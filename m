@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B42F480BA10
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6030280BA11
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjLJKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 05:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        id S231835AbjLJKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 05:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjLJKFQ (ORCPT
+        with ESMTP id S231804AbjLJKFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 05:05:16 -0500
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884D3F1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:22 -0800 (PST)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d9dcd6f478so4373219a34.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:22 -0800 (PST)
+        Sun, 10 Dec 2023 05:05:17 -0500
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2662E111
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:23 -0800 (PST)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b88ac1f09cso5385964b6e.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702202722; x=1702807522;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+5Ov6gOP5qafTlwtL6KY6FUYWPsmlqsm0IaYlR/VX7w=;
-        b=uAvsHoKjBIvQzqAPjOUz8LF2bjHt8uG59MBlTd/YhlYR0G4w/1Ox5GqINwLHuW2mqw
-         JmaZxkSJVBxKjDGSronTxveR7g+bNMZ7jMXCCz69++YDsCCIvmYWs32i8qry6fbIVOL+
-         8jKBtjQtcys3ZzoxzeCL032stYiDJIhvecf1k2oXCmcaGT2qT2F+BGLVEPM2JjYO96DY
-         AaL6X2aukmjpeRuR+CgZ65c5iWSPKrC38r1DEiLfrVkTMOTjPdvRQvYv6dvqgMe59kcl
-         gqqd5nfQ6cBbhi+43WHuupIrgH2SJZscQe5dYax/ZTwzSoDceOd3VG2DPbCIAT143bcI
-         l7cQ==
-X-Gm-Message-State: AOJu0YzQvmYoibDeekiZRlLO6UjZfITGu3y0Adp6qwmGMmAQGchtikoN
-        sLzg5+hgu77X8+OrZbvNWAR/yypuaclvLSf3mDyFxBZnEtF5
-X-Google-Smtp-Source: AGHT+IE7NBK3pcrOusjuyfBLSxHS+RHAVmquGLTyXKSRsbpLrkxw8JrwwpuygROIFcaSCou8+sDinHmstZWG/EImj7pCwGH7b8ex
+        bh=46E0STe9moK/jSQ+6rFHirn3QAtzK1kk2/EQbY4/2I8=;
+        b=BF+K6wwaLDNVopCVfQ04pneYKDNS3OPjDUuOku4vLHRon/gbEwF4n+40bSrCj0S4Lc
+         b30CCb5onHShPi5m2BG6NNwuAdOSofR4zK/ZaErVItjhrjZglElWhmlEv6ANs+xYM9MX
+         wHFJ5BN88dH71ehVm8/xrk6YPKNpxB7A+A0ZpYb3HAvpEP6iRsvEG8zeKfblLpMNktIs
+         slIU1895toAm0smBzRMDcxZxhBUyBRtbHEQXxDZCdz5PnuFgX43URNaQ/5flbdaOyQ8F
+         ExYnQ4oRYWUvX3ZdPiLaakJqwOmVDwBdPgjgRXiUFu/5fqHTQM0AEwX0Q5GglUVY3zm/
+         rv8w==
+X-Gm-Message-State: AOJu0YwL7cbLOOubWTYjJJ8shvducgz0W1SasGwt05dyutPJptl4u0tX
+        I1/xxBbLFNYD8+zpKFanDe1QWdPV3ItBDfrDVEplpY77kk2g
+X-Google-Smtp-Source: AGHT+IHRCiXG4voAtbc8pZDp4OharZNbdUQICAmtvJKfNeihR1wl4QR56CxHkFgK+34BwPXK6ywd1Hh2o9n8RAdOpGQlCvApnV0p
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:3142:b0:6d9:d1ed:42ff with SMTP id
- c2-20020a056830314200b006d9d1ed42ffmr2612817ots.1.1702202721947; Sun, 10 Dec
- 2023 02:05:21 -0800 (PST)
-Date:   Sun, 10 Dec 2023 02:05:21 -0800
+X-Received: by 2002:a05:6808:1444:b0:3b9:d3a5:2e4f with SMTP id
+ x4-20020a056808144400b003b9d3a52e4fmr2822201oiv.5.1702202722511; Sun, 10 Dec
+ 2023 02:05:22 -0800 (PST)
+Date:   Sun, 10 Dec 2023 02:05:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000093d6b3060c24f491@google.com>
-Subject: [syzbot] Monthly block report (Dec 2023)
-From:   syzbot <syzbot+list49f56196a4b6cd4a6c14@syzkaller.appspotmail.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+Message-ID: <0000000000009c70c4060c24f4f0@google.com>
+Subject: [syzbot] Monthly xfs report (Dec 2023)
+From:   syzbot <syzbot+list680675b20989b29b26c8@syzkaller.appspotmail.com>
+To:     chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
         syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello block maintainers/developers,
+Hello xfs maintainers/developers,
 
-This is a 31-day syzbot report for the block subsystem.
+This is a 31-day syzbot report for the xfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/block
+https://syzkaller.appspot.com/upstream/s/xfs
 
-During the period, 7 new issues were detected and 1 were fixed.
-In total, 53 issues are still open and 88 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 18 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 2199    Yes   WARNING in blk_rq_map_user_iov
-                  https://syzkaller.appspot.com/bug?extid=a532b03fdfee2c137666
-<2> 463     Yes   INFO: task hung in blkdev_put (4)
-                  https://syzkaller.appspot.com/bug?extid=9a29d5e745bd7523c851
-<3> 125     Yes   INFO: task hung in blkdev_fallocate
-                  https://syzkaller.appspot.com/bug?extid=39b75c02b8be0a061bfc
-<4> 43      Yes   KASAN: use-after-free Read in __dev_queue_xmit (5)
-                  https://syzkaller.appspot.com/bug?extid=b7be9429f37d15205470
-<5> 34      Yes   INFO: task hung in nbd_add_socket (2)
-                  https://syzkaller.appspot.com/bug?extid=cbb4b1ebc70d0c5a8c29
-<6> 26      Yes   WARNING in blk_register_tracepoints
-                  https://syzkaller.appspot.com/bug?extid=c54ded83396afee31eb1
-<7> 9       Yes   INFO: task hung in bdev_release
-                  https://syzkaller.appspot.com/bug?extid=4da851837827326a7cd4
-<8> 7       Yes   INFO: task hung in truncate_inode_pages
-                  https://syzkaller.appspot.com/bug?extid=bae3c73c7bf2fe3a740b
+<1> 346     Yes   KASAN: stack-out-of-bounds Read in xfs_buf_lock
+                  https://syzkaller.appspot.com/bug?extid=0bc698a422b5e4ac988c
+<2> 174     Yes   WARNING in print_bfs_bug (2)
+                  https://syzkaller.appspot.com/bug?extid=630f83b42d801d922b8b
+<3> 147     Yes   INFO: task hung in xfs_buf_item_unpin
+                  https://syzkaller.appspot.com/bug?extid=3f083e9e08b726fcfba2
+<4> 4       Yes   WARNING: Reset corrupted AGFL on AG NUM. NUM blocks leaked. Please unmount and run xfs_repair.
+                  https://syzkaller.appspot.com/bug?extid=9d0b0d54a8bd799f6ae4
 
 ---
 This report is generated by a bot. It may contain errors.
