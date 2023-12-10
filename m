@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B350C80BA4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D181580BA51
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231852AbjLJLMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 06:12:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S231906AbjLJLNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 06:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJLMM (ORCPT
+        with ESMTP id S229611AbjLJLNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 06:12:12 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD74DE1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:12:18 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54f5469c211so2631411a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:12:18 -0800 (PST)
+        Sun, 10 Dec 2023 06:13:23 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0277CE
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:13:29 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so3322815f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:13:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702206737; x=1702811537; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702206808; x=1702811608; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=azXprXSOe+X+wM33OHGadtatdNx5ZVFRLv95aGo0zBI=;
-        b=WsFU9sIdZeai9tchNSClb6WPCRxCHWThw3D5US9q/uUbnaWALmsWLuxIAbzsTRNg/X
-         9w4SHxwXmP1Obn69zSxvJTTAEtJ3Zzwaz4f34zMelncMQNBhyMfbcJqLXdF7Eo3f+Qt3
-         wNaReA+MEHWu/l843Hx0T6jDpZPspEwpeoeRYqc2VNPSmZerCGeFQN1Hyc2qRmSDeP8M
-         dKXitbRN7AwfioZOi4zoPcRYUQ3UWoswGrTbsvzbIbbBk9n2igyEtNSaOM9jZfAd+6la
-         nXXrVvaN41BVCo2yKybpUklHO+VFx2NvnXne57aKamZa5CawnYzG9hEO1pK9cb2PK8iw
-         sqOA==
+        bh=hlvSMPPWtkaeBqdtls/V0D5s82FybustbqMBgJOotgk=;
+        b=J5TrgazbG+5aVXdQZ2P/PZiwAyhctG1yfou8ldvb9Mvg/HaQX1V+S+gusUVMAU2QrT
+         lIiJtLUKaU4aNeybsexOK+0nJhifLunufengDUExFOnamuX+srJQHOzTyI55gcl30W/b
+         UEAVl65Yh8zr+GEf42tpKdpB7uVHkwqgOYAOqBKKyZY+YHcuYyelN+Z+NQEa3EBoCqvr
+         SDN6racZ1EFjlpzYh5Gk8TAK5MfnU8NgetstGVxz/SK1jzCQ1iSDdb+n7NhAOECLE9R0
+         gQZozC9dIURRI7LSiiQ8XNP35OvWiPUGfM8piVCuHslOS7vengOqPkNyXMqOvm7+gX0a
+         ZqAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702206737; x=1702811537;
+        d=1e100.net; s=20230601; t=1702206808; x=1702811608;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=azXprXSOe+X+wM33OHGadtatdNx5ZVFRLv95aGo0zBI=;
-        b=bem5JXsKQJSiaDAce22dmbbo0axBOYoiUKBzgFycOw/AQOvWg+f7/e9IpFMyA5FFGV
-         V5vkxHsunEjKxzi4cz+EVAZQqFL917C0HwE3yAW6D0HN89NfeauHskrvq2xdyIkLD5Eb
-         kWpzOQRWo6LOTncRIdBJuO0Z43tRFljuhQGrs/g9aec2QWA8Y0pDTrmDlaNrenA+YwB1
-         j8NsQAEShii1ti1yG7IxgBOw2+wY22zKr+zWX0Z50+x0W94uwEcVsqrENmc+gZ97F3Pd
-         Vv2Ufv2RbjFsJXt15MQwbGvYZzqV0B/kskUfbqGXj8gGEGh9NVXs4B68wiuslsc9alcF
-         88Ig==
-X-Gm-Message-State: AOJu0YzhCuZ6Plmy1wDKNtanxm1Hq6U52PtZ9xhyxVYos2uof4BXjorK
-        6hdZFMCO4MqI0DOsJ0kd046Ohw==
-X-Google-Smtp-Source: AGHT+IHnKrDY7vms69yrjNbTKPOfkuLEt/acayfaltEbV7DlffJbB8v39Az9ebpyQv31qA5Toonzcg==
-X-Received: by 2002:a50:a417:0:b0:54c:6814:3f2f with SMTP id u23-20020a50a417000000b0054c68143f2fmr1593372edb.14.1702206737083;
-        Sun, 10 Dec 2023 03:12:17 -0800 (PST)
+        bh=hlvSMPPWtkaeBqdtls/V0D5s82FybustbqMBgJOotgk=;
+        b=WJC1edoJ0TmJPnosD849KuwmfhWgQWeGwtv/1EppTJseQbl9nAWRN+g4PtxDHc/gxx
+         LFic3jwqyU80KwiM3Wc/TyqQSn/3r+fD1+KZR6hq1F9Vt2abr0H4B+7CIKjjd7GBz+fg
+         5GEKMlAZQdNkVaikvXM7t4ozco/WoM1Loc8bBroFYoIB5Dceq9hl9bgTQSPAo1pkMDYu
+         u4fzA8PdZ9L/0YLB6zqpHOcZuFlDduvwCbJRJXB4Uy0YDKjD1G+/rM6ueRDvxOHyDM/d
+         vL6zCtvQ85G69cj9r/IxLeEBuqZtiOzzLIyQycIyf0F5scDReofGyy2c+7dJTsDs3ux4
+         7thw==
+X-Gm-Message-State: AOJu0YygOL6gKGzTBaszVjmQSM0sjMI2NDqYZz76OmlICiGRJFskiqja
+        2YEqcl55h8hZ8mG8zBHO0MpcoA==
+X-Google-Smtp-Source: AGHT+IElP2WInxPNOeBJ56QMrFJ5L0DTwwtkXMARoc6hSF2iAXWitsEAkB9XZfnYz2KV9HrMAYu+OA==
+X-Received: by 2002:a5d:4411:0:b0:333:4862:8520 with SMTP id z17-20020a5d4411000000b0033348628520mr1319482wrq.138.1702206808225;
+        Sun, 10 Dec 2023 03:13:28 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id l6-20020a5d4bc6000000b00333381c6e12sm6158472wrt.40.2023.12.10.03.12.15
+        by smtp.gmail.com with ESMTPSA id l6-20020a5d4bc6000000b00333381c6e12sm6158472wrt.40.2023.12.10.03.13.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Dec 2023 03:12:16 -0800 (PST)
-Message-ID: <2b58450a-1bde-424b-ab69-a3834914522c@linaro.org>
-Date:   Sun, 10 Dec 2023 12:12:15 +0100
+        Sun, 10 Dec 2023 03:13:27 -0800 (PST)
+Message-ID: <32b6437f-0e56-439d-8ebb-465e5230b18f@linaro.org>
+Date:   Sun, 10 Dec 2023 12:13:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] arm64: dts: rockchip: Add support for rk3588 based
- board Cool Pi CM5 EVB
+Subject: Re: [PATCH v2 3/5] arm64: dts: rockchip: Add support for rk3588s
+ based board Cool Pi 4B
 Content-Language: en-US
 To:     Andy Yan <andyshrk@163.com>, heiko@sntech.de
 Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
@@ -63,7 +63,7 @@ Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
         linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
 References: <20231210080313.1667013-1-andyshrk@163.com>
- <20231210080629.1667589-1-andyshrk@163.com>
+ <20231210080547.1667421-1-andyshrk@163.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -109,12 +109,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231210080629.1667589-1-andyshrk@163.com>
+In-Reply-To: <20231210080547.1667421-1-andyshrk@163.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,44 +122,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2023 09:06, Andy Yan wrote:
-> Cool Pi CM5 EVB is a board based on rk3588.
-> 
+On 10/12/2023 09:05, Andy Yan wrote:
+> CoolPi 4B is a rk3588s based SBC.
 > Specification:
-> - Rockchip RK3588
+> - Rockchip RK3588S
 > - LPDDR4 2/4/8/16 GB
 > - TF scard slot
-> - eMMC 8/32/64/128 GB module
-> - Gigabit ethernet x 1 with PHY YT8531
-> - Gigabit ethernet x 1 drived by PCIE with YT6801S
-> - HDMI Type A out x 2
-> - HDMI Type D in x 1
-> - USB 2.0 Host x 2
-> - USB 3.0 OTG x 1
-> - USB 3.0 Host x 1
-> - PCIE M.2 E Key for Wireless connection
-> - PCIE M.2 M Key for NVME connection
-> - 40 pin header
 
+...
 
+> +&i2c6 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&i2c6m3_xfer>;
+> +	status = "okay";
 > +
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		power-supply = <&vcc12v_dcin>;
-> +		pwms = <&pwm2 0 25000 0>;
-> +		enable-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
+> +	hym8563: rtc@51 {
+> +		compatible = "haoyu,hym8563";
+> +		reg = <0x51>;
+> +		#clock-cells = <0>;
+> +		clock-frequency = <32768>;
+> +		clock-output-names = "hym8563";
 > +		pinctrl-names = "default";
-> +		pinctrl-0 = <&bl_en>;
+> +		pinctrl-0 = <&hym8563_int>;
+> +		interrupt-parent = <&gpio0>;
+> +		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
 > +		status = "okay";
 
-This is a friendly reminder during the review process.
-
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
-
-Thank you.
+My comments about redundant statues applies to all places, not only to
+one specific place...
 
 Best regards,
 Krzysztof
