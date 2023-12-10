@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143D280BC3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 17:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D53880BC4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjLJQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 11:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S231772AbjLJQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 11:50:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjLJQl6 (ORCPT
+        with ESMTP id S231755AbjLJQuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 11:41:58 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CD4F5;
-        Sun, 10 Dec 2023 08:42:04 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-67a948922aaso25526186d6.3;
-        Sun, 10 Dec 2023 08:42:04 -0800 (PST)
+        Sun, 10 Dec 2023 11:50:39 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9738CFA;
+        Sun, 10 Dec 2023 08:50:46 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2886d445d8dso1009275a91.1;
+        Sun, 10 Dec 2023 08:50:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702226523; x=1702831323; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i0lrZcnXtGyQm/QMIPVbNtLua11zuI47QiJurNMFZ1o=;
-        b=jVL4YL0qmHRswmEa+HuW3r3TTfypYAf1tKa4jUS6xxD2BFE03NuG3JFj8VLJ+56jWo
-         5DV6H1zMsWFfuGITdWK56eTneH1zvXBzzlUSgjgiMKu1V/kc4MhpPyeyhxw5+5risPO/
-         IrtK7vzUzS7OHGsHf7H1pj6DvyxopeTxLNmPRuxnTj1llD3pyGZ38hd5/SvDgApRLGhk
-         2gksLZVi4A+W1M0dTy1FwTUiO/wXRk4J+yHaszbXq4ZHR3xbcDsqOU+avPcYvG+ge7Ta
-         A1bc68it6gM4Ynq7PqMW+Ypiq8a1C0nQBTOdh59jjsR7EtYQwf1tQLhC1jsV86TGeh8z
-         s+iw==
+        d=gmail.com; s=20230601; t=1702227046; x=1702831846; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cx83+ClTbz5lUz2UC/9mxXOF3CM87EbKd6ZcjX3rjAI=;
+        b=bpgfOHtVXinUsbpKkASsksV0uyjqgpJFty9QpCwftGrsPe3OlLghtvzF5nvz7vI0yA
+         8/HFg0n3x/gKvdD4BLVZm1QJL7n2S572Dx/+xgwVH/UynACUtodZ5SHyJtbbJToxav12
+         X7xwoW6U2QvRcr/243HmGaufgeOf7KLYbWTlX6YeeOXiymu5ok1x36lICYUDVdUeVGso
+         fXQqzgWruPxRwlX+jcHrBkns4HpkfgIMEoO2Gms9a3odxBgyFyPz7I5BKmu4vSWsByS4
+         jejJ/rLChTg/5brPbntGvMO79VeeXcsqk2kG7Xy57fTCjzE+CWOJDG57h8YJZtPDAFIz
+         a4Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702226523; x=1702831323;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i0lrZcnXtGyQm/QMIPVbNtLua11zuI47QiJurNMFZ1o=;
-        b=GDdeU8cJHIIutAY/bkt3H5c2ETZSHNHyCCyxIx2vL64DowKM8/ZWkCxT0L1vEzp7t0
-         qhQcR5iIz0fpfOS15zfyK923mRTdwOw5XSiVqtDLWX3N1G8edxDEtt9HcmBP9kRwugCl
-         s0ij+bnvtkjrEINAXYdVxfXvfbnBVJsMFC1GRBNcCjIneM3jcqrUqMPShjTDjNzaZMmE
-         /mVxTt58mnmuCrHh3an7ZF2zR7Br46cG9rIIvB+HkFRvtGeV6O+v3unsnFhpZhCA8cc2
-         nlxeggn3ze8wBbp+pEbUHaslcxosDBsixleK1WZoK40xxYcZSp4Ugd/pu/vxVhOVM5cs
-         wXow==
-X-Gm-Message-State: AOJu0YzUnZl1DYISCBtWF2+Lvl0rX4kWzJmQHYC+kuarqUSG4LWbnW7Z
-        kqhUECLd0vlc3JSyhL+GT3SyTZR5bQMa/aAC5bhkDKD/60A=
-X-Google-Smtp-Source: AGHT+IFlVeOQUiWtpd0w0fAcibx30vf9EiQ3pz90L9Uvaz9+6/o+1u7RBzxGVZQrrvAkoWzvQgopyfvAGOsN7T5J4wo=
-X-Received: by 2002:a05:6214:17c9:b0:67a:a721:e12d with SMTP id
- cu9-20020a05621417c900b0067aa721e12dmr3567441qvb.90.1702226523168; Sun, 10
- Dec 2023 08:42:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702227046; x=1702831846;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cx83+ClTbz5lUz2UC/9mxXOF3CM87EbKd6ZcjX3rjAI=;
+        b=PQQxbgrd9IlSbjNTPxbFf7TRe+wVFlc6Z9H9U0K0ebPcfF/VMFUdzg/xRejfK9iZQc
+         /AhsYjQvAxVY6cZWFnNnddU4wLCAqM1NYyCRqCFu/k8FDK57GhUS0zOeWWdMh1QMRyLy
+         +7FKPaBrtGLgZn1mqgb48R3Hq6A3ZvZz78iqrPV+H0soNlK93z67fo3ATlac8V8VqX6f
+         60SRwTJXvYLRD8mJ1+OHcjCRAyiKjeK0VLX7NYhZsnu6TJ31kj1U3+bjlRpBS8M6ScL+
+         YPe5OAiQyLFGq2GO3fKm/q/3Ll3BkKZHnYIGN0xU9VAeb8HzVwk738lCBztcH10Bn2mu
+         B8mg==
+X-Gm-Message-State: AOJu0Yz0IFksKccnK1tUoVHVpNyIaZv91VZ09WrieQjty3MgWl9k6q/Z
+        xY/Ll9KO2K532Z2OLiydds0=
+X-Google-Smtp-Source: AGHT+IEfbTLarMP63qUNtsd6a3QqVptoby0FIdULnNzGnoM7p8yeSo8LcHvXt+o76mrdpYycJjKDmA==
+X-Received: by 2002:a05:6a20:3d29:b0:18b:c9cf:4521 with SMTP id y41-20020a056a203d2900b0018bc9cf4521mr7940567pzi.2.1702227045917;
+        Sun, 10 Dec 2023 08:50:45 -0800 (PST)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id hi16-20020a17090b30d000b00286bd821426sm6758938pjb.26.2023.12.10.08.50.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 08:50:45 -0800 (PST)
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org
+Cc:     robh@kernel.org, abel.vesa@linaro.org, dinguyen@kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] clk: hi3620: Fix memory leak in hi3620_mmc_clk_init()
+Date:   Mon, 11 Dec 2023 00:50:40 +0800
+Message-Id: <20231210165040.3407545-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231129-idmap-fscap-refactor-v1-0-da5a26058a5b@kernel.org>
- <20231129-idmap-fscap-refactor-v1-9-da5a26058a5b@kernel.org>
- <20231201-reintreten-gehalt-435a960f80ed@brauner> <ZWojWE7/HRnByRb+@do-x1extreme>
- <ZXHZ8uNEg1IK5WMW@do-x1extreme>
-In-Reply-To: <ZXHZ8uNEg1IK5WMW@do-x1extreme>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 10 Dec 2023 18:41:52 +0200
-Message-ID: <CAOQ4uxhMYPZGQ+ogStYOZYMU+Lvj+2M_HkWF7eFFReb6hDoV_g@mail.gmail.com>
-Subject: Re: [PATCH 09/16] fs: add vfs_set_fscaps()
-To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-        linux-unionfs@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,115 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 4:43=E2=80=AFPM Seth Forshee (DigitalOcean)
-<sforshee@kernel.org> wrote:
->
-> [Adding Mimi for insights on EVM questions]
->
-> On Fri, Dec 01, 2023 at 12:18:00PM -0600, Seth Forshee (DigitalOcean) wro=
-te:
-> > On Fri, Dec 01, 2023 at 06:39:18PM +0100, Christian Brauner wrote:
-> > > > +/**
-> > > > + * vfs_set_fscaps - set filesystem capabilities
-> > > > + * @idmap: idmap of the mount the inode was found from
-> > > > + * @dentry: the dentry on which to set filesystem capabilities
-> > > > + * @caps: the filesystem capabilities to be written
-> > > > + * @flags: setxattr flags to use when writing the capabilities xat=
-tr
-> > > > + *
-> > > > + * This function writes the supplied filesystem capabilities to th=
-e dentry.
-> > > > + *
-> > > > + * Return: 0 on success, a negative errno on error.
-> > > > + */
-> > > > +int vfs_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> > > > +            const struct vfs_caps *caps, int flags)
-> > > > +{
-> > > > + struct inode *inode =3D d_inode(dentry);
-> > > > + struct inode *delegated_inode =3D NULL;
-> > > > + struct vfs_ns_cap_data nscaps;
-> > > > + int size, error;
-> > > > +
-> > > > + /*
-> > > > +  * Unfortunately EVM wants to have the raw xattr value to compare=
- to
-> > > > +  * the on-disk version, so we need to pass the raw xattr to the
-> > > > +  * security hooks. But we also want to do security checks before
-> > > > +  * breaking leases, so that means a conversion to the raw xattr h=
-ere
-> > > > +  * which will usually be reduntant with the conversion we do for
-> > > > +  * writing the xattr to disk.
-> > > > +  */
-> > > > + size =3D vfs_caps_to_xattr(idmap, i_user_ns(inode), caps, &nscaps=
-,
-> > > > +                          sizeof(nscaps));
-> > > > + if (size < 0)
-> > > > +         return size;
-> > >
-> > > Oh right, I remember that. Slight eyeroll. See below though...
-> > >
-> > > > +
-> > > > +retry_deleg:
-> > > > + inode_lock(inode);
-> > > > +
-> > > > + error =3D xattr_permission(idmap, inode, XATTR_NAME_CAPS, MAY_WRI=
-TE);
-> > > > + if (error)
-> > > > +         goto out_inode_unlock;
-> > > > + error =3D security_inode_setxattr(idmap, dentry, XATTR_NAME_CAPS,=
- &nscaps,
-> > > > +                                 size, flags);
-> > > > + if (error)
-> > > > +         goto out_inode_unlock;
-> > >
-> > > For posix acls I added dedicated security hooks that take the struct
-> > > posix_acl stuff and then plumb that down into the security modules. Y=
-ou
-> > > could do the same thing here and then just force EVM and others to do
-> > > their own conversion from in-kernel to xattr format, instead of forci=
-ng
-> > > the VFS to do this.
-> > >
-> > > Because right now we make everyone pay the price all the time when
-> > > really EVM should pay that price and this whole unpleasantness.
-> >
-> > Good point, I'll do that.
->
-> I've been reconsidering various approaches here. One thing I noticed is
-> that for the non-generic case (iow overlayfs) I missed calling
-> security_inode_post_setxattr(), where EVM also wants the raw xattr, so
-> that would require another conversion. That got me wondering whether the
-> setxattr security hooks really matter when writing fscaps to overlayfs.
-> And it seems like they might not: the LSMs only look for their own
-> xattrs, and IMA doesn't do anything with fscaps xattrs. EVM does, but
-> what it does for a xattr write to an overlayfs indoe seems at least
-> partially if not completely redundant with what it will do when the
-> xattr is written to the upper filesystem.
->
-> So could we push these security calls down to the generic fscaps
-> implementations just before/after writing the raw xattr data and just
-> skip them for overlayfs? If so we can get away with doing the vfs_caps
-> to xattr conversion only once.
->
-> The trade offs are that filesystems which implement fscaps inode
-> operations become responsible for calling the security hooks if needed,
-> and if something changes such that we need to call those security hooks
-> for fscaps on overlayfs this solution would no longer work.
+In cases where kcalloc() fails for the 'clk_data->clks' allocation, the
+code path does not handle the failure gracefully, potentially leading
+to a memory leak. This fix ensures proper cleanup by freeing the
+allocated memory for 'clk_data' before returning.
 
-Hi Seth,
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ drivers/clk/hisilicon/clk-hi3620.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I was trying to understand the alternative proposals, but TBH,
-I cannot wrap my head about overlayfs+IMA/EVM and I do not
-fully understand the use case.
+diff --git a/drivers/clk/hisilicon/clk-hi3620.c b/drivers/clk/hisilicon/clk-hi3620.c
+index 2d7186905abd..5d0226530fdb 100644
+--- a/drivers/clk/hisilicon/clk-hi3620.c
++++ b/drivers/clk/hisilicon/clk-hi3620.c
+@@ -466,8 +466,10 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
+ 		return;
+ 
+ 	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
+-	if (!clk_data->clks)
++	if (!clk_data->clks) {
++		kfree(clk_data);
+ 		return;
++	}
+ 
+ 	for (i = 0; i < num; i++) {
+ 		struct hisi_mmc_clock *mmc_clk = &hi3620_mmc_clks[i];
+-- 
+2.25.1
 
-Specifically, I do not understand why the IMA/EVM attestation on
-the upper and lower fs isn't enough to make overlayfs tamper proof.
-I never got an explanation of the threat model for overlayfs+IMA/EVM.
-
-I know that for SELinux and overlayfs a lot of work was done by Vivek.
-I was not involved in this work, but AKAIF, it did not involve any conversi=
-on
-of selinux xattrs.
-
-Thanks,
-Amir.
