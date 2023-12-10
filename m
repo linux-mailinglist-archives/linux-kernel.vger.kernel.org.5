@@ -2,107 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458CE80BA35
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8933680BA38
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbjLJKu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 05:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        id S231803AbjLJKyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 05:54:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJKuZ (ORCPT
+        with ESMTP id S229482AbjLJKyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 05:50:25 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCF7C8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:50:31 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1D9B340E00C6;
-        Sun, 10 Dec 2023 10:50:30 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 175pUVsJPMCS; Sun, 10 Dec 2023 10:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702205428; bh=Dq8IvhuNZiMEXXSx0hJc6s8kGAO1BBoQM5Wx/7z/oGk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cYDBvA+XSNK/eRO0SGrsW6/Mjlv9CVl1v+ZRY2HfB/rEDdrQK1kuCdDbQFOQpli00
-         2u8HAQDgiYlfmFjbUp6WtU7T8EIByeTR5ePzCWMGiFyHqPm49vIV1nZaowrCO28+JC
-         I9ipg4OoIfb5uv42u1D2FlJCNuidEY8582gNSPWAIEFxqNw78Q5g/EeTN2vdE7cyeo
-         wYhIdiH/92ctEjOtLbQ/WsAH1cXurXn0qwIoD0aBFAc4nnfLZWMWM2x6pwsj2keYOc
-         phf/pWchzzt7HPjU6//k0Qm7c+4uCEi1D6AyOMw6FI9tNaW0v7AWypb+f8YvaA5RF8
-         CXRFXlche3yJppvm3QYeusjMdagI5oi8Q52tZPeo642UlZiLNlfOgtWtHWTT6jJRnc
-         mWQo7+a2QkgD55ZXJkQkaD0/n1vFY2eGWJG7CgpUr7kgkhde+ivT60+8YTwiSVn0UJ
-         gavvi2PKLsXNQWFwASjY4NUkqkW46Xl104TDqF9yOSY26vYc/Qdb8dtQ37k0bC3ixB
-         i3mAx+T/z1WQleANThet29SY3VOObtEXbBNzMvP8vrQsxDJK5ktmSFPpAjSzFpLyxC
-         AKIEBYMtOlS97cq9dq5QhT0iRLF9liu8fjn0KFc38np552VYAYlAIzWfrePlj58qQx
-         qUfca9KqqOFR6fR3daWJs2HU=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4025340E00A9;
-        Sun, 10 Dec 2023 10:50:25 +0000 (UTC)
-Date:   Sun, 10 Dec 2023 11:50:16 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.7-rc5
-Message-ID: <20231210105016.GAZXWX6N31tS8bu6k3@fat_crate.local>
+        Sun, 10 Dec 2023 05:54:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9229C8;
+        Sun, 10 Dec 2023 02:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702205646; x=1733741646;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bKb6I9zBG+5Ovm9G2uVoaBqjWBV1g7OKt9qJag3oGHY=;
+  b=Bquqh7DaBbD+BOFNu7lS65pH6FK9FvFDCCw9lKneft5ACNWxi5dKLeKE
+   o8LeNJW/wSEiSBA1pRJJt+wVoipKaoaAn6fAgnwagPCtjy1NJ4HnZQF2q
+   CwYYgFqj5C8wrCs3uxzllDAMzutb8LMxKhhixEGTW3+v02N395tQ+7m4Y
+   wLr3AIcJurMCAdEgKzoN139oB8OByB+JOpJjRv0eFSO6xeD7N/1LFyCmJ
+   uWnFq+eMY3rl9Ewibywb6bolH80B0Cff/pREbO6QCAJh7dSHl9L+UH+dd
+   bI/1+wv7LG/XGqybs/01KSB65ZI6BdQKpOUF6VPmZvJa+dIawC4pvNGsx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="394284648"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="394284648"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 02:54:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="772654098"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="772654098"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 10 Dec 2023 02:54:02 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCHRg-000Gjc-0h;
+        Sun, 10 Dec 2023 10:54:00 +0000
+Date:   Sun, 10 Dec 2023 18:53:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        quic_jesszhan@quicinc.com, quic_parellan@quicinc.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 07/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM
+ block
+Message-ID: <202312101815.B3ZH7Pfy-lkp@intel.com>
+References: <20231208050641.32582-8-quic_abhinavk@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231208050641.32582-8-quic_abhinavk@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Abhinav,
 
-please pull two x86/urgent fixes for v6.7-rc5.
+kernel test robot noticed the following build warnings:
 
-Thx.
+[auto build test WARNING on next-20231207]
+[also build test WARNING on v6.7-rc4]
+[cannot apply to drm-misc/drm-misc-next linus/master v6.7-rc4 v6.7-rc3 v6.7-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
----
+url:    https://github.com/intel-lab-lkp/linux/commits/Abhinav-Kumar/drm-msm-dpu-add-formats-check-for-writeback-encoder/20231208-130820
+base:   next-20231207
+patch link:    https://lore.kernel.org/r/20231208050641.32582-8-quic_abhinavk%40quicinc.com
+patch subject: [PATCH v2 07/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231210/202312101815.B3ZH7Pfy-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312101815.B3ZH7Pfy-lkp@intel.com/reproduce)
 
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312101815.B3ZH7Pfy-lkp@intel.com/
 
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+All warnings (new ones prefixed by >>):
 
-are available in the Git repository at:
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:193:5: warning: no previous prototype for function 'dpu_hw_cdm_enable' [-Wmissing-prototypes]
+   int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+       ^
+   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:193:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+   ^
+   static 
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:230:6: warning: no previous prototype for function 'dpu_hw_cdm_disable' [-Wmissing-prototypes]
+   void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+        ^
+   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:230:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+   ^
+   static 
+   2 warnings generated.
+--
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:59: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Horizontal coefficients for cosite chroma downscale
+   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:65: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Horizontal coefficients for offsite chroma downscale
+   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:70: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Vertical coefficients for cosite chroma downscale
+   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c:74: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Vertical coefficients for offsite chroma downscale
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.7_rc5
 
-for you to fetch changes up to 9b8493dc43044376716d789d07699f17d538a7c4:
+vim +/dpu_hw_cdm_enable +193 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
 
-  x86/CPU/AMD: Check vendor in the AMD microcode callback (2023-12-02 11:40:24 +0100)
-
-----------------------------------------------------------------
-- Add a forgotten CPU vendor check in the AMD microcode post-loading
-  callback so that the callback runs only on AMD
-
-- Make sure SEV-ES protocol negotiation happens only once and on the BSP
-
-----------------------------------------------------------------
-Ashwin Dayanand Kamat (1):
-      x86/sev: Fix kernel crash due to late update to read-only ghcb_version
-
-Borislav Petkov (AMD) (1):
-      x86/CPU/AMD: Check vendor in the AMD microcode callback
-
- arch/x86/kernel/cpu/amd.c |  3 +++
- arch/x86/kernel/sev.c     | 11 +++++++----
- 2 files changed, 10 insertions(+), 4 deletions(-)
-
+    57	
+    58	/**
+  > 59	 * Horizontal coefficients for cosite chroma downscale
+    60	 * s13 representation of coefficients
+    61	 */
+    62	static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
+    63	
+    64	/**
+    65	 * Horizontal coefficients for offsite chroma downscale
+    66	 */
+    67	static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
+    68	
+    69	/**
+    70	 * Vertical coefficients for cosite chroma downscale
+    71	 */
+    72	static u32 cosite_v_coeff[] = {0x00080004};
+    73	/**
+    74	 * Vertical coefficients for offsite chroma downscale
+    75	 */
+    76	static u32 offsite_v_coeff[] = {0x00060002};
+    77	
+    78	static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
+    79	{
+    80		struct dpu_hw_blk_reg_map *c = &ctx->hw;
+    81		u32 opmode = 0;
+    82		u32 out_size = 0;
+    83	
+    84		if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
+    85			opmode &= ~CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
+    86		else
+    87			opmode |= CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
+    88	
+    89		/* ENABLE DWNS_H bit */
+    90		opmode |= CDM_CDWN2_OP_MODE_ENABLE_H;
+    91	
+    92		switch (cfg->h_cdwn_type) {
+    93		case CDM_CDWN_DISABLE:
+    94			/* CLEAR METHOD_H field */
+    95			opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+    96			/* CLEAR DWNS_H bit */
+    97			opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_H;
+    98			break;
+    99		case CDM_CDWN_PIXEL_DROP:
+   100			/* Clear METHOD_H field (pixel drop is 0) */
+   101			opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+   102			break;
+   103		case CDM_CDWN_AVG:
+   104			/* Clear METHOD_H field (Average is 0x1) */
+   105			opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+   106			opmode |= CDM_CDWN2_OP_MODE_METHOD_H_AVG;
+   107			break;
+   108		case CDM_CDWN_COSITE:
+   109			/* Clear METHOD_H field (Average is 0x2) */
+   110			opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+   111			opmode |= CDM_CDWN2_OP_MODE_METHOD_H_COSITE;
+   112			/* Co-site horizontal coefficients */
+   113			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
+   114					cosite_h_coeff[0]);
+   115			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
+   116					cosite_h_coeff[1]);
+   117			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
+   118					cosite_h_coeff[2]);
+   119			break;
+   120		case CDM_CDWN_OFFSITE:
+   121			/* Clear METHOD_H field (Average is 0x3) */
+   122			opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
+   123			opmode |= CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE;
+   124	
+   125			/* Off-site horizontal coefficients */
+   126			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
+   127					offsite_h_coeff[0]);
+   128			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
+   129					offsite_h_coeff[1]);
+   130			DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
+   131					offsite_h_coeff[2]);
+   132			break;
+   133		default:
+   134			pr_err("%s invalid horz down sampling type\n", __func__);
+   135			return -EINVAL;
+   136		}
+   137	
+   138		/* ENABLE DWNS_V bit */
+   139		opmode |= CDM_CDWN2_OP_MODE_ENABLE_V;
+   140	
+   141		switch (cfg->v_cdwn_type) {
+   142		case CDM_CDWN_DISABLE:
+   143			/* CLEAR METHOD_V field */
+   144			opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+   145			/* CLEAR DWNS_V bit */
+   146			opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_V;
+   147			break;
+   148		case CDM_CDWN_PIXEL_DROP:
+   149			/* Clear METHOD_V field (pixel drop is 0) */
+   150			opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+   151			break;
+   152		case CDM_CDWN_AVG:
+   153			/* Clear METHOD_V field (Average is 0x1) */
+   154			opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+   155			opmode |= CDM_CDWN2_OP_MODE_METHOD_V_AVG;
+   156			break;
+   157		case CDM_CDWN_COSITE:
+   158			/* Clear METHOD_V field (Average is 0x2) */
+   159			opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+   160			opmode |= CDM_CDWN2_OP_MODE_METHOD_V_COSITE;
+   161			/* Co-site vertical coefficients */
+   162			DPU_REG_WRITE(c,
+   163				      CDM_CDWN2_COEFF_COSITE_V,
+   164				      cosite_v_coeff[0]);
+   165			break;
+   166		case CDM_CDWN_OFFSITE:
+   167			/* Clear METHOD_V field (Average is 0x3) */
+   168			opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
+   169			opmode |= CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE;
+   170	
+   171			/* Off-site vertical coefficients */
+   172			DPU_REG_WRITE(c,
+   173				      CDM_CDWN2_COEFF_OFFSITE_V,
+   174				      offsite_v_coeff[0]);
+   175			break;
+   176		default:
+   177			return -EINVAL;
+   178		}
+   179	
+   180		if (cfg->v_cdwn_type || cfg->h_cdwn_type)
+   181			opmode |= CDM_CDWN2_OP_MODE_EN; /* EN CDWN module */
+   182		else
+   183			opmode &= ~CDM_CDWN2_OP_MODE_EN;
+   184	
+   185		out_size = (cfg->output_width & 0xFFFF) | ((cfg->output_height & 0xFFFF) << 16);
+   186		DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
+   187		DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
+   188		DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT, ((0x3FF << 16) | 0x0));
+   189	
+   190		return 0;
+   191	}
+   192	
+ > 193	int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+   194	{
+   195		struct dpu_hw_blk_reg_map *c = &ctx->hw;
+   196		const struct dpu_format *fmt;
+   197		u32 opmode = 0;
+   198		u32 csc = 0;
+   199	
+   200		if (!ctx || !cdm)
+   201			return -EINVAL;
+   202	
+   203		fmt = cdm->output_fmt;
+   204	
+   205		if (!DPU_FORMAT_IS_YUV(fmt))
+   206			return -EINVAL;
+   207	
+   208		dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, cdm->csc_cfg, true);
+   209		dpu_hw_cdm_setup_cdwn(ctx, cdm);
+   210	
+   211		if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
+   212			if (fmt->chroma_sample != DPU_CHROMA_H1V2)
+   213				return -EINVAL; /*unsupported format */
+   214			opmode = CDM_HDMI_PACK_OP_MODE_EN;
+   215			opmode |= (fmt->chroma_sample << 1);
+   216		}
+   217	
+   218		csc |= CDM_CSC10_OP_MODE_DST_FMT_YUV;
+   219		csc &= ~CDM_CSC10_OP_MODE_SRC_FMT_YUV;
+   220		csc |= CDM_CSC10_OP_MODE_EN;
+   221	
+   222		if (ctx && ctx->ops.bind_pingpong_blk)
+   223			ctx->ops.bind_pingpong_blk(ctx, true, cdm->pp_id);
+   224	
+   225		DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
+   226		DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
+   227		return 0;
+   228	}
+   229	
+ > 230	void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+   231	{
+   232		if (!ctx)
+   233			return;
+   234	
+   235		if (ctx && ctx->ops.bind_pingpong_blk)
+   236			ctx->ops.bind_pingpong_blk(ctx, false, PINGPONG_NONE);
+   237	}
+   238	
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
