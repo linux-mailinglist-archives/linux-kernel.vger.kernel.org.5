@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F0380BA04
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF480B9F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbjLJJ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 04:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S231777AbjLJJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 04:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231728AbjLJJUu (ORCPT
+        with ESMTP id S231775AbjLJJUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 Dec 2023 04:20:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11C6107
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 01:20:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F537C433C7;
-        Sun, 10 Dec 2023 09:20:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876CF114
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 01:20:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9093C433C9;
+        Sun, 10 Dec 2023 09:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702200051;
-        bh=yOuZPXBjKzvohX2oVWWx3dWTtZRRyOJHZm+idQtSj7Y=;
+        s=k20201202; t=1702200053;
+        bh=vqEZwoEd5rfiidnh92i4EHLdEHwAQGZ/XdcKXiscRKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUBmEZdRC92b5ppU7KkbM5o9GKhtV4T8mxVcHNQtSFi1TWK6ZZgU3pNRQTsxnksO0
-         ZlH8O0D2n8ptGIZWKr9/wPIxREIvk+1tYykw+G94KFEcNueKjxl5VYj5ZnC3QhkWE1
-         AwAqrNKyEEnOfv65Ie/zTHzBLa1mLP9gr5cEzhC0gzJBjD6fyC74o3hHyVARIDzbU5
-         0jrHRuA9IjLXVS6b/2b7luEVW8xRiQIUf034T31RDcpG97OKjnQfZrEwy4KVTRFSk2
-         V72N3Y3At8ehn+q19DYpuIycqo12FdUX8K8R0QVuQIu+tGdB5aQrD3PrrHsL6tHVVf
-         +r+g/piIZcT3g==
+        b=ob1j+7BAs0/X61wciJwW/sUV+jUXQf0THBWwC3jP3ipOPJe1CkI/I/JK/aBzMHKaX
+         dyifLL0VLLk7wn+QZazE6k8/3i7kZwSiWC6218uvfcyUGIx+Zg61YnwaGrvL7D6+aj
+         5kaMnc8NJsDwmLan3iQNHzbMgHiTgnJzUTB3dROVLZZzS1Rlk0h/M2inR6X6r6oLh9
+         q44NGfqHB08B85U1B4715rn8Che6Xa4UBsgoVwFX+lCPOBQX756T95DUHdzOVx5CAa
+         6ROdXkv1oHTF2rChZxax/hz3eknBA/iSJ0RSm+nle2vkn2HMM31zHHgk57r360tofm
+         Y9e8nxCeDOb5Q==
 From:   Chao Yu <chao@kernel.org>
 To:     jaegeuk@kernel.org
 Cc:     linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
-Subject: [PATCH 3/6] f2fs: introduce get_dnode_addr() to clean up codes
-Date:   Sun, 10 Dec 2023 17:20:37 +0800
-Message-Id: <20231210092040.3374741-3-chao@kernel.org>
+Subject: [PATCH 4/6] f2fs: update blkaddr in __set_data_blkaddr() for cleanup
+Date:   Sun, 10 Dec 2023 17:20:38 +0800
+Message-Id: <20231210092040.3374741-4-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231210092040.3374741-1-chao@kernel.org>
 References: <20231210092040.3374741-1-chao@kernel.org>
@@ -49,174 +49,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch allows caller to pass blkaddr to f2fs_set_data_blkaddr()
+and let __set_data_blkaddr() inside f2fs_set_data_blkaddr() to update
+dn->data_blkaddr w/ last value of blkaddr.
+
 Just cleanup, no logic changes.
 
 Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- fs/f2fs/data.c  | 11 ++---------
- fs/f2fs/f2fs.h  | 18 +++++++++++++++---
- fs/f2fs/file.c  |  8 +-------
- fs/f2fs/inode.c | 32 ++++++++++++++------------------
- 4 files changed, 32 insertions(+), 37 deletions(-)
+ fs/f2fs/data.c | 13 ++++++-------
+ fs/f2fs/f2fs.h |  2 +-
+ fs/f2fs/file.c | 12 ++++--------
+ 3 files changed, 11 insertions(+), 16 deletions(-)
 
 diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 7a81ff3c385a..ae46c4841ca9 100644
+index ae46c4841ca9..d86419b01310 100644
 --- a/fs/f2fs/data.c
 +++ b/fs/f2fs/data.c
-@@ -1181,16 +1181,9 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
- 
- static void __set_data_blkaddr(struct dnode_of_data *dn)
- {
--	struct f2fs_node *rn = F2FS_NODE(dn->node_page);
--	__le32 *addr_array;
--	int base = 0;
-+	__le32 *addr = get_dnode_addr(dn->inode, dn->node_page);
- 
--	if (IS_INODE(dn->node_page) && f2fs_has_extra_attr(dn->inode))
--		base = get_extra_isize(dn->inode);
--
--	/* Get physical address of data block */
--	addr_array = blkaddr_in_node(rn);
--	addr_array[base + dn->ofs_in_node] = cpu_to_le32(dn->data_blkaddr);
-+	addr[dn->ofs_in_node] = cpu_to_le32(dn->data_blkaddr);
+@@ -1179,10 +1179,11 @@ static int f2fs_submit_page_read(struct inode *inode, struct page *page,
+ 	return 0;
  }
  
- /*
+-static void __set_data_blkaddr(struct dnode_of_data *dn)
++static void __set_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr)
+ {
+ 	__le32 *addr = get_dnode_addr(dn->inode, dn->node_page);
+ 
++	dn->data_blkaddr = blkaddr;
+ 	addr[dn->ofs_in_node] = cpu_to_le32(dn->data_blkaddr);
+ }
+ 
+@@ -1192,18 +1193,17 @@ static void __set_data_blkaddr(struct dnode_of_data *dn)
+  *  ->node_page
+  *    update block addresses in the node page
+  */
+-void f2fs_set_data_blkaddr(struct dnode_of_data *dn)
++void f2fs_set_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr)
+ {
+ 	f2fs_wait_on_page_writeback(dn->node_page, NODE, true, true);
+-	__set_data_blkaddr(dn);
++	__set_data_blkaddr(dn, blkaddr);
+ 	if (set_page_dirty(dn->node_page))
+ 		dn->node_changed = true;
+ }
+ 
+ void f2fs_update_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr)
+ {
+-	dn->data_blkaddr = blkaddr;
+-	f2fs_set_data_blkaddr(dn);
++	f2fs_set_data_blkaddr(dn, blkaddr);
+ 	f2fs_update_read_extent_cache(dn);
+ }
+ 
+@@ -1230,8 +1230,7 @@ int f2fs_reserve_new_blocks(struct dnode_of_data *dn, blkcnt_t count)
+ 		block_t blkaddr = f2fs_data_blkaddr(dn);
+ 
+ 		if (blkaddr == NULL_ADDR) {
+-			dn->data_blkaddr = NEW_ADDR;
+-			__set_data_blkaddr(dn);
++			__set_data_blkaddr(dn, NEW_ADDR);
+ 			count--;
+ 		}
+ 	}
 diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 2f1d76088953..a06b8aad5117 100644
+index a06b8aad5117..50e666ebd987 100644
 --- a/fs/f2fs/f2fs.h
 +++ b/fs/f2fs/f2fs.h
-@@ -3277,12 +3277,13 @@ static inline bool f2fs_is_cow_file(struct inode *inode)
- 	return is_inode_flag_set(inode, FI_COW_FILE);
- }
- 
-+static inline __le32 *get_dnode_addr(struct inode *inode,
-+					struct page *node_page);
- static inline void *inline_data_addr(struct inode *inode, struct page *page)
- {
--	struct f2fs_inode *ri = F2FS_INODE(page);
--	int extra_size = get_extra_isize(inode);
-+	__le32 *addr = get_dnode_addr(inode, page);
- 
--	return (void *)&(ri->i_addr[extra_size + DEF_INLINE_RESERVED_SIZE]);
-+	return (void *)(addr + DEF_INLINE_RESERVED_SIZE);
- }
- 
- static inline int f2fs_has_inline_dentry(struct inode *inode)
-@@ -3427,6 +3428,17 @@ static inline int get_inline_xattr_addrs(struct inode *inode)
- 	return F2FS_I(inode)->i_inline_xattr_size;
- }
- 
-+static inline __le32 *get_dnode_addr(struct inode *inode,
-+					struct page *node_page)
-+{
-+	int base = 0;
-+
-+	if (IS_INODE(node_page) && f2fs_has_extra_attr(inode))
-+		base = get_extra_isize(inode);
-+
-+	return blkaddr_in_node(F2FS_NODE(node_page)) + base;
-+}
-+
- #define f2fs_get_inode_mode(i) \
- 	((is_inode_flag_set(i, FI_ACL_MODE)) ? \
- 	 (F2FS_I(i)->i_acl_mode) : ((i)->i_mode))
+@@ -3822,7 +3822,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio);
+ struct block_device *f2fs_target_device(struct f2fs_sb_info *sbi,
+ 		block_t blk_addr, sector_t *sector);
+ int f2fs_target_device_index(struct f2fs_sb_info *sbi, block_t blkaddr);
+-void f2fs_set_data_blkaddr(struct dnode_of_data *dn);
++void f2fs_set_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr);
+ void f2fs_update_data_blkaddr(struct dnode_of_data *dn, block_t blkaddr);
+ int f2fs_reserve_new_blocks(struct dnode_of_data *dn, blkcnt_t count);
+ int f2fs_reserve_new_block(struct dnode_of_data *dn);
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 5025abf2d995..d0e7894e42d4 100644
+index d0e7894e42d4..3c7e6bfc1265 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -557,20 +557,14 @@ static int f2fs_file_open(struct inode *inode, struct file *filp)
- void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
--	struct f2fs_node *raw_node;
- 	int nr_free = 0, ofs = dn->ofs_in_node, len = count;
- 	__le32 *addr;
--	int base = 0;
- 	bool compressed_cluster = false;
- 	int cluster_index = 0, valid_blocks = 0;
- 	int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
- 	bool released = !atomic_read(&F2FS_I(dn->inode)->i_compr_blocks);
+@@ -582,8 +582,7 @@ void f2fs_truncate_data_blocks_range(struct dnode_of_data *dn, int count)
+ 		if (blkaddr == NULL_ADDR)
+ 			continue;
  
--	if (IS_INODE(dn->node_page) && f2fs_has_extra_attr(dn->inode))
--		base = get_extra_isize(dn->inode);
--
--	raw_node = F2FS_NODE(dn->node_page);
--	addr = blkaddr_in_node(raw_node) + base + ofs;
-+	addr = get_dnode_addr(dn->inode, dn->node_page) + ofs;
+-		dn->data_blkaddr = NULL_ADDR;
+-		f2fs_set_data_blkaddr(dn);
++		f2fs_set_data_blkaddr(dn, NULL_ADDR);
  
- 	/* Assumption: truncation starts with cluster */
- 	for (; count > 0; count--, addr++, dn->ofs_in_node++, cluster_index++) {
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 108e3d00028a..b31410c4afbc 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -61,35 +61,31 @@ void f2fs_set_inode_flags(struct inode *inode)
- 			S_ENCRYPTED|S_VERITY|S_CASEFOLD);
- }
- 
--static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
-+static void __get_inode_rdev(struct inode *inode, struct page *node_page)
- {
--	int extra_size = get_extra_isize(inode);
-+	__le32 *addr = get_dnode_addr(inode, node_page);
- 
- 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode) ||
- 			S_ISFIFO(inode->i_mode) || S_ISSOCK(inode->i_mode)) {
--		if (ri->i_addr[extra_size])
--			inode->i_rdev = old_decode_dev(
--				le32_to_cpu(ri->i_addr[extra_size]));
-+		if (addr[0])
-+			inode->i_rdev = old_decode_dev(le32_to_cpu(addr[0]));
- 		else
--			inode->i_rdev = new_decode_dev(
--				le32_to_cpu(ri->i_addr[extra_size + 1]));
-+			inode->i_rdev = new_decode_dev(le32_to_cpu(addr[1]));
- 	}
- }
- 
--static void __set_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
-+static void __set_inode_rdev(struct inode *inode, struct page *node_page)
- {
--	int extra_size = get_extra_isize(inode);
-+	__le32 *addr = get_dnode_addr(inode, node_page);
- 
- 	if (S_ISCHR(inode->i_mode) || S_ISBLK(inode->i_mode)) {
- 		if (old_valid_dev(inode->i_rdev)) {
--			ri->i_addr[extra_size] =
--				cpu_to_le32(old_encode_dev(inode->i_rdev));
--			ri->i_addr[extra_size + 1] = 0;
-+			addr[0] = cpu_to_le32(old_encode_dev(inode->i_rdev));
-+			addr[1] = 0;
- 		} else {
--			ri->i_addr[extra_size] = 0;
--			ri->i_addr[extra_size + 1] =
--				cpu_to_le32(new_encode_dev(inode->i_rdev));
--			ri->i_addr[extra_size + 2] = 0;
-+			addr[0] = 0;
-+			addr[1] = cpu_to_le32(new_encode_dev(inode->i_rdev));
-+			addr[2] = 0;
+ 		if (__is_valid_data_blkaddr(blkaddr)) {
+ 			if (!f2fs_is_valid_blkaddr(sbi, blkaddr,
+@@ -1478,8 +1477,7 @@ static int f2fs_do_zero_range(struct dnode_of_data *dn, pgoff_t start,
  		}
- 	}
- }
-@@ -463,7 +459,7 @@ static int do_read_inode(struct inode *inode)
+ 
+ 		f2fs_invalidate_blocks(sbi, dn->data_blkaddr);
+-		dn->data_blkaddr = NEW_ADDR;
+-		f2fs_set_data_blkaddr(dn);
++		f2fs_set_data_blkaddr(dn, NEW_ADDR);
  	}
  
- 	/* get rdev by using inline_info */
--	__get_inode_rdev(inode, ri);
-+	__get_inode_rdev(inode, node_page);
+ 	f2fs_update_read_extent_cache_range(dn, start, 0, index - start);
+@@ -3454,8 +3452,7 @@ static int release_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+ 			if (blkaddr != NEW_ADDR)
+ 				continue;
  
- 	if (!f2fs_need_inode_block_update(sbi, inode->i_ino))
- 		fi->last_disk_size = inode->i_size;
-@@ -736,7 +732,7 @@ void f2fs_update_inode(struct inode *inode, struct page *node_page)
+-			dn->data_blkaddr = NULL_ADDR;
+-			f2fs_set_data_blkaddr(dn);
++			f2fs_set_data_blkaddr(dn, NULL_ADDR);
  		}
- 	}
  
--	__set_inode_rdev(inode, ri);
-+	__set_inode_rdev(inode, node_page);
+ 		f2fs_i_compr_blocks_update(dn->inode, compr_blocks, false);
+@@ -3621,8 +3618,7 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+ 				continue;
+ 			}
  
- 	/* deleted inode */
- 	if (inode->i_nlink == 0)
+-			dn->data_blkaddr = NEW_ADDR;
+-			f2fs_set_data_blkaddr(dn);
++			f2fs_set_data_blkaddr(dn, NEW_ADDR);
+ 		}
+ 
+ 		reserved = cluster_size - compr_blocks;
 -- 
 2.40.1
 
