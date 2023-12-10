@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D559C80BCBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDF980BCBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbjLJT20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 14:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
+        id S231598AbjLJThF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 14:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJT2Y (ORCPT
+        with ESMTP id S229462AbjLJThE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 14:28:24 -0500
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3F5E8;
-        Sun, 10 Dec 2023 11:28:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702236502; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JNtPHzZleLURB8MLrU4m3gfUTywC87olz8rBDgzUhEm6AfJ9Nptk+42ZjSI34GPFZW
-    klvSW610Vqo96juHeL5xLyY0MC9Nz94oC/njGTWoUwS8XtoXJXNWfBtfRogRRoH2IoP5
-    3BWKYqwM2DsffwCLt/SXKJOnZpOcvUYSNyUpWMLGIOnJMdGL0rLy4nPD8IAgJeY71s/R
-    P1IFAxqpwyxmGcqCDHxLfpv3gznsD7Xt289vb5QRO5BFqOnvGyMlFfT8F5K4DPlGFN7O
-    zQk5I7dlM9/NBBRGeI/sF9CsWmaliw4QNmbdHxOmvbxQavuJuC4wtnoW3E8vu0FdFw3T
-    /sVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1702236502;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JzuwNz2m2BHZRXieTg2amEf06Pg1H0ACs/yF9X1xMkU=;
-    b=NpBY7caJ9YJoZyzv3cUfAj1fMW2iDfys6LI248vePK+KnmTGedsJQTGT33hVtWEGNE
-    DOMJvRnxjUBDzHnYwg9KATipZIMpeXsk4GGu8GqjSE5/6bmcPr3kFA39Y+SiCnjuL9vC
-    Y53Ha29OW7tLaeZeB3Y0Om14fPK+o/BpffcA+Nv6v29pvOA2P/Q6Dc2SAiyWq+5v3nsT
-    /YRcMojPtwUXxv4v5u2fjl9YBmzUmOv13tdFh6Kc6V7qqAsiQShexZOTbQNPbQcB5er1
-    7AnJq2t6XrXNKqujSFaD0BFEHkAns4SGfiobJDN4e2kEBR5kUVOQ2tSAUy9f4lDR2JWh
-    tuOg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1702236502;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JzuwNz2m2BHZRXieTg2amEf06Pg1H0ACs/yF9X1xMkU=;
-    b=jNsuALSKroKpZj85lkx2SltdyAA2qmIbTZ3lCIfU5xlLcj4ra0YiElQ1XQYngIa6B3
-    Ow7k9pcSaE5zk7KzuLD0h76m894lW+61dUas6cCFockQJysz2XeoFUn0LKWGUGp7t9rP
-    MJRxosaXWVLkAKe093qElB+NH0roZTscRftbtO4tsAV7j5hpPq+WcIigF4KtfbkdHgSN
-    eZ59VgO00w3g19/il0OaBnDWvy7BfpF9RduwjFYKW3V6/ILJKHZBYEonCKcu3zNfiH9T
-    6PEf0GgkSWtj6CZdwVsqdJloWrNu5QUnKsmDXTw2X8WEgJwBTWbEUNZp+ORn2skxC57D
-    u0aw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1702236502;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JzuwNz2m2BHZRXieTg2amEf06Pg1H0ACs/yF9X1xMkU=;
-    b=2Gekm8XQ8yOEiECsyL0L/xPHQrDvshxdGuz1qv9lRGVXfiqDSResHWzvFaOPD1rN1G
-    S+Zaeo4z6dTOMlpXQjBA==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSeBwhhSxarlUcu05JyMI1zXvWpofGAS3nPdhoJ/jk9323l/f/nGBvH+kduPjVfkLDvw="
-Received: from p200300c5872edccdd83ccf3bdf7838cc.dip0.t-ipconnect.de
-    by smtp.strato.de (RZmta 49.10.0 AUTH)
-    with ESMTPSA id z4c2a6zBAJSLFR6
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 10 Dec 2023 20:28:21 +0100 (CET)
-Message-ID: <fe5eacf2016622f4f3335a1d39063ec523999184.camel@iokpp.de>
-Subject: Re: [PATCH v4 2/3] scsi: ufs: core: Add UFS RTC support
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
-        beanhuo@micron.com, thomas@t-8ch.de, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikebi@micron.com, lporzio@micron.com
-Date:   Sun, 10 Dec 2023 20:28:21 +0100
-In-Reply-To: <20231208170609.GD15552@thinkpad>
-References: <20231208103940.153734-1-beanhuo@iokpp.de>
-         <20231208103940.153734-3-beanhuo@iokpp.de>
-         <20231208145021.GC15552@thinkpad>
-         <89c02f8b999a90329f2125380ad2d984767d25ae.camel@iokpp.de>
-         <20231208170609.GD15552@thinkpad>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Sun, 10 Dec 2023 14:37:04 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F0AE7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:37:09 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d0a7b72203so32649395ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:37:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=darkphysics.net; s=google; t=1702237029; x=1702841829; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWMq+fsJDOtZmzmL+dlI9RAA4JQyKEd0rPprq/Mm6AI=;
+        b=gzxyZDsShm9oGQqfSBs6LFyhzOXLBIvZ0mth3BIG0Xn0eEV+dga9mhU05XfPprHblF
+         H2cBw769OtOLBK+Q3W9hgcCu8HXLTSrXDhTNY8RZMJTfkIZ+OTZLQdO6EJQ1h1NIs29r
+         kSscyzHoevF80WpzNaw5OyE2rBN3BhvOkfqFd/ZhRSR4tbaamqnXgUt/drkVgZk9iEfz
+         9L78miTihesoTTHwnSkZSVRbZ61H2f38r1NJ9RD4iBFIzs5tV0cmjhJqGUc2vJ5q0hhA
+         8LgDSMJz4OUmLPRMi6z+Nh2e1lXjQ5yFADtkhuT3v4WnCA6PqF7TqOVBSnPpqDuGkqNy
+         i/CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702237029; x=1702841829;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nWMq+fsJDOtZmzmL+dlI9RAA4JQyKEd0rPprq/Mm6AI=;
+        b=maHCx0W4px+wBphxqFyEyDUVs3UBivwgOpXJkCUCC2PybkXY3Ut8eD8j6eAPVbiSe0
+         vi+YO9JRa+Ksk6QQwIeugxH8RZAzLyyt131gdLdf+gnIObvnZW1H2iEMQO0tWY/tmMG7
+         ODNo9pnqk9ex1cLJ0U8n+aB+qHxpUWm/vnafyainIkSWmkxVw3Orw+KcuwSboYTIhmfI
+         ORht4E+xfUHlZA/zjK0aJI9TPigu/JyHZBB4Yoiso81PM+wrmZ1XVhnSqnKWW0wjoRdX
+         V7jkeNsCBdDdYPtYlXjB5j/mb3Jzqg8Jxu3Qb1GVHORGo2BoxZL5gv3hB4Zat6KDuqrM
+         zIMw==
+X-Gm-Message-State: AOJu0Yy/G2aN7fZnbjl/k3ZrCz+gO2+Qmazo+s8hDdxbObeO00SHVBFB
+        UxYubDqDrqPRQJ3llZKxjpRRzQAA5TzXQLnZuxoT8g==
+X-Google-Smtp-Source: AGHT+IGr/MvG95lLuKzFxIXvwXlSw/NAE8PySqhzQPaocAekiGryY/Tyyls5+MukENzO0Hze+3yu6A==
+X-Received: by 2002:a17:902:704c:b0:1d0:ba40:b0e1 with SMTP id h12-20020a170902704c00b001d0ba40b0e1mr3851430plt.124.1702237028818;
+        Sun, 10 Dec 2023 11:37:08 -0800 (PST)
+Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
+        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001b9e9edbf43sm5117419plk.171.2023.12.10.11.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 11:37:08 -0800 (PST)
+From:   Tree Davies <tdavies@darkphysics.net>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Tree Davies <tdavies@darkphysics.net>
+Subject: [PATCH 0/4] Staging: rtl8192e: Remove unused variables in struct cb_desc
+Date:   Sun, 10 Dec 2023 11:37:01 -0800
+Message-Id: <20231210193705.2131807-1-tdavies@darkphysics.net>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 22:36 +0530, Manivannan Sadhasivam wrote:
-> Except that the warning will be issued to users after each 10s for 40
-> years.
-> Atleast get rid of that.
+This series removes a few unused variables from struct cb_desc in 
+rtllib.h
 
-how about using dev_warn_once(), instead of dev_warn, using
-dev_warn_once() ensures the warning is issued only once.
+Thank you in advance to reviewers.
+~Tree
 
+Tree Davies (4):
+  Staging: rtl8192e: Remove variable bFirstSeg
+  Staging: rtl8192e: Remove variable bLastSeg
+  Staging: rtl8192e: Remove variable bEncrypt
+  Staging: rtl8192e: Remove variable macId
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 953d50cc4256..b2287d2f9bf3 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -8205,7 +8205,7 @@ static void ufshcd_update_rtc(struct ufs_hba
-*hba)
-        ktime_get_real_ts64(&ts64);
-=20
-        if  (ts64.tv_sec < hba->dev_info.rtc_time_baseline) {
--               dev_warn(hba->dev, "%s: Current time precedes previous
-setting!\n", __func__);
-+               dev_warn_once(hba->dev, "%s: Current time precedes
-previous setting!\n", __func__);
+ drivers/staging/rtl8192e/rtllib.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
+-- 
+2.39.2
 
-
-Kind regards,
-Bean
