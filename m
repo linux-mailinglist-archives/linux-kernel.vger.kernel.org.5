@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F48280BAA1
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7E580BAA0
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbjLJMQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 07:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbjLJMQc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232055AbjLJMQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 10 Dec 2023 07:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbjLJMQb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Dec 2023 07:16:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AA5101
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:16:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF45EC433C8;
-        Sun, 10 Dec 2023 12:16:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE47101
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:16:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF365C433C9;
+        Sun, 10 Dec 2023 12:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702210599;
-        bh=86Fb/TnZD6UZ4D6D/ON2+9C91eIICKisOjrDG7Nsb38=;
+        s=k20201202; t=1702210596;
+        bh=zI/jeFRyjHplsqmull7ZiNDfoFDcHnPQwoXdDnLIe58=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WJlbcfpxB+33Duifi28ytoTIWRIg4aSukwbAMIXaWrASDRlHvATPvQYn3kWGO0251
-         p4eq9KCsXj+4qwLE1p+DKyEf5oB+X3f9fC+JwXVqEy3fvqlg/3mWFjWXSNXQC3hVAN
-         QxVqnAY8wp+2R+LNOyl/8j5iyoRJvqe/L3AZarS4ZMvFKfi1PNJ4BK+mIOEiqvS6zI
-         NhrqqJgXzsjZqERXoJ1nbaPsxQWEpw78rxpvrAXADS9y8ae0jNge/D/xSycJTlqM8W
-         N/NzaK0bNAniXPIDqg5LzUt+mW94CV8H8doZBTYsxThnZfhktgRDHWdSXyJSOh/4Y6
-         yARn9ck4xhnOw==
+        b=XNGPxpqMpKbxiZDIIwqaAP4vnfVrNqeUImkpUgaTvVibWyF+2Td6NYdBTgGCG8ACy
+         eXA05rq0mJvnlQ7bT6gFshJKSrDZ4rRxoaTWphSdn0dyipzHpkw3agwiO4oRHtBnD7
+         XdrNR6lyCoQZdaOWT6KN330vSSuhzLMDIw7VHQVZNG1PW9RPfHNniNnkap6e+aI6M5
+         sUdbMPxuS88tY+Ql086/6F63E7KcTUMRyDs0Kxi7qFZyt46iJ4X5z5zftq1SAiXQyX
+         CwA9Nh7Xs5MLIRJvzRv+zGsx2zYl5k+gNoRbrnoZgDDskHAaZyCWViXyAjstMkwJJ4
+         2EEHczNzYYg+g==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rCIja-002tai-3P;
+        Sun, 10 Dec 2023 12:16:34 +0000
 Date:   Sun, 10 Dec 2023 12:16:32 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v8 2/2] iio: pressure: driver for Honeywell HSC/SSC
- series
-Message-ID: <20231210121632.12ff9640@jic23-huawei>
-In-Reply-To: <ZXIPUphL8ZEYDQxk@smile.fi.intel.com>
-References: <20231207164634.11998-1-petre.rodan@subdimension.ro>
-        <20231207164634.11998-2-petre.rodan@subdimension.ro>
-        <ZXIPUphL8ZEYDQxk@smile.fi.intel.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+Message-ID: <865y16b6cf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Tianyi Liu <i.pear@outlook.com>
+Cc:     seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        mlevitsk@redhat.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com
+Subject: Re: [PATCH v3 1/5] KVM: Add arch specific interfaces for sampling guest callchains
+In-Reply-To: <SYBPR01MB6870FDFBB88F879C735198F39D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+References: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+        <SYBPR01MB6870FDFBB88F879C735198F39D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: i.pear@outlook.com, seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com, mlevitsk@redhat.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -59,31 +68,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Dec 2023 20:30:42 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-> On Thu, Dec 07, 2023 at 06:46:29PM +0200, Petre Rodan wrote:
-> > Adds driver for digital Honeywell TruStability HSC and SSC series
-> > pressure and temperature sensors.
-> > Communication is one way. The sensor only requires 4 bytes worth of
-> > clock pulses on both i2c and spi in order to push the data out.
-> > The i2c address is hardcoded and depends on the part number.
-> > There is no additional GPIO control.
-> > code is now based on iio/togreg  
+On Sun, 10 Dec 2023 08:12:18 +0000,
+Tianyi Liu <i.pear@outlook.com> wrote:
 > 
-> There is room to improve, but I think it's good enough to be included and
-> amended later on if needed.
-That's almost always true :)
+> This patch adds two architecture specific interfaces used by `perf kvm`:
 > 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> - kvm_arch_vcpu_get_unwind_info: Return required data for unwinding
+>   at once; including ip address, frame pointer, whether the guest vCPU
+>   is running in 32 or 64 bits, and possibly the base addresses of
+>   the segments.
 > 
-Thanks
+> - kvm_arch_vcpu_read_virt: Read data from a virtual address of the
+>   guest vm.
+> 
+> `perf_kvm.h` has been added to the `include/linux/` directory to store
+> the interface structures between the perf events subsystem and the KVM
+> subsystem.
+> 
+> Since arm64 hasn't provided some foundational infrastructure, stub the
+> arm64 implementation for now because it's a bit complex.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-0-day to poke at it and see if it can find anything we missed.
+It's not complex. It is *unsafe*. Do you see the difference?
 
-Thanks,
+> 
+> The above interfaces require architecture support for
+> `CONFIG_GUEST_PERF_EVENTS`, which is only implemented by x86 and arm64
+> currently. For more architectures, they need to implement these interfaces
+> when enabling `CONFIG_GUEST_PERF_EVENTS`.
+> 
+> In terms of safety, guests are designed to be read-only in this feature,
+> and we will never inject page faults into the guests, ensuring that the
+> guests are not interfered by profiling. In extremely rare cases, if the
+> guest is modifying the page table, there is a possibility of reading
+> incorrect data. Additionally, if certain programs running in the guest OS
+> do not support frame pointers, it may also result in some erroneous data.
+> These erroneous data will eventually appear as `[unknown]` entries in the
+> report. It is sufficient as long as most of the records are correct for
+> profiling.
+> 
+> Signed-off-by: Tianyi Liu <i.pear@outlook.com>
+> ---
+>  MAINTAINERS              |  1 +
+>  arch/arm64/kvm/arm.c     | 12 ++++++++++++
+>  arch/x86/kvm/x86.c       | 24 ++++++++++++++++++++++++
+>  include/linux/kvm_host.h |  5 +++++
+>  include/linux/perf_kvm.h | 18 ++++++++++++++++++
+>  5 files changed, 60 insertions(+)
+>  create mode 100644 include/linux/perf_kvm.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 788be9ab5b73..5ee36b4a9701 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16976,6 +16976,7 @@ F:	arch/*/kernel/*/perf_event*.c
+>  F:	arch/*/kernel/perf_callchain.c
+>  F:	arch/*/kernel/perf_event*.c
+>  F:	include/linux/perf_event.h
+> +F:	include/linux/perf_kvm.h
+>  F:	include/uapi/linux/perf_event.h
+>  F:	kernel/events/*
+>  F:	tools/lib/perf/
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index e5f75f1f1085..5ae74b5c263a 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -574,6 +574,18 @@ unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
+>  {
+>  	return *vcpu_pc(vcpu);
+>  }
+> +
+> +bool kvm_arch_vcpu_get_unwind_info(struct kvm_vcpu *vcpu, struct perf_kvm_guest_unwind_info *info)
+> +{
+> +	/* TODO: implement */
+> +	return false;
+> +}
+> +
+> +bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, gva_t addr, void *dest, unsigned int length)
+> +{
+> +	/* TODO: implement */
+> +	return false;
+> +}
 
-Jonathan
+I don't do it very often, but the only thing I can say about this is
+*NAK*.
 
+You have decided to ignore the previous review comments, which is your
+prerogative. However, I absolutely refuse to add half baked and
+*dangerous* stuff to the arm64's version of KVM.
 
+If you can convince the x86 folks that they absolutely want this, fine
+by me. But this need to be a buy-in interface, not something that is
+required for each and every architecture to have stubs, wrongly
+suggesting that extra work is needed.
+
+For arm64, the way to go is to have this in userspace. Which is both
+easy to implement and safe. And until we have such a userspace
+implementation as a baseline, I will not consider a kernel
+version.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
