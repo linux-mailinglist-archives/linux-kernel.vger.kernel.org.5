@@ -2,187 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A1780B8EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFDD80B8ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjLJETW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 23:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        id S231510AbjLJE1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 23:27:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjLJETS (ORCPT
+        with ESMTP id S230128AbjLJE1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 23:19:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC64FF2;
-        Sat,  9 Dec 2023 20:19:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702181963; x=1733717963;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=asvKB3ReQvJ+jiqRWBtIOZ61VkP+wjyfmq7Jgp5pQkw=;
-  b=MpeKQgpGJ0z4uA1+f36OVE+zmhnX0Q2pN12/pvgyT0qw7+Zz2EUK36VJ
-   8hVCLfiINGnqfdirwaCbE/7AyWm2t02PISndqOkI+QN0tVXFnwGg5kcs0
-   u3lDLoJNi061LQgIAVmn3Qbtxjd+jLfD5G7Lm7d63+qeGFwxoRPKUk497
-   GVF68fJOlTHAzqW2WAW1YnFvS+v03/UOxL0VPov4Hfh0nheMoSuJbEwq7
-   spjGBya2YwBKiGQywYmOKwUhTynJgd7Wr+AB2Vs9N3Vrhd4/qNp78dJir
-   708053qtFLQuq0WnEhAFne1Exjx0pYobwcMK2pfRoiOZakH60NFUs4hyj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="458851117"
-X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
-   d="scan'208";a="458851117"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 20:19:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="890647084"
-X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
-   d="scan'208";a="890647084"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Dec 2023 20:19:19 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCBHh-000GNr-1g;
-        Sun, 10 Dec 2023 04:19:17 +0000
-Date:   Sun, 10 Dec 2023 12:18:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kamal Dasu <kamal.dasu@broadcom.com>, ulf.hansson@linaro.org,
-        linux-kernel@vger.kernel.org, alcooperx@gmail.com,
-        linux-arm-kernel@lists.infradead.org, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        Kamal Dasu <kdasu@broadcom.com>
-Subject: Re: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for
- 74165b0
-Message-ID: <202312101146.IK4Nrw1S-lkp@intel.com>
-References: <20231209165816.39044-1-kamal.dasu@broadcom.com>
+        Sat, 9 Dec 2023 23:27:14 -0500
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2041.outbound.protection.outlook.com [40.107.15.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4C8ED;
+        Sat,  9 Dec 2023 20:27:20 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BCA3041fGUlAMXkNQCdfsefNwJ/+bJ+oF1pr++Zegr0hK/GQZKGFpaHfhQ0zm58CWhE8f+0LcneZ4YwhnpbavuQOjIMK7YB32XrdGXwKMLG3Et3gBbbjRlXNSsS32ft2h7w1KpUFkIs3RJ53mJneXa2PvV3cY2XDGZ1RofosyAvac/dxcTaS6wrh0NYoqL1u1tKSClz+W0xg67/BvHg+eCSnqEWbNBlsRLTBWZk32ihGjze0A3semsWm3d4jzvWwS/NHEW59Se4Z0b3eqjozA0zGBQjDLYS3/OPaRI651pytkKrIXDUdSddATYlMSjIPG8SmDdoQeZ0Mp9mpim6JLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dhxP/+YfK1EojN3WvQpqzj+3bWaV3MAugyGXQ+zOAqI=;
+ b=SDi2KmQGPD7ECB0gRW2HAtcr8tVo7CBIXCzpSggv9Ug/p4SA2pxiCzQIIDe7HV8ggkh17ne5ET2m9S0i3mthJ8TOuJ99N3SprLqL93rGO6T8XIWmsNAzeRThUq4E/rev3nqHAaKIA1wlvp1U1QFXnjq2waG7B77Uafu9OcwpipK8IAZEgdLyC87CchwmL4RNAHT2LUusJ928+CLyFgkyp2Ipy5FobD/K44eXZDB08QYGrZSolJAvp9t8r791HEISAvvr+RVL8IM40UAoIyn6vceaLvXmwXLqTrMlLssxZUVcefLRO6+aoZcuR9YXYq7DHfX/Z0Xb/zfZxCLWdO2tOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhxP/+YfK1EojN3WvQpqzj+3bWaV3MAugyGXQ+zOAqI=;
+ b=Db78pJd3PkOgAT1rjC9wtvU2F+2OcyJU5A+xDLnJgB5lA8UYa0+0OKhk4CGICaVwfG0o86VEx1od97vDM8VdeBZk472sjDvXdfpC3EVb/Mz4rQcHlMT7++H+VZny8N99MS93leVh1XQ4kqlpMrSImxPZw2vdaFMD9qpTugza6ys=
+Received: from DB7PR04MB5146.eurprd04.prod.outlook.com (2603:10a6:10:23::16)
+ by PA4PR04MB7917.eurprd04.prod.outlook.com (2603:10a6:102:cd::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.30; Sun, 10 Dec
+ 2023 04:27:17 +0000
+Received: from DB7PR04MB5146.eurprd04.prod.outlook.com
+ ([fe80::709e:6876:7df0:fc30]) by DB7PR04MB5146.eurprd04.prod.outlook.com
+ ([fe80::709e:6876:7df0:fc30%7]) with mapi id 15.20.7068.030; Sun, 10 Dec 2023
+ 04:27:17 +0000
+From:   Xu Yang <xu.yang_2@nxp.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Frank Li <frank.li@nxp.com>, "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "irogers@google.com" <irogers@google.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "mike.leach@linaro.org" <mike.leach@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: RE: [EXT] Re: [PATCH v2 1/4] dt-bindings: perf: fsl-imx-ddr: Add
+ i.MX95 compatible
+Thread-Topic: [EXT] Re: [PATCH v2 1/4] dt-bindings: perf: fsl-imx-ddr: Add
+ i.MX95 compatible
+Thread-Index: AQHaKbNLbV9si+3atU615KFz+VRTyrCfelqAgAJ0bsA=
+Date:   Sun, 10 Dec 2023 04:27:16 +0000
+Message-ID: <DB7PR04MB51468DB108F3003AF52CDDDA8C88A@DB7PR04MB5146.eurprd04.prod.outlook.com>
+References: <20231208085402.2106904-1-xu.yang_2@nxp.com>
+ <20231208-depress-smuggler-f3069487a067@spud>
+In-Reply-To: <20231208-depress-smuggler-f3069487a067@spud>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB7PR04MB5146:EE_|PA4PR04MB7917:EE_
+x-ms-office365-filtering-correlation-id: bea4020b-3a59-4b7c-ad84-08dbf9384aa7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LkKoEydtrOJq+F0270yeBqvRt3HuXimhHCGS/ZY/dB+fEQXBS83v5qszDg3hvqljYDb31Qp4QBail+t90i6HH+ZZdNLco19UySQHqlGQvm7iBl04ee1MeS9hOTL0ffkwetKe8GEBqxiPZ82lzuuLzlIMwrCktTt/3HQyvF2ixsFoJPBRaZOwBtycgt0v39GHm6ah0p2qltBlDRuz0AYVkc7eKNwOhqMe2DLU9gW2Pq1wP3uXiCsfulkYSmrJqCZ1DwPn5uEC60v4Vf/FevPpFbWgo2j6U2cJ9tqSwtODsQm5rt1nlFXAZqZFm4hL5EYP3L8UDMq/WyxywXNE4E67qp3uljuNREyHia3ykDlMPc8Mb2WXAYnu9rnW6knjm3/qIdzUzTXmsoBLvwPQG5IsTA1UUKW5ZV7d83IzMJZgAhgg1f3z7cOeJVVmwj3YLaDna8Nw6ri8stFDraKuPYwn9Fucw/gIXo4xPlhNxGyGwEiLTQXwGye5kHTLfAT+bb6jxpp4BAwE3XZWFCHF4bbNl0yJW/+OHwiP1l8oGl3wHWuUkwtz9epv3+ngpbxuRdce+z/4ScRQZEGuVCg8GR9S74Bg4MbXV56NtbmlJx0QZ38=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5146.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(9686003)(26005)(45080400002)(966005)(478600001)(6506007)(71200400001)(7696005)(83380400001)(7416002)(2906002)(5660300002)(41300700001)(6916009)(54906003)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(4326008)(8676002)(8936002)(52536014)(316002)(38100700002)(122000001)(38070700009)(86362001)(33656002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?g3OtttApcfnc/iyeZZE4n3E0rE2HkdSQRUCFXXDZUgtvetcEPcs9RtV++Oru?=
+ =?us-ascii?Q?eBgNXel0z2lxonycxJxJn4ZT4ALglyP8htCCbir+rm4B1Vx8XbUzesvVxXqI?=
+ =?us-ascii?Q?jN5+QDBkr8XCH7ahaaL7FPQif3zbgXpoI1YKHQaoDGcRK5pZpXg6MUSAZVOk?=
+ =?us-ascii?Q?jnZqqI7sykzCMJxGd1HDHeRW6YLYdPs3lMjDGF9WyZsaxLaxD1HpnXm8zW1T?=
+ =?us-ascii?Q?LIfU1aQwJEGmb8DdGuqmUS13+q1HNRnfCu1SS43jGBPO5PPNS5crnn7BjO9+?=
+ =?us-ascii?Q?C9UaGUEzy3aNqxXnAUJRuuJX27D7eoXUGQy6Iw9jU4RAuUc11MTPEgVGVM4r?=
+ =?us-ascii?Q?6MTAojS2zjJC85nayLioR9JRx21bznWX6tirV4Ue6haXMkU49WUEKfGIhWaD?=
+ =?us-ascii?Q?YVZ/l2FqEY4Sl3/AjflvybG9BYMPKwq3Azu/iT1FkTBPz4h3W4f7NAq9ZpEe?=
+ =?us-ascii?Q?2wULkg/9RIzCQwrDeVwr7y+JRNrQcfHcT3sRNY76/8cIyVMcES+oIV2kfLnq?=
+ =?us-ascii?Q?skGrOyoZuxOySkrBgiafmT1iNnA9S8jDRc8s8Jqvd5H4Nl6rlZHKSzlZskwp?=
+ =?us-ascii?Q?c4xVZOrunAg17FD+lI/G7U7HKCjirL2oYxGcmjsouGoLzrsUgkCaCAEACUTK?=
+ =?us-ascii?Q?9qjl+Xj3hpb2TJbrNNFdbdbvkeBTbruj0SdOg92AUDmjfJGi44eGKcDi4IH6?=
+ =?us-ascii?Q?xJHu9+fqcZJn5bUtK8ZZzlK4urj5YwqJJYRBIdiAoM5xU0FwzSCylGVKVDyU?=
+ =?us-ascii?Q?5LvgCZBA9BdEhSBLGdP6Z6ff4OiJ+aYBdgRenwzd4/eE3m+8eXraGugtexur?=
+ =?us-ascii?Q?eLJBPt33ZXaA+xBan/Y75CkRJGd60CgmoQWHI0dVZ0kmEL5/i7WlRFO+RVOo?=
+ =?us-ascii?Q?T2fpPpo0Ci9gl348W/k+MBbzh8LAGrTpZ+Tep2WFiBDGB/OUs9TaUZ5g+9Be?=
+ =?us-ascii?Q?E5W7n2UOuxt+TDVyuc7zJ4ZUcFCQlG3imHU4nhW2526vebOFtfNUyoZ/f7Ae?=
+ =?us-ascii?Q?8dlClAjh8Y2/POCa8F0cQaNdzK2DXJoih0euWmlQoPUZ5pqvBqniWhsQqnuo?=
+ =?us-ascii?Q?8L9br6qGGaEeobafqFh+qM+80dPCe3hFiGtWjE4gIQ/8kIvnAOlKkLkpPra3?=
+ =?us-ascii?Q?cBI8HN9o0y4MQhrNxRwUHqbyZ1CX2EDEx3i/XUvxXFpfymAWRQWplZXArvtQ?=
+ =?us-ascii?Q?t0FSmEyr9ZGqnWagq+hH1x/q3OPrj6Y5HzzcNQRstanmi7MWHYxWZmmwr5qT?=
+ =?us-ascii?Q?z52WiLtZsdTVs+t8j3s1/7KrZfn99z2WBF6D8CmVSoPbBMp56VPrbPQXfXPY?=
+ =?us-ascii?Q?tr2lH4rGo7y6li2+floL2xiUobHPOKK4J3UWMfxZw6G+ThjDA15mBo44+iUA?=
+ =?us-ascii?Q?NygfkLjHrXbRTX62RYhDnvC73pOJYXt13DH/ez2OdyQE9HQGHOsYeIvM5qpJ?=
+ =?us-ascii?Q?ThsT6JgiH90PgavkEhcRz8hSKyEn85MrCwNYyqe2m6R71F/rEO5x/wjvRmU9?=
+ =?us-ascii?Q?mMM9I5Bv/qElGQuDufs7WgGQkOzrXV2DvjbgVIdeJctOPBijZCo5/CHIdRRl?=
+ =?us-ascii?Q?mSFJ0esieugt7/uwzwc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231209165816.39044-1-kamal.dasu@broadcom.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5146.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bea4020b-3a59-4b7c-ad84-08dbf9384aa7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2023 04:27:16.8988
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eXZ+Wyb9KCVPM2yetNqEJO/MdLyu6ASBHHaiTGssm8kZXLVmFZG9/UBp6WWczNxfqcToevYfvItcP9wU2iRDHQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7917
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kamal,
+Hi Conor,
 
-kernel test robot noticed the following build warnings:
+> On Fri, Dec 08, 2023 at 04:53:59PM +0800, Xu Yang wrote:
+> > i.MX95 has a DDR pmu. This will add a compatible for it.
+>=20
+> On v1 we had a discussion because the commit message wasn't clear about
+> whether or not the device was compatible with existing ones. For some
+> reason, the v2 patch _removes_ information from the commit message
+> rather than tries to explain.
+> This [1] message of yours, that I didn't get a chance to reply to before
+> you sent this new version, seems to say that there should be an
+> imx93-ddr-pmu fallback.
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on soc/for-next linus/master v6.7-rc4 next-20231208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks for your comments.=20
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kamal-Dasu/mmc-add-new-sdhci-reset-sequence-for-brcm-74165b0/20231210-010145
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231209165816.39044-1-kamal.dasu%40broadcom.com
-patch subject: [V3, 1/2] dt-bindings: mmc: brcm,sdhci-brcmstb: Add support for 74165b0
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231210/202312101146.IK4Nrw1S-lkp@intel.com/reproduce)
+Just read my previous comment in [1] and found I made a mistake.
+Now I'll try to clarify it here.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312101146.IK4Nrw1S-lkp@intel.com/
+Imx95 and imx93 have different AXI filter configuration. I need a=20
+compatible for imx95 since the driver cannot differentiate them.=20
 
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
---
->> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml:25:1: found a tab character that violates indentation
-   Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: properties:honeywell,pmin-pascal: '$ref' should not be valid under {'const': '$ref'}
-   	hint: Standard unit suffix properties don't need a type $ref
-   	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-   Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: properties:honeywell,pmax-pascal: '$ref' should not be valid under {'const': '$ref'}
-   	hint: Standard unit suffix properties don't need a type $ref
-   	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
---
->> Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml: ignoring, error parsing file
+Then I need to consider below two options:
+1. compatible =3D "fsl,imx95-ddr-pmu", "fsl,imx93-ddr-pmu"
+2. compatible =3D "fsl,imx95-ddr-pmu"
 
-vim +25 Documentation/devicetree/bindings/mmc/brcm,sdhci-brcmstb.yaml
+Both of them work correctly on imx95. When I make changes in
+driver for imx95, imx93 is not affected.
 
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07   8  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07   9  maintainers:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  10    - Al Cooper <alcooperx@gmail.com>
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  11    - Florian Fainelli <f.fainelli@gmail.com>
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  12  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  13  properties:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  14    compatible:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  15      oneOf:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  16        - items:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  17            - enum:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  18                - brcm,bcm7216-sdhci
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  19            - const: brcm,bcm7445-sdhci
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  20            - const: brcm,sdhci-brcmstb
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  21        - items:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  22            - enum:
-48e24385c58e80 Kamal Dasu          2023-12-09  23                - brcm,bcm74165b0-sdhci
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  24                - brcm,bcm7445-sdhci
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07 @25  	      - brcm,bcm7425-sdhci
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  26            - const: brcm,sdhci-brcmstb
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  27  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  28    reg:
-b16ebda6d00361 Krzysztof Kozlowski 2022-04-28  29      maxItems: 2
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  30  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  31    reg-names:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  32      items:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  33        - const: host
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  34        - const: cfg
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  35  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  36    interrupts:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  37      maxItems: 1
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  38  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  39    clocks:
-2f8690ef64128b Kamal Dasu          2022-05-20  40      minItems: 1
-2f8690ef64128b Kamal Dasu          2022-05-20  41      items:
-2f8690ef64128b Kamal Dasu          2022-05-20  42        - description: handle to core clock for the sdhci controller
-2f8690ef64128b Kamal Dasu          2022-05-20  43        - description: handle to improved 150Mhz clock for sdhci controller (Optional clock)
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  44  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  45    clock-names:
-2f8690ef64128b Kamal Dasu          2022-05-20  46      minItems: 1
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  47      items:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  48        - const: sw_sdio
-2f8690ef64128b Kamal Dasu          2022-05-20  49        - const: sdio_freq # Optional clock
-2f8690ef64128b Kamal Dasu          2022-05-20  50  
-2f8690ef64128b Kamal Dasu          2022-05-20  51    clock-frequency:
-2f8690ef64128b Kamal Dasu          2022-05-20  52      description:
-2f8690ef64128b Kamal Dasu          2022-05-20  53        Maximum operating frequency of sdio_freq sdhci controller clock
-2f8690ef64128b Kamal Dasu          2022-05-20  54      $ref: /schemas/types.yaml#/definitions/uint32
-2f8690ef64128b Kamal Dasu          2022-05-20  55      minimum: 100000000
-2f8690ef64128b Kamal Dasu          2022-05-20  56      maximum: 150000000
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  57  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  58    sdhci,auto-cmd12:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  59      type: boolean
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  60      description: Specifies that controller should use auto CMD12
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  61  
-2f8690ef64128b Kamal Dasu          2022-05-20  62  allOf:
-2f8690ef64128b Kamal Dasu          2022-05-20  63    - $ref: mmc-controller.yaml#
-2f8690ef64128b Kamal Dasu          2022-05-20  64    - if:
-2f8690ef64128b Kamal Dasu          2022-05-20  65        properties:
-2f8690ef64128b Kamal Dasu          2022-05-20  66          clock-names:
-2f8690ef64128b Kamal Dasu          2022-05-20  67            contains:
-2f8690ef64128b Kamal Dasu          2022-05-20  68              const: sdio_freq
-2f8690ef64128b Kamal Dasu          2022-05-20  69  
-2f8690ef64128b Kamal Dasu          2022-05-20  70      then:
-2f8690ef64128b Kamal Dasu          2022-05-20  71        required:
-2f8690ef64128b Kamal Dasu          2022-05-20  72          - clock-frequency
-2f8690ef64128b Kamal Dasu          2022-05-20  73  
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  74  required:
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  75    - compatible
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  76    - reg
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  77    - interrupts
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  78    - clocks
-2f8690ef64128b Kamal Dasu          2022-05-20  79    - clock-names
-50c4ef6b8ab7d1 Florian Fainelli    2021-12-07  80  
+For basic functions, imx95 is compatible with imx93. I select the 2rd
+form for simplicity. If the first form is optimal, I can change it in next
+version.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Xu Yang
+
+>=20
+> Cheers,
+> Conor.
+>=20
+> 1 -
+> https://lore.kernel.org/all/DB7PR04MB514668A8B172CD1A2187BC408C84A@DB7PR0=
+4MB5146.eurprd04.prod.outlook.com/
+>=20
+> >
+> > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> >
+> > ---
+> > Changes in v2:
+> >  - no changes
+> > ---
+> >  Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml b/=
+Documentation/devicetree/bindings/perf/fsl-imx-
+> ddr.yaml
+> > index e9fad4b3de68..1bc7bf1c8368 100644
+> > --- a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
+> > +++ b/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
+> > @@ -20,6 +20,7 @@ properties:
+> >            - fsl,imx8mn-ddr-pmu
+> >            - fsl,imx8mp-ddr-pmu
+> >            - fsl,imx93-ddr-pmu
+> > +          - fsl,imx95-ddr-pmu
+> >        - items:
+> >            - enum:
+> >                - fsl,imx8mm-ddr-pmu
+> > --
+> > 2.34.1
+> >
