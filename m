@@ -2,198 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0457980B94C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3F380B952
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbjLJG36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 01:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
+        id S231556AbjLJGg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 01:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJG36 (ORCPT
+        with ESMTP id S231549AbjLJGg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 01:29:58 -0500
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB28CE7
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 22:30:03 -0800 (PST)
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6d9f6b89aedso2518438a34.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 22:30:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702189803; x=1702794603;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jwSPXQ9A3SdW9wytk0pMfd2AQBjEBlqo7RtTufxp39Q=;
-        b=ErL6pdi3hB9sWj+xsHP4e7z3de5wMhUI9n7ju20l7kuXPoBQYcY+Ocoy154dZp1Bsk
-         iGUKgfkb6uv61MJ3mFAe+VcW2uL0ZnxX8eA1luPjLtzSVakPun14EQ4wh6fVx8SU2dng
-         W1BtHEhISzrUp3P9KhtYU3O4cbPSKhipihzj4u9kXegbAHcpsgMWKas8rCmVn4yOmVbN
-         BaJ5uLueqaIE/dxYVLD3Auf7xnmRJ2T3RJZ/igmzhYFihTJKxxerRHMCu7PBDdeq6IYu
-         cAtnBQXXUC0/ain5C87TlpLrUzPsBLHJE4aL4a9fcqhXyHjsMQkLzCKSb7p24Lkf41Bw
-         21tw==
-X-Gm-Message-State: AOJu0YzGEPo1rAQCAEmzO0EGI3tl5ziVChBSZjCoaj6Qya9CZOsqXgl6
-        UuP5kiSOZTZLAa6IA7BzUWm+vVKqA50D9bmUG+WE0uNHWa62
-X-Google-Smtp-Source: AGHT+IFGXonJ6lDY87ZIptJVHZeZpJaqLO6KUKsOGB4PbSz2jLQ72ZBN1B69Xn88FWR1LsS4F4hBi7yeckv6yE6jNFS5NqEUNJFC
+        Sun, 10 Dec 2023 01:36:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FC711A
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 22:36:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702190193; x=1733726193;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=67icHhWoaVFXre/6V++8SJ2ngbwcUqXDzk+zKgKgaKQ=;
+  b=QlkAzWwo3GGkfmJM9deFPwJDwZ+pC4d3P78WW5w7O95v2Qa2r3dLHLSk
+   zIEse3SJfgf11lfWbtkPiMV3LkldnA1QKrrIpVpaDnUdnDMcvlUqepORZ
+   /wmQk54l9eokYEJr0LILp9IWL2f2DeGVu+R7OrRacln3UuMQ2B5NWicYm
+   EIovhZMhN1tehFaBbhwIaOzwU/Wx5QG+nQVD0NRyr1zct5qAZaxKevTCP
+   5ZbyWXT1ZeNzDL0mT0+joHvoIu10wm3fL76Nra4qUGuqIqqZnMy09nkaU
+   p7SXzJe/Uduy+q76kzE4lO8nEZ6FN+V9EEfvQBGeNCn9/564lPUSw5Bkc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="384950349"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="384950349"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 22:36:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="722333175"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="722333175"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 09 Dec 2023 22:36:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCDQT-000GU0-07;
+        Sun, 10 Dec 2023 06:36:29 +0000
+Date:   Sun, 10 Dec 2023 14:35:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202312101400.APynrk7M-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:4491:b0:6d9:d508:a856 with SMTP id
- r17-20020a056830449100b006d9d508a856mr2553957otv.7.1702189803393; Sat, 09 Dec
- 2023 22:30:03 -0800 (PST)
-Date:   Sat, 09 Dec 2023 22:30:03 -0800
-In-Reply-To: <tencent_F5872516BA75BB5A33CC9E661B2F4BB81B08@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009259a9060c21f28a@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c527f5606aa545233a4d2c6d5c636ed82b8633ef
+commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
+date:   1 year, 4 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231210/202312101400.APynrk7M-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312101400.APynrk7M-lkp@intel.com/reproduce)
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in radix_tree_insert
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312101400.APynrk7M-lkp@intel.com/
 
-2023/12/10 06:24:31 executed programs: 3
-BUG: memory leak
-unreferenced object 0xffff88810dca76d0 (size 576):
-  comm "syz-executor.0", pid 5751, jiffies 4294945011 (age 13.020s)
-  hex dump (first 32 bytes):
-    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
-    30 76 57 0c 81 88 ff ff e8 76 ca 0d 81 88 ff ff  0vW......v......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10b8>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10b8>] qrtr_node_enqueue+0x5b8/0x670 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae2756>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3332>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+sparse warnings: (new ones prefixed by >>)
+   fs/exec.c:422:31: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
+   fs/exec.c:422:31: sparse:     expected char const [noderef] __user *
+   fs/exec.c:422:31: sparse:     got void *
+   fs/exec.c:1051:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1051:48: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1051:48: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   fs/exec.c:1158:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1158:56: sparse:     expected struct task_struct *parent
+   fs/exec.c:1158:56: sparse:     got struct task_struct [noderef] __rcu *parent
+   fs/exec.c:1193:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1193:47: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1193:47: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+>> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1307:26: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1307:26: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1309:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1309:28: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1309:28: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1766:70: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1766:70: sparse:     expected struct task_struct *tsk
+   fs/exec.c:1766:70: sparse:     got struct task_struct [noderef] __rcu *parent
 
-BUG: memory leak
-unreferenced object 0xffff88810dca66d8 (size 576):
-  comm "syz-executor.0", pid 5751, jiffies 4294945011 (age 13.020s)
-  hex dump (first 32 bytes):
-    36 0f 01 00 00 00 00 00 d0 76 ca 0d 81 88 ff ff  6........v......
-    30 76 57 0c 81 88 ff ff f0 66 ca 0d 81 88 ff ff  0vW......f......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10b8>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10b8>] qrtr_node_enqueue+0x5b8/0x670 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae2756>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3332>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+vim +1307 fs/exec.c
 
-BUG: memory leak
-unreferenced object 0xffff88810dd0f488 (size 576):
-  comm "syz-executor.0", pid 5751, jiffies 4294945011 (age 13.020s)
-  hex dump (first 32 bytes):
-    30 3f 01 00 00 00 00 00 d8 66 ca 0d 81 88 ff ff  0?.......f......
-    30 76 57 0c 81 88 ff ff a0 f4 d0 0d 81 88 ff ff  0vW.............
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10b8>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10b8>] qrtr_node_enqueue+0x5b8/0x670 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae2756>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3332>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+  1243	
+  1244	/*
+  1245	 * Calling this is the point of no return. None of the failures will be
+  1246	 * seen by userspace since either the process is already taking a fatal
+  1247	 * signal (via de_thread() or coredump), or will have SEGV raised
+  1248	 * (after exec_mmap()) by search_binary_handler (see below).
+  1249	 */
+  1250	int begin_new_exec(struct linux_binprm * bprm)
+  1251	{
+  1252		struct task_struct *me = current;
+  1253		int retval;
+  1254	
+  1255		/* Once we are committed compute the creds */
+  1256		retval = bprm_creds_from_file(bprm);
+  1257		if (retval)
+  1258			return retval;
+  1259	
+  1260		/*
+  1261		 * Ensure all future errors are fatal.
+  1262		 */
+  1263		bprm->point_of_no_return = true;
+  1264	
+  1265		/*
+  1266		 * Make this the only thread in the thread group.
+  1267		 */
+  1268		retval = de_thread(me);
+  1269		if (retval)
+  1270			goto out;
+  1271	
+  1272		/*
+  1273		 * Cancel any io_uring activity across execve
+  1274		 */
+  1275		io_uring_task_cancel();
+  1276	
+  1277		/* Ensure the files table is not shared. */
+  1278		retval = unshare_files();
+  1279		if (retval)
+  1280			goto out;
+  1281	
+  1282		/*
+  1283		 * Must be called _before_ exec_mmap() as bprm->mm is
+  1284		 * not visible until then. This also enables the update
+  1285		 * to be lockless.
+  1286		 */
+  1287		retval = set_mm_exe_file(bprm->mm, bprm->file);
+  1288		if (retval)
+  1289			goto out;
+  1290	
+  1291		/* If the binary is not readable then enforce mm->dumpable=0 */
+  1292		would_dump(bprm, bprm->file);
+  1293		if (bprm->have_execfd)
+  1294			would_dump(bprm, bprm->executable);
+  1295	
+  1296		/*
+  1297		 * Release all of the old mmap stuff
+  1298		 */
+  1299		acct_arg_size(bprm, 0);
+  1300		retval = exec_mmap(bprm->mm);
+  1301		if (retval)
+  1302			goto out;
+  1303	
+  1304		bprm->mm = NULL;
+  1305	
+  1306	#ifdef CONFIG_POSIX_TIMERS
+> 1307		spin_lock_irq(&me->sighand->siglock);
+  1308		posix_cpu_timers_exit(me);
+  1309		spin_unlock_irq(&me->sighand->siglock);
+  1310		exit_itimers(me);
+  1311		flush_itimer_signals();
+  1312	#endif
+  1313	
+  1314		/*
+  1315		 * Make the signal table private.
+  1316		 */
+  1317		retval = unshare_sighand(me);
+  1318		if (retval)
+  1319			goto out_unlock;
+  1320	
+  1321		me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC |
+  1322						PF_NOFREEZE | PF_NO_SETAFFINITY);
+  1323		flush_thread();
+  1324		me->personality &= ~bprm->per_clear;
+  1325	
+  1326		clear_syscall_work_syscall_user_dispatch(me);
+  1327	
+  1328		/*
+  1329		 * We have to apply CLOEXEC before we change whether the process is
+  1330		 * dumpable (in setup_new_exec) to avoid a race with a process in userspace
+  1331		 * trying to access the should-be-closed file descriptors of a process
+  1332		 * undergoing exec(2).
+  1333		 */
+  1334		do_close_on_exec(me->files);
+  1335	
+  1336		if (bprm->secureexec) {
+  1337			/* Make sure parent cannot signal privileged process. */
+  1338			me->pdeath_signal = 0;
+  1339	
+  1340			/*
+  1341			 * For secureexec, reset the stack limit to sane default to
+  1342			 * avoid bad behavior from the prior rlimits. This has to
+  1343			 * happen before arch_pick_mmap_layout(), which examines
+  1344			 * RLIMIT_STACK, but after the point of no return to avoid
+  1345			 * needing to clean up the change on failure.
+  1346			 */
+  1347			if (bprm->rlim_stack.rlim_cur > _STK_LIM)
+  1348				bprm->rlim_stack.rlim_cur = _STK_LIM;
+  1349		}
+  1350	
+  1351		me->sas_ss_sp = me->sas_ss_size = 0;
+  1352	
+  1353		/*
+  1354		 * Figure out dumpability. Note that this checking only of current
+  1355		 * is wrong, but userspace depends on it. This should be testing
+  1356		 * bprm->secureexec instead.
+  1357		 */
+  1358		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
+  1359		    !(uid_eq(current_euid(), current_uid()) &&
+  1360		      gid_eq(current_egid(), current_gid())))
+  1361			set_dumpable(current->mm, suid_dumpable);
+  1362		else
+  1363			set_dumpable(current->mm, SUID_DUMP_USER);
+  1364	
+  1365		perf_event_exec();
+  1366		__set_task_comm(me, kbasename(bprm->filename), true);
+  1367	
+  1368		/* An exec changes our domain. We are no longer part of the thread
+  1369		   group */
+  1370		WRITE_ONCE(me->self_exec_id, me->self_exec_id + 1);
+  1371		flush_signal_handlers(me, 0);
+  1372	
+  1373		retval = set_cred_ucounts(bprm->cred);
+  1374		if (retval < 0)
+  1375			goto out_unlock;
+  1376	
+  1377		/*
+  1378		 * install the new credentials for this executable
+  1379		 */
+  1380		security_bprm_committing_creds(bprm);
+  1381	
+  1382		commit_creds(bprm->cred);
+  1383		bprm->cred = NULL;
+  1384	
+  1385		/*
+  1386		 * Disable monitoring for regular users
+  1387		 * when executing setuid binaries. Must
+  1388		 * wait until new credentials are committed
+  1389		 * by commit_creds() above
+  1390		 */
+  1391		if (get_dumpable(me->mm) != SUID_DUMP_USER)
+  1392			perf_event_exit_task(me);
+  1393		/*
+  1394		 * cred_guard_mutex must be held at least to this point to prevent
+  1395		 * ptrace_attach() from altering our determination of the task's
+  1396		 * credentials; any time after this it may be unlocked.
+  1397		 */
+  1398		security_bprm_committed_creds(bprm);
+  1399	
+  1400		/* Pass the opened binary to the interpreter. */
+  1401		if (bprm->have_execfd) {
+  1402			retval = get_unused_fd_flags(0);
+  1403			if (retval < 0)
+  1404				goto out_unlock;
+  1405			fd_install(retval, bprm->executable);
+  1406			bprm->executable = NULL;
+  1407			bprm->execfd = retval;
+  1408		}
+  1409		return 0;
+  1410	
+  1411	out_unlock:
+  1412		up_write(&me->signal->exec_update_lock);
+  1413	out:
+  1414		return retval;
+  1415	}
+  1416	EXPORT_SYMBOL(begin_new_exec);
+  1417	
 
-BUG: memory leak
-unreferenced object 0xffff8881005e0000 (size 576):
-  comm "syz-executor.0", pid 5751, jiffies 4294945011 (age 13.020s)
-  hex dump (first 32 bytes):
-    2a 3f 00 00 00 00 00 00 88 f4 d0 0d 81 88 ff ff  *?..............
-    30 76 57 0c 81 88 ff ff 18 00 5e 00 81 88 ff ff  0vW.......^.....
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10b8>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10b8>] qrtr_node_enqueue+0x5b8/0x670 net/qrtr/af_qrtr.c:354
-    [<ffffffff84ae2756>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
-    [<ffffffff84ae3332>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-
-Tested on:
-
-commit:         33cc938e Linux 6.7-rc4
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e587dae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1626d7eee80000
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
