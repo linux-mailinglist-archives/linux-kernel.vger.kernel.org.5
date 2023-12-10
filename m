@@ -2,166 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E97580BA9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E29380BA9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbjLJMJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 07:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
+        id S232035AbjLJMK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 07:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJMJR (ORCPT
+        with ESMTP id S232010AbjLJMKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 07:09:17 -0500
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E78100
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:09:23 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d9dfa56ab2so4512514a34.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:09:23 -0800 (PST)
+        Sun, 10 Dec 2023 07:10:20 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E473101
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:10:25 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bf898c43cso3363566e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1702210223; x=1702815023; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVZLGDwnFrSoZzbSshy6/E7v2T5vetFvtKyVzmesIKY=;
+        b=gOYbznckZxS+4ftN5Y1dYYVfIRfXlnUpIYI8KAmuVayget4bJUKp1PPutfJyd0TVOL
+         IZxA+q2p6pd4qcNSybfm2QjItYLKuCIaIGwxFt+1wKoVFdwWEUe7bur+kbzZrBbBZ5xU
+         71jVTCV92Dhb7MXWE7lgMfqjZTQBZF1BEitx8TAMbesWveNGltyWOB1KXBvs1JHV0CKc
+         UjfGvDEJ9GY5mBGBPqkjFvA8xghfw+OVKIoQxt8VJgu1aIpuCIb02DjAnmITGVltPcmQ
+         VCSJjNme5CCko7VUc92MqXtZxZ+dQZo7yIUmFANtBJ7HjXYQ/+N02QPMtbL2EiiVB2Cl
+         NPRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702210163; x=1702814963;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2AQNLUSllWnJ3zCwLiGh03/cl64/JUNSMwCGcq9aVe4=;
-        b=a7qUhWljaK2dxQ6i81+Rqy1IrFA18HMFVDZ9072fv3GVBOONZHYrr4645Uc2qG6IiW
-         OlNKQ+pMA0G0+ns2QXqWf9dO80BHZ/aZ1ow9pK1c17tGxIEBm7G/sbFfAIUPOq0/D0TQ
-         /BXS36YD2yA/xRnNpK6t6Qj7nABYUxy8gyjo09Ayz70U/OVkcRdhmNSo3UmFTYATxrko
-         08TCkYt5qy3Uov4WeF4B8l3X595KTxWJ7AU8YFm9WCC+w/tLeMjZtOda6QPTJbL1/26W
-         EDyDgeJruEzXxZg3Oo2TDB4LpB1DmOMbRbmaSkn+c9MnzIok1WORCILFLj064biAv6m1
-         NXaw==
-X-Gm-Message-State: AOJu0YxS5Y3IziJ4JmIufT1pOPx9rVdgSIhp1pXG4Qj5FIPNEVfV0XIO
-        NqS6KtP9A0BFgEv7a7pBExlhjhG/XUGGZetDqcHm7aZjV4FA
-X-Google-Smtp-Source: AGHT+IFejoOVXeW/TEX4EoGjoqnEUS7KKIZmKe0oR7QxnUakzBn4WXTvt0jUv/M6JRggZRi/Ngce2RhdcKonPzC/KfdRfVPex7l+
+        d=1e100.net; s=20230601; t=1702210223; x=1702815023;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVZLGDwnFrSoZzbSshy6/E7v2T5vetFvtKyVzmesIKY=;
+        b=g331xQAzM77NOtb4Tiw0QhpZhIBp9A++KLeBIePdw+0dvoD8rsBRJ4NbXxIjdN9VND
+         pECCwRF9YrKjN9zLIRB7S2ecyEXxAL/tOd3GaxtTKlFILXmnN7OAZlqEhzPauRbncRU6
+         zE67cqTSgSgtAzTAVhioIjJHU8FOwr3YhY8d5ZsXYp8Ak5jL0A+0cjVgxnmlBCroB6va
+         /6jSdhG/hvgAzF/Jwkmiax+0RTu+TuECkMRMt/46QSNexLaGnj5QASkuXUd6vJTC7Azw
+         9YS0BB2/aFbd8H+QBeYGUg41fc4NK1ELfdWjt/K8momWit3OfXuEkqETwrkNb7fPUyii
+         Jhnw==
+X-Gm-Message-State: AOJu0YxSBvawKGNSLcLj5Wpj6kD2Waw+oWgwUhFr9qNRt+UohR4Y3Ckn
+        iaJ2JAIcbigJ0trOnhrDzjpLQg==
+X-Google-Smtp-Source: AGHT+IFB80l7EyfYVJx9mjj/NoIh9j2du4/mUd4EDhNv2r6WZu64qOIGdc7jpotjPNfe3Po0CpR7vQ==
+X-Received: by 2002:ac2:598d:0:b0:50b:fdc5:dec5 with SMTP id w13-20020ac2598d000000b0050bfdc5dec5mr627566lfn.75.1702210223371;
+        Sun, 10 Dec 2023 04:10:23 -0800 (PST)
+Received: from builder (c83-248-56-68.bredband.tele2.se. [83.248.56.68])
+        by smtp.gmail.com with ESMTPSA id t23-20020ac24c17000000b0050bed700f5esm792527lfq.91.2023.12.10.04.10.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 04:10:22 -0800 (PST)
+Date:   Sun, 10 Dec 2023 13:10:20 +0100
+From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
+        <ramon.nordin.rodriguez@ferroamp.se>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] net: microchip_t1s: additional phy support and
+ collision detect handling
+Message-ID: <ZXWqrPkaJD2i5g-d@builder>
+References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
+ <d79803b5-60ec-425b-8c5c-3e96ff351e09@lunn.ch>
+ <ZWS2GYBGGZg2MS0d@debian>
+ <270f74c0-4a1d-4a82-a77c-0e8a8982e80f@lunn.ch>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:913:b0:6d9:d4d1:1610 with SMTP id
- v19-20020a056830091300b006d9d4d11610mr3009284ott.2.1702210162848; Sun, 10 Dec
- 2023 04:09:22 -0800 (PST)
-Date:   Sun, 10 Dec 2023 04:09:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000016fb59060c26b03e@google.com>
-Subject: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
-From:   syzbot <syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com,
-        yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <270f74c0-4a1d-4a82-a77c-0e8a8982e80f@lunn.ch>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 27, 2023 at 05:03:54PM +0100, Andrew Lunn wrote:
+> > * 3-4 nodes (depending on how many usb ports and dongles I have)
+> > * run iperf with long cables and CSMA/CD
+> > * run iperf with long cables and CMSA/No CD
+> > 
+> > I'll report back the results. Anything you'd like to add/focus on with
+> > evaluation?
+> 
+> Humm, thinking about how CSMA/CD works...
+> 
+> Maybe look at what counters the MAC provides. Does it have collisions
+> and bad FCS? A collision should result in a bad FCS, if you are not
+> using CD. So if things are working correctly, the count for CD should
+> move to FCS if you turn CD off. If CD is falsely triggering, FCS as a
+> % should not really change, but you probably get more frames over the
+> link?
+> 
 
-syzbot found the following issue on:
+# setup
 
-HEAD commit:    577a4ee0b96f Add linux-next specific files for 20231206
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=16eee286e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3081237da77b539
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d6330e14407721955eb
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a19474e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11abb46ae80000
+Andrew suggested that I try to get statistics from the MAC, I did some
+investigation here but could not figure it out.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/14bcd8d77be7/disk-577a4ee0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9f03a87f3ac1/vmlinux-577a4ee0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0c655bc6a307/bzImage-577a4ee0.xz
-
-The issue was bisected to:
-
-commit 41f6f64e6999a837048b1bd13a2f8742964eca6b
-Author: Andrii Nakryiko <andrii@kernel.org>
-Date:   Tue Dec 5 18:42:39 2023 +0000
-
-    bpf: support non-r10 register spill/fill to/from stack in precision tracking
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a03302e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12a03302e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a03302e80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com
-Fixes: 41f6f64e6999 ("bpf: support non-r10 register spill/fill to/from stack in precision tracking")
-
-------------[ cut here ]------------
-verifier backtracking bug (stack slot out of bounds)
-WARNING: CPU: 0 PID: 5066 at kernel/bpf/verifier.c:4266 __mark_chain_precision+0x2a84/0x4d60 kernel/bpf/verifier.c:4266
-Modules linked in:
-CPU: 0 PID: 5066 Comm: syz-executor245 Not tainted 6.7.0-rc4-next-20231206-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__mark_chain_precision+0x2a84/0x4d60 kernel/bpf/verifier.c:4266
-Code: ff 89 de e8 8e e5 ec ff 84 db 0f 85 2c e1 ff ff e8 51 ea ec ff c6 05 60 54 88 0d 01 90 48 c7 c7 a0 4b d4 8a e8 2d d9 b2 ff 90 <0f> 0b 90 90 e9 09 e1 ff ff e8 2e ea ec ff 48 8d 7b 04 48 b8 00 00
-RSP: 0018:ffffc90003abf2e8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff814e05d9
-RDX: ffff888024c3bb80 RSI: ffffffff814e05e6 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801b2e0000
-R13: 0000000000000000 R14: 0000000000000001 R15: dffffc0000000000
-FS:  0000555556ba0380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6c37df1b10 CR3: 0000000074a2e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- mark_chain_precision kernel/bpf/verifier.c:4314 [inline]
- check_cond_jmp_op+0xea0/0x72b0 kernel/bpf/verifier.c:14724
- do_check kernel/bpf/verifier.c:17516 [inline]
- do_check_common+0x8cbc/0xe8e0 kernel/bpf/verifier.c:19955
- do_check_main kernel/bpf/verifier.c:20046 [inline]
- bpf_check+0x5129/0xa420 kernel/bpf/verifier.c:20683
- bpf_prog_load+0x1533/0x2200 kernel/bpf/syscall.c:2742
- __sys_bpf+0xbf7/0x49d0 kernel/bpf/syscall.c:5414
- __do_sys_bpf kernel/bpf/syscall.c:5518 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5516 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5516
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f3f5a049af9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd0ae5d58 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3f5a049af9
-RDX: 0000000000000048 RSI: 00000000200017c0 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+Using iperf3
+Client: Arm based system running lan865x macphy 
+Server: PC running lan867x revB usb dongle
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+# test results
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+The results below should be considered fairly represenative but far from
+perfect. There was some bounce up and down when rerunning, but these resutls
+are an eye-ball average.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+No meaningful difference was seen with short (2m) cables or long (12m).
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+## with collision detection enabled
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+iperf3 normal
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  5.54 MBytes  4.65 Mbits/sec    0             sender
+[  5]   0.00-10.01  sec  5.40 MBytes  4.53 Mbits/sec                  receiver
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+iperf3 reverse
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   929 KBytes   761 Kbits/sec  293             sender
+[  5]   0.00-10.00  sec   830 KBytes   680 Kbits/sec                  receiver
 
-If you want to undo deduplication, reply with:
-#syz undup
+
+## with collision detection disabled
+
+iperf3 normal
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  6.39 MBytes  5.36 Mbits/sec    0             sender
+[  5]   0.00-10.04  sec  6.19 MBytes  5.17 Mbits/sec                  receiver
+
+iperf3 reverse
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.27  sec  1.10 MBytes   897 Kbits/sec  268             sender
+[  5]   0.00-10.00  sec  1.01 MBytes   843 Kbits/sec                  receiver
+
+# Conclusions
+
+The arm system running the lan865x macphy uses a not yet mainlined driver, see
+https://lore.kernel.org/all/20231023154649.45931-1-Parthiban.Veerasooran@microchip.com/
+
+The lan865x driver crashed out every once in a while on reverse mode, there
+is definetly something biased in the driver for tx over rx.
+Then again it's not accepted yet.
+
+Disabling collision detection seemes to have an positive effect.
+Slightly higher speeds and slightly fewer retransmissions.
+
+I don't have a black and white result to present, but things seems to work
+slightly better with CD disabled, so I'm leaning towards just unconditionally 
+disabling it for the lan865x and lan867x phys for the v2 patch.
+
+I'll wait with submitting v2 for a day so anyone interested gets a
+chance to weigh in on this.
+
+R
