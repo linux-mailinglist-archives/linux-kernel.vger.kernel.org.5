@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1A080BBB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942F580BBBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjLJO0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 09:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        id S232558AbjLJO25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 09:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLJO0J (ORCPT
+        with ESMTP id S229584AbjLJO24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 09:26:09 -0500
+        Sun, 10 Dec 2023 09:28:56 -0500
 Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485A0C2;
-        Sun, 10 Dec 2023 06:26:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2287C2;
+        Sun, 10 Dec 2023 06:29:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1702218374;
-        bh=WfOzir+oTf44dYxvkiIaqqI0cQqL7L27KViNh2TxyJg=;
+        s=smtpout1; t=1702218540;
+        bh=x6MLErZNlQVGUs1Jib1nzGnOdZ6XoYrxaz8AY77jVF4=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=P73w9OEdofIgWwoJOf+aGtqyasboZtm4H22KuOFqIxcVDEjFLFo+WEYCqP3PG7hFL
-         TpFPDKBbWvs2KNmsnUrO8ZoySvKipzM7vM/uI6/FHdTB34H90C7CO42qADbpec61qG
-         5tAqaFKGh8aJFp5bFRCcsUUS0pKUOZLTlzmF5qlkwMHCOoKL/cvLNUz1wxrBRjLlSz
-         LEO4p9YXoyiRjyPj/A2Kr7ta0fWLVzXMjc92VtElsOAGhVMts7oBGbOHIWk9HVsZid
-         Nn7S5k7QOQ28IknFY4fB1k0yvFHicO3Wpc0XDNMb+6zVw8fGqyDC1JiQnmd2eyP1KD
-         3HJkBDv72HDyw==
+        b=js6U22hl+M3GPqo+VRXiaSJh2mk1f/k4aYZCMM4EYLHQm2ZnxFNisYENir+ZWrVHt
+         58cnjxndyo0eOxwGKagZTnHnNgy+n+/LdDHvxy2zNsMHi6+FWAPG7ksxYeuhGLI+dr
+         OGUHovL9iGWmmMWptfqh6b7GA0+kqV5YbU2e9dbCday611eFc/Ah3VEMX/GxwrSqZ5
+         mhwUyMY63Rus8wpMYYwdXf4dQdDKxJqLchaJAHctjyYMrk0/hz6+BrZubaO06mk4RD
+         fKMmRsLGtFNWmSN0hnc9bkum/K0Bs8Z5MwCPbAYBvVSRhRE+5ch49/BAWHDbCESGMF
+         OePxD+2GcLl3Q==
 Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Sp6ck3NNyzG77;
-        Sun, 10 Dec 2023 09:26:14 -0500 (EST)
-Message-ID: <3b45bdf6-234d-4859-8344-c18b48c8b415@efficios.com>
-Date:   Sun, 10 Dec 2023 09:26:13 -0500
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Sp6gw6CKDzFbv;
+        Sun, 10 Dec 2023 09:29:00 -0500 (EST)
+Message-ID: <298be08b-b010-47e8-b6d5-78910b63a6a7@efficios.com>
+Date:   Sun, 10 Dec 2023 09:28:55 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/14] ringbuffer/selftest: Add basic selftest to test
- chaning subbuf order
+Subject: Re: [PATCH 13/14] ring-buffer: Add documentation on the
+ buffer_subbuf_order file
 Content-Language: en-US
 To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org
@@ -44,9 +44,9 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Vincent Donnefort <vdonnefort@google.com>,
         Kent Overstreet <kent.overstreet@gmail.com>
 References: <20231210035404.053677508@goodmis.org>
- <20231210040452.274868572@goodmis.org>
+ <20231210040451.982725347@goodmis.org>
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231210040452.274868572@goodmis.org>
+In-Reply-To: <20231210040451.982725347@goodmis.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -61,51 +61,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 2023-12-09 22:54, Steven Rostedt wrote:
 [...]
-> +get_buffer_data_size() {
-> +	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
-> +}
+> +  buffer_subbuf_order:
 > +
-> +a="1234567890"
-> +
-> +make_str() {
-> +        cnt=$1
-> +        s=""
-> +        while [ $cnt -gt 10 ]; do
-> +                s="${s}${a}"
-> +                cnt=$((cnt-10))
-> +        done
-> +        while [ $cnt -gt 0 ]; do
-> +                s="${s}X"
-> +                cnt=$((cnt-1))
-> +        done
-> +        echo -n $s
-> +}
-> +
-> +test_buffer() {
-> +
-> +	size=`get_buffer_data_size`
-> +
-> +	str=`make_str $size`
-> +
-> +	echo $str > trace_marker
-> +
-> +	grep -q $a trace
+> +	This sets or displays the sub buffer page size order. The ring buffer
+> +	is broken up into several same size "sub buffers". An event can not be
+> +	bigger than the size of the sub buffer. Normally, the sub buffer is
+> +	the size of the architecture's page (4K on x86). The sub buffer also
+> +	contains meta data at the start which also limits the size of an event.
+> +	That means when the sub buffer is a page size, no event can be larger
+> +	than the page size minus the sub buffer meta data.
 
-This test has no clue if the record was truncated or not.
-
-It basically repeats the string
-
-"1234567890" until it fills the subbuffer size and pads with
-XXXX as needed as trace marker payload, but the grep looks for the
-"1234567890" pattern only.
-
-The test should be extended to validate whether the trace marker
-payload was truncated or not, otherwise it is of limited value.
+The fact that the user ABI documentation for this tracer parameter needs
+to dig into details about architecture page size is a good indicator
+that this ABI is not at the abstraction level it should be (pages vs
+bytes).
 
 Thanks,
 
 Mathieu
 
+> +
+> +	The buffer_subbuf_order allows the user to change the size of the sub
+> +	buffer. As the sub buffer is a set of pages by the power of 2, thus
+> +	the sub buffer total size is defined by the order:
+> +
+> +	order		size
+> +	----		----
+> +	0		PAGE_SIZE
+> +	1		PAGE_SIZE * 2
+> +	2		PAGE_SIZE * 4
+> +	3		PAGE_SIZE * 8
+> +
+> +	Changing the order will change the sub buffer size allowing for events
+> +	to be larger than the page size.
+> +
+> +	Note: When changing the order, tracing is stopped and any data in the
+> +	ring buffer and the snapshot buffer will be discarded.
+> +
+>     free_buffer:
+>   
+>   	If a process is performing tracing, and the ring buffer	should be
 
 -- 
 Mathieu Desnoyers
