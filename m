@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363CF80BCBC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0577D80BCCA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjLJThR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 14:37:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S231330AbjLJTql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 14:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbjLJThH (ORCPT
+        with ESMTP id S229462AbjLJTqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 14:37:07 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B8CE7
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:37:14 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-58d06bfadf8so2333838eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:37:14 -0800 (PST)
+        Sun, 10 Dec 2023 14:46:40 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0C4ED
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:46:46 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5cfc3a48ab2so30865897b3.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1702237033; x=1702841833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1702237606; x=1702842406; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ocIsk1Z1AgB/fk/jpeDl/jTBcRisWZEz2PlTlirKV9U=;
-        b=XRY/MJS/oWG5ELPhJkB+8Ws83CXGOTEFRSVOjYwg9ryukkTiCguleBkliANlakMZzu
-         J7rmZb9uhaPZhBPRfFwHiFaPUpFIO2QwhSVHzWU3JpzLh1Vy3n/bc3cl0dR+cOCYEk56
-         jCRdds/of1OPZZS2hF31gf6D/3EXV5ZjSryD3gfc8D9nsh3/h0aTTnHc6r90UjdKigpq
-         MymYuooN7rEXu/iTMM9oFE5MrQQg9NL77dOt1F6A2W7t9z0TpGmYTnwU5Y/dYuCPoC1y
-         n7hwCu+TYAWoDN2k5zLTeGmYgGTRoNfDMqqIkxEe15TVbr//obhhDEHbDMqtVfvYN5cG
-         1Y0A==
+        bh=zfL3WzEuDXRtc2Yx9DpKvEpshQljhBnqTFJily+P2J4=;
+        b=mk/pk7j2XNoWRptCydmxvtQoifeIfk5lXV8i3x87X7XPcTt2Zv629mUAWoA4hCow0L
+         ZmpXSeKsB9jLwcg/cHVVVxmZv1XoolzR3ga6ZWdhX313iIsDB4GlFqEH5Ou8sH2oZGGz
+         lFbNvdlf3NuTL2Lt9Xdo0GdYQcv4AAcGYg6NHPiWm/l6aXUSifM/N++7Px6yAG8KcnZd
+         IUzc0O4VGJd1OhHxrSDXqzNGhhBelmRY3L+kmepjvh6Oi3sq4uPpqX+gwKBV3oqpRpBD
+         c34uogyu1H/Gshum5NDM58PhgY9Ns7EVvtYDquF+fiVdq+P26vIoQFAhtIE11z7LeeP+
+         Qr1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702237033; x=1702841833;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702237606; x=1702842406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ocIsk1Z1AgB/fk/jpeDl/jTBcRisWZEz2PlTlirKV9U=;
-        b=gKgTaxZGY0mbKMz0jmztMZ6uu8EbcLoXUyfTQDeU7yr4A/vdkzH9E4YXi5gn3HmXwA
-         HWe9sr/mUyNZPmc5I+h8xN9l6cJmri7WHsyQ8BxBR4Mi15dpi8NhQ9srNL13PTRUNIzs
-         6QApCWewVd1mPB1/GkS52lfKd766sR4eIPyLbeimytUgm6s2Wl2VmTs9H9cbKvV7VA/3
-         VdGLOKHOHgbUHdvF0DFVUBjhm4umt1OJcVfM7lF1mYABic8IjcMaJzGSxzECrjWrtPeu
-         6QNjyrVRkY/UXkzGiXK0kd1nhOdRmjABQPSgXo6SnCZi9++Ic+Ch3uP9N02HItGKVhVe
-         Kq/A==
-X-Gm-Message-State: AOJu0Yy6YTMfcGFd7vfMF18Dgz4xOG11ZioRVOYiHQes6otqFTH6JNyQ
-        LXBAopOwRZ8WDla08yp3lMUCQw==
-X-Google-Smtp-Source: AGHT+IH4+QxPwg2ArrCJJTa5iUAYLO7QQ72lGdZ7KViMmjh75qoVK3In1i+Rw1NnXHD538NSMOfPSA==
-X-Received: by 2002:a05:6358:c11a:b0:170:6675:a509 with SMTP id fh26-20020a056358c11a00b001706675a509mr4173666rwb.60.1702237033400;
-        Sun, 10 Dec 2023 11:37:13 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001b9e9edbf43sm5117419plk.171.2023.12.10.11.37.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 11:37:12 -0800 (PST)
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 4/4] Staging: rtl8192e: Remove variable macId
-Date:   Sun, 10 Dec 2023 11:37:05 -0800
-Message-Id: <20231210193705.2131807-5-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231210193705.2131807-1-tdavies@darkphysics.net>
-References: <20231210193705.2131807-1-tdavies@darkphysics.net>
+        bh=zfL3WzEuDXRtc2Yx9DpKvEpshQljhBnqTFJily+P2J4=;
+        b=ZQURhsO2ycYrZRXbPmj6RRDvM8RTHOVEtjkdXvlb8Q7qqMFnjSMKr/aI8HMODmkX24
+         xzXXXQFkOjqMHQnhtenWHBSJ3Fm2KBNRUqgBcTxgx3nBw2OL0Bg/4zarxB+Vi2dGOUGn
+         4/NFrMW6AuuQoG5AN82d9zPmzfkLdpOMAkf0BpC043KEpKtmvVVAkXrBb4aVfsphy2++
+         5LxV4SqNaYHwog5NxdbGTPv3zE5ETx3OofQkPw5gNiejMErvaveTzYP6ouU8EI61lOHL
+         W+PxFtLVAGMduwUoiXpCriXPNmfGvQScnUqDWzscF+3z44I7HO/0ubJ5A3E97YphmpYx
+         COrg==
+X-Gm-Message-State: AOJu0YybSdw7lWyjEoVX6MeobKD1VYxr2QSDDSz8D10acU0Wq4dFZQje
+        rsHZYh8GFGH01YaTH9Fm/H8Rf2BsXh/48vZzhO5R3A==
+X-Google-Smtp-Source: AGHT+IGkSafvzKSd9XrQiQnLAXp/AYZlAzkqTQNLQinImuLSVyYAumPVpSBhPCumrQMH+fplSJPGlMdPFGDW4+HPe5g=
+X-Received: by 2002:a81:4fc7:0:b0:5d7:1941:abb with SMTP id
+ d190-20020a814fc7000000b005d719410abbmr2574429ywb.86.1702237605793; Sun, 10
+ Dec 2023 11:46:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <87dfa523-1882-417d-97b5-f606ff0099f9@moroto.mountain>
+In-Reply-To: <87dfa523-1882-417d-97b5-f606ff0099f9@moroto.mountain>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 10 Dec 2023 20:46:34 +0100
+Message-ID: <CACRpkdbu=pkACc+gmBa_nCrYOwhXi77FzHwwUfd8A0sREPaM9w@mail.gmail.com>
+Subject: Re: [PATCH] usb: fotg210-hcd: delete an incorrect bounds test
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Lee Jones <lee@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove variable macId as it is defined but never used.
+Hi Dan,
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
----
- drivers/staging/rtl8192e/rtllib.h | 1 -
- 1 file changed, 1 deletion(-)
+thanks for your patch!
 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 224774b1ba31..0b4a6ded257a 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -136,7 +136,6 @@ struct cb_desc {
- 	u8 bAMSDU:1;
- 	u8 bFromAggrQ:1;
- 	u8 reserved6:6;
--	u8 macId;
- 	u8 priority;
- 
- 	/* Tx firmware related element(20-27) */
--- 
-2.39.2
+On Fri, Dec 8, 2023 at 10:23=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro=
+.org> wrote:
 
+> Here "temp" is the number of characters that we have written and "size"
+> is the size of the buffer.  The intent was clearly to say that if we have
+> written to the end of the buffer then stop.
+>
+> However, for that to work the comparison should have been done on the
+> original "size" value instead of the "size -=3D temp" value.  Not only
+> will that not trigger when we want to, but there is a small chance that
+> it will trigger incorrectly before we want it to and we break from the
+> loop slightly earlier than intended.
+>
+> This code was recently changed from using snprintf() to scnprintf().  Wit=
+h
+> snprintf() we likely would have continued looping and passed a negative
+> size parameter to snprintf().  This would have triggered an annoying
+> WARN().  Now that we have converted to scnprintf() "size" will never
+> drop below 1 and there is no real need for this test.  We could change
+> the condition to "if (temp <=3D 1) goto done;" but just deleting the test
+> is cleanest.
+
+This is a great fix! Thanks for going the extra mile and fix this
+when looking at the code.
+
+> Fixes: 1dd33a9f1b95 ("usb: fotg210: Collect pieces of dual mode controlle=
+r")
+
+That's the wrong commit.
+This commit just brings stuff together from old code...
+
+I believe it should be:
+Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
+
+It won't backport cleanly but it's the right commit.
+
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+With the right Fixes:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
