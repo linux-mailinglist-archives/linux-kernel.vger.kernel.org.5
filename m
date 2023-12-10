@@ -2,284 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065E380B860
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 03:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EE380B85F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 03:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjLJCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 21:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        id S231420AbjLJCDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 21:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLJCAJ (ORCPT
+        with ESMTP id S229488AbjLJCDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 21:00:09 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C4A10C;
-        Sat,  9 Dec 2023 18:00:15 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-77f642b9a22so47848585a.0;
-        Sat, 09 Dec 2023 18:00:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702173615; x=1702778415; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Iirnk+K80ukU5tUHF57C2FdkiPvuVc7P/UMA6GstnZ0=;
-        b=RrUvwLN+kPTtdZMWTB8wK/DyLJMnM5Q/Pmmg80rVlrtc5MjmI4NFORSq8MtGtDowau
-         3iWb8t9nWHHiwsfGP4TmllTjKqmSx4XdmuMvl05lCmpqq0Xbomi7qxPrkTabc6d1Ci4f
-         FWAu13bq6sk6xYEv3cEKcecrE9QMvV5S/FELTFMlwwVCJ7MlS1QDW8nyinEU7KSMXQj5
-         ClI0LlHjhbkrAi9i/YN5BYdn9iGj+5fGK4Ueu4DrMPLdiyFkOusKTc+soUq1x6scryga
-         qCdTtZoRDwXPxexSvn8Bd6lG0nzxfs3FwhzLspeKaatLF1MWb7xSAcHXiPTE3AejTIy1
-         wSRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702173615; x=1702778415;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Iirnk+K80ukU5tUHF57C2FdkiPvuVc7P/UMA6GstnZ0=;
-        b=ANS1XtRKJYDsCJFnQy6Ri4hFKQk4n0kHwNprHqx/ANHqi6uv81GGfuvTqKdOhpyflr
-         CwBZ1QNdM3lWdKyimQnITAPwvTV00qDBFjhA97OB+89fQrFCzvdf3PmM5KyzRGyPzR3B
-         4/GXQY5Bx95LHpe2K/7vtnvDO+yr2+/1H7spyn4DuWwQA2dRywHPnEzT4gJgg44M9YAo
-         zIA/vdMiJ1az9bZgLcicbYpEoriSWQvGbR8CXi2VJ7GYbo7Vlk7E7p0M/xt8xrP9nGBF
-         9FCEuECMqHqsJFLFiceeqKAERzf7c0a1irw1BMmm21nOcj8AiBby5ZJOfnrmR8lRnsxW
-         eO9Q==
-X-Gm-Message-State: AOJu0Yyr+ELqqk8TyCCsc5dh6PzOHe/DHLZcW2G/FAu19RnCgYxqIqxL
-        Ze6GafvHBIilf8bNbzgZWDc=
-X-Google-Smtp-Source: AGHT+IHmmO8yEQxrJ3T556l1Tmtu1x5im4Nj1OUazKYtPscjv2QXgn0AAZMkSWymutV6XmCr0Gc/AA==
-X-Received: by 2002:a05:6214:1549:b0:67a:a2a2:3935 with SMTP id t9-20020a056214154900b0067aa2a23935mr3074853qvw.7.1702173614950;
-        Sat, 09 Dec 2023 18:00:14 -0800 (PST)
-Received: from [192.168.2.14] ([76.65.20.140])
-        by smtp.gmail.com with ESMTPSA id pp12-20020a056214138c00b0067a14238fa9sm2051161qvb.94.2023.12.09.18.00.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 18:00:14 -0800 (PST)
-Message-ID: <cd286d71-811e-4976-8538-4f946dca6da8@gmail.com>
-Date:   Sat, 9 Dec 2023 21:00:04 -0500
+        Sat, 9 Dec 2023 21:03:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD9910C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 18:03:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702173800; x=1733709800;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YPSa+EqqbwYkScTEXGKik/E61oTp1OD7T/v2f6DAEvI=;
+  b=iU/K6QN1LiXxgAEWyAMX73eoRqRYr9i0zgtbt2/v8MNXvNnPquFn0j8q
+   G520KKbUp20k0MdjLxjFxoESwH4g62WUHI3ZETegtzg5K7Ate2ZGIC3Tl
+   y7byIoZZwclSnFS7/rmXKL6OwMIT3bJHltlq0ntcpnLwY24StUuiH/LXF
+   mBkaZTdkKZR97TGuqQ7O5jk1AeRl70hh1GNQa1lKoNHwSxXAg+4J63JLQ
+   1wsH9qLb1Ay8ZGxMUoU8kHQLiWWXVb4q4Gmna7XVDu851zQNbBqyB43xD
+   rbtUFeU2jou28aHxPzAxndRorC6nNHhlkNfhiydbNM6PaRQVuBUmoWjgH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="7892381"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="7892381"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 18:03:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="748776727"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="748776727"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 09 Dec 2023 18:03:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rC9A1-000GGl-0n;
+        Sun, 10 Dec 2023 02:03:13 +0000
+Date:   Sun, 10 Dec 2023 10:02:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
+        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Gergo Koteles <soyer@irl.hu>
+Subject: Re: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
+Message-ID: <202312100942.CvTnDpkg-lkp@intel.com>
+References: <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
- Thunderbird/115.5.1
-Subject: Re: [PATCH] drm/scheduler: Unwrap job dependencies
-Content-Language: en-CA, en-US
-To:     Rob Clark <robdclark@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" 
-        <linux-media@vger.kernel.org>,
-        "moderated list:DMA BUFFER SHARING
-        FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" 
-        <linaro-mm-sig@lists.linaro.org>
-References: <20231205190234.371322-1-robdclark@gmail.com>
-From:   Luben Tuikov <ltuikov89@gmail.com>
-Autocrypt: addr=ltuikov89@gmail.com; keydata=
- xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
- Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
- eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
- AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
- JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
- cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
- 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
- aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
-In-Reply-To: <20231205190234.371322-1-robdclark@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------DH1b43QTRDFYjum9TFiZzmL0"
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------DH1b43QTRDFYjum9TFiZzmL0
-Content-Type: multipart/mixed; boundary="------------5AcjGbok14q8wunARMWuRa49";
- protected-headers="v1"
-From: Luben Tuikov <ltuikov89@gmail.com>
-To: Rob Clark <robdclark@gmail.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- open list <linux-kernel@vger.kernel.org>,
- "open list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b"
- <linux-media@vger.kernel.org>,
- "moderated list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b"
- <linaro-mm-sig@lists.linaro.org>
-Message-ID: <cd286d71-811e-4976-8538-4f946dca6da8@gmail.com>
-Subject: Re: [PATCH] drm/scheduler: Unwrap job dependencies
-References: <20231205190234.371322-1-robdclark@gmail.com>
-In-Reply-To: <20231205190234.371322-1-robdclark@gmail.com>
+Hi Gergo,
 
---------------5AcjGbok14q8wunARMWuRa49
-Content-Type: multipart/mixed; boundary="------------Xnbegemyy81hwQG4dwAVqouJ"
+kernel test robot noticed the following build warnings:
 
---------------Xnbegemyy81hwQG4dwAVqouJ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+[auto build test WARNING on ffc253263a1375a65fa6c9f62a893e9767fbebfa]
 
-Hi,
+url:    https://github.com/intel-lab-lkp/linux/commits/Gergo-Koteles/ASoc-tas2563-DSP-Firmware-loading-support/20231205-074901
+base:   ffc253263a1375a65fa6c9f62a893e9767fbebfa
+patch link:    https://lore.kernel.org/r/4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer%40irl.hu
+patch subject: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
+config: x86_64-randconfig-r121-20231210 (https://download.01.org/0day-ci/archive/20231210/202312100942.CvTnDpkg-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312100942.CvTnDpkg-lkp@intel.com/reproduce)
 
-On 2023-12-05 14:02, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
->=20
-> Container fences have burner contexts, which makes the trick to store a=
-t
-> most one fence per context somewhat useless if we don't unwrap array or=
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312100942.CvTnDpkg-lkp@intel.com/
 
-> chain fences.
->=20
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+sparse warnings: (new ones prefixed by >>)
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned long __ms @@     got restricted __be16 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:21:9: sparse:     expected unsigned long __ms
+   sound/soc/codecs/tas25xx-dsp.c:21:9: sparse:     got restricted __be16 [usertype]
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:21:9: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:28:26: sparse: sparse: incorrect type in initializer (different base types) @@     expected int num_writes @@     got restricted __be16 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:28:26: sparse:     expected int num_writes
+   sound/soc/codecs/tas25xx-dsp.c:28:26: sparse:     got restricted __be16 [usertype]
+>> sound/soc/codecs/tas25xx-dsp.c:65:33: sparse: sparse: incorrect type in argument 4 (different base types) @@     expected unsigned long [usertype] val_count @@     got restricted __be16 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:65:33: sparse:     expected unsigned long [usertype] val_count
+   sound/soc/codecs/tas25xx-dsp.c:65:33: sparse:     got restricted __be16 [usertype]
+   sound/soc/codecs/tas25xx-dsp.c:84:30: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:87:30: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:82:17: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:82:17: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:82:17: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:103:17: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:103:17: sparse: sparse: restricted __be16 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:103:17: sparse: sparse: restricted __be16 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:141:24: sparse: sparse: restricted __be32 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:145:24: sparse: sparse: invalid assignment: +=
+>> sound/soc/codecs/tas25xx-dsp.c:145:24: sparse:    left side has type int
+>> sound/soc/codecs/tas25xx-dsp.c:145:24: sparse:    right side has type restricted __be32
+   sound/soc/codecs/tas25xx-dsp.c:150:35: sparse: sparse: restricted __be32 degrades to integer
+>> sound/soc/codecs/tas25xx-dsp.c:151:29: sparse: sparse: incorrect type in initializer (different base types) @@     expected int num_subblocks @@     got restricted __be32 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:151:29: sparse:     expected int num_subblocks
+   sound/soc/codecs/tas25xx-dsp.c:151:29: sparse:     got restricted __be32 [usertype]
+   sound/soc/codecs/tas25xx-dsp.c:182:26: sparse: sparse: restricted __be32 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:186:24: sparse: sparse: invalid assignment: +=
+   sound/soc/codecs/tas25xx-dsp.c:186:24: sparse:    left side has type int
+   sound/soc/codecs/tas25xx-dsp.c:186:24: sparse:    right side has type restricted __be32
+   sound/soc/codecs/tas25xx-dsp.c:191:35: sparse: sparse: restricted __be32 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:192:29: sparse: sparse: incorrect type in initializer (different base types) @@     expected int num_subblocks @@     got restricted __be32 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:192:29: sparse:     expected int num_subblocks
+   sound/soc/codecs/tas25xx-dsp.c:192:29: sparse:     got restricted __be32 [usertype]
+   sound/soc/codecs/tas25xx-dsp.c:238:29: sparse: sparse: restricted __be32 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:239:31: sparse: sparse: invalid assignment: +=
+>> sound/soc/codecs/tas25xx-dsp.c:239:31: sparse:    left side has type unsigned int
+   sound/soc/codecs/tas25xx-dsp.c:239:31: sparse:    right side has type restricted __be32
+   sound/soc/codecs/tas25xx-dsp.c:241:29: sparse: sparse: restricted __be32 degrades to integer
+   sound/soc/codecs/tas25xx-dsp.c:242:33: sparse: sparse: invalid assignment: +=
+   sound/soc/codecs/tas25xx-dsp.c:242:33: sparse:    left side has type unsigned int
+   sound/soc/codecs/tas25xx-dsp.c:242:33: sparse:    right side has type restricted __be32
+>> sound/soc/codecs/tas25xx-dsp.c:260:18: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] prog_num @@     got restricted __be32 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:260:18: sparse:     expected unsigned int [usertype] prog_num
+   sound/soc/codecs/tas25xx-dsp.c:260:18: sparse:     got restricted __be32 [usertype]
+>> sound/soc/codecs/tas25xx-dsp.c:261:20: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] config_num @@     got restricted __be32 [usertype] @@
+   sound/soc/codecs/tas25xx-dsp.c:261:20: sparse:     expected unsigned int [usertype] config_num
+   sound/soc/codecs/tas25xx-dsp.c:261:20: sparse:     got restricted __be32 [usertype]
+--
+>> sound/pci/hda/tas2563_hda_i2c.c:325:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int @@     got restricted __be32 [usertype] @@
+   sound/pci/hda/tas2563_hda_i2c.c:325:37: sparse:     expected unsigned int
+   sound/pci/hda/tas2563_hda_i2c.c:325:37: sparse:     got restricted __be32 [usertype]
 
-Link: https://lore.kernel.org/all/20230322224403.35742-1-robdclark@gmail.=
-com/
+vim +325 sound/pci/hda/tas2563_hda_i2c.c
 
-Let's include a link to the original thread, as the main discussion can b=
-e found
-therein.
+   306	
+   307	/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
+   308	 * Calibrate data is done by manufacturer in the factory. These data are used
+   309	 * by Algo for calucating the speaker temperature, speaker membrance excursion
+   310	 * and f0 in real time during playback.
+   311	 */
+   312	static int tas2563_tasdev_read_efi(struct tas2563_data *tas2563,
+   313		struct tas2563_dev *tasdev)
+   314	{
+   315		efi_status_t status;
+   316		unsigned int attr;
+   317		unsigned long max_size = TAS2563_CAL_DATA_SIZE;
+   318	
+   319		for (int i = 0; i < TAS2563_CAL_N; ++i) {
+   320			status = efi.get_variable(efi_var_names[tasdev->dev_id][i],
+   321				&efi_guid, &attr, &max_size,
+   322				&tasdev->cal_data[i]);
+   323			if (status != EFI_SUCCESS)
+   324				return -EINVAL;
+ > 325			tasdev->cal_data[i] = cpu_to_be32(tasdev->cal_data[i]);
+   326		}
+   327	
+   328		dev_info(tas2563->dev,
+   329			"Calibration data %d: power:%08x r0:%08x inv_r0:%08x r0_low:%08x tlim:%08x\n",
+   330			tasdev->dev_id, tasdev->cal_data[0], tasdev->cal_data[1],
+   331			tasdev->cal_data[2], tasdev->cal_data[3], tasdev->cal_data[4]);
+   332	
+   333		return 0;
+   334	}
+   335	
 
-Christian, could you review this patch please?
-
-Thanks!
---=20
-Regards,
-Luben
-
-> ---
->  drivers/gpu/drm/scheduler/sched_main.c | 47 ++++++++++++++++++--------=
-
->  1 file changed, 32 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/s=
-cheduler/sched_main.c
-> index 9762464e3f99..16b550949c57 100644
-> --- a/drivers/gpu/drm/scheduler/sched_main.c
-> +++ b/drivers/gpu/drm/scheduler/sched_main.c
-> @@ -52,6 +52,7 @@
->  #include <linux/wait.h>
->  #include <linux/sched.h>
->  #include <linux/completion.h>
-> +#include <linux/dma-fence-unwrap.h>
->  #include <linux/dma-resv.h>
->  #include <uapi/linux/sched/types.h>
-> =20
-> @@ -684,27 +685,14 @@ void drm_sched_job_arm(struct drm_sched_job *job)=
-
->  }
->  EXPORT_SYMBOL(drm_sched_job_arm);
-> =20
-> -/**
-> - * drm_sched_job_add_dependency - adds the fence as a job dependency
-> - * @job: scheduler job to add the dependencies to
-> - * @fence: the dma_fence to add to the list of dependencies.
-> - *
-> - * Note that @fence is consumed in both the success and error cases.
-> - *
-> - * Returns:
-> - * 0 on success, or an error on failing to expand the array.
-> - */
-> -int drm_sched_job_add_dependency(struct drm_sched_job *job,
-> -				 struct dma_fence *fence)
-> +static int drm_sched_job_add_single_dependency(struct drm_sched_job *j=
-ob,
-> +					       struct dma_fence *fence)
->  {
->  	struct dma_fence *entry;
->  	unsigned long index;
->  	u32 id =3D 0;
->  	int ret;
-> =20
-> -	if (!fence)
-> -		return 0;
-> -
->  	/* Deduplicate if we already depend on a fence from the same context.=
-
->  	 * This lets the size of the array of deps scale with the number of
->  	 * engines involved, rather than the number of BOs.
-> @@ -728,6 +716,35 @@ int drm_sched_job_add_dependency(struct drm_sched_=
-job *job,
-> =20
->  	return ret;
->  }
-> +
-> +/**
-> + * drm_sched_job_add_dependency - adds the fence as a job dependency
-> + * @job: scheduler job to add the dependencies to
-> + * @fence: the dma_fence to add to the list of dependencies.
-> + *
-> + * Note that @fence is consumed in both the success and error cases.
-> + *
-> + * Returns:
-> + * 0 on success, or an error on failing to expand the array.
-> + */
-> +int drm_sched_job_add_dependency(struct drm_sched_job *job,
-> +				 struct dma_fence *fence)
-> +{
-> +	struct dma_fence_unwrap iter;
-> +	struct dma_fence *f;
-> +	int ret =3D 0;
-> +
-> +	dma_fence_unwrap_for_each (f, &iter, fence) {
-> +		dma_fence_get(f);
-> +		ret =3D drm_sched_job_add_single_dependency(job, f);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	dma_fence_put(fence);
-> +
-> +	return ret;
-> +}
->  EXPORT_SYMBOL(drm_sched_job_add_dependency);
-> =20
->  /**
-
---------------Xnbegemyy81hwQG4dwAVqouJ
-Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
-PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
-QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
-BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
-MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
-bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
-9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
-OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
-z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
-=3DqCaZ
------END PGP PUBLIC KEY BLOCK-----
-
---------------Xnbegemyy81hwQG4dwAVqouJ--
-
---------------5AcjGbok14q8wunARMWuRa49--
-
---------------DH1b43QTRDFYjum9TFiZzmL0
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZXUbpAUDAAAAAAAKCRBMFUeUMaM0r4CB
-AP9BzdKV0/Demva8WlC8Tg3QI4lENeTPM8OVE+DczzG1/wEArLptFP004Ze3PTau6EO21XXw68MP
-6GZn+DgxJOc7nQQ=
-=MtnB
------END PGP SIGNATURE-----
-
---------------DH1b43QTRDFYjum9TFiZzmL0--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
