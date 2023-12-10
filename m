@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3313480BBF8
+	by mail.lfdr.de (Postfix) with ESMTP id 893EE80BBF9
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbjLJP1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 10:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S232936AbjLJP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 10:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbjLJP0z (ORCPT
+        with ESMTP id S233013AbjLJP1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 10:26:55 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EE410B
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:27:01 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c317ba572so5642425e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:27:01 -0800 (PST)
+        Sun, 10 Dec 2023 10:27:00 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1FC123
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:27:06 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c192f488cso5992245e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:27:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702222020; x=1702826820; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702222025; x=1702826825; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Ghc9oNYnVV/LlJvVf4sjMAoSbSil2W5yyWhaZB5Vhg=;
-        b=Q3HWLqjK4Zk/2y1bO8hbz50aiN+0fxUsz27+ktirb218eQAHiYAlel2r0Mqqm5jS1S
-         GNKnN/qyeOFMdNQsNtGlvmAMM1WpcoLeTvnequAtUhImtICRiwaN9srtt9TtG9edq8Y6
-         GcIX2B9FwVG93vhC/RxNUqLVhZV5biRRT5rxYgdeMQ3zg5beiCxRaqqEs2iUR3fnRY8u
-         xFlfMUi4qfxbFkNPL+4dHVkwxag8uLUU9PS5WtnZnsiZsQwFYSEU5ieSvfu0xDlj4YaY
-         ozbY9lZU8/VmQTJ4UH9uSRE3mz4Q9wKR1isGylysblIJGoMBEVFVp82s9YN7HGk0XoMF
-         wtWw==
+        bh=geLw7oiaKYTuY2XiNNlgp2W+j2j+NV9E7iJ/5OuM2YA=;
+        b=kkJfJYzTp0Q2ZrYqeRvHVOb2kcOzfwKUAuoOCEMfLpVdHOaFfBBAcNxhNdOFN5jYgu
+         v8RGVvbneAyQ27PzGbKnlWYJClHwSI84ekvzvYwwJURfVOYRgA5Jye5cDbWQOEAx4TLf
+         SZhjJxW64VhH67AUAdnLwTijoOFaxrVH45oGR06D5r8/8qa0fBczvkE6atSd7c63JPcf
+         KWBqpxqpULzqb2ARVcp0rN0wRTlLYr7iP6/E23Pek4rFDW3AkSxS6OP9ToA/Wf12c8oL
+         YJDF0SD5rDAKb/hKBXX0Fb+voC/K/Kzwiq7Udrn8ouZooTJUtKp4/gsIqC+09BOGogYN
+         e21g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702222020; x=1702826820;
+        d=1e100.net; s=20230601; t=1702222025; x=1702826825;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Ghc9oNYnVV/LlJvVf4sjMAoSbSil2W5yyWhaZB5Vhg=;
-        b=v4PEl5UzxVHs8AUekThHkoXLc/87o9F1D7BbbhqgjTuurPcQHJZPLVCriI426aC12u
-         S7UboRmlS3X3ewwDrJs0s1TLfkAckWYazucOhjcFSVFMGwto2USeiABQtqnfi+LeR4SY
-         qvoeZF93XmFOXhPDO1EA9Ge7PPmTlE8hbyS4HRPqN9Ah4oxTBHxyETwwizW9E1ifixZQ
-         sO73JYxw7F97nj0bzXp3CJAx0kWN/VSL50N3nqNASJooHCPFHkACEWM51RbNTmdXqHot
-         FRFf7U51m+Apd6rc+IAoQGA8tzyRHB336Zy0280zX1FvhU1uBG/dtUNEBsB2zl7d0lN8
-         cBNg==
-X-Gm-Message-State: AOJu0YzxyXR3Ybjl6w/ve66KqybeRPGNMTLV+GGQudr8TAzESNFQOh5Z
-        UuPLMt42m/iBiR31wP87G/E=
-X-Google-Smtp-Source: AGHT+IF9JUkMMqyQF8K7oosTh16A72VikY5ePJs2iVpnR6eLhp3mf8J3VR1wwdV5HcMwFUUfMhiJ8A==
-X-Received: by 2002:a05:600c:1913:b0:40c:287a:1bba with SMTP id j19-20020a05600c191300b0040c287a1bbamr4041201wmq.2.1702222019806;
-        Sun, 10 Dec 2023 07:26:59 -0800 (PST)
+        bh=geLw7oiaKYTuY2XiNNlgp2W+j2j+NV9E7iJ/5OuM2YA=;
+        b=qd/go+ku5pn5WeDZdmnYZP1CaqC2GcDC7PvVByr5XUUUAV43f+MHPvmXGUWdHE961r
+         G3F5gn0hrzGJQZUzjWop4tcU3G07e0cfEfck/4RQ/92bndDcx9gvi1MKJZpJ1rDYjePd
+         l8FfwGorAFL6dnb7kKfTcsIiG5eqw591aWFYIWuaWlsoWQBScWhJz/yEUchtGltrn8vx
+         mQoar++KnHqmeZrXfG+DzRZMhRtbU8EP5azCWSZkv/pf4lwrAcqugSreDyr3jn45zLQt
+         LSGYhbLvXnmC67O6+wEjgRIZZLxVkqCTcbdKmvoqrU9UIUET+vvBIlDxiSBpj3bxUYzf
+         Y8wg==
+X-Gm-Message-State: AOJu0YzyrrMfxVWkUI/XUii/r7cR4t/ITd4KrFlYVXS9brbYW/1vzonb
+        Sjym2Rg+wgx5a9rtvxjzzLI=
+X-Google-Smtp-Source: AGHT+IF9WyWBDNKFv8tAvjn1xZzkvUYPZW8FYaBnWJF2y8KqdJlSpf/oidoYYUZxpb6PudMK7ZeuPg==
+X-Received: by 2002:a05:600c:524e:b0:40b:2708:2a52 with SMTP id fc14-20020a05600c524e00b0040b27082a52mr4018653wmb.1.1702222025086;
+        Sun, 10 Dec 2023 07:27:05 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id r20-20020a05600c459400b0040b349c91acsm12117696wmo.16.2023.12.10.07.26.59
+        by smtp.gmail.com with ESMTPSA id r20-20020a05600c35d400b0040b538047b4sm12250228wmq.3.2023.12.10.07.27.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 07:26:59 -0800 (PST)
-Date:   Sun, 10 Dec 2023 16:26:58 +0100
+        Sun, 10 Dec 2023 07:27:04 -0800 (PST)
+Date:   Sun, 10 Dec 2023 16:27:03 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 09/10] staging: rtl8192e: Remove variable ht_info->bCurSuppCCK
-Message-ID: <159a1a84c7bc90042bf1618a067f02ac123dd15d.1702212003.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 10/10] staging: rtl8192e: Remove struct ht_info_ele SelfHTInfo
+Message-ID: <e8692d40b3cba3de1b4ceb8e72186e8d40afec73.1702212003.git.philipp.g.hortmann@gmail.com>
 References: <cover.1702212003.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -62,7 +62,7 @@ Content-Disposition: inline
 In-Reply-To: <cover.1702212003.git.philipp.g.hortmann@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,66 +70,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ht_info->bCurSuppCCK is set to 1 and unchanged. Therefore all equations
-result accordingly and ht_info->bCurSuppCCK can be removed.
+Remove struct ht_info_ele SelfHTInfo as it is unused.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
  drivers/staging/rtl8192e/rtl819x_HT.h     | 1 -
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ----
- drivers/staging/rtl8192e/rtllib_softmac.c | 5 +----
- 3 files changed, 1 insertion(+), 9 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 --
+ 2 files changed, 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index 670affe9d57b..416633b88446 100644
+index 416633b88446..0f27c820ffc5 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HT.h
 +++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -97,7 +97,6 @@ struct rt_hi_throughput {
- 	u8 cur_bw_40mhz;
- 	u8 cur_short_gi_40mhz;
+@@ -99,7 +99,6 @@ struct rt_hi_throughput {
  	u8 cur_short_gi_20mhz;
--	u8 bCurSuppCCK;
  	enum ht_spec_ver ePeerHTSpecVer;
  	struct ht_capab_ele SelfHTCap;
- 	struct ht_info_ele SelfHTInfo;
+-	struct ht_info_ele SelfHTInfo;
+ 	u8 PeerHTCapBuf[32];
+ 	u8 PeerHTInfoBuf[32];
+ 	u8 amsdu_support;
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index ca9da96b6f6c..439b43faa2bb 100644
+index 439b43faa2bb..0474594a4b96 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -471,8 +471,6 @@ void HTOnAssocRsp(struct rtllib_device *ieee)
- 	ht_info->cur_short_gi_20mhz = ((pPeerHTCap->ShortGI20Mhz == 1) ? true : false);
- 	ht_info->cur_short_gi_40mhz = ((pPeerHTCap->ShortGI40Mhz == 1) ? true : false);
+@@ -554,8 +554,6 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
  
--	ht_info->bCurSuppCCK = true;
--
- 	ht_info->bCurrent_AMSDU_Support = ht_info->amsdu_support;
- 
- 	nMaxAMSDUSize = (pPeerHTCap->MaxAMSDUSize == 0) ? 3839 : 7935;
-@@ -549,8 +547,6 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
- 	ht_info->cur_short_gi_40mhz = false;
- 	ht_info->forced_short_gi = false;
- 
--	ht_info->bCurSuppCCK = true;
--
- 	ht_info->bCurrent_AMSDU_Support = false;
- 	ht_info->nCurrent_AMSDU_MaxSize = ht_info->amsdu_max_size;
- 	ht_info->current_mpdu_density = ht_info->mpdu_density;
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 5c89744b2bbe..416f89ec576c 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -173,10 +173,7 @@ static u8 MgntQuery_MgntFrameTxRate(struct rtllib_device *ieee)
- 		rate = ieee->basic_rate & 0x7f;
- 
- 	if (rate == 0) {
--		if (ieee->mode == WIRELESS_MODE_N_24G && !ht_info->bCurSuppCCK)
--			rate = 0x0c;
--		else
--			rate = 0x02;
-+		rate = 0x02;
- 	}
- 
- 	return rate;
+ 	memset((void *)(&ht_info->SelfHTCap), 0,
+ 	       sizeof(ht_info->SelfHTCap));
+-	memset((void *)(&ht_info->SelfHTInfo), 0,
+-	       sizeof(ht_info->SelfHTInfo));
+ 	memset((void *)(&ht_info->PeerHTCapBuf), 0,
+ 	       sizeof(ht_info->PeerHTCapBuf));
+ 	memset((void *)(&ht_info->PeerHTInfoBuf), 0,
 -- 
 2.43.0
 
