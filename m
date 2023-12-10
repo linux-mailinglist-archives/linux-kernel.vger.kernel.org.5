@@ -2,274 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F48880B9CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F91A80B9CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjLJIM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 03:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S231705AbjLJINC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 03:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJIMy (ORCPT
+        with ESMTP id S229482AbjLJIM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 03:12:54 -0500
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2175.outbound.protection.outlook.com [40.92.62.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A9EC5;
-        Sun, 10 Dec 2023 00:13:00 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ksGonCfeaPwR6l5GxKxoTf6pnuz1Bjt0wtGjUOpjJf6cj4uLUkoo7i9+iZU069MuRND+1EMuEymxCokQ3aV/PXa7nFGpKj2mTN1fYNx4U9fI7E89R6P8RQA936lUW8mjzyV9LYXLfc0+yS2lAgzVqQnKUtfVHwFrSKDQhY4KXs5wwj+zzsDHpa8/zxBq/99Z+FqKs/+KFMFT3hF673nI5vaN+KvBNJBGKjdb42c5rm6ec0PiP7lTeJ3DKBupa1L+FbhF85Ocb/IIB42yOSlMwDq9YzMYUGm4apaiyWOKCvIWZHLOwR/Li/ich7zfIg7vCoSW8mz9lCoOrn90oMuNKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QPuHegOvjI1Wqy9bawitz85TcVTd7dRsokA5lEbAaHg=;
- b=CJJHfaihp31VcOb8dRdNImfqLJftgWnv8kkScbTIFaeSvgoh1/avnwQx38q+XkMMXlIPwsQmV8SC3a4ORVwHUubl3+Lqbq3VZcZCiA7JRgeCKJtxr7xXxunGCUHIdXRu41CHdH2Q2eGQCozVkOTOcWlvhhDqU3jWQGDsxSBv4sPyFni+Yr2lnfcCiijbs6/UeQXVtfiP9aPBmrquG0pW1nTKAXcO0PIjl8OsTxcDJfnsTD18Zh4QPnE85ZKgLNr/AYpja/XXsxJFDRCokptrgEzkK+J7VX0IqspcE4Pvzytg4hMzDrlUkm/ftXOS/9Y8IjwjwgtVO9fUoXLVRDwf5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QPuHegOvjI1Wqy9bawitz85TcVTd7dRsokA5lEbAaHg=;
- b=pR+oypzw3XWu2MtJ9PWqLyoJXpzYdwiWXRfzQoGX014y3p2dqrcyjSL2EBeHqLD1vEZtVAos/eVyYkRWKlWLHvsIHdv2cadY1a1AFthCw3Kddg2r+I5tnDOtdht9xAT70t3XseQXoeSjM/uWUi1gEpi9DNGJBkjSv2Hvw0+mfEhSPjcNmABUwkwai2eHlzUj9+/Hj0j5zpKMzvQCWxZefL2BKsVXtacDKYgOI+NAN24nCZyBtpWYoTfZ49y8vCgacGCBykd509lQMgjfUDjm+KxA3103CmrL2Out2aP8J2KqDVxrC7OJNBECn22Q0R+d66PnDcDgOCEU3vkmfX2EGA==
-Received: from SYBPR01MB6870.ausprd01.prod.outlook.com (2603:10c6:10:13d::10)
- by MEYPR01MB7339.ausprd01.prod.outlook.com (2603:10c6:220:15f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.31; Sun, 10 Dec
- 2023 08:12:53 +0000
-Received: from SYBPR01MB6870.ausprd01.prod.outlook.com
- ([fe80::be5a:160f:5418:9deb]) by SYBPR01MB6870.ausprd01.prod.outlook.com
- ([fe80::be5a:160f:5418:9deb%5]) with mapi id 15.20.7068.030; Sun, 10 Dec 2023
- 08:12:53 +0000
-From:   Tianyi Liu <i.pear@outlook.com>
-To:     seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
-        mlevitsk@redhat.com, maz@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: [PATCH v3 1/5] KVM: Add arch specific interfaces for sampling guest callchains
-Date:   Sun, 10 Dec 2023 16:12:18 +0800
-Message-ID: <SYBPR01MB6870FDFBB88F879C735198F39D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-References: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [QSggTfQqFdbZg1h9Gs/NfozjCC3waagQZgTkdujY8Bxzr5XF3x6M1A==]
-X-ClientProxiedBy: SG2PR01CA0125.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::29) To SYBPR01MB6870.ausprd01.prod.outlook.com
- (2603:10c6:10:13d::10)
-X-Microsoft-Original-Message-ID: <20231210081218.2226-1-i.pear@outlook.com>
+        Sun, 10 Dec 2023 03:12:58 -0500
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A69C5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:13:04 -0800 (PST)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d9decbc5d7so4058967a34.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:13:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702195984; x=1702800784;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DDcqDSo0luJBPZRr5X8W/lW27xG0MXkNcXRt+xChv+s=;
+        b=M+y4NJBvh+tiMNjPnEhQbMqBBUWzT1aFGdyuzIAqVnH1ZxXp+1BUAjx9y630WFcNl4
+         XLiZZYT1KXasLBzojOPaVxJxggzXjpiOdHxvZI2knol/fZ/rJ7AKxS43CUrI3xnqvX1W
+         GZnmT8VnAfhKqJCnWYtPNJUYobKpJx2hNTLvR4srY4+vC5xzmCodOPDQIYgkUgeIFarq
+         5H6TUlW3bpbZ4UvCzJhDlawAZo9ZxKRlu/wfO0mXEd6c+QXjDCp2CZ7jQa1KDzKdpkiX
+         O8LZtqHWrSuaZSlFA3NnuLSRup1QLX/Rphsfrvi4MrHs5bPZHt3A+lKSoGldyB/Rdx0q
+         Fz/Q==
+X-Gm-Message-State: AOJu0Yy+9eXSrYk+wUcdJ2PZIYo7EHscaYt70qKlVgGI7QDGtaqYrIOA
+        7U8sjPJpypPpz3XL91NaWib3073PyazZkev2QZb3xlMbrCDS
+X-Google-Smtp-Source: AGHT+IF/Y5Sn2bg5sJSTMUbvI8vmW/vEs1WvGu8ou/82G6xV/PW0KVUQnDXJ39anrKXTnycukJOBMtD79zujE4QziJ4K1lirm+/+
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SYBPR01MB6870:EE_|MEYPR01MB7339:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6e3b1ce-4bc6-4d46-15a7-08dbf957cec1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F3LN9hyPvN0CAVmU+CwhB+XgRrUEjHa4HI1zqe9BR1NM6xasWGUEsY21KafHRI3J6udF87Jntl/23EfJtc/Opb+vhobD14RLba1BTrlHBKYOmzbqq2koxkZRQyO47EL/bpUvwwpJs82XwF97jlhkabhXYL6QpsIGVVtU9lpA10RjaSs21fXg0BN0joIj17O6dK3xewzJ3XS8prVTjc6jURKdavKVp4MtSwUkCxXYXTcfMoFlZfpAgJUcjB64nhmc4a4vVp4s0GhSDaum5OMazYF/Hz6BtUzCXslKzjILBdQ5kiSCKp0NIZIbXdHPKNvnILwL0CqyYi4gvbrMTIUcPYDsYNFf3rXWgHjWybY4j2ZJ+PylNH/1lt9Nhd33yHflJVEkYE8KTeI4cQmMvGQ1K4L2u1Z50F4UtzZCsYcM2qBsvYnzn/tpBVJ8siv2xq+1biS8tCbKTX2LGHzeAv/VcTsmOfMam5OKlH5lRKcwojiBLArs8Oe7JqBihVrzmZmosCNboAUaeIUtAtQMILPIQBEAqiKd9nGVrjLHJXBtOGKZe6/c3uPc7dC3pBbQmuiORR8WwGUS3JF3ELuR7dNB4s+lH2ilIL9wYmogpQn+XtnqLXByGOk5o5pxnpH96IAN
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bfaX2bWF1FUPdvdpZQncA5I18O7ptYdkMt6nx0ifU5KnqRLHs7jrC+3OkApL?=
- =?us-ascii?Q?fxVTlDbFNn72Dgr495NNCmI0GGVNCwyXh5SRDIMZ+YvAumLvKeSjIS6RIdXL?=
- =?us-ascii?Q?emV8BuC3mmRl+747dOAiz70Irb619dO/nEdYGHcONsAOmRNuKAWwdB5beKkT?=
- =?us-ascii?Q?yZ6fP6TpDQmIVxP6tbJ5eYQn7oDlnoVJSpDlhv7f30cW+494lfvA71sweScc?=
- =?us-ascii?Q?nWl0lko9StWR7WmPnW8xWCG1IaEP2aKT3C4HVTVWuzPUi3GoiDxDN2/faDxv?=
- =?us-ascii?Q?+vEQgB2TljwIF90NxgO79kp2A3J078cl+fqJfsxNvSTYqnXUaneJVlA5pzh3?=
- =?us-ascii?Q?PPHOOwJCG3pmKG9P9jhludrHaSN/FNwo8a38f0oMUJpWsYPNPsa8ifY+tgWb?=
- =?us-ascii?Q?132mPYMtJ7rdjuxyj/URGu4IlgbwMGiW2piN4H9HCXrqpqNlntj+ieNbvpDE?=
- =?us-ascii?Q?hXKJM0EGhXxun4QgOmg2WkpeSkpSe7+Rq2qnlZ7r/2zGr7iD6oTC1DCkWVMH?=
- =?us-ascii?Q?ic9wKPovWHoDqBfBOZu/wwh3nV56p7NQEvt4WkuynEDGkkQr9eJg+iaxd1nK?=
- =?us-ascii?Q?E2yzjVwj5FnRiVcLe2DSQObzVeayPx+YciEM4VRnMmL99zWtbkbqRJB106wU?=
- =?us-ascii?Q?ZTS1y7nukBk2PnlNdXxQ2YuzUVRW3EjOn8p7cXE3PZgLsTX7WAMNO/yXN5SK?=
- =?us-ascii?Q?hPqpmQH4pPQNOax0EujHor/8aRPEK47rYrGW4rIJ31MBTuFs5Xmaw/SQYDIp?=
- =?us-ascii?Q?GTeFjal0mMrPF0F+dlkrRO5uRf9irmJz+E13bXrKIfHtxMzvAvlxzxnFAGjo?=
- =?us-ascii?Q?mXzGlLCvykaq4KEmdBJOD4PK4OM9olx8GjBypIVsNCx1CznBHZvhM5A1m5YL?=
- =?us-ascii?Q?ZyB3QC+/Gre5VNyFdhuSMQtnIVlkwigUwSf1j9NjeChFKTXd7K4/B/hPRMa7?=
- =?us-ascii?Q?XU8bgBRxNWBvhIyMeRQ3IaVbLBcl7O734I9D0RkV4LTul6ebVJ4h9s4JtbKx?=
- =?us-ascii?Q?CDx27lwSqItG36eMojY/u+ux7wm78BUNJbvaPx0kp/odVsYv4lI/6K1ajjmP?=
- =?us-ascii?Q?gKAOu5ilBDYqaWRtm2FivhJo5mlyJvTy+TvaGeo9Yk3kjjWGB6HQV63LoU+o?=
- =?us-ascii?Q?YF+yPTxyQDZIoI4os49NP8tgvMnS9fRQTXyA1cyeV1WamQW4eIXQ9SufosCw?=
- =?us-ascii?Q?L7XNF3jSwER7xay8v8Z46Fg1kCAsjn46YpMrZcRhsm/r69oYsuiqnU5C3g/R?=
- =?us-ascii?Q?v2dTFAh8nf4ZuhvQKY2o?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6e3b1ce-4bc6-4d46-15a7-08dbf957cec1
-X-MS-Exchange-CrossTenant-AuthSource: SYBPR01MB6870.ausprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2023 08:12:53.2638
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MEYPR01MB7339
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:4428:b0:6d9:da80:7f38 with SMTP id
+ q40-20020a056830442800b006d9da807f38mr2350017otv.5.1702195984061; Sun, 10 Dec
+ 2023 00:13:04 -0800 (PST)
+Date:   Sun, 10 Dec 2023 00:13:04 -0800
+In-Reply-To: <tencent_5DCBB36DE37A697AA3A5A44C176557784605@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7dc33060c2362be@google.com>
+Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
+From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds two architecture specific interfaces used by `perf kvm`:
+Hello,
 
-- kvm_arch_vcpu_get_unwind_info: Return required data for unwinding
-  at once; including ip address, frame pointer, whether the guest vCPU
-  is running in 32 or 64 bits, and possibly the base addresses of
-  the segments.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in radix_tree_insert
 
-- kvm_arch_vcpu_read_virt: Read data from a virtual address of the
-  guest vm.
+2023/12/10 08:04:23 executed programs: 3
+BUG: memory leak
+unreferenced object 0xffff88810b920000 (size 576):
+  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
+  hex dump (first 32 bytes):
+    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
+    30 79 97 0c 81 88 ff ff 18 00 92 0b 81 88 ff ff  0y..............
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
+    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
+    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
+    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
+    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-`perf_kvm.h` has been added to the `include/linux/` directory to store
-the interface structures between the perf events subsystem and the KVM
-subsystem.
+BUG: memory leak
+unreferenced object 0xffff88810b920248 (size 576):
+  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
+  hex dump (first 32 bytes):
+    36 0f 01 00 00 00 00 00 00 00 92 0b 81 88 ff ff  6...............
+    30 79 97 0c 81 88 ff ff 60 02 92 0b 81 88 ff ff  0y......`.......
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
+    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
+    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
+    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
+    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Since arm64 hasn't provided some foundational infrastructure, stub the
-arm64 implementation for now because it's a bit complex.
+BUG: memory leak
+unreferenced object 0xffff88810b920490 (size 576):
+  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
+  hex dump (first 32 bytes):
+    30 3f 01 00 00 00 00 00 48 02 92 0b 81 88 ff ff  0?......H.......
+    30 79 97 0c 81 88 ff ff a8 04 92 0b 81 88 ff ff  0y..............
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
+    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
+    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
+    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
+    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-The above interfaces require architecture support for
-`CONFIG_GUEST_PERF_EVENTS`, which is only implemented by x86 and arm64
-currently. For more architectures, they need to implement these interfaces
-when enabling `CONFIG_GUEST_PERF_EVENTS`.
+BUG: memory leak
+unreferenced object 0xffff88810b9206d8 (size 576):
+  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
+  hex dump (first 32 bytes):
+    2a 3f 00 00 00 00 00 00 90 04 92 0b 81 88 ff ff  *?..............
+    30 79 97 0c 81 88 ff ff f0 06 92 0b 81 88 ff ff  0y..............
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
+    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
+    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
+    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
+    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-In terms of safety, guests are designed to be read-only in this feature,
-and we will never inject page faults into the guests, ensuring that the
-guests are not interfered by profiling. In extremely rare cases, if the
-guest is modifying the page table, there is a possibility of reading
-incorrect data. Additionally, if certain programs running in the guest OS
-do not support frame pointers, it may also result in some erroneous data.
-These erroneous data will eventually appear as `[unknown]` entries in the
-report. It is sufficient as long as most of the records are correct for
-profiling.
 
-Signed-off-by: Tianyi Liu <i.pear@outlook.com>
----
- MAINTAINERS              |  1 +
- arch/arm64/kvm/arm.c     | 12 ++++++++++++
- arch/x86/kvm/x86.c       | 24 ++++++++++++++++++++++++
- include/linux/kvm_host.h |  5 +++++
- include/linux/perf_kvm.h | 18 ++++++++++++++++++
- 5 files changed, 60 insertions(+)
- create mode 100644 include/linux/perf_kvm.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 788be9ab5b73..5ee36b4a9701 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16976,6 +16976,7 @@ F:	arch/*/kernel/*/perf_event*.c
- F:	arch/*/kernel/perf_callchain.c
- F:	arch/*/kernel/perf_event*.c
- F:	include/linux/perf_event.h
-+F:	include/linux/perf_kvm.h
- F:	include/uapi/linux/perf_event.h
- F:	kernel/events/*
- F:	tools/lib/perf/
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index e5f75f1f1085..5ae74b5c263a 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -574,6 +574,18 @@ unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
- {
- 	return *vcpu_pc(vcpu);
- }
-+
-+bool kvm_arch_vcpu_get_unwind_info(struct kvm_vcpu *vcpu, struct perf_kvm_guest_unwind_info *info)
-+{
-+	/* TODO: implement */
-+	return false;
-+}
-+
-+bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, gva_t addr, void *dest, unsigned int length)
-+{
-+	/* TODO: implement */
-+	return false;
-+}
- #endif
- 
- static int kvm_vcpu_initialized(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 2c924075f6f1..9341cd80f665 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -13039,6 +13039,30 @@ unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
- 	return kvm_rip_read(vcpu);
- }
- 
-+bool kvm_arch_vcpu_get_unwind_info(struct kvm_vcpu *vcpu, struct perf_kvm_guest_unwind_info *info)
-+{
-+	info->ip_pointer = kvm_rip_read(vcpu);
-+	info->frame_pointer = kvm_register_read_raw(vcpu, VCPU_REGS_RBP);
-+
-+	info->is_guest_64bit = is_64_bit_mode(vcpu);
-+	if (info->is_guest_64bit) {
-+		info->segment_cs_base = 0;
-+		info->segment_ss_base = 0;
-+	} else {
-+		info->segment_cs_base = get_segment_base(vcpu, VCPU_SREG_CS);
-+		info->segment_ss_base = get_segment_base(vcpu, VCPU_SREG_SS);
-+	}
-+	return true;
-+}
-+
-+bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, gva_t addr, void *dest, unsigned int length)
-+{
-+	struct x86_exception e;
-+
-+	/* Return true on success */
-+	return kvm_read_guest_virt(vcpu, addr, dest, length, &e) == X86EMUL_CONTINUE;
-+}
-+
- int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
- {
- 	return kvm_vcpu_exiting_guest_mode(vcpu) == IN_GUEST_MODE;
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 4944136efaa2..6f5ff4209b0c 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -41,6 +41,7 @@
- #include <linux/kvm_para.h>
- 
- #include <linux/kvm_types.h>
-+#include <linux/perf_kvm.h>
- 
- #include <asm/kvm_host.h>
- #include <linux/kvm_dirty_ring.h>
-@@ -1595,6 +1596,10 @@ static inline bool kvm_arch_intc_initialized(struct kvm *kvm)
- 
- #ifdef CONFIG_GUEST_PERF_EVENTS
- unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu);
-+bool kvm_arch_vcpu_get_unwind_info(struct kvm_vcpu *vcpu,
-+				   struct perf_kvm_guest_unwind_info *info);
-+bool kvm_arch_vcpu_read_virt(struct kvm_vcpu *vcpu, gva_t addr, void *dest,
-+			     unsigned int length);
- 
- void kvm_register_perf_callbacks(unsigned int (*pt_intr_handler)(void));
- void kvm_unregister_perf_callbacks(void);
-diff --git a/include/linux/perf_kvm.h b/include/linux/perf_kvm.h
-new file mode 100644
-index 000000000000..e77eeebddabb
---- /dev/null
-+++ b/include/linux/perf_kvm.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_PERF_KVM_H
-+#define _LINUX_PERF_KVM_H
-+
-+/*
-+ * Structures as interface between Perf Event and KVM subsystem.
-+ * Add more members for new architectures if necessary.
-+ */
-+
-+struct perf_kvm_guest_unwind_info {
-+	unsigned long ip_pointer;
-+	unsigned long frame_pointer;
-+	bool is_guest_64bit;
-+	unsigned long segment_cs_base;
-+	unsigned long segment_ss_base;
-+};
-+
-+#endif /* _LINUX_PERF_KVM_H */
--- 
-2.34.1
+Tested on:
+
+commit:         33cc938e Linux 6.7-rc4
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=120e98b2e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
+dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13605feee80000
 
