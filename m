@@ -2,58 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3970180BE23
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7B980BE2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjLJXVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 18:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S232197AbjLJXVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 18:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232212AbjLJXVM (ORCPT
+        with ESMTP id S232220AbjLJXVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 18:21:12 -0500
+        Sun, 10 Dec 2023 18:21:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A7AF2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:21:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67A15C433C7;
-        Sun, 10 Dec 2023 23:21:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA74F4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:21:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38BC2C433D9;
+        Sun, 10 Dec 2023 23:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702250478;
-        bh=0SwR15QKyjc4lI66xJvZglqK8JbLrcKKmOUbpXT8Ayo=;
+        s=k20201202; t=1702250479;
+        bh=oezeBfZo/+ckCa0S1GKmQyyh1vQrPZkPD1HeZu+TTPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttK2msjgOje+AoxFh73cyyDL/lrykNpcUpeXiFWJMvx8Za1tDvJSg0vKx1kD9WGGK
-         qn2jNIJQp7eGXUIwuGOh6fYFCD+EiXj+IxSGKvwoEifkwhmQfIYNivBNpgMWRjsh/O
-         HLJIROmPDGIllA1ZB4PZSD9CK13aNuisPFY5UoVS/f+Dtldj68giHvOtyNdyw8nJSE
-         7AAlxr0i//sdJmy3d0jsZpxocv1/tFwTrmQFXXKBHwJG++5di3+m4xbacyqEGE3voM
-         Pw+AZL33Vho3chOCavh7kG98m81p/99b0KmkgNYsrgZFpvHHiOifIXrJf+DYf4yF7j
-         tkcLb2KHoBRtQ==
+        b=tBbRV8SI1oBJIwgABz3q/FoKvwfhfUEFgqgtrmTtuH5YO++x13jpxNV6LpxzEix4U
+         3gPwCfDQaP7hwW/SoOrCZYaK6DTIQxUhp2Zt+B9UwxR8KN/vilTDdrzFoBdtWBdTsn
+         JWhVb6h0A8VtYBfSuvFhoTHy1aS/QfNjR9T4vHrqpLqO1DD+eTjEyHzFJthvPtSu2c
+         MCwA78v+mjIl8i2iJhWRsydqcYkoADDW0nafLm9rU1Lm8fs2MoB9REVRhWLgbSZ1Lu
+         TdPXsBIz8zn6ctio80//NKhPgAcFgyFZj9ZCbHRMaMR0mZvMPffX34tiUNYKelmIdu
+         yuZy4j/mQKYtA==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
         Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Luca Weiss <luca@z3ntu.xyz>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH 0/3] Add GPU support for MSM8226 (Adreno A305B)
-Date:   Sun, 10 Dec 2023 15:25:39 -0800
-Message-ID: <170225073880.1947106.13814955780498135531.b4-ty@kernel.org>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Luca Weiss <luca@z3ntu.xyz>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bryant Mairs <bryant@mai.rs>
+Subject: Re: [PATCH] ARM: dts: qcom: Disable pm8941 & pm8226 smbb charger by default
+Date:   Sun, 10 Dec 2023 15:25:40 -0800
+Message-ID: <170225073875.1947106.17270085860203406913.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231130-msm8226-gpu-v1-0-6bb2f1b29e49@z3ntu.xyz>
-References: <20231130-msm8226-gpu-v1-0-6bb2f1b29e49@z3ntu.xyz>
+In-Reply-To: <20231203-smbb-pm8941-pm8226-v1-1-9ad75909604b@z3ntu.xyz>
+References: <20231203-smbb-pm8941-pm8226-v1-1-9ad75909604b@z3ntu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -68,17 +56,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 30 Nov 2023 21:35:17 +0100, Luca Weiss wrote:
-> Add the necessary bits to bring up the GPU on msm8226.
+On Sun, 03 Dec 2023 15:19:18 +0100, Luca Weiss wrote:
+> Some platforms don't use the built-in charging hardware (e.g. milletwifi).
+> As this is an optional peripheral, default it to off.
 > 
-> Tested on apq8026-lg-lenok.
+> Keep it enabled for all other boards that use smbb.
 > 
 > 
 
 Applied, thanks!
 
-[3/3] ARM: dts: qcom: msm8226: Add GPU
-      commit: fc209f869310776c437daba478246df64d82c38b
+[1/1] ARM: dts: qcom: Disable pm8941 & pm8226 smbb charger by default
+      commit: c9c8179d0ccdf024ce467b4c9cf5de8821bc02cb
 
 Best regards,
 -- 
