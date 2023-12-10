@@ -2,292 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7F580BB82
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576BF80BB86
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbjLJOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 09:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
+        id S232356AbjLJOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 09:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLJOCf (ORCPT
+        with ESMTP id S229584AbjLJOHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 09:02:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4283F1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 06:02:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FB33C433C7;
-        Sun, 10 Dec 2023 14:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702216961;
-        bh=pLAIYZPXpRTMWD9790Kvx5fP2Dcl4IA+htrd+/ZzJbU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Fvr1quLaRvg6K2X3qJlgkDrHYKnsKjY8fg9g/4eI6/g6d5loLnzofvDm+Ddortt5v
-         VBcX12ZmeRqEHPDKIJyuNoNEeBTLvspJATpLoXva+21elG9rJdtd7dEQ7Mo3QLP++t
-         /L2Qpc/RZQ04mMVdBjuq7NTBZnDzvh62G7gSoml5g9kXgXZ2LOXYOGwqhbRZhq6Hsq
-         dIJP/lo6ZcCcrmOHfTyk0CN4CLdNLqEii+aFOjYywtabnqg9D66vdC5Yvc+JsKIiy/
-         7jMKT50upU/J/fYik3CTv6SFQEDrmM2YRThVvHHFK4GbYX+cI3bvOv+7zU0UlCoBxc
-         vBx+3EQJrSSdA==
-Date:   Sun, 10 Dec 2023 14:02:35 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Stefan Popa <stefan.popa@analog.com>
-Subject: Re: [PATCH 2/2] iio: adc: ad7380: new driver for AD7380 ADCs
-Message-ID: <20231210140235.43d2c6ea@jic23-huawei>
-In-Reply-To: <20231208-ad7380-mainline-v1-2-2b33fe2f44ae@baylibre.com>
-References: <20231208-ad7380-mainline-v1-0-2b33fe2f44ae@baylibre.com>
-        <20231208-ad7380-mainline-v1-2-2b33fe2f44ae@baylibre.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 10 Dec 2023 09:07:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F3FF3;
+        Sun, 10 Dec 2023 06:07:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702217257; x=1733753257;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AqMQ12hypplovnBMfrnx3Zg6ItOfjkwRtKkMHvGMTUQ=;
+  b=SJ2LnbdZKqcEGWcnOaXiM1zfoP+4U6Vhrep/6d3RrWSh23MFacewplb0
+   Sq05Y/dG8lObddFbVlvwec0SI+XPgjT8h2bwaEq+qgiHv5UqIZOJ34Lqu
+   gtLazybtQdqykJfCE7t/huhU1MufZesBVBXflKB5Dj4GmXmiP6ue+clBx
+   DiZ2O+MbfYzH+hnNtffm2lwUua6YYCV6pebWBUsCPVhkTVjMxMUXSi/MG
+   aaB4p/e19VfKj30ASUg2nzUE1kLausuLi50tYNp0di7nuwnjRUCg/sIVH
+   hHT1xQ7pfZHBYlgSlQoeP6QxWpueQ/pa+DyeHnHL94o3mz0RAzDFE8yLC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="7914854"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="7914854"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 06:07:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="722435368"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="722435368"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 10 Dec 2023 06:07:32 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCKSv-000GuU-29;
+        Sun, 10 Dec 2023 14:07:29 +0000
+Date:   Sun, 10 Dec 2023 22:06:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        quic_jesszhan@quicinc.com, quic_parellan@quicinc.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 12/16] drm/msm/dpu: add an API to setup the CDM block
+ for writeback
+Message-ID: <202312102149.qmbCdsg2-lkp@intel.com>
+References: <20231208050641.32582-13-quic_abhinavk@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208050641.32582-13-quic_abhinavk@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Dec 2023 09:51:41 -0600
-David Lechner <dlechner@baylibre.com> wrote:
+Hi Abhinav,
 
-> This adds a new driver for the AD7380 family ADCs.
-> 
-> The driver currently implements basic support for the AD7380, AD7381,
-> AD7383, and AD7384 2-channel differential ADCs. Support for additional
-> single-ended and 4-channel chips that use the same register map as well
-> as additional features of the chip will be added in future patches.
-> 
-> Co-developed-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+kernel test robot noticed the following build warnings:
 
-Hi David / Stefan,
+[auto build test WARNING on next-20231207]
+[also build test WARNING on v6.7-rc4]
+[cannot apply to drm-misc/drm-misc-next linus/master v6.7-rc4 v6.7-rc3 v6.7-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-A few minor things inline.  Other than that question following through
-from the bindings about 1-wire / 2-wire description it's all trivial
-and some might be considered my odd tastes :)
-Nice to see such a clean v1
+url:    https://github.com/intel-lab-lkp/linux/commits/Abhinav-Kumar/drm-msm-dpu-add-formats-check-for-writeback-encoder/20231208-130820
+base:   next-20231207
+patch link:    https://lore.kernel.org/r/20231208050641.32582-13-quic_abhinavk%40quicinc.com
+patch subject: [PATCH v2 12/16] drm/msm/dpu: add an API to setup the CDM block for writeback
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231210/202312102149.qmbCdsg2-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312102149.qmbCdsg2-lkp@intel.com/reproduce)
 
-Jonathan
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312102149.qmbCdsg2-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
 
-> diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
-> new file mode 100644
-> index 000000000000..6a5ec59bd1fd
-> --- /dev/null
-> +++ b/drivers/iio/adc/ad7380.c
-
-> +struct ad7380_state {
-> +	const struct ad7380_chip_info *chip_info;
-> +	struct spi_device *spi;
-> +	struct regulator *vref;
-> +	struct regmap *regmap;
-> +	/*
-> +	 * DMA (thus cache coherency maintenance) requires the
-> +	 * transfer buffers to live in their own cache lines.
-> +	 * Make the buffer large enough for 2 16-bit samples and one 64-bit
-> +	 * aligned 64 bit timestamp.
-> +	 */
-> +	struct {
-> +		u16 raw[2];
-> +		s64 ts __aligned(8);
-> +	} scan_data __aligned(IIO_DMA_MINALIGN);
-> +	u16 tx[2];
-> +	u16 rx[2];
-> +};
-
-...
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c:267: warning: expecting prototype for dpu_encoder_phys_wb_setup_cdp(). Prototype was for dpu_encoder_helper_phys_setup_cdm() instead
 
 
+vim +267 drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
 
-> +static irqreturn_t ad7380_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf = p;
-> +	struct iio_dev *indio_dev = pf->indio_dev;
-> +	struct ad7380_state *st = iio_priv(indio_dev);
-> +	struct spi_transfer xfer = {
-> +		.bits_per_word = st->chip_info->channels[0].scan_type.realbits,
-> +		.len = 4,
-> +		.rx_buf = &st->scan_data,
-I'd make it explicit you are reading into st->scan_data->raw rather than using
-the address of the containing structure. 
+   261	
+   262	/**
+   263	 * dpu_encoder_phys_wb_setup_cdp - setup chroma down sampling block
+   264	 * @phys_enc:Pointer to physical encoder
+   265	 */
+   266	static void dpu_encoder_helper_phys_setup_cdm(struct dpu_encoder_phys *phys_enc)
+ > 267	{
+   268		struct dpu_hw_cdm *hw_cdm;
+   269		struct dpu_hw_cdm_cfg *cdm_cfg;
+   270		struct dpu_hw_pingpong *hw_pp;
+   271		struct dpu_encoder_phys_wb *wb_enc;
+   272		const struct msm_format *format;
+   273		const struct dpu_format *dpu_fmt;
+   274		struct drm_writeback_job *wb_job;
+   275		int ret;
+   276	
+   277		if (!phys_enc)
+   278			return;
+   279	
+   280		wb_enc = to_dpu_encoder_phys_wb(phys_enc);
+   281		cdm_cfg = &wb_enc->cdm_cfg;
+   282		hw_pp = phys_enc->hw_pp;
+   283		hw_cdm = phys_enc->hw_cdm;
+   284		wb_job = wb_enc->wb_job;
+   285	
+   286		format = msm_framebuffer_format(wb_enc->wb_job->fb);
+   287		dpu_fmt = dpu_get_dpu_format_ext(format->pixel_format, wb_job->fb->modifier);
+   288	
+   289		if (!hw_cdm)
+   290			return;
+   291	
+   292		if (!DPU_FORMAT_IS_YUV(dpu_fmt)) {
+   293			DPU_DEBUG("[enc:%d] cdm_disable fmt:%x\n", DRMID(phys_enc->parent),
+   294				  dpu_fmt->base.pixel_format);
+   295			if (hw_cdm->ops.disable)
+   296				hw_cdm->ops.disable(hw_cdm);
+   297	
+   298			return;
+   299		}
+   300	
+   301		memset(cdm_cfg, 0, sizeof(struct dpu_hw_cdm_cfg));
+   302	
+   303		cdm_cfg->output_width = wb_job->fb->width;
+   304		cdm_cfg->output_height = wb_job->fb->height;
+   305		cdm_cfg->output_fmt = dpu_fmt;
+   306		cdm_cfg->output_type = CDM_CDWN_OUTPUT_WB;
+   307		cdm_cfg->output_bit_depth = DPU_FORMAT_IS_DX(dpu_fmt) ?
+   308				CDM_CDWN_OUTPUT_10BIT : CDM_CDWN_OUTPUT_8BIT;
+   309		cdm_cfg->csc_cfg = dpu_hw_get_csc_cfg(DPU_HW_RGB2YUV_601L_10BIT);
+   310		if (!cdm_cfg->csc_cfg) {
+   311			DPU_ERROR("valid csc not found\n");
+   312			return;
+   313		}
+   314	
+   315		/* enable 10 bit logic */
+   316		switch (cdm_cfg->output_fmt->chroma_sample) {
+   317		case DPU_CHROMA_RGB:
+   318			cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
+   319			cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+   320			break;
+   321		case DPU_CHROMA_H2V1:
+   322			cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
+   323			cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+   324			break;
+   325		case DPU_CHROMA_420:
+   326			cdm_cfg->h_cdwn_type = CDM_CDWN_COSITE;
+   327			cdm_cfg->v_cdwn_type = CDM_CDWN_OFFSITE;
+   328			break;
+   329		case DPU_CHROMA_H1V2:
+   330		default:
+   331			DPU_ERROR("[enc:%d] unsupported chroma sampling type\n",
+   332				  DRMID(phys_enc->parent));
+   333			cdm_cfg->h_cdwn_type = CDM_CDWN_DISABLE;
+   334			cdm_cfg->v_cdwn_type = CDM_CDWN_DISABLE;
+   335			break;
+   336		}
+   337	
+   338		DPU_DEBUG("[enc:%d] cdm_enable:%d,%d,%X,%d,%d,%d,%d]\n",
+   339			  DRMID(phys_enc->parent), cdm_cfg->output_width,
+   340			  cdm_cfg->output_height, cdm_cfg->output_fmt->base.pixel_format,
+   341			  cdm_cfg->output_type, cdm_cfg->output_bit_depth,
+   342			  cdm_cfg->h_cdwn_type, cdm_cfg->v_cdwn_type);
+   343	
+   344		if (hw_cdm->ops.enable) {
+   345			cdm_cfg->pp_id = hw_pp->idx;
+   346			ret = hw_cdm->ops.enable(hw_cdm, cdm_cfg);
+   347			if (ret < 0) {
+   348				DPU_ERROR("[enc:%d] failed to enable CDM; ret:%d\n",
+   349					  DRMID(phys_enc->parent), ret);
+   350				return;
+   351			}
+   352		}
+   353	}
+   354	
 
-> +	};
-> +	int ret;
-> +
-> +	ret = spi_sync_transfer(st->spi, &xfer, 1);
-> +
-> +	if (ret == 0)
-I'm not keen on this pattern. It saves a bit of text but makes things slightly less
-obvious when compared to all the other error paths.
-
-	if (ret)
-		goto error;
-
-	iio_push_to_buffers...
-
-error:
-	iio_trigger_notify_done...
-
-Is my preference.
-> +		iio_push_to_buffers_with_timestamp(indio_dev, &st->scan_data,
-> +						   pf->timestamp);
-> +
-> +	iio_trigger_notify_done(indio_dev->trig);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int ad7380_read_direct(struct ad7380_state *st,
-> +			      struct iio_chan_spec const *chan, int *val)
-> +{
-> +	struct spi_transfer xfers[] = {
-> +		/* toggle CS (no data xfer) to trigger a conversion */
-> +		{
-> +			.speed_hz = AD7380_REG_WR_SPEED_HZ,
-> +			.bits_per_word = chan->scan_type.realbits,
-> +			.delay = {
-> +				.value = 190, /* t[CONVERT] */
-> +				.unit = SPI_DELAY_UNIT_NSECS,
-> +			},
-> +			.cs_change = 1,
-> +			.cs_change_delay = {
-> +				.value = 10, /* t[CSH] */
-> +				.unit = SPI_DELAY_UNIT_NSECS,
-> +			},
-> +		},
-> +		/* then read both channels */
-> +		{
-> +			.speed_hz = AD7380_REG_WR_SPEED_HZ,
-> +			.bits_per_word = chan->scan_type.realbits,
-> +			.rx_buf = &st->rx[0],
-> +			.len = 4,
-> +		},
-> +	};
-> +	int ret;
-> +
-> +	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
-> +
-
-Trivial, but no blank line here. It's good to keep error check and
-the call in the same block.
-
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	*val = sign_extend32(st->rx[chan->scan_index],
-> +			     chan->scan_type.realbits - 1);
-> +
-> +	return IIO_VAL_INT;
-> +}
-> +
-
-...
-
-> +
-> +static int ad7380_init(struct ad7380_state *st)
-> +{
-> +	int ret;
-> +
-> +	/* perform hard reset */
-> +	ret = regmap_update_bits(st->regmap, AD7380_REG_ADDR_CONFIG2,
-> +				 AD7380_CONFIG2_RESET,
-> +				 FIELD_PREP(AD7380_CONFIG2_RESET,
-> +					    AD7380_CONFIG2_RESET_HARD));
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +
-Trivial: Single blank line
-
-> +	/* select internal or external reference voltage */
-> +	ret = regmap_update_bits(st->regmap, AD7380_REG_ADDR_CONFIG1,
-> +				 AD7380_CONFIG1_REFSEL,
-> +				 FIELD_PREP(AD7380_CONFIG1_REFSEL, !!st->vref));
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* SPI 1-wire mode */
-> +	return regmap_update_bits(st->regmap, AD7380_REG_ADDR_CONFIG2,
-> +				  AD7380_CONFIG2_SDO,
-> +				  FIELD_PREP(AD7380_CONFIG2_SDO, 1));
-> +}
-> +
-> +static void ad7380_release_regulator(void *p)
-> +{
-> +	struct regulator *reg = p;
-
-The local variable doesn't really add anything over putting p
-in the regulator_disable() call.
-
-> +
-> +	regulator_disable(reg);
-> +}
-> +
-> +static int ad7380_probe(struct spi_device *spi)
-> +{
-> +	struct iio_dev *indio_dev;
-> +	struct ad7380_state *st;
-> +	const char *str_val;
-> +	int ret;
-> +
-> +	ret = device_property_read_string(&spi->dev, "adi,sdo-mode", &str_val);
-> +	if (ret < 0)
-> +		return dev_err_probe(&spi->dev, ret,
-> +				     "Failed to read adi,sdo-mode property\n");
-> +
-> +	if (strcmp(str_val, "1-wire"))
-> +		return dev_err_probe(&spi->dev, -EINVAL,
-> +				     "Only 1-wire SDO is supported\n");
-
-Discussion on this binding in the dt-binding patch.
-As mentioned there, it feels like a place where a default would be sensible.
-
-> +
-> +	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	st = iio_priv(indio_dev);
-> +	st->spi = spi;
-> +	st->chip_info = spi_get_device_match_data(spi);
-> +
-> +	st->vref = devm_regulator_get_optional(&spi->dev, "refio");
-> +	if (IS_ERR(st->vref)) {
-> +		/*
-> +		 * If there is no REFIO supply, then it means that we are using
-> +		 * the internal 2.5V reference.
-> +		 */
-> +		if (PTR_ERR(st->vref) == -ENODEV)
-> +			st->vref = NULL;
-> +		else
-> +			return dev_err_probe(&spi->dev, PTR_ERR(st->vref),
-> +					     "Failed to get refio regulator\n");
-> +	}
-> +
-> +	if (st->vref) {
-> +		ret = regulator_enable(st->vref);
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = devm_add_action_or_reset(&spi->dev, ad7380_release_regulator,
-
-Naming wise maybe ad7380_disable_regulator is less misleading that release (which in
-my mind is the bit the unwind for devm_regulator_get_optional() is doing)
-
-> +					       st->vref);
-> +		if (ret)
-> +			return ret;
-> +	}
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
