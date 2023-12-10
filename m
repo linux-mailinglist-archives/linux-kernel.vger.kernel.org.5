@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CF580BA5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FAF80BA64
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjLJLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 06:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S232114AbjLJLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 06:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbjLJLgE (ORCPT
+        with ESMTP id S231948AbjLJLgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 06:36:04 -0500
+        Sun, 10 Dec 2023 06:36:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B156F11F
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:36:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C726C433CB;
-        Sun, 10 Dec 2023 11:36:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE3B10B
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:36:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8620BC433C8;
+        Sun, 10 Dec 2023 11:36:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702208168;
-        bh=17M2pG5LF+yTUT42vRyb2J9RQolF4UPApTsylmOgOqo=;
+        s=k20201202; t=1702208171;
+        bh=Iri4gOpboj6iTV2Mhz6ZedWpHWCjZ25WFJYUfWjqqLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VhKpZ6bMkrzIwnh96I+1vV0Y2OCIZV/ymzd7baK1mrWUah3lbAoHJjqI7MB/s3SRm
-         Vl4hGgaRM7HzUXf8iw7IiZQTR7CQzPHnmb0NF2RrsVZY68DRUwdGsaX3fwKzgXd2zJ
-         JKdR5UcjWAcNU3PFutjamQmTrdJ6ubvaKMJdHjtaw927MIKe9aFFER8GfR5+fqAqdJ
-         s7YwuahFs/xFV/RUX/bvsLCDeKpZ+TG9cuTsIiDfGsdYKC8ihmdV605qwAcFRtmUXk
-         FyPeza8fPKgHSCoeyAaBiwEjhicRI1nEZKg88Q61Hs5j/YhVbRf2K4ZkP0h16h6wGZ
-         5KsDwZJHvABfQ==
+        b=KbTG84Pgti9Rg9nuZefYagaar6MmND/pXxRIOKNqNqT7kT9DvjLj816128RaHnyWA
+         1t856A8+B9XNMgz1U6jkxsyJZfSbbXH5LsaHkzIxLMHS94A6dr2KUzJHxhqUCpESI6
+         2oifUZYES9vTPlrjTDMTkq8Xws9JxGq29abvtKfa+B84E/5BReFxri9KwO907sef/O
+         YW7ozaSjlb5xmxfpYfqPd9dhbQJ2Nhwx6D+Gbcan9V3Pqy9AdGjLWVzv/dUHAtFEoq
+         Auxeql1cK/woKVsSH7GMCnjm0ClHQnpn5xteCEPDbhx8FLCdeL+73O6coYb8KAqZsB
+         awUKW8/7XI8QA==
 From:   Chao Yu <chao@kernel.org>
 To:     jaegeuk@kernel.org
 Cc:     linux-f2fs-devel@lists.sourceforge.net,
         linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
-Subject: [PATCH 5/6] f2fs: fix to restrict condition of compress inode conversion
-Date:   Sun, 10 Dec 2023 19:35:46 +0800
-Message-Id: <20231210113547.3412782-5-chao@kernel.org>
+Subject: [PATCH 6/6] f2fs: fix to update iostat correctly in f2fs_filemap_fault()
+Date:   Sun, 10 Dec 2023 19:35:47 +0800
+Message-Id: <20231210113547.3412782-6-chao@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231210113547.3412782-1-chao@kernel.org>
 References: <20231210113547.3412782-1-chao@kernel.org>
@@ -49,64 +49,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds i_size check during compress inode conversion in order
-to avoid .page_mkwrite races w/ conversion.
+In f2fs_filemap_fault(), it fixes to update iostat info only if
+VM_FAULT_LOCKED is tagged in return value of filemap_fault().
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Fixes: 8b83ac81f428 ("f2fs: support read iostat")
 Signed-off-by: Chao Yu <chao@kernel.org>
 ---
- fs/f2fs/f2fs.h | 8 +++++++-
- fs/f2fs/file.c | 5 ++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ fs/f2fs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 65294e3b0bef..c9b8a1953913 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -4397,13 +4397,19 @@ static inline int set_compress_context(struct inode *inode)
- #endif
- }
- 
-+static inline bool inode_has_data(struct inode *inode)
-+{
-+	return (S_ISREG(inode->i_mode) &&
-+		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
-+}
-+
- static inline bool f2fs_disable_compressed_file(struct inode *inode)
- {
- 	struct f2fs_inode_info *fi = F2FS_I(inode);
- 
- 	if (!f2fs_compressed_file(inode))
- 		return true;
--	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
-+	if (inode_has_data(inode))
- 		return false;
- 
- 	fi->i_flags &= ~F2FS_COMPR_FL;
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 1a3c29a9a6a0..8af4b29c3e1a 100644
+index 8af4b29c3e1a..0626da43fa84 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -1922,8 +1922,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+@@ -42,7 +42,7 @@ static vm_fault_t f2fs_filemap_fault(struct vm_fault *vmf)
+ 	vm_fault_t ret;
  
- 			f2fs_down_write(&F2FS_I(inode)->i_sem);
- 			if (!f2fs_may_compress(inode) ||
--					(S_ISREG(inode->i_mode) &&
--					F2FS_HAS_BLOCKS(inode))) {
-+					inode_has_data(inode)) {
- 				f2fs_up_write(&F2FS_I(inode)->i_sem);
- 				return -EINVAL;
- 			}
-@@ -3996,7 +3995,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
- 		goto out;
- 	}
+ 	ret = filemap_fault(vmf);
+-	if (!ret)
++	if (ret & VM_FAULT_LOCKED)
+ 		f2fs_update_iostat(F2FS_I_SB(inode), inode,
+ 					APP_MAPPED_READ_IO, F2FS_BLKSIZE);
  
--	if (F2FS_HAS_BLOCKS(inode)) {
-+	if (inode_has_data(inode)) {
- 		ret = -EFBIG;
- 		goto out;
- 	}
 -- 
 2.40.1
 
