@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7138580BC0C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D9B80BC10
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjLJPnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 10:43:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S232679AbjLJPuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 10:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLJPny (ORCPT
+        with ESMTP id S229584AbjLJPuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 10:43:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE90FFA
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:44:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B452C433C8;
-        Sun, 10 Dec 2023 15:43:59 +0000 (UTC)
-Date:   Sun, 10 Dec 2023 10:44:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Vincent Donnefort <vdonnefort@google.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [PATCH 14/14] ringbuffer/selftest: Add basic selftest to test
- chaning subbuf order
-Message-ID: <20231210104436.00d94363@gandalf.local.home>
-In-Reply-To: <3b45bdf6-234d-4859-8344-c18b48c8b415@efficios.com>
-References: <20231210035404.053677508@goodmis.org>
-        <20231210040452.274868572@goodmis.org>
-        <3b45bdf6-234d-4859-8344-c18b48c8b415@efficios.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 10 Dec 2023 10:50:02 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09FB4;
+        Sun, 10 Dec 2023 07:50:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702223406;
+        bh=VGe9TdQ/vud/OfN67E3dqBDKZmGPAhkf1qflgqRvIos=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=UNpdqagg0CxJdPA7a1TACKFRVtJ0lMgkrjkyEPXRoSMH0rZxNCxWE7OW4AswJGp36
+         aU3FmVAMORs3cY+OGG/KrivzAZ8+8TOb+CD5JeaydY17nG9LIBfGBZBUYMri3R/fxm
+         /ML5Glcelo5SsqXw23LVFOwy37lB9utJJOVGdGNOjpT8BFppWwJxUkLuJZeZobyraA
+         unn8EBL+9CpZcXHvQet6VmbecGAH3z2cZpl1IwEdKUZ6VdUVaInnQDL83rkCe7oA+y
+         Cx9xc+C4A8CGImdDkTtqJkxcqEn2x6k8+HROy53STcfp+pz65pU8mB7RC5TCoedj49
+         sHfhRL7KWvwWg==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3281337813EF;
+        Sun, 10 Dec 2023 15:50:05 +0000 (UTC)
+Message-ID: <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
+Date:   Sun, 10 Dec 2023 17:50:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
+ SOF_DAI_AMD_BT
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
+ <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
+ <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
+ <318470ce-1631-4c46-b425-755c877dda65@amd.com>
+ <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
+ <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 09:26:13 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-
-
-> This test has no clue if the record was truncated or not.
+On 12/10/23 16:01, Mark Brown wrote:
+> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
+>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
 > 
-> It basically repeats the string
+>>> This should send to SOF git repo for rewiew, once SOF reviewers approved
+>>> this, again need to send to broonie git.
+>>> All the changes in sound/soc/sof/ path should go to SOF git.
 > 
-> "1234567890" until it fills the subbuffer size and pads with
-> XXXX as needed as trace marker payload, but the grep looks for the
-> "1234567890" pattern only.
+>> Unfortunately I'm not familiar with the SOF dev workflow. So it's not
+>> enough to have this patch cc-ed to sound-open-firmware@alsa-project.org?
 > 
-> The test should be extended to validate whether the trace marker
-> payload was truncated or not, otherwise it is of limited value.
+> The SOF people basically do their own thing in github at
+> 
+>    https://github.com/thesofproject/linux
+> 
+> with a github workflow and submit their patches upstream in batches a
+> few times a release, however my understanding is that their workflow can
+> cope with things going in directly upstream as well.
 
-It can be, but for now it's just testing to make sure it doesn't crash. I
-ran out of time, and if someone else wants to extend this, go ahead.
-Currently, my testing has been just manual observations. I threw this in
-just to have some kind of smoke test applied.
-
-I agree with the API changes, and will update that. But given that this has
-been two years and never applied, is because nobody has the time to work on
-this. The reason I'm pushing for this now, is because Kent hit the limit in
-his work. Knowing that he would not have hit this limit if these patches
-were applied, I feel more urgency on getting them in. But this is all on my
-own time, not part of my Employer (hence why I'm working on the weekend).
-
--- Steve
-
+Thanks for clarifying, Mark!  That would greatly simplify and speedup
+the whole process, at least for trivial patches like this one.
