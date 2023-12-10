@@ -2,226 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E1080B9E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF06A80B9E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbjLJI4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 03:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
+        id S231706AbjLJI62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 03:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLJI4s (ORCPT
+        with ESMTP id S229518AbjLJI60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 03:56:48 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBB2F4;
-        Sun, 10 Dec 2023 00:56:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702198613;
-        bh=lqGYKJw/kRTGAKFCWWkGxAyUhMxvNyb2tHR32sdfgus=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UKGqnFZsp4D7sbv0ZNYAin7rL7xqWgOl4fnzlVMvWnG5KwtolGVnVa8mbp08hAfkn
-         YppbiKjwDu/sM+cQtxkn37Ol/68YriygnRTpPTnNVmh3MEcdejbXu7YH/n8LUyuSj/
-         Vv+1Z2/Nb/KW99KaLwh3r/jGtW05jZLfWNEkBtUnBOrP6O67mB7cZ2NQi1SCJ30A58
-         vZILBzmUX8HSl3MZYVGga4sVhfNf2Ehw0VIWZ9bbN1Jk+3a6F0Bm4h9aX4Vlx2QrdP
-         Ux77vZuVuGCKPXVivVX/PqiMfpuHNvNfpQMTu++7kKyKqpqvCjIdfwki3XkRq8Rj14
-         EegslCvxeOtHg==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id CB8193780C35;
-        Sun, 10 Dec 2023 08:56:51 +0000 (UTC)
-Message-ID: <4d6760c3-6931-4ab3-bda7-408801ad77e1@collabora.com>
-Date:   Sun, 10 Dec 2023 10:56:51 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/11] ASoC: SOF: amd: Compute file paths on firmware load
-Content-Language: en-US
-To:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
-        Mastan Katragadda <Mastan.Katragadda@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org, kernel@collabora.com
-References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
- <20231209205351.880797-10-cristian.ciocaltea@collabora.com>
- <6e25398f-9a3d-4cad-a66a-ebe43a723843@amd.com>
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <6e25398f-9a3d-4cad-a66a-ebe43a723843@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 10 Dec 2023 03:58:26 -0500
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A90FEF4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:58:28 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.192.120.142])
+        by mail-app3 (Coremail) with SMTP id cC_KCgB3f4+qfXVl+7eqAA--.2815S4;
+        Sun, 10 Dec 2023 16:58:25 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] nvdimm-btt: fix several memleaks
+Date:   Sun, 10 Dec 2023 16:58:17 +0800
+Message-Id: <20231210085817.30161-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgB3f4+qfXVl+7eqAA--.2815S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF1kuF4rJrWUGF4UAw17Awb_yoWrtFy8pF
+        4fJF98tFs8JFs7ur1DJ3yDu34aka1rKFyUKFy5Cw1Fyr15Aw4jqF4rCF15Z3s0krWrZ3W3
+        CFWktw1UKr4UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUka1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
+        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcFBmV0OhUYjgAAsu
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/23 05:50, Venkata Prasad Potturu wrote:
-> 
-> On 12/10/23 02:23, Cristian Ciocaltea wrote:
->> Commit 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback if
->> firmware files are missing") changed the order of some operations and
->> the firmware paths are not available anymore at snd_sof_probe() time.
->>
->> Precisely, fw_filename_prefix is set by sof_select_ipc_and_paths() via
->>
->>    plat_data->fw_filename_prefix = out_profile.fw_path;
->>
->> but sof_init_environment() which calls this function was moved from
->> snd_sof_device_probe() to sof_probe_continue(). Moreover,
->> snd_sof_probe() was moved from sof_probe_continue() to
->> sof_init_environment(), but before the call to
->> sof_select_ipc_and_paths().
->>
->> The problem here is that amd_sof_acp_probe() uses fw_filename_prefix to
->> compute fw_code_bin and fw_data_bin paths, and because the field is not
->> yet initialized, the paths end up containing (null):
->>
->> snd_sof_amd_vangogh 0000:04:00.5: Direct firmware load for
->> (null)/sof-vangogh-code.bin failed with error -2
->> snd_sof_amd_vangogh 0000:04:00.5: sof signed firmware code bin is missing
->> snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DSP firmware -2
->> snd_sof_amd_vangogh: probe of 0000:04:00.5 failed with error -2
->>
->> Move usage of fw_filename_prefix right before request_firmware() calls
->> in acp_sof_load_signed_firmware().
->>
->> Fixes: 6c393ebbd74a ("ASoC: SOF: core: Implement IPC version fallback
->> if firmware files are missing")
->> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
->> ---
->>   sound/soc/sof/amd/acp-loader.c | 32 ++++++++++++++++++++++++++------
->>   sound/soc/sof/amd/acp.c        |  7 ++-----
->>   2 files changed, 28 insertions(+), 11 deletions(-)
->>
->> diff --git a/sound/soc/sof/amd/acp-loader.c
->> b/sound/soc/sof/amd/acp-loader.c
->> index e05eb7a86dd4..d2d21478399e 100644
->> --- a/sound/soc/sof/amd/acp-loader.c
->> +++ b/sound/soc/sof/amd/acp-loader.c
->> @@ -267,29 +267,49 @@ int acp_sof_load_signed_firmware(struct
->> snd_sof_dev *sdev)
->>   {
->>       struct snd_sof_pdata *plat_data = sdev->pdata;
->>       struct acp_dev_data *adata = plat_data->hw_pdata;
->> +    const char *fw_filename;
->>       int ret;
->>   -    ret = request_firmware(&sdev->basefw.fw, adata->fw_code_bin,
->> sdev->dev);
->> +    fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
->> +                plat_data->fw_filename_prefix,
->> +                adata->fw_code_bin);
-> File path already saved in adata->fw_code_bin in amd_sof_acp_probe
-> function.
-> No need to get it again.
+Resources allocated by kcalloc() in btt_freelist_init(),
+btt_rtt_init(), and btt_maplocks_init() are not correctly
+released in their callers when an error happens. For
+example, when an error happens in btt_freelist_init(), its
+caller discover_arenas() will directly free arena, which makes
+arena->freelist a leaked memory. Fix these memleaks by using
+devm_kcalloc() to make the memory auto-freed on driver detach.
 
-As already stated in the patch description, fw_filename_prefix is not
-available anymore when amd_sof_acp_probe() gets invoked, and that is the
-root cause of ending up with (null) in the computed file path.
+Fixes: 5212e11fde4d ("nd_btt: atomic sector updates")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-Hence, the patch ensures amd_sof_acp_probe() computes the file name,
-without prefix, while acp_sof_load_signed_firmware() adds the prefix.
+Changelog:
 
->> +    if (!fw_filename)
->> +        return -ENOMEM;
->> +
->> +    ret = request_firmware(&sdev->basefw.fw, fw_filename, sdev->dev);
->>       if (ret < 0) {
->> +        kfree(fw_filename);
->>           dev_err(sdev->dev, "sof signed firmware code bin is
->> missing\n");
->>           return ret;
->>       } else {
->> -        dev_dbg(sdev->dev, "request_firmware %s successful\n",
->> adata->fw_code_bin);
->> +        dev_dbg(sdev->dev, "request_firmware %s successful\n",
->> fw_filename);
->>       }
->> +    kfree(fw_filename);
->> +
->>       ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_IRAM, 0,
->> -                      (void *)sdev->basefw.fw->data,
->> sdev->basefw.fw->size);
->> +                      (void *)sdev->basefw.fw->data,
->> +                      sdev->basefw.fw->size);
->> +
->> +    fw_filename = kasprintf(GFP_KERNEL, "%s/%s",
->> +                plat_data->fw_filename_prefix,
->> +                adata->fw_data_bin);
->> +    if (!fw_filename)
->> +        return -ENOMEM;
->>   -    ret = request_firmware(&adata->fw_dbin, adata->fw_data_bin,
->> sdev->dev);
->> +    ret = request_firmware(&adata->fw_dbin, fw_filename, sdev->dev);
->>       if (ret < 0) {
->> +        kfree(fw_filename);
->>           dev_err(sdev->dev, "sof signed firmware data bin is
->> missing\n");
->>           return ret;
->>         } else {
->> -        dev_dbg(sdev->dev, "request_firmware %s successful\n",
->> adata->fw_data_bin);
->> +        dev_dbg(sdev->dev, "request_firmware %s successful\n",
->> fw_filename);
->>       }
->> +    kfree(fw_filename);
->>         ret = snd_sof_dsp_block_write(sdev, SOF_FW_BLK_TYPE_DRAM, 0,
->> -                      (void *)adata->fw_dbin->data,
->> adata->fw_dbin->size);
->> +                      (void *)adata->fw_dbin->data,
->> +                      adata->fw_dbin->size);
->>       return ret;
->>   }
->>   EXPORT_SYMBOL_NS(acp_sof_load_signed_firmware, SND_SOC_SOF_AMD_COMMON);
->> diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
->> index 1e9840ae8938..87c5c71eac68 100644
->> --- a/sound/soc/sof/amd/acp.c
->> +++ b/sound/soc/sof/amd/acp.c
->> @@ -479,7 +479,6 @@ EXPORT_SYMBOL_NS(amd_sof_acp_resume,
->> SND_SOC_SOF_AMD_COMMON);
->>   int amd_sof_acp_probe(struct snd_sof_dev *sdev)
->>   {
->>       struct pci_dev *pci = to_pci_dev(sdev->dev);
->> -    struct snd_sof_pdata *plat_data = sdev->pdata;
->>       struct acp_dev_data *adata;
->>       const struct sof_amd_acp_desc *chip;
->>       const struct dmi_system_id *dmi_id;
->> @@ -547,8 +546,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
->>       dmi_id = dmi_first_match(acp_sof_quirk_table);
->>       if (dmi_id && dmi_id->driver_data) {
->>           adata->fw_code_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
->> -                            "%s/sof-%s-code.bin",
->> -                            plat_data->fw_filename_prefix,
->> +                            "sof-%s-code.bin",
->>                               chip->name);
->>           if (!adata->fw_code_bin) {
->>               ret = -ENOMEM;
->> @@ -556,8 +554,7 @@ int amd_sof_acp_probe(struct snd_sof_dev *sdev)
->>           }
->>             adata->fw_data_bin = devm_kasprintf(sdev->dev, GFP_KERNEL,
->> -                            "%s/sof-%s-data.bin",
->> -                            plat_data->fw_filename_prefix,
->> +                            "sof-%s-data.bin",
->>                               chip->name);
->>           if (!adata->fw_data_bin) {
->>               ret = -ENOMEM;
+v2: -Use devm_kcalloc() to fix the memleaks.
+    -Fix the potential leaked memory in btt_rtt_init()
+     and btt_maplocks_init().
+---
+ drivers/nvdimm/btt.c | 35 ++++++++++++++++-------------------
+ 1 file changed, 16 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index d5593b0dc700..c55231f42617 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -531,13 +531,13 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
+ 	return ret;
+ }
+ 
+-static int btt_freelist_init(struct arena_info *arena)
++static int btt_freelist_init(struct device *dev, struct arena_info *arena)
+ {
+ 	int new, ret;
+ 	struct log_entry log_new;
+ 	u32 i, map_entry, log_oldmap, log_newmap;
+ 
+-	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
++	arena->freelist = devm_kcalloc(dev, arena->nfree, sizeof(struct free_entry),
+ 					GFP_KERNEL);
+ 	if (!arena->freelist)
+ 		return -ENOMEM;
+@@ -718,20 +718,20 @@ static int log_set_indices(struct arena_info *arena)
+ 	return 0;
+ }
+ 
+-static int btt_rtt_init(struct arena_info *arena)
++static int btt_rtt_init(struct device *dev, struct arena_info *arena)
+ {
+-	arena->rtt = kcalloc(arena->nfree, sizeof(u32), GFP_KERNEL);
++	arena->rtt = devm_kcalloc(dev, arena->nfree, sizeof(u32), GFP_KERNEL);
+ 	if (arena->rtt == NULL)
+ 		return -ENOMEM;
+ 
+ 	return 0;
+ }
+ 
+-static int btt_maplocks_init(struct arena_info *arena)
++static int btt_maplocks_init(struct device *dev, struct arena_info *arena)
+ {
+ 	u32 i;
+ 
+-	arena->map_locks = kcalloc(arena->nfree, sizeof(struct aligned_lock),
++	arena->map_locks = devm_kcalloc(dev, arena->nfree, sizeof(struct aligned_lock),
+ 				GFP_KERNEL);
+ 	if (!arena->map_locks)
+ 		return -ENOMEM;
+@@ -805,9 +805,6 @@ static void free_arenas(struct btt *btt)
+ 
+ 	list_for_each_entry_safe(arena, next, &btt->arena_list, list) {
+ 		list_del(&arena->list);
+-		kfree(arena->rtt);
+-		kfree(arena->map_locks);
+-		kfree(arena->freelist);
+ 		debugfs_remove_recursive(arena->debugfs_dir);
+ 		kfree(arena);
+ 	}
+@@ -843,7 +840,7 @@ static void parse_arena_meta(struct arena_info *arena, struct btt_sb *super,
+ 	arena->flags = le32_to_cpu(super->flags);
+ }
+ 
+-static int discover_arenas(struct btt *btt)
++static int discover_arenas(struct device *dev, struct btt *btt)
+ {
+ 	int ret = 0;
+ 	struct arena_info *arena;
+@@ -893,15 +890,15 @@ static int discover_arenas(struct btt *btt)
+ 			goto out;
+ 		}
+ 
+-		ret = btt_freelist_init(arena);
++		ret = btt_freelist_init(dev, arena);
+ 		if (ret)
+ 			goto out;
+ 
+-		ret = btt_rtt_init(arena);
++		ret = btt_rtt_init(dev, arena);
+ 		if (ret)
+ 			goto out;
+ 
+-		ret = btt_maplocks_init(arena);
++		ret = btt_maplocks_init(dev, arena);
+ 		if (ret)
+ 			goto out;
+ 
+@@ -1022,7 +1019,7 @@ static int btt_arena_write_layout(struct arena_info *arena)
+  * This function completes the initialization for the BTT namespace
+  * such that it is ready to accept IOs
+  */
+-static int btt_meta_init(struct btt *btt)
++static int btt_meta_init(struct device *dev, struct btt *btt)
+ {
+ 	int ret = 0;
+ 	struct arena_info *arena;
+@@ -1033,15 +1030,15 @@ static int btt_meta_init(struct btt *btt)
+ 		if (ret)
+ 			goto unlock;
+ 
+-		ret = btt_freelist_init(arena);
++		ret = btt_freelist_init(dev, arena);
+ 		if (ret)
+ 			goto unlock;
+ 
+-		ret = btt_rtt_init(arena);
++		ret = btt_rtt_init(dev, arena);
+ 		if (ret)
+ 			goto unlock;
+ 
+-		ret = btt_maplocks_init(arena);
++		ret = btt_maplocks_init(dev, arena);
+ 		if (ret)
+ 			goto unlock;
+ 	}
+@@ -1584,7 +1581,7 @@ static struct btt *btt_init(struct nd_btt *nd_btt, unsigned long long rawsize,
+ 	nsio = to_nd_namespace_io(&nd_btt->ndns->dev);
+ 	btt->phys_bb = &nsio->bb;
+ 
+-	ret = discover_arenas(btt);
++	ret = discover_arenas(dev, btt);
+ 	if (ret) {
+ 		dev_err(dev, "init: error in arena_discover: %d\n", ret);
+ 		return NULL;
+@@ -1606,7 +1603,7 @@ static struct btt *btt_init(struct nd_btt *nd_btt, unsigned long long rawsize,
+ 			return NULL;
+ 		}
+ 
+-		ret = btt_meta_init(btt);
++		ret = btt_meta_init(dev, btt);
+ 		if (ret) {
+ 			dev_err(dev, "init: error in meta_init: %d\n", ret);
+ 			return NULL;
+-- 
+2.17.1
+
