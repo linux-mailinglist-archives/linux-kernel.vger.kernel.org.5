@@ -2,209 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF06A80B9E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C480B9EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 10:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbjLJI62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 03:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
+        id S231722AbjLJJGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 04:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLJI60 (ORCPT
+        with ESMTP id S229518AbjLJJGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 03:58:26 -0500
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A90FEF4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:58:28 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.192.120.142])
-        by mail-app3 (Coremail) with SMTP id cC_KCgB3f4+qfXVl+7eqAA--.2815S4;
-        Sun, 10 Dec 2023 16:58:25 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] nvdimm-btt: fix several memleaks
-Date:   Sun, 10 Dec 2023 16:58:17 +0800
-Message-Id: <20231210085817.30161-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgB3f4+qfXVl+7eqAA--.2815S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF1kuF4rJrWUGF4UAw17Awb_yoWrtFy8pF
-        4fJF98tFs8JFs7ur1DJ3yDu34aka1rKFyUKFy5Cw1Fyr15Aw4jqF4rCF15Z3s0krWrZ3W3
-        CFWktw1UKr4UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUka1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
-        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcFBmV0OhUYjgAAsu
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 10 Dec 2023 04:06:14 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3A3F4;
+        Sun, 10 Dec 2023 01:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702199179;
+        bh=uW/rENr9rJ72xW4QLUI1quOIaFyVpEXSWxkAjObZ5ok=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=m5/pDMDnaVWEKRz1OFErA/xo6RQzHdNvSxZXsdF8ztBn5sPo7peugkqXDvArg4HMW
+         eMREACvT8u0ocepS/u4CtnJsIqW6soMYha0EcueG1cmIxUhxOhzF1rhWKlaYQ3l9J6
+         hsBGywNkoFHyjVM8hwRn20vhuy5/PUqA/N3DxDeUSXxm3Bc6MX8zTod23+QsDNDJf9
+         wj0XXZjiSl5sIXDV87oX3kA/GcYk9zF+qOXEzwigLc9eeL72WZtCC86wMaThRh7nzF
+         efsIHGPA5fgkBoQ1pUIVXOgymDeURskxOtfuxghvCfgHcWECS5e9E8tAXzuXX7crjb
+         I1ILqmnPSg/2Q==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 27BA1378003D;
+        Sun, 10 Dec 2023 09:06:18 +0000 (UTC)
+Message-ID: <391d2476-8f4a-4670-a248-8d4d9c46ee09@collabora.com>
+Date:   Sun, 10 Dec 2023 11:06:17 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/11] ASoC: amd: acp: Use correct DAI link ID for BT
+ codec
+Content-Language: en-US
+To:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-11-cristian.ciocaltea@collabora.com>
+ <8a218987-965b-4228-b1d1-f7c061d553ab@amd.com>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <8a218987-965b-4228-b1d1-f7c061d553ab@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resources allocated by kcalloc() in btt_freelist_init(),
-btt_rtt_init(), and btt_maplocks_init() are not correctly
-released in their callers when an error happens. For
-example, when an error happens in btt_freelist_init(), its
-caller discover_arenas() will directly free arena, which makes
-arena->freelist a leaked memory. Fix these memleaks by using
-devm_kcalloc() to make the memory auto-freed on driver detach.
+On 12/10/23 05:24, Venkata Prasad Potturu wrote:
+> 
+> On 12/10/23 02:23, Cristian Ciocaltea wrote:
+>> Commit 671dd2ffbd8b ("ASoC: amd: acp: Add new cpu dai and dailink
+>> creation for I2S BT instance") added I2S BT support in ACP common
+>> machine driver, but using a wrong BT_BE_ID, i.e. 3 instead of 2:
+>>
+>> [ 7.799659] snd_sof_amd_vangogh 0000:04:00.5: Firmware info: version
+>> 0:0:0-7863d
+>> [ 7.803906] snd_sof_amd_vangogh 0000:04:00.5: Firmware: ABI 3:26:0
+>> Kernel ABI 3:23:0
+>> [ 7.872873] snd_sof_amd_vangogh 0000:04:00.5: Topology: ABI 3:26:0
+>> Kernel ABI 3:23:0
+>> [ 8.508218] sof_mach nau8821-max: ASoC: physical link acp-bt-codec (id
+>> 2) not exist
+>> [ 8.513468] sof_mach nau8821-max: ASoC: topology: could not load
+>> header: -22
+>> [ 8.518853] snd_sof_amd_vangogh 0000:04:00.5: error: tplg component
+>> load failed -22
+>> [ 8.524049] snd_sof_amd_vangogh 0000:04:00.5: error: failed to load
+>> DSP topology -22
+>> [ 8.529230] snd_sof_amd_vangogh 0000:04:00.5: ASoC: error at
+>> snd_soc_component_probe on 0000:04:00.5: -22
+>> [ 8.534465] sof_mach nau8821-max: ASoC: failed to instantiate card -22
+>> [ 8.539820] sof_mach nau8821-max: error -EINVAL: Failed to register
+>> card(sof-nau8821-max)
+>> [ 8.545022] sof_mach: probe of nau8821-max failed with error -22
+>>
+>> Move BT_BE_ID to the correct position in the enum.
+>>
+>> Fixes: 671dd2ffbd8b ("ASoC: amd: acp: Add new cpu dai and dailink
+>> creation for I2S BT instance")
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+>>   sound/soc/amd/acp/acp-mach.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
+>> index a48546d8d407..0c18ccd29305 100644
+>> --- a/sound/soc/amd/acp/acp-mach.h
+>> +++ b/sound/soc/amd/acp/acp-mach.h
+>> @@ -27,8 +27,8 @@
+>>   enum be_id {
+>>       HEADSET_BE_ID = 0,
+>>       AMP_BE_ID,
+>> -    DMIC_BE_ID,
+>>       BT_BE_ID,
+>> +    DMIC_BE_ID,
+> This will break the other platforms as this same enum used in topology
+> to create dailink.
 
-Fixes: 5212e11fde4d ("nd_btt: atomic sector updates")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+If I understand this correctly, there is no consistency across firmware
+regarding the IDs used for DAI link identification.  What would be the
+suggested solution in this case?
 
-Changelog:
+Thanks,
+Cristian
 
-v2: -Use devm_kcalloc() to fix the memleaks.
-    -Fix the potential leaked memory in btt_rtt_init()
-     and btt_maplocks_init().
----
- drivers/nvdimm/btt.c | 35 ++++++++++++++++-------------------
- 1 file changed, 16 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index d5593b0dc700..c55231f42617 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -531,13 +531,13 @@ static int arena_clear_freelist_error(struct arena_info *arena, u32 lane)
- 	return ret;
- }
- 
--static int btt_freelist_init(struct arena_info *arena)
-+static int btt_freelist_init(struct device *dev, struct arena_info *arena)
- {
- 	int new, ret;
- 	struct log_entry log_new;
- 	u32 i, map_entry, log_oldmap, log_newmap;
- 
--	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
-+	arena->freelist = devm_kcalloc(dev, arena->nfree, sizeof(struct free_entry),
- 					GFP_KERNEL);
- 	if (!arena->freelist)
- 		return -ENOMEM;
-@@ -718,20 +718,20 @@ static int log_set_indices(struct arena_info *arena)
- 	return 0;
- }
- 
--static int btt_rtt_init(struct arena_info *arena)
-+static int btt_rtt_init(struct device *dev, struct arena_info *arena)
- {
--	arena->rtt = kcalloc(arena->nfree, sizeof(u32), GFP_KERNEL);
-+	arena->rtt = devm_kcalloc(dev, arena->nfree, sizeof(u32), GFP_KERNEL);
- 	if (arena->rtt == NULL)
- 		return -ENOMEM;
- 
- 	return 0;
- }
- 
--static int btt_maplocks_init(struct arena_info *arena)
-+static int btt_maplocks_init(struct device *dev, struct arena_info *arena)
- {
- 	u32 i;
- 
--	arena->map_locks = kcalloc(arena->nfree, sizeof(struct aligned_lock),
-+	arena->map_locks = devm_kcalloc(dev, arena->nfree, sizeof(struct aligned_lock),
- 				GFP_KERNEL);
- 	if (!arena->map_locks)
- 		return -ENOMEM;
-@@ -805,9 +805,6 @@ static void free_arenas(struct btt *btt)
- 
- 	list_for_each_entry_safe(arena, next, &btt->arena_list, list) {
- 		list_del(&arena->list);
--		kfree(arena->rtt);
--		kfree(arena->map_locks);
--		kfree(arena->freelist);
- 		debugfs_remove_recursive(arena->debugfs_dir);
- 		kfree(arena);
- 	}
-@@ -843,7 +840,7 @@ static void parse_arena_meta(struct arena_info *arena, struct btt_sb *super,
- 	arena->flags = le32_to_cpu(super->flags);
- }
- 
--static int discover_arenas(struct btt *btt)
-+static int discover_arenas(struct device *dev, struct btt *btt)
- {
- 	int ret = 0;
- 	struct arena_info *arena;
-@@ -893,15 +890,15 @@ static int discover_arenas(struct btt *btt)
- 			goto out;
- 		}
- 
--		ret = btt_freelist_init(arena);
-+		ret = btt_freelist_init(dev, arena);
- 		if (ret)
- 			goto out;
- 
--		ret = btt_rtt_init(arena);
-+		ret = btt_rtt_init(dev, arena);
- 		if (ret)
- 			goto out;
- 
--		ret = btt_maplocks_init(arena);
-+		ret = btt_maplocks_init(dev, arena);
- 		if (ret)
- 			goto out;
- 
-@@ -1022,7 +1019,7 @@ static int btt_arena_write_layout(struct arena_info *arena)
-  * This function completes the initialization for the BTT namespace
-  * such that it is ready to accept IOs
-  */
--static int btt_meta_init(struct btt *btt)
-+static int btt_meta_init(struct device *dev, struct btt *btt)
- {
- 	int ret = 0;
- 	struct arena_info *arena;
-@@ -1033,15 +1030,15 @@ static int btt_meta_init(struct btt *btt)
- 		if (ret)
- 			goto unlock;
- 
--		ret = btt_freelist_init(arena);
-+		ret = btt_freelist_init(dev, arena);
- 		if (ret)
- 			goto unlock;
- 
--		ret = btt_rtt_init(arena);
-+		ret = btt_rtt_init(dev, arena);
- 		if (ret)
- 			goto unlock;
- 
--		ret = btt_maplocks_init(arena);
-+		ret = btt_maplocks_init(dev, arena);
- 		if (ret)
- 			goto unlock;
- 	}
-@@ -1584,7 +1581,7 @@ static struct btt *btt_init(struct nd_btt *nd_btt, unsigned long long rawsize,
- 	nsio = to_nd_namespace_io(&nd_btt->ndns->dev);
- 	btt->phys_bb = &nsio->bb;
- 
--	ret = discover_arenas(btt);
-+	ret = discover_arenas(dev, btt);
- 	if (ret) {
- 		dev_err(dev, "init: error in arena_discover: %d\n", ret);
- 		return NULL;
-@@ -1606,7 +1603,7 @@ static struct btt *btt_init(struct nd_btt *nd_btt, unsigned long long rawsize,
- 			return NULL;
- 		}
- 
--		ret = btt_meta_init(btt);
-+		ret = btt_meta_init(dev, btt);
- 		if (ret) {
- 			dev_err(dev, "init: error in meta_init: %d\n", ret);
- 			return NULL;
--- 
-2.17.1
-
+>>   };
+>>     enum cpu_endpoints {
