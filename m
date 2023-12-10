@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D72B80BC61
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB6B80BC66
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229503AbjLJRgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 12:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
+        id S231861AbjLJRmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 12:42:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJRgP (ORCPT
+        with ESMTP id S232711AbjLJRlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 12:36:15 -0500
-Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D77FA
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:36:21 -0800 (PST)
+        Sun, 10 Dec 2023 12:41:08 -0500
+Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F73FFF
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:41:14 -0800 (PST)
 Received: from pop-os.home ([92.140.202.140])
         by smtp.orange.fr with ESMTPA
-        id CNj0rzutIa8POCNj0rYn7g; Sun, 10 Dec 2023 18:36:20 +0100
+        id CNnjro87trKXzCNnjrSMYO; Sun, 10 Dec 2023 18:41:12 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702229780;
-        bh=3nUYliN94T1NkME5cPRgstUEirYwToMnADC29sMEwME=;
+        s=t20230301; t=1702230072;
+        bh=x7Q4NcLK40y5Q7ePxrJxb3SqI1bHDL9QSepFtUMOD10=;
         h=From:To:Cc:Subject:Date;
-        b=AxSz70YDDsU/5CeRF8hPLoSXwXW4uIk3DrZLefDz3WzhukcKpENMG14i5fQe29Kqw
-         6W7/JuIKrOtz/Oig+Sp9t0NyVhktqS23nTnwh7abJEXPC7N9p+wUBCL4apv4UujF6R
-         0cX+OY778i8Zfzpas/KBixzppkGtt9IpybUBSW61xqaKm54BXy7cUHTpSpM6hyMMfT
-         ATMHF7Uy7iPGg83ZLBG2UiR9A8Sg5PK4gEHVUf9CTOnQEDwoyKmXrJjroR1tL/6w4M
-         ju7EQbA2AZQ0JeasrQsTjeMYLK3R87BDVry9c8FZ/Y5uguXvuq6uNvnW4Hg7BY9ODd
-         eS27BWJPt7DDQ==
+        b=Pc9BW6TFksYa1CEROk7anXD820o7hFq69nZ4E1iALGEExKqhPmIfQjNKsEChFtJ5Z
+         qYeVhCs1LQvL7XSmYGMXPUXuZYaaZ2M5iw2j4NcqR7+R/YB6gI9tsQpDgQ151h1H4X
+         o2laG87RbLnpBg6b8XqU/Jlj18zJd7RQYIDeWzSHD//Hk9p4mKj3ydR76xkjp0oz1G
+         XTxFyzAkEv3O7g3cqagVvrD6zahuXOyZDrpxLZn/YvxShNecMuXsBxv/psXKIG4lDU
+         CzYDIt9e3L971bbamm2JzXXpeuWIB2BtJXlCVrNFRQ2iqUO5Z6aWG+KF0ZiNH5UqTc
+         JSOCXIC54YnLw==
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Dec 2023 18:36:20 +0100
+X-ME-Date: Sun, 10 Dec 2023 18:41:12 +0100
 X-ME-IP: 92.140.202.140
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rodolfo Giometti <giometti@enneenne.com>
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH] usb: typec: Remove usage of the deprecated ida_simple_xx() API
-Date:   Sun, 10 Dec 2023 18:36:15 +0100
-Message-Id: <c7b99c4f52649ce6405779fbf9170edc5633fdbb.1702229697.git.christophe.jaillet@wanadoo.fr>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] pps: Remove usage of the deprecated ida_simple_xx() API
+Date:   Sun, 10 Dec 2023 18:41:07 +0100
+Message-Id: <5065a9fe3101dcb7ee0a79bde0ec84de03c637ec.1702230047.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,72 +59,40 @@ This is less verbose.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/usb/typec/class.c | 8 ++++----
- drivers/usb/typec/pd.c    | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/pps/clients/pps_parport.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 16a670828dde..5fe01bf795b9 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -476,7 +476,7 @@ static int altmode_id_get(struct device *dev)
- 	else
- 		ids = &to_typec_port(dev)->mode_ids;
+diff --git a/drivers/pps/clients/pps_parport.c b/drivers/pps/clients/pps_parport.c
+index 42f93d4c6ee3..af972cdc04b5 100644
+--- a/drivers/pps/clients/pps_parport.c
++++ b/drivers/pps/clients/pps_parport.c
+@@ -148,7 +148,7 @@ static void parport_attach(struct parport *port)
+ 		return;
+ 	}
  
--	return ida_simple_get(ids, 0, 0, GFP_KERNEL);
-+	return ida_alloc(ids, GFP_KERNEL);
+-	index = ida_simple_get(&pps_client_index, 0, 0, GFP_KERNEL);
++	index = ida_alloc(&pps_client_index, GFP_KERNEL);
+ 	memset(&pps_client_cb, 0, sizeof(pps_client_cb));
+ 	pps_client_cb.private = device;
+ 	pps_client_cb.irq_func = parport_irq;
+@@ -188,7 +188,7 @@ static void parport_attach(struct parport *port)
+ err_unregister_dev:
+ 	parport_unregister_device(device->pardev);
+ err_free:
+-	ida_simple_remove(&pps_client_index, index);
++	ida_free(&pps_client_index, index);
+ 	kfree(device);
  }
  
- static void altmode_id_remove(struct device *dev, int id)
-@@ -490,7 +490,7 @@ static void altmode_id_remove(struct device *dev, int id)
- 	else
- 		ids = &to_typec_port(dev)->mode_ids;
- 
--	ida_simple_remove(ids, id);
-+	ida_free(ids, id);
+@@ -208,7 +208,7 @@ static void parport_detach(struct parport *port)
+ 	pps_unregister_source(device->pps);
+ 	parport_release(pardev);
+ 	parport_unregister_device(pardev);
+-	ida_simple_remove(&pps_client_index, device->index);
++	ida_free(&pps_client_index, device->index);
+ 	kfree(device);
  }
  
- static void typec_altmode_release(struct device *dev)
-@@ -1798,7 +1798,7 @@ static void typec_release(struct device *dev)
- {
- 	struct typec_port *port = to_typec_port(dev);
- 
--	ida_simple_remove(&typec_index_ida, port->id);
-+	ida_free(&typec_index_ida, port->id);
- 	ida_destroy(&port->mode_ids);
- 	typec_switch_put(port->sw);
- 	typec_mux_put(port->mux);
-@@ -2297,7 +2297,7 @@ struct typec_port *typec_register_port(struct device *parent,
- 	if (!port)
- 		return ERR_PTR(-ENOMEM);
- 
--	id = ida_simple_get(&typec_index_ida, 0, 0, GFP_KERNEL);
-+	id = ida_alloc(&typec_index_ida, GFP_KERNEL);
- 	if (id < 0) {
- 		kfree(port);
- 		return ERR_PTR(id);
-diff --git a/drivers/usb/typec/pd.c b/drivers/usb/typec/pd.c
-index 85d015cdbe1f..7f3d61f220f2 100644
---- a/drivers/usb/typec/pd.c
-+++ b/drivers/usb/typec/pd.c
-@@ -571,7 +571,7 @@ static void pd_release(struct device *dev)
- {
- 	struct usb_power_delivery *pd = to_usb_power_delivery(dev);
- 
--	ida_simple_remove(&pd_ida, pd->id);
-+	ida_free(&pd_ida, pd->id);
- 	kfree(pd);
- }
- 
-@@ -616,7 +616,7 @@ usb_power_delivery_register(struct device *parent, struct usb_power_delivery_des
- 	if (!pd)
- 		return ERR_PTR(-ENOMEM);
- 
--	ret = ida_simple_get(&pd_ida, 0, 0, GFP_KERNEL);
-+	ret = ida_alloc(&pd_ida, GFP_KERNEL);
- 	if (ret < 0) {
- 		kfree(pd);
- 		return ERR_PTR(ret);
 -- 
 2.34.1
 
