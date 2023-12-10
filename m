@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F6C80BC85
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 19:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AA680BC88
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 19:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbjLJSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 13:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        id S231933AbjLJSRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 13:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJSG5 (ORCPT
+        with ESMTP id S229462AbjLJSRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 13:06:57 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D47CBA;
-        Sun, 10 Dec 2023 10:07:02 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cea5548eb2so3155621b3a.0;
-        Sun, 10 Dec 2023 10:07:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702231622; x=1702836422; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/OTV7HGPkUIAwckXy51M7re7fb1HUU7ow6BY0UtdbRw=;
-        b=h3Ix7O5Zrf5MxCHP/1lsSxPl0sJJV757ZR32lHB5IQ6LRtRtdQvnzE/FSlMeSJlpIr
-         9Rvn0bCWeEHMDs33nCDrAoo+aQAx9BCWDg3Koe3iWFU0Hk78spMBlO7MnAMkqMZBOsts
-         AbsTUcTANcZdAuetRJY4flzaRKzvgZTFIvMZAwt/oOujR0EcbgllsFoMUe8tTTJDeAC3
-         jSwfwHlJxKU03YEZ/OkCSG87MMDjRvk1yyipNGT4X+jxgoWTqH1B0acEPn/MyTwDfXnb
-         /U8LNG/lWwemrPR71t/TdI9jasYQlZ85hEj3FxS35Jr+jw0cHSwh8jfNfRwVi/K0bq0s
-         i7yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702231622; x=1702836422;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/OTV7HGPkUIAwckXy51M7re7fb1HUU7ow6BY0UtdbRw=;
-        b=T/4MRPYoFWxqqIL9pJxU20hDSyckyY0cs5D++1GprXF7hFSrPFSHzgkhhFuV7zOqhq
-         RZvQxSsN+YoqFqGu+g5HLYK904iEb4EUp/BVIBog1TES6ke2bnQesPkClVIpeDGiXICr
-         0spWn5MSbZ/2oLEs5k2X30dp/k2ldKGz+tffXF1HgP0//OPk2O+q67yiTStHx/iQ/wzZ
-         5k/fdQnXqNHGDnGu2Jiufa9y9z7PL9pEJpn94pXPEK4zOXBFVdbi+yBy59R6ZsOl8lFI
-         A3iKCjVhCm9hV/XVbtGoWY4LWWMeqFhzcMDtZg/DnxX37FSwlaIr/OQS70Zl4UhMceF4
-         Y5GA==
-X-Gm-Message-State: AOJu0Yw5aNPffI++xAfTuSrtlvlKTZnKzWdRtulkEWFTmy0TA1dlYc0Q
-        IVar/Cvtmlpdr0MGLpU5UmA=
-X-Google-Smtp-Source: AGHT+IGf1cjoJui1YLxDAmJIwqwz1hXkSEY0wBxCHb7JCefydWE1QX71XuqaZiGK7iUv67Arc0VJrQ==
-X-Received: by 2002:a05:6a20:7f9b:b0:18f:97c:8a3b with SMTP id d27-20020a056a207f9b00b0018f097c8a3bmr5034958pzj.102.1702231621767;
-        Sun, 10 Dec 2023 10:07:01 -0800 (PST)
-Received: from localhost (c-73-37-105-206.hsd1.or.comcast.net. [73.37.105.206])
-        by smtp.gmail.com with ESMTPSA id 11-20020a63154b000000b005b458aa0541sm4769792pgv.15.2023.12.10.10.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 10:07:01 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Hovold <johan@kernel.org>,
-        Rob Clark <robdclark@chromium.org>, stable@vger.kernel.org,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Danila Tikhonov <danila@jiaxyga.com>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM SMMU DRIVERS),
-        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] iommu/arm-smmu-qcom: Add missing GMU entry to match table
-Date:   Sun, 10 Dec 2023 10:06:53 -0800
-Message-ID: <20231210180655.75542-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Sun, 10 Dec 2023 13:17:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9297FCE
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 10:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702232225; x=1733768225;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=hitiKMVu0mAuCQUKM+GjRpWkQ52QLtnGnEX7vaEYxmg=;
+  b=ZRb7DColILPsPZtROxd4NBQaPRf+SyEAmaGzNanehsRk6848eFG86tRJ
+   /kXucHdCATxOBsYGT+hyao/+47lTL29X5V+qYJF3JyGTbdy0unB9YWrLW
+   nynhEGXTTU9wjqDogxXVoPe2wo6s45NOlwBr5S4aEqd6bbeB14R+vT4n7
+   HlEIRtqzh40esnhwccSIHuYZUIB5KMEU3LV3RHZ7NS7F36S8KQIn4nrrD
+   72saF0Hk/sT/jx3kfNVqgycoxCzMiO6YR50RIjRbx5c1Bsl/q//ajoZAG
+   Rtt5daMqWKiuIfQG3QhF3tsjbf3V6TRsqIOy69TavwDvyyKg37AusGkYj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="7926045"
+X-IronPort-AV: E=Sophos;i="6.04,266,1695711600"; 
+   d="scan'208";a="7926045"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 10:17:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="896159770"
+X-IronPort-AV: E=Sophos;i="6.04,266,1695711600"; 
+   d="scan'208";a="896159770"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 10 Dec 2023 10:17:00 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCOMM-000H9K-1Y;
+        Sun, 10 Dec 2023 18:16:58 +0000
+Date:   Mon, 11 Dec 2023 02:16:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Borislav Petkov <bp@suse.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/edac/i7300_edac.c:591: warning: No description found for
+ parameter 'dimm'
+Message-ID: <202312110215.PEi8XY6K-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,41 +62,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c527f5606aa545233a4d2c6d5c636ed82b8633ef
+commit: e3c4ff6d8c949fa9a9ea1bd005bf1967efe09d5d EDAC: Remove EDAC_MM_EDAC
+date:   7 years ago
+config: i386-buildonly-randconfig-006-20231120 (https://download.01.org/0day-ci/archive/20231211/202312110215.PEi8XY6K-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231211/202312110215.PEi8XY6K-lkp@intel.com/reproduce)
 
-In some cases the firmware expects cbndx 1 to be assigned to the GMU,
-so we also want the default domain for the GMU to be an identy domain.
-This way it does not get a context bank assigned.  Without this, both
-of_dma_configure() and drm/msm's iommu_domain_attach() will trigger
-allocating and configuring a context bank.  So GMU ends up attached to
-both cbndx 1 and later cbndx 2.  This arrangement seemingly confounds
-and surprises the firmware if the GPU later triggers a translation
-fault, resulting (on sc8280xp / lenovo x13s, at least) in the SMMU
-getting wedged and the GPU stuck without memory access.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312110215.PEi8XY6K-lkp@intel.com/
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
+All warnings (new ones prefixed by >>):
 
-I didn't add a fixes tag because really this issue has been there
-all along, but either didn't matter with other firmware or we didn't 
-notice the problem.
+>> drivers/edac/i7300_edac.c:591: warning: No description found for parameter 'dimm'
+   drivers/edac/i7300_edac.c:591: warning: Excess function parameter 'p_csrow' description in 'decode_mtr'
+>> drivers/edac/i7300_edac.c:826: warning: No description found for parameter 'mir_no'
+--
+>> drivers/edac/amd76x_edac.c:231: warning: No description found for parameter 'pdev'
 
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 549ae4dba3a6..d326fa230b96 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -243,6 +243,7 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- 
- static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ .compatible = "qcom,adreno" },
-+	{ .compatible = "qcom,adreno-gmu" },
- 	{ .compatible = "qcom,mdp4" },
- 	{ .compatible = "qcom,mdss" },
- 	{ .compatible = "qcom,sc7180-mdss" },
+vim +/dimm +591 drivers/edac/i7300_edac.c
+
+5de6e07ed75ee2 Mauro Carvalho Chehab 2010-08-27  573  
+5de6e07ed75ee2 Mauro Carvalho Chehab 2010-08-27  574  /************************************************
+5de6e07ed75ee2 Mauro Carvalho Chehab 2010-08-27  575   * i7300 Functions related to memory enumberation
+5de6e07ed75ee2 Mauro Carvalho Chehab 2010-08-27  576   ************************************************/
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  577  
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  578  /**
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  579   * decode_mtr() - Decodes the MTR descriptor, filling the edac structs
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  580   * @pvt: pointer to the private data struct used by i7300 driver
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  581   * @slot: DIMM slot (0 to 7)
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  582   * @ch: Channel number within the branch (0 or 1)
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  583   * @branch: Branch number (0 or 1)
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  584   * @dinfo: Pointer to DIMM info where dimm size is stored
+d091a6eb177dd3 Mauro Carvalho Chehab 2010-08-27  585   * @p_csrow: Pointer to the struct csrow_info that corresponds to that element
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  586   */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  587  static int decode_mtr(struct i7300_pvt *pvt,
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  588  		      int slot, int ch, int branch,
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  589  		      struct i7300_dimm_info *dinfo,
+a895bf8b1e1ea4 Mauro Carvalho Chehab 2012-01-28  590  		      struct dimm_info *dimm)
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24 @591  {
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  592  	int mtr, ans, addrBits, channel;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  593  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  594  	channel = to_channel(ch, branch);
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  595  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  596  	mtr = pvt->mtr[slot][branch];
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  597  	ans = MTR_DIMMS_PRESENT(mtr) ? 1 : 0;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  598  
+956b9ba156dbfd Joe Perches           2012-04-29  599  	edac_dbg(2, "\tMTR%d CH%d: DIMMs are %sPresent (mtr)\n",
+956b9ba156dbfd Joe Perches           2012-04-29  600  		 slot, channel, ans ? "" : "NOT ");
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  601  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  602  	/* Determine if there is a DIMM present in this DIMM slot */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  603  	if (!ans)
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  604  		return 0;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  605  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  606  	/* Start with the number of bits for a Bank
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  607  	* on the DRAM */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  608  	addrBits = MTR_DRAM_BANKS_ADDR_BITS;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  609  	/* Add thenumber of ROW bits */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  610  	addrBits += MTR_DIMM_ROWS_ADDR_BITS(mtr);
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  611  	/* add the number of COLUMN bits */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  612  	addrBits += MTR_DIMM_COLS_ADDR_BITS(mtr);
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  613  	/* add the number of RANK bits */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  614  	addrBits += MTR_DIMM_RANKS(mtr);
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  615  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  616  	addrBits += 6;	/* add 64 bits per DIMM */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  617  	addrBits -= 20;	/* divide by 2^^20 */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  618  	addrBits -= 3;	/* 8 bits per bytes */
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  619  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  620  	dinfo->megabytes = 1 << addrBits;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  621  
+956b9ba156dbfd Joe Perches           2012-04-29  622  	edac_dbg(2, "\t\tWIDTH: x%d\n", MTR_DRAM_WIDTH(mtr));
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  623  
+956b9ba156dbfd Joe Perches           2012-04-29  624  	edac_dbg(2, "\t\tELECTRICAL THROTTLING is %s\n",
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  625  		 MTR_DIMMS_ETHROTTLE(mtr) ? "enabled" : "disabled");
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  626  
+956b9ba156dbfd Joe Perches           2012-04-29  627  	edac_dbg(2, "\t\tNUMBANK: %d bank(s)\n", MTR_DRAM_BANKS(mtr));
+956b9ba156dbfd Joe Perches           2012-04-29  628  	edac_dbg(2, "\t\tNUMRANK: %s\n",
+956b9ba156dbfd Joe Perches           2012-04-29  629  		 MTR_DIMM_RANKS(mtr) ? "double" : "single");
+956b9ba156dbfd Joe Perches           2012-04-29  630  	edac_dbg(2, "\t\tNUMROW: %s\n",
+7e881856eee8b8 Joe Perches           2012-04-28  631  		 MTR_DIMM_ROWS(mtr) == 0 ? "8,192 - 13 rows" :
+7e881856eee8b8 Joe Perches           2012-04-28  632  		 MTR_DIMM_ROWS(mtr) == 1 ? "16,384 - 14 rows" :
+7e881856eee8b8 Joe Perches           2012-04-28  633  		 MTR_DIMM_ROWS(mtr) == 2 ? "32,768 - 15 rows" :
+7e881856eee8b8 Joe Perches           2012-04-28  634  		 "65,536 - 16 rows");
+956b9ba156dbfd Joe Perches           2012-04-29  635  	edac_dbg(2, "\t\tNUMCOL: %s\n",
+7e881856eee8b8 Joe Perches           2012-04-28  636  		 MTR_DIMM_COLS(mtr) == 0 ? "1,024 - 10 columns" :
+7e881856eee8b8 Joe Perches           2012-04-28  637  		 MTR_DIMM_COLS(mtr) == 1 ? "2,048 - 11 columns" :
+7e881856eee8b8 Joe Perches           2012-04-28  638  		 MTR_DIMM_COLS(mtr) == 2 ? "4,096 - 12 columns" :
+7e881856eee8b8 Joe Perches           2012-04-28  639  		 "reserved");
+956b9ba156dbfd Joe Perches           2012-04-29  640  	edac_dbg(2, "\t\tSIZE: %d MB\n", dinfo->megabytes);
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  641  
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  642  	/*
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  643  	 * The type of error detection actually depends of the
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  644  	 * mode of operation. When it is just one single memory chip, at
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  645  	 * socket 0, channel 0, it uses 8-byte-over-32-byte SECDED+ code.
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  646  	 * In normal or mirrored mode, it uses Lockstep mode,
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  647  	 * with the possibility of using an extended algorithm for x8 memories
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  648  	 * See datasheet Sections 7.3.6 to 7.3.8
+116389ed21e4ad Mauro Carvalho Chehab 2010-08-26  649  	 */
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  650  
+a895bf8b1e1ea4 Mauro Carvalho Chehab 2012-01-28  651  	dimm->nr_pages = MiB_TO_PAGES(dinfo->megabytes);
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  652  	dimm->grain = 8;
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  653  	dimm->mtype = MEM_FB_DDR2;
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  654  	if (IS_SINGLE_MODE(pvt->mc_settings_a)) {
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  655  		dimm->edac_mode = EDAC_SECDED;
+956b9ba156dbfd Joe Perches           2012-04-29  656  		edac_dbg(2, "\t\tECC code is 8-byte-over-32-byte SECDED+ code\n");
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  657  	} else {
+956b9ba156dbfd Joe Perches           2012-04-29  658  		edac_dbg(2, "\t\tECC code is on Lockstep mode\n");
+28c2ce7c8b275a Mauro Carvalho Chehab 2010-08-27  659  		if (MTR_DRAM_WIDTH(mtr) == 8)
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  660  			dimm->edac_mode = EDAC_S8ECD8ED;
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  661  		else
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  662  			dimm->edac_mode = EDAC_S4ECD4ED;
+15154c57c62494 Mauro Carvalho Chehab 2010-08-27  663  	}
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  664  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  665  	/* ask what device type on this row */
+28c2ce7c8b275a Mauro Carvalho Chehab 2010-08-27  666  	if (MTR_DRAM_WIDTH(mtr) == 8) {
+956b9ba156dbfd Joe Perches           2012-04-29  667  		edac_dbg(2, "\t\tScrub algorithm for x8 is on %s mode\n",
+d7de2bdb0e15c5 Mauro Carvalho Chehab 2010-08-27  668  			 IS_SCRBALGO_ENHANCED(pvt->mc_settings) ?
+d7de2bdb0e15c5 Mauro Carvalho Chehab 2010-08-27  669  			 "enhanced" : "normal");
+d7de2bdb0e15c5 Mauro Carvalho Chehab 2010-08-27  670  
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  671  		dimm->dtype = DEV_X8;
+d7de2bdb0e15c5 Mauro Carvalho Chehab 2010-08-27  672  	} else
+084a4fccef39ac Mauro Carvalho Chehab 2012-01-27  673  		dimm->dtype = DEV_X4;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  674  
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  675  	return mtr;
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  676  }
+fcaf780b2ad352 Mauro Carvalho Chehab 2010-08-24  677  
+
+:::::: The code at line 591 was first introduced by commit
+:::::: fcaf780b2ad352edaeb1d1c07a6da053266b1eed i7300_edac: start a driver for i7300 chipset (Clarksboro)
+
+:::::: TO: Mauro Carvalho Chehab <mchehab@redhat.com>
+:::::: CC: Mauro Carvalho Chehab <mchehab@redhat.com>
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
