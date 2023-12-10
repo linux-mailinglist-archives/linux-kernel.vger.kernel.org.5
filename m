@@ -2,146 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B19980B8C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 05:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75DA80B8CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 05:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbjLJEIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 23:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
+        id S231506AbjLJEIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 23:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbjLJEHo (ORCPT
+        with ESMTP id S231693AbjLJEIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 23:07:44 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8893AB8
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 20:05:33 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c6f9d1ba9cso1351126a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 20:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702181132; x=1702785932; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PxTgIk35cBEBjNHmGIeLkGBa/rmxEyN1bVKNuPulPrw=;
-        b=iFKa0bXmMxzdLHkwo4WmQZwFMgNHAgkSnKB9i0qIOc1Gy5bOAYvlMd535zdM9V3W10
-         ffzskIYy4aTPApo7PzcdNnXv0Trs4ciXFgZLEc3DBPsr+E61BTgyjM2zvG6O0it9IsoR
-         a/9+rFzo/Q7TUaRV9XcCqo/BeZCSHQLmxawtmOumTzusEmyVZt53nwlAVzy3eZzqOtpw
-         gFjBeg+xzB8Or+STbgGOi9xe0PyrZZsjQA2hiZdcTyg0lS4VujQ+GOhxvUjKCYWxTUJ1
-         ymsOH6UWPd9/fegsFuJG9yRcFx3H69kBedZjrmZcGm3AbB7jtru2onfZLo0nDY4DB3jK
-         AcnQ==
+        Sat, 9 Dec 2023 23:08:16 -0500
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F38EB
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 20:08:07 -0800 (PST)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1faf4442fa5so5859063fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 20:08:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702181132; x=1702785932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PxTgIk35cBEBjNHmGIeLkGBa/rmxEyN1bVKNuPulPrw=;
-        b=G2MCk/wJ+0gNyip9s88FT6tQ9F0R1pemgFI8Aet7QtT89bxJgXSAkUEWzupxS21EC+
-         lRq6S91+ISBQWexDL7MevdD1qd2QXmy1ceFCXagjbNNTjVrlHSZ2i9ZFCrmeoDjZ62vn
-         bFUQ+j6LN15jZTMKfjeZeymnrBXyjIgltNxEByLy0NHpguc2uzlIguHtskxUgMLZezQu
-         jll+oNOovyN61ujMn/XEcEHcCWYyVzKtHthIYhzdCnlm17YLH04aVRwcOFbIRpR1rrti
-         gqm6fwA2T1X8mV0FQhUJ/lmCr1kLiFEpAHiiakw7LshXkcI8/3PlJPhW7kR6Hso8+Rd6
-         FxGg==
-X-Gm-Message-State: AOJu0YyOaADvgmYG6Y/XrreSH2aeLoVa9jPlphmX6Ip5FgJdQ4kymB61
-        i9TTd3EDzs1OZTRSKPf2u64=
-X-Google-Smtp-Source: AGHT+IH0NUo/39sXHfVIC4mD3yLbQPWnO3hPMB22iKCPdmsCkTVV89PNHgoc96UnMjHFEPuey+GWtA==
-X-Received: by 2002:a05:6a20:d386:b0:190:1e0c:d29 with SMTP id iq6-20020a056a20d38600b001901e0c0d29mr4155604pzb.4.1702181132480;
-        Sat, 09 Dec 2023 20:05:32 -0800 (PST)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170902c3c600b001d1c96a0c66sm4112497plj.130.2023.12.09.20.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 20:05:32 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, thunder.leizhen@huawei.com,
-        vgoyal@redhat.com, ytcoode@gmail.com
-Subject: [PATCH v2] crash_core: Fix the check for whether crashkernel is from high memory
-Date:   Sun, 10 Dec 2023 12:05:09 +0800
-Message-ID: <20231210040509.106292-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231209143418.92f02de6b6c6db2b7b3b1815@linux-foundation.org>
-References: <20231209143418.92f02de6b6c6db2b7b3b1815@linux-foundation.org>
+        d=1e100.net; s=20230601; t=1702181287; x=1702786087;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O1ucpX9GtPXf2qy8IMPdYCdmRnC06lUTmQWKejBpx6c=;
+        b=PAT86h3nAjH/I72SwgsAdK8mTg9YhGFb5cCtkxD32oIhn4nIrZLuGDFxnFw5a423Lv
+         EbXbS8YJY5gx1CMBX0wM1lbfjk/PWB1lXPJTHxM5hoJi0e5T+N14CLQ+hmt0Ock/U3vw
+         Oy1QFrdEA2H15NlhIB/NghS4pERVzu5mgaV1vJDr4r7kk+0FkQ/fbITBaRqOnlDdk1cf
+         VWtVtGHwoRqjz1STr5uEL+/IUFG5gavfNHRg6iZRaPSxdhN3taMaooTHKpvRWx7Etu4T
+         C0kMT94CD08Jm/slNHDRDRYjtaGHGU6wodIOtJGu8VUwXgTI2PRngB78BOwvhVmcny6p
+         kyAg==
+X-Gm-Message-State: AOJu0YwOMhv8+rdNeec8cXD0SUNi+wkmSk+0/iEemze+4SrM8LEKCVQj
+        NOPWKnWihrgBg1Veyctz9vGx7uVjf22/EEY/+yXYdaGFKtSd
+X-Google-Smtp-Source: AGHT+IFPrig1GY8Oa4lAIq6NYbXoCyN5oInMJkYXz+mcNhfXMORTYMvXyolT4m+1iqNLWK0WfCJ+JOxGBXgcKdYt4iaHKRYhoGFT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:e415:b0:1fb:f51:25bb with SMTP id
+ n21-20020a056870e41500b001fb0f5125bbmr2665014oag.5.1702181287071; Sat, 09 Dec
+ 2023 20:08:07 -0800 (PST)
+Date:   Sat, 09 Dec 2023 20:08:07 -0800
+In-Reply-To: <tencent_1571C9B12ED06EED4CAC67FD86C052FC4606@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f59633060c1ff65d@google.com>
+Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
+From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The purpose of the reserve_crashkernel_generic() function is to allocate a
-block of memory for crash kernel, and if the block of memory is allocated
-from high memory, it will allocate an additional block from low memory.
+Hello,
 
-The method to determine if a block of memory is from high memory is to
-check if crash_base is greater than or equal to CRASH_ADDR_LOW_MAX.
-However, the current code only considers the case where crash_base is
-greater than CRASH_ADDR_LOW_MAX.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in radix_tree_insert
 
-This means that if the memory is allocated from high memory and its
-starting address is CRASH_ADDR_LOW_MAX, reserve_crashkernel_generic()
-will no longer allocate the additional memory from low memory for crash
-kernel, even if it is necessary.
+2023/12/10 04:02:40 executed programs: 1
+BUG: memory leak
+unreferenced object 0xffff88810e4ac248 (size 576):
+  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
+  hex dump (first 32 bytes):
+    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
+    30 3c 8d 1a 81 88 ff ff 60 c2 4a 0e 81 88 ff ff  0<......`.J.....
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
+    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
+    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
+    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
+    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-In fact, we can also take a look at the code before it was modified in
-these commits:
+BUG: memory leak
+unreferenced object 0xffff88810e4ac000 (size 576):
+  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
+  hex dump (first 32 bytes):
+    36 0f 01 00 00 00 00 00 48 c2 4a 0e 81 88 ff ff  6.......H.J.....
+    30 3c 8d 1a 81 88 ff ff 18 c0 4a 0e 81 88 ff ff  0<........J.....
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
+    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
+    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
+    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
+    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-  9c08a2a139fe ("x86: kdump: use generic interface to simplify crashkernel reservation code")
-  fdc268232dbb ("arm64: kdump: use generic interface to simplify crashkernel reservation")
-  39365395046f ("riscv: kdump: use generic interface to simplify crashkernel reservation")
+BUG: memory leak
+unreferenced object 0xffff88810e4adda8 (size 576):
+  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
+  hex dump (first 32 bytes):
+    30 3f 01 00 00 00 00 00 00 c0 4a 0e 81 88 ff ff  0?........J.....
+    30 3c 8d 1a 81 88 ff ff c0 dd 4a 0e 81 88 ff ff  0<........J.....
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
+    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
+    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
+    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
+    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-They all checked for the case where crash_base is equal to
-CRASH_ADDR_LOW_MAX.
+BUG: memory leak
+unreferenced object 0xffff88810e4da000 (size 576):
+  comm "syz-executor.0", pid 5510, jiffies 4294944556 (age 13.040s)
+  hex dump (first 32 bytes):
+    2a 3f 00 00 00 00 00 00 a8 dd 4a 0e 81 88 ff ff  *?........J.....
+    30 3c 8d 1a 81 88 ff ff 18 a0 4d 0e 81 88 ff ff  0<........M.....
+  backtrace:
+    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
+    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:624 [inline]
+    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:712
+    [<ffffffff84ae1012>] qrtr_tx_wait net/qrtr/af_qrtr.c:281 [inline]
+    [<ffffffff84ae1012>] qrtr_node_enqueue+0x512/0x6d0 net/qrtr/af_qrtr.c:354
+    [<ffffffff84ae27b6>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:897
+    [<ffffffff84ae3392>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:998
+    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
+    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
+    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
+    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
+    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
+    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
+    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
+    [<ffffffff84b6ddcf>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6ddcf>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-This patch also includes some minor cleanups.
 
-Fixes: 0ab97169aa05 ("crash_core: add generic function to do reservation")
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1->v2: Provide a more detailed description.
 
- kernel/crash_core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Tested on:
 
-diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index efe87d501c8c..d4313b53837e 100644
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -199,7 +199,7 @@ static __initdata char *suffix_tbl[] = {
-  * It returns 0 on success and -EINVAL on failure.
-  */
- static int __init parse_crashkernel_suffix(char *cmdline,
--					   unsigned long long	*crash_size,
-+					   unsigned long long *crash_size,
- 					   const char *suffix)
- {
- 	char *cur = cmdline;
-@@ -268,9 +268,9 @@ static int __init __parse_crashkernel(char *cmdline,
- 			     unsigned long long *crash_base,
- 			     const char *suffix)
- {
--	char	*first_colon, *first_space;
--	char	*ck_cmdline;
--	char	*name = "crashkernel=";
-+	char *first_colon, *first_space;
-+	char *ck_cmdline;
-+	char *name = "crashkernel=";
- 
- 	BUG_ON(!crash_size || !crash_base);
- 	*crash_size = 0;
-@@ -440,7 +440,7 @@ void __init reserve_crashkernel_generic(char *cmdline,
- 		return;
- 	}
- 
--	if ((crash_base > CRASH_ADDR_LOW_MAX) &&
-+	if ((crash_base >= CRASH_ADDR_LOW_MAX) &&
- 	     crash_low_size && reserve_crashkernel_low(crash_low_size)) {
- 		memblock_phys_free(crash_base, crash_size);
- 		return;
--- 
-2.43.0
+commit:         33cc938e Linux 6.7-rc4
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1485aebce80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
+dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10dfa02ae80000
 
