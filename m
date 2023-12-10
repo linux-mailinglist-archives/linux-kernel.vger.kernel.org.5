@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1665680BAA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8841680BAAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjLJM01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 07:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S232064AbjLJMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 07:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJM01 (ORCPT
+        with ESMTP id S229482AbjLJMaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 07:26:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7976DFF
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:26:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBA2C433C8;
-        Sun, 10 Dec 2023 12:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702211193;
-        bh=BAEGOiXxGiji7Yqd9F2gFQ5MrzDwy3Usblm+rgqjv30=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k8nHEPhk3gGqCwrGy4zVJCHVGZVUJrtXP12s0QnFTgo441rpwwHWu7J9cxQLgm5fo
-         25VuSnGBiBJPU/MC05j/IZpl0rO/tR7SYUFZBgVxsAv3sya85ig2aBXxbNxPcY43ft
-         G8Lv8mGh6l5JI7ueaFM/Nwnwe1HTUhhtmZ7wjVyfhq8yBDgCynbpnE6SMlIwQiJL2M
-         Ib0TpHBM+ZruKCqrg3mjJ5SP+TKiOeP7BQnGaK9lvBfOcKjpsiwdVEn8A9hA7ZpCDH
-         1lgsF7gI/X/u8sHES276XDhc3iPgNsZC3lHc9dlKOgYaOJzbeoVCQ4xSiJ1ymaqS8c
-         OjkvVIXTUqI0g==
-Date:   Sun, 10 Dec 2023 12:26:24 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc:     David Lechner <dlechner@baylibre.com>,
-        Marcelo Schmitt <marcelo.schmitt@analog.com>,
-        apw@canonical.com, joe@perches.com, dwaipayanray1@gmail.com,
-        lukas.bulwahn@gmail.com, paul.cercueil@analog.com,
-        Michael.Hennerich@analog.com, lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dan.carpenter@linaro.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/13] dt-bindings: iio: Add AD7091R-8
-Message-ID: <20231210122624.6a58b8c4@jic23-huawei>
-In-Reply-To: <ZXMZ-Y18SwIFEIgA@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
-        <53d55f3195b15bd8d47387e296036730ea270770.1701971344.git.marcelo.schmitt1@gmail.com>
-        <CAMknhBEFnTUm9FPK-74+GkJs2d80dS+Q9WeGTxd3Ajs-JJGcdA@mail.gmail.com>
-        <ZXMZ-Y18SwIFEIgA@debian-BULLSEYE-live-builder-AMD64>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 10 Dec 2023 07:30:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E897310E;
+        Sun, 10 Dec 2023 04:30:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702211410; x=1733747410;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1hFKZaaYa0isYOfuRccRS7bdXdTSP+jzodb5aJcq+Mo=;
+  b=RUG1I/muz6cT8eihjn9A6NXShrQdHopGDqrQDWcvGUy8jc0+O8DUzMsd
+   yqeW7ZM0Yht9iyzxqaT+MxGgC5boiGoYvTeqxuz1Vs5FbcqKF0xI7QLgj
+   xbBoALEXVpVjUQfAXCcqV9MOPXJVBBaEJDceiErtH/CuWNppx0jyYFbAi
+   d3erj4NKyos1xsUzI5hYK9KE6tfoGTqgUt/ITtnAn3is8wxsre9LNHalS
+   i22QJQDE3NW6Ge+//TQIXG7tNfyP8v2JwC0cF5Q0rvyWsuBM+TdrbaKqt
+   +CdbrVvWdSUjBcmocKk2hQDZcos+m4uLoUFib7G0ukLCWqeWneBOfSTlY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="7910833"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="7910833"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 04:30:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1104116213"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="1104116213"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Dec 2023 04:30:05 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCIwd-000Gp8-0G;
+        Sun, 10 Dec 2023 12:30:03 +0000
+Date:   Sun, 10 Dec 2023 20:29:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        quic_jesszhan@quicinc.com, quic_parellan@quicinc.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 10/16] drm/msm/dpu: add CDM related logic to
+ dpu_hw_ctl layer
+Message-ID: <202312102047.S0I69pCs-lkp@intel.com>
+References: <20231208050641.32582-11-quic_abhinavk@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208050641.32582-11-quic_abhinavk@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 10:28:25 -0300
+Hi Abhinav,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on next-20231207]
+[also build test WARNING on v6.7-rc4]
+[cannot apply to drm-misc/drm-misc-next linus/master v6.7-rc4 v6.7-rc3 v6.7-rc2]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Abhinav-Kumar/drm-msm-dpu-add-formats-check-for-writeback-encoder/20231208-130820
+base:   next-20231207
+patch link:    https://lore.kernel.org/r/20231208050641.32582-11-quic_abhinavk%40quicinc.com
+patch subject: [PATCH v2 10/16] drm/msm/dpu: add CDM related logic to dpu_hw_ctl layer
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231210/202312102047.S0I69pCs-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312102047.S0I69pCs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312102047.S0I69pCs-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c:537:6: warning: variable 'cdm_active' set but not used [-Wunused-but-set-variable]
+           u32 cdm_active = 0;
+               ^
+   1 warning generated.
 
 
-> > > +
-> > > +    required:
-> > > +      - reg  
-> > 
-> > Missing `unevaluatedProperties: false` for channels?
-> > 
-> > Bigger picture: since no other properties besides `reg` are included
-> > here, do we actually need channel nodes?
-> >   
-> 
-> The channel nodes are not used by the drivers so we can remove them if we want.
-> I thought they would be required as documentation even if they were not used
-> in drivers.
-> Looks like they're not required so will remove them in v4.
+vim +/cdm_active +537 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
 
-A lot of drivers assume that if you paid for a device with N channels you
-probably want N channels. Of course there are always boards that wire a subset
-but it's optional whether a driver cares about that.
+   528	
+   529	
+   530	static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+   531			struct dpu_hw_intf_cfg *cfg)
+   532	{
+   533		struct dpu_hw_blk_reg_map *c = &ctx->hw;
+   534		u32 intf_active = 0;
+   535		u32 wb_active = 0;
+   536		u32 mode_sel = 0;
+ > 537		u32 cdm_active = 0;
+   538	
+   539		/* CTL_TOP[31:28] carries group_id to collate CTL paths
+   540		 * per VM. Explicitly disable it until VM support is
+   541		 * added in SW. Power on reset value is not disable.
+   542		 */
+   543		if ((test_bit(DPU_CTL_VM_CFG, &ctx->caps->features)))
+   544			mode_sel = CTL_DEFAULT_GROUP_ID  << 28;
+   545	
+   546		if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
+   547			mode_sel |= BIT(17);
+   548	
+   549		intf_active = DPU_REG_READ(c, CTL_INTF_ACTIVE);
+   550		wb_active = DPU_REG_READ(c, CTL_WB_ACTIVE);
+   551		cdm_active = DPU_REG_READ(c, CTL_CDM_ACTIVE);
+   552	
+   553		if (cfg->intf)
+   554			intf_active |= BIT(cfg->intf - INTF_0);
+   555	
+   556		if (cfg->wb)
+   557			wb_active |= BIT(cfg->wb - WB_0);
+   558	
+   559		DPU_REG_WRITE(c, CTL_TOP, mode_sel);
+   560		DPU_REG_WRITE(c, CTL_INTF_ACTIVE, intf_active);
+   561		DPU_REG_WRITE(c, CTL_WB_ACTIVE, wb_active);
+   562	
+   563		if (cfg->merge_3d)
+   564			DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
+   565				      BIT(cfg->merge_3d - MERGE_3D_0));
+   566	
+   567		if (cfg->dsc)
+   568			DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
+   569	
+   570		if (cfg->cdm)
+   571			DPU_REG_WRITE(c, CTL_CDM_ACTIVE, cfg->cdm);
+   572	}
+   573	
 
-We have drivers where not channel nodes being supplied means they are all
-on so this is extensible if we later decide that fine grained information about
-what is routed where is needed or need to add per channel controls.
-
-So fine to drop this.
-
-Jonathan
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
