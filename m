@@ -2,54 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE6C80BB8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990A180BB9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 15:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbjLJORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 09:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S232543AbjLJOWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 09:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLJORj (ORCPT
+        with ESMTP id S229584AbjLJOWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 09:17:39 -0500
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9209F4;
-        Sun, 10 Dec 2023 06:17:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1702217865;
-        bh=95FOqqEVlvMpVu60xKcTVHAxKd+ad692k9vCay/7OIc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SmGi6NmMr8M8UM9SD93vDg7+H16lkzxZdbVZdUOSatOmwq0RRnP7D8ItJLGmLth6g
-         MuRFqYbO0B82vEExpJ8fjRpe/ahu15CUQfWpiZotn1/7fDIuMY0J+76xyM45/VOx/r
-         VcD9qhLu1WR9H1yb89kYapLAQ5zXCgpevNlfFXL5t8A3wIiNvIhY1tcc96gPnH4Eoi
-         TBKnN5iSi1etbYHoDHF3WQdCCFW9lvHbjvH6CfxrZbBWQfDlxb6pLDucIV1bTM8dKm
-         617ArDJcUam1f3728aghyIvZQkMVkT+qGlKP96QLDbr6le4gJ5gPgZmXld0Pjxfqah
-         WShryYQuXOS7g==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Sp6Qw6jlVzFr3;
-        Sun, 10 Dec 2023 09:17:44 -0500 (EST)
-Message-ID: <76797ddd-bb87-4af9-9703-1ec00a0d318c@efficios.com>
-Date:   Sun, 10 Dec 2023 09:17:44 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/14] ring-buffer/tracing: Allow ring buffer to have
- bigger sub buffers
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Sun, 10 Dec 2023 09:22:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E0CF5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 06:22:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FFDC433C7;
+        Sun, 10 Dec 2023 14:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702218179;
+        bh=8tne0aaAREf7h+qiY6KAldko6jyI6LRXnoNCM9fma6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z46OPbu3lxs+nSXwJj7g5+uM236T8qcWVMENzV16W8PRn+wPA90J2c/MU1TR09r9G
+         V7uktPMYA+kX07nhFqGBeWzVnfPGq1sWi8TmA2O/Ypbc+HHzOKCOCc6aUZpI1E2ux5
+         i7a4xJ46nLuCB9P/YSDucazqkfc40Pwk2ruWwXth0yedV7jS/lBPvlu9h8D8FqQQ5E
+         7NrgTVM832Ck4BiiNruf7natGB4ETT1vuYgIR5796kVSPSFEDz9SqMvV2j2pOXJx2O
+         kYv2KFYNFZhj2cny4Ad3h63HQeFh23ezu4307DrPbna88E2yARpEbrhoRhlGsNFA2m
+         xH4AUl7qyB+aQ==
+Date:   Sun, 10 Dec 2023 14:22:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Thiago Jung Bauermann <thiago.bauermann@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Vincent Donnefort <vdonnefort@google.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-References: <20231210035404.053677508@goodmis.org>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231210035404.053677508@goodmis.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 26/39] arm64/ptrace: Expose GCS via ptrace and core
+ files
+Message-ID: <ZXXJwNdKC/y6bRYn@finisterre.sirena.org.uk>
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-26-201c483bd775@kernel.org>
+ <877clney35.fsf@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+xOPyWhFp+ttqF+R"
+Content-Disposition: inline
+In-Reply-To: <877clney35.fsf@linaro.org>
+X-Cookie: You might have mail.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,34 +79,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-09 22:54, Steven Rostedt wrote:
-[...]
-> 
-> Basically, events to the tracing subsystem are limited to just under a
-> PAGE_SIZE, as the ring buffer is split into "sub buffers" of one page
-> size, and an event can not be bigger than a sub buffer. This allows users
-> to change the size of a sub buffer by the order:
-> 
->    echo 3 > /sys/kernel/tracing/buffer_subbuf_order
-> 
-> Will make each sub buffer a size of 8 pages, allowing events to be almost
-> as big as 8 pages in size (sub buffers do have meta data on them as
-> well, keeping an event from reaching the same size as a sub buffer).
 
-Specifying the "order" of subbuffer size as a power of two of
-number of pages is a poor UX choice for a user-facing ABI.
+--+xOPyWhFp+ttqF+R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I would recommend allowing the user to specify the size in bytes, and
-internally bump to size to the next power of 2, with a minimum of
-PAGE_SIZE.
+On Sat, Dec 09, 2023 at 08:49:02PM -0300, Thiago Jung Bauermann wrote:
+> Mark Brown <broonie@kernel.org> writes:
 
-Thanks,
+> > Provide a new register type NT_ARM_GCS reporting the current GCS mode
+> > and pointer for EL0.  Due to the interactions with allocation and
+> > deallocation of Guarded Control Stacks we do not permit any changes to
+> > the GCS mode via ptrace, only GCSPR_EL0 may be changed.
 
-Mathieu
+> The code allows disabling GCS. Is that unintended?
 
+No, it's intentional - ptrace has a lot of control over the process,
+there's not a huge point trying to protect against it doing a disable.
+The reason we prevent enabling is the allocation of a GCS along with
+enable, the complexity of doing that on a remote process seemed
+unjustified.  If clone3() ends up allowing manual allocation and
+placement that'll likely be revised.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+--+xOPyWhFp+ttqF+R
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV1yb8ACgkQJNaLcl1U
+h9BWYwf/Tu6vlQCwGJ174Zum1yyKhNrP0gXrNj0hXhil/y9CwTApo4pvBUMmBwQz
+JO0qoPePZDOSlxns1bELpj5O5sFq0c8qB1e29Y1nFzNClHf+uyVDswS2nZDBU6Rk
+QyW/T7yJerJVj/Lw5Mh1iJMbf8+iOPyRCJ8iMOnYiCbPpOmz7FuarOxPowUXUTqe
+e/bnana1ic+ctkWCw67wxEB6SJsOSaN2uW7mCj2ftjf9Cq9GmxzYnn8WuOvPHLxQ
+1id5Q0hqIWUqpgKGWDeIng5VHThiIuZDUa4EWQga6fnVZnApv4pRNJY7ttyNS6SS
+VfquKJpzBaa9lItRtIz5Dxs2gX1jyg==
+=9ttk
+-----END PGP SIGNATURE-----
+
+--+xOPyWhFp+ttqF+R--
