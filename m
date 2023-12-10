@@ -2,305 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF7980BA69
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45F280BA6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 12:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjLJLg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 06:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        id S231979AbjLJLiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 06:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbjLJLgs (ORCPT
+        with ESMTP id S231978AbjLJLiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 06:36:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D577198C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:36:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4AC1C433C8;
-        Sun, 10 Dec 2023 11:36:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702208199;
-        bh=qTvsFMMpkPo9pL5ZTU/DKytaWYt9qAeOfVXyFFr6Hew=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PWl2qu3hMy9jm82HEngDDyto7e6Mjm0EOFNs3fnJDkJLCXy/ujUPYwCVFa6w3+FLi
-         JZWcgA2J9fNrDad0aj6JIGBS9Kh1jbGqW6XPTp3y3GgISVNa9WcIdFSsAy51gD2XoV
-         /gQY5CvysuN4TZgeCvHJMpraGIm6BURtq70CzOs+vHWiCIiZQ1ARu+DY4MtWuxoc9F
-         sgShShmF5vEbc0Mwj51EspOiejc3vhymeNRn2AsklbedBXahFHvowuLgtyFYaRQQzx
-         4q6N55HoLvE0+guECg5XN2JCJWTdZz8oBkwRyOataM7J0bz8GKDC2KwtiS5eMBtnCg
-         E0UCzv2pD9tVA==
-Date:   Sun, 10 Dec 2023 11:36:32 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] iio: adc: mcp3911: simplify code with guard macro
-Message-ID: <20231210113632.7880e730@jic23-huawei>
-In-Reply-To: <20231206-mcp3911-guard-v4-1-30c3c5d4340f@gmail.com>
-References: <20231206-mcp3911-guard-v4-1-30c3c5d4340f@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 10 Dec 2023 06:38:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB21114
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 03:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702208285; x=1733744285;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=amKsmiOudTx7fviB5WFl8m5teG+gXO3MPl7JvOJeoRA=;
+  b=Wsr4zZPcWPqj62syYzRziahPlwU7SvKO6cJsjgfow+1s2+5C5CTlxnIW
+   S0eq859wSIJ46mp1WK1OxITF0P4OpOcwYY85JfoLm9OiN1u4WvLKPwgtX
+   zNYpsPxX3tlTu5LXjefqayTEcw8MRn4Rdd9mj67P1xaskydER8QsoAQsT
+   TsZz5qi0EZAEKsjj+DlYS5L0gScbPaC/lI8D+0XR4QaeaFPaR6jBR2bi1
+   plH6D/yUQMQMhi968crYO1Z0GePfP2QN5BOdN3SON4i5ekxOvXqzQoU8N
+   HAWYT9nU1Zg/zj6xR6uMQQ3kQQr8+y2Eotr8sge+jcvyV2Iz8TF8gOWzU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="374709070"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="374709070"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 03:38:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="722406422"
+X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
+   d="scan'208";a="722406422"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 10 Dec 2023 03:38:04 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCI8H-000Gmu-2v;
+        Sun, 10 Dec 2023 11:38:01 +0000
+Date:   Sun, 10 Dec 2023 19:37:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer
+ (different address spaces)
+Message-ID: <202312101924.ApMqg932-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec 2023 19:39:04 +0100
-Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c527f5606aa545233a4d2c6d5c636ed82b8633ef
+commit: d80f7d7b2c75c5954d335dffbccca62a5002c3e0 signal: Guarantee that SIGNAL_GROUP_EXIT is set on process exit
+date:   1 year, 5 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231210/202312101924.ApMqg932-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312101924.ApMqg932-lkp@intel.com/reproduce)
 
-> Use the guard(mutex) macro for handle mutex lock/unlocks.
-> 
-> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
-Various changes inline - most are focused around simplifying the
-path for any given flow through the code.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312101924.ApMqg932-lkp@intel.com/
 
-Rather than going for a v5 - I've applied this with the following diff on top
-diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-index dfcb6cb7570f..7a32e7a1be9d 100644
---- a/drivers/iio/adc/mcp3911.c
-+++ b/drivers/iio/adc/mcp3911.c
-@@ -317,7 +317,7 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
-                            int *val2, long mask)
- {
-        struct mcp3911 *adc = iio_priv(indio_dev);
--       int ret = -EINVAL;
-+       int ret;
- 
-        guard(mutex)(&adc->lock);
-        switch (mask) {
-@@ -331,17 +331,23 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
-                return IIO_VAL_INT;
-        case IIO_CHAN_INFO_OFFSET:
-                ret = adc->chip->get_offset(adc, channel->channel, val);
--               return (ret) ? ret : IIO_VAL_INT;
-+               if (ret)
-+                       return ret;
-+
-+               return IIO_VAL_INT;
-        case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-                ret = adc->chip->get_osr(adc, val);
--               return (ret) ? ret : IIO_VAL_INT;
-+               if (ret)
-+                       return ret;
-+
-+               return IIO_VAL_INT;
-        case IIO_CHAN_INFO_SCALE:
-                *val = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][0];
-                *val2 = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][1];
-                return IIO_VAL_INT_PLUS_NANO;
-+       default:
-+               return -EINVAL;
-        }
--
--       return ret;
- }
- 
- static int mcp3911_write_raw(struct iio_dev *indio_dev,
-@@ -361,7 +367,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
-                                return adc->chip->set_scale(adc, channel->channel, i);
-                        }
-                }
--               break;
-+               return -EINVAL;
-        case IIO_CHAN_INFO_OFFSET:
-                if (val2 != 0)
-                        return -EINVAL;
-@@ -373,9 +379,10 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
-                                return adc->chip->set_osr(adc, i);
-                        }
-                }
--               break;
-+               return -EINVAL;
-+       default:
-+               return -EINVAL;
-        }
--       return -EINVAL;
- }
+sparse warnings: (new ones prefixed by >>)
+   kernel/exit.c:281:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:281:37: sparse:     expected struct task_struct *tsk
+   kernel/exit.c:281:37: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:284:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:284:32: sparse:     expected struct task_struct *task
+   kernel/exit.c:284:32: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:285:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:285:35: sparse:     expected struct task_struct *task
+   kernel/exit.c:285:35: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:330:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:330:24: sparse:     expected struct task_struct *parent
+   kernel/exit.c:330:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:357:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:357:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:357:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:360:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:360:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:360:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:583:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:583:29: sparse:     expected struct task_struct *reaper
+   kernel/exit.c:583:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/exit.c:585:29: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *reaper @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/exit.c:585:29: sparse:     expected struct task_struct *reaper
+   kernel/exit.c:585:29: sparse:     got struct task_struct [noderef] __rcu *real_parent
+>> kernel/exit.c:738:45: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/exit.c:738:45: sparse:     expected struct sighand_struct *sighand
+   kernel/exit.c:738:45: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/exit.c:927:63: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *const sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/exit.c:927:63: sparse:     expected struct sighand_struct *const sighand
+   kernel/exit.c:927:63: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/exit.c:1082:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1082:39: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1082:39: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1107:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1107:41: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1107:41: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1196:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1196:25: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1196:25: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1211:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1211:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1211:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1262:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1262:25: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1262:25: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1265:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1265:35: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1265:35: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1271:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/exit.c:1271:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/exit.c:1271:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/exit.c:1452:59: sparse: sparse: incompatible types in comparison expression (different base types):
+   kernel/exit.c:1452:59: sparse:    void *
+   kernel/exit.c:1452:59: sparse:    struct task_struct [noderef] __rcu *
+   kernel/exit.c:1468:25: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu * @@
+   kernel/exit.c:1468:25: sparse:     expected struct task_struct *parent
+   kernel/exit.c:1468:25: sparse:     got struct task_struct [noderef] __rcu *
+   kernel/exit.c: note: in included file:
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/exit.c: note: in included file (through include/linux/sched/signal.h, include/linux/rcuwait.h, include/linux/percpu-rwsem.h, ...):
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_zombie' - unexpected unlock
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_stopped' - unexpected unlock
+   include/linux/sched/task.h:110:21: sparse: sparse: context imbalance in 'wait_task_continued' - unexpected unlock
+   kernel/exit.c: note: in included file:
+   include/linux/ptrace.h:92:40: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p1 @@     got struct task_struct [noderef] __rcu *real_parent @@
+   include/linux/ptrace.h:92:40: sparse:     expected struct task_struct *p1
+   include/linux/ptrace.h:92:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   include/linux/ptrace.h:92:60: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *p2 @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:92:60: sparse:     expected struct task_struct *p2
+   include/linux/ptrace.h:92:60: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/exit.c: note: in included file (through include/linux/thread_info.h, arch/x86/include/asm/preempt.h, include/linux/preempt.h, ...):
+   arch/x86/include/asm/current.h:15:16: sparse: sparse: context imbalance in 'do_wait' - wrong count at exit
 
-hope that's ok with you!
+vim +738 kernel/exit.c
 
-Jonathan
-> ---
-> Changes in v4:
-> - Remove unreachable breaks
-> - Link to v3: https://lore.kernel.org/r/20231205-mcp3911-guard-v3-1-df83e956d1e9@gmail.com
-> 
-> Changes in v3:
-> - Return early in good paths as well
-> - Rebase against master
-> - Link to v2: https://lore.kernel.org/r/20231127-mcp3911-guard-v2-1-9462630dca1e@gmail.com
-> 
-> Changes in v2:
-> - Return directly instead of goto label
-> - Link to v1: https://lore.kernel.org/r/20231125-mcp3911-guard-v1-1-2748d16a3f3f@gmail.com
-> ---
->  drivers/iio/adc/mcp3911.c | 55 +++++++++++++----------------------------------
->  1 file changed, 15 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-> index d864558bc087..dfcb6cb7570f 100644
-> --- a/drivers/iio/adc/mcp3911.c
-> +++ b/drivers/iio/adc/mcp3911.c
-> @@ -7,6 +7,7 @@
->   */
->  #include <linux/bitfield.h>
->  #include <linux/bits.h>
-> +#include <linux/cleanup.h>
->  #include <linux/clk.h>
->  #include <linux/delay.h>
->  #include <linux/err.h>
-> @@ -318,44 +319,28 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
->  	struct mcp3911 *adc = iio_priv(indio_dev);
->  	int ret = -EINVAL;
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
->  		ret = mcp3911_read(adc,
->  				   MCP3911_CHANNEL(channel->channel), val, 3);
->  		if (ret)
-> -			goto out;
-> +			return ret;
->  
->  		*val = sign_extend32(*val, 23);
-> -
-> -		ret = IIO_VAL_INT;
-> -		break;
-> -
-> +		return IIO_VAL_INT;
->  	case IIO_CHAN_INFO_OFFSET:
-> -
->  		ret = adc->chip->get_offset(adc, channel->channel, val);
-> -		if (ret)
-> -			goto out;
-> -
-> -		ret = IIO_VAL_INT;
-> -		break;
-> +		return (ret) ? ret : IIO_VAL_INT;
+   735	
+   736	static void synchronize_group_exit(struct task_struct *tsk, long code)
+   737	{
+ > 738		struct sighand_struct *sighand = tsk->sighand;
+   739		struct signal_struct *signal = tsk->signal;
+   740	
+   741		spin_lock_irq(&sighand->siglock);
+   742		signal->quick_threads--;
+   743		if ((signal->quick_threads == 0) &&
+   744		    !(signal->flags & SIGNAL_GROUP_EXIT)) {
+   745			signal->flags = SIGNAL_GROUP_EXIT;
+   746			signal->group_exit_code = code;
+   747			signal->group_stop_count = 0;
+   748		}
+   749		spin_unlock_irq(&sighand->siglock);
+   750	}
+   751	
 
-Don't do this. The ternary just makes it harder to read.
-
-		if (ret)
-			return ret;
-
-		return IIO_VAL_INT;
-
-+ the brackets around (ret) are unnecessary.
-
->  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->  		ret = adc->chip->get_osr(adc, val);
-> -		if (ret)
-> -			goto out;
-> -
-> -		ret = IIO_VAL_INT;
-> -		break;
-> -
-> +		return (ret) ? ret : IIO_VAL_INT;
-
-here as well
-
->  	case IIO_CHAN_INFO_SCALE:
->  		*val = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][0];
->  		*val2 = mcp3911_scale_table[ilog2(adc->gain[channel->channel])][1];
-> -		ret = IIO_VAL_INT_PLUS_NANO;
-> -		break;
-> +		return IIO_VAL_INT_PLUS_NANO;
->  	}
->  
-> -out:
-> -	mutex_unlock(&adc->lock);
->  	return ret;
-
-This ret is only reachable if we don't hit any of the switch entries so
-better to add add a default and return -EINVAL to make that apparent and
-let the compiler detect if we are missing a return earlier.
-
->  }
->  
-> @@ -364,9 +349,8 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
->  			     int val2, long mask)
->  {
->  	struct mcp3911 *adc = iio_priv(indio_dev);
-> -	int ret = -EINVAL;
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  	switch (mask) {
->  	case IIO_CHAN_INFO_SCALE:
->  		for (int i = 0; i < MCP3911_NUM_SCALES; i++) {
-> @@ -374,32 +358,24 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
->  			    val2 == mcp3911_scale_table[i][1]) {
->  
->  				adc->gain[channel->channel] = BIT(i);
-> -				ret = adc->chip->set_scale(adc, channel->channel, i);
-> +				return adc->chip->set_scale(adc, channel->channel, i);
->  			}
->  		}
->  		break;
->  	case IIO_CHAN_INFO_OFFSET:
-> -		if (val2 != 0) {
-> -			ret = -EINVAL;
-> -			goto out;
-> -		}
-> -
-> -		ret = adc->chip->set_offset(adc, channel->channel, val);
-> -		break;
-> +		if (val2 != 0)
-> +			return -EINVAL;
->  
-> +		return adc->chip->set_offset(adc, channel->channel, val);
->  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->  		for (int i = 0; i < ARRAY_SIZE(mcp3911_osr_table); i++) {
->  			if (val == mcp3911_osr_table[i]) {
-> -				ret = adc->chip->set_osr(adc, i);
-> -				break;
-> +				return adc->chip->set_osr(adc, i);
->  			}
->  		}
->  		break;
-
-return -INVAL; here and similar above to simplify the flow.
-
->  	}
-> -
-> -out:
-> -	mutex_unlock(&adc->lock);
-> -	return ret;
-> +	return -EINVAL;
-
-Move this to a default.
-
->  }
->  
->  static int mcp3911_calc_scale_table(struct mcp3911 *adc)
-> @@ -532,7 +508,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
->  	int i = 0;
->  	int ret;
->  
-> -	mutex_lock(&adc->lock);
-> +	guard(mutex)(&adc->lock);
->  	adc->tx_buf = MCP3911_REG_READ(MCP3911_CHANNEL(0), adc->dev_addr);
->  	ret = spi_sync_transfer(adc->spi, xfer, ARRAY_SIZE(xfer));
->  	if (ret < 0) {
-> @@ -549,7 +525,6 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
->  	iio_push_to_buffers_with_timestamp(indio_dev, &adc->scan,
->  					   iio_get_time_ns(indio_dev));
->  out:
-> -	mutex_unlock(&adc->lock);
->  	iio_trigger_notify_done(indio_dev->trig);
->  
->  	return IRQ_HANDLED;
-> 
-> ---
-> base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
-> change-id: 20231125-mcp3911-guard-866591e2c947
-> 
-> Best regards,
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
