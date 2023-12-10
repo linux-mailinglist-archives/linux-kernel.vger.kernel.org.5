@@ -2,182 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E2280B9D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CCF80B9D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjLJIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 03:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S231954AbjLJIRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 03:17:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbjLJIQk (ORCPT
+        with ESMTP id S231653AbjLJIQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 03:16:40 -0500
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2174.outbound.protection.outlook.com [40.92.62.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88D7E3;
-        Sun, 10 Dec 2023 00:16:45 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mj7clTcRpmfwzuRoAM2B6W3luIjSu7oVWJ08o0LokHbqJWcbKerHEzHo2+uduiaaHohLMg/FFiUoq7u+k1dCAvXFCuaBRJRtlAkEYe2PJpBgA6VVPWK6ilkRk6cIp6pK9b7H02u4WVNQ/UUQo1b1ULotD03+qqRh5NLpTqqr0LdcOvApLk3aMfpzbKeB4nTWmwUDdw9t4400LuygtROOH/tgHCG1zwPCUp7HHW6HKEBnCXe4YaKgEkiUvcd1DI6WecfNZC1Qg7z5+KKsFcFjlOtCq/wYUD9s9ZVzvk0RfH/wKxr1AjD0CV25h3wbnyOpUEUmaZHWGhjkih0/3ghaMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Mhds1yoBbjrhkjhv8XPbO4OPO72aaoNMvMxayRbgsR4=;
- b=MRClbKtrKhZpjDdAAOpgwOjwoU8o3wE5WJveyCYqWIpUX1rONUmCyFPvbRTg48/ilYO73ZYqZn1iqLO6+NK57/cEc6HdgHjOBM2im2TVUnuQBW0m5ewtGGkUBURMTNpZKU2xWpEdELGo7sQY4cJyw6JF/DG1I/AkF+2y3Dumg0ihmAH58amWObIYMvSfC1JQeUB6gWBZKLnZJPA66WSwvtLdLT0mSHFE2KuI8fWFq2hNJx6E3adFZdW1WDRFbx001y9LlrYg3iZAqbsysMYOXMwEd2rDI1pLcBm96sbeZeJhyV7/bfe1B8vbhXl8uu2hJ3aZF6o6+7VKINSzRJZZpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mhds1yoBbjrhkjhv8XPbO4OPO72aaoNMvMxayRbgsR4=;
- b=czuqyxI+/jLrCtACYpUdol1ZJojbdl0voVkq3eixcteJ/IE90MsP6luwZCfzcMzdvTlKYVTLbi5tJb+h9aNfrVOFxJnH69DNtENmv6KffJaUTdtGodx0F49pTD4Dzcip3O1KqcGcKmlT5mycXGQMnohF+kTO1Qf1L+EnrwUNk0sh62pgFgjjjSbLWXJ+lr7Nl+J/gy5BSRK7yEOzl9t52m+9lBpceHVArMqZjv1Ic68R2Y+A7mmvQvwd3fS/tnoSjD4f8Fga9Lom5WRg9u8wILwMvi8lg4WBYpPrXsbKSCYTtSAwfKqIF61Rtvi0pE1LjckqfSW8kxu8aSHGSAefmw==
-Received: from SYBPR01MB6870.ausprd01.prod.outlook.com (2603:10c6:10:13d::10)
- by MEYPR01MB7339.ausprd01.prod.outlook.com (2603:10c6:220:15f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.31; Sun, 10 Dec
- 2023 08:16:38 +0000
-Received: from SYBPR01MB6870.ausprd01.prod.outlook.com
- ([fe80::be5a:160f:5418:9deb]) by SYBPR01MB6870.ausprd01.prod.outlook.com
- ([fe80::be5a:160f:5418:9deb%5]) with mapi id 15.20.7068.030; Sun, 10 Dec 2023
- 08:16:38 +0000
-From:   Tianyi Liu <i.pear@outlook.com>
-To:     seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
-        mlevitsk@redhat.com, maz@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        Tianyi Liu <i.pear@outlook.com>
-Subject: [PATCH v3 5/5] perf tools: Support PERF_CONTEXT_GUEST_* flags
-Date:   Sun, 10 Dec 2023 16:16:14 +0800
-Message-ID: <SYBPR01MB68703FCDA8424EC486BB208E9D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-References: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [8UVhiSmk+ilYe9quhayyz4kLLAPhV41H68ne61CRE+RkAwuHwNnW+A==]
-X-ClientProxiedBy: SG2P153CA0040.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::9)
- To SYBPR01MB6870.ausprd01.prod.outlook.com (2603:10c6:10:13d::10)
-X-Microsoft-Original-Message-ID: <20231210081614.2435-1-i.pear@outlook.com>
+        Sun, 10 Dec 2023 03:16:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FC8C6
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:17:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76281C433C8;
+        Sun, 10 Dec 2023 08:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702196224;
+        bh=4MP+IiZQyTgAhgvxwWK9fTe8S5nqlJbp9EPDPLsqyds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=id7Mif+ETkUg+AUNse9Dqu2A10VFzTNzArnoZoaxMSbOC7h5t/k6lDLydmqAfAD/N
+         QbdjWGuMcJA8s79ckAw9B4IiXJxM/ZRjmW9c48qSVsXhHej/WIQwipXW0LdN0kXuec
+         JBlSCZ+wTC1D98CwYK56EPHTtYzmUK6izmRh2Kx0=
+Date:   Sun, 10 Dec 2023 09:17:01 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Benjamin Bigler <benjamin@bigler.one>
+Cc:     broonie@kernel.org, linux@bigler.io, francesco@dolcini.it,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        regressions@lists.linux.dev, stefan.moring@technolution.nl,
+        regressions@leemhuis.info
+Subject: Re: [PATCH] spi: spi-imx: correctly configure burst length when
+ using dma
+Message-ID: <2023121047-unnamable-magma-2b6d@gregkh>
+References: <20231209222338.5564-1-benjamin@bigler.one>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SYBPR01MB6870:EE_|MEYPR01MB7339:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea4a1d05-76d7-4776-7e34-08dbf958554b
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8KlL61KGK3844bxqcw2mjgws6tBrdbjGDYJLTUij/sCbrkbRQ9yEaxqamA5ScAvluCCmn5N/sVhI7etP8Grtx20mq9nYuREuuIRcf7sQoX35ZkFcaWWTmEmAolzKfhhy9YTa3GIow3x1DrR26RpnEDOhFOMuNMT9ndbUXrdTO1tijtCixldnQ+sEU1TotpzLEfbkByd1J5N5n4yiWMs+LTR0D6uwehA8ypOw9t3SYl8abVWwTxPQkS4YrvIIATv+9isVIdC8MNnxmTY2280yuRPce74WnF9T1W6rPo8+yS5+vNHkEhbetC/Lt8RDf4siTWmeqNdKmPSYoaeuVUIW2x5S4MlENHlbHaRHC6tOLHLGst5kQ86nkYnRruEa/IxMhtVNxPEog3mqZCQWl9afEWTHWlYUXVaDiIJvvTo5SDyIJMmEdHSrMpw9R9ZA+PGiPQVN+gxvxTXjbLm6VZHR++BtBLVp07kbNUeRS1ars6DErcgqyl2y/9SaBJSa3VmT14knUt5Inqj5VSzg5BafYp52mJMIA9vQOCFZAj8EnIbdDW1QwkW5Y2NZ3L/XYz4hUGYPnkkZA7vcVqOWF4SDWoTJShlOFbq/upMwa0P1dF5kFlTg6UvWHSspWoE7MIEv
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KfEbjl6a6Sqms5Et/MeX36Qw/8VPmzfQ/l24QGo9AzUEAYvEhe/XKQFi0HiU?=
- =?us-ascii?Q?uLdJtjjeWxkV9CbU16DjwhY4NJvTyKQ2Q1IwcOMgnwl9RxhfJfrfe7QBHfqz?=
- =?us-ascii?Q?r7CzFR4yPNskOZkcdiwmG7e4eFPyLAZQFBRWDS9B4O92p1u0Lz/x41uUsEce?=
- =?us-ascii?Q?qM+qua2lkIaDuTqiDmFtNn4yIrAN3XOvALwlL7eZcKmnpduQ6N3iicyojbSR?=
- =?us-ascii?Q?dnxTdRAxhSwEzHsBwY5G0xAdiO0shG8zlBhWlGORZ7BkJ+iBjGdW0A5Oa9TR?=
- =?us-ascii?Q?cAgFNYbLtvxoQrqUW2AtuMHoQPLGGMGzp3jWBIBJyA5JFzuSeAEXiEdXAM03?=
- =?us-ascii?Q?n4/OsGGprziqjLFX1Q0Gkj8eunkfQ0AdJn/QhlxpSffJby2verSBwD0bLXtr?=
- =?us-ascii?Q?43ResD7TrvF58c7FFkKeNVyK6zrzy8dxkvRdXLmkqvCtB48FRDLolEXpz5p4?=
- =?us-ascii?Q?NZXBTzxFn8uTmZHDVwQgmY1hL+4lQLazqQar11Uyuhg1GsCg4tXL1bo4w2jb?=
- =?us-ascii?Q?jkLnOV/s4KGbOkBjAo3/UBnNAbrlJBHFjkaaPd/7M5rOsaIfvZtWuclQ7LYq?=
- =?us-ascii?Q?kGw/mWXNsWCRKc4Q7pArjkJPiI9Y1TP5bzOJLpzjbafdFLBs7K7TPYyJ7gId?=
- =?us-ascii?Q?/OJuFp63Ps3K6FZ+AZIsNh1LB5QC+/nbX6nB80qtK2YKdW2l3cNPaVNJ07ay?=
- =?us-ascii?Q?ApbjN69a/hI5LsVWo40l7CMyKLaJ3bUTPmwZC0Z4TwurZrrYqUWWA5RuIFac?=
- =?us-ascii?Q?IglBm0TTopp8zQ4eRlBTKjPAFg07ryA9EOPLOmFiqRUQWbksE6/8Z5XmceA5?=
- =?us-ascii?Q?mvCuW5ITzyP5KTUtRUjUizWqgIa7N5T+fujzcTkannuCKNZ61Bqa7DpewIz4?=
- =?us-ascii?Q?xWCjTelW71QJre1aWOtoDSygZAKj5iwZoB5aPnVkoT5eDojCyC+rNQ6XZT5U?=
- =?us-ascii?Q?5alCoAl/5P+XrA8PSUUeeLVaU4BxPXkeCNFcTUc26/yZ2APDg/QfP8romr/l?=
- =?us-ascii?Q?onN/Zoy1faXmhBL7iD8qSQQDMfBQ4ndz7h1VibyWE6zn+CYsdBv4uyAibKxr?=
- =?us-ascii?Q?/HszVvkGTJc5Zu6eaS8XFojieu6AzEuzDMV6pEyhq3m0zQ9wdPmBRuQGm6QW?=
- =?us-ascii?Q?PTSzhpeIloU0y1PvZhjJJgnOhrLPJN6ldj5cEBxiRkc7HmKWmPnZoQAHa6Lq?=
- =?us-ascii?Q?hotUe9DY2aYNWhHlxUjKUz7vDGFn/3Wl25fqPQiWOUZndr1zJsdvrZZY0uAS?=
- =?us-ascii?Q?9VZqthVg+h498A6Ddnq7?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea4a1d05-76d7-4776-7e34-08dbf958554b
-X-MS-Exchange-CrossTenant-AuthSource: SYBPR01MB6870.ausprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2023 08:16:38.9013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MEYPR01MB7339
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209222338.5564-1-benjamin@bigler.one>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `perf` util currently has an incomplete implementation for the
-following event flags. Events with these flags will be dropped
-or be identified as unknown types:
+On Sat, Dec 09, 2023 at 11:23:26PM +0100, Benjamin Bigler wrote:
+> If DMA is used, burst length should be set to the bus width of the DMA.
+> Otherwise, the SPI hardware will transmit/receive one word per DMA
+> request.
+> Since this issue affects both transmission and reception, it cannot be
+> detected with a loopback test.
+> Replace magic numbers 512 and 0xfff with MX51_ECSPI_CTRL_MAX_BURST.
+> 
+> Signed-off-by: Benjamin Bigler <benjamin@bigler.one>
+> Reported-by Stefan Bigler <linux@bigler.io>
+> Fixes: 15a6af94a277 ("spi: Increase imx51 ecspi burst length based on transfer length")
+> Link: https://lore.kernel.org/r/8a415902c751cdbb4b20ce76569216ed@mail.infomaniak.com
+> ---
+>  drivers/spi/spi-imx.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
 
-`PERF_CONTEXT_GUEST_KERNEL`
-`PERF_CONTEXT_GUEST_USER`
+Hi,
 
-This patch makes `perf script`, `perf timechart` and `perf data` to
-correctly identify these flags.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Signed-off-by: Tianyi Liu <i.pear@outlook.com>
----
- tools/perf/builtin-timechart.c      | 6 ++++++
- tools/perf/util/data-convert-json.c | 6 ++++++
- tools/perf/util/machine.c           | 6 ++++++
- 3 files changed, 18 insertions(+)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/tools/perf/builtin-timechart.c b/tools/perf/builtin-timechart.c
-index 19d4542ea18a..6a368b6a323e 100644
---- a/tools/perf/builtin-timechart.c
-+++ b/tools/perf/builtin-timechart.c
-@@ -536,6 +536,12 @@ static const char *cat_backtrace(union perf_event *event,
- 			case PERF_CONTEXT_USER:
- 				cpumode = PERF_RECORD_MISC_USER;
- 				break;
-+			case PERF_CONTEXT_GUEST_KERNEL:
-+				cpumode = PERF_RECORD_MISC_GUEST_KERNEL;
-+				break;
-+			case PERF_CONTEXT_GUEST_USER:
-+				cpumode = PERF_RECORD_MISC_GUEST_USER;
-+				break;
- 			default:
- 				pr_debug("invalid callchain context: "
- 					 "%"PRId64"\n", (s64) ip);
-diff --git a/tools/perf/util/data-convert-json.c b/tools/perf/util/data-convert-json.c
-index 5bb3c2ba95ca..62686f78d973 100644
---- a/tools/perf/util/data-convert-json.c
-+++ b/tools/perf/util/data-convert-json.c
-@@ -205,6 +205,12 @@ static int process_sample_event(struct perf_tool *tool,
- 				case PERF_CONTEXT_USER:
- 					cpumode = PERF_RECORD_MISC_USER;
- 					break;
-+				case PERF_CONTEXT_GUEST_KERNEL:
-+					cpumode = PERF_RECORD_MISC_GUEST_KERNEL;
-+					break;
-+				case PERF_CONTEXT_GUEST_USER:
-+					cpumode = PERF_RECORD_MISC_GUEST_USER;
-+					break;
- 				default:
- 					pr_debug("invalid callchain context: %"
- 							PRId64 "\n", (s64) ip);
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 90c750150b19..28eac11d0f61 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2343,6 +2343,12 @@ static int add_callchain_ip(struct thread *thread,
- 			case PERF_CONTEXT_USER:
- 				*cpumode = PERF_RECORD_MISC_USER;
- 				break;
-+			case PERF_CONTEXT_GUEST_KERNEL:
-+				*cpumode = PERF_RECORD_MISC_GUEST_KERNEL;
-+				break;
-+			case PERF_CONTEXT_GUEST_USER:
-+				*cpumode = PERF_RECORD_MISC_GUEST_USER;
-+				break;
- 			default:
- 				pr_debug("invalid callchain context: "
- 					 "%"PRId64"\n", (s64) ip);
--- 
-2.34.1
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
