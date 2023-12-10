@@ -2,162 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2096480B8F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8915280B8FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbjLJFVC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 Dec 2023 00:21:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        id S231417AbjLJFaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 00:30:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJFU7 (ORCPT
+        with ESMTP id S229481AbjLJFaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 00:20:59 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8193CD;
-        Sat,  9 Dec 2023 21:20:57 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 15CDA8043;
-        Sun, 10 Dec 2023 13:20:42 +0800 (CST)
-Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sun, 10 Dec
- 2023 13:20:42 +0800
-Received: from localhost.localdomain (180.75.243.157) by EXMBX072.cuchost.com
- (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sun, 10 Dec
- 2023 13:20:38 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     <andi.shyti@kernel.org>
-CC:     <jisheng.teoh@starfivetech.com>, <leyfoon.tan@starfivetech.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <michal.simek@amd.com>
-Subject: Re: [PATCH v2] i2c: cadence: Add system suspend and resume PM support
-Date:   Sun, 10 Dec 2023 13:20:17 +0800
-Message-ID: <20231210052018.2063-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20231209205744.ehmthjvn7nuslvhd@zenone.zhora.eu>
-References: <20231209205744.ehmthjvn7nuslvhd@zenone.zhora.eu>
+        Sun, 10 Dec 2023 00:30:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D866BF3
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 21:30:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 54083C433C9;
+        Sun, 10 Dec 2023 05:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702186223;
+        bh=1UoYqhVsIOO+xKsV2z9mjZ0OK6SVw+LuzpHTU5ab7mE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ocvynBAdIestMiZv+RQ2esNxDPqf1zXZxNDJBN5MaOJMgYr/6NcntNfmuBnha9PqR
+         zbgxF+3KLQz/Ms/FB+loNgkLP7ohx+rGwigX3vH0DbkP7ZEw6RsNsaXnxNkFFVMAXt
+         bhkQXqt4GOlzn7oaUOyjpifgxcAUZCf8S+bn2isFNuBP4z/UcDilCvNnCsGEl1yO99
+         tKSw9EvBfe4+0qzb+kICm0cYqv67r9hAv/s+f2urJ/qcgebHAWQVa33yGj9KxZlsiS
+         xVXBSTDqBHtBZBA9oxuscly+bryhJojpf2X/TFrhVBr2ZFGJ8K9DQIDgbw3l+oa5pB
+         6zYMOeGPBXhTg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 39B0FDD4F1D;
+        Sun, 10 Dec 2023 05:30:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [180.75.243.157]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX072.cuchost.com
- (172.16.6.82)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND bpf-next v1] test_bpf: Rename second ALU64_SMOD_X to
+ ALU64_SMOD_K
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170218622323.12725.6922514276385110557.git-patchwork-notify@kernel.org>
+Date:   Sun, 10 Dec 2023 05:30:23 +0000
+References: <20231207040851.19730-1-yangtiezhu@loongson.cn>
+In-Reply-To: <20231207040851.19730-1-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        puranjay12@gmail.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Dec 2023 21:57:44 +0100
-Andi Shyti <andi.shyti@kernel.org> wrote:
+Hello:
 
-> Hi Ji Sheng,
->
-> On Sat, Dec 09, 2023 at 09:15:16PM +0800, Ji Sheng Teoh wrote:
-> > Enable device system suspend and resume PM support, and mark the
-> > device state as suspended during system suspend to reject any data
-> > transfer.
-> >
-> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > ---
-> > Changes since v1:
-> > - Add missing err assignment in cdns_i2c_resume().
->
-> thanks for the quick version update. However, while it's nice to
-> see such prompt proactivity, we also need to allow more time for
-> others to review your change.
->
-> Next time, please give it a bit more time before sending out
-> version 2. :-)
->
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Thanks, will take note of that. 
+On Thu,  7 Dec 2023 12:08:51 +0800 you wrote:
+> Currently, there are two test cases with same name
+> "ALU64_SMOD_X: -7 % 2 = -1", the first one is right,
+> the second one should be ALU64_SMOD_K because its
+> code is BPF_ALU64 | BPF_MOD | BPF_K.
+> 
+> Before:
+> test_bpf: #170 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+> test_bpf: #171 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+> 
+> [...]
 
-> > ---
-> >  drivers/i2c/busses/i2c-cadence.c | 33
-> > ++++++++++++++++++++++++++++++++ 1 file changed, 33 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-cadence.c
-> > b/drivers/i2c/busses/i2c-cadence.c index de3f58b60dce..4bb7d6756947
-> > 100644 --- a/drivers/i2c/busses/i2c-cadence.c
-> > +++ b/drivers/i2c/busses/i2c-cadence.c
-> > @@ -1176,6 +1176,18 @@ static int __maybe_unused
-> > cdns_i2c_runtime_suspend(struct device *dev) return 0;
-> >  }
-> >
-> > +static int __maybe_unused cdns_i2c_suspend(struct device *dev)
-> > +{
-> > +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
-> > +
-> > +	i2c_mark_adapter_suspended(&xi2c->adap);
-> > +
-> > +	if (!pm_runtime_status_suspended(dev))
-> > +		return cdns_i2c_runtime_suspend(dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  /**
-> >   * cdns_i2c_init -  Controller initialisation
-> >   * @id:		Device private data structure
-> > @@ -1219,7 +1231,28 @@ static int __maybe_unused
-> > cdns_i2c_runtime_resume(struct device *dev) return 0;
-> >  }
-> >
-> > +static int __maybe_unused cdns_i2c_resume(struct device *dev)
-> > +{
->
-> I am not really understanding what you are trying to do here:
->
-> > +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
-> > +	int err;
-> > +
-> > +	err = cdns_i2c_runtime_resume(dev);
->
-> First you try to resume...
->
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	if (pm_runtime_status_suspended(dev)) {
->
-> ... then you check if you are suspended ...
+Here is the summary with links:
+  - [RESEND,bpf-next,v1] test_bpf: Rename second ALU64_SMOD_X to ALU64_SMOD_K
+    https://git.kernel.org/bpf/bpf-next/c/5181dc08f795
 
-This serves as a check and balance to ensure that when the system
-resumes with device in runtime suspend state, we disable the clock
-enabled in earlier cdns_i2c_runtime_resume() to ensure a balanced clock
-reference count for subsequent runtime resume transition.
-Similar implementation can be found in this commit:
-https://github.com/torvalds/linux/commit/44c99904cf61f945d02ac9976ab10dd5ccaea393
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->
-> > +		err = cdns_i2c_runtime_suspend(dev);
->
-> ... and suspend again? Shouldn't this be _resume()?
->
-> Thanks,
-[O> Andi
->
-> > +		if (err)
-> > +			return err;
-> > +	}
-> > +
-> > +	i2c_mark_adapter_resumed(&xi2c->adap);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
-> > +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cdns_i2c_suspend,
-> > cdns_i2c_resume) SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
-> >  			   cdns_i2c_runtime_resume, NULL)
-> >  };
-> > --
-> > 2.25.1
-> >
+
