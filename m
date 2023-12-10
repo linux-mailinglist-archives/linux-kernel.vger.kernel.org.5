@@ -2,82 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E83BD80B8F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2096480B8F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 06:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjLJFO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 00:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S229556AbjLJFVC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 Dec 2023 00:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJFOY (ORCPT
+        with ESMTP id S229481AbjLJFU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 00:14:24 -0500
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3523F10A
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 21:14:31 -0800 (PST)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-59077a760d7so3595235eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 21:14:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702185270; x=1702790070;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+8JVAn+vbFktNFt7tOFoDEiuegHhU/cJ407wE36XT7g=;
-        b=tadCgHDfVZ0tAc923IFiEcRbwMYMb6vq9F1oKnE+bwQxrzE01IRMDup2TXrN5UEtQC
-         IPrBsSMdM/1TrgN8Ty7uOVBZFBkXJEaNX44afAfFaGwrXv8os09M/5WLDDeAAj/TLU3h
-         VuEg6PtsVe1rqVaBT3pgIjqVzWtQNLlOuLCcPPU7uFLTAfNLwfDAif1cn1Hq0ONVMqGH
-         +CRUZiARS4I77QX9ZvvrUEEVtZeG1uAa8pUNvOSwRP2tMJ2Y689eXcLpUWN+eYAi5QqO
-         qZ3FJSFiB0wyCNBNyYWwylNK3kXDSQMgC9RthD9rOXdqd4T9ePaeHPa0bnt5dJBeOAjl
-         I1AA==
-X-Gm-Message-State: AOJu0YyLzbwSQulf2VCnVWTO+wVgMHgbJF/0X1oHa+8YYE4tCahOYOIS
-        rwFHAe0T87XCQQSLTUjPHrgoNI1oBFLl06kIw5B/6ueqgZE1RAI=
-X-Google-Smtp-Source: AGHT+IHmeIflZuSJ9dn8U4LuSv+78Fh56kIdeBjooVgPUM13KI6UhVZHNgtVWt5kW4odXfxCrPa0JLZlHlq4ZFBc/1N26/eZDF7x
+        Sun, 10 Dec 2023 00:20:59 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8193CD;
+        Sat,  9 Dec 2023 21:20:57 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 15CDA8043;
+        Sun, 10 Dec 2023 13:20:42 +0800 (CST)
+Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sun, 10 Dec
+ 2023 13:20:42 +0800
+Received: from localhost.localdomain (180.75.243.157) by EXMBX072.cuchost.com
+ (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Sun, 10 Dec
+ 2023 13:20:38 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     <andi.shyti@kernel.org>
+CC:     <jisheng.teoh@starfivetech.com>, <leyfoon.tan@starfivetech.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <michal.simek@amd.com>
+Subject: Re: [PATCH v2] i2c: cadence: Add system suspend and resume PM support
+Date:   Sun, 10 Dec 2023 13:20:17 +0800
+Message-ID: <20231210052018.2063-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.43.0.windows.1
+In-Reply-To: <20231209205744.ehmthjvn7nuslvhd@zenone.zhora.eu>
+References: <20231209205744.ehmthjvn7nuslvhd@zenone.zhora.eu>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2225:b0:3b9:e8d0:6de5 with SMTP id
- bd37-20020a056808222500b003b9e8d06de5mr2521420oib.2.1702185270499; Sat, 09
- Dec 2023 21:14:30 -0800 (PST)
-Date:   Sat, 09 Dec 2023 21:14:30 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000063e0d3060c20e4ce@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [180.75.243.157]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX072.cuchost.com
+ (172.16.6.82)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Sat, 9 Dec 2023 21:57:44 +0100
+Andi Shyti <andi.shyti@kernel.org> wrote:
 
-***
+> Hi Ji Sheng,
+>
+> On Sat, Dec 09, 2023 at 09:15:16PM +0800, Ji Sheng Teoh wrote:
+> > Enable device system suspend and resume PM support, and mark the
+> > device state as suspended during system suspend to reject any data
+> > transfer.
+> >
+> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> > ---
+> > Changes since v1:
+> > - Add missing err assignment in cdns_i2c_resume().
+>
+> thanks for the quick version update. However, while it's nice to
+> see such prompt proactivity, we also need to allow more time for
+> others to review your change.
+>
+> Next time, please give it a bit more time before sending out
+> version 2. :-)
+>
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: eadavis@qq.com
+Thanks, will take note of that. 
 
-please test memory leak in radix_tree_insert
+> > ---
+> >  drivers/i2c/busses/i2c-cadence.c | 33
+> > ++++++++++++++++++++++++++++++++ 1 file changed, 33 insertions(+)
+> >
+> > diff --git a/drivers/i2c/busses/i2c-cadence.c
+> > b/drivers/i2c/busses/i2c-cadence.c index de3f58b60dce..4bb7d6756947
+> > 100644 --- a/drivers/i2c/busses/i2c-cadence.c
+> > +++ b/drivers/i2c/busses/i2c-cadence.c
+> > @@ -1176,6 +1176,18 @@ static int __maybe_unused
+> > cdns_i2c_runtime_suspend(struct device *dev) return 0;
+> >  }
+> >
+> > +static int __maybe_unused cdns_i2c_suspend(struct device *dev)
+> > +{
+> > +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
+> > +
+> > +	i2c_mark_adapter_suspended(&xi2c->adap);
+> > +
+> > +	if (!pm_runtime_status_suspended(dev))
+> > +		return cdns_i2c_runtime_suspend(dev);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  /**
+> >   * cdns_i2c_init -  Controller initialisation
+> >   * @id:		Device private data structure
+> > @@ -1219,7 +1231,28 @@ static int __maybe_unused
+> > cdns_i2c_runtime_resume(struct device *dev) return 0;
+> >  }
+> >
+> > +static int __maybe_unused cdns_i2c_resume(struct device *dev)
+> > +{
+>
+> I am not really understanding what you are trying to do here:
+>
+> > +	struct cdns_i2c *xi2c = dev_get_drvdata(dev);
+> > +	int err;
+> > +
+> > +	err = cdns_i2c_runtime_resume(dev);
+>
+> First you try to resume...
+>
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	if (pm_runtime_status_suspended(dev)) {
+>
+> ... then you check if you are suspended ...
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+This serves as a check and balance to ensure that when the system
+resumes with device in runtime suspend state, we disable the clock
+enabled in earlier cdns_i2c_runtime_resume() to ensure a balanced clock
+reference count for subsequent runtime resume transition.
+Similar implementation can be found in this commit:
+https://github.com/torvalds/linux/commit/44c99904cf61f945d02ac9976ab10dd5ccaea393
 
-diff --git a/net/qrtr/af_qrtr.c b/net/qrtr/af_qrtr.c
-index 41ece61eb57a..3615a9f35bbb 100644
---- a/net/qrtr/af_qrtr.c
-+++ b/net/qrtr/af_qrtr.c
-@@ -267,6 +267,9 @@ static int qrtr_tx_wait(struct qrtr_node *node, int dest_node, int dest_port,
- 	/* Never set confirm_rx on non-data packets */
- 	if (type != QRTR_TYPE_DATA)
- 		return 0;
-+	printk("dn: %d, dp: %d, %s\n", dest_node, dest_port, type, __func__);
-+	if (dest_node < 0)
-+		return -EINVAL;
- 
- 	mutex_lock(&node->qrtr_tx_lock);
- 	flow = radix_tree_lookup(&node->qrtr_tx_flow, key);
-
+>
+> > +		err = cdns_i2c_runtime_suspend(dev);
+>
+> ... and suspend again? Shouldn't this be _resume()?
+>
+> Thanks,
+[O> Andi
+>
+> > +		if (err)
+> > +			return err;
+> > +	}
+> > +
+> > +	i2c_mark_adapter_resumed(&xi2c->adap);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
+> > +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(cdns_i2c_suspend,
+> > cdns_i2c_resume) SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
+> >  			   cdns_i2c_runtime_resume, NULL)
+> >  };
+> > --
+> > 2.25.1
+> >
