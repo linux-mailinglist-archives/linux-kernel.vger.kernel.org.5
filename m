@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E9280BC70
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:48:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6122A80BC72
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbjLJRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 12:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        id S231960AbjLJRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 12:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJRsS (ORCPT
+        with ESMTP id S231916AbjLJRuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 12:48:18 -0500
-Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29286FC
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:48:24 -0800 (PST)
+        Sun, 10 Dec 2023 12:50:05 -0500
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1AEFD
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:50:11 -0800 (PST)
 Received: from pop-os.home ([92.140.202.140])
         by smtp.orange.fr with ESMTPA
-        id CNudrI7QgoJwrCNudrE128; Sun, 10 Dec 2023 18:48:22 +0100
+        id CNwNr4gNwWblTCNwNrbUKc; Sun, 10 Dec 2023 18:50:10 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702230502;
-        bh=lBPdDjemhVHEdTvges9UmlJ1LQEDyrXReCC0qW2qybY=;
+        s=t20230301; t=1702230610;
+        bh=HzZTGQuA0kr0qzhf9S/gzmjguN57sJaWf26PktWi9U4=;
         h=From:To:Cc:Subject:Date;
-        b=mFSnB5pAeg6rY7xHcKVfo6rQQienz7/0t99YSnk1T24Rxu1Mw4XoHgC8qg/Cct1XM
-         EHjZ5X1GahrP32evCuHkKA9dXUBkaNdeZ0Y1/gksOdZ7YYS+sGWCg4GGszn3WHtuNS
-         eg1r7SxuEzS7I+auiD0fp/imJyUL8h8MUJP2NlX4fyjyosQFVehOY3yLlIdj36iLSz
-         0wXoOvr8P7NmIvZU8bfMWKqxkje1GOjlbD4bTJ97JuN6qCLpOYmBIEi6LfPE2cUMkQ
-         cF1A1w73kvWvcy5pqNIuUUbOLBCdUWEdgTquZT5ycAw60uZHm/UyC/84ZXU0HKm9D9
-         fKo20h/TJaBPA==
+        b=s2eZNshYTi2b1eXXjtC1TXyhFurVyBUyFnpASCghE6xZzdQkacTO0gSetG+bHAMwD
+         GmbWPPMyGUzSOl98YCRa6qF3nOMDLpgz+TRyWu2SGI8v4UGoMbvAfxR76+62pXOPtM
+         PUvKS7UcyX1kdIUeNMk33quvsuptSz5xrX/YDOyD7apbb6wFtbN8o5faCStcgpj7mX
+         p+P9DxWPO+NGkbJRXHVmWc5DHX3QJrJcBRHzsxDTlPhhd03WlITdC6n4c/UJsxCJF/
+         pRieHQaY2FJblcUFaY+2gjI3twk9LYvFJRcVs8tvVa6lNPfrQJt/IoulMAxIZkKnDY
+         NG84iK8KS0gaQ==
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Dec 2023 18:48:22 +0100
+X-ME-Date: Sun, 10 Dec 2023 18:50:10 +0100
 X-ME-IP: 92.140.202.140
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
+To:     Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] drivers/perf: Remove usage of the deprecated ida_simple_xx() API
-Date:   Sun, 10 Dec 2023 18:48:18 +0100
-Message-Id: <85b0b73a1b2f743dd5db15d4765c7685100de27f.1702230488.git.christophe.jaillet@wanadoo.fr>
+        linux-pci@vger.kernel.org
+Subject: [PATCH] PCI: vmd: Remove usage of the deprecated ida_simple_xx() API
+Date:   Sun, 10 Dec 2023 18:50:03 +0100
+Message-Id: <270f25cdc154f3b0309e57b2f6421776752e2170.1702230593.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,40 +66,40 @@ This is less verbose.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/perf/fsl_imx9_ddr_perf.c | 6 +++---
+ drivers/pci/controller/vmd.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
-index 5cf770a1bc31..9685645bfe04 100644
---- a/drivers/perf/fsl_imx9_ddr_perf.c
-+++ b/drivers/perf/fsl_imx9_ddr_perf.c
-@@ -617,7 +617,7 @@ static int ddr_perf_probe(struct platform_device *pdev)
+diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+index 94ba61fe1c44..00a4264711f1 100644
+--- a/drivers/pci/controller/vmd.c
++++ b/drivers/pci/controller/vmd.c
+@@ -984,7 +984,7 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 		return -ENOMEM;
  
- 	platform_set_drvdata(pdev, pmu);
+ 	vmd->dev = dev;
+-	vmd->instance = ida_simple_get(&vmd_instance_ida, 0, 0, GFP_KERNEL);
++	vmd->instance = ida_alloc(&vmd_instance_ida, GFP_KERNEL);
+ 	if (vmd->instance < 0)
+ 		return vmd->instance;
  
--	pmu->id = ida_simple_get(&ddr_ida, 0, 0, GFP_KERNEL);
-+	pmu->id = ida_alloc(&ddr_ida, GFP_KERNEL);
- 	name = devm_kasprintf(&pdev->dev, GFP_KERNEL, DDR_PERF_DEV_NAME "%d", pmu->id);
- 	if (!name) {
- 		ret = -ENOMEM;
-@@ -674,7 +674,7 @@ static int ddr_perf_probe(struct platform_device *pdev)
- 	cpuhp_remove_multi_state(pmu->cpuhp_state);
- cpuhp_state_err:
- format_string_err:
--	ida_simple_remove(&ddr_ida, pmu->id);
-+	ida_free(&ddr_ida, pmu->id);
- 	dev_warn(&pdev->dev, "i.MX9 DDR Perf PMU failed (%d), disabled\n", ret);
- 	return ret;
- }
-@@ -688,7 +688,7 @@ static int ddr_perf_remove(struct platform_device *pdev)
- 
- 	perf_pmu_unregister(&pmu->pmu);
- 
--	ida_simple_remove(&ddr_ida, pmu->id);
-+	ida_free(&ddr_ida, pmu->id);
- 
+@@ -1026,7 +1026,7 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
  	return 0;
+ 
+  out_release_instance:
+-	ida_simple_remove(&vmd_instance_ida, vmd->instance);
++	ida_free(&vmd_instance_ida, vmd->instance);
+ 	return err;
  }
+ 
+@@ -1048,7 +1048,7 @@ static void vmd_remove(struct pci_dev *dev)
+ 	vmd_cleanup_srcu(vmd);
+ 	vmd_detach_resources(vmd);
+ 	vmd_remove_irq_domain(vmd);
+-	ida_simple_remove(&vmd_instance_ida, vmd->instance);
++	ida_free(&vmd_instance_ida, vmd->instance);
+ }
+ 
+ static void vmd_shutdown(struct pci_dev *dev)
 -- 
 2.34.1
 
