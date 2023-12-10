@@ -2,159 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8841680BAAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA8880BAAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbjLJMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 07:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        id S231871AbjLJMdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 07:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJMaD (ORCPT
+        with ESMTP id S229482AbjLJMdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 07:30:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E897310E;
-        Sun, 10 Dec 2023 04:30:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702211410; x=1733747410;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1hFKZaaYa0isYOfuRccRS7bdXdTSP+jzodb5aJcq+Mo=;
-  b=RUG1I/muz6cT8eihjn9A6NXShrQdHopGDqrQDWcvGUy8jc0+O8DUzMsd
-   yqeW7ZM0Yht9iyzxqaT+MxGgC5boiGoYvTeqxuz1Vs5FbcqKF0xI7QLgj
-   xbBoALEXVpVjUQfAXCcqV9MOPXJVBBaEJDceiErtH/CuWNppx0jyYFbAi
-   d3erj4NKyos1xsUzI5hYK9KE6tfoGTqgUt/ITtnAn3is8wxsre9LNHalS
-   i22QJQDE3NW6Ge+//TQIXG7tNfyP8v2JwC0cF5Q0rvyWsuBM+TdrbaKqt
-   +CdbrVvWdSUjBcmocKk2hQDZcos+m4uLoUFib7G0ukLCWqeWneBOfSTlY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="7910833"
-X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
-   d="scan'208";a="7910833"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 04:30:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="1104116213"
-X-IronPort-AV: E=Sophos;i="6.04,265,1695711600"; 
-   d="scan'208";a="1104116213"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Dec 2023 04:30:05 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCIwd-000Gp8-0G;
-        Sun, 10 Dec 2023 12:30:03 +0000
-Date:   Sun, 10 Dec 2023 20:29:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        quic_jesszhan@quicinc.com, quic_parellan@quicinc.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 10/16] drm/msm/dpu: add CDM related logic to
- dpu_hw_ctl layer
-Message-ID: <202312102047.S0I69pCs-lkp@intel.com>
-References: <20231208050641.32582-11-quic_abhinavk@quicinc.com>
+        Sun, 10 Dec 2023 07:33:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8ACEFF
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:33:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C5C7C433C7;
+        Sun, 10 Dec 2023 12:33:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702211632;
+        bh=N9/kqstXD8U7IPBmYFZROtil/oc5Xniz8xWapHWaMvA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mtrPxM5C0jy16l8EMCWn1a4BzLhVBWYsyBP6p/UQVloQAYMNzO8q2khJZrthnh0/p
+         1XvSfjYcykH0/Evq+rrCf7UmSn3Xv5MYnFdMJDdz29SBXvrx1+pydX76VyC43x1Hvi
+         HUpMyWyehvsygzRfBx42pbQShNRZblkjR/uNX1Bc3w+SwsZv1r3ej2Ps+e+odMuBuu
+         +eJ5BwqyO6ax1QNM0pmsNRGErhc9/CyQ62mreBcWFFDM0gBw5QHk3MdGknnekhku4E
+         jvsvWMFl5T6bfni76/tj45PVtjyyx4/aML425FbQ7dJ641UkfrmQaztVH6ZtsPYDms
+         QedtgtvNcIXhg==
+Date:   Sun, 10 Dec 2023 12:33:43 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Marcelo Schmitt <marcelo.schmitt@analog.com>
+Cc:     <apw@canonical.com>, <joe@perches.com>, <dwaipayanray1@gmail.com>,
+        <lukas.bulwahn@gmail.com>, <paul.cercueil@analog.com>,
+        <Michael.Hennerich@analog.com>, <lars@metafoo.de>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <dan.carpenter@linaro.org>,
+        <marcelo.schmitt1@gmail.com>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 12/13] iio: adc: Add support for AD7091R-8
+Message-ID: <20231210123343.2695a9dc@jic23-huawei>
+In-Reply-To: <0dd8b9682728b07a30877fcb37335b5055d046ff.1701971344.git.marcelo.schmitt1@gmail.com>
+References: <cover.1701971344.git.marcelo.schmitt1@gmail.com>
+        <0dd8b9682728b07a30877fcb37335b5055d046ff.1701971344.git.marcelo.schmitt1@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208050641.32582-11-quic_abhinavk@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhinav,
+On Thu, 7 Dec 2023 15:42:56 -0300
+Marcelo Schmitt <marcelo.schmitt@analog.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> Add support for Analog Devices AD7091R-2, AD7091R-4, and AD7091R-8
+> low power 12-Bit SAR ADCs with SPI interface.
+> Extend ad7091r-base driver so it can be used by the AD7091R-8 driver.
+> 
+> Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
 
-[auto build test WARNING on next-20231207]
-[also build test WARNING on v6.7-rc4]
-[cannot apply to drm-misc/drm-misc-next linus/master v6.7-rc4 v6.7-rc3 v6.7-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+A few trivial things inline.
+Otherwise looks pretty good to me.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Abhinav-Kumar/drm-msm-dpu-add-formats-check-for-writeback-encoder/20231208-130820
-base:   next-20231207
-patch link:    https://lore.kernel.org/r/20231208050641.32582-11-quic_abhinavk%40quicinc.com
-patch subject: [PATCH v2 10/16] drm/msm/dpu: add CDM related logic to dpu_hw_ctl layer
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231210/202312102047.S0I69pCs-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312102047.S0I69pCs-lkp@intel.com/reproduce)
+Jonathan
+> diff --git a/drivers/iio/adc/ad7091r8.c b/drivers/iio/adc/ad7091r8.c
+> new file mode 100644
+> index 000000000000..8dc0f784913b
+> --- /dev/null
+> +++ b/drivers/iio/adc/ad7091r8.c
+> @@ -0,0 +1,261 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Analog Devices AD7091R8 12-bit SAR ADC driver
+> + *
+> + * Copyright 2023 Analog Devices Inc.
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include "ad7091r-base.h"
+> +
+> +#define AD7091R8_REG_ADDR_MSK				GENMASK(15, 11)
+> +#define AD7091R8_RD_WR_FLAG_MSK				BIT(10)
+> +#define AD7091R8_REG_DATA_MSK				GENMASK(9, 0)
+> +
+> +#define AD7091R2_DEV_NAME				"ad7091r-2"
+> +#define AD7091R4_DEV_NAME				"ad7091r-4"
+> +#define AD7091R8_DEV_NAME				"ad7091r-8"
+Not seeing any advantage in these macros.  It will be more readable to just
+have the strings inline where the macros are currently used.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312102047.S0I69pCs-lkp@intel.com/
+> +static int ad7091r8_gpio_setup(struct ad7091r_state *st)
+> +{
+> +	st->convst_gpio = devm_gpiod_get(st->dev, "adi,conversion-start",
+> +					 GPIOD_OUT_LOW);
+> +	if (IS_ERR(st->convst_gpio))
+> +		return dev_err_probe(st->dev, PTR_ERR(st->convst_gpio),
+> +				     "Error getting convst GPIO\n");
+> +
+> +	st->reset_gpio =  devm_gpiod_get_optional(st->dev, "reset",
+> +						  GPIOD_OUT_HIGH);
+> +	if (IS_ERR(st->reset_gpio))
+> +		return PTR_ERR(st->reset_gpio);
+Maybe a dev_err_probe() here as well both for consistency and for the
+debug info that gets stashed if it's EPROBE_DEFER
+> +
+> +	if (st->reset_gpio) {
+> +		fsleep(20);
+> +		gpiod_set_value_cansleep(st->reset_gpio, 0);
+> +	}
+> +
+> +	return 0;
+> +}
 
-All warnings (new ones prefixed by >>):
+> +
+> +static struct ad7091r_init_info ad7091r2_init_info = {
+> +	.info_no_irq = AD7091R_SPI_CHIP_INFO(2),
+> +	.regmap_config = &ad7091r2_reg_conf,
+> +	.ad7091r_regmap_init = &ad7091r8_regmap_init,
+> +	.ad7091r_setup = &ad7091r8_gpio_setup
+> +};
+> +
+> +static struct ad7091r_init_info ad7091r4_init_info = {
+> +	.irq_info = AD7091R_SPI_CHIP_INFO_IRQ(4),
+> +	.info_no_irq = AD7091R_SPI_CHIP_INFO(4),
+> +	.regmap_config = &ad7091r4_reg_conf,
+> +	.ad7091r_regmap_init = &ad7091r8_regmap_init,
+> +	.ad7091r_setup = &ad7091r8_gpio_setup
+> +};
+> +
+> +static struct ad7091r_init_info ad7091r8_init_info = {
+> +	.irq_info = AD7091R_SPI_CHIP_INFO_IRQ(8),
+> +	.info_no_irq = AD7091R_SPI_CHIP_INFO(8),
+> +	.regmap_config = &ad7091r8_reg_conf,
+> +	.ad7091r_regmap_init = &ad7091r8_regmap_init,
+> +	.ad7091r_setup = &ad7091r8_gpio_setup
+> +};
+> +
+> +static int ad7091r8_spi_probe(struct spi_device *spi)
+> +{
+> +	const struct spi_device_id *id = spi_get_device_id(spi);
+> +	const struct ad7091r_init_info *init_info;
+> +
+> +	init_info = spi_get_device_match_data(spi);
+> +	if (!init_info)
+> +		return -EINVAL;
+> +
+> +	return ad7091r_probe(&spi->dev, id->name, init_info, NULL, spi->irq);
+id->name isn't generally a good idea because we end up with lots of odd corner
+cases if the of_device_id and spi_device_id tables get out of sync - which
+can happen if fallback compatibles get used.
 
->> drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c:537:6: warning: variable 'cdm_active' set but not used [-Wunused-but-set-variable]
-           u32 cdm_active = 0;
-               ^
-   1 warning generated.
+Normal way round this is just put the naming of the device in the
+info structure.  Costs a little storage, but makes the code simpler
+and less probe to odd corner cases.  Also, I think you already have it
+in there!
 
+> +}
+> +
+> +static const struct of_device_id ad7091r8_of_match[] = {
+> +	{ .compatible = "adi,ad7091r2", .data = &ad7091r2_init_info },
+> +	{ .compatible = "adi,ad7091r4", .data = &ad7091r4_init_info },
+> +	{ .compatible = "adi,ad7091r8", .data = &ad7091r8_init_info },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ad7091r8_of_match);
+> +
+> +static const struct spi_device_id ad7091r8_spi_id[] = {
+> +	{ "ad7091r2", (kernel_ulong_t)&ad7091r2_init_info },
+> +	{ "ad7091r4", (kernel_ulong_t)&ad7091r4_init_info },
+> +	{ "ad7091r8", (kernel_ulong_t)&ad7091r8_init_info },
+> +	{}
+Trivial but be consistent on spacing for these terminators.  I like a space, so
+{ } but I don't mind if an author prefers {} as long as they are consistent!
 
-vim +/cdm_active +537 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +};
+> +MODULE_DEVICE_TABLE(spi, ad7091r8_spi_id);
 
-   528	
-   529	
-   530	static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
-   531			struct dpu_hw_intf_cfg *cfg)
-   532	{
-   533		struct dpu_hw_blk_reg_map *c = &ctx->hw;
-   534		u32 intf_active = 0;
-   535		u32 wb_active = 0;
-   536		u32 mode_sel = 0;
- > 537		u32 cdm_active = 0;
-   538	
-   539		/* CTL_TOP[31:28] carries group_id to collate CTL paths
-   540		 * per VM. Explicitly disable it until VM support is
-   541		 * added in SW. Power on reset value is not disable.
-   542		 */
-   543		if ((test_bit(DPU_CTL_VM_CFG, &ctx->caps->features)))
-   544			mode_sel = CTL_DEFAULT_GROUP_ID  << 28;
-   545	
-   546		if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
-   547			mode_sel |= BIT(17);
-   548	
-   549		intf_active = DPU_REG_READ(c, CTL_INTF_ACTIVE);
-   550		wb_active = DPU_REG_READ(c, CTL_WB_ACTIVE);
-   551		cdm_active = DPU_REG_READ(c, CTL_CDM_ACTIVE);
-   552	
-   553		if (cfg->intf)
-   554			intf_active |= BIT(cfg->intf - INTF_0);
-   555	
-   556		if (cfg->wb)
-   557			wb_active |= BIT(cfg->wb - WB_0);
-   558	
-   559		DPU_REG_WRITE(c, CTL_TOP, mode_sel);
-   560		DPU_REG_WRITE(c, CTL_INTF_ACTIVE, intf_active);
-   561		DPU_REG_WRITE(c, CTL_WB_ACTIVE, wb_active);
-   562	
-   563		if (cfg->merge_3d)
-   564			DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
-   565				      BIT(cfg->merge_3d - MERGE_3D_0));
-   566	
-   567		if (cfg->dsc)
-   568			DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
-   569	
-   570		if (cfg->cdm)
-   571			DPU_REG_WRITE(c, CTL_CDM_ACTIVE, cfg->cdm);
-   572	}
-   573	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
