@@ -2,143 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5293B80B855
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 02:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065E380B860
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 03:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbjLJBmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 20:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
+        id S231400AbjLJCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 21:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLJBmM (ORCPT
+        with ESMTP id S229488AbjLJCAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 20:42:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48C511F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 17:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702172537; x=1733708537;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=SMEZ4HuQuME2VWmNwxyLBdE71XJ/nCF16hw7yXXy2Fo=;
-  b=O2o0qZr6yxOC+eACaPL7VcBm0aoUwy3zFmkz1I+KZiLKS2arc859cPWw
-   3PvHKfUmekcXegMobfx/NMreUtcNrsWLeje4o/O/ngWCPzPY++U+VRvUh
-   c0jV2+B5v7/Pfi3FGr5bYlH7qObD6xlnpn5ibpGxWL12c43TcdFJaVSzx
-   MvO4nzrVCjarAP5EGjZwTJCRcsVwY7SUyBhhSs8kwS7H+zd5z7T9Q3hlJ
-   JDLDuKaFqXEzh07SswiG0xn/mrLUJmLdtX+WoD2TE3VXBagwo6ChOABBt
-   wYvM1q/k1jiiINjz8AW3kwSq/sYL4iQeUQI9AFItqgw916dhlOfhypaGl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="379533376"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="379533376"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 17:42:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="843030579"
-X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
-   d="scan'208";a="843030579"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Dec 2023 17:42:14 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rC8pg-000GFR-1p;
-        Sun, 10 Dec 2023 01:42:12 +0000
-Date:   Sun, 10 Dec 2023 09:41:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:394:38: warning:
- '%d' directive output may be truncated writing between 1 and 11 bytes into a
- region of size between 5 and 20
-Message-ID: <202312100937.ZPZCARhB-lkp@intel.com>
+        Sat, 9 Dec 2023 21:00:09 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C4A10C;
+        Sat,  9 Dec 2023 18:00:15 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-77f642b9a22so47848585a.0;
+        Sat, 09 Dec 2023 18:00:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702173615; x=1702778415; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Iirnk+K80ukU5tUHF57C2FdkiPvuVc7P/UMA6GstnZ0=;
+        b=RrUvwLN+kPTtdZMWTB8wK/DyLJMnM5Q/Pmmg80rVlrtc5MjmI4NFORSq8MtGtDowau
+         3iWb8t9nWHHiwsfGP4TmllTjKqmSx4XdmuMvl05lCmpqq0Xbomi7qxPrkTabc6d1Ci4f
+         FWAu13bq6sk6xYEv3cEKcecrE9QMvV5S/FELTFMlwwVCJ7MlS1QDW8nyinEU7KSMXQj5
+         ClI0LlHjhbkrAi9i/YN5BYdn9iGj+5fGK4Ueu4DrMPLdiyFkOusKTc+soUq1x6scryga
+         qCdTtZoRDwXPxexSvn8Bd6lG0nzxfs3FwhzLspeKaatLF1MWb7xSAcHXiPTE3AejTIy1
+         wSRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702173615; x=1702778415;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iirnk+K80ukU5tUHF57C2FdkiPvuVc7P/UMA6GstnZ0=;
+        b=ANS1XtRKJYDsCJFnQy6Ri4hFKQk4n0kHwNprHqx/ANHqi6uv81GGfuvTqKdOhpyflr
+         CwBZ1QNdM3lWdKyimQnITAPwvTV00qDBFjhA97OB+89fQrFCzvdf3PmM5KyzRGyPzR3B
+         4/GXQY5Bx95LHpe2K/7vtnvDO+yr2+/1H7spyn4DuWwQA2dRywHPnEzT4gJgg44M9YAo
+         zIA/vdMiJ1az9bZgLcicbYpEoriSWQvGbR8CXi2VJ7GYbo7Vlk7E7p0M/xt8xrP9nGBF
+         9FCEuECMqHqsJFLFiceeqKAERzf7c0a1irw1BMmm21nOcj8AiBby5ZJOfnrmR8lRnsxW
+         eO9Q==
+X-Gm-Message-State: AOJu0Yyr+ELqqk8TyCCsc5dh6PzOHe/DHLZcW2G/FAu19RnCgYxqIqxL
+        Ze6GafvHBIilf8bNbzgZWDc=
+X-Google-Smtp-Source: AGHT+IHmmO8yEQxrJ3T556l1Tmtu1x5im4Nj1OUazKYtPscjv2QXgn0AAZMkSWymutV6XmCr0Gc/AA==
+X-Received: by 2002:a05:6214:1549:b0:67a:a2a2:3935 with SMTP id t9-20020a056214154900b0067aa2a23935mr3074853qvw.7.1702173614950;
+        Sat, 09 Dec 2023 18:00:14 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id pp12-20020a056214138c00b0067a14238fa9sm2051161qvb.94.2023.12.09.18.00.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 18:00:14 -0800 (PST)
+Message-ID: <cd286d71-811e-4976-8538-4f946dca6da8@gmail.com>
+Date:   Sat, 9 Dec 2023 21:00:04 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.5.1
+Subject: Re: [PATCH] drm/scheduler: Unwrap job dependencies
+Content-Language: en-CA, en-US
+To:     Rob Clark <robdclark@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING
+        FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b" 
+        <linaro-mm-sig@lists.linaro.org>
+References: <20231205190234.371322-1-robdclark@gmail.com>
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <20231205190234.371322-1-robdclark@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------DH1b43QTRDFYjum9TFiZzmL0"
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   21b73ffcc62ab772bc06e3e90bd87eff5e9e8ed4
-commit: d0a3ac549f389c1511a4df0d7638536305205d20 ubsan: enable for all*config builds
-date:   3 years ago
-config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231210/202312100937.ZPZCARhB-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231210/202312100937.ZPZCARhB-lkp@intel.com/reproduce)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------DH1b43QTRDFYjum9TFiZzmL0
+Content-Type: multipart/mixed; boundary="------------5AcjGbok14q8wunARMWuRa49";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Rob Clark <robdclark@gmail.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b"
+ <linux-media@vger.kernel.org>,
+ "moderated list:DMA BUFFER SHARING FRAMEWORK:Keyword:bdma_(?:buf|fence|resv)b"
+ <linaro-mm-sig@lists.linaro.org>
+Message-ID: <cd286d71-811e-4976-8538-4f946dca6da8@gmail.com>
+Subject: Re: [PATCH] drm/scheduler: Unwrap job dependencies
+References: <20231205190234.371322-1-robdclark@gmail.com>
+In-Reply-To: <20231205190234.371322-1-robdclark@gmail.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312100937.ZPZCARhB-lkp@intel.com/
+--------------5AcjGbok14q8wunARMWuRa49
+Content-Type: multipart/mixed; boundary="------------Xnbegemyy81hwQG4dwAVqouJ"
 
-All warnings (new ones prefixed by >>):
+--------------Xnbegemyy81hwQG4dwAVqouJ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-   drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c: In function 'cxgb_up':
->> drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:394:38: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size between 5 and 20 [-Wformat-truncation=]
-     394 |                                  "%s-%d", d->name, pi->first_qset + i);
-         |                                      ^~
-   In function 'name_msix_vecs',
-       inlined from 'cxgb_up' at drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:1264:3:
-   drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:394:34: note: directive argument in the range [-2147483641, 509]
-     394 |                                  "%s-%d", d->name, pi->first_qset + i);
-         |                                  ^~~~~~~
-   drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:393:25: note: 'snprintf' output between 3 and 28 bytes into a destination of size 21
-     393 |                         snprintf(adap->msix_info[msi_idx].desc, n,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     394 |                                  "%s-%d", d->name, pi->first_qset + i);
-         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   drivers/net/ethernet/amd/xgbe/xgbe-drv.c: In function 'xgbe_alloc_channels':
->> drivers/net/ethernet/amd/xgbe/xgbe-drv.c:211:73: warning: '%u' directive output may be truncated writing between 1 and 10 bytes into a region of size 8 [-Wformat-truncation=]
-     211 |                 snprintf(channel->name, sizeof(channel->name), "channel-%u", i);
-         |                                                                         ^~
-   drivers/net/ethernet/amd/xgbe/xgbe-drv.c:211:64: note: directive argument in the range [0, 4294967294]
-     211 |                 snprintf(channel->name, sizeof(channel->name), "channel-%u", i);
-         |                                                                ^~~~~~~~~~~~
-   drivers/net/ethernet/amd/xgbe/xgbe-drv.c:211:17: note: 'snprintf' output between 10 and 19 bytes into a destination of size 16
-     211 |                 snprintf(channel->name, sizeof(channel->name), "channel-%u", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hi,
 
+On 2023-12-05 14:02, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+>=20
+> Container fences have burner contexts, which makes the trick to store a=
+t
+> most one fence per context somewhat useless if we don't unwrap array or=
 
-vim +394 drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c
+> chain fences.
+>=20
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  377  
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  378  /*
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  379   * Name the MSI-X interrupts.
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  380   */
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  381  static void name_msix_vecs(struct adapter *adap)
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  382  {
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  383  	int i, j, msi_idx = 1, n = sizeof(adap->msix_info[0].desc) - 1;
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  384  
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  385  	snprintf(adap->msix_info[0].desc, n, "%s", adap->name);
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  386  	adap->msix_info[0].desc[n] = 0;
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  387  
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  388  	for_each_port(adap, j) {
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  389  		struct net_device *d = adap->port[j];
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  390  		const struct port_info *pi = netdev_priv(d);
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  391  
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  392  		for (i = 0; i < pi->nqsets; i++, msi_idx++) {
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  393  			snprintf(adap->msix_info[msi_idx].desc, n,
-8c26376112fb4b drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2008-10-08 @394  				 "%s-%d", d->name, pi->first_qset + i);
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  395  			adap->msix_info[msi_idx].desc[n] = 0;
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  396  		}
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  397  	}
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  398  }
-4d22de3e6cc4a0 drivers/net/cxgb3/cxgb3_main.c Divy Le Ray 2007-01-18  399  
+Link: https://lore.kernel.org/all/20230322224403.35742-1-robdclark@gmail.=
+com/
 
-:::::: The code at line 394 was first introduced by commit
-:::::: 8c26376112fb4b8dfea42069b602c03d53366052 cxgb3: Allocate multiqueues at init time
+Let's include a link to the original thread, as the main discussion can b=
+e found
+therein.
 
-:::::: TO: Divy Le Ray <divy@chelsio.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
+Christian, could you review this patch please?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks!
+--=20
+Regards,
+Luben
+
+> ---
+>  drivers/gpu/drm/scheduler/sched_main.c | 47 ++++++++++++++++++--------=
+
+>  1 file changed, 32 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/s=
+cheduler/sched_main.c
+> index 9762464e3f99..16b550949c57 100644
+> --- a/drivers/gpu/drm/scheduler/sched_main.c
+> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+> @@ -52,6 +52,7 @@
+>  #include <linux/wait.h>
+>  #include <linux/sched.h>
+>  #include <linux/completion.h>
+> +#include <linux/dma-fence-unwrap.h>
+>  #include <linux/dma-resv.h>
+>  #include <uapi/linux/sched/types.h>
+> =20
+> @@ -684,27 +685,14 @@ void drm_sched_job_arm(struct drm_sched_job *job)=
+
+>  }
+>  EXPORT_SYMBOL(drm_sched_job_arm);
+> =20
+> -/**
+> - * drm_sched_job_add_dependency - adds the fence as a job dependency
+> - * @job: scheduler job to add the dependencies to
+> - * @fence: the dma_fence to add to the list of dependencies.
+> - *
+> - * Note that @fence is consumed in both the success and error cases.
+> - *
+> - * Returns:
+> - * 0 on success, or an error on failing to expand the array.
+> - */
+> -int drm_sched_job_add_dependency(struct drm_sched_job *job,
+> -				 struct dma_fence *fence)
+> +static int drm_sched_job_add_single_dependency(struct drm_sched_job *j=
+ob,
+> +					       struct dma_fence *fence)
+>  {
+>  	struct dma_fence *entry;
+>  	unsigned long index;
+>  	u32 id =3D 0;
+>  	int ret;
+> =20
+> -	if (!fence)
+> -		return 0;
+> -
+>  	/* Deduplicate if we already depend on a fence from the same context.=
+
+>  	 * This lets the size of the array of deps scale with the number of
+>  	 * engines involved, rather than the number of BOs.
+> @@ -728,6 +716,35 @@ int drm_sched_job_add_dependency(struct drm_sched_=
+job *job,
+> =20
+>  	return ret;
+>  }
+> +
+> +/**
+> + * drm_sched_job_add_dependency - adds the fence as a job dependency
+> + * @job: scheduler job to add the dependencies to
+> + * @fence: the dma_fence to add to the list of dependencies.
+> + *
+> + * Note that @fence is consumed in both the success and error cases.
+> + *
+> + * Returns:
+> + * 0 on success, or an error on failing to expand the array.
+> + */
+> +int drm_sched_job_add_dependency(struct drm_sched_job *job,
+> +				 struct dma_fence *fence)
+> +{
+> +	struct dma_fence_unwrap iter;
+> +	struct dma_fence *f;
+> +	int ret =3D 0;
+> +
+> +	dma_fence_unwrap_for_each (f, &iter, fence) {
+> +		dma_fence_get(f);
+> +		ret =3D drm_sched_job_add_single_dependency(job, f);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	dma_fence_put(fence);
+> +
+> +	return ret;
+> +}
+>  EXPORT_SYMBOL(drm_sched_job_add_dependency);
+> =20
+>  /**
+
+--------------Xnbegemyy81hwQG4dwAVqouJ
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------Xnbegemyy81hwQG4dwAVqouJ--
+
+--------------5AcjGbok14q8wunARMWuRa49--
+
+--------------DH1b43QTRDFYjum9TFiZzmL0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZXUbpAUDAAAAAAAKCRBMFUeUMaM0r4CB
+AP9BzdKV0/Demva8WlC8Tg3QI4lENeTPM8OVE+DczzG1/wEArLptFP004Ze3PTau6EO21XXw68MP
+6GZn+DgxJOc7nQQ=
+=MtnB
+-----END PGP SIGNATURE-----
+
+--------------DH1b43QTRDFYjum9TFiZzmL0--
