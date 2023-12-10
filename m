@@ -2,213 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C627C80B824
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 00:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C3D80B838
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 01:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjLIXtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 18:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
+        id S231349AbjLJAVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 19:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLIXs7 (ORCPT
+        with ESMTP id S229488AbjLJAVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 18:48:59 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFCC13A
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 15:49:05 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cecb004339so1549958b3a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 15:49:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702165745; x=1702770545; darn=vger.kernel.org;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=OPCNY52nyiQdIzlwx6EU4oIvd2oaUqsRoubFMnhv/R4=;
-        b=zeX7cj6eDI445l9p88vZzXNpzx4yxRjaVboSx6t6SQrGkB/rOHfyG8R78sqItWbBl4
-         CWTqBwZr/w/5uxAB6PvKb3bYVQQWymqG9t0uOWtI6EWNgezB3Lu3LQ5GrHwwGOWYmgTr
-         JZu+4p4ZSv06JJUN7zfulKhGHTelZFVHYQ6oW5SLTX5p//byE5LRdIfiqxvCXUnbLNNE
-         WtJdNVQQLR9J5W++6vcM8tn0UryZRlkWOlYgLQy9EPu04nzXNmsNn/yasR11cCAjnuPt
-         B4bWx9dkmSQ2uLlHOD+szDm9FbW7Y69s4Xd2E87qU/Eu+mYJAxDxCMD7SF46UshnzNnP
-         FBgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702165745; x=1702770545;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OPCNY52nyiQdIzlwx6EU4oIvd2oaUqsRoubFMnhv/R4=;
-        b=BUAo0CB6PXQXhLp8a4H+0nKbe14p0kCJKhkZ3BxL29U+xO1pfdlfqCKD2sEAF6Ta3j
-         e1P9CnX5GPRvfiVh9gCP/uMZE7U5aN/vryFRyLHl3VsD52XIfXHRkRbz7YcRPkpJ0Jyx
-         H0fFelcwwEW4UgVp9Gra4g+Cc0y9JkRJjQBVuZXQjOlQ0GURYrzfnXH5szLUoP+die66
-         2th0C6Xj+JLVEIZaFertSx5kyjX7Tab6qiAIkJAtRayd2vXuShQyw3N6799zdX0/T/wi
-         T5Ai426L/T/v2T2ImrvPET+pOA73iJSZnKvghRNINv1MATBSQzTuXhQqIqEQhO6wqdAK
-         fvXQ==
-X-Gm-Message-State: AOJu0Yxmae7xutPQGn1VNVmE0C+jNQs9aKIKMX/r5n62qxNGh5sdGs4I
-        oTSpndoDDbp+DjrNIq/4lz+spw==
-X-Google-Smtp-Source: AGHT+IEJJXjirbJfGvEGv9wlC7QhPL3oJqPTSZjXXGeMs1qcfj17IHUevHGTEfzPXl+gH/HmXyzIBw==
-X-Received: by 2002:a17:902:c64a:b0:1d0:c41b:1d1e with SMTP id s10-20020a170902c64a00b001d0c41b1d1emr919404pls.73.1702165744705;
-        Sat, 09 Dec 2023 15:49:04 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:ded6:9593:9f4f:5c29])
-        by smtp.gmail.com with ESMTPSA id n2-20020a170902d2c200b001cfcf3dd317sm3918148plc.61.2023.12.09.15.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 15:49:04 -0800 (PST)
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-26-201c483bd775@kernel.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From:   Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 26/39] arm64/ptrace: Expose GCS via ptrace and core
- files
-In-reply-to: <20231122-arm64-gcs-v7-26-201c483bd775@kernel.org>
-Date:   Sat, 09 Dec 2023 20:49:02 -0300
-Message-ID: <877clney35.fsf@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Sat, 9 Dec 2023 19:21:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9DB126
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 16:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702167670; x=1733703670;
+  h=date:from:to:cc:subject:message-id;
+  bh=Z1xWl3Kd+sZT+glxntwuOJ+sZl/z+UglZctMg0OouTU=;
+  b=aycEhOVHFEe5+C7FeiqZqlysUzE9mp3+qQVf86+iJ/PX5j0Qo8arF6q1
+   ljG/M15J8vpk3D6dxbGHMumA/a4EN9brnlWcshQ/2GaAr4r8tf/cqvJs4
+   0NmVxXVAY0ZSorLMGAh+UGkrzW4w0hsRVZnKfQaQrqjzQWwnRbkKwah5V
+   c2JolUz/c8fCmslTicNNbn8kpPd2SJXZulDCMxIL3LIcpP/O/hTCfLIuZ
+   kcGszImL1VuSeV7zvcU/UOS1RmtmNKaQfl3Vm7cCckovbf55MG1R1vzEA
+   ixbr4qRnQzgdawKZRRZXA4axrK6sXkqzZPkeI+Pl5WV5XnkBQ+RptZKPn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="13224679"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="13224679"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2023 16:21:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10919"; a="895935666"
+X-IronPort-AV: E=Sophos;i="6.04,264,1695711600"; 
+   d="scan'208";a="895935666"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 09 Dec 2023 16:21:08 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rC7ZC-000GAV-0P;
+        Sun, 10 Dec 2023 00:21:06 +0000
+Date:   Sun, 10 Dec 2023 08:20:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:frederic.2023.12.08a] BUILD REGRESSION
+ 37843b5f561a08ae899fb791eeeb5abd992eabe2
+Message-ID: <202312100852.GEdLyqb6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git frederic.2023.12.08a
+branch HEAD: 37843b5f561a08ae899fb791eeeb5abd992eabe2  rcu/exp: Remove rcu_par_gp_wq
 
-Mark Brown <broonie@kernel.org> writes:
+Error/Warning reports:
 
-> Provide a new register type NT_ARM_GCS reporting the current GCS mode
-> and pointer for EL0.  Due to the interactions with allocation and
-> deallocation of Guarded Control Stacks we do not permit any changes to
-> the GCS mode via ptrace, only GCSPR_EL0 may be changed.
+https://lore.kernel.org/oe-kbuild-all/202312091837.cKaPw0Tf-lkp@intel.com
 
-The code allows disabling GCS. Is that unintended?
+Error/Warning: (recently discovered and may have been fixed)
 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  arch/arm64/include/uapi/asm/ptrace.h |  8 +++++
->  arch/arm64/kernel/ptrace.c           | 59 ++++++++++++++++++++++++++++++++++++
->  include/uapi/linux/elf.h             |  1 +
->  3 files changed, 68 insertions(+)
->
-> diff --git a/arch/arm64/include/uapi/asm/ptrace.h b/arch/arm64/include/uapi/asm/ptrace.h
-> index 7fa2f7036aa7..0f39ba4f3efd 100644
-> --- a/arch/arm64/include/uapi/asm/ptrace.h
-> +++ b/arch/arm64/include/uapi/asm/ptrace.h
-> @@ -324,6 +324,14 @@ struct user_za_header {
->  #define ZA_PT_SIZE(vq)						\
->  	(ZA_PT_ZA_OFFSET + ZA_PT_ZA_SIZE(vq))
->  
-> +/* GCS state (NT_ARM_GCS) */
-> +
-> +struct user_gcs {
-> +	__u64 features_enabled;
-> +	__u64 features_locked;
-> +	__u64 gcspr_el0;
-> +};
+fs/btrfs/transaction.c:496:6: error: call to '__compiletime_assert_329' declared with 'error' attribute: Need native word sized stores/loads for atomicity.
 
-If there's a reserved field in sigframe's gcs_context, isn't it worth it
-to have a reserved field here as well?
+Error/Warning ids grouped by kconfigs:
 
-> +
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* _UAPI__ASM_PTRACE_H */
-> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> index 20d7ef82de90..f15b8e33561e 100644
-> --- a/arch/arm64/kernel/ptrace.c
-> +++ b/arch/arm64/kernel/ptrace.c
-> @@ -33,6 +33,7 @@
->  #include <asm/cpufeature.h>
->  #include <asm/debug-monitors.h>
->  #include <asm/fpsimd.h>
-> +#include <asm/gcs.h>
->  #include <asm/mte.h>
->  #include <asm/pointer_auth.h>
->  #include <asm/stacktrace.h>
-> @@ -1409,6 +1410,51 @@ static int tagged_addr_ctrl_set(struct task_struct *target, const struct
->  }
->  #endif
->  
-> +#ifdef CONFIG_ARM64_GCS
-> +static int gcs_get(struct task_struct *target,
-> +		   const struct user_regset *regset,
-> +		   struct membuf to)
-> +{
-> +	struct user_gcs user_gcs;
-> +
-> +	if (target == current)
-> +		gcs_preserve_current_state();
-> +
-> +	user_gcs.features_enabled = target->thread.gcs_el0_mode;
-> +	user_gcs.features_locked = target->thread.gcs_el0_locked;
-> +	user_gcs.gcspr_el0 = target->thread.gcspr_el0;
-> +
-> +	return membuf_write(&to, &user_gcs, sizeof(user_gcs));
-> +}
-> +
-> +static int gcs_set(struct task_struct *target, const struct
-> +		   user_regset *regset, unsigned int pos,
-> +		   unsigned int count, const void *kbuf, const
-> +		   void __user *ubuf)
-> +{
-> +	int ret;
-> +	struct user_gcs user_gcs;
-> +
-> +	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &user_gcs, 0, -1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (user_gcs.features_enabled & ~PR_SHADOW_STACK_SUPPORTED_STATUS_MASK)
-> +		return -EINVAL;
-> +
-> +	/* Do not allow enable via ptrace */
-> +	if ((user_gcs.features_enabled & PR_SHADOW_STACK_ENABLE) &&
-> +	    !!(target->thread.gcs_el0_mode & PR_SHADOW_STACK_ENABLE))
+clang_recent_errors
+|-- hexagon-allmodconfig
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- hexagon-allyesconfig
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- hexagon-randconfig-002-20231209
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- hexagon-randconfig-r062-20231209
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- hexagon-randconfig-r133-20231209
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- i386-allmodconfig
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- i386-allyesconfig
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- i386-randconfig-015-20231209
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+|-- i386-randconfig-016-20231209
+|   `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
+`-- riscv-rv32_defconfig
+    `-- fs-btrfs-transaction.c:error:call-to-__compiletime_assert_NNN-declared-with-error-attribute:Need-native-word-sized-stores-loads-for-atomicity.
 
-There should be only one '!' above.
+elapsed time: 1465m
 
-Though contrary to the patch description, this code allows disabling
-GCS. Shouldn't we require that
+configs tested: 157
+configs skipped: 2
 
-  (user_gcs.features_enabled & PR_SHADOW_STACK_ENABLE) ==
-    (target->thread.gcs_el0_mode & PR_SHADOW_STACK_ENABLE)
-
-? That would ensure that the GCS mode can't be changed.
-
-> +		return -EBUSY;
-> +
-> +	target->thread.gcs_el0_mode = user_gcs.features_enabled;
-> +	target->thread.gcs_el0_locked = user_gcs.features_locked;
-> +	target->thread.gcspr_el0 = user_gcs.gcspr_el0;
-> +
-> +	return 0;
-> +}
-> +#endif
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              alldefconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231209   gcc  
+arc                   randconfig-002-20231209   gcc  
+arm                               allnoconfig   gcc  
+arm                                 defconfig   clang
+arm                        keystone_defconfig   gcc  
+arm                   randconfig-001-20231209   gcc  
+arm                   randconfig-002-20231209   gcc  
+arm                   randconfig-003-20231209   gcc  
+arm                   randconfig-004-20231209   gcc  
+arm                           sama5_defconfig   gcc  
+arm                        spear6xx_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231209   gcc  
+arm64                 randconfig-002-20231209   gcc  
+arm64                 randconfig-003-20231209   gcc  
+arm64                 randconfig-004-20231209   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231209   gcc  
+csky                  randconfig-002-20231209   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386                                defconfig   gcc  
+i386                  randconfig-011-20231209   clang
+i386                  randconfig-012-20231209   clang
+i386                  randconfig-013-20231209   clang
+i386                  randconfig-014-20231209   clang
+i386                  randconfig-015-20231209   clang
+i386                  randconfig-016-20231209   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231209   gcc  
+loongarch             randconfig-002-20231209   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+mips                     decstation_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231209   gcc  
+nios2                 randconfig-002-20231209   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231209   gcc  
+parisc                randconfig-002-20231209   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      chrp32_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc               randconfig-001-20231209   gcc  
+powerpc               randconfig-002-20231209   gcc  
+powerpc               randconfig-003-20231209   gcc  
+powerpc64             randconfig-001-20231209   gcc  
+powerpc64             randconfig-002-20231209   gcc  
+powerpc64             randconfig-003-20231209   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                    nommu_k210_defconfig   gcc  
+riscv                 randconfig-001-20231209   gcc  
+riscv                 randconfig-002-20231209   gcc  
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sh                    randconfig-001-20231209   gcc  
+sh                    randconfig-002-20231209   gcc  
+sh                          sdk7786_defconfig   gcc  
+sh                           se7712_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                       sparc64_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231209   gcc  
+sparc64               randconfig-002-20231209   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231209   gcc  
+um                    randconfig-002-20231209   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231209   gcc  
+x86_64       buildonly-randconfig-002-20231209   gcc  
+x86_64       buildonly-randconfig-003-20231209   gcc  
+x86_64       buildonly-randconfig-004-20231209   gcc  
+x86_64       buildonly-randconfig-005-20231209   gcc  
+x86_64       buildonly-randconfig-006-20231209   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-011-20231209   gcc  
+x86_64                randconfig-012-20231209   gcc  
+x86_64                randconfig-013-20231209   gcc  
+x86_64                randconfig-014-20231209   gcc  
+x86_64                randconfig-015-20231209   gcc  
+x86_64                randconfig-016-20231209   gcc  
+x86_64                randconfig-071-20231209   gcc  
+x86_64                randconfig-072-20231209   gcc  
+x86_64                randconfig-073-20231209   gcc  
+x86_64                randconfig-074-20231209   gcc  
+x86_64                randconfig-075-20231209   gcc  
+x86_64                randconfig-076-20231209   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa                randconfig-001-20231209   gcc  
+xtensa                randconfig-002-20231209   gcc  
 
 -- 
-Thiago
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
