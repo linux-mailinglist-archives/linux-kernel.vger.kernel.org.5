@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6122A80BC72
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B62680BC75
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjLJRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 12:50:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        id S231969AbjLJRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 12:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231916AbjLJRuF (ORCPT
+        with ESMTP id S229643AbjLJRvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 12:50:05 -0500
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1AEFD
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:50:11 -0800 (PST)
+        Sun, 10 Dec 2023 12:51:54 -0500
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD88FC
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:51:57 -0800 (PST)
 Received: from pop-os.home ([92.140.202.140])
         by smtp.orange.fr with ESMTPA
-        id CNwNr4gNwWblTCNwNrbUKc; Sun, 10 Dec 2023 18:50:10 +0100
+        id CNy4r77eNxqX7CNy4r8b6X; Sun, 10 Dec 2023 18:51:56 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702230610;
-        bh=HzZTGQuA0kr0qzhf9S/gzmjguN57sJaWf26PktWi9U4=;
+        s=t20230301; t=1702230716;
+        bh=I+oLHrfSteD1fM5wZcNGUaFi+cT/ZUrP8W7m+tITsR4=;
         h=From:To:Cc:Subject:Date;
-        b=s2eZNshYTi2b1eXXjtC1TXyhFurVyBUyFnpASCghE6xZzdQkacTO0gSetG+bHAMwD
-         GmbWPPMyGUzSOl98YCRa6qF3nOMDLpgz+TRyWu2SGI8v4UGoMbvAfxR76+62pXOPtM
-         PUvKS7UcyX1kdIUeNMk33quvsuptSz5xrX/YDOyD7apbb6wFtbN8o5faCStcgpj7mX
-         p+P9DxWPO+NGkbJRXHVmWc5DHX3QJrJcBRHzsxDTlPhhd03WlITdC6n4c/UJsxCJF/
-         pRieHQaY2FJblcUFaY+2gjI3twk9LYvFJRcVs8tvVa6lNPfrQJt/IoulMAxIZkKnDY
-         NG84iK8KS0gaQ==
+        b=mkWMq5TBbq7Mt5b0vqjmNsCy44MG2vlYUyENYi5GtepUNxLqKPZnXgx5x90e79Xu4
+         kK3Vk+ulADvk2FkP248VX7Nx2QyglnFw5TqYDsn7aN28tqEIrdMloZ/tBfOAmG2DDf
+         JD5mPXyCkPWtBy3/fQJZosYogQcBjzVHqnHODhTGFHouy6YOb+U5QaYoo5F6B0faif
+         slLqRoNkhCuRZx2G+d93TRM2X94o1VS/eKxPUpdPyykrBBfePH5piqer/h0nY4WPvy
+         hJCBt1nMacbOMxAbnocPtbXHqgW195NJCgVcgIZOC0ptbTnaXsbiV3IvRJpOGXEn3r
+         kN/rjptAc/3Ug==
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Dec 2023 18:50:10 +0100
+X-ME-Date: Sun, 10 Dec 2023 18:51:56 +0100
 X-ME-IP: 92.140.202.140
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: vmd: Remove usage of the deprecated ida_simple_xx() API
-Date:   Sun, 10 Dec 2023 18:50:03 +0100
-Message-Id: <270f25cdc154f3b0309e57b2f6421776752e2170.1702230593.git.christophe.jaillet@wanadoo.fr>
+        virtualization@lists.linux.dev
+Subject: [PATCH] vdpa: Remove usage of the deprecated ida_simple_xx() API
+Date:   Sun, 10 Dec 2023 18:51:50 +0100
+Message-Id: <d7534cc4caf4ff9d6b072744352c1b69487779ea.1702230703.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -66,40 +62,31 @@ This is less verbose.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/pci/controller/vmd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/vdpa/vdpa.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index 94ba61fe1c44..00a4264711f1 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -984,7 +984,7 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 		return -ENOMEM;
+diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+index a7612e0783b3..d0695680b282 100644
+--- a/drivers/vdpa/vdpa.c
++++ b/drivers/vdpa/vdpa.c
+@@ -131,7 +131,7 @@ static void vdpa_release_dev(struct device *d)
+ 	if (ops->free)
+ 		ops->free(vdev);
  
- 	vmd->dev = dev;
--	vmd->instance = ida_simple_get(&vmd_instance_ida, 0, 0, GFP_KERNEL);
-+	vmd->instance = ida_alloc(&vmd_instance_ida, GFP_KERNEL);
- 	if (vmd->instance < 0)
- 		return vmd->instance;
- 
-@@ -1026,7 +1026,7 @@ static int vmd_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	return 0;
- 
-  out_release_instance:
--	ida_simple_remove(&vmd_instance_ida, vmd->instance);
-+	ida_free(&vmd_instance_ida, vmd->instance);
- 	return err;
+-	ida_simple_remove(&vdpa_index_ida, vdev->index);
++	ida_free(&vdpa_index_ida, vdev->index);
+ 	kfree(vdev->driver_override);
+ 	kfree(vdev);
  }
+@@ -205,7 +205,7 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+ 	return vdev;
  
-@@ -1048,7 +1048,7 @@ static void vmd_remove(struct pci_dev *dev)
- 	vmd_cleanup_srcu(vmd);
- 	vmd_detach_resources(vmd);
- 	vmd_remove_irq_domain(vmd);
--	ida_simple_remove(&vmd_instance_ida, vmd->instance);
-+	ida_free(&vmd_instance_ida, vmd->instance);
- }
- 
- static void vmd_shutdown(struct pci_dev *dev)
+ err_name:
+-	ida_simple_remove(&vdpa_index_ida, vdev->index);
++	ida_free(&vdpa_index_ida, vdev->index);
+ err_ida:
+ 	kfree(vdev);
+ err:
 -- 
 2.34.1
 
