@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC93880B964
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12AD80B969
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbjLJGmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 01:42:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S231562AbjLJGsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 01:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJGmf (ORCPT
+        with ESMTP id S229481AbjLJGst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 01:42:35 -0500
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F39B8;
-        Sat,  9 Dec 2023 22:42:40 -0800 (PST)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1fb06f38df0so2549307fac.1;
-        Sat, 09 Dec 2023 22:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702190560; x=1702795360; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hPnfGn6B7os71uYqHnSLyoq1lTDN3Gl3B7F72ZE0VBI=;
-        b=CZNp0P1pL+17Bh+BSrMlGvy2uaX+sOuRHlBQTO1a0kr16V0rIO5dR34JRlkBtLI4bC
-         /LD0/8Vbz7VTrQu+/ENVD8JulvHnE0Hw1e6DDUInEJIC23gG4aLEzG04dOLMUFc0c7sw
-         Nou6Fe5m+MQ/Cp32sWwGQrWP/nNUlrTVArR3Vsmnwdf6cFR4xKzbt02OF9dnbtuIiOPm
-         HFH9J8VmLaJljyO7iUONvW5HxEBng4rfIagNLtar46c81zSDH5eng7cyOcNO7Thbbap0
-         lrVQ5PzqruX4iGv4mFDnKac4Bc4wBeaQDUd53InyUz6fkwzsAEq9zSpGW/NsyTvlybV4
-         MRUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702190560; x=1702795360;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hPnfGn6B7os71uYqHnSLyoq1lTDN3Gl3B7F72ZE0VBI=;
-        b=iYDBJoRcXh0TL4LaCBDPayHsd80cZl+LUwt9+NQXFInMwxF+wnAZg9nyY4toXM4Zgf
-         E1hpzyNLgOaSgKzra1dmytH/b6C7P15hBCi+7vMEb2WL0WmaQ5mulBEheUx5ztIHVOtv
-         p80yLqSOzx7X1W6iPOhVKbZalBbIzn6Tk6w9+shWQC9jUM6Wp3RuJF9QPVGo9jFvc2RE
-         IXnqIuvSHj+9/IXGOSSL9sI7/G++bslaXax/RR3sF3AkVWrO/mBwyJejEunsBmF1jIA9
-         sw2BNspW9P7P1HyGnY/CAVxA6j/XnvWdZdOJ22Zhn8+Mi+MyCn2uj3nRa2DGFAo3NR5k
-         bGfg==
-X-Gm-Message-State: AOJu0YzO8wKIkfsaBAMkR+1q1jFKN8CSXRENnA8ZJVGHyO142lmb8GuN
-        tSTNJRawtyD8/ky1toGTCT8=
-X-Google-Smtp-Source: AGHT+IEZosxF2/g1jVFkisBIAmohaUhmlBXDDTYx48PjqVdcn+OdFCtXM0pG3z8FIvl4EW+TPywiOg==
-X-Received: by 2002:a05:6870:d18c:b0:1fb:2bec:9fb5 with SMTP id a12-20020a056870d18c00b001fb2bec9fb5mr3632282oac.0.1702190560026;
-        Sat, 09 Dec 2023 22:42:40 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:9082:8aa4:377c:de99])
-        by smtp.gmail.com with ESMTPSA id t14-20020a63eb0e000000b005ac384b71cbsm4116777pgh.60.2023.12.09.22.42.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 22:42:39 -0800 (PST)
-Date:   Sat, 9 Dec 2023 22:42:37 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     tony@atomide.com, frank.li@vivo.com,
-        u.kleine-koenig@pengutronix.de, Jonathan.Cameron@huawei.com,
-        robh@kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] Input: omap4-keypad: react on keypresses if
- device is runtime-suspended
-Message-ID: <ZXVd3RcTdHi3MifB@google.com>
-References: <20231209112058.453030-1-andreas@kemnade.info>
+        Sun, 10 Dec 2023 01:48:49 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66D8AB8;
+        Sat,  9 Dec 2023 22:48:54 -0800 (PST)
+Received: from loongson.cn (unknown [112.20.109.254])
+        by gateway (Coremail) with SMTP id _____8DxVuhUX3VlmkxAAA--.28032S3;
+        Sun, 10 Dec 2023 14:48:52 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.109.254])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxkN1NX3VldDNaAA--.5375S3;
+        Sun, 10 Dec 2023 14:48:47 +0800 (CST)
+Message-ID: <93b41b72-a6ac-4d7f-95f0-ba42399729fc@loongson.cn>
+Date:   Sun, 10 Dec 2023 14:48:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231209112058.453030-1-andreas@kemnade.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFT PATCH 1/2] stmmac: dwmac-loongson: drop useless check for
+ compatible fallback
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        jiaxun.yang@flygoat.com, Andrew Lunn <andrew@lunn.ch>,
+        Conor Dooley <conor@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20230616103127.285608-1-krzysztof.kozlowski@linaro.org>
+ <20230616-activity-shed-be3c13e5ac71@spud>
+From:   Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20230616-activity-shed-be3c13e5ac71@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxkN1NX3VldDNaAA--.5375S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZw1DGF4fJr1fAry5Aw15KFX_yoWDtwcEkF
+        WfW3s7KrWIqFWDXwsYkFZ3tr90gF1qyF15Ary8Xwn2gwn5AFWkA3ykCryIq343XFWrCFsx
+        uF1xAwnrCr12kosvyTuYvTs0mTUanT9S1TB71UUUU17qnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbTAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
+        JVW8Jr1ln4kS14v26r1q6r43M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+        x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5
+        McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
+        CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+        WUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+        wI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcI
+        k0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j
+        6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUShiSDUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,52 +81,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
 
-On Sat, Dec 09, 2023 at 12:20:58PM +0100, Andreas Kemnade wrote:
-> According to SWPU235AB, table 26-6, fclk is required to generate events
-> at least on OMAP4460, so keep fclk enabled all the time the device
-> is opened.
-> 
-> Suggested-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
-> ---
-> Changes since RFC:
-> - add R-by:
-> 
->  drivers/input/keyboard/omap4-keypad.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-> index d3f8688fdd9c3..7d83aff95617f 100644
-> --- a/drivers/input/keyboard/omap4-keypad.c
-> +++ b/drivers/input/keyboard/omap4-keypad.c
-> @@ -11,6 +11,7 @@
->  #include <linux/module.h>
->  #include <linux/interrupt.h>
->  #include <linux/platform_device.h>
-> +#include <linux/clk.h>
->  #include <linux/errno.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> @@ -83,6 +84,7 @@ struct omap4_keypad {
->  	bool no_autorepeat;
->  	u64 keys;
->  	unsigned short *keymap;
-> +	struct clk *fck;
->  };
->  
->  static int kbd_readl(struct omap4_keypad *keypad_data, u32 offset)
-> @@ -211,6 +213,8 @@ static int omap4_keypad_open(struct input_dev *input)
->  
->  	disable_irq(keypad_data->irq);
->  
-> +	clk_prepare_enable(keypad_data->fck);
+在 2023/6/17 02:52, Conor Dooley 写道:
+> On Fri, Jun 16, 2023 at 12:31:26PM +0200, Krzysztof Kozlowski wrote:
+>> Device binds to proper PCI ID (LOONGSON, 0x7a03), already listed in DTS,
+>> so checking for some other compatible does not make sense.  It cannot be
+>> bound to unsupported platform.
+>>
+>> Drop useless, incorrect (space in between) and undocumented compatible.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Might be worth noting that dropping it is required to allow the
+> new loongarch dts stuff to be functional with a sane set of compatibles.
+>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Thank you Krzysztof for your work. when I am
+adding more devices support to stmmac, I found that your
+two patches seemed to be forgotten.
+Thomas, Jiaxun. Can the two patches get an Acked-by?
+My stmmac patch thread:
+<https://lore.kernel.org/loongarch/cover.1699533745.git 
+.siyanteng@loongson.cn/T/#md3108d29a5efe71b27f4c5ccf5d0217571bf6586>
+Thanks,
+Yanteng
 
-I believe this needs error handling.
+>
+> Cheers,
+> Conor.
 
-Thanks.
-
--- 
-Dmitry
