@@ -2,125 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE8280BE29
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE9680BDC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 23:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjLJXT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 18:19:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S232139AbjLJWri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 17:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJXTz (ORCPT
+        with ESMTP id S229462AbjLJWrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 18:19:55 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5013EEB
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:20:01 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso38895625e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:20:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702250400; x=1702855200; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m/DkVLa8r0eVoKVXH0/up1/++p+v5Fo1aaa5zaxGRQs=;
-        b=wjF6e2VdmSN/ptiRWYouFzNgwX/33tIpV4JjN+TenSd4g0ooy7WbOEuWTs40duY3P2
-         9xs0Gev5rO7yv7k3MnNdtR1bReF8Prb8pISyhJYjhgNQU4h0iBaLlL5oa9mbrXrJB4ek
-         qDad28wMLkV24hFItkspmsfGBaJPpoF0UicPFM9q7iJIOXJgs6me/6vpPO/m/O6QR60P
-         AKS/Gx4UZdBUGfJOs3zzlgLgKZRjpK4Zju+t2HoQ4Q47QLGJ052uW1f7427qkEpwOfXC
-         CUcJ0pQyyJ3wxAjFJW5Ol5zn4H2BHgZFepSuqb/YKDs320GA8tunlSnu00H627iy7ik6
-         zTRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702250400; x=1702855200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m/DkVLa8r0eVoKVXH0/up1/++p+v5Fo1aaa5zaxGRQs=;
-        b=PUUQcZvdQ4WHVh+sR6RSKba1rMCwg0kVaL2oEXB6OY4333bOdHfOW2HN/eWozzQG4V
-         3NrjF23sRrRgJTJ8b30weF5anYwVVSYOY4YVeJz2OVfn4pNL5dU9sn/02T/GGsvkIa81
-         ayznNzg/NX5+ARZ6cThhHlhxvxFM0FB1LN6X3/ZvxD6H/WVjyLsSg/qoGh2gQKGUHLPR
-         PfaYZlA1rQv4iGsJSIeTuwJF5Uu00Cd2S5USQszXT0xaGzIHPqLu4F+rwTh5j42CWYli
-         UOIftEzqrUmwk7Chea08xRi93uKkGF4GNKGdsJZ2SHTbHKtAIyis4WjFANFr7GQrp1n8
-         bcRQ==
-X-Gm-Message-State: AOJu0YwbYSn7tP/s1AiVZlaz0bkF8+H6ep3BXIwqvzg3x1F+Ht+sdYgI
-        E+QtIngIiio6uKJ7V7MxgL28aw==
-X-Google-Smtp-Source: AGHT+IGnXdafJNqHJdGM3REGKQvDkTxqI5oDfAZTA4IBzI2lhNbScCtgyyaVHlvnImbIZSFoCdMoIQ==
-X-Received: by 2002:a05:600c:319b:b0:40b:5e4a:40a5 with SMTP id s27-20020a05600c319b00b0040b5e4a40a5mr1476609wmp.197.1702250399662;
-        Sun, 10 Dec 2023 15:19:59 -0800 (PST)
-Received: from airbuntu (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
-        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c4886f254sm1169967wmn.13.2023.12.10.15.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 15:19:59 -0800 (PST)
-Date:   Sun, 10 Dec 2023 22:47:24 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        vincent.guittot@linaro.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de,
-        daniel.m.jordan@oracle.com
-Subject: Re: [PATCH 2/2] sched/eevdf: Use sched_attr::sched_runtime to set
- request/slice suggestion
-Message-ID: <20231210224724.eteuahkempeeojfz@airbuntu>
-References: <20230915124354.416936110@noisy.programming.kicks-ass.net>
- <20230915124822.956946622@noisy.programming.kicks-ass.net>
- <20230919220708.l2llt2f5xullxzzz@airbuntu>
- <20230919223704.GG424@noisy.programming.kicks-ass.net>
+        Sun, 10 Dec 2023 17:47:37 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7663BDF;
+        Sun, 10 Dec 2023 14:47:43 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8343C22179;
+        Sun, 10 Dec 2023 22:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702248461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qTWu+7fJmRUa9JaK7MNQfzwJEOHSHQSeMdkuB1S6r2U=;
+        b=rp/Uy7pzLEu6FPC9FtXfRoZIKYMiAvNa6LwCkQGtue0gFdfRyw4yyntkJts8jaH0mZHFWP
+        ikqcAkVPgb262CN54QR+lFyhZ5kOz7V5VNhUWF+n/Hid1OIcRYNYhoe/cEUX4LfOMF5L7B
+        TlkqkxXeYm1NvuZmfAyocncfNoOlilE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702248461;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qTWu+7fJmRUa9JaK7MNQfzwJEOHSHQSeMdkuB1S6r2U=;
+        b=uNwEpaz78gnq2bm1ORy6HOymdF05srNJ0t5gXQPNsRN/HsnFOP2y94Fu5hrCHFF3+HZRi3
+        42GZvSW+dnB+3EAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702248461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qTWu+7fJmRUa9JaK7MNQfzwJEOHSHQSeMdkuB1S6r2U=;
+        b=rp/Uy7pzLEu6FPC9FtXfRoZIKYMiAvNa6LwCkQGtue0gFdfRyw4yyntkJts8jaH0mZHFWP
+        ikqcAkVPgb262CN54QR+lFyhZ5kOz7V5VNhUWF+n/Hid1OIcRYNYhoe/cEUX4LfOMF5L7B
+        TlkqkxXeYm1NvuZmfAyocncfNoOlilE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702248461;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qTWu+7fJmRUa9JaK7MNQfzwJEOHSHQSeMdkuB1S6r2U=;
+        b=uNwEpaz78gnq2bm1ORy6HOymdF05srNJ0t5gXQPNsRN/HsnFOP2y94Fu5hrCHFF3+HZRi3
+        42GZvSW+dnB+3EAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4700C133DE;
+        Sun, 10 Dec 2023 22:47:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id lGG/OQlAdmVtFgAAD6G6ig
+        (envelope-from <neilb@suse.de>); Sun, 10 Dec 2023 22:47:37 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230919223704.GG424@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of files.
+In-reply-to: <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
+References: <20231208033006.5546-1-neilb@suse.de>,
+ <20231208033006.5546-2-neilb@suse.de>,
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
+Date:   Mon, 11 Dec 2023 09:47:35 +1100
+Message-id: <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+X-Spam-Level: 
+X-Spam-Score: -4.21
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.21
+X-Spamd-Result: default: False [-4.21 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-0.92)[-0.921];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.19)[-0.940];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/20/23 00:37, Peter Zijlstra wrote:
-> On Tue, Sep 19, 2023 at 11:07:08PM +0100, Qais Yousef wrote:
-> > On 09/15/23 14:43, peterz@infradead.org wrote:
-> > > Allow applications to directly set a suggested request/slice length using
-> > > sched_attr::sched_runtime.
+On Sat, 09 Dec 2023, Chuck Lever wrote:
+> On Fri, Dec 08, 2023 at 02:27:26PM +1100, NeilBrown wrote:
+> > Calling fput() directly or though filp_close() from a kernel thread like
+> > nfsd causes the final __fput() (if necessary) to be called from a
+> > workqueue.  This means that nfsd is not forced to wait for any work to
+> > complete.  If the ->release of ->destroy_inode function is slow for any
+> > reason, this can result in nfsd closing files more quickly than the
+> > workqueue can complete the close and the queue of pending closes can
+> > grow without bounces (30 million has been seen at one customer site,
+> > though this was in part due to a slowness in xfs which has since been
+> > fixed).
 > > 
-> > I'm probably as eternally confused as ever, but is this going to be the latency
-> > hint too? I find it hard to correlate runtime to latency if it is.
+> > nfsd does not need this.
 > 
-> Yes. Think of it as if a task has to save up for it's slice. Shorter
-> slice means a shorter time to save up for the time, means it can run
-> sooner. Longer slice, you get to save up longer.
-> 
-> Some people really want longer slices to reduce cache trashing or
-> held-lock-preemption like things. Oracle, Facebook, or virt thingies.
-> 
-> Other people just want very short activations but wants them quickly.
+> That is technically true, but IIUC, there is only one case where a
+> synchronous close matters for the backlog problem, and that's when
+> nfsd_file_free() is called from nfsd_file_put(). AFAICT all other
+> call sites (except rename) are error paths, so there aren't negative
+> consequences for the lack of synchronous wait there...
 
-I did check with several folks around here in the Android world, and none of us
-can see how in practice we can use this interface.
+What you say is technically true but it isn't the way I see it.
 
-It is helpful for those who have a specific system and workload they want to
-tune them together. But as a generic app developer interface it will be
-impossible to use.
+Firstly I should clarify that __fput_sync() is *not* a flushing close as
+you describe it below.
+All it does, apart for some trivial book-keeping, is to call ->release
+and possibly ->destroy_inode immediately rather than shunting them off
+to another thread.
+Apparently ->release sometimes does something that can deadlock with
+some kernel threads or if some awkward locks are held, so the whole
+final __fput is delay by default.  But this does not apply to nfsd.
+Standard fput() is really the wrong interface for nfsd to use.  
+It should use __fput_sync() (which shouldn't have such a scary name).
 
-Is that sched-qos thingy worth trying to pursue as an alternative for app
-developers? I think from their perspective they just can practically say I care
-about running ASAP or not; so a boolean flag to trigger the desire for short
-wake up latency. How to implement that, that'd be my pain. But do you see an
-issue in principle in trying to go down that route and see how far I (we if
-anyone else is interested) can get?
+The comment above flush_delayed_fput() seems to suggest that unmounting
+is a core issue.  Maybe the fact that __fput() can call
+dissolve_on_fput() is a reason why it is sometimes safer to leave the
+work to later.  But I don't see that applying to nfsd.
 
-I think the two can co-exist each serving a different purpose.
+Of course a ->release function *could* do synchronous writes just like
+the XFS ->destroy_inode function used to do synchronous reads.
+I don't think we should ever try to hide that by putting it in
+a workqueue.  It's probably a bug and it is best if bugs are visible.
 
-Or is there something about this interface that makes it usable in this manner
-but I couldn't get it?
+Note that the XFS ->release function does call filemap_flush() in some
+cases, but that is an async flush, so __fput_sync doesn't wait for the
+flush to complete.
 
+The way I see this patch is that fput() is the wrong interface for nfsd
+to use, __fput_sync is the right interface.  So we should change.  1
+patch.
+The details about exhausting memory explain a particular symptom that
+motivated the examination which revealed that nfsd was using the wrong
+interface.
 
-Thanks!
+If we have nfsd sometimes using fput() and sometimes __fput_sync, then
+we need to have clear rules for when to use which.  It is much easier to
+have a simple rule: always use __fput_sync().
 
---
-Qais Yousef
+I'm certainly happy to revise function documentation and provide
+wrapper functions if needed.
+
+I might be good to have
+
+  void filp_close_sync(struct file *f)
+  {
+       get_file(f);
+       filp_close(f);
+       __fput_sync(f);
+  }
+
+but as that would only be called once, it was hard to motivate.
+Having it in linux/fs.h would be nice.
+
+Similarly would could wrap __fput_sync() is a more friendly name, but
+that would be better if we actually renamed the function.
+
+  void fput_now(struct file *f)
+  {
+      __fput_sync(f);
+  }
+
+??
+
+Thanks,
+NeilBrown
