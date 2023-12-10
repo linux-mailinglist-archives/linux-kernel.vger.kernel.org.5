@@ -2,96 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 498E480B844
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 02:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77F280B84D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 02:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjLJBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 20:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
+        id S229703AbjLJBSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 20:18:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLJBER (ORCPT
+        with ESMTP id S229488AbjLJBSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 20:04:17 -0500
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD9DFE
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 17:04:24 -0800 (PST)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fb2132b0edso6120404fac.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 17:04:24 -0800 (PST)
+        Sat, 9 Dec 2023 20:18:31 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD86D0;
+        Sat,  9 Dec 2023 17:18:37 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3332e351670so3169978f8f.0;
+        Sat, 09 Dec 2023 17:18:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702171116; x=1702775916; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OSqJ3Gq1m5O067Yev9/OhXEqr6xxNOyvhwu0WzwCQqM=;
+        b=OdBxe7ylAJGaQPnQB2Y92RuHLAXnc+aAeYX4FOmIHvOrNyG8PNVnGqV8R7yNVZQtfB
+         uolsb+OQpFJ+BeJk3SCBXSuqvqZ7hpIS6bAKiBfs6Pc8p2cCJ2IluGioYchsIBsVkm5V
+         WA+AhaQXjXUQMxNc0GpJKPvLpQ/YfU/O9AGQ59Zjt80Fqjm1gTr9ClonQR56rXrnyJrU
+         bgUFEgSXaz3pG5fkeFR4l4l3UHma71zrhpG3eQlHOmu63BR851//bJMddgRsty8klcf5
+         /6fneuE3vBAzYPjhdL6z5OOFFFEaNcbh70FgURPS5t0WpYeWhChJng+7ioy1YVHekv2O
+         ELNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702170263; x=1702775063;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1702171116; x=1702775916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1OQnRc36TMxqEoU10ESmIL5BWzXs4NdEo+e5jbz/hAw=;
-        b=ZCdnILUcsr4f0rms8mAp2MMdp5Kjyl25vaDwppYjubKxqzxliVNxhQ1nqCStvWeLcu
-         fRUzGmrE27HAlfedfZaB1EFB3X+7ynRkU2jDsXdKZc2bfmIt3rGjwYmqDN2UxORPTQi7
-         mF3Fic4P8lj/8zdf8tWw3w6skyg3uZDhJ8KVdvEIpwQGRuxawzY4JhR/0Ho3yOp9utwi
-         16eFI1iLNHP5uCjFixK56DgmegmxQApdHvCSc80vyQOHVCvFSrnKuJW9cvF0YwW6Kiw2
-         qto6w6XEdMfZE0fxkCRb/S2GkkVrzMu5VRpc5lpY4h6KAeDJpjis92P/XeSc6WpZ8/qh
-         zlQQ==
-X-Gm-Message-State: AOJu0YwJfuOMJ8gb5lC/Q3wAWvfgWM0KQ3P0CancCHeUVNo+Fy3zb93v
-        FAYKFT6ZLgaV4nf28MN8fUHzo4xsYehn1D3JfqGDN4vSxEMHltE=
-X-Google-Smtp-Source: AGHT+IENA90DBUQ545YEzR6cruTyIKk+MsO4cNtwsvsBDYbj0lovNzyHlr/3qICOm4QrOQKgovOzTh+yTyHd2z+stHaY0rBjHybE
+        bh=OSqJ3Gq1m5O067Yev9/OhXEqr6xxNOyvhwu0WzwCQqM=;
+        b=lot2+BMaZ0Y7zfkM3j0lc300tg4IY7JcmIUoxyon0UeBolJzIv/8BJrM8cW3zPXjq3
+         eJRFI9unOA+FQTsWzvebBtbX5mjJOFeb5en2Mq/qVIgg5kr3K+tIFhE+b7YaHqU0io3h
+         R3Hnl3VB03AxtnPO4YRhsiimkK53svk7azeR8u08k7dYhGums6zAM9yIYkSfBff7DhkQ
+         XJVPCaXUi2PpqnM2cUVISE+NVbJwLfbLerdG6/YIBdF1Q9wn1e1SSPpLOGtAsnWTHV2Q
+         HSE2ORby1xotD049LF4hIAaIDIcqrVQgp+kPGPAi/VRubfvrfR3Mc6wbI11gQRqfkWGj
+         boMw==
+X-Gm-Message-State: AOJu0YyU2zvLxbJfQRKSA7Ji41EOP54uG8MtJbiKew3u1DFTg5nT9ZAl
+        NSwjrJSIxMrJk3/JhZVxiJYykn5DoRM=
+X-Google-Smtp-Source: AGHT+IEBEg+/hyyuNVUclgs1+x3sTO6RBlnRuYIq+IYOYB62kMo2yWcnmanqfWJcnvBzv4DfWnvXLA==
+X-Received: by 2002:adf:f882:0:b0:333:3117:c453 with SMTP id u2-20020adff882000000b003333117c453mr666048wrp.228.1702171115790;
+        Sat, 09 Dec 2023 17:18:35 -0800 (PST)
+Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
+        by smtp.gmail.com with ESMTPSA id a9-20020a5d5709000000b003332aa97101sm5322013wrv.38.2023.12.09.17.18.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 17:18:35 -0800 (PST)
+Message-ID: <b9e70eae-dad5-4775-8def-596344cf3c8b@gmail.com>
+Date:   Sun, 10 Dec 2023 02:18:33 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:8197:b0:1fa:fa54:1a6a with SMTP id
- k23-20020a056870819700b001fafa541a6amr2950785oae.6.1702170263562; Sat, 09 Dec
- 2023 17:04:23 -0800 (PST)
-Date:   Sat, 09 Dec 2023 17:04:23 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e83079060c1d659c@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 01/13] firmware: qcom: qseecom: fix memory leaks in
+ error paths
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>
+References: <20231127141600.20929-1-brgl@bgdev.pl>
+ <20231127141600.20929-2-brgl@bgdev.pl>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+In-Reply-To: <20231127141600.20929-2-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On 11/27/23 15:15, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Fix instances of returning error codes directly instead of jumping to
+> the relevant labels where memory allocated for the SCM calls would be
+> freed.
+> 
+> Fixes: 759e7a2b62eb ("firmware: Add support for Qualcomm UEFI Secure Application")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Closes: https://lore.kernel.org/r/202311270828.k4HGcjiL-lkp@intel.com/
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-***
+Thanks!
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: eadavis@qq.com
+Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
 
-please test memory leak in radix_tree_insert
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
-
-diff --git a/net/qrtr/af_qrtr.c b/net/qrtr/af_qrtr.c
-index 41ece61eb57a..3d06156fe913 100644
---- a/net/qrtr/af_qrtr.c
-+++ b/net/qrtr/af_qrtr.c
-@@ -275,6 +275,8 @@ static int qrtr_tx_wait(struct qrtr_node *node, int dest_node, int dest_port,
- 		if (flow) {
- 			init_waitqueue_head(&flow->resume_tx);
- 			if (radix_tree_insert(&node->qrtr_tx_flow, key, flow)) {
-+				printk("f: %p\n", flow);
-+				radix_tree_delete(&node->qrtr_tx_flow, key);
- 				kfree(flow);
- 				flow = NULL;
- 			}
-@@ -287,10 +289,14 @@ static int qrtr_tx_wait(struct qrtr_node *node, int dest_node, int dest_port,
- 		return 1;
- 
- 	spin_lock_irq(&flow->resume_tx.lock);
-+	printk("to wait, f: %p, pd: %d, ff: %d, ep: %p\n", 
-+		flow, flow->pending, flow->tx_failed, node->ep);
- 	ret = wait_event_interruptible_locked_irq(flow->resume_tx,
- 						  flow->pending < QRTR_TX_FLOW_HIGH ||
- 						  flow->tx_failed ||
- 						  !node->ep);
-+	printk("r: %d, f: %p, pd: %d, ff: %d, ep: %p\n", 
-+		ret, flow, flow->pending, flow->tx_failed, node->ep);
- 	if (ret < 0) {
- 		confirm_rx = ret;
- 	} else if (!node->ep) {
-
+> ---
+>   .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 20 ++++++++++++-------
+>   1 file changed, 13 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c b/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
+> index a33acdaf7b78..32188f098ef3 100644
+> --- a/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
+> +++ b/drivers/firmware/qcom/qcom_qseecom_uefisecapp.c
+> @@ -325,8 +325,10 @@ static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const e
+>   	req_data->length = req_size;
+>   
+>   	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name, name_length);
+> -	if (status < 0)
+> -		return EFI_INVALID_PARAMETER;
+> +	if (status < 0) {
+> +		efi_status = EFI_INVALID_PARAMETER;
+> +		goto out_free;
+> +	}
+>   
+>   	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
+>   
+> @@ -471,8 +473,10 @@ static efi_status_t qsee_uefi_set_variable(struct qcuefi_client *qcuefi, const e
+>   	req_data->length = req_size;
+>   
+>   	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name, name_length);
+> -	if (status < 0)
+> -		return EFI_INVALID_PARAMETER;
+> +	if (status < 0) {
+> +		efi_status = EFI_INVALID_PARAMETER;
+> +		goto out_free;
+> +	}
+>   
+>   	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
+>   
+> @@ -563,8 +567,10 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
+>   	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
+>   	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name,
+>   			      *name_size / sizeof(*name));
+> -	if (status < 0)
+> -		return EFI_INVALID_PARAMETER;
+> +	if (status < 0) {
+> +		efi_status = EFI_INVALID_PARAMETER;
+> +		goto out_free;
+> +	}
+>   
+>   	status = qcom_qseecom_app_send(qcuefi->client, req_data, req_size, rsp_data, rsp_size);
+>   	if (status) {
+> @@ -635,7 +641,7 @@ static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
+>   		 * have already been validated above, causing this function to
+>   		 * bail with EFI_BUFFER_TOO_SMALL.
+>   		 */
+> -		return EFI_DEVICE_ERROR;
+> +		efi_status = EFI_DEVICE_ERROR;
+>   	}
+>   
+>   out_free:
