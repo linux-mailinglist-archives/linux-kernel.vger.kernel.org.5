@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4905680BE49
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D9980BE61
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 00:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbjLJXjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 18:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        id S230465AbjLJXta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 18:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLJXjp (ORCPT
+        with ESMTP id S229643AbjLJXt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 18:39:45 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E23EB
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:39:51 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c701bd98f3so298265a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 15:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702251590; x=1702856390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZRlK8XSOgjLEALc1Z5hQNRyRQl5uMFZ8VhU8lledO9I=;
-        b=rZDMmXth+QtQs5MiTf/Iupg1yKdttYePVq4u7N8MVavGkyTOxS5jxkhOmE/CMfoYXE
-         4SKUbksEnScIqYGSBl7zsrUX8CSphCmBPM1Td14wlMToL8vsKMokfjiqiJcDWTruskrT
-         iI8+s6Prg9jeTnFg6QWtSvVo9R3ZNSRSdDvkfXFcwf+G5luK7FdlEvnkgfBVt9KwG8ia
-         6IpDl28rNur6wXFh79eJ3Tq+Rh18Sodz2RhDmw1de3RtKdcnMyio343YL6EIiuY24cUn
-         TFq4uRikU7zFOXQKdW5DMRGgpPmF5q31dP5PKzbxb49xOJ3RjSMC4XK4y3FYmZ45JqVT
-         WLQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702251590; x=1702856390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZRlK8XSOgjLEALc1Z5hQNRyRQl5uMFZ8VhU8lledO9I=;
-        b=iidrMG1Bxhi+rDbJv6XqGkJHQOa3p653rR+oDFbOiyAw+dT9oOhjPUGhlsC/2iUbc9
-         uwts8d0oYJad860fhaXHzXtGL7nZOH2yhlv37PL6a48kiHetE0J0MLlCZKnEyLwSZ5Kj
-         K11SJaGNu+XPda1XyPhjavGgn4vomlDHw6izFrf9hDaLaPyMThbKHHKcopd80/6v4mkb
-         tDjTcH4qMmR5wXfTaJthHD164ehUOA83/Q7BlrmKjbRY07veNsFvbk2tJhPBa9MXxh/T
-         qoIqOLmGTS8HSO3zLRScjlNHifloJ1YnKaXven6EupSJKir+wlX0sor1cziNPYYtdRMI
-         5m4w==
-X-Gm-Message-State: AOJu0YxBJq+lqCmo5JmQIqxNr9OpuACMt1A/q8uKmPJeXrq+kw7CSdwC
-        rAh+Ru65Svprt79pC94JNlvvgV3y4WfdevB3VYpQKQ==
-X-Google-Smtp-Source: AGHT+IGsxFuYOhPbXcOyI8L4TnUro7MH402Xh7LjA1I7HZsXimGjb/gGb5R5X025i0dHUk0DjPb38yxObtyCuoxUp/s=
-X-Received: by 2002:a05:6a21:998c:b0:190:228e:4c26 with SMTP id
- ve12-20020a056a21998c00b00190228e4c26mr1570718pzb.31.1702251590680; Sun, 10
- Dec 2023 15:39:50 -0800 (PST)
+        Sun, 10 Dec 2023 18:49:27 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5523AE7;
+        Sun, 10 Dec 2023 15:49:33 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BANmILC117035;
+        Sun, 10 Dec 2023 17:48:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702252098;
+        bh=tqVowNCu+gkbra0kKTIBn0rJWUwWawWCh6sjB2aRuug=;
+        h=From:To:CC:Subject:Date;
+        b=SLVhScEU0stjXmFxhm+n8t1noEhS9mHOX3Qt94i2LI6ecjBoZ5pl2KgzXZQS2fk2H
+         GvHcWUsPERcSa6WP3Jgb7xpDECeRlBYlvUwsK4plMxRFM5KdzaHGS+YjPJpeFZ+tVu
+         7m+DSW693ZMz3C26hyLrEGLK4TC+II+t8xlBf+uM=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BANmI2M016287
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 10 Dec 2023 17:48:18 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 10
+ Dec 2023 17:48:17 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 10 Dec 2023 17:48:18 -0600
+Received: from LT5CG31242FY.dhcp.ti.com ([10.250.64.203])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BANm4Cd015683;
+        Sun, 10 Dec 2023 17:48:06 -0600
+From:   Shenghao Ding <shenghao-ding@ti.com>
+To:     <broonie@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski@linaro.org>
+CC:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <devicetree@vger.kernel.org>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
+        <13916275206@139.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <soyer@irl.hu>, <tiwai@suse.de>, <peeyush@ti.com>, <navada@ti.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v2] ASoC: dt-bindings: Add tas2563 into yaml
+Date:   Mon, 11 Dec 2023 07:47:58 +0800
+Message-ID: <20231210234759.1095-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-References: <20231210134834.43943-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231210134834.43943-1-krzysztof.kozlowski@linaro.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sun, 10 Dec 2023 17:39:39 -0600
-Message-ID: <CAPLW+4nKzYLTPpTAba9X3YmeGwY_avpZoPr=Lw8Uy7ktSkH4_w@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: samsung: exynos-sysreg: combine
- exynosautov920 with other enum
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,49 +68,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 7:48=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> No need to create a new enum every time we bring-up new SoC.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+Support tas2563.
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
->  .../bindings/soc/samsung/samsung,exynos-sysreg.yaml        | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos=
--sysreg.yaml b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos=
--sysreg.yaml
-> index 2de4301a467d..b00f25482fec 100644
-> --- a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg=
-.yaml
-> +++ b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg=
-.yaml
-> @@ -17,6 +17,8 @@ properties:
->                - samsung,exynos3-sysreg
->                - samsung,exynos4-sysreg
->                - samsung,exynos5-sysreg
-> +              - samsung,exynosautov920-peric0-sysreg
-> +              - samsung,exynosautov920-peric1-sysreg
->                - tesla,fsd-cam-sysreg
->                - tesla,fsd-fsys0-sysreg
->                - tesla,fsd-fsys1-sysreg
-> @@ -50,11 +52,6 @@ properties:
->                - samsung,exynosautov9-peric1-sysreg
->            - const: samsung,exynosautov9-sysreg
->            - const: syscon
-> -      - items:
-> -          - enum:
-> -              - samsung,exynosautov920-peric0-sysreg
-> -              - samsung,exynosautov920-peric1-sysreg
-> -          - const: syscon
->
->    reg:
->      maxItems: 1
-> --
-> 2.34.1
->
->
+---
+Change in v2:
+ - Add devicetree list and other list of necessary people and lists to CC
+ - Express Compatibility in the bindings
+ - Drop driver changes
+---
+ .../devicetree/bindings/sound/ti,tas2781.yaml | 26 +++++++++++++------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+index a69e6c223308..c049fe6b2dad 100644
+--- a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
++++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+@@ -5,17 +5,17 @@
+ $id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Texas Instruments TAS2781 SmartAMP
++title: Texas Instruments TAS2781/TAS2563 SmartAMP
+ 
+ maintainers:
+   - Shenghao Ding <shenghao-ding@ti.com>
+ 
+ description:
+-  The TAS2781 is a mono, digital input Class-D audio amplifier
+-  optimized for efficiently driving high peak power into small
+-  loudspeakers. An integrated on-chip DSP supports Texas Instruments
+-  Smart Amp speaker protection algorithm. The integrated speaker
+-  voltage and current sense provides for real time
++  The TAS2781/TAS2563 is a mono, digital input Class-D audio
++  amplifier optimized for efficiently driving high peak power into
++  small loudspeakers. An integrated on-chip DSP supports Texas
++  Instruments Smart Amp speaker protection algorithm. The
++  integrated speaker voltage and current sense provides for real time
+   monitoring of loudspeaker behavior.
+ 
+ allOf:
+@@ -23,18 +23,28 @@ allOf:
+ 
+ properties:
+   compatible:
++    description: |
++      ti,tas2781: 24-V Class-D Amplifier with Real Time Integrated Speaker
++      Protection and Audio Processing, 16/20/24/32bit stereo I2S or
++      multichannel TDM.
++
++      ti,tas2563: 6.1-W Boosted Class-D Audio Amplifier With Integrated
++      DSP and IV Sense, 16/20/24/32bit stereo I2S or multichannel TDM.
+     enum:
+       - ti,tas2781
++      - ti,tas2563
+ 
+   reg:
+     description:
+-      I2C address, in multiple tas2781s case, all the i2c address
++      I2C address, in multiple AMP case, all the i2c address
+       aggregate as one Audio Device to support multiple audio slots.
++      - For tas2781, i2c address is from 0x38 to 0x3f.
++      - For tas2563, i2c address is from 0x4e to 0x4f.
+     maxItems: 8
+     minItems: 1
+     items:
+       minimum: 0x38
+-      maximum: 0x3f
++      maximum: 0x4f
+ 
+   reset-gpios:
+     maxItems: 1
+-- 
+2.34.1
+
