@@ -2,59 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B7780BCA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0F180BCA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjLJTH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 14:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
+        id S232034AbjLJTKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 14:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjLJTHz (ORCPT
+        with ESMTP id S231486AbjLJTKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 14:07:55 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27C4ED
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:08:01 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67abd1879c0so25474536d6.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:08:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702235281; x=1702840081; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=adzOKgwESdnl6ILP955Ezto6DuxWXcPvJ6gVSnWyjOY=;
-        b=CRNSQcQVn9dw5MxK7EKgjMmhqnoS4PMdQjqcsZIZ96hJ5fPVGZXCVLVBvJLZ5NIDZW
-         17QMle6ZodJpKdTukls9BCQdxjbq++nfmHOZftChPVfueLdSWHS/pPU4UA6jY1J5V4W+
-         11DKqF8ytU0w0Eqx3H3yZIreVy18kN8VdL5eQTcrps4AKSFwt8Qbd3Qw1glkQk5JuKW2
-         7/nlisq3hRYqXh2qElk6Wtjg/Tcid14J05SF1MFh60hnFdln/cwHP55Ffk9ZcJcRlwc0
-         KMUDiF2u5+Xq/sWW2XqrQnW6cyrJoa0u/tuuAP6wS81EwUbZyqIB1O6ceomcR2Upa369
-         6dkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702235281; x=1702840081;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=adzOKgwESdnl6ILP955Ezto6DuxWXcPvJ6gVSnWyjOY=;
-        b=U3CppqmsKrVmJTssbnIPohuvMaLIcXzaT61HAoTVIaSXI2Xn6QZd5oSwWklIkYMzSx
-         17lQWb56jRSmxxSBvwVqk4ax1WpvGOfsu8AFOFvfaxOdDyYYPHLltkRIADw4JAQUSaUZ
-         hCfiedntqWitUAKZONVuDPhPjuOOesSEJiHyszqf+wl7GO888Ul4pD1hGEFfyvRQg8vN
-         cNFn1i0RLDo0s1pVSIxDuaant5MUlmODPuT9RLG2ZeOYeCDL1u6HYkvFuzZpC0W4NEgu
-         myASNz/ejvjbFiTsLZhXO2TpsITC6lPeDIvtIu2mx5/T77oWcjT9zRp6cixn6xp9VdpJ
-         hCAQ==
-X-Gm-Message-State: AOJu0YwgiFJuXCA+Ia+Lk9+tNbl4NlBzlhcxMDhPeuY6y7O2Z4S3Q5F5
-        1E2L2RCH+VhjuvxM/mNjGQjRTRLQfuZtBQ9E8Jd37x0Wt88=
-X-Google-Smtp-Source: AGHT+IE6MS1wEs0W4w2nTC2af13yLIF1lCTWdFUvyVc0XfXpi9pxAFEHKyGNCJEaoBN63KCDPDGwMu0cniSKkP9h4k0=
-X-Received: by 2002:a0c:d644:0:b0:67a:bc4f:341f with SMTP id
- e4-20020a0cd644000000b0067abc4f341fmr4016993qvj.83.1702235280672; Sun, 10 Dec
- 2023 11:08:00 -0800 (PST)
+        Sun, 10 Dec 2023 14:10:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095D7ED
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:10:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 78E99C433CA;
+        Sun, 10 Dec 2023 19:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702235424;
+        bh=eQ0/407KP3HhnrTVlfGnfnwd1/ssbYotrJsWIdFbWhU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NL2apv8f160BY5bvo8LX+976+HJNoGlmwgKPzn4+GB2GwtUCa5L0Fg+XjIksXp+zy
+         iKlbAdsvpc8Ccw0SbYWcGt7BKUlu8iPgVBAu/NL47WptmhFN3wjqzW0OickVEzWUib
+         Mi8xckIizx++hO1BvZ2NHNd623vv9gXWBveTVf/KncV6zQplMkhFfQS+wqkmCHPZki
+         qvqe72evzaq1YfS4Bb0mL8McEvbFapBryCVeC1T+2OWhiy1LUVZlB7Q44pk7Xe2vNS
+         q6GOGxy5AZiuWwQ21SDlxt5BeypA6YZxA0IsXFfbQRsQ0nsJC3SPUA9PCctWJlzP8J
+         4THE2FO5yITBA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5EED9C595D2;
+        Sun, 10 Dec 2023 19:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-From:   Chris Rankin <rankincj@gmail.com>
-Date:   Sun, 10 Dec 2023 19:07:50 +0000
-Message-ID: <CAK2bqVLVfBOGcj326grzz2b2PMcTmuj44a5yhWh1H1Z9ch3JCA@mail.gmail.com>
-Subject: Does 6.5 kernel require different userspace to 6.4 kernel?
-To:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] qlcnic: replace deprecated strncpy with strscpy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170223542438.32670.7822552798580562858.git-patchwork-notify@kernel.org>
+Date:   Sun, 10 Dec 2023 19:10:24 +0000
+References: <20231207-strncpy-drivers-net-ethernet-qlogic-qlcnic-qlcnic_83xx_init-c-v2-1-eb1a20a91b2a@google.com>
+In-Reply-To: <20231207-strncpy-drivers-net-ethernet-qlogic-qlcnic-qlcnic_83xx_init-c-v2-1-eb1a20a91b2a@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     shshaikh@marvell.com, manishc@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,23 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-I have a truly ancient i586/UP/32 bit PC (for historical reasons) that
-happily runs Linux 6.4.16. However, when I tried to upgrade it today
-to run Linux 6.5.13, I discovered that both its console and its
-networking froze almost immediately after it had booted. There is no
-sign of any oops in any of the logs. My first thought was that memory
-corruption had crashed the kernel, except that the SysRq interface
-still works correctly.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-The PC's userspace has not changed at all; I have only upgraded its
-kernel from 6.4.16 to 6.5.13. And restoring the 6.4.16 kernel restores
-correct operation. However, I cannot identify any clue as to what
-could be wrong with my 6.5.13 kernel. Can anyone suggest anything that
-may have changed between 6.4 and 6.5 that could be causing this
-please?
+On Thu, 07 Dec 2023 21:42:22 +0000 you wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We expect fw_info->fw_file_name to be NUL-terminated based on its use
+> within _request_firmware_prepare() wherein `name` refers to it:
+> |       if (firmware_request_builtin_buf(firmware, name, dbuf, size)) {
+> |               dev_dbg(device, "using built-in %s\n", name);
+> |               return 0; /* assigned */
+> |       }
+> ... and with firmware_request_builtin() also via `name`:
+> |       if (strcmp(name, b_fw->name) == 0) {
+> 
+> [...]
 
-Thanks for any assistance,
-Cheers,
-Chris
+Here is the summary with links:
+  - [v2] qlcnic: replace deprecated strncpy with strscpy
+    https://git.kernel.org/netdev/net-next/c/f8dd2412ba66
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
