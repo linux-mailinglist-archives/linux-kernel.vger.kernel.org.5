@@ -2,112 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BEB80BD5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 22:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE8F80BD44
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 22:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbjLJVYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 16:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        id S231810AbjLJVHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 16:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJVYJ (ORCPT
+        with ESMTP id S229462AbjLJVHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 16:24:09 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3441BDA
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 13:24:15 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-33349b3f99aso3614770f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 13:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702243453; x=1702848253; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqEf7WmuKDGX9nvRdQA8LWh5OGSEy6Iu2m6IfkFvvR8=;
-        b=FZoPsK9LRG4psqsGmAMfhEbonWl7qM1oYWXL2NkrKTyc9ijDckexMNcyVe0/btkP1f
-         UcS2NqlgT3AG3Vr07JafFUJtu0BVuU6tBAODrsJ90kSdjHqqNWlz+sSzcEtEnuWD3YuT
-         GMWfd0n4+ztuM41n72SEsefxXsSb0etAFR6QuBI+11uFZzAUjL2imszV2/Ubxi7TgfFV
-         bqcp1F4IXPp7sbkrlUh1wh1SAZYpUWCnFVoA+k36JnaC1NubAIXG/SpMSRkCuJErzvtu
-         T8svHvASWAYtNkcetvDc5YrDHIi5WgN3UPEe5kL+C70niG+TMGddQYYwOvFjkkMbtNkB
-         badQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702243453; x=1702848253;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mqEf7WmuKDGX9nvRdQA8LWh5OGSEy6Iu2m6IfkFvvR8=;
-        b=Asmc57w2tQEZQTllBBeLaT2fD20dfICQmor84RMe6VgK9+NRgd8LYvd61YQK36urpD
-         71pDk4hHWQ+SCWRVVW7LSOeSur1xf8hKJmcXcoNGdilg2BjlhZJ2nNCm9uCaqJDr49XY
-         msp0M90L2wouWKs9fwGJiX5zN5p8/dJQN+Xbv1XutNIaEqZRgjxG5N/iK0nfThwGLq4j
-         dxfB54F/lKy2uBIeRJNFY/+YrHHUa/D8ci3Zf3Y6bJXxnLhxtx3yPGWgGTq4rJorXJNO
-         ZQTSNAtelfdmwKa+HiVTaWevk1HB6TIgMv0cYrCkfTzp4QrtUIwlIIdtcu2ovGceLlW2
-         9+MA==
-X-Gm-Message-State: AOJu0Yz8VGlke9FbYS+2D+y+7/A21lRJbOKv2+w2hf6tnoJrgoG+PNUh
-        nRDQpb38+E5yHkUqUtw8G4sZiA==
-X-Google-Smtp-Source: AGHT+IHk94izCilF/BewfwW/CZqmak7w/eouFIC+6NzSJblcQxRBUIeAZX7fQCm4BQU00/CeXDVuJw==
-X-Received: by 2002:a05:6000:4c4:b0:333:28f6:d9e3 with SMTP id h4-20020a05600004c400b0033328f6d9e3mr1730755wri.33.1702243453583;
-        Sun, 10 Dec 2023 13:24:13 -0800 (PST)
-Received: from airbuntu (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
-        by smtp.gmail.com with ESMTPSA id h4-20020a05600004c400b0033621fe3a29sm706874wri.26.2023.12.10.13.24.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 13:24:13 -0800 (PST)
-Date:   Sun, 10 Dec 2023 20:51:56 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-pm@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Wei Wang <wvw@google.com>, Rick Yiu <rickyiu@google.com>,
-        Chung-Kai Mei <chungkai@google.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
- cpufreq_update_util()
-Message-ID: <20231210205156.kausxdcwsydggwie@airbuntu>
-References: <20231208015242.385103-1-qyousef@layalina.io>
- <20231208015242.385103-2-qyousef@layalina.io>
- <bc525124-da79-45af-a99b-ec4616b3fa6b@arm.com>
+        Sun, 10 Dec 2023 16:07:45 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2141E9;
+        Sun, 10 Dec 2023 13:07:51 -0800 (PST)
+Received: from kitsune.suse.cz (unknown [10.100.12.127])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 647581F8AB;
+        Sun, 10 Dec 2023 21:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702242469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GXX7fyzwGRqzBW8lszpIez3y7hw+F2xzAdIfxzSWHk=;
+        b=WzQGylcghSjxyRvA7kTKmVr6D7O0XygNbJtpTC9DQXrN/EU0GUly3kEyi2UDFDX+d1uOdu
+        LlQUiP+gx39FrOSG/TVALllqUy3xJURqqXttIdjbNmrIv7Rs3Bod+kfjk5AHDgoyVhdMzD
+        KzrgbZeoWPk4opF/c3svMckoGyCfVsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702242469;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GXX7fyzwGRqzBW8lszpIez3y7hw+F2xzAdIfxzSWHk=;
+        b=qZ2PWsxoDvAI5/CLEjExhp0VZE1Ob8xFkqYgAZ8tMN7IwoXauYpeJbuZjB+5cmJSnRT02k
+        1l2ACRjUNsxSHUAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702242469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GXX7fyzwGRqzBW8lszpIez3y7hw+F2xzAdIfxzSWHk=;
+        b=WzQGylcghSjxyRvA7kTKmVr6D7O0XygNbJtpTC9DQXrN/EU0GUly3kEyi2UDFDX+d1uOdu
+        LlQUiP+gx39FrOSG/TVALllqUy3xJURqqXttIdjbNmrIv7Rs3Bod+kfjk5AHDgoyVhdMzD
+        KzrgbZeoWPk4opF/c3svMckoGyCfVsY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702242469;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0GXX7fyzwGRqzBW8lszpIez3y7hw+F2xzAdIfxzSWHk=;
+        b=qZ2PWsxoDvAI5/CLEjExhp0VZE1Ob8xFkqYgAZ8tMN7IwoXauYpeJbuZjB+5cmJSnRT02k
+        1l2ACRjUNsxSHUAg==
+Date:   Sun, 10 Dec 2023 22:07:48 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] depmod: Handle installing modules under a
+ different directory
+Message-ID: <20231210210748.GM9696@kitsune.suse.cz>
+References: <CAK7LNAT3N82cJD3GsF+yUBEfPNOBkhzYPk37q3k0HdU7ukz9vQ@mail.gmail.com>
+ <32b332af189bfca8acdb231cee294355aa4af290.1701892062.git.msuchanek@suse.de>
+ <CAK7LNATPF7baHLXZVgzz=6zOhLx8maX0r0EU3DBFwAEZ6kCeww@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bc525124-da79-45af-a99b-ec4616b3fa6b@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNATPF7baHLXZVgzz=6zOhLx8maX0r0EU3DBFwAEZ6kCeww@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Level: 
+X-Spam-Score: 0.20
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: 0.20
+X-Spamd-Result: default: False [0.20 / 50.00];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[12];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,gmail.com,inai.de,kernel.org,google.com,fjasle.eu];
+         BAYES_HAM(-0.00)[20.47%];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/23 10:05, Lukasz Luba wrote:
-> Hi Qais,
-> 
-> On 12/8/23 01:52, Qais Yousef wrote:
-> 
-> [snip]
-> 
-> > @@ -6704,14 +6677,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> >   	 */
-> >   	util_est_enqueue(&rq->cfs, p);
-> > -	/*
-> > -	 * If in_iowait is set, the code below may not trigger any cpufreq
-> > -	 * utilization updates, so do it here explicitly with the IOWAIT flag
-> > -	 * passed.
-> > -	 */
-> > -	if (p->in_iowait)
-> > -		cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT);
-> > -
-> 
-> Why this io wait boost is considered as the $subject says 'aggressive'
-> calling?
+Hello!
 
-This will trigger a frequency update along with the iowait boost. Did I miss
-something?
+On Mon, Dec 11, 2023 at 03:43:44AM +0900, Masahiro Yamada wrote:
+> On Thu, Dec 7, 2023 at 4:48 AM Michal Suchanek <msuchanek@suse.de> wrote:
+> >
+> > Some distributions aim at shipping all files in /usr.
+> >
+> > The path under which kernel modules are installed is hardcoded to /lib
+> > which conflicts with this goal.
+> >
+> > When kmod provides kmod.pc, use it to determine the correct module
+> > installation path.
+> >
+> > With kmod that does not provide the config /lib/modules is used as
+> > before.
+> >
+> > While pkg-config does not return an error when a variable does not exist
+> > the kmod configure script puts some effort into ensuring that
+> > module_directory is non-empty. With that empty module_directory from
+> > pkg-config can be used to detect absence of the variable.
+> >
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> > v6:
+> >  - use ?= instead of := to make it easier to override the value
+> 
+> 
+> "KERNEL_MODULE_DIRECTORY=/local/usr/lib/modules make modules_install"
+> will override the install destination, but
+> depmod will not be not aware of it.
 
+At the same time if you know what you are doing you can build a src rpm
+for another system that uses a different location.
 
-Cheers
+> How to avoid the depmod error?
 
---
-Qais Yousef
+Not override the variable?
+
+Thanks
+
+Michal
+
+> >  - use shorter expression for determining the module directory assuming
+> >    it's non-empty
+> > ---
+> >  Makefile | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Makefile b/Makefile
+> > index 511b5616aa41..84f32bd563d4 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -1081,7 +1081,9 @@ export INSTALL_DTBS_PATH ?= $(INSTALL_PATH)/dtbs/$(KERNELRELEASE)
+> >  # makefile but the argument can be passed to make if needed.
+> >  #
+> >
+> > -MODLIB = $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
+> > +export KERNEL_MODULE_DIRECTORY ?= $(or $(shell pkg-config --variable=module_directory kmod 2>/dev/null),/lib/modules)
+> > +
+> > +MODLIB = $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELEASE)
+> >  export MODLIB
+> >
+> >  PHONY += prepare0
+> > --
+> > 2.42.0
+> >
+> >
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
