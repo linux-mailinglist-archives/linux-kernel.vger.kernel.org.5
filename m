@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D0F80B995
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B60D80B998
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjLJHGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 02:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S231615AbjLJHPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 02:15:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJHGj (ORCPT
+        with ESMTP id S229481AbjLJHPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 02:06:39 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216A9107;
-        Sat,  9 Dec 2023 23:06:44 -0800 (PST)
-X-QQ-mid: bizesmtpipv601t1702191989teml
-Received: from localhost.localdomain ( [255.141.82.1])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 10 Dec 2023 15:05:55 +0800 (CST)
-X-QQ-SSF: 01200000000000B0J000000A0000000
-X-QQ-FEAT: XDJ14wmgNKL+JotWPJlcmW4AloQlqtxbmipQt2oqafFm/U2XoSoYwGfl6VDI1
-        lT2/S6PukQdYO5Sm10cf8rMsgUFFjhEqbMg+p/jWhQ6n7ciRTBgbkC6xWILQP9u3hS37Qrl
-        cldhL6V0TOFNUjDLQMi0IfqaTI8NBt6jeROPzKhPdIpjYtBPClO8PY+4qnK80z99vHjlDe0
-        MU9htik+OVMwTE27GhKy17dQsqbGmJBI9NNfRRFm/T+TVwmNapErwbffaFdD4Jk2YxbYZXL
-        eoKcUrZ90LbVJ9QT2bZLe475dTI0TtiLiItEbon0z3hld0l0d9JraN51FRrF04Pyp4DqsdF
-        ExPGg8Q2YuT3j8h8Jfcw8BwXp5WynrpRfmmOB9by0VXsQWWp0Si/cB4dlSDmw==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3158962225522791323
-From:   Jialu Xu <xujialu@vimux.org>
-To:     masahiroy@kernel.org
-Cc:     justinstitt@google.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        morbo@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        xujialu@vimux.org
-Subject: [PATCH v5] gen_compile_commands.py: fix path resolve with symlinks in it
-Date:   Sun, 10 Dec 2023 15:05:34 +0800
-Message-Id: <20231210070533.925534-2-xujialu@vimux.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231210070533.925534-1-xujialu@vimux.org>
-References: <CAK7LNAQAAZXV3i1sM0ZTFDC3eOaDWBVzOV9FmiLUM5YoX=89Wg@mail.gmail.com>
- <20231210070533.925534-1-xujialu@vimux.org>
+        Sun, 10 Dec 2023 02:15:46 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F77C1;
+        Sat,  9 Dec 2023 23:15:49 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1rCE2O-0007XZ-HN; Sun, 10 Dec 2023 08:15:40 +0100
+Message-ID: <fe7a2b72-9418-42dc-b6fb-2aa93bc4eabc@leemhuis.info>
+Date:   Sun, 10 Dec 2023 08:15:39 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:vimux.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,RCVD_ILLEGAL_IP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Kernel 6.6.1 hangs on "loading initial ramdisk"
+Content-Language: en-US, de-DE
+To:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, bwg <whirl@mniotilta.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, shibedrill1@gmail.com
+References: <9057d7de-f2e0-44ba-bec7-8b0861b2a850@gmail.com>
+ <ZXVdZE3D-KFBqPnj@archie.me>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZXVdZE3D-KFBqPnj@archie.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1702192549;0aa0df20;
+X-HE-SMSGID: 1rCE2O-0007XZ-HN
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a path contains relative symbolic links, os.path.abspath() might
-not follow the symlinks and instead return the absolute path with just
-the relative paths resolved, resulting in an incorrect path.
+[Moved a lot of people CCed in the previous mail to BCC, as I'm pretty
+sure they do not care about this regression; at the same time add the
+x86 maintainers and the efi list.]
 
-1. Say "drivers/hdf/" has some symlinks:
+[Top posting for once to make this easier accessible for everyone.]
 
-    # ls -l drivers/hdf/
-    total 364
-    drwxrwxr-x 2 ...   4096 ... evdev
-    lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hdf_core/framework
-    -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
-    lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hdf_core/interfaces/inner_api
-    lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_core/adapter/khdf/linux
-    -rw-r--r-- 1 ...     74 ... Makefile
-    drwxrwxr-x 3 ...   4096 ... wifi
+Ard, Boris, just to make it obvious: the regression report quoted below
+ was bisected to a1b87d54f4e45f ("x86/efistub: Avoid legacy decompressor
+when doing EFI boot") [v6.6-rc1] from Ard which committed by Boris.
+There are two users that seem to be affected by this. Both seem to run
+Arch. For details see:
+https://bugzilla.kernel.org/show_bug.cgi?id=218173
 
-2. One .cmd file records that:
+Bagas, FWIW, I know you want to help, but your previous mail is not
+helpful at all -- on the contrary, as it is yet another one that is
+likely hurting my regression tracking efforts[1]. Please stop and just
+tell me about things like this in a private mail, as we agreed on earlier.
 
-    # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
-    cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.o := ... \
-    /path/to/src/drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.c
+Ciao, Thorsten
 
-3. os.path.abspath returns "/path/to/src/framework/core/manager/src/devmgr_service.c", not correct:
+[1] This is why: You just added Ard and Boris to the CC, but did not
+make it obvious *why* they should care about that mail. They (and all
+the other recipients) for sure will have no idea what a1b87d54f4e45f
+exactly is, so you should have mentioned the commit summary. And doing
+that after a big quote makes it worse, as many people now need to scroll
+down to see if that mails contains something that might be relevant for
+them -- and just a waste of time if not.
 
-    # ./scripts/clang-tools/gen_compile_commands.py
-    INFO: Could not add line from ./framework/core/manager/src/.devmgr_service.o.cmd: File \
-        /path/to/src/framework/core/manager/src/devmgr_service.c not found
+Furthermore, sending the first mail of the thread to all those people
+and lists was likely not very wise, as nobody is likely to care in a
+case like this. And not removing all those people and lists in the
+second mail of the thread make it a lot worse, as it became clear that
+many people and list do not care about it now that the regression was
+bisected. Hence it's best to remove them, we all get enough mail already.
 
-Use os.path.realpath(), which resolves the symlinks and normalizes the paths correctly.
+All that makes people ignore mails from you -- and maybe about
+regression tracking in general. :-(
 
-    # cat compile_commands.json
-    ...
-    {
-      "command": ...
-      "directory": ...
-      "file": "/path/to/bla/drivers/hdf_core/framework/core/manager/src/devmgr_service.c"
-    },
-    ...
-
-Also fix it in parse_arguments().
-
-Signed-off-by: Jialu Xu <xujialu@vimux.org>
----
- scripts/clang-tools/gen_compile_commands.py | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 180952fb91c1b..5dea4479240bc 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -64,7 +64,7 @@ def parse_arguments():
-     args = parser.parse_args()
- 
-     return (args.log_level,
--            os.path.abspath(args.directory),
-+            os.path.realpath(args.directory),
-             args.output,
-             args.ar,
-             args.paths if len(args.paths) > 0 else [args.directory])
-@@ -172,8 +172,8 @@ def process_line(root_directory, command_prefix, file_path):
-     # by Make, so this code replaces the escaped version with '#'.
-     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
- 
--    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
--    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
-+    # Return the canonical path, eliminating any symbolic links encountered in the path.
-+    abs_path = os.path.realpath(os.path.join(root_directory, file_path))
-     if not os.path.exists(abs_path):
-         raise ValueError('File %s not found' % abs_path)
-     return {
--- 
-2.39.2
-
+On 10.12.23 07:40, Bagas Sanjaya wrote:
+> On Wed, Nov 22, 2023 at 07:06:50AM +0700, Bagas Sanjaya wrote:
+>> Hi,
+>>
+>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>
+>>> After upgrading from 6.5.9 to 6.6.1 on my Dell Latitude E6420 (Intel i5-2520M) with EndeavourOS, the boot process would hang at "loading initial ramdisk". The issue is present on the 6.6.1 release of both Linux and Linux-zen, but not the 6.5.9 release, which makes me think this is somehow upstream in the kernel, rather than to do with packaging. My current workaround is using the Linux LTS kernel.
+>>>
+>>> I have been unable to consistently reproduce this bug. Between 50 and 30 percent of the time, the "loading initial ramdisk" will display, the disk activity indicator will turn off briefly and then resume blinking, and then the kernel boots as expected. The other 50 to 70 percent of the time, the boot stops at "loading initial ramdisk" and the disk activity indicator turns off, and does not resume blinking. The disk activity light is constantly flashing during normal system operation, so I know it's not secretly booting but not updating the display. I haven't been able to replicate this issue in QEMU. I have seen similar bugs that have been solved by disabling IOMMU, but this has not had any effect. Neither has disabling graphics drivers and modesetting. I have been able to reproduce it while using Nouveau, so I don't believe it has to do with Nvidia's proprietary drivers.
+>>>
+>>> Examining dmesg and journalctl, there doesn't appear to be ANY logs from the failed boots. I don't believe the kernel even is started on these failed boots. Enabling GRUB debug messages (linux,loader,init,fs,device,disk,partition) shows that the hang occurs after GRUB attempts to start the loaded image- it's able to load the image into memory, but the boot stalls after "Starting image" with a hex address (presumably the start addr of the kernel).  
+>>>
+>>> I've been trying to compile the kernel myself to see if I can solve the issue, or at least aid in reproduceability, but this is not easy or fast to do on a 2012 i5 processor. I'll update if I can successfully recompile the kernel and if it yields any information.  
+>>>
+>>> Please let me know if I should provide any additional information. This is my first time filing a bug here.
+>>
+>> See Bugzilla for the full thread and attached grub output.
+>>
+>> Anyway, I'm adding this regression to regzbot:
+>>
+>> #regzbot introduced: v6.5..v6.6 https://bugzilla.kernel.org/show_bug.cgi?id=218173
+>> #regzbot title: initramfs loading hang on nouveau system (Dell Latitude E6420)
+>>
+> 
+> Another reporter on Bugzilla had bisected the regression, so:
+> 
+> #regzbot introduced: a1b87d54f4e45f
+> 
+> Thanks.
+> 
