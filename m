@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6030280BA11
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E722780BA12
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 11:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjLJKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 05:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S231862AbjLJKFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 05:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbjLJKFR (ORCPT
+        with ESMTP id S231812AbjLJKFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 Dec 2023 05:05:17 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2662E111
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307C1115
         for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:23 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b88ac1f09cso5385964b6e.2
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d8770b512dso3747453a34.0
         for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 02:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702202722; x=1702807522;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=46E0STe9moK/jSQ+6rFHirn3QAtzK1kk2/EQbY4/2I8=;
-        b=BF+K6wwaLDNVopCVfQ04pneYKDNS3OPjDUuOku4vLHRon/gbEwF4n+40bSrCj0S4Lc
-         b30CCb5onHShPi5m2BG6NNwuAdOSofR4zK/ZaErVItjhrjZglElWhmlEv6ANs+xYM9MX
-         wHFJ5BN88dH71ehVm8/xrk6YPKNpxB7A+A0ZpYb3HAvpEP6iRsvEG8zeKfblLpMNktIs
-         slIU1895toAm0smBzRMDcxZxhBUyBRtbHEQXxDZCdz5PnuFgX43URNaQ/5flbdaOyQ8F
-         ExYnQ4oRYWUvX3ZdPiLaakJqwOmVDwBdPgjgRXiUFu/5fqHTQM0AEwX0Q5GglUVY3zm/
-         rv8w==
-X-Gm-Message-State: AOJu0YwL7cbLOOubWTYjJJ8shvducgz0W1SasGwt05dyutPJptl4u0tX
-        I1/xxBbLFNYD8+zpKFanDe1QWdPV3ItBDfrDVEplpY77kk2g
-X-Google-Smtp-Source: AGHT+IHRCiXG4voAtbc8pZDp4OharZNbdUQICAmtvJKfNeihR1wl4QR56CxHkFgK+34BwPXK6ywd1Hh2o9n8RAdOpGQlCvApnV0p
+        bh=YKXFc2v7t4kCPe8Iesh8qQND7OzFTIcop0B/KSdXasE=;
+        b=eFByWxQpk6NV8WqOoLLC0rJiV9GSn5ERqaiPHduuw4q/bM4++nOOMp0gtYkox1rBo9
+         B90og917l0truDWwwCIK6jud5gsBipjua6gL34jToSh9Bi21gHv141Wm3WStn0O/DV80
+         7W0LxOEM96HAhpHSZYFyA8BIbUmUnO9VSaU5ZoIWBmmcjtO8X6nCtXvbvZIAUr6LaALl
+         pVT9ayXFgX4j8MUaQSuN2QD+34XwUtxfSgtZVh+sF+NgLVAQ+Zs566Q3aVACTeI9zqlI
+         FPB23h1gFjUJrU1nriwoPo4kdrrqTIoDFewN2fjb+1J7ww+JQXUd5Kib1vlJi+lMMP3q
+         E8pw==
+X-Gm-Message-State: AOJu0YzpfrTOajxOs4kg8wNBNrZRags2zSCkpSo7wU/3WT8uUp4LBAqn
+        YYuA9tgJ1vJAdtl5wZL7+hf08od9IiNC2r9jWggqhsbGQY3O
+X-Google-Smtp-Source: AGHT+IF3qDImtqdycyGXN44w/tJpzNdjGEYlzQeJZKDWqiMw1vFKoS5HQnUnTIZ/28zH/2VGVNvWbF/e0jMYVfkJJJfj3oBV+Py7
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1444:b0:3b9:d3a5:2e4f with SMTP id
- x4-20020a056808144400b003b9d3a52e4fmr2822201oiv.5.1702202722511; Sun, 10 Dec
+X-Received: by 2002:a05:6870:96a1:b0:1e1:2ebc:b636 with SMTP id
+ o33-20020a05687096a100b001e12ebcb636mr3312255oaq.4.1702202722216; Sun, 10 Dec
  2023 02:05:22 -0800 (PST)
 Date:   Sun, 10 Dec 2023 02:05:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009c70c4060c24f4f0@google.com>
-Subject: [syzbot] Monthly xfs report (Dec 2023)
-From:   syzbot <syzbot+list680675b20989b29b26c8@syzkaller.appspotmail.com>
-To:     chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000097ef5d060c24f422@google.com>
+Subject: [syzbot] Monthly ext4 report (Dec 2023)
+From:   syzbot <syzbot+list52026f6b95687b491ce2@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello xfs maintainers/developers,
+Hello ext4 maintainers/developers,
 
-This is a 31-day syzbot report for the xfs subsystem.
+This is a 31-day syzbot report for the ext4 subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/xfs
+https://syzkaller.appspot.com/upstream/s/ext4
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 10 issues are still open and 18 have been fixed so far.
+During the period, 8 new issues were detected and 0 were fixed.
+In total, 61 issues are still open and 115 have been fixed so far.
+There are also 2 low-priority issues.
 
 Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 346     Yes   KASAN: stack-out-of-bounds Read in xfs_buf_lock
-                  https://syzkaller.appspot.com/bug?extid=0bc698a422b5e4ac988c
-<2> 174     Yes   WARNING in print_bfs_bug (2)
-                  https://syzkaller.appspot.com/bug?extid=630f83b42d801d922b8b
-<3> 147     Yes   INFO: task hung in xfs_buf_item_unpin
-                  https://syzkaller.appspot.com/bug?extid=3f083e9e08b726fcfba2
-<4> 4       Yes   WARNING: Reset corrupted AGFL on AG NUM. NUM blocks leaked. Please unmount and run xfs_repair.
-                  https://syzkaller.appspot.com/bug?extid=9d0b0d54a8bd799f6ae4
+Ref  Crashes Repro Title
+<1>  51616   Yes   possible deadlock in console_flush_all (2)
+                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
+<2>  6748    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<3>  546     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<4>  247     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<5>  152     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<6>  115     Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<7>  47      No    KASAN: slab-use-after-free Read in check_igot_inode
+                   https://syzkaller.appspot.com/bug?extid=741810aea4ac24243b2f
+<8>  32      Yes   kernel BUG in ext4_write_inline_data_end
+                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
+<9>  16      Yes   possible deadlock in ext4_xattr_inode_iget (2)
+                   https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
+<10> 13      Yes   kernel BUG in ext4_enable_quotas
+                   https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
 
 ---
 This report is generated by a bot. It may contain errors.
