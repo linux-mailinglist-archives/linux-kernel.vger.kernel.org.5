@@ -2,203 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6430980B9AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A71C80B9B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbjLJH0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 02:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S231627AbjLJHaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 02:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjLJH0p (ORCPT
+        with ESMTP id S229481AbjLJHaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 02:26:45 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB217B7;
-        Sat,  9 Dec 2023 23:26:51 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BA7FlpX006873;
-        Sun, 10 Dec 2023 07:26:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=epupJxbLnE3q/89ZQF8hZ0X0NAXOB0INxckkyrikmMQ=; b=Rs
-        p3b/cR0iQDAbdRLPYPIhSo72xeEjvNiaOWnbnusidEFUa2/0hiEZaH/J+rVuiOf4
-        4YaSGteEENu7NjEFmT9cKj4uhGNBnP4BRWcY5BJAIYSanNNDdVOISvViByrEUHOU
-        kH3LMpqq8Wl4I2nfZjL0tf1akdGH8Fl0hun31ryM5bLbfofoFM99Nx7+RsbwbKX6
-        3zQ5lFowNk9z3OUFw2xQscMQHbRgsqcszSnCG2Y4lLOg9Zsc0uIyzZxc+4ZoB1IR
-        0cHKCd6ATqqRibcB9jT6G4SFKjMLEqQWQvy2pqlgbxIsKHpVqzIpd57tVE6J3Thy
-        ZIHy+X+W0Ply0pLqUYNw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvney13k1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Dec 2023 07:26:46 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BA7QkLJ005586
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Dec 2023 07:26:46 GMT
-Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sat, 9 Dec 2023 23:26:45 -0800
-From:   Mao Jinlong <quic_jinlmao@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Mao Jinlong <quic_jinlmao@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        "Tao Zhang" <quic_taozha@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 4/4] arm64: dts: qcom: Fix coresight warnings in in-ports and out-ports
-Date:   Sat, 9 Dec 2023 23:26:31 -0800
-Message-ID: <20231210072633.4243-5-quic_jinlmao@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231210072633.4243-1-quic_jinlmao@quicinc.com>
-References: <20231210072633.4243-1-quic_jinlmao@quicinc.com>
+        Sun, 10 Dec 2023 02:30:10 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF7BD;
+        Sat,  9 Dec 2023 23:30:14 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2880709a12.1;
+        Sat, 09 Dec 2023 23:30:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702193414; x=1702798214; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PJZ68NEWh29H4sGqzC2fIlY8OiY/jserKoz9/XMRFts=;
+        b=YQj5MxqpFmS3F4wAUDUkndAhFQvwmEhEN4RBTWS5eFoLHQO/vKcpKDrrwo8mE9xAHH
+         5CcU4J0AXUbt5bTOkJXpReIw4fAg8b0wD6h8IGL5voq2ny53uxWJzMCmsKc+9bicUXZ0
+         QinC7tfuubQDwykKlxvUU5gmXl9cwHCBT/gCwu6atH8zbn8Tfcf9UGaqlvped8hpPwfr
+         SossnzV3V1MdkcpzgHjnV0vCBEiVvJYErXpVC4q5EvMolzWEkknOTf3UTNmyBsx6WF5u
+         /bRXbZ2iXOq9GBUgqsMEt3pwhy9y3BhUNn8m9Cgt4Imns6FO3nkcy7TVtjUfjFHykrds
+         Jetw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702193414; x=1702798214;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJZ68NEWh29H4sGqzC2fIlY8OiY/jserKoz9/XMRFts=;
+        b=H6csmPLg26ij78VGkHl5Wzzgra+pNPjl4hrPffqOUlf+NTQAIK5hYHivQ1uneREpdP
+         uuIfDiMkO68DfzB2IwunWZL7RtCMpbhAXGSj2fLAChi0uGqXpe3iUB+QxLXr1K3BKLkN
+         9WljgCadWifRLtqDEHbAnoJ/9kdcaR+AX1elznaIGSz7imcb1r40rJ92bPDKH5gvR7Jf
+         v8vn/eR+Oza38kr9KmSBQKn4jdsv2CDpFMcR5wXKojrt+cg2syEpNUy/E0zj5f+0Y1pS
+         klIfxP0hSj4e1eFLKRFm4BxVwv5p2XFBS9A/BibTwasufliOwuBAHbtD/TdkvOdbYG/B
+         oG2g==
+X-Gm-Message-State: AOJu0YyyGXuG3ntcGB7q41lMGOUte906GEh9SuoVUpjoKl+kN3cXsyl6
+        sssLmg8dYN3Ts9ucFgBLHwQ=
+X-Google-Smtp-Source: AGHT+IE4E/haG2aufMTkcvK3NaUCG+up+gPhQuwhMTIAchkganZEWSFvdmizSOzYzpS7+oaJliX8vg==
+X-Received: by 2002:a17:902:f686:b0:1cf:cf34:d4fa with SMTP id l6-20020a170902f68600b001cfcf34d4famr2556606plg.28.1702193414038;
+        Sat, 09 Dec 2023 23:30:14 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id hx11-20020a17090b440b00b002886e13bcbesm6075884pjb.56.2023.12.09.23.30.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Dec 2023 23:30:13 -0800 (PST)
+Message-ID: <7cf21703-391a-4123-b862-14a1af62aeaa@gmail.com>
+Date:   Sun, 10 Dec 2023 14:30:08 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6gzPLLVnvpMt_Buzv5zayHgUCoo32ffr
-X-Proofpoint-ORIG-GUID: 6gzPLLVnvpMt_Buzv5zayHgUCoo32ffr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=729 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312100063
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Kernel 6.6.1 hangs on "loading initial ramdisk"
+Content-Language: en-US
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     bwg <whirl@mniotilta.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, shibedrill1@gmail.com
+References: <9057d7de-f2e0-44ba-bec7-8b0861b2a850@gmail.com>
+ <ZXVdZE3D-KFBqPnj@archie.me>
+ <fe7a2b72-9418-42dc-b6fb-2aa93bc4eabc@leemhuis.info>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <fe7a2b72-9418-42dc-b6fb-2aa93bc4eabc@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a node is only one in port or one out port, address-cells and
-size-cells are not required in in-ports and out-ports. And the number
-and reg of the port need to be removed.
+On 12/10/23 14:15, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [Moved a lot of people CCed in the previous mail to BCC, as I'm pretty
+> sure they do not care about this regression; at the same time add the
+> x86 maintainers and the efi list.]
+> 
+> [Top posting for once to make this easier accessible for everyone.]
+> 
+> Ard, Boris, just to make it obvious: the regression report quoted below
+>  was bisected to a1b87d54f4e45f ("x86/efistub: Avoid legacy decompressor
+> when doing EFI boot") [v6.6-rc1] from Ard which committed by Boris.
+> There are two users that seem to be affected by this. Both seem to run
+> Arch. For details see:
+> https://bugzilla.kernel.org/show_bug.cgi?id=218173
+> 
+> Bagas, FWIW, I know you want to help, but your previous mail is not
+> helpful at all -- on the contrary, as it is yet another one that is
+> likely hurting my regression tracking efforts[1]. Please stop and just
+> tell me about things like this in a private mail, as we agreed on earlier.
+> 
+> Ciao, Thorsten
+> 
+> [1] This is why: You just added Ard and Boris to the CC, but did not
+> make it obvious *why* they should care about that mail. They (and all
+> the other recipients) for sure will have no idea what a1b87d54f4e45f
+> exactly is, so you should have mentioned the commit summary. And doing
+> that after a big quote makes it worse, as many people now need to scroll
+> down to see if that mails contains something that might be relevant for
+> them -- and just a waste of time if not.
+> 
+> Furthermore, sending the first mail of the thread to all those people
+> and lists was likely not very wise, as nobody is likely to care in a
+> case like this. And not removing all those people and lists in the
+> second mail of the thread make it a lot worse, as it became clear that
+> many people and list do not care about it now that the regression was
+> bisected. Hence it's best to remove them, we all get enough mail already.
+> 
+> All that makes people ignore mails from you -- and maybe about
+> regression tracking in general. :-(
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8150.dtsi |  5 +----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 24 ++++--------------------
- 3 files changed, 6 insertions(+), 28 deletions(-)
+Oops, I didn't greet additional Cc's as you mentioned (that's my
+tendency when handling regressions).
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index bf5e6eb9d313..c4dbca4c15f2 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3545,11 +3545,8 @@ etf_out: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@1 {
--					reg = <1>;
-+				port {
- 					etf_in: endpoint {
- 						remote-endpoint =
- 						  <&merge_funnel_out>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 97623af13464..7bae3bc6af06 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -2957,11 +2957,8 @@ replicator1_out: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@1 {
--					reg = <1>;
-+				port {
- 					replicator1_in: endpoint {
- 						remote-endpoint = <&replicator_out1>;
- 					};
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index be970472f6c4..fa4e8887d53b 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -3095,11 +3095,8 @@ tpda@6004000 {
- 			clock-names = "apb_pclk";
- 
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@0 {
--					reg = <0>;
-+				port {
- 					tpda_out_funnel_qatb: endpoint {
- 						remote-endpoint = <&funnel_qatb_in_tpda>;
- 					};
-@@ -3142,11 +3139,7 @@ funnel_qatb_out_funnel_in0: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_qatb_in_tpda: endpoint {
- 						remote-endpoint = <&tpda_out_funnel_qatb>;
- 					};
-@@ -3355,11 +3348,8 @@ etf_out: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 
--				port@0 {
--					reg = <0>;
-+				port {
- 					etf_in_funnel_swao_out: endpoint {
- 						remote-endpoint = <&funnel_swao_out_etf>;
- 					};
-@@ -3443,8 +3433,6 @@ funnel@6c2d000 {
- 			clock-names = "apb_pclk";
- 
- 			out-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
- 				port {
- 					tpdm_mm_out_tpda9: endpoint {
- 						remote-endpoint = <&tpda_9_in_tpdm_mm>;
-@@ -3710,11 +3698,7 @@ funnel_apss_merg_out_funnel_in1: endpoint {
- 			};
- 
- 			in-ports {
--				#address-cells = <1>;
--				#size-cells = <0>;
--
--				port@0 {
--					reg = <0>;
-+				port {
- 					funnel_apss_merg_in_funnel_apss: endpoint {
- 					remote-endpoint = <&funnel_apss_out_funnel_apss_merg>;
- 					};
+So maybe we continue tracking this on Bugzilla or keeping on ML or
+both?
+
+Thanks.
+
 -- 
-2.41.0
+An old man doll... just what I always wanted! - Clara
 
