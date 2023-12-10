@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 678FE80BCAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B86580BCAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 20:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbjLJTKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 14:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S232042AbjLJTMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 14:12:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjLJTKT (ORCPT
+        with ESMTP id S230460AbjLJTML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 14:10:19 -0500
+        Sun, 10 Dec 2023 14:12:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB68F0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:10:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 83C3DC433C9;
-        Sun, 10 Dec 2023 19:10:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7416BF1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 11:12:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 137C3C433C9;
+        Sun, 10 Dec 2023 19:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702235424;
-        bh=xtoKuB/V5aQTclBE1TijIXIA5MMvFsOIUDUePA15oJ0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fTn5fYSwkkUvrDxP4edGPar1kTbyUg/lSDWLQpE0fO7MjAH2qRbaseAw1YYic51oE
-         7M7VMoUcbhvtVSQq/ez59JfxOpcGYbaBbTFWGBHd3ukUsv7YiB15mnxg3ATsFw7Ce5
-         38jd2tAq9tV+Lcn87qWGpMnLT6bhfmwlEn34ZuzEJoVg6zDjTm84CoSDfCZt7jI6sq
-         5LP6m8M/2IL556tt7xMTTvJWTCazbBIWh6ya2+GwVJYIqYq4tdpL0LgL4oRflqdGnJ
-         3L2lKexfdgLLwkrKJOL60p/5oYkBoB51V0RPtHtXRLbGyLqkSzdW49ZlEXd80xdXnP
-         6z1v1rQhhwEHg==
+        s=k20201202; t=1702235538;
+        bh=SfGl5/l5mszggs07mf73IyaPvpbrRB3M+3vvdYUjyhg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ac73Wdu6dG50lap5Fu4xh0E5ZctpkrUj/uYvfERpQ4JXeyldJfqoEY5NGnwzsauCp
+         ctFNzdpbGOWXVHyvUAKZZQ6MAKlx8hE1q/l5mKhpLd0rYmtI+NW7j7RhUpoWWgvTRD
+         sxO3KghnhQvKJdoeyc1GQZka6+CtZDEDmoIeLKgLdBDv4N9zqw9oS2YN1Y5JO0mEC4
+         8QGc9/AQOyXetYACiHuecn2gUvnGGfdc1UatojXaiPWCaDVPbb07/U9rot8+m/xB0r
+         2hJc1sPOuDU4NRUbZpCASmgZa0AZjkSSuYzl/6Jez5d1Y1sBxFWwQ3GvHlM9P7zoBv
+         PxvcXc5UjfDjA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 694FDC595CE;
-        Sun, 10 Dec 2023 19:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: ena: replace deprecated strncpy with strscpy
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170223542442.32670.11976049465072620330.git-patchwork-notify@kernel.org>
-Date:   Sun, 10 Dec 2023 19:10:24 +0000
-References: <20231207-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v2-1-a1f2893d1b70@google.com>
-In-Reply-To: <20231207-strncpy-drivers-net-ethernet-amazon-ena-ena_netdev-c-v2-1-a1f2893d1b70@google.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     shayagr@amazon.com, akiyano@amazon.com, darinzon@amazon.com,
-        ndagan@amazon.com, saeedb@amazon.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F308BC595CE;
+        Sun, 10 Dec 2023 19:12:17 +0000 (UTC)
+Subject: Re: [GIT PULL] x86/urgent for v6.7-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231210105016.GAZXWX6N31tS8bu6k3@fat_crate.local>
+References: <20231210105016.GAZXWX6N31tS8bu6k3@fat_crate.local>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231210105016.GAZXWX6N31tS8bu6k3@fat_crate.local>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.7_rc5
+X-PR-Tracked-Commit-Id: 9b8493dc43044376716d789d07699f17d538a7c4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5412fed784876892c4d0960f003795b6dbdcfc5a
+Message-Id: <170223553799.2016.12573171525395960793.pr-tracker-bot@kernel.org>
+Date:   Sun, 10 Dec 2023 19:12:17 +0000
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,29 +56,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+The pull request you sent on Sun, 10 Dec 2023 11:50:16 +0100:
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.7_rc5
 
-On Thu, 07 Dec 2023 21:34:42 +0000 you wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on the destination buffer without
-> unnecessarily NUL-padding.
-> 
-> [...]
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5412fed784876892c4d0960f003795b6dbdcfc5a
 
-Here is the summary with links:
-  - [v2] net: ena: replace deprecated strncpy with strscpy
-    https://git.kernel.org/netdev/net-next/c/378bc9a40ed8
+Thank you!
 
-You are awesome, thank you!
 -- 
 Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+https://korg.docs.kernel.org/prtracker.html
