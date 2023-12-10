@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32C080BBEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D1B80BBF1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232629AbjLJPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 10:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S232798AbjLJP0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 10:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbjLJPZz (ORCPT
+        with ESMTP id S232816AbjLJP0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 10:25:55 -0500
+        Sun, 10 Dec 2023 10:26:08 -0500
 Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F251C4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:26:01 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b36e721fcso7374855e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:26:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8599C4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:26:13 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c2655da63so5702935e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:26:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702221960; x=1702826760; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702221972; x=1702826772; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1HxTpgRZMqUaasDK2SQoows7vTW70XnRViyUroMPu9U=;
-        b=njlxZ3SVKMNr1PdGKRq/wNtb7vSLaJi3Nnj53UeSUVtse+LfNEI6Vxk0o5CTD8imtK
-         aeLuHEOvi1GxsKG+upcscV6q2oHdR2Jl2oOPQDC8nxo2u3UDh6FR2WXD1n8yCJDPDa7b
-         p+SGSee5JblKivTt7/1Jihs6qCEgPQtkfPLCqPwdLb/FLkFnrumjhBJqAP6r1d1ERHu1
-         qiY6vraehAgz8hhKsOLR8OyCzqMBMca8uxtq96bMvxf0TFxF2KVla3Mbchms0dsqmfpJ
-         929hRwQpvQ66BMpZKtc8/ZK+lMZCXJkM3CRTmXUIZgLDvq9e4dfGzJqq+9zEsBNrOX46
-         jFTg==
+        bh=IXZChcAWYyXJ3xwEo34Bj3n8r/lOSA4PWuJHfRPgZ7U=;
+        b=B2Lfq/RiuXh36LmwWl+Xvk9UMq1OIFpOnW4LB4Rn6qLzLTgmdY8TOTtbHn9AFb865T
+         p9IELjOhMO1TILYEKfOnkxjVC0Z2OPJba/H997X69tZvVGsngB0PEF8MwPCY0Le0Ylhz
+         EsmItVlxB/ZGxrsC99ElurTQ9aXIqRLnpbenEC/5HprAIPKElc3j0kYKq6eYrfDq4XDh
+         JxkEotB3J/Jp/E0lxy7w9LUmH5MkekkMADlgWOuN9HHOSIg9IjnF9Gt4KDfCSchakgeX
+         qF2jPgqTXWALigBL+1lJcyZGiKGwZk3OLAEHG6UEHdrnA2tkeQd9E5/22TaaSdAcqjzj
+         tNSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702221960; x=1702826760;
+        d=1e100.net; s=20230601; t=1702221972; x=1702826772;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1HxTpgRZMqUaasDK2SQoows7vTW70XnRViyUroMPu9U=;
-        b=pTJPD/xpLw4zbY3q7I8TmMnjRsGgQ1/RoXr8Xe4iLT2uSQ/8lFdGp4sh1I473q+s4S
-         zsVc6WYd6n3osqWWwR2nDwT/hEASSruBCCDytyXYuNRav7P1nrsk0bAXQpCJOSkEFLM3
-         9f1F88oFhBpxz5ANZDocDQ5dlf0Tb2pyXIdWRW2DKxGcAJMjfT+UKqgmLOxDb/18xag+
-         PaPMnw7UgV+i63oj7cB2b3ePSnmrMss2oDqKzeVYBmjbU12y6SKNSeuZDPkKOdJ6RTqS
-         fpMCe5PIpnbkcxa3dVUQfhYY/BZDVeJPa1EjYVDWv8dggjcQg+4rY8BtMh41uSK7+GOD
-         6pxw==
-X-Gm-Message-State: AOJu0YzYuhNDEo8STBy0op3LHJC9kZLWHdYK8fG3fSbKmt04SW7GnmH4
-        00s8LJh4KGkyyWq6UkZnlvU=
-X-Google-Smtp-Source: AGHT+IH4EzRkwgg/9IU6xxKsto+E6fiddXvXCHiduD7imzBv3zqTn9K+VLHLteQrHMEJX5aVf67cYg==
-X-Received: by 2002:a05:600c:511a:b0:40b:516a:3856 with SMTP id o26-20020a05600c511a00b0040b516a3856mr4029610wms.1.1702221959852;
-        Sun, 10 Dec 2023 07:25:59 -0800 (PST)
+        bh=IXZChcAWYyXJ3xwEo34Bj3n8r/lOSA4PWuJHfRPgZ7U=;
+        b=SqMglXy/rzspOlszVhehrVjXOWqk2eRC3YVZQcHbTtph2Az8VH41oODWKL2ER4BF32
+         IruUyhqUicm3qoXYJj6JDSj6HH+k1xfgBoP8k4gm24dqvIQIvgBOBmTXugXPRnLN0Gk0
+         30kG9arRfUnZQP0UgcEZE27cvDsFpyeIdiueu1JoGR2x1ZEz0B3/wHFPqJA3slcKMMYA
+         hcJKVmriZ75obfdquWRVLvL9X7mXVxj4LU0VWgKbNKfRlUZ1cPI6UNlI8AmCcaIrOYrR
+         dwqz++k4EXPfiRg92zdFTWYHAJcqTnuKH8B81tFOjghV+sTzxz8dB/FyXg3JCg4tPKbk
+         eVaw==
+X-Gm-Message-State: AOJu0Yw2nPOecG9zdz9KfmZEm/XtQ7ARn2/ed51kLsn2sVehTIhyLtwD
+        hZKhsnyeHQjedd9tkIEi3Yw=
+X-Google-Smtp-Source: AGHT+IGqLnNPjUYQ+YdfgFxcsr4GPTxHvUrBPwPPACa9RwN6TVPv8JLz4sYFmXnX/YuMpO+AmBVXKg==
+X-Received: by 2002:a05:600c:35d6:b0:405:358c:ba75 with SMTP id r22-20020a05600c35d600b00405358cba75mr4025647wmq.0.1702221971674;
+        Sun, 10 Dec 2023 07:26:11 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id fc17-20020a05600c525100b0040c42681fcesm3080228wmb.15.2023.12.10.07.25.59
+        by smtp.gmail.com with ESMTPSA id k40-20020a05600c1ca800b0040b45356b72sm12132495wms.33.2023.12.10.07.26.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 07:25:59 -0800 (PST)
-Date:   Sun, 10 Dec 2023 16:25:58 +0100
+        Sun, 10 Dec 2023 07:26:11 -0800 (PST)
+Date:   Sun, 10 Dec 2023 16:26:10 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/10] staging: rtl8192e: Remove unused struct
- iw_range_with_scan_capa
-Message-ID: <8b4532b8739ca0baa9fa7c736dab68130510ffe8.1702212003.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 02/10] staging: rtl8192e: Remove variable
+ ht_info->reg_bw_40mhz
+Message-ID: <4ff7afdc2ada8095c95f053381834cea9f5796bf.1702212003.git.philipp.g.hortmann@gmail.com>
 References: <cover.1702212003.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,46 +71,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused struct iw_range_with_scan_capa.
+ht_info->reg_bw_40mhz is set to 1 and unchanged. Therefore all equations
+result accordingly and ht_info->reg_bw_40mhz can be removed.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 22 ----------------------
- 1 file changed, 22 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HT.h     |  1 -
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 14 +++-----------
+ 2 files changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-index 4371ab1239ee..4c884c5277f9 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-@@ -158,28 +158,6 @@ static int _rtl92e_wx_set_mode(struct net_device *dev,
- 	return ret;
- }
+diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
+index c004020099e3..bbfdfb79c6f2 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HT.h
++++ b/drivers/staging/rtl8192e/rtl819x_HT.h
+@@ -94,7 +94,6 @@ enum ht_aggre_mode {
+ struct rt_hi_throughput {
+ 	u8 enable_ht;
+ 	u8 current_ht_support;
+-	u8 reg_bw_40mhz;
+ 	u8 cur_bw_40mhz;
+ 	u8 reg_short_gi_40mhz;
+ 	u8 cur_short_gi_40mhz;
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 99626be899fd..f81d9ba9c9f5 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -74,12 +74,7 @@ void ht_update_default_setting(struct rtllib_device *ieee)
+ 	ht_info->reg_short_gi_20mhz = 1;
+ 	ht_info->reg_short_gi_40mhz = 1;
  
--struct  iw_range_with_scan_capa {
--	/* Informative stuff (to choose between different interface) */
--	__u32	   throughput;     /* To give an idea... */
--	/* In theory this value should be the maximum benchmarked
--	 * TCP/IP throughput, because with most of these devices the
--	 * bit rate is meaningless (overhead an co) to estimate how
--	 * fast the connection will go and pick the fastest one.
--	 * I suggest people to play with Netperf or any benchmark...
--	 */
+-	ht_info->reg_bw_40mhz = 1;
 -
--	/* NWID (or domain id) */
--	__u32	   min_nwid;	/* Minimal NWID we are able to set */
--	__u32	   max_nwid;	/* Maximal NWID we are able to set */
+-	if (ht_info->reg_bw_40mhz)
+-		ht_info->reg_supp_cck = 1;
+-	else
+-		ht_info->reg_supp_cck = true;
++	ht_info->reg_supp_cck = 1;
+ 
+ 	ht_info->amsdu_max_size = 7935UL;
+ 	ht_info->amsdu_support = 0;
+@@ -275,7 +270,7 @@ void HTConstructCapabilityElement(struct rtllib_device *ieee, u8 *posHTCap,
+ 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
+ 		pCapELE->ChlWidth = 0;
+ 	else
+-		pCapELE->ChlWidth = (pHT->reg_bw_40mhz ? 1 : 0);
++		pCapELE->ChlWidth = 1;
+ 
+ 	pCapELE->MimoPwrSave		= pHT->self_mimo_ps;
+ 	pCapELE->GreenField		= 0;
+@@ -286,7 +281,7 @@ void HTConstructCapabilityElement(struct rtllib_device *ieee, u8 *posHTCap,
+ 	pCapELE->RxSTBC			= 0;
+ 	pCapELE->DelayBA		= 0;
+ 	pCapELE->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
+-	pCapELE->DssCCk = ((pHT->reg_bw_40mhz) ? (pHT->reg_supp_cck ? 1 : 0) : 0);
++	pCapELE->DssCCk = (pHT->reg_supp_cck ? 1 : 0);
+ 	pCapELE->PSMP = 0;
+ 	pCapELE->LSigTxopProtect = 0;
+ 
+@@ -734,9 +729,6 @@ void HTSetConnectBwMode(struct rtllib_device *ieee,
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+ 
+-	if (!ht_info->reg_bw_40mhz)
+-		return;
 -
--	/* Old Frequency (backward compat - moved lower ) */
--	__u16	   old_num_channels;
--	__u8	    old_num_frequency;
--
--	/* Scan capabilities */
--	__u8	    scan_capa;
--};
--
- static int _rtl92e_wx_get_range(struct net_device *dev,
- 				struct iw_request_info *info,
- 				union iwreq_data *wrqu, char *extra)
+ 	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
+ 		bandwidth = HT_CHANNEL_WIDTH_20;
+ 
 -- 
 2.43.0
 
