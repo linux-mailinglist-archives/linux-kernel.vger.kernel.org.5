@@ -2,117 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9B080B8B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 05:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B19980B8C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 05:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbjLJD70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Dec 2023 22:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        id S231818AbjLJEIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Dec 2023 23:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLJD7Z (ORCPT
+        with ESMTP id S231490AbjLJEHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Dec 2023 22:59:25 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB29A9;
-        Sat,  9 Dec 2023 19:59:32 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35d725ac060so14996775ab.2;
-        Sat, 09 Dec 2023 19:59:32 -0800 (PST)
+        Sat, 9 Dec 2023 23:07:44 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8893AB8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 20:05:33 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c6f9d1ba9cso1351126a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Dec 2023 20:05:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702180771; x=1702785571; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=84cInsubYIer0iSHh7fFONzX0zWNfmSdIBRyKoPJTkI=;
-        b=Dpqe82ixxSSlYbhIzV4rNaEDkOnIiiRPf7jpFsAcHgDwxCr4Ms2JSc0eRfQ7dXDu5d
-         bw32ai1gAryHH0ZG+d3fEp6CNoR9WwQArNNtkv3qTKMLFDTvXm0z6Hn7EihQrdKE/jR4
-         NU8b+Akh0wOOqzkT3vvftHIbvllFqQc7jOtGd2V1WhEtrZzQKJbHPuWXKN0srVrSHdaw
-         HcDjyMUHzmcTibFYvWtEVVKZVd+kGzfx7rmx6EwuqQdRBYywPXrlG/aXFsVfJGMLlfRL
-         Z2byYxb9H1kaz53izhAZv1INArcTOb00Or6jAwxWbGqt1+52pMsrLUjgD1if6kXGB/22
-         PYcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702180771; x=1702785571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702181132; x=1702785932; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=84cInsubYIer0iSHh7fFONzX0zWNfmSdIBRyKoPJTkI=;
-        b=CE9U9prywbf4ws35fDREq5qeTXLrYc/s58IqiqRPRtnBiftMULtEsaNTUdlT9IN0mi
-         p0eTaV64nNpTjeqjXvH+yVy5/zJB+RX9A87P10wxmKDVSdye0iVzJviL0BG8RlnBZx8u
-         GSstTGkHFS3W3kWSW0qULyul9DcXxuSey7Q8J1kIe6h6wmvRRHm3MwgdfA8MFtHd0Cjl
-         Ix5bav6GfWwhX/ajw2JTcL/eqweW+CPyrvXbF77LCWLTZla1eXENbnyPWfbr4Mr87DWX
-         Izx/T5TKk2QBJLHc1O6CmCKZpFkSsvCMmdR1V63UXHevATWRVpDLw0fRLN0VCFvsm0OV
-         5m2g==
-X-Gm-Message-State: AOJu0YxYMWa48ePM9hNZJCYCfEbni4S4bOF/UBHa1fCesRuAlQIKO9YJ
-        sFa0JgRKtpKPXxtbJO15jbu6t3PAA2A=
-X-Google-Smtp-Source: AGHT+IH9F5XvBInEJBWDJV2re58BWPH91w8i++zb8S4UYFPdHM7W/4ZmjNF8Wa+XCmRN3R3hwoJNSg==
-X-Received: by 2002:a05:6e02:1845:b0:35d:5667:c42e with SMTP id b5-20020a056e02184500b0035d5667c42emr4576271ilv.2.1702180771158;
-        Sat, 09 Dec 2023 19:59:31 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:9082:8aa4:377c:de99])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001d060bb0582sm4129422pld.165.2023.12.09.19.59.28
+        bh=PxTgIk35cBEBjNHmGIeLkGBa/rmxEyN1bVKNuPulPrw=;
+        b=iFKa0bXmMxzdLHkwo4WmQZwFMgNHAgkSnKB9i0qIOc1Gy5bOAYvlMd535zdM9V3W10
+         ffzskIYy4aTPApo7PzcdNnXv0Trs4ciXFgZLEc3DBPsr+E61BTgyjM2zvG6O0it9IsoR
+         a/9+rFzo/Q7TUaRV9XcCqo/BeZCSHQLmxawtmOumTzusEmyVZt53nwlAVzy3eZzqOtpw
+         gFjBeg+xzB8Or+STbgGOi9xe0PyrZZsjQA2hiZdcTyg0lS4VujQ+GOhxvUjKCYWxTUJ1
+         ymsOH6UWPd9/fegsFuJG9yRcFx3H69kBedZjrmZcGm3AbB7jtru2onfZLo0nDY4DB3jK
+         AcnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702181132; x=1702785932;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PxTgIk35cBEBjNHmGIeLkGBa/rmxEyN1bVKNuPulPrw=;
+        b=G2MCk/wJ+0gNyip9s88FT6tQ9F0R1pemgFI8Aet7QtT89bxJgXSAkUEWzupxS21EC+
+         lRq6S91+ISBQWexDL7MevdD1qd2QXmy1ceFCXagjbNNTjVrlHSZ2i9ZFCrmeoDjZ62vn
+         bFUQ+j6LN15jZTMKfjeZeymnrBXyjIgltNxEByLy0NHpguc2uzlIguHtskxUgMLZezQu
+         jll+oNOovyN61ujMn/XEcEHcCWYyVzKtHthIYhzdCnlm17YLH04aVRwcOFbIRpR1rrti
+         gqm6fwA2T1X8mV0FQhUJ/lmCr1kLiFEpAHiiakw7LshXkcI8/3PlJPhW7kR6Hso8+Rd6
+         FxGg==
+X-Gm-Message-State: AOJu0YyOaADvgmYG6Y/XrreSH2aeLoVa9jPlphmX6Ip5FgJdQ4kymB61
+        i9TTd3EDzs1OZTRSKPf2u64=
+X-Google-Smtp-Source: AGHT+IH0NUo/39sXHfVIC4mD3yLbQPWnO3hPMB22iKCPdmsCkTVV89PNHgoc96UnMjHFEPuey+GWtA==
+X-Received: by 2002:a05:6a20:d386:b0:190:1e0c:d29 with SMTP id iq6-20020a056a20d38600b001901e0c0d29mr4155604pzb.4.1702181132480;
+        Sat, 09 Dec 2023 20:05:32 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id j6-20020a170902c3c600b001d1c96a0c66sm4112497plj.130.2023.12.09.20.05.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Dec 2023 19:59:30 -0800 (PST)
-Date:   Sat, 9 Dec 2023 19:59:26 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Jani Nikula <jani.nikula@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v6 1/4] pwm: rename pwm_apply_state() to
- pwm_apply_might_sleep()
-Message-ID: <ZXU3nsNoQxXKUF4F@google.com>
-References: <cover.1701248996.git.sean@mess.org>
- <37090c1d8d8f42f1e12fa84942027d995189a99e.1701248996.git.sean@mess.org>
+        Sat, 09 Dec 2023 20:05:32 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     bhe@redhat.com, dyoung@redhat.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, thunder.leizhen@huawei.com,
+        vgoyal@redhat.com, ytcoode@gmail.com
+Subject: [PATCH v2] crash_core: Fix the check for whether crashkernel is from high memory
+Date:   Sun, 10 Dec 2023 12:05:09 +0800
+Message-ID: <20231210040509.106292-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231209143418.92f02de6b6c6db2b7b3b1815@linux-foundation.org>
+References: <20231209143418.92f02de6b6c6db2b7b3b1815@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37090c1d8d8f42f1e12fa84942027d995189a99e.1701248996.git.sean@mess.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 09:13:34AM +0000, Sean Young wrote:
->  drivers/input/misc/da7280.c                   |  4 +--
->  drivers/input/misc/pwm-beeper.c               |  4 +--
->  drivers/input/misc/pwm-vibra.c                |  8 +++---
+The purpose of the reserve_crashkernel_generic() function is to allocate a
+block of memory for crash kernel, and if the block of memory is allocated
+from high memory, it will allocate an additional block from low memory.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com> # for input
+The method to determine if a block of memory is from high memory is to
+check if crash_base is greater than or equal to CRASH_ADDR_LOW_MAX.
+However, the current code only considers the case where crash_base is
+greater than CRASH_ADDR_LOW_MAX.
 
-Thanks.
+This means that if the memory is allocated from high memory and its
+starting address is CRASH_ADDR_LOW_MAX, reserve_crashkernel_generic()
+will no longer allocate the additional memory from low memory for crash
+kernel, even if it is necessary.
 
+In fact, we can also take a look at the code before it was modified in
+these commits:
+
+  9c08a2a139fe ("x86: kdump: use generic interface to simplify crashkernel reservation code")
+  fdc268232dbb ("arm64: kdump: use generic interface to simplify crashkernel reservation")
+  39365395046f ("riscv: kdump: use generic interface to simplify crashkernel reservation")
+
+They all checked for the case where crash_base is equal to
+CRASH_ADDR_LOW_MAX.
+
+This patch also includes some minor cleanups.
+
+Fixes: 0ab97169aa05 ("crash_core: add generic function to do reservation")
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+v1->v2: Provide a more detailed description.
+
+ kernel/crash_core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+index efe87d501c8c..d4313b53837e 100644
+--- a/kernel/crash_core.c
++++ b/kernel/crash_core.c
+@@ -199,7 +199,7 @@ static __initdata char *suffix_tbl[] = {
+  * It returns 0 on success and -EINVAL on failure.
+  */
+ static int __init parse_crashkernel_suffix(char *cmdline,
+-					   unsigned long long	*crash_size,
++					   unsigned long long *crash_size,
+ 					   const char *suffix)
+ {
+ 	char *cur = cmdline;
+@@ -268,9 +268,9 @@ static int __init __parse_crashkernel(char *cmdline,
+ 			     unsigned long long *crash_base,
+ 			     const char *suffix)
+ {
+-	char	*first_colon, *first_space;
+-	char	*ck_cmdline;
+-	char	*name = "crashkernel=";
++	char *first_colon, *first_space;
++	char *ck_cmdline;
++	char *name = "crashkernel=";
+ 
+ 	BUG_ON(!crash_size || !crash_base);
+ 	*crash_size = 0;
+@@ -440,7 +440,7 @@ void __init reserve_crashkernel_generic(char *cmdline,
+ 		return;
+ 	}
+ 
+-	if ((crash_base > CRASH_ADDR_LOW_MAX) &&
++	if ((crash_base >= CRASH_ADDR_LOW_MAX) &&
+ 	     crash_low_size && reserve_crashkernel_low(crash_low_size)) {
+ 		memblock_phys_free(crash_base, crash_size);
+ 		return;
 -- 
-Dmitry
+2.43.0
+
