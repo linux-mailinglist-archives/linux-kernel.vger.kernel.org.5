@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E0080BAB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B39180BABC
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 13:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjLJMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 07:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
+        id S232181AbjLJMxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 07:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJMhD (ORCPT
+        with ESMTP id S229482AbjLJMxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 07:37:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435BC102
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:37:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77346C433C7;
-        Sun, 10 Dec 2023 12:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702211828;
-        bh=pRBeoq0i5wdIAoj64UnUDaiei1SKdwmcYgCs6WKw67s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=siLUPEh+g1d5hTqWbpQ0jYVZKFMXNeYUvAuGg3f2A+aw5FOgAZC3Amtf2qDAs+0KG
-         nFMQPcMPCTNO3VcNjFpN2jCrdOdoe0SQ3gM3Gtjwmv/6o/HSOLy4R0k0pb797cxNw1
-         Hh/kEaGHPy3XBDS5TPGIZD6iYKnizqVf3dnpMS/8rs16B3QFN73H+adkpY1j7rcveu
-         xDaWJwggp9s/o3SA93bwdwu9xSrAzUXgXVntANdVvjvwf5+HUyOU1Vh+PEh/Sa26p8
-         QnC73fxI0JHIc47R4ifPdP8WX4jHnla/8z3gGINU6jGKYRjne656/ZGyAsgJcayZ/P
-         053jZCyjbaPQQ==
-Date:   Sun, 10 Dec 2023 12:37:04 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] iio: light: isl76682: remove unreachable code
-Message-ID: <20231210123704.4be7087e@jic23-huawei>
-In-Reply-To: <20231208021715.32450-1-jiapeng.chong@linux.alibaba.com>
-References: <20231208021715.32450-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sun, 10 Dec 2023 07:53:33 -0500
+X-Greylist: delayed 318 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 10 Dec 2023 04:53:37 PST
+Received: from smtp.outgoing.loopia.se (smtp.outgoing.loopia.se [93.188.3.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC70FA
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 04:53:37 -0800 (PST)
+Received: from s807.loopia.se (localhost [127.0.0.1])
+        by s807.loopia.se (Postfix) with ESMTP id 8F1AF2FC96D6
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 13:48:17 +0100 (CET)
+Received: from s979.loopia.se (unknown [172.22.191.5])
+        by s807.loopia.se (Postfix) with ESMTP id 7FB4F2E274E8;
+        Sun, 10 Dec 2023 13:48:17 +0100 (CET)
+Received: from s473.loopia.se (unknown [172.22.191.6])
+        by s979.loopia.se (Postfix) with ESMTP id 7C14710BC4C7;
+        Sun, 10 Dec 2023 13:48:17 +0100 (CET)
+X-Virus-Scanned: amavisd-new at amavis.loopia.se
+X-Spam-Score: -1.01
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from s981.loopia.se ([172.22.191.5])
+        by s473.loopia.se (s473.loopia.se [172.22.190.13]) (amavisd-new, port 10024)
+        with LMTP id JvZZ6xxqkSUo; Sun, 10 Dec 2023 13:48:17 +0100 (CET)
+X-Loopia-Auth: user
+X-Loopia-User: fredrik@frelon.se
+X-Loopia-Originating-IP: 81.233.40.252
+Received: from localhost.localdomain (81-233-40-252-no600.tbcn.telia.com [81.233.40.252])
+        (Authenticated sender: fredrik@frelon.se)
+        by s981.loopia.se (Postfix) with ESMTPSA id 0BA2122B17C2;
+        Sun, 10 Dec 2023 13:48:17 +0100 (CET)
+From:   =?UTF-8?q?Fredrik=20L=C3=B6nnegren?= <fredrik@frelon.se>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, fredrik.lonnegren@gmail.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Fredrik=20L=C3=B6nnegren?= <fredrik@frelon.se>
+Subject: [PATCH 1/2] RISC-V: fix include warning in smpboot.c
+Date:   Sun, 10 Dec 2023 13:42:24 +0100
+Message-ID: <20231210124811.26204-1-fredrik@frelon.se>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Dec 2023 10:17:15 +0800
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
+This commit fixes a warning about duplicate includes of
+"asm/cpufeatures.h" found using scripts/checkincludes.pl
 
-> The function isl76682_read_raw cannot execute return -EINVAL up to 145
-> lines, delete the invalid code.
-> 
-> drivers/iio/light/isl76682.c:145 isl76682_read_raw() warn: ignoring unreachable code.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7698
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Applied.
+Signed-off-by: Fredrik Lönnegren <fredrik@frelon.se>
+---
+ arch/riscv/kernel/smpboot.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/light/isl76682.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/iio/light/isl76682.c b/drivers/iio/light/isl76682.c
-> index 0a7c3b09c3c0..cf6ddee44ffc 100644
-> --- a/drivers/iio/light/isl76682.c
-> +++ b/drivers/iio/light/isl76682.c
-> @@ -142,7 +142,6 @@ static int isl76682_read_raw(struct iio_dev *indio_dev,
->  		default:
->  			return -EINVAL;
->  		}
-> -		return -EINVAL;
->  	case IIO_CHAN_INFO_SCALE:
->  		for (i = 0; i < ARRAY_SIZE(isl76682_range_table); i++) {
->  			if (chip->range != isl76682_range_table[i].range)
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index d162bf339beb..1b461570d456 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -26,7 +26,6 @@
+ #include <linux/sched/task_stack.h>
+ #include <linux/sched/mm.h>
+ 
+-#include <asm/cpufeature.h>
+ #include <asm/cpu_ops.h>
+ #include <asm/cpufeature.h>
+ #include <asm/irq.h>
+-- 
+2.43.0
 
