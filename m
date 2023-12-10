@@ -2,55 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A78480B950
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AA880B95A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 07:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbjLJGgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 01:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
+        id S231555AbjLJGig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 01:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjLJGgM (ORCPT
+        with ESMTP id S229482AbjLJGif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 01:36:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674D3118
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 22:36:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8D70C433CA;
-        Sun, 10 Dec 2023 06:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702190178;
-        bh=M/6wLn8z1v9OB3jE3O+3Xw9Y4HHJzGOqFn+iYKs91HA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GKiYYxXrm6vPl1EQLzPrXmKc0/zgzkZ+G3tf+mhbB4QXRQ5nxcdh8dGyjs8Gave0C
-         F13e1vLXumCfh6WVCNCVX2TpJK3i+2ZqpC1ozk0xlYR89vsUvjyKHJ9udBvYbeBUfS
-         2UDmDmjT/bGGjk2B953DCqdZtmZ+fmV00fNYwKFrTuwfwpAxN8NK7flqJw+iFyZDNO
-         SLMesqIOb1r5r8zOdvt9x8iUNi+vv/zj8YBg18Gh5sZgqM2ETuik89c1msNCQK3iSg
-         xHmRk4HVnadQDIE8xn9oR0gS+C3ycGB5+A8XvPgMh/B+YFAwPSskTjXdpJatuDbbCB
-         O94jXj8BwLJkQ==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f5bd86ceb3so2419516fac.2;
-        Sat, 09 Dec 2023 22:36:18 -0800 (PST)
-X-Gm-Message-State: AOJu0YxMz3B7XPLIzZBWl4b1XmCECutrCAQfVGDR7TnGERpUMOLpOakt
-        ZFYDX2BCGNWBgf2j+/6d86xLpZju4+MPk70PK4A=
-X-Google-Smtp-Source: AGHT+IFQVJUQFeEFHsTwAZp7ZhGHssvbi/i98rUeBk2zW/8DwIEsjKJtvHV8cUWi9hmXG7QpO369Mg+JsytoM+93b/0=
-X-Received: by 2002:a05:6870:4201:b0:1fb:20ca:95df with SMTP id
- u1-20020a056870420100b001fb20ca95dfmr3248841oac.39.1702190178238; Sat, 09 Dec
- 2023 22:36:18 -0800 (PST)
+        Sun, 10 Dec 2023 01:38:35 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545F8E7
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Dec 2023 22:38:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KxuMmHejzwcAfbqSkq9KLGid4QEHdgcdfkIDW6jbR7U=; b=cNf8oJZ2UeugVtVhYQ1sqXxpz5
+        mRDagUgxAhEF5CvkYxJSJqzFQXu4Lg4CtSkqE54K95n6KISyAZcvIMrkzqYT4Fl/tymdH08n2eJpU
+        ZW2AtbRvYkK05M9ezou350Wnfu1MphrSZTKo1wszX1+7Ms1kJckL+vgZ5CoswbvEsHbISDfi6e6Js
+        aNC7O38ohjbI9YI5HGKPDJkq3eqP2RTxWeM+gEZr/CeSwR1lwdcrZqH6h9AOHd8u20vtY2XRaN6Pi
+        CgnhHXIvE/xU8RIwGmZYeu2VOk7V9IFFNV6IjTDsbbyX8iblMdPrambV3RfjxYeeTUwhSK6FBxp8K
+        R9k49wGg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rCDSZ-0012hS-2y;
+        Sun, 10 Dec 2023 06:38:39 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] maple_tree: fix typos/spellos etc.
+Date:   Sat,  9 Dec 2023 22:38:39 -0800
+Message-ID: <20231210063839.29967-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20231203101418.1910661-1-masahiroy@kernel.org> <20231203191947.GA147536@ravnborg.org>
-In-Reply-To: <20231203191947.GA147536@ravnborg.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 10 Dec 2023 15:35:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ5E2T0oitxniLhCAjf4e7QRPfyVpV8SU5P60_j1oF=uA@mail.gmail.com>
-Message-ID: <CAK7LNAQ5E2T0oitxniLhCAjf4e7QRPfyVpV8SU5P60_j1oF=uA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] sparc: vdso: clean up build artifacts in arch/sparc/vdso/
-To:     sparclinux@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,32 +51,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 4:21=E2=80=AFAM Sam Ravnborg <sam@ravnborg.org> wrot=
-e:
->
-> Hi Masahiro.
->
-> On Sun, Dec 03, 2023 at 07:14:16PM +0900, Masahiro Yamada wrote:
-> > Currently, vdso-image-*.c, vdso*.so, vdso*.so.dbg are not cleaned
-> > because 'make clean' does not include include/config/auto.conf,
-> > resulting in $(vdso_img-y) being empty.
-> >
-> > Add the build artifacts to 'targets' unconditionally.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Nice small fix/clean-ups.
->
-> This and the following two patches are:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
->
-> > ---
-> >
+Fix typos/grammar and spellos in documentation.
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: maple-tree@lists.infradead.org
+Cc: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ lib/maple_tree.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Series, applied to linux-kbuild.
-
-
---=20
-Best Regards
-Masahiro Yamada
+diff -- a/lib/maple_tree.c b/lib/maple_tree.c
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -16,8 +16,8 @@
+  * and are simply the slot index + the minimum of the node.
+  *
+  * In regular B-Tree terms, pivots are called keys.  The term pivot is used to
+- * indicate that the tree is specifying ranges,  Pivots may appear in the
+- * subtree with an entry attached to the value where as keys are unique to a
++ * indicate that the tree is specifying ranges.  Pivots may appear in the
++ * subtree with an entry attached to the value whereas keys are unique to a
+  * specific position of a B-tree.  Pivot values are inclusive of the slot with
+  * the same index.
+  *
+@@ -2500,7 +2500,7 @@ static inline void mast_set_split_parent
+ }
+ 
+ /*
+- * mas_topiary_node() - Dispose of a singe node
++ * mas_topiary_node() - Dispose of a single node
+  * @mas: The maple state for pushing nodes
+  * @enode: The encoded maple node
+  * @in_rcu: If the tree is in rcu mode
+@@ -5474,7 +5474,7 @@ int mas_preallocate(struct ma_state *mas
+ 		goto ask_now;
+ 	}
+ 
+-	/* New root needs a singe node */
++	/* New root needs a single node */
+ 	if (unlikely(mte_is_root(mas->node)))
+ 		goto ask_now;
+ 
