@@ -2,198 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F91A80B9CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E1280B9CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 09:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjLJINC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 03:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S231735AbjLJIPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 03:15:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjLJIM6 (ORCPT
+        with ESMTP id S229518AbjLJIPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 03:12:58 -0500
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A69C5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:13:04 -0800 (PST)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d9decbc5d7so4058967a34.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 00:13:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702195984; x=1702800784;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DDcqDSo0luJBPZRr5X8W/lW27xG0MXkNcXRt+xChv+s=;
-        b=M+y4NJBvh+tiMNjPnEhQbMqBBUWzT1aFGdyuzIAqVnH1ZxXp+1BUAjx9y630WFcNl4
-         XLiZZYT1KXasLBzojOPaVxJxggzXjpiOdHxvZI2knol/fZ/rJ7AKxS43CUrI3xnqvX1W
-         GZnmT8VnAfhKqJCnWYtPNJUYobKpJx2hNTLvR4srY4+vC5xzmCodOPDQIYgkUgeIFarq
-         5H6TUlW3bpbZ4UvCzJhDlawAZo9ZxKRlu/wfO0mXEd6c+QXjDCp2CZ7jQa1KDzKdpkiX
-         O8LZtqHWrSuaZSlFA3NnuLSRup1QLX/Rphsfrvi4MrHs5bPZHt3A+lKSoGldyB/Rdx0q
-         Fz/Q==
-X-Gm-Message-State: AOJu0Yy+9eXSrYk+wUcdJ2PZIYo7EHscaYt70qKlVgGI7QDGtaqYrIOA
-        7U8sjPJpypPpz3XL91NaWib3073PyazZkev2QZb3xlMbrCDS
-X-Google-Smtp-Source: AGHT+IF/Y5Sn2bg5sJSTMUbvI8vmW/vEs1WvGu8ou/82G6xV/PW0KVUQnDXJ39anrKXTnycukJOBMtD79zujE4QziJ4K1lirm+/+
+        Sun, 10 Dec 2023 03:15:15 -0500
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2156.outbound.protection.outlook.com [40.92.62.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F8AC6;
+        Sun, 10 Dec 2023 00:15:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=REW2+iW1lTE75brGn8JouBVk/ZYBBezUKtXsXdoXh7HHSl7bbOMfSps7F61q+LPk/sA8xzWjYMykBJn9g9wzXwJ1r0U+YUzq5hcZvdexSeNOKH1o0GeTwLCFOCv1JakuIqvWlYyiHPYp6ujvHVUFT/PQYUDZXoe2ee8xqVkLOS2cxef3raMt3Pl4mnRa2fHK10l1qQbejFrL07vb2e+I1Lf6xtJGNK0xMdGdtRpzrLiqY6Hqly4PG4GayNdDchwTH3vDcw9h5EZcn47muq2WGaJ6RldbE8qCHxtkLzLH4i5xLba+nLhg+AZxkpbUT4T63WcejrDxKpJno2CJnQVNzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pxF+R4s6Cw2cH1iWqjVrs90ajnNFMMq5vaqUa7oXs9o=;
+ b=UyiEV0Kbb3VTdQCVKXufdYwaGT2C6WjSVey/l4LsceGpsUTT2H9xTd9qDFZP49OIW/Pp4zI7Lu3bksS6wzkNBRgWGS3TkkMSd6LKCYceWYhypwJSH6qOf1nCn+g2bjmi1PGo/Yd0+4h2ZbLiEyOrSegVRKhwOnNjya0gT1zvsZxIFKy3vEuyWIYWvDVQvESP9cbPMUGhuIyHEclXrMbM+odId313zym2HWHpblqN+GAptfjPd2qkFblNEaUoy9XcWCyfBMiTBATWjOZYr/wC+Ysbjsy+mHgiH/64LBcNY+LuI4BHKqS+xQYqnnNmMiIR9LKLciimQ0oz0L4yUp021g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pxF+R4s6Cw2cH1iWqjVrs90ajnNFMMq5vaqUa7oXs9o=;
+ b=QHGF6j0PJzjvlRgm0+Ia6OdgsHGKpmuB9GAfHxO6C2wXpeEQ7ZdNkJHybBkYPPSDtu9J8Uw7EAepOuJ+RbXAaeHWQPMB+KocJbszJ9EIPgVVoNZHOtxGNEBurpPhQNUXw2Uvi3EWM/muru1e2X3jh5vlkkY8xQB0zaV9LKFQeF5ujFzNsdPFZ/MuylNZJZpmo6QF/BJe9Gct0XsrxBqm2EcGUyjCg1Gxf5g/7njttglVq3isTl7vU19VsbjflSz8l2MbWJInIc8FRSHuq9ZvyAx1EPXgMZyoYhAY/pRHhIK8LsDPx9XB2PGlGQZ8prBgru1owTe6rAFHkaCCxXKo2g==
+Received: from SYBPR01MB6870.ausprd01.prod.outlook.com (2603:10c6:10:13d::10)
+ by MEYPR01MB7339.ausprd01.prod.outlook.com (2603:10c6:220:15f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.31; Sun, 10 Dec
+ 2023 08:15:12 +0000
+Received: from SYBPR01MB6870.ausprd01.prod.outlook.com
+ ([fe80::be5a:160f:5418:9deb]) by SYBPR01MB6870.ausprd01.prod.outlook.com
+ ([fe80::be5a:160f:5418:9deb%5]) with mapi id 15.20.7068.030; Sun, 10 Dec 2023
+ 08:15:12 +0000
+From:   Tianyi Liu <i.pear@outlook.com>
+To:     seanjc@google.com, pbonzini@redhat.com, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, x86@kernel.org, mark.rutland@arm.com,
+        mlevitsk@redhat.com, maz@kernel.org,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        Tianyi Liu <i.pear@outlook.com>
+Subject: [PATCH v3 2/5] perf kvm: Introduce guest interfaces for sampling callchains
+Date:   Sun, 10 Dec 2023 16:14:52 +0800
+Message-ID: <SYBPR01MB68706FAC3D66758BB4951F5D9D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+References: <SYBPR01MB687069BFC9744585B4EEF8C49D88A@SYBPR01MB6870.ausprd01.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [tNQOTVHnuDQwQkpUy9i9+/3gTNGARQA5x7xlGvNEgKG54CKGU5CETA==]
+X-ClientProxiedBy: SG2PR03CA0107.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::35) To SYBPR01MB6870.ausprd01.prod.outlook.com
+ (2603:10c6:10:13d::10)
+X-Microsoft-Original-Message-ID: <20231210081452.2312-1-i.pear@outlook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:4428:b0:6d9:da80:7f38 with SMTP id
- q40-20020a056830442800b006d9da807f38mr2350017otv.5.1702195984061; Sun, 10 Dec
- 2023 00:13:04 -0800 (PST)
-Date:   Sun, 10 Dec 2023 00:13:04 -0800
-In-Reply-To: <tencent_5DCBB36DE37A697AA3A5A44C176557784605@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f7dc33060c2362be@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert (2)
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SYBPR01MB6870:EE_|MEYPR01MB7339:EE_
+X-MS-Office365-Filtering-Correlation-Id: 80c8c0ea-93a6-4a93-9b4c-08dbf95821c3
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V2lVPkeEVw0TXhPSNndJFgrUfQfWQhe97/3dWJAom8I8E5xwvpRVo0D4oa1wpDtNYLTXvE6LrN2JpZ2K04UUo7cnjLbfZwnhbVv6n4sknlJ9kA2KeT77ZtZaPxjdCYBoQodjqkrR9Y+TSvYe1bHNeA0r9eJSB/u37ZR3RkI/kowuinjWLGm0MjPJ8lMEdb2KvXMW0WPoP5t4WTAYXxWymURvuPa7LDqE3HEu+hXJkNjN5MC/lTVatkDAkooWfuKh2nRsOw/x/LgeTcTyziGKAi18iUuJYOTjMD0KJrwjKcEueimehowQa0z/9k/gMLNZQHqwGT81EoiQMp6KOUZ7IL/RGAmOHaTw5661VM0vRVXxnzp+3b83x8Uy+/DAzzqHvN04TBz3IommzV28DPS655xsfLSxVuW4cMSCdVPBrXDguphsryjDtk/bWYYyJ9Xv5/1QeVjfsq7ietbowNTrsedf0L4i0wuNQ9U/p26wEYlRIxPdNLOaipDsjA9lURH/0nk5hBkPlRiSVfWtgUe1zhwb/17w50KXw0C2wT4cy9ZNJo3wW3TaUNAGGFRJOkMzy2rnutKrxp/24re6daIDsimlqWeFWzwrB6Jcs9v8jMYE+QlS9qhlhBv8zKEP46+G
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9lgUD9GI56U0BB6wy6svR5OakY3jPajmR4UGCWi1PKSBK1khbQ/vfOXE6y8F?=
+ =?us-ascii?Q?0St8D0nd1G8SvBPo/g+H6YgVeye6pW80B+lqimWMFq9vyGlMht+qHyia7a7Q?=
+ =?us-ascii?Q?CFgEKraosAZBAj2giVCURb9TvFA52CRBeoGxbfCr0OthD3i3i66lWJ49lGf+?=
+ =?us-ascii?Q?30GZREkGwW9xRl+Dw0Rr5GVIykKE7bP7ElQoffGEZT3OC4S7xuU94AocAyyN?=
+ =?us-ascii?Q?1HFYaCqoup7WbqoeMxepIQGZqXgpA/VBWdbw3xPvUWeNA9BsopXiRTc2yupo?=
+ =?us-ascii?Q?rXYvF0o/ULDA2ZhDFEPzyC2SzUw/ou2zyJ1Uhs7NdjnkYf5BT6p3OFkmI6FC?=
+ =?us-ascii?Q?sP7r9Kn2hlp1NRBO1+7nWWaYirkeVcEHMHDs09/uuGj2FMzbpSO1OMhNMIie?=
+ =?us-ascii?Q?crP4hEBlNRNMs8ZsTa54L8a/iS/N8R0KWYCTpw+G38kBWQkbof4xLKinuZTL?=
+ =?us-ascii?Q?14SrisfoB+HBc03PteZd/t3J4EeFoictaZWFruZCeNorXZIqNyP1947AJoaB?=
+ =?us-ascii?Q?zWf4pxnX+U9JB/94eWiL2abht+521Us736h3Z+qjPU9c8+5c80JGBIP6HWfq?=
+ =?us-ascii?Q?zfi8D0YX0Nqk3RP3pQ8ttPsSbAZh3OA1eGr5ESc0nRzxnHJzcOSMrGAVrmIO?=
+ =?us-ascii?Q?8sLX5OMjJSPQBt1FjJlq/wKV4EnrcwKG0Wxvnn0SgCUi5cE20SZsX1rM37+m?=
+ =?us-ascii?Q?wjSb/5xdKdg6ERsj/8pFuiw4K71LoEdO2hqQdGnf5qaAd382uEODi58wf1WL?=
+ =?us-ascii?Q?g7V2NSh6+wyVi4LcOASjJcf0288FMcyBXaMFcNA/W5JKzII5N/AoKEYRBPwj?=
+ =?us-ascii?Q?PPOLKmSgegMK7kh7ovY6pgsiWhfn1NgDtE9DAXVGik80PMFh9F2tIipQKvbF?=
+ =?us-ascii?Q?F/X/9EH8UW/ZFG+HoRMqzxfXPY6/WWOU2OK3XijDsCKk66rwvgKG7fG+mvuT?=
+ =?us-ascii?Q?zfRt2DMtOW/GaRBcKgcUu8PPZkrLQyQCuylgY9XSKGAqxeqR9xXmd0BJfvM8?=
+ =?us-ascii?Q?OJcxXJs9mMXHbpxG1PalBZ3TLyj8SJuzkRb9pq5HTqfl9tR1FWMCCSP1Hdtx?=
+ =?us-ascii?Q?mUopb1rkpleE73Lfe73zR3qK9498hNRrfSIUe5P0iYwc+6tBjLbSeexDpwYM?=
+ =?us-ascii?Q?9SBAmiVhzvj10A2SG39KZfzZOLTniVhDnIxvp0tnFkk37u+JH/MuxbTjtgHQ?=
+ =?us-ascii?Q?3gn/5Td8l7a0biU7WfMkt+6qvBUjPgsIDAS7mePxp5Fl6WPUoRqE0k4MT/NG?=
+ =?us-ascii?Q?x7MPDY6+utJlbrK0sqrq?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80c8c0ea-93a6-4a93-9b4c-08dbf95821c3
+X-MS-Exchange-CrossTenant-AuthSource: SYBPR01MB6870.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2023 08:15:12.4656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MEYPR01MB7339
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This patch introduces two callback interfaces used between perf and KVM:
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in radix_tree_insert
+- get_unwind_info: Return required data for unwinding at once; including
+  ip address, frame pointer, whether the guest vCPU is running in 32 or 64
+  bits, and possibly the base addresses of the segments.
 
-2023/12/10 08:04:23 executed programs: 3
-BUG: memory leak
-unreferenced object 0xffff88810b920000 (size 576):
-  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
-  hex dump (first 32 bytes):
-    3c 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00  <...............
-    30 79 97 0c 81 88 ff ff 18 00 92 0b 81 88 ff ff  0y..............
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
-    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
-    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+- read_virt: Read data from a virtual address of the guest vm, used for
+  reading the stack frames from the guest.
 
-BUG: memory leak
-unreferenced object 0xffff88810b920248 (size 576):
-  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
-  hex dump (first 32 bytes):
-    36 0f 01 00 00 00 00 00 00 00 92 0b 81 88 ff ff  6...............
-    30 79 97 0c 81 88 ff ff 60 02 92 0b 81 88 ff ff  0y......`.......
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
-    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
-    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Signed-off-by: Tianyi Liu <i.pear@outlook.com>
+---
+ include/linux/perf_event.h | 17 +++++++++++++++++
+ kernel/events/core.c       | 10 ++++++++++
+ 2 files changed, 27 insertions(+)
 
-BUG: memory leak
-unreferenced object 0xffff88810b920490 (size 576):
-  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
-  hex dump (first 32 bytes):
-    30 3f 01 00 00 00 00 00 48 02 92 0b 81 88 ff ff  0?......H.......
-    30 79 97 0c 81 88 ff ff a8 04 92 0b 81 88 ff ff  0y..............
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
-    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
-    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-BUG: memory leak
-unreferenced object 0xffff88810b9206d8 (size 576):
-  comm "syz-executor.0", pid 5753, jiffies 4294945520 (age 13.500s)
-  hex dump (first 32 bytes):
-    2a 3f 00 00 00 00 00 00 90 04 92 0b 81 88 ff ff  *?..............
-    30 79 97 0c 81 88 ff ff f0 06 92 0b 81 88 ff ff  0y..............
-  backtrace:
-    [<ffffffff81631398>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81631398>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81631398>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81631398>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81631398>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81631398>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff84b5094c>] radix_tree_node_alloc.constprop.0+0x7c/0x1a0 lib/radix-tree.c:276
-    [<ffffffff84b524cf>] __radix_tree_create lib/radix-tree.c:636 [inline]
-    [<ffffffff84b524cf>] radix_tree_insert+0x14f/0x360 lib/radix-tree.c:724
-    [<ffffffff84ae10d0>] qrtr_tx_wait net/qrtr/af_qrtr.c:277 [inline]
-    [<ffffffff84ae10d0>] qrtr_node_enqueue+0x5d0/0x6a0 net/qrtr/af_qrtr.c:356
-    [<ffffffff84ae2786>] qrtr_bcast_enqueue+0x66/0xd0 net/qrtr/af_qrtr.c:899
-    [<ffffffff84ae3362>] qrtr_sendmsg+0x232/0x450 net/qrtr/af_qrtr.c:1000
-    [<ffffffff83ec3c42>] sock_sendmsg_nosec net/socket.c:730 [inline]
-    [<ffffffff83ec3c42>] __sock_sendmsg+0x52/0xa0 net/socket.c:745
-    [<ffffffff83ec3d8b>] sock_write_iter+0xfb/0x180 net/socket.c:1158
-    [<ffffffff816961a7>] call_write_iter include/linux/fs.h:2020 [inline]
-    [<ffffffff816961a7>] new_sync_write fs/read_write.c:491 [inline]
-    [<ffffffff816961a7>] vfs_write+0x327/0x590 fs/read_write.c:584
-    [<ffffffff816966fb>] ksys_write+0x13b/0x170 fs/read_write.c:637
-    [<ffffffff84b6de2f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6de2f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-
-Tested on:
-
-commit:         33cc938e Linux 6.7-rc4
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=120e98b2e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37d1b8bb20150e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=006987d1be3586e13555
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13605feee80000
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 5547ba68e6e4..dacc1623dcaa 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -17,6 +17,8 @@
+ #include <uapi/linux/perf_event.h>
+ #include <uapi/linux/bpf_perf_event.h>
+ 
++#include <linux/perf_kvm.h>
++
+ /*
+  * Kernel-internal data types and definitions:
+  */
+@@ -32,6 +34,9 @@
+ struct perf_guest_info_callbacks {
+ 	unsigned int			(*state)(void);
+ 	unsigned long			(*get_ip)(void);
++	bool				(*get_unwind_info)(struct perf_kvm_guest_unwind_info *info);
++	bool				(*read_virt)(unsigned long addr, void *dest,
++						     unsigned int len);
+ 	unsigned int			(*handle_intel_pt_intr)(void);
+ };
+ 
+@@ -1500,6 +1505,8 @@ extern struct perf_guest_info_callbacks __rcu *perf_guest_cbs;
+ 
+ DECLARE_STATIC_CALL(__perf_guest_state, *perf_guest_cbs->state);
+ DECLARE_STATIC_CALL(__perf_guest_get_ip, *perf_guest_cbs->get_ip);
++DECLARE_STATIC_CALL(__perf_guest_get_unwind_info, *perf_guest_cbs->get_unwind_info);
++DECLARE_STATIC_CALL(__perf_guest_read_virt, *perf_guest_cbs->read_virt);
+ DECLARE_STATIC_CALL(__perf_guest_handle_intel_pt_intr, *perf_guest_cbs->handle_intel_pt_intr);
+ 
+ static inline unsigned int perf_guest_state(void)
+@@ -1510,6 +1517,14 @@ static inline unsigned long perf_guest_get_ip(void)
+ {
+ 	return static_call(__perf_guest_get_ip)();
+ }
++static inline bool perf_guest_get_unwind_info(struct perf_kvm_guest_unwind_info *info)
++{
++	return static_call(__perf_guest_get_unwind_info)(info);
++}
++static inline bool perf_guest_read_virt(unsigned long addr, void *dest, unsigned int length)
++{
++	return static_call(__perf_guest_read_virt)(addr, dest, length);
++}
+ static inline unsigned int perf_guest_handle_intel_pt_intr(void)
+ {
+ 	return static_call(__perf_guest_handle_intel_pt_intr)();
+@@ -1519,6 +1534,8 @@ extern void perf_unregister_guest_info_callbacks(struct perf_guest_info_callback
+ #else
+ static inline unsigned int perf_guest_state(void)		 { return 0; }
+ static inline unsigned long perf_guest_get_ip(void)		 { return 0; }
++static inline bool perf_guest_get_unwind_info(struct perf_kvm_guest_unwind_info *) { return 0; }
++static inline bool perf_guest_read_virt(unsigned long, void*, unsigned int)	   { return 0; }
+ static inline unsigned int perf_guest_handle_intel_pt_intr(void) { return 0; }
+ #endif /* CONFIG_GUEST_PERF_EVENTS */
+ 
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index b704d83a28b2..4c5e35006217 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6807,6 +6807,8 @@ struct perf_guest_info_callbacks __rcu *perf_guest_cbs;
+ 
+ DEFINE_STATIC_CALL_RET0(__perf_guest_state, *perf_guest_cbs->state);
+ DEFINE_STATIC_CALL_RET0(__perf_guest_get_ip, *perf_guest_cbs->get_ip);
++DEFINE_STATIC_CALL_RET0(__perf_guest_get_unwind_info, *perf_guest_cbs->get_unwind_info);
++DEFINE_STATIC_CALL_RET0(__perf_guest_read_virt, *perf_guest_cbs->read_virt);
+ DEFINE_STATIC_CALL_RET0(__perf_guest_handle_intel_pt_intr, *perf_guest_cbs->handle_intel_pt_intr);
+ 
+ void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+@@ -6818,6 +6820,12 @@ void perf_register_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+ 	static_call_update(__perf_guest_state, cbs->state);
+ 	static_call_update(__perf_guest_get_ip, cbs->get_ip);
+ 
++	if (cbs->get_unwind_info)
++		static_call_update(__perf_guest_get_unwind_info, cbs->get_unwind_info);
++
++	if (cbs->read_virt)
++		static_call_update(__perf_guest_read_virt, cbs->read_virt);
++
+ 	/* Implementing ->handle_intel_pt_intr is optional. */
+ 	if (cbs->handle_intel_pt_intr)
+ 		static_call_update(__perf_guest_handle_intel_pt_intr,
+@@ -6833,6 +6841,8 @@ void perf_unregister_guest_info_callbacks(struct perf_guest_info_callbacks *cbs)
+ 	rcu_assign_pointer(perf_guest_cbs, NULL);
+ 	static_call_update(__perf_guest_state, (void *)&__static_call_return0);
+ 	static_call_update(__perf_guest_get_ip, (void *)&__static_call_return0);
++	static_call_update(__perf_guest_get_unwind_info, (void *)&__static_call_return0);
++	static_call_update(__perf_guest_read_virt, (void *)&__static_call_return0);
+ 	static_call_update(__perf_guest_handle_intel_pt_intr,
+ 			   (void *)&__static_call_return0);
+ 	synchronize_rcu();
+-- 
+2.34.1
 
