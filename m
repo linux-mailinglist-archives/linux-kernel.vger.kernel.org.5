@@ -2,100 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D53880BC4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA6B80BC4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 18:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjLJQus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 11:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        id S231814AbjLJRCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 12:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231755AbjLJQuj (ORCPT
+        with ESMTP id S229550AbjLJRCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 11:50:39 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9738CFA;
-        Sun, 10 Dec 2023 08:50:46 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2886d445d8dso1009275a91.1;
-        Sun, 10 Dec 2023 08:50:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702227046; x=1702831846; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cx83+ClTbz5lUz2UC/9mxXOF3CM87EbKd6ZcjX3rjAI=;
-        b=bpgfOHtVXinUsbpKkASsksV0uyjqgpJFty9QpCwftGrsPe3OlLghtvzF5nvz7vI0yA
-         8/HFg0n3x/gKvdD4BLVZm1QJL7n2S572Dx/+xgwVH/UynACUtodZ5SHyJtbbJToxav12
-         X7xwoW6U2QvRcr/243HmGaufgeOf7KLYbWTlX6YeeOXiymu5ok1x36lICYUDVdUeVGso
-         fXQqzgWruPxRwlX+jcHrBkns4HpkfgIMEoO2Gms9a3odxBgyFyPz7I5BKmu4vSWsByS4
-         jejJ/rLChTg/5brPbntGvMO79VeeXcsqk2kG7Xy57fTCjzE+CWOJDG57h8YJZtPDAFIz
-         a4Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702227046; x=1702831846;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cx83+ClTbz5lUz2UC/9mxXOF3CM87EbKd6ZcjX3rjAI=;
-        b=PQQxbgrd9IlSbjNTPxbFf7TRe+wVFlc6Z9H9U0K0ebPcfF/VMFUdzg/xRejfK9iZQc
-         /AhsYjQvAxVY6cZWFnNnddU4wLCAqM1NYyCRqCFu/k8FDK57GhUS0zOeWWdMh1QMRyLy
-         +7FKPaBrtGLgZn1mqgb48R3Hq6A3ZvZz78iqrPV+H0soNlK93z67fo3ATlac8V8VqX6f
-         60SRwTJXvYLRD8mJ1+OHcjCRAyiKjeK0VLX7NYhZsnu6TJ31kj1U3+bjlRpBS8M6ScL+
-         YPe5OAiQyLFGq2GO3fKm/q/3Ll3BkKZHnYIGN0xU9VAeb8HzVwk738lCBztcH10Bn2mu
-         B8mg==
-X-Gm-Message-State: AOJu0Yz0IFksKccnK1tUoVHVpNyIaZv91VZ09WrieQjty3MgWl9k6q/Z
-        xY/Ll9KO2K532Z2OLiydds0=
-X-Google-Smtp-Source: AGHT+IEfbTLarMP63qUNtsd6a3QqVptoby0FIdULnNzGnoM7p8yeSo8LcHvXt+o76mrdpYycJjKDmA==
-X-Received: by 2002:a05:6a20:3d29:b0:18b:c9cf:4521 with SMTP id y41-20020a056a203d2900b0018bc9cf4521mr7940567pzi.2.1702227045917;
-        Sun, 10 Dec 2023 08:50:45 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id hi16-20020a17090b30d000b00286bd821426sm6758938pjb.26.2023.12.10.08.50.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 08:50:45 -0800 (PST)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org
-Cc:     robh@kernel.org, abel.vesa@linaro.org, dinguyen@kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] clk: hi3620: Fix memory leak in hi3620_mmc_clk_init()
-Date:   Mon, 11 Dec 2023 00:50:40 +0800
-Message-Id: <20231210165040.3407545-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 10 Dec 2023 12:02:51 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9C2F4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 09:02:57 -0800 (PST)
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1rCNCh-0007h2-0D; Sun, 10 Dec 2023 18:02:55 +0100
+From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2023-12-10]
+Date:   Sun, 10 Dec 2023 17:02:54 +0000
+Message-Id: <170222766284.86103.11020060769330721008@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1702227777;3576d11e;
+X-HE-SMSGID: 1rCNCh-0007h2-0D
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cases where kcalloc() fails for the 'clk_data->clks' allocation, the
-code path does not handle the failure gracefully, potentially leading
-to a memory leak. This fix ensures proper cleanup by freeing the
-allocated memory for 'clk_data' before returning.
+Hi Linus. Find below the list of regressions by bot currently tracks.
+But first let let me mention a few things manually:
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+* Remember the "Blank screen on boot of Linux 6.5 and later on Lenovo
+ThinkPad L570" regression?[1]. Shortly before releasing 6.6 you wrote
+"But if this is not fixed by -rc1, we'll just revert it." [2]. I might
+have missed something, but it afaics is still not fixed; there was an
+attempt to fix this, but maintainers were not happy and then nothing
+happened anymore -- at least unless I missed something [3].
+
+[1] https://lore.kernel.org/dri-devel/7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee/
+[2] https://lore.kernel.org/all/CAHk-=wiX0j=8DB0EbCheAAfcx2z99QUZMTeJUxSBGpb0J5pjVg@mail.gmail.com/
+[3] https://lore.kernel.org/all/20231108024613.2898921-1-chenhuacai@loongson.cn/
+
+* The Apparmor stuff from Stéphane I CCed you on a few days ago is in
+below list of tracked 6.7 regressions; just mentioning this slightly
+complicated regression (one we might have to live with due to the
+security aspect, but that's your call, I didn't even look closer) in case the CC fall through the crack due to you traveling:
+https://lore.kernel.org/regressions/CA%2Benf=u0UmgjKrd98EYkxFu7FYV8dR1SBYJn_1b0Naq=3twbbQ@mail.gmail.com/
+
+* Most of the other 6.7 issues I track are being dealt with afaics,
+except for one: it seems a amggpu change broke something for users that
+haven't updated their firmware. A amd dev acked the problem mid Nov, but
+since then it seems nothing has happened to address this; I'll prod the
+devs again tomorrow:
+https://lore.kernel.org/lkml/CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E%2B8p-4QO6FOWa6zp22_A@mail.gmail.com/
+
+Ciao, Thorsten
+
+
 ---
- drivers/clk/hisilicon/clk-hi3620.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3620.c b/drivers/clk/hisilicon/clk-hi3620.c
-index 2d7186905abd..5d0226530fdb 100644
---- a/drivers/clk/hisilicon/clk-hi3620.c
-+++ b/drivers/clk/hisilicon/clk-hi3620.c
-@@ -466,8 +466,10 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
- 		return;
- 
- 	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
--	if (!clk_data->clks)
-+	if (!clk_data->clks) {
-+		kfree(clk_data);
- 		return;
-+	}
- 
- 	for (i = 0; i < num; i++) {
- 		struct hisi_mmc_clock *mmc_clk = &hi3620_mmc_clks[i];
--- 
-2.25.1
+Hi, this is regzbot, the Linux kernel regression tracking bot.
 
+Currently I'm aware of 6 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+======================================================
+current cycle (v6.6.. aka v6.7-rc), culprit identified
+======================================================
+
+
+[ *NEW* ] Re: [PATCH v2 0/9] Support light color temperature and chromaticity
+-----------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/4441bd6b-01cd-4f26-bf85-bde2e1bf404e@t-8ch.de/
+https://lore.kernel.org/linux-input/4441bd6b-01cd-4f26-bf85-bde2e1bf404e@t-8ch.de/
+https://bugzilla.kernel.org/show_bug.cgi?id!8223
+
+By Thomas Weißschuh; 3 days ago; 2 activities, latest 0 days ago.
+Introduced in 5f05285df691 (v6.7-rc1)
+
+Recent activities from: Jonathan Cameron (1), Thomas Weißschuh (1)
+
+
+[ *NEW* ] iwlwifi: rfkill locking up kernel 6.5.12, 6.6.2
+---------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/218206/
+https://bugzilla.kernel.org/show_bug.cgi?id=218206
+https://lore.kernel.org/lkml/5ef14fe7-84a5-407f-b514-1527f7279ecd@gmail.com/
+
+By Linus Lotz and Linus Lotz; 11 days ago; 13 activities, latest 2 days ago.
+Introduced in 37fb29bd1f90 (v6.7-rc1)
+
+Recent activities from: Mike Pagano (6), Johannes Berg (2), The Linux
+  kernel's regression tracker (Thorsten Leemhuis) (2), Darrell Enns (1),
+  Bagas Sanjaya (1), Linus Lotz (1)
+
+One patch associated with this regression:
+* bugzilla.kernel.org bug 218206: new comment(#11)
+  https://bugzilla.kernel.org/show_bug.cgi?id=218206#c11
+  3 days ago, by Johannes Berg
+
+
+[ *NEW* ] system after successful resuming the CPU won't enter lower Package Sates below pc2
+--------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/218198/
+https://bugzilla.kernel.org/show_bug.cgi?id=218198
+https://lore.kernel.org/regressions/4cbd1ad9-d343-421a-b9de-30dc8e2d02c1@leemhuis.info/
+
+By Dieter Mummenschanz and Dieter Mummenschanz; 12 days ago; 17 activities, latest 3 days ago.
+Introduced in d035e4eb38b3 (v6.7-rc1)
+
+Recent activities from: Dieter Mummenschanz (10), Phillip Susi (4),
+  Niklas.Cassel (2), dlemoal (1)
+
+
+[ *NEW* ] Re: [PATCH v2 0/6] PCI: Fix deadlocks when enabling ASPM
+------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZXHHrCDKKQbGIxli@hovoldconsulting.com/
+https://lore.kernel.org/lkml/ZXHHrCDKKQbGIxli@hovoldconsulting.com/
+
+By Johan Hovold; 3 days ago; 1 activities, latest 3 days ago.
+Introduced in 9f4f3dfad8cf (v6.7-rc1)
+
+Fix incoming:
+* https://lore.kernel.org/lkml/daa0c12e-49be-4047-933f-26823117b3db@leemhuis.info/
+
+
+[ *NEW* ] apparmor: move_mount mediation breaks mount tool in containers
+------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CA+enf=u0UmgjKrd98EYkxFu7FYV8dR1SBYJn_1b0Naq=3twbbQ@mail.gmail.com/
+https://lore.kernel.org/regressions/CA%2Benf=u0UmgjKrd98EYkxFu7FYV8dR1SBYJn_1b0Naq=3twbbQ@mail.gmail.com/
+
+By Stéphane Graber; 6 days ago; 14 activities, latest 3 days ago.
+Introduced in 157a3537d6bc (v6.7-rc1)
+
+Recent activities from: John Johansen (6), Stéphane Graber (3),
+  Christian Brauner (2), Linux regression tracking (Thorsten
+  Leemhuis) (2), Sasha Levin (1)
+
+One patch associated with this regression:
+* Re: Apparmor move_mount mediation breaks mount tool in containers
+  https://lore.kernel.org/regressions/3d17c8c3-6558-4847-b123-4dbe1a1b0763@canonical.com/
+  4 days ago, by John Johansen
+
+
+drm/amd/display: horizontal flashing bar with a picture of the desktop background on white screen after login
+-------------------------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com/
+https://lore.kernel.org/lkml/CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E%2B8p-4QO6FOWa6zp22_A@mail.gmail.com/
+
+By Mikhail Gavrilov; 26 days ago; 9 activities, latest 12 days ago; poked 5 days ago.
+Introduced in ed6e2782e974 (v6.7-rc1)
+
+Recent activities from: Alex Deucher (1)
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/170041205809.2648289.15922511203232588109@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
