@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBC380B9AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B972980B9B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 08:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjLJH05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 02:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S231670AbjLJH1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 02:27:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbjLJH0p (ORCPT
+        with ESMTP id S229481AbjLJH0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 02:26:45 -0500
+        Sun, 10 Dec 2023 02:26:46 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A23FD6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0073DFC;
         Sat,  9 Dec 2023 23:26:52 -0800 (PST)
 Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BA70HUb014626;
-        Sun, 10 Dec 2023 07:26:46 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BA7N7Wb019858;
+        Sun, 10 Dec 2023 07:26:47 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=qcppdkim1; bh=bBKZG0e
-        5JbM21y8DbMmfAn/bcHoYE4szGRyxicHy54k=; b=X3FTt/CI9V2KiKgsZ6XcHV1
-        pa92r26fZNqWhIq5Sl+1Ld64sOmmn4QAltXOmXy4TQGh4/oeEwsUGxwwN4kCnY6O
-        QgU7dr3S72CRL0jXWX6bXhVYLuokdKrdl7iYZU2YQwqlkSphrvYmx9+YXOBcdZsY
-        I2Dh3aFXUeIOLrNm+TusweBPaE+iUXC1mJSCJqs6gjpbILxVXZzu5NJbiZccOrmM
-        OC+Hk7P6Zq+Ap/K89kdq48LYWtBTQOKU3IBIR6mhN/lmFcLbLOI0tvTn8JjhnvUd
-        uyD0D3qNI2ZHWFeit0iLXnGaTI53QrqNIVu41V5fLS2bXmc2+Esr8qQxkJ/r+og=
-        =
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvney13jy-1
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        qcppdkim1; bh=/z4BxeFGp7oYbJB1dgXCRImmUz9pRo/IBvMZtOGegYU=; b=Wd
+        T+Jsv1cxM2xXHDg4W3HbaVCXJ5qUPXKMfkU0CIqCFhhvzplnjdfHOq0XxNBbdJJQ
+        brZqMt1KMW7+99BUnrJ46WX2EEmOuKmbVD1vXdoyqdP7dMPHXAEDh4hlcEfQBCGn
+        Nw+LW4h0w0DamRVrjyEa7vHQZSZI2ph7QOcDhuiTDC0AEapu77VEr86WuWYYs23Z
+        YriMW6uJGhnHt4ne1jtP4DKZjJuR4UkY7shQ/D6moW8NkCu6JBdAh1UOresppA2d
+        iaqK9O0hY7H+NXuwlqMkKLXeJQuMvkZqFiAX4xDwinyhnJHO4nTZ8Duw6DA5jtxM
+        qkLW5jMtpYwRwyt5ibkw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvney13k0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sun, 10 Dec 2023 07:26:46 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BA7QjOE005581
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BA7Qjn0002357
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sun, 10 Dec 2023 07:26:45 GMT
 Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
@@ -52,11 +52,14 @@ CC:     Mao Jinlong <quic_jinlmao@quicinc.com>,
         <linux-kernel@vger.kernel.org>,
         Tingwei Zhang <quic_tingweiz@quicinc.com>,
         Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        "Tao Zhang" <quic_taozha@quicinc.com>
-Subject: [PATCH v4 0/4] arm64: dts: qcom: Fix the warnings from coresight bindings
-Date:   Sat, 9 Dec 2023 23:26:27 -0800
-Message-ID: <20231210072633.4243-1-quic_jinlmao@quicinc.com>
+        "Tao Zhang" <quic_taozha@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/4] dt-bindings: arm: Add remote etm dt-binding
+Date:   Sat, 9 Dec 2023 23:26:28 -0800
+Message-ID: <20231210072633.4243-2-quic_jinlmao@quicinc.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231210072633.4243-1-quic_jinlmao@quicinc.com>
+References: <20231210072633.4243-1-quic_jinlmao@quicinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -65,13 +68,13 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0YyyZ_dJy0T9re2rpc9-VhUE6u8uPOwc
-X-Proofpoint-ORIG-GUID: 0YyyZ_dJy0T9re2rpc9-VhUE6u8uPOwc
+X-Proofpoint-GUID: s12YTqd626WDzbIqJs2T7wI9U5pvYY-w
+X-Proofpoint-ORIG-GUID: s12YTqd626WDzbIqJs2T7wI9U5pvYY-w
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=470 mlxscore=0 phishscore=0 spamscore=0
+ impostorscore=0 mlxlogscore=721 mlxscore=0 phishscore=0 spamscore=0
  malwarescore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0
  priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2311290000 definitions=main-2312100063
@@ -85,67 +88,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix all warnings in Qualcomm boards coming from Coresight bindings.
+Remote ETM(Embedded Trace Macrocell) is to capture information of
+the executed processor instructions of remote processors like modem.
+Add new coresight-remote-etm.yaml file describing the bindings
+required to define coresight remote etm in the device trees.
 
-There are warnings below after running dtbs_check. The patches are
-to fix them for Qcom boards.
-
-funnel@3023000: 'in-ports' is a required property
-
-etm@7c40000: 'out-ports' is a required property
-
-etf@6047000: in-ports: '#address-cells', '#size-cells', 'port@1'
-do not match any of the regexes: 'pinctrl-[0-9]+'
-
-replicator@604a000: in-ports: '#address-cells', '#size-cells',
-'port@1' do not match any of the regexes: 'pinctrl-[0-9]+'
-
-funnel@6c2d000: out-ports: '#address-cells', '#size-cells' do not
-match any of the regexes: 'pinctrl-[0-9]+'
-
-Warning (graph_child_address): /soc@0/tpda@6004000/out-ports:
-graph node has single child node 'port@0', #address-cells/#size-cells
-are not necessary
-
-Warning (graph_child_address): /soc@0/funnel@6005000/in-ports: graph
-node has single child node 'port@0', #address-cells/#size-cells are
-not necessary
-
-Warning (graph_child_address): /soc@0/etf@6b05000/in-ports: graph node
-has single child node 'port@0', #address-cells/#size-cells are not
-necessary
-
-Warning (graph_child_address): /soc@0/funnel@7810000/in-ports: graph
-node has single child node 'port@0', #address-cells/#size-cells are
-not necessary
-
-Changes since V3:
-1. Modify the indentation of dt binding smaple.
-
-Changes since V2:
-1. Remove qcom,inst-id for remote etm.
-2. Modify the node name of remote etm dt node.
-3. Add space between 'endpoint' and the opening brace.
-
-Changes since V1:
-1. Add new dt binding for remote etm.
-2. Add new dt node modem-etm in msm8996.dtsi
-
-Mao Jinlong (4):
-  dt-bindings: arm: Add remote etm dt-binding
-  arm64: dts: qcom: msm8996: Fix 'in-ports' is a required property
-  arm64: dts: qcom: msm8998: Fix 'out-ports' is a required property
-  arm64: dts: qcom: Fix coresight warnings in in-ports and out-ports
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+---
  .../arm/qcom,coresight-remote-etm.yaml        | 51 +++++++++++++++++++
- arch/arm64/boot/dts/qcom/msm8996.dtsi         | 21 ++++++++
- arch/arm64/boot/dts/qcom/msm8998.dtsi         | 32 +++++++-----
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |  5 +-
- arch/arm64/boot/dts/qcom/sm8150.dtsi          |  5 +-
- arch/arm64/boot/dts/qcom/sm8250.dtsi          | 24 ++-------
- 6 files changed, 98 insertions(+), 40 deletions(-)
+ 1 file changed, 51 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/arm/qcom,coresight-remote-etm.yaml
 
+diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-remote-etm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-remote-etm.yaml
+new file mode 100644
+index 000000000000..4fd5752978cd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/arm/qcom,coresight-remote-etm.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/qcom,coresight-remote-etm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Coresight Remote ETM(Embedded Trace Macrocell)
++
++maintainers:
++  - Jinlong Mao <quic_jinlmao@quicinc.com>
++  - Tao Zhang <quic_taozha@quicinc.com>
++
++description:
++  Support for ETM trace collection on remote processor using coresight
++  framework. Enabling this will allow turning on ETM tracing on remote
++  processor like modem processor via sysfs and collecting the trace
++  via coresight TMC sinks.
++
++properties:
++  compatible:
++    const: qcom,coresight-remote-etm
++
++  out-ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
++
++    properties:
++      port:
++        description: Output connection to the CoreSight Trace bus.
++        $ref: /schemas/graph.yaml#/properties/port
++
++required:
++  - compatible
++  - out-ports
++
++additionalProperties: false
++
++examples:
++  - |
++    etm {
++        compatible = "qcom,coresight-remote-etm";
++
++        out-ports {
++            port {
++                modem_etm0_out_funnel_modem: endpoint {
++                    remote-endpoint = <&funnel_modem_in_modem_etm0>;
++                };
++            };
++        };
++    };
++...
 -- 
 2.41.0
 
