@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1449C80BC0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7138580BC0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 16:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbjLJPiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 10:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S232646AbjLJPnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 10:43:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjLJPiC (ORCPT
+        with ESMTP id S229584AbjLJPny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 10:38:02 -0500
+        Sun, 10 Dec 2023 10:43:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB25DF4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:38:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F6CAC433C7;
-        Sun, 10 Dec 2023 15:38:07 +0000 (UTC)
-Date:   Sun, 10 Dec 2023 10:38:44 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE90FFA
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 07:44:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B452C433C8;
+        Sun, 10 Dec 2023 15:43:59 +0000 (UTC)
+Date:   Sun, 10 Dec 2023 10:44:36 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
@@ -27,12 +27,13 @@ Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
         Vincent Donnefort <vdonnefort@google.com>,
         Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [PATCH 00/14] ring-buffer/tracing: Allow ring buffer to have
- bigger sub buffers
-Message-ID: <20231210103844.7cabaa13@gandalf.local.home>
-In-Reply-To: <76797ddd-bb87-4af9-9703-1ec00a0d318c@efficios.com>
+Subject: Re: [PATCH 14/14] ringbuffer/selftest: Add basic selftest to test
+ chaning subbuf order
+Message-ID: <20231210104436.00d94363@gandalf.local.home>
+In-Reply-To: <3b45bdf6-234d-4859-8344-c18b48c8b415@efficios.com>
 References: <20231210035404.053677508@goodmis.org>
-        <76797ddd-bb87-4af9-9703-1ec00a0d318c@efficios.com>
+        <20231210040452.274868572@goodmis.org>
+        <3b45bdf6-234d-4859-8344-c18b48c8b415@efficios.com>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -47,42 +48,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 09:17:44 -0500
+On Sun, 10 Dec 2023 09:26:13 -0500
 Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-> On 2023-12-09 22:54, Steven Rostedt wrote:
-> [...]
-> > 
-> > Basically, events to the tracing subsystem are limited to just under a
-> > PAGE_SIZE, as the ring buffer is split into "sub buffers" of one page
-> > size, and an event can not be bigger than a sub buffer. This allows users
-> > to change the size of a sub buffer by the order:
-> > 
-> >    echo 3 > /sys/kernel/tracing/buffer_subbuf_order
-> > 
-> > Will make each sub buffer a size of 8 pages, allowing events to be almost
-> > as big as 8 pages in size (sub buffers do have meta data on them as
-> > well, keeping an event from reaching the same size as a sub buffer).  
+
+> This test has no clue if the record was truncated or not.
 > 
-> Specifying the "order" of subbuffer size as a power of two of
-> number of pages is a poor UX choice for a user-facing ABI.
+> It basically repeats the string
 > 
-> I would recommend allowing the user to specify the size in bytes, and
-> internally bump to size to the next power of 2, with a minimum of
-> PAGE_SIZE.
+> "1234567890" until it fills the subbuffer size and pads with
+> XXXX as needed as trace marker payload, but the grep looks for the
+> "1234567890" pattern only.
+> 
+> The test should be extended to validate whether the trace marker
+> payload was truncated or not, otherwise it is of limited value.
 
-Thanks. I actually agree with you and thought about doing just that, but
-decided to not make those changes and send out these patches with the
-given API first. I wanted to see if you would comment on this ;-) You did
-not disappoint!
+It can be, but for now it's just testing to make sure it doesn't crash. I
+ran out of time, and if someone else wants to extend this, go ahead.
+Currently, my testing has been just manual observations. I threw this in
+just to have some kind of smoke test applied.
 
-I was thinking of keeping the same kind of interface as we have with the
-buffer size "buffer_size_kb", and have it be "buffer_subbuf_size_kb", where
-you specify the minimum size in kilobytes and it creates it, and the subbuf
-may end up being bigger than specified (as that's more a implementation
-detail).
-
-Now that you called it out, I will add a patch to convert that as such. But
-will keep the current patches in for historical reasons.
+I agree with the API changes, and will update that. But given that this has
+been two years and never applied, is because nobody has the time to work on
+this. The reason I'm pushing for this now, is because Kent hit the limit in
+his work. Knowing that he would not have hit this limit if these patches
+were applied, I feel more urgency on getting them in. But this is all on my
+own time, not part of my Employer (hence why I'm working on the weekend).
 
 -- Steve
+
