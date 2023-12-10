@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226CC80BD3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 22:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C84380BD39
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Dec 2023 22:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjLJUiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 15:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
+        id S230030AbjLJUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 15:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLJUiA (ORCPT
+        with ESMTP id S229462AbjLJUkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 15:38:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118AFD5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 12:38:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702240687; x=1733776687;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=XFXPO+n/Lu8tJ0UlCah9YtoT3mlmYBBj3N7+CPKuZN0=;
-  b=VLOLHKX06IG1WB0CvTnPdWpmcqTN5i+XqoJaCNqNIz9YFmWpUTKMmINl
-   ++7qflLKGybtDoIMg1bvgvtM5AF5TcUZVC3m+jWLECXyy87k0d9nWvd6v
-   ZUDoLTnuG5z0aXnYHFv0VDRE/VRXq6XX2d4m6H/usStvQ3uZkq6iP6jZX
-   rWqqUj5KYbfd13vNOy3jI77PWbX+/Eqptkzzr2xKq7nJYnxKlSY3AXO1w
-   k/Kk5OLW//gonTCxyTFzOfrCe1ojJhLRTIemFW+QBf+UEOEtzZLUBBp7y
-   4L7chKKp4xu70kiGFg0J0w5V2+xRCunPqPMNttt0yGAmfPTF26kWhj6/6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="1384242"
-X-IronPort-AV: E=Sophos;i="6.04,266,1695711600"; 
-   d="scan'208";a="1384242"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 12:38:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="772784450"
-X-IronPort-AV: E=Sophos;i="6.04,266,1695711600"; 
-   d="scan'208";a="772784450"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 10 Dec 2023 12:38:05 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCQYs-000HFq-3D;
-        Sun, 10 Dec 2023 20:38:03 +0000
-Date:   Mon, 11 Dec 2023 04:37:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: drivers/virtio/virtio_dma_buf.c:41: warning: Function parameter or
- member 'dma_buf' not described in 'virtio_dma_buf_attach'
-Message-ID: <202312110445.z6bDltrY-lkp@intel.com>
+        Sun, 10 Dec 2023 15:40:31 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DD9D7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 12:40:36 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c39e936b4so15794515e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 12:40:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702240835; x=1702845635; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2Uyd9KMY+K25kTJFgOr5S8Hm0W9vFSsTptGb/Ecd2pM=;
+        b=E5ZHl+VyniGXu8tX8dC80tid+/FFfk0vt/Wno2lU7requPiTZgv6/RODbpLH/gbTKx
+         /DdyFLA8vgKmE17K/nFohsUjqtxq0j26oPOpSD6KDcHu2xX1lV8EwAfOhe+Kspo110a/
+         ytRPClvVzgPy0hBd70WvsHr+KRoQQ9d93MF80LVofmH9ySErnUx6EEu4slgmSOsoI187
+         EWeznvh+eoPZzs0ILpi7q5KTL+Hfl/aSE4KB66AKuUkUIjRNwRm2sGS7TokKTf3bwmGU
+         iHRld15OtQ5kv5U8nRumi5zSOu1yZB1qD4rq4Uw8r6rvUd7d9aViNKSGnZXD1s8G0QbN
+         kSHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702240835; x=1702845635;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Uyd9KMY+K25kTJFgOr5S8Hm0W9vFSsTptGb/Ecd2pM=;
+        b=bDESVWTlY6Ee+TukeqsoSzlk189UvAj1oNoKTn34/loZows9SbCMFNcOMVdcxYVoCK
+         lRBN6D99mH3mANY++Fcoqj28JWXOCPEU9yr1bA/N6V+MurH917iHDucRTT2IjWpXtI3R
+         BCyHrWsWimZoyOaO6wbMSctt4LO4DLpsXQyeqTmMk9xfQTUwJGgMzRourFYRZL3PZAgw
+         YSMVj22ty69Bd/vwn6RazSIkTvxoNa0BK46kkJc7SgpyNKzNCXMEfXLyuRT6W/9H/r6o
+         oCWYPuTS2KPE1Q9MTdm9Uw/nBzwsCrcJYmA9GQTMA5rpS+cCkg1mf5XwIiZ5MtvdW2ar
+         yv1Q==
+X-Gm-Message-State: AOJu0YwGC6JHiAXUJ82mmVFbLZYiMR1zlEIUpLZYBwDzpuNGQ63L/cQG
+        +15PE4F/5aigDVexs/UEImrBzA==
+X-Google-Smtp-Source: AGHT+IFxMIMh5aewN00Oc8FUKcOa4n76XyVMwRfDK93DYoceLQVAxOssdc0xwwnr430pCJK3uVtfwg==
+X-Received: by 2002:a05:600c:993:b0:40c:18fa:8e6b with SMTP id w19-20020a05600c099300b0040c18fa8e6bmr861474wmp.266.1702240834891;
+        Sun, 10 Dec 2023 12:40:34 -0800 (PST)
+Received: from airbuntu (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
+        by smtp.gmail.com with ESMTPSA id q12-20020a05600c46cc00b0040b4c59f133sm10574096wmo.1.2023.12.10.12.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 12:40:34 -0800 (PST)
+Date:   Sun, 10 Dec 2023 20:40:32 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+        Rick Yiu <rickyiu@google.com>,
+        Chung-Kai Mei <chungkai@google.com>
+Subject: Re: [PATCH v2 7/8] sched/schedutil: Add a new tunable to dictate
+ response time
+Message-ID: <20231210204032.fficzltp2gq66pne@airbuntu>
+References: <20231208002342.367117-1-qyousef@layalina.io>
+ <20231208002342.367117-8-qyousef@layalina.io>
+ <CAJZ5v0iYUY-LrL3LNdMqxyMntBij_pkpETB2esYPraPekqtbhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iYUY-LrL3LNdMqxyMntBij_pkpETB2esYPraPekqtbhw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,49 +83,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3a87498869d6d1e7347cd01f337a77984604eb5e
-commit: a0308938ec81cd0dca9d75833ec0dd1b8708917e virtio: add dma-buf support for exported objects
-date:   3 years, 4 months ago
-config: parisc-randconfig-m041-20230821 (https://download.01.org/0day-ci/archive/20231211/202312110445.z6bDltrY-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231211/202312110445.z6bDltrY-lkp@intel.com/reproduce)
+On 12/08/23 19:06, Rafael J. Wysocki wrote:
+> On Fri, Dec 8, 2023 at 1:24 AM Qais Yousef <qyousef@layalina.io> wrote:
+> >
+> > The new tunable, response_time_ms,  allow us to speed up or slow down
+> > the response time of the policy to meet the perf, power and thermal
+> > characteristic desired by the user/sysadmin. There's no single universal
+> > trade-off that we can apply for all systems even if they use the same
+> > SoC. The form factor of the system, the dominant use case, and in case
+> > of battery powered systems, the size of the battery and presence or
+> > absence of active cooling can play a big role on what would be best to
+> > use.
+> >
+> > The new tunable provides sensible defaults, but yet gives the power to
+> > control the response time to the user/sysadmin, if they wish to.
+> >
+> > This tunable is applied before we apply the DVFS headroom.
+> >
+> > The default behavior of applying 1.25 headroom can be re-instated easily
+> > now. But we continue to keep the min required headroom to overcome
+> > hardware limitation in its speed to change DVFS. And any additional
+> > headroom to speed things up must be applied by userspace to match their
+> > expectation for best perf/watt as it dictates a type of policy that will
+> > be better for some systems, but worse for others.
+> >
+> > There's a whitespace clean up included in sugov_start().
+> >
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> 
+> I thought that there was an agreement to avoid adding any new tunables
+> to schedutil.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312110445.z6bDltrY-lkp@intel.com/
+Oh. I didn't know that.
 
-All warnings (new ones prefixed by >>):
+What alternatives do we have? I couldn't see how can we universally make the
+response work for every possible system (not just SoC, but different platforms
+with same SoC even) and workloads. We see big power saving with no or little
+perf impact on many workloads when not applying the current 125%. Others want
+to push it faster under gaming scenarios etc to get more stable FPS.
 
->> drivers/virtio/virtio_dma_buf.c:41: warning: Function parameter or member 'dma_buf' not described in 'virtio_dma_buf_attach'
->> drivers/virtio/virtio_dma_buf.c:41: warning: Function parameter or member 'attach' not described in 'virtio_dma_buf_attach'
+Hopefully uclamp will make the need for this tuning obsolete over time. But
+until userspace gains critical mass; I can't see how we can know best
+trade-offs for all myriads of use cases/systems.
+
+Some are happy to gain more perf and lose power. Others prefer to save power
+over perf. DVFS response time plays a critical role in this trade-off and I'm
+not sure how we can crystal ball it without delegating.
 
 
-vim +41 drivers/virtio/virtio_dma_buf.c
+Thanks!
 
-    35	
-    36	/**
-    37	 * virtio_dma_buf_attach - mandatory attach callback for virtio dma-bufs
-    38	 */
-    39	int virtio_dma_buf_attach(struct dma_buf *dma_buf,
-    40				  struct dma_buf_attachment *attach)
-  > 41	{
-    42		int ret;
-    43		const struct virtio_dma_buf_ops *ops =
-    44			container_of(dma_buf->ops,
-    45				     const struct virtio_dma_buf_ops, ops);
-    46	
-    47		if (ops->device_attach) {
-    48			ret = ops->device_attach(dma_buf, attach);
-    49			if (ret)
-    50				return ret;
-    51		}
-    52		return 0;
-    53	}
-    54	EXPORT_SYMBOL(virtio_dma_buf_attach);
-    55	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+Qais Yousef
