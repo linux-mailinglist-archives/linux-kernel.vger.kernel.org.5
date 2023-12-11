@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3DB80DE33
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9418E80DE1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345031AbjLKWXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S1345042AbjLKWYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKWXx (ORCPT
+        with ESMTP id S229493AbjLKWYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:23:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265BF8F;
-        Mon, 11 Dec 2023 14:24:00 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 477672243D;
-        Mon, 11 Dec 2023 22:23:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702333438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
-        b=gHOxDtY0sMxr4xrroTkDnAtQqbTNflYkcDbk8SLU23cVa8e+xsy79mJZNyGpWr+K5LYV19
-        QQ4MHd2PKJQE4oQWTYUtUu1PK2tvFiYo4j4A3+hBMpo/nxu2LGIAnwpdnfd1h7hFr6inBP
-        xSx6KIAHUUphaDkd3fK6PIi3ID/99E8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702333438;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
-        b=I30+EAmN4n4SBnszs/6KX2t0cujDYmKEMoiXI6wdj8Njx7HXrmJOtV4Iq9bcbL8Ly07fut
-        G1tBfbX79aNOmODg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702333438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
-        b=gHOxDtY0sMxr4xrroTkDnAtQqbTNflYkcDbk8SLU23cVa8e+xsy79mJZNyGpWr+K5LYV19
-        QQ4MHd2PKJQE4oQWTYUtUu1PK2tvFiYo4j4A3+hBMpo/nxu2LGIAnwpdnfd1h7hFr6inBP
-        xSx6KIAHUUphaDkd3fK6PIi3ID/99E8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702333438;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
-        b=I30+EAmN4n4SBnszs/6KX2t0cujDYmKEMoiXI6wdj8Njx7HXrmJOtV4Iq9bcbL8Ly07fut
-        G1tBfbX79aNOmODg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0317D132DA;
-        Mon, 11 Dec 2023 22:23:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id zZjaKPqLd2VKOwAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 11 Dec 2023 22:23:54 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 11 Dec 2023 17:24:46 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556F3AD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:24:52 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c2db0ca48so6745e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:24:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702333491; x=1702938291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PuQhIspD6JR77pVxf75RvkVh4XrOwhOgI88fQHyFirk=;
+        b=LH5EeGXfZ7RLz9iWo8xeyim+HtNCofdi73PH3S4IeeNSxU6G/goNu0/gtcNk6qFrCk
+         73R5DaGDra5ziw0Juf9YQi6jH9QGgiitfre9wUPwMlKoi1E4Re1HRXtcVqCTSyIdw2n0
+         M5EMZWc/o9kLkJgGGiuY1Ad9xvf32ArQ6Knv/zWTfSIR74XQ+MVls4o9jQ2cROOL0OmC
+         3TjIxeD0BtK95RTGRwa0k7+nYHy3PW/0BZ5jVu+kwDpdVFKLe/QjFN8ICj8UIdZrvJoo
+         Fl6q+IPYR8nridsBq9kZODh1cCe7rp9h2Y5IrtvEVmvawUsDt+Rux9EAZDOp1yrq7c4D
+         Oisg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702333491; x=1702938291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PuQhIspD6JR77pVxf75RvkVh4XrOwhOgI88fQHyFirk=;
+        b=L6TZg97TySWYhcGC0Av+h0JZzmlTYeQ1Vzt2dJIg19Njv/aIWTKlGxDketX8N0SlDz
+         jzcucMJU043WPHvF0uewGYsCwoxMQh2bg8sXeuUCVTstXUhCITzJOaodreQSNm92QWDW
+         44ikB0p43PO0fFrVwLcCDicN8gqZ5wQq208s6ZegeFM2AmlNff46tLrm0aVsYGx6w4bJ
+         vLJ0IV4SWz2SQDRaBBg6r9P46k+bsPChl0iUoeQrikxKVC27mwSD5CtP3rQCmIJHIpmM
+         8uWSZYVK3e5+xhEi2ic5OQzBRwhGvUCXGHetLfAPdbkf2+J3g30W4MvjORuTkVCp3klI
+         O8sA==
+X-Gm-Message-State: AOJu0YxOJsqlPZiEuJzVd5aB1dB92NZdUY76I0DmYOj20LohTRpkUnn0
+        lfDcwndstG1t4lkwRHsfKKt3JDFSdOjc1spfTZC76A==
+X-Google-Smtp-Source: AGHT+IFj+gQqjsQ9tZwqQ54imOTiWUHQxRdBbgfw67rUBLpxq2CY7ZuT/sJpYMBLtvRJ0bbqhxLMjQeCf8fVYSPRJtk=
+X-Received: by 2002:a05:600c:4f4b:b0:40c:4ed3:8d1f with SMTP id
+ m11-20020a05600c4f4b00b0040c4ed38d1fmr29228wmq.7.1702333490714; Mon, 11 Dec
+ 2023 14:24:50 -0800 (PST)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Al Viro" <viro@zeniv.linux.org.uk>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "Christian Brauner" <brauner@kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
-        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of files.
-In-reply-to: <20231211191117.GD1674809@ZenIV>
-References: <20231208033006.5546-1-neilb@suse.de>,
- <20231208033006.5546-2-neilb@suse.de>,
- <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
- <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
- <20231211191117.GD1674809@ZenIV>
-Date:   Tue, 12 Dec 2023 09:23:51 +1100
-Message-id: <170233343177.12910.2316815312951521227@noble.neil.brown.name>
-X-Spam-Level: **********
-X-Spam-Score: 10.12
-X-Spamd-Result: default: False [-9.01 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         BAYES_HAM(-0.00)[23.87%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         DKIM_TRACE(0.00)[suse.de:+];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         WHITELIST_DMARC(-7.00)[suse.de:D:+];
-         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCVD_TLS_ALL(0.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 477672243D
-X-Spam-Score: -9.01
-Authentication-Results: smtp-out1.suse.de;
-        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gHOxDtY0;
-        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=I30+EAmN;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de;
-        dmarc=pass (policy=none) header.from=suse.de
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-4-rmoar@google.com>
+ <CABVgOSmbbAyckSvKREmUDBrZJtErQpxaNjXH0vaH1oZjkVt3JA@mail.gmail.com>
+In-Reply-To: <CABVgOSmbbAyckSvKREmUDBrZJtErQpxaNjXH0vaH1oZjkVt3JA@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Mon, 11 Dec 2023 17:24:38 -0500
+Message-ID: <CA+GJov7yKzWPfKGWaJwaHR4kJkotXdOXJ3yeewUhL4gTe2jVhw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] kunit: add is_init test attribute
+To:     David Gow <davidgow@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023, Al Viro wrote:
-> On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
-> 
-> > Similarly would could wrap __fput_sync() is a more friendly name, but
-> > that would be better if we actually renamed the function.
-> > 
-> >   void fput_now(struct file *f)
-> >   {
-> >       __fput_sync(f);
-> >   }
-> 
-> It is unfriendly *precisely* because it should not be used without
-> a very good reason.
-> 
-> It may be the last opened file keeping a lazy-umounted mount alive.
-> It may be taking pretty much any locks, or eating a lot of stack
-> space.
+On Sat, Dec 9, 2023 at 2:57=E2=80=AFAM David Gow <davidgow@google.com> wrot=
+e:
+>
+> On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
+> >
+> > Add is_init test attribute of type bool. Add to_string, get, and filter
+> > methods to lib/kunit/attributes.c.
+> >
+> > Mark each of the tests in the init section with the is_init=3Dtrue attr=
+ibute.
+> >
+> > Add is_init to the attributes documentation.
+> >
+> > Signed-off-by: Rae Moar <rmoar@google.com>
+> > ---
+>
+> Would it be possible to not have this in kunit_attributes? I know it's
+> required for the run-after-boot stuff later, but I'd love this to be
+> (a) just generated at runtime, or (b) stored only at a suite or
+> suite-set level. It seems like a bit of a waste to store this
+> per-test-case, and to have it potentially accessible or overwritable
+> by users.
+>
+> Otherwise, this looks good (and I appreciate the automatic setting of
+> this when merging the suite sets.
+>
+> Maybe if we always kept the init suites in a separate set, we could
+> just use pointer comparisons to generate this; otherwise let's make
+> this a suite-level-only attribute (inherited by tests).
+>
+>
+> -- David
 
-Previously you've suggested problems with ->release blocking.
-Now you refer to lazy-umount, which is what the comment above
-__fput_sync() mentions.
+Hello!
 
-"pretty much an locks" seems like hyperbole.  I don't see it taking
-nfsd_mutex or nlmsvc_mutex.  Maybe you mean any filesystem lock?
+I did consider making is_init a field within a suite object instead
+and then pointing to that in the kunit_attributes framework during
+filtering, printing, etc... I will change that out in the next
+version.
 
-My understanding is that the advent of vmalloc allocated stacks means
-that kernel stack space is not an important consideration.
-
-It would really help if we could have clear documented explanation of
-what problems can occur.  Maybe an example of contexts where it isn't
-safe to call __fput_sync().
-
-I can easily see that lazy-unmount is an interesting case which could
-easily catch people unawares.  Punting the tail end of mntput_no_expire
-(i.e.  if count reaches zero) to a workqueue/task_work makes sense and
-would be much less impact than punting every __fput to a workqueue.
-
-Would that make an fput_now() call safe to use in most contexts, or is
-there something about ->release or dentry_kill() that can still cause
-problems?
-
-Thanks,
-NeilBrown
-
-
-> 
-> It really isn't a general-purpose API; any "more friendly name"
-> is going to be NAKed for that reason alone.
-> 
-> Al, very much tempted to send a patch renaming that sucker to
-> __fput_dont_use_that_unless_you_really_know_what_you_are_doing().
-> 
-
+Thanks!
+-Rae
