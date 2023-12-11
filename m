@@ -2,318 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D4780C69B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE2C80C69D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbjLKKbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        id S234227AbjLKKbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbjLKKbf (ORCPT
+        with ESMTP id S234185AbjLKKbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:31:35 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A37D5;
-        Mon, 11 Dec 2023 02:31:42 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB9IIeg009915;
-        Mon, 11 Dec 2023 02:31:35 -0800
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uwyp4g98m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 02:31:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iXpzl9S765II/iygjOyHnGD2daST5TViL4Y/2mbRMemeoNsHWm0n+yVydtgl+fZojpLethA51KYXpV3BIaREfGmzdhHg8Aw38YLdiPJgf0vrQCrGxEe1QyBMKvZOPYO4AKPU2l2vJ8F+lfHfRKtV5RNnQgZKiEWhG6zTL3EFA1vLR2ajaSIQbR4aVwUaR27hwbWJwWqEUtq0RajtigGqCUjCmATzj+t3/4CfbfQns3oFp7/6Pgx8jmu0MCzyPaCA5881IvvvwZIPDA2nenhfe3bUIgZxg+LBYIW4LE69fDhJCAYwvSEJjJ8FNVwJxaVlCenw7xraMRcWxCY4KDOk6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qyAAY/w5N9xtjelrL3uDkb8yAfq0RF7+jaYO4SAWXIU=;
- b=LB7nJ4FLFhNdnt0ZKtNtjsv13f5sD6DmFGRsMjhuMm6ft9OV1sUvdBCUgiAjn/P09RJo609y7psbYYdwJuDgChbbdSOcnXIKz2LA0ZAigDt4/kqxycUA5tbWrzc5IiXzScERa+m7GsaUpmI/ZabxJ6QM4Z2uByPJK8Z/UANiR4uVuVvo6OLkQ7+6ji8cqPFTfMsDLRQ2wBWHkgTJ7Wo2nsaOr1hEpnMbQjQpwlR33nTUm0nHWt5aMjApuNMW64k5sQCwBPbXZ9CsadtfokQykYW0RzZUzHqfs0LVad+jflBGnl/hL9njn55T/wPOvVIznj3bSy0/LLpB1+t/rZ9CyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Mon, 11 Dec 2023 05:31:50 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFCB91;
+        Mon, 11 Dec 2023 02:31:54 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so2208981a12.3;
+        Mon, 11 Dec 2023 02:31:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyAAY/w5N9xtjelrL3uDkb8yAfq0RF7+jaYO4SAWXIU=;
- b=VdC1d69Be3MyUtI3IwqdRkx/47xV5OZOAr84mbriPck2xd4YMoCFbvxx7lT2qo0LDxWq7bOC2OpPdVvIXBIasHV1i+xkh95QkuPp+llM+kplNXZHkc1G8m7iKLNc14o+pj3td/KtqefOF1AFPwS9kPk7t1eVKeDVUr6q6nnlE6s=
-Received: from PH0PR18MB4734.namprd18.prod.outlook.com (2603:10b6:510:cd::24)
- by CO3PR18MB4911.namprd18.prod.outlook.com (2603:10b6:303:175::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.23; Mon, 11 Dec
- 2023 10:31:32 +0000
-Received: from PH0PR18MB4734.namprd18.prod.outlook.com
- ([fe80::41f7:8311:f9d8:f3c4]) by PH0PR18MB4734.namprd18.prod.outlook.com
- ([fe80::41f7:8311:f9d8:f3c4%3]) with mapi id 15.20.7091.020; Mon, 11 Dec 2023
- 10:31:32 +0000
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Haseeb Gani <hgani@marvell.com>,
-        Vimlesh Kumar <vimleshk@marvell.com>,
-        "egallen@redhat.com" <egallen@redhat.com>,
-        "mschmidt@redhat.com" <mschmidt@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wizhao@redhat.com" <wizhao@redhat.com>,
-        "kheib@redhat.com" <kheib@redhat.com>,
-        "konguyen@redhat.com" <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh B Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: RE: [EXT] Re: [PATCH net-next v3 2/4] octeon_ep: PF-VF mailbox
- version support
-Thread-Topic: [EXT] Re: [PATCH net-next v3 2/4] octeon_ep: PF-VF mailbox
- version support
-Thread-Index: AQHaK/wMORkyMuRMT0eHMOpWmawaoLCjxTQAgAAaEyA=
-Date:   Mon, 11 Dec 2023 10:31:32 +0000
-Message-ID: <PH0PR18MB4734652F50856F52507577ADC78FA@PH0PR18MB4734.namprd18.prod.outlook.com>
-References: <20231211063355.2630028-1-srasheed@marvell.com>
- <20231211063355.2630028-3-srasheed@marvell.com>
- <20231211084652.GC4870@unreal>
-In-Reply-To: <20231211084652.GC4870@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3Jhc2hlZWRc?=
- =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy03MGU3Y2Y4Yi05ODEwLTExZWUtODYzOS1jOGNi?=
- =?us-ascii?Q?OWVhOThmOWRcYW1lLXRlc3RcNzBlN2NmOGMtOTgxMC0xMWVlLTg2MzktYzhj?=
- =?us-ascii?Q?YjllYTk4ZjlkYm9keS50eHQiIHN6PSI0NDMwIiB0PSIxMzM0Njc2NDI4ODc0?=
- =?us-ascii?Q?NzY2ODkiIGg9Ikt1eHhkY1NrU1FOTWtEREE4bEQzOXduaDhkMD0iIGlkPSIi?=
- =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUJnV0FB?=
- =?us-ascii?Q?RFJGVkV6SFN6YUFaekY1VDkybkRSZG5NWGxQM2FjTkYwWkFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQTNnOEFBRG9HQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFRRUJBQUFBOVJlbkx3Q0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFa?=
- =?us-ascii?Q?QUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNB?=
- =?us-ascii?Q?QmxBSElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
- =?us-ascii?Q?QUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdC?=
- =?us-ascii?Q?MUFHMEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhV?=
- =?us-ascii?Q?QWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?TUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dC?=
- =?us-ascii?Q?a0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcw?=
- =?us-ascii?Q?QVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0Jm?=
- =?us-ascii?Q?QUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFB?=
- =?us-ascii?Q?QUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhB?=
- =?us-ascii?Q?Y3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
- =?us-ascii?Q?QUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFa?=
- =?us-ascii?Q?UUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpB?=
- =?us-ascii?Q?R3dBWVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpR?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJm?=
- =?us-ascii?Q?QUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFh?=
- =?us-ascii?Q?UUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
- =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtB?=
- =?us-ascii?Q?SElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
- =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
- =?us-ascii?Q?OEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFC?=
- =?us-ascii?Q?aEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNn?=
- =?us-ascii?Q?QjJBR1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhN?=
- =?us-ascii?Q?QVh3QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0Js?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FC?=
- =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFB?=
- =?us-ascii?Q?Y2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
- =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndC?=
- =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
- =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2?=
- =?us-ascii?Q?QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
- =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtB?=
- =?us-ascii?Q?R2tBWXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
- =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFh?=
- =?us-ascii?Q?Z0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FH?=
- =?us-ascii?Q?VUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
- =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJn?=
- =?us-ascii?Q?QmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3?=
- =?us-ascii?Q?QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
- =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFY?=
- =?us-ascii?Q?d0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFH?=
- =?us-ascii?Q?RUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndC?=
- =?us-ascii?Q?bkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
- =?us-ascii?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3?=
- =?us-ascii?Q?QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdV?=
- =?us-ascii?Q?QWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
- =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FI?=
- =?us-ascii?Q?SUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFC?=
- =?us-ascii?Q?eUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElB?=
- =?us-ascii?Q?WHdCaEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
- =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhV?=
- =?us-ascii?Q?QWN3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
- =?us-ascii?Q?MkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFPZ1lBQUFBQUFBQUlBQUFBQUFBQUFBZ0FBQUFB?=
- =?us-ascii?Q?QUFBQUNBQUFBQUFBQUFBYUJnQUFHUUFBQUJn?=
-x-dg-rorf: true
-x-dg-reffive: =?us-ascii?Q?QUFBQUFBQUFBWVFCa0FHUUFjZ0JsQUhNQWN3QUFBQ1FBQUFBQUFBQUFZd0Ix?=
- =?us-ascii?Q?QUhNQWRBQnZBRzBBWHdCd0FHVUFjZ0J6QUc4QWJnQUFBQzRBQUFBQUFBQUFZ?=
- =?us-ascii?Q?d0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFBRzBBWWdCbEFI?=
- =?us-ascii?Q?SUFBQUF3QUFBQUFBQUFBR01BZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdC?=
- =?us-ascii?Q?a0FHRUFjd0JvQUY4QWRnQXdBRElBQUFBd0FBQUFBQUFBQUdNQWRRQnpBSFFB?=
- =?us-ascii?Q?YndCdEFGOEFjd0J6QUc0QVh3QnJBR1VBZVFCM0FHOEFjZ0JrQUhNQUFBQStB?=
- =?us-ascii?Q?QUFBQUFBQUFHTUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0J1QUc4QVpB?=
- =?us-ascii?Q?QmxBR3dBYVFCdEFHa0FkQUJsQUhJQVh3QjJBREFBTWdBQUFESUFBQUFBQUFB?=
- =?us-ascii?Q?QVl3QjFBSE1BZEFCdkFHMEFYd0J6QUhNQWJnQmZBSE1BY0FCaEFHTUFaUUJm?=
- =?us-ascii?Q?QUhZQU1BQXlBQUFBUGdBQUFBQUFBQUJrQUd3QWNBQmZBSE1BYXdCNUFIQUFa?=
- =?us-ascii?Q?UUJmQUdNQWFBQmhBSFFBWHdCdEFHVUFjd0J6QUdFQVp3QmxBRjhBZGdBd0FE?=
- =?us-ascii?Q?SUFBQUEyQUFBQUFBQUFBR1FBYkFCd0FGOEFjd0JzQUdFQVl3QnJBRjhBWXdC?=
- =?us-ascii?Q?b0FHRUFkQUJmQUcwQVpRQnpBSE1BWVFCbkFHVUFBQUE0QUFBQUFBQUFBR1FB?=
- =?us-ascii?Q?YkFCd0FGOEFkQUJsQUdFQWJRQnpBRjhBYndCdUFHVUFaQUJ5QUdrQWRnQmxB?=
- =?us-ascii?Q?RjhBWmdCcEFHd0FaUUFBQUNRQUFBQUFBQUFBWlFCdEFHRUFhUUJzQUY4QVlR?=
- =?us-ascii?Q?QmtBR1FBY2dCbEFITUFjd0FBQUZnQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3?=
- =?us-ascii?Q?QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFZd0J2?=
- =?us-ascii?Q?QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QmhBR3dBYndCdUFHVUFB?=
- =?us-ascii?Q?QUJVQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlBRzhBYWdCbEFH?=
- =?us-ascii?Q?TUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNnQnBBR01BZEFC?=
- =?us-ascii?Q?bEFHUUFYd0JoQUd3QWJ3QnVBR1VBQUFCYUFBQUFBQUFBQUcwQVlRQnlBSFlB?=
- =?us-ascii?Q?WlFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZB?=
- =?us-ascii?Q?SElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCb0FHVUFlQUJqQUc4QVpB?=
- =?us-ascii?Q?QmxBSE1BQUFBZ0FBQUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0JoQUhJ?=
- =?us-ascii?Q?QWJRQUFBQ1lBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFHY0Fid0J2?=
- =?us-ascii?Q?QUdjQWJBQmxBQUFBTkFBQUFBQUFBQUJ0QUdF?=
-x-dg-refsix: =?us-ascii?Q?QWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHTUFid0Jr?=
- =?us-ascii?Q?QUdVQWN3QUFBRDRBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFj?=
- =?us-ascii?Q?Z0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtBR2tBWXdCMEFB?=
- =?us-ascii?Q?QUFYZ0FBQUFBQUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
- =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
- =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUd3QUFBQUFB?=
- =?us-ascii?Q?QUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3?=
- =?us-ascii?Q?QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFHNEFkQUJwQUdF?=
- =?us-ascii?Q?QWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdCaEFISUFiUUFB?=
- =?us-ascii?Q?QUhJQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0Fa?=
- =?us-ascii?Q?UUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1BR2tBWkFCbEFH?=
- =?us-ascii?Q?NEFkQUJwQUdFQWJBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdC?=
- =?us-ascii?Q?bkFHOEFid0JuQUd3QVpRQUFBRm9BQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
- =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlB?=
- =?us-ascii?Q?R1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJB?=
- =?us-ascii?Q?QUFBR2dBQUFBQUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdv?=
- =?us-ascii?Q?QVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlBR1VBY3dCMEFISUFhUUJq?=
- =?us-ascii?Q?QUhRQVpRQmtBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQmZBRzhBY2dCZkFHRUFj?=
- =?us-ascii?Q?Z0J0QUFBQUtnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBZEFCbEFI?=
- =?us-ascii?Q?SUFiUUJwQUc0QWRRQnpBQUFBSWdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFC?=
- =?us-ascii?Q?c0FGOEFkd0J2QUhJQVpBQUFBQT09Ii8+PC9tZXRhPg=3D=3D?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB4734:EE_|CO3PR18MB4911:EE_
-x-ms-office365-filtering-correlation-id: 5cb46a35-754a-4f3e-286b-08dbfa34581b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YZ8Nb11AFQJl4OeG13+qp7rUIkYGtyu8ryd5/pjyh6nzh84qkES8LOqw+U7Wxfs1GRF+079/EIM6WnzB4X9GHlPLzuKqcl1MofKRC+hdtD0waXIWOetq6c0zC9YQ3v748R5aYRFy090s3QcEZGaxQFhjeexgMSi3B0Ggv9j2oYSARYKI3jv4vF0QscslNf+bw27ug+XisixDb7iyqV94ARFQNLvzzMm/P7Ob2yBR0/2A+HgWGdz1n57sACx3Sa4B9lhpJsDDjn9P/lQx3l4XO9XmCl6N20JezTgyZQszWjesoUUDxhbAlmJKuk6XyqR8EIAnxZngkKFIm+XDz9ol4rXl393JD/DDhrpEgZOakpzKO0WWgJBs5vIoGi+KCH0LHSqImU0vZLrcNPTip9pZv+EFrFiMDiyrv2pkXz9hMeIipQiUs35db6qPN6YubHf8IMoDoTLlGyumEWmGZmscyXCMwKVXcfVp8NSqO6oK0FdBCortuh1i9ddL/7l0GNKGCDZ2d5KLlzUKmjyXyJYqEChl4wKMMU3ynNcZzsCfu2Qul9hyjGTHO8h4HtnY0eyLQ0kQA6D9FvZLpM70hCwFElt115C6Sck7GiI9EaKkD6zBRxM6act3IEp3RZ0og39h
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4734.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(366004)(396003)(376002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(66446008)(7696005)(6506007)(478600001)(2906002)(71200400001)(83380400001)(26005)(9686003)(4326008)(8936002)(8676002)(5660300002)(52536014)(7416002)(38070700009)(54906003)(66946007)(76116006)(6916009)(64756008)(316002)(33656002)(38100700002)(122000001)(86362001)(55016003)(66476007)(66556008)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pzK2U4bN0ghWhF4+oISyzgKMjl7orUrys0uG28MPvRZFAJ0SheCjmiT+K7Ff?=
- =?us-ascii?Q?I0xUtDPJed3gDP1kEAUrAq3BjrR4sAkteY51RD1hi5rATY2xBT4V+yk3eQ6K?=
- =?us-ascii?Q?o6hVJc/ifRTFYho3c3+2XFekEAscxAGK5SnpYMtboU8AVX3WqWb5MHUgUR8i?=
- =?us-ascii?Q?yF4d4o9yaJzVHCKNs5An4Xtstd5QsYB2gBKOYplTPut+3CDBHwzXwMC/6lve?=
- =?us-ascii?Q?g2qPJ9L3C95ZbEQR//GY23VLhMSF1HeriMVMnH4POqtA0r8LUZFzf57JrzSI?=
- =?us-ascii?Q?psy/O2dcariWp0aQ1NDCG92A3+kJcQHYPp4DN6blF0DVT93Oxx2U8EuKHe2E?=
- =?us-ascii?Q?cIrv39ev9sSKqL8LBZgUfm30nPi3Lsm1I06K9h2NziWAi1I4JMLgAq5/l/ek?=
- =?us-ascii?Q?CzRuqAICTYaFwZwft3DFVmHP9w0Etnk5kYEXNFyVv6AHgdic98dwKY8gT0oZ?=
- =?us-ascii?Q?wRrwQQ/W6dO8o+TGYHHJ3C75Mn+9bNhfHliciQzjYbuXbMZMIyA63YKiLZ3K?=
- =?us-ascii?Q?sBR4QVnqjs4mgE0+gwOUzfAwwlAh0adVaZmtk25wKoaUoSMKTSXjPkgQPS0q?=
- =?us-ascii?Q?TawTLbIQ4r3qx9Z5U0fCwTvrXNcSmoem6Nt9mryw0+aVkU1JX90zoCGG5hiB?=
- =?us-ascii?Q?06uH7gR56F1qx8+W3rQcW03i5Cxk/bXFjoBQjIgy0cLbugN2S4d+l54DqJQ5?=
- =?us-ascii?Q?iAel2BNz6r1i6B3PwrIX38PrpDRbiMNTz4CDy2iO+d9+eZmIBvYjhxGYCueq?=
- =?us-ascii?Q?MAm6OHFGfqWFaPp/wj2ScRXaV4c2mhgrL/YXgKny11kXuLD6ufxqj++mQVsb?=
- =?us-ascii?Q?KtB95r58VMhs4rIwIF+yxcy0EaSFTfbjimOy0+ukvEWLRr39gWD+Jj7S5yLw?=
- =?us-ascii?Q?sivWP1rPeivzF0xsUsyASdVxGREyaWuN6yvbq3WZquymvql+pBhNixcXIQt5?=
- =?us-ascii?Q?qjaomvJpKXl7iBvjbRobTQNivRvIlr8mJ3tifiIu2S+81VHnSGST7jbZGlJJ?=
- =?us-ascii?Q?CtHyyA/WpqBKN6IQzOi7eqN6nDRo3SgYrPx6oJC+XYG3CVZQiTt/W9+jU2IU?=
- =?us-ascii?Q?PtS6NpIsr2VnP9T81Ol1SQ7so5YAJHRpbgmcLT+ir3ZeIOzLutBdW8EQzfB+?=
- =?us-ascii?Q?jMz6kXMNyV0WFg3NUxv79uKNq5EcaX1fRoKtbEv11Zd1S3HX08DOT7eayItU?=
- =?us-ascii?Q?qOxAh4qaRwUdEF+pQ1S6q/ggD5ovW+/GX3UbPWIpwrLRemBemGAvk/UeW6gm?=
- =?us-ascii?Q?ABaNCgQSaJpuijpSIhhu8Anwrvu+j1KEVsPoOo19dnuzrHMc8uAcRYfkdSY3?=
- =?us-ascii?Q?X7EnXOyxwTlUQErko7s+M/WHlRdYQ2Qr1MPkZLx3wqlKlKkaby+KNSRQSb1Z?=
- =?us-ascii?Q?IZ2sKSkewf21G9u5ECIO3im5wo3nh42v06A3Olc3tWlznN9mMadY39FaaGaN?=
- =?us-ascii?Q?XFDLgsZuNngEOUMgC9XZ9lUhcRJrCzPW618TNoSOto8IlvQdfOhBtzBu6Y5j?=
- =?us-ascii?Q?Et9bJ4oH8wDaAtuBYNtaICOP8ZEdy+fATO90EP8tIjkTqHp1lMyQsQSqymJK?=
- =?us-ascii?Q?X0RimH5tQ427XxcNnnj6rohIrHPPOJMTlT/RogCE?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1702290714; x=1702895514; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N+6fsL71+uqPJMFUKBQnGfk6sHtlVXXB4hFF4cRC+os=;
+        b=QevlyOPqAsu9yuuqT7KMiVUdvKI+4d7mI0Art9SOfzJvP42CBt/V7erm7TomnInFM1
+         QzsAhH9lTKHxih38rsgx4vS0oBW+TRwy5FViIIQRf+CZnWKa+UOcKAeKPgaymp0dToor
+         qAzT61QgDu5qcaw25lEwKqrFvMDT+spiApNgB6saghKJR1d/iwPUXtFRIPiQd6wt2tAH
+         L6AVtkz2pkKifU4p8CB0GMg7+gcGRhugn2oAGKxJGorbxUvHgntdBcpLrhydKZ9Q5ua3
+         hXOWauaKXOXfPpztJgOomDAxzgzliCXG+5ar0nRjLZLqsSKfe2quTRicoiVBxkbFL7W6
+         HI/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702290714; x=1702895514;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N+6fsL71+uqPJMFUKBQnGfk6sHtlVXXB4hFF4cRC+os=;
+        b=CiZqX/OmLB9EDT6d34XOgCQPl0+KpTXiJDD8IFRxYRrQMl81v7UAluxNr+6pB9Nrwx
+         XYrXYOIlAGejSXTihU4BA8I8CFMah7PMSfXPCo7agcTBuMLtqkIVreRpscCdj+QpUfM9
+         ZmXHB2E28H8VYkHSdsF5/0OdJFbLY5VvIk+P4zGL6rTWa1qM+irYVg4uIWhtyWpU7bIp
+         zyK5VfB5FnAgvvSK5l02kMK2SkVyPfBFuMuDTtE44p2TkPXAN6yQdo1RmJc9BU+99aoI
+         MEirTj1pgfQAPHKtwUmOzdqIq93zBrUdOpEaW+KbOFsCsLQDrLhwpy8WyLREoflKlfSq
+         ncBQ==
+X-Gm-Message-State: AOJu0Yw5DdSzinfEXCKeMCyxr+X+uTauIkNuhw1rNvhZW+RH8YeGqRES
+        QSqmHLHjXzouki6Psko+OY6AY0pfGDeKbudwfEs=
+X-Google-Smtp-Source: AGHT+IGZNfoMdg7yuyb1iBqRQtZgj9jNPyOGUMp9O5m3KkuOKSy5kM5KKzQE9EflbJJRbAv6s1Iloi5G33IVKvatAFo=
+X-Received: by 2002:a05:6a20:8f1a:b0:190:de0:ea78 with SMTP id
+ b26-20020a056a208f1a00b001900de0ea78mr1876270pzk.95.1702290714102; Mon, 11
+ Dec 2023 02:31:54 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4734.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5cb46a35-754a-4f3e-286b-08dbfa34581b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2023 10:31:32.6067
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bI560hlYq1Vr1AhFCH3ow6alvaAFP9FI19RstWoW1mGjugvADyuB6jnUbuWNue0USrf6jQl25GXHckt/UdZDdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO3PR18MB4911
-X-Proofpoint-ORIG-GUID: hWsW7t6s2tGkkPyoenoExAu84XZR_f0N
-X-Proofpoint-GUID: hWsW7t6s2tGkkPyoenoExAu84XZR_f0N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Mon, 11 Dec 2023 18:31:41 +0800
+Message-ID: <CABOYnLxrKDpgoBTEPyu0wVe1aiB8LQrMqBRuXtggxippB5NDAw@mail.gmail.com>
+Subject: general protection fault in dccp_write_xmit
+To:     davem@davemloft.net
+Cc:     Eric Dumazet <edumazet@google.com>, kuba@kernel.org,
+        pabeni@redhat.com, kuniyu@amazon.com, leitao@debian.org,
+        willemb@google.com, dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -321,57 +66,451 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
+Hello I found a bug in net/dccp in the lastest upstream linux 6.7.rc5
+and lastest net tree
+titled general protection fault in dccp_write_xmit
 
-> > @@ -28,10 +28,18 @@ static void octep_pfvf_validate_version(struct
-> octep_device *oct,  u32 vf_id,
-> >  {
-> >  	u32 vf_version =3D (u32)cmd.s_version.version;
-> >
-> > -	if (vf_version <=3D OCTEP_PFVF_MBOX_VERSION_V1)
-> > -		rsp->s_version.type =3D OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> > +	dev_dbg(&oct->pdev->dev, "VF id:%d VF version:%d PF
-> version:%d\n",
-> > +		vf_id, vf_version, OCTEP_PFVF_MBOX_VERSION_CURRENT);
-> > +	if (vf_version < OCTEP_PFVF_MBOX_VERSION_CURRENT)
-> > +		rsp->s_version.version =3D vf_version;
-> >  	else
-> > -		rsp->s_version.type =3D OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
-> > +		rsp->s_version.version =3D
-> OCTEP_PFVF_MBOX_VERSION_CURRENT;
-> > +
-> > +	oct->vf_info[vf_id].mbox_version =3D rsp->s_version.version;
-> > +	dev_dbg(&oct->pdev->dev, "VF id:%d negotiated VF version:%d\n",
-> > +		vf_id, oct->vf_info[vf_id].mbox_version);
-> > +
-> > +	rsp->s_version.type =3D OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> >  }
->=20
-> <...>
->=20
-> > +#define OCTEP_PFVF_MBOX_VERSION_CURRENT
-> 	OCTEP_PFVF_MBOX_VERSION_V1
->=20
-> This architecture design is unlikely to work in the real world unless
-> you control both PF and VF environment. Mostly PF is running some old
-> legacy distribution while VFs run more modern OS and this check will
-> prevent to run new driver in VF.
->=20
-> Thanks
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei Lee <xrivendell7@gmail.com>
 
-Thanks for the review. This version validation only concerns regarding the =
-control net API layer (which is used to communicate with
-the firmware). In the case you have described, this instead enables new VF =
-drivers to atleast work atop legacy PF drivers (note legacy here still
-refers to PF drivers which support this backward compatibility), although t=
-hey might not be able to use the latest control net functionalities that th=
-ey
-have been enabled for.
+kernel: net.git c3e041425af9068e3ec9d90c536de2a2ba97ba2b
+Kernel config: https://github.com/google/syzkaller/commits/17e6d52686f8a56935991f1b066798279f76504a
 
-In the absence of such a backward compatibility, VF drivers would issue con=
-trol net requests which PF drivers wouldn't know, only leading to logs of
-incompatibility errors and erroneous usage.=20
+in the lastest net tree commit, the crash like:
 
-Also again please note that this version compatibility only concerns the co=
-ntrol net infrastructure and API (the control plane).
+CPU: 1 PID: 8151 Comm: 096 Not tainted 6.7.0-rc4-00151-gc3e041425af9 #5
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ccid_hc_tx_send_packet home/dubbo/net/net/dccp/ccid.h:166 [inline]
+RIP: 0010:dccp_write_xmit+0x66/0x1d0 home/dubbo/net/net/dccp/output.c:356
+Code: 00 48 85 c0 49 89 c4 0f 84 03 01 00 00 e8 12 1d 0d f8 41 80 3e
+00 0f 85 45 01 00 00 48 8b 9d f0 08 00 00 48 89 d8 48 c1 e8 03 <42> 80
+3c 28 00 0f 85 1f 01 00 00 48 8b 1b 48 8d bb b0 00 00 00 48
+RSP: 0018:ffffc90010fcf878 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88814ea6a540 RSI: ffffffff897ab2ce RDI: ffff8881555b8b40
+RBP: ffff8881555b8b40 R08: 0000000000000001 R09: fffffbfff23317ec
+R10: ffffffff9198bf67 R11: 0000000000000001 R12: ffff88814c691700
+R13: dffffc0000000000 R14: ffffed102aab7286 R15: ffff8881555b9430
+FS:  00007f74af0706c0(0000) GS:ffff88823bc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200001c0 CR3: 0000000154391000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dccp_sendmsg+0x968/0xcc0 home/dubbo/net/net/dccp/proto.c:801
+ inet_sendmsg+0x9d/0xe0 home/dubbo/net/net/ipv4/af_inet.c:847
+ sock_sendmsg_nosec home/dubbo/net/net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 home/dubbo/net/net/socket.c:745
+ ____sys_sendmsg+0x2b0/0x880 home/dubbo/net/net/socket.c:2584
+ ___sys_sendmsg+0x135/0x1d0 home/dubbo/net/net/socket.c:2638
+ __sys_sendmmsg+0x1a1/0x450 home/dubbo/net/net/socket.c:2724
+ __do_sys_sendmmsg home/dubbo/net/net/socket.c:2753 [inline]
+ __se_sys_sendmmsg home/dubbo/net/net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0x9c/0x100 home/dubbo/net/net/socket.c:2750
+ do_syscall_x64 home/dubbo/net/arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x3f/0x110 home/dubbo/net/arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x4368e9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f74af0701e8 EFLAGS: 00000213 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f74af0706c0 RCX: 00000000004368e9
+RDX: 0000000000000001 RSI: 0000000020000200 RDI: 0000000000000006
+RBP: 00007f74af070220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000048000 R11: 0000000000000213 R12: ffffffffffffffb0
+R13: 0000000000000000 R14: 00007ffecb287a30 R15: 00007ffecb287b18
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ccid_hc_tx_send_packet home/dubbo/net/net/dccp/ccid.h:166 [inline]
+RIP: 0010:dccp_write_xmit+0x66/0x1d0 home/dubbo/net/net/dccp/output.c:356
+Code: 00 48 85 c0 49 89 c4 0f 84 03 01 00 00 e8 12 1d 0d f8 41 80 3e
+00 0f 85 45 01 00 00 48 8b 9d f0 08 00 00 48 89 d8 48 c1 e8 03 <42> 80
+3c 28 00 0f 85 1f 01 00 00 48 8b 1b 48 8d bb b0 00 00 00 48
+RSP: 0018:ffffc90010fcf878 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88814ea6a540 RSI: ffffffff897ab2ce RDI: ffff8881555b8b40
+RBP: ffff8881555b8b40 R08: 0000000000000001 R09: fffffbfff23317ec
+R10: ffffffff9198bf67 R11: 0000000000000001 R12: ffff88814c691700
+R13: dffffc0000000000 R14: ffffed102aab7286 R15: ffff8881555b9430
+FS:  00007f74af0706c0(0000) GS:ffff88823bc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200001c0 CR3: 0000000154391000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Kernel panic - not syncing: Fatal exception
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+----------------
+Code disassembly (best guess):
+   0: 00 48 85              add    %cl,-0x7b(%rax)
+   3: c0 49 89 c4           rorb   $0xc4,-0x77(%rcx)
+   7: 0f 84 03 01 00 00     je     0x110
+   d: e8 12 1d 0d f8        call   0xf80d1d24
+  12: 41 80 3e 00           cmpb   $0x0,(%r14)
+  16: 0f 85 45 01 00 00     jne    0x161
+  1c: 48 8b 9d f0 08 00 00  mov    0x8f0(%rbp),%rbx
+  23: 48 89 d8              mov    %rbx,%rax
+  26: 48 c1 e8 03           shr    $0x3,%rax
+* 2a: 42 80 3c 28 00        cmpb   $0x0,(%rax,%r13,1) <-- trapping instruction
+  2f: 0f 85 1f 01 00 00     jne    0x154
+  35: 48 8b 1b              mov    (%rbx),%rbx
+  38: 48 8d bb b0 00 00 00  lea    0xb0(%rbx),%rdi
+  3f: 48                    rex.W
 
+
+
+=* repro.c =*
+#define _GNU_SOURCE
+
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/futex.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+
+static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+
+static uint64_t current_time_ms(void) {
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static void thread_start(void* (*fn)(void*), void* arg) {
+  pthread_t th;
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  pthread_attr_setstacksize(&attr, 128 << 10);
+  int i = 0;
+  for (; i < 100; i++) {
+    if (pthread_create(&th, &attr, fn, arg) == 0) {
+      pthread_attr_destroy(&attr);
+      return;
+    }
+    if (errno == EAGAIN) {
+      usleep(50);
+      continue;
+    }
+    break;
+  }
+  exit(1);
+}
+
+typedef struct {
+  int state;
+} event_t;
+
+static void event_init(event_t* ev) { ev->state = 0; }
+
+static void event_reset(event_t* ev) { ev->state = 0; }
+
+static void event_set(event_t* ev) {
+  if (ev->state) exit(1);
+  __atomic_store_n(&ev->state, 1, __ATOMIC_RELEASE);
+  syscall(SYS_futex, &ev->state, FUTEX_WAKE | FUTEX_PRIVATE_FLAG, 1000000);
+}
+
+static void event_wait(event_t* ev) {
+  while (!__atomic_load_n(&ev->state, __ATOMIC_ACQUIRE))
+    syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0, 0);
+}
+
+static int event_isset(event_t* ev) {
+  return __atomic_load_n(&ev->state, __ATOMIC_ACQUIRE);
+}
+
+static int event_timedwait(event_t* ev, uint64_t timeout) {
+  uint64_t start = current_time_ms();
+  uint64_t now = start;
+  for (;;) {
+    uint64_t remain = timeout - (now - start);
+    struct timespec ts;
+    ts.tv_sec = remain / 1000;
+    ts.tv_nsec = (remain % 1000) * 1000 * 1000;
+    syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0, &ts);
+    if (__atomic_load_n(&ev->state, __ATOMIC_ACQUIRE)) return 1;
+    now = current_time_ms();
+    if (now - start > timeout) return 0;
+  }
+}
+
+static bool write_file(const char* file, const char* what, ...) {
+  char buf[1024];
+  va_list args;
+  va_start(args, what);
+  vsnprintf(buf, sizeof(buf), what, args);
+  va_end(args);
+  buf[sizeof(buf) - 1] = 0;
+  int len = strlen(buf);
+  int fd = open(file, O_WRONLY | O_CLOEXEC);
+  if (fd == -1) return false;
+  if (write(fd, buf, len) != len) {
+    int err = errno;
+    close(fd);
+    errno = err;
+    return false;
+  }
+  close(fd);
+  return true;
+}
+
+static void kill_and_wait(int pid, int* status) {
+  kill(-pid, SIGKILL);
+  kill(pid, SIGKILL);
+  for (int i = 0; i < 100; i++) {
+    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
+    usleep(1000);
+  }
+  DIR* dir = opendir("/sys/fs/fuse/connections");
+  if (dir) {
+    for (;;) {
+      struct dirent* ent = readdir(dir);
+      if (!ent) break;
+      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+        continue;
+      char abort[300];
+      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+               ent->d_name);
+      int fd = open(abort, O_WRONLY);
+      if (fd == -1) {
+        continue;
+      }
+      if (write(fd, abort, 1) < 0) {
+      }
+      close(fd);
+    }
+    closedir(dir);
+  } else {
+  }
+  while (waitpid(-1, status, __WALL) != pid) {
+  }
+}
+
+static void setup_test() {
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setpgrp();
+  write_file("/proc/self/oom_score_adj", "1000");
+}
+
+struct thread_t {
+  int created, call;
+  event_t ready, done;
+};
+
+static struct thread_t threads[16];
+static void execute_call(int call);
+static int running;
+
+static void* thr(void* arg) {
+  struct thread_t* th = (struct thread_t*)arg;
+  for (;;) {
+    event_wait(&th->ready);
+    event_reset(&th->ready);
+    execute_call(th->call);
+    __atomic_fetch_sub(&running, 1, __ATOMIC_RELAXED);
+    event_set(&th->done);
+  }
+  return 0;
+}
+
+static void execute_one(void) {
+  int i, call, thread;
+  for (call = 0; call < 10; call++) {
+    for (thread = 0; thread < (int)(sizeof(threads) / sizeof(threads[0]));
+         thread++) {
+      struct thread_t* th = &threads[thread];
+      if (!th->created) {
+        th->created = 1;
+        event_init(&th->ready);
+        event_init(&th->done);
+        event_set(&th->done);
+        thread_start(thr, th);
+      }
+      if (!event_isset(&th->done)) continue;
+      event_reset(&th->done);
+      th->call = call;
+      __atomic_fetch_add(&running, 1, __ATOMIC_RELAXED);
+      event_set(&th->ready);
+      event_timedwait(&th->done, 50);
+      break;
+    }
+  }
+  for (i = 0; i < 100 && __atomic_load_n(&running, __ATOMIC_RELAXED); i++)
+    sleep_ms(1);
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+  int iter = 0;
+  for (;; iter++) {
+    int pid = fork();
+    if (pid < 0) exit(1);
+    if (pid == 0) {
+      setup_test();
+      execute_one();
+      exit(0);
+    }
+    int status = 0;
+    uint64_t start = current_time_ms();
+    for (;;) {
+      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
+      sleep_ms(1);
+      if (current_time_ms() - start < 5000) continue;
+      kill_and_wait(pid, &status);
+      break;
+    }
+  }
+}
+
+uint64_t r[5] = {0xffffffffffffffff, 0xffffffffffffffff, 0x0,
+                 0xffffffffffffffff, 0xffffffffffffffff};
+
+void execute_call(int call) {
+  intptr_t res = 0;
+  switch (call) {
+    case 0:
+      res = syscall(__NR_socket, /*domain=*/0x10ul, /*type=*/0x803ul,
+                    /*proto=*/0);
+      if (res != -1) r[0] = res;
+      break;
+    case 1:
+      res = syscall(__NR_socket, /*domain=*/0xaul, /*type=*/1ul, /*proto=*/0);
+      if (res != -1) r[1] = res;
+      break;
+    case 2:
+      memcpy((void*)0x200001c0,
+             "wg1\000\000\000\000\000\000\000\000\000\000\000\000\000", 16);
+      res = syscall(__NR_ioctl, /*fd=*/r[1], /*cmd=*/0x8933,
+                    /*arg=*/0x200001c0ul);
+      if (res != -1) r[2] = *(uint32_t*)0x200001d0;
+      break;
+    case 3:
+      *(uint64_t*)0x20000340 = 0;
+      *(uint32_t*)0x20000348 = 0;
+      *(uint64_t*)0x20000350 = 0x20002840;
+      *(uint64_t*)0x20002840 = 0x20000080;
+      *(uint32_t*)0x20000080 = 0x2c;
+      *(uint16_t*)0x20000084 = 0x14;
+      *(uint16_t*)0x20000086 = 1;
+      *(uint32_t*)0x20000088 = 0;
+      *(uint32_t*)0x2000008c = 0;
+      *(uint8_t*)0x20000090 = 0xa;
+      *(uint8_t*)0x20000091 = 0;
+      *(uint8_t*)0x20000092 = 0;
+      *(uint8_t*)0x20000093 = 0;
+      *(uint32_t*)0x20000094 = r[2];
+      *(uint16_t*)0x20000098 = 0x14;
+      *(uint16_t*)0x2000009a = 2;
+      *(uint8_t*)0x2000009c = 0xfe;
+      *(uint8_t*)0x2000009d = 0x80;
+      memset((void*)0x2000009e, 0, 13);
+      *(uint8_t*)0x200000ab = 0xbb;
+      *(uint64_t*)0x20002848 = 0x2c;
+      *(uint64_t*)0x20000358 = 1;
+      *(uint64_t*)0x20000360 = 0;
+      *(uint64_t*)0x20000368 = 0;
+      *(uint32_t*)0x20000370 = 0;
+      syscall(__NR_sendmsg, /*fd=*/r[0], /*msg=*/0x20000340ul, /*f=*/0ul);
+      break;
+    case 4:
+      res = syscall(__NR_socket, /*domain=*/0xaul, /*type=*/6ul, /*proto=*/0);
+      if (res != -1) r[3] = res;
+      break;
+    case 5:
+      *(uint16_t*)0x20000000 = 0xa;
+      *(uint16_t*)0x20000002 = htobe16(0);
+      *(uint32_t*)0x20000004 = htobe32(0);
+      *(uint64_t*)0x20000008 = htobe64(0);
+      *(uint64_t*)0x20000010 = htobe64(0xa0211fffe000000);
+      *(uint32_t*)0x20000018 = 0;
+      syscall(__NR_connect, /*fd=*/r[3], /*addr=*/0x20000000ul,
+              /*addrlen=*/0x1cul);
+      break;
+    case 6:
+      res = syscall(__NR_dup, /*oldfd=*/r[3]);
+      if (res != -1) r[4] = res;
+      break;
+    case 7:
+      *(uint64_t*)0x20000200 = 0;
+      *(uint32_t*)0x20000208 = 0;
+      *(uint64_t*)0x20000210 = 0;
+      *(uint64_t*)0x20000218 = 0;
+      *(uint64_t*)0x20000220 = 0;
+      *(uint64_t*)0x20000228 = 0;
+      *(uint32_t*)0x20000230 = 0;
+      *(uint32_t*)0x20000238 = 0;
+      syscall(__NR_sendmmsg, /*fd=*/r[4], /*mmsg=*/0x20000200ul, /*vlen=*/1ul,
+              /*f=*/0x48000ul);
+      break;
+    case 8:
+      syscall(__NR_shutdown, /*fd=*/r[3], /*how=*/0ul);
+      break;
+    case 9:
+      *(uint16_t*)0x20000000 = 0xa;
+      *(uint16_t*)0x20000002 = htobe16(0);
+      *(uint32_t*)0x20000004 = htobe32(0);
+      *(uint64_t*)0x20000008 = htobe64(0);
+      *(uint64_t*)0x20000010 = htobe64(0xa0211fffe000000);
+      *(uint32_t*)0x20000018 = 0;
+      syscall(__NR_connect, /*fd=*/r[3], /*addr=*/0x20000000ul,
+              /*addrlen=*/0x1cul);
+      break;
+  }
+}
+int main(void) {
+  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  loop();
+  return 0;
+}
+
+
+
+=* repro.txt =*
+
+r0 = socket(0x10, 0x803, 0x0)
+r1 = socket$inet6(0xa, 0x1, 0x0)
+ioctl$ifreq_SIOCGIFINDEX_wireguard(r1, 0x8933,
+&(0x7f00000001c0)={'wg1\x00', <r2=>0x0})
+sendmsg$nl_route(r0, &(0x7f0000000340)={0x0, 0x0,
+&(0x7f0000002840)={&(0x7f0000000080)=@ipv6_newaddr={0x2c, 0x14, 0x1,
+0x0, 0x0, {0xa, 0x0, 0x0, 0x0, r2}, [@IFA_LOCAL={0x14, 0x2,
+@remote}]}, 0x2c}}, 0x0)
+r3 = socket$inet6(0xa, 0x6, 0x0)
+connect$inet6(r3, &(0x7f0000000000)={0xa, 0x0, 0x0, @loopback={0x0,
+0xa0211fffe000000}}, 0x1c)
+r4 = dup(r3)
+sendmmsg$inet6(r4, &(0x7f0000000200)=[{{0x0, 0x0, 0x0}}], 0x1, 0x48000)
+shutdown(r3, 0x0)
+connect$inet6(r3, &(0x7f0000000000)={0xa, 0x0, 0x0, @loopback={0x0,
+0xa0211fffe000000}}, 0x1c)
+
+
+Please see also
+https://gist.github.com/xrivendell7/93aebd97f6d43b735e45a66e8650c2ad
