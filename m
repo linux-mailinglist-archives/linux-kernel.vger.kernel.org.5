@@ -2,138 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58ABB80C3F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2989380C3FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbjLKJKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        id S234149AbjLKJKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234119AbjLKJKV (ORCPT
+        with ESMTP id S234119AbjLKJKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:10:21 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7BD100
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:10:26 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso17365535e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:10:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702285825; x=1702890625; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e1hHdtNOUKQtimSKcn02EUH8wMvcC3cjPEPTtQNRnlQ=;
-        b=otgh9Sgeq6dYI5vXeUk1tGyj+R+yIbu1K/5gF8gbdpg+ReleRo+VoxO+aRmWHFc2Lc
-         i0tkU3juHpCfOIzIwzCQ+SevYKC096RG5PzWOLnaee5LETNXBd/FdP2B8Brzfr1L2H/P
-         be4pXnU97902b33X3s0uJEdKn4MwL6+5hbnpGjpssq4L+WwklQeT0JqflPssKHGXV6lq
-         CYexZ5r2XvLvcVxfmkz4AkrrDnQVcnqgjkiVp8+Wxy0XKBfm4mqkovMU2ynZptnZPhoL
-         CtIDWZl2QIdMYF67DOwtanb8jcvVuLh6wPT4G03j9xDhF5Qf1reT5FNdt9J3UWwQPfnG
-         kmEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702285825; x=1702890625;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=e1hHdtNOUKQtimSKcn02EUH8wMvcC3cjPEPTtQNRnlQ=;
-        b=ntsMMA/nh5RgMORuR79lucAPwS9zi3GUsdYPL+7g85Nwxy8XCNqiVUjvX79y30K/kG
-         zRvvVUYTNv6NMiQyli5MJuiAAXAFDWpVeHZbN+RxhzO22odPeJN627x7+QJMUuuuqDWm
-         DY+56wq3Q/R3lvLafNqRR1CEJjbxqVbndshSLHjXqNxOHIX98A5XltyvadJL+LEh5rJB
-         gRBTN8nD/6gTF5ERJtXlrinGWrEUU3CMxgdVB2E55RlYKr/ww+JyuQ/boZo7D+NKOr6P
-         HpwF5jlcOpw1hFHkR5TTQYFVdoXb9GFMyWbU7xqsCgUZ8UnfnoxURN6W5KiqFiJbt2u4
-         qPpg==
-X-Gm-Message-State: AOJu0Yx8ttpZPxVYajYXURANstwb8R+aee6hWb6CewV5DEMGBcHz8bkH
-        2NQzp0Jvm0EQ4EQNaWo57Tgr+/VLX1w/KR2jzipCXWEW
-X-Google-Smtp-Source: AGHT+IH64u4s+nNS2hEACtXPcIntf1k/WlEVOEsxu7iP8inZ9hFuymODeAPuiTftKfdWL40tXRirWQ==
-X-Received: by 2002:a05:600c:3411:b0:409:79df:7f9c with SMTP id y17-20020a05600c341100b0040979df7f9cmr2584703wmp.36.1702285824976;
-        Mon, 11 Dec 2023 01:10:24 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:302e:e0c2:d42c:cb23? ([2a01:e0a:982:cbb0:302e:e0c2:d42c:cb23])
-        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b0040c440f9393sm4627069wmq.42.2023.12.11.01.10.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 01:10:24 -0800 (PST)
-Message-ID: <449d675f-e98c-4924-ab81-14a139081a97@linaro.org>
-Date:   Mon, 11 Dec 2023 10:10:23 +0100
+        Mon, 11 Dec 2023 04:10:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3FF2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:10:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702285841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X3H2rKzNGhPd5aG+amaV+RsXWG/q4mDryaGgazG1R5k=;
+        b=goTdSFJJ4vGzxpA7yS2dsDwoOf/IBW2PrHDRxd3r3NfqGtCrPTnTsjy9HqieTlbpXBOVun
+        BJxqT3KcGEUDkk3FGzkh1PQUZ8MeFqyYpjbN76LMWTDkaZ93JPSQn3qLDnavPrE4r1hYIP
+        2wIjUAbUF5yxiYM6ZAKljNVnxo9/WjE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-7k3BtasXNIGeNUyNQiTfDg-1; Mon, 11 Dec 2023 04:10:34 -0500
+X-MC-Unique: 7k3BtasXNIGeNUyNQiTfDg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9F258833944;
+        Mon, 11 Dec 2023 09:10:33 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B74A11C060AF;
+        Mon, 11 Dec 2023 09:10:32 +0000 (UTC)
+Date:   Mon, 11 Dec 2023 17:10:29 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        loongarch@lists.linux.dev, kexec@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-sh@vger.kernel.org, x86@kernel.org,
+        akpm@linux-foundation.org, eric_devolder@yahoo.com,
+        sfr@canb.auug.org.au, ignat@cloudflare.com
+Subject: Re: [PATCH 0/5] kexec: fix the incorrect ifdeffery and dependency of
+ CONFIG_KEXEC
+Message-ID: <ZXbSBdalhEWPtUn0@MiWiFi-R3L-srv>
+References: <20231208073036.7884-1-bhe@redhat.com>
+ <ZXLI748b85be459B@fedora>
+ <CAMuHMdWAaM+eJtiVbXXBO0xOmpqhrOiCO5itNsNdTiOxRXVtVw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/2] arm64: dts: amlogic: minor whitespace cleanup around
- '='
-Content-Language: en-US, fr
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231124094739.58163-1-krzysztof.kozlowski@linaro.org>
- <20231124094739.58163-2-krzysztof.kozlowski@linaro.org>
- <4150bf8e-a48d-4d16-902f-a95f6489c6f5@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <4150bf8e-a48d-4d16-902f-a95f6489c6f5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWAaM+eJtiVbXXBO0xOmpqhrOiCO5itNsNdTiOxRXVtVw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 24/11/2023 10:49, Krzysztof Kozlowski wrote:
-> On 24/11/2023 10:47, Krzysztof Kozlowski wrote:
->> The DTS code coding style expects exactly one space before and after '='
->> sign.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
+On 12/11/23 at 09:25am, Geert Uytterhoeven wrote:
+> Hi Baoquan,
 > 
-> Please ignore, that's duplicated of my previous send.
-
-I don't see a previous send, so I'm confused.
-I can apply this patch if you're ok.
-
-Thanks,
-Neil
-
+> On Fri, Dec 8, 2023 at 8:43 AM Baoquan He <bhe@redhat.com> wrote:
+> > Forgot adding kexec to CC, add it now.
+> >
+> > On 12/08/23 at 03:30pm, Baoquan He wrote:
+> > > The select of KEXEC for CRASH_DUMP in kernel/Kconfig.kexec will be
+> > > dropped, then compiling errors will be triggered if below config
+> > > items are set:
+> > >
+> > > ===
+> > > CONFIG_CRASH_CORE=y
+> > > CONFIG_KEXEC_CORE=y
+> > > CONFIG_CRASH_DUMP=y
+> > > ===
+> > >
+> > > E.g on mips, below link error are seen:
+> > > --------------------------------------------------------------------
+> > > mipsel-linux-ld: kernel/kexec_core.o: in function `kimage_free':
+> > > kernel/kexec_core.c:(.text+0x2200): undefined reference to `machine_kexec_cleanup'
+> > > mipsel-linux-ld: kernel/kexec_core.o: in function `__crash_kexec':
+> > > kernel/kexec_core.c:(.text+0x2480): undefined reference to `machine_crash_shutdown'
+> > > mipsel-linux-ld: kernel/kexec_core.c:(.text+0x2488): undefined reference to `machine_kexec'
+> > > mipsel-linux-ld: kernel/kexec_core.o: in function `kernel_kexec':
+> > > kernel/kexec_core.c:(.text+0x29b8): undefined reference to `machine_shutdown'
+> > > mipsel-linux-ld: kernel/kexec_core.c:(.text+0x29c0): undefined reference to `machine_kexec'
+> > > --------------------------------------------------------------------
+> > >
+> > > Here, change the incorrect dependency of building kexec_core related object
+> > > files, and the ifdeffery on architectures from CONFIG_KEXEC to
+> > > CONFIG_KEXEC_CORE.
+> > >
+> > > Testing:
+> > > ========
+> > > Passed on mips and loognarch with the LKP reproducer.
+> > >
+> > > Baoquan He (5):
+> > >   loongarch, kexec: change dependency of object files
+> > >   m68k, kexec: fix the incorrect ifdeffery and build dependency of
+> > >     CONFIG_KEXEC
+> > >   mips, kexec: fix the incorrect ifdeffery and dependency of
+> > >     CONFIG_KEXEC
+> > >   sh, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
+> > >   x86, kexec: fix the wrong ifdeffery CONFIG_KEXEC
 > 
-> Best regards,
-> Krzysztof
-> 
+> I understand this series is v3 of "[PATCH v2] kexec_core: change
+> dependency of object files"? As this series does not contain a
+> changelog, can you please summarize what was changed?
+> Thanks!
+
+Oh, sorry for the confusion.
+
+You are right, I should have taken this as v3 and posted to avoid
+confusion.
+
+I add below change log for this series, not sure if it's clearer than
+before. E.g for m68k, the <asm/kexec.h> is included in <linux/kexec.h>.
+The old ifdeffery CONFIG_KEXEC will cause those definitions in
+asm/kexec.h unseen if CONFIG_KEXEC is unset. See
+KEXEC_SOURCE_MEMORY_LIMIT, it's needed in kernel/kexec_core.c.
+
+Changelog:
+------------
+v2->v3:
+- Change the incorrect ifdeffery CONFIG_KEXEC in arch. Since select of
+  KEXEC for CRASH_DUMP in kernel/Kconfig.kexec is dropped, people can
+  set below config items dependently of CONFIG_KEXEC. Then those
+  KEXEC_CORE or CRASH_CORE related codes compiling will report error.
+
+  ===
+  CONFIG_CRASH_CORE=y
+  CONFIG_KEXEC_CORE=y
+  CONFIG_CRASH_DUMP=y
+  ===
+- Change the incorrect ifdeffery CONFIG_KEXEC in get_cmdline_acpi_rsdp()
+  of x86 because kexec_file_load needs that too.
+
+v1->v2:
+- V1 only includes fix on loongarch. Add m68k, mips, sh fix in v2 too.
 
