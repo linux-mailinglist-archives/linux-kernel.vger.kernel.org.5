@@ -2,166 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2BF80DD8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256DE80DDAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345455AbjLKVss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S1345458AbjLKVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345291AbjLKVsp (ORCPT
+        with ESMTP id S229493AbjLKVyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:48:45 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E46CD5;
-        Mon, 11 Dec 2023 13:48:50 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WBpxw8+Xic6YoM9bj/HrqoVUVrrPGA1uo+ncozHX04/cCrhDeo0a83EW0txzUPC5y0LrgGxXDl4h12xqmuL2vStkS9XjoLpaGSzZ0uKNPC/9nsIEQRElfxnwzW3qwwaBo0M1p0+E5+noBVf+b0GKHMHu0DpjHY00ObPCR70pWfra/Ya/DCcbTzu26qhgNNx3UMUwbxzR9BWfhMfTVYuN/etQXJRsf5GT8vhbhgitmaf6OSCkJUxBu31tVH2bzYtbJ4nxShAFG1ZkyjWsPB+jrEVI75JsMQvp07QgrWJpxC7uwATqN+IvOI0hXC1rsuRqBt1xhKHm0G9HDPrrIhutQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TX0lSt+o+2FnjAgjWeFMslPvvVURHD8S0u7zd9l7UjQ=;
- b=ci5bJFl+EX7ppH8QtabAAmxjqOA734g0z8CHzHYlURnBWl5GExiDTgyvsRxqhoJ1Dwvc5zulv8HfuddZoWHJ1kE36JOAIFbbBu1BMKxZMo3P05ppLqm/oHxbK1MZN4vFCg+tAra2Hx2755XoxGlHZ1tJR4BCf6Kcso3aNiGX13HWXvJpTWY+XI+p/aqee9t+m7AO7zP3VBgWhbRFN3trMD8zmV/9tw03FMnRCKDhmQjGpKOjLIwDpK1OYCg5XRnzOOpjZghUag19WXbhkAcmA+0sGL2v1UbL4IW+S6M7OX3cqyToRr0R+wn2MAsp0QMd5SUXScjN4FUa76nQd/NhSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TX0lSt+o+2FnjAgjWeFMslPvvVURHD8S0u7zd9l7UjQ=;
- b=CMP/RVUxF8vyhjjV8MO5Kv9noxCEBBvNutmT9Z9Ki0LshziKzOEH1PgzVUWPa7RqDHbc7eUxgtHeA4N7mdTaUfmnYfsRuFTovnB7ioKcQFEQzuIrZOvG7HX9v9cQ8CAgmtlfGVf8F0LmqgzZ7PoPa58Fe+ZSTqRsE64Mt9iLu2UPxiQ2spjucbsFc9DZ+DTH3N8P8yS1bfDfMbK1QxNFRvnN1RscIhF5TetevEB9dXZnh7dFnqSdH/BX8nnP0n3Vc4rOwKxBdKf2GSXtQKVNu9f2Sc4vdQygGY6GJ7zAnzmnZXfpeseDUdt97AWKagIm+w0NWu8RPlPhioD+n332Wg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH3PR12MB9171.namprd12.prod.outlook.com (2603:10b6:610:1a2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Mon, 11 Dec
- 2023 21:48:47 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 21:48:47 +0000
-Date:   Mon, 11 Dec 2023 17:48:46 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>,
-        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
-        Vasant Hegde <vasant.hegde@amd.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, zhenzhong.duan@intel.com,
-        joao.m.martins@oracle.com, xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
-Message-ID: <20231211214846.GA3014157@nvidia.com>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231209014726.GA2945299@nvidia.com>
- <77ac47d0-2ef0-41fa-86c2-091358541465@intel.com>
- <20231211132041.GE2944114@nvidia.com>
- <ZXds7V0Dz0ycF5IR@Asurada-Nvidia>
+        Mon, 11 Dec 2023 16:54:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C21BD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702331650; x=1733867650;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ZlZAFvQjqOhfssyHtpjNDK/wGZ9SY9AXu/xWQtGN1Fo=;
+  b=JJBZA+rZ1D44knRUiG1m4zsq8EQTe3MxMJhoFnUm1+vTyLa3n5sk2gNE
+   hwDhA6P7cAj8CnYmMsg935Qgiua/rWhwjDvQejRXjTGvVRsD7Gt67vCVC
+   LorqbyudqkqjqsykG7rxZ2Yd1hdl609VHzpKFRXtNPrYIBr7G6cc1KBwK
+   Vb24wCCvrfI3173OAws4FSruEk2YA/I0DTZJKDLH/nSj0CWjbftr6/eCA
+   rFJZq8H3UmVNpm4q95smqDfojzSv3UBJdHjgQBquUoyNQqD2W2VDf1A8E
+   NLbaDrtQ7RdEUzWDZyJ1aViOxZTGyxCoAV1mFPs8pCpYFyKvzKnC/a9A9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="8077195"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="8077195"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 13:54:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="21249696"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 11 Dec 2023 13:54:07 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCoE1-000IVe-09;
+        Mon, 11 Dec 2023 21:54:05 +0000
+Date:   Tue, 12 Dec 2023 05:53:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Inki Dae <inki.dae@samsung.com>
+Subject: drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse: sparse:
+ incorrect type in argument 2 (different address spaces)
+Message-ID: <202312120556.xUDl8cXT-lkp@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXds7V0Dz0ycF5IR@Asurada-Nvidia>
-X-ClientProxiedBy: MN2PR02CA0025.namprd02.prod.outlook.com
- (2603:10b6:208:fc::38) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB9171:EE_
-X-MS-Office365-Filtering-Correlation-Id: cfc646f7-810b-4600-780d-08dbfa92f454
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PzAJQwCJbPtkTQtMY3SwuQO7U3iIw4moJLm5Og4fjYV4wpdF+NTc0rhg+sxBU/BZo147qt5XFkNH1MZA/UrSwrfmI8or12VfmivRjJNAkQPCDwDg65zZb5RAl+a33wf0ddGujnxPW5r9tj2dlUmlnLgyBXg9TGefythsFgVA8HSrL3rA76uIzdWyRAIWGDcAas2i2Vn7BzRrlqiDjRkdEV4aZclklXgCaYo+JsON/wopXsxFQryDKzgGnIMJb/O+b3nZqak9keyY/Ag4hsvEH/mgBX0dXSVsx8plF8s8AKOkPjmiEsDH5VlPeyQ2sLvj6cETjiFOo5dBBMQ+NG8ZwhiKrk4pY95Nuzrx94HSy2VcQxydYSQDQOSPfBbpokqe9lA5cEl8eMMX2JjupsgkstCM4JR7CWJat48ob4Ilf8BQ4L+Jj1N5YdZCgml8JNRR2taWFIdn1J9W5HQi89cwDTdH/WKmzyQvPHu6aKSnUanP2WsQuaQxzP9OkssUJmVmCWkt6c1yaLYqc8voSG8PRhGYJ2Vf2/Wo7sdrWkh1dehHWUkJygEoV40o1gJ2t+WB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(2906002)(41300700001)(86362001)(478600001)(66556008)(66476007)(6636002)(54906003)(7416002)(66946007)(6486002)(316002)(38100700002)(37006003)(8676002)(6862004)(4326008)(8936002)(6506007)(6512007)(66899024)(36756003)(33656002)(1076003)(5660300002)(26005)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VyBfoeU43U/AIzoA/551ueGOliW2d0OGw8kG/z2AZWtQ76kQHxmsnAIda0RP?=
- =?us-ascii?Q?b/tYDe0I7uB7ooWkl4/wtZha0Kpj/J16AFNFx4DVU1381xGPLCqlTBai+Mvx?=
- =?us-ascii?Q?ZX+3DIJFww5ojTl/ML+Wvw5AmgsnKY+RIckeMpSwmj+ITNfx4OhfpZes69jD?=
- =?us-ascii?Q?cjvi+x7nfi0l6IkjbsH8XckuGHiZkuLAmuafUFPoCp3HjvGHIEpAjmIJvc2l?=
- =?us-ascii?Q?dysbhxYIMnEoHFaMaPQTrV+w4QK+0SMED6yInxrhJz/RXOKu3m+fmTlp1hG9?=
- =?us-ascii?Q?PWQAFWaGqPkO8uacvUT1KsAtmllNKq87l6uO5t79dfL5wP0E4XtGO2lSwLcJ?=
- =?us-ascii?Q?QhfqvWQqVJDso8OrYOwSrj2ZNsrvDH0zayQHnVu95545rT75MsjPuCVQrhR8?=
- =?us-ascii?Q?xV4UWFZJaNHj8pRJU8oUZE4S25esuqIT2mKKFfBrxL4OkhvknmiSzxi7rNaW?=
- =?us-ascii?Q?6ki20i61LJPe7uVtiS14VklX/Ry8s1csJqxVjROEorAvcTnZ9FJ/rBxKFTDM?=
- =?us-ascii?Q?C6tPBIdx6MW9Z9LM0Z1WOWyYyZKt7jymtWEpPopacy1pRxVoBpcRZuboCwZ7?=
- =?us-ascii?Q?2pU/HgQzVOizP4zzO4QLeUByi4l9zJ9ctXGHWeVr893tfvk6M6yB9dn7HFyH?=
- =?us-ascii?Q?qo0a3Pr1UAJ8RVRT8ukRXu+Z/qfteiT+r0Pyv3P71wjY4ZVP5DJR3QAmVSn/?=
- =?us-ascii?Q?yBmF48RZhd2FKQAMNUevSpaFA8p3Dlebf5iJ1pWDqW1mjkx9+ZF012G+gFQ3?=
- =?us-ascii?Q?WWBsXE1PuFItgCTvY/BDyUGSsdDA2Mq4tGnHFbsLZzByjHG6cVCDGJCLzQSZ?=
- =?us-ascii?Q?S/FeHtblW4VO9/FiB1sAcj8Z8WXl1Zdqjoq7vffQaQFisDCd4CjNayBqySnF?=
- =?us-ascii?Q?zACFLPuc8vYk8v1iHvjwOd5+VZ95vg1K2UUy5QwD6SjYbw/FDCM7U2O4uZhP?=
- =?us-ascii?Q?tWZWaQOi89PnokxZppNDydjLDxx+VDDoG/n+fn7O4wvmfiE3UpsbTUimK/7l?=
- =?us-ascii?Q?OFHnu5FXIC8IhrzOlNlSjpCbcZerxgHKAqAHaAgNkS0Nm/SkwHFqik0HG+ov?=
- =?us-ascii?Q?nUrpYsDdDBRAVkZqwJ9zkfbM57vxEShdlSG84TXzt77HrbsTuIOjMGFnuwyT?=
- =?us-ascii?Q?mLWezcMYwxZcWb1RGmjHsc7K1Mehlc6GnIDQVd2JcIwZki5pa6gamLzblVg7?=
- =?us-ascii?Q?VBYjztUiM5M1bz3EoWWH387SfmnXQ9KyYsvCw1M8psgD59mxp+W4iZ3egBVE?=
- =?us-ascii?Q?24ZCIQjHA92+i2yrbM6KNsHDNMSA9S54JAjElZeBOb76Z0pLOyx8Jtnm2fv9?=
- =?us-ascii?Q?pNm3tFWHteoElvKClK55tfNKuxZO8Q/kWl1vNuUq1UGhWvqI5UnNeI3VzwBE?=
- =?us-ascii?Q?q96tJvD3i/ZBDR9GUtvx1ZEY7YPaTbTo065rO+eSLb1hZjI0sX6sKWpjc7pR?=
- =?us-ascii?Q?riGSnyPB7usfwgNKD4L1RETilPLdAAKkt3FakJjLR6QK8JgF0giZzNP/w5Yv?=
- =?us-ascii?Q?FG1KqQx2rzaGvrQQlphBo+lH4fHFImCTnwll2NGZW5KBky+Df7EUM/JqbE36?=
- =?us-ascii?Q?ZWPUE7Q6vGffs1Z8g4ArmSU61VwcrdV12llkV7xY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfc646f7-810b-4600-780d-08dbfa92f454
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 21:48:47.6339
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fk3cZcqCs+daPBsL4zhGPWmZhEUj35f9f7cpSmA4kc7z8w2Hf19qJVA+SaVQYqg3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9171
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 12:11:25PM -0800, Nicolin Chen wrote:
-> On Mon, Dec 11, 2023 at 09:20:41AM -0400, Jason Gunthorpe wrote:
-> > On Mon, Dec 11, 2023 at 08:35:09PM +0800, Yi Liu wrote:
-> > > > So.. In short.. Invalidation is a PITA. The idea is the same but
-> > > > annoying little details interfere with actually having a compltely
-> > > > common API here. IMHO the uAPI in this series is fine. It will support
-> > > > Intel invalidation and non-ATC invalidation on AMD/ARM. It should be
-> > > > setup to allow that the target domain object can be any HWPT.
-> > > 
-> > > This HWPT is still nested domain. Is it? But it can represent a guest I/O
-> > > page table (VT-d), guest CD table (ARM), guest CR3 Table (AMD, it seems to
-> > > be a set of guest CR3 table pointers). May ARM and AMD guys keep me honest
-> > > here.
-> > 
-> > I was thinking ARM would not want to use a nested domain because
-> > really the invalidation is global to the entire nesting parent.
-> > 
-> > But, there is an issue with that - the nesting parent could be
-> > attached to multiple iommu instances but we only want to invalidate a
-> > single instance. 
-> 
-> I am still not sure about attaching an S2 domain to multiple
-> SMMUs. An S2 domain is created per SMMU, and we have such a
-> rejection in arm_smmu_attach_dev():
-> 	} else if (smmu_domain->smmu != smmu)
-> 		ret = -EINVAL;
+Hi Sam,
 
-I intend to remove that eventually
+First bad commit (maybe != root cause):
 
-> I understand that it would be probably ideal to share the S2
-> iopt among the SMMUs. But in the driver the objects (domain)
-> holding a shared S2 iopt must be different to allocate their
-> own VMIDs, right?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+commit: 156bdac99061b4013c8e47799c6e574f7f84e9f4 drm/exynos: trigger build of all modules
+date:   4 years, 6 months ago
+config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231212/202312120556.xUDl8cXT-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231212/202312120556.xUDl8cXT-lkp@intel.com/reproduce)
 
-No, the vmid will be moved into the struct arm_smmu_master_domain
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312120556.xUDl8cXT-lkp@intel.com/
 
-Jason
+sparse warnings: (new ones prefixed by >>)
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *timing_base @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse:     expected void *timing_base
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse:     got void [noderef] __iomem *
+>> drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *timing_base @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse:     expected void *timing_base
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse:     got void [noderef] __iomem *
+>> drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse:     expected void const volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c: note: in included file (through arch/mips/include/asm/mmiowb.h, include/linux/spinlock.h, include/linux/rwsem.h, ...):
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+
+vim +470 drivers/gpu/drm/exynos/exynos_drm_fimd.c
+
+a6f75aa161c5a5 Inki Dae              2016-04-18  452  
+93bca243ec96f0 Gustavo Padovan       2015-01-18  453  static void fimd_commit(struct exynos_drm_crtc *crtc)
+1c248b7d2960fa Inki Dae              2011-10-04  454  {
+93bca243ec96f0 Gustavo Padovan       2015-01-18  455  	struct fimd_context *ctx = crtc->ctx;
+020e79de265996 Joonyoung Shim        2015-06-02  456  	struct drm_display_mode *mode = &crtc->base.state->adjusted_mode;
+e1a7b9b40d1c0c Marek Szyprowski      2016-04-18  457  	const struct fimd_driver_data *driver_data = ctx->driver_data;
+3854fab24e899c YoungJun Cho          2014-07-17  458  	void *timing_base = ctx->regs + driver_data->timing_base;
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  459  	u32 val;
+1c248b7d2960fa Inki Dae              2011-10-04  460  
+e30d4bcf79b6a3 Inki Dae              2011-12-12  461  	if (ctx->suspended)
+e30d4bcf79b6a3 Inki Dae              2011-12-12  462  		return;
+e30d4bcf79b6a3 Inki Dae              2011-12-12  463  
+a968e72771ea19 Sean Paul             2014-01-30  464  	/* nothing to do if we haven't set the mode yet */
+a968e72771ea19 Sean Paul             2014-01-30  465  	if (mode->htotal == 0 || mode->vtotal == 0)
+a968e72771ea19 Sean Paul             2014-01-30  466  		return;
+a968e72771ea19 Sean Paul             2014-01-30  467  
+3854fab24e899c YoungJun Cho          2014-07-17  468  	if (ctx->i80_if) {
+3854fab24e899c YoungJun Cho          2014-07-17  469  		val = ctx->i80ifcon | I80IFEN_ENABLE;
+3854fab24e899c YoungJun Cho          2014-07-17 @470  		writel(val, timing_base + I80IFCONFAx(0));
+3854fab24e899c YoungJun Cho          2014-07-17  471  
+3854fab24e899c YoungJun Cho          2014-07-17  472  		/* disable auto frame rate */
+3854fab24e899c YoungJun Cho          2014-07-17  473  		writel(0, timing_base + I80IFCONFBx(0));
+3854fab24e899c YoungJun Cho          2014-07-17  474  
+3854fab24e899c YoungJun Cho          2014-07-17  475  		/* set video type selection to I80 interface */
+3c3c9c1d904dca Joonyoung Shim        2014-11-14  476  		if (driver_data->has_vtsel && ctx->sysreg &&
+3c3c9c1d904dca Joonyoung Shim        2014-11-14  477  				regmap_update_bits(ctx->sysreg,
+3854fab24e899c YoungJun Cho          2014-07-17  478  					driver_data->lcdblk_offset,
+3854fab24e899c YoungJun Cho          2014-07-17  479  					0x3 << driver_data->lcdblk_vt_shift,
+3854fab24e899c YoungJun Cho          2014-07-17  480  					0x1 << driver_data->lcdblk_vt_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  481  			DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  482  				      "Failed to update sysreg for I80 i/f.\n");
+3854fab24e899c YoungJun Cho          2014-07-17  483  			return;
+3854fab24e899c YoungJun Cho          2014-07-17  484  		}
+3854fab24e899c YoungJun Cho          2014-07-17  485  	} else {
+3854fab24e899c YoungJun Cho          2014-07-17  486  		int vsync_len, vbpd, vfpd, hsync_len, hbpd, hfpd;
+3854fab24e899c YoungJun Cho          2014-07-17  487  		u32 vidcon1;
+3854fab24e899c YoungJun Cho          2014-07-17  488  
+1417f109a82f8a Sean Paul             2014-01-30  489  		/* setup polarity values */
+1417f109a82f8a Sean Paul             2014-01-30  490  		vidcon1 = ctx->vidcon1;
+1417f109a82f8a Sean Paul             2014-01-30  491  		if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+1417f109a82f8a Sean Paul             2014-01-30  492  			vidcon1 |= VIDCON1_INV_VSYNC;
+1417f109a82f8a Sean Paul             2014-01-30  493  		if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+1417f109a82f8a Sean Paul             2014-01-30  494  			vidcon1 |= VIDCON1_INV_HSYNC;
+1417f109a82f8a Sean Paul             2014-01-30  495  		writel(vidcon1, ctx->regs + driver_data->timing_base + VIDCON1);
+1c248b7d2960fa Inki Dae              2011-10-04  496  
+1c248b7d2960fa Inki Dae              2011-10-04  497  		/* setup vertical timing values. */
+a968e72771ea19 Sean Paul             2014-01-30  498  		vsync_len = mode->crtc_vsync_end - mode->crtc_vsync_start;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  499  		vbpd = mode->crtc_vtotal - mode->crtc_vsync_end;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  500  		vfpd = mode->crtc_vsync_start - mode->crtc_vdisplay;
+a968e72771ea19 Sean Paul             2014-01-30  501  
+a968e72771ea19 Sean Paul             2014-01-30  502  		val = VIDTCON0_VBPD(vbpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  503  			VIDTCON0_VFPD(vfpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  504  			VIDTCON0_VSPW(vsync_len - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  505  		writel(val, ctx->regs + driver_data->timing_base + VIDTCON0);
+1c248b7d2960fa Inki Dae              2011-10-04  506  
+1c248b7d2960fa Inki Dae              2011-10-04  507  		/* setup horizontal timing values.  */
+a968e72771ea19 Sean Paul             2014-01-30  508  		hsync_len = mode->crtc_hsync_end - mode->crtc_hsync_start;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  509  		hbpd = mode->crtc_htotal - mode->crtc_hsync_end;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  510  		hfpd = mode->crtc_hsync_start - mode->crtc_hdisplay;
+a968e72771ea19 Sean Paul             2014-01-30  511  
+a968e72771ea19 Sean Paul             2014-01-30  512  		val = VIDTCON1_HBPD(hbpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  513  			VIDTCON1_HFPD(hfpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  514  			VIDTCON1_HSPW(hsync_len - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  515  		writel(val, ctx->regs + driver_data->timing_base + VIDTCON1);
+3854fab24e899c YoungJun Cho          2014-07-17  516  	}
+3854fab24e899c YoungJun Cho          2014-07-17  517  
+3854fab24e899c YoungJun Cho          2014-07-17  518  	if (driver_data->has_vidoutcon)
+3854fab24e899c YoungJun Cho          2014-07-17  519  		writel(ctx->vidout_con, timing_base + VIDOUT_CON);
+3854fab24e899c YoungJun Cho          2014-07-17  520  
+3854fab24e899c YoungJun Cho          2014-07-17  521  	/* set bypass selection */
+3854fab24e899c YoungJun Cho          2014-07-17  522  	if (ctx->sysreg && regmap_update_bits(ctx->sysreg,
+3854fab24e899c YoungJun Cho          2014-07-17  523  				driver_data->lcdblk_offset,
+3854fab24e899c YoungJun Cho          2014-07-17  524  				0x1 << driver_data->lcdblk_bypass_shift,
+3854fab24e899c YoungJun Cho          2014-07-17  525  				0x1 << driver_data->lcdblk_bypass_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  526  		DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  527  			      "Failed to update sysreg for bypass setting.\n");
+3854fab24e899c YoungJun Cho          2014-07-17  528  		return;
+3854fab24e899c YoungJun Cho          2014-07-17  529  	}
+1c248b7d2960fa Inki Dae              2011-10-04  530  
+1feafd3afd294b Chanho Park           2016-02-12  531  	/* TODO: When MIC is enabled for display path, the lcdblk_mic_bypass
+1feafd3afd294b Chanho Park           2016-02-12  532  	 * bit should be cleared.
+1feafd3afd294b Chanho Park           2016-02-12  533  	 */
+1feafd3afd294b Chanho Park           2016-02-12  534  	if (driver_data->has_mic_bypass && ctx->sysreg &&
+1feafd3afd294b Chanho Park           2016-02-12  535  	    regmap_update_bits(ctx->sysreg,
+1feafd3afd294b Chanho Park           2016-02-12  536  				driver_data->lcdblk_offset,
+1feafd3afd294b Chanho Park           2016-02-12  537  				0x1 << driver_data->lcdblk_mic_bypass_shift,
+1feafd3afd294b Chanho Park           2016-02-12  538  				0x1 << driver_data->lcdblk_mic_bypass_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  539  		DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  540  			      "Failed to update sysreg for bypass mic.\n");
+1feafd3afd294b Chanho Park           2016-02-12  541  		return;
+1feafd3afd294b Chanho Park           2016-02-12  542  	}
+1feafd3afd294b Chanho Park           2016-02-12  543  
+1c248b7d2960fa Inki Dae              2011-10-04  544  	/* setup horizontal and vertical display size. */
+a968e72771ea19 Sean Paul             2014-01-30  545  	val = VIDTCON2_LINEVAL(mode->vdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  546  	       VIDTCON2_HOZVAL(mode->hdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  547  	       VIDTCON2_LINEVAL_E(mode->vdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  548  	       VIDTCON2_HOZVAL_E(mode->hdisplay - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  549  	writel(val, ctx->regs + driver_data->timing_base + VIDTCON2);
+1c248b7d2960fa Inki Dae              2011-10-04  550  
+a6f75aa161c5a5 Inki Dae              2016-04-18  551  	fimd_setup_trigger(ctx);
+a6f75aa161c5a5 Inki Dae              2016-04-18  552  
+1d531062cdc5fc Andrzej Hajda         2014-03-20  553  	/*
+1d531062cdc5fc Andrzej Hajda         2014-03-20  554  	 * fields of register with prefix '_F' would be updated
+1d531062cdc5fc Andrzej Hajda         2014-03-20  555  	 * at vsync(same as dma start)
+1d531062cdc5fc Andrzej Hajda         2014-03-20  556  	 */
+3854fab24e899c YoungJun Cho          2014-07-17  557  	val = ctx->vidcon0;
+3854fab24e899c YoungJun Cho          2014-07-17  558  	val |= VIDCON0_ENVID | VIDCON0_ENVID_F;
+1c248b7d2960fa Inki Dae              2011-10-04  559  
+1d531062cdc5fc Andrzej Hajda         2014-03-20  560  	if (ctx->driver_data->has_clksel)
+411d9ed4486a4e Tomasz Figa           2013-05-01  561  		val |= VIDCON0_CLKSEL_LCD;
+411d9ed4486a4e Tomasz Figa           2013-05-01  562  
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  563  	if (ctx->clkdiv > 1)
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  564  		val |= VIDCON0_CLKVAL_F(ctx->clkdiv - 1) | VIDCON0_CLKDIR;
+1c248b7d2960fa Inki Dae              2011-10-04  565  
+1c248b7d2960fa Inki Dae              2011-10-04  566  	writel(val, ctx->regs + VIDCON0);
+1c248b7d2960fa Inki Dae              2011-10-04  567  }
+1c248b7d2960fa Inki Dae              2011-10-04  568  
+
+:::::: The code at line 470 was first introduced by commit
+:::::: 3854fab24e899c02439657956ab1d2c85001958c drm/exynos: fimd: support LCD I80 interface
+
+:::::: TO: YoungJun Cho <yj44.cho@samsung.com>
+:::::: CC: Inki Dae <daeinki@gmail.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
