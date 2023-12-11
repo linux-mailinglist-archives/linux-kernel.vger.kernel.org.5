@@ -2,265 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BEB80D4EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A129280D4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345145AbjLKSGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
+        id S1345193AbjLKSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345205AbjLKSGK (ORCPT
+        with ESMTP id S1345117AbjLKSF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:06:10 -0500
+        Mon, 11 Dec 2023 13:05:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84A895
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:06:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 637F1C433CC;
-        Mon, 11 Dec 2023 18:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702317975;
-        bh=BuNKuEYimtFsnC+d0fYe5xVzG5VtzDF/Hpu4INevUFQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dLYPcqxGJ13e6yGw5URBmdy7roCSwGX/5U4K1FIx7qr0KgR27JCRmFJE2W9NuL4HX
-         /M3KJDcGp/3DjlsftKlqBLjF43NTFQ5gx2ptiLsvk7whBKGxAY6jaQew3bNke017s1
-         ioXEsdjC7ttfp0naouoOj3HnRzl1HLIK7uPhlh73bbEV6xN9aH1cwyk57iU/tUjssj
-         IWLR/JE98fRKDBB2RMd/G1ZTFLxaKOydNNHa2bb3ZWhci5zLcSWA3nLxVBwOxZ62bz
-         isnkux1aYH5p3wirzQr1QIgr1V60P4JJXB+sTA+/F1KI0V/o11btRvch5oEQS6ybqj
-         LpaKAq3PJ3rHw==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1eb39505ba4so2871081fac.0;
-        Mon, 11 Dec 2023 10:06:15 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw8PGP/Z4jGm5O2Bmb5P2MgkyfNoavRs9OiFGh3gkU5j75MgzKT
-        oF04bvUZ+tV6PvBhUnKdQy6gfAslyncV4wL7Hr0=
-X-Google-Smtp-Source: AGHT+IEnmW3IeOYXl+S2MP/iBK/5qYhRfcerMVGLupCQg6sJo4cyNRBO+W30721hORW+UW6IIsRbodQqtL/y3NtNvjQ=
-X-Received: by 2002:a05:6871:7990:b0:1fb:75b:999f with SMTP id
- pb16-20020a056871799000b001fb075b999fmr5873381oac.78.1702317974698; Mon, 11
- Dec 2023 10:06:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C38793
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:05:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCC54C433C7;
+        Mon, 11 Dec 2023 18:05:34 +0000 (UTC)
+Date:   Mon, 11 Dec 2023 13:06:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2] ring-buffer: Add offset of events in dump on mismatch
+Message-ID: <20231211130614.43ff4462@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231208181802.88528-3-leobras@redhat.com> <CAK7LNAQk3Nm53qf95p7yQbSQ_M3phD_n5OMGxFWorGg_4fpQZg@mail.gmail.com>
- <ZXcLEKSBg9Bd1qEu@LeoBras>
-In-Reply-To: <ZXcLEKSBg9Bd1qEu@LeoBras>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Dec 2023 03:05:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARUYBS3Nd83M7uEtPt_GjUGK2jDGEJk9SBBedUKgb911g@mail.gmail.com>
-Message-ID: <CAK7LNARUYBS3Nd83M7uEtPt_GjUGK2jDGEJk9SBBedUKgb911g@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
-To:     lsoaresp@redhat.com
-Cc:     Leonardo Bras <leobras@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 10:14=E2=80=AFPM <lsoaresp@redhat.com> wrote:
->
-> From: Leonardo Bras <masahiroy@kernel.org>
->
-> On Sun, Dec 10, 2023 at 04:13:54AM +0900, Masahiro Yamada wrote:
-> > On Sat, Dec 9, 2023 at 3:19=E2=80=AFAM Leonardo Bras <leobras@redhat.co=
-m> wrote:
-> > >
-> > > When reviewing patches, it looks much nicer to have some changes show=
-n
-> > > before others, which allow better understanding of the patch before t=
-he
-> > > the .c files reviewing.
-> > >
-> > > Introduce a default git.orderFile, in order to help developers gettin=
-g the
-> > > best ordering easier.
-> > >
-> > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > >
-> > > ---
-> > > Changes since RFCv4:
-> > > - Added scripts/* into "build system" section
-> > > - Added "git-specific" section with this script and .gitignore
-> > > - Thanks for this feedback Nicolas!
-> > >
-> > > Changes since RFCv3:
-> > > - Added "*types.h" matching so type headers appear before regular hea=
-ders
-> > > - Removed line ends ($) in patterns: they previously provided a
-> > >   false-positive
-> > > - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
-> > >   in any subdirectory
-> > >
-> > > Changes since RFCv2:
-> > > - Fixed licence comment to from /**/ to #
-> > > - Fixed filename in how-to comment
-> > > - Fix build order: Kconfig -> Kbuild -> Makefile
-> > > - Add *.mk extension
-> > > - Add line-ends ($) to make sure and get the correct extensions
-> > > - Thanks Masahiro Yamada for above suggestions!
-> > > - 1 Ack, thanks Randy!
-> > >
-> > > Changes since RFCv1:
-> > > - Added Kconfig* (thanks Randy Dunlap!)
-> > > - Changed Kbuild to Kbuild* (improve matching)
-> > >
-> > >
-> > >  scripts/git.orderFile | 39 +++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 39 insertions(+)
-> > >  create mode 100644 scripts/git.orderFile
-> > >
-> > > diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> > > new file mode 100644
-> > > index 0000000000000..31649ff53d22c
-> > > --- /dev/null
-> > > +++ b/scripts/git.orderFile
-> > > @@ -0,0 +1,39 @@
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +# order file for git, to produce patches which are easier to review
-> > > +# by diffing the important stuff like header changes first.
-> > > +#
-> > > +# one-off usage:
-> > > +#   git diff -O scripts/git.orderFile ...
-> > > +#
-> > > +# add to git config:
-> > > +#   git config diff.orderFile scripts/git.orderFile
-> > > +#
-> > > +
-> > > +MAINTAINERS
-> > > +
-> > > +# Documentation
-> > > +Documentation/*
-> > > +*.rst
-> > > +
-> > > +# git-specific
-> > > +.gitignore
-> > > +scripts/git.orderFile
-> >
->
-> Hello Masahiro, thanks for the feedback!
->
-> >
-> >
-> > I think scripts/git.orderFile should be part of
-> > "scripts/*" below.
-> >
-> >
-> >
-> >
-> >
-> >
-> > > +
-> > > +# build system
-> > > +*Kconfig*
-> > > +*Kbuild*
-> > > +*Makefile*
-> >
-> > I do not like this because "foo-Makefile-bar"
-> > is not a Makefile, but would match "*Makefile*".
->
-> That makes sense.
->
-> >
-> >
-> > If you do not use wildcard at all, 'Makefile'
-> > will match to the root-dir and sub-directories.
->
-> I tried a quick test here changing an mm/*.c file and mm/Makefile, and th=
-e
-> above will print the .c file changes first in any situation here, so it
-> won't have the desired behavior.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+On bugs that have the ring buffer timestamp get out of sync, the config
+CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS, that checks for it and if it is
+detected it causes a dump of the bad sub buffer.
+
+It shows each event and their timestamp as well as the delta in the event.
+But it's also good to see the offset into the subbuffer for that event to
+know if how close to the end it is.
+
+Also print where the last event actually ended compared to where it was
+expected to end.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231207173108.484b912c@gandalf.local.home
+
+- Also show where the last event added and where it expected to end.
 
 
+ kernel/trace/ring_buffer.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Hmm, you are right.
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index bc70cb9bbdb7..c28513624ab3 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3429,29 +3429,34 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
+ 		case RINGBUF_TYPE_TIME_EXTEND:
+ 			delta = rb_event_time_stamp(event);
+ 			ts += delta;
+-			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
++			pr_warn(" 0x%x: [%lld] delta:%lld TIME EXTEND\n",
++				e, ts, delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_TIME_STAMP:
+ 			delta = rb_event_time_stamp(event);
+ 			ts = rb_fix_abs_ts(delta, ts);
+-			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
++			pr_warn(" 0x%x:  [%lld] absolute:%lld TIME STAMP\n",
++				e, ts, delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_PADDING:
+ 			ts += event->time_delta;
+-			pr_warn("  [%lld] delta:%d PADDING\n", ts, event->time_delta);
++			pr_warn(" 0x%x:  [%lld] delta:%d PADDING\n",
++				e, ts, event->time_delta);
+ 			break;
+ 
+ 		case RINGBUF_TYPE_DATA:
+ 			ts += event->time_delta;
+-			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
++			pr_warn(" 0x%x:  [%lld] delta:%d\n",
++				e, ts, event->time_delta);
+ 			break;
+ 
+ 		default:
+ 			break;
+ 		}
+ 	}
++	pr_warn("expected end:%ld last event actually ended at:%d\n", tail, e);
+ }
+ 
+ static DEFINE_PER_CPU(atomic_t, checking);
+-- 
+2.42.0
 
-
-OK, your suggestion below looks good.
-
-
-Thanks.
-
-
-
-
-
-
->
-> But if we want to achieve the above we can do so with a slight change in
-> the suggestion:
->
-> >
-> >
-> > Kconfig
-> > */Kconfig*
-> > Kbuild
-> > Makefile
-> */Makefile
-> > *.mak
-> > *.mk
-> > scripts/*
-> >
-> >
-> > may satisfy your needs mostly.
-> >
->
-> I have tried the following in the Kernel root:
->
-> $ find . |grep Makefile |grep -v Makefile$
-> ./arch/arm/mach-s3c/Makefile.s3c64xx
-> ./arch/mips/Makefile.postlink
-> ./arch/powerpc/Makefile.postlink
-> ./arch/um/Makefile-os-Linux
-> ./arch/um/Makefile-skas
-> ./arch/um/scripts/Makefile.rules
-> ./arch/x86/Makefile_32.cpu
-> ./arch/x86/Makefile.um
-> ./arch/x86/Makefile.postlink
-> ./arch/riscv/Makefile.postlink
-> ./drivers/firmware/efi/libstub/Makefile.zboot
-> ./drivers/usb/serial/Makefile-keyspan_pda_fw
-> [...]
->
-> $ find . |grep Kbuild |grep -v Kbuild$
-> ./arch/mips/Kbuild.platforms
-> ./scripts/Kbuild.include
->
-> Which leads to an honest question:
-> Don't we want to show changes on those files before C files, for example?
->
-> If so, we need something like:
->
-> # build system
-> Kconfig*
-> */Kconfig*
-> Kbuild*
-> */Kbuild*
-> Makefile*
-> */Makefile*
-> *.mak
-> *.mk
-> scripts/*
->
-> It would get rid of "foo-Makefile-bar" case but still match
-> "Makefile-bar" case, which seems to be used around.
->
-> Is that ok?
->
-> Thanks!
-> Leo
->
->
-
-
---=20
-Best Regards
-Masahiro Yamada
