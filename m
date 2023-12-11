@@ -2,63 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B2180C9EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755EB80C9DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343554AbjLKMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
+        id S1343516AbjLKMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:32:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbjLKMdZ (ORCPT
+        with ESMTP id S234605AbjLKMci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:33:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BCA8E;
-        Mon, 11 Dec 2023 04:33:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702298011; x=1733834011;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LkVViNkwO7QQP+f8k/J3d57xIdGBSObZp2X787WTBXs=;
-  b=Bz0iL+yRQ4my/Xg8WPzBa8nIHN6ETCgKeA0PaAU7rwLBqh0xqG0MZApF
-   a3nNbkEmp9x6mTX2FastmZ0x57K2RZxAVsHZEVR29JH9f108f2j0+1X3J
-   w7cfNeMNejTZEIZd1+m9DUmiR0FhHK9A+HwqLDYhgsdlLt3BYNHyi+8kI
-   zXeJt1/zRf3vXGXG4zLf6XQ+ITI7NyLY55e8UGxs/7O6yqep+K/V16GGZ
-   opLvv6BRhQI+kUsCx1FKpyO9lGPpxKqzdTpwxNkdwUTj73VygGPola4X7
-   Ste8tYUiuTrU7axYDyQcUJDddK0Mym6TnbS5MriIasL8hsHWUgVwVzSbB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="391808850"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="391808850"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:33:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="21069107"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa001.jf.intel.com with ESMTP; 11 Dec 2023 04:33:28 -0800
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH iwl-net v2] idpf: fix corrupted frames and skb leaks in singleq mode
-Date:   Mon, 11 Dec 2023 13:31:44 +0100
-Message-ID: <20231211123144.3759488-1-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.43.0
+        Mon, 11 Dec 2023 07:32:38 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47319A1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:32:44 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6ce72faf1e8so2545104b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:32:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702297964; x=1702902764; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fPAVPWVAnFaXRPunJWiaKjsDd+rTNd09tI3XdhhqUCE=;
+        b=usgg7FDHN+saXk9YACblrr5Eg+cZCNFOCqgTl1UrLTlEaWJNdfpYDXopBykztVo3JE
+         GQnY2CJf6vj+Qco7cXVQ8NgiPbExjDYVKeywjJEGJlDROGoF4R5z0MDITdv8lnfcCkGm
+         NKNMwGR7a31oKTaq1dg4ecQqLMtuk3MJRGE6bwYXpU8c7sEQC6xHliO4sDjps92J8UAd
+         y1qJ1vWh17NzWodY4LFnaQ9xHQRlVKzreCYFaXQYJF3KIlbcG3b73QHecLmFOUTUS6Zk
+         nS8ZJsioRtV9tOQv1mWNrpn23zxyneRqZYGYz9Xe8TFX2U4qm3ffrcJjNUf+TTDcrfp8
+         W3sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702297964; x=1702902764;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fPAVPWVAnFaXRPunJWiaKjsDd+rTNd09tI3XdhhqUCE=;
+        b=rS/LIzlPCUQavyPH6zQ/qjxE9QrJ6CjFZ9mjZZP/ArzagZVem+mW7Q9qGUPCsA4BmZ
+         tQt80b7KOPI8w5XFpFF46K0cgVIa5cB02kXZ9/gn2IXsCwQrnDauMfwTSsceho4OAx0+
+         0F71OJlcE4eBt+TGeEDQidlKEUmLsnDrMW8QMfpvDsQ4jSs5a6hHzYG4J37AtbekpGVw
+         LQdR8x94EN32fac/C59Yy39a6+5xsGs+jH09P/vLxOHXUpSr6N/4XHa3bxrCzVJWBDQZ
+         1FYhDy9GUL72R6Y7ilcEBqJ18rN2GUGA/yWP3x+xif21EJZzRSSEsIZTcJdQySRIxrtd
+         P6Lg==
+X-Gm-Message-State: AOJu0YxS49jwNFg2+Yd+ZG3Gri49e0xIKAyVLVy9T/W5PiZPuE1tkCa/
+        DSS0LYxd7tu2JOpU5t7GVcsr
+X-Google-Smtp-Source: AGHT+IGAj7mad8cH/r7AaL9JchtXkKhavxCYBULU5Feeu5CuqlFYGtjyc51OnSPI5ahkTCVMWMKpaQ==
+X-Received: by 2002:a05:6a00:23c5:b0:6cb:a653:d927 with SMTP id g5-20020a056a0023c500b006cba653d927mr2166554pfc.3.1702297963665;
+        Mon, 11 Dec 2023 04:32:43 -0800 (PST)
+Received: from thinkpad ([117.207.26.193])
+        by smtp.gmail.com with ESMTPSA id p1-20020a056a000a0100b006c06779e593sm6424692pfh.16.2023.12.11.04.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 04:32:43 -0800 (PST)
+Date:   Mon, 11 Dec 2023 18:02:32 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Message-ID: <20231211123232.GD2894@thinkpad>
+References: <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+ <20231206131009.GD12802@thinkpad>
+ <ZXGVjY9gYMD6-xFJ@hovoldconsulting.com>
+ <20231207101252.GJ2932@thinkpad>
+ <ZXHDCNosx8PCUzao@hovoldconsulting.com>
+ <20231207132032.GL2932@thinkpad>
+ <ZXHKcToXzTgoDCLW@hovoldconsulting.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZXHKcToXzTgoDCLW@hovoldconsulting.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,70 +96,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-idpf_ring::skb serves only for keeping an incomplete frame between
-several NAPI Rx polling cycles, as one cycle may end up before
-processing the end of packet descriptor. The pointer is taken from
-the ring onto the stack before entering the loop and gets written
-there after the loop exits. When inside the loop, only the onstack
-pointer is used.
-For some reason, the logics is broken in the singleq mode, where the
-pointer is taken from the ring each iteration. This means that if a
-frame got fragmented into several descriptors, each fragment will have
-its own skb, but only the last one will be passed up the stack
-(containing garbage), leaving the rest leaked.
-Then, on ifdown, rxq::skb is being freed only in the splitq mode, while
-it can point to a valid skb in singleq as well. This can lead to a yet
-another skb leak.
-Just don't touch the ring skb field inside the polling loop, letting
-the onstack skb pointer work as expected: build a new skb if it's the
-first frame descriptor and attach a frag otherwise. On ifdown, free
-rxq::skb unconditionally if the pointer is non-NULL.
+On Thu, Dec 07, 2023 at 02:36:49PM +0100, Johan Hovold wrote:
+> On Thu, Dec 07, 2023 at 06:50:32PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Dec 07, 2023 at 02:05:12PM +0100, Johan Hovold wrote:
+> > > On Thu, Dec 07, 2023 at 03:42:52PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Thu, Dec 07, 2023 at 10:51:09AM +0100, Johan Hovold wrote:
+> 
+> > > > > Shouldn't that be
+> > > > > 
+> > > > > 	qcom,broken-clkreq
+> > > > > 
+> > > > > since its the CLKREQ# signal used to request REFCLK that is broken, not
+> > > > > the REFCLK itself?
+> > > > > 
+> > > > 
+> > > > Darn... You are right. I got carried away by the initial property name. Thanks
+> > > > for spotting!
+> > > 
+> > > Thinking some more on this after hitting send: It may still be wrong
+> > > with a 'broken-clkreq' property in the PHY instead of in the controller
+> > > (or endpoint).
+> > > 
+> > > Could there not be other ways to handle a broken clkreq signal so that
+> > > this really should be a decision made by the OS, for example, to disable
+> > > L1 substates and clock PM?
+> > 
+> > One has to weigh the power consumption between keeping refclk always on and
+> > disabling L1SS. Chaitanya, can you measure power consumption in both cases?
+> 
+> Sure, my point was just that that's a policy decision and not something
+> that should be encoded in the devicetree (as was initially proposed).
+> 
+> And that the right place for the renamed property is not necessarily in
+> the PHY node either.
+> 
+> > > Simply leaving the refclk always on in the PHY seems like a bit of a
+> > > hack and I'm not even sure that can be considered correct.
+> > 
+> > I wouldn't agree it is a hack, even though it may sound like one. The option to
+> > keep refclk always on in the PHY is precisely there for usecase like this.
+> 
+> I just skimmed the spec so perhaps I'm missing something, but there's
+> definitely wordings in there that explicitly says that L1 PM substates
+> must not be enabling unless you have a functioning CLKREQ# signal.
+> 
 
-Fixes: a5ab9ee0df0b ("idpf: add singleq start_xmit and napi poll")
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
-Tony, please add it to dev-queue instead of the first revision.
+I checked 'PCI Express Base spec 4.0', and there is a wording in 'Section 5.5
+L1 PM Substates':
 
-From v1[0]:
-* fix the related skb leak on ifdown;
-* fix subject prefix;
-* pick Reviewed-bys.
+For L1 PM ... each port must have a unique instance of the signal (CLKREQ#) and
+the upstream and downstream port CLKREQ# signals must be connected.
 
-[0] https://lore.kernel.org/all/20231201143821.1091005-1-aleksander.lobakin@intel.com
----
- drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c | 1 -
- drivers/net/ethernet/intel/idpf/idpf_txrx.c         | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+So yes, we should not enable L1 PM substates in this case. And also it appears
+to me that the property should be part of the controller node, since CLKREQ# is
+handled by the controller instance.
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-index 81288a17da2a..20c4b3a64710 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
-@@ -1044,7 +1044,6 @@ static int idpf_rx_singleq_clean(struct idpf_queue *rx_q, int budget)
- 		}
- 
- 		idpf_rx_sync_for_cpu(rx_buf, fields.size);
--		skb = rx_q->skb;
- 		if (skb)
- 			idpf_rx_add_frag(rx_buf, skb, fields.size);
- 		else
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-index 1f728a9004d9..9e942e5baf39 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
-@@ -396,7 +396,7 @@ static void idpf_rx_desc_rel(struct idpf_queue *rxq, bool bufq, s32 q_model)
- 	if (!rxq)
- 		return;
- 
--	if (!bufq && idpf_is_queue_model_split(q_model) && rxq->skb) {
-+	if (rxq->skb) {
- 		dev_kfree_skb_any(rxq->skb);
- 		rxq->skb = NULL;
- 	}
+- Mani
+
+> Johan
+
 -- 
-2.43.0
-
+மணிவண்ணன் சதாசிவம்
