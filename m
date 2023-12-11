@@ -2,299 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2262280DF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3491580DF20
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbjLKW7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S1345170AbjLKW7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345188AbjLKW7x (ORCPT
+        with ESMTP id S1345166AbjLKW7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:59:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A41CB;
-        Mon, 11 Dec 2023 14:59:51 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5CFD322447;
-        Mon, 11 Dec 2023 22:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702335590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LePoVybpwvjdQcOaFjez5cAm5ufuJxfHDIgldQ+mJQQ=;
-        b=s31NYK2tYhVzD/kOQAbVDWOyHgYJG5A2oAE4tGDLPA1tgwlWW5QiJHiE9BWwd+X4LNMCuP
-        y8z3YdpVSRP6GwU2DsikWUVnzQfAj1U2Q2JwJV1SWy9nQfuBkU1rQM+fwxyS97Atd984Vy
-        sgKsz99gJLiqQOT76spBUVSyVj9niQo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702335590;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LePoVybpwvjdQcOaFjez5cAm5ufuJxfHDIgldQ+mJQQ=;
-        b=vXkte2f5eKZYCH1yElSfOqEwEopj17bua+4JN63psupnTHgI8YuV2VuWyxqm2XL+XwO3Mn
-        LpMut4w5kCgHKPDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702335590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LePoVybpwvjdQcOaFjez5cAm5ufuJxfHDIgldQ+mJQQ=;
-        b=s31NYK2tYhVzD/kOQAbVDWOyHgYJG5A2oAE4tGDLPA1tgwlWW5QiJHiE9BWwd+X4LNMCuP
-        y8z3YdpVSRP6GwU2DsikWUVnzQfAj1U2Q2JwJV1SWy9nQfuBkU1rQM+fwxyS97Atd984Vy
-        sgKsz99gJLiqQOT76spBUVSyVj9niQo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702335590;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LePoVybpwvjdQcOaFjez5cAm5ufuJxfHDIgldQ+mJQQ=;
-        b=vXkte2f5eKZYCH1yElSfOqEwEopj17bua+4JN63psupnTHgI8YuV2VuWyxqm2XL+XwO3Mn
-        LpMut4w5kCgHKPDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 759F1133DE;
-        Mon, 11 Dec 2023 22:59:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id R/i2CWOUd2WVRQAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 11 Dec 2023 22:59:47 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Dec 2023 17:59:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B1E9A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:59:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5B7C433C8;
+        Mon, 11 Dec 2023 22:59:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702335585;
+        bh=t7nQKTTeGh65bU29w+Bc8SK2+uEhQ8nX0LrViq7JYqk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=V/ayCjsP1FkvVFM17OEH03CfEKEOd2MP64ffO019moohHMBAdYMxM5wQ7lLiPowaw
+         gxescu6QOlqk99izlWGLWswXQLkz5ItDrmoIvvWQodLnU/faMboH+eT+XG0OrS1Q2h
+         tRi4+rt1enNLzJtYP+djQEOAHnND0Sz51/8/5xFqWeXdymJfoZ9AdvRT6fsuKu/EfF
+         WLPhwPCLSMFAewuDZvjD4tNBsUa3gJpGoyIren8v1orQnVNzQnDK1BDCpiYv7in+2X
+         sxXVAxPiGeW3FNMlzlnF2SAmfftk6XZwbbKVPltqcpp9HpRvIPK/zFqQpkdVC8UwhT
+         hfmR1+icdW39A==
+Date:   Mon, 11 Dec 2023 14:59:44 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        James Li <James.Li1@synopsys.com>,
+        Martin McKenny <Martin.McKenny@synopsys.com>
+Subject: Re: [PATCH net-next] net: stmmac: xgmac3+: add FPE handshaking
+ support
+Message-ID: <20231211145944.0be51404@kernel.org>
+In-Reply-To: <zx7tfojtnzuhcpglkeiwg6ep265xpcb5lmz6fgjjugc2tue6qe@cmuqtneujsvb>
+References: <CY5PR12MB63726FED738099761A9B81E7BF8FA@CY5PR12MB6372.namprd12.prod.outlook.com>
+        <zx7tfojtnzuhcpglkeiwg6ep265xpcb5lmz6fgjjugc2tue6qe@cmuqtneujsvb>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Jeff Layton" <jlayton@kernel.org>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Zhi Li" <yieli@redhat.com>, "Jeff Layton" <jlayton@kernel.org>
-Subject: Re: [PATCH] nfsd: properly tear down server when write_ports fails
-In-reply-to: <20231211-nfsd-fixes-v1-1-c87a802f4977@kernel.org>
-References: <20231211-nfsd-fixes-v1-1-c87a802f4977@kernel.org>
-Date:   Tue, 12 Dec 2023 09:59:44 +1100
-Message-id: <170233558429.12910.17902271117186364002@noble.neil.brown.name>
-X-Spam-Level: *******
-X-Spam-Score: 7.11
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=s31NYK2t;
-        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vXkte2f5;
-        dmarc=pass (policy=none) header.from=suse.de;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-12.01 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         DKIM_TRACE(0.00)[suse.de:+];
-         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         WHITELIST_DMARC(-7.00)[suse.de:D:+];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-         MX_GOOD(-0.01)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -12.01
-X-Rspamd-Queue-Id: 5CFD322447
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023, Jeff Layton wrote:
-> When the initial write to the "portlist" file fails, we'll currently put
-> the reference to the nn->nfsd_serv, but leave the pointer intact. This
-> leads to a UAF if someone tries to write to "portlist" again.
->=20
-> Simple reproducer, from a host with nfsd shut down:
->=20
->     # echo "foo 2049" > /proc/fs/nfsd/portlist
->     # echo "foo 2049" > /proc/fs/nfsd/portlist
->=20
-> The kernel will oops on the second one when it trips over the dangling
-> nn->nfsd_serv pointer. There is a similar bug in __write_ports_addfd.
->=20
-> This patch fixes it by adding some extra logic to nfsd_put to ensure
-> that nfsd_last_thread is called prior to putting the reference when the
-> conditions are right.
->=20
-> Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_put()")
-> Closes: https://issues.redhat.com/browse/RHEL-19081
-> Reported-by: Zhi Li <yieli@redhat.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> This should probably go to stable, but we'll need to backport for v6.6
-> since older kernels don't have nfsd_nl_rpc_status_get_done. We should
-> just be able to drop that hunk though.
-> ---
->  fs/nfsd/nfsctl.c | 32 ++++++++++++++++++++++++++++----
->  fs/nfsd/nfsd.h   |  8 +-------
->  fs/nfsd/nfssvc.c |  2 +-
->  3 files changed, 30 insertions(+), 12 deletions(-)
+On Mon, 11 Dec 2023 14:14:00 +0300 Serge Semin wrote:
+> Although in this case AFAICS the implementation is simpler and the
+> only difference is in the CSR offset and the frame preemption residue
+> queue ID setting. All of that can be easily solved in the same way as
+> it was done for EST (see the link above).
+> 
+> Jakub, what do you think?
 
-This is much the same as
-
-https://lore.kernel.org/linux-nfs/20231030011247.9794-2-neilb@suse.de/
-
-It seems that didn't land.  Maybe I dropped the ball...
-
-NeilBrown
-
-
->=20
-> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> index 3e15b72f421d..1ceccf804e44 100644
-> --- a/fs/nfsd/nfsctl.c
-> +++ b/fs/nfsd/nfsctl.c
-> @@ -61,6 +61,30 @@ enum {
->  	NFSD_MaxReserved
->  };
-> =20
-> +/**
-> + * nfsd_put - put the reference to the nfsd_serv for given net
-> + * @net: the net namespace for the serv
-> + * @err: current error for the op
-> + *
-> + * When putting a reference to the nfsd_serv from a control operation
-> + * we must first call nfsd_last_thread if all of these are true:
-> + *
-> + * - the configuration operation is going fail
-> + * - there are no running threads
-> + * - there are no successfully configured ports
-> + *
-> + * Otherwise, just put the serv reference.
-> + */
-> +static inline void nfsd_put(struct net *net, int err)
-> +{
-> +	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> +	struct svc_serv *serv =3D nn->nfsd_serv;
-> +
-> +	if (err < 0 && !nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
-> +		nfsd_last_thread(net);
-> +	svc_put(serv);
-> +}
-> +
->  /*
->   * write() for these nodes.
->   */
-> @@ -709,7 +733,7 @@ static ssize_t __write_ports_addfd(char *buf, struct ne=
-t *net, const struct cred
->  	    !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
->  		svc_get(nn->nfsd_serv);
-> =20
-> -	nfsd_put(net);
-> +	nfsd_put(net, err);
->  	return err;
->  }
-> =20
-> @@ -748,7 +772,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct =
-net *net, const struct cr
->  	if (!nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
->  		svc_get(nn->nfsd_serv);
-> =20
-> -	nfsd_put(net);
-> +	nfsd_put(net, 0);
->  	return 0;
->  out_close:
->  	xprt =3D svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
-> @@ -757,7 +781,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct =
-net *net, const struct cr
->  		svc_xprt_put(xprt);
->  	}
->  out_err:
-> -	nfsd_put(net);
-> +	nfsd_put(net, err);
->  	return err;
->  }
-> =20
-> @@ -1687,7 +1711,7 @@ int nfsd_nl_rpc_status_get_dumpit(struct sk_buff *skb,
->  int nfsd_nl_rpc_status_get_done(struct netlink_callback *cb)
->  {
->  	mutex_lock(&nfsd_mutex);
-> -	nfsd_put(sock_net(cb->skb->sk));
-> +	nfsd_put(sock_net(cb->skb->sk), 0);
->  	mutex_unlock(&nfsd_mutex);
-> =20
->  	return 0;
-> diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-> index f5ff42f41ee7..3aa8cd2c19ac 100644
-> --- a/fs/nfsd/nfsd.h
-> +++ b/fs/nfsd/nfsd.h
-> @@ -113,13 +113,6 @@ int		nfsd_pool_stats_open(struct inode *, struct file =
-*);
->  int		nfsd_pool_stats_release(struct inode *, struct file *);
->  void		nfsd_shutdown_threads(struct net *net);
-> =20
-> -static inline void nfsd_put(struct net *net)
-> -{
-> -	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
-> -
-> -	svc_put(nn->nfsd_serv);
-> -}
-> -
->  bool		i_am_nfsd(void);
-> =20
->  struct nfsdfs_client {
-> @@ -153,6 +146,7 @@ struct nfsd_net;
->  enum vers_op {NFSD_SET, NFSD_CLEAR, NFSD_TEST, NFSD_AVAIL };
->  int nfsd_vers(struct nfsd_net *nn, int vers, enum vers_op change);
->  int nfsd_minorversion(struct nfsd_net *nn, u32 minorversion, enum vers_op =
-change);
-> +void nfsd_last_thread(struct net *net);
->  void nfsd_reset_versions(struct nfsd_net *nn);
->  int nfsd_create_serv(struct net *net);
-> =20
-> diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> index fe61d9bbcc1f..d6939e23ffcf 100644
-> --- a/fs/nfsd/nfssvc.c
-> +++ b/fs/nfsd/nfssvc.c
-> @@ -542,7 +542,7 @@ static struct notifier_block nfsd_inet6addr_notifier =
-=3D {
->  /* Only used under nfsd_mutex, so this atomic may be overkill: */
->  static atomic_t nfsd_notifier_refcount =3D ATOMIC_INIT(0);
-> =20
-> -static void nfsd_last_thread(struct net *net)
-> +void nfsd_last_thread(struct net *net)
->  {
->  	struct nfsd_net *nn =3D net_generic(net, nfsd_net_id);
->  	struct svc_serv *serv =3D nn->nfsd_serv;
->=20
-> ---
-> base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-> change-id: 20231211-nfsd-fixes-d9f21d5c12d7
->=20
-> Best regards,
-> --=20
-> Jeff Layton <jlayton@kernel.org>
->=20
->=20
-
+Yup, less code duplication would be great. Highest prio, tho, is to
+focus on Vladimir's comment around this driver seemingly implementing
+FPE but not using the common ethtool APIs to configure it, yet :(
