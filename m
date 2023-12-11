@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA56D80C42A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 875D280C431
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbjLKJP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        id S234471AbjLKJQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:16:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbjLKJPy (ORCPT
+        with ESMTP id S234105AbjLKJQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:15:54 -0500
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68658DF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:00 -0800 (PST)
-X-ASG-Debug-ID: 1702286158-1eb14e538c2fb40001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id tlsxMCEnclsgaayR (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 11 Dec 2023 17:15:58 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
- 2023 17:15:47 +0800
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
- 2023 17:15:44 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From:   LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
-To:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>,
-        <YeeLi@zhaoxin.com>, <Leoliu@zhaoxin.com>,
-        LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH v2] PCI: Extend PCI root port device IDs for Zhaoxin platforms
-Date:   Mon, 11 Dec 2023 17:15:43 +0800
-X-ASG-Orig-Subj: [PATCH v2] PCI: Extend PCI root port device IDs for Zhaoxin platforms
-Message-ID: <20231211091543.735903-1-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231201120942.680075-1-LeoLiu-oc@zhaoxin.com>
-References: <20231201120942.680075-1-LeoLiu-oc@zhaoxin.com>
+        Mon, 11 Dec 2023 04:16:10 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BE4FC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:16 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso44500815e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702286175; x=1702890975; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W68af/91Atj1zDTUN4IE+pQHHryD09cfa+2lKqJ1RE0=;
+        b=bkPsSXA2xvV0L0ozvXYdNvuxwhDUnmtuL1mKSIMmJmuSTA1VhCDYONRYH/Udc5cLJr
+         GHMoJ2XFqjGyYZNwFAzfuiKcqhmUNYi4irejfNHZN8EPyj0GDCxI9ZMMCOaDC9MT7FeY
+         alR7VRkO4nMN0JrivvV/QHswtoVRtrOPVOkbaRBuHsFAI0RkamUvOIRy5tWEfY2eZVKj
+         DmCcNt5vuDXCBxcWsorv8T6d+2VSTebqRb/t45k4b/E4jR7k8n/Km2LrtM3QR6RALHEs
+         gALSMIii3DMPx8eU8qCIsQ1ZfR/oICKq2gFZALNPGTOX4/mT+aaLL/VF0NZloS/BMwox
+         k4Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702286175; x=1702890975;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W68af/91Atj1zDTUN4IE+pQHHryD09cfa+2lKqJ1RE0=;
+        b=QJOQJJE6b98hzhDLM4/q/5kWV132hE+llEcMTEbVV27ij2vzoHCzt09kYmhP2YzE6D
+         EU4RdzMnnXGZKdF1GxSB0PRHyNLIAwfOsSI72a2A6JFYqYY4pbRG5zmpdKVCgLOCp5YV
+         KCep5oZ8a7AyehBQImtsyxmps2cKXnDJGCJ6bFTVMZkMyrged4+KgPlD7uIB0zwe1k42
+         Tl20zgkFgLlXgs3aBTmSiA0AUFq4drljcXggDNss61l+cKLQisI/AgynX5qXNMsmdx6D
+         JYGDNsl8g4CjGg+6QHbPzlivLYyszyKDTI9+yorSAIDPu8yxJcXUvmz6stPiFH8AlLEN
+         DGxQ==
+X-Gm-Message-State: AOJu0YwGBJf8sIGahDQ4tVoTrWTRe6ldjUgZtBvFNbVOHkOZ5/HTky47
+        ObGK3ojW9L2sTumP35W3vsppdw==
+X-Google-Smtp-Source: AGHT+IGc7ZBXK1VFhnwmlIkMnqFbV5XQIhopbQq2WBKyxWy0zx/bRn3t4fW3cKNsLP/owsKA6iuFHA==
+X-Received: by 2002:a05:600c:492f:b0:40c:3464:f816 with SMTP id f47-20020a05600c492f00b0040c3464f816mr1942464wmp.51.1702286175116;
+        Mon, 11 Dec 2023 01:16:15 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm12398470wmb.8.2023.12.11.01.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 01:16:14 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     dri-devel@lists.freedesktop.org, John Watts <contact@jookia.org>
+Cc:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231210-fs035vg158-v5-0-d75adc75571f@jookia.org>
+References: <20231210-fs035vg158-v5-0-d75adc75571f@jookia.org>
+Subject: Re: [PATCH RFC v5 0/7] Add FS035VG158 panel
+Message-Id: <170228617410.2409693.12184151943497966820.b4-ty@linaro.org>
+Date:   Mon, 11 Dec 2023 10:16:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.32.64.1]
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1702286158
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 1227
-X-Barracuda-BRTS-Status: 0
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.117936
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Hi,
 
-Add more PCI root port device IDs to the
-pci_quirk_zhaoxin_pcie_ports_acs() for some new Zhaoxin platforms.
+On Sun, 10 Dec 2023 17:55:48 +1100, John Watts wrote:
+> This RFC introduces support for the FS035VG158 LCD panel, cleaning up
+> the nv3052c driver on the way and documentating existing panel code.
+> 
+> This revision is mostly a resend and ask for more feedback.
+> I have tested that it works on next-20231208.
+> 
+> John.
+> 
+> [...]
 
-v1 -> v2:
-1. Add a note to indicate future Zhaoxin devices will implement ACS
-Capability based on the PCIe Spec.
-2. Includes DID of more Zhaoxin devices that have not yet implemented ACS
-Capability.
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- drivers/pci/quirks.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+[1/7] drm/panel: nv3052c: Document known register names
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=f48dee9ed7c992eaf6a3635db304a61ed82827b3
+[2/7] drm/panel: nv3052c: Add SPI device IDs
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=095e3a99e793767ca6c0483d31fb5d4087966d51
+[3/7] drm/panel: nv3052c: Allow specifying registers per panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=2e6b7be84d88c0af927967418a56e22d372ce98c
+[4/7] drm/panel: nv3052c: Add Fascontek FS035VG158 LCD display
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=bf92f9163097dc717518d598116c1e385004b5ce
+[5/7] dt-bindings: display: panel: Clean up leadtek,ltk035c5444t properties
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=43cc1ce456b57ad48220393bbb7fac6e32369233
+[6/7] dt-bindings: vendor-prefixes: Add fascontek
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8fcb387a210cfc30a3b61abae21d5c8c4a55e470
+[7/7] dt-bindings: display: panel: add Fascontek FS035VG158 panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=267624378ed6bebd733b4917452d78780db032dc
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index ea476252280a..f4546590d9e3 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4706,10 +4706,14 @@ static int  pci_quirk_zhaoxin_pcie_ports_acs(struct pci_dev *dev, u16 acs_flags)
- 	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
- 		return -ENOTTY;
- 
-+	/*
-+	 * Future Zhaoxin Root Ports and Switch Downstream Ports will implement ACS
-+	 * capability in accordance with the PCIe Spec.
-+	 */
- 	switch (dev->device) {
- 	case 0x0710 ... 0x071e:
- 	case 0x0721:
--	case 0x0723 ... 0x0732:
-+	case 0x0723 ... 0x0752:
- 		return pci_acs_ctrl_enabled(acs_flags,
- 			PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
- 	}
 -- 
-2.34.1
+Neil
 
