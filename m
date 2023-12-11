@@ -2,209 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F25F80BFAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951BB80BFA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbjLKCvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        id S233175AbjLKCww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbjLKCvd (ORCPT
+        with ESMTP id S233555AbjLKCwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:51:33 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937A21FD2;
-        Sun, 10 Dec 2023 18:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702263056;
-        bh=Sq8nbVEcRVues8cBbXzwXlj2IWgRQ6rEbTmY8CyoHEQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FlJaLcfvWS0edDd1sYTx/8DzmUXQDkHkg7aaaVy2DXBd/DYjO4uRS7amjU047M51z
-         0leWYyiuNja1b+mhQqTLXKFmZeAExiFUs4Yahv5l6+i/QqscvmIrvMNyTOay2c5qBH
-         ViUrDHolpRMPXcQRpUmsTwkjiuQev7Rcyx1SdwDlbPwnh/mO3381+uTrqfsdEOTguO
-         4Gsvr1lOrZBGId28c59lxYnjBFFZpHbAngOG6PRuQBGu2Q7ClTVeBrLzcdg69A+85q
-         BBOaMws56i3778t58GsA6YA68vMMA/KRAGmHRR5UEuW+hy8uYJxpN3SZlYbFvwFdOK
-         sJW1eehFHeiiA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpR7y06KGz4xNH;
-        Mon, 11 Dec 2023 13:50:53 +1100 (AEDT)
-Date:   Mon, 11 Dec 2023 13:50:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     KVM <kvm@vger.kernel.org>, Ackerley Tng <ackerleytng@google.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kvm tree
-Message-ID: <20231211135052.4fb016a6@canb.auug.org.au>
-In-Reply-To: <20231120152227.3bfe2450@canb.auug.org.au>
-References: <20231120152227.3bfe2450@canb.auug.org.au>
+        Sun, 10 Dec 2023 21:52:36 -0500
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367F5172A
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:51:44 -0800 (PST)
+X-QQ-mid: bizesmtp64t1702263093txwc5r18
+Received: from HX09040029.powercore.com.cn ( [58.34.117.194])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 11 Dec 2023 10:51:30 +0800 (CST)
+X-QQ-SSF: 01400000000000402000000A0000000
+X-QQ-FEAT: l3A5VUsUnUlcsmarVtr1L2MyOzd1tHeCEh7Lba7DnyL7XM6lBjjwpWggANvlj
+        37vbA2o6jXMMSVExU4hOP923LNECzG2mlYCsrEbEER10kpMLd1ytTJRAIkQMo/DuMHtbIq4
+        y7fJQxL4aAsCJeZVhKdXRgPujuV96APRS6oMgV7j95XrdcP1Lt7xOBkczU19oMf2JlCRWUI
+        2i+ILVZ4gDfP7RyUPHDErBcMfhs59sqmk8UESE/ptvWETVMLOy3gUMLpsfja5FudKa+tMpM
+        j30u0h0S/JI0R4dHOKGgVStzn6hC5bwesVf243JoatAujmU6Xn1YuJTs5CsPSNSx+AusESV
+        Ns98AtgEeIccij1Lya9L3/jc15C/ZrmM9K8k7SpfwczAOSjEfCdLCpSjan8rfPvrkHQxBlY
+        pHhEmqIBhuU=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 9599634464750526515
+From:   Luming Yu <luming.yu@shingroup.cn>
+To:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu
+Cc:     luming.yu@gmail.com, ke.zhao@shingroup.cn, dawei.li@shingroup.cn,
+        shenghui.qu@shingroup.cn, Luming Yu <luming.yu@shingroup.cn>
+Subject: [PATCH 1/1] powerpc/debug: implement HAVE_USER_RETURN_NOTIFIER
+Date:   Mon, 11 Dec 2023 10:50:54 +0800
+Message-ID: <475A60AEEAA99F6C+20231211025054.885-1-luming.yu@shingroup.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/k6L+z4ZF5AITNIBFCyYc60_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/k6L+z4ZF5AITNIBFCyYc60_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The support for user return notifier infrastructure
+is hooked into powerpc architecture.
+---
+ arch/powerpc/Kconfig                    |  1 +
+ arch/powerpc/include/asm/entry-common.h | 16 ++++++++++++++++
+ arch/powerpc/include/asm/thread_info.h  |  2 ++
+ arch/powerpc/kernel/process.c           |  2 ++
+ 4 files changed, 21 insertions(+)
+ create mode 100644 arch/powerpc/include/asm/entry-common.h
 
-Hi all,
-
-On Mon, 20 Nov 2023 15:22:27 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the kvm tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->=20
-> arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:10: error: 'const struct=
- address_space_operations' has no member named 'error_remove_page'; did you=
- mean 'error_remove_folio'?
->   306 |         .error_remove_page =3D kvm_gmem_error_page,
->       |          ^~~~~~~~~~~~~~~~~
->       |          error_remove_folio
-> arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:30: error: initializatio=
-n of 'int (*)(struct folio *)' from incompatible pointer type 'int (*)(stru=
-ct address_space *, struct page *)' [-Werror=3Dincompatible-pointer-types]
->   306 |         .error_remove_page =3D kvm_gmem_error_page,
->       |                              ^~~~~~~~~~~~~~~~~~~
-> arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:30: note: (near initiali=
-zation for 'kvm_gmem_aops.launder_folio')
->=20
-> Caused by commit
->=20
->   640be5bc564f ("fs: convert error_remove_page to error_remove_folio")
->=20
-> from the mm tree intercting with commit
->=20
->   a7800aa80ea4 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specif=
-ic backing memory")
->=20
-> I have applied the following supplied merge fix patch (thanks Andrew).
->=20
-> From: Andrew Morton <akpm@linux-foundation.org>
-> Date: Fri, 17 Nov 2023 09:28:33 -0800
-> Subject: [PATCH] fs: Convert error_remove_page to error_remove_folio
->=20
-> On Fri, 17 Nov 2023 16:14:47 +0000 "Matthew Wilcox (Oracle)" <willy@infra=
-dead.org> wrote:
->=20
-> > There were already assertions that we were not passing a tail page
-> > to error_remove_page(), so make the compiler enforce that by converting
-> > everything to pass and use a folio.
-> >
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > ---
-> >  Documentation/filesystems/locking.rst |  4 ++--
-> >  Documentation/filesystems/vfs.rst     |  6 +++---
-> >  block/fops.c                          |  2 +-
-> >  fs/afs/write.c                        |  2 +-
-> >  fs/bcachefs/fs.c                      |  2 +-
-> >  fs/btrfs/inode.c                      |  2 +-
-> >  fs/ceph/addr.c                        |  4 ++--
-> >  fs/ext2/inode.c                       |  2 +-
-> >  fs/ext4/inode.c                       |  6 +++---
-> >  fs/f2fs/compress.c                    |  2 +-
-> >  fs/f2fs/inode.c                       |  2 +-
-> >  fs/gfs2/aops.c                        |  4 ++--
-> >  fs/hugetlbfs/inode.c                  |  6 +++---
-> >  fs/nfs/file.c                         |  2 +-
-> >  fs/ntfs/aops.c                        |  6 +++---
-> >  fs/ocfs2/aops.c                       |  2 +-
-> >  fs/xfs/xfs_aops.c                     |  2 +-
-> >  fs/zonefs/file.c                      |  2 +-
-> >  include/linux/fs.h                    |  2 +-
-> >  include/linux/mm.h                    |  3 ++-
-> >  mm/memory-failure.c                   | 10 +++++-----
-> >  mm/shmem.c                            |  6 +++---
-> >  mm/truncate.c                         |  9 ++++-----
-> >  virt/kvm/guest_memfd.c                |  9 +++++---- =20
->=20
-> virt/kvm/guest_memfd.c exists only in the KVM tree (and hence
-> linux-next).  So I assume Stephen will use the change from this patch
-> when doing his resolution.
->=20
-> This:
-> ---
-Now this:
-
- virt/kvm/guest_memfd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index c2e2371720a9..c23ce219e21c 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -267,7 +267,8 @@ static int kvm_gmem_migrate_folio(struct address_space =
-*mapping,
- 	return -EINVAL;
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index c10229c0243c..b968068cc04a 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -277,6 +277,7 @@ config PPC
+ 	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
+ 	select HAVE_STATIC_CALL			if PPC32
+ 	select HAVE_SYSCALL_TRACEPOINTS
++	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_VIRT_CPU_ACCOUNTING
+ 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
+ 	select HOTPLUG_SMT			if HOTPLUG_CPU
+diff --git a/arch/powerpc/include/asm/entry-common.h b/arch/powerpc/include/asm/entry-common.h
+new file mode 100644
+index 000000000000..51f1eb767696
+--- /dev/null
++++ b/arch/powerpc/include/asm/entry-common.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef ARCH_POWERPC_ENTRY_COMMON_H
++#define ARCH_POWERPC_ENTRY_COMMON_H
++
++#include <linux/user-return-notifier.h>
++
++static inline void arch_exit_to_user_mode_prepare(struct pt_regs *regs,
++						  unsigned long ti_work)
++{
++	if (ti_work & _TIF_USER_RETURN_NOTIFY)
++		fire_user_return_notifiers();
++}
++
++#define arch_exit_to_user_mode_prepare arch_exit_to_user_mode_prepare
++
++#endif
+diff --git a/arch/powerpc/include/asm/thread_info.h b/arch/powerpc/include/asm/thread_info.h
+index bf5dde1a4114..47e226032f9c 100644
+--- a/arch/powerpc/include/asm/thread_info.h
++++ b/arch/powerpc/include/asm/thread_info.h
+@@ -117,6 +117,7 @@ void arch_setup_new_exec(void);
+ #endif
+ #define TIF_POLLING_NRFLAG	19	/* true if poll_idle() is polling TIF_NEED_RESCHED */
+ #define TIF_32BIT		20	/* 32 bit binary */
++#define TIF_USER_RETURN_NOTIFY	21	/* notify kernel of userspace return */
+ 
+ /* as above, but as bit values */
+ #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
+@@ -125,6 +126,7 @@ void arch_setup_new_exec(void);
+ #define _TIF_NOTIFY_SIGNAL	(1<<TIF_NOTIFY_SIGNAL)
+ #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
+ #define _TIF_32BIT		(1<<TIF_32BIT)
++#define _TIF_USER_RETURN_NOTIFY	(1<<TIF_USER_RETURN_NOTIFY)
+ #define _TIF_RESTORE_TM		(1<<TIF_RESTORE_TM)
+ #define _TIF_PATCH_PENDING	(1<<TIF_PATCH_PENDING)
+ #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 392404688cec..70a9ea949798 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -38,6 +38,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/pkeys.h>
+ #include <linux/seq_buf.h>
++#include <linux/user-return-notifier.h>
+ 
+ #include <asm/interrupt.h>
+ #include <asm/io.h>
+@@ -1386,6 +1387,7 @@ struct task_struct *__switch_to(struct task_struct *prev,
+ 	if (current->thread.regs)
+ 		restore_math(current->thread.regs);
+ #endif /* CONFIG_PPC_BOOK3S_64 */
++	propagate_user_return_notify(prev, new);
+ 
+ 	return last;
  }
-=20
--static int kvm_gmem_error_page(struct address_space *mapping, struct page =
-*page)
-+static int kvm_gmem_error_folio(struct address_space *mapping,
-+		struct folio *folio)
- {
- 	struct list_head *gmem_list =3D &mapping->private_list;
- 	struct kvm_gmem *gmem;
-@@ -275,8 +276,8 @@ static int kvm_gmem_error_page(struct address_space *ma=
-pping, struct page *page)
-=20
- 	filemap_invalidate_lock_shared(mapping);
-=20
--	start =3D page->index;
--	end =3D start + thp_nr_pages(page);
-+	start =3D folio->index;
-+	end =3D start + folio_nr_pages(folio);
-=20
- 	list_for_each_entry(gmem, gmem_list, entry)
- 		kvm_gmem_invalidate_begin(gmem, start, end);
-@@ -301,7 +302,7 @@ static int kvm_gmem_error_page(struct address_space *ma=
-pping, struct page *page)
- static const struct address_space_operations kvm_gmem_aops =3D {
- 	.dirty_folio =3D noop_dirty_folio,
- 	.migrate_folio	=3D kvm_gmem_migrate_folio,
--	.error_remove_page =3D kvm_gmem_error_page,
-+	.error_remove_folio =3D kvm_gmem_error_folio,
- };
-=20
- static int kvm_gmem_getattr(struct mnt_idmap *idmap, const struct path *pa=
-th,
+-- 
+2.42.0.windows.2
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/k6L+z4ZF5AITNIBFCyYc60_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV2eQwACgkQAVBC80lX
-0GxNSAf/dDZBSEWcxmOyeozZ/ArXSlpS/X2SmABjDh02ed8wURGrwmrayYtj4HF2
-YnxLKEulMDxUjOT3upvFvamu/xaZhDFwEfBboxjvJ4rqbYKUeBOoB0S8UKAEee7P
-yW0lW0+nvqDqc7nfHCGtBPIq9VsIUdi6P9YD9XHcYuuA73pEL8ZVGi8aWZEOlU8d
-UZ3q9qsMlWZS5Na1RDgIjFR+hY89xCCI3hWwGx5Cw1Dj/MYDqSgsOVENnBrSvBgx
-gWbemvzi5rAdiAZTcFrTlHKTlU6+eJAsmyZzofR3ddwbVs1DX1rIqIZKUZDyhLiG
-ydPrmhDb0eopw1fDRwxu1M0yTAnVIA==
-=EZzi
------END PGP SIGNATURE-----
-
---Sig_/k6L+z4ZF5AITNIBFCyYc60_--
