@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3ED80BEEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE5F80BEF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjLKB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 20:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
+        id S232303AbjLKB50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 20:57:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKB4J (ORCPT
+        with ESMTP id S229483AbjLKB5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 20:56:09 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB83E5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:56:15 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-35d396ae91fso17595305ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:56:15 -0800 (PST)
+        Sun, 10 Dec 2023 20:57:24 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA82EE5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:57:30 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7b6fc474d16so168517639f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:57:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702259774; x=1702864574; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1702259849; x=1702864649; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kLLsvsTVKPGR1aUZ5CxdQS0YxKVY+vVHvFwMxx0irc=;
-        b=g4Oa9O5Hln/Gju5Cu4vz7WCEQ1kxg3vGsy9IWQQSeTqi9Xnu0dwpiB2nTmoTh9mehJ
-         XSh6tnHHj3i1CibKkuOcOG2QKJy0WZkGcN/avk7RYBn8UC9oBbZHVN+1i+UqzyoI66a6
-         sk8unpcGTfIkOfKNQFbsgjkanf5tY6d8qfSfo=
+        bh=/Vr+YzVHJ/mPJrnzMDjXJsm4sTrJoVDHcdAw1WNnfhs=;
+        b=o92bPhVgbk4+YC5frbcvgO0CTMoUE0sUyyXnbwH+wCFtUN6ib9YMCx0tp8EOYws4C1
+         i7pN14jEvQUfKBdfvVJ3GhT7GzpAqoOF6sEGmVU40vHAt4pTuJYP2bNG4tkKcwbbZupN
+         Nuom+jKi1EpuYFxmOY6M2q6xjvv+chr+00EE8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702259774; x=1702864574;
+        d=1e100.net; s=20230601; t=1702259849; x=1702864649;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0kLLsvsTVKPGR1aUZ5CxdQS0YxKVY+vVHvFwMxx0irc=;
-        b=DCSbu+lof0Eh48yKNzIhWWYF0OxDZNR1SPbZ7QbOyAqlNcW7whiT1JvRigeIjHw5i1
-         fa2qa33XzS7a4Um4JtvmlCDX4GETxxv4fbajhcYiv86C2Y788Mbsj7CYH8PZ8ox/R1Nm
-         S5t6850ox0bbBGrwS4yuLZDkGxbiSnbS3qmX1VHwioz6x3NNMM5eZExrRyv4AFBwNbpx
-         Hp6rG0nAi5U+HkMsiTIoZlV9qjtgwiBK/pGstAW0gGhOIu7HdIL/D4lw3WQ8aUw6NRMo
-         pPZO8zfN4qPG13CAq9NpuWMMC185oA5y1lMfeYll6tA5/6GmWW6PGQ4Uw0aj6VfGh4Hj
-         Tk5Q==
-X-Gm-Message-State: AOJu0YzB4rR7XqtGYZOHGF9si+WhW7QeZunnH+Dx6bTTLouvG6/7yksC
-        w15ge8gUCYiPkU+t3G8HvYMLmlXmMiBsd+u7/4Y=
-X-Google-Smtp-Source: AGHT+IGEpi2Ao8lqbCSALU9/7Mujq6xkLaKre4TBcEq1OUySc3xDXHgUE65n/8qQgl1T2EeISorClA==
-X-Received: by 2002:a05:6e02:1689:b0:35d:59a2:331d with SMTP id f9-20020a056e02168900b0035d59a2331dmr6953090ila.33.1702259773949;
-        Sun, 10 Dec 2023 17:56:13 -0800 (PST)
+        bh=/Vr+YzVHJ/mPJrnzMDjXJsm4sTrJoVDHcdAw1WNnfhs=;
+        b=FzQdHbde93OAislZu9S3XLOSmRH8oOlgayasCM+PgM4lpN61dXui9gWAFVtH/tuMOd
+         QmvjMVQn57Nyns1k+KfnjBFqLube39O84SPdD105yw7zTtTdm09sAOFxCc2Qf/nbyqFD
+         NQu88iUbyrAEAIgEr3aaQoj4Icu0wby9QoyhJwF8JX0vh0srH42rpzBA8td2cknFuv6q
+         h9wkiQw4oODXpA5b0PO7jtgLY3gYOC+TJ2Ozdnat3Nki7UBaxs3AZHgEVQ/Hl2+eSP/D
+         G1bbjlimxIWu9ka2m+53igKtrQcGcfmIIsVTmHq7m1J3kYQzLdL6Bum9PnqVoro2ox2z
+         wIoA==
+X-Gm-Message-State: AOJu0Yy5xOoLqmKkJ1ihuIjvp5n5ExD1sAyuQgc8uQD0vl1LAX360Iwa
+        zrG0HRaNdN4L4MVCJjZu6yhk+BiD+f6q/o7gWz0=
+X-Google-Smtp-Source: AGHT+IFnO0bKn5i2P1O8YLdvk4Da1GGmaNBPL6L8dgKEQo7Tbfw6V9d/9SYoyqYp1nMH3ueuW9QIBw==
+X-Received: by 2002:a6b:4115:0:b0:7b4:28f8:d0 with SMTP id n21-20020a6b4115000000b007b428f800d0mr5524811ioa.25.1702259849093;
+        Sun, 10 Dec 2023 17:57:29 -0800 (PST)
 Received: from joelboxx5.c.googlers.com.com (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
-        by smtp.gmail.com with ESMTPSA id t22-20020a02ab96000000b0046856360a07sm1669337jan.13.2023.12.10.17.56.13
+        by smtp.gmail.com with ESMTPSA id h11-20020a056602130b00b007b74680132esm474248iov.38.2023.12.10.17.57.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 17:56:13 -0800 (PST)
+        Sun, 10 Dec 2023 17:57:28 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     linux-kernel@vger.kernel.org,
         Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -56,15 +56,15 @@ To:     linux-kernel@vger.kernel.org,
 Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
-Subject: [PATCH] srcu: Improvement comments about acceleration leak
-Date:   Mon, 11 Dec 2023 01:56:05 +0000
-Message-ID: <20231211015606.1067121-1-joel@joelfernandes.org>
+Subject: [PATCH v2] srcu: Improve comments about acceleration leak
+Date:   Mon, 11 Dec 2023 01:57:16 +0000
+Message-ID: <20231211015717.1067822-1-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,6 +83,8 @@ Cc: Frederic Weisbecker <frederic@kernel.org>
 Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
+v1->v2: Fix typo in change log.
+
  kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
  1 file changed, 20 insertions(+), 4 deletions(-)
 
