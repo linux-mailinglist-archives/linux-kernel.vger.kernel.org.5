@@ -2,293 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C55EC80C16C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDCF80C172
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbjLKGhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 01:37:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
+        id S233530AbjLKGnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjLKGhV (ORCPT
+        with ESMTP id S229570AbjLKGnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 01:37:21 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0330495;
-        Sun, 10 Dec 2023 22:37:27 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 6431220B74C0; Sun, 10 Dec 2023 22:37:26 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6431220B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702276646;
-        bh=plvwsq/k0bUEpqQI6kSEXAfkzMO9ufErkwbSyDLrpro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QCT+HK0WSXxvxXDdsu/zd+ld9FUITryrxN2I5Z9hNlGE35pZ4vvppuFLwgx3WEiQl
-         r55nPqP7tFwaoYlYWi5Abi3+0mAITnNoh5jeYFmriCA5tM1xp/dLDV3dwLs1m1uEST
-         OnGHIuAPqD98a/CJnitIldsExxy0rGQ0qhjwCtGA=
-Date:   Sun, 10 Dec 2023 22:37:26 -0800
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 01:43:03 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672E5B5;
+        Sun, 10 Dec 2023 22:43:09 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB5kZCJ028438;
+        Mon, 11 Dec 2023 06:42:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id; s=qcppdkim1; bh=gDmF3Z8bpvyT
+        2isGQR96C4xl9uFFMECarS08e0Gntcs=; b=meBN3VtnBit3X/I56N8Mulby2qUZ
+        60VL2VBdetWqFQsffLIArcxS9LWuIl/R1hkO5ZDQBhPYnOzORVlASlrn/03WaxcM
+        m4p0b653azm1MffIPcHn6wTUrny1wCXmaFECl2aukrNpOVvZX4pK3mhagUT8nZq1
+        mzn+J/5QtGrYZz/4UovCYx5NUeb4PxderLl6Lknb4dOBZUsJQt8u+W91XOUt01t8
+        q5K9B8TBSxaYiYYhSNvEwL14Om27r35HS5CqXpvrFWp5pHF4kguwIqq13DzmpiWB
+        J13v33o9YQgLgZeWdXuEbtngNsKsTR+EkXkuwK1Lg09vvS/fQ6kPqulqsA==
+Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvney2gkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 06:42:57 +0000 (GMT)
+Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BB6gtkt026134;
+        Mon, 11 Dec 2023 06:42:55 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3uvhak8ycp-1;
+        Mon, 11 Dec 2023 06:42:55 +0000
+Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BB6gtsb026128;
+        Mon, 11 Dec 2023 06:42:55 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3BB6gtG5026127;
+        Mon, 11 Dec 2023 06:42:55 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id 016C355E7; Mon, 11 Dec 2023 14:42:53 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH v5 0/2] bus: mhi: host: Add lock to avoid race when ringing channel DB
+Date:   Mon, 11 Dec 2023 14:42:50 +0800
+Message-Id: <1702276972-41296-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SS15zwtudvQ1jNPVx9kJqxPv_KROnGsh
+X-Proofpoint-ORIG-GUID: SS15zwtudvQ1jNPVx9kJqxPv_KROnGsh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=536 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312110054
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
-> On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
-> > Existing MANA design assigns IRQ to every CPU, including sibling
-> > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > in the same core and may reduce the network performance with RSS.
-> 
-> Can you add an IRQ distribution diagram to compare before/after
-> behavior, similarly to what I did in the other email?
-> 
-Let's consider this topology:
 
-Node            0               1
-Core        0       1       2       3
-CPU       0   1   2   3   4   5   6   7
+1. We need a write lock in mhi_gen_tre otherwise there is race of the WP
+used for ringing channel DB between mhi_queue and M0 transition.
+2. We can not invoke local_bh_enable() when irqs are disabled, so move
+read_lock_irqsave() under the mhi_gen_tre() since we add write_lock_bh() in
+mhi_gen_tre().
+3. Unlock xfer_cb to prevent potential lockup
 
- Before  
- IRQ     Nodes   Cores   CPUs
- 0       1       0       0
- 1       1       1       2
- 2       1       0       1
- 3       1       1       3
- 4       2       2       4
- 5       2       3       6
- 6       2       2       5
- 7       2       3       7
- 
- Now
- IRQ     Nodes   Cores   CPUs
- 0       1       0       0-1
- 1       1       1       2-3
- 2       1       0       0-1
- 3       1       1       2-3
- 4       2       2       4-5
- 5       2       3       6-7
- 6       2       2       4-5
- 7       2       3       6-7
-> > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > NUMA node. The performance improvement we are getting using ntttcp with
-> > following patch is around 15 percent with existing design and approximately
-> > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-> > if enough cores are present.
-> 
-> How did you measure it? In the other email you said you used perf, can
-> you show your procedure in details?
-I have used ntttcp for performance analysis, by perf I had meant performance
-analysis. I have used ntttcp with following parameters
-ntttcp -r -m 64 <receiver> 
+v1 -> v2:
+Added write_unlock_bh(&mhi_chan->lock) in mhi_gen_tre() before return
+because of error process.
 
-ntttcp -s <receiver side ip address>  -m 64 <sender>
-Both the VMs are in same Azure subnet and private IP address is used.
-MTU and tcp buffer is set accordingly and number of channels are set using ethtool
-accordingly for best performance. Also irqbalance was disabled.
-https://github.com/microsoft/ntttcp-for-linux
-https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
+v2 -> v3:
+1. split protecting WP and unlocking xfer_cb into two patches
+2. Add a new patch to stop processing buffer and eventof a disabled or
+stopped channel.
 
-> 
-> > Suggested-by: Yury Norov <yury.norov@gmali.com>
-> > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > ---
-> 
-> [...]
-> 
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
-> >  1 file changed, 83 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > index 6367de0c2c2e..18e8908c5d29 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> >  	r->size = 0;
-> >  }
-> >  
-> > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > +{
-> > +	int w, cnt, cpu, err = 0, i = 0;
-> > +	int next_node = start_numa_node;
-> 
-> What for this?
-This is the local numa node, from where to start hopping.
-Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
-number of irqs allocated, and the local numa node to the device.
-> 
-> > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > +	cpumask_var_t curr, cpus;
-> > +
-> > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-> > +		err = -ENOMEM;
-> > +		return err;
-> > +	}
-> > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
-> 
->                 free(curr);
-Will fix it in next version. Thanks for pointing.
-> 
-> > +		err = -ENOMEM;
-> > +		return err;
-> > +	}
-> > +
-> > +	rcu_read_lock();
-> > +	for_each_numa_hop_mask(next, next_node) {
-> > +		cpumask_andnot(curr, next, prev);
-> > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-> > +			cpumask_copy(cpus, curr);
-> > +			for_each_cpu(cpu, cpus) {
-> > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
-> > +				if (++i == nvec)
-> > +					goto done;
-> 
-> Think what if you're passed with irq_setup(NULL, 0, 0).
-> That's why I suggested to place this check at the beginning.
-> 
-irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
-care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
+v3 -> v4:
+1. Modify commit message
+2. Add unlock operation before return error
 
-nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-if (nvec < 0)
-	return nvec;
-> 
-> > +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
-> > +				++cnt;
-> > +			}
-> > +		}
-> > +		prev = next;
-> > +	}
-> > +done:
-> > +	rcu_read_unlock();
-> > +	free_cpumask_var(curr);
-> > +	free_cpumask_var(cpus);
-> > +	return err;
-> > +}
-> > +
-> >  static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  {
-> > -	unsigned int max_queues_per_port = num_online_cpus();
-> >  	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > +	unsigned int max_queues_per_port;
-> >  	struct gdma_irq_context *gic;
-> >  	unsigned int max_irqs, cpu;
-> > -	int nvec, irq;
-> > +	int start_irq_index = 1;
-> > +	int nvec, *irqs, irq;
-> >  	int err, i = 0, j;
-> >  
-> > +	cpus_read_lock();
-> > +	max_queues_per_port = num_online_cpus();
-> >  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-> >  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
-> >  
-> > @@ -1261,6 +1302,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> >  	if (nvec < 0)
-> >  		return nvec;
-> > +	if (nvec <= num_online_cpus())
-> > +		start_irq_index = 0;
-> > +
-> > +	irqs = kmalloc_array((nvec - start_irq_index), sizeof(int), GFP_KERNEL);
-> > +	if (!irqs) {
-> > +		err = -ENOMEM;
-> > +		goto free_irq_vector;
-> > +	}
-> >  
-> >  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
-> >  				   GFP_KERNEL);
-> > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  			goto free_irq;
-> >  		}
-> >  
-> > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > -		if (err)
-> > -			goto free_irq;
-> > -
-> > -		cpu = cpumask_local_spread(i, gc->numa_node);
-> > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> > +		if (!i) {
-> > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > +			if (err)
-> > +				goto free_irq;
-> > +
-> > +			/* If number of IRQ is one extra than number of online CPUs,
-> > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-> > +			 * same CPU.
-> > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
-> > +			 * Also we are using cpumask_local_spread instead of
-> > +			 * cpumask_first for the node, because the node can be
-> > +			 * mem only.
-> > +			 */
-> > +			if (start_irq_index) {
-> > +				cpu = cpumask_local_spread(i, gc->numa_node);
-> 
-> I already mentioned that: if i == 0, you don't need to spread, just
-> pick 1st cpu from node.
-The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
-can be a memory only node, in that case we need to jump to next node to get the CPU.
-Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
-> 
-> > +				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> > +			} else {
-> > +				irqs[start_irq_index] = irq;
-> > +			}
-> > +		} else {
-> > +			irqs[i - start_irq_index] = irq;
-> > +			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
-> > +					  gic->name, gic);
-> > +			if (err)
-> > +				goto free_irq;
-> > +		}
-> >  	}
-> >  
-> > +	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
-> > +	if (err)
-> > +		goto free_irq;
-> >  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
-> >  	if (err)
-> >  		goto free_irq;
-> >  
-> >  	gc->max_num_msix = nvec;
-> >  	gc->num_msix_usable = nvec;
-> > -
-> > +	cpus_read_unlock();
-> >  	return 0;
-> >  
-> >  free_irq:
-> > @@ -1314,8 +1386,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  	}
-> >  
-> >  	kfree(gc->irq_contexts);
-> > +	kfree(irqs);
-> >  	gc->irq_contexts = NULL;
-> >  free_irq_vector:
-> > +	cpus_read_unlock();
-> >  	pci_free_irq_vectors(pdev);
-> >  	return err;
-> >  }
-> > -- 
-> > 2.34.1
+v4 -> v5:
+1. Squash "protecting WP" and "Take irqsave lock" into one patch
+2. Drop patch 3/4 of patch v4
+
+Bhaumik Bhatt (1):
+  bus: mhi: host: Add spinlock to protect WP access when queueing TREs
+
+Qiang Yu (1):
+  bus: mhi: host: Drop chan lock before queuing buffers
+
+ drivers/bus/mhi/host/main.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
+-- 
+2.7.4
+
