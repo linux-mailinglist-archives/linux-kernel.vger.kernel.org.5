@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DA380C41D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA56D80C42A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbjLKJOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S234370AbjLKJP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:15:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbjLKJOp (ORCPT
+        with ESMTP id S234105AbjLKJPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:14:45 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7D0100
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:14:50 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7cb029c41e4so55664241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:14:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702286089; x=1702890889; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ifFUtMv14jjmsyQD3seNpomQ4jZ0rsJwdv7NnE8oVF4=;
-        b=FkwxYNzYiFsvO1D6SfjXWuNmuKDBpBsoF2x37uPtF04ocuxx40Idu22etxeVNurnx5
-         Rdds+MhH/vzAAQWxjR5hh6piwKQz9iAz3i5UX5MFedhqGeBF5r40Xl7b7Eq+uCTwBUJi
-         jmpfrKmcmrn4Yx0cRGohDmFbQWuUhAEUtZZ9eCpbdY5L5iwsW17XISWJ/gVHCLzDHQNF
-         iPRv1PUXWxM+px4/LL6FX98kYTN01hJt9rtuYe9DTWKUTA8YZWypv0QjrveZsF9/pZe0
-         Gp5e+YpO2D/eyRgnU2zOnhB4GKqdVrflT2o1TY9eJ8LjXpv1Y7UGvx7qgklcoWJu6oxj
-         BIpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286089; x=1702890889;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ifFUtMv14jjmsyQD3seNpomQ4jZ0rsJwdv7NnE8oVF4=;
-        b=GPRRfoFbS4aNJ1VU94g2esDCSyk5nlkZLm498rD2Z298+drK+M5NN7X15Cc7boCpPF
-         7KTtC4fgXiylEuDoTRkwS/DCndW2pGrsj8sHmJTnHxECRTVg5JeaB7PqXJOWKNIT77jk
-         mVZFnqjLlMoy76moUZWF4GAbv8B4JsHx1UDPfwgkYPdLzzVmzV3DvpvrtD+/55olIhzl
-         J/BgC+T8op1XT71MjdIAl+WX8HBXbxRVaooWKtHv9tyycP7qqKrw1sVppv8cq/gPQAKN
-         vD4hw5RPxj0GMZGx1MVS0sXTyt/3R4O72vn5vetTRIj1Dcb5Ge6WqvtpfMG/WNOsce0e
-         rPrg==
-X-Gm-Message-State: AOJu0YxlWCmIKbaKtJHEzpZjDe2Kd7DCoLSijxoXbsrmT9iHhOQWwFCj
-        9qq3WqoaoBEViDQdOcx12BKSvkUOPClnCnaqz5PClGjAAxMlSkLx
-X-Google-Smtp-Source: AGHT+IEYJDEZISkxxQQnqjsuy3oSCYaAXfYDPkQM7U3WOhZ0uMOUkXiEmV06SWlV6/7zXx6GnXheetzTw60vqz4YJGI=
-X-Received: by 2002:a05:6102:5596:b0:464:93af:268 with SMTP id
- dc22-20020a056102559600b0046493af0268mr2348369vsb.9.1702286089204; Mon, 11
- Dec 2023 01:14:49 -0800 (PST)
+        Mon, 11 Dec 2023 04:15:54 -0500
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68658DF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:00 -0800 (PST)
+X-ASG-Debug-ID: 1702286158-1eb14e538c2fb40001-xx1T2L
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id tlsxMCEnclsgaayR (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 11 Dec 2023 17:15:58 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
+ 2023 17:15:47 +0800
+Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
+ 2023 17:15:44 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+From:   LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
+To:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>,
+        <YeeLi@zhaoxin.com>, <Leoliu@zhaoxin.com>,
+        LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+Subject: [PATCH v2] PCI: Extend PCI root port device IDs for Zhaoxin platforms
+Date:   Mon, 11 Dec 2023 17:15:43 +0800
+X-ASG-Orig-Subj: [PATCH v2] PCI: Extend PCI root port device IDs for Zhaoxin platforms
+Message-ID: <20231211091543.735903-1-LeoLiu-oc@zhaoxin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231201120942.680075-1-LeoLiu-oc@zhaoxin.com>
+References: <20231201120942.680075-1-LeoLiu-oc@zhaoxin.com>
 MIME-Version: 1.0
-References: <20231115165915.2936349-1-brgl@bgdev.pl> <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
- <CAMRc=Md6fCbXco-VOZeDM=cAy_a6HGjM8N5jse5OM7AXSha4dw@mail.gmail.com>
-In-Reply-To: <CAMRc=Md6fCbXco-VOZeDM=cAy_a6HGjM8N5jse5OM7AXSha4dw@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 11 Dec 2023 10:14:38 +0100
-Message-ID: <CAMRc=MeLCUQ1dGT2RsgrWMBMbGmjQ9tGwEWJ7nBCOss9TfvvGw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.32.64.1]
+X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1702286158
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 1227
+X-Barracuda-BRTS-Status: 0
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.117936
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 9:47=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
->
-> On Wed, Nov 29, 2023 at 10:18=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.=
-pl> wrote:
-> >
-> > On Wed, Nov 15, 2023 at 5:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev=
-.pl> wrote:
-> > >
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Here are a couple of updates to the interrupt simulator. Two are mino=
-r:
-> > > remove an unused field and reorder includes for readability. The thir=
-d
-> > > one simplifies the error paths by using new cleanup macros. To that e=
-nd
-> > > we also add a cleanup definition for dynamic bitmaps.
-> > >
-> > > Resending rebased on top of v6.7-rc1 and with tags collected.
-> > >
-> > > v1 -> v2:
-> > > - add a NULL-pointer check to the bitmap cleanup macro as advised by
-> > >   Peter Zijlstra
-> > > - initialize managed pointers when declaring them to create a clear p=
-airing
-> > >   between the type and the cleanup action
-> > >
-> > > Bartosz Golaszewski (4):
-> > >   bitmap: define a cleanup function for bitmaps
-> > >   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
-> > >   genirq/irq_sim: order headers alphabetically
-> > >   genirq/irq_sim: shrink code by using cleanup helpers
-> > >
-> > >  include/linux/bitmap.h |  3 +++
-> > >  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
-> > >  2 files changed, 15 insertions(+), 18 deletions(-)
-> > >
-> > > --
-> > > 2.40.1
-> > >
-> >
-> > It's been two weeks since this submission and ~2.5 months since the
-> > first one so I guess, a gentle ping is in order. This is not a very
-> > controversial series - can this be applied?
-> >
-> > Bart
->
-> Another ping...
->
-> Bartosz
+From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
 
-Thomas,
+Add more PCI root port device IDs to the
+pci_quirk_zhaoxin_pcie_ports_acs() for some new Zhaoxin platforms.
 
-Is there any formal reason why this cannot be processed?
+v1 -> v2:
+1. Add a note to indicate future Zhaoxin devices will implement ACS
+Capability based on the PCIe Spec.
+2. Includes DID of more Zhaoxin devices that have not yet implemented ACS
+Capability.
 
-Bartosz
+Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+---
+ drivers/pci/quirks.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index ea476252280a..f4546590d9e3 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4706,10 +4706,14 @@ static int  pci_quirk_zhaoxin_pcie_ports_acs(struct pci_dev *dev, u16 acs_flags)
+ 	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
+ 		return -ENOTTY;
+ 
++	/*
++	 * Future Zhaoxin Root Ports and Switch Downstream Ports will implement ACS
++	 * capability in accordance with the PCIe Spec.
++	 */
+ 	switch (dev->device) {
+ 	case 0x0710 ... 0x071e:
+ 	case 0x0721:
+-	case 0x0723 ... 0x0732:
++	case 0x0723 ... 0x0752:
+ 		return pci_acs_ctrl_enabled(acs_flags,
+ 			PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ 	}
+-- 
+2.34.1
+
