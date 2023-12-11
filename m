@@ -2,76 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF33980D314
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591BD80D31C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344190AbjLKRAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
+        id S1344222AbjLKRCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjLKRAn (ORCPT
+        with ESMTP id S1343918AbjLKRCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:00:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4BFB3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:00:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XQL4KLYK46FBcvS2Q/hWsRZjCkcrPdKFGKmtrMsbgdc=; b=h/IzyEDXFu6U8tWkhAzL4uzmOt
-        PM9PoWDLlm+5uSEnp9Ch6iGufZCzFHD7XntJ87pW50FC9PQ4B3ltyjcZMfevYhIKk7H6cHnbnscpI
-        aQDHqgFgsPQWLm8aLLRwDdo3fM7NhVeuXBL/lBaHoPNYssz2RzDlKUUKjBD8RF/pRX6TTjlKJM+Ri
-        CLcpGOWp3Qcs5dBM6LS1lh33zSokbjzTfXX0CaeyTi/wFKQZwv5WSrURfN7Zwm51gH6eG38Qb2LZU
-        xIENm+1OIbEIHtkXBz7Cg8WD3stbmlhwFpOvAuIil6Ta9qevjE1wZ16eXlZnBlPXX+hhgar7nefby
-        B2/s9q+A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rCje6-00924L-VK; Mon, 11 Dec 2023 17:00:43 +0000
-Date:   Mon, 11 Dec 2023 17:00:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, surenb@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        souravpanda@google.com
-Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
-Message-ID: <ZXdAOroKNce1r+TZ@casper.infradead.org>
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
+        Mon, 11 Dec 2023 12:02:01 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD40A8E;
+        Mon, 11 Dec 2023 09:02:07 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C498220C2;
+        Mon, 11 Dec 2023 17:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702314126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJTtFSWYty5rD2FaJe1sSOro2wxy5ZiVyedBxngtDfE=;
+        b=BZxkpRai1ts2vNxggOB/v7gk2nFpyWllZj6onJ3Dt3DyV4dK7SJ0NrUdxxh3X5Z9WGTt6y
+        LgObJv5hMlf6wrFSK29DFgotj76K8SY40h9VkgCncZW8AXiH6J728E3hbPThcRFSX/ChCf
+        XAMYs+fHlCQ980tXDKIpcF4+GU5v7d4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702314126;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJTtFSWYty5rD2FaJe1sSOro2wxy5ZiVyedBxngtDfE=;
+        b=O90m8eEv67V1f7UQSuk3DTjKjeKk5FSTuqcYlJgLj+a2JH9D3Hl9xBcqww9wVkxTE8nKAg
+        pQ2LJOMEzVb/m4AA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702314126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJTtFSWYty5rD2FaJe1sSOro2wxy5ZiVyedBxngtDfE=;
+        b=BZxkpRai1ts2vNxggOB/v7gk2nFpyWllZj6onJ3Dt3DyV4dK7SJ0NrUdxxh3X5Z9WGTt6y
+        LgObJv5hMlf6wrFSK29DFgotj76K8SY40h9VkgCncZW8AXiH6J728E3hbPThcRFSX/ChCf
+        XAMYs+fHlCQ980tXDKIpcF4+GU5v7d4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702314126;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PJTtFSWYty5rD2FaJe1sSOro2wxy5ZiVyedBxngtDfE=;
+        b=O90m8eEv67V1f7UQSuk3DTjKjeKk5FSTuqcYlJgLj+a2JH9D3Hl9xBcqww9wVkxTE8nKAg
+        pQ2LJOMEzVb/m4AA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DE24D134B0;
+        Mon, 11 Dec 2023 17:02:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id 4aw2No1Ad2WVFwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:02:05 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 75B40A07E3; Mon, 11 Dec 2023 18:02:01 +0100 (CET)
+Date:   Mon, 11 Dec 2023 18:02:01 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 18/18] ext4: use bdev apis
+Message-ID: <20231211170201.ygdxtjm7y2jliev5@quack3>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140839.976021-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231211140839.976021-1-yukuai1@huaweicloud.com>
+X-Spam-Score: 12.98
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=BZxkpRai;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=O90m8eEv;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [3.34 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         R_RATELIMIT(0.00)[to_ip_from(RLa8hd5fybgmzcyr9mhbq8ey7y)];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_GT_50(0.00)[50];
+         NEURAL_HAM_SHORT(-0.19)[-0.957];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-2.96)[99.82%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,huawei.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 3.34
+X-Rspamd-Queue-Id: 0C498220C2
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:46:44PM +0000, Pasha Tatashin wrote:
-> +++ b/drivers/base/node.c
-> @@ -520,26 +520,34 @@ static ssize_t node_read_vmstat(struct device *dev,
->  	int i;
->  	int len = 0;
->  
-> -	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-> -		len += sysfs_emit_at(buf, len, "%s %lu\n",
-> -				     zone_stat_name(i),
-> -				     sum_zone_node_page_state(nid, i));
-> +	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
-> +		if (vmstat_text[ZONE_STAT_NAME_IDX(i)].flags & VMSTAT_SHOW_SYSFS) {
-> +			len += sysfs_emit_at(buf, len, "%s %lu\n",
-> +					     zone_stat_name(i),
-> +					     sum_zone_node_page_state(nid, i));
-> +		}
-> +	}
+On Mon 11-12-23 22:08:39, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Avoid to access bd_inode directly, prepare to remove bd_inode from
+> block_devcie.
+         ^^^ device
+ 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-This seems overly complicated.  Why not do:
+Looks good. Feel free to add:
 
-	for (i = 0; i < NR_VM_ZONE_STAT_SYSFS_ITEMS; i++)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-and have assertions that this number doesn't change (and require people
-to add to the list after that point)?
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
