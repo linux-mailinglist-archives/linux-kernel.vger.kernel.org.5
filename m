@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6EC80C39B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5483480C373
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjLKIuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S231319AbjLKIlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:41:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbjLKIlC (ORCPT
+        with ESMTP id S229654AbjLKIlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:41:02 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FE4FD;
-        Mon, 11 Dec 2023 00:41:07 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyEGLG4_1702284064;
-Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyEGLG4_1702284064)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Dec 2023 16:41:05 +0800
-Message-ID: <dce514ab-5650-2b6c-9326-fd313bb44622@linux.alibaba.com>
-Date:   Mon, 11 Dec 2023 16:41:03 +0800
+        Mon, 11 Dec 2023 03:41:07 -0500
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CE4B6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:41:13 -0800 (PST)
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6da00040aafso2575536a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:41:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702284072; x=1702888872;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HNpK7gVVocd6D97UNc/uU33LSZEMZP8thvqp4QD621w=;
+        b=IscxURfgMC8xA4Rjpo3d0BwcGrfOjPjiPZtLsCf5RPI+f2bRw7Qy7EHCbSsDwtIaVs
+         5JmHKS2truGomlo5yZN+jNyvOLmT5Xl8gIRAgLm8XtKTlyDegsyhuY4sepSomeuul8Kj
+         cpUio6HdhWG5QRZIeXV7YUocwkbkhNU5HW7i3nbzsNRb83AqR2j2xdHtnzHgjZFYIU/Y
+         PVNrI+GSYTvy3xnGfnhUaGZSx7uT4G5PDyxbSu+nZQ0DQGR+OY9eg191a1Vnlx9fxWe9
+         h7msJsNWmYGAcvJR9yNNLiIlmteham8AFYzTTGbGRmCEVf64oShxACsGsR30Oyzlu66W
+         rGyA==
+X-Gm-Message-State: AOJu0Yy4U7IS9RO1q/zDLLLPMsfdPXW3Aso0aqdSwzNqvatyG59btjSg
+        hPjQJ/PBcexDd/CTy5VEdTQyPyUSQjsblbQgKRI48mpMSHTg
+X-Google-Smtp-Source: AGHT+IGfKrROzc73KF0ejaUWsIpnsUmLsLBlTMqcRYfFE/B2YIdyfJZ5i9qn/JPhnNqB+AehJiu4dzQCN/IdUWyYcy93lo6E05KY
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 5/9] net/smc: define a reserved CHID range for
- virtual ISM devices
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-6-git-send-email-guwen@linux.alibaba.com>
- <5094518a-1d60-48fb-aaf2-dd811296e53a@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <5094518a-1d60-48fb-aaf2-dd811296e53a@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.8 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:4104:b0:6d9:e33a:e4e7 with SMTP id
+ w4-20020a056830410400b006d9e33ae4e7mr4031696ott.1.1702284072435; Mon, 11 Dec
+ 2023 00:41:12 -0800 (PST)
+Date:   Mon, 11 Dec 2023 00:41:12 -0800
+In-Reply-To: <000000000000ad704b05f8de7e19@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000071c5ec060c37e5e1@google.com>
+Subject: Re: [v5.15] WARNING in kvm_arch_vcpu_ioctl_run
+From:   syzbot <syzbot+412c9ae97b4338c5187e@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        seanjc@google.com, syzkaller-lts-bugs@googlegroups.com,
+        tglx@linutronix.de, usama.anjum@collabora.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This bug is marked as fixed by commit:
+KVM: x86: Remove WARN sanity check on hypervisor timer vs. UNINITIALIZED vCPU
 
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-On 2023/12/11 16:24, Alexandra Winter wrote:
-> 
-> 
-> On 08.12.23 08:40, Wen Gu wrote:
->> According to virtual ISM support feature defined by SMCv2.1, CHIDs in
->> the range 0xFF00 to 0xFFFF are reserved for use by virtual ISM devices.
->>
->> And two helpers are introduced to distinguish virtual ISM devices from
->> the existing platform firmware ISM devices.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
-> 
-> I've sent you a Reviewed-by for v3 of this patch. Did you lose it?
+#syz fix: exact-commit-title
 
-Sorry! I missed it when formating the patches.
-I will add your and Wenjia's Reviewed-by to the unmodified patches, thank you!
-New version coming soon.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux 5.15
+Dashboard link: https://syzkaller.appspot.com/bug?extid=412c9ae97b4338c5187e
+
+---
+[1] I expect the commit to be present in:
+
+1. linux-5.15.y branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
