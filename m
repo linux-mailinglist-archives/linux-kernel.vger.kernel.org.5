@@ -2,165 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D6080D4FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66B880D502
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345276AbjLKSK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        id S1345380AbjLKSK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345182AbjLKSK0 (ORCPT
+        with ESMTP id S1345369AbjLKSKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:10:26 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EF6A9;
-        Mon, 11 Dec 2023 10:10:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YX2o9Tm+LccykSN8xiXCTcS5I9H5mfzSctLGWZrca+kYpFhz96bUkHT9Rab/I05G0iPitmJM3iFpOh652e0n3RVQSloMUbA5cByBdPWV5gHLof69YtzUxHSx58dvzFMiBLSV0dp5O15mLwgdXk2kjDt9ov3yGt8xlEPngBYD945XPWPoJoYUlpKxIsiRnq/1+mj6V96jTigBQLPboamef66qBRcplNWTPN5RkAQQ8zFRnJg+ZQLFBUY3yG7arwl5SMY0rNCnaR1xWJRgWJYLmDKtBHNZea4XKMAAiYJgT/CPHj0Mpbls6Mf8I1XryhBXWwZx1zw/2YsVK5Kp+n7cRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m/xnC3l3SqmD6BEEg/WXtbjRHvVtgB/4cv84Tm+0O3g=;
- b=XQbq0kSUkr0FVLE0CniNsw+5kJSS2ZoVU+BelCWTQBxECy9qE6XwUDuJ0tMPn0OYNZp0CspdKB1ktStI/+HGGqK0JxhRaA7n3KspaLHbksvDdIuGR81cAxhZgu9ql0N152TpCNTmhY7XCApTeCSrK2botdS7ZqSSNE79YVfD6dLElPTnnuUIcnU8GqeSLe0GHJgcGcOnxOxbOjItAlQUKYKVzn2bf/VHvKl4h9oMvACTiHAD92efMXYv2ZRMqsTWj3DDtrLpMc4rGwomSu6xHCnk1Bz1dlL41K5MkwLovm48P7It3+ELfKyQGr7ILoc/QAvLi4zGd8DGL0DDBkES1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m/xnC3l3SqmD6BEEg/WXtbjRHvVtgB/4cv84Tm+0O3g=;
- b=SaF5w75FrB4OBokJ3Q/pRwl7CFUqMqkuFQDYbNqmdUOIRwnS67pBl4iWVwhnq668SL7VqMNhFww6cRU5J2YDzyJaQQV23gqeuPMuGdyL/SYIi+XND2s7C7jjTno+s021fcyv3jsUJpOSLIQVNwHT4uTeH6V0OBGAVGjZLiCdOY9n/i2PZs0Tu2yNzYsqvW3pTDd3oWIVcqkm8UpAfy3SmaBgbRVqTWCC1oxKLWapbnXwFRbL6celHmSR3+1peNUol6NIFb3T7fNMfR5Q1g7i0pXfvNS2e2LN0TJNo3T4UMQsxuZRdBPqQpl+T2OC6cCtaIJToIB2SNpcPXHgGgd/IQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4548.namprd12.prod.outlook.com (2603:10b6:5:2a1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 18:10:29 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 18:10:29 +0000
-Date:   Mon, 11 Dec 2023 14:10:28 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH 3/3] vfio: Report PASID capability via
- VFIO_DEVICE_FEATURE ioctl
-Message-ID: <20231211181028.GL2944114@nvidia.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
- <20231127063909.129153-4-yi.l.liu@intel.com>
- <20231211110345.1b4526c6.alex.williamson@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211110345.1b4526c6.alex.williamson@redhat.com>
-X-ClientProxiedBy: MN2PR06CA0023.namprd06.prod.outlook.com
- (2603:10b6:208:23d::28) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 11 Dec 2023 13:10:54 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69A493;
+        Mon, 11 Dec 2023 10:11:00 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 708DF922;
+        Mon, 11 Dec 2023 19:10:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702318215;
+        bh=Hkw53CbAYCaVZwFD6iEyB0w0BwlSOvyQDw30dZMGkeA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vaJ7Qdr6VFdkee/w1bOqs3IU/FcFR5GgyqCC8hF7BbQjf1JGAhASI6K5GRg4pMXde
+         vHOxKyUaDwvp2MroRVdD1sq0w3AIgIg7jMyFQUTVrIq938i5l3AcRbyzF0RXVwNyRk
+         CdS3M1LUZuyMsPHA86Jp3+Mdxjng5l+W3F0Wi5P4=
+Date:   Mon, 11 Dec 2023 20:11:06 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 05/19] media: i2c: ov4689: Refactor ov4689_set_ctrl
+Message-ID: <20231211181106.GD27535@pendragon.ideasonboard.com>
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-6-mike.rudenko@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4548:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43c517f4-0549-4137-1c2f-08dbfa747561
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eyk8VLPxLi1wTV9d4ZK6XkVhn1m4N6aOoUet2f99g6OvN3vTCml+9rQEL5EtQyOVpcoQ3xZX+GsLjGHscMZs9pi+IfoF7/4qjEuJORJ/8PiL5nZykMp9VLwaF7/3U1ciyRkXsKtcIP2+kZ6+Re2oAO/xd18Mf0RNX3jAZa2YhOH9liBbNxmice8pEB7YDRVJl+Eon5LFekXfrrX9j8IWOZNYgOj0LbmFA4Q3D+FCTP6to+n6JFJngLvCiMZaiyP3rAc+rPtY8zybNKcqtglLsoD8r8+QZVcploolUdDrEGSsU5UT+U8yCBpEDcKH6LzvHLZaEZDa2xYSmyC+lVeLPdUCQ2rf4bwCzG16rqkqkcWl50rezZi8hfm2R/rDz6KBbHHX8ABZhmrQh6wu7Qu3pNvRnWsg4Sc6EWjlmHpDr1IDEpM9co2jJkTSdGLFbZeg3FXIe4hAPIyxsQ/yLdsErqo3PdfS6k6NBrQ/QdGNd5G9Z/0a09jo1RC15PHITTMrNESjQL6Gz1PbeUKDoV6xCQSaOSOs4FAi8Z5iFxQeENZihKX/p9tTfdS2xIOLMhgw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(376002)(346002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(1076003)(26005)(2616005)(66556008)(36756003)(38100700002)(33656002)(86362001)(7416002)(5660300002)(6512007)(6506007)(8936002)(8676002)(66946007)(6486002)(66476007)(316002)(6916009)(4326008)(2906002)(478600001)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rbp3zue29QjY/LJbjpWdTegJ6D5DjXuxiivSSAua91WuLTUt0Mh9dPUe219M?=
- =?us-ascii?Q?y+QMVU2r7QCzfQB78nm51pqyvk6QVH7T9W4T2fHBroopfsQGjxmcRO+Izw17?=
- =?us-ascii?Q?lQ1MT4Id+R7hygfsW9fdLxEX6h4mkG74bky+fH9Lx22eaClEn+ZnPPz02A73?=
- =?us-ascii?Q?qvLqbCp7/G9OjkiKMGFS/nW83nhh4/aXswMQGvbmWIsBHUM8996ztiWC3v7f?=
- =?us-ascii?Q?CcQs+6FG5LHUMU9ALI7PKOY2qeImoGRwHrbvgla14S6Paj5O967KPcK56XpT?=
- =?us-ascii?Q?XES50bjv1CXIHE01d30I8KGa5yddmELAR5C3dkFw3M4NUzRzy254nSHKxvS3?=
- =?us-ascii?Q?HNb2nVrshFU4Hpg8DH2FQNuv9fw7lj6XuLwXM4YAJuBITfeHUPTfDhq6mF6d?=
- =?us-ascii?Q?JKDIiLs59v6lrfOqOXehCYUllM4+A5WAe7x79Vfm8buZcYp7nmudDrRlRFm+?=
- =?us-ascii?Q?buCEOzo89KlNEkxauaPtmsf5O9BOozxmY6qJRBBX2zGpYkLjIVgnBuTZz8D2?=
- =?us-ascii?Q?5cPzBymW1fghzXqQSCJgt3q1o1Qcc0cc2Tm8mkTVBK59Q3QHLkSpJTX0lTDC?=
- =?us-ascii?Q?OqSCCWI9rh6KNfnA4aVYfhRjkXji5yIO7pYAj/tjrPkoZ9ZD5WHnhZoOTZ5V?=
- =?us-ascii?Q?/5cdmhFjcT8iS6zl73fHzEOpvxqNkluvCaUo+ojhtO3vs9CRO+TASr1MOt1x?=
- =?us-ascii?Q?xyqcTMI3Dvb5BlXKWZrPJns4QCtxMjLpmCE4coHYlnLX9yqkuXv2dc+HERx2?=
- =?us-ascii?Q?bEcrCn3SWv0I9H/vNetoZ3XREdd+8G8Vd7kGLZdZe2qJyYWknPWho9UGbkX2?=
- =?us-ascii?Q?/FEIMgeAN5XHOZKrviBtIYaHsokB3Lr21C3Sedon+S0hxf9oZwlkmmiGkLd9?=
- =?us-ascii?Q?05dIxd+XkWZQjhueNazFypCS751p+Y1MN/UplfWi8W+iQ5RkWJRaLDVZt8GN?=
- =?us-ascii?Q?+aa5vs6Rr2JDXyLh8IprlOveWpN1N2QAVmKSTDi9ZGs7hHTBtQJoZNERy83n?=
- =?us-ascii?Q?p3kHZW24aqjoNJj0bwedMrSBO07tH9kzBMUDgzDDtHQFeKkJoT7N7Rdh4ZeX?=
- =?us-ascii?Q?5HCrvlgSwOySjZSn4WKChH2ISYD0O9/QBcJbfw/4gEKtQLhrt7MLqLW3D1ZY?=
- =?us-ascii?Q?bqzpGBNBn0IsLQie9hQsU0zCN01h71dtzbj/GaCc1ll7TjspO7MgliqdOvGq?=
- =?us-ascii?Q?wiQ5BoBHCj0+7Wj0F2vyf8Q86NXGMBpXS8DH+9xt3r95tYHWOPoiOXissjFo?=
- =?us-ascii?Q?E2R0ft473qHuMQwdFLtmtxwCD6DswkOlCtxSGG7UN484S3r2fHM4ij27bZct?=
- =?us-ascii?Q?NWEX0ahzjwyzL7bz4oY1d5zC8/JaAT4I5yZdOlacDI6WuzcFvYIMQfVV6x4Y?=
- =?us-ascii?Q?e7nz3GwOuqe9jBC45s1YYglvgj+JVkhTTRuJk6XSbjgs26P0umY7ok1SfucO?=
- =?us-ascii?Q?/8GMCaTQ70A8ceKhyi128JwCTxehgGO33Atuci60I0pMIec9io1FY3cjq17Q?=
- =?us-ascii?Q?eQngr49MzIkERS0fsiLo2NSo8kA4huMS64kIr6+VQ2yEl4v2ylfu9ulj16dZ?=
- =?us-ascii?Q?8YEaer2DKV1pIBz7F3eGVIIJJia3Eihw5PXERTdS?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43c517f4-0549-4137-1c2f-08dbfa747561
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 18:10:29.6905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RZ/WO9kKQgDczZOYLqMugx7e66b9J6HX1MKwblEJSGhwitxIOXP0c+ivvkzwtMhk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4548
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231211175023.1680247-6-mike.rudenko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 11:03:45AM -0700, Alex Williamson wrote:
-> On Sun, 26 Nov 2023 22:39:09 -0800
-> Yi Liu <yi.l.liu@intel.com> wrote:
+Hi Mikhail,
+
+Thank you for the patch.
+
+On Mon, Dec 11, 2023 at 08:50:08PM +0300, Mikhail Rudenko wrote:
+> Introduces local variables for regmap and the control value within the
+> ov4689_set_ctrl function. This adjustment eliminates repetition within
+> the function.
 > 
-> > This reports the PASID capability data to userspace via VFIO_DEVICE_FEATURE,
-> > hence userspace could probe PASID capability by it. This is a bit different
-> > with other capabilities which are reported to userspace when the user reads
-> > the device's PCI configuration space. There are two reasons for this.
-> > 
-> >  - First, Qemu by default exposes all available PCI capabilities in vfio-pci
-> >    config space to the guest as read-only, so adding PASID capability in the
-> >    vfio-pci config space will make it exposed to the guest automatically while
-> >    an old Qemu doesn't really support it.
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> ---
+>  drivers/media/i2c/ov4689.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 > 
-> Shouldn't we also be working on hiding the PASID capability in QEMU
-> ASAP?  This feature only allows QEMU to know PASID control is actually
-> available, not the guest.  Maybe we're hoping this is really only used
-> by VFs where there's no capability currently exposed to the guest?
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index 8c120d7f7830..42700ecfbe0e 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -584,7 +584,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  {
+>  	struct ov4689 *ov4689 =
+>  		container_of(ctrl->handler, struct ov4689, ctrl_handler);
+> +	struct regmap *regmap = ov4689->regmap;
+>  	struct device *dev = ov4689->dev;
+> +	s32 val = ctrl->val;
 
-Makes sense, yes
+For ctrl->val, I think the code is clearer without this change. When
+reading the function, seeing "val", I need to look up what it is, while
+seeing "ctrl->val" gives me more context and makes (in my opinion) the
+code more readable.
 
-> >    the PF). Creating a virtual PASID capability in vfio-pci config space needs
-> >    to find a hole to place it, but doing so may require device specific
-> >    knowledge to avoid potential conflict with device specific registers like
-> >    hiden bits in VF config space. It's simpler by moving this burden to the
-> >    VMM instead of maintaining a quirk system in the kernel.
+>  	int sensor_gain;
+>  	s64 max_expo;
+>  	int ret;
+> @@ -593,7 +595,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_VBLANK:
+>  		/* Update max exposure while meeting expected vblanking */
+> -		max_expo = ov4689->cur_mode->height + ctrl->val - 4;
+> +		max_expo = ov4689->cur_mode->height + val - 4;
+>  		__v4l2_ctrl_modify_range(ov4689->exposure,
+>  					 ov4689->exposure->minimum, max_expo,
+>  					 ov4689->exposure->step,
+> @@ -607,36 +609,34 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_EXPOSURE:
+>  		/* 4 least significant bits of exposure are fractional part */
+> -		ret = cci_write(ov4689->regmap, OV4689_REG_EXPOSURE,
+> -				ctrl->val << 4, NULL);
+> +		cci_write(regmap, OV4689_REG_EXPOSURE, val << 4, &ret);
+>  		break;
+>  	case V4L2_CID_ANALOGUE_GAIN:
+> -		ret = ov4689_map_gain(ov4689, ctrl->val, &sensor_gain);
+> +		ret = ov4689_map_gain(ov4689, val, &sensor_gain);
+>  
+> -		cci_write(ov4689->regmap, OV4689_REG_GAIN_H,
+> +		cci_write(regmap, OV4689_REG_GAIN_H,
+>  			  (sensor_gain >> OV4689_GAIN_H_SHIFT) &
+>  			  OV4689_GAIN_H_MASK, &ret);
+>  
+> -		cci_write(ov4689->regmap, OV4689_REG_GAIN_L,
+> +		cci_write(regmap, OV4689_REG_GAIN_L,
+>  			  sensor_gain & OV4689_GAIN_L_MASK,
+>  			  &ret);
+>  		break;
+>  	case V4L2_CID_VBLANK:
+> -		ret = cci_write(ov4689->regmap, OV4689_REG_VTS,
+> -				ctrl->val + ov4689->cur_mode->height, NULL);
+> +		cci_write(regmap, OV4689_REG_VTS,
+> +			  val + ov4689->cur_mode->height, &ret);
+>  		break;
+>  	case V4L2_CID_TEST_PATTERN:
+> -		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
+> +		ret = ov4689_enable_test_pattern(ov4689, val);
+>  		break;
+>  	default:
+>  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+> -			 __func__, ctrl->id, ctrl->val);
+> +			 __func__, ctrl->id, val);
+>  		ret = -EINVAL;
+>  		break;
+>  	}
+>  
+>  	pm_runtime_put(dev);
+> -
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.43.0
 > 
-> This feels a bit like an incomplete solution though and we might
-> already posses device specific knowledge in the form of a variant
-> driver.  Should this feature structure include a flag + field that
-> could serve to generically indicate to the VMM a location for
-> implementing the PASID capability?  The default core implementation
-> might fill this only for PFs where clearly an emualted PASID capability
-> can overlap the physical capability.  Thanks,
 
-In many ways I would perfer to solve this for good by having a way to
-learn a range of available config space - I liked the suggestion to
-use a DVSEC to mark empty space.
+-- 
+Regards,
 
-Jason
+Laurent Pinchart
