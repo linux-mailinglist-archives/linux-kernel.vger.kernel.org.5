@@ -2,61 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A747580CF33
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C73F80CF3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344214AbjLKPNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        id S1344294AbjLKPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344092AbjLKPM4 (ORCPT
+        with ESMTP id S1344159AbjLKPM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:12:56 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5443E11F;
-        Mon, 11 Dec 2023 07:12:53 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 29B90E000F;
-        Mon, 11 Dec 2023 15:12:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702307572;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YFRNTXiHpB5q4OBf51HMQ0MXG7WMAPuA7YrMIImpGe0=;
-        b=eH/hVFqXLeGU/34uyK7mc9EgkXkva33CrQszVtV40e1/5u6zGyGh9h36e4GlExYnIYOOHh
-        +FEJ1Q7arcqVy235e191ce9lFPMVqL302sckpRP2VeKq7Y9d9WFAsh9mBxRC82//Ef7t0x
-        AbRDSZmDH8bl8BhgULMlAkSLZNByGPttTtIxJc7poOMK3XuErAyfjYaN7GAumSJtRmjUu+
-        PB3e6PZSdQP3ctZgagW5pPmILOl/EVMhN+3Er7BTjn0QFEWILCfLmQ1p1ETYt2a7NPcbAT
-        5+b4qBtrDNqT6EUmLDIH71QbQF3tzOle1vR7RX+xk/LkFxO5e383G23QUMe8Kw==
-From:   Romain Gantois <romain.gantois@bootlin.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Romain Gantois <romain.gantois@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: [RFC PATCH 6/6] dt-bindings: mtd: add GPT partition bindings
-Date:   Mon, 11 Dec 2023 16:12:42 +0100
-Message-ID: <20231211151244.289349-7-romain.gantois@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231211151244.289349-1-romain.gantois@bootlin.com>
-References: <20231211151244.289349-1-romain.gantois@bootlin.com>
+        Mon, 11 Dec 2023 10:12:58 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071DBE9;
+        Mon, 11 Dec 2023 07:12:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JauBR/LEbHCc2vv8KSJsV1oxQwfG5ifcWzxVqBIww94=; b=IlmwAPyL2w+N8oz9Vmlqb/9KEs
+        WZsIRZwCWYozgqSIHxkPUjfG6zTpZLjQJjPWclLgcV35wXbJzvy+kDIcXCebxoLSf+En77GKwvQtd
+        UyiuNn/x/XbRETkeoutNzf7b+1ABtJrabw3pw+JBBYgfz7XppsYfy0NajxKzW4Q+bQgc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rChxe-002dGd-PN; Mon, 11 Dec 2023 16:12:46 +0100
+Date:   Mon, 11 Dec 2023 16:12:46 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1 1/2] net: phy: c45: add
+ genphy_c45_pma_read_ext_abilities() function
+Message-ID: <e6d03b2a-a590-4a32-bb81-d9b356ddb5b8@lunn.ch>
+References: <20231208151159.2791794-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: romain.gantois@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208151159.2791794-1-o.rempel@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,74 +53,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow parsing GPT layouts on MTD devices.
+On Fri, Dec 08, 2023 at 04:11:58PM +0100, Oleksij Rempel wrote:
+> Move part of the genphy_c45_pma_read_abilities() code to a separate
+> function.
+> 
+> Some PHYs do not implement PMA/PMD status 2 register (Register 1.8) but
+> do implement PMA/PMD extended ability register (Register 1.11). To make
+> use of it, we need to be able to access this part of code separately.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
----
- .../bindings/mtd/partitions/gpt.yaml          | 41 +++++++++++++++++++
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- 2 files changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/gpt.yaml
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/gpt.yaml b/Documentation/devicetree/bindings/mtd/partitions/gpt.yaml
-new file mode 100644
-index 000000000000..3c538562e3e5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/gpt.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mtd/partitions/gpt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: GUID Partition Table (GPT)
-+
-+description: The GPT format is commonly used on block devices to describe a
-+partitioning scheme. It mainly consists of a Legacy or Protective MBR for
-+backwards compatibility, a primary GPT header with an array of Partition Table
-+Entries, and a backup header with a backup array of PTEs. This partition table
-+format can be used on MTD devices, specifically NOR flash devices, since NAND
-+flashes are susceptible to bad blocks which could easily corrupt the GPT layout.
-+Logical Block Addresses (LBAs) are defined to target 512-byte blocks.
-+
-+maintainers:
-+  - Romain Gantois <romain.gantois@bootlin.com>
-+
-+select: false
-+
-+properties:
-+  compatible:
-+    const: gpt
-+
-+  '#address-cells': false
-+
-+  '#size-cells': false
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    flash@0 {
-+      partitions {
-+        compatible = "gpt";
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..f2b1565d5d0a 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -18,6 +18,7 @@ oneOf:
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-+  - $ref: gpt.yaml
-   - $ref: linksys,ns-partitions.yaml
-   - $ref: qcom,smem-part.yaml
-   - $ref: redboot-fis.yaml
--- 
-2.43.0
-
+    Andrew
