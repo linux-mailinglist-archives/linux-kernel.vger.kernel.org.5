@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F1780DAA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DE580DAA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344458AbjLKTLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:11:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S1344366AbjLKTON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjLKTLe (ORCPT
+        with ESMTP id S229516AbjLKTOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:11:34 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988D0DB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:11:39 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso6745712a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:11:39 -0800 (PST)
+        Mon, 11 Dec 2023 14:14:12 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EDFBD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:14:18 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9c18e7990so66814541fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:14:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702321898; x=1702926698; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=gmail.com; s=20230601; t=1702322056; x=1702926856; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=53+GQ9DSChkfFqfGSXLQ0QMyql+oTK4NA8OXD5BIsZM=;
-        b=aZWfVsi0nhc27jgWVTLOn5u5JI7n/FejXbGaYxrlG9ZYP57iGMBuWw/3c+6ABQFN0t
-         /IIap0t111JzD/rBOv574CoJefv9C4xr8851F9HnUkwWVjUmTAwmFx2GiYCtyqw01iPN
-         1yaEqSA5Fr5cxOf0XOJ2QqlDYbutU+J2+IZkGocCN37wwRwB/bJQoXVf3bGixpPidEQz
-         PugIscb+bt7JblMgLidAqvJ5QB3veg9Xui3L8wo51+zgEfdzKZtIw/m5OsMKUkDL0eRD
-         ni3eOEFGGQnAnaN42P9hEodtgq+jPjnZXKH3yTewWCskzh8NPLed0HfDJP/AGD5UUNhm
-         RBmA==
+        bh=DAfezLtwlsLKsGLxIMeUmD/ncEXFCl8paKQT2/k5F8Y=;
+        b=IfvCoTglC021eQ+oYTMUiWABBsiQmXZ91FOBuJFPgKKBjk1cbNAvUA5eIKRueb6j8W
+         FCupufQNrWGjYjvzDrrkBzXxi8AY0O9W09MoIpbpTXl3FPfiaGNW3vDs/dd/VDW19uSE
+         La03cU2IsqiMOQ/FVjS6slIbpSu8PdKb9Rldo9+Hce9i/GU5GBWWgVrjEPaUOyNem6Bj
+         jrhvkZpFK1MxZLyZxZEF5OlqmFKGIaUPtiJ2aCmttBTbL8O15v+lHRex/3L3dMKit+it
+         NpIZ+noK0EjM7VVOQLbg/AzxGuXL5xpfm++5MtGyyye+Hd+9BWQR5QVPSzoEKyXwaI8e
+         MuZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702321898; x=1702926698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1702322056; x=1702926856;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=53+GQ9DSChkfFqfGSXLQ0QMyql+oTK4NA8OXD5BIsZM=;
-        b=XDCVm2Q2zg3bpDIgOFfsED66V5PYPkoNCMvtQl3dWmW+s1tiw3Ga7ytxFhV6yVTDAv
-         kxytxIFDiid9L16sMZraaS61gy2QxEZicqL+bZWt2aO3TjIw9Hu2IFeeDp7v/m8ckW3R
-         xINAQra8wXkV8QJ4YBFqFlev19st3ooizBBD8eTd6xOwyPG2eD/4xSmcU6bumecaah28
-         OP0NO9sZkFafUX+9J24gVA5HKM0D/phiD9WdNRK4pPxKsPvo+gQWRYuGtF2FFWdnEqOY
-         KUpjiot9Ecvzhd6pYU1uFfEhIfFVBnOlhMG6Y+OQxe8fcPqBNZJ35BtkcIi/DjkLoU8h
-         5WDg==
-X-Gm-Message-State: AOJu0Yw8gmFEtGSueAJ/GabtZUoK/ERCt5/jPdkx5NY681EyLd5bbdjJ
-        /m/Oc4YKnhVmMBGnBiYz3Khs55nLZyMJHCWrABYzfA==
-X-Google-Smtp-Source: AGHT+IFvmTrqFmb3KMd/5xiFQbhGpELJ/arHQLgqbMwaN7GGJJxxJmDMIqQ2CDnleZexNcIu6ZMsfzm7/A6/dIyFIGQ=
-X-Received: by 2002:a17:906:c141:b0:a12:7a14:5355 with SMTP id
- dp1-20020a170906c14100b00a127a145355mr1440878ejc.39.1702321897853; Mon, 11
- Dec 2023 11:11:37 -0800 (PST)
+        bh=DAfezLtwlsLKsGLxIMeUmD/ncEXFCl8paKQT2/k5F8Y=;
+        b=Kvli0IA1zrm+QYA8FxDS2puWYydpCWH4jgxMhn3jDE18Ukdps7QIm/8U3tRQCkValr
+         RmMjrbe40VqRMvA0YrVtLsgPrV9K7xHyOBjpfF2gz3azP6/G2KoTHWAocDakdVVqjNSc
+         MOuGD9Mj/RU1cx/PwZUmDV1LwpNGW1+uIMYbp0GOjaPganc8tnlKTkqNVa8eABDOEVjk
+         2s/1IoX4CXhP4ygKBuKle9r4darUtefGBZYxL3rwmsUYkH7fB2LTeEir2tGS0JGNrybC
+         D6y85UD8wJbVlgopWftTNrDhYC6f8g3jhi0mYeb8dGRg8GVwVzQLkA5X10P48wzBKdnr
+         2E5A==
+X-Gm-Message-State: AOJu0YwYvriJjiSR8Ol3RnLy88xxz9fD7fsJR/4eIUi0MdKBYLxPzlyW
+        0j59qnGR5uXzed2nqGgLTG1W5JbG2HYpkv2REVPOCsmW/46hOA==
+X-Google-Smtp-Source: AGHT+IFoW8tjESXXjZ7fjCCGy/EZqXjqB8xSrlNzNRkX5VWaU/k4a8pAlSSiojBKV4OrQ5zIVyh7to+ESpijo9WFgHg=
+X-Received: by 2002:a2e:b5b5:0:b0:2cc:2170:87fa with SMTP id
+ f21-20020a2eb5b5000000b002cc217087famr740056ljn.44.1702322056038; Mon, 11 Dec
+ 2023 11:14:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20231207-strncpy-drivers-net-mdio-mdio-gpio-c-v2-1-c28d52dd3dfe@google.com>
- <ZXJNwrcSfgUFhaz6@shell.armlinux.org.uk>
-In-Reply-To: <ZXJNwrcSfgUFhaz6@shell.armlinux.org.uk>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Mon, 11 Dec 2023 11:11:25 -0800
-Message-ID: <CAFhGd8r1t8Gs5_idKiLqWL8Aicj1A_hTuqvO0075TP23rvjxJg@mail.gmail.com>
-Subject: Re: [PATCH v2] net: mdio-gpio: replace deprecated strncpy with strscpy
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <CAHP4M8WQdQfjxa-oqGTEF-kfF3j8En6V5fi7gyNbGegwFqfpCQ@mail.gmail.com>
+In-Reply-To: <CAHP4M8WQdQfjxa-oqGTEF-kfF3j8En6V5fi7gyNbGegwFqfpCQ@mail.gmail.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Tue, 12 Dec 2023 00:44:03 +0530
+Message-ID: <CAHP4M8U8rUaFFRkQ2wYmT3JgKJ+g7h9nKLiqSYNdrBGLF1ckNw@mail.gmail.com>
+Subject: Re: Query on a rare simultaneous processing of interrupts from GIC/NVIC
+To:     linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,49 +68,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 2:57=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+Have had some discussion at the following link and following comments :
+linux kernel - Query on a rare simultaneous processing of interrupts
+from GIC/NVIC - Stack Overflow
+
+Really wish to understand if interrupts can in fact be queued at the
+software side, if the sequencing mentioned occurs.
+
+On Mon, Dec 11, 2023 at 6:36=E2=80=AFPM Ajay Garg <ajaygargnsit@gmail.com> =
+wrote:
 >
-> On Thu, Dec 07, 2023 at 09:54:31PM +0000, Justin Stitt wrote:
-> > We expect new_bus->id to be NUL-terminated but not NUL-padded based on
-> > its prior assignment through snprintf:
-> > |       snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
-> >
-> > We can also use sizeof() instead of a length macro as this more closely
-> > ties the maximum buffer size to the destination buffer.
+> Hi everyone.
 >
-> Honestly, this looks machine generated and unreviewed by the submitter,
-> because...
+> Let's say the following code is shared by multiple ISRs :
 >
-
-Not machine generated.
-
-Was just trying to keep my change as small as possible towards the
-goal of replacing strncpy.
-
-However, you're right. It's literally the line right above it and now
-it looks inconsistent .
-
-> >       if (bus_id !=3D -1)
-> >               snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id)=
-;
-> >       else
-> > -             strncpy(new_bus->id, "gpio", MII_BUS_ID_SIZE);
-> > +             strscpy(new_bus->id, "gpio", sizeof(new_bus->id));
+>    spin_lock_irqsave
+>    <critical section>
+>    spin_lock_irqrestore
 >
-> If there is an argument for not using MII_BUS_ID_SIZE in one place,
-> then the very same argument applies to snprintf(). If one place
-> changes the other also needs to be changed.
 >
-
-Gotcha, I've sent a [v3].
-
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
-
-[v3]: https://lore.kernel.org/all/20231211-strncpy-drivers-net-mdio-mdio-gp=
-io-c-v3-1-76dea53a1a52@google.com/
-
-Thanks
-Justin
+>
+> Also, following sequencing happens :
+>
+> *
+> Low-priority interrupt comes in, and GIC/NVIC causes it jump to ISR.
+>
+> *
+> Low-priority interrupt starts executing "spin_lock_irqsave".
+>
+> *
+> Before preemption and interrupts could be disabled (by the executing
+> low-priority interrupt). high-priority interrupt comes in.
+> Since a higher priority interrupt has come in, the GIC/NVIC causes it
+> to start executing the "spin_lock_irqsave" statement.
+>
+> *
+> Through the low-priority interrupt executing, "spin_lock_irqsave" has com=
+pleted.
+> Preemption and interrupts are disabled, and low-priority interrupt
+> grabs the spin lock.
+>
+> *
+> High-priority interrupt spins on the spin-lock.
+>
+>
+>
+> Is the above sequencing possible?
+>
+> In other words, although the first interrupt did its best to disable
+> all preemption and interrupts before it could enter the critical
+> section, yet above sequencing *will* cause the high-priority interrupt
+> to spin?
+>
+>
+> Many thanks in advance for your time for help !
+>
+>
+> Thanks and Regards,
+> Ajay
