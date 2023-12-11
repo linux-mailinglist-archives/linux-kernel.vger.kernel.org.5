@@ -2,1404 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA1880C4CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C31080C4CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbjLKJhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:37:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        id S234555AbjLKJh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjLKJhO (ORCPT
+        with ESMTP id S234526AbjLKJhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:37:14 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F399DB3;
-        Mon, 11 Dec 2023 01:37:17 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2865742e256so2943674a91.0;
-        Mon, 11 Dec 2023 01:37:17 -0800 (PST)
+        Mon, 11 Dec 2023 04:37:24 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB2B10D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:37:30 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-33621d443a7so688120f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:37:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702287437; x=1702892237; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZFfyHjrLLeE2yIflYNlZD/qukRZo5ZcIM2nt9CBYkiQ=;
-        b=ldN62noFLnGtOg7snFC09lh+o0FkQQ5NuWMyGSiHT2tZXzwQybD4HEzHxTlDGYwM+s
-         r9Mg+1jj55bMZJ6iuw6BeogOuLgPyAfrRaXxVYLGL+GnqsREjAqqgXQ3+jvXYSSOQPHX
-         /fq+FCY3pSoRlmwYJdFZDKb7VO7Rx62+aFn3GeucjeoKZqaio87fL462VKazTsFUGVxo
-         kMkyZC4irKy4eYOw8L3qUcu4xyUzmf8YHR3uA/Qhq4kdUJ12ckZ5li7BF8Fn1oWaOMS0
-         xm8tbfJ9idzxci6OvkavqTxZgZxGCsciOeERRan6xOj1oXgx2MJmcObpwm8E/UdkzYWU
-         O3bQ==
+        d=linaro.org; s=google; t=1702287448; x=1702892248; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UnWVMTaxObdqPPJp07rc5My1DxGVKVXEVldSTKNFuGo=;
+        b=BYlWGZuooFwejauZQHbmzAZpQLg/oKpeOiakUGdNp3MyL99Ge3lyRvrt2aE3pyPB85
+         8w37jL5adri8ZwNE7+fic3iVS/M25KGSYJCIbEPOpe7cXE2cliCp33K6q0a8oqo5zrtN
+         chF0r5Tn0ycbLq9jG4SsRxsSRkuiupGZqBHEY/a8AkFju8oqZfyTaosMVcOCW9zWtjBi
+         2yfHlzl5l0DgRpi4XJidOmvHlBN6j3ixnTkjEfqPdFCc1TZZi9mOzlJZM0M4gWvLZcKG
+         hGV7+Xwngc9SyYdPHZBwR2sZobxA+Fa46JlGvMPAtImKyYpowGTxM03atGGOB+kofKky
+         2Zvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702287437; x=1702892237;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZFfyHjrLLeE2yIflYNlZD/qukRZo5ZcIM2nt9CBYkiQ=;
-        b=B8EbI8PoNYinZSY6sLTTm/D9x2lbHE36Xj0jZKUHCz/9JCf3VWh+W9AxULvBP/71Pw
-         GFaHda4Sih5f6Vq/uZBi743eeb4NbFigKWNkbjjbygeeWkOkaXnMXlhQ3bwbh4EXAEKX
-         VdCb8nflKBC9IUx7XWpKP5v5QS3yPBywbE28/i6HZuGxtznHIeJ2r24Zwu8Lps0f4+Bd
-         oLuALUcl8ULOKU/rI5KhMP3hqOPIr3C3HlM0T6og6RrsUcfL+6PFLGGBT8SyUXLyTex+
-         77JlqDyCEKrX2WjfTZuDLpenS6SclM2NoruLVVrm7IldNNOV2Bbu8PfOmW7lkqZMjQWn
-         uFOw==
-X-Gm-Message-State: AOJu0Yy5ABDwmB22piB1tx6aN1I75Gvg0YMaOXv+hryEWuuXs4x8LJkM
-        YOT4GzS0rapU1ums/nf3j3R1m+cgU1BrYLVQ700=
-X-Google-Smtp-Source: AGHT+IGXglkAN/dWmhbfUnSAgjAim9wYS48e3uHYD+Fw1IYZasZlKDjEWSUDMB7/3D17bSemiIQ9YFGQYbtCepgg2Hc=
-X-Received: by 2002:a17:90b:68a:b0:288:9756:5da9 with SMTP id
- m10-20020a17090b068a00b0028897565da9mr1457689pjz.30.1702287437110; Mon, 11
- Dec 2023 01:37:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702287448; x=1702892248;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UnWVMTaxObdqPPJp07rc5My1DxGVKVXEVldSTKNFuGo=;
+        b=xFSadEi1AiO8+revDkBjqtJNXYq6M9wDUJ6lyZ2dbXF+1zff47vq/sjKtZxMip44b+
+         LwFLxY8SIlP4bvc4Oo/rW0G2QzdLfRzxADUkxOwdcYYSH0ABA6g24nCzm9dCZEcD8UCw
+         oDdRcZpiYlRZRQ8MF9304FgS1IT2Wzr+05x20gAJ0fIgwqfbSRcHC8VVr8ES3UDfZa0i
+         tjxlm+GSZblMk0lMTDQI/OEW/wCsTedRp6oP8S2lJYxA3XW/L0ZGp/f36isjN2OOCHGu
+         LERLGxUoqnF/3Sctf8TvGfpG7362u3fMPVYCPVddGcutCnXdCV5kV4RHf+Yt5Nwv8sqh
+         9lkA==
+X-Gm-Message-State: AOJu0Yz4apN7354JBazJezu8aMK7zj1eyKzqeiUS9HM/Db4wQUH2FA22
+        gFTHgFvJDXV947IZZBu4rjmDMA==
+X-Google-Smtp-Source: AGHT+IG/SHas0hGJoH1UfYwxWyP5z9Xo8SDwlQx8FKpKMCl519QBDIny0MArDFboRe+HKL4HuE7V4Q==
+X-Received: by 2002:a5d:594b:0:b0:333:53c5:7003 with SMTP id e11-20020a5d594b000000b0033353c57003mr1748218wri.60.1702287448503;
+        Mon, 11 Dec 2023 01:37:28 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:302e:e0c2:d42c:cb23? ([2a01:e0a:982:cbb0:302e:e0c2:d42c:cb23])
+        by smtp.gmail.com with ESMTPSA id f8-20020adff448000000b0033344666878sm8099688wrp.91.2023.12.11.01.37.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 01:37:28 -0800 (PST)
+Message-ID: <374addd2-e336-4625-9e0c-45e5efe1eb47@linaro.org>
+Date:   Mon, 11 Dec 2023 10:37:27 +0100
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Mon, 11 Dec 2023 17:37:03 +0800
-Message-ID: <CABOYnLxoG=YsE1XyOjfF0O+2UrdTyK1JMir3xPapGsRzh-XFAA@mail.gmail.com>
-Subject: possible deadlock in down_trylock/perf_event_open
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v4 2/3] remoteproc: qcom: pas: make region assign more
+ generic
+Content-Language: en-US, fr
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mukesh Ojha <quic_mojha@quicinc.com>
+References: <20231208-topic-sm8650-upstream-remoteproc-v4-0-a96c3e5f0913@linaro.org>
+ <20231208-topic-sm8650-upstream-remoteproc-v4-2-a96c3e5f0913@linaro.org>
+ <76f18323-a59e-4724-96ec-6306e5dcd2dc@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <76f18323-a59e-4724-96ec-6306e5dcd2dc@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello I found a bug in kernel/perf in the lastest upstream linux 6.7.rc5
-possible deadlock in down_trylock/perf_event_open
+On 09/12/2023 19:06, Konrad Dybcio wrote:
+> On 8.12.2023 16:04, Neil Armstrong wrote:
+>> The current memory region assign only supports a single
+>> memory region.
+>>
+>> But new platforms introduces more regions to make the
+>> memory requirements more flexible for various use cases.
+>> Those new platforms also shares the memory region between the
+>> DSP and HLOS.
+>>
+>> To handle this, make the region assign more generic in order
+>> to support more than a single memory region and also permit
+>> setting the regions permissions as shared.
+>>
+>> Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> [...]
+> 
+>> +	for (offset = 0; offset < adsp->region_assign_count; ++offset) {
+>> +		struct reserved_mem *rmem = NULL;
+>> +
+>> +		node = of_parse_phandle(adsp->dev->of_node, "memory-region",
+>> +					adsp->region_assign_idx + offset);
+>> +		if (node)
+>> +			rmem = of_reserved_mem_lookup(node);
+>> +		of_node_put(node);
+> Shouldn't this only be called when parse_phandle succeeds? (separate
+> patch with a fix + cc stable if so?)
+
+It's not a bug, it was added like that because of_node_put() already
+checks for a NULL pointer:
+https://elixir.bootlin.com/linux/v6.7-rc5/source/drivers/of/dynamic.c#L45
+
+> 
+>> +		if (!rmem) {
+>> +			dev_err(adsp->dev, "unable to resolve shareable memory-region index %d\n",
+>> +				offset);
+>> +			return -EINVAL;
+>> +		}
+>>   
+>> -	perm.vmid = QCOM_SCM_VMID_MSS_MSA;
+>> -	perm.perm = QCOM_SCM_PERM_RW;
+>> +		if (adsp->region_assign_shared)  {
+>> +			perm[0].vmid = QCOM_SCM_VMID_HLOS;
+>> +			perm[0].perm = QCOM_SCM_PERM_RW;
+>> +			perm[1].vmid = adsp->region_assign_vmid;
+>> +			perm[1].perm = QCOM_SCM_PERM_RW;
+>> +			perm_size = 2;
+>> +		} else {
+>> +			perm[0].vmid = adsp->region_assign_vmid;
+>> +			perm[0].perm = QCOM_SCM_PERM_RW;
+>> +			perm_size = 1;
+>> +		}
+>>   
+>> -	adsp->region_assign_phys = rmem->base;
+>> -	adsp->region_assign_size = rmem->size;
+>> -	adsp->region_assign_perms = BIT(QCOM_SCM_VMID_HLOS);
+>> +		adsp->region_assign_phys[offset] = rmem->base;
+>> +		adsp->region_assign_size[offset] = rmem->size;
+>> +		adsp->region_assign_perms[offset] = BIT(QCOM_SCM_VMID_HLOS);
+>>   
+>> -	ret = qcom_scm_assign_mem(adsp->region_assign_phys,
+>> -				  adsp->region_assign_size,
+>> -				  &adsp->region_assign_perms,
+> I think this should be renamed to region_assign_owner(s)
+
+Why ? this bitfield is names "perms" everywhere qcom_scm_assign_mem is used
+
+> 
+>> -				  &perm, 1);
+>> -	if (ret < 0) {
+>> -		dev_err(adsp->dev, "assign memory failed\n");
+>> -		return ret;
+>> +		ret = qcom_scm_assign_mem(adsp->region_assign_phys[offset],
+>> +					  adsp->region_assign_size[offset],
+>> +					  &adsp->region_assign_perms[offset],
+>> +					  perm, perm_size);
+>> +		if (ret < 0) {
+>> +			dev_err(adsp->dev, "assign memory %d failed\n", offset);
+>> +			return ret;
+>> +		}
+>>   	}
+>>   
+>>   	return 0;
+>> @@ -629,20 +653,23 @@ static int adsp_assign_memory_region(struct qcom_adsp *adsp)
+>>   static void adsp_unassign_memory_region(struct qcom_adsp *adsp)
+>>   {
+>>   	struct qcom_scm_vmperm perm;
+>> +	int offset;
+>>   	int ret;
+>>   
+>> -	if (!adsp->region_assign_idx)
+>> +	if (!adsp->region_assign_idx || adsp->region_assign_shared)
+> So when it's *shared*, we don't want to un-assign it?
+
+Exact, when shared the region stays shared, as downstream does, un-assigning will fail
+in this case.
+
+> 
+> Konrad
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
-
-kernel: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-Kernel config: https://github.com/google/syzkaller/commits/17e6d52686f8a56935991f1b066798279f76504a
-
-in the lastest commit, the crash like:
-
-
-syzkaller login: root
-Linux syzkaller 6.7.0-rc5 #3 SMP PREEMPT_DYNAMIC Mon Dec 11 17:02:24
-HKT 2023 x86_64
-root@syzkaller:~# ./572
-[  113.795108][ T8266] ------------[ cut here ]------------
-[  113.795707][ T8266] WARNING: CPU: 1 PID: 8266 at
-kernel/events/core.c:1950 __do_sys_perf_event_open0
-[  113.797339][ T8266] Modules linked in:
-[  113.797681][ T8266] CPU: 1 PID: 8266 Comm: 572 Not tainted 6.7.0-rc5 #3
-[  113.798239][ T8266] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.16.2-debian-1.16.4
-[  113.799161][ T8266] RIP: 0010:__do_sys_perf_event_open+0x2747/0x2c70
-[  113.799722][ T8266] Code: ce ff 48 8d b8 a8 00 00 00 e8 e5 ce 99 08
-bf 01 00 00 00 89 c3 89 c6 e8 80
-[  113.801287][ T8266] RSP: 0018:ffffc900131c7d90 EFLAGS: 00010293
-[  113.801798][ T8266] RAX: 0000000000000000 RBX: 00000000ffffffff
-RCX: ffffffff81b30db9
-[  113.802447][ T8266] RDX: ffff88825d344a40 RSI: ffffffff81b30dc7
-RDI: 0000000000000005
-[  113.803098][ T8266] RBP: ffff888107678008 R08: 0000000000000005
-R09: 0000000000000001
-[  113.803752][ T8266] R10: 0000000000000000 R11: ffffffff910e4bb8
-R12: ffff88825c15b700
-[  113.804406][ T8266] R13: 1ffff92002638fbd R14: ffff88825d344a40
-R15: ffff888107678008
-[  113.805057][ T8266] FS:  000000000144f380(0000)
-GS:ffff888437c00000(0000) knlGS:0000000000000000
-[  113.805831][ T8266] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  113.806397][ T8266] CR2: 0000000020000080 CR3: 000000025bf41000
-CR4: 0000000000750ef0
-[  113.807086][ T8266] DR0: 0000000000000000 DR1: 0000000000000000
-DR2: 0000000000000000
-[  113.807763][ T8266] DR3: 0000000000000000 DR6: 00000000fffe0ff0
-DR7: 0000000000000400
-[  113.808483][ T8266] PKRU: 55555554
-[  113.808805][ T8266] Call Trace:
-[  113.809101][ T8266]  <TASK>
-[  113.809404][ T8266]  ? show_regs+0x8f/0xa0
-[  113.809793][ T8266]  ? __warn+0xe6/0x380
-[  113.810157][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.810677][ T8266]  ? report_bug+0x3bc/0x580
-[  113.811816][ T8266]  ? handle_bug+0x3c/0x70
-[  113.812206][ T8266]  ? exc_invalid_op+0x17/0x40
-[  113.812626][ T8266]  ? asm_exc_invalid_op+0x1a/0x20
-[  113.813075][ T8266]  ? __do_sys_perf_event_open+0x2739/0x2c70
-[  113.813602][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.814121][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.814654][ T8266]  ? perf_event_set_output+0x5a0/0x5a0
-[  113.815144][ T8266]  ? syscall_enter_from_user_mode+0x26/0x80
-[  113.815669][ T8266]  do_syscall_64+0x3f/0x110
-[  113.816070][ T8266]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  113.816592][ T8266] RIP: 0033:0x43a4c9
-[  113.816949][ T8266] Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00
-00 00 00 48 89 f8 48 89 f7 48 88
-[  113.818635][ T8266] RSP: 002b:00007ffc88b30bf8 EFLAGS: 00000246
-ORIG_RAX: 000000000000012a
-[  113.819360][ T8266] RAX: ffffffffffffffda RBX: 00007ffc88b30e08
-RCX: 000000000043a4c9
-[  113.820036][ T8266] RDX: 0000000000000000 RSI: 0000000000000000
-RDI: 0000000020000080
-[  113.820717][ T8266] RBP: 00007ffc88b30c00 R08: 0000000000000000
-R09: 00007ffc88b30c20
-[  113.821394][ T8266] R10: 00000000ffffffff R11: 0000000000000246
-R12: 0000000000000001
-[  113.822065][ T8266] R13: 00007ffc88b30df8 R14: 0000000000000001
-R15: 0000000000000001
-[  113.822750][ T8266]  </TASK>
-[  113.823024][ T8266] Kernel panic - not syncing: kernel: panic_on_warn set ...
-[  113.823641][ T8266] CPU: 1 PID: 8266 Comm: 572 Not tainted 6.7.0-rc5 #3
-[  113.824218][ T8266] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.16.2-debian-1.16.4
-[  113.825091][ T8266] Call Trace:
-[  113.825389][ T8266]  <TASK>
-[  113.825647][ T8266]  dump_stack_lvl+0xd9/0x1b0
-[  113.826064][ T8266]  panic+0x6dc/0x790
-[  113.826413][ T8266]  ? panic_smp_self_stop+0xa0/0xa0
-[  113.826860][ T8266]  ? show_trace_log_lvl+0x363/0x4f0
-[  113.827321][ T8266]  ? check_panic_on_warn+0x1f/0xb0
-[  113.827771][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.828286][ T8266]  check_panic_on_warn+0xab/0xb0
-[  113.828734][ T8266]  __warn+0xf2/0x380
-[  113.829082][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.829606][ T8266]  report_bug+0x3bc/0x580
-[  113.829986][ T8266]  handle_bug+0x3c/0x70
-[  113.830353][ T8266]  exc_invalid_op+0x17/0x40
-[  113.830750][ T8266]  asm_exc_invalid_op+0x1a/0x20
-[  113.831175][ T8266] RIP: 0010:__do_sys_perf_event_open+0x2747/0x2c70
-[  113.831730][ T8266] Code: ce ff 48 8d b8 a8 00 00 00 e8 e5 ce 99 08
-bf 01 00 00 00 89 c3 89 c6 e8 80
-[  113.833342][ T8266] RSP: 0018:ffffc900131c7d90 EFLAGS: 00010293
-[  113.833865][ T8266] RAX: 0000000000000000 RBX: 00000000ffffffff
-RCX: ffffffff81b30db9
-[  113.834539][ T8266] RDX: ffff88825d344a40 RSI: ffffffff81b30dc7
-RDI: 0000000000000005
-[  113.835209][ T8266] RBP: ffff888107678008 R08: 0000000000000005
-R09: 0000000000000001
-[  113.835875][ T8266] R10: 0000000000000000 R11: ffffffff910e4bb8
-R12: ffff88825c15b700
-[  113.836542][ T8266] R13: 1ffff92002638fbd R14: ffff88825d344a40
-R15: ffff888107678008
-[  113.837218][ T8266]  ? __do_sys_perf_event_open+0x2739/0x2c70
-[  113.837732][ T8266]  ? __do_sys_perf_event_open+0x2747/0x2c70
-[  113.838253][ T8266]  ? perf_event_set_output+0x5a0/0x5a0
-[  113.838743][ T8266]  ? syscall_enter_from_user_mode+0x26/0x80
-[  113.839260][ T8266]  do_syscall_64+0x3f/0x110
-[  113.839657][ T8266]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-[  113.840172][ T8266] RIP: 0033:0x43a4c9
-[  113.840514][ T8266] Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00
-00 00 00 48 89 f8 48 89 f7 48 88
-[  113.842131][ T8266] RSP: 002b:00007ffc88b30bf8 EFLAGS: 00000246
-ORIG_RAX: 000000000000012a
-[  113.842841][ T8266] RAX: ffffffffffffffda RBX: 00007ffc88b30e08
-RCX: 000000000043a4c9
-[  113.843510][ T8266] RDX: 0000000000000000 RSI: 0000000000000000
-RDI: 0000000020000080
-[  113.844174][ T8266] RBP: 00007ffc88b30c00 R08: 0000000000000000
-R09: 00007ffc88b30c20
-[  113.844839][ T8266] R10: 00000000ffffffff R11: 0000000000000246
-R12: 0000000000000001
-[  113.845513][ T8266] R13: 00007ffc88b30df8 R14: 0000000000000001
-R15: 0000000000000001
-[  113.846193][ T8266]  </TASK>
-[  113.846636][ T8266] Kernel Offset: disabled
-[  113.847101][ T8266] Rebooting in 86400 seconds..
-
-
-
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <arpa/inet.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <linux/capability.h>
-#include <linux/genetlink.h>
-#include <linux/if_addr.h>
-#include <linux/if_ether.h>
-#include <linux/if_link.h>
-#include <linux/if_tun.h>
-#include <linux/in6.h>
-#include <linux/ip.h>
-#include <linux/neighbour.h>
-#include <linux/net.h>
-#include <linux/netlink.h>
-#include <linux/rtnetlink.h>
-#include <linux/tcp.h>
-#include <linux/veth.h>
-#include <net/if.h>
-#include <net/if_arp.h>
-#include <netinet/in.h>
-#include <sched.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/mount.h>
-#include <sys/prctl.h>
-#include <sys/resource.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <sys/wait.h>
-#include <unistd.h>
-
-static unsigned long long procid;
-
-#define BITMASK(bf_off, bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
-#define STORE_BY_BITMASK(type, htobe, addr, val, bf_off, bf_len)     \
-  *(type*)(addr) =                                                   \
-      htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | \
-            (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
-
-static bool write_file(const char* file, const char* what, ...) {
-  char buf[1024];
-  va_list args;
-  va_start(args, what);
-  vsnprintf(buf, sizeof(buf), what, args);
-  va_end(args);
-  buf[sizeof(buf) - 1] = 0;
-  int len = strlen(buf);
-  int fd = open(file, O_WRONLY | O_CLOEXEC);
-  if (fd == -1) return false;
-  if (write(fd, buf, len) != len) {
-    int err = errno;
-    close(fd);
-    errno = err;
-    return false;
-  }
-  close(fd);
-  return true;
-}
-
-struct nlmsg {
-  char* pos;
-  int nesting;
-  struct nlattr* nested[8];
-  char buf[4096];
-};
-
-static void netlink_init(struct nlmsg* nlmsg, int typ, int flags,
-                         const void* data, int size) {
-  memset(nlmsg, 0, sizeof(*nlmsg));
-  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
-  hdr->nlmsg_type = typ;
-  hdr->nlmsg_flags = NLM_F_REQUEST | NLM_F_ACK | flags;
-  memcpy(hdr + 1, data, size);
-  nlmsg->pos = (char*)(hdr + 1) + NLMSG_ALIGN(size);
-}
-
-static void netlink_attr(struct nlmsg* nlmsg, int typ, const void* data,
-                         int size) {
-  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
-  attr->nla_len = sizeof(*attr) + size;
-  attr->nla_type = typ;
-  if (size > 0) memcpy(attr + 1, data, size);
-  nlmsg->pos += NLMSG_ALIGN(attr->nla_len);
-}
-
-static void netlink_nest(struct nlmsg* nlmsg, int typ) {
-  struct nlattr* attr = (struct nlattr*)nlmsg->pos;
-  attr->nla_type = typ;
-  nlmsg->pos += sizeof(*attr);
-  nlmsg->nested[nlmsg->nesting++] = attr;
-}
-
-static void netlink_done(struct nlmsg* nlmsg) {
-  struct nlattr* attr = nlmsg->nested[--nlmsg->nesting];
-  attr->nla_len = nlmsg->pos - (char*)attr;
-}
-
-static int netlink_send_ext(struct nlmsg* nlmsg, int sock, uint16_t reply_type,
-                            int* reply_len, bool dofail) {
-  if (nlmsg->pos > nlmsg->buf + sizeof(nlmsg->buf) || nlmsg->nesting) exit(1);
-  struct nlmsghdr* hdr = (struct nlmsghdr*)nlmsg->buf;
-  hdr->nlmsg_len = nlmsg->pos - nlmsg->buf;
-  struct sockaddr_nl addr;
-  memset(&addr, 0, sizeof(addr));
-  addr.nl_family = AF_NETLINK;
-  ssize_t n = sendto(sock, nlmsg->buf, hdr->nlmsg_len, 0,
-                     (struct sockaddr*)&addr, sizeof(addr));
-  if (n != (ssize_t)hdr->nlmsg_len) {
-    if (dofail) exit(1);
-    return -1;
-  }
-  n = recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
-  if (reply_len) *reply_len = 0;
-  if (n < 0) {
-    if (dofail) exit(1);
-    return -1;
-  }
-  if (n < (ssize_t)sizeof(struct nlmsghdr)) {
-    errno = EINVAL;
-    if (dofail) exit(1);
-    return -1;
-  }
-  if (hdr->nlmsg_type == NLMSG_DONE) return 0;
-  if (reply_len && hdr->nlmsg_type == reply_type) {
-    *reply_len = n;
-    return 0;
-  }
-  if (n < (ssize_t)(sizeof(struct nlmsghdr) + sizeof(struct nlmsgerr))) {
-    errno = EINVAL;
-    if (dofail) exit(1);
-    return -1;
-  }
-  if (hdr->nlmsg_type != NLMSG_ERROR) {
-    errno = EINVAL;
-    if (dofail) exit(1);
-    return -1;
-  }
-  errno = -((struct nlmsgerr*)(hdr + 1))->error;
-  return -errno;
-}
-
-static int netlink_send(struct nlmsg* nlmsg, int sock) {
-  return netlink_send_ext(nlmsg, sock, 0, NULL, true);
-}
-
-static int netlink_query_family_id(struct nlmsg* nlmsg, int sock,
-                                   const char* family_name, bool dofail) {
-  struct genlmsghdr genlhdr;
-  memset(&genlhdr, 0, sizeof(genlhdr));
-  genlhdr.cmd = CTRL_CMD_GETFAMILY;
-  netlink_init(nlmsg, GENL_ID_CTRL, 0, &genlhdr, sizeof(genlhdr));
-  netlink_attr(nlmsg, CTRL_ATTR_FAMILY_NAME, family_name,
-               strnlen(family_name, GENL_NAMSIZ - 1) + 1);
-  int n = 0;
-  int err = netlink_send_ext(nlmsg, sock, GENL_ID_CTRL, &n, dofail);
-  if (err < 0) {
-    return -1;
-  }
-  uint16_t id = 0;
-  struct nlattr* attr = (struct nlattr*)(nlmsg->buf + NLMSG_HDRLEN +
-                                         NLMSG_ALIGN(sizeof(genlhdr)));
-  for (; (char*)attr < nlmsg->buf + n;
-       attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
-    if (attr->nla_type == CTRL_ATTR_FAMILY_ID) {
-      id = *(uint16_t*)(attr + 1);
-      break;
-    }
-  }
-  if (!id) {
-    errno = EINVAL;
-    return -1;
-  }
-  recv(sock, nlmsg->buf, sizeof(nlmsg->buf), 0);
-  return id;
-}
-
-static int netlink_next_msg(struct nlmsg* nlmsg, unsigned int offset,
-                            unsigned int total_len) {
-  struct nlmsghdr* hdr = (struct nlmsghdr*)(nlmsg->buf + offset);
-  if (offset == total_len || offset + hdr->nlmsg_len > total_len) return -1;
-  return hdr->nlmsg_len;
-}
-
-static void netlink_add_device_impl(struct nlmsg* nlmsg, const char* type,
-                                    const char* name, bool up) {
-  struct ifinfomsg hdr;
-  memset(&hdr, 0, sizeof(hdr));
-  if (up) hdr.ifi_flags = hdr.ifi_change = IFF_UP;
-  netlink_init(nlmsg, RTM_NEWLINK, NLM_F_EXCL | NLM_F_CREATE, &hdr,
-               sizeof(hdr));
-  if (name) netlink_attr(nlmsg, IFLA_IFNAME, name, strlen(name));
-  netlink_nest(nlmsg, IFLA_LINKINFO);
-  netlink_attr(nlmsg, IFLA_INFO_KIND, type, strlen(type));
-}
-
-static void netlink_add_device(struct nlmsg* nlmsg, int sock, const char* type,
-                               const char* name) {
-  netlink_add_device_impl(nlmsg, type, name, false);
-  netlink_done(nlmsg);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_veth(struct nlmsg* nlmsg, int sock, const char* name,
-                             const char* peer) {
-  netlink_add_device_impl(nlmsg, "veth", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  netlink_nest(nlmsg, VETH_INFO_PEER);
-  nlmsg->pos += sizeof(struct ifinfomsg);
-  netlink_attr(nlmsg, IFLA_IFNAME, peer, strlen(peer));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_xfrm(struct nlmsg* nlmsg, int sock, const char* name) {
-  netlink_add_device_impl(nlmsg, "xfrm", name, true);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  int if_id = 1;
-  netlink_attr(nlmsg, 2, &if_id, sizeof(if_id));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_hsr(struct nlmsg* nlmsg, int sock, const char* name,
-                            const char* slave1, const char* slave2) {
-  netlink_add_device_impl(nlmsg, "hsr", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  int ifindex1 = if_nametoindex(slave1);
-  netlink_attr(nlmsg, IFLA_HSR_SLAVE1, &ifindex1, sizeof(ifindex1));
-  int ifindex2 = if_nametoindex(slave2);
-  netlink_attr(nlmsg, IFLA_HSR_SLAVE2, &ifindex2, sizeof(ifindex2));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_linked(struct nlmsg* nlmsg, int sock, const char* type,
-                               const char* name, const char* link) {
-  netlink_add_device_impl(nlmsg, type, name, false);
-  netlink_done(nlmsg);
-  int ifindex = if_nametoindex(link);
-  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_vlan(struct nlmsg* nlmsg, int sock, const char* name,
-                             const char* link, uint16_t id, uint16_t proto) {
-  netlink_add_device_impl(nlmsg, "vlan", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  netlink_attr(nlmsg, IFLA_VLAN_ID, &id, sizeof(id));
-  netlink_attr(nlmsg, IFLA_VLAN_PROTOCOL, &proto, sizeof(proto));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int ifindex = if_nametoindex(link);
-  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_macvlan(struct nlmsg* nlmsg, int sock, const char* name,
-                                const char* link) {
-  netlink_add_device_impl(nlmsg, "macvlan", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  uint32_t mode = MACVLAN_MODE_BRIDGE;
-  netlink_attr(nlmsg, IFLA_MACVLAN_MODE, &mode, sizeof(mode));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int ifindex = if_nametoindex(link);
-  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_geneve(struct nlmsg* nlmsg, int sock, const char* name,
-                               uint32_t vni, struct in_addr* addr4,
-                               struct in6_addr* addr6) {
-  netlink_add_device_impl(nlmsg, "geneve", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  netlink_attr(nlmsg, IFLA_GENEVE_ID, &vni, sizeof(vni));
-  if (addr4) netlink_attr(nlmsg, IFLA_GENEVE_REMOTE, addr4, sizeof(*addr4));
-  if (addr6) netlink_attr(nlmsg, IFLA_GENEVE_REMOTE6, addr6, sizeof(*addr6));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-#define IFLA_IPVLAN_FLAGS 2
-#define IPVLAN_MODE_L3S 2
-#undef IPVLAN_F_VEPA
-#define IPVLAN_F_VEPA 2
-
-static void netlink_add_ipvlan(struct nlmsg* nlmsg, int sock, const char* name,
-                               const char* link, uint16_t mode,
-                               uint16_t flags) {
-  netlink_add_device_impl(nlmsg, "ipvlan", name, false);
-  netlink_nest(nlmsg, IFLA_INFO_DATA);
-  netlink_attr(nlmsg, IFLA_IPVLAN_MODE, &mode, sizeof(mode));
-  netlink_attr(nlmsg, IFLA_IPVLAN_FLAGS, &flags, sizeof(flags));
-  netlink_done(nlmsg);
-  netlink_done(nlmsg);
-  int ifindex = if_nametoindex(link);
-  netlink_attr(nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static void netlink_device_change(struct nlmsg* nlmsg, int sock,
-                                  const char* name, bool up, const char* master,
-                                  const void* mac, int macsize,
-                                  const char* new_name) {
-  struct ifinfomsg hdr;
-  memset(&hdr, 0, sizeof(hdr));
-  if (up) hdr.ifi_flags = hdr.ifi_change = IFF_UP;
-  hdr.ifi_index = if_nametoindex(name);
-  netlink_init(nlmsg, RTM_NEWLINK, 0, &hdr, sizeof(hdr));
-  if (new_name) netlink_attr(nlmsg, IFLA_IFNAME, new_name, strlen(new_name));
-  if (master) {
-    int ifindex = if_nametoindex(master);
-    netlink_attr(nlmsg, IFLA_MASTER, &ifindex, sizeof(ifindex));
-  }
-  if (macsize) netlink_attr(nlmsg, IFLA_ADDRESS, mac, macsize);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static int netlink_add_addr(struct nlmsg* nlmsg, int sock, const char* dev,
-                            const void* addr, int addrsize) {
-  struct ifaddrmsg hdr;
-  memset(&hdr, 0, sizeof(hdr));
-  hdr.ifa_family = addrsize == 4 ? AF_INET : AF_INET6;
-  hdr.ifa_prefixlen = addrsize == 4 ? 24 : 120;
-  hdr.ifa_scope = RT_SCOPE_UNIVERSE;
-  hdr.ifa_index = if_nametoindex(dev);
-  netlink_init(nlmsg, RTM_NEWADDR, NLM_F_CREATE | NLM_F_REPLACE, &hdr,
-               sizeof(hdr));
-  netlink_attr(nlmsg, IFA_LOCAL, addr, addrsize);
-  netlink_attr(nlmsg, IFA_ADDRESS, addr, addrsize);
-  return netlink_send(nlmsg, sock);
-}
-
-static void netlink_add_addr4(struct nlmsg* nlmsg, int sock, const char* dev,
-                              const char* addr) {
-  struct in_addr in_addr;
-  inet_pton(AF_INET, addr, &in_addr);
-  int err = netlink_add_addr(nlmsg, sock, dev, &in_addr, sizeof(in_addr));
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_addr6(struct nlmsg* nlmsg, int sock, const char* dev,
-                              const char* addr) {
-  struct in6_addr in6_addr;
-  inet_pton(AF_INET6, addr, &in6_addr);
-  int err = netlink_add_addr(nlmsg, sock, dev, &in6_addr, sizeof(in6_addr));
-  if (err < 0) {
-  }
-}
-
-static void netlink_add_neigh(struct nlmsg* nlmsg, int sock, const char* name,
-                              const void* addr, int addrsize, const void* mac,
-                              int macsize) {
-  struct ndmsg hdr;
-  memset(&hdr, 0, sizeof(hdr));
-  hdr.ndm_family = addrsize == 4 ? AF_INET : AF_INET6;
-  hdr.ndm_ifindex = if_nametoindex(name);
-  hdr.ndm_state = NUD_PERMANENT;
-  netlink_init(nlmsg, RTM_NEWNEIGH, NLM_F_EXCL | NLM_F_CREATE, &hdr,
-               sizeof(hdr));
-  netlink_attr(nlmsg, NDA_DST, addr, addrsize);
-  netlink_attr(nlmsg, NDA_LLADDR, mac, macsize);
-  int err = netlink_send(nlmsg, sock);
-  if (err < 0) {
-  }
-}
-
-static struct nlmsg nlmsg;
-
-static int tunfd = -1;
-
-#define TUN_IFACE "syz_tun"
-#define LOCAL_MAC 0xaaaaaaaaaaaa
-#define REMOTE_MAC 0xaaaaaaaaaabb
-#define LOCAL_IPV4 "172.20.20.170"
-#define REMOTE_IPV4 "172.20.20.187"
-#define LOCAL_IPV6 "fe80::aa"
-#define REMOTE_IPV6 "fe80::bb"
-
-#define IFF_NAPI 0x0010
-
-static void initialize_tun(void) {
-  tunfd = open("/dev/net/tun", O_RDWR | O_NONBLOCK);
-  if (tunfd == -1) {
-    printf("tun: can't open /dev/net/tun: please enable CONFIG_TUN=y\n");
-    printf("otherwise fuzzing or reproducing might not work as intended\n");
-    return;
-  }
-  const int kTunFd = 200;
-  if (dup2(tunfd, kTunFd) < 0) exit(1);
-  close(tunfd);
-  tunfd = kTunFd;
-  struct ifreq ifr;
-  memset(&ifr, 0, sizeof(ifr));
-  strncpy(ifr.ifr_name, TUN_IFACE, IFNAMSIZ);
-  ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
-  if (ioctl(tunfd, TUNSETIFF, (void*)&ifr) < 0) {
-    exit(1);
-  }
-  char sysctl[64];
-  sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/accept_dad", TUN_IFACE);
-  write_file(sysctl, "0");
-  sprintf(sysctl, "/proc/sys/net/ipv6/conf/%s/router_solicitations", TUN_IFACE);
-  write_file(sysctl, "0");
-  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-  if (sock == -1) exit(1);
-  netlink_add_addr4(&nlmsg, sock, TUN_IFACE, LOCAL_IPV4);
-  netlink_add_addr6(&nlmsg, sock, TUN_IFACE, LOCAL_IPV6);
-  uint64_t macaddr = REMOTE_MAC;
-  struct in_addr in_addr;
-  inet_pton(AF_INET, REMOTE_IPV4, &in_addr);
-  netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in_addr, sizeof(in_addr),
-                    &macaddr, ETH_ALEN);
-  struct in6_addr in6_addr;
-  inet_pton(AF_INET6, REMOTE_IPV6, &in6_addr);
-  netlink_add_neigh(&nlmsg, sock, TUN_IFACE, &in6_addr, sizeof(in6_addr),
-                    &macaddr, ETH_ALEN);
-  macaddr = LOCAL_MAC;
-  netlink_device_change(&nlmsg, sock, TUN_IFACE, true, 0, &macaddr, ETH_ALEN,
-                        NULL);
-  close(sock);
-}
-
-#define DEVLINK_FAMILY_NAME "devlink"
-
-#define DEVLINK_CMD_PORT_GET 5
-#define DEVLINK_ATTR_BUS_NAME 1
-#define DEVLINK_ATTR_DEV_NAME 2
-#define DEVLINK_ATTR_NETDEV_NAME 7
-
-static struct nlmsg nlmsg2;
-
-static void initialize_devlink_ports(const char* bus_name, const char* dev_name,
-                                     const char* netdev_prefix) {
-  struct genlmsghdr genlhdr;
-  int len, total_len, id, err, offset;
-  uint16_t netdev_index;
-  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-  if (sock == -1) exit(1);
-  int rtsock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-  if (rtsock == -1) exit(1);
-  id = netlink_query_family_id(&nlmsg, sock, DEVLINK_FAMILY_NAME, true);
-  if (id == -1) goto error;
-  memset(&genlhdr, 0, sizeof(genlhdr));
-  genlhdr.cmd = DEVLINK_CMD_PORT_GET;
-  netlink_init(&nlmsg, id, NLM_F_DUMP, &genlhdr, sizeof(genlhdr));
-  netlink_attr(&nlmsg, DEVLINK_ATTR_BUS_NAME, bus_name, strlen(bus_name) + 1);
-  netlink_attr(&nlmsg, DEVLINK_ATTR_DEV_NAME, dev_name, strlen(dev_name) + 1);
-  err = netlink_send_ext(&nlmsg, sock, id, &total_len, true);
-  if (err < 0) {
-    goto error;
-  }
-  offset = 0;
-  netdev_index = 0;
-  while ((len = netlink_next_msg(&nlmsg, offset, total_len)) != -1) {
-    struct nlattr* attr = (struct nlattr*)(nlmsg.buf + offset + NLMSG_HDRLEN +
-                                           NLMSG_ALIGN(sizeof(genlhdr)));
-    for (; (char*)attr < nlmsg.buf + offset + len;
-         attr = (struct nlattr*)((char*)attr + NLMSG_ALIGN(attr->nla_len))) {
-      if (attr->nla_type == DEVLINK_ATTR_NETDEV_NAME) {
-        char* port_name;
-        char netdev_name[IFNAMSIZ];
-        port_name = (char*)(attr + 1);
-        snprintf(netdev_name, sizeof(netdev_name), "%s%d", netdev_prefix,
-                 netdev_index);
-        netlink_device_change(&nlmsg2, rtsock, port_name, true, 0, 0, 0,
-                              netdev_name);
-        break;
-      }
-    }
-    offset += len;
-    netdev_index++;
-  }
-error:
-  close(rtsock);
-  close(sock);
-}
-
-#define DEV_IPV4 "172.20.20.%d"
-#define DEV_IPV6 "fe80::%02x"
-#define DEV_MAC 0x00aaaaaaaaaa
-
-static void netdevsim_add(unsigned int addr, unsigned int port_count) {
-  write_file("/sys/bus/netdevsim/del_device", "%u", addr);
-  if (write_file("/sys/bus/netdevsim/new_device", "%u %u", addr, port_count)) {
-    char buf[32];
-    snprintf(buf, sizeof(buf), "netdevsim%d", addr);
-    initialize_devlink_ports("netdevsim", buf, "netdevsim");
-  }
-}
-
-#define WG_GENL_NAME "wireguard"
-enum wg_cmd {
-  WG_CMD_GET_DEVICE,
-  WG_CMD_SET_DEVICE,
-};
-enum wgdevice_attribute {
-  WGDEVICE_A_UNSPEC,
-  WGDEVICE_A_IFINDEX,
-  WGDEVICE_A_IFNAME,
-  WGDEVICE_A_PRIVATE_KEY,
-  WGDEVICE_A_PUBLIC_KEY,
-  WGDEVICE_A_FLAGS,
-  WGDEVICE_A_LISTEN_PORT,
-  WGDEVICE_A_FWMARK,
-  WGDEVICE_A_PEERS,
-};
-enum wgpeer_attribute {
-  WGPEER_A_UNSPEC,
-  WGPEER_A_PUBLIC_KEY,
-  WGPEER_A_PRESHARED_KEY,
-  WGPEER_A_FLAGS,
-  WGPEER_A_ENDPOINT,
-  WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-  WGPEER_A_LAST_HANDSHAKE_TIME,
-  WGPEER_A_RX_BYTES,
-  WGPEER_A_TX_BYTES,
-  WGPEER_A_ALLOWEDIPS,
-  WGPEER_A_PROTOCOL_VERSION,
-};
-enum wgallowedip_attribute {
-  WGALLOWEDIP_A_UNSPEC,
-  WGALLOWEDIP_A_FAMILY,
-  WGALLOWEDIP_A_IPADDR,
-  WGALLOWEDIP_A_CIDR_MASK,
-};
-
-static void netlink_wireguard_setup(void) {
-  const char ifname_a[] = "wg0";
-  const char ifname_b[] = "wg1";
-  const char ifname_c[] = "wg2";
-  const char private_a[] =
-      "\xa0\x5c\xa8\x4f\x6c\x9c\x8e\x38\x53\xe2\xfd\x7a\x70\xae\x0f\xb2\x0f\xa1"
-      "\x52\x60\x0c\xb0\x08\x45\x17\x4f\x08\x07\x6f\x8d\x78\x43";
-  const char private_b[] =
-      "\xb0\x80\x73\xe8\xd4\x4e\x91\xe3\xda\x92\x2c\x22\x43\x82\x44\xbb\x88\x5c"
-      "\x69\xe2\x69\xc8\xe9\xd8\x35\xb1\x14\x29\x3a\x4d\xdc\x6e";
-  const char private_c[] =
-      "\xa0\xcb\x87\x9a\x47\xf5\xbc\x64\x4c\x0e\x69\x3f\xa6\xd0\x31\xc7\x4a\x15"
-      "\x53\xb6\xe9\x01\xb9\xff\x2f\x51\x8c\x78\x04\x2f\xb5\x42";
-  const char public_a[] =
-      "\x97\x5c\x9d\x81\xc9\x83\xc8\x20\x9e\xe7\x81\x25\x4b\x89\x9f\x8e\xd9\x25"
-      "\xae\x9f\x09\x23\xc2\x3c\x62\xf5\x3c\x57\xcd\xbf\x69\x1c";
-  const char public_b[] =
-      "\xd1\x73\x28\x99\xf6\x11\xcd\x89\x94\x03\x4d\x7f\x41\x3d\xc9\x57\x63\x0e"
-      "\x54\x93\xc2\x85\xac\xa4\x00\x65\xcb\x63\x11\xbe\x69\x6b";
-  const char public_c[] =
-      "\xf4\x4d\xa3\x67\xa8\x8e\xe6\x56\x4f\x02\x02\x11\x45\x67\x27\x08\x2f\x5c"
-      "\xeb\xee\x8b\x1b\xf5\xeb\x73\x37\x34\x1b\x45\x9b\x39\x22";
-  const uint16_t listen_a = 20001;
-  const uint16_t listen_b = 20002;
-  const uint16_t listen_c = 20003;
-  const uint16_t af_inet = AF_INET;
-  const uint16_t af_inet6 = AF_INET6;
-  const struct sockaddr_in endpoint_b_v4 = {
-      .sin_family = AF_INET,
-      .sin_port = htons(listen_b),
-      .sin_addr = {htonl(INADDR_LOOPBACK)}};
-  const struct sockaddr_in endpoint_c_v4 = {
-      .sin_family = AF_INET,
-      .sin_port = htons(listen_c),
-      .sin_addr = {htonl(INADDR_LOOPBACK)}};
-  struct sockaddr_in6 endpoint_a_v6 = {.sin6_family = AF_INET6,
-                                       .sin6_port = htons(listen_a)};
-  endpoint_a_v6.sin6_addr = in6addr_loopback;
-  struct sockaddr_in6 endpoint_c_v6 = {.sin6_family = AF_INET6,
-                                       .sin6_port = htons(listen_c)};
-  endpoint_c_v6.sin6_addr = in6addr_loopback;
-  const struct in_addr first_half_v4 = {0};
-  const struct in_addr second_half_v4 = {(uint32_t)htonl(128 << 24)};
-  const struct in6_addr first_half_v6 = {{{0}}};
-  const struct in6_addr second_half_v6 = {{{0x80}}};
-  const uint8_t half_cidr = 1;
-  const uint16_t persistent_keepalives[] = {1, 3, 7, 9, 14, 19};
-  struct genlmsghdr genlhdr = {.cmd = WG_CMD_SET_DEVICE, .version = 1};
-  int sock;
-  int id, err;
-  sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-  if (sock == -1) {
-    return;
-  }
-  id = netlink_query_family_id(&nlmsg, sock, WG_GENL_NAME, true);
-  if (id == -1) goto error;
-  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
-  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_a, strlen(ifname_a) + 1);
-  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_a, 32);
-  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_a, 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
-               sizeof(endpoint_b_v4));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[0], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
-               sizeof(first_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
-               sizeof(first_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v6,
-               sizeof(endpoint_c_v6));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[1], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
-               sizeof(second_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
-               sizeof(second_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  err = netlink_send(&nlmsg, sock);
-  if (err < 0) {
-  }
-  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
-  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_b, strlen(ifname_b) + 1);
-  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_b, 32);
-  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_b, 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
-               sizeof(endpoint_a_v6));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[2], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
-               sizeof(first_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
-               sizeof(first_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_c, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_c_v4,
-               sizeof(endpoint_c_v4));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[3], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
-               sizeof(second_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
-               sizeof(second_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  err = netlink_send(&nlmsg, sock);
-  if (err < 0) {
-  }
-  netlink_init(&nlmsg, id, 0, &genlhdr, sizeof(genlhdr));
-  netlink_attr(&nlmsg, WGDEVICE_A_IFNAME, ifname_c, strlen(ifname_c) + 1);
-  netlink_attr(&nlmsg, WGDEVICE_A_PRIVATE_KEY, private_c, 32);
-  netlink_attr(&nlmsg, WGDEVICE_A_LISTEN_PORT, &listen_c, 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGDEVICE_A_PEERS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_a, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_a_v6,
-               sizeof(endpoint_a_v6));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[4], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v4,
-               sizeof(first_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &first_half_v6,
-               sizeof(first_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGPEER_A_PUBLIC_KEY, public_b, 32);
-  netlink_attr(&nlmsg, WGPEER_A_ENDPOINT, &endpoint_b_v4,
-               sizeof(endpoint_b_v4));
-  netlink_attr(&nlmsg, WGPEER_A_PERSISTENT_KEEPALIVE_INTERVAL,
-               &persistent_keepalives[5], 2);
-  netlink_nest(&nlmsg, NLA_F_NESTED | WGPEER_A_ALLOWEDIPS);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v4,
-               sizeof(second_half_v4));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_nest(&nlmsg, NLA_F_NESTED | 0);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_FAMILY, &af_inet6, 2);
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_IPADDR, &second_half_v6,
-               sizeof(second_half_v6));
-  netlink_attr(&nlmsg, WGALLOWEDIP_A_CIDR_MASK, &half_cidr, 1);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  netlink_done(&nlmsg);
-  err = netlink_send(&nlmsg, sock);
-  if (err < 0) {
-  }
-
-error:
-  close(sock);
-}
-
-static void initialize_netdevices(void) {
-  char netdevsim[16];
-  sprintf(netdevsim, "netdevsim%d", (int)procid);
-  struct {
-    const char* type;
-    const char* dev;
-  } devtypes[] = {
-      {"ip6gretap", "ip6gretap0"}, {"bridge", "bridge0"}, {"vcan", "vcan0"},
-      {"bond", "bond0"},           {"team", "team0"},     {"dummy", "dummy0"},
-      {"nlmon", "nlmon0"},         {"caif", "caif0"},     {"batadv", "batadv0"},
-      {"vxcan", "vxcan1"},         {"veth", 0},           {"wireguard", "wg0"},
-      {"wireguard", "wg1"},        {"wireguard", "wg2"},
-  };
-  const char* devmasters[] = {"bridge", "bond", "team", "batadv"};
-  struct {
-    const char* name;
-    int macsize;
-    bool noipv6;
-  } devices[] = {
-      {"lo", ETH_ALEN},
-      {"sit0", 0},
-      {"bridge0", ETH_ALEN},
-      {"vcan0", 0, true},
-      {"tunl0", 0},
-      {"gre0", 0},
-      {"gretap0", ETH_ALEN},
-      {"ip_vti0", 0},
-      {"ip6_vti0", 0},
-      {"ip6tnl0", 0},
-      {"ip6gre0", 0},
-      {"ip6gretap0", ETH_ALEN},
-      {"erspan0", ETH_ALEN},
-      {"bond0", ETH_ALEN},
-      {"veth0", ETH_ALEN},
-      {"veth1", ETH_ALEN},
-      {"team0", ETH_ALEN},
-      {"veth0_to_bridge", ETH_ALEN},
-      {"veth1_to_bridge", ETH_ALEN},
-      {"veth0_to_bond", ETH_ALEN},
-      {"veth1_to_bond", ETH_ALEN},
-      {"veth0_to_team", ETH_ALEN},
-      {"veth1_to_team", ETH_ALEN},
-      {"veth0_to_hsr", ETH_ALEN},
-      {"veth1_to_hsr", ETH_ALEN},
-      {"hsr0", 0},
-      {"dummy0", ETH_ALEN},
-      {"nlmon0", 0},
-      {"vxcan0", 0, true},
-      {"vxcan1", 0, true},
-      {"caif0", ETH_ALEN},
-      {"batadv0", ETH_ALEN},
-      {netdevsim, ETH_ALEN},
-      {"xfrm0", ETH_ALEN},
-      {"veth0_virt_wifi", ETH_ALEN},
-      {"veth1_virt_wifi", ETH_ALEN},
-      {"virt_wifi0", ETH_ALEN},
-      {"veth0_vlan", ETH_ALEN},
-      {"veth1_vlan", ETH_ALEN},
-      {"vlan0", ETH_ALEN},
-      {"vlan1", ETH_ALEN},
-      {"macvlan0", ETH_ALEN},
-      {"macvlan1", ETH_ALEN},
-      {"ipvlan0", ETH_ALEN},
-      {"ipvlan1", ETH_ALEN},
-      {"veth0_macvtap", ETH_ALEN},
-      {"veth1_macvtap", ETH_ALEN},
-      {"macvtap0", ETH_ALEN},
-      {"macsec0", ETH_ALEN},
-      {"veth0_to_batadv", ETH_ALEN},
-      {"veth1_to_batadv", ETH_ALEN},
-      {"batadv_slave_0", ETH_ALEN},
-      {"batadv_slave_1", ETH_ALEN},
-      {"geneve0", ETH_ALEN},
-      {"geneve1", ETH_ALEN},
-      {"wg0", 0},
-      {"wg1", 0},
-      {"wg2", 0},
-  };
-  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-  if (sock == -1) exit(1);
-  unsigned i;
-  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++)
-    netlink_add_device(&nlmsg, sock, devtypes[i].type, devtypes[i].dev);
-  for (i = 0; i < sizeof(devmasters) / (sizeof(devmasters[0])); i++) {
-    char master[32], slave0[32], veth0[32], slave1[32], veth1[32];
-    sprintf(slave0, "%s_slave_0", devmasters[i]);
-    sprintf(veth0, "veth0_to_%s", devmasters[i]);
-    netlink_add_veth(&nlmsg, sock, slave0, veth0);
-    sprintf(slave1, "%s_slave_1", devmasters[i]);
-    sprintf(veth1, "veth1_to_%s", devmasters[i]);
-    netlink_add_veth(&nlmsg, sock, slave1, veth1);
-    sprintf(master, "%s0", devmasters[i]);
-    netlink_device_change(&nlmsg, sock, slave0, false, master, 0, 0, NULL);
-    netlink_device_change(&nlmsg, sock, slave1, false, master, 0, 0, NULL);
-  }
-  netlink_add_xfrm(&nlmsg, sock, "xfrm0");
-  netlink_device_change(&nlmsg, sock, "bridge_slave_0", true, 0, 0, 0, NULL);
-  netlink_device_change(&nlmsg, sock, "bridge_slave_1", true, 0, 0, 0, NULL);
-  netlink_add_veth(&nlmsg, sock, "hsr_slave_0", "veth0_to_hsr");
-  netlink_add_veth(&nlmsg, sock, "hsr_slave_1", "veth1_to_hsr");
-  netlink_add_hsr(&nlmsg, sock, "hsr0", "hsr_slave_0", "hsr_slave_1");
-  netlink_device_change(&nlmsg, sock, "hsr_slave_0", true, 0, 0, 0, NULL);
-  netlink_device_change(&nlmsg, sock, "hsr_slave_1", true, 0, 0, 0, NULL);
-  netlink_add_veth(&nlmsg, sock, "veth0_virt_wifi", "veth1_virt_wifi");
-  netlink_add_linked(&nlmsg, sock, "virt_wifi", "virt_wifi0",
-                     "veth1_virt_wifi");
-  netlink_add_veth(&nlmsg, sock, "veth0_vlan", "veth1_vlan");
-  netlink_add_vlan(&nlmsg, sock, "vlan0", "veth0_vlan", 0, htons(ETH_P_8021Q));
-  netlink_add_vlan(&nlmsg, sock, "vlan1", "veth0_vlan", 1, htons(ETH_P_8021AD));
-  netlink_add_macvlan(&nlmsg, sock, "macvlan0", "veth1_vlan");
-  netlink_add_macvlan(&nlmsg, sock, "macvlan1", "veth1_vlan");
-  netlink_add_ipvlan(&nlmsg, sock, "ipvlan0", "veth0_vlan", IPVLAN_MODE_L2, 0);
-  netlink_add_ipvlan(&nlmsg, sock, "ipvlan1", "veth0_vlan", IPVLAN_MODE_L3S,
-                     IPVLAN_F_VEPA);
-  netlink_add_veth(&nlmsg, sock, "veth0_macvtap", "veth1_macvtap");
-  netlink_add_linked(&nlmsg, sock, "macvtap", "macvtap0", "veth0_macvtap");
-  netlink_add_linked(&nlmsg, sock, "macsec", "macsec0", "veth1_macvtap");
-  char addr[32];
-  sprintf(addr, DEV_IPV4, 14 + 10);
-  struct in_addr geneve_addr4;
-  if (inet_pton(AF_INET, addr, &geneve_addr4) <= 0) exit(1);
-  struct in6_addr geneve_addr6;
-  if (inet_pton(AF_INET6, "fc00::01", &geneve_addr6) <= 0) exit(1);
-  netlink_add_geneve(&nlmsg, sock, "geneve0", 0, &geneve_addr4, 0);
-  netlink_add_geneve(&nlmsg, sock, "geneve1", 1, 0, &geneve_addr6);
-  netdevsim_add((int)procid, 4);
-  netlink_wireguard_setup();
-  for (i = 0; i < sizeof(devices) / (sizeof(devices[0])); i++) {
-    char addr[32];
-    sprintf(addr, DEV_IPV4, i + 10);
-    netlink_add_addr4(&nlmsg, sock, devices[i].name, addr);
-    if (!devices[i].noipv6) {
-      sprintf(addr, DEV_IPV6, i + 10);
-      netlink_add_addr6(&nlmsg, sock, devices[i].name, addr);
-    }
-    uint64_t macaddr = DEV_MAC + ((i + 10ull) << 40);
-    netlink_device_change(&nlmsg, sock, devices[i].name, true, 0, &macaddr,
-                          devices[i].macsize, NULL);
-  }
-  close(sock);
-}
-static void initialize_netdevices_init(void) {
-  int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-  if (sock == -1) exit(1);
-  struct {
-    const char* type;
-    int macsize;
-    bool noipv6;
-    bool noup;
-  } devtypes[] = {
-      {"nr", 7, true},
-      {"rose", 5, true, true},
-  };
-  unsigned i;
-  for (i = 0; i < sizeof(devtypes) / sizeof(devtypes[0]); i++) {
-    char dev[32], addr[32];
-    sprintf(dev, "%s%d", devtypes[i].type, (int)procid);
-    sprintf(addr, "172.30.%d.%d", i, (int)procid + 1);
-    netlink_add_addr4(&nlmsg, sock, dev, addr);
-    if (!devtypes[i].noipv6) {
-      sprintf(addr, "fe88::%02x:%02x", i, (int)procid + 1);
-      netlink_add_addr6(&nlmsg, sock, dev, addr);
-    }
-    int macsize = devtypes[i].macsize;
-    uint64_t macaddr = 0xbbbbbb +
-                       ((unsigned long long)i << (8 * (macsize - 2))) +
-                       (procid << (8 * (macsize - 1)));
-    netlink_device_change(&nlmsg, sock, dev, !devtypes[i].noup, 0, &macaddr,
-                          macsize, NULL);
-  }
-  close(sock);
-}
-
-static void setup_common() {
-  if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
-  }
-}
-
-static void setup_binderfs() {
-  if (mkdir("/dev/binderfs", 0777)) {
-  }
-  if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
-  }
-  if (symlink("/dev/binderfs", "./binderfs")) {
-  }
-}
-
-static void loop();
-
-static void sandbox_common() {
-  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-  setsid();
-  struct rlimit rlim;
-  rlim.rlim_cur = rlim.rlim_max = (200 << 20);
-  setrlimit(RLIMIT_AS, &rlim);
-  rlim.rlim_cur = rlim.rlim_max = 32 << 20;
-  setrlimit(RLIMIT_MEMLOCK, &rlim);
-  rlim.rlim_cur = rlim.rlim_max = 136 << 20;
-  setrlimit(RLIMIT_FSIZE, &rlim);
-  rlim.rlim_cur = rlim.rlim_max = 1 << 20;
-  setrlimit(RLIMIT_STACK, &rlim);
-  rlim.rlim_cur = rlim.rlim_max = 128 << 20;
-  setrlimit(RLIMIT_CORE, &rlim);
-  rlim.rlim_cur = rlim.rlim_max = 256;
-  setrlimit(RLIMIT_NOFILE, &rlim);
-  if (unshare(CLONE_NEWNS)) {
-  }
-  if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
-  }
-  if (unshare(CLONE_NEWIPC)) {
-  }
-  if (unshare(0x02000000)) {
-  }
-  if (unshare(CLONE_NEWUTS)) {
-  }
-  if (unshare(CLONE_SYSVSEM)) {
-  }
-  typedef struct {
-    const char* name;
-    const char* value;
-  } sysctl_t;
-  static const sysctl_t sysctls[] = {
-      {"/proc/sys/kernel/shmmax", "16777216"},
-      {"/proc/sys/kernel/shmall", "536870912"},
-      {"/proc/sys/kernel/shmmni", "1024"},
-      {"/proc/sys/kernel/msgmax", "8192"},
-      {"/proc/sys/kernel/msgmni", "1024"},
-      {"/proc/sys/kernel/msgmnb", "1024"},
-      {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
-  };
-  unsigned i;
-  for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
-    write_file(sysctls[i].name, sysctls[i].value);
-}
-
-static int wait_for_loop(int pid) {
-  if (pid < 0) exit(1);
-  int status = 0;
-  while (waitpid(-1, &status, __WALL) != pid) {
-  }
-  return WEXITSTATUS(status);
-}
-
-static void drop_caps(void) {
-  struct __user_cap_header_struct cap_hdr = {};
-  struct __user_cap_data_struct cap_data[2] = {};
-  cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
-  cap_hdr.pid = getpid();
-  if (syscall(SYS_capget, &cap_hdr, &cap_data)) exit(1);
-  const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
-  cap_data[0].effective &= ~drop;
-  cap_data[0].permitted &= ~drop;
-  cap_data[0].inheritable &= ~drop;
-  if (syscall(SYS_capset, &cap_hdr, &cap_data)) exit(1);
-}
-
-static int do_sandbox_none(void) {
-  if (unshare(CLONE_NEWPID)) {
-  }
-  int pid = fork();
-  if (pid != 0) return wait_for_loop(pid);
-  setup_common();
-  sandbox_common();
-  drop_caps();
-  initialize_netdevices_init();
-  if (unshare(CLONE_NEWNET)) {
-  }
-  write_file("/proc/sys/net/ipv4/ping_group_range", "0 65535");
-  initialize_tun();
-  initialize_netdevices();
-  setup_binderfs();
-  loop();
-  exit(1);
-}
-
-static void setup_binfmt_misc() {
-  if (mount(0, "/proc/sys/fs/binfmt_misc", "binfmt_misc", 0, 0)) {
-  }
-  write_file("/proc/sys/fs/binfmt_misc/register", ":syz0:M:0:\x01::./file0:");
-  write_file("/proc/sys/fs/binfmt_misc/register",
-             ":syz1:M:1:\x02::./file0:POC");
-}
-
-#define NL802154_CMD_SET_SHORT_ADDR 11
-#define NL802154_ATTR_IFINDEX 3
-#define NL802154_ATTR_SHORT_ADDR 10
-
-static void setup_802154() {
-  int sock_route = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-  if (sock_route == -1) exit(1);
-  int sock_generic = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-  if (sock_generic < 0) exit(1);
-  int nl802154_family_id =
-      netlink_query_family_id(&nlmsg, sock_generic, "nl802154", true);
-  for (int i = 0; i < 2; i++) {
-    char devname[] = "wpan0";
-    devname[strlen(devname) - 1] += i;
-    uint64_t hwaddr = 0xaaaaaaaaaaaa0002 + (i << 8);
-    uint16_t shortaddr = 0xaaa0 + i;
-    int ifindex = if_nametoindex(devname);
-    struct genlmsghdr genlhdr;
-    memset(&genlhdr, 0, sizeof(genlhdr));
-    genlhdr.cmd = NL802154_CMD_SET_SHORT_ADDR;
-    netlink_init(&nlmsg, nl802154_family_id, 0, &genlhdr, sizeof(genlhdr));
-    netlink_attr(&nlmsg, NL802154_ATTR_IFINDEX, &ifindex, sizeof(ifindex));
-    netlink_attr(&nlmsg, NL802154_ATTR_SHORT_ADDR, &shortaddr,
-                 sizeof(shortaddr));
-    int err = netlink_send(&nlmsg, sock_generic);
-    if (err < 0) {
-    }
-    netlink_device_change(&nlmsg, sock_route, devname, true, 0, &hwaddr,
-                          sizeof(hwaddr), 0);
-    if (i == 0) {
-      netlink_add_device_impl(&nlmsg, "lowpan", "lowpan0", false);
-      netlink_done(&nlmsg);
-      netlink_attr(&nlmsg, IFLA_LINK, &ifindex, sizeof(ifindex));
-      int err = netlink_send(&nlmsg, sock_route);
-      if (err < 0) {
-      }
-    }
-  }
-  close(sock_route);
-  close(sock_generic);
-}
-
-void loop(void) {
-  *(uint32_t*)0x20000080 = 4;
-  *(uint32_t*)0x20000084 = 0x80;
-  *(uint8_t*)0x20000088 = 0;
-  *(uint8_t*)0x20000089 = 0;
-  *(uint8_t*)0x2000008a = 0;
-  *(uint8_t*)0x2000008b = 0;
-  *(uint32_t*)0x2000008c = 2;
-  *(uint64_t*)0x20000090 = 0;
-  *(uint64_t*)0x20000098 = 0;
-  *(uint64_t*)0x200000a0 = 0;
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 0, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 1, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 2, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 3, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 4, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 5, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 6, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 7, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 8, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 9, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 10, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 11, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 12, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 13, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 14, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 15, 2);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 17, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 18, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 19, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 20, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 21, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 22, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 23, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 24, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 25, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 26, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 27, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 28, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 29, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 30, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 31, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 32, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 33, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 34, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 35, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 36, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 37, 1);
-  STORE_BY_BITMASK(uint64_t, , 0x200000a8, 0, 38, 26);
-  *(uint32_t*)0x200000b0 = 0;
-  *(uint32_t*)0x200000b4 = 0;
-  *(uint64_t*)0x200000b8 = 0;
-  *(uint64_t*)0x200000c0 = 0;
-  *(uint64_t*)0x200000c8 = 0;
-  *(uint64_t*)0x200000d0 = 0;
-  *(uint32_t*)0x200000d8 = 0;
-  *(uint32_t*)0x200000dc = 0;
-  *(uint64_t*)0x200000e0 = 0;
-  *(uint32_t*)0x200000e8 = 0;
-  *(uint16_t*)0x200000ec = 0;
-  *(uint16_t*)0x200000ee = 0;
-  *(uint32_t*)0x200000f0 = 0;
-  *(uint32_t*)0x200000f4 = 0;
-  *(uint64_t*)0x200000f8 = 0;
-  syscall(__NR_perf_event_open, /*attr=*/0x20000080ul, /*pid=*/0, /*cpu=*/0ul,
-          /*group=*/-1, /*flags=*/0ul);
-}
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  setup_binfmt_misc();
-  setup_802154();
-  do_sandbox_none();
-  return 0;
-}
-
-
-=* repro.txt =*
-
-perf_event_open(&(0x7f0000000080)={0x4, 0x80, 0x0, 0x0, 0x0, 0x0, 0x2,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-0x0, @perf_config_ext}, 0x0, 0x0, 0xffffffffffffffff, 0x0)
-
-Please see also
-https://gist.github.com/xrivendell7/0e216426fc07060db67a50ea277b7920
+Thanks,
+Neil
