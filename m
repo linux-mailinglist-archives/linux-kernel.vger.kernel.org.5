@@ -2,533 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6EB80BFE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD5280BFE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjLKDbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 22:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S230087AbjLKDdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 22:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLKDbu (ORCPT
+        with ESMTP id S229448AbjLKDdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 22:31:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9605E9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 19:31:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58734C433CD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702265515;
-        bh=nBe3pEi89nVjE6KQG6aHPAjI1wb4AF5WzZ3K3ixFswQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EVRaNPpN8meKEGbONouFfFwsKzcpntAoxwBOaQCArXeT4Xk0uCzotRKDN+Z/a9RwX
-         hO/CFMun3pvphMD80tS05uYswJ8gTCE9dRvQ6CW7siJARs9VVB3LBYY/jRtyjBKgUX
-         oe0eivVfqUOSajOMzoX6Adhg/DsSkliayJkNQg2js1ShPUvvwJh8ycUUBk/fxgiMkZ
-         MXirjVT9VjEfMOeVkFTosbuzQVk6F30c4oBp/56bBnpKDo365P8+UbDy5uY/6n6HBp
-         zztkPa/ov2+woWHvRIOhGhcJQIAk2cKTjDlWqLWQoFufegsm6lhxvtE9O9gvOi90HF
-         YvvPqceWH8tmQ==
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso15506495e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 19:31:55 -0800 (PST)
-X-Gm-Message-State: AOJu0YzgjrD59IvjqOi7z/i6IpkU+o9kd4423d3COyZJDsdUXYwicTmt
-        iRA/QP8BGqjgQcjq3n6YYsbxnMP7Tcpeyv6cgmU=
-X-Google-Smtp-Source: AGHT+IGIFmmJNy3d9paomMpD+h5JSfKYZE2rsyet2O28wrF9VeiU7gHn4WwyHTZMP5eKCthkpm9u09jG1A+TSeajS1I=
-X-Received: by 2002:a5d:68cb:0:b0:334:b31e:d400 with SMTP id
- p11-20020a5d68cb000000b00334b31ed400mr2632534wrw.92.1702265513542; Sun, 10
- Dec 2023 19:31:53 -0800 (PST)
+        Sun, 10 Dec 2023 22:33:06 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E0CF1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 19:33:11 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54c9116d05fso5617247a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 19:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702265590; x=1702870390; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hqNPXHMTB4FcRiyJZx6FRt2mBNVGf6u2fS63Yrzy71c=;
+        b=vShUqo+BUvwwsk4/uqTriausX9RUfaUguB058RDIReWGbyrI75PE69y0EyePCHVlah
+         iDUyeZGGvnizXdqc7S7PVNubP9/LVV293deS2bN9qyfsNCzzXdd+Ffn0e/Oyl1MCaZZ/
+         UZJoixLzP3za4D9GSYN50MEuCP6GlXtYdvGVp+HHqH1520pw7I9J/+i6RGM76hFcclM3
+         IA9NLdHf21jZpKoKWtW1Ur/qH5tjIX60CdgUKirB0b5TF16vQ3daOfYzEADq26AMrXHT
+         8kuIlPDK+C8UTujGG/kXjr/pfqte4Mj3g8g1nOBYvHIWSpdKlGkWbijX06EEY5/nRl9w
+         KFaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702265590; x=1702870390;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hqNPXHMTB4FcRiyJZx6FRt2mBNVGf6u2fS63Yrzy71c=;
+        b=Hqn6lwGYSBfJ/3suHC5QYkub9E1mtXKL5FW4CoMsbfC8gA/60s2813Y2tQ5KcX4m3W
+         omobq9cCVJ3oHeyv2nMhj8qTpc2ePb0emVmEOMAil6xR5aj/3j/z9cVOB2NKZ/DEPsf3
+         hhkQEq/p5mfqhMEzUwmJHjt14d02PBhB7U/IpzSfytcQ4H1PgVq7ogUckhomEjk+Jte8
+         qLxIFZ4SUEgoFjRqgahdlUZ3jmR5UN3VOMKxNDUHuRRJJXHyC16V5jC7DivVKnv9drEU
+         seKRzBk1npkV1oiihdmHBaBuEz2S843f7S8un/FgkbIUY5XF18Rh+R6InuUrnQseP8x5
+         F/0Q==
+X-Gm-Message-State: AOJu0YxZxqV0X8RPiUO78jRw+2pz9O72x8ALisAU9PwxmdAoCeBLAnYX
+        WPO7DxW7K2nfQ92HeDBqlGHzqg==
+X-Google-Smtp-Source: AGHT+IF8Dlajrv6pbvu0jejDFv94gGz6TWGl172LjPCSXoBDXsO+7DBqbrZGe8N1+N5g0QfMuU1TPg==
+X-Received: by 2002:a05:6402:903:b0:54c:79cc:dad1 with SMTP id g3-20020a056402090300b0054c79ccdad1mr1226451edz.54.1702265590308;
+        Sun, 10 Dec 2023 19:33:10 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id dk11-20020a0564021d8b00b0054c8415f834sm3211782edb.34.2023.12.10.19.33.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Dec 2023 19:33:09 -0800 (PST)
+Message-ID: <f5a47024-514a-4846-bc16-08cf0f9af912@linaro.org>
+Date:   Mon, 11 Dec 2023 03:33:06 +0000
 MIME-Version: 1.0
-References: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
- <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
- <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee> <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
- <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
- <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee> <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
- <ZUSJDG82vzbuyFEY@P70.localdomain> <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
- <ZUWtTuIcMwwCWg7z@P70.localdomain> <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
- <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee> <CAAhV-H7nhkvLoDMwQDwNEhykZANGMq-Qrzip48qYzgQs1fNUgA@mail.gmail.com>
- <be82874b-d41b-4547-9ab5-dac9a5ddfeaf@ristioja.ee>
-In-Reply-To: <be82874b-d41b-4547-9ab5-dac9a5ddfeaf@ristioja.ee>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Mon, 11 Dec 2023 11:31:43 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5eXM7FNzuRCMthAziG_jg75XwQV3grpw=sdyJ-9GXgvA@mail.gmail.com>
-Message-ID: <CAAhV-H5eXM7FNzuRCMthAziG_jg75XwQV3grpw=sdyJ-9GXgvA@mail.gmail.com>
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
-To:     Jaak Ristioja <jaak@ristioja.ee>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Evan Preston <x.arch@epreston.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        WEIRD_PORT autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support in
+ spi-nor
+Content-Language: en-US
+To:     "Mahapatra, Amit Kumar" <amit.kumar-mahapatra@amd.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "pratyush@kernel.org" <pratyush@kernel.org>,
+        "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+        "richard@nod.at" <richard@nod.at>,
+        "vigneshr@ti.com" <vigneshr@ti.com>,
+        "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+        "lee@kernel.org" <lee@kernel.org>,
+        "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+        "david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+        "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>
+Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "michael@walle.cc" <michael@walle.cc>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "claudiu.beznea@tuxon.dev" <claudiu.beznea@tuxon.dev>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+        "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+        "git (AMD-Xilinx)" <git@amd.com>,
+        "amitrkcian2002@gmail.com" <amitrkcian2002@gmail.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+ <20231125092137.2948-8-amit.kumar-mahapatra@amd.com>
+ <e2305642-55f1-4893-bea3-b170ac0a5348@linaro.org>
+ <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <BN7PR12MB2802BEDFB821A1748185794CDC8AA@BN7PR12MB2802.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jaak,
 
-On Mon, Nov 6, 2023 at 9:49=E2=80=AFPM Jaak Ristioja <jaak@ristioja.ee> wro=
-te:
->
-> On 06.11.23 04:15, Huacai Chen wrote:
-> > Hi, Jaak and Evan,
-> >
-> > On Mon, Nov 6, 2023 at 12:28=E2=80=AFAM Jaak Ristioja <jaak@ristioja.ee=
-> wrote:
-> >>
-> >> On 05.11.23 14:40, Huacai Chen wrote:
-> >>> Hi, Evan,
-> >>>
-> >>> On Sat, Nov 4, 2023 at 10:50=E2=80=AFAM Evan Preston <x.arch@epreston=
-.net> wrote:
-> >>>>
-> >>>> Hi Huacai,
-> >>>>
-> >>>> On 2023-11-03 Fri 02:36pm, Huacai Chen wrote:
-> >>>>> Hi, Evan,
-> >>>>>
-> >>>>> On Fri, Nov 3, 2023 at 1:54=E2=80=AFPM Evan Preston <x.arch@epresto=
-n.net> wrote:
-> >>>>>>
-> >>>>>> Hi Huacai,
-> >>>>>>
-> >>>>>> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
-> >>>>>>> Hi, Jaak,
-> >>>>>>>
-> >>>>>>> On Wed, Nov 1, 2023 at 7:52=E2=80=AFPM Jaak Ristioja <jaak@ristio=
-ja.ee> wrote:
-> >>>>>>>>
-> >>>>>>>> On 31.10.23 14:17, Huacai Chen wrote:
-> >>>>>>>>> Hi, Jaak and Evan,
-> >>>>>>>>>
-> >>>>>>>>> On Sun, Oct 29, 2023 at 9:42=E2=80=AFAM Huacai Chen <chenhuacai=
-@kernel.org> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@ri=
-stioja.ee> wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 26.10.23 03:58, Huacai Chen wrote:
-> >>>>>>>>>>>> Hi, Jaak,
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@=
-ristioja.ee> wrote:
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> On 25.10.23 16:23, Huacai Chen wrote:
-> >>>>>>>>>>>>>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
-> >>>>>>>>>>>>>> <regressions@leemhuis.info> wrote:
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> Javier, Dave, Sima,
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> On 23.10.23 00:54, Evan Preston wrote:
-> >>>>>>>>>>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
-> >>>>>>>>>>>>>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regressio=
-n tracking (Thorsten
-> >>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> >>>>>>>>>>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
-> >>>>>>>>>>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya =
-<bagasdotme@gmail.com> wrote:
-> >>>>>>>>>>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Che=
-n wrote:
-> >>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Che=
-n <chenhuacai@kernel.org> wrote:
-> >>>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regr=
-ession tracking (Thorsten
-> >>>>>>>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> >>>>>>>>>>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
-> >>>>>>>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570=
- (Integrated Intel HD
-> >>>>>>>>>>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500=
-U) results in a blank
-> >>>>>>>>>>>>>>>>>>>>>>>> screen after boot until the display manager star=
-ts... if it does start
-> >>>>>>>>>>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter see=
-ms to be a workaround.
-> >>>>>>>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9=
-625f514a8041717e3a2e4
-> >>>>>>>>>>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from devic=
-e_initcall to
-> >>>>>>>>>>>>>>>>>>>>>>>> subsys_initcall_sync").
-> >>>>>>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes=
- things work fine
-> >>>>>>>>>>>>>>>>>>>>> again. So I guess the reason:
-> >>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>> Well, this to me still looks a lot (please correct me =
-if I'm wrong) like
-> >>>>>>>>>>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was =
-enabled beforehand
-> >>>>>>>>>>>>>>>>>> if I understood things correctly. Or is there a proper=
- fix for this
-> >>>>>>>>>>>>>>>>>> already in the works and I just missed this? Or is the=
-re some good
-> >>>>>>>>>>>>>>>>>> reason why this won't/can't be fixed?
-> >>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all bec=
-ause there was
-> >>>>>>>>>>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM wor=
-ks but it has a
-> >>>>>>>>>>>>>>>>> blank screen. Of course it is valuable to investigate f=
-urther about
-> >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's =
-effort because
-> >>>>>>>>>>>>>>>>> I don't have a same machine.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> Side note: Huacai, have you tried working with Jaak to ge=
-t down to the
-> >>>>>>>>>>>>>>> real problem? Evan, might you be able to help out here?
-> >>>>>>>>>>>>>> No, Jaak has no response after he 'fixed' his problem by d=
-isabling SIMPLEDRM.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> I'm sorry, what was it exactly you want me to do? Please be=
- mindful that
-> >>>>>>>>>>>>> I'm not familiar with the internals of the Linux kernel and=
- DRI, and it
-> >>>>>>>>>>>>> might sometimes take weeks before I have time to work and r=
-espond on this.
-> >>>>>>>>>>>> It doesn't matter. I hope you can do some experiments to inv=
-estigate
-> >>>>>>>>>>>> deeper. The first experiment you can do is enabling SIMPLEFB=
- (i.e.
-> >>>>>>>>>>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM=
-) to see
-> >>>>>>>>>>>> whether there is also a blank screen. If no blank screen, th=
-at
-> >>>>>>>>>>>> probably means SIMPLEDRM has a bug, if still blank screen, t=
-hat means
-> >>>>>>>>>>>> the firmware may pass wrong screen information.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPL=
-EDRM=3Dy and
-> >>>>>>>>>>> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_=
-SIMPLEDRM unset.
-> >>>>>>>>>> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device=
- created
-> >>>>>>>>>> by sysfb_init(). Since FB_SIMPLE works fine, I think the real =
-problem
-> >>>>>>>>>> is that DRM_SIMPLEDRM has a bug. The next step is to enable
-> >>>>>>>>>> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, =
-adding
-> >>>>>>>>>> some printk() in simpledrm_probe() and its sub-routines to see=
- where
-> >>>>>>>>>> the driver fails. The output of these printk() can be seen by =
-the
-> >>>>>>>>>> 'dmesg' command after boot.
-> >>>>>>>>> I need your help. I tried with my laptop (ThinkPad E490, Intel =
-Core
-> >>>>>>>>> i3-8145U, UHD Graphics 620) but I can't reproduce your problem.=
- So
-> >>>>>>>>> please patch your 6.5.x kernel with this temporary patch [1], t=
-hen
-> >>>>>>>>> build a "bad kernel" with SIMPLEDRM enabled. And after booting =
-your
-> >>>>>>>>> machine with this "bad kernel", please give me the dmesg output=
-. Thank
-> >>>>>>>>> you very much.
-> >>>>>>>>>
-> >>>>>>>>> [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5=
-.9
-> >>>>>>>>
-> >>>>>>>> I'm unable to download it. Can you please send it by e-mail?
-> >>>>>>> I'm sorry, please download from attachment.
-> >>>>>>
-> >>>>>> When applying this patch the first hunk (drivers/firmware/sysfb.c)=
- fails for
-> >>>>>> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this p=
-atch
-> >>>>>> produces no dmesg output on my machine.
-> >>>>> You copy-paste the patch? If you download it directly it can be
-> >>>>> applied successfully, I think.
-> >>>>
-> >>>> The patch downloaded from your URL applies successfully.  However, I=
- still
-> >>>> see no dmesg output using the patched 6.5.9 kernel.  'journalctl -k =
--b all'
-> >>>> shows no dmesg output from any 6.5.x boots, only from 6.4.12 boots.
-> >>> Thank you for your testing. Since you cannot boot to GUI successfully
-> >>> as Jaak, you may have some troubles with getting the dmesg output. Bu=
-t
-> >>> you can try to use "systemd.unit=3Dmulti-user.target" boot parameters=
-.
-> >>> In this way you may boot to the login: prompt and then you can get
-> >>> dmesg output. Or if you still fail, you may use 'jornalctl -k -b -1'
-> >>> to get the previous dmesg output with 6.4.12.
-> >>>
-> >>> Hi, Jaak,
-> >>>
-> >>> Have you tested? I think you can successfully get a dmesg output with=
- my patch.
-> >>
-> >> Yes, just tested it, here I think are the relevant parts from a dmesg
-> >> produced with CONFIG_DRM_SIMPLEDRM and the patch provided by Huacai:
-> >>
-> >> ...
-> >> [    2.909625] sysfb 1
-> >> [    2.909627] sysfb 2
-> >> ...
-> >> [    2.951477] ACPI: bus type drm_connector registered
-> >> [    2.952096] i915 0000:00:02.0: [drm] VT-d active for gfx access
-> >> [    2.952105] resource: resource sanity check: requesting [mem
-> >> 0x00000000e0000000-0x00000000efffffff], which spans more than BOOTFB
-> >> [mem 0xe0000000-0xe012bfff]
-> >> [    2.952111] caller i915_ggtt_init_hw+0x88/0x120 mapping multiple BA=
-Rs
-> >> [    2.952138] i915 0000:00:02.0: [drm] Using Transparent Hugepages
-> >> [    2.953204] Loading firmware: i915/kbl_dmc_ver1_04.bin
-> >> [    2.953485] i915 0000:00:02.0: [drm] Finished loading DMC firmware
-> >> i915/kbl_dmc_ver1_04.bin (v1.4)
-> >> ...
-> >> [    4.142075] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 =
-on
-> >> minor 0
-> >> [    4.144269] ACPI: video: Video Device [GFX0] (multi-head: yes  rom:
-> >> no  post: no)
-> >> [    4.144414] input: Video Bus as
-> >> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input4
-> >> [    4.144580] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor=
- 1
-> >> [    4.144590] usbcore: registered new interface driver udl
-> >> [    4.144603] T: probe 1
-> >> [    4.144605] T: create 1
-> >> [    4.144610] T: create 2
-> >> [    4.144611] T: create 3a-1
-> >> [    4.144613] T: create 3a-2
-> >> [    4.144614] T: create 3a-3
-> >> [    4.144616] T: create 3a-4
-> >> [    4.144618] T: create 4
-> >> [    4.144619] T: create 5
-> >> [    4.144621] simple-framebuffer simple-framebuffer.0: [drm] display
-> >> mode=3D{"": 60 18432 640 640 640 640 480 480 480 480 0x40 0x0}
-> >> [    4.144628] simple-framebuffer simple-framebuffer.0: [drm]
-> >> framebuffer format=3DXR24 little-endian (0x34325258), size=3D640x480,
-> >> stride=3D2560 byte
-> >> [    4.144633] T: create 6b-1
-> >> [    4.144635] T: create 6b-2
-> >> [    4.144637] simple-framebuffer simple-framebuffer.0: [drm] using I/=
-O
-> >> memory framebuffer at [mem 0xe0000000-0xe012bfff flags 0x200]
-> >> [    4.144643] T: create 6b-3
-> >> [    4.144660] T: create 6b-4
-> >> [    4.144662] T: create 7
-> >> [    4.144673] T: create 8
-> >> [    4.144676] T: create 9
-> >> [    4.144678] T: create 10
-> >> [    4.144681] T: create 11
-> >> [    4.144685] T: create 12
-> >> [    4.144689] T: probe 2
-> >> [    4.144728] [drm] Initialized simpledrm 1.0.0 20200625 for
-> >> simple-framebuffer.0 on minor 2
-> >> [    4.144732] T: probe 3
-> >> [    4.145905] Console: switching to colour frame buffer device 80x30
-> >> [    4.150437] simple-framebuffer simple-framebuffer.0: [drm] fb0:
-> >> simpledrmdrmfb frame buffer device
-> >> [    4.150766] T: probe 4
-> >> [    4.151218] loop: module loaded
-> >> [    4.154434] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer de=
-vice
-> >> ...
-> >> [   44.630789] simple-framebuffer simple-framebuffer.0: swiotlb buffer
-> >> is full (sz: 1310720 bytes), total 32768 (slots), used 0 (slots)
-> >> ...
-> >>
-> >> The last message might be due to the display manager starting up.
-> >>
-> >> Hope it helps.
-> > Thank you for your testing. Jaak's problem seems related to the
-> > initialization order, you can try to modify drivers/gpu/drm/Makefile,
-> > move
-> >
-> > obj-y                  +=3D tiny/
-> >
-> > to between these two lines
-> >
-> > obj-$(CONFIG_DRM_SCHED) +=3D scheduler/
-> > obj-$(CONFIG_DRM_RADEON)+=3D radeon/
-> >
-> > then build a new 6.5.x kernel to see whether your problem is resolved.
->
-> Yes, this seems to have resolved it.
-Adjusting Makefile is unacceptable from the maintainer's view, but I
-really don't want the original patch to be reverted.
 
-So, could you please test with the below patch (keep the original
-order in Makefile) and then give me the dmesg output?
+On 12/8/23 17:05, Mahapatra, Amit Kumar wrote:
+> Hello Tudor,
 
-diff --git a/drivers/video/aperture.c b/drivers/video/aperture.c
-index 561be8feca96..cc2e39fb98f5 100644
---- a/drivers/video/aperture.c
-+++ b/drivers/video/aperture.c
-@@ -350,21 +350,29 @@ int
-aperture_remove_conflicting_pci_devices(struct pci_dev *pdev, const
-char *na
-        resource_size_t base, size;
-        int bar, ret =3D 0;
+Hi!
 
--       if (pdev =3D=3D vga_default_device())
-+       printk("DEBUG: remove 1\n");
-+
-+       if (pdev =3D=3D vga_default_device()) {
-+               printk("DEBUG: primary =3D true\n");
-                primary =3D true;
-+       }
+> 
+>> -----Original Message-----
+>> From: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> Sent: Wednesday, December 6, 2023 8:00 PM
+>> To: Mahapatra, Amit Kumar <amit.kumar-mahapatra@amd.com>;
+>> broonie@kernel.org; pratyush@kernel.org; miquel.raynal@bootlin.com;
+>> richard@nod.at; vigneshr@ti.com; sbinding@opensource.cirrus.com;
+>> lee@kernel.org; james.schulman@cirrus.com; david.rhodes@cirrus.com;
+>> rf@opensource.cirrus.com; perex@perex.cz; tiwai@suse.com
+>> Cc: linux-spi@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> michael@walle.cc; linux-mtd@lists.infradead.org;
+>> nicolas.ferre@microchip.com; alexandre.belloni@bootlin.com;
+>> claudiu.beznea@tuxon.dev; Simek, Michal <michal.simek@amd.com>; linux-
+>> arm-kernel@lists.infradead.org; alsa-devel@alsa-project.org;
+>> patches@opensource.cirrus.com; linux-sound@vger.kernel.org; git (AMD-
+>> Xilinx) <git@amd.com>; amitrkcian2002@gmail.com
+>> Subject: Re: [PATCH v11 07/10] mtd: spi-nor: Add stacked memories support
+>> in spi-nor
+>>
+>> Hi, Amit,
+>>
+>> On 11/25/23 09:21, Amit Kumar Mahapatra wrote:
+>>> Each flash that is connected in stacked mode should have a separate
+>>> parameter structure. So, the flash parameter member(*params) of the
+>>> spi_nor structure is changed to an array (*params[2]). The array is
+>>> used to store the parameters of each flash connected in stacked
+>> configuration.
+>>>
+>>> The current implementation assumes that a maximum of two flashes are
+>>> connected in stacked mode and both the flashes are of same make but
+>>> can differ in sizes. So, except the sizes all other flash parameters
+>>> of both the flashes are identical.
+>>
+>> Do you plan to add support for different flashes in stacked mode? If not,
+> 
+> No, according to the current implementation, in stacked mode, both flashes 
+> must be of the same make.
+> 
+>> wouldn't it be simpler to have just an array of flash sizes instead of
+>> duplicating the entire params struct?
+> 
+> Yes, that is accurate. In alignment with our current stacked support use case we 
+> can have an array of flash sizes instead.
+> The primary purpose of having an array of params struct was to facilitate 
+> potential future extensions, allowing the addition of stacked support for 
+> different flashes
+> 
 
--       if (primary)
-+       if (primary) {
-+               printk("DEBUG: disable sysfb\n");
-                sysfb_disable();
-+       }
+right. Don't do this change yet, let's decide on the overall
+architecture first.
 
-        for (bar =3D 0; bar < PCI_STD_NUM_BARS; ++bar) {
-                if (!(pci_resource_flags(pdev, bar) & IORESOURCE_MEM))
-                        continue;
+>>
+>>>
+>>> SPI-NOR is not aware of the chip_select values, for any incoming
+>>> request SPI-NOR will decide the flash index with the help of
+>>> individual flash size and the configuration type (single/stacked).
+>>> SPI-NOR will pass on the flash index information to the SPI core & SPI
+>>> driver by setting the appropriate bit in
+>>> nor->spimem->spi->cs_index_mask. For example, if nth bit of
+>>> nor->spimem->spi->cs_index_mask is set then the driver would
+>>> assert/de-assert spi->chip_slect[n].
+>>>
+>>> Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+>>> ---
+>>>  drivers/mtd/spi-nor/core.c  | 272 +++++++++++++++++++++++++++++-------
+>>>  drivers/mtd/spi-nor/core.h  |   4 +
+>>>  include/linux/mtd/spi-nor.h |  15 +-
+>>>  3 files changed, 240 insertions(+), 51 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>>> index 93ae69b7ff83..e990be7c7eb6 100644
+>>> --- a/drivers/mtd/spi-nor/core.c
+>>> +++ b/drivers/mtd/spi-nor/core.c
+>>
+>> cut
+>>
+>>> @@ -2905,7 +3007,10 @@ static void spi_nor_init_fixup_flags(struct
+>>> spi_nor *nor)  static int spi_nor_late_init_params(struct spi_nor
+>>> *nor)  {
+>>>  	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor,
+>> 0);
+>>> -	int ret;
+>>> +	struct device_node *np = spi_nor_get_flash_node(nor);
+>>> +	u64 flash_size[SNOR_FLASH_CNT_MAX];
+>>> +	u32 idx = 0;
+>>> +	int rc, ret;
+>>>
+>>>  	if (nor->manufacturer && nor->manufacturer->fixups &&
+>>>  	    nor->manufacturer->fixups->late_init) { @@ -2937,6 +3042,44 @@
+>>> static int spi_nor_late_init_params(struct spi_nor *nor)
+>>>  	if (params->n_banks > 1)
+>>>  		params->bank_size = div64_u64(params->size, params-
+>>> n_banks);
+>>>
+>>> +	nor->num_flash = 0;
+>>> +
+>>> +	/*
+>>> +	 * The flashes that are connected in stacked mode should be of same
+>> make.
+>>> +	 * Except the flash size all other properties are identical for all the
+>>> +	 * flashes connected in stacked mode.
+>>> +	 * The flashes that are connected in parallel mode should be identical.
+>>> +	 */
+>>> +	while (idx < SNOR_FLASH_CNT_MAX) {
+>>> +		rc = of_property_read_u64_index(np, "stacked-memories",
+>> idx,
+>>> +&flash_size[idx]);
+>>
+>> This is a little late in my opinion, as we don't have any sanity check on the
+>> flashes that are stacked on top of the first. We shall at least read and compare
+>> the ID for all.
+> 
+> Alright, I will incorporate a sanity check for reading and comparing the 
+> ID of the stacked flash. Subsequently, I believe this stacked logic 
+> should be relocated to spi_nor_get_flash_info() where we identify the 
+> first flash. Please share your thoughts on this. Additionally, do you 
 
-+               printk("DEBUG: remove 2\n");
-                base =3D pci_resource_start(pdev, bar);
-                size =3D pci_resource_len(pdev, bar);
-                aperture_detach_devices(base, size);
-        }
+I'm wondering whether we can add a layer on top of the flash type to
+handle the stacked/parallel modes. This way everything will become flash
+type independent. Would it be possible to stack 2 SPI NANDs? How about a
+SPI NOR and a SPI NAND?
 
-+       printk("DEBUG: remove 3\n");
-        /*
-         * If this is the primary adapter, there could be a VGA device
-         * that consumes the VGA framebuffer I/O range. Remove this
+Is the datasheet of the controller public?
 
-[1]  https://lore.kernel.org/lkml/170222766284.86103.11020060769330721008@l=
-eemhuis.info/T/#u
+> anticipate that SPI-NOR should throw an error if the second or any 
+> subsequent flash within the stacked connection is different? Or would you 
+> prefer it to print a warning and operate in single mode (i.e., only the 
+> first flash)?
 
-Huacai
+Both options are fine, but I haven't yet decided on the overall
+architecture.
 
->
-> Jaak
->
-> >
-> > Evan's problem seems a little strange, could you please give me your
-> > config files of both 6.4.12 and 6.5.x? And you can also try the above
-> > method to see if anything changes.
-> >
-> > Huacai
-> >
-> >>
-> >> J
-> >>
-> >>>
-> >>>>
-> >>>> Evan
-> >>>>
-> >>>>>
-> >>>>> Huacai
-> >>>>>
-> >>>>>>
-> >>>>>> Evan
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Huacai
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>> Jaak
-> >>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> Huacai
-> >>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> Huacai
-> >>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>>>> Jaak
-> >>>>>>>>>>>
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Huacai
-> >>>>>>>>>>>>
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>> Jaak
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> But I write this mail for a different reason:
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Int=
-el
-> >>>>>>>>>>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) =
-i7-6700HQ).
-> >>>>>>>>>>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in =
-only a blank
-> >>>>>>>>>>>>>>>> screen after boot and a rapidly flashing device-access-s=
-tatus
-> >>>>>>>>>>>>>>>> indicator.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> This additional report makes me wonder if we should rever=
-t the culprit
-> >>>>>>>>>>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() fro=
-m
-> >>>>>>>>>>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). Bu=
-t I guess that
-> >>>>>>>>>>>>>>> might lead to regressions for some users? But the patch d=
-escription says
-> >>>>>>>>>>>>>>> that this is not a common configuration, so can we maybe =
-get away with that?
-> >>>>>>>>>>>>>>      From my point of view, this is not a regression, 60ae=
-bc9559492c
-> >>>>>>>>>>>>>> doesn't cause a problem, but exposes a problem. So we need=
- to fix the
-> >>>>>>>>>>>>>> real problem (SIMPLEDRM has a blank screen on some conditi=
-ons). This
-> >>>>>>>>>>>>>> needs Jaak or Evan's help.
-> >>>>>>>>>>>>>>
-> >>>>>>>>>>>>>> Huacai
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regressio=
-n tracker' hat)
-> >>>>>>>>>>>>>>> --
-> >>>>>>>>>>>>>>> Everything you wanna know about Linux kernel regression t=
-racking:
-> >>>>>>>>>>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
-> >>>>>>>>>>>>>>> If I did something stupid, please tell me, as explained o=
-n that page.
-> >>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the scre=
-en is blank (don't
-> >>>>>>>>>>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("dri=
-vers/firmware: Move
-> >>>>>>>>>>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcal=
-l_sync") there is
-> >>>>>>>>>>>>>>>>>>>>> no platform device created for SIMPLEDRM at early s=
-tage, so it seems
-> >>>>>>>>>>>>>>>>>>>>> also "no problem".
-> >>>>>>>>>>>>>>>>>>>> I don't understand above. You mean that after that c=
-ommit the platform
-> >>>>>>>>>>>>>>>>>>>> device is also none, right?
-> >>>>>>>>>>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to w=
-ork, and that
-> >>>>>>>>>>>>>>>>>>> commit makes the platform device created earlier. So,=
- before that
-> >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't =
-blank; after that
-> >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
-> >>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>> Huacai
-> >>>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>> Confused...
-> >>>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>> --
-> >>>>>>>>>>>>>>>>>>>> An old man doll... just what I always wanted! - Clar=
-a
-> >>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>>>>
-> >>>>>>>>>>>>>
-> >>>>>>>>>>>
-> >>>>>>>>
-> >>>>>>
-> >>>>>>
-> >>
->
+Cheers,
+ta
