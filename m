@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D979280D2F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C2480D2FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343943AbjLKQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:55:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
+        id S1344183AbjLKQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKQy7 (ORCPT
+        with ESMTP id S229820AbjLKQ4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:54:59 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53749B4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:55:06 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c236624edso48007575e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:55:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google; t=1702313705; x=1702918505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/aQB4e679gg004POwfDoV2M+ylGjdoOtKaUmuhlaWT0=;
-        b=EjLLYJw5XlWyzBT+kpo7j21MJw739hZc81Lm5NGFyrqjQERXKhu555UiuMw9xUvj/7
-         2VJ+RuAJR9rnZYFHFjDnnEpwoYZRhqswDxfn2r2K5pDmuin3J+ehOLZk6s98K9bKenQI
-         Qksa+UGI9+KuSQjSbkv0XmkiMgN1VGWrPoUNyhf1oP+j3wlk+NC4TX2zOU+r9lkA6hRp
-         bPId+zIfwjJ1pZJDOJ7IuV9xf7FjRjcXOYGkcWVlpJPhBnDIpkVgipsFH0KwKuCx5X/+
-         //6ufxCc2C4Sc/V8eOiY840qOhhuwDFBOvQ6kJ67tHmNF1QIHuWhDeaAN9lCJUrwPzt1
-         sATg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702313705; x=1702918505;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/aQB4e679gg004POwfDoV2M+ylGjdoOtKaUmuhlaWT0=;
-        b=jwu1uNw844ktsPAXmPj+pxQuQW1Cp0ou0B/CqivW6wsHhcfhdVcuYoK62/Ui+WYcBC
-         kza+owZ8CvNobQTKwv3TJH2GnFAsF6Jk5HaAONrNjPlOe9DDLWTGHf33MPchAN3W/6VS
-         OML7muwNnSXj0o5pjvZgf3HOG8qJBqMLbTSwT7du7S9tZAkauXJmPasMZPY+HJPJ6/e3
-         N9+LmlC/7XO/Bs05daJfZ3hG+c6bSk+sD9ddzU8FjhZwbw4z6CCfPiiuRgsgKxlQ3wyy
-         LWBhoBsbDJ4hFZhBn9ArmbQ+dEJSYQIzWrcIHKxJviolfTBCuih2U1TxW40f7Fhe6nsb
-         S9og==
-X-Gm-Message-State: AOJu0YzlguYZcZtsNp8jkZArzDSlrCRmVcZ+mKwdMrseYLhMpx5LOxGa
-        49bz3mBJNdaiWpO3xLZcZt+Uqg==
-X-Google-Smtp-Source: AGHT+IErwDWQj6vbRb9WM5dwKMENhbE9O5oHBCsCa5WlJd/1Ls68OegcT8VxTfUkgkad9quChVl8CA==
-X-Received: by 2002:a05:600c:4285:b0:40c:1df2:c9a2 with SMTP id v5-20020a05600c428500b0040c1df2c9a2mr2430291wmc.126.1702313704714;
-        Mon, 11 Dec 2023 08:55:04 -0800 (PST)
-Received: from trax.. (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
-        by smtp.gmail.com with ESMTPSA id g10-20020a05600c4eca00b0040c11fbe581sm13374370wmq.27.2023.12.11.08.55.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 08:55:04 -0800 (PST)
-From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
-To:     jorge@foundries.io, adrian.hunter@intel.com, Avri.Altman@wdc.com,
-        ulf.hansson@linaro.org, christian.loehle@arm.com,
-        ricardo@foundries.io
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
-Date:   Mon, 11 Dec 2023 17:55:00 +0100
-Message-Id: <20231211165500.310097-1-jorge@foundries.io>
-X-Mailer: git-send-email 2.34.1
+        Mon, 11 Dec 2023 11:56:24 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE015BD;
+        Mon, 11 Dec 2023 08:56:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702313787;
+        bh=UHAxHzAWe0eE9J7rlsFTxRyXjBw3RyM2beztcNyE+3c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hSYJ5ZSPxzWA44W5gp0fsrbvrrNBIrJqXspIX9zOlsBa5GKckBgSEJUpO/pXFz2aD
+         363GKKi9JqB47wQWxgLoww5HWt6SxUWicPTWkn5etUbpAyrrpH8qtszNMwIeLPavAF
+         iftr4LxTcBj+PBuJwOQ+JWWAgc22EYxsRw3Q5UvjJKjM4Q6K2xOtFU2L3GccaBs2WJ
+         4tz7ALc5GVsblCJx9MUhQmR3YHRYM6hCBf2jY1qSfMMg2H2qr/6DPmbnEWp9BecpuD
+         2E16GQZpBx34vqKimStyFGao3NhLnXgP7Tv1GEQDONJ0u3DzH/D9gzD8xTNf1RJNK7
+         7rTF+ZnCaT8Xw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6BE7F3781443;
+        Mon, 11 Dec 2023 16:56:26 +0000 (UTC)
+Message-ID: <07d71c9b-45e0-4d51-9449-68d40a46449e@collabora.com>
+Date:   Mon, 11 Dec 2023 18:56:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/11] ASoC: amd: acp: Add missing error handling in
+ sof-mach
+Content-Language: en-US
+To:     Emil Velikov <emil.velikov@collabora.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-4-cristian.ciocaltea@collabora.com>
+ <ZXcPRc8xGKt4euth@arch-x395>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <ZXcPRc8xGKt4euth@arch-x395>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,51 +78,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Requesting a retune before switching to the RPMB partition has been
-observed to cause CRC errors on the RPMB reads (-EILSEQ).
+On 12/11/23 15:31, Emil Velikov wrote:
+> On 2023/12/09, Cristian Ciocaltea wrote:
+>> Handle potential acp_sofdsp_dai_links_create() errors in ACP SOF machine
+>> driver's probe function.  Additionally, switch to dev_err_probe().
+>>
+>> Fixes: 9f84940f5004 ("ASoC: amd: acp: Add SOF audio support on Chrome board")
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+>>  sound/soc/amd/acp/acp-sof-mach.c | 14 ++++++--------
+>>  1 file changed, 6 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
+>> index 1d313fcb5f2d..6f0ca23638af 100644
+>> --- a/sound/soc/amd/acp/acp-sof-mach.c
+>> +++ b/sound/soc/amd/acp/acp-sof-mach.c
+>> @@ -112,16 +112,14 @@ static int acp_sof_probe(struct platform_device *pdev)
+>>  	if (dmi_id && dmi_id->driver_data)
+>>  		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
+>>  
+>> -	acp_sofdsp_dai_links_create(card);
+>> +	ret = acp_sofdsp_dai_links_create(card);
+>> +	if (ret)
+>> +		return dev_err_probe(&pdev->dev, ret, "Failed to create DAI links\n");
+>>  
+>>  	ret = devm_snd_soc_register_card(&pdev->dev, card);
+>> -	if (ret) {
+>> -		dev_err(&pdev->dev,
+>> -				"devm_snd_soc_register_card(%s) failed: %d\n",
+>> -				card->name, ret);
+>> -		return ret;
+>> -	}
+>> -
+>> +	if (ret)
+> 
+> Do we need to undo acp_sofdsp_dai_links_create() in here? If not, please
+> add a trivial note in the commit message.
 
-Since RPMB reads can not be retried, the clients would be directly
-affected by the errors.
+No need to undo, will update the commit as suggested.
 
-This commit disables the retune request prior to switching to the RPMB
-partition: mmc_retune_pause() no longer triggers a retune before the
-pause period begins.
+> With that the series is:
+> Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
 
-This was verified with the sdhci-of-arasan driver (ZynqMP) configured
-for HS200 using two separate eMMC cards (DG4064 and 064GB2). In both
-cases, the error was easy to reproduce triggering every few tenths of
-reads.
+Thanks for reviewing,
+Cristian
 
-Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-Acked-by: Avri Altman <avri.altman@wdc.com>
----
- v2:
-    mmc_retune_pause() no longer can trigger a retune.
-    Keeping Avri Altman Acked-by since they are functionally equivalent.
- v1:
-    modify mmc_retune_pause to optionally trigger a retune.
-
- drivers/mmc/core/host.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-index 096093f7be00..ed44920e92df 100644
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -119,13 +119,12 @@ void mmc_retune_enable(struct mmc_host *host)
-
- /*
-  * Pause re-tuning for a small set of operations.  The pause begins after the
-- * next command and after first doing re-tuning.
-+ * next command.
-  */
- void mmc_retune_pause(struct mmc_host *host)
- {
- 	if (!host->retune_paused) {
- 		host->retune_paused = 1;
--		mmc_retune_needed(host);
- 		mmc_retune_hold(host);
- 	}
- }
---
-2.34.1
+> HTH o/
+> -Emil
