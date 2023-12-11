@@ -2,196 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8C480DF2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51BE80DF31
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345161AbjLKWwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S1345189AbjLKWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjLKWw2 (ORCPT
+        with ESMTP id S230102AbjLKWwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:52:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7941BEA;
-        Mon, 11 Dec 2023 14:52:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702335154; x=1733871154;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=ehImgNx/k9AKKVzaSKbOLo1Mb4OGFvOlrdKezvX51Qs=;
-  b=mnl9ktrZGwft0/ztMbnaEwHkUOfGIrXRU4xt86tHV4frmXtPYovdRLoZ
-   IMSC4a8pWqUwRubFfhtYBz0bb/MXhtcvfNmUObtHHoRHk8m643AYvw52S
-   d6Fkkcywz7i3afFoqumBy/h2G8/61m2Nva+0KJ3OsUfeBkC8ZFy0p21HR
-   6CZx4H08XPXSAtBBnVGHc45SRLlA5KKKVNo56k85wB/HslnQCsOz/SPW1
-   UO3HX0gAqDxNREqo9mDzWSeqldoIrpzcwoJb795ZFfaBdHUPT//TiSDlH
-   +HIEZnqaJE+m5z9fa7ra2d4q7F/uuGz0D9G2xf0mK6DXa3xCXhZVPzMrh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="8083760"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="8083760"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 14:52:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="946511338"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="946511338"
-Received: from tlyon-mobl2.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.89.19])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 14:52:29 -0800
-From:   Vishal Verma <vishal.l.verma@intel.com>
-Date:   Mon, 11 Dec 2023 15:52:18 -0700
-Subject: [PATCH v3 2/2] dax: add a sysfs knob to control memmap_on_memory
- behavior
-MIME-Version: 1.0
+        Mon, 11 Dec 2023 17:52:30 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD7CB8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:52:36 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbc7fce330cso1973162276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:52:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702335155; x=1702939955; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B9ebOHKT7ubdCD5+hQDSD8eq6ojeprFgMPVNOjVnCG8=;
+        b=mAY8olsEcKszTzM3EWC1r5S/jY+6ef8Iu9ZrUassQcMJL2aJVu9a89hP96ycIxnoJY
+         UhARvAFkdtxSoSvqeiMCJEqpqmrPEHxjLIRdatTkJdpPJr1dbG4sY9Z+LLvDWSDrIYPr
+         3u78F4CaHL7XCjZ7p5dJyJgSiOOrMh3N7LtHRdR3sHKymLCsJAdOpv62vr6jmkD9A/oj
+         8GuV41xpPcA6AEl7t0ivll8N9288eP7BdWAgmWTTwS7746Weda66z4I1QgzFw9psqOz2
+         kEGU+AVvU+rN+4Cml/MPeyMRiSnLQtbwoVscPjH11MQ/QjLMFyMem0Okyov9jzUYuY21
+         Xk1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702335155; x=1702939955;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B9ebOHKT7ubdCD5+hQDSD8eq6ojeprFgMPVNOjVnCG8=;
+        b=tPns4gMFuUUP49kzLqwFj1nzsP/1z9uHRlAC7aB6F1WlOZUumFUFzDUTyJfZZJnfMM
+         dVq9bdC2bG40DUZq0hL814hSHXAoX1TbMJrLVg7ECKXxKXZtieP2mz8fbu3CBpwW99YL
+         HaGBQrBu3BZcRS3wunskvENLzHeG2elJHsFmYnS/I4ClmOGnu9AWQ1A6Ryh1gGtgZ5Ev
+         c65FTKlK74gTbrjmFNQHFggHKmjF8bCdCiKQtF0c6mdNybQRyA6UFGe3KHXotIl8Agz6
+         RtRMAJ23AHSOeVCvseQZtf2Df8DrLAs6gajBffpCbAs4ENObdIXqvRwbg6KrILSYN3kW
+         f81A==
+X-Gm-Message-State: AOJu0Yz7ZkaSg4aiVgnLh6hMPCmZk7FWBVgcVWkgysFEjfG94RnIG2XA
+        YfKk8nhGQSy1HH9i6ZWJsiDxzu1S9AMb
+X-Google-Smtp-Source: AGHT+IGsrJP5MwOhfiNyz2OKPJOAqglVB7R2Jud6wtKYGBu0YDJXzcKpaWV2UlZbYDwuPYUO9cfoNhGAdE0D
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a25:b90e:0:b0:dbc:1c42:2d4e with SMTP id
+ x14-20020a25b90e000000b00dbc1c422d4emr39340ybj.8.1702335155628; Mon, 11 Dec
+ 2023 14:52:35 -0800 (PST)
+Date:   Mon, 11 Dec 2023 22:52:32 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK+Sd2UC/4XPwW7DIBAE0F+JOJeKBeyanvIfVQ9AB4IUm8hUq
+ FXkf+8ml6qtVB9npXmjvYqGtaCJ58NVrOillbpwoIeDiCe/ZMjyxllopQ1pIrlirh2+zRkLV6N
+ MYwAZb3UYg+DaZUUqH3fy5ZXzqbT3un7eFzrdrv9gnSRJG3RSiqaBYjjm2ZfzY6yzuGFd7wGaA
+ aUwPY0KLir3GzB7gGGAXwJIJQ2HY641n/Et2D3BsuCMH21Mfpqc+yMMe8LAQnBmQAzwZMwPYdu 2L2VpWta3AQAA
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702335154; l=882;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=A2aVJiix4clFb7X/1Qv26DmYyS9huqwRq6TucutM9l8=; b=Atw+9+xOK54xIt5bcfqJF5/wLLnYZYUHButs4pynDb3A9boCboW8uw4pnJv/IQFiSAUcVEAv7
+ hgQ8l56jQVpCLWxFf41bSu1Wvl7YE5QvEJRFS2f68436QH5YbQ6SDpU
+X-Mailer: b4 0.12.3
+Message-ID: <20231211-removeasmgeneric-v1-1-a0274e802789@google.com>
+Subject: [PATCH] arch/riscv/kernel/sys_riscv.c: removed asm-generic
+From:   tanzirh@google.com
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <nnn@google.com>,
+        Tanzir Hasan <tanzirh@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231211-vv-dax_abi-v3-2-acf6cc1bde9f@intel.com>
-References: <20231211-vv-dax_abi-v3-0-acf6cc1bde9f@intel.com>
-In-Reply-To: <20231211-vv-dax_abi-v3-0-acf6cc1bde9f@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-cxl@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Li Zhijian <lizhijian@fujitsu.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-X-Mailer: b4 0.13-dev-433a8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4067;
- i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=ehImgNx/k9AKKVzaSKbOLo1Mb4OGFvOlrdKezvX51Qs=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKnlk9bs0Q08u36yeE9D5odPpy9eCq97f3DXZimjGV/ut
- wuXmyXv6ChlYRDjYpAVU2T5u+cj4zG57fk8gQmOMHNYmUCGMHBxCsBEWsUY/sp/05f8vH7V+2LJ
- dUduyLd3/SlOK1JcbvvFQTuv8drym+kMPxlNnmheye0rqIxzYlwU819lzccdx/O5BCPvnUnwMTD
- zZAMA
-X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
- fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a sysfs knob for dax devices to control the memmap_on_memory setting
-if the dax device were to be hotplugged as system memory.
+arch/riscv/kernel/sys_riscv.c builds without using anything
+from asm-generic/mman-common.h. There seems to be no reason
+to include this file.
 
-The default memmap_on_memory setting for dax devices originating via
-pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
-preserve legacy behavior. For dax devices via CXL, the default is on.
-The sysfs control allows the administrator to override the above
-defaults if needed.
-
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Tested-by: Li Zhijian <lizhijian@fujitsu.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Signed-off-by: Tanzir Hasan <tanzirh@google.com>
 ---
- drivers/dax/bus.c                       | 47 +++++++++++++++++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-dax | 17 ++++++++++++
- 2 files changed, 64 insertions(+)
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 1ff1ab5fa105..2871e5188f0d 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -1270,6 +1270,52 @@ static ssize_t numa_node_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(numa_node);
- 
-+static ssize_t memmap_on_memory_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
-+{
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+
-+	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
-+}
-+
-+static ssize_t memmap_on_memory_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct device_driver *drv = dev->driver;
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	struct dax_region *dax_region = dev_dax->region;
-+	struct dax_device_driver *dax_drv = to_dax_drv(drv);
-+	ssize_t rc;
-+	bool val;
-+
-+	rc = kstrtobool(buf, &val);
-+	if (rc)
-+		return rc;
-+
-+	if (dev_dax->memmap_on_memory == val)
-+		return len;
-+
-+	device_lock(dax_region->dev);
-+	if (!dax_region->dev->driver) {
-+		device_unlock(dax_region->dev);
-+		return -ENXIO;
-+	}
-+
-+	if (dax_drv->type == DAXDRV_KMEM_TYPE) {
-+		device_unlock(dax_region->dev);
-+		return -EBUSY;
-+	}
-+
-+	device_lock(dev);
-+	dev_dax->memmap_on_memory = val;
-+	device_unlock(dev);
-+
-+	device_unlock(dax_region->dev);
-+	return len;
-+}
-+static DEVICE_ATTR_RW(memmap_on_memory);
-+
- static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
- {
- 	struct device *dev = container_of(kobj, struct device, kobj);
-@@ -1296,6 +1342,7 @@ static struct attribute *dev_dax_attributes[] = {
- 	&dev_attr_align.attr,
- 	&dev_attr_resource.attr,
- 	&dev_attr_numa_node.attr,
-+	&dev_attr_memmap_on_memory.attr,
- 	NULL,
- };
- 
-diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
-index a61a7b186017..b1fd8bf8a7de 100644
---- a/Documentation/ABI/testing/sysfs-bus-dax
-+++ b/Documentation/ABI/testing/sysfs-bus-dax
-@@ -149,3 +149,20 @@ KernelVersion:	v5.1
- Contact:	nvdimm@lists.linux.dev
- Description:
- 		(RO) The id attribute indicates the region id of a dax region.
-+
-+What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
-+Date:		October, 2023
-+KernelVersion:	v6.8
-+Contact:	nvdimm@lists.linux.dev
-+Description:
-+		(RW) Control the memmap_on_memory setting if the dax device
-+		were to be hotplugged as system memory. This determines whether
-+		the 'altmap' for the hotplugged memory will be placed on the
-+		device being hotplugged (memmap_on_memory=1) or if it will be
-+		placed on regular memory (memmap_on_memory=0). This attribute
-+		must be set before the device is handed over to the 'kmem'
-+		driver (i.e.  hotplugged into system-ram). Additionally, this
-+		depends on CONFIG_MHP_MEMMAP_ON_MEMORY, and a globally enabled
-+		memmap_on_memory parameter for memory_hotplug. This is
-+		typically set on the kernel command line -
-+		memory_hotplug.memmap_on_memory set to 'true' or 'force'."
+---
+ arch/riscv/kernel/sys_riscv.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
+index a2ca5b7756a5..ebcaf386ea62 100644
+--- a/arch/riscv/kernel/sys_riscv.c
++++ b/arch/riscv/kernel/sys_riscv.c
+@@ -14,7 +14,6 @@
+ #include <asm/switch_to.h>
+ #include <asm/uaccess.h>
+ #include <asm/unistd.h>
+-#include <asm-generic/mman-common.h>
+ #include <vdso/vsyscall.h>
+ 
+ static long riscv_sys_mmap(unsigned long addr, unsigned long len,
+
+---
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+change-id: 20231211-removeasmgeneric-f6be13a42b6b
+
+Best regards,
 -- 
-2.41.0
+Tanzir Hasan <tanzirh@google.com>
 
