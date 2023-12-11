@@ -2,92 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC5580CED1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBC280CEDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234961AbjLKO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
+        id S234940AbjLKPB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKO4a (ORCPT
+        with ESMTP id S234618AbjLKPB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:56:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3946BC5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:56:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55B8FC433C8;
-        Mon, 11 Dec 2023 14:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702306596;
-        bh=yeGJvoAhrRUdjjLyjIJiQRRidjJWgvKa+3GL2nDVUtM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lr0A/IQzptm9L/e+o5KMT9FMS3j80GX6sEJbS6KS607y4WTzHTs6rXMSTMV+TjcFK
-         46Nr8O+JVoKoj9tJ88rsIM6K6+jL+E7IUF6VFHYLuqvpT2SuSLCb/C4wzJ2PfKSFwL
-         HbgUe7TcvMQgCp+JN5/Xm2LcjIeh7TkbvyEwWxFw=
-Date:   Mon, 11 Dec 2023 15:56:31 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
-Message-ID: <2023121118-snagged-ninja-7efb@gregkh>
-References: <20231205183241.636315882@linuxfoundation.org>
- <5b0eb360-3765-40e1-854a-9da6d97eb405@roeck-us.net>
+        Mon, 11 Dec 2023 10:01:28 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF65FAB;
+        Mon, 11 Dec 2023 07:01:33 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14658FEC;
+        Mon, 11 Dec 2023 07:02:20 -0800 (PST)
+Received: from [10.57.85.194] (unknown [10.57.85.194])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87DA73F738;
+        Mon, 11 Dec 2023 07:01:28 -0800 (PST)
+Message-ID: <91b22090-485f-49c9-a536-849fd7f92f8e@arm.com>
+Date:   Mon, 11 Dec 2023 15:01:27 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b0eb360-3765-40e1-854a-9da6d97eb405@roeck-us.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/7] ACPI/IORT: Handle memory address size limits as
+ limits
+Content-Language: en-GB
+To:     Will Deacon <will@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
+        iommu@lists.linux.dev, devicetree@vger.kernel.org
+References: <cover.1701268753.git.robin.murphy@arm.com>
+ <2ae6199a9cf035c1defd42e48675b827f41cdc95.1701268753.git.robin.murphy@arm.com>
+ <20231211132757.GE25681@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231211132757.GE25681@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 10:09:17AM -0800, Guenter Roeck wrote:
-> On 12/5/23 11:22, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.263 release.
-> > There are 90 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> > Anything received after that time might be too late.
-> > 
-> [ ... ]
-> > Qu Wenruo <wqu@suse.com>
-> >      btrfs: add dmesg output for first mount and last unmount of a filesystem
-> > 
+On 2023-12-11 1:27 pm, Will Deacon wrote:
+> On Wed, Nov 29, 2023 at 05:43:00PM +0000, Robin Murphy wrote:
+>> Return the Root Complex/Named Component memory address size limit as an
+>> inclusive limit value, rather than an exclusive size.  This saves us
+>> having to special-case 64-bit overflow, and simplifies our caller too.
+>>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>> ---
+>>   drivers/acpi/arm64/dma.c  |  9 +++------
+>>   drivers/acpi/arm64/iort.c | 18 ++++++++----------
+>>   include/linux/acpi_iort.h |  4 ++--
+>>   3 files changed, 13 insertions(+), 18 deletions(-)
 > 
-> This patch results in the following code in fs/btrfs/disk-io.c:open_ctree():
+> [...]
 > 
-> 	struct btrfs_super_block *disk_super;
-> 	... (no access to disk_super)
-> 	btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
+>> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+>> index 6496ff5a6ba2..eb64d8e17dd1 100644
+>> --- a/drivers/acpi/arm64/iort.c
+>> +++ b/drivers/acpi/arm64/iort.c
+>> @@ -1367,7 +1367,7 @@ int iort_iommu_configure_id(struct device *dev, const u32 *input_id)
+>>   { return -ENODEV; }
+>>   #endif
+>>   
+>> -static int nc_dma_get_range(struct device *dev, u64 *size)
+>> +static int nc_dma_get_range(struct device *dev, u64 *limit)
+>>   {
+>>   	struct acpi_iort_node *node;
+>>   	struct acpi_iort_named_component *ncomp;
+>> @@ -1384,13 +1384,12 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
+>> -			1ULL<<ncomp->memory_address_limit;
+>> +	*limit = (1ULL << ncomp->memory_address_limit) - 1;
 > 
-> which I would assume _should_ result in btrfs crashes. No idea why that isn't
-> actually happening or why gcc doesn't complain. Building allmodconfig with
-> clang does complain, but doesn't bail out.
-> 
-> s/btrfs/disk-io.c:2832:55: warning: variable 'disk_super' is uninitialized when used here [-Wuninitialized]
->         btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
->                                                              ^~~~~~~~~~
-> 
-> The actual log output is:
-> 
-> [    7.302427] BTRFS info (device nvme0n1): first mount of filesystem (efault)
-> 
-> It might be a good idea to either revert this patch or fix it up
-> (though I don't know how to fix it up).
+> The old code handled 'ncomp->memory_address_limit >= 64' -- why is it safe
+> to drop that? You mention it in the cover letter, so clearly I'm missing
+> something!
 
-yeah, that doesn't look good, now reverted, thanks!
+Because an unsigned shift by 64 or more generates 0 (modulo 2^64), thus 
+subtracting 1 results in the correct all-bits-set value for an inclusive 
+64-bit limit.
 
-greg k-h
+Thanks,
+Robin.
+
+>>   
+>>   	return 0;
+>>   }
+>>   
+>> -static int rc_dma_get_range(struct device *dev, u64 *size)
+>> +static int rc_dma_get_range(struct device *dev, u64 *limit)
+>>   {
+>>   	struct acpi_iort_node *node;
+>>   	struct acpi_iort_root_complex *rc;
+>> @@ -1408,8 +1407,7 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	*size = rc->memory_address_limit >= 64 ? U64_MAX :
+>> -			1ULL<<rc->memory_address_limit;
+>> +	*limit = (1ULL << rc->memory_address_limit) - 1;
+> 
+> Same thing here.
+> 
+> Will
