@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B2080C3BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B4780C3CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjLKI6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
+        id S234035AbjLKI7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:59:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbjLKI6b (ORCPT
+        with ESMTP id S229521AbjLKI7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:58:31 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38D4FD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:58:37 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c32df9174so34107015e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:58:37 -0800 (PST)
+        Mon, 11 Dec 2023 03:59:41 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795DED9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:59:47 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5dd3affae03so41307967b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:59:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702285116; x=1702889916; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702285186; x=1702889986; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xndb3S0aJ33QuSezQAhJtJok3tQar4xBD7H+FypbxGQ=;
-        b=fESYPOZqQRo4exK22pcFuRV9GYGoEGUAE32whSmB9c341eUJQVGCSPY9z/qllqQl+I
-         kpGlYxYuah0edkqZoxIFHUt9CYp8cBP1eQyl1RvkyMreaywc3jtbQfWowofwnrTQPa+H
-         Z5SUMayA3XGNttxsXLjYJckZl+36jxkysSaIfZtylsu43WaIKehJrR8LvEHeXPhfCJ1+
-         NCaXYp1UTxvQrI8Qj9+gSkamq6NzeD+ldbJ6uB7vb3VCefRbwpsfwjCgn1L6R26rMCjL
-         wJ81gE4xuNmKv6KAJQAsNNkT7o3GO/SyhBvPy78417v6UYL0eBauHf4gdUY+RGMXTlbl
-         L5TA==
+        bh=mUXYWrFKYGWP04qknfNgRmd2u837ytBt0tL58kYIbnI=;
+        b=BfGnLSngtnTmNxDqHkrwmdrZzEwAAgRzRBdusu0+MVm/OKbHGI8urZIxE75oHe59Oh
+         fDFKsZDZ5Io5ylWx5NHrSeelMy/LluhLE/oPO6nlmzTenFxH+RGqf6ik63boqqJ3RNOr
+         RmeBBQe5VHrJzIF+aQ4GpfI16oadSCsDHgXVp3MpAY6FKNLJGn/neoarCPgz+hvEfSHl
+         IxcsMFVABTqJDuuqJAUV3TNI1+1Bo8KTJ9BOwt4X91t1FlAIhx6z4ydFhzUGG6JRZuem
+         Fu23mIhCClQtqKCm1tgjQScKx50kvSw0gEb7cbEVOvLi3aBtidMlSPVJpxyHdaFYSYMK
+         xHhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702285116; x=1702889916;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702285186; x=1702889986;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xndb3S0aJ33QuSezQAhJtJok3tQar4xBD7H+FypbxGQ=;
-        b=mye8QOXJbLMLYM2LHwFG9t2BeM8+7VZ3edThJcbqUZX8IMARl/X9EE03AToBaUBQsG
-         bj5tekJbZzG/x0VsbP+jXhah9CfMf/oHmbJUTQ8BmDie78a8N0PnWplr96MzPIablvC3
-         6ZtGbLs76lL2i9OEMj/ddBsM/mRYv6C13D29fJneYeo9cf3Ak/dVXlpa+JC+dNvun+kH
-         ICAAjuZNBDteO40/bcwfQ8CEj6sihoRgu0YfXJ6X9y3n9dVtn5ArBplAuLhRPbAmGGzI
-         +vZx0B9BIzIZZipBLjLA7sQqLbQyFcZjn3suluKI0skklaAFEdEzRRsMTv7WBQ4y8GMz
-         o9Wg==
-X-Gm-Message-State: AOJu0YyIlnioUihiglJ4UIjWHUokov7Y6LHMpPgyaeAlmM6d0gBZi5z6
-        OmEYASYKyDvyROZ9Z3vTMq+JFw==
-X-Google-Smtp-Source: AGHT+IFj7nAJyqu+vNt9O5FvQS/Z/HfcaRXMdNaRLjM9frtJGn8AOK1htzp5C1UgMbr5OAVzW2Flfw==
-X-Received: by 2002:a05:600c:2184:b0:40b:5e21:c5af with SMTP id e4-20020a05600c218400b0040b5e21c5afmr1423973wme.125.1702285116186;
-        Mon, 11 Dec 2023 00:58:36 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id fl9-20020a05600c0b8900b0040b43da0bbasm12315067wmb.30.2023.12.11.00.58.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 00:58:35 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Subject: [PATCH 3/3] arm64: dts: qcom: ipq8074: add dedicated SDHCI compatible
-Date:   Mon, 11 Dec 2023 09:58:30 +0100
-Message-Id: <20231211085830.25380-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
-References: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
+        bh=mUXYWrFKYGWP04qknfNgRmd2u837ytBt0tL58kYIbnI=;
+        b=j/nG+qRPLt3h8jfDANIy+yREV76CIyAHwf74MLahpv7nj+UXpRgC1jSUtEWqEVnAEe
+         0AF8MSA5DcUrw9NUezKI0DM0UyAO2Q3EetopTwhM8GJ0Fr91lg9jIRc8bVk5L6ENUS3q
+         e8Co5Dbhs5jv7OAqEpTpahEtDdNi7oU7+qMG9ihM4LR/UWfPNeIE9n/dDrCIxkTxW3YR
+         DcqFkVJIZIrTAtoLIOY7SoahLrE2RFIRWm9nFiRgMubdeYc67FAZb0GPhesRzJ9hcthM
+         9OV3diHilVcPSdMECtuc7UwFyvUwj4GV2qKpPvqvTuiCjdeZ1i8nhpdTUMhiya7A6w4/
+         zX8g==
+X-Gm-Message-State: AOJu0YyFcQtaXflr5Ks7iJlSY721iLGrVAunwWK6DqBhtKZs6EBRQZ4r
+        8MkNXLmsMAAx0CaN7pMoTs58glHbzy1Gh3tRSW0tki3IXCaJmcQBq3KjxQ==
+X-Google-Smtp-Source: AGHT+IEYfFKC2E7GT8BiuS7sS2IPTNXVm/8NvBSUDTULqXseHPKAWeWvOug21F4BysG7RPG4R1cxSzjysuq5H0SqBJ4=
+X-Received: by 2002:a0d:ea13:0:b0:5de:7c46:8e5 with SMTP id
+ t19-20020a0dea13000000b005de7c4608e5mr3287703ywe.36.1702285186526; Mon, 11
+ Dec 2023 00:59:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org> <20231209-b4-arm64-sysreg-additions-v1-5-45284e538474@kernel.org>
+In-Reply-To: <20231209-b4-arm64-sysreg-additions-v1-5-45284e538474@kernel.org>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 11 Dec 2023 08:59:09 +0000
+Message-ID: <CA+EHjTyLSf6KEs==Bb2htdyydw4Kz0GDhJkgVkLZ_4f62-6+Hg@mail.gmail.com>
+Subject: Re: [PATCH 05/13] arm64/sysreg: Add definition for ID_AA64PFR2_EL1
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dedicated compatible for the SDHCI MMC controller, because usage of
-generic qcom,sdhci-msm-v4 compatible alone is deprecated.
+Hi Mark,
 
-Cc: Chukun Pan <amadeus@jmu.edu.cn>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for putting this patch series together.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index dca7005c0a9d..915c22b0f270 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -400,7 +400,7 @@ spmi_bus: spmi@200f000 {
- 		};
- 
- 		sdhc_1: mmc@7824900 {
--			compatible = "qcom,sdhci-msm-v4";
-+			compatible = "qcom,ipq8074-sdhci", "qcom,sdhci-msm-v4";
- 			reg = <0x7824900 0x500>, <0x7824000 0x800>;
- 			reg-names = "hc", "core";
- 
--- 
-2.34.1
+On Sat, Dec 9, 2023 at 1:03=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
+e:
+>
+> DDI0601 2023-09 defines a new system register ID_AA64PFR2_EL1 which
+> enumerates FPMR and some new MTE features. Add a definition of this
+> register.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
+Reviewed-by: Fuad Tabba <tabba@google.com>
+
+Cheers,
+/fuad
+
+> ---
+>  arch/arm64/tools/sysreg | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+> index c2dbbaa22620..c48a3b8d00ad 100644
+> --- a/arch/arm64/tools/sysreg
+> +++ b/arch/arm64/tools/sysreg
+> @@ -1002,6 +1002,27 @@ UnsignedEnum     3:0     BT
+>  EndEnum
+>  EndSysreg
+>
+> +Sysreg ID_AA64PFR2_EL1 3       0       0       4       2
+> +Res0   63:36
+> +UnsignedEnum   35:32   FPMR
+> +       0b0000  NI
+> +       0b0001  IMP
+> +EndEnum
+> +Res0   31:12
+> +UnsignedEnum   11:8    MTEFAR
+> +       0b0000  NI
+> +       0b0001  IMP
+> +EndEnum
+> +UnsignedEnum   7:4     MTESTOREONLY
+> +       0b0000  NI
+> +       0b0001  IMP
+> +EndEnum
+> +UnsignedEnum   3:0     MTEPERM
+> +       0b0000  NI
+> +       0b0001  IMP
+> +EndEnum
+> +EndSysreg
+> +
+>  Sysreg ID_AA64ZFR0_EL1 3       0       0       4       4
+>  Res0   63:60
+>  UnsignedEnum   59:56   F64MM
+>
+> --
+> 2.39.2
+>
