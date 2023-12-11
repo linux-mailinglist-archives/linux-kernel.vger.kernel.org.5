@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 928F780D0DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F0F80D0EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbjLKQPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S1344420AbjLKQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344253AbjLKQO6 (ORCPT
+        with ESMTP id S1344624AbjLKQPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:14:58 -0500
+        Mon, 11 Dec 2023 11:15:17 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FCED114;
-        Mon, 11 Dec 2023 08:14:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7D2AD56;
+        Mon, 11 Dec 2023 08:14:54 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BEFDE169E;
-        Mon, 11 Dec 2023 08:15:28 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B79F16F3;
+        Mon, 11 Dec 2023 08:15:41 -0800 (PST)
 Received: from e127643.broadband (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4DAC43F738;
-        Mon, 11 Dec 2023 08:14:38 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A91923F738;
+        Mon, 11 Dec 2023 08:14:50 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
@@ -48,9 +48,9 @@ Cc:     namhyung@gmail.com, James Clark <james.clark@arm.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev, kvm@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 04/11] arm: perf: Convert remaining fields to use GENMASK
-Date:   Mon, 11 Dec 2023 16:13:16 +0000
-Message-Id: <20231211161331.1277825-5-james.clark@arm.com>
+Subject: [PATCH v7 05/11] arm64: perf: Include threshold control fields in PMEVTYPER mask
+Date:   Mon, 11 Dec 2023 16:13:17 +0000
+Message-Id: <20231211161331.1277825-6-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231211161331.1277825-1-james.clark@arm.com>
 References: <20231211161331.1277825-1-james.clark@arm.com>
@@ -65,78 +65,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the remaining fields to use either GENMASK or be built from
-other fields. These all already started at bit 0 so don't need a code
-change for the lack of _SHIFT.
+FEAT_PMUv3_TH (Armv8.8) adds two new fields to PMEVTYPER, so include
+them in the mask. These aren't writable on 32 bit kernels as they are in
+the high part of the register, so only include them for arm64.
 
+It would be difficult to do this statically in the asm header files for
+each platform without resulting in circular includes or #ifdefs inline
+in the code. For that reason the ARMV8_PMU_EVTYPE_MASK definition has
+been removed and the mask is constructed programmatically.
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- drivers/perf/arm_pmuv3.c       |  2 +-
- include/linux/perf/arm_pmuv3.h | 18 +++++++++++++-----
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/perf/arm_pmuv3.c       | 9 ++++++++-
+ include/linux/perf/arm_pmuv3.h | 3 ++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-index 7b2c1d03464a..fbdf3cab8e66 100644
+index fbdf3cab8e66..16ef8448afc0 100644
 --- a/drivers/perf/arm_pmuv3.c
 +++ b/drivers/perf/arm_pmuv3.c
-@@ -671,7 +671,7 @@ static u32 armv8pmu_getreset_flags(void)
- 	value = read_pmovsclr();
+@@ -554,8 +554,15 @@ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
+ static void armv8pmu_write_evtype(int idx, u32 val)
+ {
+ 	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
++	unsigned long mask = ARMV8_PMU_EVTYPE_EVENT |
++			     ARMV8_PMU_INCLUDE_EL2 |
++			     ARMV8_PMU_EXCLUDE_EL0 |
++			     ARMV8_PMU_EXCLUDE_EL1;
  
- 	/* Write to clear flags */
--	value &= ARMV8_PMU_OVSR_MASK;
-+	value &= ARMV8_PMU_OVERFLOWED_MASK;
- 	write_pmovsclr(value);
+-	val &= ARMV8_PMU_EVTYPE_MASK;
++	if (IS_ENABLED(CONFIG_ARM64))
++		mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
++
++	val &= mask;
+ 	write_pmevtypern(counter, val);
+ }
  
- 	return value;
 diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
-index 1bc7678c10d4..daa63542242d 100644
+index daa63542242d..91957b3468e9 100644
 --- a/include/linux/perf/arm_pmuv3.h
 +++ b/include/linux/perf/arm_pmuv3.h
-@@ -216,19 +216,25 @@
- #define ARMV8_PMU_PMCR_LC	(1 << 6) /* Overflow on 64 bit cycle counter */
- #define ARMV8_PMU_PMCR_LP	(1 << 7) /* Long event counter enable */
- #define ARMV8_PMU_PMCR_N	GENMASK(15, 11) /* Number of counters supported */
--#define ARMV8_PMU_PMCR_MASK	0xff    /* Mask for writable bits */
-+/* Mask for writable bits */
-+#define ARMV8_PMU_PMCR_MASK	(ARMV8_PMU_PMCR_E | ARMV8_PMU_PMCR_P | \
-+				 ARMV8_PMU_PMCR_C | ARMV8_PMU_PMCR_D | \
-+				 ARMV8_PMU_PMCR_X | ARMV8_PMU_PMCR_DP | \
-+				 ARMV8_PMU_PMCR_LC | ARMV8_PMU_PMCR_LP)
- 
- /*
-  * PMOVSR: counters overflow flag status reg
-  */
--#define ARMV8_PMU_OVSR_MASK		0xffffffff	/* Mask for writable bits */
--#define ARMV8_PMU_OVERFLOWED_MASK	ARMV8_PMU_OVSR_MASK
-+#define ARMV8_PMU_OVSR_P		GENMASK(30, 0)
-+#define ARMV8_PMU_OVSR_C		BIT(31)
-+/* Mask for writable bits is both P and C fields */
-+#define ARMV8_PMU_OVERFLOWED_MASK	(ARMV8_PMU_OVSR_P | ARMV8_PMU_OVSR_C)
- 
+@@ -233,8 +233,9 @@
  /*
   * PMXEVTYPER: Event selection reg
   */
- #define ARMV8_PMU_EVTYPE_MASK	0xc800ffff	/* Mask for writable bits */
--#define ARMV8_PMU_EVTYPE_EVENT	0xffff		/* Mask for EVENT bits */
-+#define ARMV8_PMU_EVTYPE_EVENT	GENMASK(15, 0)	/* Mask for EVENT bits */
+-#define ARMV8_PMU_EVTYPE_MASK	0xc800ffff	/* Mask for writable bits */
+ #define ARMV8_PMU_EVTYPE_EVENT	GENMASK(15, 0)	/* Mask for EVENT bits */
++#define ARMV8_PMU_EVTYPE_TH	GENMASK(43, 32)
++#define ARMV8_PMU_EVTYPE_TC	GENMASK(63, 61)
  
  /*
   * Event filters for PMUv3
-@@ -243,11 +249,13 @@
- /*
-  * PMUSERENR: user enable reg
-  */
--#define ARMV8_PMU_USERENR_MASK	0xf		/* Mask for writable bits */
- #define ARMV8_PMU_USERENR_EN	(1 << 0) /* PMU regs can be accessed at EL0 */
- #define ARMV8_PMU_USERENR_SW	(1 << 1) /* PMSWINC can be written at EL0 */
- #define ARMV8_PMU_USERENR_CR	(1 << 2) /* Cycle counter can be read at EL0 */
- #define ARMV8_PMU_USERENR_ER	(1 << 3) /* Event counter can be read at EL0 */
-+/* Mask for writable bits */
-+#define ARMV8_PMU_USERENR_MASK	(ARMV8_PMU_USERENR_EN | ARMV8_PMU_USERENR_SW | \
-+				 ARMV8_PMU_USERENR_CR | ARMV8_PMU_USERENR_ER)
- 
- /* PMMIR_EL1.SLOTS mask */
- #define ARMV8_PMU_SLOTS		GENMASK(7, 0)
 -- 
 2.34.1
 
