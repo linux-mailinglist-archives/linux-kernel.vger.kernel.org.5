@@ -2,137 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4DA80D307
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A32A80D30B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344060AbjLKQ6B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 11:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S1344197AbjLKQ6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjLKQ57 (ORCPT
+        with ESMTP id S229661AbjLKQ6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:57:59 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F6B8E;
-        Mon, 11 Dec 2023 08:58:04 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 85DF47FD3;
-        Tue, 12 Dec 2023 00:58:03 +0800 (CST)
-Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 00:58:03 +0800
-Received: from localhost.localdomain (202.188.176.82) by EXMBX072.cuchost.com
- (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 00:57:58 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     <krzysztof.kozlowski@linaro.org>
-CC:     <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <jisheng.teoh@starfivetech.com>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <leyfoon.tan@starfivetech.com>, <linux-kernel@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <samin.guo@starfivetech.com>,
-        <wim@linux-watchdog.org>, <xingyu.wu@starfivetech.com>
-Subject: Re: [PATCH v1 2/2] dt-bindings: watchdog: starfive,jh7100-wdt: Add compatible for JH8100
-Date:   Tue, 12 Dec 2023 00:57:31 +0800
-Message-ID: <20231211165731.1604004-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <3b53b6c4-96e6-4129-912e-82b8ab9b2269@linaro.org>
-References: <3b53b6c4-96e6-4129-912e-82b8ab9b2269@linaro.org>
+        Mon, 11 Dec 2023 11:58:18 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3247EB4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:58:25 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rCjbr-0002QV-3t; Mon, 11 Dec 2023 17:58:23 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rCjbq-00F8tu-34; Mon, 11 Dec 2023 17:58:22 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rCjbp-0012o0-QE; Mon, 11 Dec 2023 17:58:21 +0100
+Date:   Mon, 11 Dec 2023 17:58:21 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alessandro Zummo <a.zummo@towertech.it>
+Subject: Re: [PATCH] rtc: MAINTAINERS: drop Alessandro Zummo
+Message-ID: <20231211165821.xp3mlxdezvezg6r4@pengutronix.de>
+References: <20231211132600.101090-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX072.cuchost.com
- (172.16.6.82)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hfuxyhyjjyeionsg"
+Content-Disposition: inline
+In-Reply-To: <20231211132600.101090-1-krzysztof.kozlowski@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 11:06:09 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-> On 09/12/2023 15:27, Ji Sheng Teoh wrote:
-> > Add "starfive,jh8100-wdt" compatible string for StarFive's JH8100
-> > watchdog.
-> > Since JH8100 watchdog only has 1 reset signal, update binding
-> > document to support one reset for "starfive,jh8100-wdt" compatible.
-> > 
-> > Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > ---
-> >  .../watchdog/starfive,jh7100-wdt.yaml         | 29
-> > ++++++++++++++----- 1 file changed, 21 insertions(+), 8 deletions(-)
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> > index 68f3f6fd08a6..eec182317219 100644 ---
-> > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> > +++
-> > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> > @@ -19,14 +19,12 @@ description: isn't cleared, the watchdog will
-> > reset the system unless the watchdog reset is disabled. -allOf:
-> > -  - $ref: watchdog.yaml#
-> > -
-> >  properties:
-> >    compatible:
-> >      enum:
-> >        - starfive,jh7100-wdt
-> >        - starfive,jh7110-wdt
-> > +      - starfive,jh8100-wdt
-> >  
-> >    reg:
-> >      maxItems: 1
-> > @@ -44,11 +42,6 @@ properties:
-> >        - const: apb
-> >        - const: core
-> >  
-> > -  resets:  
-> 
-> No, keep it here with min/maxItems.
-> 
+--hfuxyhyjjyeionsg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok, will change it up to use min/maxItems.
+On Mon, Dec 11, 2023 at 02:26:00PM +0100, Krzysztof Kozlowski wrote:
+> Last email from Alessandro was in 2016, so remove him from maintainers
+> of the RTC subsystem.  Stale maintainer entries hide information whether
+> subsystem needs help, has a bus-factor or is even orphaned.
+>=20
+> Link: https://lore.kernel.org/all/?q=3Df%3A%22Alessandro+Zummo%22
 
-> > -    items:
-> > -      - description: APB reset
-> > -      - description: Core reset
-> > -
-> >  required:
-> >    - compatible
-> >    - reg
-> > @@ -56,6 +49,26 @@ required:
-> >    - clock-names
-> >    - resets
-> >  
-> > +allOf:
-> > +  - $ref: watchdog.yaml#
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - starfive,jh8100-wdt
-> > +    then:
-> > +      properties:
-> > +        resets:
-> > +          items:
-> > +            - description: Watchdog reset  
-> 
-> Why is it called "Watchdog"? How is it different from "Core"?
+unusual usage of Link: (which traditionally has an URL proving the patch
+submission).
 
-Will standardize them to use "Core" instead. Thanks.
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ec736fccbb26..82ef00014f41 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18271,7 +18271,6 @@ X:	include/linux/srcu*.h
+>  X:	kernel/rcu/srcu*.c
+> =20
+>  REAL TIME CLOCK (RTC) SUBSYSTEM
+> -M:	Alessandro Zummo <a.zummo@towertech.it>
+>  M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
+>  L:	linux-rtc@vger.kernel.org
+>  S:	Maintained
 
-> 
-> Best regards,
-> Krzysztof
-> 
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Maybe it would be a nice move to add him to CREDITS.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--hfuxyhyjjyeionsg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV3P6wACgkQj4D7WH0S
+/k40NQf/Qp/lGuMGxdxHGUK86QhoSIf2Aha4aI6sPgwAgGgMWiaAbbAMXgfKn2K0
+ZeApA49vchlK2qnbJ5cXm99fUS294zJK7rdv6Skq+ZlQ5zFkGRNl1jGD8c9Z0gnP
+5zWn2b6r4se0vxd7Xh/U9EAMfUlOMhTFKzz+ECbA/ZNPYRh5tTihv0XKjL4DHNmy
+TLgcN06QAGJycB3OLFJ+/YAcXrKxJ34HNqGAfRHKTJJpbPdc79lzM1s3Sh7ZH/Wn
+kviBaYYA9FTgfqUYLISYhKgz3pd7ojsAEN8PhLmAmxUVEASo7Sp+lsthjHQOHt/2
+K4hT/3psQH8N58YIaOVGIasMcvZRyg==
+=W2Xa
+-----END PGP SIGNATURE-----
+
+--hfuxyhyjjyeionsg--
