@@ -2,230 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A9980CB0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529F80CB10
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343672AbjLKNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        id S1343502AbjLKNbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343502AbjLKNaR (ORCPT
+        with ESMTP id S234350AbjLKNbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:30:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BE99A;
-        Mon, 11 Dec 2023 05:30:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702301424; x=1733837424;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3d0ZqW0s9NY7VE8U/j6KTSmrdZ+E7YFFIPmXG9j0Wks=;
-  b=R4t8cXihOV3DFJq3QqXgr2axdIdkprHB4wkNr0AT5t16oxKsNnh7v8vI
-   /QRsBFpu+PPOln0b1UIHz4L8a9VDjm5UcqxN5Nv9FhJmekkepPJX6kO2s
-   G1wIM10YQHJKXbU74J0w5j633heXR8I0hF4w/CpB/SN33NjWjJ5RuaqdC
-   252Db675opQm5NohBENPPw2JmRh8JYCd3Fvq2zpU8oJkSDHF/27OJZ3WL
-   jCIYJe+dFWD15cjmEryWT2rFiO1y9lqOV/xJg8Phbz2yGXNqmU2jParc0
-   Kn0VGnVxQbkzB770s+KUt07CvpD3D/Qy2869F+IQvT+y1/2QXmnREh754
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="8009216"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="8009216"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 05:30:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="776674844"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="776674844"
-Received: from unknown (HELO amlin-019-225.igk.intel.com) ([10.102.19.225])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Dec 2023 05:30:21 -0800
-From:   Andrii Staikov <andrii.staikov@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrii Staikov <andrii.staikov@intel.com>,
-        Marcin Szycik <marcin.szycik@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>
-Subject: [PATCH iwl-next  v5] ice: Add support for packet mirroring using hardware in switchdev mode
-Date:   Mon, 11 Dec 2023 14:30:17 +0100
-Message-Id: <20231211133017.815891-1-andrii.staikov@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Dec 2023 08:31:04 -0500
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2128.outbound.protection.outlook.com [40.107.20.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9FAB3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:31:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cJaPKcMYreexOcbJGSmaYzc3dngzOgoiX579QXRtCME6QasacebrN47yGI8hzuzGi//Tud5hGpuUOK0+f9EQg+vA42V/Rkse6flZdSL6S+uiVMsOvoaIHPyyrgLGNyzen1iXwxEeV+ZzILpNj4fw8Xkg46MFNGn/6g+NtXvnfTvbbr7eh9jWHG6wCqgnhv4ioqZTYHq9v+XoyepzkiL40dC+pgy1lJxl97e3pCa3zzguAztciVLuPTytuhXh6lJMhOQAXpVl55UfBeaqG5bp3b/YczSQztSuZLoB4yIk7m/gUiHxHbGitqldT/oXEU7izm9/3Ii/uPW7e3zXp3ovrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PvSG3XpyAjP0LVHb5cLb0mq0nabmjI4fK0dTfIFDw5Q=;
+ b=QiVoRJRZ824udaewuro/WATuNCILakGTCDFwYg8/SfNxMqgys4mHXBAhwAc/WyJ4mgW0CyAyZZ0u0Rlrp6i/JmfVX1FdZ/BrLtHlIH6L1nPioLXW/MyL4NSugX5f11z7PxOu9e/1R2PFzg3Y4cUe3MmWTOicMUco/n8e7rZi/32GIHcTBROGTA6pTmTsFD218unKIJzZ32Ow+EBEPTNwZrJpJ0nL2bfFBocQvTeAXj3vpXKb/sa6RlccRGa7zdO6txuOXcfyXKS8WtqepafM5oDxMRKAO9JyXS2Z4rq24NoukT+WKOSg+CmVLt9JlqrjTxJxXkI551cvATGl3ODWZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=raritan.com; dmarc=pass action=none header.from=raritan.com;
+ dkim=pass header.d=raritan.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=grpleg.onmicrosoft.com; s=selector1-grpleg-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PvSG3XpyAjP0LVHb5cLb0mq0nabmjI4fK0dTfIFDw5Q=;
+ b=XWlSf6i87TJ1xRpXAjp2HbE1FPdZsDVqnToflbiYIF+iZCfRaXAZj0mZT0SOOwLUnBK6jhoN8+nz1TeAxJtZAgSMkFVmuDP0qI2dtLpO0jV9+4+oLaHJDjG5KOy+JgsDtmUcQoVPDNUS8L63+w2WvpXlH87thzLPEyL0Fri+tAU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=raritan.com;
+Received: from DB8PR06MB6539.eurprd06.prod.outlook.com (2603:10a6:10:12f::23)
+ by PR3PR06MB7097.eurprd06.prod.outlook.com (2603:10a6:102:8a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 13:31:07 +0000
+Received: from DB8PR06MB6539.eurprd06.prod.outlook.com
+ ([fe80::98dd:e9db:b7d8:9001]) by DB8PR06MB6539.eurprd06.prod.outlook.com
+ ([fe80::98dd:e9db:b7d8:9001%3]) with mapi id 15.20.7068.028; Mon, 11 Dec 2023
+ 13:31:07 +0000
+Message-ID: <06e77692-4942-4657-9694-725d6de3e883@raritan.com>
+Date:   Mon, 11 Dec 2023 14:31:04 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] stacktrace: check whether task has a stack before saving
+ it
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Ronald Wahl <rwahl@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+References: <20231030175854.12675-1-rwahl@gmx.de>
+ <CACRpkdZ2CXiNsnh_VxAy0OK+s_=cDqP8k0PVmNiL4QJ+mMZ+GQ@mail.gmail.com>
+From:   Ronald Wahl <ronald.wahl@raritan.com>
+In-Reply-To: <CACRpkdZ2CXiNsnh_VxAy0OK+s_=cDqP8k0PVmNiL4QJ+mMZ+GQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: FR2P281CA0054.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:93::8) To DB8PR06MB6539.eurprd06.prod.outlook.com
+ (2603:10a6:10:12f::23)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR06MB6539:EE_|PR3PR06MB7097:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3042a3d9-03f1-4608-5b64-08dbfa4d6e03
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7VCEkznnyEgRMxz5IR5oaLlO5N31WxZj1UXDgRQLSfuuKZpXMOc6oyVIZhL8fSPrG9/xEfPqUFHek7HEkFJPJqLzDFzv/K2GQAzt+UUxdRsrQmePGcRmjr8mihHE7S18BbYAblXVSRB9ZtvEPLa7AOdUjAr78sldZy+pAHFfRVM02lAyiuaShtVpJPmEbbEKkZimLH5S8dnKbF+mIuqL1ibMu2dYXHAL2NmnKYKkkbvlpC3S/2dVIpBpMF8O+1lnjn08XGqNxLkWQwrH08lkORsFSEj14VyXeIujQxC+AvjSa4s0iv/NL0Tp5Ap/L3ac0GfWdP/T+cBuJh7ewAGHTC4a7UF1rpBQ+x4jJHo7+2W5vPxWkmLRZ/8+upEdLIMmXp4hlKcLPiU7HrGTkCtTYcIsqFnBOBhTISJAt6KNl490IQlsGDM/sA0GhleaJYxCP8Z5rCmMBkfigadMTcIwbbyTnF5MMwumpM60C1kxiguKA66Emn+fUbxEWA/O9l8b3Gf/JeW3b86uVetc5p+O8gFjnhl6lactmuDB7bihJNm9JCOIbPyYb36VPhJXW0KUV8xWKqRFuPp6xkvYIjrC4H/bHE1nzSxY1xVAPveMjGY62WN0R1+iBRGbyMYdiZZFthJFGFDPzKaQ6jczneH3RuHHb+Ss2iOKSJADMBYF6OVsumvbx59dcmPmEUOTEbNXcykieu+UWOG9CTLDgg1jqqA4lle4IazGdmbojJjW6s0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR06MB6539.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(136003)(396003)(366004)(230922051799003)(230373577357003)(230173577357003)(230273577357003)(230473577357003)(451199024)(186009)(64100799003)(1800799012)(41300700001)(66574015)(26005)(2616005)(83380400001)(86362001)(31696002)(36756003)(38100700002)(44832011)(5660300002)(316002)(8676002)(8936002)(4326008)(2906002)(6666004)(6512007)(6506007)(53546011)(66476007)(66556008)(66946007)(110136005)(478600001)(6486002)(966005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WkgyMjlpcmVhMUM5NDdmQkw1cHZYeHAzbzRLZk05V3hjOU9KTkFtbGdxWlRj?=
+ =?utf-8?B?aWlSVlNnamFPVk9OWmdwbXVkNFZiYVpMTEU1S0phRUJXNlVtdlRDNTNMaUl1?=
+ =?utf-8?B?MXNRanpBa2hPQnluU3ZBKzBjRm9JYU5lcmZBaGZsc1RucGg1VTZiWnN3OTZy?=
+ =?utf-8?B?Z3h5QXJpb0ViL3VXaGtmdzViQmJtWEFCUXNrbjBZaGFnaC9JMmNLMjNRN1BO?=
+ =?utf-8?B?clB3S1RqTi9YODdZczArQXFJWnF1OEFheGI3QjJTTEliQVRPU0hsL3RWeW14?=
+ =?utf-8?B?cXVXcjJHTkVJQ2ZIOGxpaEZpZTdGZ1lMYUlYeU1vNzkxQnpHU2VqaDNTbDZO?=
+ =?utf-8?B?QVZ5ejQyQ29TVW1rQ1pOTjlSRlVnL2x6QnVuN0VzMkUwdk80TWdDNmN5SmNz?=
+ =?utf-8?B?WW01SDlraWtLNEVSM2UvcGMxK3hIU1Y0NEJ5cnhLWS80SXhSdEhxK0lMelEv?=
+ =?utf-8?B?Q2p4cG51akR2d2pPV3BRYU5WWUlHd2taelh1WnU2VkhZa29nWkZxU05kZzRp?=
+ =?utf-8?B?eGNUUXZlQlI0c21RVDVsZDAyRXdRRnp4UkRLODNaaFNscGt1T0lDaVJycUZq?=
+ =?utf-8?B?OWpBQWJ1dW1YVU8yVXBGeHUvY09qSjZ1RVlaK3k3cm9iTjAyTmVEajVTd0N6?=
+ =?utf-8?B?SW9zb2N4S1dlbGliWVU1cjdHeCtXcVk4d1oxRVdxTlM0WHE5STJtS1cyOE9T?=
+ =?utf-8?B?cEdHNzVEWENybXF0aTFBN1Q1bjFJaVZ2ZDJadGRwNTNlRWlGZUN1Z3FtSGhQ?=
+ =?utf-8?B?dHQwbmR1ditQWnJIRnlkczFNSy9xazRyYVRKL0Z1WGFqUktUcUxPWTRrdFFa?=
+ =?utf-8?B?cDh0L09WdWFPV2lIa0RuVGMvU3A2cjFhdGFTTWI4c08yVnFtSnJvYWdQOEFv?=
+ =?utf-8?B?eXRnWERFMnNqWHpPMlZsOTV0NnlrUUgydWMrclNqZ1VVTzl5U2hUbWd0eExN?=
+ =?utf-8?B?TzRoL2tobnFZNjU4a09iZXNXazhrSXBKU3RmMlo4SFBkQlJScFhBemNYbFZ0?=
+ =?utf-8?B?aStscjFLOEl5REl4UVdySG1ueWRIb0RjUjBKMnJBU002cTVFRmgvbDJSbXB4?=
+ =?utf-8?B?andETmkzQWkxbXJLZ28rZWxrTU9RV3Q0NjlodzB6eFNkajlPbUpieEdoMTEx?=
+ =?utf-8?B?V08rY1lyTGx0bDVQTUFJYStDOC9JanN5QWl3OGw4Q1krRUdRdHl2THVtT0Fh?=
+ =?utf-8?B?TnY5eldQYnlNQlNpL0dib0trRVVUMHpGTUt3ODZvK3BUQ0srMisxdFE3NnFW?=
+ =?utf-8?B?UzVMejN4SWVLUjA5dy94WkJ0WlRsZGhDaGN2S3gwVis1dkI4Zkp6b3dnLy9i?=
+ =?utf-8?B?MGhHMGxDajN3eGNXQmQrbU04VUp0VmsvUkgxZWlLOEpFOHpaYjNWYUMzcmNr?=
+ =?utf-8?B?aStvZjFCcGdTY3NnYWpoV245NmVPWWNuME45dlM4ZVpQY1RacnF5MHhINXhm?=
+ =?utf-8?B?amQ1cjZLaTc1OEVXTHdNVFNuMGdwbXd1R1ZYQ1JEcUxRSHVSazJQL1QraVZ6?=
+ =?utf-8?B?bmI2eU14UkJ5NXJGb1U1K3VaTllhSFNTdVk5SnFLRWdMaVdDYkV3NkJMM0FI?=
+ =?utf-8?B?S1B0MEFoWWRRWEpjdHRyVFNFdURsQ0tydm9XL213Nzl6QUwvQXVjN09NUkNy?=
+ =?utf-8?B?TUhGZktDRjU0N3hPN1IxV0VHM0kvV0krMWV2bWRqUGRWWlRJa1J0ZDhDd3Nn?=
+ =?utf-8?B?UmltNUkwczl3cmNrUlJudUJScy9JblFidmlpSVlpR2duNC9raWVHQitHd241?=
+ =?utf-8?B?Z0dlV1ExUkRMTjdwZXozNkNBSFBWdnJBS0NocE9WbVhmWjBRVlJFTVJBOUJT?=
+ =?utf-8?B?dC9ETnExSnp4Nk12WlZMWkt3WlY0SzZFWUhiWW5TSWFMLzRLdXFtSzVPK3ky?=
+ =?utf-8?B?Q1B2M2RQQW5SVTdBdyt5cmRNMm5mUmJ5TiswcDUzTDBueTVtYkhWaVA2NE1p?=
+ =?utf-8?B?V2ZKRnZnMVBjSlpVY1JRU0xFVVQ4RWJyckI0NFVwYnlMK0szQ3gwaEUvQ1kz?=
+ =?utf-8?B?QkcraVo2ZTF1OWpZUm9vaXNaU0M0dUVmM2t6RUNFL1RyeWVtWHM3bmVHZnJl?=
+ =?utf-8?B?TS9VMHRqZ09BN3ZOc0tuQ3JXVndIY0FOSHhXWktTeUp0V0xvQ3V2T3dqVjI3?=
+ =?utf-8?B?THBPdW9lYkkxdFJGZXZjUjBtdk1xS2R3Vyt6V3plS3M5REJIK3lRSmdQUDZZ?=
+ =?utf-8?B?Tnc9PQ==?=
+X-OriginatorOrg: raritan.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3042a3d9-03f1-4608-5b64-08dbfa4d6e03
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR06MB6539.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 13:31:07.1235
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 199686b5-bef4-4960-8786-7a6b1888fee3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /rzybCKI60VG9cUjgOSoGXeanZJa3a3fAjUPHhH140K3HG0/zjOAfdJhZRHKSE+Lbdnc7qwHz6/jEJovcgwmiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR06MB7097
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switchdev mode allows to add mirroring rules to mirror incoming and
-outgoing packets to the interface's port representor. Previously, this was
-available only using software functionality. Add possibility to offload
-this functionality to the NIC hardware.
+On 01.11.23 22:59, Linus Walleij wrote:
+> [You don't often get email from linus.walleij@linaro.org. Learn why this =
+is important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+> On Mon, Oct 30, 2023 at 6:59=E2=80=AFPM Ronald Wahl <rwahl@gmx.de> wrote:
+>
+>> I encountered a crash on ARM32 when trying to dump the stack of some
+>> zombie process. This is caused by a missing check whether the task
+>> actually has a valid stack. This commit adds this check.
+>>
+>> Commit 214d8ca6ee85 ("stacktrace: Provide common infrastructure")
+>> introduced this check for platforms that define CONFIG_ARCH_STACKWALK
+>> but ARM32 is not one of them.
+>>
+>> Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+>
+> Looks correct to me:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Introduce ICE_MIRROR_PACKET filter action to the ice_sw_fwd_act_type enum
-to identify the desired action and pass it to the hardware as well as the
-VSI to mirror.
+Unfortunately it causes a memory leak because I forgot to call
+put_task_stack(task) now. Should I post v2 or a separate patch?
 
-Example of tc mirror command using hardware:
-  tc filter add dev ens1f0np0 ingress protocol ip prio 1 flower src_mac
-  b4:96:91:a5:c7:a7 skip_sw action mirred egress mirror dev eth1
+- ron
 
-ens1f0np0 - PF
-b4:96:91:a5:c7:a7 - source MAC address
-eth1 - PR of a VF to mirror to
 
-Co-developed-by: Marcin Szycik <marcin.szycik@intel.com>
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Signed-off-by: Andrii Staikov <andrii.staikov@intel.com>
----
-v1 -> v2: no need for changes in ice_add_tc_flower_adv_fltr()
-v2 -> v3: add another if branch for netif_is_ice(act->dev) || 
-ice_is_tunnel_supported(act->dev) for FLOW_ACTION_MIRRED action and 
-add direction rules for filters
-v3 -> v4: move setting mirroring into dedicated function
-ice_tc_setup_mirror_action()
-v4 -> v5: Fix packets not mirroring from VF to VF by changing
-ICE_ESWITCH_FLTR_INGRESS to ICE_ESWITCH_FLTR_EGRESS where needed
----
- drivers/net/ethernet/intel/ice/ice_switch.c | 25 +++++++++----
- drivers/net/ethernet/intel/ice/ice_tc_lib.c | 41 +++++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_type.h   |  1 +
- 3 files changed, 60 insertions(+), 7 deletions(-)
+________________________________
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
-index ee19f3aa3d19..4af1ce2657ad 100644
---- a/drivers/net/ethernet/intel/ice/ice_switch.c
-+++ b/drivers/net/ethernet/intel/ice/ice_switch.c
-@@ -6065,6 +6065,7 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 	      rinfo->sw_act.fltr_act == ICE_FWD_TO_Q ||
- 	      rinfo->sw_act.fltr_act == ICE_FWD_TO_QGRP ||
- 	      rinfo->sw_act.fltr_act == ICE_DROP_PACKET ||
-+	      rinfo->sw_act.fltr_act == ICE_MIRROR_PACKET ||
- 	      rinfo->sw_act.fltr_act == ICE_NOP)) {
- 		status = -EIO;
- 		goto free_pkt_profile;
-@@ -6077,9 +6078,11 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 	}
- 
- 	if (rinfo->sw_act.fltr_act == ICE_FWD_TO_VSI ||
--	    rinfo->sw_act.fltr_act == ICE_NOP)
-+	    rinfo->sw_act.fltr_act == ICE_MIRROR_PACKET ||
-+	    rinfo->sw_act.fltr_act == ICE_NOP) {
- 		rinfo->sw_act.fwd_id.hw_vsi_id =
- 			ice_get_hw_vsi_num(hw, vsi_handle);
-+	}
- 
- 	if (rinfo->src_vsi)
- 		rinfo->sw_act.src = ice_get_hw_vsi_num(hw, rinfo->src_vsi);
-@@ -6115,12 +6118,15 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 		status = -ENOMEM;
- 		goto free_pkt_profile;
- 	}
--	if (!rinfo->flags_info.act_valid) {
--		act |= ICE_SINGLE_ACT_LAN_ENABLE;
--		act |= ICE_SINGLE_ACT_LB_ENABLE;
--	} else {
--		act |= rinfo->flags_info.act & (ICE_SINGLE_ACT_LAN_ENABLE |
--						ICE_SINGLE_ACT_LB_ENABLE);
-+
-+	if (rinfo->sw_act.fltr_act != ICE_MIRROR_PACKET) {
-+		if (!rinfo->flags_info.act_valid) {
-+			act |= ICE_SINGLE_ACT_LAN_ENABLE;
-+			act |= ICE_SINGLE_ACT_LB_ENABLE;
-+		} else {
-+			act |= rinfo->flags_info.act & (ICE_SINGLE_ACT_LAN_ENABLE |
-+							ICE_SINGLE_ACT_LB_ENABLE);
-+		}
- 	}
- 
- 	switch (rinfo->sw_act.fltr_act) {
-@@ -6147,6 +6153,11 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 		act |= ICE_SINGLE_ACT_VSI_FORWARDING | ICE_SINGLE_ACT_DROP |
- 		       ICE_SINGLE_ACT_VALID_BIT;
- 		break;
-+	case ICE_MIRROR_PACKET:
-+		act |= ICE_SINGLE_ACT_OTHER_ACTS;
-+		act |= FIELD_PREP(ICE_SINGLE_ACT_VSI_ID_M,
-+				  rinfo->sw_act.fwd_id.hw_vsi_id);
-+		break;
- 	case ICE_NOP:
- 		act |= FIELD_PREP(ICE_SINGLE_ACT_VSI_ID_M,
- 				  rinfo->sw_act.fwd_id.hw_vsi_id);
-diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.c b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-index 08d3bbf4b44c..b890410a2bc0 100644
---- a/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-@@ -689,6 +689,41 @@ ice_tc_setup_drop_action(struct net_device *filter_dev,
- 	return 0;
- }
- 
-+static int ice_tc_setup_mirror_action(struct net_device *filter_dev,
-+				      struct ice_tc_flower_fltr *fltr,
-+				      struct net_device *target_dev)
-+{
-+	struct ice_repr *repr;
-+
-+	fltr->action.fltr_act = ICE_MIRROR_PACKET;
-+
-+	if (ice_is_port_repr_netdev(filter_dev) &&
-+	    ice_is_port_repr_netdev(target_dev)) {
-+		repr = ice_netdev_to_repr(target_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_EGRESS;
-+	} else if (ice_is_port_repr_netdev(filter_dev) &&
-+		   ice_tc_is_dev_uplink(target_dev)) {
-+		repr = ice_netdev_to_repr(filter_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi->back->eswitch.uplink_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_EGRESS;
-+	} else if (ice_tc_is_dev_uplink(filter_dev) &&
-+		   ice_is_port_repr_netdev(target_dev)) {
-+		repr = ice_netdev_to_repr(target_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_INGRESS;
-+	} else {
-+		NL_SET_ERR_MSG_MOD(fltr->extack,
-+				   "Unsupported netdevice in switchdev mode");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int ice_eswitch_tc_parse_action(struct net_device *filter_dev,
- 				       struct ice_tc_flower_fltr *fltr,
- 				       struct flow_action_entry *act)
-@@ -710,6 +745,12 @@ static int ice_eswitch_tc_parse_action(struct net_device *filter_dev,
- 
- 		break;
- 
-+	case FLOW_ACTION_MIRRED:
-+		err = ice_tc_setup_mirror_action(filter_dev, fltr, act->dev);
-+		if (err)
-+			return err;
-+		break;
-+
- 	default:
- 		NL_SET_ERR_MSG_MOD(fltr->extack, "Unsupported action in switchdev mode");
- 		return -EINVAL;
-diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
-index 5a80158e49ed..20c014e9b6c0 100644
---- a/drivers/net/ethernet/intel/ice/ice_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_type.h
-@@ -1055,6 +1055,7 @@ enum ice_sw_fwd_act_type {
- 	ICE_FWD_TO_Q,
- 	ICE_FWD_TO_QGRP,
- 	ICE_DROP_PACKET,
-+	ICE_MIRROR_PACKET,
- 	ICE_NOP,
- 	ICE_INVAL_ACT
- };
--- 
-2.25.1
+Ce message, ainsi que tous les fichiers joints =C3=A0 ce message, peuvent c=
+ontenir des informations sensibles et/ ou confidentielles ne devant pas =C3=
+=AAtre divulgu=C3=A9es. Si vous n'=C3=AAtes pas le destinataire de ce messa=
+ge (ou que vous recevez ce message par erreur), nous vous remercions de le =
+notifier imm=C3=A9diatement =C3=A0 son exp=C3=A9diteur, et de d=C3=A9truire=
+ ce message. Toute copie, divulgation, modification, utilisation ou diffusi=
+on, non autoris=C3=A9e, directe ou indirecte, de tout ou partie de ce messa=
+ge, est strictement interdite.
 
+
+This e-mail, and any document attached hereby, may contain confidential and=
+/or privileged information. If you are not the intended recipient (or have =
+received this e-mail in error) please notify the sender immediately and des=
+troy this e-mail. Any unauthorized, direct or indirect, copying, disclosure=
+, distribution or other use of the material or parts thereof is strictly fo=
+rbidden.
