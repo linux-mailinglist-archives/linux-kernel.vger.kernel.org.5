@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EF880C88C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5A880C846
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbjLKLlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:41:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S234608AbjLKLmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:42:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234789AbjLKLkz (ORCPT
+        with ESMTP id S234323AbjLKLmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:40:55 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20836D0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:41:01 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so40154855e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:41:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702294859; x=1702899659; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cMvA/ANtahW+hb9oH+xQ7G9xSFgd/krQcWaU1bteuv4=;
-        b=nBB0QM99ztLXI6RgbXCeVBuDP5ZoSF1RDANFe1/qh2EyTu7BBG6Jogth/vdj+5B18q
-         LN7U6iryl2Z73mg8sBiVCOHTdL7aCQgVGu2/wBQwPolxbO4dEOmd+1jXlWmQElSoixWG
-         8/LhnQFZoR8uM7NJbqAUOVxzfx6S4c71RvzNjlhKZY++mjau7Y128eVW8K+X+OnbCdlG
-         b+JoElNnYgvlu56iNYf1PLpbtnL4Sjp/vIHOjfEqNiNY9AISbVbYcDR6bwjbp+C08D7x
-         cQo8ImCsdmvi55Zl16MSxyzkiBjxn+dakk2sZ9EpdNeL2Q2I3NyO7e4auO5NO5PRq3Iw
-         xqZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702294859; x=1702899659;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cMvA/ANtahW+hb9oH+xQ7G9xSFgd/krQcWaU1bteuv4=;
-        b=j28q3OgGxJ+52QkkSOXKoEBdDGfQmf9uyFGQy6RmDopKgrfAjstfqK+zwHXvDPzSVa
-         MQELxnc++gV7IFbmI6dhzDq06mAB0Em9zP/0VbpxkEIKZgkWof7xjoP/K84KT1ZjLKO5
-         fkoU41DKNiDqhuE2yJtniR4R+kBv+HBnNomi6dYv7eLejHN8ByN72JnEVSUAtbxyRgL/
-         wz1JNBUS7Wd/zX1ib4mszvf5SUk9Eu/ZPD4lc/lZXDFVvROtRCMA0dfW2XTw7Q0koAhB
-         GPiGi3mx4qzUT8HroEcKm0AIZRi8mL3IR4ndIN7c37yh2kIXRdP2GqOGdJlRsYig+BSu
-         G+HA==
-X-Gm-Message-State: AOJu0YxlmVpNK5ueE9pHn6kGYUwTmuyBcH2MvdNfXknZJf/BLcHQs3YE
-        tZww94Wy8QFdID5UdQGsAyfm/r4cs8Mujiz5+tGzVr/v
-X-Google-Smtp-Source: AGHT+IGEjB1saOzLbqjUnbbOLBg/lh3L6Ga+lymW3L4n04g9lWLUrFnJl2hsCTDEre3MRludqgGqdw==
-X-Received: by 2002:a7b:ce8b:0:b0:40c:3270:ec9a with SMTP id q11-20020a7bce8b000000b0040c3270ec9amr1089805wmj.349.1702294859472;
-        Mon, 11 Dec 2023 03:40:59 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05600c468700b0040c420eda48sm6178883wmo.22.2023.12.11.03.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 03:40:59 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 11 Dec 2023 12:40:57 +0100
-Subject: [PATCH] ASoC: codec: wsa884x: make use of new
- mute_unmute_on_trigger flag
+        Mon, 11 Dec 2023 06:42:16 -0500
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFED6CD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:42:19 -0800 (PST)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231211114217epoutp0308dfb940c735934c1af975579770e398~fxDoEPmbv0402204022epoutp03X
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:42:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231211114217epoutp0308dfb940c735934c1af975579770e398~fxDoEPmbv0402204022epoutp03X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702294937;
+        bh=jQWQUWzPxv0uZIMSlUDxzoXSveqRH1BJkEWvhggSG8U=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=e2Qi4E25NnsyyUFuxCVneXcYU/VvfIQ/y/iAdxrGrHUgkpKLpFmHEF2BHgd3XJNnB
+         wPqrrhpdgLj0yLcliFlYzJ4A0deP9rPKFWuwyV2mDgHD8oepqr7xh053QzFOCYghR2
+         HfEk2GvyVCW1PHI/0G+k1BVzwp2kSgpAp98kRgXk=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20231211114216epcas2p32b0c575b4a632ca8f60d79ac4044d36d~fxDnaN8MU0911509115epcas2p3T;
+        Mon, 11 Dec 2023 11:42:16 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.97]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4Spfx42dT7z4x9Q0; Mon, 11 Dec
+        2023 11:42:16 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.EB.09607.895F6756; Mon, 11 Dec 2023 20:42:16 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231211114215epcas2p226d66c6dd01a4414559272c648c3d464~fxDmZiIUm2599425994epcas2p2Z;
+        Mon, 11 Dec 2023 11:42:15 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231211114215epsmtrp1bcbaa9b4d46762ba5dc2e2ab5f132274~fxDmXoM8-0416704167epsmtrp1W;
+        Mon, 11 Dec 2023 11:42:15 +0000 (GMT)
+X-AuditID: b6c32a48-bcdfd70000002587-b1-6576f598f8f1
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        92.A9.18939.795F6756; Mon, 11 Dec 2023 20:42:15 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.229.9.55]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231211114215epsmtip2b6acf38faa8291bbd2f8edc322642f1d~fxDmIqQr20289402894epsmtip2N;
+        Mon, 11 Dec 2023 11:42:15 +0000 (GMT)
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jaewon Kim <jaewon02.kim@samsung.com>
+Subject: [PATCH v4 0/2] Introduce ExynosAutov920 SoC and SADK board
+Date:   Mon, 11 Dec 2023 20:41:43 +0900
+Message-ID: <20231211114145.106255-1-jaewon02.kim@samsung.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOJsWRmVeSWpSXmKPExsWy7bCmue6Mr2WpBsvO81k8mLeNzWLN3nNM
+        FvOPnGO1aF68ns1iR8MRVot3c2Us9r7eym4x5c9yJotNj6+xWmye/4fR4vKuOWwWd++uYrSY
+        cX4fk8WZxb3sFq17j7BbHH7Tzmrxc9c8FotVu4Dqbk+czOgg7LFz1l12j02rOtk87lzbw+ax
+        f+4ado/NS+o9+v8aePRtWcXo8XmTXABHVLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGu
+        oaWFuZJCXmJuqq2Si0+ArltmDtA7SgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwC
+        8wK94sTc4tK8dL281BIrQwMDI1OgwoTsjEsfFjMXnOep2PO7j62BcTFXFyMnh4SAicS/3yuY
+        uhi5OIQEdjBKLFi+jh3C+cQosfDcUyY4Z13ranaYlv/rrkNV7WSU+D/3AiuE85FRov3XESaQ
+        KjYBbYnv6xezgtgiAveZJV63VYMUMQu0M0nM+/aSBSQhLOAs8artASOIzSKgKnH78HS2LkYO
+        Dl4BO4n2uwIQ2+QlFu9Yzgxi8woISpyc+QSslRko3rx1NjPITAmBLRwSExc1MUE0uEgsXDOR
+        DcIWlnh1fAvU2VISL/vboOx8ibYrZ6DsGomNCy4xQtj2EovO/GQHuYFZQFNi/S59EFNCQFni
+        yC2otXwSHYf/skOEeSU62oQgGtUk7k89B7VURmLSkZVQx3hITGzYAdYqJBArsWXvKuYJjPKz
+        kDwzC8kzsxD2LmBkXsUollpQnJueWmxUYAKP1OT83E2M4BSt5bGDcfbbD3qHGJk4GA8xSnAw
+        K4nwyhwpThXiTUmsrEotyo8vKs1JLT7EaAoM3YnMUqLJ+cAskVcSb2hiaWBiZmZobmRqYK4k
+        znuvdW6KkEB6YklqdmpqQWoRTB8TB6dUA9OSM2mPHWQU1TJrp+jmv3/kuC7Wds2HmuRNf24d
+        3LZle/6eOLU7ly/oZhlZdi1z6VCaGjvtVsO8mJ4DIRNKc1nlbj7ffefY5R9bNso+Pb9WKHGW
+        orT2PN4AqaOfK9y23XR+fqLezeDRgbnPEuq1He+wilhevjW5ZoJplMHU68ejdkwwT58uZavL
+        05tx/NSamzvq/nn9WBf5MPXk8SpHB9nXlxi1C/S26zle1Lnv3OSzK+vpMofLE5fUsKgbbshb
+        uq7Zx/qekrnF1zWKJrckeURucN72ChSfZrUx9LKH09FDlqclBAUueR5X5FgjHfhP2VHObCbb
+        QZZvFV4P17rM7lu+ys3qlrezwxLPvxfOLDurxFKckWioxVxUnAgAZLnkB1oEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMLMWRmVeSWpSXmKPExsWy7bCSvO70r2WpBn/eaVk8mLeNzWLN3nNM
+        FvOPnGO1aF68ns1iR8MRVot3c2Us9r7eym4x5c9yJotNj6+xWmye/4fR4vKuOWwWd++uYrSY
+        cX4fk8WZxb3sFq17j7BbHH7Tzmrxc9c8FotVu4Dqbk+czOgg7LFz1l12j02rOtk87lzbw+ax
+        f+4ado/NS+o9+v8aePRtWcXo8XmTXABHFJdNSmpOZllqkb5dAlfGpQ+LmQvO81Ts+d3H1sC4
+        mKuLkZNDQsBE4v+66+xdjFwcQgLbGSVOXZ3IDJGQkVj+rI8NwhaWuN9yhBWi6D2jxLVHrWAJ
+        NgFtie/rF4MlRASeM0uc/fMIrJtZoJ9J4vqmBBBbWMBZ4lXbA0YQm0VAVeL24elAzRwcvAJ2
+        Eu13BSAWyEss3rEcrJVXQFDi5MwnLBBj5CWat85mnsDINwtJahaS1AJGplWMoqkFxbnpuckF
+        hnrFibnFpXnpesn5uZsYwfGiFbSDcdn6v3qHGJk4GA8xSnAwK4nwyhwpThXiTUmsrEotyo8v
+        Ks1JLT7EKM3BoiTOq5zTmSIkkJ5YkpqdmlqQWgSTZeLglGpg2jqtVl3ok1f2t00a2R6/zHhr
+        gmJaorXTtp5WfSRrkdudnPPOWPtkZr78rl5GjawvH1wzlBnNWszyczX+cGb+nrXqgOPswF29
+        p0tdNCpuJRzea/gg7IX4RLs9v55dNI+7vG6z3PELdRuWOfa0Z50X2lryPUoxecLrQ6b2LZxs
+        gsEZdiZR+yNNA1RFHfap/TrP8uTdZvPz60JjC4V94tULf29i+HG+vNbi7tund36mrH38/Oye
+        h6funyx7EPX65Magl62zL+xkXM/e0rvKsFtp30QD+ZCFC8043nJaneL28fvTmnN2H39v4JM/
+        /XwlvRcynuv3Za61fnTZ6stby7mf/nyJqNau19lnukWjWumQEktxRqKhFnNRcSIAHm0J1QYD
+        AAA=
+X-CMS-MailID: 20231211114215epcas2p226d66c6dd01a4414559272c648c3d464
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231211-topic-sm8x50-upstream-wsa884x-fix-plop-v1-1-0dc630a19172@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAEj1dmUC/x2N0QrCMAwAf2Xk2cBSlRZ/RXwIMWrAraXZtDD27
- xYfj4O7DVyrqcNl2KDqx9zy3IEOA8iL56ei3TtDGMORAhEuuZigT6mdR1yLL1V5wq9zSqeGD2t
- Y3rkgR47CUSWQQI+Vqt39R9fbvv8AkBnT3HgAAAA=
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1958;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=O686kNPfhDqyBc+yvwfM+enx5jWXb5MAlOqcdwFA5+M=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBldvVKCbZAQnrutsDlCbNPOPYiveBzyrvr8dCS2rbw
- arXbjQ+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXb1SgAKCRB33NvayMhJ0YCuD/
- 4iq4pN/CJwoFmazc6CD98pcr/TlK3oH4npma/Gs2B+MZTt+bseIgVjy7pKgNTjE5vrvEw3+bq+MRJ2
- Cp4uZw2wpfsoKXt+BCvBbJvYc9O51e+8ffKK1N7dviP5eGURT6e3y/lfftkg508YRt9n+tfKV17FMt
- 2UsrqH4vi7QSxaDs2a0ucGSeMY6oGIMLeeNTdLxOE6Uz+Cbm79efoq4AcFRI4Rva8fAn7AbvGpKFVj
- ts4dpZNYV+baK1SHjl5/t6+JjVQCitZlZ5PzMdKRVtjLDIBvT1NG4Rv0W9Q6ww4xF90o9BZaNL4vla
- xlShjZLc6AH/UtbGt3J37/yI1nwiA6ueJbVd9Gq9O92uUiyysiIfwz4pelB4sBCKJv9n4Zdmct0t+v
- CnrpMcB9wbJe1ftEXAOeD52qjAQA56HcmtIMK5cbJveK063an5mP5Hdlay1jWE3FSIikfRZHa9agV+
- +kqkQZ4WeqA6P1rNmkZZCsbKJ2XyfRpOU8uwPT6xdphNGLBmwLPQ90U+nO1G8larZowOHxqqncpcdD
- D4yDelhqVet0n8HyvlL8nWTsNATliDsDuM1HtcwXhOVIN0oqvtxXNSiXoteSyYdcA9nQHbPTUHryUT
- RAFidOJ9l8TCF1wXxCjQNzJb3LtXXeaZrLMX96ICC51k4smRFJOCddjRq90A==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231211114215epcas2p226d66c6dd01a4414559272c648c3d464
+References: <CGME20231211114215epcas2p226d66c6dd01a4414559272c648c3d464@epcas2p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,55 +129,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fix is based on commit [1] fixing click and pop sounds during
-SoundWire port start because PA is left unmuted.
+ExynosAutov920[1] is ARMv8-based automotive-oriented SoC.
+This SoC is the next generation of exynosautov9 and AE(Automotive Enhanced)
+IPs are used for safety.
 
-making use of new mute_unmute_on_trigger flag and removing unmute
-at PA setup, removes the Click/Pop issue at SoundWire enable.
+This patchset is the minimal set for ExynosAutov920 SoC and SADK board.
+Currently, ramdisk console is available and Clock, UFS, and USI will be
+added after this patchset.
 
-[1] 805ce81826c8 ("ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag")
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Fixes: aa21a7d4f68a ("ASoC: codecs: wsa884x: Add WSA884x family of speakers")
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- sound/soc/codecs/wsa884x.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/wsa884x.c b/sound/soc/codecs/wsa884x.c
-index 993d76b18b53..f2653df84e4a 100644
---- a/sound/soc/codecs/wsa884x.c
-+++ b/sound/soc/codecs/wsa884x.c
-@@ -1654,15 +1654,9 @@ static int wsa884x_spkr_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_component_write_field(component, WSA884X_PDM_WD_CTL,
- 					      WSA884X_PDM_WD_CTL_PDM_WD_EN_MASK,
- 					      0x1);
--		snd_soc_component_write_field(component, WSA884X_PA_FSM_EN,
--					      WSA884X_PA_FSM_EN_GLOBAL_PA_EN_MASK,
--					      0x1);
- 
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
--		snd_soc_component_write_field(component, WSA884X_PA_FSM_EN,
--					      WSA884X_PA_FSM_EN_GLOBAL_PA_EN_MASK,
--					      0x0);
- 		snd_soc_component_write_field(component, WSA884X_PDM_WD_CTL,
- 					      WSA884X_PDM_WD_CTL_PDM_WD_EN_MASK,
- 					      0x0);
-@@ -1786,6 +1780,7 @@ static const struct snd_soc_dai_ops wsa884x_dai_ops = {
- 	.hw_free = wsa884x_hw_free,
- 	.mute_stream = wsa884x_mute_stream,
- 	.set_stream = wsa884x_set_stream,
-+	.mute_unmute_on_trigger = true,
- };
- 
- static struct snd_soc_dai_driver wsa884x_dais[] = {
+[1] : https://semiconductor.samsung.com/processor/automotive-processor/exynos-auto-v920
 
 ---
-base-commit: bbd220ce4e29ed55ab079007cff0b550895258eb
-change-id: 20231211-topic-sm8x50-upstream-wsa884x-fix-plop-a7a7ca7ec21c
+Changes in v4:
+ - Modify the comment for clear understanding
+ - svc-related changes moved to exynosautov920 support patch
+ - device-tree file merged in v3
 
-Best regards,
+Changes in v3:
+ - Split pinctrl driver change patch and v920 support patch
+ - Remove 'combine' variable and use offset variable
+ - Fix coding style warning in checkpatch with --strict option
+ - Fix CHECK_DTBS=y waring with W=1 option
+ - dt-binding document merged in v2
+
+Changes in v2:
+ - Rebase to git://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git
+             branch : for-v6.8/samsung-bindings-compatibles
+ - Specific exynosautov920 compatible
+ - Add dt-binding patch for pmu, chipid
+
+
+Jaewon Kim (2):
+  pinctrl: samsung: support ExynosAuto GPIO structure
+  pinctrl: samsung: add exynosautov920 pinctrl
+
+ .../pinctrl/samsung/pinctrl-exynos-arm64.c    | 140 ++++++++++++++++++
+ drivers/pinctrl/samsung/pinctrl-exynos.c      |  95 ++++++++++--
+ drivers/pinctrl/samsung/pinctrl-exynos.h      |  25 ++++
+ drivers/pinctrl/samsung/pinctrl-samsung.c     |   5 +
+ drivers/pinctrl/samsung/pinctrl-samsung.h     |  13 ++
+ 5 files changed, 269 insertions(+), 9 deletions(-)
+
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.43.0
 
