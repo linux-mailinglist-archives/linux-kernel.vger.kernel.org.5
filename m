@@ -2,176 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D666980C10C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B2180C113
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbjLKF6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        id S233203AbjLKGAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKF6P (ORCPT
+        with ESMTP id S229478AbjLKGAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:58:15 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2E2B3;
-        Sun, 10 Dec 2023 21:58:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TJruvqBxE4P4H2tUr0aqx1acCzDrIFZZWwfHp1FRu8dZitsDfnQd2AY/Ac+WGVYdMU6ypfwPTeoNCLa52wZ1+o7/vIReeVd5kJL0T0fIPak9VwTxr8BQwqbScmjvEX8a4Y8Du5Mn8HJHtAreZD9JhcS30Cqfwbm44vdDE3ZlmxXu7/MHu4OdVpcZoszu00jYe9ubCyoCmosaO3EacA0UG6QS2vBOKCZ/GrSYC8NFnVnEY2Gg5HcMgCcOm2HLZPmPIOfHkqs9ID26jaTw0r6liffVVIoVyymmyHgcW31OnRIE/xgR9DyzWpS4O8pfdi97PJTl+WFdwEeSZd2DQynXbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=amX//vw/T4kFrWIGThNrSJ2PX+mkMHpkdnUMxJRtQqI=;
- b=P4mSfFMRwlS8H2ZPuaLpQgGIBlNHBTyOV/GeS9sNdGr6Q0faVBEamzzsa1L3nXw23/2ABQjcpxUHAMeHfTLtZ0faCxBpxvcokvT+dZrifn4aXeneuM/kkVgi1ccOLntiDGprYdQTEfSKjaaLy8zTtVdqFilYNJ/xr8b6px8WIp+NZdt4SJTq+6zQiOKhIJ+hlSGuw6B+SpRhhFJTxqBt5lIJj8zTyNXbeVHDBwzPeeb72fVBMoZ6w8maBH4YI+3m8+0j5Ba2/4oS/+C1I5lKPg38GrUpZ8WNNWuseYjkl63Cx0thEe3gZ0tuGDSFAKDRnC2kMLYLdQods83Wf+BA6g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=amX//vw/T4kFrWIGThNrSJ2PX+mkMHpkdnUMxJRtQqI=;
- b=i5szTLX/5ol1PLzhK6UZdVw/r71SoLEVaufV3KaVCw4EcsQz8czu01vXNm5TbaMc4vmIg4M7LfPyjFOOV5S2k9lSLib+54I/0qgsodMldcBY5yupTLHgSNcW9IIXhWPDGNoNnhpu+PcWlbs6I4mkGrIoM9ooCCG7ZF4fGUg9r2Y=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5951.namprd12.prod.outlook.com (2603:10b6:510:1da::16)
- by DS0PR12MB9421.namprd12.prod.outlook.com (2603:10b6:8:1a1::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 05:58:16 +0000
-Received: from PH7PR12MB5951.namprd12.prod.outlook.com
- ([fe80::e007:72f7:4102:9258]) by PH7PR12MB5951.namprd12.prod.outlook.com
- ([fe80::e007:72f7:4102:9258%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 05:58:16 +0000
-Message-ID: <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
-Date:   Mon, 11 Dec 2023 11:28:04 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
- SOF_DAI_AMD_BT
-Content-Language: en-US
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
-        Mastan Katragadda <Mastan.Katragadda@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org, kernel@collabora.com
-References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
- <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
- <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
- <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
- <318470ce-1631-4c46-b425-755c877dda65@amd.com>
- <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
- <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
- <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
-From:   Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-In-Reply-To: <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXP287CA0021.INDP287.PROD.OUTLOOK.COM
- (2603:1096:b00:2c::25) To PH7PR12MB5951.namprd12.prod.outlook.com
- (2603:10b6:510:1da::16)
+        Mon, 11 Dec 2023 01:00:10 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 864DED9;
+        Sun, 10 Dec 2023 22:00:16 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C4131007;
+        Sun, 10 Dec 2023 22:01:02 -0800 (PST)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3799C3F762;
+        Sun, 10 Dec 2023 22:00:10 -0800 (PST)
+Message-ID: <e48f5cdc-2711-4a03-a074-da87d84b3caf@arm.com>
+Date:   Mon, 11 Dec 2023 11:30:08 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5951:EE_|DS0PR12MB9421:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2095dd5-a7de-4c13-6a11-08dbfa0e2b08
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2vipTLlgMobcg2x9Ls6mS3JJFE8cHMdVqJs4oU+/cOwzqeKzGQ+ucSm9YY8+ICKnyh0aN0Zhii556DlJl7fCFh6mDxpDULTvvUVuQrBMtuh3TgWCf1heGZyHPHvPsh3waCGWOQ5GQAsht4XiE6BRvrTV09rS0ato3mMmA8LgskS1SU0GFzn8YIGcnCuGdw7r8bojuvGD1yuZfXhGilQ9hb0zBamMNj164FSMdmareMtr+SGSx279NgxnxX7EQr3/FX0Wjgd54XAaIADYzAPH1zQ1JTDUvfFvyOsZk/JQTysxBCZRiVp0302Q1sOohRz8vT85nasIRrH5SNKCQxrOAOltK/gMrSONbmLUUscDbIKSEdS2klqBnXD0lvDkroHWqbMTJuETZpPb0v0cfnz2tJBqo/VW2bf2PFY0/3hbUT1IIQGg6CKD+eZE1tedeFD40T2njZ6kwXiSCFXZFK7idDSUteAYk093qNmsrOpiSuMbWuBFxzqRzkaHldfJwWPCfrMM+3kmkD429PjLS1ikErvAHt92WOX7XBwz9Rp/gyYk3jjoCpBa01dA+qHOglBhcfq6MUF2e2mS+x+JdxLRM7Bt86ZILMH22hg+wssGqHtgeTRYyGSO7o8l0NJIBI9qpRcWsx2NIx4BPEXgJ31pKE+md0BZ64/bfcBnrbptuyQ1Xm2TKeqL1IfoRnOJfX+B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5951.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(136003)(376002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(7416002)(6506007)(6512007)(6666004)(2906002)(53546011)(54906003)(66476007)(66556008)(66946007)(38100700002)(31696002)(86362001)(36756003)(316002)(8936002)(4326008)(8676002)(5660300002)(31686004)(110136005)(966005)(6486002)(478600001)(41300700001)(26005)(2616005)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3FnV3d1K2I1UHh6UjRyc01LNEdPdTl1Y1lHcU9vV0VlYkVKRG5QRDlvcnND?=
- =?utf-8?B?VCtQeEI0eFFTbXhpc0tRcU9BM0V2bEJ6d2NjQ1BUdmZrTGNRbWFxMHJlYVd2?=
- =?utf-8?B?WHI4alBBVkJZcDdOaVU0dkc4T0NJUlpqWXVHMVJqL25ybHhpWHBSeDlaMkFT?=
- =?utf-8?B?MEN3TTlvd1ZUMXRoYm9McHUrT3c5ZjN1aGdGdmtsSU5DQmVmYkRtY3lQVVJI?=
- =?utf-8?B?enpuY2xvTU9ycHZ1clhTR2RIZnhMQmR6cDRXRjRvb1FlQlVkeStyV3BsU09L?=
- =?utf-8?B?U0thUkpJRSs0RlV5a1NSVGF6TWpLUWtkTktBTTRVOFBXNlBPaWd3UENZNy9K?=
- =?utf-8?B?b1RTcVpwR1o4OWJJWDNhVCtVeWVHVFAzVFczcWRXQkZsRGZIdE5WcUU1ZFZo?=
- =?utf-8?B?ZktjaGJRWGlwNzZRTHZMWmtlZ3lvWUNGeTBtWkpHMG1Pc2xQd0pRdkxacnNO?=
- =?utf-8?B?WlcvSklvT3NhWW5JK0xlcGo5dmxnOXVZeFVEdDJndHVVc0dKTVF1TXE5S3ZJ?=
- =?utf-8?B?L3JpLy91QWVOYUozSFhnSW9KdHZjM2N1aHlIUkFrUHZOdWRxM2o3ck5mcXNO?=
- =?utf-8?B?NSt5azUwQlJOUEdhZS93OXZ6bHlIUHNRc2pNTnFPRWE3enRxY01WWDlxdURJ?=
- =?utf-8?B?WjJhUk95RS9BZGp1eUhpakJKWmlwZkl3YS8xR0hHM3Q5RXJVNXV2Q2hSd2cx?=
- =?utf-8?B?aGNCbENDZ0JSMG5hMWJmcm1BQTB3NFpqeEplOXNIM0JSSGsvYysvN0RPZzg0?=
- =?utf-8?B?QUdUSDRSMHgzbHVOL3ZvVXEvazNabHlqajhCcytGZEFsSnZodnVDSEl6YmFU?=
- =?utf-8?B?bmQzaGtCYjAwSGNrL3E3VWJPcjY4bEhYSkhjSGFhM29vTkYrZWsyZnNBZWJB?=
- =?utf-8?B?M2NUK29XN1BrcmpYRDVUN1ExZFc1aGMwODAwMmhEckVOSkUyZzNzWXQvS1lB?=
- =?utf-8?B?TVljYXlmeGR5czRwM09PemdUaUNJK1hEK0JtdkJzTmJnc0lvbndtN2paa0VT?=
- =?utf-8?B?aURqV0JuVGIyS3BybUY0RUdXVis0RmIzY0thRGJUdG9iZ2VTQWtnQWhGLzl2?=
- =?utf-8?B?NW9XYkhQaHVqTWVBK2xHbEl6OXovYlVvRkRnOCt6dThzWVJMYll4TUgvWXpE?=
- =?utf-8?B?OFVOb2k5eVBYbXFqL3U1Q0ZhVW5lYkhjb29DclZ3RFFmOSsrK3V5cWtyMjJF?=
- =?utf-8?B?NndxeEM4MnJ3MDB5bnlJR3dUZEUvRE13YVpmYUZPTjdpdWUzMm1GNEVSQXA5?=
- =?utf-8?B?OUZVNkMzYWdDSzc0OWZpaEovdXQ3QVZRVWlFQm55ZFBEZW1SMkRKY1hFODFT?=
- =?utf-8?B?UmpsU3VLcXdST3FWaVYxaXUzczluWVkwYnB1UE1hMm9ZUllFMzFkdVQyelli?=
- =?utf-8?B?L0ZhamZCb3ByV2g0Z0YxZFk4K3ZzSGRBUmtBdWVKNnFNeHVlbWlTQ3A3L1Ny?=
- =?utf-8?B?UlJ1djNuK3A4NVVSS3hJaFkvVTFhZm50SHpVbU93ZVQvZm5kQWp0cm9vSXFs?=
- =?utf-8?B?TWR6MWF2ejFncVBRVTVGdE5VWW9lVXFWSUIydFROcFhIWlBIN1BRTFp1Smxh?=
- =?utf-8?B?QW5TcUJRWkFsZ2FQNWc3RGw5azFueUhBQWhtVFVseXpuUGhHTlhYb1FJYSta?=
- =?utf-8?B?dHR0QUdOM05ZcXVoU3o5ajlsaVBEZy9CWVd0T2dXaFJ3NjhPem0wQ3ErR1RG?=
- =?utf-8?B?dWZHZUZXUXBxNldvU1plU053eVZOcWJ3Vnh1QTJjQmZjZ2prMzRvM3hwUVNI?=
- =?utf-8?B?cml0WWpBbCs5RDNvWVdsYTVLcE0ySGdxTVoxbmlrN0hXZVdTQ3BBQmJCQnlM?=
- =?utf-8?B?Vk9jZFM1TWFwdWV3MjRCMTlsU2tzM0VOQmJ4Q1I4T0ViMFAyWURJeG5JTkZx?=
- =?utf-8?B?a0h4RGlpOGJBM2dEL2lhRlZheHhLMmcvbHljQ0FnZjltLzJ2MnJOUzlXQzRS?=
- =?utf-8?B?WkhPZC9OZjdPdlJhM0FPRmVtaTd6U1VIcDFwODdRN1hZYTEyV1JmNktJQzFB?=
- =?utf-8?B?aWs5cUJFcHhPVEtuM2JNNCtNZXZDSDJkR3VRVUFGQm5HWC80YUFMb2FhaDAy?=
- =?utf-8?B?Z0xiOWc2VWFDVEZYS2svTW00SU5BQUxDQnVxVThmRE9MdUEzQWphYUhDV04x?=
- =?utf-8?Q?aa2BC17Fnzm8iYp1nKYGqacYV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2095dd5-a7de-4c13-6a11-08dbfa0e2b08
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5951.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 05:58:16.2803
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D2MuzOYM78lNSi+p2ao+Kz3I9gJi1OimnKymSHYGOEG+HEGulnVygCoxjr9Hx+qrvUIHOkUJ8cdsGf/3D850pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9421
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V15 5/8] KVM: arm64: nvhe: Disable branch generation in
+ nVHE guests
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        Mark Brown <broonie@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
+ <20231201053906.1261704-6-anshuman.khandual@arm.com>
+ <86ttoybbp4.wl-maz@kernel.org>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <86ttoybbp4.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/10/23 21:20, Cristian Ciocaltea wrote:
-> On 12/10/23 16:01, Mark Brown wrote:
->> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
->>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
->>>> This should send to SOF git repo for rewiew, once SOF reviewers approved
->>>> this, again need to send to broonie git.
->>>> All the changes in sound/soc/sof/ path should go to SOF git.
->>> Unfortunately I'm not familiar with the SOF dev workflow. So it's not
->>> enough to have this patch cc-ed to sound-open-firmware@alsa-project.org?
->> The SOF people basically do their own thing in github at
+On 12/4/23 14:12, Marc Zyngier wrote:
+> On Fri, 01 Dec 2023 05:39:03 +0000,
+> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 >>
->>     https://github.com/thesofproject/linux
+>> Disable the BRBE before we enter the guest, saving the status and enable it
+>> back once we get out of the guest. This is just to avoid capturing records
+>> in the guest kernel/userspace, which would be confusing the samples.
+> 
+> Why does it have to be limited to non-VHE? What protects host EL0
+> records from guest's EL0 execution when the host is VHE?
+
+In a scenario when running the host in VHE mode
+ 
+- The host might have enabled branch records for host EL0 through BRBCR_EL2.E0HBRE
+  indirectly via accessing BRBCR_EL1.E0BRE
+
+- But after the guest switches in on the cpu - BRBCR_EL2.E0HBRE will still remain
+  set and enable branch records in guest EL0 as well because BRBCR_EL1.E0BRE will
+  not have any effect when EL2 is implemented and HCR_EL2.TGE == 1. The guest EL0
+  execution branch records will find their way into branch records being captured
+  for host EL0
+
+You are right. The host EL0 branch records too need to be protected from guest EL0
+execution. A similar BRBCR_EL1 save/restore mechanism is needed for VHE as well ?
+
+> 
 >>
->> with a github workflow and submit their patches upstream in batches a
->> few times a release, however my understanding is that their workflow can
->> cope with things going in directly upstream as well.
-> Thanks for clarifying, Mark!  That would greatly simplify and speedup
-> the whole process, at least for trivial patches like this one.
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: Oliver Upton <oliver.upton@linux.dev>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: kvmarm@lists.linux.dev
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> CC: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V15:
+>>
+>> - Dropped runtime BRBE enable for setting DEBUG_STATE_SAVE_BRBE
+>> - Dropped BRBFCR_EL1 from __debug_save_brbe()/__debug_restore_brbe()
+>> - Always save the live SYS_BRBCR_EL1 in host context and then check if
+>>   BRBE was enabled before resetting SYS_BRBCR_EL1 for the host
+>>
+>>  arch/arm64/include/asm/kvm_host.h  |  4 ++++
+>>  arch/arm64/kvm/debug.c             |  5 +++++
+>>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 33 ++++++++++++++++++++++++++++++
+>>  3 files changed, 42 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index 68421c74283a..1faa0430d8dd 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -449,6 +449,8 @@ enum vcpu_sysreg {
+>>  	CNTHV_CVAL_EL2,
+>>  	PMSCR_EL1,	/* Statistical profiling extension */
+>>  	TRFCR_EL1,	/* Self-hosted trace filters */
+>> +	BRBCR_EL1,	/* Branch Record Buffer Control Register */
+>> +	BRBFCR_EL1,	/* Branch Record Buffer Function Control Register */
+> 
+> Whose state is this? If this is limited to the host, it has no purpose
+> in this enum. Once you add guest support, then it will make sense.
 
-Hi Cristian,
+yes, this is limited to host but if not here, where this register (BRBCR_EL1)
+should be stored during guest context switch ? This place holder is used for
+that purpose via ctxt_sys_reg(host_ctxt, BRBCR_EL1).
 
-We have created a Pull request in SOF git hub for I2S BT support.
-please hold v2 version SOF patches till below PR get's merged.
-PR:- https://github.com/thesofproject/linux/pull/4742
+> 
+>>
+>>  	NR_SYS_REGS	/* Nothing after this line! */
+>>  };
+>> @@ -753,6 +755,8 @@ struct kvm_vcpu_arch {
+>>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
+>>  /* Save trace filter controls */
+>>  #define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
+>> +/* Save BRBE context if active  */
+>> +#define DEBUG_STATE_SAVE_BRBE	__vcpu_single_flag(iflags, BIT(9))
+>>  
+>>  /* SVE enabled for host EL0 */
+>>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+>> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+>> index 2ab41b954512..fa46a70a9503 100644
+>> --- a/arch/arm64/kvm/debug.c
+>> +++ b/arch/arm64/kvm/debug.c
+>> @@ -354,6 +354,10 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+>>  		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+>>  			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>>  	}
+>> +
+>> +	/* Check if we have BRBE implemented and available at the host */
+>> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT))
+>> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>>  }
+>>  
+>>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>> @@ -361,6 +365,7 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>>  }
+>>  
+>>  void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+>> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+>> index 6174f710948e..1994fc48b57c 100644
+>> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+>> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+>> @@ -93,6 +93,33 @@ static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
+>>  		write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
+>>  }
+>>  
+>> +static void __debug_save_brbe(struct kvm_cpu_context *host_ctxt)
+>> +{
+>> +	ctxt_sys_reg(host_ctxt, BRBCR_EL1) = read_sysreg_s(SYS_BRBCR_EL1);
+>> +
+>> +	/* Check if the BRBE is enabled */
+>> +	if (!(ctxt_sys_reg(host_ctxt, BRBCR_EL1) & (BRBCR_ELx_E0BRE | BRBCR_ELx_ExBRE)))
+>> +		return;
+> 
+> Why save BRBCR_EL1 if there is nothing enabled? It isn't like it can
+> change behind your back, can it?
 
+James mentioned that always setting the host value with real BRBCR_EL1 is preferred.
+
+https://lore.kernel.org/linux-arm-kernel/1a94cccd-d871-1824-9fad-a8f7b99bb02a@arm.com/
+ 
+> 
+>> +
+>> +	/*
+>> +	 * Prohibit branch record generation while we are in guest.
+>> +	 * Since access to BRBCR_EL1 is trapped, the guest can't
+>> +	 * modify the filtering set by the host.
+>> +	 */
+>> +	write_sysreg_s(0, SYS_BRBCR_EL1);
+>> +	isb();
+> 
+> What is the point of this ISB? We're at EL2, and this only affects
+> EL1.
+
+Makes sense, will drop this isb().
+
+> 
+>> +}
+>> +
+>> +static void __debug_restore_brbe(struct kvm_cpu_context *host_ctxt)
+>> +{
+>> +	if (!ctxt_sys_reg(host_ctxt, BRBCR_EL1))
+>> +		return;
+> 
+> So on one side you're using a flag, and on the other you're using the
+> *value*. You need some consistency.
+
+Both DEBUG_STATE_SAVE_BRBE flag and BRBCR_EL1 value is checked on both save
+and restore side.
+
+__debug_save_host_buffers_nvhe()
+	vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE)
+		__debug_save_brbe(host_ctxt)
+			Save BRBE but reset if BRBE is running
+
+__debug_restore_host_buffers_nvhe()
+	vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE)
+		__debug_restore_brbe(host_ctxt)
+			Restore when saved BRBCR_EL1 is positive
+
+> 
+>> +
+>> +	/* Restore BRBE controls */
+>> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, BRBCR_EL1), SYS_BRBCR_EL1);
+>> +	isb();
+> 
+> Same question.
+> 
+>> +}
+>> +
+>>  void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>>  				    struct kvm_cpu_context *guest_ctxt)
+>>  {
+>> @@ -102,6 +129,10 @@ void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>>  
+>>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+>>  		__debug_save_trace(host_ctxt, guest_ctxt);
+>> +
+>> +	/* Disable BRBE branch records */
+>> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
+>> +		__debug_save_brbe(host_ctxt);
+>>  }
+>>  
+>>  void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+>> @@ -116,6 +147,8 @@ void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>>  		__debug_restore_spe(host_ctxt);
+>>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+>>  		__debug_restore_trace(host_ctxt, guest_ctxt);
+>> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
+>> +		__debug_restore_brbe(host_ctxt);
+>>  }
+>>  
+>>  void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+> 
+> The lifetime of this flag seems bogus, specially when there is nothing
+> to do, which will always be the arch-majority of the executions.
+
+Not sure if I follow your point, could you please be more specific here ?
+
+DEBUG_STATE_SAVE_BRBE follows all existing register state context save/restore
+mechanism such as DEBUG_STATE_SAVE_SPE and DEBUG_STATE_SAVE_TRFCR. How is this
+any different or problematic ?
