@@ -2,107 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C493080D2A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C1680D2AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344627AbjLKQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S1344039AbjLKQqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKQqU (ORCPT
+        with ESMTP id S230022AbjLKQqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:46:20 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A9991
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:46:26 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1fae88e66eso97879666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:46:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702313185; x=1702917985; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=noVxPYQYTouWSdFR1RAszjBhMSmcJiRgz0SE80oZI+g=;
-        b=hwxyLHl0Cez4tO9u9ZpXAejMyxXvO18jh1SysXrcZzNEqRfZ3NJwJEHXpVCpD59G2O
-         BEZzpHcq5mvUOyGi+cgukrOyAViBxt7AeZozqUKJhY3dUAONpyzvF5Z35UqrUgSwNwGK
-         rNFwIZVqclLQ5myZdsufkF8BOV0zEsmvRDH3pE3ZoL9kOQf3MXMQdG0K0gwa8J4wEczd
-         F5VERA2RQ+qTt1avUqZWJGvUo8D3bItGkhunBQzxsLfGDv3ffUgiTQm0+9iZJVBJrXi7
-         a8cU+z33BeKTASGRW8+SxticiuP1Jezdyb7YMStYEnCnM5z4jYJXfKLjCHKNbVhLv4BG
-         TRgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702313185; x=1702917985;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=noVxPYQYTouWSdFR1RAszjBhMSmcJiRgz0SE80oZI+g=;
-        b=PqRZ4oBGxwo2DohZOlufj/eXw21P+1KxBzusoosEZ03xikD80dhHwJOiNigfT536V/
-         A9/SzVB/ACPasO+5DGCteGlt2DKUCijv1SejZBGZqfpW+JSxCtuL9F2T93hoeN/QMFAR
-         ajlWvkx4lGPLbH/O7zD3fT6gniqi9Ruq02aXR1fF6I26JPZ39vQH7vxbLjqVCKxQlSVd
-         oVx44yyQmuxZ3vHvYiZ6dx48CcvMNPQQVfzcpf9g1m7NyZVf4qViGXuJdAdzAv1o1FiM
-         BgNvjHr9eZDVupXMlpmXW5ti9F8zd3As8g6CfM8npOUTeeZ5638w2ZYDnvcV4mD84kRa
-         oong==
-X-Gm-Message-State: AOJu0YzYvC0CAIp3ah8XfSBSxzDI4haSxQ5IKbVBdjphAoWPdkbFlfrB
-        mVGiR5hR4DhksRQ7T8aJLsg=
-X-Google-Smtp-Source: AGHT+IHIneeEguymyNcX7Q5AOfOUbwInZrHPEts5XP3rQK5DpGrJG0kvyF/FPoQxuvGsAv7Nno8OtA==
-X-Received: by 2002:a17:907:e8f:b0:a18:b240:915f with SMTP id ho15-20020a1709070e8f00b00a18b240915fmr2571288ejc.69.1702313184563;
-        Mon, 11 Dec 2023 08:46:24 -0800 (PST)
-Received: from andrea ([31.189.124.152])
-        by smtp.gmail.com with ESMTPSA id rd12-20020a170907a28c00b00a11b2677acbsm5008366ejc.163.2023.12.11.08.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 08:46:24 -0800 (PST)
-Date:   Mon, 11 Dec 2023 17:46:19 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] membarrier: riscv: Provide core serializing
- command
-Message-ID: <ZXc82331D+qWufsL@andrea>
-References: <20231211094414.8078-1-parri.andrea@gmail.com>
- <20231211094414.8078-4-parri.andrea@gmail.com>
- <fc29a938-c34a-45ee-8c6e-3aa71964c873@efficios.com>
+        Mon, 11 Dec 2023 11:46:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6506CCF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:46:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F92AC433C8;
+        Mon, 11 Dec 2023 16:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702313218;
+        bh=M40PI+a7RNFzj/ZFgspMXJXtnJLcZwidsLCpYvdczs8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oE/OlgqySbql/JS2lw29WxTdP8SDQ/XWh/IJ73gM+4NRb0Vf38scOsUGTtNynCB/I
+         pVrpb3Scme+8mexL2fjcntYaLwVOi43r/u33GYgFfVgnONz6DM+AYfiOlE+DP/5MFG
+         Qkf2raas9EqIB75LC8Lk7+jWk4uXGIqSvwm+QEm9NjouPRx5gQue5BJhRg4Sriaaaw
+         TMVNLPbpOLV//SdM0OL/sLVO+1E/TyAzS38cU51H1QDaZgEMFmwTuQF2TP2DGebn11
+         Jk10m3MO97ydZhWQVAe5eMBKvqLl3stiVs6NuFoCAjZTrU4d0WEkoucam3d/imR+Ax
+         efIVKNY5mrZ2g==
+Date:   Mon, 11 Dec 2023 08:46:56 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Lee Jones <lee@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Andrew Lunn <andrew@lunn.ch>,
+        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
+Message-ID: <20231211084656.26578d89@kernel.org>
+In-Reply-To: <6577315e.050a0220.50f30.0122@mx.google.com>
+References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
+        <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
+        <6577315e.050a0220.50f30.0122@mx.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc29a938-c34a-45ee-8c6e-3aa71964c873@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >   	/*
-> >   	 * The membarrier system call requires a full memory barrier
-> >   	 * after storing to rq->curr, before going back to user-space.
-> > +	 *
-> > +	 * The barrier is also needed for the SYNC_CORE command when
-> > +	 * switching between processes; in particular, on a transition
-> > +	 * from a thread belonging to another mm to a thread belonging
-> > +	 * to the mm for which a membarrier SYNC_CORE is done on CPU0:
-> > +	 *
-> > +	 *   - [CPU0] sets all bits in the mm icache_stale_mask.
-> > +	 *
-> > +	 *   - [CPU1] store to rq->curr (by the scheduler).
-> > +	 *
-> > +	 *   - [CPU0] loads rq->curr within membarrier and observes
-> > +	 *     cpu_rq(1)->curr->mm != mm, so the IPI is skipped on
-> > +	 *     CPU1; this means membarrier relies on switch_mm() to
-> > +	 *     issue the sync-core.
-> > +	 *
-> > +	 *   - [CPU1] switch_mm() loads icache_stale_mask; if the bit
-> > +	 *     is zero, switch_mm() may incorrectly skip the sync-core.
-> > +	 *
-> > +	 * Matches the full barrier in membarrier_private_expedited().
+On Mon, 11 Dec 2023 16:57:15 +0100 Christian Marangi wrote:
+> > [1/2] leds: trigger: netdev: extend speeds up to 10G
+> >       commit: bc8e1da69a68d9871773b657d18400a7941cbdef
+> > [2/2] docs: ABI: sysfs-class-led-trigger-netdev: add new modes and entry
+> >       commit: f07894d3b384344c43be1bcf61ef8e2fded0efe5
+> >  
 > 
-> There are two full barriers in membarrier_private_expedited(). We
-> should clearly state which one it matches, and update the associated
-> barrier to state that it matches this barrier as well.
+> Hi, Lee
+> 
+> I'm working on adding LEDs support for qca8081 PHY. This PHY supports
+> 2500 link speed.
+> 
+> Is it possible to have an immutable branch for this series so we can
+> have this in net-next? 
+> 
+> Jakub can you also help with this?
 
-Agreed, will do.
+I'm guessing that if it's already applied - it's already applied.
 
-  Andrea
+Lee, we seem to be getting quite a few LEDs/netdev patches - do you
+reckon we should ask Konstantin for a separate repo to which we can
+both apply, and then merge that into our respective trees? Because
+stacking the changes on stable branches may get weird and/or error
+prone. Or is separate tree an overkill at this stage? IDK..
