@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2230380C081
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 271A080C084
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbjLKEz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 23:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
+        id S233215AbjLKE46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 23:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbjLKEzw (ORCPT
+        with ESMTP id S233435AbjLKE4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 23:55:52 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D82F3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:55:58 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cfb30ce241so35598025ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:55:58 -0800 (PST)
+        Sun, 10 Dec 2023 23:56:32 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A48198
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:56:30 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d053c45897so35744605ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:56:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1702270558; x=1702875358; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1702270590; x=1702875390; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BoADJIsaU4bvjYI7gdqH4FQT1qltoRFf88+tkPG8tZk=;
-        b=TKGWwN1BMSfkcarzFN58mcceccPtTKo8f+lsaSmGESfSjcWXVzeVturjsETQBsbmFx
-         KoFzR0qSE93M3dMBH8rwryOSXnsHsy/ktAVjRiH8ZWThdUmvvFdSo6m+o39XW1tLokql
-         TZZCzt2UKeWBkgUg15enpKP+v+8vlN4oR/uaWp52O7LdaqWQJXf99XOf2xc90YSpbfX/
-         aPRFQdKIKvUP+O25NwGvrJ6cywElGOKbvQQ81ttlMgK29w2zSm3KQ3o7B7Xo9Vlw2xSC
-         9INEfPcO6VTPC4wEaYbnmjqIO922djMFHBBlTQ/kUX5QYXtleLSNqrGZzCy3toqswhN1
-         an9A==
+        bh=f/uOwN8/AYKX/iTSNcMtLhs7X+zpyhpj6oRruBreRa4=;
+        b=MKSRvC1OxyjdP7zrUzYvQsbx6mJ74RpWWf1U6sy8Yn3lqxzf5ZqLSo8OeWz9ipEDm6
+         7W7bubSjoonHVa4aoZuJvUXxlxiUCQkvjbMsCUjiQX98riXNOgWNNrUgoug0opr7JOQQ
+         MUMj8QHvTosq/9WO6urCr8IX49gUENbTMs55EhHuR3IjdOjBAT4DXImbI9Oavf+vvOO2
+         WknaPCL1RxrYAILMHixVA5da0s7EndwQBJlcoi7Gw6gueeWJvWA8+3JZ4OtW1IkxzQQY
+         p6c5tr6SHhBtT64l0sAoQrMp4q+UTPBIZefdVufgHcLstbOepIhZ6+xMu4UP3/Chwoa3
+         nL1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702270558; x=1702875358;
+        d=1e100.net; s=20230601; t=1702270590; x=1702875390;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BoADJIsaU4bvjYI7gdqH4FQT1qltoRFf88+tkPG8tZk=;
-        b=Xam5YCf9yzFyc1bsPZwqv895/VrZOOC/xUqFVJBZ3MRMiZugydjTPZFkQwfrIRp2Nm
-         QLauyPQXMxVowvxNFDX9q/OIYOV8dYFByhNiDTWRImggzjp+jiuGDL7mZJTrZLeqh91C
-         GqAmHqZ901Ml5QiTdE3OsHNrdqxKmIZbp6i0dHJ0tq+peDNLaBYTcPZY1TBY+woEODNh
-         hMQLxx22LPXyKetQs8W6/CQwNBJ1WDBcor2kM8tAfLI0ccQVp1gujd2DipkNUEuckxbO
-         gbHg3xWo08jGCCxwrCCsryk5U3M8PR9H5T6KhfGgPZjzCYXwYOHyr9s0lfyM1Ejja+Q4
-         B/AQ==
-X-Gm-Message-State: AOJu0YzJmpBkOxZIfkB07cyYaMqU+JV0yk+464800a8hqrykQ0lye/wv
-        ldYgxqaL6YKtTY6LGOpZ+TbvbQ==
-X-Google-Smtp-Source: AGHT+IHW/xB8+qfj2EAC1FWaRV9BV7vEy4h+GdJx19JjFNP+gJ4a3gVBh6F+eeS7FTFAgLsaSJA/jg==
-X-Received: by 2002:a17:902:bc84:b0:1d2:e976:bd21 with SMTP id bb4-20020a170902bc8400b001d2e976bd21mr3501188plb.94.1702270558222;
-        Sun, 10 Dec 2023 20:55:58 -0800 (PST)
+        bh=f/uOwN8/AYKX/iTSNcMtLhs7X+zpyhpj6oRruBreRa4=;
+        b=oBxUafeRQ46tH5+wde/j1hSOzzLgxylo1pBZZIv5JXwoMY4CPo3XHL7gPOQATc1+Ix
+         tKyFy5GUjRBiao9T+1m655DXRo/abXSA0sZ5B2K4lZXCROAazf8JeW3MV5H4Ewcv3p7p
+         rDSmTe8cpzPno2ToRNBylRmWegOtSVlxxNCVdww35xc1ZHGht5aktHUp1nIbMyYGa6sc
+         yEfBO1QBhcIZwlxXduDeACuyv8ISJSPK6Vya+NEt4JjO1P0hb/Y6gkRMxziFn4sfFmT4
+         g2R73r5f3cyorUCAxxKMEPFWZjLsv5aYO53WIGyptofjH18O/oQt6PxMBQmnDtXw3AJX
+         br7Q==
+X-Gm-Message-State: AOJu0Ywiz39VDZk80G6fqorXxDsFTurks951Kz7L6QoJfufqVrbdcTly
+        7VnfPHjakIg72m/4oKMX37bCYD1MqLt63oYnQUl2eg==
+X-Google-Smtp-Source: AGHT+IHgP24C9H6TC1qkhK0WnVUgjdIKQD/L+UmDGrOm9ocb3UIOQduZF38TYB04xwZtzp9Bl64vMA==
+X-Received: by 2002:a17:902:c3d1:b0:1d0:d168:daae with SMTP id j17-20020a170902c3d100b001d0d168daaemr4338646plj.95.1702270589707;
+        Sun, 10 Dec 2023 20:56:29 -0800 (PST)
 Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id e11-20020a170902b78b00b001d2ffeac9d3sm3300623pls.186.2023.12.10.20.55.56
+        by smtp.gmail.com with ESMTPSA id e11-20020a170902b78b00b001d2ffeac9d3sm3300623pls.186.2023.12.10.20.56.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 20:55:57 -0800 (PST)
+        Sun, 10 Dec 2023 20:56:29 -0800 (PST)
 From:   Kyle Huey <me@kylehuey.com>
 X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
 To:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
@@ -59,17 +59,20 @@ To:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
         Marco Elver <elver@google.com>,
         Yonghong Song <yonghong.song@linux.dev>
 Cc:     Robert O'Callahan <robert@ocallahan.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v3 3/4] perf/bpf: Allow a bpf program to suppress all sample side effects
-Date:   Sun, 10 Dec 2023 20:55:42 -0800
-Message-Id: <20231211045543.31741-4-khuey@kylehuey.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 4/4] selftest/bpf: Test a perf bpf program that suppresses side effects.
+Date:   Sun, 10 Dec 2023 20:55:43 -0800
+Message-Id: <20231211045543.31741-5-khuey@kylehuey.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231211045543.31741-1-khuey@kylehuey.com>
 References: <20231211045543.31741-1-khuey@kylehuey.com>
@@ -77,7 +80,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,44 +88,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Returning zero from a bpf program attached to a perf event already
-suppresses any data output. Return early from __perf_event_overflow() in
-this case so it will also suppress event_limit accounting, SIGTRAP
-generation, and F_ASYNC signalling.
+The test sets a hardware breakpoint and uses a bpf program to suppress the
+side effects of a perf event sample, including I/O availability signals,
+SIGTRAPs, and decrementing the event counter limit, if the ip matches the
+expected value. Then the function with the breakpoint is executed multiple
+times to test that all effects behave as expected.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- kernel/events/core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/perf_skip.c      | 140 ++++++++++++++++++
+ .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
+ 2 files changed, 155 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 54f6372d2634..d6093fe893c8 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9541,6 +9541,11 @@ static int __perf_event_overflow(struct perf_event *event,
- 
- 	ret = __perf_event_account_interrupt(event, throttle);
- 
-+#ifdef CONFIG_BPF_SYSCALL
-+	if (event->prog && !bpf_overflow_handler(event, data, regs))
-+		return ret;
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+new file mode 100644
+index 000000000000..0200736a8baf
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++
++#include <test_progs.h>
++#include "test_perf_skip.skel.h"
++#include <linux/compiler.h>
++#include <linux/hw_breakpoint.h>
++#include <sys/mman.h>
++
++#ifndef TRAP_PERF
++#define TRAP_PERF 6
 +#endif
 +
- 	/*
- 	 * XXX event_limit might not quite work as expected on inherited
- 	 * events
-@@ -9590,10 +9595,7 @@ static int __perf_event_overflow(struct perf_event *event,
- 		irq_work_queue(&event->pending_irq);
- 	}
- 
--#ifdef CONFIG_BPF_SYSCALL
--	if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
--#endif
--		READ_ONCE(event->overflow_handler)(event, data, regs);
-+	READ_ONCE(event->overflow_handler)(event, data, regs);
- 
- 	if (*perf_event_fasync(event) && event->pending_kill) {
- 		event->pending_wakeup = 1;
++int signals_unexpected = 1;
++int sigio_count, sigtrap_count;
++
++static void handle_sigio(int sig __always_unused)
++{
++	ASSERT_OK(signals_unexpected, "perf event not skipped");
++	++sigio_count;
++}
++
++static void handle_sigtrap(int signum __always_unused,
++			   siginfo_t *info,
++			   void *ucontext __always_unused)
++{
++	ASSERT_OK(signals_unexpected, "perf event not skipped");
++	ASSERT_EQ(info->si_code, TRAP_PERF, "wrong si_code");
++	++sigtrap_count;
++}
++
++static noinline int test_function(void)
++{
++	asm volatile ("");
++	return 0;
++}
++
++void serial_test_perf_skip(void)
++{
++	struct sigaction action = {};
++	struct sigaction previous_sigtrap;
++	sighandler_t previous_sigio;
++	struct test_perf_skip *skel = NULL;
++	struct perf_event_attr attr = {};
++	int perf_fd = -1;
++	int err;
++	struct f_owner_ex owner;
++	struct bpf_link *prog_link = NULL;
++
++	action.sa_flags = SA_SIGINFO | SA_NODEFER;
++	action.sa_sigaction = handle_sigtrap;
++	sigemptyset(&action.sa_mask);
++	if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), "sigaction"))
++		return;
++
++	previous_sigio = signal(SIGIO, handle_sigio);
++
++	skel = test_perf_skip__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto cleanup;
++
++	attr.type = PERF_TYPE_BREAKPOINT;
++	attr.size = sizeof(attr);
++	attr.bp_type = HW_BREAKPOINT_X;
++	attr.bp_addr = (uintptr_t)test_function;
++	attr.bp_len = sizeof(long);
++	attr.sample_period = 1;
++	attr.sample_type = PERF_SAMPLE_IP;
++	attr.pinned = 1;
++	attr.exclude_kernel = 1;
++	attr.exclude_hv = 1;
++	attr.precise_ip = 3;
++	attr.sigtrap = 1;
++	attr.remove_on_exec = 1;
++
++	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
++	if (perf_fd < 0 && (errno == ENOENT || errno == EOPNOTSUPP)) {
++		printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n");
++		test__skip();
++		goto cleanup;
++	}
++	if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
++		goto cleanup;
++
++	/* Configure the perf event to signal on sample. */
++	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
++	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
++		goto cleanup;
++
++	owner.type = F_OWNER_TID;
++	owner.pid = syscall(__NR_gettid);
++	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
++	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
++		goto cleanup;
++
++	/*
++	 * Allow at most one sample. A sample rejected by bpf should
++	 * not count against this.
++	 */
++	err = ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
++	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
++		goto cleanup;
++
++	prog_link = bpf_program__attach_perf_event(skel->progs.handler, perf_fd);
++	if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event"))
++		goto cleanup;
++
++	/* Configure the bpf program to suppress the sample. */
++	skel->bss->ip = (uintptr_t)test_function;
++	test_function();
++
++	ASSERT_EQ(sigio_count, 0, "sigio_count");
++	ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
++
++	/* Configure the bpf program to allow the sample. */
++	skel->bss->ip = 0;
++	signals_unexpected = 0;
++	test_function();
++
++	ASSERT_EQ(sigio_count, 1, "sigio_count");
++	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
++
++	/*
++	 * Test that the sample above is the only one allowed (by perf, not
++	 * by bpf)
++	 */
++	test_function();
++
++	ASSERT_EQ(sigio_count, 1, "sigio_count");
++	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
++
++cleanup:
++	bpf_link__destroy(prog_link);
++	if (perf_fd >= 0)
++		close(perf_fd);
++	test_perf_skip__destroy(skel);
++
++	signal(SIGIO, previous_sigio);
++	sigaction(SIGTRAP, &previous_sigtrap, NULL);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+new file mode 100644
+index 000000000000..7eb8b6de7a57
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++uintptr_t ip;
++
++SEC("perf_event")
++int handler(struct bpf_perf_event_data *data)
++{
++	/* Skip events that have the correct ip. */
++	return ip != PT_REGS_IP(&data->regs);
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
