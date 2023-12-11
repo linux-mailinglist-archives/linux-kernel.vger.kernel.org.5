@@ -2,285 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1696B80C8E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E15680C8EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbjLKMCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
+        id S234887AbjLKMDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKMBx (ORCPT
+        with ESMTP id S234858AbjLKMCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:01:53 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA69191;
-        Mon, 11 Dec 2023 04:01:43 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BAMrXbr012812;
-        Mon, 11 Dec 2023 04:01:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        pfpt0220; bh=sMtZ9Q01OAK6p2ziuaeGd7XYYB49/WfDTIJFtebrjAs=; b=dtz
-        eJGzuELWL1vdIWRuVqURSknF0NJKIBScYPTKsmydVHis3EnfXSdacRkEPeHRuUn6
-        jIYBfF/0q92ro0fSyNFFkU7gzxp6q5/4sG39E5/sbt/2v5t/PCnBuBh223npZuvA
-        6KLH3s6Yi96n54Hkul0yCyE4klSCVNPjAvB0Z92rSBInDY3FDjN0/Ke3DbL9jlMH
-        bWroiCZoYAE4SX4b3iPRqiA7UpCXmT4XtJGyUpNHvY26L7h5ThkaRdxLkcH/a3Yh
-        hPu6qa15Bknxun3rkoaWAdC0jJAlP2nsWCf9x/ZaS9qFQvw9EEZ69m1u4/8kyt0x
-        oOHRNIFslSlLUFNRgKw==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uvrmjmcgv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 04:01:39 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Dec
- 2023 04:01:37 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 11 Dec 2023 04:01:37 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id 8377E3F704B;
-        Mon, 11 Dec 2023 04:01:35 -0800 (PST)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <gregory.clement@bootlin.com>, <andi.shyti@kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <enachman@marvell.com>, <cyuval@marvell.com>
-Subject: [PATCH v3 1/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
-Date:   Mon, 11 Dec 2023 14:01:29 +0200
-Message-ID: <20231211120129.3719469-2-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231211120129.3719469-1-enachman@marvell.com>
-References: <20231211120129.3719469-1-enachman@marvell.com>
+        Mon, 11 Dec 2023 07:02:52 -0500
+Received: from mx9.didiglobal.com (mx9.didiglobal.com [111.202.70.124])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id DFD17130
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:02:25 -0800 (PST)
+Received: from mail.didiglobal.com (unknown [10.79.65.12])
+        by mx9.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id 39CD418E5212AF;
+        Mon, 11 Dec 2023 20:02:20 +0800 (CST)
+Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 11 Dec 2023 20:02:19 +0800
+Date:   Mon, 11 Dec 2023 20:02:09 +0800
+X-MD-Sfrom: tiozhang@didiglobal.com
+X-MD-SrcIP: 10.79.65.12
+From:   Tio Zhang <tiozhang@didiglobal.com>
+To:     <bigeasy@linutronix.de>, <rostedt@goodmis.org>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <dietmar.eggemann@arm.com>,
+        <rostedt@goodmis.org>, <bsegall@google.com>, <mgorman@suse.de>,
+        <bristot@redhat.com>, <vschneid@redhat.com>,
+        <zyhtheonly@gmail.com>, <tiozhang@didiglobal.com>,
+        <zyhtheonly@yeah.net>
+Subject: [PATCH v4] sched/cputime: account ksoftirqd's time on SYSTEM in
+ PREEMPT_RT
+Message-ID: <20231211120209.GA25877@didi-ThinkCentre-M930t-N000>
+Mail-Followup-To: bigeasy@linutronix.de, rostedt@goodmis.org,
+        tglx@linutronix.de, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, zyhtheonly@gmail.com, zyhtheonly@yeah.net
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 18GS2MCmPC00cYsMZHGK83q0QJOKCxXH
-X-Proofpoint-ORIG-GUID: 18GS2MCmPC00cYsMZHGK83q0QJOKCxXH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231208092616.LcwLlOyE@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.79.64.101]
+X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Nachman <enachman@marvell.com>
+In PREEMPT_RT kernel, we dont want ksoftirqd's time accounting on SOFTIRQ
+since it is available to the scheduler (while it is unpreemptable in
+mainline). So we put it into SYSTEM like any other task running in SYSTEM.
+With this patch, when ksoftirqd is taking CPU's time, we observe SYSTEM
+in /proc/stat would be bigger than before while SOFTIRQ would be less,
+which behaves in contract to mainline, but more suitable for PREEMPT_RT.
 
-Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
-while slave is in the middle of responding.
-This means that the i2c slave has not finished the transmission, but
-the master has already finished toggling the clock, probably due to
-the slave missing some of the master's clocks.
-This was seen with Ubiquity SFP module.
-This is typically caused by slaves which do not adhere completely
-to the i2c standard.
-
-The solution is to change the I2C mode from mpps to gpios, and toggle
-the i2c_scl gpio to emulate bus clock toggling, so slave will finish
-its transmission, driven by the manual clock toggling, and will release
-the i2c bus.
-
-Signed-off-by: Elad Nachman <enachman@marvell.com>
+Signed-off-by: Tio Zhang <tiozhang@didiglobal.com>
 ---
- drivers/i2c/busses/i2c-mv64xxx.c | 118 ++++++++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 1 deletion(-)
+ kernel/sched/cputime.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
-index dc160cbc3155..9d80cb393283 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -26,6 +26,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/delay.h>
-+#include <linux/of_gpio.h>
- 
- #define MV64XXX_I2C_ADDR_ADDR(val)			((val & 0x7f) << 1)
- #define MV64XXX_I2C_BAUD_DIV_N(val)			(val & 0x7)
-@@ -104,6 +105,7 @@ enum {
- 	MV64XXX_I2C_ACTION_RCV_DATA,
- 	MV64XXX_I2C_ACTION_RCV_DATA_STOP,
- 	MV64XXX_I2C_ACTION_SEND_STOP,
-+	MV64XXX_I2C_ACTION_UNLOCK_BUS
- };
- 
- struct mv64xxx_i2c_regs {
-@@ -150,6 +152,12 @@ struct mv64xxx_i2c_data {
- 	bool			clk_n_base_0;
- 	struct i2c_bus_recovery_info	rinfo;
- 	bool			atomic;
-+	/* I2C mpp states & gpios needed for arbitration lost recovery */
-+	int			scl_gpio, sda_gpio;
-+	bool			soft_reset;
-+	struct pinctrl_state *i2c_mpp_state;
-+	struct pinctrl_state *i2c_gpio_state;
-+	struct pinctrl *pc;
- };
- 
- static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
-@@ -318,6 +326,11 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
- 		drv_data->state = MV64XXX_I2C_STATE_IDLE;
- 		break;
- 
-+	case MV64XXX_I2C_STATUS_MAST_LOST_ARB: /* 0x38 */
-+		drv_data->action = MV64XXX_I2C_ACTION_UNLOCK_BUS;
-+		drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+		break;
-+
- 	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK: /* 0x20 */
- 	case MV64XXX_I2C_STATUS_MAST_WR_NO_ACK: /* 30 */
- 	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK: /* 48 */
-@@ -356,6 +369,9 @@ static void mv64xxx_i2c_send_start(struct mv64xxx_i2c_data *drv_data)
- static void
- mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- {
-+	struct pinctrl *pc;
-+	int i;
-+
- 	switch(drv_data->action) {
- 	case MV64XXX_I2C_ACTION_SEND_RESTART:
- 		/* We should only get here if we have further messages */
-@@ -409,6 +425,54 @@ mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- 			drv_data->reg_base + drv_data->reg_offsets.control);
- 		break;
- 
-+	case MV64XXX_I2C_ACTION_UNLOCK_BUS:
-+		if (!drv_data->soft_reset)
-+			break;
-+
-+		pc = drv_data->pc;
-+		if (IS_ERR(pc)) {
-+			dev_err(&drv_data->adapter.dev,
-+				"failed to get pinctrl for bus unlock!\n");
-+			break;
-+		}
-+
-+		/* Change i2c MPPs state to act as GPIOs: */
-+		if (pinctrl_select_state(pc, drv_data->i2c_gpio_state) >= 0) {
-+			/*
-+			 * Toggle i2c scl (serial clock) 10 times.
-+			 * 10 clocks are enough to transfer a full
-+			 * byte plus extra as seen from tests with
-+			 * Ubiquity SFP module causing the issue.
-+			 * This allows the slave that occupies
-+			 * the bus to transmit its remaining data,
-+			 * so it can release the i2c bus:
-+			 */
-+			for (i = 0; i < 10; i++) {
-+				gpio_set_value(drv_data->scl_gpio, 1);
-+				usleep_range(100, 1000);
-+				gpio_set_value(drv_data->scl_gpio, 0);
-+			};
-+
-+			/* restore i2c pin state to MPPs: */
-+			pinctrl_select_state(pc, drv_data->i2c_mpp_state);
-+		}
-+
-+		/*
-+		 * Trigger controller soft reset
-+		 * This register is write only, with none of the bits defined.
-+		 * So any value will do.
-+		 * 0x1 just seems more intuitive than 0x0 ...
-+		 */
-+		writel(0x1, drv_data->reg_base + drv_data->reg_offsets.soft_reset);
-+		/* wait for i2c controller to complete reset: */
-+		usleep_range(100, 1000);
-+		/*
-+		 * Need to proceed to the data stop condition generation clause.
-+		 * This is needed after clock toggling to put the i2c slave
-+		 * in the correct state.
-+		 */
-+		fallthrough;
-+
- 	case MV64XXX_I2C_ACTION_RCV_DATA_STOP:
- 		drv_data->msg->buf[drv_data->byte_posn++] =
- 			readl(drv_data->reg_base + drv_data->reg_offsets.data);
-@@ -985,6 +1049,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- {
- 	struct mv64xxx_i2c_data		*drv_data;
- 	struct mv64xxx_i2c_pdata	*pdata = dev_get_platdata(&pd->dev);
-+	struct pinctrl *pc;
- 	int	rc;
- 
- 	if ((!pdata && !pd->dev.of_node))
-@@ -1040,6 +1105,47 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	if (rc == -EPROBE_DEFER)
- 		return rc;
- 
-+	/*
-+	 * Start with arbitration lost soft reset enabled as to false.
-+	 * Try to locate the necessary items in the device tree to
-+	 * make this feature work.
-+	 * Only after we verify that the device tree contains all of
-+	 * the needed information and that it is sound and usable,
-+	 * then we enable this flag.
-+	 * This information should be defined, but the driver maintains
-+	 * backward compatibility with old dts files, so it will not fail
-+	 * the probe in case these are missing.
-+	 */
-+	drv_data->soft_reset = false;
-+	pc = pinctrl_get(&pd->dev);
-+	if (!IS_ERR(pc)) {
-+		drv_data->pc = pc;
-+		drv_data->i2c_mpp_state =
-+			pinctrl_lookup_state(pc, "default");
-+		drv_data->i2c_gpio_state =
-+			pinctrl_lookup_state(pc, "gpio");
-+		drv_data->scl_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "scl-gpios", 0);
-+		drv_data->sda_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "sda-gpios", 0);
-+
-+		if (!IS_ERR(drv_data->i2c_gpio_state) &&
-+		    !IS_ERR(drv_data->i2c_mpp_state) &&
-+		    gpio_is_valid(drv_data->scl_gpio) &&
-+		    gpio_is_valid(drv_data->sda_gpio)) {
-+			rc = devm_gpio_request_one(&pd->dev, drv_data->scl_gpio,
-+						   GPIOF_DIR_OUT, NULL);
-+			rc |= devm_gpio_request_one(&pd->dev, drv_data->sda_gpio,
-+						    GPIOF_DIR_OUT, NULL);
-+			if (!rc)
-+				drv_data->soft_reset = true;
-+		}
-+	}
-+
-+	if (!drv_data->soft_reset)
-+		dev_info(&pd->dev,
-+			"mv64xxx: missing arbitration-lost recovery definitions in dts file\n");
-+
- 	drv_data->adapter.dev.parent = &pd->dev;
- 	drv_data->adapter.algo = &mv64xxx_i2c_algo;
- 	drv_data->adapter.owner = THIS_MODULE;
-@@ -1079,7 +1185,8 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	pm_runtime_disable(&pd->dev);
- 	if (!pm_runtime_status_suspended(&pd->dev))
- 		mv64xxx_i2c_runtime_suspend(&pd->dev);
--
-+	if (!IS_ERR(drv_data->pc))
-+		pinctrl_put(drv_data->pc);
- 	return rc;
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index af7952f12e6c..6685bb46805d 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -73,7 +73,8 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 	 */
+ 	if (pc & HARDIRQ_MASK)
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
+-	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
++	else if ((pc & SOFTIRQ_OFFSET) &&
++		 (IS_ENABLED(CONFIG_PREEMPT_RT) || curr != this_cpu_ksoftirqd()))
+ 		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
  }
  
-@@ -1088,6 +1195,15 @@ mv64xxx_i2c_remove(struct platform_device *pd)
- {
- 	struct mv64xxx_i2c_data		*drv_data = platform_get_drvdata(pd);
+@@ -391,7 +392,7 @@ static void irqtime_account_process_tick(struct task_struct *p, int user_tick,
  
-+	if (!IS_ERR(drv_data->pc))
-+		pinctrl_put(drv_data->pc);
-+	if (drv_data->soft_reset) {
-+		devm_gpiod_put(drv_data->adapter.dev.parent,
-+			       gpio_to_desc(drv_data->scl_gpio));
-+		devm_gpiod_put(drv_data->adapter.dev.parent,
-+			       gpio_to_desc(drv_data->sda_gpio));
-+	}
-+
- 	i2c_del_adapter(&drv_data->adapter);
- 	free_irq(drv_data->irq, drv_data);
- 	pm_runtime_disable(&pd->dev);
+ 	cputime -= other;
+ 
+-	if (this_cpu_ksoftirqd() == p) {
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && this_cpu_ksoftirqd() == p) {
+ 		/*
+ 		 * ksoftirqd time do not get accounted in cpu_softirq_time.
+ 		 * So, we have to handle it separately here.
 -- 
-2.25.1
+2.17.1
 
