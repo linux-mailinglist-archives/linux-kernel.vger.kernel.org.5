@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD5F80C2B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF6180C2BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbjLKIGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37712 "EHLO
+        id S233931AbjLKIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:07:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjLKIGv (ORCPT
+        with ESMTP id S233904AbjLKIHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:06:51 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C33ED;
-        Mon, 11 Dec 2023 00:06:57 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB6mpwa009470;
-        Mon, 11 Dec 2023 08:06:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=XNenH5aJV/ZldxK+c+V4J8ZQ9r6vQ48/MsxKcIZksSc=; b=lX
-        S/Bf6YmS+m8tmVkCxnp+adZtLhWcWMmy/nV9G8/GgqFVA5iitlAtVWKK2QxgdLtZ
-        f8Sac78UUyLewB8w0Cj0kIKcOKpJjAWizYQMbSnC+HuolpJmONWbqxqI3nIJv/u3
-        OD5+2zOaCCFErq93f1YXAmHMR519SeOtpUNmwnFwzlJbFgPOCzWM6WyFC0fnGN3Q
-        D0+MUVZU6VnEaF4i4VUKxc9MzpyhaEcVbcOyTlsY4DOgCCER+09inGThRBLnnoRM
-        THPNeJ94cmzqmR8syKaXJCqNg7DPO2g9Buh5U3fMDOFHUygo2v6qnR9h9d2dgG3T
-        6WKvAPS0L9u2dFICNX7w==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnyvajqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 08:06:51 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BB86n8C030106
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 08:06:49 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
- 2023 00:06:46 -0800
-Message-ID: <f521df97-dfd7-b56d-3799-0a72c22edf83@quicinc.com>
-Date:   Mon, 11 Dec 2023 13:36:37 +0530
+        Mon, 11 Dec 2023 03:07:42 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DABED
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:07:46 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BB877gp041704;
+        Mon, 11 Dec 2023 02:07:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702282027;
+        bh=nQh0szUKn1fiUjn2eBJrcs5FIE908EQzylNliKwbDHc=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Z1RSwQy3EJtECrlifpYfXVA13frkJ+cxKdh8d0QPx9GDYqAKIO7CDGgG3+bCmG+r7
+         qSuoM0i7UvwN9H+stxX/2iCMcrKoGwVpSvjDZKS3uP8cWwOZxtYlqXhP73P6vCrPCK
+         +FJr9qrkxOoJHI4pHhAxcygAmtiyX/jSWaxTpSbM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BB877hF073914
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Dec 2023 02:07:07 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Dec 2023 02:07:07 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Dec 2023 02:07:06 -0600
+Received: from [172.24.227.25] (uda0496377.dhcp.ti.com [172.24.227.25])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BB871nQ074015;
+        Mon, 11 Dec 2023 02:07:02 -0600
+Message-ID: <f6af46e0-aadb-450a-9349-eec1337ea870@ti.com>
+Date:   Mon, 11 Dec 2023 13:37:00 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: (subset) [PATCH v2 1/4] dt-bindings: mfd: qcom,tcsr: Add
- compatible for sm8250/sm8350
-To:     Bjorn Andersson <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
- <170200426910.2871025.1931459275540622967.b4-ty@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR case
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        <dri-devel@lists.freedesktop.org>, <marex@denx.de>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
+ <3537389.iIbC2pHGDl@steina-w>
+ <511f437b-89b5-4963-ae7d-dd66ab6db4fc@ideasonboard.com>
 Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <170200426910.2871025.1931459275540622967.b4-ty@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3UsKlVjhObpSIAv0_WQW-pZXeBKRyJiz
-X-Proofpoint-ORIG-GUID: 3UsKlVjhObpSIAv0_WQW-pZXeBKRyJiz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=615 suspectscore=0 spamscore=0 bulkscore=0 clxscore=1015
- phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312110067
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <511f437b-89b5-4963-ae7d-dd66ab6db4fc@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
 
-I have said in one of the thread here,
 
-https://lore.kernel.org/lkml/57eed7c3-e884-a28b-a1ff-e5aecbb11137@quicinc.com/
-
-There is a wrong register offset given for sm8550 in 4/4.
-Since, you applied the changes in your tree, shall i send
-the separate patch for it, or would you mind fixing it ?
-
--Mukesh
-
-On 12/8/2023 8:27 AM, Bjorn Andersson wrote:
+On 06/12/23 17:41, Tomi Valkeinen wrote:
+> Hi,
 > 
-> On Wed, 25 Oct 2023 22:36:38 +0530, Mukesh Ojha wrote:
->> Document the compatible for both sm8250 and sm8350 SoCs.
+> On 08/11/2023 14:45, Alexander Stein wrote:
+>> Hi Tomi,
+>>
+>> Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
+>>> These two patches are needed to make tc358767 work in the
+>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP connector.
+>>>
+>>> I have tested this with TI AM654 EVM with a tc358767 add-on card
+>>> connected to a DP monitor.
+>>
+>> Just a question regarding the usage of this DSI-DP bridge.
+>> What is the state of the DSI lanes after the DSI host has been
+>> initialized,
+>> but before calling atomic_pre_enable? AFAIK this bridge requires LP-11
+>> on DSI
+>> at any time for accessing the AUX channel.
+
++ Marek
+
+Marek, Alexander,
+
+A quick grep tells me that you have added devicetree for tc358767 in DSI
+to (e)DP mode on other platforms. Could you please test these patches
+and report if you find any issue?
+
+Regards
+Aradhya
+
+> 
+> We haven't received any test reports for the DSI-DP case... I was
+> looking at the datasheet, and I wonder, why do you say the bridge
+> requires DSI to be up for the AUX transactions?
+> 
+>  Tomi
+> 
+>> Best regards,
+>> Alexander
+>>
+>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>> ---
+>>> Changes in v2:
+>>> - Update the format negotiation patch as discussed in
+>>> https://lore.kernel.org/all/7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com/ -
+>>> Link to v1:
+>>> https://lore.kernel.org/r/20231031-tc358767-v1-0-392081ad9f4b@ideasonboard.
+>>> com
+>>>
+>>> ---
+>>> Aradhya Bhatia (1):
+>>>        drm/bridge: tc358767: Add format negotiation hooks for DPI/DSI to
+>>> (e)DP
+>>>
+>>> Tomi Valkeinen (1):
+>>>        drm/bridge: tc358767: Fix link properties discovery
+>>>
+>>>   drivers/gpu/drm/bridge/tc358767.c | 32
+>>> ++++++++++++++++++++++++++++++++
+>>>   1 file changed, 32 insertions(+)
+>>> ---
+>>> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
+>>> change-id: 20231031-tc358767-58e3ebdf95f0
+>>>
+>>> Best regards,
 >>
 >>
 > 
-> Applied, thanks!
-> 
-> [2/4] arm64: dts: qcom: sm8250: Add TCSR halt register space
->        commit: d59653233e8779e3fe082eb5635b9785f2095af6
-> [3/4] arm64: dts: qcom: sm8350: Add TCSR halt register space
->        commit: 1accc6031d925c6045c4776d5f3646996b0b242a
-> [4/4] arm64: dts: qcom: sm8550: Enable download mode register write
->        commit: 44b1f64cad5703c87918cc9ffbf9b79bb959418d
-> 
-> Best regards,
