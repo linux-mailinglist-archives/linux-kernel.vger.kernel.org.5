@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C43A80C534
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E52A80C538
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbjLKJtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:49:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        id S234667AbjLKJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:50:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbjLKJtx (ORCPT
+        with ESMTP id S234619AbjLKJuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:49:53 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D7B7;
-        Mon, 11 Dec 2023 01:49:52 -0800 (PST)
-X-UUID: 9e13a96c980a11eeba30773df0976c77-20231211
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ciXZzyC9ZU0ljtsNsTEjkWMSYDk1eZJ4CxmA2ikjg9c=;
-        b=HFADTEwmhWcvhCZOtKH/6rFkvcAwURQcWAR/uND12QK6E4qYtdCgcrYn3i3w77g/n9edvAj0MQFSaYXGtrRuaSCO8TYFAbGftJb6L1depnJk3JR6ujyMeW7XtBfWHuf0y9mFfVOddY6YWk6Bw5xNJyfIufH2M10UviOqx7LJVYI=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:a46590e4-426f-4861-9795-5f5cf8d49f22,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:5d391d7,CLOUDID:18170f61-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 9e13a96c980a11eeba30773df0976c77-20231211
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2090974650; Mon, 11 Dec 2023 17:49:46 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 11 Dec 2023 17:49:45 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 11 Dec 2023 17:49:44 +0800
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     Ryder Lee <ryder.lee@mediatek.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <qizhong.cheng@mediatek.com>, <stable@vger.kernel.org>
-Subject: [PATCH v4] PCI: mediatek: Clear interrupt status before dispatching handler
-Date:   Mon, 11 Dec 2023 17:49:23 +0800
-Message-ID: <20231211094923.31967-1-jianjun.wang@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Dec 2023 04:50:19 -0500
+Received: from m1345.mail.163.com (m1345.mail.163.com [220.181.13.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A14E8E;
+        Mon, 11 Dec 2023 01:50:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=Le9S3rlswY7wsWpZpFPJ1/zOzeuR21eJrjPWtQDnFmw=; b=R
+        BWlbPA99UveIgqwBMNsovL7c9E9Qjxlt7FC/oDBdkpzkh2wknCpH9RQu8bIPbiq1
+        7AJILkrhd+a07N6G9vDSylwE+q56fk/K48Vx1K2LNDYPQT0xSi+sEPYADuvWymDJ
+        1L8QIDVu/8l+8vxJY1TT0q9PZS4pHQagY9tpI5UBI8=
+Received: from andyshrk$163.com ( [58.22.7.114] ) by ajax-webmail-wmsvr45
+ (Coremail) ; Mon, 11 Dec 2023 17:49:58 +0800 (CST)
+X-Originating-IP: [58.22.7.114]
+Date:   Mon, 11 Dec 2023 17:49:58 +0800 (CST)
+From:   "Andy Yan" <andyshrk@163.com>
+To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+Cc:     heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re:Re: [PATCH v2 5/5] arm64: dts: rockchip: Add support for rk3588
+ based board Cool Pi CM5 EVB
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <2b58450a-1bde-424b-ab69-a3834914522c@linaro.org>
+References: <20231210080313.1667013-1-andyshrk@163.com>
+ <20231210080629.1667589-1-andyshrk@163.com>
+ <2b58450a-1bde-424b-ab69-a3834914522c@linaro.org>
+X-NTES-SC: AL_Qu2bAP6Tt0ki7iabbOkXn0kXhec2W8Czvvgg34JRP5k0hynnwAEvc0JFOEPk/d2MNhKrjSWXaid/wONHUYtdeq32EJv2by2Fsmbt0bCXqxA3
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,
-        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <14ab4c8c.4fa1.18c58488bf2.Coremail.andyshrk@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LcGowADH_mtG23ZleJAsAA--.19192W
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqApDXmVOA4wwdAACsd
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: qizhong cheng <qizhong.cheng@mediatek.com>
-
-We found a failure when used iperf tool for wifi performance testing,
-there are some MSIs received while clearing the interrupt status,
-these MSIs cannot be serviced.
-
-The interrupt status can be cleared even the MSI status still remaining,
-as an edge-triggered interrupts, its interrupt status should be cleared
-before dispatching to the handler of device.
-
-Fixes: 43e6409db64d ("PCI: mediatek: Add MSI support for MT2712 and MT7622")
-Signed-off-by: qizhong cheng <qizhong.cheng@mediatek.com>
-Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: stable@vger.kernel.org
----
-v4:
- - Found that this patch has not been merged, resending it as v4.
-
-v3:
- - Add Fix tag.
-
-v2:
- - Update the subject line.
- - Improve the commit log and code comments.
----
- drivers/pci/controller/pcie-mediatek.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
-index 66a8f73296fc..3fb7f08de061 100644
---- a/drivers/pci/controller/pcie-mediatek.c
-+++ b/drivers/pci/controller/pcie-mediatek.c
-@@ -617,12 +617,17 @@ static void mtk_pcie_intr_handler(struct irq_desc *desc)
- 		if (status & MSI_STATUS){
- 			unsigned long imsi_status;
- 
-+			/*
-+			 * The interrupt status can be cleared even the MSI
-+			 * status still remaining, hence as an edge-triggered
-+			 * interrupts, its interrupt status should be cleared
-+			 * before dispatching handler.
-+			 */
-+			writel(MSI_STATUS, port->base + PCIE_INT_STATUS);
- 			while ((imsi_status = readl(port->base + PCIE_IMSI_STATUS))) {
- 				for_each_set_bit(bit, &imsi_status, MTK_MSI_IRQS_NUM)
- 					generic_handle_domain_irq(port->inner_domain, bit);
- 			}
--			/* Clear MSI interrupt status */
--			writel(MSI_STATUS, port->base + PCIE_INT_STATUS);
- 		}
- 	}
- 
--- 
-2.18.0
-
+CkhpIEtyenlzenRvZu+8mgoKQXQgMjAyMy0xMi0xMCAxOToxMjoxNSwgIktyenlzenRvZiBLb3ps
+b3dza2kiIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+IHdyb3RlOgo+T24gMTAvMTIv
+MjAyMyAwOTowNiwgQW5keSBZYW4gd3JvdGU6Cj4+IENvb2wgUGkgQ001IEVWQiBpcyBhIGJvYXJk
+IGJhc2VkIG9uIHJrMzU4OC4KPj4gCj4+IFNwZWNpZmljYXRpb246Cj4+IC0gUm9ja2NoaXAgUksz
+NTg4Cj4+IC0gTFBERFI0IDIvNC84LzE2IEdCCj4+IC0gVEYgc2NhcmQgc2xvdAo+PiAtIGVNTUMg
+OC8zMi82NC8xMjggR0IgbW9kdWxlCj4+IC0gR2lnYWJpdCBldGhlcm5ldCB4IDEgd2l0aCBQSFkg
+WVQ4NTMxCj4+IC0gR2lnYWJpdCBldGhlcm5ldCB4IDEgZHJpdmVkIGJ5IFBDSUUgd2l0aCBZVDY4
+MDFTCj4+IC0gSERNSSBUeXBlIEEgb3V0IHggMgo+PiAtIEhETUkgVHlwZSBEIGluIHggMQo+PiAt
+IFVTQiAyLjAgSG9zdCB4IDIKPj4gLSBVU0IgMy4wIE9URyB4IDEKPj4gLSBVU0IgMy4wIEhvc3Qg
+eCAxCj4+IC0gUENJRSBNLjIgRSBLZXkgZm9yIFdpcmVsZXNzIGNvbm5lY3Rpb24KPj4gLSBQQ0lF
+IE0uMiBNIEtleSBmb3IgTlZNRSBjb25uZWN0aW9uCj4+IC0gNDAgcGluIGhlYWRlcgo+Cj4KPj4g
+Kwo+PiArCWJhY2tsaWdodDogYmFja2xpZ2h0IHsKPj4gKwkJY29tcGF0aWJsZSA9ICJwd20tYmFj
+a2xpZ2h0IjsKPj4gKwkJcG93ZXItc3VwcGx5ID0gPCZ2Y2MxMnZfZGNpbj47Cj4+ICsJCXB3bXMg
+PSA8JnB3bTIgMCAyNTAwMCAwPjsKPj4gKwkJZW5hYmxlLWdwaW9zID0gPCZncGlvNCBSS19QQTMg
+R1BJT19BQ1RJVkVfSElHSD47Cj4+ICsJCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7Cj4+ICsJ
+CXBpbmN0cmwtMCA9IDwmYmxfZW4+Owo+PiArCQlzdGF0dXMgPSAib2theSI7Cj4KPlRoaXMgaXMg
+YSBmcmllbmRseSByZW1pbmRlciBkdXJpbmcgdGhlIHJldmlldyBwcm9jZXNzLgo+Cj5JdCBzZWVt
+cyBteSBvciBvdGhlciByZXZpZXdlcidzIHByZXZpb3VzIGNvbW1lbnRzIHdlcmUgbm90IGZ1bGx5
+Cj5hZGRyZXNzZWQuIE1heWJlIHRoZSBmZWVkYmFjayBnb3QgbG9zdCBiZXR3ZWVuIHRoZSBxdW90
+ZXMsIG1heWJlIHlvdQo+anVzdCBmb3Jnb3QgdG8gYXBwbHkgaXQuIFBsZWFzZSBnbyBiYWNrIHRv
+IHRoZSBwcmV2aW91cyBkaXNjdXNzaW9uIGFuZAo+ZWl0aGVyIGltcGxlbWVudCBhbGwgcmVxdWVz
+dGVkIGNoYW5nZXMgb3Iga2VlcCBkaXNjdXNzaW5nIHRoZW0uCgpZZXPvvIwgaXQgc2VlbXMgdGhh
+dCB0aGUgY29tbWVudHMgd2VyZSBsb3N077yMIEkgZGlkbid0IGdldCBhbnkgY29tbWVudHMgYWJv
+dXQgUEFUQ0ggNSBpbiBteSBWMS4KQW55d2F5LCBJIHdpbGwgY2hlY2sgdGhpcyBwYXRjaCBhZ2Fp
+biwgYW5kIGZpeCB0aGUgaXNzdWUgSSBmaW5kIGJ5IG15c2VsZi4KPgo+VGhhbmsgeW91Lgo+Cj5C
+ZXN0IHJlZ2FyZHMsCj5Lcnp5c3p0b2YKPgo+Cj5fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+bGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKPmxpbnV4
+LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwo+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
