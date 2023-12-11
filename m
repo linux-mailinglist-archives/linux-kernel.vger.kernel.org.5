@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ACE80CCAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFAB80CCAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344050AbjLKOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S1343810AbjLKOCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344011AbjLKOC0 (ORCPT
+        with ESMTP id S1344034AbjLKOCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:02:26 -0500
+        Mon, 11 Dec 2023 09:02:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110165A5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AA8C433C7;
-        Mon, 11 Dec 2023 13:59:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F6549D6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0875C433C8;
+        Mon, 11 Dec 2023 14:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303201;
-        bh=Z4zFiJy8nVOqQvwvU48WTvdbUM9MltSNX1w9qcMnUeU=;
+        s=k20201202; t=1702303207;
+        bh=TuVggnxu9ShxSMN3u4mLZoB2JnPKQkI71cau9glhJFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DCOd6P5K/KzVXOR7bragkvYZLTfwnsrl7Edz0EQ5dwNG899bMBKbyUOVqJB1UqX2L
-         Y1tdv13kcPS9A4pKc1Z8LoRgF+vERQ9289HcjvoxZUb2qbsiR/dHLSMAEya+sLITck
-         LugL1+sAEGXhtVvcDJFIMxRt3aq+AyQIlLLZBQMyiY6rtFLr0fMqyiSdJR/7v2AdBK
-         LAUegGclr3N2TtcpsSJ8P0WZ3cLGNxNc5XeTakAiWAn3cCdoO5F6vmaBlf2/sXd1q2
-         KQdsr9+gYSkZtUJQWeQ2CN7IwhJgb3vara+WHh9m2vAvTl57hhKfz3NLwwjK/B56CP
-         wxnQdr1KC2AUw==
+        b=AHK6denglvcFoA5X4lYcaB5TubK8lQdKFXNoec6xYlDlPXTVkEJqLO4eE9vgq/3ZW
+         8/hUU/VhGtSbphNjc340CzHqNWDVKeFJ6du7vJJGAutvgiVRvwHbdA1poV9xgZIzgX
+         CophhDQPJ3etrjXS8oV0jdSGacvrKbp4h77Fn49L/wqC4ifw1MGAjz8WJP3sexDbBG
+         EyFFnBwVK73u7FjrvD4AJqBoevH2vCOuNS4H3+yh4G124wOosIpwIsvZYrgQb6Luuk
+         5XaMLUFuDCxaF/QMWnSJc0G5C15DQEqfpAmrmAf8UVzUHm28aEYnXgFwMGQuEUneCb
+         ZWj8AbOe4C6Kg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Airlie <airlied@redhat.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, kherbst@redhat.com,
-        lyude@redhat.com, airlied@gmail.com, daniel@ffwll.ch,
-        bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 09/19] nouveau/tu102: flush all pdbs on vmm flush
-Date:   Mon, 11 Dec 2023 08:57:43 -0500
-Message-ID: <20231211135908.385694-9-sashal@kernel.org>
+Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com,
+        pierre-louis.bossart@linux.intel.com,
+        yung-chuan.liao@linux.intel.com, rander.wang@intel.com,
+        linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 10/19] ASoC: hdac_hda: Conditionally register dais for HDMI and Analog
+Date:   Mon, 11 Dec 2023 08:57:44 -0500
+Message-ID: <20231211135908.385694-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135908.385694-1-sashal@kernel.org>
 References: <20231211135908.385694-1-sashal@kernel.org>
@@ -56,36 +58,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Airlie <airlied@redhat.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-[ Upstream commit cb9c919364653eeafb49e7ff5cd32f1ad64063ac ]
+[ Upstream commit a0575b4add21a243cc3257e75ad913cd5377d5f2 ]
 
-This is a hack around a bug exposed with the GSP code, I'm not sure
-what is happening exactly, but it appears some of our flushes don't
-result in proper tlb invalidation for out BAR2 and we get a BAR2
-fault from GSP and it all dies.
+The current driver is registering the same dais for each hdev found in the
+system which results duplicated widgets to be registered and the kernel
+log contains similar prints:
+snd_hda_codec_realtek ehdaudio0D0: ASoC: sink widget AIF1TX overwritten
+snd_hda_codec_realtek ehdaudio0D0: ASoC: source widget AIF1RX overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi3 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi2 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Codec Output Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Codec Input Pin1 overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Digital Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Alt Analog Codec Playback overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Analog Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Digital Codec Capture overwritten
+skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Alt Analog Codec Capture overwritten
 
-Signed-off-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231130010852.4034774-1-airlied@gmail.com
+To avoid such issue, split the dai array into HDMI and non HDMI array and
+register them conditionally:
+for HDMI hdev only register the dais needed for HDMI
+for non HDMI hdev do not  register the HDMI dais.
+
+Depends-on: 3d1dc8b1030d ("ASoC: Intel: skl_hda_dsp_generic: Drop HDMI routes when HDMI is not available")
+Link: https://github.com/thesofproject/linux/issues/4509
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20231128123914.3986-1-peter.ujfalusi@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hda.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
-index 6cb5eefa45e9a..5a08458fe1b7f 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
-@@ -31,7 +31,7 @@ tu102_vmm_flush(struct nvkm_vmm *vmm, int depth)
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index de5955db0a5f0..0bbe248c0728e 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -124,6 +124,9 @@ static struct snd_soc_dai_driver hdac_hda_dais[] = {
+ 		.sig_bits = 24,
+ 	},
+ },
++};
++
++static struct snd_soc_dai_driver hdac_hda_hdmi_dais[] = {
+ {
+ 	.id = HDAC_HDMI_0_DAI_ID,
+ 	.name = "intel-hdmi-hifi1",
+@@ -575,8 +578,16 @@ static const struct snd_soc_component_driver hdac_hda_codec = {
+ 	.num_dapm_routes        = ARRAY_SIZE(hdac_hda_dapm_routes),
+ };
  
- 	type |= 0x00000001; /* PAGE_ALL */
- 	if (atomic_read(&vmm->engref[NVKM_SUBDEV_BAR]))
--		type |= 0x00000004; /* HUB_ONLY */
-+		type |= 0x00000006; /* HUB_ONLY | ALL PDB (hack) */
++static const struct snd_soc_component_driver hdac_hda_hdmi_codec = {
++	.probe			= hdac_hda_codec_probe,
++	.remove			= hdac_hda_codec_remove,
++	.idle_bias_on		= false,
++	.endianness		= 1,
++};
++
+ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ {
++	struct hdac_hda_priv *hda_pvt = dev_get_drvdata(&hdev->dev);
+ 	struct hdac_ext_link *hlink;
+ 	struct hdac_hda_priv *hda_pvt;
+ 	int ret;
+@@ -594,9 +605,15 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ 		return -ENOMEM;
  
- 	mutex_lock(&vmm->mmu->mutex);
- 
+ 	/* ASoC specific initialization */
+-	ret = devm_snd_soc_register_component(&hdev->dev,
+-					 &hdac_hda_codec, hdac_hda_dais,
+-					 ARRAY_SIZE(hdac_hda_dais));
++	if (hda_pvt->need_display_power)
++		ret = devm_snd_soc_register_component(&hdev->dev,
++						&hdac_hda_hdmi_codec, hdac_hda_hdmi_dais,
++						ARRAY_SIZE(hdac_hda_hdmi_dais));
++	else
++		ret = devm_snd_soc_register_component(&hdev->dev,
++						&hdac_hda_codec, hdac_hda_dais,
++						ARRAY_SIZE(hdac_hda_dais));
++
+ 	if (ret < 0) {
+ 		dev_err(&hdev->dev, "failed to register HDA codec %d\n", ret);
+ 		return ret;
 -- 
 2.42.0
 
