@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D996180DCAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467BE80DCB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344760AbjLKVJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        id S1345111AbjLKVK7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 16:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLKVJi (ORCPT
+        with ESMTP id S1345051AbjLKVKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:09:38 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA5BBE;
-        Mon, 11 Dec 2023 13:09:44 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b88f2a37deso3828822b6e.0;
-        Mon, 11 Dec 2023 13:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702328984; x=1702933784; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k+ey/gQgXGxGry1lQD8K5omLablilAoeCXkj6pliNPA=;
-        b=GXkr5bvpldND4I6tp63lswIXsq4DUwjEw/K9h+eioVirPOBfsYGHV903MiG0PspXu+
-         Fg0qFOcJpRVlZJFNukQ7S0CpxKPw3OMRg5AM5DITuooSWZJJI6mHfEHcOedNmeUvqwzn
-         6Yd49jngxXzikT35iAIyh6nqa6BVHUS6Ta5VJSRhl5h7YJB9jQQIaEFfWAZc1pDE608D
-         qnw4mZW5gfsVYPke6wL+REpawXfV/MVNjxQ5ANYPhONwK9RCKVy8kcKM6pIi+Q4Bg989
-         6RfFkzPSgA6tK1O53IcFHjE+ZRCsTP3oAVqV83ZosaLDuGSidYOMnujM/p/cInv1yLbV
-         XY+A==
+        Mon, 11 Dec 2023 16:10:55 -0500
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF54FCE;
+        Mon, 11 Dec 2023 13:11:01 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d9d6f8485eso711709a34.0;
+        Mon, 11 Dec 2023 13:11:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702328984; x=1702933784;
+        d=1e100.net; s=20230601; t=1702329061; x=1702933861;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k+ey/gQgXGxGry1lQD8K5omLablilAoeCXkj6pliNPA=;
-        b=nbINGO475kgSaClG4TgRP3jh3LDpQx5gBtdPMQN/XUpyj34Vrbc0yyPdvpyb0unKss
-         xRH8YW9kacLJeTH/65++ztpkNrD86Fnw1JYLfQNl2UcagedM5BqEdUaT6fwow+opui8M
-         JC2Qf/giaPdnHowuCRnY8ysEg0AbF6nyq9StaFByx7jHpN/qZG81KeEZMrS5MZDEuD9s
-         e1mrN/eXtD8NEEf9WwJJBusDFwKsqUcwkGPdGpNS7EYYkqae9G2z56TY2VP1PRz/UfM+
-         g4qEH8h+DQJ28DPIEC8VnfwxhFwJnUKQlbYbbbhecIEFnJWGOE53FbJCNgnsM00e0rqh
-         jTyA==
-X-Gm-Message-State: AOJu0YwY1hHh/1Skdt7qZUPpOq3yM/BOUnuqa80C14AQkVStTMShb9Vm
-        EEHBhZBFklOnl08j600YgGy+Fh/FWRFmKLemzWM=
-X-Google-Smtp-Source: AGHT+IGsdwJssPRzImhE1I7xHS06dBU4ugRt6h3GUi5zrQgtImqxrC8jGY3uyhZCK/yzgSUT/ysNt8HWLxJ+R/8nUV0=
-X-Received: by 2002:a05:6808:17a7:b0:3b8:b365:1e34 with SMTP id
- bg39-20020a05680817a700b003b8b3651e34mr6119019oib.33.1702328983890; Mon, 11
- Dec 2023 13:09:43 -0800 (PST)
+        bh=+28nOcEyCcEuwJJom4JSQW5x+/ek8mhjRptDpKqeApE=;
+        b=sqhTYToQpNIxKfyxA2a7yrdheIoCq2ywXrn0fnILnZrcj/pm3iLc1oVjeJrwOJIN7j
+         vWk/nNtwXVsVE/oD42h+/WEYd9PKr9u6t9Z1hPUqcJD93IxBYeViiBCP+ArMV2QzLPSj
+         lNjPovs0OAToFsWpbc2h+TFC8TkcrJq8QJld+v/FmQ+Zidc6P0rjcqJmkcGNj4dM1ip2
+         /ggbJBitjP21muKk0msXHgiY2k30THtNUQRydoQClHIKh/OptQkw6NIV9IFGiDU/Z5F3
+         BnNO4xxOdXLBUPO+6z8LVUy0h/18DDCasbHYR6fcwMapRDnIiXHvMgUm++6Q27R0dpjD
+         k5Eg==
+X-Gm-Message-State: AOJu0YxiBHe3rzoV+HRXqnenwheWtdDFfmJaeJ0Bx1A3cw/n2WKt91om
+        HZEByg0E9HkMAyDd8M/trt81zb67PBjLBSzIcKA=
+X-Google-Smtp-Source: AGHT+IGPrkYJLDfxqTwDOmJQQiLfS+sFr/VYQzZCMQ4uwzE3+4BdKwQRzCpU3Hz2N5pz5NSxwD7dJv1P28MAUJAKDTY=
+X-Received: by 2002:a05:6871:7589:b0:1fa:db26:78a6 with SMTP id
+ nz9-20020a056871758900b001fadb2678a6mr10132449oac.1.1702329061054; Mon, 11
+ Dec 2023 13:11:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20231211150753.293883-1-mmaurer@google.com> <CANiq72nrCThY3mtHRMncRFDsu8XUmdb=W4WBs5Ua6oNugkDZhA@mail.gmail.com>
- <CAGSQo03EPpPFy9ppE7wjv_NG8P_pRqLN21TvoMnYzA=+Z_gCnw@mail.gmail.com> <991d92dc-9b08-497e-bef1-dde7de2642a0@gmail.com>
-In-Reply-To: <991d92dc-9b08-497e-bef1-dde7de2642a0@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 11 Dec 2023 22:09:32 +0100
-Message-ID: <CANiq72=393A++eb8W2eQz+Su83xhZDVcr-T3WKZ63Toxvy_i1w@mail.gmail.com>
-Subject: Re: [PATCH] x86/Kconfig: rust: Patchable function Rust compat
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+References: <20231024020434.34145-1-zeming@nfschina.com>
+In-Reply-To: <20231024020434.34145-1-zeming@nfschina.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Dec 2023 22:10:50 +0100
+Message-ID: <CAJZ5v0iRhjjqOsp+h5KzyJBV33vr2NuUbwaDMrTWdmQvBdX9dQ@mail.gmail.com>
+Subject: Re: [PATCH] power: snapshot: Optimize the error variable in the snapshot_write_next()
+To:     Li zeming <zeming@nfschina.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 5:23=E2=80=AFPM Martin Rodriguez Reboredo
-<yakoyoku@gmail.com> wrote:
+On Tue, Oct 24, 2023 at 4:05 AM Li zeming <zeming@nfschina.com> wrote:
 >
-> About issues, commits or PRs I was referring to issues in
-> `rust-lang/rust`. When we use unstable compiler features in R4L they
-> get tracked in [1].
+> Assign a value when removing the definition for error, which is assigned
+> before use.
 >
-> Link: https://github.com/Rust-for-Linux/linux/issues/355 [1]
+> Signed-off-by: Li zeming <zeming@nfschina.com>
+> ---
+>  kernel/power/snapshot.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 87e9f7e2bdc05..40c141144c9a1 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -2776,7 +2776,7 @@ static void *get_buffer(struct memory_bitmap *bm, struct chain_allocator *ca)
+>  int snapshot_write_next(struct snapshot_handle *handle)
+>  {
+>         static struct chain_allocator ca;
+> -       int error = 0;
+> +       int error;
+>
+>  next:
+>         /* Check if we have already loaded the entire image */
+> --
 
-Almost right :) In that one we put compiler things that we "want",
-i.e. they may not even implemented in upstream Rust. When we start
-using them (or we intend to use it and they have a
-flag/feature/cfg...) it is when we (also) put them in the "main" list
-of unstable features in issue #2.
+Applied as 6.8 material with rewritten subject and changelog.
 
-Cheers,
-Miguel
+Thanks!
