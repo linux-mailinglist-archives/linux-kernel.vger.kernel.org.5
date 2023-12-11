@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E529080C950
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B10D80C95E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbjLKMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
+        id S234803AbjLKMSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343517AbjLKMQm (ORCPT
+        with ESMTP id S234333AbjLKMSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:16:42 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CA3DF;
-        Mon, 11 Dec 2023 04:16:48 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBCGDrY018512;
-        Mon, 11 Dec 2023 12:16:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=FyydenSadC4CI1d5c7+QVbIrTc7pak6h8q6cWLVbo4U=; b=Tv
-        kPSutz6DxKA5RdAxSbsoYE+3xy7xYFy8h/ZrwpC07pQf2xlbwunY/wXmiGX2oy2h
-        dfD8Jl3fuiLjP7Ab4q6TyLgmgu+UU+xEQhjdJepH0jFhpQODZghP41f5C0JIYlkn
-        GzblmB6yqcTQKYWTGpFJMEpIwpS1SmjCZO2+AI+uLWCx9Y/8A0onQjrqXls8zjoz
-        0i6a2qRKn5bj8OFA5Zg+b8Ap38MwTMAX/a3aNwvGdu/pXef357pXINahShUjGA+k
-        KguWjDuV71GgiTjdfgzRoqiDXTrRarW7IAZBYsj8QvXNfiksaoU2O5WIxZVzPW/Q
-        X4dQQEKL4wQtjAIRqk6A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux28s8054-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 12:16:45 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBCGiFV012050
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 12:16:44 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 04:16:40 -0800
-From:   Krishna Kurapati <quic_kriskura@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>,
-        Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH 4/4] arm64: dts: qcom: Add missing interrupts for qcs404/ipq5332
-Date:   Mon, 11 Dec 2023 17:46:11 +0530
-Message-ID: <20231211121611.6765-5-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211121611.6765-1-quic_kriskura@quicinc.com>
-References: <20231211121611.6765-1-quic_kriskura@quicinc.com>
+        Mon, 11 Dec 2023 07:18:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D66CD;
+        Mon, 11 Dec 2023 04:18:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702297122; x=1733833122;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=WoCyP7/eVs07Uaxg+Z6bbeKyFt0c/ppUNHZy+vX7I+w=;
+  b=C+QQp+fU30b9FokY+LYJkgJC2H6H7f7aaGMnn3YGozetZ14f7P8JiZIA
+   RSz6DQuzKqF2LIssYpo5+GhBmjrt5jR0r4vNYsswltkgoKPHnG3ed3QnE
+   /IJ6Xxb3D7pJYicWtOejJpoMF8wgpWiznuhDKDLvc22dg/v0MUAVGzpCA
+   mear1ywTP3/YENWvRR0Jd5Becy21+uYO1sshKmTQvs/EPMhEbI7RYb4T3
+   pqfLPvU4cyQqzUDzO+8uBXLZGpIRiTpEhXlSuI0QGyAbOEMnaKKWImTVV
+   cmpy9332D0QN2cZkrTuVSnQe2IQALRBRo4m0vTYgoeRwhoETOjEAuAWfT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="7992227"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="7992227"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:18:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="916826074"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="916826074"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.50.188])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:18:38 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v3 00/29] selftests/resctrl: CAT test improvements & generalized test framework
+Date:   Mon, 11 Dec 2023 14:17:57 +0200
+Message-Id: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CeeiGSD3svwWW5CzOhMNC6L07BnkVMM5
-X-Proofpoint-GUID: CeeiGSD3svwWW5CzOhMNC6L07BnkVMM5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 clxscore=1015 lowpriorityscore=0 suspectscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- spamscore=0 mlxlogscore=452 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312110099
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,70 +66,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For qcs404 and ipq5332, certain interrupts are missing in DT.
-Add them to ensure they are in accordance to bindings.
+Hi all,
 
-The interrupts added enable remote wakeup functionality for these SoCs.
+Here's v3 series to improve resctrl selftests with generalized test
+framework and rewritten CAT test. As agreed, v3 does not include the
+group naming patch which will become part of Maciej's non-contiguous
+serie. The error handling cleanups (return errno, perror() & return
+value comment cleanups) and CPU affinity restore for CAT test add to
+the patch count.
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- arch/arm64/boot/dts/qcom/ipq5332.dtsi |  8 ++++++--
- arch/arm64/boot/dts/qcom/qcs404.dtsi  | 16 ++++++++++++++++
- 2 files changed, 22 insertions(+), 2 deletions(-)
+The series contains following improvements:
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-index d3fef2f80a81..82cd807af475 100644
---- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-@@ -307,8 +307,12 @@ usb: usb@8af8800 {
- 			compatible = "qcom,ipq5332-dwc3", "qcom,dwc3";
- 			reg = <0x08af8800 0x400>;
- 
--			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "hs_phy_irq";
-+			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 53 IRQ_TYPE_EDGE_BOTH>,
-+				     <GIC_SPI 52 IRQ_TYPE_EDGE_BOTH>;
-+			interrupt-names = "pwr_event",
-+					  "dp_hs_phy_irq",
-+					  "dm_hs_phy_irq";
- 
- 			clocks = <&gcc GCC_USB0_MASTER_CLK>,
- 				 <&gcc GCC_SNOC_USB_CLK>,
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 2721f32dfb71..469ea4d8cd3b 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -684,6 +684,14 @@ usb3: usb@7678800 {
- 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
- 					  <&gcc GCC_USB30_MASTER_CLK>;
- 			assigned-clock-rates = <19200000>, <200000000>;
-+
-+			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "qusb2_phy";
-+
- 			status = "disabled";
- 
- 			usb3_dwc3: usb@7580000 {
-@@ -713,6 +721,14 @@ usb2: usb@79b8800 {
- 			assigned-clocks = <&gcc GCC_USB20_MOCK_UTMI_CLK>,
- 					  <&gcc GCC_USB_HS_SYSTEM_CLK>;
- 			assigned-clock-rates = <19200000>, <133333333>;
-+
-+			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "pwr_event",
-+					  "hs_phy_irq",
-+					  "qusb2_phy";
-+
- 			status = "disabled";
- 
- 			usb@78c0000 {
+- Excludes shareable bits from CAT test allocation to avoid interference
+- Replaces file "sink" with a volatile variable
+- Alters read pattern to defeat HW prefetcher optimizations
+- Rewrites CAT test to make the CAT test reliable and truly measure
+  if CAT is working or not
+- Introduces generalized test framework making easier to add new tests
+- Lots of other cleanups & refactoring
+
+This serie have been tested across a large number of systems from
+different generations.
+
+v3:
+- New patches to handle return errno, perror() and return value comments
+- Tweak changelogs
+- Moved error printout removal to other patch
+- Zero bit CBM returns error
+- Tweak comments
+- Make get_shareable_mask() static
+- Return directly without storing result into ret variable first
+- llc -> LLC
+- Altered changelog and removed "the whole time" wording because
+  llc occu results are still unsigned long
+- Altered changelog's wording to not say "a volatile pointer"
+- Make min_diff_percent and MIN_DIFF_PERCENT_PER_BIT unsigned long
+- Add patch to restore CPU affinity after CAT test
+- Move uparams clear into init function
+- Add CPU vendor ID bitmask comment
+- Use test_resource_feature_check(test) in CMT
+- "feature" -> "resource" in function comment
+
+v2:
+- Postpone adding L2 CAT test as more investigations are necessary
+- Add patch to remove ctrlc_handler() from wrong place
+- Improvements to changelogs
+- Function comments improvements & comment cleanups
+- Move some parts of the changes into more logical patch
+- If checks: buf == NULL -> !buf
+- Variable naming:
+        - p -> buf
+        - cbm_mask_path -> cbm_path
+- Function naming:
+        - get_cbm_mask() -> get_full_cbm()
+        - cache_size() -> cache_portion_size()
+- Use PATH_MAX
+- Improved cache_portion_size() parameter names
+- int count -> unsigned int
+- Pass filename to measurement taking functions instead of
+  resctrl_val_param
+- !lines ? : reversal
+- Removed bogus static from function local variable
+- Open perf fd only once, reset & enable in the innermost test loop
+- Add perf fd ioctl() error handling
+- Add patch to change compiler optimization prevention "sink" from file
+  to volatile variable
+- Remove cpu_no and resource (the latter was added in v1) members from
+  resctrl_val_param (pass uparams and test where those are needed)
+- Removed ARRAY_SIZE() macro
+- Add patch to rename "resource_id" to "domain_id"
+
+Ilpo Järvinen (29):
+  selftests/resctrl: Convert perror() to ksft_perror() or
+    ksft_print_msg()
+  selftests/resctrl: Return -1 instead of errno on error
+  selftests/resctrl: Don't use ctrlc_handler() outside signal handling
+  selftests/resctrl: Change function comments to say < 0 on error
+  selftests/resctrl: Split fill_buf to allow tests finer-grained control
+  selftests/resctrl: Refactor fill_buf functions
+  selftests/resctrl: Refactor get_cbm_mask() and rename to
+    get_full_cbm()
+  selftests/resctrl: Mark get_cache_size() cache_type const
+  selftests/resctrl: Create cache_portion_size() helper
+  selftests/resctrl: Exclude shareable bits from schemata in CAT test
+  selftests/resctrl: Split measure_cache_vals()
+  selftests/resctrl: Split show_cache_info() to test specific and
+    generic parts
+  selftests/resctrl: Remove unnecessary __u64 -> unsigned long
+    conversion
+  selftests/resctrl: Remove nested calls in perf event handling
+  selftests/resctrl: Consolidate naming of perf event related things
+  selftests/resctrl: Improve perf init
+  selftests/resctrl: Convert perf related globals to locals
+  selftests/resctrl: Move cat_val() to cat_test.c and rename to
+    cat_test()
+  selftests/resctrl: Open perf fd before start & add error handling
+  selftests/resctrl: Replace file write with volatile variable
+  selftests/resctrl: Read in less obvious order to defeat prefetch
+    optimizations
+  selftests/resctrl: Rewrite Cache Allocation Technology (CAT) test
+  selftests/resctrl: Restore the CPU affinity after CAT test
+  selftests/resctrl: Create struct for input parameters
+  selftests/resctrl: Introduce generalized test framework
+  selftests/resctrl: Pass write_schemata() resource instead of test name
+  selftests/resctrl: Add helper to convert L2/3 to integer
+  selftests/resctrl: Rename resource ID to domain ID
+  selftests/resctrl: Get domain id from cache id
+
+ tools/testing/selftests/resctrl/cache.c       | 287 +++++----------
+ tools/testing/selftests/resctrl/cat_test.c    | 337 +++++++++++-------
+ tools/testing/selftests/resctrl/cmt_test.c    |  80 +++--
+ tools/testing/selftests/resctrl/fill_buf.c    | 132 ++++---
+ tools/testing/selftests/resctrl/mba_test.c    |  30 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |  32 +-
+ tools/testing/selftests/resctrl/resctrl.h     | 126 +++++--
+ .../testing/selftests/resctrl/resctrl_tests.c | 197 ++++------
+ tools/testing/selftests/resctrl/resctrl_val.c | 138 +++----
+ tools/testing/selftests/resctrl/resctrlfs.c   | 321 +++++++++++------
+ 10 files changed, 936 insertions(+), 744 deletions(-)
+
 -- 
-2.42.0
+2.30.2
 
