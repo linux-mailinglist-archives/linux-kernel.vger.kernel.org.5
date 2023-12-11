@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A6980C8A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E83880C8C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbjLKL6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S234640AbjLKL7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:59:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234454AbjLKL6V (ORCPT
+        with ESMTP id S234537AbjLKL7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:58:21 -0500
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF729B
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:58:27 -0800 (PST)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b9fe1a9f16so3106262b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:58:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702295906; x=1702900706;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gXKTIALbyouSGf/POO3O289jn5YeMVhjl/ASe319lHc=;
-        b=TBb4d1wDF5yMLMLLayc2x55ZQooIldyB6jr8yEIa16SaLQkqtu+YsiXaYTfqCgcjJC
-         /pcpkOGPSqtVO7np59GBaaOet+FAZxBPhFoVaLDgMorXu7vLBA78fouiGClacNbpAjM1
-         LiV3pjsPCZpzLz5l0VBVS5P9BJZa1HXwHg0cFHRSP1jGqX8HKj0Gt+jSy+2RMrHOASPr
-         2+Y9et2Kz08VIwEex/66D2zo7L31I7kLVMGqlgVb31gDePGF45UbwxJavkCJp+fR0tao
-         YJldgUAxJen20ef1cODgoqtk7sSsEAM+LbMDetf+VlGp54oSF99wNjAZhZt1H9xTRMJn
-         GnIA==
-X-Gm-Message-State: AOJu0YyKJK2qoRPdKbW02zuiQVODYQEGoVAtiWwG9pAfsv0aibW5zUtl
-        Kca+LgfJDcMOiAb1XacSkL9fEUdInX5AwOLar/VsqtCLhRhZ
-X-Google-Smtp-Source: AGHT+IE27QIdYr079A/T3mwVVk3ZrwtRaYf+m0GsAZwN6tQ+StzdigAG/5Oe3+IkyvCBIyQAzmTUkzfevoPxSc+vk936ATPccYDa
+        Mon, 11 Dec 2023 06:59:20 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF882D5;
+        Mon, 11 Dec 2023 03:59:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=oq8U2
+        J4jeAwzSS+oI8lZIgh3XmVih5h3euc/enRVnmk=; b=PpkDKIS7YuODt4KYpDhlZ
+        Qi1FHu/R6KUo8RK7WynZh6WDVpQBCAv/JQrANMbMN6339OUCvU4+qu/nDSrpvyvU
+        CByv5jdRCJLHO3+TveubtqhuWjc7cdqotsDJrpjqL++WQSE329qawogzQ/LwORKJ
+        zykpIf4ljhSKrIqvs9iMB0=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wDntzht+XZlU7P7Aw--.32885S2;
+        Mon, 11 Dec 2023 19:58:41 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 09/16] dt-bindings: soc: rockchip: add rk3588 vop/vo syscon
+Date:   Mon, 11 Dec 2023 19:58:36 +0800
+Message-Id: <20231211115836.1785248-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231211115547.1784587-1-andyshrk@163.com>
+References: <20231211115547.1784587-1-andyshrk@163.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2087:b0:3b9:de11:cc9c with SMTP id
- s7-20020a056808208700b003b9de11cc9cmr4131856oiw.5.1702295906763; Mon, 11 Dec
- 2023 03:58:26 -0800 (PST)
-Date:   Mon, 11 Dec 2023 03:58:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d3490c060c3aa67a@google.com>
-Subject: [syzbot] [gfs2] WARNING in vfs_utimes
-From:   syzbot <syzbot+0c64a8706d587f73409e@syzkaller.appspotmail.com>
-To:     brauner@kernel.org, gfs2@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDntzht+XZlU7P7Aw--.32885S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF13Ar4UKr17uw1Utw47urg_yoWfCFgEka
+        4xZa45uF48GryFgw1qyayIk3Z8A3Z2kFykCa1jyF4kCaykZrZrKF95Jw1aqr1rua1fuw1f
+        C3Z5WrWUGFnxGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8K0P3UUUUU==
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBnAlDXlghl75dlgAAsT
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,87 +59,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Andy Yan <andy.yan@rock-chips.com>
 
-syzbot found the following issue on:
+Add VOP and VO GRF syscon compatibles for RK3588
 
-HEAD commit:    aed8aee11130 Merge tag 'pmdomain-v6.6-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ec0a28680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c64a8706d587f73409e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/310bcfc234f7/disk-aed8aee1.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9ca036d3eeb2/vmlinux-aed8aee1.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1e0032b9919c/bzImage-aed8aee1.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0c64a8706d587f73409e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-DEBUG_RWSEMS_WARN_ON((rwsem_owner(sem) != current) && !rwsem_test_oflags(sem, RWSEM_NONSPINNABLE)): count = 0x1, magic = 0xffff8880371ddef0, owner = 0xffff88801d773b80, curr 0xffff888023728000, list empty
-WARNING: CPU: 0 PID: 13147 at kernel/locking/rwsem.c:1370 __up_write kernel/locking/rwsem.c:1369 [inline]
-WARNING: CPU: 0 PID: 13147 at kernel/locking/rwsem.c:1370 up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
-Modules linked in:
-CPU: 0 PID: 13147 Comm: syz-executor.1 Not tainted 6.6.0-rc1-syzkaller-00072-gaed8aee11130 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
-RIP: 0010:up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
-Code: 48 c7 c7 a0 98 0a 8b 48 c7 c6 e0 9a 0a 8b 48 8b 54 24 28 48 8b 4c 24 18 4d 89 e0 4c 8b 4c 24 30 53 e8 b0 12 e8 ff 48 83 c4 08 <0f> 0b e9 75 fd ff ff 48 c7 c1 10 9b 9a 8e 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc9001520fbe0 EFLAGS: 00010292
-RAX: 144e8f9151b91a00 RBX: ffffffff8b0a9980 RCX: ffff888023728000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9001520fcb0 R08: ffffffff81542432 R09: 1ffff92002a41ee8
-R10: dffffc0000000000 R11: fffff52002a41ee9 R12: ffff88801d773b80
-R13: ffff8880371ddef0 R14: 1ffff92002a41f84 R15: dffffc0000000000
-FS:  00007fadafbfe6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f527c5b8000 CR3: 000000001c7cb000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- inode_unlock include/linux/fs.h:807 [inline]
- vfs_utimes+0x4c2/0x760 fs/utimes.c:68
- do_utimes_path fs/utimes.c:99 [inline]
- do_utimes fs/utimes.c:145 [inline]
- __do_sys_utime fs/utimes.c:226 [inline]
- __se_sys_utime+0x1e1/0x2e0 fs/utimes.c:215
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fadb847cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fadafbfe0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000084
-RAX: ffffffffffffffda RBX: 00007fadb859c050 RCX: 00007fadb847cae9
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000020000080
-RBP: 00007fadb84c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fadb859c050 R15: 00007ffca2821ba8
- </TASK>
-
-
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+(no changes since v1)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+index 1309bf5ae0cd..9793ea6f0fe6 100644
+--- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
++++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+@@ -28,6 +28,8 @@ properties:
+               - rockchip,rk3588-sys-grf
+               - rockchip,rk3588-pcie3-phy-grf
+               - rockchip,rk3588-pcie3-pipe-grf
++              - rockchip,rk3588-vo-grf
++              - rockchip,rk3588-vop-grf
+               - rockchip,rv1108-usbgrf
+           - const: syscon
+       - items:
+-- 
+2.34.1
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
