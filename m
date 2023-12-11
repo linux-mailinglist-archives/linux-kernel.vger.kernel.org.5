@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1D280CE17
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7967680CE19
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344114AbjLKOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:16:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S1344553AbjLKORJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344071AbjLKOQd (ORCPT
+        with ESMTP id S234989AbjLKOQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:16:33 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44EA3269;
-        Mon, 11 Dec 2023 06:10:01 -0800 (PST)
+        Mon, 11 Dec 2023 09:16:45 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCDA44AA;
+        Mon, 11 Dec 2023 06:10:09 -0800 (PST)
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkCT6TGMz4f3kJr;
-        Mon, 11 Dec 2023 22:09:57 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SpkCZ5hzfz4f3kGD;
+        Mon, 11 Dec 2023 22:10:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 0E0251A0893;
-        Mon, 11 Dec 2023 22:09:59 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTP id 2F9511A08B0;
+        Mon, 11 Dec 2023 22:10:05 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgBXWhA0GHdlbq5xDQ--.18493S4;
-        Mon, 11 Dec 2023 22:09:58 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgDnNw46GHdlJ7BxDQ--.34937S4;
+        Mon, 11 Dec 2023 22:10:04 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
         kent.overstreet@gmail.com, joern@lazybastard.org,
@@ -45,33 +45,33 @@ Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 17/18] ext4: remove block_device_ejected()
-Date:   Mon, 11 Dec 2023 22:08:33 +0800
-Message-Id: <20231211140833.975935-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 for-6.8/block 18/18] ext4: use bdev apis
+Date:   Mon, 11 Dec 2023 22:08:39 +0800
+Message-Id: <20231211140839.976021-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBXWhA0GHdlbq5xDQ--.18493S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4UGw1xJF1fWr48KFy3urg_yoW8uFyfp3
-        y3Cw1fArW8ur1I9ayxJr48W340qayvkay0gFyxur1Fqr1fJ34IgFWktF1Iya40vrZ3uw1F
-        qF1UCrWxCr18GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID: cCh0CgDnNw46GHdlJ7BxDQ--.34937S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF47JryfCw48Xw1Duw48JFb_yoW5XF4fpa
+        43GFyDGr4Dury09wsrGFsrZa40kw18GFy3GryfZa42qrWaqrySkFykKF1xZF1UX3y8X348
+        XFyjkryxAr45CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_
-        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        YLvtUUUUU==
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUCVW8JwCI42IY6I8E87Iv67AKxVW8
+        JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUe_
+        MaUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,61 +82,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-block_device_ejected() is added by commit bdfe0cbd746a ("Revert
-"ext4: remove block_device_ejected"") in 2015. At that time 'bdi->wb'
-is destroyed synchronized from del_gendisk(), hence if ext4 is still
-mounted, and then mark_buffer_dirty() will reference destroyed 'wb'.
-However, such problem doesn't exist anymore:
-
-- commit d03f6cdc1fc4 ("block: Dynamically allocate and refcount
-backing_dev_info") switch bdi to use refcounting;
-- commit 13eec2363ef0 ("fs: Get proper reference for s_bdi"), will grab
-additional reference of bdi while mounting, so that 'bdi->wb' will not
-be destroyed until generic_shutdown_super().
-
-Hence remove this dead function block_device_ejected().
+Avoid to access bd_inode directly, prepare to remove bd_inode from
+block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/ext4/super.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+ fs/ext4/dir.c       | 6 ++----
+ fs/ext4/ext4_jbd2.c | 6 +++---
+ fs/ext4/super.c     | 3 +--
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 3985f8c33f95..64e35eb6a324 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -191,10 +191,8 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 			pgoff_t index = map.m_pblk >>
+ 					(PAGE_SHIFT - inode->i_blkbits);
+ 			if (!ra_has_index(&file->f_ra, index))
+-				page_cache_sync_readahead(
+-					sb->s_bdev->bd_inode->i_mapping,
+-					&file->f_ra, file,
+-					index, 1);
++				bdev_sync_readahead(sb->s_bdev, &file->f_ra,
++						    file, index, 1);
+ 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
+ 			bh = ext4_bread(NULL, inode, map.m_lblk, 0);
+ 			if (IS_ERR(bh)) {
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index d1a2e6624401..c1bf3a00fad9 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -206,7 +206,6 @@ static void ext4_journal_abort_handle(const char *caller, unsigned int line,
+ 
+ static void ext4_check_bdev_write_error(struct super_block *sb)
+ {
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int err;
+ 
+@@ -216,9 +215,10 @@ static void ext4_check_bdev_write_error(struct super_block *sb)
+ 	 * we could read old data from disk and write it out again, which
+ 	 * may lead to on-disk filesystem inconsistency.
+ 	 */
+-	if (errseq_check(&mapping->wb_err, READ_ONCE(sbi->s_bdev_wb_err))) {
++	if (bdev_wb_err_check(sb->s_bdev, READ_ONCE(sbi->s_bdev_wb_err))) {
+ 		spin_lock(&sbi->s_bdev_wb_lock);
+-		err = errseq_check_and_advance(&mapping->wb_err, &sbi->s_bdev_wb_err);
++		err = bdev_wb_err_check_and_advance(sb->s_bdev,
++						    &sbi->s_bdev_wb_err);
+ 		spin_unlock(&sbi->s_bdev_wb_lock);
+ 		if (err)
+ 			ext4_error_err(sb, -err,
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ae41204f52d4..3b5e2b557488 100644
+index 3b5e2b557488..96724cae622a 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -467,22 +467,6 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
- 		schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
- }
- 
--/*
-- * The del_gendisk() function uninitializes the disk-specific data
-- * structures, including the bdi structure, without telling anyone
-- * else.  Once this happens, any attempt to call mark_buffer_dirty()
-- * (for example, by ext4_commit_super), will cause a kernel OOPS.
-- * This is a kludge to prevent these oops until we can put in a proper
-- * hook in del_gendisk() to inform the VFS and file system layers.
-- */
--static int block_device_ejected(struct super_block *sb)
--{
--	struct inode *bd_inode = sb->s_bdev->bd_inode;
--	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
--
--	return bdi->dev == NULL;
--}
--
- static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
- {
- 	struct super_block		*sb = journal->j_private;
-@@ -6162,8 +6146,6 @@ static int ext4_commit_super(struct super_block *sb)
- 
- 	if (!sbh)
- 		return -EINVAL;
--	if (block_device_ejected(sb))
--		return -ENODEV;
- 
- 	ext4_update_super(sb);
- 
+@@ -5544,8 +5544,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * used to detect the metadata async write error.
+ 	 */
+ 	spin_lock_init(&sbi->s_bdev_wb_lock);
+-	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+-				 &sbi->s_bdev_wb_err);
++	bdev_wb_err_check_and_advance(sb->s_bdev, &sbi->s_bdev_wb_err);
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+ 	ext4_orphan_cleanup(sb, es);
+ 	EXT4_SB(sb)->s_mount_state &= ~EXT4_ORPHAN_FS;
 -- 
 2.39.2
 
