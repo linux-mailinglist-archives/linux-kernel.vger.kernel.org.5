@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90BB80D4BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2445580D4BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344975AbjLKRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:55:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
+        id S1345067AbjLKRzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235101AbjLKRy6 (ORCPT
+        with ESMTP id S1345073AbjLKRzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:54:58 -0500
+        Mon, 11 Dec 2023 12:55:12 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F2DD64
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:54:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3216FC433C7;
-        Mon, 11 Dec 2023 17:54:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAF9199D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:54:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 320BEC433CB;
+        Mon, 11 Dec 2023 17:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702317249;
-        bh=Ae4/apPtu2qVDtyWUKMc0acmOcBz6ycK0QKMshewLZk=;
+        s=k20201202; t=1702317279;
+        bh=VhOZevBYxgpOhWMJVI4ylnjAowG5TlTM6iqFjlI60UU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=k8UONH8Fsvpv9P6sElnOdB4OtaxmloX5YxC+LhyNZSRMQT/RqeMPedezuwG9By+Jm
-         afGXxFlDIbkOr08f4Cws/GXwu1g0kfI4mF96RCBwikTxh/SZqeQEoc5JLyXi3+acfT
-         I9d080O/DxQzAkCqBDltyAauDgZp1sjR7MWFi5VLPjdBOuVo0S4cFdYfp5A09k900R
-         SWcd9+dOf7VraOr2ZRIxaslG/4DtGpoiMzOsZT+Mx5n1cmQv5bBVThR1sVnQvYK913
-         4CFppwji9kaeiavIM0AGPhD4LdWuQ0GTCr+hClGQBG2KUybtCyzjmJpCaXiiAG6wY4
-         ix2z/5I1qSAgA==
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1efb9571b13so2919634fac.2;
-        Mon, 11 Dec 2023 09:54:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YzXbYIM8vBgORFmH6f9b1v181dC/VQ7q7v8W0N20CU9mJlW3WIV
-        BjohppZMCnICQi2NQOHTugmb5WA1ez9bxxj7C68=
-X-Google-Smtp-Source: AGHT+IH3YWplGc8affe6Z5G16cCMbxz0Ejp/HQYPpcSEYz2Jv1Vgz6V06YKP4LE8oV6w3fjJNR0JuEBZ2zTCUkgWph8=
-X-Received: by 2002:a05:6870:d10a:b0:1fb:7f3:252b with SMTP id
- e10-20020a056870d10a00b001fb07f3252bmr4670680oac.7.1702317248614; Mon, 11 Dec
- 2023 09:54:08 -0800 (PST)
+        b=plAAiuvhB8/I/HPxx72m1izcox9S8pBBt35UwHguqzoFwLI8lT6AWPXQtjM3YcQ7e
+         IQ6M798PQHv8fJtJ1S8MQHLSR7eqgOnXATQJkABGwXZC9M4TMXyLdWCheSQ68tLQ6t
+         5G6cShOUObjmAXp+XyiJHSli+XrHhsHo9Vnk41+OslPs39tlRrHL8qI0Ice7X5eFhO
+         nLlao7XQrvHBpGMlMh9NYa4lxLNi9kizl5dY9ljwkBqmiXYuqDRjwizQfimr/5sUrA
+         YsgDBNJXVwJB8H10O91/mMutyhVKiVvBZBltG3Qc9CDRrwi5RRxwqj1FbzZgsgyUac
+         YEzXT3JzDcT1g==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso65886241fa.0;
+        Mon, 11 Dec 2023 09:54:39 -0800 (PST)
+X-Gm-Message-State: AOJu0Yyl9yoeUlXOU3iiFrv7jMvYxmeANyN7eQKlyjO71yvg+CR8uPy+
+        /e2DYvJuGCnkyQ0ua093GqpWFnQwVNb0kNKGBg==
+X-Google-Smtp-Source: AGHT+IGDP8YJSUf3mRcHf/dTgho4Et9I/62IVaAx+3E12Y8YlqdA24xaDa0UutL0Xy9xotdWR0raSnVdzI5CVc2b2us=
+X-Received: by 2002:a05:6512:32ac:b0:50b:e4a7:948 with SMTP id
+ q12-20020a05651232ac00b0050be4a70948mr2241742lfe.126.1702317277404; Mon, 11
+ Dec 2023 09:54:37 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK7LNAQAAZXV3i1sM0ZTFDC3eOaDWBVzOV9FmiLUM5YoX=89Wg@mail.gmail.com>
- <20231210070533.925534-1-xujialu@vimux.org> <20231210070533.925534-2-xujialu@vimux.org>
-In-Reply-To: <20231210070533.925534-2-xujialu@vimux.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Dec 2023 02:53:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS=rnVqJYfoo-t7EhC8G4E20r1B-xQCKF9W2zgyigi-2w@mail.gmail.com>
-Message-ID: <CAK7LNAS=rnVqJYfoo-t7EhC8G4E20r1B-xQCKF9W2zgyigi-2w@mail.gmail.com>
-Subject: Re: [PATCH v5] gen_compile_commands.py: fix path resolve with
- symlinks in it
-To:     Jialu Xu <xujialu@vimux.org>
-Cc:     justinstitt@google.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        morbo@google.com, nathan@kernel.org, ndesaulniers@google.com
+References: <20231116162330.1144983-1-jisheng.teoh@starfivetech.com> <20231116162330.1144983-2-jisheng.teoh@starfivetech.com>
+In-Reply-To: <20231116162330.1144983-2-jisheng.teoh@starfivetech.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 11 Dec 2023 11:54:25 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+AMbwR64YwtugJ=WC-No0eBUejf3v4YbSB8h7x+uf3wA@mail.gmail.com>
+Message-ID: <CAL_Jsq+AMbwR64YwtugJ=WC-No0eBUejf3v4YbSB8h7x+uf3wA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] perf: starfive: Add StarLink PMU support
+To:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,68 +64,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 4:06=E2=80=AFPM Jialu Xu <xujialu@vimux.org> wrote:
+On Thu, Nov 16, 2023 at 10:24=E2=80=AFAM Ji Sheng Teoh
+<jisheng.teoh@starfivetech.com> wrote:
 >
-> When a path contains relative symbolic links, os.path.abspath() might
-> not follow the symlinks and instead return the absolute path with just
-> the relative paths resolved, resulting in an incorrect path.
+> This patch adds support for StarFive's StarLink PMU (Performance
+> Monitor Unit). StarLink PMU integrates one or more CPU cores with
+> a shared L3 memory system. The PMU supports overflow interrupt,
+> up to 16 programmable 64bit event counters, and an independent
+> 64bit cycle counter. StarLink PMU is accessed via MMIO.
 >
-> 1. Say "drivers/hdf/" has some symlinks:
+> Example Perf stat output:
+> [root@user]# perf stat -a -e /starfive_starlink_pmu/cycles/ \
+>         -e /starfive_starlink_pmu/read_miss/ \
+>         -e /starfive_starlink_pmu/read_hit/ \
+>         -e /starfive_starlink_pmu/release_request/  \
+>         -e /starfive_starlink_pmu/write_hit/ \
+>         -e /starfive_starlink_pmu/write_miss/ \
+>         -e /starfive_starlink_pmu/write_request/ \
+>         -e /starfive_starlink_pmu/writeback/ \
+>         -e /starfive_starlink_pmu/read_request/ \
+>         -- openssl speed rsa2048
+> Doing 2048 bits private rsa's for 10s: 5 2048 bits private RSA's in
+> 2.84s
+> Doing 2048 bits public rsa's for 10s: 169 2048 bits public RSA's in
+> 2.42s
+> version: 3.0.11
+> built on: Tue Sep 19 13:02:31 2023 UTC
+> options: bn(64,64)
+> CPUINFO: N/A
+>                   sign    verify    sign/s verify/s
+> rsa 2048 bits 0.568000s 0.014320s      1.8     69.8
+> /////////
+>  Performance counter stats for 'system wide':
 >
->     # ls -l drivers/hdf/
->     total 364
->     drwxrwxr-x 2 ...   4096 ... evdev
->     lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hd=
-f_core/framework
->     -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
->     lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hd=
-f_core/interfaces/inner_api
->     lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_cor=
-e/adapter/khdf/linux
->     -rw-r--r-- 1 ...     74 ... Makefile
->     drwxrwxr-x 3 ...   4096 ... wifi
+>          649991998      starfive_starlink_pmu/cycles/
+>            1009690      starfive_starlink_pmu/read_miss/
+>            1079750      starfive_starlink_pmu/read_hit/
+>            2089405      starfive_starlink_pmu/release_request/
+>                129      starfive_starlink_pmu/write_hit/
+>                 70      starfive_starlink_pmu/write_miss/
+>                194      starfive_starlink_pmu/write_request/
+>             150080      starfive_starlink_pmu/writeback/
+>            2089423      starfive_starlink_pmu/read_request/
 >
-> 2. One .cmd file records that:
+>       27.062755678 seconds time elapsed
 >
->     # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
->     cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/d=
-evmgr_service.o :=3D ... \
->     /path/to/src/drivers/hdf/khdf/manager/../../../../framework/core/mana=
-ger/src/devmgr_service.c
+> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> ---
+>  drivers/perf/Kconfig                 |   9 +
+>  drivers/perf/Makefile                |   1 +
+>  drivers/perf/starfive_starlink_pmu.c | 654 +++++++++++++++++++++++++++
+>  include/linux/cpuhotplug.h           |   1 +
+>  4 files changed, 665 insertions(+)
+>  create mode 100644 drivers/perf/starfive_starlink_pmu.c
 >
-> 3. os.path.abspath returns "/path/to/src/framework/core/manager/src/devmg=
-r_service.c", not correct:
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 273d67ecf6d2..41278742ef88 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -86,6 +86,15 @@ config RISCV_PMU_SBI
+>           full perf feature support i.e. counter overflow, privilege mode
+>           filtering, counter configuration.
 >
->     # ./scripts/clang-tools/gen_compile_commands.py
->     INFO: Could not add line from ./framework/core/manager/src/.devmgr_se=
-rvice.o.cmd: File \
->         /path/to/src/framework/core/manager/src/devmgr_service.c not foun=
-d
->
-> Use os.path.realpath(), which resolves the symlinks and normalizes the pa=
-ths correctly.
->
->     # cat compile_commands.json
->     ...
->     {
->       "command": ...
->       "directory": ...
->       "file": "/path/to/bla/drivers/hdf_core/framework/core/manager/src/d=
-evmgr_service.c"
->     },
->     ...
->
-> Also fix it in parse_arguments().
->
-> Signed-off-by: Jialu Xu <xujialu@vimux.org>
+> +config STARFIVE_STARLINK_PMU
+> +       depends on ARCH_STARFIVE
+> +       bool "StarFive StarLink PMU"
+> +       help
+> +          Provide support for StarLink Performance Monitor Unit.
+> +          StarLink Performance Monitor Unit integrates one or more cores=
+ with
+> +          an L3 memory system. The L3 cache events are added into perf e=
+vent
+> +          subsystem, allowing monitoring of various L3 cache perf events=
+.
+> +
+>  config ARM_PMU_ACPI
+>         depends on ARM_PMU && ACPI
+>         def_bool y
+> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+> index 16b3ec4db916..e2153aee1e04 100644
+> --- a/drivers/perf/Makefile
+> +++ b/drivers/perf/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_QCOM_L3_PMU) +=3D qcom_l3_pmu.o
+>  obj-$(CONFIG_RISCV_PMU) +=3D riscv_pmu.o
+>  obj-$(CONFIG_RISCV_PMU_LEGACY) +=3D riscv_pmu_legacy.o
+>  obj-$(CONFIG_RISCV_PMU_SBI) +=3D riscv_pmu_sbi.o
+> +obj-$(CONFIG_STARFIVE_STARLINK_PMU) +=3D starfive_starlink_pmu.o
+>  obj-$(CONFIG_THUNDERX2_PMU) +=3D thunderx2_pmu.o
+>  obj-$(CONFIG_XGENE_PMU) +=3D xgene_pmu.o
+>  obj-$(CONFIG_ARM_SPE_PMU) +=3D arm_spe_pmu.o
+> diff --git a/drivers/perf/starfive_starlink_pmu.c b/drivers/perf/starfive=
+_starlink_pmu.c
+> new file mode 100644
+> index 000000000000..272896ab1ade
+> --- /dev/null
+> +++ b/drivers/perf/starfive_starlink_pmu.c
+> @@ -0,0 +1,654 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * StarFive's StarLink PMU driver
+> + *
+> + * Copyright (C) 2023 StarFive Technology Co., Ltd.
+> + *
+> + * Author: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> + *
+> + */
+> +
+> +#define STARLINK_PMU_PDEV_NAME "starfive_starlink_pmu"
+> +#define pr_fmt(fmt)    STARLINK_PMU_PDEV_NAME ": " fmt
+> +
+> +#include <linux/bitmap.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
 
+You probably don't need this header and the implicit includes it makes
+are dropped now in linux-next. Please check what you actually need and
+make them explicit.
 
-
-Applied to linux-kbuild. Thanks.
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+Rob
