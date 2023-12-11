@@ -2,187 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF6280D3B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C2780D3BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344558AbjLKR1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S1344594AbjLKR1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjLKR1F (ORCPT
+        with ESMTP id S1344542AbjLKR1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:27:05 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B5C3;
-        Mon, 11 Dec 2023 09:27:11 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B84E5223DB;
-        Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702315630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-        b=KJ4efM9E+sa33aFAd8jwg5VXmnjMxleP6CmyD1Z0i97ow/IMJQBSqYXPh1ej+xavVwSRP4
-        Yg1lz/fUikUZbf1u2+vXr2RJE2evTJgLdRHZp8PKCuknSrpV2KnjDsWgIdBkLdxCyxxQjh
-        RNp4pJOJa1FNsc52gTMd8s7goQjnjEc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702315630;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-        b=TO6pszgbMWjR3gBZnaW4MEVQ+gbRax/0poyUFFXjotFHInDoOr+qN7/2TD3A7ZbLly3/IT
-        YRHLNJGFEpFf+TBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702315629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-        b=wzXbksvRNiCb4BbXMMBxbEnY6iRN/20VAk4MCpHS3Rljj8T26a7bGIb5ufMVkyXIF6ZR91
-        EvfGBjSwf9A5O7MLBegJl4BM0+huE5fNoBm4jZzLIFLmDT7FuH6vs9QkRAvxTJx13mPPRM
-        NuBUsypYbVCpDejdowVksfEijuMTCJg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702315629;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
-        b=k3338zTO3EpETkE8li6Dp/0dY97GEZjygMS4ZhvDNl1b1VwUfwBL4jBi4Swo7FgrfAdnP+
-        7OISWgzg4D5XlXAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A588134B0;
-        Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id DhppJW1Gd2WxHQAAn2gu4w
-        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:27:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 0511CA07E3; Mon, 11 Dec 2023 18:27:08 +0100 (CET)
-Date:   Mon, 11 Dec 2023 18:27:08 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, willy@infradead.org,
-        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-Message-ID: <20231211172708.qpuk4rkwq4u2zbmj@quack3>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
+        Mon, 11 Dec 2023 12:27:46 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51767C4;
+        Mon, 11 Dec 2023 09:27:52 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bf8843a6fso4697788e87.0;
+        Mon, 11 Dec 2023 09:27:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702315670; x=1702920470; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OO0GQljarECteBeseBCGP9zfJso+D2EETifrGOypSaw=;
+        b=i/yfQHxwoo7e7B/ud9SBf/3RYGyPO2oN5GMqAISVPSQhVRY+lYreJZPmJBc/Ilb1hk
+         jHFaRXap91p6D49jTMoiGwG8uQPctWl4v7Oc6GTpQqprI+/sh3qj94PkZaXtBKyREFnF
+         t/J+iPtGp9rU1ZTAJgY8hcI9JmaR1syUCvVfR8itRgflb0eBMfTPwX81f46C2tP04jGJ
+         fJxiDGy+gJhu9elo4luft0b+uNh4xU/MfM6huTCntKQ68XdTNDFxNiV2vAKqkNVHJV/h
+         9KnR6EAdldedUxKkWsuYies8vMPu1D6Jx6rpjRru8UE79e+MDsWgYU3LXfmTFBqYP0wr
+         +DLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702315670; x=1702920470;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OO0GQljarECteBeseBCGP9zfJso+D2EETifrGOypSaw=;
+        b=o0Dh0/4ocjuNB0VRSXzvAA/zl4nCmoUBwa99OZHYKLkiZKorBMriJU/tOxQ5Tr0URc
+         ejxij65u5U+7lDSOLVN7+Eqa1jgxrTTjTHXK92oCMRu0qZp2pDlrHOUjB3Jx6DlPVNHf
+         S3F9qMSGrzAbrfa9LvDxO3K3yQO9GAxFGemjtAWIsJwTF/wtY8408sYkbQYJV7KWEjy3
+         ipmApcklHiQ0Lzclc68u3QFOSheLrEN1uQ8szJmU1kfrPQPg8W7fzbYqlEl3hfQmJ52U
+         Wxe0a/w+W/heBk67NAw8tjSoXU2fyQ0mNopnn3XcDn+t/LlQSZcAx4eQOuiWeXSGNKrU
+         +VuQ==
+X-Gm-Message-State: AOJu0YxOGEz9uUd8ONbibZjjD7XRy01IxDc2HGycspDPGJ3H+uXSFPo5
+        FVxvQ3YqkZnHVNLGwZboyCNrmZMnx7M=
+X-Google-Smtp-Source: AGHT+IFUg4ywpvNcYPrUuDPc0QKX6EBfk9n5LgjF6r7DuqftMLpNUtqDdaOY3KOuOLNJ19ftSGKBQA==
+X-Received: by 2002:a05:6512:b95:b0:50c:2177:f184 with SMTP id b21-20020a0565120b9500b0050c2177f184mr3648357lfv.17.1702315670061;
+        Mon, 11 Dec 2023 09:27:50 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id h4-20020a056512350400b0050d14ce3958sm1072052lfs.81.2023.12.11.09.27.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 09:27:49 -0800 (PST)
+Date:   Mon, 11 Dec 2023 20:27:46 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH net-next v3] net: stmmac: don't create a MDIO bus if
+ unnecessary
+Message-ID: <hpqssnt7odmuuyhsljuqovmwatdjz4s6kix6abq7lrvyciawy5@5ypscmmivnmh>
+References: <20231207-stmmac-no-mdio-node-v3-1-34b870f2bafb@redhat.com>
+ <jz6ot44fjkbmwcezi3fkgqd54nurglblbemrchfgxgq6udlhqz@ntepnnzzelta>
+ <hxds75erxqcfkufxnfbyo2up4b4jeicmi3f5xr6qlb3yf7fe76@4byeq62jhu4o>
+ <hgz3pt625kggix6kzincohw7kr2okcumrwfkmjgiauw2yvhrzt@ekeygo4b7k3b>
+ <h5ucipgjtsesrz3jyul5xohu4pqom56v6ayx7aonnfesret3ht@wmblmndj6zir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
-X-Spam-Score: 16.16
-X-Spamd-Bar: +++++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wzXbksvR;
-        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k3338zTO;
-        dmarc=none;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [9.46 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         R_RATELIMIT(0.00)[to_ip_from(RLa8hd5fybgmzcyr9mhbq8ey7y)];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_TRACE(0.00)[suse.cz:+];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_GT_50(0.00)[50];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         NEURAL_SPAM_SHORT(2.97)[0.991];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,huawei.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 9.46
-X-Rspamd-Queue-Id: B84E5223DB
-X-Spam-Flag: NO
+In-Reply-To: <h5ucipgjtsesrz3jyul5xohu4pqom56v6ayx7aonnfesret3ht@wmblmndj6zir>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-12-23 22:07:53, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Fri, Dec 08, 2023 at 10:50:29AM -0600, Andrew Halaney wrote:
+> On Fri, Dec 08, 2023 at 06:07:06PM +0300, Serge Semin wrote:
+> > On Thu, Dec 07, 2023 at 05:07:24PM -0600, Andrew Halaney wrote:
+> > > On Fri, Dec 08, 2023 at 01:16:12AM +0300, Serge Semin wrote:
+> > > > On Thu, Dec 07, 2023 at 03:12:40PM -0600, Andrew Halaney wrote:
+> > > > > The stmmac_dt_phy() function, which parses the devicetree node of the
+> > > > > MAC and ultimately causes MDIO bus allocation, misinterprets what
+> > > > > fixed-link means in relation to the MAC's MDIO bus. This results in
+> > > > > a MDIO bus being created in situations it need not be.
+> > > > > 
+> > > > > Currently a MDIO bus is created if the description is either:
+> > > > > 
+> > > > >     1. Not fixed-link
+> > > > >     2. fixed-link but contains a MDIO bus as well
+> > > > > 
+> > > > > The "1" case above isn't always accurate. If there's a phy-handle,
+> > > > > it could be referencing a phy on another MDIO controller's bus[1]. In
+> > > > > this case currently the MAC will make a MDIO bus and scan it all
+> > > > > anyways unnecessarily.
+> > > > > 
+> > > > > There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
+> > > > > be created and scanned for a phy. This case can also be inferred from
+> > > > > the platform description by not having a phy-handle && not being
+> > > > > fixed-link. This hits case "1" in the current driver's logic.
+> > > > > 
+> > > > > Let's improve the logic to create a MDIO bus if either:
+> > > > > 
+> > > > 
+> > > > >     - Devicetree contains a MDIO bus
+> > > > >     - !fixed-link && !phy-handle (legacy handling)
+> > > > 
+> > > > If what you suggest here is a free from regressions semantics change
+> > > > (really hope it is) I will be with both my hands for it. This will
+> > > > solve the problem we have with one of our device which doesn't have
+> > > > SMA interface (hardware designers decided to save ~4K gates of the
+> > > > chip area) but has a PHY externally attached to the DW XGMAC<->XPCS
+> > > > interface. PHY is accessible via a GPIO-based MDIO bus. BTW having no
+> > > > SMA interface available on a DW *MAC device but creating the MDIO-bus
+> > > > on top of the non-existent SMA CSRs anyway causes having _32_ dummy
+> > > > PHYs created with zero IDs.
+> > > 
+> > 
+> > > I hope it is regression free! I have tested both the [1] and [2] cases
+> > > (I hacked up the devicetree for [1] to make it look like [2]) without
+> > > any issue.
+> > > 
+> > 
+> > I doubt you could have tested it on all the possible hardware the
+> > STMMAC driver supports. The problem is that the DT-bindings thing is a
+> > kind of contract which can't be changed that easily. It's like ABI but
+> > for the hardware description so the kernel would bootup correctly on
+> > the platforms with the old DT blobs. But if the change isn't that
+> > critical, if the device-tree sources in the kernel fit to the updated
+> > semantics, if the networking subsystem maintainers aren't against it
+> > and I guess with the Rob, Krzysztof or Conor blessing (at least it
+> > won't hurt to add them to the Cc-list together with the devicetree
+> > mailing-list), then it will likely be accepted.
 > 
-> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
-> 
-> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
-> 2) If buffer write failed before, set buffer uptodate and don't read
->    block from disk;
-> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
-> 4) If failed, return error ptr instead of NULL;
-> 
-> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
-> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
-> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
-> in ext4.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-...
-> +/*
-> + * This works like __bread_gfp() except:
-> + * 1) If buffer write failed before, set buffer uptodate and don't read
-> + * block from disk;
-> + * 2) Caller can pass in additional op_flags like REQ_META;
-> + */
-> +struct buffer_head *
-> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
-> +	     blk_opf_t op_flags, gfp_t gfp)
-> +{
-> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
-> +}
-> +EXPORT_SYMBOL(__bread_gfp2);
 
-__bread_gfp2() is not a great name, why not just using bread_gfp()
-directly? I'm not a huge fan of boolean arguments but three different flags
-arguments would be too much for my taste ;) so I guess I can live with
-that.
+> To be clear, I don't think we're violating the dt-binding ABI contract
+> here. My intention is that all the existing use cases continue to work,
+> and this just improves one use case. I did a write up
+> over on v2 about the use cases I see and the current logic vs what
+> changes with this patch series:
+> 
+>     https://lore.kernel.org/netdev/plvbqgi2bwlv5quvpiwplq7cxx6m5rl3ghnfhuxfx4bpuhyihl@zmydwrtwdeg6/
+> 
+> Please comment if you think I have broken some backwards
+> compatibility.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+To shortly sum up so I didn't miss something. Current semantics of the
+MDIO-bus registration is:
+if !fixed-link || mdio_node_present
+    create MDIO-bus
+and the semantics of the PHY auto-probe (legacy) is:
+if !(fixed-link || mdio_node_present || phy_node_present)
+    auto-probe PHY
+
+You are changing the MDIO-bus creation semantics to:
+if !(fixed-link || phy_node_present) || mdio_node_present
+    create MDIO-bus
+with no change in the PHY auto-probe semantics:
+if !(fixed-link || mdio_node_present || phy_node_present)
+    auto-probe PHY
+
+So the change is that if a PHY-handle is specified the MDIO-bus won't
+be created with the rest conditions being the same.
+
+The only concern I had was the so called legacy case and a possibility
+to have MDIO-bus with other than PHY devices. Based on the pseudo-code
+above the former case won't be affected since having PHY-node
+specified didn't triggered MDIO-bus auto-probe even before your
+change. The later case concerns for instance the DW XPCS devices which
+on some platforms could be found on the DW MAC MDIO bus with not
+having PHY living on that bus. But DW XPCS auto-probing currently is
+only supported by the non-OF platforms (it's Intel). Thus your change
+is supposed to be safe here too.
+
+So to speak AFAICS from the STMMAC MDIO OF stuff your solution isn't
+supposed to cause regressions and break the current DTs backward
+compatibility indeed.
+
+Regarding the ideal implementation. What could be much better is to
+implement the next semantics:
+if SMA-capability-detected &&
+   (!mdio_node_present || (mdio_node_present && mdio_node_enabled))
+    create MDIO-bus
+and preserve the PHY auto-probe semantics for backwards compatibility.
+Regarding the SMA-capability flag, it has been presented since DW GMAC
+v3.50, so since very much early DW MAC releases. But even for the
+early devices I think it could be auto-detected by checking the SMA
+CSRs writability. At least DW XGMAC AFAICS has the command CSR not
+writable if SMA is unavailable.
+
+But I guess it's a matter of another patch.
+
+> If I _could_ break compatibility, I'd make everyone
+> describe their busses entirely... but as you said that's against the
+> spirit of dt-bindings and would upset a lot of people. That's why I've
+> left the "!fixed-link && !phy-handle (legacy handling) logic :)
+> 
+> > 
+> > > Sorry, I don't have any docs for stmmac hardware so this might be
+> > > answered in there (or just common net knowledge that I can't find
+> > > online)... what's SMA stand for? I assume it's the MDIO interface.
+> > 
+> > Right. Synopsys names the MDIO-bus interface as Station Management
+> > Agent MDIO module.
+> > 
+> > > 
+> > > I agree though, if you have a phy-handle and no mdio node in your
+> > > devicetree this patch series should bail out without registering a bus
+> > > in stmmac_mdio_register().
+> > 
+> > On the other hand why would the MDIO-bus needed in such case? If the
+> > phy-handle property is specified with no MDIO-bus DT-subnode, then it
+> > will point out to a PHY residing an external bus. The only case I can
+> > imagine though is that the DW XPCS device could be still auto-detected
+> > on the internal SMA-MDIO-bus. But the only driver which currently has
+> > XPCS auto-detection activated is the Intel glue layer (see
+> > dwmac-intel.c and has_xpcs flag), but it doesn't use DT interface
+> > since it handles a PCIe-based device.  So this case is out of
+> > brackets.
+> 
+> Agreed, I think making the bus is not needed in the driver as is in that
+> case.
+> 
+
+> I'd like to think (but am not sure) that when a devicetree based DW XPCS
+> description comes around it will allow you to describe it exactly
+> instead of doing auto-detection (i.e. something like phy-handle), but I
+> am not very familiar with PCS and friends in the stack so that may be a
+> crude extension from my knowledge of MDIO.
+
+Right, there is a generic property for that - "pcs-handle". Last week
+I submitted a series which makes it supported on the STMMAC and XPCS
+drivers.
+
+-Serge(y)
+
+> 
+> Thanks,
+> Andrew
+> 
+> > 
+> > > 
+> > > > 
+> > > > > 
+> > > > > Below upstream devicetree snippets can be found that explain some of
+> > > > > the cases above more concretely.
+> > > 
+> > > <snip>
+> > > 
+> > > > > -	if (mdio) {
+> > > > > -		plat->mdio_bus_data =
+> > > > > -			devm_kzalloc(dev, sizeof(struct stmmac_mdio_bus_data),
+> > > > > -				     GFP_KERNEL);
+> > > > 
+> > > > > +	/* Legacy devicetrees allowed for no MDIO bus description and expect
+> > > > > +	 * the bus to be scanned for devices. If there's no phy or fixed-link
+> > > > > +	 * described assume this is the case since there must be something
+> > > > > +	 * connected to the MAC.
+> > > > > +	 */
+> > > > > +	legacy_mdio = !of_phy_is_fixed_link(np) && !plat->phy_node;
+> > > > > +	if (legacy_mdio)
+> > > > > +		dev_info(dev, "Deprecated MDIO bus assumption used\n");
+> > > > > +
+> > > > > +	if (plat->mdio_node || legacy_mdio) {
+> > > > > +		plat->mdio_bus_data = devm_kzalloc(dev,
+> > > > 
+> > > > Special thanks for adding the comment above this code. It will really
+> > > > save time of figuring out why MDIO-bus needs to be created anyway.
+> > > > 
+> > > > > +						   sizeof(struct stmmac_mdio_bus_data),
+> > > > 
+> > > > Should v4 is required I would suggest to change this to
+> > > > sizeof(*plat->mdio_bus_data).
+> > > > 
+> > > > Anyway feel free to add:
+> > > > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> > > > 
+> > > > -Serge(y)
+> > > 
+> > 
+> > > Sure I will spin v4 to pick that up, thanks for catching it. I'll also
+> > > improve the motivation in the commit message a hair more per Andrew
+> > > Lunn's request over here on v2 (and will hold off a little bit just to
+> > > make sure reviews come in before a respin):
+> > > 
+> > >     https://lore.kernel.org/netdev/e64b14c3-4b80-4120-8cc4-9baa40cdcb75@lunn.ch/
+> > 
+> > Ok. Thanks.
+> > 
+> > -Serge(y)
+> > 
+> > > 
+> > > Thanks,
+> > > Andrew
+> > > 
+> > 
+> 
