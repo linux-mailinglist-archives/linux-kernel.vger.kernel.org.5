@@ -2,79 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFC380C0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AAC80C0BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbjLKFhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        id S230098AbjLKFjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjLKFhB (ORCPT
+        with ESMTP id S229478AbjLKFjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:37:01 -0500
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CE7EA
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:37:07 -0800 (PST)
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-58ceea508bfso5287955eaf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:37:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702273027; x=1702877827;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJbhLWpc9OcAqNfWslnsCcj4qPU1N90g91QqdKjuBf8=;
-        b=xEISYqOQZe7HaogqxyPsIOa23Pb4QhXXUAUbxHZcKGVxHKdKz7mq/+h9ie2aRPoIKw
-         mkGJf1X3RB3UEh9MWhSpikoFtVXlru7xVqs1B601cozoKG71Te2OF6+irj9jTMY7Hgsl
-         8aPlbOIBjgOaFTR6Y8pMgp8eWODB+E3fvwl/AwEbYHVqn1Dxc086eJkQhqCwZxk2186r
-         yCbvG23434ssVDsggSuFTCrJYf6NQ+XplbyHI/l2NDmuui7829TLfD0ltKGrUA0r3vaI
-         QuvJSFfioLcYRXDANz2HYYxYD26CYsGt3FJJH6aGpBLOl5uXNQkmWJDTM3urQtvO0wFm
-         UngA==
-X-Gm-Message-State: AOJu0Yz9aHf404tZ47/PwsivMN+imZ+AMP6ciDHLUeYAshKcnsDZZeJI
-        XsQbIhbulKVyZvXZmevwMzhEZsMxUBSdeYi6N7AD9nRpvAYw
-X-Google-Smtp-Source: AGHT+IF0QKBJHNms6LBgAbPwdjaDNpi+9qFHPWR90i5Swotv9xAtzPKQBk0NY3XZAQo+zgWzoWm3AGQ20nIPV55fiqKeJNgwSrc3
-MIME-Version: 1.0
-X-Received: by 2002:a4a:3146:0:b0:590:7a45:da4c with SMTP id
- v6-20020a4a3146000000b005907a45da4cmr2707681oog.1.1702273027022; Sun, 10 Dec
- 2023 21:37:07 -0800 (PST)
-Date:   Sun, 10 Dec 2023 21:37:06 -0800
-In-Reply-To: <000000000000ffc87a06086172a0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000162818060c3553cc@google.com>
-Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in ptp_release
-From:   syzbot <syzbot+8a676a50d4eee2f21539@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, eadavis@qq.com, hdanton@sina.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, reibax@gmail.com, richardcochran@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 00:39:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CCDD9
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:39:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CDEDC433C7;
+        Mon, 11 Dec 2023 05:39:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702273195;
+        bh=pXkGuPEWqJcgOs6ijfV32w7ZZV3pIr0foEoCn6cP/+c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rZ4neWCTUFGh1Y+953GYlVN2hnNOeL71TAYRdsHCd7Jk+zhyeZRMkMX4QL4UlFjPa
+         DU8eBc8rFP8uMdvg0IoEazbkZS8MIFjx2HeskY6O2qS21h5tlb/PWQdo0rvmP1+7t7
+         ObHCEOH/35CFjFP0DL+z8Lnh6be/Jmsf2g5Q7Hng329CKXKqZsGR9PwBgkCaqRh8KC
+         KrpZKo4SLGo25yHGtRKqk//4MuoszNSOYv77wubakdw41SGYJ3m3brJf7jMPrvO50M
+         UIefKNDhmr4bhUu8zjWSGJ1Rql78fOVBKwdnFvBAFwCIIzONdg8LahcFp6d814eX2F
+         Lgh4qWviAbKPA==
+Date:   Mon, 11 Dec 2023 14:39:50 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Naveen N Rao <naveen@kernel.org>
+Cc:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [RFC PATCH 5/9] powerpc/kprobes: Use ftrace to determine if a
+ probe is at function entry
+Message-Id: <20231211143950.980b4ab4e11b71de04332540@kernel.org>
+In-Reply-To: <15f0b3a2e72326423cfb4ce4e89afff540042245.1702045299.git.naveen@kernel.org>
+References: <cover.1702045299.git.naveen@kernel.org>
+        <15f0b3a2e72326423cfb4ce4e89afff540042245.1702045299.git.naveen@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Fri,  8 Dec 2023 22:00:44 +0530
+Naveen N Rao <naveen@kernel.org> wrote:
 
-commit 1bea2c3e6df8caf45d18384abfb707f47e9ff993
-Author: Edward Adam Davis <eadavis@qq.com>
-Date:   Tue Nov 7 08:00:41 2023 +0000
+> Rather than hard-coding the offset into a function to be used to
+> determine if a kprobe is at function entry, use ftrace_location() to
+> determine the ftrace location within the function and categorize all
+> instructions till that offset to be function entry.
+> 
+> For functions that cannot be traced, we fall back to using a fixed
+> offset of 8 (two instructions) to categorize a probe as being at
+> function entry for 64-bit elfv2.
+> 
 
-    ptp: fix corrupted list in ptp_open
+OK, so this can cover both KPROBES_ON_FTRACE=y/n cases and the function
+is traced by ftrace or not.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=145ba76ce80000
-start commit:   6bc986ab839c Merge tag 'nfs-for-6.7-1' of git://git.linux-..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a676a50d4eee2f21539
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cc14a8e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ade40f680000
+Looks good to me.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-#syz fix: ptp: fix corrupted list in ptp_open
+Thanks,
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+> ---
+>  arch/powerpc/kernel/kprobes.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+> index b20ee72e873a..42665dfab59e 100644
+> --- a/arch/powerpc/kernel/kprobes.c
+> +++ b/arch/powerpc/kernel/kprobes.c
+> @@ -105,24 +105,22 @@ kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset)
+>  	return addr;
+>  }
+>  
+> -static bool arch_kprobe_on_func_entry(unsigned long offset)
+> +static bool arch_kprobe_on_func_entry(unsigned long addr, unsigned long offset)
+>  {
+> -#ifdef CONFIG_PPC64_ELF_ABI_V2
+> -#ifdef CONFIG_KPROBES_ON_FTRACE
+> -	return offset <= 16;
+> -#else
+> -	return offset <= 8;
+> -#endif
+> -#else
+> +	unsigned long ip = ftrace_location(addr);
+> +
+> +	if (ip)
+> +		return offset <= (ip - addr);
+> +	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2))
+> +		return offset <= 8;
+>  	return !offset;
+> -#endif
+>  }
+>  
+>  /* XXX try and fold the magic of kprobe_lookup_name() in this */
+>  kprobe_opcode_t *arch_adjust_kprobe_addr(unsigned long addr, unsigned long offset,
+>  					 bool *on_func_entry)
+>  {
+> -	*on_func_entry = arch_kprobe_on_func_entry(offset);
+> +	*on_func_entry = arch_kprobe_on_func_entry(addr, offset);
+>  	return (kprobe_opcode_t *)(addr + offset);
+>  }
+>  
+> -- 
+> 2.43.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
