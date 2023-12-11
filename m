@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DFA80CE13
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F0580CCC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344562AbjLKOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S1344005AbjLKODw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:03:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344621AbjLKOPv (ORCPT
+        with ESMTP id S1344133AbjLKODe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:15:51 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4934C1F;
-        Mon, 11 Dec 2023 06:00:25 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e180547bdeso1458317b3.1;
-        Mon, 11 Dec 2023 06:00:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702303225; x=1702908025; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
-        b=IZ+Q1ocQvf0EqoQJMZXvl9CRIrLkCY6CYBMV5lgvT66wedCAAJppYZb3DjQlMCmbu8
-         J8jjzu0nmdf6uK8Q8RO7RP+4qjVTNZKM9QCgDjDeUjCBkPnXxcY4VZjackjUhy0kWNZW
-         yERJ+A9HEmCayllSlY142FulW0EGKwmUB9bPw95ZnDTF3XWsdH33enaRUa2kUktPFwTo
-         HxIS3aawvm2IIHF1d5Mf38J/Yl1fgIqYDsIoZuIiU3HOwKUjyTo37ypqvmDPKIwzMLzN
-         tXaY+QnrYDbrh/phk6+Y3ekSI+ao6CtT8w6pKMv8fZOPKH7vwoWNhv5i0Fngg1DpYJJF
-         EkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702303225; x=1702908025;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
-        b=N+qzxX8CAPXo2FDt41QceFBuxHpL2V++3+o1fK/RPGPS4ty30uUaEwNtGI7wLpCYMp
-         DryWHj8R3soNjkz3S6EdIqz2OKK0zeA6pg+B5QiDYED2+bmyx2ttnSGINtf0MzTv3pLq
-         /8BSfgZY5pHcgV6GvOFFmyj5MOKkj97qdLMzVdEUCnAC4LMRlLENTIrmqRx38IdoE0/Q
-         MAcD3D44BkkCblJUIpcC4yO5mwbkmCfQHdFg8k4cIyZLdiMSwJpsbvSPhTv9nLUJa5N3
-         br5Hm/nxlnf22UnACSUaAUeBAteYb3G+rEcNTGeeh+nsDAlXjCZLRxlaJvu0GvxExtvT
-         vzgg==
-X-Gm-Message-State: AOJu0YytMVsS83ZiByk2VA+DCcjGFaljHlCM3/gssarfegmNHS7g45wE
-        2uc2dLBKXNAE+Jj2xgtaQBg=
-X-Google-Smtp-Source: AGHT+IGLhyIF/d5QvpkeI4/4kwHQ1QkLNBHHxOYgnuqRp9V6jzQy+pH/7dtnS4EyBFrob/ltOoRX4g==
-X-Received: by 2002:a5b:784:0:b0:d9a:d8bd:7b9c with SMTP id b4-20020a5b0784000000b00d9ad8bd7b9cmr2783952ybq.11.1702303224510;
-        Mon, 11 Dec 2023 06:00:24 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:f798:e824:429f:84b0])
-        by smtp.gmail.com with ESMTPSA id k18-20020a258c12000000b00d9cbf2aabc6sm2514846ybl.14.2023.12.11.06.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:00:23 -0800 (PST)
-Date:   Mon, 11 Dec 2023 06:00:22 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <ZXcV9pXmg+GE2BCF@yury-ThinkPad>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
- <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Mon, 11 Dec 2023 09:03:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380EF1BD8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:01:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C67C433C8;
+        Mon, 11 Dec 2023 14:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702303279;
+        bh=KqhcoOphEL5gcxzZHYBt0BAkpL2iVn2/L9Rn9pRBU8M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bvOvie28lfkfcuVyJBe6W68R8yq6C5gvVts/sXc9imspefp237QUhjHEFpO3RVmvP
+         2xOSrNqnoqNxDorwOeawZla2X1C91ouWi2iIZYThmGJWAPnev0a81KL3dBVPNw6f2n
+         kRmAVmW74NOUB+kG0e8GzEQXPifA6IR1IPz92EuuUixFc8Sx+S+kTHTMs3X9NhmfsK
+         UajSWQoPrTGNN3cmtEt/zwhu+UjShLxv8twE5LWLaedqgSqddjfOwwAWaHGozMYN8t
+         Atsx2LCgiISHTCWTAaTTmc4pFw0Y1dIOesXw3LlcYztZEV9RRyQyoZ0VREa1Y4GrLj
+         Y6a7Xj3tJbHgQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, u.kleine-koenig@pengutronix.de,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 01/16] ASoC: wm8974: Correct boost mixer inputs
+Date:   Mon, 11 Dec 2023 09:00:25 -0500
+Message-ID: <20231211140116.391986-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.10.203
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 10:53:23PM -0800, Souradeep Chakrabarti wrote:
-> On Fri, Dec 08, 2023 at 01:53:51PM -0800, Yury Norov wrote:
-> > Few more nits
-> > 
-> > On Fri, Dec 08, 2023 at 06:03:40AM -0800, Yury Norov wrote:
-> > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
-> > > > Existing MANA design assigns IRQ to every CPU, including sibling
-> > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > > > in the same core and may reduce the network performance with RSS.
-> > > 
-> > > Can you add an IRQ distribution diagram to compare before/after
-> > > behavior, similarly to what I did in the other email?
-> > > 
-> > > > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > > > NUMA node. The performance improvement we are getting using ntttcp with
-> > > > following patch is around 15 percent with existing design and approximately
-> > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-> > > > if enough cores are present.
-> > > 
-> > > How did you measure it? In the other email you said you used perf, can
-> > > you show your procedure in details?
-> > > 
-> > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
-> > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > > > ---
-> > > 
-> > > [...]
-> > > 
-> > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
-> > > >  1 file changed, 83 insertions(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > index 6367de0c2c2e..18e8908c5d29 100644
-> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > > >  	r->size = 0;
-> > > >  }
-> > > >  
-> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> > > > +{
-> > > > +	int w, cnt, cpu, err = 0, i = 0;
-> > > > +	int next_node = start_numa_node;
-> > > 
-> > > What for this?
-> > > 
-> > > > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > > > +	cpumask_var_t curr, cpus;
-> > > > +
-> > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-> > 
-> > alloc_cpumask_var() here and below, because you initialize them by
-> > copying
-> I have used zalloc here as prev gets initialized after the first hop, before that
-> it may contain unwanted values, which may impact cpumask_andnot(curr, next, prev).
-> Regarding curr I will change it to alloc_cpumask_var().
-> Please let me know if that sounds right.
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-What? prev is initialized at declaration:
-        
-        const struct cpumask *next, *prev = cpu_none_mask;
+[ Upstream commit 37e6fd0cebf0b9f71afb38fd95b10408799d1f0b ]
+
+Bit 6 of INPPGA (INPPGAMUTE) does not control the Aux path, it controls
+the input PGA path, as can been seen from Figure 8 Input Boost Stage in
+the datasheet. Update the naming of things in the driver to match this
+and update the routing to also reflect this.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20231113155916.1741027-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/wm8974.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index c86231dfcf4f8..600e93d61a90f 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -186,7 +186,7 @@ SOC_DAPM_SINGLE("PCM Playback Switch", WM8974_MONOMIX, 0, 1, 0),
+ 
+ /* Boost mixer */
+ static const struct snd_kcontrol_new wm8974_boost_mixer[] = {
+-SOC_DAPM_SINGLE("Aux Switch", WM8974_INPPGA, 6, 1, 1),
++SOC_DAPM_SINGLE("PGA Switch", WM8974_INPPGA, 6, 1, 1),
+ };
+ 
+ /* Input PGA */
+@@ -246,8 +246,8 @@ static const struct snd_soc_dapm_route wm8974_dapm_routes[] = {
+ 
+ 	/* Boost Mixer */
+ 	{"ADC", NULL, "Boost Mixer"},
+-	{"Boost Mixer", "Aux Switch", "Aux Input"},
+-	{"Boost Mixer", NULL, "Input PGA"},
++	{"Boost Mixer", NULL, "Aux Input"},
++	{"Boost Mixer", "PGA Switch", "Input PGA"},
+ 	{"Boost Mixer", NULL, "MICP"},
+ 
+ 	/* Input PGA */
+-- 
+2.42.0
 
