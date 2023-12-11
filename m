@@ -2,272 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E3C80DF51
+	by mail.lfdr.de (Postfix) with ESMTP id 9E02880DF52
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345344AbjLKXNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 18:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S1345319AbjLKXNO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 18:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345313AbjLKXNO (ORCPT
+        with ESMTP id S1345300AbjLKXNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 18:13:14 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510D6CD;
-        Mon, 11 Dec 2023 15:13:20 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-590bb31ccf5so1666215eaf.3;
-        Mon, 11 Dec 2023 15:13:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702336399; x=1702941199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xubElgI4Z56aixIPByeWysvBwAoYQd2kSEQW2+R/bzE=;
-        b=m2BaB0nX9CcWyDNId/hrYcLMRpPGJurHtazB4F8WRzEpB6f8aXwxQSyk6gAGMik6LG
-         VxgvZ5Lg8j0qQ3Gc5oWoozsqza67RAHkadQBBsy/Zlf6Oq5HZ/PwZU0uBGXGP2FNWuE6
-         wbA04uKRktB5t8w6sPp9epFKmPTXib299XDAMbBRkeO8IvBx0FdHNesPwg8zbDoQjHDV
-         lvGzrZZxTE7VwEkXeamz6R20p0hiOibl1icPP4QhLg0CrxoZ8Up/zVDYxlGBovs7WkiA
-         RJrDBMvkrkd+JGDHeF3VtVPPfU7FjEQvQsy4TaPC2ZuyJkrSHrKYnHpFHDYD+PQVTbll
-         ES5w==
+        Mon, 11 Dec 2023 18:13:13 -0500
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C718CCB;
+        Mon, 11 Dec 2023 15:13:19 -0800 (PST)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso2602026a12.2;
+        Mon, 11 Dec 2023 15:13:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702336399; x=1702941199;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xubElgI4Z56aixIPByeWysvBwAoYQd2kSEQW2+R/bzE=;
-        b=H8fpWQvMRsRks9i41VDq5OjqXTLlhT4s+DrXppCpagT+LzsQ2N760jL+i4jFYXnLn+
-         rO6KwlM+3vgXuY01qck2te3b8662fgSc7HErDSaiSc/C7NedonsJHGVQdCVvY++YY9mE
-         OE8OcdlCN/g5Ln7cfzbWsVvjv30T0j2URQM9PPpcy0VnHmYkqhsy7ICNEbLgT4ocgVWI
-         SnGiOez0vhkDWfFWvZk/QcXbfRQ1Wu41VRSCW9W1iXpr+utr7d911RyIqXFrohkb6c10
-         yZKhi7T7PjqB+kXZqcHFFOfmE0chufmpVbsStCJFIiuNH2T8tGa0AYkIoWqjjEpx3jLF
-         ZrjA==
-X-Gm-Message-State: AOJu0YyL2+2nHiOzpcAcZXYa1UxFSHfFAPMIaVpcML3hnvYWILZHLCoo
-        EUNSlj5a3lL+kdM30P+AMLYAg+lDKJlxr6lTGxA=
-X-Google-Smtp-Source: AGHT+IHdPeLx0zfH/6+KNsgpXh0zWHoT8Dqe3uFCxj/4RnAWzc8/3vZC2f0d6d0EWMBgLZoVh86YLlH/joKhYG7Yjpg=
-X-Received: by 2002:a4a:5507:0:b0:591:203b:c1d6 with SMTP id
- e7-20020a4a5507000000b00591203bc1d6mr977454oob.15.1702336399455; Mon, 11 Dec
- 2023 15:13:19 -0800 (PST)
+        bh=Cqid22gVYH094dKsNq0+eWukD9v01nP4LAhWHajwYxo=;
+        b=o2bRTkKwfrzWT6OkJeKYtq9OprxDeD5/YUxCkdMB3WPo5/vo9th6xElrdwdYaGgK+5
+         WN0zf/BkQL70h9sig2ySnyutSCtltRSxcff6pf2hAU7xgfp8x5MMwcmkJMx7Z1VYle+X
+         S1V6Ij5ynIbt5qdfF+9tJaB83gzFq8Wi/FeKqI+6LDwl8hhsFqbh20NbPMR55FxiCZBe
+         q1WCbEtWwK8i8MqQmP22OHfMrO7QcKILFPDscRd7MzW9GhU1fGVZ22CrWFMHR/LxoMSd
+         VA7rSN2gkeIuBImGxpkK2avGJOea1lyELHZRiWCQTB3GqebZlL20RhrFaAUfWGWcdIHA
+         eOZA==
+X-Gm-Message-State: AOJu0YwtmfmmKDzAK5/1JBeoIy1f7onm2P0egAqviLNjR1UTkNZcL9xp
+        2rcUqxS+c5A5a923DoiUJMPoWdmVdtxsIlNdXjJCUkUwZps=
+X-Google-Smtp-Source: AGHT+IFs5STX4S2N0jTA70Ngwh3RK7N00wUSIIOBD/HENzpB5AKMNG20w7x0dKREB9ZbHLlL0xHkT6kxXiptoR/Kei0=
+X-Received: by 2002:a17:90a:24b:b0:28a:7a82:53b6 with SMTP id
+ t11-20020a17090a024b00b0028a7a8253b6mr1507629pje.28.1702336398933; Mon, 11
+ Dec 2023 15:13:18 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1702325874.git.dxu@dxuuu.xyz> <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com> <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
-In-Reply-To: <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
-From:   Eyal Birger <eyal.birger@gmail.com>
+References: <20231207125716.1947860-1-tmricht@linux.ibm.com>
+ <CAM9d7cgJUgVGpQJ=KgH+3RzAJ8Ce50Acr=gSZh_ZLuiTa3-sEg@mail.gmail.com>
+ <de0dd86a-4c49-49ed-a90b-4890c82a7b2d@linux.ibm.com> <7451a263-82e8-4daa-a7f6-009d5560445e@linux.ibm.com>
+In-Reply-To: <7451a263-82e8-4daa-a7f6-009d5560445e@linux.ibm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
 Date:   Mon, 11 Dec 2023 15:13:07 -0800
-Message-ID: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org,
-        ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
-        andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devel@linux-ipsec.org
+Message-ID: <CAM9d7cheZG+4PYf2xT0kykHW2LRt_d2GHG-mLWqvLBD3fJWFOQ@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Fix fails of perf stat --bpf-counters
+ --for-each-cgroup on s390
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, svens@linux.ibm.com, gor@linux.ibm.com,
+        sumanthk@linux.ibm.com, hca@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 2:31=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Fri, Dec 8, 2023 at 3:30 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
 >
-> On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > Hi Daniel,
+> On 12/8/23 12:07, Thomas Richter wrote:
+> > On 12/8/23 00:26, Namhyung Kim wrote:
 > >
-> > Tiny nits below in case you respin this for other reasons:
+> >> Thanks for the patch.  But I think it should support
+> >> machines without systemd (or maybe with old versions).
+> >>
+> >> Also probably you want to reset the behavior after
+> >> the test.  I think we can just run some built-in test
+> >> workload like `perf test -w thloop`.
+> >>
+> >> Thanks,
+> >> Namhyung
 > >
-> > On Mon, Dec 11, 2023 at 12:20=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrot=
-e:
-> > >
-> > > This commit extends test_tunnel selftest to test the new XDP xfrm sta=
-te
-> > > lookup kfunc.
-> > >
-> > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++=
-++
-> > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/t=
-ools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > >         SYS(fail,
-> > >             "ip netns exec at_ns0 "
-> > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > -                       "spi %d reqid 1 mode tunnel "
-> > > +                       "spi %d reqid 1 mode tunnel replay-window 42 =
-"
-> > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)'=
- %s",
-> > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > >         SYS(fail,
-> > >             "ip netns exec at_ns0 "
-> > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > -                       "spi %d reqid 2 mode tunnel "
-> > > +                       "spi %d reqid 2 mode tunnel replay-window 42 =
-"
+> > Thanks for our feedback.
+> > Well regarding the use of systemd daemon-reexec the manual says
+> > this command restarts the systemd triggered processes.
+> > There is nothing to reset. All ports stay active while the command
+> > is processed.
 > >
-> > nit: why do you need to set the replay-window in both directions?
->
-> No reason - probably just careless here.
->
+> > I tried your 'perf test -w thloop`, but that did not trigger
+> > anything on system.slice.
 > >
-> > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)'=
- %s",
-> > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > >          */
-> > >         SYS(fail,
-> > >             "ip xfrm state add src %s dst %s proto esp "
-> > > -                   "spi %d reqid 1 mode tunnel "
-> > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s=
-",
-> > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > >         /* root -> at_ns0 */
-> > >         SYS(fail,
-> > >             "ip xfrm state add src %s dst %s proto esp "
-> > > -                   "spi %d reqid 2 mode tunnel "
-> > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s=
-",
-> > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > >  {
-> > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > >                             .attach_point =3D BPF_TC_INGRESS);
-> > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > >         struct test_tunnel_kern *skel =3D NULL;
-> > >         struct nstoken *nstoken;
-> > > +       int xdp_prog_fd;
-> > >         int tc_prog_fd;
-> > >         int ifindex;
-> > >         int err;
-> > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > >                 goto done;
-> > >
-> > > +       /* attach xdp prog to tunnel dev */
-> > > +       xdp_prog_fd =3D bpf_program__fd(skel->progs.xfrm_get_state_xd=
-p);
-> > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > +               goto done;
-> > > +       err =3D bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLAC=
-E, &opts);
-> > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > +               goto done;
-> > > +
-> > >         /* ping from at_ns0 namespace test */
-> > >         nstoken =3D open_netns("at_ns0");
-> > >         err =3D test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > >                 goto done;
-> > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote=
-_ip"))
-> > >                 goto done;
-> > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_win=
-dow"))
-> > > +               goto done;
-> > >
-> > >  done:
-> > >         delete_xfrm_tunnel();
-> > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/t=
-ools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > index 3a59eb9c34de..c0dd38616562 100644
-> > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ct=
-x,
-> > >                           struct bpf_fou_encap *encap, int type) __ks=
-ym;
-> > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > >                           struct bpf_fou_encap *encap) __ksym;
-> > > +struct xfrm_state *
-> > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opt=
-s *opts,
-> > > +                      u32 opts__sz) __ksym;
-> > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > >
-> > >  struct {
-> > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > >         return TC_ACT_OK;
-> > >  }
-> > >
-> > > +volatile int xfrm_replay_window =3D 0;
-> > > +
-> > > +SEC("xdp")
-> > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > +{
-> > > +       struct bpf_xfrm_state_opts opts =3D {};
-> > > +       struct xfrm_state *x =3D NULL;
-> > > +       struct ip_esp_hdr *esph;
-> > > +       struct bpf_dynptr ptr;
-> > > +       u8 esph_buf[8] =3D {};
-> > > +       u8 iph_buf[20] =3D {};
-> > > +       struct iphdr *iph;
-> > > +       u32 off;
-> > > +
-> > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > +               goto out;
-> > > +
-> > > +       off =3D sizeof(struct ethhdr);
-> > > +       iph =3D bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf))=
-;
-> > > +       if (!iph || iph->protocol !=3D IPPROTO_ESP)
-> > > +               goto out;
-> > > +
-> > > +       off +=3D sizeof(struct iphdr);
-> > > +       esph =3D bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_bu=
-f));
-> > > +       if (!esph)
-> > > +               goto out;
-> > > +
-> > > +       opts.netns_id =3D BPF_F_CURRENT_NETNS;
-> > > +       opts.daddr.a4 =3D iph->daddr;
-> > > +       opts.spi =3D esph->spi;
-> > > +       opts.proto =3D IPPROTO_ESP;
-> > > +       opts.family =3D AF_INET;
-> > > +
-> > > +       x =3D bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > +       if (!x || opts.error)
-> >
-> > nit: how can opts.error be non zero if x =3D=3D NULL?
->
-> Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> behavior here.
+> > I do not understand enough about cgroups and system.slice, but I am
+> > under the impression, that the system.slice just increment counters
+> > when executed by processes under systemd control. Maybe I am wrong.
 
-I'm sorry, I don't understand.
+Ah, you're right.  It needs to run the task somewhere in the system.slice.
+Then it'd be hard to get a proper cgroup name generally. Hmm..
 
-AFAICT, regardless of the -ENOENT change, I don't see
-how (!x) is false and (opt.error) is true, and so
-"if (!x || opts.error)" is always equivalent to "if (!x)".
+My concern was it'd bind system daemons on the CPU 0 and 1 after the
+test.  Probably you could run it at the end of the test again without taskset.
 
-What am I missing?
-Eyal.
+> >
+> > The only other workload which always incremented system.slice counters
+> > was 'ssh localhost ls -l', which involves local login and a running sshd.
+
+But it won't work if the system doesn't have sshd.
+
+Thanks,
+Namhyung
