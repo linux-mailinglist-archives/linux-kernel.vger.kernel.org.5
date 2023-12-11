@@ -2,291 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F4A80DE9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A4180DE9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345105AbjLKWsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
+        id S1345242AbjLKWsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235058AbjLKWsL (ORCPT
+        with ESMTP id S230399AbjLKWsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:48:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57870F1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:47:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F5A4C433C8;
-        Mon, 11 Dec 2023 22:47:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702334866;
-        bh=34tnQX9ctCBczkyhWp459H2RBzFpA5vSI+uY7xIEEhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S34qGgIX+VOjSl98nrnGR6MzsYZbUiNVAeKCJ4TrF1uISKJo36bMCBAnzoOzmMGr7
-         oZBhmXvFJjCPIF31qM0WRkPrZBRd9EoXcdtWX4Mt9gQ7TGkBFwzT2eVR3MnZaVgq/4
-         YOfemhdPwNmj+9FyecWIQ9/R7tb7AKsn4V67Q9dYC8ZcIOxT4v7GuOMKHvYe++sPjw
-         wF3SugfP0GUB58TxxivrkSYlst/FPKtBY/frIq1hx7PIcL+wmnLgqHQkKlg1d1Mext
-         xLjYgMbzs2sCKz05QdN1lyNOOPrPlG/7FWoeiNbfgLMI9/u/qPEESUxtnJYCTyuj1i
-         RwVzFJkNe1rgA==
-Date:   Mon, 11 Dec 2023 14:47:44 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Yonggil Song <yonggil.song@samsung.com>
-Cc:     "chao@kernel.org" <chao@kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Seokhwan Kim <sukka.kim@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Siwoo Jung <siu.jung@samsung.com>
-Subject: Re: [PATCH v2] f2fs: New victim selection for GC
-Message-ID: <ZXeRkAoQTtTpf1dg@google.com>
-References: <CGME20231208090444epcms2p33884216391931d04c1771dfb51a08a44@epcms2p3>
- <20231208090444epcms2p33884216391931d04c1771dfb51a08a44@epcms2p3>
+        Mon, 11 Dec 2023 17:48:21 -0500
+Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [129.187.255.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C38187;
+        Mon, 11 Dec 2023 14:48:05 -0800 (PST)
+Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
+        by postout2.mail.lrz.de (Postfix) with ESMTP id 4SpxjG5tDvzyTl;
+        Mon, 11 Dec 2023 23:48:02 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        in-reply-to:content-transfer-encoding:content-disposition
+        :content-type:content-type:mime-version:references:message-id
+        :subject:subject:from:from:date:date:received:received; s=
+        tu-postout21; t=1702334882; bh=Lyi9Y87z52dsNVzPku4bbN/tUE2KjXbNI
+        DCbU7BhnmU=; b=MZQYpE9qpYGWkW9PZljSYvvd3CVqIuFNXTIVmfPyKzZACNgTx
+        PptgPSIyoiXHyf3tOlHvrzhaW5B3N4TznJlvgPVgDfOIr5xbLNArick89XfZWxfB
+        AtUGh5CEB0ZeN3WcfkFh9nJXColDrXIeP22d6THk+gs13FgsUYaautEet7HpIHH9
+        PDEtAM/ZLueCMz8lbzNMuRjppVeGgv8c0CREyYAjhx3x1yFCg0k1Khh4eBERjhkl
+        CtQAtIVVjQfGBjnxdfnzEvzYBbTfA1R0mSTZJwy+Fs8nxCsjpxi7xE+ABKXhpY9g
+        nJOFukKNMODZ0wch69wX+Wns0iXIT5wfVwj1g==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
+X-Spam-Score: -2.881
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from postout2.mail.lrz.de ([127.0.0.1])
+        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id RXtrqxiiQ05L; Mon, 11 Dec 2023 23:48:02 +0100 (CET)
+Received: from cerulean.fritz.box (unknown [IPv6:2001:a61:245c:a01:443b:cc34:8ae7:6ede])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4SpxjF04PnzyTZ;
+        Mon, 11 Dec 2023 23:48:00 +0100 (CET)
+Date:   Mon, 11 Dec 2023 23:47:57 +0100
+From:   Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Marco Elver <elver@google.com>, andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
+Message-ID: <osqmp2j6gsmgbkle6mwhoaf65mjn4a4w3e5hsfbyob6f44wcg6@7rihb5otzl2z>
+References: <CAMn1gO6reT+MTmogLOrOVoNqzLH+fKmQ2JRAGy-tDOTLx-fpyw@mail.gmail.com>
+ <CANpmjNN7Gf_aeX+Y6g0UBL-cmTGEF9zgE7hQ1VK8F+0Yeg5Rvg@mail.gmail.com>
+ <20230215143306.2d563215@rorschach.local.home>
+ <CAMn1gO4_+-0x4ibpcASy4bLeZ+7rsmjx=0AYKGVDUApUbanSrQ@mail.gmail.com>
+ <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
+ <20230505095805.759153de@gandalf.local.home>
+ <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
+ <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
+ <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
+ <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231208090444epcms2p33884216391931d04c1771dfb51a08a44@epcms2p3>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08, Yonggil Song wrote:
-> Overview
-> ========
+On 11.12.2023 21:51, Andrey Konovalov wrote:
+> On Mon, Dec 11, 2023 at 7:59 PM Paul Heidekrüger
+> <paul.heidekrueger@tum.de> wrote:
+> >
+> > > Hi Paul,
+> > >
+> > > I've been successfully running KASAN tests with CONFIG_TRACEPOINTS
+> > > enabled on arm64 since this patch landed.
+> >
+> > Interesting ...
+> >
+> > > What happens when you try running the tests with .kunitconfig? Does
+> > > CONFIG_TRACEPOINTS or CONFIG_KASAN_KUNIT_TEST get disabled during
+> > > kernel building?
+> >
+> > Yes, exactly, that's what's happening.
+> >
+> > Here's the output kunit.py is giving me. I replaced CONFIG_DEBUG_KERNEL with
+> > CONFIG_TRACEPOINTS in my .kunitconfig. Otherwise, it's identical with the one I
+> > posted above.
+> >
+> >         ➜   ./tools/testing/kunit/kunit.py run --kunitconfig=mm/kasan/.kunitconfig --arch=arm64
+> >         Configuring KUnit Kernel ...
+> >         Regenerating .config ...
+> >         Populating config with:
+> >         $ make ARCH=arm64 O=.kunit olddefconfig
+> >         ERROR:root:Not all Kconfig options selected in kunitconfig were in the generated .config.
+> >         This is probably due to unsatisfied dependencies.
+> >         Missing: CONFIG_KASAN_KUNIT_TEST=y, CONFIG_TRACEPOINTS=y
+> >
+> > Does CONFIG_TRACEPOINTS have some dependency I'm not seeing? I couldn't find a
+> > reason why it would get disabled, but I could definitely be wrong.
 > 
-> This patch introduces a new way to preference data sections when selecting
-> GC victims. Migration of data blocks causes invalidation of node blocks.
-> Therefore, in situations where GC is frequent, selecting data blocks as
-> victims can reduce unnecessary block migration by invalidating node blocks.
-> For exceptional situations where free sections are insufficient, node blocks
-> are selected as victims instead of data blocks to get extra free sections.
-> 
-> Problem
-> =======
-> 
-> If the total amount of nodes is larger than the size of one section, nodes
-> occupy multiple sections, and node victims are often selected because the
-> gc cost is lowered by data block migration in GC. Since moving the data
-> section causes frequent node victim selection, victim threshing occurs in
-> the node section. This results in an increase in WAF.
-> 
-> Experiment
-> ==========
-> 
-> Test environment is as follows.
-> 
->         System info
->           - 3.6GHz, 16 core CPU
->           - 36GiB Memory
->         Device info
->           - a conventional null_blk with 228MiB
->           - a sequential null_blk with 4068 zones of 8MiB
->         Format
->           - mkfs.f2fs <conv null_blk> -c <seq null_blk> -m -Z 8 -o 3.89
->         Mount
->           - mount <conv null_blk> <mount point>
->         Fio script
-> 	  - fio --rw=randwrite --bs=4k --ba=4k --filesize=31187m --norandommap --overwrite=1 --name=job1 --filename=./mnt/sustain --io_size=128g
-> 	WAF calculation
-> 	  - (IOs on conv. null_blk + IOs on seq. null_blk) / random write IOs
-> 
-> Conclusion
-> ==========
-> 
-> This experiment showed that the WAF was reduced by 29% (18.75 -> 13.3) when
-> the data section was selected first when selecting GC victims. This was
-> achieved by reducing the migration of the node blocks by 69.4%
-> (253,131,743 blks -> 77,463,278 blks). It is possible to achieve low WAF
-> performance with the GC victim selection method in environments where the
-> section size is relatively small.
-> 
-> Signed-off-by: Yonggil Song <yonggil.song@samsung.com>
-> ---
->  fs/f2fs/f2fs.h |  1 +
->  fs/f2fs/gc.c   | 98 ++++++++++++++++++++++++++++++++++++++------------
->  2 files changed, 77 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 9043cedfa12b..578d57f6022f 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -1649,6 +1649,7 @@ struct f2fs_sb_info {
->  	struct f2fs_mount_info mount_opt;	/* mount options */
->  
->  	/* for cleaning operations */
-> +	bool need_node_clean;			/* need to clean dirty nodes */
->  	struct f2fs_rwsem gc_lock;		/*
->  						 * semaphore for GC, avoid
->  						 * race between GC and GC or CP
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index f550cdeaa663..682dcf0de59e 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -368,6 +368,14 @@ static inline unsigned int get_gc_cost(struct f2fs_sb_info *sbi,
->  	if (p->alloc_mode == SSR)
->  		return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
->  
-> +	/*
-> +	 * If we don't need to clean dirty nodes,
-> +	 * we just skip node victims.
-> +	 */
-> +	if (IS_NODESEG(get_seg_entry(sbi, segno)->type) &&
-> +		!sbi->need_node_clean)
-> +		return get_max_cost(sbi, p);
+> Does your .kunitconfig include CONFIG_TRACEPOINTS=y? I don't see it in
+> the listing that you sent earlier.
 
-How about differentiating the gc cost between data vs. node by adding some
-weights? By default, data is preferred, while node is better in the worst case?
+Yes. For the kunit.py output from my previous email, I replaced 
+CONFIG_DEBUG_KERNEL=y with CONFIG_TRACEPOINTS=y. So, the .kunitconfig I used to 
+produce the output above was:
+	
+	CONFIG_KUNIT=y
+	CONFIG_KUNIT_ALL_TESTS=n
+	CONFIG_TRACEPOINTS=y
+	CONFIG_KASAN=y
+	CONFIG_KASAN_GENERIC=y
+	CONFIG_KASAN_KUNIT_TEST=y
 
-> +
->  	/* alloc_mode == LFS */
->  	if (p->gc_mode == GC_GREEDY)
->  		return get_valid_blocks(sbi, segno, true);
-> @@ -557,6 +565,14 @@ static void atgc_lookup_victim(struct f2fs_sb_info *sbi,
->  	if (ve->mtime >= max_mtime || ve->mtime < min_mtime)
->  		goto skip;
->  
-> +	/*
-> +	 * If we don't need to clean dirty nodes,
-> +	 * we just skip node victims.
-> +	 */
-> +	if (IS_NODESEG(get_seg_entry(sbi, ve->segno)->type) &&
-> +	    !sbi->need_node_clean)
-> +		goto skip;
-> +
->  	/* age = 10000 * x% * 60 */
->  	age = div64_u64(accu * (max_mtime - ve->mtime), total_time) *
->  								age_weight;
-> @@ -913,7 +929,21 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
->  		goto retry;
->  	}
->  
-> +
->  	if (p.min_segno != NULL_SEGNO) {
-> +		if (sbi->need_node_clean &&
-> +		    IS_DATASEG(get_seg_entry(sbi, p.min_segno)->type)) {
-> +			 /*
-> +			  * we need to clean node sections.
-> +			  * but, data victim cost is the lowest.
-> +			  * if free sections are enough, stop cleaning node victim.
-> +			  * if not, it goes on by GCing data victims.
-> +			  */
-> +			if (has_enough_free_secs(sbi, prefree_segments(sbi), 0)) {
-> +				p.min_segno = NULL_SEGNO;
-> +				goto out;
-> +			}
-> +		}
->  got_it:
->  		*result = (p.min_segno / p.ofs_unit) * p.ofs_unit;
->  got_result:
-> @@ -1830,8 +1860,27 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  		goto stop;
->  	}
->  
-> +	__get_secs_required(sbi, NULL, &upper_secs, NULL);
-> +
-> +	/*
-> +	 * Write checkpoint to reclaim prefree segments.
-> +	 * We need more three extra sections for writer's data/node/dentry.
-> +	 */
-> +	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS) {
-> +		sbi->need_node_clean = true;
-> +
-> +		if (prefree_segments(sbi)) {
-> +			stat_inc_cp_call_count(sbi, TOTAL_CALL);
-> +			ret = f2fs_write_checkpoint(sbi, &cpc);
-> +			if (ret)
-> +				goto stop;
-> +			/* Reset due to checkpoint */
-> +			sec_freed = 0;
-> +		}
-> +	}
-> +
->  	/* Let's run FG_GC, if we don't have enough space. */
-> -	if (has_not_enough_free_secs(sbi, 0, 0)) {
-> +	if (gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) {
->  		gc_type = FG_GC;
->  
->  		/*
-> @@ -1858,10 +1907,22 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  	ret = __get_victim(sbi, &segno, gc_type);
->  	if (ret) {
->  		/* allow to search victim from sections has pinned data */
-> -		if (ret == -ENODATA && gc_type == FG_GC &&
-> -				f2fs_pinned_section_exists(DIRTY_I(sbi))) {
-> -			f2fs_unpin_all_sections(sbi, false);
-> -			goto retry;
-> +		if (ret == -ENODATA && gc_type == FG_GC) {
-> +			if (f2fs_pinned_section_exists(DIRTY_I(sbi))) {
-> +				f2fs_unpin_all_sections(sbi, false);
-> +				goto retry;
-> +			}
-> +			/*
-> +			 * If we have no more data victims, let's start to
-> +			 * clean dirty nodes.
-> +			 */
-> +			if (!sbi->need_node_clean) {
-> +				sbi->need_node_clean = true;
-> +				goto retry;
-> +			}
-> +			/* node cleaning is over */
-> +			else if (sbi->need_node_clean)
-> +				goto stop;
->  		}
->  		goto stop;
->  	}
-> @@ -1882,7 +1943,13 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  			if (!gc_control->no_bg_gc &&
->  			    total_sec_freed < gc_control->nr_free_secs)
->  				goto go_gc_more;
-> -			goto stop;
-> +			/*
-> +			 * If the need_node_clean flag is set
-> +			 * even though there are enough free
-> +			 * sections, node cleaning will continue.
-> +			 */
-> +			if (!sbi->need_node_clean)
-> +				goto stop;
->  		}
->  		if (sbi->skipped_gc_rwsem)
->  			skipped_round++;
-> @@ -1897,21 +1964,6 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  		goto stop;
->  	}
->  
-> -	__get_secs_required(sbi, NULL, &upper_secs, NULL);
-> -
-> -	/*
-> -	 * Write checkpoint to reclaim prefree segments.
-> -	 * We need more three extra sections for writer's data/node/dentry.
-> -	 */
-> -	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS &&
-> -				prefree_segments(sbi)) {
-> -		stat_inc_cp_call_count(sbi, TOTAL_CALL);
-> -		ret = f2fs_write_checkpoint(sbi, &cpc);
-> -		if (ret)
-> -			goto stop;
-> -		/* Reset due to checkpoint */
-> -		sec_freed = 0;
-> -	}
->  go_gc_more:
->  	segno = NULL_SEGNO;
->  	goto gc_more;
-> @@ -1920,8 +1972,10 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
->  	SIT_I(sbi)->last_victim[ALLOC_NEXT] = 0;
->  	SIT_I(sbi)->last_victim[FLUSH_DEVICE] = gc_control->victim_segno;
->  
-> -	if (gc_type == FG_GC)
-> +	if (gc_type == FG_GC) {
->  		f2fs_unpin_all_sections(sbi, true);
-> +		sbi->need_node_clean = false;
-> +	}
->  
->  	trace_f2fs_gc_end(sbi->sb, ret, total_freed, total_sec_freed,
->  				get_pages(sbi, F2FS_DIRTY_NODES),
-> -- 
-> 2.34.1
+This more or less mirrors what mm/kfence/.kunitconfig is doing, which also isn't 
+working on my side; kunit.py reports the same error.
+
+Many thanks,
+Paul
