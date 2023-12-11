@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C487480D10C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F1E80D110
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344255AbjLKQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
+        id S229824AbjLKQUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbjLKQTB (ORCPT
+        with ESMTP id S234618AbjLKQUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:19:01 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B93FFF;
-        Mon, 11 Dec 2023 08:19:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=4HnagbOJonb+x6IstHctUf9ht4
-        OgV9P3OzAjZHHA+wBtF3soPL+84Q+8Ow5Dy+Tg0bBJi3pKlWMRn6liq03gzvVmLmsFiCJI27eai8K
-        fDXtdcjcHZd8wWhJL+qm6215qCWUBTk0SSEkFbHcTftQnohN5Hi6VkRi96prYI6ZEUUuB5AUk7Guc
-        D9X+eZ+K8uOeZaoUNo8SiBLHKOnwDO3kAo3gmg8rt4tz3gjcpi7P4JxDrWh6dxAIw71FcJuR8VYxM
-        fyHVNAJN8VaRlFrugZy7Zo3+h08hWIvvbKWHPS5UWSdMFd30eF60CpVfSXPKE8CB0PmMzSlO2Lvm+
-        kTdvx7ZQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rCizm-005kHT-2F;
-        Mon, 11 Dec 2023 16:19:02 +0000
-Date:   Mon, 11 Dec 2023 08:19:02 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH 12/12] selftests/fpu: Allow building on other
- architectures
-Message-ID: <ZXc2diNGXH8vaEZ8@infradead.org>
-References: <20231208055501.2916202-1-samuel.holland@sifive.com>
- <20231208055501.2916202-13-samuel.holland@sifive.com>
+        Mon, 11 Dec 2023 11:20:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD923AD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:20:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A08C433C7;
+        Mon, 11 Dec 2023 16:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702311610;
+        bh=tgoKaQNovHS9RWp3+K6M2LkRytAhgXwHG6PjpqOenpU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=IhwDGvMDayZhO/ouKOmDaaOJzNx/xwMIjs9YhcTCcKs+t6IObyGFBnqQRsygnWr3/
+         g8LzhS5VFgM9/a6Dce6Uqb/y5hcsD/2R2ap+NbMQGlvJjQLhjbPNJhppNcVSCciB/p
+         YDlLzd8uaya95w/+DaKbPa55aUs7hW0YF1bx49uOY4HFCG7BbjKNGpN808LQ0EZOnP
+         4FgU7ocVEVgoDDxqI0DE5Uf5KKImlv0jsMu9OZpuxGPCCa8fAL9Hsk1uTR67sGVzpr
+         pRSmAieOqPpI3s4IwjjaxlyX31RaEMJa1bdhhOfpeERwX+9iNrSoCpHy+3JQU9Ish3
+         f9k5ov4vq0YYA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>
+In-Reply-To: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
+References: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add SM8650
+ LPASS RX
+Message-Id: <170231160677.85457.6870068020415164910.b4-ty@kernel.org>
+Date:   Mon, 11 Dec 2023 16:20:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208055501.2916202-13-samuel.holland@sifive.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,6 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good:
+On Wed, 29 Nov 2023 12:30:11 +0100, Krzysztof Kozlowski wrote:
+> Add bindings for Qualcomm SM8650 Low Power Audio SubSystem (LPASS) RX
+> macro codec, which looks like compatible with earlier SM8550.
+> 
+> 
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add SM8650 LPASS RX
+      commit: 0bfa20b18acbcdd133d41e04e07a2d78bcc04bc5
+[2/4] ASoC: dt-bindings: qcom,lpass-tx-macro: Add SM8650 LPASS TX
+      commit: 5a5085c9ce381f92399c755be6deaf1d76ad57e8
+[3/4] ASoC: dt-bindings: qcom,lpass-va-macro: Add SM8650 LPASS VA
+      commit: f243ef746d0ace20fe092fc1ee9987ecf003f7a4
+[4/4] ASoC: dt-bindings: qcom,lpass-wsa-macro: Add SM8650 LPASS WSA
+      commit: ab8921e1da8fdca14192c44775151f50c1cdb763
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
