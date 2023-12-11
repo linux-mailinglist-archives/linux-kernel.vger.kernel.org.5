@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EA880D450
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCA480D406
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344542AbjLKRnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S1344754AbjLKRg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjLKRnT (ORCPT
+        with ESMTP id S1344748AbjLKRg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:43:19 -0500
-Received: from rcdn-iport-8.cisco.com (rcdn-iport-8.cisco.com [173.37.86.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADC1F7;
-        Mon, 11 Dec 2023 09:43:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=cisco.com; i=@cisco.com; l=1150; q=dns/txt; s=iport;
-  t=1702316603; x=1703526203;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=G9QiCkWX0CDZzcn8b0FGIm9Ug5LwglrT540l2fD/J3M=;
-  b=ZgvjtRLQPgE9+A/iRGC+wN7IyAlnXpGbmVK/A3zfyDQYpM9VxGIUkN7K
-   s0i324SPk/vWFdQcd7nce9YgO/OCmlstleTPlkcAEeAdoMVtiwgZI6VjZ
-   RaygWG09NqkMmAYx41Z1eC6AqRp9KQaXfZrflyBQWoqXXKkMezPMPOTiw
-   E=;
-X-CSE-ConnectionGUID: F6gKke7gRUWvgSJdVg1jMQ==
-X-CSE-MsgGUID: WNjcuzb0TbuFtvpx8deFHw==
-X-IronPort-AV: E=Sophos;i="6.04,268,1695686400"; 
-   d="scan'208";a="151011038"
-Received: from rcdn-core-1.cisco.com ([173.37.93.152])
-  by rcdn-iport-8.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 17:43:22 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3BBHaKr7009547
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 11 Dec 2023 17:43:20 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH v6 13/13] scsi: fnic: Increment driver version
-Date:   Mon, 11 Dec 2023 09:36:17 -0800
-Message-Id: <20231211173617.932990-14-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231211173617.932990-1-kartilak@cisco.com>
-References: <20231211173617.932990-1-kartilak@cisco.com>
+        Mon, 11 Dec 2023 12:36:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A367C7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:36:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1CFCC433C7;
+        Mon, 11 Dec 2023 17:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702316193;
+        bh=Ako3lvIvEUfiqGQJq4GqRqTsaTMhVesj9bhTZOv+avA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cv1+xrqXoHFbWdUJLTpczJTYJa5136QAg8p6zLoBASeDwSQPJEGvfqHhPkQJxwAsj
+         6BZCcIbYNQq+GeQVeC8BWl3x+b2c9DBWhroFbuc6z8B2F0+aZMJWp54PixQoKCDFGt
+         jgJdPnLwggbppAuLR4+FzYF9wW5JVFrPbAxWtF6SUCOydC3D6/h+geJ6K7D5WKIPm3
+         8UACbWFhw/YQlJ8eO9XeJko/Mdo0d5j6xeTtN+y0fKPEJpwirXmqHAawBrRHO5df/v
+         GLcstuYk1daow0GukEskHUbPRdWxB8LF0oILCP8MCoOGBqY2KwnKRFO1RujcWxhzxg
+         6wCX045ThnJsw==
+Date:   Mon, 11 Dec 2023 17:36:26 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add X1E80100
+ LPASS RX
+Message-ID: <a210dd57-a22f-41ab-8e3b-93fa1fd03a0c@sirena.org.uk>
+References: <20231211123104.72963-1-krzysztof.kozlowski@linaro.org>
+ <20231211-cardstock-elevator-3e19f9d41ac2@spud>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-1.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n42/ISRIigQDPDMF"
+Content-Disposition: inline
+In-Reply-To: <20231211-cardstock-elevator-3e19f9d41ac2@spud>
+X-Cookie: Better dead than mellow.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,42 +64,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increment driver version for multiqueue(MQ)
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
----
-Changes between v5 and v6:
-    Incorporate comments from Martin:
-		Rebase changes to 6.8/scsi-queue,
-		Resolve merge conflicts.
+--n42/ISRIigQDPDMF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes between v4 and v5:
-    Incorporate review comments from Martin:
-	Modify patch commits to include a "---" separator.
+On Mon, Dec 11, 2023 at 05:29:50PM +0000, Conor Dooley wrote:
+> On Mon, Dec 11, 2023 at 01:31:01PM +0100, Krzysztof Kozlowski wrote:
+> > Add bindings for Qualcomm X1E80100 SoC Low Power Audio SubSystem (LPASS)
+> > RX macro codec, which looks like compatible with earlier SM8550.
 
-Changes between v2 and v3:
-    Incorporate the following review comments from Hannes:
-	Create a separate patch to increment driver version.
-	Increment driver version number to 1.7.0.0.
----
- drivers/scsi/fnic/fnic.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
-index 28f402932b3c..2074937c05bc 100644
---- a/drivers/scsi/fnic/fnic.h
-+++ b/drivers/scsi/fnic/fnic.h
-@@ -27,7 +27,7 @@
- 
- #define DRV_NAME		"fnic"
- #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
--#define DRV_VERSION		"1.6.0.57"
-+#define DRV_VERSION		"1.7.0.0"
- #define PFX			DRV_NAME ": "
- #define DFX                     DRV_NAME "%d: "
- 
--- 
-2.31.1
+> I wish you'd send cover letters when you send series of trivial patches
+> like this that could be acked in one go.
 
+In general any patch series should have at least a brief cover letter,
+it makes everything work much better.
+
+--n42/ISRIigQDPDMF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV3SJkACgkQJNaLcl1U
+h9DAmwf9FAyBzWGolz41aTQV/iYxTZfK4ZqEsyyThB9fYsQrPLVGYOw5PHpUTeul
+0d88h6YldHkaT+pffLxlmSlq0D8H2XmOSsSjKE0/8RCLSZL4V5MgOksiQzQxsBUV
+Sbrz2hfDZqYhg5bis2VHpjwrfdXjY7lrpOtGwomGqaecaAm7swTu3tyL7Eh23dBF
+w4MpjYr20bJnbt7qwi32NxvzETYnVm0JFaX1biUkJtHowZpi55Z+9XydwmRWlvJZ
+w6G3K+++zd8Wo+ViR1pYaHWOxlvLB0RXP0kEZtIiCeNAiaSOlIDcGMVwkyVGcPfF
+FBb4ujCnVVxe6GlilQfyEDfJThkmJA==
+=8Yu8
+-----END PGP SIGNATURE-----
+
+--n42/ISRIigQDPDMF--
