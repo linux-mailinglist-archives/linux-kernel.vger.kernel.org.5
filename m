@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD40480C63A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F14C80C641
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbjLKKTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
+        id S234824AbjLKKWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKKTs (ORCPT
+        with ESMTP id S229512AbjLKKWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:19:48 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE8ACF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:19:54 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1e35c2807fso566279466b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:19:53 -0800 (PST)
+        Mon, 11 Dec 2023 05:22:38 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7C191;
+        Mon, 11 Dec 2023 02:22:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sg4Rsou7wwcdZUWNR0ZD6ReRnhemirOOKRRvfVfa7WiNRrD27+RPj4RG2LDsX9kFeFOtMZTW/FhLoxSabsvFgOHtRejL455cyzb18+Dq70P7z/h3xYhmsBZhzt+QMvCoAPx4AU0kcIdS3e+LMjdml4Wqe8JGC3tN86VOaAW63Gm/OpWQBZ7ZHPyFXY+aLWhuQQeIlU7f/R6HvWuD1aJW61LbEx5gp7X15vzTWkZ/7nouHN/EFEmlp3E8PDPySeEwWxcU7POmKLFIrgztZ5qRaxVUyQrfE6wdj7CilRes8oVsrPO8V/8HW8PGOG50aEirAY3QccXHn2cPHVQxup8kwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wkNVu8BCBYHj+9GrrTL1RInEeIlIgrqTWkAajkbyTKs=;
+ b=FjUR3gWzGBsP87X/WWZOcNpzHlALi52sb+5p+zjmeohonFFfscwwX/3uVD4gYa6MvXW9ms4e+o0M4ftpx3Sde/EBJiJwCYPaC1nUaylZGwVw/zOGEzCk7qavdkHdv+WRHm/BWntk+tY9gdqHvV6VRzXRaJNmU0kl+rpdo2mn8Rc4/q0mZ+YQzUccF7Q1HocfSbrOaZOTNwWtTYfsLN3jwiigY/5FVAK6dWt1vHf7OeztcESDS1d/oYQZ7Y4YfN3od3CYkZ1VtkxcB3FFmFcs+nw3r6EnBEE4ML05COaccWm8MdwD4YDEP78Xs1NAyIEUBQ6T7dfKx76fSjZpOCMbOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702289992; x=1702894792; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pbJH3swBnrwAhmGqDMGSc/B4DsQizuTOvVJjLJU1KRI=;
-        b=ZJjVECifJzRvIQ0eghQt83qMMpJgIquXfd8M/1kI+ZLFrbcRC+mauB/D5oNBGllhwQ
-         GJFhT2nYp22kRgq0vPExjiiMR31Twk+8vXjNOKUy54FJfGGg/cdKbWL49sZMaXbub20k
-         6dMa+6kfJAN1X46Z/O/YS6yoMwKR5Nb8cJghsqkH5fLKcW2HXJc2opQird3ABfKqLLwG
-         nHavD5P17l6KOou1JVnVdnsroDx/sN0UHgwTbq6FQbgI18YZRkbnHyvlMQBjstDw+1F/
-         zDeuVXPPwLGtWxIAT5epDvcYyIuSIQGAPgWdcx+ill4D4K76alsIZCoIa5EtuMmwdCUf
-         aOCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702289992; x=1702894792;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbJH3swBnrwAhmGqDMGSc/B4DsQizuTOvVJjLJU1KRI=;
-        b=YQEhF1uIXwowaeiZfLliP4cYHpII2pMyI+ngiZGBYB1z6nlT1Ho/xWrknbrLPrksHC
-         ctaYAu6MB9Jx9hDfR3EHZjbHGTFHe2EF3uPFz3ZM0EYmf7hMRYaBF/Q1dNTs8nfuyZL2
-         JP9tJRWY7YexePDkEo5FDyYjRwrLhtwACX+6cy0SrGRY26APjn50nB0ooJ/5OchNnvBo
-         HzwWkW68eVDK2qDCyRqAp6q85iNl0R7Tt/1Rj68CIxnmLJJZFBQ50HFMljkb7CpeB0FO
-         JRtNeI+gBygNkUn4ELdB0g22Ht+N/XE9X6oYuIoWwAxvBSgTHbFmvqGp1onytnXvrVML
-         rfiw==
-X-Gm-Message-State: AOJu0YyaIxwr3yeepH1n5nEDk5s+gEtZBU8NtxvebMBp2Q0TFM3akEKu
-        XiIjUXO0N5PPzYVZuHDYzuiyXw==
-X-Google-Smtp-Source: AGHT+IG2DDH8vlUb7UxXrRJZyEl0POduE9xN32zkG/2NBiYALr8zaWt6hqMSOtiX0vvQzOohG/ym7Q==
-X-Received: by 2002:a17:906:116:b0:a1b:7df6:11dd with SMTP id 22-20020a170906011600b00a1b7df611ddmr2147250eje.80.1702289992450;
-        Mon, 11 Dec 2023 02:19:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id mm15-20020a1709077a8f00b00a1b6ec7a88asm4581996ejc.113.2023.12.11.02.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 02:19:52 -0800 (PST)
-Message-ID: <b855eceb-05f4-4376-be62-2301d42575e7@linaro.org>
-Date:   Mon, 11 Dec 2023 11:19:50 +0100
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wkNVu8BCBYHj+9GrrTL1RInEeIlIgrqTWkAajkbyTKs=;
+ b=G+RnZEIiJQQtHCP9OQA79+b12wuh6dWV4gSvLOuqIgvk7VoWKgh/x1qZl9tX7xm9rL4YroDl9NhoQ+kubRhNQy0GQXZEclGL1KmBzA/vif5ACylxucvXkUTtnQgBZikEiTS9Oai3R2gB5wV+e9FWY22N/90sgqRWdQSUAYrRvhE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
+ CO1PR01MB6568.prod.exchangelabs.com (2603:10b6:303:f9::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.33; Mon, 11 Dec 2023 10:22:39 +0000
+Received: from SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 10:22:39 +0000
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>
+Subject: [PATCH v4 0/2] i2c: aspeed: Late ack Tx done irqs and handle coalesced start with stop conditions
+Date:   Mon, 11 Dec 2023 17:22:15 +0700
+Message-Id: <20231211102217.2436294-1-quan@os.amperecomputing.com>
+X-Mailer: git-send-email 2.35.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2P153CA0007.APCP153.PROD.OUTLOOK.COM (2603:1096::17) To
+ SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH 1/2] dt-bindings: Document QCA808x PHYs
-Content-Language: en-US
-To:     Christian Marangi <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231209014828.28194-1-ansuelsmth@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231209014828.28194-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|CO1PR01MB6568:EE_
+X-MS-Office365-Filtering-Correlation-Id: 800de197-143e-4aec-65a9-08dbfa3319b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tY8UcZfQqGnOvz8i4bzN9Dh4Lmj1GVS+2ok8YWjTFCiB+nBPJtbn9nDpi2AYHb2iRUmnAJbRBRw8z8mo0P53wa7G3WzVOPkRvnQI3l+6Y0OMk9GSWV0rr6WSKw7Hh1syzHHZwCcljwTOKxbhkfK4R1JXq2HW3srm0bHyk2dnj4ak6a7c1lyDlz6V5FIYBAhC55EYdLnMiNZZqXmHimoYwtc069Bug1UcTqRiY1MtZekUj546VpomfqZtIqFGTHStMJ4cs3wnnrIW/sbrBtM5VQNcHZ0uKTVHGmtti8idkOur4ng1XhEkllfMPHHzjVvM6FaARub4f356w2hS3+MMWEa8wCbqkeqmTo3vVByFRAfYzUHcpRS7UwsdADVUKbftd/rjfC21bOvxIpLSQOqgCTmRG6XVfeqTJnDchJtLtB2NEMMvJQsw+y0NRjyT1s94YgN6Kv7kAOXmQkTsVxwbvDWoumlkmKF/XTDYOEVxlESEAJArrzSR7SFJ/y3hvXCoWClLt5sjt6xn7wmdaBR6nAKyxwOT9MJwqHI5H5ORnY2swdDOvmHfSjfyvrFIEVUe9MGDySOVdeFRywKbT7h4ZmZPhcHZhwWHjlPacvU6LgKeGJ1puktLQkc9v49Yum8Zl5Vfsgorf2vJFjvIAvUImg+Z6C3est8C9OpIjSL6OX4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39850400004)(136003)(396003)(346002)(366004)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(1076003)(26005)(107886003)(2616005)(6506007)(6512007)(6666004)(52116002)(83380400001)(5660300002)(7416002)(41300700001)(2906002)(4326008)(478600001)(966005)(6486002)(8676002)(8936002)(66946007)(110136005)(66556008)(316002)(66476007)(54906003)(86362001)(38100700002)(38350700005)(921008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dLVzhlg/mHw+f5A3uVvyr2rrRSrcn1B0ErXVcJLgSm4ZmUyockQxMkfBG//D?=
+ =?us-ascii?Q?cspHlK9w8DCqLDNMuC5Wr3MplgrWKWGcesrcQuAmaetNtHd6+ln/fuNos8qr?=
+ =?us-ascii?Q?soe4HGWhKZEUPCvglGhfKeD+SbgYF5t8y8SB36hhCP5Zz1SNJ8YL7Qr7z6G0?=
+ =?us-ascii?Q?G5IH6PFZWauGE/XZkfd1UpXf2qhiQNN19NHIp6yJLfCAJj3dm/QPuBfKi1BJ?=
+ =?us-ascii?Q?nlUGneqWLHld2jMvpBGd4ahJ9qgfjNtoAA++lUC5BjzxJwUHK9UZkvqpFNTV?=
+ =?us-ascii?Q?EeGv5g6RGw5Egk6LPmbBZ6qDg9ffhHueNX7j01wYq38Hvh6U/LB9uHCW+92+?=
+ =?us-ascii?Q?mtiAQ2Q4aB6VaRWPUcP85uDVhx0crh6LuNk7+fN1M/9RyBpBieRPNa5JrHIW?=
+ =?us-ascii?Q?O/WHs6gixoUl7SwbBivKOwmTt+AW+KnBIVbpRQolghhVe8TsSpsYQklZD79f?=
+ =?us-ascii?Q?AXcFz/31H3NWttITWCqvBQQoRl2FPWxcftoAi573bCfKFsYvDZemFc2EJVia?=
+ =?us-ascii?Q?1xoCpJSl+0BOLVDwaocffKxHRtd9u5l0JzrsR+rpyV6v4TTBktZMgP2YtAy8?=
+ =?us-ascii?Q?XJG0oJu71/QXiINLtX4CJMet4PTr90RqFjjrODG/L2wQPel8QOeR9FRcoP+4?=
+ =?us-ascii?Q?VP6v6Nmj0bKFSKBaWKVLJ9wrYD8/3ONk+IwW0dhsol+fewFWGiTHYAhWUw+I?=
+ =?us-ascii?Q?7TMQZJzyOqd7Pr7PEbRqrZk7tjRQYvjGDHcM1esI3xDiAu6Acj3deOypw1ay?=
+ =?us-ascii?Q?xcou6LATJro/JYAcx92bdqlKFnLat85pnYEYuxnZvCPaxGhcwg0zLDwLJqOd?=
+ =?us-ascii?Q?v28mFHcHTgOmDW0BzxIER7QJ7axFcX7ChAH5olpqjqlhTApmWwdhoJNeTN+r?=
+ =?us-ascii?Q?A5dFRTFN3yOdnoERP2ER2sXbxdQMs/v2vACIzIcfM3OqrPBeHnV2SizYWTw3?=
+ =?us-ascii?Q?0t8yHlA4V9UjfVwIzAO+HEp8C/DNc6CTfj3vvUxHNcBbRnSRXcQ2r41OYF0h?=
+ =?us-ascii?Q?44ZIJdSX6+arcg72d1F9SQK3cc5CC7d6cNrP9nVDrM70TuYuxNlsONqL6Fg/?=
+ =?us-ascii?Q?vuDB9/YUMhT1Ecs+TMCS8/SXvxWBgq+sfna2KdzaBncSXAp0qfFGDVAjxVGe?=
+ =?us-ascii?Q?eunSbtBepia5G67koAur9RQo+tyzdiQOAc+pIu3mvlGDOubE0oLkgdGc64rd?=
+ =?us-ascii?Q?byJP/Rrjh/ryjLr3oHchTz6CWdCC7Es28aR8d/Esuo4Vy1P/hXHT67cSlnoo?=
+ =?us-ascii?Q?khGmqrC8sMeiQ+bGsuNZ7Nm03+7e/9bmZ1gXW4u2LlgVsdkS+48WqdfzbgGg?=
+ =?us-ascii?Q?E2gHpm/YEvu4UFOVDjud8LBryAlIQPx41fe24uRXpDTotGp45bGOHKC46gB/?=
+ =?us-ascii?Q?/EW1qdCpScHfMn5Eo6iYuEOf9jzGp1LyRp2Yxn30VMldPudAKittkCzzOJ4I?=
+ =?us-ascii?Q?Qr2/HIfCZe+4+e6gvK4OHLlm3Cf3RRPNh28KiEhbLYV9VvI4yswhyjsJNqzw?=
+ =?us-ascii?Q?ajYmI0xcfbiM1TaqBb+0hWN0fVaDRk2H/wtOar6+AbAxXtwQBbGLGwMMgvUW?=
+ =?us-ascii?Q?K9iibTNfL8RNo7/gevzs6Eh3DyfxOk2YifPjIGWLGI5gg5ZajcVCASmIwLTo?=
+ =?us-ascii?Q?1m7+xh9jrZ4xvMCzMFScvbc=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 800de197-143e-4aec-65a9-08dbfa3319b9
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 10:22:38.9219
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m2MEKC3BKOotvQ+Q0T+nxfOw1CndocZXpznfOpeFVsuKqkYkxOaZdwjqanGAeD0ks2drovNtvQHyaPEwk1t7ODSGnTqJI+cKXOnoL80xSYI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6568
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,77 +124,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/12/2023 02:48, Christian Marangi wrote:
-> Add Documentation for QCA808x PHYs for the additional property for the
-> active high LED setting and also document the LED configuration for this
-> PHY.
-> 
+This series consists of two patches to handle the below issues observed
+when testing with slave mode:
+  + The coalesced stop condition with the start conditions
+  + Early ack'ed of Tx done (ACK and NAK) causing "Unexpected Ack on
+  read request".
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+This series was verified with ast2500 and ast2600.
 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
->  .../devicetree/bindings/net/qca,qca808x.yaml  | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/qca,qca808x.yaml b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> new file mode 100644
-> index 000000000000..73cfff357311
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: GPL-2.0+
+The prior discussion could be found at:
+https://lore.kernel.org/all/20231208033142.1673232-1-quan@os.amperecomputing.com/
 
-Dual license as checkpath and writing-bindings ask.
+v4:
+  + Switch to use define macro instead of variable             [Andrew]
+  + Make the early ack conditionally to avoid unnecessary
+writel()/readl()                                                 [Quan]
+  + Add an extra empty line before the comment in patch 1      [Andrew]
 
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/qca,qca808x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Atheros QCA808X PHY
-> +
-> +maintainers:
-> +  - Christian Marangi <ansuelsmth@gmail.com>
-> +
-> +description:
-> +  Bindings for Qualcomm Atheros QCA808X PHYs
+v3:
+  + Fix the unconditional write when ack the irqs              [Andrew]
+  + Handle the coalesced stop condition with the
+start conditions                                               [Andrew]
+  + Refactor the code to enhance code readability                [Quan]
+  + Revised commit message                                       [Quan]
 
-Drop "Bindings for" and then entire sentence seems not useful.
+v2:
+  + Split these patches to separate series                       [Joel]
+  + Added the Fixes lines                                        [Joel]
+  + Fixed multiline comment                                      [Joel]
+  + Refactor irq clearing code                          [Joel, Guenter]
+  + Revised commit message                                 [Joel, Quan]
 
-> +
-> +  QCA808X PHYs can have up to 3 LEDs attached.
-> +  All 3 LEDs are disabled by default.
-> +  2 LEDs have dedicated pins with the 3rd LED having the
-> +  double function of Interrupt LEDs/GPIO or additional LED.
-> +
-> +  By default this special PIN is set to LED function.
-> +
-> +allOf:
-> +  - $ref: ethernet-phy.yaml#
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - ethernet-phy-id004d.d101
+v1:
+  + These patches are first introduced from this disscusstion
+https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputing.com/
 
-I have impression that this is continuation of some other patchset...
-Anyway, id004d.d101 is specific to QCA808x?
+Quan Nguyen (2):
+  i2c: aspeed: Handle the coalesced stop conditions with the start
+    conditions.
+  i2c: aspeed: Acknowledge Tx done with and without ACK irq late
 
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  qca,led-active-high:
-> +    description: Set all the LEDs to active high to be turned on.
-> +    type: boolean
+ drivers/i2c/busses/i2c-aspeed.c | 75 +++++++++++++++++++++++----------
+ 1 file changed, 52 insertions(+), 23 deletions(-)
 
-
-Best regards,
-Krzysztof
+-- 
+2.35.1
 
