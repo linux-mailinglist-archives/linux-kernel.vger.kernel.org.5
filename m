@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFAB80CCAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C410180CCB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343810AbjLKOCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
+        id S1343945AbjLKOC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344034AbjLKOCc (ORCPT
+        with ESMTP id S1343847AbjLKOCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:02:32 -0500
+        Mon, 11 Dec 2023 09:02:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F6549D6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0875C433C8;
-        Mon, 11 Dec 2023 14:00:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD1049F5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36F58C433C9;
+        Mon, 11 Dec 2023 14:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303207;
-        bh=TuVggnxu9ShxSMN3u4mLZoB2JnPKQkI71cau9glhJFk=;
+        s=k20201202; t=1702303209;
+        bh=/E6nsoNxSxBlDumXRRDkrD+zQkcxuqlaJOwxQsE/9OY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AHK6denglvcFoA5X4lYcaB5TubK8lQdKFXNoec6xYlDlPXTVkEJqLO4eE9vgq/3ZW
-         8/hUU/VhGtSbphNjc340CzHqNWDVKeFJ6du7vJJGAutvgiVRvwHbdA1poV9xgZIzgX
-         CophhDQPJ3etrjXS8oV0jdSGacvrKbp4h77Fn49L/wqC4ifw1MGAjz8WJP3sexDbBG
-         EyFFnBwVK73u7FjrvD4AJqBoevH2vCOuNS4H3+yh4G124wOosIpwIsvZYrgQb6Luuk
-         5XaMLUFuDCxaF/QMWnSJc0G5C15DQEqfpAmrmAf8UVzUHm28aEYnXgFwMGQuEUneCb
-         ZWj8AbOe4C6Kg==
+        b=DIFn/ZYXBfCa2+feNeMlV/vKSC8Alppynm0lhI3glH8DoZpvkpuXHYmnVmY6eDHDd
+         sJ/NJcalQbQYp/QNEmVbmaKARJhJKwGSHBm7WpfcheBSZ/wfcvx0ML/Tb3nQN/3bDb
+         MkfgmeB6MhCxNDPmeW7WgdWeWEC5tuo4tX9hGLQz2KYKzscJ1W6Ikfmuk3Nmu+bEaE
+         CkT7VpTPXwsKRUKWEfueDszcF6ArmTVEFFquG0C/r4vv83np+N1cUNIONL6rhcjRLe
+         seZulQu85nt41oGmd1PkatwhTUn9OWenk19/LEftPtqegwvQaJiEE5h/sUrfkcNv8A
+         FR+7J7H07ePRw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com,
-        pierre-louis.bossart@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, rander.wang@intel.com,
-        linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/19] ASoC: hdac_hda: Conditionally register dais for HDMI and Analog
-Date:   Mon, 11 Dec 2023 08:57:44 -0500
-Message-ID: <20231211135908.385694-10-sashal@kernel.org>
+Cc:     Thinh Tran <thinhtr@linux.vnet.ibm.com>,
+        Venkata Sai Duggi <venkata.sai.duggi@ibm.com>,
+        David Christensen <drc@linux.vnet.ibm.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, pavan.chebbi@broadcom.com,
+        mchan@broadcom.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 11/19] net/tg3: fix race condition in tg3_reset_task()
+Date:   Mon, 11 Dec 2023 08:57:45 -0500
+Message-ID: <20231211135908.385694-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135908.385694-1-sashal@kernel.org>
 References: <20231211135908.385694-1-sashal@kernel.org>
@@ -58,93 +58,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Thinh Tran <thinhtr@linux.vnet.ibm.com>
 
-[ Upstream commit a0575b4add21a243cc3257e75ad913cd5377d5f2 ]
+[ Upstream commit 16b55b1f2269962fb6b5154b8bf43f37c9a96637 ]
 
-The current driver is registering the same dais for each hdev found in the
-system which results duplicated widgets to be registered and the kernel
-log contains similar prints:
-snd_hda_codec_realtek ehdaudio0D0: ASoC: sink widget AIF1TX overwritten
-snd_hda_codec_realtek ehdaudio0D0: ASoC: source widget AIF1RX overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi3 overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi2 overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget hifi1 overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Codec Output Pin1 overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Codec Input Pin1 overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Analog Codec Playback overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Digital Codec Playback overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: sink widget Alt Analog Codec Playback overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Analog Codec Capture overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Digital Codec Capture overwritten
-skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: source widget Alt Analog Codec Capture overwritten
+When an EEH error is encountered by a PCI adapter, the EEH driver
+modifies the PCI channel's state as shown below:
 
-To avoid such issue, split the dai array into HDMI and non HDMI array and
-register them conditionally:
-for HDMI hdev only register the dais needed for HDMI
-for non HDMI hdev do not  register the HDMI dais.
+   enum {
+      /* I/O channel is in normal state */
+      pci_channel_io_normal = (__force pci_channel_state_t) 1,
 
-Depends-on: 3d1dc8b1030d ("ASoC: Intel: skl_hda_dsp_generic: Drop HDMI routes when HDMI is not available")
-Link: https://github.com/thesofproject/linux/issues/4509
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20231128123914.3986-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+      /* I/O to channel is blocked */
+      pci_channel_io_frozen = (__force pci_channel_state_t) 2,
+
+      /* PCI card is dead */
+      pci_channel_io_perm_failure = (__force pci_channel_state_t) 3,
+   };
+
+If the same EEH error then causes the tg3 driver's transmit timeout
+logic to execute, the tg3_tx_timeout() function schedules a reset
+task via tg3_reset_task_schedule(), which may cause a race condition
+between the tg3 and EEH driver as both attempt to recover the HW via
+a reset action.
+
+EEH driver gets error event
+--> eeh_set_channel_state()
+    and set device to one of
+    error state above           scheduler: tg3_reset_task() get
+                                returned error from tg3_init_hw()
+                             --> dev_close() shuts down the interface
+tg3_io_slot_reset() and
+tg3_io_resume() fail to
+reset/resume the device
+
+To resolve this issue, we avoid the race condition by checking the PCI
+channel state in the tg3_reset_task() function and skip the tg3 driver
+initiated reset when the PCI channel is not in the normal state.  (The
+driver has no access to tg3 device registers at this point and cannot
+even complete the reset task successfully without external assistance.)
+We'll leave the reset procedure to be managed by the EEH driver which
+calls the tg3_io_error_detected(), tg3_io_slot_reset() and
+tg3_io_resume() functions as appropriate.
+
+Adding the same checking in tg3_dump_state() to avoid dumping all
+device registers when the PCI channel is not in the normal state.
+
+Signed-off-by: Thinh Tran <thinhtr@linux.vnet.ibm.com>
+Tested-by: Venkata Sai Duggi <venkata.sai.duggi@ibm.com>
+Reviewed-by: David Christensen <drc@linux.vnet.ibm.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Link: https://lore.kernel.org/r/20231201001911.656-1-thinhtr@linux.vnet.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/hdac_hda.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/broadcom/tg3.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index de5955db0a5f0..0bbe248c0728e 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -124,6 +124,9 @@ static struct snd_soc_dai_driver hdac_hda_dais[] = {
- 		.sig_bits = 24,
- 	},
- },
-+};
-+
-+static struct snd_soc_dai_driver hdac_hda_hdmi_dais[] = {
- {
- 	.id = HDAC_HDMI_0_DAI_ID,
- 	.name = "intel-hdmi-hifi1",
-@@ -575,8 +578,16 @@ static const struct snd_soc_component_driver hdac_hda_codec = {
- 	.num_dapm_routes        = ARRAY_SIZE(hdac_hda_dapm_routes),
- };
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index 2c41852a082bb..7b49befed7332 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -6448,6 +6448,14 @@ static void tg3_dump_state(struct tg3 *tp)
+ 	int i;
+ 	u32 *regs;
  
-+static const struct snd_soc_component_driver hdac_hda_hdmi_codec = {
-+	.probe			= hdac_hda_codec_probe,
-+	.remove			= hdac_hda_codec_remove,
-+	.idle_bias_on		= false,
-+	.endianness		= 1,
-+};
++	/* If it is a PCI error, all registers will be 0xffff,
++	 * we don't dump them out, just report the error and return
++	 */
++	if (tp->pdev->error_state != pci_channel_io_normal) {
++		netdev_err(tp->dev, "PCI channel ERROR!\n");
++		return;
++	}
 +
- static int hdac_hda_dev_probe(struct hdac_device *hdev)
- {
-+	struct hdac_hda_priv *hda_pvt = dev_get_drvdata(&hdev->dev);
- 	struct hdac_ext_link *hlink;
- 	struct hdac_hda_priv *hda_pvt;
- 	int ret;
-@@ -594,9 +605,15 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
- 		return -ENOMEM;
+ 	regs = kzalloc(TG3_REG_BLK_SIZE, GFP_ATOMIC);
+ 	if (!regs)
+ 		return;
+@@ -11177,7 +11185,8 @@ static void tg3_reset_task(struct work_struct *work)
+ 	rtnl_lock();
+ 	tg3_full_lock(tp, 0);
  
- 	/* ASoC specific initialization */
--	ret = devm_snd_soc_register_component(&hdev->dev,
--					 &hdac_hda_codec, hdac_hda_dais,
--					 ARRAY_SIZE(hdac_hda_dais));
-+	if (hda_pvt->need_display_power)
-+		ret = devm_snd_soc_register_component(&hdev->dev,
-+						&hdac_hda_hdmi_codec, hdac_hda_hdmi_dais,
-+						ARRAY_SIZE(hdac_hda_hdmi_dais));
-+	else
-+		ret = devm_snd_soc_register_component(&hdev->dev,
-+						&hdac_hda_codec, hdac_hda_dais,
-+						ARRAY_SIZE(hdac_hda_dais));
-+
- 	if (ret < 0) {
- 		dev_err(&hdev->dev, "failed to register HDA codec %d\n", ret);
- 		return ret;
+-	if (tp->pcierr_recovery || !netif_running(tp->dev)) {
++	if (tp->pcierr_recovery || !netif_running(tp->dev) ||
++	    tp->pdev->error_state != pci_channel_io_normal) {
+ 		tg3_flag_clear(tp, RESET_TASK_PENDING);
+ 		tg3_full_unlock(tp);
+ 		rtnl_unlock();
 -- 
 2.42.0
 
