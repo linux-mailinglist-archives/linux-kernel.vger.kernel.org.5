@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B37680CE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CABC880CDD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344534AbjLKOVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:21:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S1344372AbjLKOOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344864AbjLKOUy (ORCPT
+        with ESMTP id S1343904AbjLKOOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:20:54 -0500
+        Mon, 11 Dec 2023 09:14:03 -0500
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BA1A27A;
-        Mon, 11 Dec 2023 06:08:56 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkB85zFZz4f3lWC;
-        Mon, 11 Dec 2023 22:08:48 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABF11BEC;
+        Mon, 11 Dec 2023 06:09:02 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkBG4Fsnz4f3lfd;
+        Mon, 11 Dec 2023 22:08:54 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id ACA251A0AEF;
-        Mon, 11 Dec 2023 22:08:53 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTP id 701141A0530;
+        Mon, 11 Dec 2023 22:08:59 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDX2xHyF3dl1JtxDQ--.35010S4;
-        Mon, 11 Dec 2023 22:08:52 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgDHyhD4F3dlc51xDQ--.24857S4;
+        Mon, 11 Dec 2023 22:08:58 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
         kent.overstreet@gmail.com, joern@lazybastard.org,
@@ -45,31 +45,31 @@ Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
         yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
         yangerkun@huawei.com
-Subject: [PATCH RFC v2 for-6.8/block 12/18] gfs2: use bdev api
-Date:   Mon, 11 Dec 2023 22:07:28 +0800
-Message-Id: <20231211140728.974887-1-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 for-6.8/block 13/18] nilfs2: use bdev api in nilfs_attach_log_writer()
+Date:   Mon, 11 Dec 2023 22:07:33 +0800
+Message-Id: <20231211140733.974992-1-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDX2xHyF3dl1JtxDQ--.35010S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyUZFWfCw1DKw45ZF1fZwb_yoW8Jw45pr
-        yDAF1akF4kWrnIgaykZF4rt3WUWay8G3yxAr95Aw1YvrZrW3Wag392kF4UJF45Ja97JwsI
-        ga1ayw4akr1agrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        Mq2tUUUUU==
+X-CM-TRANSID: cCh0CgDHyhD4F3dlc51xDQ--.24857S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAFW7ZFyrGFW3Ar45GFg_yoW3Gwc_Xr
+        n5JrykWrWYqFZ3uw4DurZ0yryrA3WrGa1xJry0kFyrGF4IyFs5Cr1qvr45tayUursrXwn3
+        WwnrWrZ8tr1UXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
+        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
+        JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUoL
+        0eDUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
@@ -87,36 +87,22 @@ block_devcie.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/gfs2/glock.c      | 2 +-
- fs/gfs2/ops_fstype.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/nilfs2/segment.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index d6bf1f8c25dc..4128a5bc4bb6 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1210,7 +1210,7 @@ int gfs2_glock_get(struct gfs2_sbd *sdp, u64 number,
- 	mapping = gfs2_glock2aspace(gl);
- 	if (mapping) {
-                 mapping->a_ops = &gfs2_meta_aops;
--		mapping->host = s->s_bdev->bd_inode;
-+		bdev_associated_mapping(s->s_bdev, mapping);
- 		mapping->flags = 0;
- 		mapping_set_gfp_mask(mapping, GFP_NOFS);
- 		mapping->private_data = NULL;
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index b108c5d26839..56ae8959b55a 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -114,7 +114,7 @@ static struct gfs2_sbd *init_sbd(struct super_block *sb)
+diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
+index 55e31cc903d1..a1130e384937 100644
+--- a/fs/nilfs2/segment.c
++++ b/fs/nilfs2/segment.c
+@@ -2823,7 +2823,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
+ 	if (!nilfs->ns_writer)
+ 		return -ENOMEM;
  
- 	address_space_init_once(mapping);
- 	mapping->a_ops = &gfs2_rgrp_aops;
--	mapping->host = sb->s_bdev->bd_inode;
-+	bdev_associated_mapping(sb->s_bdev, mapping);
- 	mapping->flags = 0;
- 	mapping_set_gfp_mask(mapping, GFP_NOFS);
- 	mapping->private_data = NULL;
+-	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
++	bdev_attach_wb(nilfs->ns_bdev);
+ 
+ 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
+ 	if (unlikely(err))
 -- 
 2.39.2
 
