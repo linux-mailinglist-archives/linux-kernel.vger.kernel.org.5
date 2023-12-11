@@ -2,124 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7924480CECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62E980CED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjLKOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
+        id S1343714AbjLKOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKOsf (ORCPT
+        with ESMTP id S234618AbjLKOuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:48:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61611C2;
-        Mon, 11 Dec 2023 06:48:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702306121; x=1733842121;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EtQXmTGLtgY5zDIntByKtT6Px6kjcnXXrK7DALzvv84=;
-  b=BxqwjqXY/BEbAtSara1Dbg25U1x9gQccmqiOqpV9tz4gv0qFwJ0as6zU
-   fRQnEZQZKTXjl1HS2X+DQMmRalzOoZPiN4fU5hhx/qKrvFo9qm3cnI1oc
-   Dtn+3wUukHmuY2S7ekEP2ITooy66i/wb85cDcXbaoBTvxE5Vv4y1EuYZv
-   u+DSDlnqGpRDutuLEBD5YRpBuWs25v6riSzqgUQpdHaGcFCZp7fSKpVqo
-   TDEMlW7CUEOM95h++LZx9rPv4auC1xa2Th/K/q2pWhWsgc/XtVYB0wHjk
-   Je6j/8/Oy7krSBIpyNLo1WpGkmaJTaZ+FD0Y82pd/GiZE65lGAig2ostv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1465783"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1465783"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 06:48:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="891152499"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="891152499"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 06:48:39 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rChaG-000000052ak-3tG2;
-        Mon, 11 Dec 2023 16:48:36 +0200
-Date:   Mon, 11 Dec 2023 16:48:36 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pinctrl-intel tree with the
- gpio-brgl tree
-Message-ID: <ZXchRJoxvn8I-6-L@smile.fi.intel.com>
-References: <20231211145056.23fbfd7d@canb.auug.org.au>
- <CACMJSetGz1fCnqS_HPTLyV8dOWOUtO07-bZKKXu3=3Lk2PGdyw@mail.gmail.com>
- <ZXcRMTFitYohcFfS@smile.fi.intel.com>
- <CACMJSeun5bCUwkVZPXpc5mKqyj_XztUHTXafuz5Psc_8LCKkuA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACMJSeun5bCUwkVZPXpc5mKqyj_XztUHTXafuz5Psc_8LCKkuA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 09:50:00 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2D0C3;
+        Mon, 11 Dec 2023 06:50:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=kEmVlye6CMrVPDyTmVFhOQ15lLv0MDG5hDAupVdWbcI=; b=gsXMqkQARmulOgWXmYNgBvmkpk
+        3QX7SSPv47Y/AVWozhPBPlR3/0omDCt9HHk4eqe6vmnzVKA7eVEaC4Koa0om8RkdVuOfFXTorn8uT
+        48s2HbOm9zme/QgYf6307hmA/tZ4eEF9MgEtFDUKBDlmtCuh2eu5hicPLqCCTdnl023w=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:45548 helo=debian-acer)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rChbI-0002gh-29; Mon, 11 Dec 2023 09:49:40 -0500
+Date:   Mon, 11 Dec 2023 09:49:38 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
+        shawnguo@kernel.org, s.hauer@pengutronix.de,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        cniedermaier@dh-electronics.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, LinoSanfilippo@gmx.de,
+        lukas@wunner.de, p.rosenberger@kunbus.com, stable@vger.kernel.org
+Message-Id: <20231211094938.11c3322b80c2b827b46725c5@hugovil.com>
+In-Reply-To: <20231209125836.16294-2-l.sanfilippo@kunbus.com>
+References: <20231209125836.16294-1-l.sanfilippo@kunbus.com>
+        <20231209125836.16294-2-l.sanfilippo@kunbus.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v5 1/7] serial: Do not hold the port lock when setting
+ rx-during-tx GPIO
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:04:09PM +0100, Bartosz Golaszewski wrote:
-> On Mon, 11 Dec 2023 at 14:40, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Dec 11, 2023 at 09:15:30AM +0100, Bartosz Golaszewski wrote:
-> > > On Mon, 11 Dec 2023 at 04:51, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > > > Today's linux-next merge of the pinctrl-intel tree got a conflict in:
-> > > >
-> > > >   drivers/pinctrl/intel/pinctrl-baytrail.c
-> > > >
-> > > > between commit:
-> > > >
-> > > >   c73505c8a001 ("pinctrl: baytrail: use gpiochip_dup_line_label()")
-> > > >
-> > > > from the gpio-brgl tree and commit:
-> > > >
-> > > >   6191e49de389 ("pinctrl: baytrail: Simplify code with cleanup helpers")
-> > > >
-> > > > from the pinctrl-intel tree.
+On Sat,  9 Dec 2023 13:58:30 +0100
+Lino Sanfilippo <l.sanfilippo@kunbus.com> wrote:
 
-...
-
-> > > Andy, please pull the following into your baytrail tree:
-> > > https://lore.kernel.org/lkml/20231208083650.25015-1-brgl@bgdev.pl/
-> >
-> > I can do it, but why?
+> Both the imx and stm32 driver set the rx-during-tx GPIO in rs485_config().
+> Since this function is called with the port lock held, this can be an
+> problem in case that setting the GPIO line can sleep (e.g. if a GPIO
+> expander is used which is connected via SPI or I2C).
 > 
-> You were the one who asked me to put these commits into an immutable
-> branch in the first place to avoid conflicts with the baytrail branch.
-> :)
+> Avoid this issue by moving the GPIO setting outside of the port lock into
+> the serial core and thus making it a generic feature.
+> 
+> Fixes: c54d48543689 ("serial: stm32: Add support for rs485 RX_DURING_TX output GPIO")
+> Fixes: ca530cfa968c ("serial: imx: Add support for RS485 RX_DURING_TX output GPIO")
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> ---
+>  drivers/tty/serial/imx.c         |  4 ----
+>  drivers/tty/serial/serial_core.c | 12 ++++++++++++
+>  drivers/tty/serial/stm32-usart.c |  5 +----
+>  3 files changed, 13 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index 708b9852a575..9cffeb23112b 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -1943,10 +1943,6 @@ static int imx_uart_rs485_config(struct uart_port *port, struct ktermios *termio
+>  	    rs485conf->flags & SER_RS485_RX_DURING_TX)
+>  		imx_uart_start_rx(port);
+>  
+> -	if (port->rs485_rx_during_tx_gpio)
+> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
+> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
+> -
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index f1348a509552..a0290a5fe8b3 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -1402,6 +1402,16 @@ static void uart_set_rs485_termination(struct uart_port *port,
+>  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
+>  }
+>  
+> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
+> +					const struct serial_rs485 *rs485)
+> +{
+> +	if (!(rs485->flags & SER_RS485_ENABLED))
+> +		return;
+> +
+> +	gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
+> +				 !!(rs485->flags & SER_RS485_RX_DURING_TX));
+> +}
+> +
+>  static int uart_rs485_config(struct uart_port *port)
+>  {
+>  	struct serial_rs485 *rs485 = &port->rs485;
+> @@ -1413,6 +1423,7 @@ static int uart_rs485_config(struct uart_port *port)
+>  
+>  	uart_sanitize_serial_rs485(port, rs485);
+>  	uart_set_rs485_termination(port, rs485);
+> +	uart_set_rs485_rx_during_tx(port, rs485);
+>  
+>  	uart_port_lock_irqsave(port, &flags);
+>  	ret = port->rs485_config(port, NULL, rs485);
+> @@ -1457,6 +1468,7 @@ static int uart_set_rs485_config(struct tty_struct *tty, struct uart_port *port,
+>  		return ret;
+>  	uart_sanitize_serial_rs485(port, &rs485);
+>  	uart_set_rs485_termination(port, &rs485);
+> +	uart_set_rs485_rx_during_tx(port, &rs485);
+>  
+>  	uart_port_lock_irqsave(port, &flags);
+>  	ret = port->rs485_config(port, &tty->termios, &rs485);
+> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> index 3048620315d6..ec9a72a5bea9 100644
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct uart_port *port, struct ktermios *ter
+>  
+>  	stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->uart_enable_bit));
+>  
+> -	if (port->rs485_rx_during_tx_gpio)
+> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
+> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
+> -	else
+> +	if (!port->rs485_rx_during_tx_gpio)
+>  		rs485conf->flags |= SER_RS485_RX_DURING_TX;
+>  
+>  	if (rs485conf->flags & SER_RS485_ENABLED) {
+> -- 
+> 2.42.0
+> 
 
-True with the caveat like (citing by memory): "I see no conflicts with
-the code that needs this PR to be pulled, but just in case."
+Reviewed-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-So, thank you for PR, but there is nothing pending in my tree that requires
-this PR to be pulled.
-
-So, when I send the PR to Linus W. (presumably end of this week) it will be
-solved on his level, I believe.
-
-> > Conflicts is a normal practice during kernel development. And I believe this
-> > particular one will be solved by Linus W.
-> >
-> > Stephen, resolution looks correct to me, thank you.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Hugo
