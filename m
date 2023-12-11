@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB42580CE73
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4709B80CE74
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343763AbjLKOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S1343782AbjLKOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbjLKOdI (ORCPT
+        with ESMTP id S1343710AbjLKOe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:33:08 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14992C3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:33:15 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49D43FEC;
-        Mon, 11 Dec 2023 06:34:01 -0800 (PST)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E6943F738;
-        Mon, 11 Dec 2023 06:33:12 -0800 (PST)
-Message-ID: <27ddb859-a67e-9a9d-7135-c4829c5b27db@arm.com>
-Date:   Mon, 11 Dec 2023 14:33:06 +0000
+        Mon, 11 Dec 2023 09:34:26 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F80B8;
+        Mon, 11 Dec 2023 06:34:33 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso2242927a12.2;
+        Mon, 11 Dec 2023 06:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702305272; x=1702910072; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BhFeURBLxLzEVc1vRPu/BJJbPB/L1vjdzzDdvH8sMws=;
+        b=LSiMJERzD69cg9RqqDSsZwS57yhv4f3UsqaDIU931qtMo4bCvlXHKJe2QuF8Uon+S7
+         iMasAz4UgR/+Hh4s1bR83woxVwpqW8xxDtqjZV40f8C6AmyE/CqnEJlx/CG/H6A1TW4+
+         vGBu4qHlEBarw7TEjpQtkFB+g77pf7xu7ViuOssQaloRhHXCwNT2wXbnOLRIZmbCgzt7
+         kcA+O5VTtAHekXZeBgcNSijLgX7UpHYb22CzFohWuCmMzJL2tzADeXMirsGuNw95rida
+         aIoDHD2B0BAiLhTi/F89apXzL85kcOeKiUWToV3WjN5TS755/7HUCTYuaZu19ajj5GLv
+         3vMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702305272; x=1702910072;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BhFeURBLxLzEVc1vRPu/BJJbPB/L1vjdzzDdvH8sMws=;
+        b=n5e+WcaivL4AWIC3r6+Vc5n8AvaCAQLmNdNaOjT2S8gmVxcLDvNj1XZg3PKYeu/Nm4
+         N/TkzjRIzadRFKPymlqsYuY3WUCFW70J8K3U8TvgnJs6QV0Tpf4xsR8Ci+QhKLz0Qadm
+         c5RlXLnWP9yQUeSai6XV8g0KaKG9s5YNku1mW/PvXUEvV4Qk9R1wLr6n2nXTmsK9ZyU2
+         YITFHFrruoQaze6LIGyNe4x+Owvo9Ywolla4BqKGBbsGXW/6qYqJFeNCSF/IYrHiDwYo
+         pLBx0FTV6w3rfijWFnaJ8cJykmProfNtGLAzvUi3EyfYf4Td8A6+biVdV7W423uhtO2h
+         q2ug==
+X-Gm-Message-State: AOJu0YyfEie4tAOly9IK5LdDObH+m4WwNystpv3IUoRkImVlXivDewwn
+        Swn0k/lEEiHRC9a3+W8N6jF9AXOMS5A=
+X-Google-Smtp-Source: AGHT+IHOFIL1vKAZj4Zu3p22Zn/R1Kq5OPfAzqANWOQ4JZWJBcYr9a0VQ9kgOkHoYdj5IOjrq+uvVA==
+X-Received: by 2002:a05:6a20:8e14:b0:18c:b6:ab4f with SMTP id y20-20020a056a208e1400b0018c00b6ab4fmr1878951pzj.48.1702305272500;
+        Mon, 11 Dec 2023 06:34:32 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b16-20020a056a0002d000b006ce70d26d9csm6389748pft.27.2023.12.11.06.34.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 06:34:32 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 11 Dec 2023 06:34:31 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] dt-bindings: arm: hwmon: gpio-fan: Convert txt
+ bindings to yaml
+Message-ID: <08ecf10d-03c4-4025-8809-475fb5ee76a9@roeck-us.net>
+References: <20231209171653.85468-1-david@ixit.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by
- index
-Content-Language: en-GB
-To:     Amit Singh Tomar <amitsinght@marvell.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
-        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
-        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>,
-        "peternewman@google.com" <peternewman@google.com>,
-        "dfustini@baylibre.com" <dfustini@baylibre.com>,
-        "muhammad.zahid@nokia.com" <muhammad.zahid@nokia.com>
-References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-7-james.morse@arm.com>
- <MW4PR18MB5084AC18E19386E5B83C0F0EC6A0A@MW4PR18MB5084.namprd18.prod.outlook.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <MW4PR18MB5084AC18E19386E5B83C0F0EC6A0A@MW4PR18MB5084.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209171653.85468-1-david@ixit.cz>
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amit,
-
-On 31/10/2023 07:43, Amit Singh Tomar wrote:
-> -----Original Message-----
-> From: James Morse <james.morse@arm.com> 
-> Sent: Wednesday, October 25, 2023 11:33 PM
-> Subject: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by index
-
-Looks like you are afflicted with outlook - let me know if I didn't find all the changes
-you made to the original message ...
-
-[..]
-
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index 2a0233cd0bc9..c02cf32cd17c 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -735,19 +768,20 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
->  
->  static int dom_data_init(struct rdt_resource *r)  {
-> +	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
->  	struct rmid_entry *entry = NULL;
-> -	int i, nr_rmids;
-> +	u32 idx;
-> +	int i;
->  
-> -	nr_rmids = r->num_rmid;
-> -	rmid_ptrs = kcalloc(nr_rmids, sizeof(struct rmid_entry), GFP_KERNEL);
-> +	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
+On Sat, Dec 09, 2023 at 06:15:39PM +0100, David Heidelberg wrote:
+> Convert fan devices connected to GPIOs to the YAML syntax.
 > 
-> [>>] Is there a chance, it could result in "ZERO_SIZE_PTR", and we should guard it against ZERO_OR_NULL_PTR in the following if condition?
->         It might be related, while testing the snapshot[1] (and subsequent snapshots has similar change) on x86 platform, Zahid is seeing Kernel panic:
->         https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/fs/resctrl/monitor.c?h=mpam/snapshot/v6.2#n695
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 
-Interesting - I didn't think this could happen. Could you share the full splat?
+I keep wondering: What does this have to do with arm (in the subject) ?
 
-This would imply idx_limit was zero, so boot_cpu_data.x86_cache_max_rmid would be -1.
-But wouldn't this happen before this patch? idx_limit has the same value as nr_rmids on
-x86, its only MPAM that needs a different value.
-
-
-Thanks,
-
-James
+Guenter
