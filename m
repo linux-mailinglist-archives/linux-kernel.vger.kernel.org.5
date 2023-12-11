@@ -2,131 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF8180C436
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E404D80C444
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbjLKJQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S234529AbjLKJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbjLKJQN (ORCPT
+        with ESMTP id S234353AbjLKJRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:16:13 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305CA100
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:19 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3333074512bso2701018f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:19 -0800 (PST)
+        Mon, 11 Dec 2023 04:17:34 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7069EF2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:17:40 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-db99bad7745so3798735276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:17:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702286177; x=1702890977; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702286259; x=1702891059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i92w0H7T5cIJREEPTTsPXzjdkkN3FCVq9uA4lCfv1LA=;
-        b=unCM+QCjThdnQ32XOZSTfoyq6ktVic0r/YbdcBxFAKaHcDfpKXLaDZWqDYlmzV1emn
-         LG7pBTOjtal1qC0BmLjMRXPmhwyfXx7U70PX84IH7DPb/NM0KxtYXUhSW+ocgPWqjxuH
-         8Vj+GzmC5iJDHHsYul2yeFFT6ZX+XS+kUUnf25MGv2M/rN7V7J7XokjnfxwYOUGFmKGt
-         EJeQPDJTSsgIc50wMIMcYVzzHWVyLiEY2k4yuemwsBFC7Ambm90D5dZuB78mcIGuUXJY
-         QMh/u2whabTcfdfy7TGzgVtAwBwNaSrj45tIuWyNBXMaiS7fEzg4Hv4SO3nOWpwxNRMw
-         NOAQ==
+        bh=tON2THycPn5WWu4go17kYKIdjO0Li+YdKKlN3UXl7fo=;
+        b=e00PNCpN8ZLjOL7xSctTJ/LYxlUQtCXrYTS/HL4+rSs/7TUTxIBKl86FqWh+mo8OwY
+         5Ag+4v/LCUpmaTpiyNhtiXbWB84j5o0VuOXdEYktImiwc7cCL3NfUx7Vg0lqrx3psb50
+         TBng6bR4Nx7f8JA4wHxyqMd79dWGoXbum1K+z6nsgBaxNksI6yXe2nWZXnBZA/YcN62y
+         nou5jioMpADLCzw2piBGiyHhT2im2vOPHT6R9guU84bx/JDET4X4Uw7n4WGkbR84hQ1T
+         FLJKNrP1iX0l2mog6FglukxVIcaL9plddu3H+gzqeDgizKFdq+0I3H5Tr+Po0YVBf7Fw
+         KENA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286177; x=1702890977;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702286259; x=1702891059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i92w0H7T5cIJREEPTTsPXzjdkkN3FCVq9uA4lCfv1LA=;
-        b=gRbUJvfOO3pCR86IH530hM8SM2Q4+4Jc1vtkjAGWT3q24R0rUzf1W4Cv3vhVRng1/D
-         U0SdXFN+0063dVP11tsknU1Xsh9fCjR1vCbyIYHnfuQkhLHUYo9MGflKNgI1UcMKx5v+
-         QyD4c+86k5rttMd5PM9qq86uEtd6LTakm1nw0OGI10OJeIQlkB/NClaNj7iZUPWDSPX9
-         mbZWn/811A6lT+HSDf3MlFa38wyZs1zqh91SN/yQN4Htr7n1BVQnHzaNYAM3fcKKZvQV
-         JveT3J1HplICsGN/35XR+xDinDaVbXu1Fa2dPjac12dk9fz8vrRiiF3yFNBf2MuzQEil
-         Dlsg==
-X-Gm-Message-State: AOJu0Yx+b9x9z14EIWZSkOXi9wx8IEbJumeyB0EL0sBRZBRNEoy3UYk1
-        Raer/ZIAv84a/g79vrehLnI7hw==
-X-Google-Smtp-Source: AGHT+IE1Y3s47FyeYwxBMhMeqlNT8+HKhqIsiKFRswD7iG2IJiOPDvdZF+8n1xssCubPjCtjT+n+5A==
-X-Received: by 2002:a05:600c:11c8:b0:40b:5e56:7b51 with SMTP id b8-20020a05600c11c800b0040b5e567b51mr2033425wmi.154.1702286177549;
-        Mon, 11 Dec 2023 01:16:17 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm12398470wmb.8.2023.12.11.01.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 01:16:17 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        michael@amarulasolutions.com,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        David Airlie <airlied@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
-References: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
-Subject: Re: (subset) [PATCH v5 00/10] Add displays support for
- bsh-smm-s2/pro boards
-Message-Id: <170228617622.2409693.12899768447819855539.b4-ty@linaro.org>
-Date:   Mon, 11 Dec 2023 10:16:16 +0100
+        bh=tON2THycPn5WWu4go17kYKIdjO0Li+YdKKlN3UXl7fo=;
+        b=LJduIqG8H4VwkfuruhGLOVfZGI7z9CKrZbtfwtQ97AbPfcoFFxGf4eXmMySUcXkxSU
+         SHbhw2QTKsQlFEojOF6PCB8WU1Verb+nNXNa30oixLNrecExg3c6D6sCekvpLaMBRrEd
+         Oh3+wSPXQWezIGpdqx/ko0GhYC52lo5reeixYH+EA+PiXGeI2AycbpBdLZhMXTBe9rNC
+         IRRzkAUTPWak9icOYrlcTwk/G7w/DXMerxa/fxMXR4VCjTQr4zLeJi2WO7k22QGQY7Kx
+         rlktCGEPsaC1OUaboygPL7cW5Ka+zoW9bqa8Dd5PCn9pcCw4Dn6N7fbhlhY/RK7D+lw9
+         IOaQ==
+X-Gm-Message-State: AOJu0YxvhFR1W6n4It7HUHOChyqxWdisC1KACI4/jdVAoqb7h6dCiaj2
+        aFYDzSzNMVJGl7bredygyjvr4YkCZ0L1wUBcniG/ag==
+X-Google-Smtp-Source: AGHT+IGFfzc18Y0DvF6kIgNlWfALl1M8QjjxShgvXEdPkndGc0o1rTK2NDXz2q1MVL3JVH+322w8AxuAAcd+0Gs5STg=
+X-Received: by 2002:a5b:dc3:0:b0:db7:dacf:2f32 with SMTP id
+ t3-20020a5b0dc3000000b00db7dacf2f32mr2625241ybr.121.1702286259533; Mon, 11
+ Dec 2023 01:17:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org> <20231209-b4-arm64-sysreg-additions-v1-9-45284e538474@kernel.org>
+In-Reply-To: <20231209-b4-arm64-sysreg-additions-v1-9-45284e538474@kernel.org>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 11 Dec 2023 09:17:02 +0000
+Message-ID: <CA+EHjTwQUd66umh-w=fTtHsf-iUAUKk4HbtO-27RdZ6HRP=UEQ@mail.gmail.com>
+Subject: Re: [PATCH 09/13] arm64/sysreg: Update ID_AA64SMFR0_EL1 definition
+ for DDI0601 2023-09
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mark,
 
-On Thu, 07 Dec 2023 15:16:29 +0100, Dario Binacchi wrote:
-> The series adds drivers for the displays used by bsh-smm-s2/pro boards.
-> This required applying some patches to the samsung-dsim driver and the
-> drm_bridge.c module.
-> 
-> Changes in v5:
-> - Replace a 'return ret' with a 'goto fail' in the r63353_panel_activate()
-> - Add 'Reviewed-by' tag of Krzysztof Kozlowski
-> 
-> [...]
+On Sat, Dec 9, 2023 at 1:03=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
+e:
+>
+> The 2023-09 release of DDI0601 defines a number of new feature enumeratio=
+n
+> fields in ID_AA64SMFR0_EL1. Add these fields.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+Reviewed-by: Fuad Tabba <tabba@google.com>
 
-[06/10] drm/panel: Add Synaptics R63353 panel driver
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=2e87bad7cd339882cf26b7101a1c87dab71962c9
-[07/10] dt-bindings: display: panel: Add Ilitek ili9805 panel controller
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=549240c98e50207244bc1ac182622b8daba89a89
-[08/10] drm/panel: Add Ilitek ILI9805 panel driver
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=edbf1d506ebe8c0857c406bd5d5b81d46ffd8437
-[09/10] drm/panel: ilitek-ili9805: add support for Tianma TM041XDHG01 panel
-        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b1fcb7ee3707290466b2cc4956325fb91f09f13b
+Cheers,
+/fuad
 
--- 
-Neil
-
+> ---
+>  arch/arm64/tools/sysreg | 30 +++++++++++++++++++++++++++---
+>  1 file changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+> index 68236cf1abda..839f7cca53e0 100644
+> --- a/arch/arm64/tools/sysreg
+> +++ b/arch/arm64/tools/sysreg
+> @@ -1079,7 +1079,11 @@ UnsignedEnum     63      FA64
+>         0b0     NI
+>         0b1     IMP
+>  EndEnum
+> -Res0   62:60
+> +Res0   62:61
+> +UnsignedEnum   60      LUTv2
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+>  UnsignedEnum   59:56   SMEver
+>         0b0000  SME
+>         0b0001  SME2
+> @@ -1107,7 +1111,14 @@ UnsignedEnum     42      F16F16
+>         0b0     NI
+>         0b1     IMP
+>  EndEnum
+> -Res0   41:40
+> +UnsignedEnum   41      F8F16
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+> +UnsignedEnum   40      F8F32
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+>  UnsignedEnum   39:36   I8I32
+>         0b0000  NI
+>         0b1111  IMP
+> @@ -1128,7 +1139,20 @@ UnsignedEnum     32      F32F32
+>         0b0     NI
+>         0b1     IMP
+>  EndEnum
+> -Res0   31:0
+> +Res0   31
+> +UnsignedEnum   30      SF8FMA
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+> +UnsignedEnum   29      SF8DP4
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+> +UnsignedEnum   28      SF8DP2
+> +       0b0     NI
+> +       0b1     IMP
+> +EndEnum
+> +Res0   27:0
+>  EndSysreg
+>
+>  Sysreg ID_AA64FPFR0_EL1        3       0       0       4       7
+>
+> --
+> 2.39.2
+>
