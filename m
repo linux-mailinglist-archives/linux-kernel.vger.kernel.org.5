@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6895D80C549
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3BA80C54A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbjLKJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:54:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        id S234687AbjLKJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjLKJyD (ORCPT
+        with ESMTP id S229608AbjLKJyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:54:03 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11088E;
-        Mon, 11 Dec 2023 01:54:09 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d06d42a58aso39516165ad.0;
-        Mon, 11 Dec 2023 01:54:09 -0800 (PST)
+        Mon, 11 Dec 2023 04:54:08 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E128E;
+        Mon, 11 Dec 2023 01:54:14 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so3580295a12.3;
+        Mon, 11 Dec 2023 01:54:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702288449; x=1702893249; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1CAjGizWvzIdnxcqD28quz07hmswkxp+9z0Y4S9z6jE=;
-        b=KcLXWaGJS1NKhCm9RAk3OCAbOYdy7xqXjPSuVgp//wsG4Yb3jDpXpkgn8Kfe3Vk7wF
-         pt2hDwyFiixKz1p7UG8+n22Fm13uoCB0ixAS3H3NcmCqxdjokvbZa1eDcoV44qosj3Dz
-         TwfU6Uob1Zmir5tH7/9d8LxCI4Tzqps0ecx3E1p4i3quPAIxbzhrY49x2fiOp9IdYAe8
-         x6QyBkmC/9WA7zvaGxAWG2Eiru/KKdtnkcm1Myjkp+u0ow1t+ja0fbqtnaEe0Jahyh72
-         uvi0HBpltEnuCrzcq3VH0H5cddatzCOkgopCSWX3KFD65Nbs34NURDrH3sldBGxatrPg
-         5YRA==
+        d=gmail.com; s=20230601; t=1702288454; x=1702893254; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AA04sfNkH62YtYg6Nmq5x2j1Jcg5BYJtxmdnCLXGgCI=;
+        b=mrb5bq9bp3XzapTLBupayEIyRgwXPGUJz/OAQY89hYHjUHJNnRMdWGDLZ4VMXFzKvf
+         qei+E6U9kwoBVrDxp/UwoPzPoKt4g2bbOK+9EGyQ02/JFjRxQBktXlX4FkRT71z3ZLhY
+         0kQi+NsJAkGRa0E31W494VMcpucmsNjrxsM6XMU7HWUfCLTVgKl/vSb/fbH0zEIqNgwL
+         hiPfqkH8qW7xVyo8tvs3ftaJ4wfx4gCGM6/W8S4rHjD+8sLwgQPLiySDw76koAyDVgwl
+         HT6tcqGjh3NbvuAQoWkYN1AivIKZEfYWiJBMsCTSjPN1yjYqlp7TAe49cJERggctlZLN
+         zU7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702288449; x=1702893249;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1CAjGizWvzIdnxcqD28quz07hmswkxp+9z0Y4S9z6jE=;
-        b=ClLTASygU11j6f/YlnhMbuSPzPJqe7ntoD+0qrmBiFgFp0J2sSVxsDobYtr9H7j5O2
-         bWvZK+UZVp2WWCVVEF7BnpIEoF2wvTYc3zs8l5ByQsfj1DaWFfOaEz7SEKXca+RklMNk
-         TSXFkowXSyWBgCCgtOqgyiG414iKvTHL817ZM8HGLRWAxLswJaa/2d3cHuYra+bi0Nmv
-         kgrnxJbhTX5Nz/hVGqTPuCYBT5nOIs4h9wTzf02HILkdghcShcdbfvpVsifSJILtIyyx
-         fqV1ODro2fTZle2/QYnqKCD53WO0j9PdQJ31TTkrFLCX8T4jmeJrhkApacJvWqqgOQO7
-         mMtw==
-X-Gm-Message-State: AOJu0YwTIe3XR5YcF9T2JynL3MUZ5bQjqgXS2prH2LoD8p7KkO0IQyHB
-        j4l0/WQKy2imy3Sktmdx7B0=
-X-Google-Smtp-Source: AGHT+IH4q9rRR48G64b0jTRAPHAn8Y3eZCGFF3OJxV+1DOpUKTGLJ4/QgeKp2uKXk6ZrqJyn5wInjQ==
-X-Received: by 2002:a17:90b:1c0a:b0:286:815b:8c87 with SMTP id oc10-20020a17090b1c0a00b00286815b8c87mr2823495pjb.13.1702288449037;
-        Mon, 11 Dec 2023 01:54:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702288454; x=1702893254;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AA04sfNkH62YtYg6Nmq5x2j1Jcg5BYJtxmdnCLXGgCI=;
+        b=quNPiv/hutHlwnjI8yO8uc+YJZDtafIYJDaBJhV0cyy7HccnhYBRDyLy4R72RcIVAo
+         ILPkj/XDvFwtyB5dOJ2ptRi8gRzD9S7ow0ZiCQrVHvMdEay9G7p7cPdmYoq9ZrUB5o7A
+         0ueUU4s0GHp/G5ahmbdGXDAwW54UIVIqtFSF2bik+peI8kLjFj24eg3RsUo8x/Sn04Ht
+         DIvK3ZSpWEWXDLwvrMtPAJ6X8pqK/59PduMw/vOAYKsrJz8/7al6Z7mGdOHXeUKNrUiB
+         vMuKI+5GHIt43cwDYZ5ffubY3vBDW73lw0JyEb/+cPDg4uB0Zht/fkFR7b6eoevKYeXb
+         ZILg==
+X-Gm-Message-State: AOJu0YzAGmnpE9cVsD8Kua0k13CLOz9D9B+2H8+A4T7zEJQ/Zs+TSNHN
+        nRulFNp9zPxTDdSd6P+L7E4=
+X-Google-Smtp-Source: AGHT+IFqSNjgBxvcCASuoNTVlJPNlgjlLzFSaeUpu44Ey6GZeodxdNuVHFZImKjMy0H9Ph6Aiyyh5w==
+X-Received: by 2002:a05:6a21:789d:b0:18f:df5f:d9f3 with SMTP id bf29-20020a056a21789d00b0018fdf5fd9f3mr6159341pzc.91.1702288454100;
+        Mon, 11 Dec 2023 01:54:14 -0800 (PST)
 Received: from localhost.localdomain ([2409:8a6a:5426:70b1:a6fc:77ff:fe50:e63d])
-        by smtp.gmail.com with ESMTPSA id mt20-20020a17090b231400b002853349e490sm8149734pjb.34.2023.12.11.01.54.05
+        by smtp.gmail.com with ESMTPSA id mt20-20020a17090b231400b002853349e490sm8149734pjb.34.2023.12.11.01.54.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 01:54:08 -0800 (PST)
+        Mon, 11 Dec 2023 01:54:13 -0800 (PST)
 From:   Jianhua Lu <lujianhua000@gmail.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami <bgoswami@quicinc.com>,
@@ -57,10 +58,12 @@ To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
         linux-kernel@vger.kernel.org, Jianhua Lu <lujianhua000@gmail.com>
-Subject: [RFC, PATCH 1/2] ASoC: qcom: sdw: Add TDM support
-Date:   Mon, 11 Dec 2023 17:53:56 +0800
-Message-ID: <20231211095357.4629-1-lujianhua000@gmail.com>
+Subject: [RFC, PATCH 2/2] ASoC: qcom: sm8250: Add TERTIARY_TDM_RX_0 support
+Date:   Mon, 11 Dec 2023 17:53:57 +0800
+Message-ID: <20231211095357.4629-2-lujianhua000@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231211095357.4629-1-lujianhua000@gmail.com>
+References: <20231211095357.4629-1-lujianhua000@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,102 +76,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add qcom TDM setup function to support TDM ports for qcom platform.
+Add TERTIARY_TDM_RX_0 case to make speaker amplifiers working
+on xiaomi-elish tablet.
 
 Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
 ---
- sound/soc/qcom/sdw.c | 64 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+ sound/soc/qcom/sm8250.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
-index 77dbe0c28b29..267a8cff01a4 100644
---- a/sound/soc/qcom/sdw.c
-+++ b/sound/soc/qcom/sdw.c
-@@ -4,6 +4,7 @@
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+index f298167c2a23..00c89c073e72 100644
+--- a/sound/soc/qcom/sm8250.c
++++ b/sound/soc/qcom/sm8250.c
+@@ -16,6 +16,7 @@
  
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <linux/module.h>
-+#include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include "sdw.h"
+ #define DRIVER_NAME		"sm8250"
+ #define MI2S_BCLK_RATE		1536000
++#define TDM_BCLK_RATE		12288000
  
-@@ -101,6 +102,66 @@ int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
- }
- EXPORT_SYMBOL_GPL(qcom_snd_sdw_prepare);
+ struct sm8250_snd_data {
+ 	bool stream_prepared[AFE_PORT_MAX];
+@@ -53,6 +54,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
++	int ret, j;
  
-+static int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-+	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-+	unsigned int tdm_slot_offset[8] = { 0, 4, 8, 12, 16, 20, 24, 28 };
-+	int channels, slot_width;
-+	int ret;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		slot_width = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		slot_width = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		slot_width = 32;
-+		break;
-+	default:
-+		dev_err(rtd->dev, "%s: invalid param format 0x%x\n", __func__,
-+			params_format(params));
-+		return -EINVAL;
-+	}
-+
-+	channels = params_channels(params);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3, 8, slot_width);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "%s: failed to set tdm slot, err:%d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL, channels,
-+						  tdm_slot_offset);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "%s: failed to set channel map, err:%d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+	} else {
-+		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0xf, 0, 8, slot_width);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "%s: failed to set tdm slot, err:%d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_channel_map(cpu_dai, channels,
-+						  tdm_slot_offset, 0, NULL);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "%s: failed to set channel map, err:%d\n",
-+				__func__, ret);
-+			return ret;
-+		}
-+	}
-+}
-+EXPORT_SYMBOL_GPL(qcom_snd_tdm_hw_params);
-+
- int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct sdw_stream_runtime **psruntime)
-@@ -125,6 +186,9 @@ int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
- 				*psruntime = sruntime;
- 		}
+ 	switch (cpu_dai->id) {
+ 	case TERTIARY_MI2S_RX:
+@@ -63,6 +65,23 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
  		break;
-+	case PRIMARY_TDM_RX_0...QUINARY_TDM_TX_7:
-+		qcom_snd_tdm_hw_params(substream, params);
++	case TERTIARY_TDM_RX_0:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_DSP_A;
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_TER_TDM_IBIT,
++			TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++
++		for_each_rtd_codec_dais(rtd, j, codec_dai) {
++			ret = snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
++			snd_soc_dai_set_sysclk(codec_dai,
++				0,
++				TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++			if (ret < 0) {
++				dev_err(rtd->dev, "TDM fmt err:%d\n", ret);
++				return ret;
++			}
++		}
 +		break;
+ 	default:
+ 		break;
  	}
- 
- 	return 0;
 -- 
 2.41.0
 
