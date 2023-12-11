@@ -2,163 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3AC80D4C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD75880D4CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344964AbjLKR5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S1345087AbjLKR6H convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 12:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjLKR5v (ORCPT
+        with ESMTP id S1344957AbjLKR6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:57:51 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF80FCD;
-        Mon, 11 Dec 2023 09:57:56 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b5155e154so55892165e9.3;
-        Mon, 11 Dec 2023 09:57:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702317475; x=1702922275; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wYKSJ2l3/7Ewha/gT1ScFG6FBTutwPomIDS5R6uY778=;
-        b=Ym5MwTGeE8YE6Wa29SglxoszQ4v5RFUclnKE6xTGGnwHq+UE8ZWFpYbUr1docIiy1V
-         fEK2v0Iu94XBPVfB6PlI+6H0omRdby8HJgy+GVrxNVVyck9a35ZzoEq/vOLcz9O/kLjb
-         D+KKS5CuEdDVGb2J6SSHkgmh/ACoo7f0J1ONfDStEWW4/vCyLm7SnHRx7oIi4xK6sGwp
-         qCad/uKrFTUsZek4MxV4VUTqFhCE7HhPawBNbV1qz2a3RgSAjowaF2H/XxZdzKDukIo3
-         fhbTPA4brHiK+zah7y+6b2saHe5ellncJO0CphyS0G+B9pZ/9GMSsXKPw8EEUmimkTCn
-         ALqg==
+        Mon, 11 Dec 2023 12:58:06 -0500
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5193;
+        Mon, 11 Dec 2023 09:58:12 -0800 (PST)
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6d9db92bd71so600219a34.1;
+        Mon, 11 Dec 2023 09:58:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702317475; x=1702922275;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wYKSJ2l3/7Ewha/gT1ScFG6FBTutwPomIDS5R6uY778=;
-        b=w4Io3RETbttqm6IMuDDplJPnDqA7qTPcv+Cvm6kTQnNpmcl6uGYB2jPxbhnzR7EwaW
-         mQ98OGqAGFK+0i0wmcOOkpFK1HeQ3g4BkqoON/4mSaye1szd/m3wsoxbkS4o/iC1I404
-         /NMQjege5T2d0buYQIfSjE+WZlvZNvfsEuL3RW8Se+oBKP+Fvk4NBBouKKrQiGC2PVCv
-         OJ1wyn1BuAUwkYhK9dOj3cr1Ib6wL1u64PeCQITNSUBgpH/o/IFXr2wUmGmmOTAWdwL/
-         8QEp+mxC1bo/btLYDgQHAbOUM6240p41tioZDBlsLLludy5aUZr5p5MC5k8wODRQIn1S
-         TVWQ==
-X-Gm-Message-State: AOJu0YypnylH1JR0/pkEJRnTsRFQbS/OYA4ioWVQz/cU0xSiyLwpL2yh
-        nu2C/IkQkRLvDwxxOjXOUE2eDLITztE=
-X-Google-Smtp-Source: AGHT+IEg3L3pPefnALqwZK+c/kYFSt7/PmeOBRRMNF0qjacTIuHa3pTrzWGFXCqoTZPCv8mt9vjefA==
-X-Received: by 2002:a05:600c:5248:b0:40c:3e0a:692e with SMTP id fc8-20020a05600c524800b0040c3e0a692emr1989294wmb.232.1702317474580;
-        Mon, 11 Dec 2023 09:57:54 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id iv19-20020a05600c549300b0040b397787d3sm10147623wmb.24.2023.12.11.09.57.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:57:53 -0800 (PST)
-Message-ID: <65774da1.050a0220.bd430.2025@mx.google.com>
-X-Google-Original-Message-ID: <ZXdNnsqUxlecXIF8@Ansuel-xps.>
-Date:   Mon, 11 Dec 2023 18:57:50 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 1/2] dt-bindings: Document QCA808x PHYs
-References: <20231209014828.28194-1-ansuelsmth@gmail.com>
- <242759d9-327d-4fde-b2a0-24566cf5bf25@lunn.ch>
- <65772f36.050a0220.678b6.ef84@mx.google.com>
- <74b7fc4f-88d2-41c0-8d98-6530f0fc2d70@lunn.ch>
- <657744b5.050a0220.dfa0d.11a4@mx.google.com>
- <2698eda5-af84-494f-844b-2ea87aa510d2@lunn.ch>
+        d=1e100.net; s=20230601; t=1702317491; x=1702922291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OXbiTpVzJfHRl7QZFMGmf1sW13oDT9FBF5f3B7KPSvc=;
+        b=AZLuqQHAZbxrleryKoiCa7ycnnmw1g7zBi3m56KgedN562h66X4iIHoeDHcreTH3L7
+         naAPTlkORp5uZxqi3KijuaFI1dJbRokHtO70Rom/mxKxEyJUgrZSxcejxdkvPbFDfeC/
+         uz78wbaPSfHc+vWdFt1ZMlHyT/eOX6aIhN3lxPeTHNBImwxclVlcyT+eL5NfHTsl2+pM
+         Ky8KUIHhkPwsoS0wOi98seZFvjSSs/hAkb1I9Rwwgf5EKMUmRGbn6ICITAtZdRsIzsAH
+         p3Dikz61fe51hM8p2RSBkKmpzeZt7R23po+EPt/biQXQpP5fsY04xkLkKXssXdxmJ+7C
+         tFLA==
+X-Gm-Message-State: AOJu0YzZLDV5C6xY0Y7FwDaYknR0tqSxHkxWjFKi9Q6Qok9pNTnnkvDY
+        fRK5sO4z9OM2gqNRNHeDUamcI27p6wynd3wRBlE=
+X-Google-Smtp-Source: AGHT+IEB8tbPHG0hpmSXtZbQPu9rCKTmgzM9oTofWHtCzQfwuRW4mAEhOhvFbMf7e2/laCNphcPlfM/B7FB2AK0pBlo=
+X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
+ sd4-20020a056871228400b001fb06485207mr9545202oab.2.1702317491331; Mon, 11 Dec
+ 2023 09:58:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2698eda5-af84-494f-844b-2ea87aa510d2@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1880915.tdWV9SEqCh@kreacher> <8315317.T7Z3S40VBb@kreacher> <03944e4e-d57d-4442-b38d-e36e20cb5ae3@linaro.org>
+In-Reply-To: <03944e4e-d57d-4442-b38d-e36e20cb5ae3@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Dec 2023 18:58:00 +0100
+Message-ID: <CAJZ5v0hwLcL9UKQs7WA=hb2v31eEY83rv-bQVgSv_EV9AidYZA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] thermal: Drop redundant and confusing
+ device_is_registered() checks
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 06:49:02PM +0100, Andrew Lunn wrote:
-> On Mon, Dec 11, 2023 at 06:19:46PM +0100, Christian Marangi wrote:
-> > On Mon, Dec 11, 2023 at 04:54:12PM +0100, Andrew Lunn wrote:
-> > > > Mhhh with a generic property and LED core or phylib handling it... How
-> > > > it would work applying that setting on PHY side?
-> > > 
-> > > Add a .led_set_polarity callback to the PHY driver structure?
-> > > 
-> > > Take a look at other LED drivers. Does anything similar already exist?
-> > > It is unlikely that PHYs are the only sort of LED to have a polarity.
-> > >
-> > 
-> > Interesting topic... With a quick grep on Documentation for polarity of
-> > high, I can't find any use of it...
-> 
-> As i said, active-high is the default. So there is no need to specify
-> it. But if you look in Documentation/devicetree/binding/leds for
-> 'active-low' you will find a few examples.
+On Mon, Dec 11, 2023 at 6:39 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
 >
-
-Yes I was searching more and I just notice active-low and led-active-low
-usage for bcm6358.
-
-> > Also main problem is that the thing is controlled globally and not per
-> > LED. (can be handled internally to the driver with some priv and check
-> > magic)
-> 
-> Ah, missed that. Marvell PHYs have polarity per LED.
-> 
-> It would be better to describe this correctly, so one property at a
-> higher level. We can then in the future add an 'active-low' property
-> per PHY.
-> 
-> > Is it worth to impemement the additional API to control this? And I
-> > guess a egenric binding should be added to ethernet-phy? Or should it be
-> > added to LEDs?
-> 
-> Since it is above individual LEDs, i would not add it to the generic
-> LED binding. But it could go inside the leds object of
-> ethernet-phy.yaml.
-> 
->            leds {
->                 #address-cells = <1>;
->                 #size-cells = <0>;
-> 
-> 		active-low;
-> 
->                 led@0 {
->                     reg = <0>;
->                     color = <LED_COLOR_ID_WHITE>;
->                     function = LED_FUNCTION_LAN;
->                     default-state = "keep";
->                 };
+> On 08/12/2023 20:19, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Multiple places in the thermal subsystem (most importantly, sysfs
+> > attribute callback functions) check if the given thermal zone device is
+> > still registered in order to return early in case the device_del() in
+> > thermal_zone_device_unregister() has run already.
+> >
+> > However, after thermal_zone_device_unregister() has been made wait for
+> > all of the zone-related activity to complete before returning, it is
+> > not necessary to do that any more, because all of the code holding a
+> > reference to the thermal zone device object will be waited for even if
+> > it does not do anything special to enforce this.
+> >
+> > Accordingly, drop all of the device_is_registered() checks that are now
+> > redundant and get rid of the zone locking that is not necessary any more
+> > after dropping them.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
 >
+> [ ... ]
+>
+> > @@ -132,11 +120,6 @@ trip_point_temp_store(struct device *dev
+> >
+> >       mutex_lock(&tz->lock);
+> >
+> > -     if (!device_is_registered(dev)) {
+> > -             ret = -ENODEV;
+> > -             goto unlock;
+> > -     }
+> > -
+> >       trip = &tz->trips[trip_id];
+> >
+> >       if (temp != trip->temperature) {
+> > @@ -162,23 +145,12 @@ trip_point_temp_show(struct device *dev,
+> >                    char *buf)
+> >   {
+> >       struct thermal_zone_device *tz = to_thermal_zone(dev);
+> > -     int trip_id, temp;
+> > +     int trip_id;
+> >
+> >       if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+> >               return -EINVAL;
+> >
+> > -     mutex_lock(&tz->lock);
+> > -
+> > -     if (!device_is_registered(dev)) {
+> > -             mutex_unlock(&tz->lock);
+> > -             return -ENODEV;
+> > -     }
+> > -
+> > -     temp = tz->trips[trip_id].temperature;
+> > -
+> > -     mutex_unlock(&tz->lock);
+> > -
+> > -     return sprintf(buf, "%d\n", temp);
+> > +     return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
+>
+> Without the lock, could the trip_temp_store() make the value change
+> while we read it?
 
-Ok! And I guess the additional API will (initially to be later expanded
-for other usage?) take this value and call the set polarity based on
-this correct? 
-
-bool active_low = of_property_read_bool(leds_node, "active-low");
-
-.led_set_polarity(struct phy_device *phydev, bool active_low);
-
-
-Maybe a more flexible approach might be scan for both. (either in leds
-node or in the led subnode)
-
-.led_set_polarity(struct phy_device *phydev, int index, bool active_low);
-
-Where index is -1 if it's global and the led index if it's in the led
-node?
-
-PHY driver will know what to ignore/use as I can't immagine to have a
-PHY that have both global and per LED polarity. What do you think?
-
--- 
-	Ansuel
+The lock doesn't change that, because the write can occur before
+dropping the lock and the printf() and reading an int is atomic on all
+architectures supported by Linux.
