@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 864ED80CC16
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EB080CC22
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343652AbjLKN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
+        id S1343845AbjLKN5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343994AbjLKNzs (ORCPT
+        with ESMTP id S1344021AbjLKNzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:55:48 -0500
+        Mon, 11 Dec 2023 08:55:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785E2325A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:54:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04A60C433C9;
-        Mon, 11 Dec 2023 13:54:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE15E8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:54:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F70CC433C7;
+        Mon, 11 Dec 2023 13:54:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302847;
-        bh=GK4QKJzdH8xJclUvoSi7bhMR3Qj3mX8sc8lN1h3KH3o=;
+        s=k20201202; t=1702302851;
+        bh=gmWXl8OnCsDxGnfCAvvdJ9/lz1xt84JHADheam84Pw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWzMcxxzuEJOYCulIaSA5WjqufdHZ/AFsPZdjlw5hRAC7LUkRGKtukndqr2h59eIM
-         ypLam2pfH3v4YEtZQiIGTquf0GenAx0w6qtVOhGConxE0d4eUPqzCw6nrM3yKDaO5r
-         aVgTZhHXPJaWFgNPEqJRbBvFeYDjah0lUQ6leKupck+TYeF1JtkZ4dRSEl2Z5P411l
-         MM8yMkFC9VEsWGn70+sPFK+Y/eOS5l2cEkKAmryY2YiQrTNivAx0C5pNlOYH8QkQws
-         TTdyWhW6syNNCOPbKL6a2ytaM/3Cdic8eUrc0IM8wIJlkaHJBnAzlAeXtKzUcEfMt6
-         ChvwohfoJa9JQ==
+        b=SvBl+m+09oDNEHo5Q4aH4aSNYq1uuGpreTCXZSr+fq6/zGeVIrqeesF+pDMbTWPQz
+         Mty/KJfz/VOiqPxs0kzdlmduh1GRgdiNrg7udScux6bWlfH/1eajcWbom7LejGz1lh
+         Lvdn/CHmwXZpBjjagkDYpW5nboFbbd4uYFO93as7Iduh+QjJ631ExDl+CJngjFQTw5
+         3ECbZyz3lWwqMoGNdSPECQZhZziinpGJ7aWmopuGw7tNLW6qxqwZcSafcaov140a6g
+         IIZJTW7ciKxEdxDSg1kULVGdLxpdGSNwsyZBOI9UFlRmJ5yxw4qSt/xkFIyUa2qW1q
+         qRWJQYfttmrMA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jinyang He <hejinyang@loongson.cn>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
+Cc:     Hengqi Chen <hengqi.chen@gmail.com>,
         Huacai Chen <chenhuacai@loongson.cn>,
         Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        lienze@kylinos.cn, yangtiezhu@loongson.cn, zhangqing@loongson.cn,
-        loongarch@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 46/47] LoongArch: Set unwind stack type to unknown rather than set error flag
-Date:   Mon, 11 Dec 2023 08:50:47 -0500
-Message-ID: <20231211135147.380223-46-sashal@kernel.org>
+        yangtiezhu@loongson.cn, loongarch@lists.linux.dev,
+        linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 6.6 47/47] LoongArch: Preserve syscall nr across execve()
+Date:   Mon, 11 Dec 2023 08:50:48 -0500
+Message-ID: <20231211135147.380223-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -56,68 +55,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinyang He <hejinyang@loongson.cn>
+From: Hengqi Chen <hengqi.chen@gmail.com>
 
-[ Upstream commit 97ceddbc9404a7d1e2c4049435bff29427d762cc ]
+[ Upstream commit d6c5f06e46a836e6a70c7cfd95bb38a67d9252ec ]
 
-During unwinding, unwind_done() is used as an end condition. Normally it
-unwind to the user stack and then set the stack type to unknown, which
-is a normal exit. When something unexpected happens in unwind process
-and we cannot unwind anymore, we should set the error flag, and also set
-the stack type to unknown to indicate that the unwind process can not
-continue. The error flag emphasizes that the unwind process produce an
-unexpected error. There is no unexpected things when we unwind the PT_REGS
-in the top of IRQ stack and find out that is an user mode PT_REGS. Thus,
-we should not set error flag and just set stack type to unknown.
+Currently, we store syscall nr in pt_regs::regs[11] and syscall execve()
+accidentally overrides it during its execution:
 
-Reported-by: Hengqi Chen <hengqi.chen@gmail.com>
-Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+    sys_execve()
+      -> do_execve()
+        -> do_execveat_common()
+          -> bprm_execve()
+            -> exec_binprm()
+              -> search_binary_handler()
+                -> load_elf_binary()
+                  -> ELF_PLAT_INIT()
+
+ELF_PLAT_INIT() reset regs[11] to 0, so in syscall_exit_to_user_mode()
+we later get a wrong syscall nr. This breaks tools like execsnoop since
+it relies on execve() tracepoints.
+
+Skip pt_regs::regs[11] reset in ELF_PLAT_INIT() to fix the issue.
+
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/kernel/stacktrace.c      | 2 +-
- arch/loongarch/kernel/unwind.c          | 1 -
- arch/loongarch/kernel/unwind_prologue.c | 2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
+ arch/loongarch/include/asm/elf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/loongarch/kernel/stacktrace.c b/arch/loongarch/kernel/stacktrace.c
-index 92270f14db948..f623feb2129f1 100644
---- a/arch/loongarch/kernel/stacktrace.c
-+++ b/arch/loongarch/kernel/stacktrace.c
-@@ -32,7 +32,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 	}
- 
- 	for (unwind_start(&state, task, regs);
--	     !unwind_done(&state) && !unwind_error(&state); unwind_next_frame(&state)) {
-+	     !unwind_done(&state); unwind_next_frame(&state)) {
- 		addr = unwind_get_return_address(&state);
- 		if (!addr || !consume_entry(cookie, addr))
- 			break;
-diff --git a/arch/loongarch/kernel/unwind.c b/arch/loongarch/kernel/unwind.c
-index ba324ba76fa15..a463d6961344c 100644
---- a/arch/loongarch/kernel/unwind.c
-+++ b/arch/loongarch/kernel/unwind.c
-@@ -28,6 +28,5 @@ bool default_next_frame(struct unwind_state *state)
- 
- 	} while (!get_stack_info(state->sp, state->task, info));
- 
--	state->error = true;
- 	return false;
- }
-diff --git a/arch/loongarch/kernel/unwind_prologue.c b/arch/loongarch/kernel/unwind_prologue.c
-index 55afc27320e12..929ae240280a5 100644
---- a/arch/loongarch/kernel/unwind_prologue.c
-+++ b/arch/loongarch/kernel/unwind_prologue.c
-@@ -227,7 +227,7 @@ static bool next_frame(struct unwind_state *state)
- 	} while (!get_stack_info(state->sp, state->task, info));
- 
- out:
--	state->error = true;
-+	state->stack_info.type = STACK_TYPE_UNKNOWN;
- 	return false;
- }
- 
+diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
+index b9a4ab54285c1..9b16a3b8e7060 100644
+--- a/arch/loongarch/include/asm/elf.h
++++ b/arch/loongarch/include/asm/elf.h
+@@ -293,7 +293,7 @@ extern const char *__elf_platform;
+ #define ELF_PLAT_INIT(_r, load_addr)	do { \
+ 	_r->regs[1] = _r->regs[2] = _r->regs[3] = _r->regs[4] = 0;	\
+ 	_r->regs[5] = _r->regs[6] = _r->regs[7] = _r->regs[8] = 0;	\
+-	_r->regs[9] = _r->regs[10] = _r->regs[11] = _r->regs[12] = 0;	\
++	_r->regs[9] = _r->regs[10] /* syscall n */ = _r->regs[12] = 0;	\
+ 	_r->regs[13] = _r->regs[14] = _r->regs[15] = _r->regs[16] = 0;	\
+ 	_r->regs[17] = _r->regs[18] = _r->regs[19] = _r->regs[20] = 0;	\
+ 	_r->regs[21] = _r->regs[22] = _r->regs[23] = _r->regs[24] = 0;	\
 -- 
 2.42.0
 
