@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8096080C8E5
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1A280C8E4
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343504AbjLKMCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S1343509AbjLKMCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234810AbjLKMBt (ORCPT
+        with ESMTP id S234851AbjLKMBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 07:01:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0712121
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:01:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2DC0C433C8;
-        Mon, 11 Dec 2023 12:01:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702296099;
-        bh=oCr5WivpKHnBfuV05fpWq2BCfxH42ssUJX2KXJJzi2c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UdoPj2K21OzXKLz2Sa5CGfHq6A/EDzr2G1ZE31IeG9Ec8+9XpMdWmmDZEysg1zZAo
-         0TBXLWYhr1dAOEc3ZJ6i533NEDrEFnuINndFDAE776FXRbQqrvBA0xGPe+i1Jt2lO7
-         gGJQgmJAWmLaCvlCrcGBTqjViaT/YMeyuBYYM7OVnsNYnLw97OxcSMztWkndp2oJW2
-         JksAUOY2mQ2w3vPAnuOh4VL9XBU8J4Jr//FBP26hEB5lLbXxw0I8MSFbdB4vqI/MFs
-         Fs+Fm/QcaOylvzTOpQkDHXp/JcnJlp33+AzIX4eqIiBKCkJQPb+FFex2e1PBz/G2KT
-         LJBpmziPF0emw==
-Date:   Mon, 11 Dec 2023 17:31:24 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] dmaengine: axi-dmac: Use only EOT interrupts when
- doing scatter-gather
-Message-ID: <ZXb6FE5Z1zcmRFKO@matsya>
-References: <20231204140352.30420-1-paul@crapouillou.net>
- <20231204140352.30420-5-paul@crapouillou.net>
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81080137;
+        Mon, 11 Dec 2023 04:01:40 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB9IEYK009898;
+        Mon, 11 Dec 2023 04:01:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=pfpt0220; bh=h0QNwsIs
+        xCVCFnb61YiC0y8uyBswFifMu55wtofMhKA=; b=awCT9xfCMKHJgzaWicpcLmAs
+        jqpxb/mwQpK+R3grVz1y1fz19XU3JY9JzCLkzWVWWg3nU5VTUuTPEhAPjGHL8HwV
+        gAi37qrDqv2ka9m2TSpRZ9yp/gsm8wYgJCQ0R9ns797zPHkx6kYybjLOe745Ebkd
+        CGYNWxwBLFqeMsOWtVh185ka3CFgUDaL/20qrVngQbGdsqIzyDCyutopq1i9vCS8
+        Jt0s2VpWbkdSV0tSBjkIqZVvKf0qTaavWBwb6JY/PVam6BTY+Hp7qERcZzud1EDm
+        v/nYAiYeM5KpqbqheIhZHhtJxVMYOX9kh4iY9jHoDmdaOqvJACDm82sbea9qpQ==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uwyp4gfjk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 04:01:36 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Dec
+ 2023 04:01:35 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 11 Dec 2023 04:01:34 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id 530E63F7045;
+        Mon, 11 Dec 2023 04:01:33 -0800 (PST)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <gregory.clement@bootlin.com>, <andi.shyti@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v3 0/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+Date:   Mon, 11 Dec 2023 14:01:28 +0200
+Message-ID: <20231211120129.3719469-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204140352.30420-5-paul@crapouillou.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: _89VZfFsXvVH5A_7vJDI7Kvq921FjJ-J
+X-Proofpoint-GUID: _89VZfFsXvVH5A_7vJDI7Kvq921FjJ-J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-12-23, 15:03, Paul Cercueil wrote:
-> Instead of notifying userspace in the end-of-transfer (EOT) interrupt
-> and program the hardware in the start-of-transfer (SOT) interrupt, we
-> can do both things in the EOT, allowing us to mask the SOT, and halve
-> the number of interrupts sent by the HDL core.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/dma/dma-axi-dmac.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
-> index 5109530b66de..beed91a8238c 100644
-> --- a/drivers/dma/dma-axi-dmac.c
-> +++ b/drivers/dma/dma-axi-dmac.c
-> @@ -415,6 +415,7 @@ static bool axi_dmac_transfer_done(struct axi_dmac_chan *chan,
->  			list_del(&active->vdesc.node);
->  			vchan_cookie_complete(&active->vdesc);
->  			active = axi_dmac_active_desc(chan);
-> +			start_next = !!active;
+From: Elad Nachman <enachman@marvell.com>
 
-Should this be in current patch, sounds like this should be a different
-patch?
+i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
 
->  		}
->  	} else {
->  		do {
-> @@ -1000,6 +1001,7 @@ static int axi_dmac_probe(struct platform_device *pdev)
->  	struct axi_dmac *dmac;
->  	struct regmap *regmap;
->  	unsigned int version;
-> +	u32 irq_mask = 0;
->  	int ret;
->  
->  	dmac = devm_kzalloc(&pdev->dev, sizeof(*dmac), GFP_KERNEL);
-> @@ -1067,7 +1069,10 @@ static int axi_dmac_probe(struct platform_device *pdev)
->  
->  	dma_dev->copy_align = (dmac->chan.address_align_mask + 1);
->  
-> -	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, 0x00);
-> +	if (dmac->chan.hw_sg)
-> +		irq_mask |= AXI_DMAC_IRQ_SOT;
-> +
-> +	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, irq_mask);
->  
->  	if (of_dma_is_coherent(pdev->dev.of_node)) {
->  		ret = axi_dmac_read(dmac, AXI_DMAC_REG_COHERENCY_DESC);
-> -- 
-> 2.42.0
-> 
+Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
+while slave is in the middle of responding.
+This means that the i2c slave has not finished the transmission, but
+the master has already finished toggling the clock, probably due to
+the slave missing some of the master's clocks.
+This was seen with Ubiquity SFP module.
+This is typically caused by slaves which do not adhere completely
+to the i2c standard.
+
+The solution is to change the I2C mode from mpps to gpios, and toggle
+the i2c_scl gpio to emulate bus clock toggling, so slave will finish
+its transmission, driven by the manual clock toggling, and will release
+the i2c bus.
+
+v3:
+   1) Remove unused / un-initialized variable
+
+   2) Replace devm_pinctrl_get() with pinctrl_get() and pinctrl_put() pair
+      in probe and device removal.
+
+   3) Replace atomic sleeps with usleep_range()
+
+   4) Rework comment to start with a capital letter
+
+v2:
+   1) Explain more about cause of issue in commit message
+
+   2) Change variable name to something clearer
+
+   3) Leave space between comments
+
+   4) Remove redundant blank line
+
+   5) Add error message if pinctrl get failed
+
+   6) Move gpio request to probe function
+
+   7) Fix commenting style
+
+   8) Explain in comments why 10 togglings are required
+
+   9) Move from mdelay to udelay, reducing delay time
+
+   10) Explain in comments what is the value written
+       to the reset register.
+
+   11) Explain why fallthrough is required (generate stop condition)
+
+   12) Explain why in case of missing i2c arbitration loss details,
+       driver probe will not fail, in order to be backward compatible
+       with older dts files
+
+Elad Nachman (1):
+  i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+
+ drivers/i2c/busses/i2c-mv64xxx.c | 118 ++++++++++++++++++++++++++++++-
+ 1 file changed, 117 insertions(+), 1 deletion(-)
 
 -- 
-~Vinod
+2.25.1
+
