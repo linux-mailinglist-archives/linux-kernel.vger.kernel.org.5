@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF6280DF4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D454280DF50
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345235AbjLKXHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 18:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S1345246AbjLKXKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 18:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjLKXHY (ORCPT
+        with ESMTP id S230101AbjLKXKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 18:07:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C6D9A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 15:07:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27CCBC433C8;
-        Mon, 11 Dec 2023 23:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702336050;
-        bh=BElgQv8/npTSDU2dFL+JufzC4ciRNU6YqmHa3dc12DI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pAyWQ8pgDKHPBv3dj1xjaMrnr2k+U0DA1EpGk7u6/znbiQgAeXsuvQaAMXDMoYA/z
-         Xee5VdIeb2OOw460rxC7hL2YxgyXKySTqpi7/hED543BFBQX4d6iLrnt3u6WZWRsVC
-         Ykr71wo0h+38RSKjrF0Rg0ejIoTfzmX5Vpce71u4PPTdX21Xqkd+HAlwUKh/jE21gk
-         o9BwHHBvs8w15PZC4Yx9y+7h+6yW5sUzkUqVUs0cBoyjLT6Wku555G0l72D08YG28p
-         i5X1M7TNN1vvX+cuMG4wfd+ocZyd6NjMXq+N/ZFyyDIm3Xcsg+wfxiZxNxIxkddDez
-         yuWFhFuWtY6Mg==
-Date:   Tue, 12 Dec 2023 08:07:26 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] trace_seq: Increase the buffer size to almost two pages
-Message-Id: <20231212080726.a8d1f614e65c3b49ff1d9fbd@kernel.org>
-In-Reply-To: <20231211132837.24488ec1@gandalf.local.home>
-References: <20231209175220.19867af4@gandalf.local.home>
-        <20231211214627.cff4ecfead14029ef22cd3ef@kernel.org>
-        <20231211132837.24488ec1@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 18:10:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B469C9A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 15:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702336244; x=1733872244;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fdZ2x/5+NDcHqfPGDDUoiJaMPSKPPuvvjvF9z/kpukA=;
+  b=hxk66eJJFbvWrSlYgym/xWotfSSem/NLIN7Z/EOS24ltAIBF4Oggcb/S
+   Cy6o3semsjSVe7kpPLCB6s/gLORZAy4IrgZfenskKwvRU7ikCumz6O2Rk
+   bHG9GJkzLwqjstoBoK3ysQLp3kvOFg2Logiom1IgitHgQQRe3TSruXIjO
+   1oXeIA2UxnzEG02PwCLs0LevhKnjD61TkpokaOVLQ2+1VYkxytX4SGBsd
+   eBIZPOWTxDJuM/iJxlKb3CHdlars98zqu4u5eaOg9PQH00LH8+2JiALmm
+   zMJHN1l236ouayX6JR4V2azrOzCGzJl95s2Z0aL0LkwaQGvTGFYYQ9wWz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="374229721"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="374229721"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 15:10:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="722994661"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="722994661"
+Received: from liviuoct-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.47.81])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 15:10:38 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 9998110A290; Tue, 12 Dec 2023 02:10:35 +0300 (+03)
+Date:   Tue, 12 Dec 2023 02:10:35 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCHv4 05/14] x86/kvm: Do not try to disable kvmclock if it
+ was not enabled
+Message-ID: <20231211231035.743cesujphsp5eve@box.shutemov.name>
+References: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
+ <20231205004510.27164-6-kirill.shutemov@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205004510.27164-6-kirill.shutemov@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 13:28:37 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Dec 05, 2023 at 03:45:01AM +0300, Kirill A. Shutemov wrote:
+> kvm_guest_cpu_offline() tries to disable kvmclock regardless if it is
+> present in the VM. It leads to write to a MSR that doesn't exist on some
+> configurations, namely in TDX guest:
+> 
+> 	unchecked MSR access error: WRMSR to 0x12 (tried to write 0x0000000000000000)
+> 	at rIP: 0xffffffff8110687c (kvmclock_disable+0x1c/0x30)
+> 
+> kvmclock enabling is gated by CLOCKSOURCE and CLOCKSOURCE2 KVM paravirt
+> features.
+> 
+> Do not disable kvmclock if it was not enabled.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Fixes: c02027b5742b ("x86/kvm: Disable kvmclock on all CPUs on shutdown")
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Wanpeng Li <wanpengli@tencent.com>
 
-> On Mon, 11 Dec 2023 21:46:27 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > 
-> > > By increasing the trace_seq buffer to almost two pages, it can now print
-> > > out the first line.
-> > > 
-> > > This also subtracts the rest of the trace_seq fields from the buffer, so
-> > > that the entire trace_seq is now PAGE_SIZE aligned.  
-> > 
-> > Ok, but I just a bit concern about the memory consumption.
-> > Since this is very specific case, can we make it configurable later?
-> 
-> I was concerned about this too, but it looks like it's allocated and later
-> freed in every location except for a couple of instances.
-> 
-> One is "tracepoint_print_iter" which is used to pipe tracepoints to printk.
-> I think we can possibly make that allocated too.
-> 
-> The other is in ftrace_dump, which I don't think we can easily allocate
-> that. Although, we could have it allocated at boot up if
-> ftrace_dump_on_oops() is enabled.
-
-Can we reallocate it when we detect such bigger event entry in the path
-of trace_marker write? If any issue happens in the reallocation, we will
-not finish (commit) such big event in dumping buffer anyway.
-
-> 
-> Another KTODO?
-
-Yes, I think so.
-
-Thanks,
-
-> 
-> > 
-> > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> 
-> Thanks!
-> 
-> -- Steve
-
+Paolo, Sean, any chance you can get it in through KVM tree while the rest
+of kexec patchset is pending? The problem is visible on normal reboot too.
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+  Kiryl Shutsemau / Kirill A. Shutemov
