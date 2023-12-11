@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A456A80D050
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD62E80D041
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344678AbjLKP7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S1344687AbjLKP61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:58:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344699AbjLKP6b (ORCPT
+        with ESMTP id S1344570AbjLKP6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:58:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E0B199
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:58:32 -0800 (PST)
+        Mon, 11 Dec 2023 10:58:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11F018F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:57:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702310308;
+        s=mimecast20190719; t=1702310277;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kqof2lbc18NuxxZ3avfpRF1Wh/FjZz2qWodEICCpfdI=;
-        b=Dek82FcfP1ePG6KpQA36jOa71CLOX8vBP6c49VSUAwFAEGwvnTWYhOui8dnvFeadqhmPsb
-        sheNBAJO1ADgXzLEuSZ2nJSes2PgmorlECakazllY+REaX+x4s5k0uNHXmZ4oUIT77bvzL
-        GS8XUb3PE0UCDn6MqA4Q6ddZUuYmAc4=
+        bh=KuC5xwuqcP7rQWdUGs+5SfITvp1Oi5oe13QDRULS4WU=;
+        b=HVGBbowyJeZXhiFjYSfHcHcDig0oaeQOMpoMNqRNrvNHxB+p+gOi9qcEBWMvgX+SpuV5M+
+        WgSGu556vNpqZoqW8PeSsNg5VXfCYCSp9Yutb4mMkrPJHu4tbclv5Ae6YqUoH2ZrmHEEUR
+        hY3tMyiDlb/3GyuTsSmjHhA9sy0fdC8=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-146-nQ4jaL5vOtq2vnJawkD1nA-1; Mon, 11 Dec 2023 10:58:04 -0500
-X-MC-Unique: nQ4jaL5vOtq2vnJawkD1nA-1
+ us-mta-473-hqCqiiJtNeeYflAwvpNPtw-1; Mon, 11 Dec 2023 10:57:52 -0500
+X-MC-Unique: hqCqiiJtNeeYflAwvpNPtw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E265A85A58A;
-        Mon, 11 Dec 2023 15:57:49 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8E6585A597;
+        Mon, 11 Dec 2023 15:57:51 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.192.166])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B71401121306;
-        Mon, 11 Dec 2023 15:57:47 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 25E491121306;
+        Mon, 11 Dec 2023 15:57:50 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -50,9 +50,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Muchun Song <muchun.song@linux.dev>,
         Peter Xu <peterx@redhat.com>
-Subject: [PATCH v1 21/39] mm/rmap: remove page_add_anon_rmap()
-Date:   Mon, 11 Dec 2023 16:56:34 +0100
-Message-ID: <20231211155652.131054-22-david@redhat.com>
+Subject: [PATCH v1 22/39] mm/rmap: remove RMAP_COMPOUND
+Date:   Mon, 11 Dec 2023 16:56:35 +0100
+Message-ID: <20231211155652.131054-23-david@redhat.com>
 In-Reply-To: <20231211155652.131054-1-david@redhat.com>
 References: <20231211155652.131054-1-david@redhat.com>
 MIME-Version: 1.0
@@ -60,7 +60,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,97 +69,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All users are gone, remove it and all traces.
+No longer used, let's remove it and clarify RMAP_NONE/RMAP_EXCLUSIVE a
+bit.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/rmap.h |  2 --
- mm/rmap.c            | 31 ++++---------------------------
- 2 files changed, 4 insertions(+), 29 deletions(-)
+ include/linux/rmap.h | 12 +++---------
+ mm/rmap.c            |  2 --
+ 2 files changed, 3 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 3b5357cb1c09..bd4edae4dbe7 100644
+index bd4edae4dbe7..0acebe41ab8e 100644
 --- a/include/linux/rmap.h
 +++ b/include/linux/rmap.h
-@@ -240,8 +240,6 @@ void folio_add_anon_rmap_ptes(struct folio *, struct page *, int nr_pages,
- 	folio_add_anon_rmap_ptes(folio, page, 1, vma, address, flags)
- void folio_add_anon_rmap_pmd(struct folio *, struct page *,
- 		struct vm_area_struct *, unsigned long address, rmap_t flags);
--void page_add_anon_rmap(struct page *, struct vm_area_struct *,
--		unsigned long address, rmap_t flags);
- void page_add_new_anon_rmap(struct page *, struct vm_area_struct *,
- 		unsigned long address);
- void folio_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
+@@ -177,20 +177,14 @@ struct anon_vma *folio_get_anon_vma(struct folio *folio);
+ typedef int __bitwise rmap_t;
+ 
+ /*
+- * No special request: if the page is a subpage of a compound page, it is
+- * mapped via a PTE. The mapped (sub)page is possibly shared between processes.
++ * No special request: A mapped anonymous (sub)page is possibly shared between
++ * processes.
+  */
+ #define RMAP_NONE		((__force rmap_t)0)
+ 
+-/* The (sub)page is exclusive to a single process. */
++/* The anonymous (sub)page is exclusive to a single process. */
+ #define RMAP_EXCLUSIVE		((__force rmap_t)BIT(0))
+ 
+-/*
+- * The compound page is not mapped via PTEs, but instead via a single PMD and
+- * should be accounted accordingly.
+- */
+-#define RMAP_COMPOUND		((__force rmap_t)BIT(1))
+-
+ /*
+  * Internally, we're using an enum to specify the granularity. Usually,
+  * we make the compiler create specialized variants for the different
 diff --git a/mm/rmap.c b/mm/rmap.c
-index 7787499fa2ad..83cba8909848 100644
+index 83cba8909848..9212726268ba 100644
 --- a/mm/rmap.c
 +++ b/mm/rmap.c
-@@ -1271,7 +1271,7 @@ static void __page_check_anon_rmap(struct folio *folio, struct page *page,
- 	 * The page's anon-rmap details (mapping and index) are guaranteed to
- 	 * be set up correctly at this point.
- 	 *
--	 * We have exclusion against page_add_anon_rmap because the caller
-+	 * We have exclusion against folio_add_anon_rmap_*() because the caller
- 	 * always holds the page locked.
- 	 *
- 	 * We have exclusion against page_add_new_anon_rmap because those pages
-@@ -1284,29 +1284,6 @@ static void __page_check_anon_rmap(struct folio *folio, struct page *page,
- 		       page);
- }
- 
--/**
-- * page_add_anon_rmap - add pte mapping to an anonymous page
-- * @page:	the page to add the mapping to
-- * @vma:	the vm area in which the mapping is added
-- * @address:	the user virtual address mapped
-- * @flags:	the rmap flags
+@@ -2663,8 +2663,6 @@ void rmap_walk_locked(struct folio *folio, struct rmap_walk_control *rwc)
+  * The following two functions are for anonymous (private mapped) hugepages.
+  * Unlike common anonymous pages, anonymous hugepages have no accounting code
+  * and no lru code, because we handle hugepages differently from common pages.
 - *
-- * The caller needs to hold the pte lock, and the page must be locked in
-- * the anon_vma case: to serialize mapping,index checking after setting,
-- * and to ensure that PageAnon is not being upgraded racily to PageKsm
-- * (but PageKsm is never downgraded to PageAnon).
-- */
--void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
--		unsigned long address, rmap_t flags)
--{
--	struct folio *folio = page_folio(page);
--
--	if (likely(!(flags & RMAP_COMPOUND)))
--		folio_add_anon_rmap_pte(folio, page, vma, address, flags);
--	else
--		folio_add_anon_rmap_pmd(folio, page, vma, address, flags);
--}
--
- static __always_inline void __folio_add_anon_rmap(struct folio *folio,
- 		struct page *page, int nr_pages, struct vm_area_struct *vma,
- 		unsigned long address, rmap_t flags, enum rmap_mode mode)
-@@ -1420,7 +1397,7 @@ void folio_add_anon_rmap_pmd(struct folio *folio, struct page *page,
-  * @vma:	the vm area in which the mapping is added
-  * @address:	the user virtual address mapped
-  *
-- * Like page_add_anon_rmap() but must only be called on *new* folios.
-+ * Like folio_add_anon_rmap_*() but must only be called on *new* folios.
-  * This means the inc-and-test can be bypassed.
-  * The folio does not have to be locked.
-  *
-@@ -1480,7 +1457,7 @@ static __always_inline void __folio_add_file_rmap(struct folio *folio,
- 	if (nr)
- 		__lruvec_stat_mod_folio(folio, NR_FILE_MAPPED, nr);
- 
--	/* See comments in page_add_anon_rmap() */
-+	/* See comments in folio_add_anon_rmap_*() */
- 	if (!folio_test_large(folio))
- 		mlock_vma_folio(folio, vma);
- }
-@@ -1594,7 +1571,7 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
- 
- 	/*
- 	 * It would be tidy to reset folio_test_anon mapping when fully
--	 * unmapped, but that might overwrite a racing page_add_anon_rmap
-+	 * unmapped, but that might overwrite a racing folio_add_anon_rmap_*()
- 	 * which increments mapcount after us but sets mapping before us:
- 	 * so leave the reset to free_pages_prepare, and remember that
- 	 * it's only reliable while mapped.
+- * RMAP_COMPOUND is ignored.
+  */
+ void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+ 		unsigned long address, rmap_t flags)
 -- 
 2.43.0
 
