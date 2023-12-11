@@ -2,93 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A35880D28B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF8180D29C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344885AbjLKQnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S1343941AbjLKQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKQng (ORCPT
+        with ESMTP id S229625AbjLKQoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:43:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510B198
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:43:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D78BC433C8;
-        Mon, 11 Dec 2023 16:43:41 +0000 (UTC)
-Date:   Mon, 11 Dec 2023 11:44:20 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH] ring-buffer: Do not update before stamp when switching
- sub-buffers
-Message-ID: <20231211114420.36dde01b@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        Mon, 11 Dec 2023 11:44:55 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD548E;
+        Mon, 11 Dec 2023 08:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=TL1+ZfABaO3NcVU1msasX17Cuyls1YNXC9R1nv/2x6o=; b=jTC8tqA/1cCyBgw7v5730bbj3L
+        iZei9gN1mFQ1V8pWnpCVnIQnuEpoUfsZiuGLn2eL+X9Y5ZfKrdg0o/CxqY+Y8JSquwVDK+Fw+zvoy
+        4feyUI1MsxIfwYOQ0rNe9nsDj1/XJBbYWOd6ZB0VW7ktU2kyszdIzadd3q7M7zH7vqRM=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:48306 helo=debian-acer)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rCjOp-0003hR-5C; Mon, 11 Dec 2023 11:44:55 -0500
+Date:   Mon, 11 Dec 2023 11:44:54 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Message-Id: <20231211114454.44ef3b7e5d994142af506a6f@hugovil.com>
+In-Reply-To: <20231211090949.297683-1-crescentcy.hsieh@moxa.com>
+References: <20231211090949.297683-1-crescentcy.hsieh@moxa.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe boards
+ not work by default
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi,
+your commit title message is somewhat vague and not really usefull in
+determining why the change is done.
 
-The ring buffer timestamps are synchronized by two timestamp placeholders.
-One is the "before_stamp" and the other is the "write_stamp" (sometimes
-referred to as the "after stamp" but only in the comments. These two
-stamps are key to knowing how to handle nested events coming in with a
-lockless system.
+Maybe change it to something like : "Set RS422 mode by default to fix
+MOXA RS422/RS485 PCIe boards..."
 
-When moving across sub-buffers, the before stamp is updated but the write
-stamp is not. There's an effort to put back the before stamp to something
-that seems logical in case there's nested events. But as the current event
-is about to cross sub-buffers, and so will any new nested event that happens,
-updating the before stamp is useless, and could even introduce new race
-conditions.
+Hugo Villeneuve.
 
-The first event on a sub-buffer simply uses the sub-buffer's timestamp
-and keeps a "delta" of zero. The "before_stamp" and "write_stamp" are not
-used in the algorithm in this case. There's no reason to try to fix the
-before_stamp when this happens.
 
-As a bonus, it removes a cmpxchg() when crossing sub-buffers!
+On Mon, 11 Dec 2023 17:09:49 +0800
+Crescent CY Hsieh <crescentcy.hsieh@moxa.com> wrote:
 
-Cc: stable@vger.kernel.org
-Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+> MOXA PCIe RS422/RS485 boards will not function by default because of the
+> initial default serial interface of all MOXA PCIe boards is set to
+> RS232.
+> 
+> This patch fixes the problem above by setting the initial default serial
+> interface to RS422 for those MOXA RS422/RS485 PCIe boards.
+> 
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+> Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312060523.Kmstf65q-lkp@intel.com/
+> 
+> ---
+> Changes from v1 to v2:
+> - Fix issue reported by kernel test robot
+> 	- Replace function return type from u32 to static unsigned int
+> 
+> v1: https://lore.kernel.org/all/20231201074055.259207-1-crescentcy.hsieh@moxa.com/
+> 
+> ---
+>  drivers/tty/serial/8250/8250_pci.c | 58 +++++++++++++++++++++++++++++-
+>  1 file changed, 57 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+> index b2be3783f..42fbbe89e 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/serial_core.h>
+>  #include <linux/8250_pci.h>
+>  #include <linux/bitops.h>
+> +#include <linux/bitfield.h>
+>  
+>  #include <asm/byteorder.h>
+>  #include <asm/io.h>
+> @@ -1968,6 +1969,20 @@ pci_sunix_setup(struct serial_private *priv,
+>  
+>  #define MOXA_GPIO_PIN2	BIT(2)
+>  
+> +#define MOXA_RS232	0x00
+> +#define MOXA_RS422	0x01
+> +#define MOXA_RS485_4W	0x0B
+> +#define MOXA_RS485_2W	0x0F
+> +#define MOXA_UIR_OFFSET	0x04
+> +#define MOXA_EVEN_RS_MASK	GENMASK(3, 0)
+> +#define MOXA_ODD_RS_MASK	GENMASK(7, 4)
+> +
+> +enum {
+> +	MOXA_SUPP_RS232 = BIT(0),
+> +	MOXA_SUPP_RS422 = BIT(1),
+> +	MOXA_SUPP_RS485 = BIT(2),
+> +};
+> +
+>  static bool pci_moxa_is_mini_pcie(unsigned short device)
+>  {
+>  	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
+> @@ -1981,13 +1996,54 @@ static bool pci_moxa_is_mini_pcie(unsigned short device)
+>  	return false;
+>  }
+>  
+> +static unsigned int pci_moxa_supported_rs(struct pci_dev *dev)
+> +{
+> +	switch (dev->device & 0x0F00) {
+> +	case 0x0000:
+> +	case 0x0600:
+> +		return MOXA_SUPP_RS232;
+> +	case 0x0100:
+> +		return MOXA_SUPP_RS232 | MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
+> +	case 0x0300:
+> +		return MOXA_SUPP_RS422 | MOXA_SUPP_RS485;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int pci_moxa_set_interface(const struct pci_dev *dev,
+> +				  unsigned int port_idx,
+> +				  u8 mode)
+> +{
+> +	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+> +	resource_size_t UIR_addr = iobar_addr + MOXA_UIR_OFFSET + port_idx / 2;
+> +	u8 val;
+> +
+> +	val = inb(UIR_addr);
+> +
+> +	if (port_idx % 2) {
+> +		val &= ~MOXA_ODD_RS_MASK;
+> +		val |= FIELD_PREP(MOXA_ODD_RS_MASK, mode);
+> +	} else {
+> +		val &= ~MOXA_EVEN_RS_MASK;
+> +		val |= FIELD_PREP(MOXA_EVEN_RS_MASK, mode);
+> +	}
+> +	outb(val, UIR_addr);
+> +
+> +	return 0;
+> +}
+> +
+>  static int pci_moxa_init(struct pci_dev *dev)
+>  {
+>  	unsigned short device = dev->device;
+>  	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+> -	unsigned int num_ports = (device & 0x00F0) >> 4;
+> +	unsigned int num_ports = (device & 0x00F0) >> 4, i;
+>  	u8 val;
+>  
+> +	if (!(pci_moxa_supported_rs(dev) & MOXA_SUPP_RS232)) {
+> +		for (i = 0; i < num_ports; ++i)
+> +			pci_moxa_set_interface(dev, i, MOXA_RS422);
+> +	}
+> +
+>  	/*
+>  	 * Enable hardware buffer to prevent break signal output when system boots up.
+>  	 * This hardware buffer is only supported on Mini PCIe series.
+> -- 
+> 2.34.1
+> 
+> 
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 2596fa7b748a..02bc9986fe0d 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3607,14 +3607,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	/* See if we shot pass the end of this buffer page */
- 	if (unlikely(write > BUF_PAGE_SIZE)) {
--		/* before and after may now different, fix it up*/
--		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
--		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--		if (a_ok && b_ok && info->before != info->after)
--			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
--					      info->before, info->after);
--		if (a_ok && b_ok)
--			check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
-+		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
- 		return rb_move_tail(cpu_buffer, tail, info);
- 	}
- 
+
 -- 
-2.42.0
-
+Hugo Villeneuve <hugo@hugovil.com>
