@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFACC80CCF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305B080CCF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344072AbjLKOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
+        id S1344306AbjLKOFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234925AbjLKOEk (ORCPT
+        with ESMTP id S234957AbjLKOEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:04:40 -0500
+        Mon, 11 Dec 2023 09:04:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F633877
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:02:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9250EC433CA;
-        Mon, 11 Dec 2023 14:02:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21964387A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:03:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FAAFC433C9;
+        Mon, 11 Dec 2023 14:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303378;
-        bh=BuHKqMd7L6hJUMKqGXVpnwJckHYtw9yzl+qIn3moBgE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GqUXPSwqO9gcjR0hRnkNZlaBCUbYXvYOQkeOzhD4HXi3pFPRExyAxHXdw0Wcs8RkE
-         JfQaQleefeude45KBaUjv6Ek2PFGmzP6wNx7/YbBWq2GPijXGjueYXKfymDAnr2nZP
-         w5NBCGOMFKb09tF9EugOmQORTjKPkvl/R5dlUK64Jkr9rOrvCyHF1vSUrod3OXWCTV
-         aPSlA7mZ5oOmp5mj8c2PZqRV3Naox07QcG2ieEU3z4O/NgOLSFw7SHD+IvTSzQxl2q
-         6UO3Bp6t7o5FYP3WTkHVW5VGogzIMfw1P4t37Fzs1bpSk2rgiQPuHyhpzZn+D95AMR
-         mT4JIjvobI5XQ==
+        s=k20201202; t=1702303380;
+        bh=2+ABJjwi2rtcImLzfvGNWYJkqy4ofmwTcTdjHO4769E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F/gpGUw7MIh8dKZHv6mRhiEW37+3BrbswOzImibqjslh0Fxoy7exDBlqf9gX9buPD
+         TMjsPAE9mLP6oKohFuUQEd5RmERBFOyGzvaSnZTRqJzNBaIJ39+kvWIENwB3dbAYMM
+         j0Q1lCyqiEcmxMp1k9gCdkrwlJfvwGKbDP9TNV8no44S4U5BMFIrhTLIvlVA0B8Z76
+         z9MmLMJATMC1PCHj6kmhPB3hPP95ksfeD60mLMCP0Vi//FFs8Z1AO4rbhfFHbi3KnB
+         dCmTfTMdn0Kcmw3jhtjFQCJkmyXwz1Ml17okJeABkjFzeFKINw6JljX9j09cHx6+1Q
+         aOcbdxQzh45Kw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kamil Duljas <kamil.duljas@gmail.com>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
+Cc:     Maciej Strozek <mstrozek@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
-        pierre-louis.bossart@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
-        suhui@nfschina.com, kuninori.morimoto.gx@renesas.com,
-        zhangyiqun@phytium.com.cn, alsa-devel@alsa-project.org,
+        Sasha Levin <sashal@kernel.org>, james.schulman@cirrus.com,
+        david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
         linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: Intel: Skylake: mem leak in skl register function
-Date:   Mon, 11 Dec 2023 09:02:44 -0500
-Message-ID: <20231211140254.392656-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 2/7] ASoC: cs43130: Fix the position of const qualifier
+Date:   Mon, 11 Dec 2023 09:02:45 -0500
+Message-ID: <20231211140254.392656-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231211140254.392656-1-sashal@kernel.org>
+References: <20231211140254.392656-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.301
@@ -61,47 +58,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamil Duljas <kamil.duljas@gmail.com>
+From: Maciej Strozek <mstrozek@opensource.cirrus.com>
 
-[ Upstream commit f8ba14b780273fd290ddf7ee0d7d7decb44cc365 ]
+[ Upstream commit e7f289a59e76a5890a57bc27b198f69f175f75d9 ]
 
-skl_platform_register() uses krealloc. When krealloc is fail,
-then previous memory is not freed. The leak is also when soc
-component registration failed.
-
-Signed-off-by: Kamil Duljas <kamil.duljas@gmail.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20231116224112.2209-2-kamil.duljas@gmail.com
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20231117141344.64320-2-mstrozek@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs43130.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 6b2c8c6e7a00f..5195e012dc6d4 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1450,6 +1450,7 @@ int skl_platform_register(struct device *dev)
- 		dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
- 				sizeof(skl_platform_dai), GFP_KERNEL);
- 		if (!dais) {
-+			kfree(skl->dais);
- 			ret = -ENOMEM;
- 			goto err;
- 		}
-@@ -1462,8 +1463,10 @@ int skl_platform_register(struct device *dev)
- 
- 	ret = devm_snd_soc_register_component(dev, &skl_component,
- 					 skl->dais, num_dais);
--	if (ret)
-+	if (ret) {
-+		kfree(skl->dais);
- 		dev_err(dev, "soc component registration failed %d\n", ret);
-+	}
- err:
- 	return ret;
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index cf29dec28b5e3..95060ae7dbb40 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -1686,7 +1686,7 @@ static ssize_t cs43130_show_dc_r(struct device *dev,
+ 	return cs43130_show_dc(dev, buf, HP_RIGHT);
  }
+ 
+-static u16 const cs43130_ac_freq[CS43130_AC_FREQ] = {
++static const u16 cs43130_ac_freq[CS43130_AC_FREQ] = {
+ 	24,
+ 	43,
+ 	93,
+@@ -2365,7 +2365,7 @@ static const struct regmap_config cs43130_regmap = {
+ 	.use_single_rw		= true, /* needed for regcache_sync */
+ };
+ 
+-static u16 const cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
++static const u16 cs43130_dc_threshold[CS43130_DC_THRESHOLD] = {
+ 	50,
+ 	120,
+ };
 -- 
 2.42.0
 
