@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD0080DBF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B0280DC0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344828AbjLKUrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S1344832AbjLKUtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344409AbjLKUru (ORCPT
+        with ESMTP id S1344409AbjLKUtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:47:50 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9731DB5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:47:56 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3332e351670so4524339f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:47:56 -0800 (PST)
+        Mon, 11 Dec 2023 15:49:21 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC529F;
+        Mon, 11 Dec 2023 12:49:28 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-33334480eb4so5566780f8f.0;
+        Mon, 11 Dec 2023 12:49:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702327675; x=1702932475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FNFFKTdQ4QRGU3jiDsgZw6qRsjpUS+kZ+xjPJ/qMrTI=;
-        b=EnBLlceTcSSyp37RP4ztHPHpitRX0yRJR5QhD3ot4GsLp+g+f/8eNOOeswU1ZSKGDZ
-         piCx9vSg4FtLvebqSTp/N9SczyhTK69RfXM+8ksmJaGy/cvm7rEEN8YG/37/3B3Y+XSU
-         TUl/QBtllRecfzYUi1AVR5KfmMedrdn1TEha/0pSa6ucKPvl42jxqF/nOWRa9RwawmTf
-         gfPSxJJQ8l1X6VbuzYuN2C9FbEC7NX1f7+I5QdzDsnQQrfC6vBv4le3SbnKovWfupGqh
-         jt6/UqNifdK/wgP/OG4efIotAD88WxVJbLvmA8ysXUbVe7ZCw0rCZTg4/3uhl0gYOA6+
-         7AMg==
+        d=gmail.com; s=20230601; t=1702327766; x=1702932566; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNt1leGWwF6iMNgl8vh4qT6p47tEM1r7xJkmF3rIPw0=;
+        b=lfAdm+YZKUmrhoa0+b7TXXu4yEaexLEknsBKbF89xi5NJTQZZBWcyqGYd74ivxcV3N
+         GSuiFYZgRe1TvwEzHTjzmkf5KV4VRaipmH+vfSaRZYsRgaYVf8IkIQGjyngRp4yjwbu0
+         6xcLJBI5nxAzqT6R3liS5H5lw0mriiqtm+Zus+Q/U93V3fC9KvBCRwrLR+QIPlzLU5dy
+         0paZK/BzmKUV3VdnjYFWINbPGkC7mIq/PzHVMVRy4EKlVqE5dKRUnjQQGO/YJaPYIwmC
+         zJeglbS2DeHjDQpaCaO3KSO72dgLnit6sL06QyhfF5oJ2DNATFFoLHnW/qIB0Ko1j54c
+         Ih+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702327675; x=1702932475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FNFFKTdQ4QRGU3jiDsgZw6qRsjpUS+kZ+xjPJ/qMrTI=;
-        b=dedNdDwwycEedILgCAwMkOQETvGDGqyLQQ6y95V1IrQ0TesAKwuy/AQD3pQQoSxGww
-         ohtTbkKSr/FY+wGpEEE8Tq+z4QoNOnALjV45FdQ3gtGABU5wV8fMKhPaovOQucVqpOeA
-         wDbo5VmoCjqK+kCE4mp6H+Js7Ef+sNZlMc8JCKAaCGaGlrDV6RSfteyH+kl2ZZb2pz97
-         2xnIMSZYi3kkYwPPlDDGOBFb/QTqXafqafwM62hBMAqkkVsfK2PXqdWhovDVvGb5Fh5R
-         0pObBYAZzwxSxvawIDHGsGLs9SGCyPorPx6UMaDNSmjcUfOh5EpX3tENMPBbDYwyf2ec
-         iskQ==
-X-Gm-Message-State: AOJu0YwCx9M4bF0GZYHMGyhBMUWyI7jBW/7Bz/Qaw6Wt2mEHw3J0cciY
-        kxounPfZiEqqe1I4D07UpCOSs23TBKxm5BTjbmyu1w==
-X-Google-Smtp-Source: AGHT+IHwCiI9a280gfixWHYnlXadu2DnALRqwi1TkFx8Su2VU6cZ+QOy+Dz/bbRdlhSki6Dni8BtYfJKHIclqEDVHoc=
-X-Received: by 2002:a5d:604d:0:b0:333:2fd2:7692 with SMTP id
- j13-20020a5d604d000000b003332fd27692mr435092wrt.131.1702327674923; Mon, 11
- Dec 2023 12:47:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702327766; x=1702932566;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FNt1leGWwF6iMNgl8vh4qT6p47tEM1r7xJkmF3rIPw0=;
+        b=VFr+AZ2nI8Lnb2MrzJy2v2HF9CWFbhQd9L1tvWY6yo7QQRhdfhY6URk4U03FRL0tH3
+         ABubsiK5w3dDThoIUe8DWhwipOiaYgTAxVlJ4IPP9uHRJJlXW7NdVSpx3irdjgmToXx/
+         vkGkkP2Vz5bdX3/vGqkneq6kOyfq7piVYSa4fExvaR4LZA7VXzYnoT61KkZ3xW85DeWH
+         nTls4AH5ZQyO/acUPViXxYpVep2EgGe1JS14lhiXOgtrNVwcgJv9GxvBNlFyfkYX062r
+         9Bus3DmQtnqzpVBwcjqv+U8SCYdV+BX/sHGQi/JUfK90WdYG4tnXuXxbqk7MOx/ibGEF
+         yOmg==
+X-Gm-Message-State: AOJu0Ywwd7LAS/42a/YrHXq3sZTTSi8FTGBBJpZ4Y9Kih7xM+5zlDZQP
+        t9PtRyeF2Y277mJjakW3BFg=
+X-Google-Smtp-Source: AGHT+IH2XFdFabW6X217F3scHBOkH/lG9jnSJEwVmN7ZeT+/bl8+IDli3a7laaNgA/b33aOEYwS0ZA==
+X-Received: by 2002:a5d:61d1:0:b0:333:2fd2:2eda with SMTP id q17-20020a5d61d1000000b003332fd22edamr2434593wrv.83.1702327766165;
+        Mon, 11 Dec 2023 12:49:26 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d58ca000000b0033338c3ba42sm9375414wrf.111.2023.12.11.12.49.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 12:49:25 -0800 (PST)
+Message-ID: <657775d5.5d0a0220.20552.2a2d@mx.google.com>
+X-Google-Original-Message-ID: <ZXd10iNX_S5S0vib@Ansuel-xps.>
+Date:   Mon, 11 Dec 2023 21:49:22 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [net-next RFC PATCH v2 3/4] dt-bindings: net: Document QCA808x
+ PHYs
+References: <20231211192318.16450-1-ansuelsmth@gmail.com>
+ <20231211192318.16450-3-ansuelsmth@gmail.com>
+ <170232732808.2870894.17994101779465776370.robh@kernel.org>
 MIME-Version: 1.0
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205130449.8e330a26ecbed1f7b5ad5d7a@linux-foundation.org>
- <CAKwvOdn+VTM+LY6ALcgaZTL57JpiKt5rBPMSPNXsgS3MCENhDQ@mail.gmail.com>
- <20231205132452.418722bea8f6878dca88142a@linux-foundation.org>
- <CAKwvOdn=og6h5gVdDCjFDANs3MN-_CD4OZ9oRM=o9YAvoTzkzw@mail.gmail.com> <20231205214359.GF1674809@ZenIV>
-In-Reply-To: <20231205214359.GF1674809@ZenIV>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 Dec 2023 12:47:39 -0800
-Message-ID: <CAKwvOdkC0oHWKGJ1Z6k_U9cwkjdcf=iweG-G78jXSJgWFk86Jg@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170232732808.2870894.17994101779465776370.robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 1:44=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
+On Mon, Dec 11, 2023 at 02:42:08PM -0600, Rob Herring wrote:
+> 
+> On Mon, 11 Dec 2023 20:23:17 +0100, Christian Marangi wrote:
+> > Add Documentation for QCA808x PHYs for the additional LED configuration
+> > for this PHY.
+> > 
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> > Changes v2:
+> > - Fix License warning from checkpatch
+> > - Drop redundant Description phrase
+> > - Improve commit tile
+> > - Drop special property (generalized)
+> > 
+> >  .../devicetree/bindings/net/qca,qca808x.yaml  | 58 +++++++++++++++++++
+> >  1 file changed, 58 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/qca,qca808x.yaml: 'anyOf' conditional failed, one must be fixed:
+> 	'properties' is a required property
+> 	'patternProperties' is a required property
+> 	hint: Metaschema for devicetree binding documentation
+> 	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+> 
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231211192318.16450-3-ansuelsmth@gmail.com
+> 
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
 >
-> On Tue, Dec 05, 2023 at 01:39:47PM -0800, Nick Desaulniers wrote:
->
-> > The tooling Tanzir is working on does wrap IWYU, and does support such
-> > mapping (of 'low level' to 'high level' headers; more so, if it
-> > recommends X you can override to suggest Y instead).
-> >
-> > arch/nios/ also doesn't provide a bug.h, which this patch is
-> > suggesting we include directly.  I guess the same goes for
-> > asm/rwonce.h.
->
-> See include/asm-generic/Kbuild:
-> mandatory-y +=3D bug.h
-> ...
-> mandatory-y +=3D rwonce.h
->
-> IOW, sh will have asm/bug.h and as/rwonce.h copied from asm-generic.
->
-> Still, includes of asm/*.h had been a massive headache historically
-> and breeding more of those shouldn't be overdone.
->
-> More painful problem is arch- and config-dependent stuff, though...
 
-Ah, it looks like include/uapi/asm-generic/Kbuild also makes use of
-this pattern using mandatory-y.
+Erm sorry for the bot error... But How to handle this? 
 
-So I think we can handle this as a two step translation. We can tell
-the tooling to 'nevermind recommending X, always replace
-recommendations for X with Y <for raisins>', so:
-1. any recommendation to use asm-generic/foo.h should be replaced with
-asm/foo.h (always, based on those 2 Kbuild files, could autogenerate)
-2. some recommendations to use asm/foo.h should be replaced with
-linux/foo.h (not necessarily codified anywhere; depends on if there is
-a linux/foo.h, will manually curate this list for now)
-
-Orthogonal but some places in tree can be cleaned up to include
-linux/foo.h rather than asm/foo.h.
-
-Does this sound like an improvement to my mental model of the
-conventions used for kernel header inclusion within the linux kernel?
-
-Tanzir nearly has the above done (for 1, 2 we will probably need to
-iterate on more).  We've also beefed up our local testing to test more
-architectures.  I expect Tanzir to send a v2 of this patch (as a
-series, with the fix for ARCH=3Dsh) later this week, if the above seems
-correct.
---=20
-Thanks,
-~Nick Desaulniers
+-- 
+	Ansuel
