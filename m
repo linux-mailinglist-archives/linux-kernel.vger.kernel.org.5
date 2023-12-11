@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D585F80D3AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF6280D3B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344546AbjLKR0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        id S1344558AbjLKR1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjLKR0f (ORCPT
+        with ESMTP id S234959AbjLKR1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:26:35 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EE2C3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:26:40 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1f8510883aso296872266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:26:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702315599; x=1702920399; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z8dOU7vgCrWoj+Jdp90eY+meUzL5fXI8ikuHYzvel8Q=;
-        b=xjTugPexuaiydY/nBgm2Nj6iGiTRwVIab1DQIit9GHwoUMH/e9cRVOjiB4XIkyfnJ9
-         zNxh+NhugNOYyfQgGYSi1aC0Msznq0dJIaCiICpOOPEUndfWRI/DCkrtiW011PfI/Xyz
-         MWge1ORw1l2hRlIVYUfeKKW3QmZ7kDoiqvJNhE7zFpn9HMSRExp54zbpTujxMeb/vW6u
-         44dMeMF0ZQcTXteolPdnqgo3YJPJ/5q4fj5kQHoEalX5216BW/1+wAeLKJ6BSKAUPrnX
-         yT3MyZgDdG2DLKvorV6/p8VTyDfmOztOd1t5lDF/tC6ZPjmCE3AQum/e9Cd+IlCSA8Sw
-         7u+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702315599; x=1702920399;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z8dOU7vgCrWoj+Jdp90eY+meUzL5fXI8ikuHYzvel8Q=;
-        b=fip1NEV8YdcjRu/LaOiAfLaNvN7DcPrRFDqWjk2CI7qzlotRoDXn/ITnEgRXCsa5JX
-         aVi1BZ0TttdgFk2aXovhxNZOGB7tkzMY5WmYozrOZ7B4lKlFuCGz2sxnnDzLhFUK3mDk
-         qHps2H982Rdt5D3InVRY4Q2mPzXTY/nZaL26/DNKaSGKSd4Snn88BJvYcABUlPVeJJdJ
-         w9a9ZR3+YvdrfuDRSiTgUZVWWzcZtdASHtFZ04Q7mD6bQ9zgPkix5GZWl7QJI8F4UP70
-         1cNiNwNPl7+nlozEVweyjQRUrr785a4LmsY3LxS2fsv4zMxdRKK1sf0TiZd5l6j1ejE0
-         rjKA==
-X-Gm-Message-State: AOJu0YzZoXtOqI6kgZgBY10rRFVhNqsIgVQ6z1DGusujTK8kZ0XTnzdg
-        dD7GGC+0X4qiw3S17Hqm+bG8ig==
-X-Google-Smtp-Source: AGHT+IEfw0tEWsYPUq1rUjK9r/SXMnRXPdUdO3qwcb1lgx/CQQoGx2F5+1XWcfj41LNcAiufmggqNA==
-X-Received: by 2002:a17:907:c2a:b0:a1c:695d:c936 with SMTP id ga42-20020a1709070c2a00b00a1c695dc936mr1648188ejc.73.1702315599451;
-        Mon, 11 Dec 2023 09:26:39 -0800 (PST)
-Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
-        by smtp.gmail.com with ESMTPSA id vt4-20020a170907a60400b00a1e1a1dd318sm5140324ejc.137.2023.12.11.09.26.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 09:26:39 -0800 (PST)
-Message-ID: <9d8be91b-36f4-4f01-bced-73359f98a84d@linaro.org>
-Date:   Mon, 11 Dec 2023 18:26:37 +0100
+        Mon, 11 Dec 2023 12:27:05 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62B5C3;
+        Mon, 11 Dec 2023 09:27:11 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B84E5223DB;
+        Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702315630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
+        b=KJ4efM9E+sa33aFAd8jwg5VXmnjMxleP6CmyD1Z0i97ow/IMJQBSqYXPh1ej+xavVwSRP4
+        Yg1lz/fUikUZbf1u2+vXr2RJE2evTJgLdRHZp8PKCuknSrpV2KnjDsWgIdBkLdxCyxxQjh
+        RNp4pJOJa1FNsc52gTMd8s7goQjnjEc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702315630;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
+        b=TO6pszgbMWjR3gBZnaW4MEVQ+gbRax/0poyUFFXjotFHInDoOr+qN7/2TD3A7ZbLly3/IT
+        YRHLNJGFEpFf+TBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702315629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
+        b=wzXbksvRNiCb4BbXMMBxbEnY6iRN/20VAk4MCpHS3Rljj8T26a7bGIb5ufMVkyXIF6ZR91
+        EvfGBjSwf9A5O7MLBegJl4BM0+huE5fNoBm4jZzLIFLmDT7FuH6vs9QkRAvxTJx13mPPRM
+        NuBUsypYbVCpDejdowVksfEijuMTCJg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702315629;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuXeYcPGrieZET/Hl977sPLVwbUrIJA1zejD9mT3ogI=;
+        b=k3338zTO3EpETkE8li6Dp/0dY97GEZjygMS4ZhvDNl1b1VwUfwBL4jBi4Swo7FgrfAdnP+
+        7OISWgzg4D5XlXAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A588134B0;
+        Mon, 11 Dec 2023 17:27:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id DhppJW1Gd2WxHQAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:27:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 0511CA07E3; Mon, 11 Dec 2023 18:27:08 +0100 (CET)
+Date:   Mon, 11 Dec 2023 18:27:08 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
+ read sb block
+Message-ID: <20231211172708.qpuk4rkwq4u2zbmj@quack3>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140753.975297-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom-sdx55: Fix the base address of PCIe PHY
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        stable@vger.kernel.org
-References: <20231211172411.141289-1-manivannan.sadhasivam@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231211172411.141289-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
+X-Spam-Score: 16.16
+X-Spamd-Bar: +++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wzXbksvR;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k3338zTO;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [9.46 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         R_RATELIMIT(0.00)[to_ip_from(RLa8hd5fybgmzcyr9mhbq8ey7y)];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_GT_50(0.00)[50];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_SPAM_SHORT(2.97)[0.991];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,huawei.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 9.46
+X-Rspamd-Queue-Id: B84E5223DB
+X-Spam-Flag: NO
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,17 +145,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.2023 18:24, Manivannan Sadhasivam wrote:
-> While convering the binding to new format, serdes address specified in the
-> old binding was used as the base address. This causes a boot hang as the
-> driver tries to access memory region outside of the specified address. Fix
-> it!
+On Mon 11-12-23 22:07:53, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: stable@vger.kernel.org # 6.6
-> Fixes: bb56cff4ac03 ("ARM: dts: qcom-sdx55: switch PCIe QMP PHY to new style of bindings")
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Unlike __bread_gfp(), ext4 has special handing while reading sb block:
+> 
+> 1) __GFP_NOFAIL is not set, and memory allocation can fail;
+> 2) If buffer write failed before, set buffer uptodate and don't read
+>    block from disk;
+> 3) REQ_META is set for all IO, and REQ_PRIO is set for reading xattr;
+> 4) If failed, return error ptr instead of NULL;
+> 
+> This patch add a new helper __bread_gfp2() that will match above 2 and 3(
+> 1 will be used, and 4 will still be encapsulated by ext4), and prepare to
+> prevent calling mapping_gfp_constraint() directly on bd_inode->i_mapping
+> in ext4.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+...
+> +/*
+> + * This works like __bread_gfp() except:
+> + * 1) If buffer write failed before, set buffer uptodate and don't read
+> + * block from disk;
+> + * 2) Caller can pass in additional op_flags like REQ_META;
+> + */
+> +struct buffer_head *
+> +__bread_gfp2(struct block_device *bdev, sector_t block, unsigned int size,
+> +	     blk_opf_t op_flags, gfp_t gfp)
+> +{
+> +	return bread_gfp(bdev, block, size, op_flags, gfp, true);
+> +}
+> +EXPORT_SYMBOL(__bread_gfp2);
 
-Konrad
+__bread_gfp2() is not a great name, why not just using bread_gfp()
+directly? I'm not a huge fan of boolean arguments but three different flags
+arguments would be too much for my taste ;) so I guess I can live with
+that.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
