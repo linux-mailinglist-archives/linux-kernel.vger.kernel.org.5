@@ -2,238 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED0B80DE2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A09580DE2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344943AbjLKWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
+        id S229663AbjLKWRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKWQp (ORCPT
+        with ESMTP id S229493AbjLKWRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:16:45 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A4E8F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:16:50 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso22375e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:16:50 -0800 (PST)
+        Mon, 11 Dec 2023 17:17:35 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386948F;
+        Mon, 11 Dec 2023 14:17:42 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c4846847eso13624545e9.1;
+        Mon, 11 Dec 2023 14:17:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702333008; x=1702937808; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nvF5V1Q9Ar02mtoysYDu05U7aSKEzXllew7q5EyIvRE=;
-        b=EJGkd/iw2jT4LICCe7+1ZUUwN7mBfzeOtBXag0ZjSuy9YBg/LBxNWAFQQ7Il7oD0/W
-         natwddcNSVEvix41/0w02yQvnstpeVWLmZW6nHMcMTCn407rnT7CZV5jkkI+ouyYG/O2
-         uAbBZOJlmBL2FhYDMN32/d3PHfZEuVZNkzWhfCti6QFl+1UpEUa+hAxo144ds8nGSZkD
-         X8kVeWtJlLjj6Tuz3dfFEMu56+vgn31UFcAKVsJtIC0vkhg3ItzzyVSWW2hEJApzUJQy
-         Qyq7JtKPNEg7ILjTzWPZObmhA3X5nGxSh4YHyk7wP3BYYZBi+E7KsrdxstPjOez//nmI
-         yKHA==
+        d=gmail.com; s=20230601; t=1702333060; x=1702937860; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=c9tp9YUq5vWpe1+ZnJGAbvZAkepuaBVbVaZfpHzIC5g=;
+        b=DEzJAL+DGJ365ADX3v5yv/iMSA0tN0xUzQPGS/V6vxBKGJZekl445z2gnBP8hA0izA
+         6G4g+WwUrSSQJFBATCAyDToZjK2M3/Mtjy23RbIBVPVwz2qBap+ee4Iq8P98qrMbtpoQ
+         UZ01Y1fedsTS4n8Jt/ux78ed2QjYYOFIpmY8tA/fxLtae0dLmsIt9WMfy/ri3lYt4Wmz
+         q/aoSnm169ugH/JQ4EvsfxEvobzbgreQx+rnRnM28GrkQx2BFgiCI78ebztB4HxSK7Jx
+         4+42ClUt8oUlOV1d7INBwuS7CMJCvTbOrxaytV/+u6CKdXKglvlSJPxrUPMNBZK0lwWC
+         wcwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702333008; x=1702937808;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nvF5V1Q9Ar02mtoysYDu05U7aSKEzXllew7q5EyIvRE=;
-        b=mUFcR8iXUCUaIqvFOG3We4wekkKXxQe6RtOAlhtN0w6QWwgyh3ocf6QRkXfucjl4kw
-         xHoXWr5xZ64Hh42tjAgpiLDgaRamciNcXN/g+h1PYqhpcISNdycEtFDj+au/QRunXMiE
-         lPCZ+/Et7/+8b+y+t4x2GrYwRnlQWmVgbnGCqQbVHUHnqqVjlh3vIsEJ34cfdAKkKLjR
-         JCXEU5nnCp3DURrNlUevjO1KKv2aM9t8ZwWyUDg6u5g/T/ih0QFRvJVdMJlnivFBRc/z
-         7CEAGjoxxrXgUITO2MWb0DYKEI3AaMFbvaRs4+DHQDsCxCE6kq07PlS/XmPLGj66hbiS
-         usTA==
-X-Gm-Message-State: AOJu0YzTBWG7eOOUY4FDQXp+kivxg45gWWfb1ODGg18nYe6EHK5mrTAV
-        /ibwAmV0GRU3AVQSSdgRT7z+i3VPFXtaQBhxV2fYqA==
-X-Google-Smtp-Source: AGHT+IFpb1D1ELfBB0XjKdpLdiG584OwfX3FeJOeBZ0Uir/keSyebeXbF0BprRN9LD/H+g2A9OXUfFP3Ggfu3iAe+mU=
-X-Received: by 2002:a05:600c:1910:b0:40c:337e:f596 with SMTP id
- j16-20020a05600c191000b0040c337ef596mr258861wmq.0.1702333008321; Mon, 11 Dec
- 2023 14:16:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702333060; x=1702937860;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c9tp9YUq5vWpe1+ZnJGAbvZAkepuaBVbVaZfpHzIC5g=;
+        b=s28e3L1xM4O9QbprqNJeF19687tvtqBhOtNDAEo42whrN3anQPhG4xrQVamVfwcx4K
+         BPEJfVKe1EChoG9jJpuxMcoMvFqgHaDMg7cpElVrXT9asU7JJrTJnlB6lgvvPE8pougF
+         11LP7XvCM8wMK06WHzJ9P9Ycjh7YLId1IvxS7U2loravqpNAJOdK3FwPZlD7y5KqlZVG
+         7Um+O5vTaTQGv2yPRInzxDGgliXcALjzUuovn+GHFCWxJhPgiMYqrAmiJ0277wd07g75
+         wvGockVp33jVIIldooztuZ7/STWHdNf0a+6YPmthzVjeRi8q6n7J/sg7+y22S78d/6hK
+         a7ew==
+X-Gm-Message-State: AOJu0YxiM5wws7nqa6+kr5Z5lgmZj3prHAFVbi67aKq5hSwideqBWU1m
+        oezQOwdwFKTWfrnIX8zXRxs=
+X-Google-Smtp-Source: AGHT+IFmQW9IHLsf1rjDUOGUiGQD+zZRcRhxTeab+Q1YCndW3ZED0ngtFstIjQrgx202OEoE+6NTjA==
+X-Received: by 2002:a05:600c:5249:b0:40c:243b:3d7f with SMTP id fc9-20020a05600c524900b0040c243b3d7fmr2374419wmb.18.1702333060470;
+        Mon, 11 Dec 2023 14:17:40 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id g20-20020a05600c4ed400b0040c31bb66dcsm14004808wmq.20.2023.12.11.14.17.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 14:17:39 -0800 (PST)
+Message-ID: <65778a83.050a0220.b2844.2af7@mx.google.com>
+X-Google-Original-Message-ID: <ZXeKgZt0QlAm209k@Ansuel-xps.>
+Date:   Mon, 11 Dec 2023 23:17:37 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
+References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
+ <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
+ <6577315e.050a0220.50f30.0122@mx.google.com>
+ <20231211084656.26578d89@kernel.org>
+ <657784f6.5d0a0220.617b5.20ee@mx.google.com>
+ <20231211140546.5c39b819@kernel.org>
 MIME-Version: 1.0
-References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-6-rmoar@google.com>
- <CABVgOS=JAn49ux6Cg2i1-V_2eNH4Utx_areqg4H1p5xwkT9FMA@mail.gmail.com>
-In-Reply-To: <CABVgOS=JAn49ux6Cg2i1-V_2eNH4Utx_areqg4H1p5xwkT9FMA@mail.gmail.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Mon, 11 Dec 2023 17:16:36 -0500
-Message-ID: <CA+GJov7fUjfKL=O2wC4ZKMvO8OMYJm07h0vGQRDxRF6v4EOpxg@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] Documentation: Add debugfs docs with run after boot
-To:     David Gow <davidgow@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211140546.5c39b819@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 9, 2023 at 2:58=E2=80=AFAM David Gow <davidgow@google.com> wrot=
-e:
->
-> On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
-> >
-> > Expand the documentation on the KUnit debugfs filesystem on the
-> > run_manual.rst page.
-> >
-> > Add section describing how to access results using debugfs.
-> >
-> > Add section describing how to run tests after boot using debugfs.
-> >
-> > Signed-off-by: Rae Moar <rmoar@google.com>
-> > ---
->
-> Looks good to me, some nitpicks below.
->
-> The other thing I'd really want to add is some documentation on
-> writing init-section suites, which covers the pitfalls better (as
-> mentioned in the previous emails). Though that could be a separate
-> patch if you want to keep this one debugfs-specific.
->
-> Otherwise,
-> Reviewed-by: David Gow <davidgow@google.com>
->
-> Cheers,
-> -- David
+On Mon, Dec 11, 2023 at 02:05:46PM -0800, Jakub Kicinski wrote:
+> On Mon, 11 Dec 2023 22:53:55 +0100 Christian Marangi wrote:
+> > Soo that it's problematic to also have on net-next? (Sorry for the
+> > stupid question)
+> 
+> Unless I pull from Lee the patch would be duplicated, we'd have two
+> commits with different hashes and the same diff. And if I pull we'd
+> get a lot of netdev-unrelated stuff into net-next:
+> 
 
-Hello!
+Thanks for the explaination... Sad... guess I have to wait, hoped I
+could have the qca808x series before proposing the at803x driver split
+but I guess it's not possible... Maybe I can try pushing the change for
+link_1000 for now and later add link_2500 ?
 
-I have responded to your comments below. I would also be happy to add
-documentation to the init-section suites either in this patch series
-or in a future one.
+> $ git merge f07894d3b384344c43be1bcf61ef8e2fded0efe5
+> Auto-merging drivers/leds/trigger/ledtrig-netdev.c
+> Merge made by the 'ort' strategy.
+>  .../ABI/testing/sysfs-class-led-trigger-netdev     |  39 ++
+>  .../ABI/testing/sysfs-class-led-trigger-tty        |  56 ++
+>  .../bindings/leds/allwinner,sun50i-a100-ledc.yaml  | 137 +++++
+>  Documentation/devicetree/bindings/leds/common.yaml |   2 +-
+>  drivers/leds/Kconfig                               |  21 +
+>  drivers/leds/Makefile                              |   2 +
+>  drivers/leds/leds-max5970.c                        | 109 ++++
+>  drivers/leds/leds-sun50i-a100.c                    | 580 +++++++++++++++++++++
+>  drivers/leds/leds-syscon.c                         |   3 +-
+>  drivers/leds/leds-tca6507.c                        |  30 +-
+>  drivers/leds/rgb/leds-qcom-lpg.c                   |  52 +-
+>  drivers/leds/trigger/ledtrig-gpio.c                |  26 +-
+>  drivers/leds/trigger/ledtrig-netdev.c              |  32 +-
+>  drivers/leds/trigger/ledtrig-tty.c                 | 247 +++++++--
+>  drivers/tty/tty_io.c                               |  28 +-
+>  include/linux/leds.h                               |   3 +
+>  include/linux/tty.h                                |   1 +
+>  17 files changed, 1247 insertions(+), 121 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-a100-ledc.yaml
+>  create mode 100644 drivers/leds/leds-max5970.c
+>  create mode 100644 drivers/leds/leds-sun50i-a100.c
 
-Thanks!
--Rae
-
->
-> >
-> > Changes since v2:
-> > - Add info to documentation about cleaning up data, init tests, and
-> >   running tests concurrently
-> >
-> >  Documentation/dev-tools/kunit/run_manual.rst | 49 ++++++++++++++++++--
-> >  1 file changed, 45 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/dev-tools/kunit/run_manual.rst b/Documentati=
-on/dev-tools/kunit/run_manual.rst
-> > index e7b46421f247..aebb52ba9605 100644
-> > --- a/Documentation/dev-tools/kunit/run_manual.rst
-> > +++ b/Documentation/dev-tools/kunit/run_manual.rst
-> > @@ -49,9 +49,50 @@ loaded.
-> >
-> >  The results will appear in TAP format in ``dmesg``.
-> >
-> > +debugfs
-> > +=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +``debugfs`` is a file system that enables user interaction with the fi=
-les to
-> > +make kernel information available to user space (See more information =
-at
-> > +Documentation/filesystems/debugfs.html)
->
-> Nit: reference debugfs.rst here, not debugfs.html -- sphinx ought to
-> update the link automatically.
-
-Thanks for catching this! I didn't realize Sphinx would update it.
-
->
-> Also, maybe we can make this introduction a _little_ bit more
-> KUnit-specific. I'd personally start by saying that KUnit can be
-> accessed from userspace via the debugfs filesystem (link), usually
-> mounted in /sys/kernel/debug/kunit, etc, if CONFIG_KUNIT_DEBUGFS is
-> enabled.
-
-Ok I will add this for the next version.
-
->
-> > +
-> > +By default, only the root user has access to the debugfs directory.
-> > +
-> > +If ``CONFIG_KUNIT_DEBUGFS`` is enabled, you can use KUnit debugfs
-> > +filesystem to perform the following actions.
-> > +
-> > +Retrieve Test Results
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +You can use debugfs to retrieve KUnit test results. The test results a=
-re
-> > +accessible from the debugfs filesystem in the following read-only file=
-:
-> > +
-> > +.. code-block :: bash
-> > +
-> > +       /sys/kernel/debug/kunit/<test_suite>/results
-> > +
-> > +The test results are available in KTAP format.
->
-> Do we want to note that this is a separate KTAP document, and so may
-> have different suite numbering from the dmesg log?
-
-Sure! I will add this for the next version.
-
->
-> > +
-> > +Run Tests After Kernel Has Booted
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +You can use the debugfs filesystem to trigger built-in tests to run af=
-ter
-> > +boot. To run the test suite, you can use the following command to writ=
-e to
-> > +the ``/sys/kernel/debug/kunit/<test_suite>/run`` file:
-> > +
-> > +.. code-block :: bash
-> > +
-> > +       echo "any string" > /sys/kernel/debugfs/kunit/<test_suite>/run
-> > +
-> > +As a result, the test suite runs and the results are printed to the ke=
-rnel
-> > +log.
-> > +
-> > +However, this feature is not available with KUnit tests that use init =
-data.
->
-> Let's expand this slightly, and mention that this is because the data
-> may have already been discarded, and that you can find such tests by
-> either looking for the kunit_test_init_section_suites() macro or the
-> is_init attribute.
-
-Got it. I will definitely expand this more.
-
->
-> > +
-> > +Also, you cannot use this feature to run tests concurrently as there i=
-s a
-> > +mutex lock around running KUnit tests at the same time.
-> > +
->
-> Instead of mentioning the mutex, which is an implementation detail,
-> just mention that tests will either wait for other tests to complete,
-> or fail having timed out.
->
-
-I will definitely switch this out in the next version.
-
->
->
-> >  .. note ::
-> >
-> > -       If ``CONFIG_KUNIT_DEBUGFS`` is enabled, KUnit test results will
-> > -       be accessible from the ``debugfs`` filesystem (if mounted).
-> > -       They will be in ``/sys/kernel/debug/kunit/<test_suite>/results`=
-`, in
-> > -       TAP format.
-> > +       For test authors, to use this feature, tests will need to corre=
-ctly initialise
-> > +       and/or clean up any data, so the test runs correctly a second t=
-ime.
-> > --
-> > 2.43.0.rc2.451.g8631bc7472-goog
-> >
+-- 
+	Ansuel
