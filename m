@@ -2,50 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7280F80C940
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A08680C946
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343522AbjLKMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        id S234848AbjLKMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbjLKMPj (ORCPT
+        with ESMTP id S234820AbjLKMQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:15:39 -0500
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2C2F3;
-        Mon, 11 Dec 2023 04:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1702296940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=L7kf+hcbV1aunzsc1VgHXPmGkTxyrjAbnWlUqmjpkTo=;
-        b=APV739V1DwujHZ/HRZTNPFrxBD2Tls1tzP0FkljoQUKl2aBbwAs9PFWm7i5M+3AjOeEj6s
-        GkMR+tAVdKzPn2t4Irv0rSPjQsIeG0XB1V+D+SOgtCg9zTH391azMl5da0b0xSebMXpC33
-        9T1rd6FRM76yNCLrA2YNUAZfVgL69vk=
-Message-ID: <3da88ffe37e1fa20918848fdef8f80e5ae49743a.camel@crapouillou.net>
-Subject: Re: [PATCH 1/4] dmaengine: axi-dmac: Small code cleanup
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 11 Dec 2023 13:15:38 +0100
-In-Reply-To: <ZXb5IhaNiKJufH/k@matsya>
-References: <20231204140352.30420-1-paul@crapouillou.net>
-         <20231204140352.30420-2-paul@crapouillou.net> <ZXb5IhaNiKJufH/k@matsya>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-        YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Dec 2023 07:16:25 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF5ECD;
+        Mon, 11 Dec 2023 04:16:30 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBCEnCI015819;
+        Mon, 11 Dec 2023 12:16:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=BO2E/VF
+        t3fhOvyueWkwLvFoCtA2VGyW96lSGYw7jWWw=; b=MDymsoQoZuEKGX42GBgqUIe
+        0Qlwyw9TgiWCO78blOvPKNteATdS09SbskeDSNWy4bapmtcO5vlC7gCfy5+9EKjo
+        mHVdD9fsSgiSVvhwZCCqpAgbnLgAUz9vNsNpTQMrVKo9HfhWAAfVxSSrX3Onc5Nv
+        PXIExVygSRyHw/qwh6HHVYRJw+7XFWOBAtrjP6PkS6jlu9oo1Ci+bRuQcoSer9SB
+        BXknC7ebWZaLQoQA2RtFemSpHaNPYLqAhalw6HzrtZLhyRO6OW5fRgM1cgveKGHp
+        nSoNKptcMJY8SV3V1x+P4QNltk7Rm41nom+9ZCOvGTjJwA9tEWymevYiYVRTAcw=
+        =
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux28s8044-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 12:16:26 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBCGPXN011009
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 12:16:25 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Dec 2023 04:16:20 -0800
+From:   Krishna Kurapati <quic_kriskura@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>,
+        Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [PATCH 0/4] Fix USB Interrupts on Qualcomm Platforms
+Date:   Mon, 11 Dec 2023 17:46:07 +0530
+Message-ID: <20231211121611.6765-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _KmZE37y7V9E-jBEzQNwFyNBjcs1psON
+X-Proofpoint-GUID: _KmZE37y7V9E-jBEzQNwFyNBjcs1psON
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ spamscore=0 mlxlogscore=491 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312110099
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,54 +86,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Currently the interrupts mentioned in most of Qualcomm platforms
+are partially faulty because of following reasons:
 
-Le lundi 11 d=C3=A9cembre 2023 =C3=A0 17:27 +0530, Vinod Koul a =C3=A9crit=
-=C2=A0:
-> On 04-12-23, 15:03, Paul Cercueil wrote:
-> > Use a for() loop instead of a while() loop in
-> > axi_dmac_fill_linear_sg().
->=20
-> Why?
+1. hs_phy_irq mentioned on QUSB2 PHY targets is actually qusb2_phy interrupt
+2. pwr_event irq is missing for many targets
+3. Actual hs_phy_irq is also missing for most of the platforms
 
-Simplicity? Code quality?
+The series intends to fix these interrupts as per bindings update done in [1].
 
--Paul
+Rebased on top of wakeup interrupt fixes by Johan Hovold:
+https://patchwork.kernel.org/project/linux-arm-msm/cover/20231120164331.8116-1-johan+linaro@kernel.org/
 
->=20
-> >=20
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > ---
-> > =C2=A0drivers/dma/dma-axi-dmac.c | 5 +----
-> > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-
-> > dmac.c
-> > index 2457a420c13d..760940b21eab 100644
-> > --- a/drivers/dma/dma-axi-dmac.c
-> > +++ b/drivers/dma/dma-axi-dmac.c
-> > @@ -508,16 +508,13 @@ static struct axi_dmac_sg
-> > *axi_dmac_fill_linear_sg(struct axi_dmac_chan *chan,
-> > =C2=A0	segment_size =3D ((segment_size - 1) | chan-
-> > >length_align_mask) + 1;
-> > =C2=A0
-> > =C2=A0	for (i =3D 0; i < num_periods; i++) {
-> > -		len =3D period_len;
-> > -
-> > -		while (len > segment_size) {
-> > +		for (len =3D period_len; len > segment_size; sg++) {
-> > =C2=A0			if (direction =3D=3D DMA_DEV_TO_MEM)
-> > =C2=A0				sg->dest_addr =3D addr;
-> > =C2=A0			else
-> > =C2=A0				sg->src_addr =3D addr;
-> > =C2=A0			sg->x_len =3D segment_size;
-> > =C2=A0			sg->y_len =3D 1;
-> > -			sg++;
-> > =C2=A0			addr +=3D segment_size;
-> > =C2=A0			len -=3D segment_size;
-> > =C2=A0		}
-> > --=20
-> > 2.42.0
-> >=20
->=20
+[1]: https://lore.kernel.org/all/20231211121124.4194-1-quic_kriskura@quicinc.com/
+
+Krishna Kurapati (4):
+  arm64: dts: qcom: Fix hs_phy_irq for QUSB2 targets
+  arm64: dts: qcom: Fix hs_phy_irq for non-QUSB2 targets
+  arm64: dts: qcom: Fix hs_phy_irq for SDM670/SDM845/SM6350
+  arm64: dts: qcom: Add missing interrupts for qcs404/ipq5332
+
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi | 14 ++++++++-----
+ arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 14 +++++++------
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi  |  8 ++++++--
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi  | 13 ++++++++++++
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi  | 14 +++++++++++++
+ arch/arm64/boot/dts/qcom/msm8953.dtsi  |  7 +++++--
+ arch/arm64/boot/dts/qcom/msm8996.dtsi  | 17 ++++++++++++----
+ arch/arm64/boot/dts/qcom/msm8998.dtsi  |  7 +++++--
+ arch/arm64/boot/dts/qcom/qcs404.dtsi   | 16 +++++++++++++++
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi  |  6 ++++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi   | 14 ++++++++-----
+ arch/arm64/boot/dts/qcom/sc7280.dtsi   | 12 +++++++----
+ arch/arm64/boot/dts/qcom/sdm630.dtsi   | 17 ++++++++++++----
+ arch/arm64/boot/dts/qcom/sdm670.dtsi   | 14 ++++++++-----
+ arch/arm64/boot/dts/qcom/sdm845.dtsi   | 28 +++++++++++++++++---------
+ arch/arm64/boot/dts/qcom/sm6115.dtsi   |  9 +++++++--
+ arch/arm64/boot/dts/qcom/sm6125.dtsi   |  9 +++++++++
+ arch/arm64/boot/dts/qcom/sm6350.dtsi   | 13 +++++++-----
+ arch/arm64/boot/dts/qcom/sm6375.dtsi   | 12 ++++++-----
+ arch/arm64/boot/dts/qcom/sm8150.dtsi   | 28 +++++++++++++++++---------
+ arch/arm64/boot/dts/qcom/sm8250.dtsi   | 28 +++++++++++++++-----------
+ arch/arm64/boot/dts/qcom/sm8350.dtsi   | 28 +++++++++++++++-----------
+ arch/arm64/boot/dts/qcom/sm8450.dtsi   | 12 ++++++-----
+ arch/arm64/boot/dts/qcom/sm8550.dtsi   | 12 ++++++-----
+ 24 files changed, 247 insertions(+), 105 deletions(-)
+
+-- 
+2.42.0
 
