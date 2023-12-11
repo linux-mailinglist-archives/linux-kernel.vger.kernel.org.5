@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875D280C431
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF8180C436
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbjLKJQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S234550AbjLKJQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbjLKJQK (ORCPT
+        with ESMTP id S234537AbjLKJQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:16:10 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BE4FC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:16 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso44500815e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:16 -0800 (PST)
+        Mon, 11 Dec 2023 04:16:13 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305CA100
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:19 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3333074512bso2701018f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:16:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702286175; x=1702890975; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702286177; x=1702890977; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W68af/91Atj1zDTUN4IE+pQHHryD09cfa+2lKqJ1RE0=;
-        b=bkPsSXA2xvV0L0ozvXYdNvuxwhDUnmtuL1mKSIMmJmuSTA1VhCDYONRYH/Udc5cLJr
-         GHMoJ2XFqjGyYZNwFAzfuiKcqhmUNYi4irejfNHZN8EPyj0GDCxI9ZMMCOaDC9MT7FeY
-         alR7VRkO4nMN0JrivvV/QHswtoVRtrOPVOkbaRBuHsFAI0RkamUvOIRy5tWEfY2eZVKj
-         DmCcNt5vuDXCBxcWsorv8T6d+2VSTebqRb/t45k4b/E4jR7k8n/Km2LrtM3QR6RALHEs
-         gALSMIii3DMPx8eU8qCIsQ1ZfR/oICKq2gFZALNPGTOX4/mT+aaLL/VF0NZloS/BMwox
-         k4Nw==
+        bh=i92w0H7T5cIJREEPTTsPXzjdkkN3FCVq9uA4lCfv1LA=;
+        b=unCM+QCjThdnQ32XOZSTfoyq6ktVic0r/YbdcBxFAKaHcDfpKXLaDZWqDYlmzV1emn
+         LG7pBTOjtal1qC0BmLjMRXPmhwyfXx7U70PX84IH7DPb/NM0KxtYXUhSW+ocgPWqjxuH
+         8Vj+GzmC5iJDHHsYul2yeFFT6ZX+XS+kUUnf25MGv2M/rN7V7J7XokjnfxwYOUGFmKGt
+         EJeQPDJTSsgIc50wMIMcYVzzHWVyLiEY2k4yuemwsBFC7Ambm90D5dZuB78mcIGuUXJY
+         QMh/u2whabTcfdfy7TGzgVtAwBwNaSrj45tIuWyNBXMaiS7fEzg4Hv4SO3nOWpwxNRMw
+         NOAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286175; x=1702890975;
+        d=1e100.net; s=20230601; t=1702286177; x=1702890977;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W68af/91Atj1zDTUN4IE+pQHHryD09cfa+2lKqJ1RE0=;
-        b=QJOQJJE6b98hzhDLM4/q/5kWV132hE+llEcMTEbVV27ij2vzoHCzt09kYmhP2YzE6D
-         EU4RdzMnnXGZKdF1GxSB0PRHyNLIAwfOsSI72a2A6JFYqYY4pbRG5zmpdKVCgLOCp5YV
-         KCep5oZ8a7AyehBQImtsyxmps2cKXnDJGCJ6bFTVMZkMyrged4+KgPlD7uIB0zwe1k42
-         Tl20zgkFgLlXgs3aBTmSiA0AUFq4drljcXggDNss61l+cKLQisI/AgynX5qXNMsmdx6D
-         JYGDNsl8g4CjGg+6QHbPzlivLYyszyKDTI9+yorSAIDPu8yxJcXUvmz6stPiFH8AlLEN
-         DGxQ==
-X-Gm-Message-State: AOJu0YwGBJf8sIGahDQ4tVoTrWTRe6ldjUgZtBvFNbVOHkOZ5/HTky47
-        ObGK3ojW9L2sTumP35W3vsppdw==
-X-Google-Smtp-Source: AGHT+IGc7ZBXK1VFhnwmlIkMnqFbV5XQIhopbQq2WBKyxWy0zx/bRn3t4fW3cKNsLP/owsKA6iuFHA==
-X-Received: by 2002:a05:600c:492f:b0:40c:3464:f816 with SMTP id f47-20020a05600c492f00b0040c3464f816mr1942464wmp.51.1702286175116;
-        Mon, 11 Dec 2023 01:16:15 -0800 (PST)
+        bh=i92w0H7T5cIJREEPTTsPXzjdkkN3FCVq9uA4lCfv1LA=;
+        b=gRbUJvfOO3pCR86IH530hM8SM2Q4+4Jc1vtkjAGWT3q24R0rUzf1W4Cv3vhVRng1/D
+         U0SdXFN+0063dVP11tsknU1Xsh9fCjR1vCbyIYHnfuQkhLHUYo9MGflKNgI1UcMKx5v+
+         QyD4c+86k5rttMd5PM9qq86uEtd6LTakm1nw0OGI10OJeIQlkB/NClaNj7iZUPWDSPX9
+         mbZWn/811A6lT+HSDf3MlFa38wyZs1zqh91SN/yQN4Htr7n1BVQnHzaNYAM3fcKKZvQV
+         JveT3J1HplICsGN/35XR+xDinDaVbXu1Fa2dPjac12dk9fz8vrRiiF3yFNBf2MuzQEil
+         Dlsg==
+X-Gm-Message-State: AOJu0Yx+b9x9z14EIWZSkOXi9wx8IEbJumeyB0EL0sBRZBRNEoy3UYk1
+        Raer/ZIAv84a/g79vrehLnI7hw==
+X-Google-Smtp-Source: AGHT+IE1Y3s47FyeYwxBMhMeqlNT8+HKhqIsiKFRswD7iG2IJiOPDvdZF+8n1xssCubPjCtjT+n+5A==
+X-Received: by 2002:a05:600c:11c8:b0:40b:5e56:7b51 with SMTP id b8-20020a05600c11c800b0040b5e567b51mr2033425wmi.154.1702286177549;
+        Mon, 11 Dec 2023 01:16:17 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm12398470wmb.8.2023.12.11.01.16.14
+        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm12398470wmb.8.2023.12.11.01.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 01:16:14 -0800 (PST)
+        Mon, 11 Dec 2023 01:16:17 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     dri-devel@lists.freedesktop.org, John Watts <contact@jookia.org>
-Cc:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+To:     linux-kernel@vger.kernel.org,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        michael@amarulasolutions.com,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231210-fs035vg158-v5-0-d75adc75571f@jookia.org>
-References: <20231210-fs035vg158-v5-0-d75adc75571f@jookia.org>
-Subject: Re: [PATCH RFC v5 0/7] Add FS035VG158 panel
-Message-Id: <170228617410.2409693.12184151943497966820.b4-ty@linaro.org>
-Date:   Mon, 11 Dec 2023 10:16:14 +0100
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        David Airlie <airlied@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
+References: <20231207141723.108004-1-dario.binacchi@amarulasolutions.com>
+Subject: Re: (subset) [PATCH v5 00/10] Add displays support for
+ bsh-smm-s2/pro boards
+Message-Id: <170228617622.2409693.12899768447819855539.b4-ty@linaro.org>
+Date:   Mon, 11 Dec 2023 10:16:16 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -89,33 +105,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Sun, 10 Dec 2023 17:55:48 +1100, John Watts wrote:
-> This RFC introduces support for the FS035VG158 LCD panel, cleaning up
-> the nv3052c driver on the way and documentating existing panel code.
+On Thu, 07 Dec 2023 15:16:29 +0100, Dario Binacchi wrote:
+> The series adds drivers for the displays used by bsh-smm-s2/pro boards.
+> This required applying some patches to the samsung-dsim driver and the
+> drm_bridge.c module.
 > 
-> This revision is mostly a resend and ask for more feedback.
-> I have tested that it works on next-20231208.
-> 
-> John.
+> Changes in v5:
+> - Replace a 'return ret' with a 'goto fail' in the r63353_panel_activate()
+> - Add 'Reviewed-by' tag of Krzysztof Kozlowski
 > 
 > [...]
 
 Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-[1/7] drm/panel: nv3052c: Document known register names
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=f48dee9ed7c992eaf6a3635db304a61ed82827b3
-[2/7] drm/panel: nv3052c: Add SPI device IDs
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=095e3a99e793767ca6c0483d31fb5d4087966d51
-[3/7] drm/panel: nv3052c: Allow specifying registers per panel
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=2e6b7be84d88c0af927967418a56e22d372ce98c
-[4/7] drm/panel: nv3052c: Add Fascontek FS035VG158 LCD display
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=bf92f9163097dc717518d598116c1e385004b5ce
-[5/7] dt-bindings: display: panel: Clean up leadtek,ltk035c5444t properties
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=43cc1ce456b57ad48220393bbb7fac6e32369233
-[6/7] dt-bindings: vendor-prefixes: Add fascontek
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8fcb387a210cfc30a3b61abae21d5c8c4a55e470
-[7/7] dt-bindings: display: panel: add Fascontek FS035VG158 panel
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=267624378ed6bebd733b4917452d78780db032dc
+[06/10] drm/panel: Add Synaptics R63353 panel driver
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=2e87bad7cd339882cf26b7101a1c87dab71962c9
+[07/10] dt-bindings: display: panel: Add Ilitek ili9805 panel controller
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=549240c98e50207244bc1ac182622b8daba89a89
+[08/10] drm/panel: Add Ilitek ILI9805 panel driver
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=edbf1d506ebe8c0857c406bd5d5b81d46ffd8437
+[09/10] drm/panel: ilitek-ili9805: add support for Tianma TM041XDHG01 panel
+        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=b1fcb7ee3707290466b2cc4956325fb91f09f13b
 
 -- 
 Neil
