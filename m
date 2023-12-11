@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C9980C173
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A4180C180
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbjLKGnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 01:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
+        id S233420AbjLKGrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjLKGnE (ORCPT
+        with ESMTP id S229478AbjLKGrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 01:43:04 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62248C3;
-        Sun, 10 Dec 2023 22:43:10 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB5anrG008038;
-        Mon, 11 Dec 2023 06:42:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references; s=
-        qcppdkim1; bh=e1+zOy1qUA8HHZYc5Bz8jvBUDY2bNGJthqVjZfAWwWM=; b=bD
-        5hylflfZoXirBZeF7jkwfSwl0KoeG0YIy39hjF3Yzpr/g1tWmWUAOYns7+1UJRWJ
-        Ji0AcX1dEfMCj8gmsIwfGs2hYTMM5W+leJIM8fnH3T0Lhz9lr8RBftmkL8yjwoBy
-        IFqbl/xXh/MKp2GTtbU3HgNHhEKGT5OMRddJyoHvYh7rSQ2e133YTrcBLFIKXf8c
-        /DdrbXoZDuX0ZIYOUoI1t3D+mreZjipKtjl5AANBE2hTt2J0RVrB59jjQoOi7Wty
-        cQUXw27bS2Hn8zqJ1WIKtqCLfYRvWR4TiWW0Z15Tne2Kj9Gu27ghoN4tXbzwe07b
-        SB2f4Q27end1v8wLS3MA==
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnyvadhq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 06:42:58 +0000 (GMT)
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BB6gt7s030880;
-        Mon, 11 Dec 2023 06:42:56 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3uvhak95cv-1;
-        Mon, 11 Dec 2023 06:42:56 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BB6gtSu030875;
-        Mon, 11 Dec 2023 06:42:56 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3BB6gt3O030883;
-        Mon, 11 Dec 2023 06:42:56 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-        id 3466B55E9; Mon, 11 Dec 2023 14:42:55 +0800 (CST)
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-To:     mani@kernel.org, quic_jhugo@quicinc.com
-Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH v5 2/2] bus: mhi: host: Drop chan lock before queuing buffers
-Date:   Mon, 11 Dec 2023 14:42:52 +0800
-Message-Id: <1702276972-41296-3-git-send-email-quic_qianyu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1702276972-41296-1-git-send-email-quic_qianyu@quicinc.com>
-References: <1702276972-41296-1-git-send-email-quic_qianyu@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8Df1Yo5-Hlz7hPdjP3ssHD4aAAr05k0g
-X-Proofpoint-ORIG-GUID: 8Df1Yo5-Hlz7hPdjP3ssHD4aAAr05k0g
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=639 suspectscore=0 spamscore=0 bulkscore=0 clxscore=1015
- phishscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312110054
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Mon, 11 Dec 2023 01:47:40 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0414BD8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:47:46 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so2102304a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702277265; x=1702882065; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a48U/31wlYhKh2YcSR/tePNphggIU3CwJSH0jG+cw8E=;
+        b=CxVHFMRlgB3caYI7f54djRbSS7nlsRY6EH1bJoZAmmP8x+HFbdwt4X4taiBgdo4W+S
+         iDrPms4bPKIRQZbgu6KMNkbeu9iysadMyAkMKSKAwtWZjoCdAxuZMHKvJ02cDpexvipD
+         KLf0klhrHjNTZLoXKRMDFDR9iC2geVo9PxNw4+G+/XA4kLnhBnoMv79OaM6ms+yEesXU
+         1Q7hXLprADmXs4IrKGCwIqCPCMYP2lYya08Z/yIfv030QXKnM8bDQ8WxI2xZxBUM48nC
+         5TGJfuvZdLNifk5Yl8s41zm2Ef03E5ID+l6U9kY71+v/ihiUJ4aCPNu7/1IkF/MBCG0F
+         fx7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702277265; x=1702882065;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a48U/31wlYhKh2YcSR/tePNphggIU3CwJSH0jG+cw8E=;
+        b=PEeUcNtE/rsk7q8zLDnX3ou6wrzd77bwvL/Si8/VpjjT+H25ZX6pGt+M0lGxIbjgvj
+         3BtYehrnn9TRC53ZU41VNuXqiG2XopkBxuiXPaYJtoqzQNDm/MbKnaClprK/YXvMX/Uz
+         z7QvLF0jRIcnDk1NMsI3EjTVgU24D6aRPZwcMQ4+P7N1t+f0TjIT4y4OIzYm9SUHvL9f
+         LKx01R0XOB9aeCci/CMV2HyReSSp0/23p4nLb7Z5+bfGQk40m2HbxcTalXqed17e9e59
+         yejiSiYcGOl2XWQwHZe9A9pI49YZ9RTx8iWGmr/ASxa7PhMyLyc2QCct0pfwSFXfEjXT
+         VNtA==
+X-Gm-Message-State: AOJu0YwB4aIeFsBy7bxD3CnZz1xIEvyeJYIGcOnU1f8K/H8fQ9S5XM29
+        3DI/0ZxpZZoDdOIfzOrtNoEDfw==
+X-Google-Smtp-Source: AGHT+IH1sraA/ewghKmWcDdZXIY/GSc4x1aDBpmQSc9Y28rj/4GaXYs1TwdtDbpoGr+jWN9S49K08w==
+X-Received: by 2002:a05:6a20:431c:b0:18f:97c:ba03 with SMTP id h28-20020a056a20431c00b0018f097cba03mr1769416pzk.93.1702277265442;
+        Sun, 10 Dec 2023 22:47:45 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id pt8-20020a17090b3d0800b002839679c23dsm6161953pjb.13.2023.12.10.22.47.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 22:47:44 -0800 (PST)
+Date:   Mon, 11 Dec 2023 12:17:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Benno Lossin <benno.lossin@proton.me>
+Cc:     Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: rust: Clarify that 'rustup override' applies to
+ build directory
+Message-ID: <20231211064742.63l4cmvxe4uso5us@vireshk-i7>
+References: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
+ <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure read and write locks for the channel are not taken in succession by
-dropping the read lock from parse_xfer_event() such that a callback given
-to client can potentially queue buffers and acquire the write lock in that
-process. Any queueing of buffers should be done without channel read lock
-acquired as it can result in multiple locks and a soft lockup.
+On 08-12-23, 18:04, Benno Lossin wrote:
+> Shouldn't this be "Note that the override only applies to the current
+> working directory (and its sub-directories)."?
+> I think it would also be useful to continue with this: "But in order
+> to build the kernel, this override must affect the build directory.".
+> 
+> And then you could also mention that in the default location for the
+> build directory is in the repository.
 
-Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
----
- drivers/bus/mhi/host/main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Based on feedback from Miguel and Benno, how about this instead ?
 
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index 32021fe..25f98d6 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
- 			mhi_del_ring_element(mhi_cntrl, tre_ring);
- 			local_rp = tre_ring->rp;
- 
-+			read_unlock_bh(&mhi_chan->lock);
+diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
+index f382914f4191..dee787f92d26 100644
+--- a/Documentation/rust/quick-start.rst
++++ b/Documentation/rust/quick-start.rst
+@@ -33,14 +33,17 @@ A particular version of the Rust compiler is required. Newer versions may or
+ may not work because, for the moment, the kernel depends on some unstable
+ Rust features.
+
+-If ``rustup`` is being used, enter the checked out source code directory
+-and run::
++If ``rustup`` is being used, enter the kernel build directory and run::
+
+        rustup override set $(scripts/min-tool-version.sh rustc)
+
+ This will configure your working directory to use the correct version of
+-``rustc`` without affecting your default toolchain. If you are not using
+-``rustup``, fetch a standalone installer from:
++``rustc`` without affecting your default toolchain.
 +
- 			/* notify client */
- 			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
- 
-@@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
- 					kfree(buf_info->cb_buf);
- 				}
- 			}
++Note that the override applies to the current working directory (and its
++sub-directories).
 +
-+			read_lock_bh(&mhi_chan->lock);
- 		}
- 		break;
- 	} /* CC_EOT */
++If you are not using ``rustup``, fetch a standalone installer from:
+
+        https://forge.rust-lang.org/infra/other-installation-methods.html#standalone
+
 -- 
-2.7.4
-
+viresh
