@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C8280CC06
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937AB80CBCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343737AbjLKNyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S1343788AbjLKNyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:54:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343838AbjLKNyE (ORCPT
+        with ESMTP id S1343745AbjLKNyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:54:04 -0500
+        Mon, 11 Dec 2023 08:54:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C7B1FFB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C73C433C7;
-        Mon, 11 Dec 2023 13:53:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657F52107
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E4FFC433CB;
+        Mon, 11 Dec 2023 13:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302790;
-        bh=ce52MwjmCIqIGNpNziEdwAz/8cYu0NoXFtL2rJUJqLo=;
+        s=k20201202; t=1702302792;
+        bh=fgN+YDhf8a3nw9oZAz0gxAwY5i58ycVwFHLHFzYEZ08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNxZzgpLHXLGUscfzHgZELbcJv8FCZjRWlDswmv6kZ/fHe9TzniSXBiDUY8MLEmkp
-         1ussrscWsZwFtr9vDld/wApBpwEGqZ9kZ/UZxtOW20Qq50CcoypgyzDPph3BT2Z3R0
-         V3V4CWhEaJ+K4pTfZTWo2+ESa9Z6fU2l3VB2RofURrCyodAfuzwWcLoGj5FRmJgiyu
-         L2V4sX1pGb/zE2ookO7hvAeLvKMVuNagm/o3aBX854R77zWmjQbU4+mGQ4GektHfmF
-         5LgQmxHhArjQYTUL6HBN1AtOfF99/KcjS0HSjfj7fvCortbANtGJWG0jn1UjpdSNFP
-         86xQCMNIlQsnA==
+        b=J/BvRMdQGYC5PfS0rnUOwYUwTyB7sDIZb5maRSgVqrgh641oRv7/cD9PvocLZaDCG
+         q30N/HFb8X1dnEWwr4vmXeKZYvktWr4JLXnR4M0avgSPVCdwEWHUZYj7+QSquMHs4M
+         2n61fsO/mT1QFmdrCAcB11eoQaMTskzqgB6qFlwRPpSyecQjTbpyD2gcv0rCrgvueI
+         9ryggNRM2HwazYAfV0hTBBRUb1f+kB7iXQH/XG9ub76Vn8UW4tR3CFvVKZN7EqpnuF
+         C8J05/mr6uBkTE2iz2TJc/Juu8RugvsfhmSnG9eEQvFRKr8u2ix97E9pt9IjQ8wsCK
+         uU7SVz/sTFwHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shannon Nelson <shannon.nelson@amd.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, allen.hubbe@amd.com,
-        virtualization@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 26/47] pds_vdpa: set features order
-Date:   Mon, 11 Dec 2023 08:50:27 -0500
-Message-ID: <20231211135147.380223-26-sashal@kernel.org>
+Cc:     Thinh Tran <thinhtr@linux.vnet.ibm.com>,
+        Venkata Sai Duggi <venkata.sai.duggi@ibm.com>,
+        David Christensen <drc@linux.vnet.ibm.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, pavan.chebbi@broadcom.com,
+        mchan@broadcom.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 27/47] net/tg3: fix race condition in tg3_reset_task()
+Date:   Mon, 11 Dec 2023 08:50:28 -0500
+Message-ID: <20231211135147.380223-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -55,38 +58,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <shannon.nelson@amd.com>
+From: Thinh Tran <thinhtr@linux.vnet.ibm.com>
 
-[ Upstream commit cefc9ba6aed48a3aa085888e3262ac2aa975714b ]
+[ Upstream commit 16b55b1f2269962fb6b5154b8bf43f37c9a96637 ]
 
-Fix up the order that the device and negotiated features
-are checked to get a more reliable difference when things
-get changed.
+When an EEH error is encountered by a PCI adapter, the EEH driver
+modifies the PCI channel's state as shown below:
 
-Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
-Message-Id: <20231110221802.46841-4-shannon.nelson@amd.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+   enum {
+      /* I/O channel is in normal state */
+      pci_channel_io_normal = (__force pci_channel_state_t) 1,
+
+      /* I/O to channel is blocked */
+      pci_channel_io_frozen = (__force pci_channel_state_t) 2,
+
+      /* PCI card is dead */
+      pci_channel_io_perm_failure = (__force pci_channel_state_t) 3,
+   };
+
+If the same EEH error then causes the tg3 driver's transmit timeout
+logic to execute, the tg3_tx_timeout() function schedules a reset
+task via tg3_reset_task_schedule(), which may cause a race condition
+between the tg3 and EEH driver as both attempt to recover the HW via
+a reset action.
+
+EEH driver gets error event
+--> eeh_set_channel_state()
+    and set device to one of
+    error state above           scheduler: tg3_reset_task() get
+                                returned error from tg3_init_hw()
+                             --> dev_close() shuts down the interface
+tg3_io_slot_reset() and
+tg3_io_resume() fail to
+reset/resume the device
+
+To resolve this issue, we avoid the race condition by checking the PCI
+channel state in the tg3_reset_task() function and skip the tg3 driver
+initiated reset when the PCI channel is not in the normal state.  (The
+driver has no access to tg3 device registers at this point and cannot
+even complete the reset task successfully without external assistance.)
+We'll leave the reset procedure to be managed by the EEH driver which
+calls the tg3_io_error_detected(), tg3_io_slot_reset() and
+tg3_io_resume() functions as appropriate.
+
+Adding the same checking in tg3_dump_state() to avoid dumping all
+device registers when the PCI channel is not in the normal state.
+
+Signed-off-by: Thinh Tran <thinhtr@linux.vnet.ibm.com>
+Tested-by: Venkata Sai Duggi <venkata.sai.duggi@ibm.com>
+Reviewed-by: David Christensen <drc@linux.vnet.ibm.com>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Link: https://lore.kernel.org/r/20231201001911.656-1-thinhtr@linux.vnet.ibm.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vdpa/pds/vdpa_dev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/tg3.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/vdpa/pds/vdpa_dev.c b/drivers/vdpa/pds/vdpa_dev.c
-index 9fc89c82d1f01..25c0fe5ec3d5d 100644
---- a/drivers/vdpa/pds/vdpa_dev.c
-+++ b/drivers/vdpa/pds/vdpa_dev.c
-@@ -318,9 +318,8 @@ static int pds_vdpa_set_driver_features(struct vdpa_device *vdpa_dev, u64 featur
- 		return -EOPNOTSUPP;
- 	}
+diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+index 22b00912f7ac8..95d476ec14f5e 100644
+--- a/drivers/net/ethernet/broadcom/tg3.c
++++ b/drivers/net/ethernet/broadcom/tg3.c
+@@ -6439,6 +6439,14 @@ static void tg3_dump_state(struct tg3 *tp)
+ 	int i;
+ 	u32 *regs;
  
--	pdsv->negotiated_features = nego_features;
--
- 	driver_features = pds_vdpa_get_driver_features(vdpa_dev);
-+	pdsv->negotiated_features = nego_features;
- 	dev_dbg(dev, "%s: %#llx => %#llx\n",
- 		__func__, driver_features, nego_features);
++	/* If it is a PCI error, all registers will be 0xffff,
++	 * we don't dump them out, just report the error and return
++	 */
++	if (tp->pdev->error_state != pci_channel_io_normal) {
++		netdev_err(tp->dev, "PCI channel ERROR!\n");
++		return;
++	}
++
+ 	regs = kzalloc(TG3_REG_BLK_SIZE, GFP_ATOMIC);
+ 	if (!regs)
+ 		return;
+@@ -11170,7 +11178,8 @@ static void tg3_reset_task(struct work_struct *work)
+ 	rtnl_lock();
+ 	tg3_full_lock(tp, 0);
  
+-	if (tp->pcierr_recovery || !netif_running(tp->dev)) {
++	if (tp->pcierr_recovery || !netif_running(tp->dev) ||
++	    tp->pdev->error_state != pci_channel_io_normal) {
+ 		tg3_flag_clear(tp, RESET_TASK_PENDING);
+ 		tg3_full_unlock(tp);
+ 		rtnl_unlock();
 -- 
 2.42.0
 
