@@ -2,1002 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B13E980C9E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6F780C9E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbjLKMdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:33:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49776 "EHLO
+        id S1343555AbjLKMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbjLKMdC (ORCPT
+        with ESMTP id S234605AbjLKMcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:33:02 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0929D6;
-        Mon, 11 Dec 2023 04:33:04 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1rCfT3-000892-Hg; Mon, 11 Dec 2023 13:33:01 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andy Yan <andyshrk@163.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, Andy Yan <andyshrk@163.com>
-Subject: Re: [PATCH v3 5/5] arm64: dts: rockchip: Add support for rk3588 based board
- Cool Pi CM5 EVB
-Date:   Mon, 11 Dec 2023 13:33:00 +0100
-Message-ID: <2215635.TLkxdtWsSY@diego>
-In-Reply-To: <20231211105043.1779852-1-andyshrk@163.com>
-References: <20231211104915.1779476-1-andyshrk@163.com>
- <20231211105043.1779852-1-andyshrk@163.com>
+        Mon, 11 Dec 2023 07:32:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517248E;
+        Mon, 11 Dec 2023 04:32:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702297967; x=1733833967;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=gU88qj0IZP7NR/jAJC1g8YzbzBMbIf51xggMI4rHhlA=;
+  b=DDo5NgHcJ02ZYgluN2/idSXHpRqzi5ZGQstJMKb2pN9lxPau1IerG3uV
+   164dTMp/YIdfN+MHlGNc+V835qVvNJh07ehYUAbCU3zcRfwr1hyBx/kd9
+   RGXP9TFoNxAgVxei43VfLM9dmxTsdfglSBktNAO+XEjy2m53C54ju+9Do
+   QSZVgZVQIxB2tpGp9E2MnDtVbW7L0oMPy7kWj3IPuYjkcVcRWb8iudkWk
+   tVQO0gXx/If5lXRq1SuT+A8H0aqZISUAu9VSgoYTwpcevJBpVQt0EJgAk
+   zsTB1UPYpvXNFKqcm3CQHdM7giCanSu4V4r9jMXpbtgLfLHM8LpXJZyOi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="385051819"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="385051819"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:32:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="801992344"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="801992344"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 04:32:43 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 04:32:43 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 04:32:42 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 04:32:42 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 04:32:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NGx/9/jq/oQfeRtae+LKFmwFdlSahEwHG3KeuW7/+j1mqlbxgXMdbgAyhBeNpUjTMIdrHlFtwm0HCEecVc91JIFM+mfSsTFkfj13HmQIcjjy44SXg5JMGmw2pIqEFoVfk9/tQx93O8CXeoacsWe43gIxM7f5d89KUsYYwYvBmiJMKEy3t7vrRyFCij/qFpf52/DbsjSbCY8dW0egcJt357WQ6FWJ8j0B6bsdGBSNsSNQRCy1TrEoa5SJUjU3UCxf3pEhUuowf4gH7wO3IPJq1g/eyc+gFghUzhl6Ol9D1SGTczqhp9iIjQVGGrY7eBGi8VLcrI75BmJa1T7gb6UcTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NecTSibqD+7QiDwY/79ESXAf6LzrPxqsdtDfreRNdAk=;
+ b=cobXWrAYGIksUbvSZ81v9wX4BJPMes/L+UZLWzpcN4SYoh8CZGwAVl2z6hfvvYdS8GY0Hq19ypC1xORWiuOFvZkzY56QW5cjReRLjMXs4ZqtWYSwenb+z1gyuqJQ+EK5wdc3lldK5Tt/5y/qUq0v8IlRK+9ljtd65rxvRrPaMum2+rA2LWENHSEGkAHnJ5q5E+O5yZsDMljGme2CW0JZWrzb+oeKI7FF+EWXaFOwvczTzfvNicCHmHrOQtEFMtjfZIhhgHSbb78LqbJqwvfQu5KP3kdo2EX4rdcDiZnGepLlCvRJmtJRm3dfDZLR6DYCTUj236kY6Pst2P0VkjN4Dg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by SJ0PR11MB4829.namprd11.prod.outlook.com (2603:10b6:a03:2d3::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 12:32:38 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 12:32:37 +0000
+Message-ID: <77ac47d0-2ef0-41fa-86c2-091358541465@intel.com>
+Date:   Mon, 11 Dec 2023 20:35:09 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <zhenzhong.duan@intel.com>,
+        <joao.m.martins@oracle.com>, <xin.zeng@intel.com>,
+        <yan.y.zhao@intel.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+Content-Language: en-US
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <20231209014726.GA2945299@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0021.apcprd02.prod.outlook.com
+ (2603:1096:4:195::10) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|SJ0PR11MB4829:EE_
+X-MS-Office365-Filtering-Correlation-Id: 38c56e90-f0a6-4b23-0f77-08dbfa45420e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XnvNqrAPaR12EM7Nq0E/FVylyWEAevU/nmjwNV4Uqp4Iqt3qLOi3tmBEA6QImwu9imQOn7TUAt6vm0HYPXzQ+G2CQWUyt6gvdHUSYxUyQR6YAXE9a73+3QOgJWO/e5xWyRbnAg+tWvWTnnJSfBU8RtzaSluyT8oO0IJQjdJ4ItYYZ8jRgAKBATpS+fNg2Zs+aVHVy/+01ZkRB4+rDJW9z7Cw/MC3kk4Xmpl7iFtWiB2lsHWh63vk9wQr1N523Hfx384S0eodivsxj+hbEpYEQX0z0wRTzmMfDdJ285sg/+A/KOMEtilGj1hmoym2mofNTbdimaCOoVrAP4q90uOfrffqjxI6lubZ5qFz13G7G8tf+gHh9GpStq+lL8LX21oITBp5Ors0uPVfld8mXVdzsB2dko+qKFG2R2X7WzUtNfyvifJsaK7KqhDBR1NUSMCaLuwmpLGU8HGr3DDANO8dfCwr5+VSXL7xel8bRGZhYzBzS8Dzbpk3GJd1RG9Qmnz28+xzVTM1N0SrGlgAPQuRXL499Bqev6sxn9MPn43ga/lVXNWCsl+EhN+0IgHV0Ok/no7aXdvRGw2mbT0bqGX7k0elVwxUBZQPw7iZRFXmbJTbWwclDTN5Dwj7a9rtW1EU2V+RWDYgMJYxHXkHDvobhUx/f9fWhe9/0mwLlJnfuuw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(6512007)(6506007)(53546011)(5660300002)(26005)(2616005)(36756003)(6486002)(7416002)(66946007)(66476007)(66556008)(966005)(2906002)(83380400001)(31686004)(82960400001)(41300700001)(478600001)(86362001)(8676002)(8936002)(4326008)(31696002)(110136005)(316002)(38100700002)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2pYdUdiV2xDTWVpd0NJbzdad01uSWNwU2NUNXhGbk9QRkkzR3puNHJQc3Ri?=
+ =?utf-8?B?aGd4U040ekdnSFZlMi9INEt1T2xhYTJuR0l5cHkyZUhrRmJyYlBIK0Fqcldw?=
+ =?utf-8?B?eXNxWmVRUGhCdmplWXplZFVqcUN0dk5YRU85S2dGWXJyRkVZNGJIK2g4dkNa?=
+ =?utf-8?B?Zlhjb1BMWXdtR3JPd2JQbVRKNGxpdlp6UkdoMGhZQ21WWUFNQTNwWUhpVSti?=
+ =?utf-8?B?QjhiWVc0cXorUjJ3Ymw0eE9MN3A5S2l0ZEl3cER2dGF4SW5LZWZwOEI2R0hq?=
+ =?utf-8?B?LzJveEhkQTV5QzBPancxUW45LzhwYTZGd1RXQ0RUN256bXhwL1JDS055anJV?=
+ =?utf-8?B?U2ZyM0JBNXlzUzVUUjBxQ3NGUThaTE5XL2FXM2dtM05wQmt5K0JtNm81Q2dk?=
+ =?utf-8?B?Q01ZQkVuQSs1eUc4OWlCZFpINXVVNEFJMjlsYzNjbldFbUpJVU9ockNOK0lO?=
+ =?utf-8?B?MTVCTXZ6c1RzVVBSNGVmMTAwaHJDOWEranVUelVseFVieThRQTlsdkRuUDE3?=
+ =?utf-8?B?aTYwdTdOY09tMmhBdTlCT0RVdXBXb09DOEJwNDlBK0d4Y2FGOEV5Q1ZjV1B2?=
+ =?utf-8?B?bHdtNzB2a3dlNEVJYlZ4ZlJqZ3h1VHhvNEtCSEpLaVN2dmtsSDdwSXVNM1da?=
+ =?utf-8?B?cVBidnRXbGZCTVZ6Q2VvVE9jc2w3cmc3Q0p2dTRha2duTGhkU0FLay8yS3BT?=
+ =?utf-8?B?M1g5N2N0SjIwSG5hZUVEQTkzWFAwdGc1akRwbE94QWxmdVFzZ3BsZFBtbHJr?=
+ =?utf-8?B?RWxpbzhXcW9raVY5ekFYQ09RYnVERVllcFhCejJvRDlNeTlqWXNTSDVYOUxP?=
+ =?utf-8?B?eFVhVlJmaVlZTjZmZTFqRm45RTQ2QzFyak45RDczZGdndHFSWHhsdks3SFFp?=
+ =?utf-8?B?RDFoU3NGK0V2bU9FN05xMkE0UXdGS3h0VG44YjJncWNCakxoOW1aTHAwSzZH?=
+ =?utf-8?B?dFNUNmlVMlo0UWdJR2hjb3ZsVzhCbVN6Ry84U3J1UFNKTkVJVFdOQkxaTFp6?=
+ =?utf-8?B?Rk5aQzN6T1E0cEY5ZC9QQUYrSkhGUzc4cEZzQ0RTVXNMZFFhdytuTk5SZUt2?=
+ =?utf-8?B?TVNDcExwSHNzbHMwcnNYZDBEamtrQUNRR0UrczhiOTRZWkpTbWVIYkdoVjE3?=
+ =?utf-8?B?YkpkeEo1WURGYlBVdFJSTUZrS2ErbEJYY1BxenhJT2ZtYm1WZDYwSld4QnpQ?=
+ =?utf-8?B?c3hwNDdUZkcwZjNEWnRmRVNaTm8xN0hLcjhOdjkyQ0RsUkxxVFlaaGhlWEhz?=
+ =?utf-8?B?SWRxbWQ3Z1pDLzIxdHlGWUFWeE5DdEUrOFFMN1cxNis5Y2VRU1lRVHA1TzJw?=
+ =?utf-8?B?OHpKWEtBNmlDMjh0R2ZRYVpLVU5NRTY0SGxoMFV2OWpTR3lEWjFub1dXM3RS?=
+ =?utf-8?B?a001NnhkSzVhYzlBRmpwV2R5emowWTZzdkZUWDBKbTJpTkVyS3hxWkN0bjk3?=
+ =?utf-8?B?WmVoUi9HOWdlbXJsclVxN2taL2FzS3Y2ejNURW8yRlAyNGxVWFpJSkJzS3pv?=
+ =?utf-8?B?Qjh0MmgwM0xEc1hJQVM3NVQrNzJYM1paTTBHTWZpaFVTWE1LQk1zTlcvL2dK?=
+ =?utf-8?B?RFdIRkhScCtENVlSSVJqUitqV3doTlhNQVhPc3c4cEFrRWJzOUswOHJ5SFpK?=
+ =?utf-8?B?OXhEVnBQQVpYOWpVL3Fqa0tTenY5Z09CMUhoT3o1MUNWY3czSndKN0RxVWNP?=
+ =?utf-8?B?dHNUTUdwOXI0bEp0TE40MlIzbnpJeERSWFZSOXhFRUh3TldlQnNDWVJQczZW?=
+ =?utf-8?B?T2hmdlkvaFZUQmZoNTYyMGVPQTBYcmJ6bHdySkdJTUR6RjNEejVlNzJ2Y1Zy?=
+ =?utf-8?B?dVpTcXhlVFRTMm9QS0tzWUcrMkYzYk1wNHpRN0wyR3kwZFNyZnVadTNQZEVJ?=
+ =?utf-8?B?MVFscmZqbkZYMDFVa09COU0zSlNOcm9haG1sSVVjNFVSdkxSWk5DS2U5ZXVq?=
+ =?utf-8?B?dnNrcm5ZSFhBb3ZQaGpKMnJxUEFVeXRLdk1YcnRCeGVyN0loWThjWnp4Uzkv?=
+ =?utf-8?B?eGU1MC9idkxNb0JVL1BUSEFZVGdWenQ0RWpxejVYTks0NE03a0xQa0hNOHZS?=
+ =?utf-8?B?K1FnbVhyTk15MG9GVlhLUk9jTGJxMTVPYnhrNWZ6alQ3OXNIdGUyYmNEcTFn?=
+ =?utf-8?Q?Nyou0FRxBcrCmq0+vHM3lHb/J?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38c56e90-f0a6-4b23-0f77-08dbfa45420e
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 12:32:37.4257
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VG+CbzUxUxKk0zq/kWbHdZdSaii2y0LZEpzC1P2zqYrI93ohM2lkMbZl0NxdjQDlVqdCl+dEfLF9bPUz+dKJKw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4829
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 11. Dezember 2023, 11:50:43 CET schrieb Andy Yan:
-> Cool Pi CM5 EVB is a board based on rk3588.
+On 2023/12/9 09:47, Jason Gunthorpe wrote:
+> On Fri, Nov 17, 2023 at 05:07:11AM -0800, Yi Liu wrote:
 > 
-> Specification:
-> - Rockchip RK3588
-> - LPDDR4 2/4/8/16 GB
-> - TF scard slot
-> - eMMC 8/32/64/128 GB module
-> - Gigabit ethernet x 1 with PHY YT8531
-> - Gigabit ethernet x 1 drived by PCIE with YT6801S
-> - HDMI Type A out x 2
-> - HDMI Type D in x 1
-> - USB 2.0 Host x 2
-> - USB 3.0 OTG x 1
-> - USB 3.0 Host x 1
-> - PCIE M.2 E Key for Wireless connection
-> - PCIE M.2 M Key for NVME connection
-> - 40 pin header
+>> Take Intel VT-d as an example, the stage-1 translation table is I/O page
+>> table. As the below diagram shows, guest I/O page table pointer in GPA
+>> (guest physical address) is passed to host and be used to perform the stage-1
+>> address translation. Along with it, modifications to present mappings in the
+>> guest I/O page table should be followed with an IOTLB invalidation.
 > 
-> Signed-off-by: Andy Yan <andyshrk@163.com>
-
-In the overall scheme of things I would really like to see the correct
-split between SoM dtsi and baseboard dts, like the other SoMs do.
-
-You said you wanted to wait for an actual second baseboard to come along
-before doing this and I guess for "yet another som" we can try going that
-route.
-
-But please state this explicitly in the commit message that this is a
-baseboard+som combination, so the next one working here should do
-that split.
-
-An update is needed anyway, cause the compatible thing mentioned in 
-the binding.
-
-
-Thanks
-Heiko
-
-> ---
+> I've been looking at what the three HW's need for invalidation, it is
+> a bit messy.. Here is my thinking. Please let me know if I got it right
 > 
-> Changes in v3:
-> - drop ununnecessary property status = "okay" for backlight
-> - reorder some nodes alphabetical
-> - drop ununnecessary blank line
+> What is the starting point of the guest memory walks:
+>   Intel: Single Scalable Mode PASID table entry indexed by a RID & PASID
+>   AMD: GCR3 table (a table of PASIDs) indexed by RID
+>   ARM: CD table (a table of PASIDs) indexed by RID
 > 
-> Changes in v2:
-> - change board compatible from "CoolPi CM5 EVB" to "coolpi,pi-cm5-evb"
+> What key does the physical HW use for invalidation:
+>   Intel: Domain-ID (stored in hypervisor, per PASID), PASID
+>   AMD: Domain-ID (stored in hypervisor, per RID), PASID
+>   ARM: VMID (stored in hypervisor, per RID), ASID (stored in guest)
 > 
->  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
->  .../dts/rockchip/rk3588-coolpi-cm5-evb.dts    | 879 ++++++++++++++++++
->  2 files changed, 880 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
+> Why key does the VM use for invalidation:
+>   Intel: vDomain-ID (per PASID), PASID
+>   AMD: vDomain-ID (per RID), PASID
+>   ARM: ASID
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-> index e59682691eb0..9be8e4830158 100644
-> --- a/arch/arm64/boot/dts/rockchip/Makefile
-> +++ b/arch/arm64/boot/dts/rockchip/Makefile
-> @@ -100,6 +100,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-odroid-m1.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-radxa-e25.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-roc-pc.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
-> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-coolpi-cm5-evb.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6a-io.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6b-io.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-evb1-v10.dtb
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
-> new file mode 100644
-> index 000000000000..ccf17185dc10
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dts
-> @@ -0,0 +1,879 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2023 Rockchip Electronics Co., Ltd.
-> + *
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/pwm/pwm.h>
-> +#include <dt-bindings/pinctrl/rockchip.h>
-> +#include "rk3588.dtsi"
-> +
-> +/ {
-> +	model = "RK3588 CoolPi CM5 EVB";
-> +	compatible = "coolpi,pi-cm5-evb", "rockchip,rk3588";
-> +
-> +	aliases {
-> +		mmc0 = &sdhci;
-> +		mmc1 = &sdio;
-> +		mmc2 = &sdmmc;
-> +		serial2 = &uart2;
-> +	};
-> +
-> +	analog-sound {
-> +		compatible = "audio-graph-card";
-> +		label = "rk3588-es8316";
-> +
-> +		widgets = "Microphone", "Mic Jack",
-> +			  "Headphone", "Headphones";
-> +
-> +		routing = "MIC2", "Mic Jack",
-> +			  "Headphones", "HPOL",
-> +			  "Headphones", "HPOR";
-> +
-> +		dais = <&i2s0_8ch_p0>;
-> +	};
-> +
-> +	backlight: backlight {
-> +		compatible = "pwm-backlight";
-> +		power-supply = <&vcc12v_dcin>;
-> +		pwms = <&pwm2 0 25000 0>;
-> +		enable-gpios = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&bl_en>;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial2:1500000n8";
-> +	};
-> +
-> +	leds: leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led: led-green {
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			function = LED_FUNCTION_STATUS;
-> +			gpios = <&gpio3 RK_PB7 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	vcc12v_dcin: vcc12v-dcin-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc12v_dcin";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <12000000>;
-> +		regulator-max-microvolt = <12000000>;
-> +	};
-> +
-> +	vcc5v0_sys: vcc5v0-sys-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc5v0_sys";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		vin-supply = <&vcc12v_dcin>;
-> +	};
-> +
-> +	vcc3v3_sys: vcc3v3-sys-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc3v3_sys";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&vcc12v_dcin>;
-> +	};
-> +
-> +	vcc3v3_lcd: vcc3v3-lcd-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc3v3_lcd";
-> +		enable-active-high;
-> +		gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&lcdpwr_en>;
-> +		vin-supply = <&vcc3v3_sys>;
-> +	};
-> +
-> +	avdd0v85_pcie20: avdd0v85-pcie20-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "avdd0v85_pcie20";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-min-microvolt = <850000>;
-> +		regulator-max-microvolt = <850000>;
-> +		vin-supply = <&vdd_0v85_s0>;
-> +	};
-> +
-> +	avdd1v8_pcie20: avdd1v8-pcie20-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "avdd1v8_pcie20";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		vin-supply = <&avcc_1v8_s0>;
-> +	};
-> +
-> +	avdd0v75_pcie30: avdd0v75-pcie30-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "avdd0v75_pcie30";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-min-microvolt = <750000>;
-> +		regulator-max-microvolt = <750000>;
-> +		vin-supply = <&avdd_0v75_s0>;
-> +	};
-> +
-> +	pcie30_avdd1v8: avdd1v8-pcie30-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pcie30_avdd1v8";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +		vin-supply = <&avcc_1v8_s0>;
-> +	};
-> +
-> +	vcc5v0_host: vcc5v0-host-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc5v0_host";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		enable-active-high;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&vcc5v0_host1_en>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +	};
-> +
-> +	vcc5v0_otg: vcc5v0-otg-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc5v0_otg";
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		enable-active-high;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpios = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&typec5v_pwren>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +	};
-> +
-> +	vcc_mipidphy0: vcc-mipi-dphy0-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc_mipidphy0";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		enable-active-high;
-> +		gpios = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&cam_en>;
-> +	};
-> +};
-> +
-> +&combphy0_ps {
-> +	status = "okay";
-> +};
-> +
-> +&combphy1_ps {
-> +	status = "okay";
-> +};
-> +
-> +&combphy2_psu {
-> +	status = "okay";
-> +};
-> +
-> +&cpu_b0 {
-> +	cpu-supply = <&vdd_cpu_big0_s0>;
-> +};
-> +
-> +&cpu_b1 {
-> +	cpu-supply = <&vdd_cpu_big0_s0>;
-> +};
-> +
-> +&cpu_b2 {
-> +	cpu-supply = <&vdd_cpu_big1_s0>;
-> +};
-> +
-> +&cpu_b3 {
-> +	cpu-supply = <&vdd_cpu_big1_s0>;
-> +};
-> +
-> +&cpu_l0 {
-> +	cpu-supply = <&vdd_cpu_lit_s0>;
-> +};
-> +
-> +&cpu_l1 {
-> +	cpu-supply = <&vdd_cpu_lit_s0>;
-> +};
-> +
-> +&cpu_l2 {
-> +	cpu-supply = <&vdd_cpu_lit_s0>;
-> +};
-> +
-> +&cpu_l3 {
-> +	cpu-supply = <&vdd_cpu_lit_s0>;
-> +};
-> +
-> +&gmac0 {
-> +	clock_in_out = "output";
-> +	phy-handle = <&rgmii_phy>;
-> +	phy-mode = "rgmii-rxid";
-> +	pinctrl-0 = <&gmac0_miim
-> +		     &gmac0_tx_bus2
-> +		     &gmac0_rx_bus2
-> +		     &gmac0_rgmii_clk
-> +		     &gmac0_rgmii_bus>;
-> +	pinctrl-names = "default";
-> +	rx_delay = <0x00>;
-> +	tx_delay = <0x43>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c0 {
-> +	pinctrl-0 = <&i2c0m2_xfer>;
-> +	status = "okay";
-> +
-> +	vdd_cpu_big0_s0: regulator@42 {
-> +		compatible = "rockchip,rk8602";
-> +		reg = <0x42>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-name = "vdd_cpu_big0_s0";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <550000>;
-> +		regulator-max-microvolt = <1050000>;
-> +		regulator-ramp-delay = <2300>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +
-> +	vdd_cpu_big1_s0: regulator@43 {
-> +		compatible = "rockchip,rk8603", "rockchip,rk8602";
-> +		reg = <0x43>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-name = "vdd_cpu_big1_s0";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <550000>;
-> +		regulator-max-microvolt = <1050000>;
-> +		regulator-ramp-delay = <2300>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	status = "okay";
-> +
-> +	vdd_npu_s0: regulator@42 {
-> +		compatible = "rockchip,rk8602";
-> +		reg = <0x42>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-name = "vdd_npu_s0";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <550000>;
-> +		regulator-max-microvolt = <950000>;
-> +		regulator-ramp-delay = <2300>;
-> +		vin-supply = <&vcc5v0_sys>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c6 {
-> +	status = "okay";
-> +
-> +	hym8563: rtc@51 {
-> +		compatible = "haoyu,hym8563";
-> +		reg = <0x51>;
-> +		#clock-cells = <0>;
-> +		clock-frequency = <32768>;
-> +		clock-output-names = "hym8563";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&hym8563_int>;
-> +		interrupt-parent = <&gpio0>;
-> +		interrupts = <RK_PD4 IRQ_TYPE_LEVEL_LOW>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
-> +&i2c7 {
-> +	pinctrl-0 = <&i2c7m0_xfer>;
-> +	status = "okay";
-> +
-> +	es8316: audio-codec@11 {
-> +		compatible = "everest,es8316";
-> +		reg = <0x11>;
-> +		clocks = <&cru I2S0_8CH_MCLKOUT>;
-> +		clock-names = "mclk";
-> +		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
-> +		assigned-clock-rates = <12288000>;
-> +		#sound-dai-cells = <0>;
-> +
-> +		port {
-> +			es8316_p0_0: endpoint {
-> +				remote-endpoint = <&i2s0_8ch_p0_0>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2s0_8ch {
-> +	pinctrl-0 = <&i2s0_lrck
-> +		     &i2s0_mclk
-> +		     &i2s0_sclk
-> +		     &i2s0_sdi0
-> +		     &i2s0_sdo0>;
-> +	status = "okay";
-> +
-> +	i2s0_8ch_p0: port {
-> +		i2s0_8ch_p0_0: endpoint {
-> +			dai-format = "i2s";
-> +			mclk-fs = <256>;
-> +			remote-endpoint = <&es8316_p0_0>;
-> +		};
-> +	};
-> +};
-> +
-> +&mdio0 {
-> +	rgmii_phy: ethernet-phy@1 {
-> +		/* YT8531C/H */
-> +		compatible = "ethernet-phy-ieee802.3-c22";
-> +		reg = <0x1>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&yt8531_rst>;
-> +		reset-assert-us = <20000>;
-> +		reset-deassert-us = <100000>;
-> +		reset-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
-> +	};
-> +};
-> +
-> +/* M.2 E-Key */
-> +&pcie2x1l1 {
-> +	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc3v3_sys>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pcie_clkreq &pcie_wake &pcie_rst &wifi_pwron &bt_pwron>;
-> +	status = "okay";
-> +};
-> +
-> +/* ethernet */
-> +&pcie2x1l2 {
-> +	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc3v3_sys>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&rtl8111_isolate>;
-> +	status = "okay";
-> +};
-> +
-> +&pcie30phy {
-> +	status = "okay";
-> +};
-> +
-> +&pcie3x2 {
-> +	reset-gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc3v3_sys>;
-> +	status = "okay";
-> +};
-> +
-> +/* M.2 M-Kye ssd */
-> +&pcie3x4 {
-> +	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&vcc3v3_sys>;
-> +	status = "okay";
-> +};
-> +
-> +&pinctrl {
-> +	cam {
-> +		cam_en: cam-en {
-> +			rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_output_high>;
-> +		};
-> +	};
-> +
-> +	hym8563 {
-> +		hym8563_int: hym8563-int {
-> +			rockchip,pins = <0 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	lcd {
-> +		lcdpwr_en: lcdpwr-en {
-> +			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_down>;
-> +		};
-> +
-> +		bl_en: bl-en {
-> +			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +
-> +	rtl8111 {
-> +		rtl8111_isolate: rtl8111-isolate {
-> +			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	rtl8211f {
-> +		yt8531_rst: yt8531-rst {
-> +			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +
-> +	usb {
-> +		vcc5v0_host1_en: vcc5v0-host1-en {
-> +			rockchip,pins = <1 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	usb-typec {
-> +		typec5v_pwren: typec5v-pwren {
-> +			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +
-> +	wifi {
-> +		bt_pwron: bt-pwron {
-> +			rockchip,pins = <3 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +
-> +		pcie_clkreq: pcie-clkreq {
-> +			rockchip,pins = <4 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +
-> +		pcie_rst: pcie-rst {
-> +			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +
-> +		wifi_pwron: wifi-pwron {
-> +			rockchip,pins = <3 RK_PB1 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +
-> +		pcie_wake: pcie-wake {
-> +			rockchip,pins = <4 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +};
-> +
-> +&pwm2 {
-> +	status = "okay";
-> +};
-> +
-> +&saradc {
-> +	vref-supply = <&vcc_1v8_s0>;
-> +	status = "okay";
-> +};
-> +
-> +&sata1 {
-> +	status = "okay";
-> +};
-> +
-> +&sdhci {
-> +	bus-width = <8>;
-> +	no-sdio;
-> +	no-sd;
-> +	non-removable;
-> +	max-frequency = <200000000>;
-> +	mmc-hs400-1_8v;
-> +	mmc-hs400-enhanced-strobe;
-> +	status = "okay";
-> +};
-> +
-> +&sdmmc {
-> +	max-frequency = <150000000>;
-> +	no-sdio;
-> +	no-mmc;
-> +	bus-width = <4>;
-> +	cap-mmc-highspeed;
-> +	cap-sd-highspeed;
-> +	disable-wp;
-> +	sd-uhs-sdr104;
-> +	vqmmc-supply = <&vccio_sd_s0>;
-> +	status = "okay";
-> +};
-> +
-> +&spi2 {
-> +	status = "okay";
-> +	assigned-clocks = <&cru CLK_SPI2>;
-> +	assigned-clock-rates = <200000000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
-> +	num-cs = <1>;
-> +
-> +	pmic@0 {
-> +		compatible = "rockchip,rk806";
-> +		spi-max-frequency = <1000000>;
-> +		reg = <0x0>;
-> +
-> +		interrupt-parent = <&gpio0>;
-> +		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
-> +			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
-> +
-> +		vcc1-supply = <&vcc5v0_sys>;
-> +		vcc2-supply = <&vcc5v0_sys>;
-> +		vcc3-supply = <&vcc5v0_sys>;
-> +		vcc4-supply = <&vcc5v0_sys>;
-> +		vcc5-supply = <&vcc5v0_sys>;
-> +		vcc6-supply = <&vcc5v0_sys>;
-> +		vcc7-supply = <&vcc5v0_sys>;
-> +		vcc8-supply = <&vcc5v0_sys>;
-> +		vcc9-supply = <&vcc5v0_sys>;
-> +		vcc10-supply = <&vcc5v0_sys>;
-> +		vcc11-supply = <&vcc_2v0_pldo_s3>;
-> +		vcc12-supply = <&vcc5v0_sys>;
-> +		vcc13-supply = <&vcc_2v0_pldo_s3>;
-> +		vcc14-supply = <&vcc_2v0_pldo_s3>;
-> +		vcca-supply = <&vcc5v0_sys>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		rk806_dvs1_null: dvs1-null-pins {
-> +			pins = "gpio_pwrctrl2";
-> +			function = "pin_fun0";
-> +		};
-> +
-> +		rk806_dvs2_null: dvs2-null-pins {
-> +			pins = "gpio_pwrctrl2";
-> +			function = "pin_fun0";
-> +		};
-> +
-> +		rk806_dvs3_null: dvs3-null-pins {
-> +			pins = "gpio_pwrctrl3";
-> +			function = "pin_fun0";
-> +		};
-> +
-> +		regulators {
-> +			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <550000>;
-> +				regulator-max-microvolt = <950000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_gpu_s0";
-> +				regulator-enable-ramp-delay = <400>;
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <550000>;
-> +				regulator-max-microvolt = <950000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_cpu_lit_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_log_s0: dcdc-reg3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <675000>;
-> +				regulator-max-microvolt = <750000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_log_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +					regulator-suspend-microvolt = <750000>;
-> +				};
-> +			};
-> +
-> +			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <550000>;
-> +				regulator-max-microvolt = <950000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_vdenc_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_ddr_s0: dcdc-reg5 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <675000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_ddr_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +					regulator-suspend-microvolt = <850000>;
-> +				};
-> +			};
-> +
-> +			vdd2_ddr_s3: dcdc-reg6 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-name = "vdd2_ddr_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_2v0_pldo_s3: dcdc-reg7 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <2000000>;
-> +				regulator-max-microvolt = <2000000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vdd_2v0_pldo_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <2000000>;
-> +				};
-> +			};
-> +
-> +			vcc_3v3_s3: dcdc-reg8 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vcc_3v3_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <3300000>;
-> +				};
-> +			};
-> +
-> +			vddq_ddr_s0: dcdc-reg9 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-name = "vddq_ddr_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_1v8_s3: dcdc-reg10 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcc_1v8_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <1800000>;
-> +				};
-> +			};
-> +
-> +			avcc_1v8_s0: pldo-reg1 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "avcc_1v8_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_1v8_s0: pldo-reg2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcc_1v8_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +					regulator-suspend-microvolt = <1800000>;
-> +				};
-> +			};
-> +
-> +			avdd_1v2_s0: pldo-reg3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1200000>;
-> +				regulator-max-microvolt = <1200000>;
-> +				regulator-name = "avdd_1v2_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vcc_3v3_s0: pldo-reg4 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vcc_3v3_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vccio_sd_s0: pldo-reg5 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-ramp-delay = <12500>;
-> +				regulator-name = "vccio_sd_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			pldo6_s3: pldo-reg6 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "pldo6_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <1800000>;
-> +				};
-> +			};
-> +
-> +			vdd_0v75_s3: nldo-reg1 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <750000>;
-> +				regulator-max-microvolt = <750000>;
-> +				regulator-name = "vdd_0v75_s3";
-> +
-> +				regulator-state-mem {
-> +					regulator-on-in-suspend;
-> +					regulator-suspend-microvolt = <750000>;
-> +				};
-> +			};
-> +
-> +			vdd_ddr_pll_s0: nldo-reg2 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <850000>;
-> +				regulator-name = "vdd_ddr_pll_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +					regulator-suspend-microvolt = <850000>;
-> +				};
-> +			};
-> +
-> +			avdd_0v75_s0: nldo-reg3 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <750000>;
-> +				regulator-max-microvolt = <750000>;
-> +				regulator-name = "avdd_0v75_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_0v85_s0: nldo-reg4 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <850000>;
-> +				regulator-name = "vdd_0v85_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +
-> +			vdd_0v75_s0: nldo-reg5 {
-> +				regulator-always-on;
-> +				regulator-boot-on;
-> +				regulator-min-microvolt = <750000>;
-> +				regulator-max-microvolt = <750000>;
-> +				regulator-name = "vdd_0v75_s0";
-> +
-> +				regulator-state-mem {
-> +					regulator-off-in-suspend;
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&tsadc {
-> +	status = "okay";
-> +};
-> +
-> +&u2phy2 {
-> +	status = "okay";
-> +};
-> +
-> +&u2phy3 {
-> +	status = "okay";
-> +};
-> +
-> +&u2phy2_host {
-> +	phy-supply = <&vcc5v0_host>;
-> +	status = "okay";
-> +};
-> +
-> +&u2phy3_host {
-> +	phy-supply = <&vcc5v0_host>;
-> +	status = "okay";
-> +};
-> +
-> +&uart2 {
-> +	pinctrl-0 = <&uart2m0_xfer>;
-> +	status = "okay";
-> +};
-> +
-> +&usb_host0_ehci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host0_ohci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host1_ehci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host1_ohci {
-> +	status = "okay";
-> +};
+> What is in a Nested domain:
+>   Intel: A single IO page table refereed to by a PASID entry
+>          Each vDomain-ID,PASID allocates a unique nesting domain
+>   AMD: A GCR3 table pointer
+>        Nesting domains are created for every unique GCR3 pointer.
+>        vDomain-ID can possibly refer to multiple Nesting domains :(
+
+Per section '2.2.6.3 Guest CR3 Table' in below spec, DTE has domainID,
+and it points to a guest CR3 Table (it should be a set of guest CRs3)
+which is indexed by PASID. So it looks like the PASID is per-DommainID.
+HW should use domainID+PASID to tag the cache, otherwise there would be
+cache conflict...
+
+https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/specifications/48882_IOMMU.pdf
+
+>   ARM: A CD table pointer
+>        Nesting domains are created for every unique CD table top pointer.
 > 
+> How does the hypervisor compute it's cache tag:
+>   Intel: Each time a nesting domain is attached to a (RID,PASID) the
+>          hypervisor driver will try to find a (DID,PASID) that is
+> 	already used by this domain, or allocate a new DID.
+>   AMD: When creating the Nesting Domain the vDomain-ID should be passed
+>        in. The hypervisor driver will allocate a unique pDomain-ID for
+>        each vDomain-ID (hand wave). Several Nesting Domains will share
+>        the same p/vDomain-ID.
+>   ARM: The VMID is uniquely assigned to the Nesting Parent when it
+>        is allocated, in some configurations it has to be shared with
+>        KVM's VMID so allocating the Nesting Parent will require a KVM FD.
+> 
+> Will ATC be forwarded or synthesized:
+>   Intel: The (vDomain-ID,PASID) is a unique nesting domain so
+>          the hypervisor knows exactly which RIDs this nesting domain is
+> 	linked to and can generate an ATC invalidation. Plan is to
+> 	supress/discard the ATC invalidations from the VM and generate
+> 	them in the hypervisor.
+>   AMD: (vDomain-ID,PASID) is ambiguous, it can refer to multiple GCR3
+>        tables. We know which maximal set of RIDs it represents, but not
+>        the actual set. I expect AMD will forward the ATC invalidation
+>        to avoid over invalidation.
+>   ARM: ASID is ambiguous. We have no idea which Nesting Domain/CD table
+>        the ASID is contained in. ARM must forward the ATC invalidation
+>        from the guest.
+> 
+> What iommufd object should receive the IOTLB invalidation command list:
+>   Intel: The Nesting domain. The command list has to be broken up per
+>          (vDomain-ID,PASID) and that batch delivered to the single
+> 	nesting domain. Kernel ignores vDomain-ID/PASID and just
+> 	invalidates whatever the nesting domain is actually attached to
 
+this is what we are doing in current series[1]. is it? Guest needs to
+issue invalidation request with vDomain-ID and PASID (if it is enabled),
+and affected pages for sure. But in hypervisor side, use vDomainID and
+PASID info to figure out the target HWPT, then invoke a cache invalidation
+on the HWPT with the invalidation range is enough. Kernel can figure out
+what device/pasid this HWPT has been attached and invalidate the caches.
 
+[1] 
+https://lore.kernel.org/linux-iommu/20231117131816.24359-1-yi.l.liu@intel.com/
 
+>   AMD: Any Nesting Domain in the vDomain-ID group. The command list has
+>        to be broken up per (vDomain-ID). Kernel replaces
+>        vDomain-ID with pDomain-ID from the nesting domain and executes
+>        the invalidation.
+>   ARM: The Nesting Parent domain. Kernel forces the VMID from the
+>        Nesting Parent and executes the invalidation.
+> 
+> In all cases the VM issues an ATC invalidation with (vRID, PASID) as
+> the tag. The VMM must translate vRID -> dev_id -> pRID
+> 
+> For a pure SW flow the vRID can be mapped to the dev_id and the ATC
+> invalidation delivered to the device object (eg IOMMUFD_DEV_INVALIDATE)
+> 
+> Finally, we have the HW driven invalidation DMA queues that can be
+> directly assigned to the guest. AMD and SMMUv3+vCMDQ support this. In
+> this case the HW is directly processing invalidation commands without
+> a hypervisor trap.
+> 
+> To make this work the iommu needs to be programmed with:
+>   AMD: A vDomain-ID -> pDomain-ID table
+>        A vRID -> pRID table
+>        This is all bound to some "virtual function"
+>   ARM: A vRID -> pRID table
+>        The vCMDQ is bound to a VM_ID, so to the Nesting Parent
+> 
+> For AMD, as above, I suggest the vDomain-ID be passed when creating
+> the nesting domain.
+> 
+> The AMD "virtual function".. It is probably best to create a new iommufd
+> object for this and it can be passed in to a few places
+> 
+> The vRID->pRID table should be some mostly common
+> IOMMUFD_DEV_ASSIGN_VIRTUAL_ID. AMD will need to pass in the virtual
+> function ID and ARM will need to pass in the Nesting Parent ID.
+> 
+> For the HW path some function will create the command queue and
+> DMA/mmap it. Taking in the virtual function/nesting parent as the
+> handle to associate it with.
+> 
+> For a SW path:
+>   AMD: All invalidations can be delivered to the virtual function
+>        and the kernel can use the vDomainID/vRID tables to translate
+>        them fully
+>   ARM: All invalidations can be delivered to the nesting parent
+> 
+> In many ways the nesting parent/virtual function are very similar
+> things. Perhaps ARM should also create a virtual function object which
+> is just welded to the nesting parent for API consistency.
+> 
+> So.. In short.. Invalidation is a PITA. The idea is the same but
+> annoying little details interfere with actually having a compltely
+> common API here. IMHO the uAPI in this series is fine. It will support
+> Intel invalidation and non-ATC invalidation on AMD/ARM. It should be
+> setup to allow that the target domain object can be any HWPT.
 
+This HWPT is still nested domain. Is it? But it can represent a guest I/O
+page table (VT-d), guest CD table (ARM), guest CR3 Table (AMD, it seems to
+be a set of guest CR3 table pointers). May ARM and AMD guys keep me honest
+here.
+
+The Intel guest I/O page table case may be the simplest as userspace only
+needs to provide the HWPT ID and the affected ranges for invalidating. As
+mentioned above, kernel will find out the attached device/pasid and
+invalidating cache with the device/pasid. For ARM and AMD case, extra
+information is needed. Am I getting you correct?
+
+> 
+> ARM will be able to do IOTLB invalidation using this API.
+> 
+> IOMMUFD_DEV_INVALIDATE should be introduced with the same design as
+> HWPT invalidate. This would be used for AMD/ARM's ATC invalidation
+> (and just force the stream ID, userspace must direct the vRID to the
+> correct dev_id).
+> 
+> Then in yet another series we can tackle the entire "virtual function"
+> vRID/pRID translation stuff when the mmapable queue thing is
+> introduced.
+> 
+> Thus next steps:
+>   - Respin this and lets focus on Intel only (this will be tough for
+>     the holidays, but if it is available I will try)
+
+I've respinned the iommufd cache invalidation part with the change to
+report error_code/error_data per invalidation entry. yet still busy on
+making Intel VTd part to report the error_code. Besides, I didn't see
+other respin needed for Intel VT-d invalidation. If I missed thing, please
+do let me know.:)
+
+>   - Get an ARM patch that just does IOTLB invalidation and add it to my
+>     part 3
+>   - Start working on IOMMUFD_DEV_INVALIDATE along with an ARM
+>     implementation of it
+>   - Reorganize the AMD RFC broadly along these lines and lets see it
+>     freshened up in the next months as well. I would like to see the
+>     AMD support structured to implement the SW paths in first steps and
+>     later add in the "virtual function" acceleration stuff. The latter
+>     is going to be complex.
+>   
+> Jason
+
+-- 
+Regards,
+Yi Liu
