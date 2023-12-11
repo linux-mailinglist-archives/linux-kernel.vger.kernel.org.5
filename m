@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815FC80CC4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86CD80CD4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344040AbjLKN77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
+        id S1344070AbjLKOIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbjLKN7j (ORCPT
+        with ESMTP id S1343996AbjLKOI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:59:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7907549E6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:57:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E69C433C9;
-        Mon, 11 Dec 2023 13:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303059;
-        bh=gmWXl8OnCsDxGnfCAvvdJ9/lz1xt84JHADheam84Pw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V374Q210qweBD3E8fXjl1CBQBikPTEb7Kz6PJdJC36Zcckw50tE9/yRhcFF0BFqdF
-         zu0Gx1qAfPHR4FyqcD9HT93uQBZAgrUei1mt1Q1B/GqPeBLorMfwYWQz0q77iXy/p+
-         SbS71XArMz88bAK2DMsjBEs2oNPn6C/v883SmFYuopOuVHdUl1TSQ82EY/5kb6DsNx
-         4zqTvAn8dKZkAK7zSddzozfAKt15ZKEjoNwSEtMmQqpMR8CjyMhET9GE5lbJoOSU9K
-         +xDjyUBaWyyiPT8mcbkAcVy04d732RcMlxfu7qJiNrbUozcWIK7XvpduGJxbNmujD/
-         3F0QBPgBb6FIw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hengqi Chen <hengqi.chen@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        yangtiezhu@loongson.cn, loongarch@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 6.1 29/29] LoongArch: Preserve syscall nr across execve()
-Date:   Mon, 11 Dec 2023 08:54:13 -0500
-Message-ID: <20231211135457.381397-29-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211135457.381397-1-sashal@kernel.org>
-References: <20231211135457.381397-1-sashal@kernel.org>
+        Mon, 11 Dec 2023 09:08:26 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB23812E;
+        Mon, 11 Dec 2023 05:55:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=a5KlyULzT0peuZ0c1QWXDeAwyadS1a4REYYtErhjE+A=; b=1CQSVdejU3ZzLEn2q0Fn/CRiw6
+        ofo935OiRRj+zg2q8PJUmbmZnLm7uOOeblonKXNxqHr5k0MFhQBvzz8igGt0VyYzA2MgtKyMPh2Mj
+        w5tBE+e5kab9YD2PWkOtKPYKb8TCcABIttfQ/nrEv8dJ/k5yOH553EB21IQQVXSDOOfA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rCgkD-002cfT-2r; Mon, 11 Dec 2023 14:54:49 +0100
+Date:   Mon, 11 Dec 2023 14:54:49 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
+        <ramon.nordin.rodriguez@ferroamp.se>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] net: microchip_t1s: additional phy support and
+ collision detect handling
+Message-ID: <e4e675be-bbef-4fff-8bc2-d07bc1981ae2@lunn.ch>
+References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
+ <d79803b5-60ec-425b-8c5c-3e96ff351e09@lunn.ch>
+ <ZWS2GYBGGZg2MS0d@debian>
+ <270f74c0-4a1d-4a82-a77c-0e8a8982e80f@lunn.ch>
+ <ZXWqrPkaJD2i5g-d@builder>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.66
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXWqrPkaJD2i5g-d@builder>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hengqi Chen <hengqi.chen@gmail.com>
+> ## with collision detection enabled
+> 
+> iperf3 normal
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.00  sec  5.54 MBytes  4.65 Mbits/sec    0             sender
+> [  5]   0.00-10.01  sec  5.40 MBytes  4.53 Mbits/sec                  receiver
+> 
+> iperf3 reverse
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.00  sec   929 KBytes   761 Kbits/sec  293             sender
+> [  5]   0.00-10.00  sec   830 KBytes   680 Kbits/sec                  receiver
+> 
+> 
+> ## with collision detection disabled
+> 
+> iperf3 normal
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.00  sec  6.39 MBytes  5.36 Mbits/sec    0             sender
+> [  5]   0.00-10.04  sec  6.19 MBytes  5.17 Mbits/sec                  receiver
+> 
+> iperf3 reverse
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.27  sec  1.10 MBytes   897 Kbits/sec  268             sender
+> [  5]   0.00-10.00  sec  1.01 MBytes   843 Kbits/sec                  receiver
+> 
+> # Conclusions
+> 
+> The arm system running the lan865x macphy uses a not yet mainlined driver, see
+> https://lore.kernel.org/all/20231023154649.45931-1-Parthiban.Veerasooran@microchip.com/
+> 
+> The lan865x driver crashed out every once in a while on reverse mode, there
+> is definetly something biased in the driver for tx over rx.
+>
+> Then again it's not accepted yet.
+> 
+> Disabling collision detection seemes to have an positive effect.
+> Slightly higher speeds and slightly fewer retransmissions.
 
-[ Upstream commit d6c5f06e46a836e6a70c7cfd95bb38a67d9252ec ]
+I would want to first understand why there is such a big difference
+with the direction. Is it TCP backing off because of the packet loss?
+Or is there some other problem.
 
-Currently, we store syscall nr in pt_regs::regs[11] and syscall execve()
-accidentally overrides it during its execution:
+Maybe try with UDP streams, say with a bandwidth of 5Mbps. Do you
+loose 4Mbps in one direction? Or a much smaller number of packets.
 
-    sys_execve()
-      -> do_execve()
-        -> do_execveat_common()
-          -> bprm_execve()
-            -> exec_binprm()
-              -> search_binary_handler()
-                -> load_elf_binary()
-                  -> ELF_PLAT_INIT()
+Are there any usable statistics? FCS errors?
 
-ELF_PLAT_INIT() reset regs[11] to 0, so in syscall_exit_to_user_mode()
-we later get a wrong syscall nr. This breaks tools like execsnoop since
-it relies on execve() tracepoints.
-
-Skip pt_regs::regs[11] reset in ELF_PLAT_INIT() to fix the issue.
-
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/loongarch/include/asm/elf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-index b9a4ab54285c1..9b16a3b8e7060 100644
---- a/arch/loongarch/include/asm/elf.h
-+++ b/arch/loongarch/include/asm/elf.h
-@@ -293,7 +293,7 @@ extern const char *__elf_platform;
- #define ELF_PLAT_INIT(_r, load_addr)	do { \
- 	_r->regs[1] = _r->regs[2] = _r->regs[3] = _r->regs[4] = 0;	\
- 	_r->regs[5] = _r->regs[6] = _r->regs[7] = _r->regs[8] = 0;	\
--	_r->regs[9] = _r->regs[10] = _r->regs[11] = _r->regs[12] = 0;	\
-+	_r->regs[9] = _r->regs[10] /* syscall n */ = _r->regs[12] = 0;	\
- 	_r->regs[13] = _r->regs[14] = _r->regs[15] = _r->regs[16] = 0;	\
- 	_r->regs[17] = _r->regs[18] = _r->regs[19] = _r->regs[20] = 0;	\
- 	_r->regs[21] = _r->regs[22] = _r->regs[23] = _r->regs[24] = 0;	\
--- 
-2.42.0
-
+    Andrew
