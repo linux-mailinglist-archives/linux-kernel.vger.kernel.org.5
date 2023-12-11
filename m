@@ -2,136 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AD280DF96
+	by mail.lfdr.de (Postfix) with ESMTP id 14B6580DF95
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345268AbjLKXhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 18:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        id S1345281AbjLKXiZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 18:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLKXhh (ORCPT
+        with ESMTP id S229625AbjLKXiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 18:37:37 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1EFCB;
-        Mon, 11 Dec 2023 15:37:43 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d9d307a732so3838374a34.1;
-        Mon, 11 Dec 2023 15:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702337862; x=1702942662; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t86WZt4ENI/hv5N6g/BMDwtkCseB1St9FbZ8iMLj7J0=;
-        b=g5YuCn/ydonCSaXaRgFIV42YSQRysQ0PSOiP8ZafYb8Id5Z8uOWNxFhQcbsjpNtPna
-         y7w6NS4CsJ6Ah1WMIga8s9uZCeH/+HuWx+RTD+pw8sG2Jh6tPximIOuA+w2z8gAerOJH
-         JFERr0dih3b270JWS8d2ZjvRo7UiB/OfCRy0zYXL9AP6zCpPV0xG/ogIthJUGpQpKuyP
-         QXhEoI9j+b/HaUbdeqNvyuYN5Q7cBErWZvUR7Omam2uh5w6xh/2xdqTI0dHIRYG+UOV9
-         fCgJFYdtsA3wVWsFILBgdyPR//wcvNGEe+VsSaiaozqKBJ5To3IWbe+RTQAWRd9mKEYu
-         8USw==
+        Mon, 11 Dec 2023 18:38:22 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F749CB;
+        Mon, 11 Dec 2023 15:38:29 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c66b093b86so4569315a12.0;
+        Mon, 11 Dec 2023 15:38:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702337862; x=1702942662;
+        d=1e100.net; s=20230601; t=1702337909; x=1702942709;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t86WZt4ENI/hv5N6g/BMDwtkCseB1St9FbZ8iMLj7J0=;
-        b=G1C9IR0wbjBipMQTpmi2f72T4qXhnxegABnnUn/O9eNl9/xhHsonGx7C31wkloWZaz
-         hEfTH3dM6wNJl12xt/34IJh03jniFzF+7vQCZjeJqMC1pp1YZLhRdt9SUJC4gQ2iEdxz
-         1ZIaProYmdIH0QD3bsQsCCGEmew+xjPQ/GnMN4b6Zj5KemZL4fL1Hv43kBjKWTQlV89H
-         5W/my7NlLOstB8xlcvOoO1bX+6QLx1GMO+pj+lJVO+D1gzEChw73AOByayXQX38Z1Rgm
-         paj6R2FKNgxEK8ThXll88qm18e/iByoARhHyGx+LcFwA5VX/wRUElICA2EKUhDNdw1pg
-         HC1w==
-X-Gm-Message-State: AOJu0Yxzqvt9Vl/h8IQit54cUs/sJDm9/wjpOMO84C45i2Z0Em+xCN+G
-        igQnElrLGFTzjJxDUjRXzJswynucw8Ymird0WB4=
-X-Google-Smtp-Source: AGHT+IG4FfgKtfsGPWYbi9QAB1q+LRDEA87I2H5e0e/b7szIlVMYT/arqkZQIO5Lc9PGgI8WXY5FUBR6yaCN2BqAZ4s=
-X-Received: by 2002:a05:6358:c304:b0:170:3f9f:b367 with SMTP id
- fk4-20020a056358c30400b001703f9fb367mr4811270rwb.26.1702337862479; Mon, 11
- Dec 2023 15:37:42 -0800 (PST)
+        bh=BHpTfcyEiSTL+Iiy4h09/0w/ff7Mj2tSbGaHW/cYLyA=;
+        b=T2Kwi0LCSCwD/ZpCvx58zqth91J+IUDNe5Ys9tf9uYJaAaSpKZ0PMXqEwECQI6sa0E
+         5OoT3dhnH0y3Am8DCNtuCCCAq55ho+Aw/ERg98cZLhfvnLp29nAqq28B9R3ylaPryk8x
+         dsE4MUOkm1pul/f/oYEfHDokX41fd8l+ISgHathEEO43Uthg5wYcwj2o0h4pmeqdx8qD
+         Du4AKHV0HnY7QkYjuPCso8Cuob+zblECT+Lp9mLHzqTbAxG5pw+6OcmrQ14G/jk4Lagl
+         LW34/4fqsn2lwf/HD/I2qlAMQ+JSl7ZD1NgUM4kBJAA5R9JL3/DmGL918smqpROV3mMe
+         kucA==
+X-Gm-Message-State: AOJu0YzgXBwycHTZfHhaFZ3j+hJmuo1DPHJlKwI35zr9ohg7oaYmCJnU
+        ZK5HEcXy9NM6IcepJkz5stGZtRnUwvxHWkOndT8=
+X-Google-Smtp-Source: AGHT+IG6XeG2QHBItXCy7jlLpitpWE5WDX6fF+j8UTcmkqlO011/5wKWPuqSYXO/CiPnBl4Ca/kyQ+uMui58XQRhKF8=
+X-Received: by 2002:a17:90a:5b08:b0:286:9212:a7cf with SMTP id
+ o8-20020a17090a5b0800b002869212a7cfmr5765857pji.44.1702337908760; Mon, 11 Dec
+ 2023 15:38:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20230215143306.2d563215@rorschach.local.home> <CAMn1gO4_+-0x4ibpcASy4bLeZ+7rsmjx=0AYKGVDUApUbanSrQ@mail.gmail.com>
- <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
- <20230505095805.759153de@gandalf.local.home> <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
- <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
- <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
- <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
- <osqmp2j6gsmgbkle6mwhoaf65mjn4a4w3e5hsfbyob6f44wcg6@7rihb5otzl2z>
- <CANpmjNMw3N09x06Q+0mFCEeTKfUsDdXwXM2hdgAQ+wwbZGpB9w@mail.gmail.com> <rbcdbilhh67fvjdgnstu25v4jnfeesthoxstnzzglynbngu5bk@5ozwgzaulbsx>
-In-Reply-To: <rbcdbilhh67fvjdgnstu25v4jnfeesthoxstnzzglynbngu5bk@5ozwgzaulbsx>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Tue, 12 Dec 2023 00:37:31 +0100
-Message-ID: <CA+fCnZf5kxWUWCzK8EKgUuq_E2rYv5aw=SqZMDb93+=7vSUp+w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
-To:     =?UTF-8?Q?Paul_Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
-Cc:     Marco Elver <elver@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Collingbourne <pcc@google.com>,
-        andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
+References: <20231207011722.1220634-1-irogers@google.com> <20231207011722.1220634-2-irogers@google.com>
+In-Reply-To: <20231207011722.1220634-2-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 11 Dec 2023 15:38:17 -0800
+Message-ID: <CAM9d7cjUVCWpiy0ZsdaWQ5RtrULJSQsggZwz1wJNfeb1kXBwtw@mail.gmail.com>
+Subject: Re: [PATCH v6 01/47] perf map: Improve map/unmap parameter names
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 12:35=E2=80=AFAM Paul Heidekr=C3=BCger
-<paul.heidekrueger@tum.de> wrote:
+On Wed, Dec 6, 2023 at 5:17 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Using CONFIG_FTRACE=3Dy instead of CONFIG_TRACEPOINTS=3Dy produces the sa=
-me error
-> for me.
+> The u64 values are either absolute or relative, try to hint better in
+> the parameter names.
 >
-> So
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/map.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
->         CONFIG_KUNIT=3Dy
->         CONFIG_KUNIT_ALL_TESTS=3Dn
->         CONFIG_FTRACE=3Dy
->         CONFIG_KASAN=3Dy
->         CONFIG_KASAN_GENERIC=3Dy
->         CONFIG_KASAN_KUNIT_TEST=3Dy
+> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+> index 3a3b7757da5f..49756716cb13 100644
+> --- a/tools/perf/util/map.h
+> +++ b/tools/perf/util/map.h
+> @@ -105,25 +105,25 @@ static inline u64 map__dso_map_ip(const struct map *map, u64 ip)
+>  }
 >
-> produces
+>  /* dso rip -> ip */
+> -static inline u64 map__dso_unmap_ip(const struct map *map, u64 ip)
+> +static inline u64 map__dso_unmap_ip(const struct map *map, u64 rip)
+>  {
+> -       return ip + map__start(map) - map__pgoff(map);
+> +       return rip + map__start(map) - map__pgoff(map);
+>  }
 >
->         =E2=9E=9C   ./tools/testing/kunit/kunit.py run --kunitconfig=3Dmm=
-/kasan/.kunitconfig --arch=3Darm64
->         Configuring KUnit Kernel ...
->         Regenerating .config ...
->         Populating config with:
->         $ make ARCH=3Darm64 O=3D.kunit olddefconfig CC=3Dclang
->         ERROR:root:Not all Kconfig options selected in kunitconfig were i=
-n the generated .config.
->         This is probably due to unsatisfied dependencies.
->         Missing: CONFIG_KASAN_KUNIT_TEST=3Dy
->
-> By that error message, CONFIG_FTRACE appears to be present in the generat=
-ed
-> config, but CONFIG_KASAN_KUNIT_TEST still isn't. Presumably,
-> CONFIG_KASAN_KUNIT_TEST is missing because of an unsatisfied dependency, =
-which
-> must be CONFIG_TRACEPOINTS, unless I'm missing something ...
->
-> If I just generate an arm64 defconfig and select CONFIG_FTRACE=3Dy,
-> CONFIG_TRACEPOINTS=3Dy shows up in my .config. So, maybe this is kunit.py=
--related
-> then?
->
-> Andrey, you said that the tests have been working for you; are you runnin=
-g them
-> with kunit.py?
+> -static inline u64 map__map_ip(const struct map *map, u64 ip)
+> +static inline u64 map__map_ip(const struct map *map, u64 ip_or_rip)
 
-No, I just run the kernel built with a config file that I put together
-based on defconfig.
+I'm afraid it's gonna be more confusing.  Can we say just 'rip'?
+
+>  {
+>         if ((RC_CHK_ACCESS(map)->mapping_type) == MAPPING_TYPE__DSO)
+> -               return map__dso_map_ip(map, ip);
+> +               return map__dso_map_ip(map, ip_or_rip);
+>         else
+> -               return ip;
+> +               return ip_or_rip;
+>  }
+>
+> -static inline u64 map__unmap_ip(const struct map *map, u64 ip)
+> +static inline u64 map__unmap_ip(const struct map *map, u64 ip_or_rip)
+
+Ditto.
+
+Thanks,
+Namhyung
+
+
+>  {
+>         if ((RC_CHK_ACCESS(map)->mapping_type) == MAPPING_TYPE__DSO)
+> -               return map__dso_unmap_ip(map, ip);
+> +               return map__dso_unmap_ip(map, ip_or_rip);
+>         else
+> -               return ip;
+> +               return ip_or_rip;
+>  }
+>
+>  /* rip/ip <-> addr suitable for passing to `objdump --start-address=` */
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
