@@ -2,140 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A123480D3E6
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDE480D3E5
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344707AbjLKReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
+        id S1344691AbjLKReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344702AbjLKReW (ORCPT
+        with ESMTP id S1344543AbjLKReU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:34:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B17C8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:34:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AF33C43395;
-        Mon, 11 Dec 2023 17:34:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702316068;
-        bh=xuX6L1jHorTrNZtjpFIc75B8ypRXxqR2z0Z/exf+Bcc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KIjtlOXLZ/5nmD+yo2uenPqJ2aX9ssBIWM7zx7V9mGsNS4dvR6D8aAIpaFDBgT/r+
-         wCvrgF4StzlkDzjt3do/cB8Ml9zAQyJfXoeVqddjOpo3pkOKvyDvqomizxhhpAT3fh
-         rzG8LdwxdhzGsWTOvKytoF3vcPxedGlbsj2C2TPNgVi3xrrQSxjBVTpuaXQYZILPDr
-         Owt92PpG7h2R9rdPdu4WeAmREgjeG5gLlH18dk1z5Z0Y+LmOEd2gzOX3vK4wDsVx9I
-         iFwdL7SSj0y5Vdk3nDvkGPzjfeJpNdePgxd0MaZgSP5X3Vcf/XbxkKo4AkZuKQ91+7
-         ezj7eG3+MhM2A==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50bfd8d5c77so5402141e87.1;
-        Mon, 11 Dec 2023 09:34:28 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy0t5o4FLu0bA8WzldfPpU9Vd8Qfqu9A0pPJUGJfMRthp+OlQCo
-        zfdTPxS3Mhb4V6kM9iGm2XHkvYhjkaiUrZItaQ==
-X-Google-Smtp-Source: AGHT+IGMURGYLV/Y+ayED33ueZXlH85oU9OGhLmkTdCm4X1g7BaIMGfr4V8LF++R0RHFP+RuG1E0QnZTXRhkxEzjTew=
-X-Received: by 2002:a05:6512:3d05:b0:50b:f776:1d6a with SMTP id
- d5-20020a0565123d0500b0050bf7761d6amr1293404lfv.1.1702316066602; Mon, 11 Dec
+        Mon, 11 Dec 2023 12:34:20 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17EFC3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:34:26 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1d09a64eaebso41740045ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:34:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702316066; x=1702920866; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4dy1GZPt4ahloA1lKMAAh2vw8dnz9eCUNT+pZwXAOsM=;
+        b=PsrxwYGYkWHe0CkFvfaqqYjLelWXMpmqt8sKJnJ+TJR8yVwAIg9QBqI1Jk9k7cZjFV
+         pqfxvWHWXcELwExNBrw9OIsUzU8lhC8lTc/A7FhgSXITD+9wVLoJY0bx67BVjrnmsWDJ
+         81jcP8+UHbwyvx3wDqVsy+JSJj0kUUeCLgm8YKj/18PeSRwUBh6xApeM5Ym3KXbpQQZs
+         26q2L6GtssE7w4jkpH0DqrlVpq+JDb7zPIHxgugASvFrouj0+f7BsI4caL2SdGmxKUjq
+         V1hSOfdVa/9INaQhZbMsTVYkgXgNEEyZfkxs9gnG8wO6AAdC3Fyq5Y8JvPix+qwa1VOm
+         mSIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702316066; x=1702920866;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4dy1GZPt4ahloA1lKMAAh2vw8dnz9eCUNT+pZwXAOsM=;
+        b=THSRzyi1u5ETpuw6gcyYpLM99O/BlSDYlDxNFSOAF7bKfYJlnH8eP+ncfGPi6lfK9U
+         N6jUOkgINkNFnlIiea6JrjYin+HivWdl7GWU2+wPIqfKGVgxDhOD60WNOuHItEAw/lTr
+         KCDTV2ReRDn+W0fR/vTSjoVlSzgP9kSBtRCU7TiHVWG8PQXfATeREWSm0WaXDfXUTPIB
+         zpFQSSD3kG8NqDBMts5A00Rsr7ZejMdmjLmzOpjxn95EzQ6wdEFz8Y6wDaobKdiJQK3c
+         +COYy3eDwfc+YmslQaPX/DfQEoykmSbzqmSXVOv2JbGvH2WykQFZrbBvpDo+qQxdtkoF
+         7ymg==
+X-Gm-Message-State: AOJu0YyzlYwzs4X8AyhhIzfOzR29YnodvKPOUb0gSisMUlu2iOaavtw4
+        5bEvv/Ql0KW35Ue+56B6i9aUqVwiCM4=
+X-Google-Smtp-Source: AGHT+IHqkXvBHkzpZr4xBbgwsL3PvOCK8qSlSmIRPscVFj5vuMB/n5MJcuPBtGQA7MQkmEwS8R6UC/HFYLE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:41cf:b0:1d0:80cd:4c44 with SMTP id
+ u15-20020a17090341cf00b001d080cd4c44mr36557ple.10.1702316066276; Mon, 11 Dec
  2023 09:34:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20231204123315.28456-1-keith.zhao@starfivetech.com> <20231204123315.28456-6-keith.zhao@starfivetech.com>
-In-Reply-To: <20231204123315.28456-6-keith.zhao@starfivetech.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 11 Dec 2023 11:34:14 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJz5pcFwLbh9Jdw1HKLPFgF8ZQdCM18bHO_8R1dtmfx7Q@mail.gmail.com>
-Message-ID: <CAL_JsqJz5pcFwLbh9Jdw1HKLPFgF8ZQdCM18bHO_8R1dtmfx7Q@mail.gmail.com>
-Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
-To:     Keith Zhao <keith.zhao@starfivetech.com>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        aou@eecs.berkeley.edu, suijingfeng@loongson.cn,
-        tzimmermann@suse.de, paul.walmsley@sifive.com, mripard@kernel.org,
-        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
-        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
-        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
-        changhuang.liang@starfivetech.com
-Content-Type: text/plain; charset="UTF-8"
+Date:   Mon, 11 Dec 2023 09:34:24 -0800
+In-Reply-To: <cfed942fc767fa7b2fabc68a3357a7b95bd6a589.camel@amazon.com>
+Mime-Version: 1.0
+References: <20230512233127.804012-1-seanjc@google.com> <20230512233127.804012-2-seanjc@google.com>
+ <cfed942fc767fa7b2fabc68a3357a7b95bd6a589.camel@amazon.com>
+Message-ID: <ZXdIIBUXcCIK28ys@google.com>
+Subject: Re: [PATCH v2 1/2] KVM: Use syscore_ops instead of reboot_notifier to
+ hook restart/shutdown
+From:   Sean Christopherson <seanjc@google.com>
+To:     James Gowans <jgowans@amazon.com>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        Alexander Graf <graf@amazon.de>,
+        "Jan =?utf-8?Q?Sch=C3=B6nherr?=" <jschoenh@amazon.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+        "atishp@atishpatra.org" <atishp@atishpatra.org>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "aleksandar.qemu.devel@gmail.com" <aleksandar.qemu.devel@gmail.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 6:33=E2=80=AFAM Keith Zhao <keith.zhao@starfivetech.=
-com> wrote:
->
-> add hdmi driver as encoder and connect
->
-> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> ---
->  drivers/gpu/drm/verisilicon/Kconfig         |   8 +
->  drivers/gpu/drm/verisilicon/Makefile        |   1 +
->  drivers/gpu/drm/verisilicon/starfive_hdmi.c | 849 ++++++++++++++++++++
->  drivers/gpu/drm/verisilicon/starfive_hdmi.h | 304 +++++++
->  drivers/gpu/drm/verisilicon/vs_drv.c        |   3 +
->  drivers/gpu/drm/verisilicon/vs_drv.h        |   4 +
->  6 files changed, 1169 insertions(+)
->  create mode 100644 drivers/gpu/drm/verisilicon/starfive_hdmi.c
->  create mode 100644 drivers/gpu/drm/verisilicon/starfive_hdmi.h
->
-> diff --git a/drivers/gpu/drm/verisilicon/Kconfig b/drivers/gpu/drm/verisi=
-licon/Kconfig
-> index e10fa97635aa..122c786e3948 100644
-> --- a/drivers/gpu/drm/verisilicon/Kconfig
-> +++ b/drivers/gpu/drm/verisilicon/Kconfig
-> @@ -11,3 +11,11 @@ config DRM_VERISILICON
->           This driver provides VeriSilicon kernel mode
->           setting and buffer management. It does not
->           provide 2D or 3D acceleration.
-> +
-> +config DRM_VERISILICON_STARFIVE_HDMI
-> +       bool "Starfive HDMI extensions"
-> +       depends on DRM_VERISILICON
-> +       help
-> +          This selects support for StarFive soc specific extensions
-> +          for the Innosilicon HDMI driver. If you want to enable
-> +          HDMI on JH7110 based soc, you should select this option.
-> diff --git a/drivers/gpu/drm/verisilicon/Makefile b/drivers/gpu/drm/veris=
-ilicon/Makefile
-> index bf6f2b7ee480..71fadafcee13 100644
-> --- a/drivers/gpu/drm/verisilicon/Makefile
-> +++ b/drivers/gpu/drm/verisilicon/Makefile
-> @@ -6,4 +6,5 @@ vs_drm-objs :=3D vs_dc_hw.o \
->                 vs_drv.o \
->                 vs_modeset.o \
->                 vs_plane.o
-> +vs_drm-$(CONFIG_DRM_VERISILICON_STARFIVE_HDMI) +=3D starfive_hdmi.o
->  obj-$(CONFIG_DRM_VERISILICON) +=3D vs_drm.o
-> diff --git a/drivers/gpu/drm/verisilicon/starfive_hdmi.c b/drivers/gpu/dr=
-m/verisilicon/starfive_hdmi.c
-> new file mode 100644
-> index 000000000000..aa621db0dee0
-> --- /dev/null
-> +++ b/drivers/gpu/drm/verisilicon/starfive_hdmi.c
-> @@ -0,0 +1,849 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2023 StarFive Technology Co., Ltd.
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/component.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/hdmi.h>
-> +#include <linux/i2c.h>
-> +#include <linux/irq.h>
-> +#include <linux/media-bus-format.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_device.h>
+On Sat, Dec 09, 2023, James Gowans wrote:
+> Hi Sean,
+>=20
+> Blast from the past but I've just been bitten by this patch when
+> rebasing across v6.4.
+>=20
+> On Fri, 2023-05-12 at 16:31 -0700, Sean Christopherson wrote:
+> > Use syscore_ops.shutdown to disable hardware virtualization during a
+> > reboot instead of using the dedicated reboot_notifier so that KVM disab=
+les
+> > virtualization _after_ system_state has been updated.=C2=A0 This will a=
+llow
+> > fixing a race in KVM's handling of a forced reboot where KVM can end up
+> > enabling hardware virtualization between kernel_restart_prepare() and
+> > machine_restart().
+>=20
+> The issue is that, AFAICT, the syscore_ops.shutdown are not called when
+> doing a kexec. Reboot notifiers are called across kexec via:
+>=20
+> kernel_kexec
+>   kernel_restart_prepare
+>     blocking_notifier_call_chain
+>       kvm_reboot
+>=20
+> So after this patch, KVM is not shutdown during kexec; if hardware virt
+> mode is enabled then the kexec hangs in exactly the same manner as you
+> describe with the reboot.
+>=20
+> Some specific shutdown callbacks, for example IOMMU, HPET, IRQ, etc are
+> called in native_machine_shutdown, but KVM is not one of these.
+>=20
+> Thoughts on possible ways to fix this:
+> a) go back to reboot notifiers
+> b) get kexec to call syscore_shutdown() to invoke all of these callbacks
+> c) Add a KVM-specific callback to native_machine_shutdown(); we only
+> need this for Intel x86, right?
 
-You probably don't need this header and the implicit includes it makes
-are dropped now in linux-next. Please check what you actually need and
-make them explicit.
+I don't like (c).  VMX is the most sensitive/problematic, e.g. the whole bl=
+ocking
+of INIT thing, but SVM can also run afoul of EFER.SVME being cleared, and K=
+VM really=20
+should leave virtualization enabled across kexec(), even if leaving virtual=
+ization
+enabled is relatively benign on other architectures.
 
-Rob
+One more option would be:
+
+ d) Add another sycore hook, e.g. syscore_kexec() specifically for this pat=
+h.
+
+> My slight preference is towards adding syscore_shutdown() to kexec, but
+> I'm not sure that's feasible. Adding kexec maintainers for input.
+
+In a vacuum, that'd be my preference too.  It's the obvious choice IMO, e.g=
+. the
+kexec_image->preserve_context path does syscore_suspend() (and then resume(=
+), so
+it's not completely uncharted territory.
+
+However, there's a rather big wrinkle in that not all of the existing .shut=
+down()
+implementations are obviously ok to call during kexec.  Luckily, AFAICT the=
+re are
+very few users of the syscore .shutdown hook, so it's at least feasible to =
+go that
+route.
+
+x86's mce_syscore_shutdown() should be ok, and arguably is correct, e.g. I =
+don't
+see how leaving #MC reporting enabled across kexec can work.
+
+ledtrig_cpu_syscore_shutdown() is also likely ok and arguably correct.
+
+The interrupt controllers though?  x86 disables IRQs at the very beginning =
+of
+machine_kexec(), so it's likely fine.  But every other architecture?  No cl=
+ue.
+E.g. PPC's default_machine_kexec() sends IPIs to shutdown other CPUs, thoug=
+h I
+have no idea if that can run afoul of any of the paths below.
+
+        arch/powerpc/platforms/cell/spu_base.c  .shutdown =3D spu_shutdown,
+        arch/x86/kernel/cpu/mce/core.c	        .shutdown =3D mce_syscore_sh=
+utdown,
+        arch/x86/kernel/i8259.c                 .shutdown =3D i8259A_shutdo=
+wn,
+        drivers/irqchip/irq-i8259.c	        .shutdown =3D i8259A_shutdown,
+        drivers/irqchip/irq-sun6i-r.c	        .shutdown =3D sun6i_r_intc_sh=
+utdown,
+        drivers/leds/trigger/ledtrig-cpu.c	.shutdown =3D ledtrig_cpu_syscor=
+e_shutdown,
+        drivers/power/reset/sc27xx-poweroff.c	.shutdown =3D sc27xx_poweroff=
+_shutdown,
+        kernel/irq/generic-chip.c	        .shutdown =3D irq_gc_shutdown,
+        virt/kvm/kvm_main.c	                .shutdown =3D kvm_shutdown,
+
+The whole thing is a bit of a mess.  E.g. x86 treats machine_shutdown() fro=
+m
+kexec pretty much the same as shutdown for reboot, but other architectures =
+have
+what appear to be unique paths for handling kexec.
+
+FWIW, if we want to go with option (b), syscore_shutdown() hooks could use
+kexec_in_progress to differentiate between "regular" shutdown/reboot and ke=
+xec.
