@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AF080D33D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A216680D33C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344280AbjLKRE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
+        id S1344262AbjLKREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjLKRE4 (ORCPT
+        with ESMTP id S229618AbjLKREv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:04:56 -0500
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAD88E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:05:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1702314298; x=1702573498;
-        bh=hICd6xX0pWZMvUHgptvk6MN17tBFZ5wEr7xIBYhapgI=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=kFBL2cI8A2VVbApnMZefxfQoAV7krDo06fwBB/INYVg5h9I3xWVIaJ5Y/CXW2iTOW
-         zkmccE2guKKCcWtfH4NxOQBFph3bZqlEgoJFMJZ/NY/VfT8AKUNiQYG6R4/tqCh6L9
-         jTzEde1/2L9p2f2TezIofPRLny+FZ6QvrMFEQpnwcMSqQZZcqWYDadPKNPlw4cpAlj
-         DoeBj9SQ8YCFD0aF9ESEMCIIEKdXPHzRe/1gu26JX0+0rW7casmRDN6NyVxyIpPdxB
-         xhMdkcSS6sPqOF/6IMIsZRzGVhpn8hylty3nWCt/GS7BGGoxlf8nAqxC6FHoqxj2GA
-         6RYYKOgp1jh1A==
-Date:   Mon, 11 Dec 2023 17:04:52 +0000
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <rPOj4p2TGoIYUzMbmRCjmzHuCktN1rc0EVJ-skynzRblrqQLRU2GQaAPOb9RHhUBn_XhGfqcUii4EJBr_AWjoWHnTE8v_wQCMVmkgl2shg0=@proton.me>
-In-Reply-To: <20231211155836.4qb4pfcfaguhuzo7@moria.home.lan>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-5-af617c0d9d94@google.com> <jtCKrRw-FNajNJOXOuI1sweeDxI8T_uYnJ7DxMuqnJc9sgWjS0zouT_XIS-KmPferL7lU51BwD6nu73jZtzzB0T17pDeQP0-sFGRQxdjnaA=@proton.me> <ZXNHp5BoR2LJuv7D@Boquns-Mac-mini.home> <20231211155836.4qb4pfcfaguhuzo7@moria.home.lan>
-Feedback-ID: 71780778:user:proton
+        Mon, 11 Dec 2023 12:04:51 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AB68E;
+        Mon, 11 Dec 2023 09:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702314295;
+        bh=ql7mK0NO5lV8Eo4S5IGxxve3zvILVNJcv/sz+C+oCKQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YTQiDMPN/cXiD4oPlBzvOVlb047A4bLmZSA4Beb9u0DBldFbh5tmIUYjJcU6W+9fD
+         fPgFrYcpYbA4mP3XTuGxFZzzY6l0RGxbXPdHF5bSGIDK5u6xlF0WJ78BnZD+Qbs2lW
+         CaFRe6wNqjQB8lv6FXwsgJhhE5jwEudiqwL7ExIViJNRMZLqAYNEwgK5oWoadQWcfp
+         Hmqno/NU4eYb8foJJbeN3NbGThZtF3sWrKOh8hxyTlmHA3JtyZstnvOBAiSEO5fV1y
+         frzqjcaLZDO/AUQ6NK4yYRra2Uoo9sxL4he0cBCZkZeW0I3zFZ9R0iftavby7UG7Su
+         NtDCclQRkFxbw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7C081378131A;
+        Mon, 11 Dec 2023 17:04:54 +0000 (UTC)
+Message-ID: <23ddcf66-7656-466f-9244-f82ffa66e504@collabora.com>
+Date:   Mon, 11 Dec 2023 19:04:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] Improve AMD ACP Vangogh audio support for Steam Deck
+ OLED
+Content-Language: en-US
+To:     Emil Velikov <emil.velikov@collabora.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Rander Wang <rander.wang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
+ <ZXcm9v0vgnc7gGfc@arch-x395>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <ZXcm9v0vgnc7gGfc@arch-x395>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,66 +73,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 16:58, Kent Overstreet wrote:
-> On Fri, Dec 08, 2023 at 08:43:19AM -0800, Boqun Feng wrote:
->> On Fri, Dec 08, 2023 at 04:40:09PM +0000, Benno Lossin wrote:
->>> On 12/6/23 12:59, Alice Ryhl wrote:
->>>> +    /// Returns the given task's pid in the current pid namespace.
->>>> +    pub fn pid_in_current_ns(&self) -> Pid {
->>>> +        // SAFETY: Calling `task_active_pid_ns` with the current task=
- is always safe.
->>>> +        let namespace =3D unsafe { bindings::task_active_pid_ns(bindi=
-ngs::get_current()) };
->>>
->>> Why not create a safe wrapper for `bindings::get_current()`?
->>> This patch series has three occurrences of `get_current`, so I think it
->>> should be ok to add a wrapper.
->>> I would also prefer to move the call to `bindings::get_current()` out o=
-f
->>> the `unsafe` block.
+On 12/11/23 17:12, Emil Velikov wrote:
+> On 2023/12/09, Cristian Ciocaltea wrote:
+>> This patch series provides several fixes and improvements to AMD ACP drivers
+>> targeting the Vangogh platform, as found on the Valve's new Steam Deck OLED.
 >>
->> FWIW, we have a current!() macro, we should use it here.
->=20
-> Why does it need to be a macro?
+>> Although in theory the board should have been supported by both SOF and legacy
+>> ACP drivers, as of next-20231208 the audio seems to be completely broken.
+>>
+>> Please note this only restores the legacy support, while SOF will be handled in
+>> a separate series.
+>>
+>> Cristian Ciocaltea (5):
+>>   ASoC: amd: vangogh: Drop conflicting ACPI-based probing
+>>   ASoC: amd: vangogh: Allow probing ACP PCI when SOF is disabled
+>>   ASoC: amd: vangogh: Switch to {RUNTIME,SYSTEM_SLEEP}_PM_OPS
+>>   ASoC: amd: acp-config: Add missing MODULE_DESCRIPTION
+>>   ASoC: amd: acp: Add missing MODULE_DESCRIPTION in mach-common
+>>
+> 
+> If it were me, I'd drop the Fixes tag in the latter two patches since
+> the warning is harmless and as-is it'll get into the -stable
+> maintainers' list, who are already pretty swamped with patches.
 
-This is a very interesting question. A `Task` is `AlwaysRefCounted`, so
-if you have a `&'a Task`, someone above you owns a refcount on that
-task. But the `current` task will never go away as long as you stay in
-the same task. So you actually do not need to own a refcount as long as
-there are no context switches.
+Sure, I can drop them if there is a need for v2.
 
-We use this to our advantage and the `current!()` macro returns
-something that acts like `&'a Task` but additionally is `!Send` (so it
-cannot be sent over to a different task). This means that we do not need
-to take a refcount on the current task to get a reference to it.
+> Regardless, for the series:
+> Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
 
-But just having a function that returns a `&'a Task` like thing that is
-`!Send` is not enough, since there are no constraints on 'a. This is
-because the function `Task::current` would take no arguments and there
-is nothing the lifetime could even bind to.
-Since there are no constraints, you could just choose 'a =3D 'static which
-is obviously wrong, since there are tasks that end. For this reason the
-`Task::current` function is `unsafe` and the macro `current!` ensures
-that the lifetime 'a ends early enough. It is implemented like this:
+Thanks for the review,
+Cristian
 
-    macro_rules! current {
-        () =3D> {
-            // SAFETY: Deref + addr-of below create a temporary `TaskRef` t=
-hat cannot outlive the
-            // caller.
-            unsafe { &*$crate::task::Task::current() }
-        };
-    }
-
-Note the `&*`. This ensures that the thing returned by `Task::current`
-is temporary and cannot outlive the current function thus preventing the
-creation of static references to it.
-
-If you want to read more, see here for Gary's original discovery of the
-issue:
-https://lore.kernel.org/rust-for-linux/20230331034701.0657d5f2.gary@garyguo=
-.net/
-
---=20
-Cheers,
-Benno
+> HTH
+> Emil
