@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4097180C39A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDF380C376
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbjLKIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S234164AbjLKIlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:41:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjLKIkk (ORCPT
+        with ESMTP id S234007AbjLKIlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:40:40 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024D4C4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:40:45 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54c4f95e27fso3934215a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:40:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702284043; x=1702888843; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8WHfXsMSBzIil3vhzGR0vYJMqSWAgjj/PiuOMlAKQdE=;
-        b=xmWdoWxJb7NcmQORf3mhRyqp5fBwD9vB7+jLYofpaa7TMazRbQb4myuLuqqvYenTsZ
-         r7ou58xrwdVn8MZ7QJUBKLW5C6g7WbpFcmWRoRkXNZvQebDa52/PtvS83fbsc9Izs4tL
-         ojUb3eSWsS1VITxKkViHRfFniEzoeJQ5nyzyyO5iHa34bBCiIZOCoZim5BLTERfIdKO1
-         J9pxYhwq1+RCfrhDckvEnMaIM5rBF+bFhrBNq5EES0tx29+x4Yli63N81aK3nW5NQYPt
-         6hMnEDVlAnrDFCftqH3wDPChmKmdcEUMivZCimkJ/dcpzGFxd6cgQjdbnFy4K3sfrfPw
-         hcBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702284043; x=1702888843;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8WHfXsMSBzIil3vhzGR0vYJMqSWAgjj/PiuOMlAKQdE=;
-        b=uKFOGKNkVPB0XTr0NihUwlFYs1NeKGXhnTgYDEZBZj5JvFxMO9tjonIH3HlWZhHeNV
-         7hJnNIjF2pStwvS1YqyXcqmPsDqu6Vnei8ClY6VXYMnjHyTgNUNUxd/9v3E9TKiTW+je
-         yaDuhy/MXcT9TX2dUjgWz5LqjzJTxYXfNyJwGvCCpj61LWLK4aRr415/bh5zVdyt/tEo
-         CytKGOX/aG6xogABDd8S8OJn0WPbGJCEV2cdcOmjemf53Md64A2BN54R+5+ExW9/QJbV
-         4PTIk9003XGilQstD6NOS5c1Nk61MeHNgyj+Os+Yl+7byD2i63iywDUVhns4fKuaTPuC
-         waxg==
-X-Gm-Message-State: AOJu0YwXSZ0mVUAQi3zc8i1op14cRD7JqjMRNjmPbDcmmhgU6yuvlwPC
-        +0PM433Y+ePt4s8kVLA26YEHQA==
-X-Google-Smtp-Source: AGHT+IF64K0QJF6TSoo0bL/zIfLzd/TJ4LUK6Q16W4r6xL17AU4KXSPEjd3vvv3X3QBo0csjqxoprg==
-X-Received: by 2002:a50:9e2d:0:b0:54c:5e18:50e6 with SMTP id z42-20020a509e2d000000b0054c5e1850e6mr2346907ede.42.1702284043366;
-        Mon, 11 Dec 2023 00:40:43 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id cx14-20020a05640222ae00b0054cb07a17ebsm3395959edb.31.2023.12.11.00.40.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 00:40:42 -0800 (PST)
-Message-ID: <4e032b2c-eed8-475b-ba10-5fdb2156e4d0@linaro.org>
-Date:   Mon, 11 Dec 2023 09:40:41 +0100
+        Mon, 11 Dec 2023 03:41:20 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A13C2;
+        Mon, 11 Dec 2023 00:41:25 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB5e83k028548;
+        Mon, 11 Dec 2023 08:41:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=OloedqYYUwZtP1M5Bxe8DI7g155sUm6orY/Vc0ddjpQ=; b=S0
+        7VF9zuMN40gCdvHqZEoX31bTBTiH6yAPJRNo3yN0WZK62FAyZW4NYpZBJRqomyJB
+        berLXW7aag42QXv1pkJNxX7ka1pRJsHjqIid2BBBYm3CYrwiD9aeMoFT4FK8YqYF
+        +pAh6TtWrycQUzlRxjML2k+fhkp73QKJvTwL7OE2vaIP5vNInoSE+KFiKDYd8IJc
+        jN+AWwJZIwnNrPS03EB3Oqhh5Ajx07QT5/bEz7dCWDf3nfPzMZYkKagGF+qMREwx
+        WW75AR3S2+dpSBmr2eQEEurk5q4xvup3zMJquTdj9dlsuALiepRC6gjxzEodzKej
+        OA+8cxjnnWlldENNjioQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnhdtq45-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 08:41:06 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BB8f5J6018074
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 08:41:05 GMT
+Received: from [10.217.91.61] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
+ 2023 00:40:57 -0800
+Message-ID: <9d8250a9-8e00-4233-8bd9-9e49bd15fac5@quicinc.com>
+Date:   Mon, 11 Dec 2023 14:10:54 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] arm64: dts: qcom: ipq8074: add MicroSD node
+Subject: Re: [PATCH net v3] net: stmmac: update Rx clk divider for 10M SGMII
 Content-Language: en-US
-To:     Chukun Pan <amadeus@jmu.edu.cn>, Andy Gross <agross@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231210152015.2243310-1-amadeus@jmu.edu.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231210152015.2243310-1-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+References: <20231208062502.13124-1-quic_snehshah@quicinc.com>
+ <5luxwdjyzkg5o6w27mqixggr65ebosnn53vaqrbtsclfudet4v@kse23pgyj7ld>
+From:   Sneh Shah <quic_snehshah@quicinc.com>
+In-Reply-To: <5luxwdjyzkg5o6w27mqixggr65ebosnn53vaqrbtsclfudet4v@kse23pgyj7ld>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wRHaFD2ugsi6Wj-ZGlreTuhfCFad-N5a
+X-Proofpoint-ORIG-GUID: wRHaFD2ugsi6Wj-ZGlreTuhfCFad-N5a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312110073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -123,47 +92,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/2023 16:20, Chukun Pan wrote:
-> Enable MicroSD card found on ipq8074 devices.
-> Tested fine when SD card IO voltage is 3.3v.
+
+
+On 12/9/2023 9:54 AM, Bjorn Andersson wrote:
+> On Fri, Dec 08, 2023 at 11:55:02AM +0530, Sneh Shah wrote:
+>> SGMII 10MBPS mode needs RX clock divider to avoid drops in Rx.
+>> Update configure SGMII function with rx clk divider programming.
 > 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->  arch/arm64/boot/dts/qcom/ipq8074.dtsi | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+> Are you trying saying that the RX clock is completely wrong in 10MBps
+> mode? Or is the RX clock good, but without some division of some other
+> clock signal you loose some packets now and then?
+
+Without the divider, Rx clock is completely wrong. All the packets will dropped.  
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> index a4f7ae35be27..4f23c4459112 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> @@ -422,6 +422,26 @@ sdhc_1: mmc@7824900 {
->  			status = "disabled";
->  		};
->  
-> +		sdhc_2: mmc@7864900 {
-> +			compatible = "qcom,sdhci-msm-v4";
+> Please write your commit message such that it describe the actual
+> problem you're having. This will help others to know if this fix is
+> applicable to some issue they are seeing on their hardware, now and in
+> the future.
+> 
+Rx clock divider is must for 10M SGMII to work for my hardware. Hence, It was mentioned that SGMII needs Rx clock divider for 10MBPS to work.
+Will update the commit message to emphasize on how rx clock is completely wrong without this.
+>>
+>> Fixes: 463120c31c58 ("net: stmmac: dwmac-qcom-ethqos: add support for SGMII")
+>> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+>> ---
+>> v3 changelog:
+>> - Added comment to explain why MAC needs to be reconfigured for SGMII
+>> v2 changelog:
+>> - Use FIELD_PREP to prepare bifield values in place of GENMASK
+>> - Add fixes tag
+>> ---
+>>  drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> index d3bf42d0fceb..ab2245995bc6 100644
+>> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+>> @@ -34,6 +34,7 @@
+>>  #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
+>>  #define RGMII_CONFIG_PROG_SWAP			BIT(1)
+>>  #define RGMII_CONFIG_DDR_MODE			BIT(0)
+>> +#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
+> 
+> This new bitfield overlaps with existing fields, is it the same
+> register? Did the fields move? Is it applicable to all versions?
+> 
+It is same register but bitfield is moved for new SGMII based HW version. Not applicable to older version. few bitfields of older HW version's RGMII register are repurposed in the new hw version for SGMII config.
 
-That's deprecated.
+> What will existing writes to RGMII_IO_MACRO_CONFIG do to this new
+> layout? What will the new write do to hardware with the existing field
+> layout?
+> 
+we have two functions to configure MAC IOMACRO interface.
+1. ethqos_configure_sgmii( this used this new bifield) 2. ethqos_configure_rgmii ( this used old layout)
+Old HW version uses ethqos_configure_rgmii only. New HW version used ethqos_configure_sgmii only.
 
-> +			reg = <0x7864900 0x500>, <0x7864000 0x800>;
-> +			reg-names = "hc", "core";
-> +
-> +			interrupts = <GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-names = "hc_irq", "pwr_irq";
-> +
-> +			clocks = <&gcc GCC_SDCC2_AHB_CLK>,
-> +				 <&gcc GCC_SDCC2_APPS_CLK>,
-> +				 <&xo>;
-> +			clock-names = "iface", "core", "xo";
-> +			resets = <&gcc GCC_SDCC2_BCR>;
-> +			max-frequency = <192000000>;
-> +			bus-width = <4>;
-> +
-> +			status = "disabled";
+Old HW version is not going to use this new layout. New HW version is not going to use old layout configuration.
 
-No board users?
-
-Best regards,
-Krzysztof
-
+>>  
+>>  /* SDCC_HC_REG_DLL_CONFIG fields */
+>>  #define SDCC_DLL_CONFIG_DLL_RST			BIT(30)
+>> @@ -598,6 +599,9 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+>>  	return 0;
+>>  }
+>>  
+>> +/* On interface toggle MAC registetrs gets reset.
+>> + * Configure MAC block for SGMII on ethernet phy link up
+>> + */
+>>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>>  {
+>>  	int val;
+>> @@ -617,6 +621,9 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>>  	case SPEED_10:
+>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+>> +		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR,
+>> +			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 0x31),
+> 
+> Is this just a magic constant, or does 0x31 of some convenient unit?
+> Could we give it name/define?
+> 
+It is just a constant based on programming guide of HW.  Will add a #define for it.
+> Regards,
+> Bjorn
+> 
+>> +			      RGMII_IO_MACRO_CONFIG);
+>>  		break;
+>>  	}
+>>  
+>> -- 
+>> 2.17.1
+>>
+>>
