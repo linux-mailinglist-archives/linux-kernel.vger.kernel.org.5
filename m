@@ -2,226 +2,642 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A5480D4E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B7380D4EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345152AbjLKSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
+        id S1345186AbjLKSES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:04:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345117AbjLKSDq (ORCPT
+        with ESMTP id S1345182AbjLKSEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:03:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA83E95
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702317832;
+        Mon, 11 Dec 2023 13:04:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB4CD8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:04:21 -0800 (PST)
+Date:   Mon, 11 Dec 2023 19:04:17 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702317859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MaxmWb0gmmOa2NNadHjgN+9H3pLxhDx5JIlGNJciyGA=;
-        b=Pouv8Xf3Zy3EV+ekmlFj9KlaZy0AKLgUG1P+4QRZt94FJM1oQ2mS/SLwewXRNTn6Nx2QDE
-        hG3U/OPd6IyD9lwNPnVi7zX1E23chMEd/CvtkiNHOnVyYblyytW9AhLDMYMXCrnisFhrqh
-        gtK9gWSxEIk0jVwFQF/Zy/9EHRG8C50=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-656-92kqU4hkP_m4AteO-dRIaw-1; Mon, 11 Dec 2023 13:03:50 -0500
-X-MC-Unique: 92kqU4hkP_m4AteO-dRIaw-1
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6d9feae8dfdso3690083a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:03:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702317829; x=1702922629;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MaxmWb0gmmOa2NNadHjgN+9H3pLxhDx5JIlGNJciyGA=;
-        b=ha+pyRdLpy0v2JaOngpSsHVoa/TySFT1GgA95ZJGoYH22jx7OP32qO1VTb5Flk257b
-         csDdIvO71FIj72dIUyVyD4oATMviQXlo5bLjcafqjzovaLuaD3PegMWD4X1v5hlupqSP
-         ccrynIkxz4B8suqURazrL6MGLWKXXNqws4lvvWhFqwjkmKZs6rbEWPCPfKXF7Xt6/H3G
-         U6Jo7F2NGMANo62W7TckpQHvouFJgHD7k5H5krig9i1qa7UkIZNbeBXYLCeLGkPvY7t6
-         RwMSsosf+2ckYRRT589yoEh9zXRoZBHetMgbJzDLD6KjqGgO682NZanqq/Ju9PPfsTxM
-         ikng==
-X-Gm-Message-State: AOJu0YwoSKFrgFYq/fJ91lQjehtS/06tUNbMGfLPme/+x6lYQcb1uPga
-        4vy2Nxv24kzxGzGzud2QkYjyhTpXBH2DiP0kUan+jDqM+Ev2BRA/kjIHry3Hu/QcyneLhVX9RgI
-        NAcz6QO0/e+h1rvKe5dEEd34U
-X-Received: by 2002:a9d:4e8f:0:b0:6d8:8053:af56 with SMTP id v15-20020a9d4e8f000000b006d88053af56mr5256028otk.39.1702317829724;
-        Mon, 11 Dec 2023 10:03:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFSgJpcgGM/uc3eXwfGlIeFBE+F5c01rkGI5ZWrgUL/mGmyGdintBKaoq0B478Ka1tOjndr+w==
-X-Received: by 2002:a9d:4e8f:0:b0:6d8:8053:af56 with SMTP id v15-20020a9d4e8f000000b006d88053af56mr5256002otk.39.1702317829439;
-        Mon, 11 Dec 2023 10:03:49 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id c25-20020a9d6859000000b006d9a7a7048asm1827521oto.49.2023.12.11.10.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 10:03:48 -0800 (PST)
-Date:   Mon, 11 Dec 2023 11:03:45 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH 3/3] vfio: Report PASID capability via
- VFIO_DEVICE_FEATURE ioctl
-Message-ID: <20231211110345.1b4526c6.alex.williamson@redhat.com>
-In-Reply-To: <20231127063909.129153-4-yi.l.liu@intel.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
-        <20231127063909.129153-4-yi.l.liu@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        bh=0hwIxmS6FmU4+B5yQIwczQUKS2fo8Wko8tr9hrUQH94=;
+        b=t/fbZOmr/z/Su+FDvFbQYm7PHbKnth4QQoUw2Kx3YO/7a3UyII5S8JCkh6Uq4W8e03DBMA
+        c4jCm8DN3hqf1qzSjxzYcQkYwxEKbyPFMGe2d9L9RfCiNq9G25gFf7w0l91GlkIiWQd1ZI
+        NjDldocDY3l34pVhwcn4WUa8ECqNBMygCN3kn+93UOHpoDaSxhoyT71Wy+JUQqckrJvXdi
+        PjNIt8laiBOEzm0lycXYd/ROWKBDe6G4f0K90oFFZJFL7rO8dPgRgGKBhAjuM44uKn2Q91
+        NahAWE6TpmOmSszfFEQGKzmBsr652TTg+tCgBsJS4n6DcIWA+40wyIgra2eo/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702317859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hwIxmS6FmU4+B5yQIwczQUKS2fo8Wko8tr9hrUQH94=;
+        b=xwddmrWDYV89nzPLL25sNLUqrv+vay0HnoRz9sYgW7J7DLpRmS3D1D4r2DTDHMHeE4QpPL
+        aSowT6HWTS1qljBw==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+Message-ID: <20231211180417.XG9G3ryS@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231201092654.34614-31-anna-maria@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Nov 2023 22:39:09 -0800
-Yi Liu <yi.l.liu@intel.com> wrote:
-
-> This reports the PASID capability data to userspace via VFIO_DEVICE_FEATURE,
-> hence userspace could probe PASID capability by it. This is a bit different
-> with other capabilities which are reported to userspace when the user reads
-> the device's PCI configuration space. There are two reasons for this.
-> 
->  - First, Qemu by default exposes all available PCI capabilities in vfio-pci
->    config space to the guest as read-only, so adding PASID capability in the
->    vfio-pci config space will make it exposed to the guest automatically while
->    an old Qemu doesn't really support it.
-
-Shouldn't we also be working on hiding the PASID capability in QEMU
-ASAP?  This feature only allows QEMU to know PASID control is actually
-available, not the guest.  Maybe we're hoping this is really only used
-by VFs where there's no capability currently exposed to the guest?
-
->  - Second, PASID capability does not exit on VFs (instead shares the cap of
-
-s/exit/exist/
-
->    the PF). Creating a virtual PASID capability in vfio-pci config space needs
->    to find a hole to place it, but doing so may require device specific
->    knowledge to avoid potential conflict with device specific registers like
->    hiden bits in VF config space. It's simpler by moving this burden to the
->    VMM instead of maintaining a quirk system in the kernel.
-
-This feels a bit like an incomplete solution though and we might
-already posses device specific knowledge in the form of a variant
-driver.  Should this feature structure include a flag + field that
-could serve to generically indicate to the VMM a location for
-implementing the PASID capability?  The default core implementation
-might fill this only for PFs where clearly an emualted PASID capability
-can overlap the physical capability.  Thanks,
-
-Alex
-
-> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->  drivers/vfio/pci/vfio_pci_core.c | 47 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/vfio.h        | 13 +++++++++
->  2 files changed, 60 insertions(+)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 1929103ee59a..8038aa45500e 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -1495,6 +1495,51 @@ static int vfio_pci_core_feature_token(struct vfio_device *device, u32 flags,
->  	return 0;
->  }
->  
-> +static int vfio_pci_core_feature_pasid(struct vfio_device *device, u32 flags,
-> +				       struct vfio_device_feature_pasid __user *arg,
-> +				       size_t argsz)
+On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
+> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+> new file mode 100644
+> index 000000000000..05cd8f1bc45d
+> --- /dev/null
+> +++ b/kernel/time/timer_migration.c
+> @@ -0,0 +1,1636 @@
+=E2=80=A6
+> +static bool tmigr_active_up(struct tmigr_group *group,
+> +			    struct tmigr_group *child,
+> +			    void *ptr)
 > +{
-> +	struct vfio_pci_core_device *vdev =
-> +		container_of(device, struct vfio_pci_core_device, vdev);
-> +	struct vfio_device_feature_pasid pasid = { 0 };
-> +	struct pci_dev *pdev = vdev->pdev;
-> +	u32 capabilities = 0;
-> +	int ret;
+> +	union tmigr_state curstate, newstate;
+> +	struct tmigr_walk *data =3D ptr;
+> +	bool walk_done;
+> +	u8 childmask;
 > +
-> +	/* We do not support SET of the PASID capability */
-> +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_GET,
-> +				 sizeof(pasid));
-> +	if (ret != 1)
-> +		return ret;
+> +	childmask =3D data->childmask;
+> +	newstate =3D curstate =3D data->groupstate;
+> +
+> +retry:
+> +	walk_done =3D true;
+> +
+> +	if (newstate.migrator =3D=3D TMIGR_NONE) {
+> +		newstate.migrator =3D childmask;
+> +
+> +		/* Changes need to be propagated */
+> +		walk_done =3D false;
+> +	}
+> +
+> +	newstate.active |=3D childmask;
+> +
+> +	newstate.seq++;
+> +
+> +	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.s=
+tate)) {
+> +		newstate.state =3D curstate.state;
+
+This does not look right. If
+	group->migr_state !=3D curstate.state
+then
+	curstate.state =3D newstate.state
+
+does not make a difference since curstate is on stack. So this should
+become
+
+|	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.sta=
+te)) {
+|		curstate.state =3D newstate.state =3D atomic_read(&group->parent->migr_s=
+tate);
+
+and now I question the existence of tmigr_walk::groupstate. It does not
+match the comment for the struct saying it will be re-read if the
+cmpxchg() fails because it does not happen (at least here). Also why do
+we have it? Is it avoid atomic_read() and have it "cached"?
+
+> +		goto retry;
+> +	}
+> +
+> +	if (group->parent && (walk_done =3D=3D false)) {
+
+The group's parent doesn't change so it can be accessed lock-less. It is
+just that the topmost group has no parent so we need this check. I would
+move the walk_done check to the left so it can be evaluated first.
+
+> +		data->groupstate.state =3D atomic_read(&group->parent->migr_state);
+> +		data->childmask =3D group->childmask;
+
+We don't re-read in case the cmpxchg failed assuming someone else is
+updating the state. Wouldn't it make sense to read the childmask at top
+of the function from the child pointer. There is no need to keep around
+in the data pointer, right?
+
+> +	}
 > +
 > +	/*
-> +	 * Needs go to PF if the device is VF as VF shares its PF's
-> +	 * PASID Capability.
+> +	 * The group is active and the event will be ignored - the ignore flag =
+is
+> +	 * updated without holding the lock. In case the bit is set while
+> +	 * another CPU already handles remote events, nothing happens, because
+> +	 * it is clear that the CPU became active just in this moment, or in
+> +	 * worst case the event is handled remote. Nothing to worry about.
 > +	 */
-> +	if (pdev->is_virtfn)
-> +		pdev = pci_physfn(pdev);
+
+   The CPU is becoming active, so is the group. The ignore flag for the
+   group is updated lock less to reflect this. Another CPU might also
+   set it true while becoming active. In worst case the migrator
+   observes it too late and expires remotely timer belonging to this
+   group. The lock is held while going idle (and setting ignore to
+   false) so the state is not lost.
+
+> +	group->groupevt.ignore =3D true;
 > +
-> +	if (!pdev->pasid_enabled)
-> +		goto out;
+> +	return walk_done;
+> +}
+=E2=80=A6
+> +/*
+> + * Returns the expiry of the next timer that needs to be handled. KTIME_=
+MAX is
+> + * returned, when an active CPU will handle all the timer migration hier=
+archy
+
+s/when/if ?
+
+> + * timers.
+> + */
+> +static u64 tmigr_new_timer(struct tmigr_cpu *tmc, u64 nextexp)
+> +{
+> +	struct tmigr_walk data =3D { .evt =3D &tmc->cpuevt,
+> +				   .nextexp =3D nextexp };
 > +
-> +#ifdef CONFIG_PCI_PASID
-> +	pci_read_config_dword(pdev, pdev->pasid_cap + PCI_PASID_CAP,
-> +			      &capabilities);
-> +#endif
+> +	lockdep_assert_held(&tmc->lock);
 > +
-> +	if (capabilities & PCI_PASID_CAP_EXEC)
-> +		pasid.capabilities |= VFIO_DEVICE_PASID_CAP_EXEC;
-> +	if (capabilities & PCI_PASID_CAP_PRIV)
-> +		pasid.capabilities |= VFIO_DEVICE_PASID_CAP_PRIV;
+> +	if (tmc->remote)
+> +		return KTIME_MAX;
 > +
-> +	pasid.width = (capabilities >> 8) & 0x1f;
+> +	tmc->cpuevt.ignore =3D false;
+> +	data.remote =3D false;
 > +
-> +out:
-> +	if (copy_to_user(arg, &pasid, sizeof(pasid)))
-> +		return -EFAULT;
-> +	return 0;
+> +	walk_groups(&tmigr_new_timer_up, &data, tmc);
+> +
+> +	/* If there is a new first global event, make sure it is handled */
+> +	return data.nextexp;
 > +}
 > +
->  int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
->  				void __user *arg, size_t argsz)
->  {
-> @@ -1508,6 +1553,8 @@ int vfio_pci_core_ioctl_feature(struct vfio_device *device, u32 flags,
->  		return vfio_pci_core_pm_exit(device, flags, arg, argsz);
->  	case VFIO_DEVICE_FEATURE_PCI_VF_TOKEN:
->  		return vfio_pci_core_feature_token(device, flags, arg, argsz);
-> +	case VFIO_DEVICE_FEATURE_PASID:
-> +		return vfio_pci_core_feature_pasid(device, flags, arg, argsz);
->  	default:
->  		return -ENOTTY;
->  	}
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 495193629029..8326faf8622b 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -1512,6 +1512,19 @@ struct vfio_device_feature_bus_master {
->  };
->  #define VFIO_DEVICE_FEATURE_BUS_MASTER 10
->  
-> +/**
-> + * Upon VFIO_DEVICE_FEATURE_GET, return the PASID capability for the device.
-> + * Zero width means no support for PASID.
-> + */
-> +struct vfio_device_feature_pasid {
-> +	__u16 capabilities;
-> +#define VFIO_DEVICE_PASID_CAP_EXEC	(1 << 0)
-> +#define VFIO_DEVICE_PASID_CAP_PRIV	(1 << 1)
-> +	__u8 width;
-> +	__u8 __reserved;
-> +};
-> +#define VFIO_DEVICE_FEATURE_PASID 11
+> +static u64 tmigr_handle_remote_cpu(unsigned int cpu, u64 now,
+> +				   unsigned long jif)
+> +{
+> +	struct timer_events tevt;
+> +	struct tmigr_walk data;
+> +	struct tmigr_cpu *tmc;
+> +	u64 next =3D KTIME_MAX;
 > +
->  /* -------- API for Type1 VFIO IOMMU -------- */
->  
->  /**
+> +	tmc =3D per_cpu_ptr(&tmigr_cpu, cpu);
+> +
+> +	raw_spin_lock_irq(&tmc->lock);
+> +
+> +	/*
+> +	 * The remote CPU is offline or the CPU event does not has to be handled
+> +	 * (the CPU is active or there is no longer an event to expire) or
+> +	 * another CPU handles the CPU timers already or the next event was
+> +	 * already expired - return!
+> +	 */
 
+The comment is the english version of the C code below. The *why* is
+usually the thing we care about. This basically sums up to:
+
+	If remote CPU is offline then the timer events have been
+	migrated away.
+	If tmigr_cpu::remote is set then another CPU takes care of this.
+	If tmigr_event::ignore is set then the CPU is returning from
+	idle and take care of its timers.
+	If the next event expires in the future then the event node has
+	been updated and there are no timer to expire right now.
+
+> +	if (!tmc->online || tmc->remote || tmc->cpuevt.ignore ||
+> +	    now < tmc->cpuevt.nextevt.expires) {
+> +		raw_spin_unlock_irq(&tmc->lock);
+> +		return next;
+
+Looking at the last condition where the timerqueue has been forwarded by
+a jiffy+, shouldn't we return _that_ values next instead of KTIME_MAX?
+
+> +	}
+> +
+> +	tmc->remote =3D true;
+> +	WRITE_ONCE(tmc->wakeup, KTIME_MAX);
+> +
+> +	/* Drop the lock to allow the remote CPU to exit idle */
+> +	raw_spin_unlock_irq(&tmc->lock);
+> +
+> +	if (cpu !=3D smp_processor_id())
+> +		timer_expire_remote(cpu);
+> +
+> +	/*
+> +	 * Lock ordering needs to be preserved - timer_base locks before tmigr
+> +	 * related locks (see section "Locking rules" in the documentation at
+> +	 * the top). During fetching the next timer interrupt, also tmc->lock
+> +	 * needs to be held. Otherwise there is a possible race window against
+> +	 * the CPU itself when it comes out of idle, updates the first timer in
+> +	 * the hierarchy and goes back to idle.
+> +	 *
+> +	 * timer base locks are dropped as fast as possible: After checking
+> +	 * whether the remote CPU went offline in the meantime and after
+> +	 * fetching the next remote timer interrupt. Dropping the locks as fast
+> +	 * as possible keeps the locking region small and prevents holding
+> +	 * several (unnecessary) locks during walking the hierarchy for updating
+> +	 * the timerqueue and group events.
+> +	 */
+> +	local_irq_disable();
+> +	timer_lock_remote_bases(cpu);
+> +	raw_spin_lock(&tmc->lock);
+> +
+> +	/*
+> +	 * When the CPU went offline in the meantime, no hierarchy walk has to
+> +	 * be done for updating the queued events, because the walk was
+> +	 * already done during marking the CPU offline in the hierarchy.
+> +	 *
+> +	 * When the CPU is no longer idle, the CPU takes care of the timers and
+   If the CPU is no longer idle then it takes care of its timers and
+   also of the timers in its hierarchy.
+
+> +	 * also of the timers in the path to the top.
+> +	 *
+> +	 * (See also section "Required event and timerqueue update after
+> +	 * remote expiry" in the documentation at the top)
+
+Perfect. The reasoning why it is safe to skip walk + expire timers, has
+been explained.
+
+> +	 */
+> +	if (!tmc->online || !tmc->idle) {
+> +		timer_unlock_remote_bases(cpu);
+> +		goto unlock;
+> +	} else {
+> +		/* next	event of CPU */
+> +		fetch_next_timer_interrupt_remote(jif, now, &tevt, cpu);
+> +	}
+> +
+> +	timer_unlock_remote_bases(cpu);
+> +
+> +	data.evt =3D &tmc->cpuevt;
+> +	data.nextexp =3D tevt.global;
+> +	data.remote =3D true;
+> +
+> +	/*
+> +	 * The update is done even when there is no 'new' global timer pending
+> +	 * on the remote CPU (see section "Required event and timerqueue update
+> +	 * after remote expiry" in the documentation at the top)
+> +	 */
+> +	walk_groups(&tmigr_new_timer_up, &data, tmc);
+> +
+> +	next =3D data.nextexp;
+> +
+> +unlock:
+> +	tmc->remote =3D false;
+> +	raw_spin_unlock_irq(&tmc->lock);
+> +
+> +	return next;
+> +}
+> +
+=E2=80=A6
+> +/**
+> + * tmigr_handle_remote() - Handle global timers of remote idle CPUs
+> + *
+> + * Called from the timer soft interrupt with interrupts enabled.
+> + */
+> +void tmigr_handle_remote(void)
+> +{
+> +	struct tmigr_cpu *tmc =3D this_cpu_ptr(&tmigr_cpu);
+> +	struct tmigr_remote_data data;
+> +
+> +	if (tmigr_is_not_available(tmc))
+> +		return;
+> +
+> +	data.childmask =3D tmc->childmask;
+> +	data.nextexp =3D KTIME_MAX;
+> +
+> +	/*
+> +	 * NOTE: This is a doubled check because the migrator test will be done
+> +	 * in tmigr_handle_remote_up() anyway. Keep this check to fasten the
+
+s/fasten/speed up/
+
+> +	 * return when nothing has to be done.
+> +	 */
+> +	if (!tmigr_check_migrator(tmc->tmgroup, tmc->childmask))
+> +		return;
+> +
+> +	data.now =3D get_jiffies_update(&data.basej);
+> +
+> +	/*
+> +	 * Update @tmc->wakeup only at the end and do not reset @tmc->wakeup to
+> +	 * KTIME_MAX. Even if tmc->lock is not held during the whole remote
+> +	 * handling, tmc->wakeup is fine to be stale as it is called in
+> +	 * interrupt context and tick_nohz_next_event() is executed in interrupt
+> +	 * exit path only after processing the last pending interrupt.
+> +	 */
+> +
+> +	__walk_groups(&tmigr_handle_remote_up, &data, tmc);
+> +
+> +	raw_spin_lock_irq(&tmc->lock);
+> +	WRITE_ONCE(tmc->wakeup, data.nextexp);
+> +	raw_spin_unlock_irq(&tmc->lock);
+> +}
+> +
+> +static bool tmigr_requires_handle_remote_up(struct tmigr_group *group,
+> +					    struct tmigr_group *child,
+> +					    void *ptr)
+> +{
+> +	struct tmigr_remote_data *data =3D ptr;
+> +	u8 childmask;
+> +
+> +	childmask =3D data->childmask;
+> +
+> +	/*
+> +	 * Handle the group only if the child is the migrator or if the group
+> +	 * has no migrator. Otherwise the group is active and is handled by its
+> +	 * own migrator.
+> +	 */
+> +	if (!tmigr_check_migrator(group, childmask))
+> +		return true;
+> +
+> +	/*
+> +	 * When there is a parent group and the CPU which triggered the
+> +	 * hierarchy walk is not active, proceed the walk to reach the top level
+> +	 * group before reading the next_expiry value.
+> +	 */
+> +	if (group->parent && !data->tmc_active)
+> +		goto out;
+> +
+> +	/*
+> +	 * On 32 bit systems the racy lockless check for next_expiry will
+> +	 * turn into a random number generator. Therefore do the lockless
+> +	 * check only on 64 bit systems.
+> +	 */
+
+	 The lock is required on 32bit architectures to read the
+	 variable consistently with a concurrent writer. On 64bit the
+	 lock is not required because the read operation is not split
+	 and so is always consistent.
+
+> +	if (IS_ENABLED(CONFIG_64BIT)) {
+> +		data->nextexp =3D READ_ONCE(group->next_expiry);
+> +		if (data->now >=3D data->nextexp) {
+> +			data->check =3D true;
+> +			return true;
+> +		}
+> +	} else {
+> +		raw_spin_lock(&group->lock);
+> +		data->nextexp =3D group->next_expiry;
+> +		if (data->now >=3D group->next_expiry) {
+> +			data->check =3D true;
+> +			raw_spin_unlock(&group->lock);
+> +			return true;
+> +		}
+> +		raw_spin_unlock(&group->lock);
+> +	}
+> +
+> +out:
+> +	/* Update of childmask for the next level */
+> +	data->childmask =3D group->childmask;
+> +	return false;
+> +}
+> +
+> +/**
+> + * tmigr_requires_handle_remote() - Check the need of remote timer handl=
+ing
+> + *
+> + * Must be called with interrupts disabled.
+> + */
+> +int tmigr_requires_handle_remote(void)
+> +{
+> +	struct tmigr_cpu *tmc =3D this_cpu_ptr(&tmigr_cpu);
+> +	struct tmigr_remote_data data;
+> +	unsigned int ret =3D 0;
+> +	unsigned long jif;
+> +
+> +	if (tmigr_is_not_available(tmc))
+> +		return ret;
+> +
+> +	data.now =3D get_jiffies_update(&jif);
+> +	data.childmask =3D tmc->childmask;
+> +	data.nextexp =3D KTIME_MAX;
+> +	data.tmc_active =3D !tmc->idle;
+> +	data.check =3D false;
+> +
+> +	/*
+> +	 * When the CPU is active, walking the hierarchy to check whether a
+> +	 * remote expiry is required.
+
+s/When/If
+s/walking/walk
+
+> +	 *
+> +	 * Check is done lockless as interrupts are disabled and @tmc->idle is
+> +	 * set only by the local CPU.
+> +	 */
+> +	if (!tmc->idle) {
+> +		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+> +
+> +		if (data.nextexp !=3D KTIME_MAX)
+> +			ret =3D 1;
+> +
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * When the CPU is idle, check whether the recalculation of @tmc->wakeup
+> +	 * is required. @tmc->wakeup_recalc is set by a remote CPU which is
+> +	 * about to go offline, was the last active CPU in the whole timer
+> +	 * migration hierarchy and now delegates handling of the hierarchy to
+> +	 * this CPU.
+
+I'm failing here=E2=80=A6
+
+> +	 * Racy lockless check is valid:
+> +	 * - @tmc->wakeup_recalc is set by the remote CPU before it issues
+> +	 *   reschedule IPI.
+> +	 * - As interrupts are disabled here this CPU will either observe
+> +	 *   @tmc->wakeup_recalc set before the reschedule IPI can be handled or
+> +	 *   it will observe it when this function is called again on return
+> +	 *   from handling the reschedule IPI.
+> +	 */
+> +	if (tmc->wakeup_recalc) {
+> +		raw_spin_lock(&tmc->lock);
+> +
+> +		__walk_groups(&tmigr_requires_handle_remote_up, &data, tmc);
+> +
+> +		if (data.nextexp !=3D KTIME_MAX)
+> +			ret =3D 1;
+> +
+> +		WRITE_ONCE(tmc->wakeup, data.nextexp);
+> +		tmc->wakeup_recalc =3D false;
+> +		raw_spin_unlock(&tmc->lock);
+> +
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * When the CPU is idle and @tmc->wakeup is reliable, compare it with
+> +	 * @data.now. On 64 bit it is valid to do this lockless. On 32 bit
+> +	 * systems, holding the lock is required to get valid data on concurrent
+> +	 * writers.
+
+The wakeup value is reliable when the CPU is idle?
+
+See the comments regarding 64bit.=20
+
+> +	 */
+> +	if (IS_ENABLED(CONFIG_64BIT)) {
+> +		if (data.now >=3D READ_ONCE(tmc->wakeup))
+> +			ret =3D 1;
+> +	} else {
+> +		raw_spin_lock(&tmc->lock);
+> +		if (data.now >=3D tmc->wakeup)
+> +			ret =3D 1;
+> +		raw_spin_unlock(&tmc->lock);
+> +	}
+> +
+> +	return ret;
+> +}
+
+=E2=80=A6
+
+> +static bool tmigr_inactive_up(struct tmigr_group *group,
+> +			      struct tmigr_group *child,
+> +			      void *ptr)
+> +{
+> +	union tmigr_state curstate, newstate;
+> +	struct tmigr_walk *data =3D ptr;
+> +	bool walk_done;
+> +	u8 childmask;
+> +
+> +	childmask =3D data->childmask;
+> +	newstate =3D curstate =3D data->groupstate;
+> +
+> +retry:
+> +	walk_done =3D true;
+> +
+> +	/* Reset active bit when the child is no longer active */
+> +	if (!data->childstate.active)
+> +		newstate.active &=3D ~childmask;
+> +
+> +	if (newstate.migrator =3D=3D childmask) {
+> +		/*
+> +		 * Find a new migrator for the group, because the child group is
+> +		 * idle!
+> +		 */
+> +		if (!data->childstate.active) {
+> +			unsigned long new_migr_bit, active =3D newstate.active;
+> +
+> +			new_migr_bit =3D find_first_bit(&active, BIT_CNT);
+> +
+> +			if (new_migr_bit !=3D BIT_CNT) {
+> +				newstate.migrator =3D BIT(new_migr_bit);
+> +			} else {
+> +				newstate.migrator =3D TMIGR_NONE;
+> +
+> +				/* Changes need to be propagated */
+> +				walk_done =3D false;
+> +			}
+> +		}
+> +	}
+> +
+> +	newstate.seq++;
+> +
+> +	WARN_ON_ONCE((newstate.migrator !=3D TMIGR_NONE) && !(newstate.active));
+> +
+> +	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate.s=
+tate)) {
+
+This one appears wrong, too. The curstate is not getting updated during
+retry.
+
+> +		newstate.state =3D curstate.state;
+> +
+> +		/*
+> +		 * Something changed in the child/parent group in the meantime,
+> +		 * reread the state of the child and parent; Update of
+> +		 * data->childstate is required for event handling;
+> +		 */
+> +		if (child)
+> +			data->childstate.state =3D atomic_read(&child->migr_state);
+> +
+> +		goto retry;
+> +	}
+> +
+> +	data->groupstate =3D newstate;
+> +	data->remote =3D false;
+> +
+> +	/* Event Handling */
+> +	tmigr_update_events(group, child, data);
+> +
+> +	if (group->parent && (walk_done =3D=3D false)) {
+> +		data->childmask =3D group->childmask;
+> +		data->childstate =3D newstate;
+> +		data->groupstate.state =3D atomic_read(&group->parent->migr_state);
+> +	}
+> +
+> +	/*
+> +	 * data->nextexp was set by tmigr_update_events() and contains the
+> +	 * expiry of the first global event which needs to be handled
+> +	 */
+> +	if (data->nextexp !=3D KTIME_MAX) {
+> +		WARN_ON_ONCE(group->parent);
+> +		/*
+> +		 * Top level path - If this CPU is about going offline, wake
+> +		 * up some random other CPU so it will take over the
+> +		 * migrator duty and program its timer properly. Ideally
+> +		 * wake the CPU with the closest expiry time, but that's
+> +		 * overkill to figure out.
+> +		 *
+> +		 * Set wakeup_recalc of remote CPU, to make sure the complete
+> +		 * idle hierarchy with enqueued timers is reevaluated.
+> +		 */
+> +		if (!(this_cpu_ptr(&tmigr_cpu)->online)) {
+> +			struct tmigr_cpu *tmc =3D this_cpu_ptr(&tmigr_cpu);
+> +			unsigned int cpu =3D smp_processor_id();
+> +			struct tmigr_cpu *tmc_resched;
+> +
+> +			cpu =3D cpumask_any_but(cpu_online_mask, cpu);
+> +			tmc_resched =3D per_cpu_ptr(&tmigr_cpu, cpu);
+> +
+> +			raw_spin_unlock(&tmc->lock);
+> +
+> +			raw_spin_lock(&tmc_resched->lock);
+> +			tmc_resched->wakeup_recalc =3D true;
+> +			raw_spin_unlock(&tmc_resched->lock);
+> +
+> +			raw_spin_lock(&tmc->lock);
+> +			smp_send_reschedule(cpu);
+
+This whole thing confuses me.
+If the CPU goes offline, it needs to get removed from the migration
+hierarchy and this is it. Everything else is handled by the migrator. If
+the migrator is going offline then it needs wake a random CPU and make
+sure it takes the migrator role. I am confused by the whole ::wakeup and
+::wakeup_recalc thingy.
+
+> +		}
+> +	}
+> +
+> +	return walk_done;
+> +}
+
+Sebastian
