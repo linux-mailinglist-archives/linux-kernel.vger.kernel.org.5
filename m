@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0786E80CE3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA3A80CE15
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344191AbjLKOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:21:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S1344325AbjLKOQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343747AbjLKOVA (ORCPT
+        with ESMTP id S1344559AbjLKOQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:21:00 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B05A5D1;
-        Mon, 11 Dec 2023 06:09:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3ZV48LQITHOdv4wAedeujOP64YpOp9FQs7bVs74eoQA=; b=TTAR4WIFUcT7OOvA4W3jlDpybH
-        yZH6lFm5YDaAPk3c8IiHfrT80eA4u8p60YuzuM93UbLkZGL8LTeegW9b2Kiux59uOwpLndn0EDEOu
-        rV4pJEWujufHhEDVM7exXtk9S6Q2xxMe9XV1A482ghStTfPmNqMARIHKrsBfjmc0Q0jw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rCgy5-002cri-9G; Mon, 11 Dec 2023 15:09:09 +0100
-Date:   Mon, 11 Dec 2023 15:09:09 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Simon Horman <horms@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>
-Subject: Re: [RFC PATCH net-next v3 01/13] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <67557c83-4318-4557-ac96-858053b5f89b@lunn.ch>
-References: <20231201163704.1306431-1-maxime.chevallier@bootlin.com>
- <20231201163704.1306431-2-maxime.chevallier@bootlin.com>
- <20231209170241.GA5817@kernel.org>
- <20231211120623.03b1ced4@device.home>
+        Mon, 11 Dec 2023 09:16:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D98272B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702303793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAAvf3xWNdiA5yQ9F9boRppGC66yI7jkgPgymNCWcs8=;
+        b=Kx0L4Z2c/L5QuL8pwP5bFOoc3btrWbfbOLIXoO8jyz/plOxvrs8thsIf+ZJvrwW6GBFCNJ
+        H900h3fFIzmEIqqap4fa2Y2DhqxJFIl4XO5HcX0rhKsBB7l/RGgI2w+7hgH2hakXm0jynM
+        kvXj6vzs75cfRLjMINVvrifizUxxazw=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-155-VsAB1YeZPZy4IUAR44xjWA-1; Mon, 11 Dec 2023 09:09:51 -0500
+X-MC-Unique: VsAB1YeZPZy4IUAR44xjWA-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-286da868833so2860291a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:09:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702303790; x=1702908590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vAAvf3xWNdiA5yQ9F9boRppGC66yI7jkgPgymNCWcs8=;
+        b=hyNngcvjp02NNZ31ITDEiL2g0IH6hXdLg9czEGY3zopErr5OLyvjJJySaBIp7Cy5We
+         AjSimh1/fDAukonwclt9eYhjMQb8OugzHg4d4ds+Ssk8HI496bIPPYNoPF8tstg+Xsb4
+         yBGuQAAHPrx0U9z6jkcgmHb6sakiYSgYjdBSJJxJgL2BToX4i2MwXQduj+IhhCzCC9Bc
+         eWW7tp8yfUS2Ilona5rwr9tWj+bCM1g4zjKuTWMdwPpJJh7Bei927Pss518sDR6SR0rI
+         HKFk7cxXYr+FfHZhv1I1O9eJEU34qlbxhr3x4KNxIKqO71sQJvmW4cLYIFUG36Ql6rE7
+         Y1EQ==
+X-Gm-Message-State: AOJu0YxVsvVy51vH3g+2rMz4eJDcnicNnx2gSgeB/bLL2sBAHiHxCIuS
+        ysnAlEQEaDrjHlbwenoHe3lZVo3C2rGBwV6X4gGikDZ25Jlicjwr0ZJevWCR0jCLK5K2tUI1d3R
+        zs4xFHNTvzWhgJn/uVTd+gNhykOdbisdBgKrP1AqC
+X-Received: by 2002:a17:90a:6e42:b0:286:6cc1:2cb1 with SMTP id s2-20020a17090a6e4200b002866cc12cb1mr1793350pjm.59.1702303790644;
+        Mon, 11 Dec 2023 06:09:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGR/6GiM7/0vFHkDfHn1IFcQktjWuh0v87SXtOh2Gg4WrYU1x0CHfs0k8+lUvJEjfRLnRGu0eSx98AeHk6CVWU=
+X-Received: by 2002:a17:90a:6e42:b0:286:6cc1:2cb1 with SMTP id
+ s2-20020a17090a6e4200b002866cc12cb1mr1793339pjm.59.1702303790367; Mon, 11 Dec
+ 2023 06:09:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211120623.03b1ced4@device.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+References: <20231211131051.1500834-1-neelx@redhat.com> <20231211132217.GF4870@unreal>
+ <20231211132522.GY1489931@ziepe.ca>
+In-Reply-To: <20231211132522.GY1489931@ziepe.ca>
+From:   Daniel Vacek <neelx@redhat.com>
+Date:   Mon, 11 Dec 2023 15:09:13 +0100
+Message-ID: <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
+Subject: Re: [PATCH] IB/ipoib: No need to hold the lock while printing the warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,24 +76,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > @@ -10832,6 +10833,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
-> > >  #ifdef CONFIG_NET_SCHED
-> > >  	hash_init(dev->qdisc_hash);
-> > >  #endif
-> > > +	phy_link_topo_init(&dev->link_topo);
-> > > +  
-> > 
-> > I don't think this can work unless PHYLIB is compiled as a built-in.
-> 
-> Inded, I need to better clarify and document the dependency with
-> PHYLIB.
+On Mon, Dec 11, 2023 at 2:25=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Mon, Dec 11, 2023 at 03:22:17PM +0200, Leon Romanovsky wrote:
+>
+> > Please fill some text in commit message.
+>
+> Yes, explain *why* you are doing this
 
-It is getting harder and harder to make the phylib core a module :-(
+Oh, sorry. I did not mention it but there's no particular reason
+really. The @Subject says it all. There should be no logical or
+functional change other than reducing the span of that critical
+section. In other words, just nitpicking, not a big deal.
 
-How much work does phy_link_topo_init() do? Could it be an inline
-function? Are there other dependencies?
+While checking the code (and past changes) related to the other issue
+I also sent today I just noticed the way 08bc327629cbd added the
+spin_lock before returning from this function and it appeared to me
+it's clearer the way I'm proposing here.
 
-Also look at ethtool_phy_ops and e.g. how plca_get_cfg_prepare_data()
-uses it.
+Honestly, I was not looking into why the lock is released for that
+completion. And I'm not changing that logic.
 
-	Andrew
+If this complete() can be called with priv->lock held, the cleanup
+would look different, of course.
+
+That said, If you'd like to keep this patch I can send a v2 with the
+above details in the message body. Otherwise feel free to drop this.
+
+--nX
+
+> > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers=
+/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > index 5b3154503bf4..ae2c05806dcc 100644
+> > > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > @@ -536,17 +536,17 @@ static int ipoib_mcast_join(struct net_device *=
+dev, struct ipoib_mcast *mcast)
+> > >     multicast =3D ib_sa_join_multicast(&ipoib_sa_client, priv->ca, pr=
+iv->port,
+> > >                                      &rec, comp_mask, GFP_KERNEL,
+> > >                                      ipoib_mcast_join_complete, mcast=
+);
+> > > -   spin_lock_irq(&priv->lock);
+> > >     if (IS_ERR(multicast)) {
+> > >             ret =3D PTR_ERR(multicast);
+> > >             ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\=
+n", ret);
+> > > +           spin_lock_irq(&priv->lock);
+> > >             /* Requeue this join task with a backoff delay */
+> > >             __ipoib_mcast_schedule_join_thread(priv, mcast, 1);
+> > >             clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+> > >             spin_unlock_irq(&priv->lock);
+> > >             complete(&mcast->done);
+> > > -           spin_lock_irq(&priv->lock);
+>
+> It is super weird to unlock just around complete.
+>
+> Jason
+>
+
