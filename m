@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD8680D9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D51D80D4C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344805AbjLKS4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
+        id S1345033AbjLKR5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:57:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345225AbjLKRzp (ORCPT
+        with ESMTP id S1344578AbjLKR5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:55:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290D7126
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:55:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCD5C433CA;
-        Mon, 11 Dec 2023 17:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702317350;
-        bh=TDsZZcW//Yjkn4AZvJmsYsqi1Yqt03hg0vEJ8F1Khno=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wy+XZfm/xBwdGjaMO0iafORqU7AYUAKBrpmfPhZnS63W2LD+9lIUmmY85M7iDotZV
-         RUUIwg0POXN4Tkdavv6UXUiOqqIzFni8VQZhDxQXeupY9UVawI9v08XKg2gq0caO+p
-         bb/oY/p81QaSRDsWLnEdSbbaXi5FUQWA3fN2rcUuikHcWh1dLUY3aINV97NKCubO1y
-         l1tEo9YR5UB1hVIpFdg/ivykxGAYb0eRvemLSdGk5XfxND1zVPvoEgRkS3FVf/9l7S
-         zVh3HSiOyx1yr1oE8BoiPzfD3sQ8wFq0jjsCHcAeefrs846eDBoTAiVYXqLGpWcnwo
-         b9f2qqc7TPtxw==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50bdec453c8so5633504e87.3;
-        Mon, 11 Dec 2023 09:55:50 -0800 (PST)
-X-Gm-Message-State: AOJu0YyLwFCyWuctzlW9fzX+J6DSrjCi45cu081ACeOFixmvpNgPC2AV
-        KKcTdsOTobn3vI5bNHtGG82xlRREQ9jGiF+fcA==
-X-Google-Smtp-Source: AGHT+IEv/8aN3PfaLGZ9JYm4t5UMDrJAklhI4W9r08evSljkXdLA6kO7mL8YfS3YKHyNIbwwq6+C5bGH+jkLyGQVaN8=
-X-Received: by 2002:a05:6512:2242:b0:50b:f812:b313 with SMTP id
- i2-20020a056512224200b0050bf812b313mr2431265lfu.77.1702317348971; Mon, 11 Dec
- 2023 09:55:48 -0800 (PST)
+        Mon, 11 Dec 2023 12:57:16 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB10793
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:57:21 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-333630e9e43so4915961f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:57:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1702317440; x=1702922240; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZ+R8B3wHCuWt284dmb9Of0onfh+d3cgp76iNW/6Qqk=;
+        b=NBFkepOOw19ltXFI+lrhjkoLrBMmbcPeWm3kf1KWQJk2ve9DcQrPd+5U1NnpAADeDy
+         se1Q7rtK988ynzKIJMhhW16vsydT9Zo4lBcH5xNgImSv2blEsjsyX75IGF446+JJgIQa
+         OSbjGH7FsBnSlMlzJpGiMOsnLzJ06BriR8pGw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702317440; x=1702922240;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PZ+R8B3wHCuWt284dmb9Of0onfh+d3cgp76iNW/6Qqk=;
+        b=AoVOjMI9bPik/daoQHNx6RjHxe2xOIbVZ4R3g0xNTXi8CfwtvILs2+JZMitoZx8+55
+         iJQKCw6ENGYj049K/DRx0rCxc5oASnEfrS7K9KdPA4KRIset6tcen3uXNDrRGXI/qqdj
+         NPpB4nmdN+cGmIcPJuGmNMXeNBAmVV2aKnIBIVEBYlhXap1m68VzGe8/+cz/ovOscGj1
+         8EBULgXFUKLuHZFrnFqB8/rfBH2Tj2jpVw/1jufpnC1up/0inH6xjSmunGrcyaXHsW4C
+         SFw5/OAM658vEn1CpwB7rifMUfvGIoDreEyNtg6375ogcIvxljMsD1IswD09gJ/RnNCh
+         ZgLg==
+X-Gm-Message-State: AOJu0YwrqyyU0ovyBYocWUpBVeW7eCVJVuTe+M8hpBH1NLNCeiBipQCG
+        pQtw2OZyYf+VlBubjhkKapFytg==
+X-Google-Smtp-Source: AGHT+IHhS8zwI1NybzNdNGlVlhUK2j8AuOrYo5xAxBVkRUX7U4OlrMBon1SmCu4zLgRRSqo6ThubwA==
+X-Received: by 2002:a05:600c:1ca3:b0:40c:243d:daa6 with SMTP id k35-20020a05600c1ca300b0040c243ddaa6mr1570231wms.8.1702317440373;
+        Mon, 11 Dec 2023 09:57:20 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id m3-20020a5d56c3000000b003334520e49bsm9101723wrw.53.2023.12.11.09.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 09:57:19 -0800 (PST)
+Date:   Mon, 11 Dec 2023 18:57:19 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Jiqian Chen <Jiqian.Chen@amd.com>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <xenia.ragiadakou@amd.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v3 3/3] PCI/sysfs: Add gsi sysfs for pci_dev
+Message-ID: <ZXdNf0HWs4nAVPeF@macbook>
+References: <20231210161519.1550860-1-Jiqian.Chen@amd.com>
+ <20231210161519.1550860-4-Jiqian.Chen@amd.com>
 MIME-Version: 1.0
-References: <20231125-topic-6115icc-v3-0-bd8907b8cfd7@linaro.org> <20231125-topic-6115icc-v3-2-bd8907b8cfd7@linaro.org>
-In-Reply-To: <20231125-topic-6115icc-v3-2-bd8907b8cfd7@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 11 Dec 2023 11:55:36 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+FNYS-Ue1NQgDW_0D_NgONfsJj4Q-nzFWHHXpm0Ka=_Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+FNYS-Ue1NQgDW_0D_NgONfsJj4Q-nzFWHHXpm0Ka=_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] interconnect: qcom: Add SM6115 interconnect
- provider driver
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        Konrad Dybcio <konradybcio@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231210161519.1550860-4-Jiqian.Chen@amd.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 8:41=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
->
-> Add a driver for managing NoC providers on SM6115.
->
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon, Dec 11, 2023 at 12:15:19AM +0800, Jiqian Chen wrote:
+> There is a need for some scenarios to use gsi sysfs.
+> For example, when xen passthrough a device to dumU, it will
+> use gsi to map pirq, but currently userspace can't get gsi
+> number.
+> So, add gsi sysfs for that and for other potential scenarios.
+> 
+> Co-developed-by: Huang Rui <ray.huang@amd.com>
+> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
 > ---
->  drivers/interconnect/qcom/Kconfig  |    9 +
->  drivers/interconnect/qcom/Makefile |    2 +
->  drivers/interconnect/qcom/sm6115.c | 1427 ++++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 1438 insertions(+)
->
-> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qco=
-m/Kconfig
-> index 4d15ce2dab16..697f96c49f6f 100644
-> --- a/drivers/interconnect/qcom/Kconfig
-> +++ b/drivers/interconnect/qcom/Kconfig
-> @@ -191,6 +191,15 @@ config INTERCONNECT_QCOM_SDX75
->           This is a driver for the Qualcomm Network-on-Chip on sdx75-base=
-d
->           platforms.
->
-> +config INTERCONNECT_QCOM_SM6115
-> +       tristate "Qualcomm SM6115 interconnect driver"
-> +       depends on INTERCONNECT_QCOM
-> +       depends on QCOM_SMD_RPM
-> +       select INTERCONNECT_QCOM_SMD_RPM
-> +       help
-> +         This is a driver for the Qualcomm Network-on-Chip on sm6115-bas=
-ed
-> +         platforms.
-> +
->  config INTERCONNECT_QCOM_SM6350
->         tristate "Qualcomm SM6350 interconnect driver"
->         depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
-> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qc=
-om/Makefile
-> index 3a8a6ef67543..704846165022 100644
-> --- a/drivers/interconnect/qcom/Makefile
-> +++ b/drivers/interconnect/qcom/Makefile
-> @@ -24,6 +24,7 @@ qnoc-sdm845-objs                      :=3D sdm845.o
->  qnoc-sdx55-objs                                :=3D sdx55.o
->  qnoc-sdx65-objs                                :=3D sdx65.o
->  qnoc-sdx75-objs                                :=3D sdx75.o
-> +qnoc-sm6115-objs                       :=3D sm6115.o
->  qnoc-sm6350-objs                       :=3D sm6350.o
->  qnoc-sm8150-objs                       :=3D sm8150.o
->  qnoc-sm8250-objs                       :=3D sm8250.o
-> @@ -55,6 +56,7 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) +=3D qnoc-sdm845=
-.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SDX55) +=3D qnoc-sdx55.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SDX65) +=3D qnoc-sdx65.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SDX75) +=3D qnoc-sdx75.o
-> +obj-$(CONFIG_INTERCONNECT_QCOM_SM6115) +=3D qnoc-sm6115.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SM6350) +=3D qnoc-sm6350.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) +=3D qnoc-sm8150.o
->  obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) +=3D qnoc-sm8250.o
-> diff --git a/drivers/interconnect/qcom/sm6115.c b/drivers/interconnect/qc=
-om/sm6115.c
-> new file mode 100644
-> index 000000000000..c49a83c87739
-> --- /dev/null
-> +++ b/drivers/interconnect/qcom/sm6115.c
-> @@ -0,0 +1,1427 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reser=
-ved.
-> + * Copyright (c) 2023, Linaro Limited
-> + */
-> +
-> +#include <dt-bindings/interconnect/qcom,sm6115.h>
-> +#include <linux/clk.h>
-> +#include <linux/device.h>
-> +#include <linux/interconnect-provider.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
+>  drivers/acpi/pci_irq.c  |  1 +
+>  drivers/pci/pci-sysfs.c | 11 +++++++++++
+>  include/linux/pci.h     |  2 ++
+>  3 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+> index 630fe0a34bc6..739a58755df2 100644
+> --- a/drivers/acpi/pci_irq.c
+> +++ b/drivers/acpi/pci_irq.c
+> @@ -449,6 +449,7 @@ int acpi_pci_irq_enable(struct pci_dev *dev)
+>  		kfree(entry);
+>  		return 0;
+>  	}
+> +	dev->gsi = gsi;
 
-You probably don't need this header and the implicit includes it makes
-are dropped now in linux-next. Please check what you actually need and
-make them explicit.
+It would be better if the gsi if fetched without requiring calling
+acpi_pci_irq_enable(), as the gsi doesn't require the interrupt to be
+enabled.  The gsi is known at boot time and won't change for the
+lifetime of the device.
 
-> +#include <linux/of_platform.h>
+>  
+>  	rc = acpi_register_gsi(&dev->dev, gsi, triggering, polarity);
+>  	if (rc < 0) {
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 2321fdfefd7d..c51df88d079e 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -71,6 +71,16 @@ static ssize_t irq_show(struct device *dev,
+>  }
+>  static DEVICE_ATTR_RO(irq);
+>  
+> +static ssize_t gsi_show(struct device *dev,
+> +			struct device_attribute *attr,
+> +			char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
 
-Also probably not needed. Please double check.
+const
 
-Rob
+Thanks, Roger.
