@@ -2,339 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B26A80CD5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D44E80CDA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344356AbjLKOJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:09:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
+        id S1344023AbjLKOM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343834AbjLKOIt (ORCPT
+        with ESMTP id S1344415AbjLKOMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:08:49 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC2D6580;
-        Mon, 11 Dec 2023 06:04:39 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-42594f0ca09so21224911cf.0;
-        Mon, 11 Dec 2023 06:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702303479; x=1702908279; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fjv3xaAwIYR0bV7vWv+aqP2iMgmrLsGsg7noubEWJU0=;
-        b=AxcbH9TBcUyokcTyPFtqCWDBeAefxnzAVozu4LvhES6BsUVncMUiJaeRaIW4kkM4V6
-         UxqvxjmHF6s0nIyVH+l0TydCOwywL8NdnZipiPyD0c3+mTbLmHGBlAlZaMs1f+HapbVV
-         U10zSJknWLbNiOoaOuQvdqlBxnkPSgXvF29EV4dhHU4yxwtjXcgyHiXqatNHyDtciguy
-         zFborbplN9SgizdkrseA0si74+GLLv/6a5/OWwyFTmHPtAu1vi5YV/UolMyjCPjbfRQV
-         jSqlTCv6iOhqpo4kUzSgBKxo/YHjorZ2ZkJTtgO68+do35w8gnQ8GMUBAPITDbp+aGp8
-         hzlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702303479; x=1702908279;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fjv3xaAwIYR0bV7vWv+aqP2iMgmrLsGsg7noubEWJU0=;
-        b=cCpvOuNUTG+Z4CRgsGEIEObXBfiwmrCePgAWgA/R3U4yRxfZOhiN34QYgYKhTR1LSk
-         Fo/Zkb1XatlCE7UXGu3z20UtgdR5SMF2y7Dv0Wc71SFgo73WMdm62tXqMRqgIQcXDEtm
-         u26Ih6yV1B81n+iCaWTNi9tEw2qPhj83In5SRDMe/WlQlmvh15NWPHCywl5jPFzm9eWZ
-         U/wzRfbtVsEOqxne2/EjYS3bwEjxSLp1a7MbnhcYKt9e9WdKZ0Ot7pM9H5+wXTQRP+dx
-         WHKOQRv72rUSLo0Hl2tFQwY3Jw3r4a1BVLYkJccMYuaTJYeNHRrMBrZF3Mp1oLv3qa/a
-         wu+A==
-X-Gm-Message-State: AOJu0YyoyLXQnQ/CdOm34OSkKddQqnyaflpH52Y0tbRhkKXGCJR7BCG3
-        1wx0V1XDB3d7bpMV+wCv+S4=
-X-Google-Smtp-Source: AGHT+IF1HX3JHdwq2GaOCTk9P4s+U/GdIY1YVtlNRng0dWHJJC3DxlF+r8Rtb94zL7GDHDFVqmzLjQ==
-X-Received: by 2002:a05:622a:1207:b0:425:a6dd:b997 with SMTP id y7-20020a05622a120700b00425a6ddb997mr2984093qtx.132.1702303478657;
-        Mon, 11 Dec 2023 06:04:38 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:45f0])
-        by smtp.gmail.com with ESMTPSA id j25-20020ac874d9000000b004257e4c5e21sm3201635qtr.28.2023.12.11.06.04.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:04:38 -0800 (PST)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chris Li <chrisl@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
-Date:   Mon, 11 Dec 2023 06:04:15 -0800
-Message-Id: <20231211140419.1298178-2-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
-References: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
+        Mon, 11 Dec 2023 09:12:39 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D714C3F;
+        Mon, 11 Dec 2023 06:07:22 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Spk8N3TFDz4f3kG7;
+        Mon, 11 Dec 2023 22:07:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id D84331A060E;
+        Mon, 11 Dec 2023 22:07:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S4;
+        Mon, 11 Dec 2023 22:07:17 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH RFC v2 for-6.8/block 00/18] block: don't access bd_inode directly from other modules
+Date:   Mon, 11 Dec 2023 22:05:34 +0800
+Message-Id: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-CM-TRANSID: cCh0CgDn6xGTF3dlDYFxDQ--.28013S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr48Ww4Utw47JFWDWFW7Arb_yoW5XFWfpr
+        13KF4fGr1UWryxZaya9a17tw1rG3WkGayUWFnIy34rZFW5AryfZrWktF1rJa4kXryxXr4k
+        Xw17JryrKr1jgaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+        JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        fUojjgUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow proactive reclaimers to submit an additional swappiness=<val>
-argument to memory.reclaim. This overrides the global or per-memcg
-swappiness setting for that reclaim attempt.
+From: Yu Kuai <yukuai3@huawei.com>
 
-For example:
+Changes in v2:
+ - remove some bdev apis that is not necessary;
+ - pass in offset for bdev_read_folio() and __bdev_get_folio();
+ - remove bdev_gfp_constraint() and add a new helper in fs/buffer.c to
+ prevent access bd_indoe() directly from mapping_gfp_constraint() in
+ ext4.(patch 15, 16);
+ - remove block_device_ejected() from ext4.
 
-echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
+Noted that following is not changed yet since v1:
+- Chirstoph suggested to remove invalidate_inode_pages2() from
+xen_update_blkif_status(), however, this sync_bdev() + invalidate_bdev()
+is used from many modules, and I'll leave this for later if we want to
+kill all of them.
+- Matthew suggested that pass in valid file_ra_state for cramfs,
+however, I don't see an easy way to do this for cramfs_lookup() and
+cramfs_read_super().
 
-will perform reclaim on the rootcg with a swappiness setting of 0 (no
-swap) regardless of the vm.swappiness sysctl setting.
+Patch 1 add some bdev apis, then follow up patches will use these apis
+to avoid access bd_inode directly, and hopefully the field bd_inode can
+be removed eventually(after figure out a way for fs/buffer.c).
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 15 ++++++-
- include/linux/swap.h                    |  3 +-
- mm/memcontrol.c                         | 55 ++++++++++++++++++++-----
- mm/vmscan.c                             | 13 +++++-
- 4 files changed, 70 insertions(+), 16 deletions(-)
+Yu Kuai (18):
+  block: add some bdev apis
+  xen/blkback: use bdev api in xen_update_blkif_status()
+  bcache: use bdev api in read_super()
+  mtd: block2mtd: use bdev apis
+  s390/dasd: use bdev api in dasd_format()
+  scsicam: use bdev api in scsi_bios_ptable()
+  bcachefs: remove dead function bdev_sectors()
+  bio: export bio_add_folio_nofail()
+  btrfs: use bdev apis
+  cramfs: use bdev apis in cramfs_blkdev_read()
+  erofs: use bdev api
+  gfs2: use bdev api
+  nilfs2: use bdev api in nilfs_attach_log_writer()
+  jbd2: use bdev apis
+  buffer: add a new helper to read sb block
+  ext4: use new helper to read sb block
+  ext4: remove block_device_ejected()
+  ext4: use bdev apis
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..fc2b379dbd0f 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1282,8 +1282,8 @@ PAGE_SIZE multiple when read back.
- 	This is a simple interface to trigger memory reclaim in the
- 	target cgroup.
- 
--	This file accepts a single key, the number of bytes to reclaim.
--	No nested keys are currently supported.
-+	This file accepts a string which containers thhe number of bytes
-+	to reclaim.
- 
- 	Example::
- 
-@@ -1304,6 +1304,17 @@ PAGE_SIZE multiple when read back.
- 	This means that the networking layer will not adapt based on
- 	reclaim induced by memory.reclaim.
- 
-+	This file also allows the user to specify the swappiness value
-+	to be used for the reclaim. For example:
-+
-+	  echo "1G swappiness=60" > memory.reclaim
-+
-+	The above instructs the kernel to perform the reclaim with
-+	a swappiness value of 60. Note that this has the same semantics
-+	as the vm.swappiness sysctl - it sets the relative IO cost of
-+	reclaiming anon vs file memory but does not allow for reclaiming
-+	specific amounts of anon or file memory.
-+
-   memory.peak
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index f6dd6575b905..ebc20d094609 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -410,7 +410,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  int swappiness);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1c1061df9cd1..74598c17d3cc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/parser.h>
- #include <linux/sched/isolation.h>
- #include "internal.h"
- #include <net/sock.h>
-@@ -2449,7 +2450,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP, -1);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2740,7 +2741,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options, -1);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3660,7 +3661,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, -1)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3774,7 +3775,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP, -1))
- 			nr_retries--;
- 	}
- 
-@@ -6720,7 +6721,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, -1);
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6769,7 +6770,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, -1))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+enum {
-+	MEMORY_RECLAIM_SWAPPINESS = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t if_tokens = {
-+	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
-@@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
- 	unsigned int reclaim_options;
--	int err;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
-+	int swappiness = -1;
- 
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-+
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		switch (match_token(start, if_tokens, args)) {
-+		case MEMORY_RECLAIM_SWAPPINESS:
-+			if (match_int(&args[0], &swappiness))
-+				return -EINVAL;
-+			if (swappiness < 0 || swappiness > 200)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
- 
- 	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
- 	while (nr_reclaimed < nr_to_reclaim) {
-@@ -6926,7 +6958,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--					GFP_KERNEL, reclaim_options);
-+					GFP_KERNEL, reclaim_options,
-+					swappiness);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 506f8220c5fe..a20965b20177 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -136,6 +136,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swappiness value for reclaim, if -1 use memcg/global value */
-+	int swappiness;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
--	int swappiness = mem_cgroup_swappiness(memcg);
-+	int swappiness = sc->swappiness != -1 ?
-+		sc->swappiness : mem_cgroup_swappiness(memcg);
- 	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
-@@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
-+	if (sc->swappiness != -1)
-+		return sc->swappiness;
-+
- 	return mem_cgroup_swappiness(memcg);
- }
- 
-@@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   int swappiness)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.swappiness = swappiness,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+ block/bdev.c                       | 70 ++++++++++++++++++++++++++
+ block/bio.c                        |  1 +
+ block/blk.h                        |  2 -
+ drivers/block/xen-blkback/xenbus.c |  3 +-
+ drivers/md/bcache/super.c          | 11 ++--
+ drivers/mtd/devices/block2mtd.c    | 81 +++++++++++++-----------------
+ drivers/s390/block/dasd_ioctl.c    |  5 +-
+ drivers/scsi/scsicam.c             |  4 +-
+ fs/bcachefs/util.h                 |  5 --
+ fs/btrfs/disk-io.c                 | 71 ++++++++++++--------------
+ fs/btrfs/volumes.c                 | 17 +++----
+ fs/btrfs/zoned.c                   | 15 +++---
+ fs/buffer.c                        | 68 +++++++++++++++++--------
+ fs/cramfs/inode.c                  | 36 +++++--------
+ fs/erofs/data.c                    | 18 ++++---
+ fs/erofs/internal.h                |  2 +
+ fs/ext4/dir.c                      |  6 +--
+ fs/ext4/ext4.h                     | 13 -----
+ fs/ext4/ext4_jbd2.c                |  6 +--
+ fs/ext4/inode.c                    |  8 +--
+ fs/ext4/super.c                    | 66 ++++--------------------
+ fs/ext4/symlink.c                  |  2 +-
+ fs/gfs2/glock.c                    |  2 +-
+ fs/gfs2/ops_fstype.c               |  2 +-
+ fs/jbd2/journal.c                  |  3 +-
+ fs/jbd2/recovery.c                 |  6 +--
+ fs/nilfs2/segment.c                |  2 +-
+ include/linux/blkdev.h             | 17 +++++++
+ include/linux/buffer_head.h        | 18 ++++++-
+ 29 files changed, 301 insertions(+), 259 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
