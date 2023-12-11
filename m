@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E464680D2B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777CA80D2C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344865AbjLKQtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        id S1344888AbjLKQvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:51:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKQtP (ORCPT
+        with ESMTP id S229625AbjLKQve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:49:15 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A568E;
-        Mon, 11 Dec 2023 08:49:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KGk0p455n9Qyqg3jYMqF3nY83oslNnD+prahsS3y2tg=; b=rJhP3hWgktnDzGJNYm2tJw4xI7
-        TDqg7sdHNEg15rTEfZGNJ8HQ0/9cuVFcZD0RzxDoqN9E3H2U4t2h0p0f1s6cuMj0fIbvlWFrtREe0
-        ScIHQItSJyoiH/7RD5UvqgRXQlE/MgoIQOaectiMLWiOerK2qa82ed1qeyDVR9n0vVZCTrL++gnZz
-        m5ay27K3W+82SGtrMP2rKybQGP6h0rhma6nk3TsKnrv+H7nMYlCUfsdrcqO7bD2gua1ZPaQs/eeDK
-        wqwZhkEnqXbYKWKF6nSJv+T2mKJTiFwscPwOeE1mh5EqSHSZPmOqHv13b5lJk2CaiSUwVq1Vs498I
-        lGQaaG8Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rCjT4-005xZv-26;
-        Mon, 11 Dec 2023 16:49:18 +0000
-Date:   Mon, 11 Dec 2023 08:49:18 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     linan666@huaweicloud.com
-Cc:     axboe@kernel.dk, akpm@linux-foundation.org, ming.lei@canonical.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH] block: Set memalloc_noio to false on device_add_disk()
- error path
-Message-ID: <ZXc9jphAnYnwPnwm@infradead.org>
-References: <20231211075356.1839282-1-linan666@huaweicloud.com>
+        Mon, 11 Dec 2023 11:51:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4DC8E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:51:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D840C433C8;
+        Mon, 11 Dec 2023 16:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702313501;
+        bh=jXrfnDnXSAdCkJtLjpJCKDrNg7DOIOOclITycj8SrBs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XvrINhKbpjF5SAY9B9Ur5XIGWUrWK005J4+6zhivTUVERjJN0CYBnXNG6sktJZBEa
+         +TKtwkIzZVvPI/ygufXQWweLn+Mlqk6IeALZRk1vekCm+1e8XBBdoXTor6Yv7ivWhQ
+         eL54cJKPGd8ozXq1KoU/98JRmzw28WQfqH+5QfPPpHimLkTDrn2qc37M5hhAd/CYgR
+         LT1RJwRU6R4F1wu0CIRg9sztDfGXp0nQkO6lpE5eldTKmGpQmfO32z1+P/M7GeB6pF
+         aL8ZWXSw25SVWwVnRbrBW4SgnRh5pKeQrIlqCEeUczOF1wijqzJZHLuNJgDRQirWa0
+         gJHZU4dYAQ6pA==
+Date:   Mon, 11 Dec 2023 08:51:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Patrick Williams <patrick@stwcx.xyz>
+Cc:     Ivan Mikhaylov <fr0st61te@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, peter@pjd.dev,
+        sam@mendozajonas.com
+Subject: Re: [PATCH net-next v2 3/3] net/ncsi: Add NC-SI 1.2 Get MC MAC
+ Address command
+Message-ID: <20231211085139.011f650a@kernel.org>
+In-Reply-To: <ZXZ5EOSJAekCiT44@heinlein.vulture-banana.ts.net>
+References: <20231114160737.3209218-4-patrick@stwcx.xyz>
+        <20231210215356.4154-1-fr0st61te@gmail.com>
+        <ZXZ5EOSJAekCiT44@heinlein.vulture-banana.ts.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211075356.1839282-1-linan666@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:53:56PM +0800, linan666@huaweicloud.com wrote:
-> From: Li Nan <linan122@huawei.com>
-> 
-> On the error path of device_add_disk(), device's memalloc_noio flag was
-> set but not cleared. As the comment of pm_runtime_set_memalloc_noio(),
-> "The function should be called between device_add() and device_del()".
-> Clear this flag before device_del() now.
+On Sun, 10 Dec 2023 20:50:56 -0600 Patrick Williams wrote:
+> Either you or I can send a "Fixes: " on this commit to improve the
+> handling as you're proposing.  While the change is likely trivial, I
+> have not had any chance to test it yet, so I've not sent it up myself.
+> If you want to refactor the code to reduce duplication, I think that should
+> be an entirely separate proposal.
 
-Looks good:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Yes, incremental change is better.
