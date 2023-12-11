@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EABCA80C6C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4F380C6CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbjLKKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
+        id S234255AbjLKKhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbjLKKg6 (ORCPT
+        with ESMTP id S234234AbjLKKhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:36:58 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9546ED2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:37:04 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-67ab19339b4so29808156d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702291023; x=1702895823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9xZZSpag6K2BrrxUB+HXexjy0tvgok7Hn3gQdazxamw=;
-        b=QBIfDKvLL5uUNay6AxyqufLxo9IouB1IBJb06qeRDlxx6PfaEOlVQnVnaG4ZHQLZSA
-         2JeeAvRN3w8FZ0Xc/8L8fqtsiCpUNRtyusCfYeV8FTBOevAuI5O7c/e6IhFp+IOKDTtH
-         u9KTF7iRydG0e7Xd6caQIQkMoze+rH/2E3M/Dny3LWnh0nxZzc5Tuo/kE2YkbVIPgi6m
-         wZVNZtAeBZ5I6e/E//O7SHk/wjKRgwRfefrA36RRCej1YbMUQd7rj5OiY1YRXz084fbY
-         G947zyxToqma0CuyasEq6o3dI/WLGwgpVGllUKXfNmHCeAd+SCQWU2GJc5yKTUwJqeu8
-         wyeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702291023; x=1702895823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9xZZSpag6K2BrrxUB+HXexjy0tvgok7Hn3gQdazxamw=;
-        b=k69yzxv78WvXsw+sTvJ3bk+y+xAaqgKB2rVbmIKpGjB87dIvNdV5p6LVVKiItjJMW0
-         dfg71fVOrvmplFDng5+tCpnzw3xxWEkU+eUueiUhRRWtdq8k30ReCMWuz5msr42nFszp
-         qYzYu/RpU7n+8o80IvHxd/6VDkjW50N007Tnugc/A260Rp0wpA1hzE7DiElaruF2fJOS
-         gsz/ZGCH6IZrhiXuMQDMjIyq0T2VTCNkNLItYM+hQzpm2GrUilOUsk+PCeYj3FT/h7TU
-         txQpgEtZQhbuUOANp3MPullw+rNT/4w4VBsC9CnVu0DKqulG8NdGmrTHxoKN9wreS9mh
-         AoLQ==
-X-Gm-Message-State: AOJu0YyijHnzvf/ZHikzq7bfJ9BWqE6irazylWDhRLp7IA7WNF5gjT9p
-        BWqmTU3PWLfsXhapF2wfViiBcFgb4u+cjazQ5p4r9g==
-X-Google-Smtp-Source: AGHT+IG2hreF5WUvCkeK9/1PTdi6XuXHKd5OzzWIV9TutEPZLQcFZOECLixwnYp9kHhdQ4NW9Hm2iZIo6eRfJV7Vqu8=
-X-Received: by 2002:a05:6214:5cc:b0:67a:97a4:1f73 with SMTP id
- t12-20020a05621405cc00b0067a97a41f73mr5565614qvz.40.1702291023543; Mon, 11
- Dec 2023 02:37:03 -0800 (PST)
+        Mon, 11 Dec 2023 05:37:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8DAD0;
+        Mon, 11 Dec 2023 02:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702291027; x=1733827027;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=hHtobIbjGrWsDPGAnvtGAAfDp/QQJRNIOz1kL4DmbOw=;
+  b=drtvES98zKyIrJDvCiLB6UlCFVH8mEkYoL9ZzlrJrt7bQw1+lAJKHA45
+   KeYGmiKAsxf/xIlNY/53f2DdkOK4+w6meoJ/sYCpug/cGTx4ItvbmuoK7
+   u+fqE+pf4AbpQAMoKdO/x7P0SH7EAhOK2DTgl7PDxaOQjDytiHlzcy+c9
+   v3OSnzybX6ra2FVNNxw6JvMmZRv3fRW3PHJjReh4r6Nk1C9GItByaFbNB
+   Xqc/i8dbCcDRQTIv0e5yeTByQL66krf1TA8Ze7GNd06KxZYuWOzM/cFNL
+   qckRywPz2gUF23E2zvoY1+kNrCitNBXJoKPJWO7CRXIYuuDVAbnhCieeC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="16180046"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="16180046"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:37:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="772998121"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="772998121"
+Received: from lmckeon-mobl.ger.corp.intel.com (HELO iboscu-mobl2.ger.corp.intel.com) ([10.252.48.111])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:37:01 -0800
+Date:   Mon, 11 Dec 2023 12:36:59 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
+        hugo@hugovil.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LinoSanfilippo@gmx.de, Lukas Wunner <lukas@wunner.de>,
+        p.rosenberger@kunbus.com, stable@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] serial: core: set missing supported flag for RX
+ during TX GPIO
+In-Reply-To: <20231209125836.16294-3-l.sanfilippo@kunbus.com>
+Message-ID: <f128419a-6782-fc4d-df6f-3b7deebbb467@linux.intel.com>
+References: <20231209125836.16294-1-l.sanfilippo@kunbus.com> <20231209125836.16294-3-l.sanfilippo@kunbus.com>
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-26-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-26-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 11 Dec 2023 11:36:27 +0100
-Message-ID: <CAG_fn=W7EQph__sbiBvNdaaSFG3-vweA396Oa81QoXAE8+b9yA@mail.gmail.com>
-Subject: Re: [PATCH v2 25/33] s390/cpacf: Unpoison the results of cpacf_trng()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1849002651-1702291025=:1867"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> Prevent KMSAN from complaining about buffers filled by cpacf_trng()
-> being uninitialized.
->
-> Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1849002651-1702291025=:1867
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Sat, 9 Dec 2023, Lino Sanfilippo wrote:
+
+> If the RS485 feature RX-during-TX is supported by means of a GPIO set the
+> according supported flag. Otherwise setting this feature from userspace may
+> not be possible, since in uart_sanitize_serial_rs485() the passed RS485
+> configuration is matched against the supported features and unsupported
+> settings are thereby removed and thus take no effect.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 163f080eb717 ("serial: core: Add option to output RS485 RX_DURING_TX state via GPIO")
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> ---
+>  drivers/tty/serial/serial_core.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index a0290a5fe8b3..c254e88c8452 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -3632,6 +3632,8 @@ int uart_get_rs485_mode(struct uart_port *port)
+>  	if (IS_ERR(desc))
+>  		return dev_err_probe(dev, PTR_ERR(desc), "Cannot get rs485-rx-during-tx-gpios\n");
+>  	port->rs485_rx_during_tx_gpio = desc;
+> +	if (port->rs485_rx_during_tx_gpio)
+> +		port->rs485_supported.flags |= SER_RS485_RX_DURING_TX;
+>  
+>  	return 0;
+>  }
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+--8323329-1849002651-1702291025=:1867--
