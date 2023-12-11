@@ -2,188 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF0780C93F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7280F80C940
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbjLKMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
+        id S1343522AbjLKMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235014AbjLKMPg (ORCPT
+        with ESMTP id S234869AbjLKMPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:15:36 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BF711F;
-        Mon, 11 Dec 2023 04:15:30 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyIPaKz_1702296927;
-Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyIPaKz_1702296927)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Dec 2023 20:15:28 +0800
-Message-ID: <9a6d57c0-f5b4-9b2c-dc5f-dc47d0518141@linux.alibaba.com>
-Date:   Mon, 11 Dec 2023 20:15:26 +0800
+        Mon, 11 Dec 2023 07:15:39 -0500
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2C2F3;
+        Mon, 11 Dec 2023 04:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1702296940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=L7kf+hcbV1aunzsc1VgHXPmGkTxyrjAbnWlUqmjpkTo=;
+        b=APV739V1DwujHZ/HRZTNPFrxBD2Tls1tzP0FkljoQUKl2aBbwAs9PFWm7i5M+3AjOeEj6s
+        GkMR+tAVdKzPn2t4Irv0rSPjQsIeG0XB1V+D+SOgtCg9zTH391azMl5da0b0xSebMXpC33
+        9T1rd6FRM76yNCLrA2YNUAZfVgL69vk=
+Message-ID: <3da88ffe37e1fa20918848fdef8f80e5ae49743a.camel@crapouillou.net>
+Subject: Re: [PATCH 1/4] dmaengine: axi-dmac: Small code cleanup
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 11 Dec 2023 13:15:38 +0100
+In-Reply-To: <ZXb5IhaNiKJufH/k@matsya>
+References: <20231204140352.30420-1-paul@crapouillou.net>
+         <20231204140352.30420-2-paul@crapouillou.net> <ZXb5IhaNiKJufH/k@matsya>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+        YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
- smc_clc_send_confirm_accept()
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
- <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vinod,
 
+Le lundi 11 d=C3=A9cembre 2023 =C3=A0 17:27 +0530, Vinod Koul a =C3=A9crit=
+=C2=A0:
+> On 04-12-23, 15:03, Paul Cercueil wrote:
+> > Use a for() loop instead of a while() loop in
+> > axi_dmac_fill_linear_sg().
+>=20
+> Why?
 
-On 2023/12/11 18:43, Alexandra Winter wrote:
-> 
-> 
-> On 08.12.23 08:40, Wen Gu wrote:
->> There is a large if-else block in smc_clc_send_confirm_accept() and it
->> is better to split it into two sub-functions.
->>
->> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
-> 
-> Thank you very much Wen Gu for improving the codebase.
-> 
-I'm glad I could help.
+Simplicity? Code quality?
 
-> 
->>   net/smc/smc_clc.c | 196 +++++++++++++++++++++++++++++++-----------------------
->>   1 file changed, 114 insertions(+), 82 deletions(-)
->>
->> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->> index 0fcb035..52b4ea9 100644
->> --- a/net/smc/smc_clc.c
->> +++ b/net/smc/smc_clc.c
->> @@ -998,6 +998,111 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>   	return reason_code;
->>   }
->>   
->> +static void smcd_clc_prep_confirm_accept(struct smc_connection *conn,
->> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
->> +				int first_contact, u8 version,
->> +				u8 *eid, struct smc_init_info *ini,
->> +				int *fce_len,
->> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
->> +				struct smc_clc_msg_trail *trl)
->> +{
->> +	struct smcd_dev *smcd = conn->lgr->smcd;
->> +	struct smc_clc_msg_accept_confirm *clc;
->> +	int len;
->> +
->> +	/* SMC-D specific settings */
->> +	clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
-> 
-> Why is this cast neccessary? (Here as well as in smcr_clc_prep_confirm_accept
-> and in smc_clc_send_confirm_accept)
-> smc_clc_msg_accept_confirm_v2 has hdr and d0 as well.
+-Paul
 
-I think the cast is to imply that v2 is an expansion of v1, or v1 is the base of v2.
-So here using clc(v1) reperesents their common set.
+>=20
+> >=20
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > ---
+> > =C2=A0drivers/dma/dma-axi-dmac.c | 5 +----
+> > =C2=A01 file changed, 1 insertion(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-
+> > dmac.c
+> > index 2457a420c13d..760940b21eab 100644
+> > --- a/drivers/dma/dma-axi-dmac.c
+> > +++ b/drivers/dma/dma-axi-dmac.c
+> > @@ -508,16 +508,13 @@ static struct axi_dmac_sg
+> > *axi_dmac_fill_linear_sg(struct axi_dmac_chan *chan,
+> > =C2=A0	segment_size =3D ((segment_size - 1) | chan-
+> > >length_align_mask) + 1;
+> > =C2=A0
+> > =C2=A0	for (i =3D 0; i < num_periods; i++) {
+> > -		len =3D period_len;
+> > -
+> > -		while (len > segment_size) {
+> > +		for (len =3D period_len; len > segment_size; sg++) {
+> > =C2=A0			if (direction =3D=3D DMA_DEV_TO_MEM)
+> > =C2=A0				sg->dest_addr =3D addr;
+> > =C2=A0			else
+> > =C2=A0				sg->src_addr =3D addr;
+> > =C2=A0			sg->x_len =3D segment_size;
+> > =C2=A0			sg->y_len =3D 1;
+> > -			sg++;
+> > =C2=A0			addr +=3D segment_size;
+> > =C2=A0			len -=3D segment_size;
+> > =C2=A0		}
+> > --=20
+> > 2.42.0
+> >=20
+>=20
 
-If we use smc_clc_msg_accept_confirm_v2 for all, I think readers may be tempted to
-check whether the hdr and d0 in 'smc_clc_msg_accept_confirm_v2' are also applicable to v1.
-
-And there are settings below that are specific for v1. It may be confusing if we
-change it like this:
-
-if (version == SMC_V1) {
-	clc_v2->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
-} else {
-
-
-> 
-> IMO, it would be a nice seperate patch to get rid of the 2 type defs for
-> smc_clc_msg_accept_confirm and smc_clc_msg_accept_confirm_v2
-> and all the related casting anyhow.
-> 
-
-Do you mean to define only smc_clc_msg_accept_confirm_v2 or define with the name
-of smc_clc_msg_accept_confirm but the contents of smc_clc_msg_accept_confirm_v2?
-
-I have a different opinion on this, since I think the smc_clc_msg_accept_confirm
-and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
-v2 messages and remind people what is currently working on. So I perfer to keep them.
-Am I missing something?
-
-> 
-> 
->> +	memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
->> +	       sizeof(SMCD_EYECATCHER));
->> +	clc->hdr.typev1 = SMC_TYPE_D;
->> +	clc->d0.gid = htonll(smcd->ops->get_local_gid(smcd));
->> +	clc->d0.token = htonll(conn->rmb_desc->token);
->> +	clc->d0.dmbe_size = conn->rmbe_size_comp;
->> +	clc->d0.dmbe_idx = 0;
->> +	memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
->> +	if (version == SMC_V1) {
->> +		clc->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
->> +	} else {
->> +		clc_v2->d1.chid = htons(smc_ism_get_chid(smcd));
->> +		if (eid && eid[0])
->> +			memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
->> +		len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
->> +		if (first_contact) {
->> +			*fce_len = smc_clc_fill_fce_v2x(fce_v2x, ini);
->> +			len += *fce_len;
->> +		}
->> +		clc_v2->hdr.length = htons(len);
->> +	}
->> +	memcpy(trl->eyecatcher, SMCD_EYECATCHER,
->> +	       sizeof(SMCD_EYECATCHER));
->> +}
->> +
->> +static void smcr_clc_prep_confirm_accept(struct smc_connection *conn,
->> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
->> +				int first_contact, u8 version,
->> +				u8 *eid, struct smc_init_info *ini,
->> +				int *fce_len,
->> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
->> +				struct smc_clc_fce_gid_ext *gle,
->> +				struct smc_clc_msg_trail *trl)
->> +{
->> +	struct smc_clc_msg_accept_confirm *clc;
->> +	struct smc_link *link = conn->lnk;
->> +	int len;
->> +
->> +	/* SMC-R specific settings */
->> +	clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
-> 
-> Why is this cast neccessary?
-> smc_clc_msg_accept_confirm_v2 has hdr and r0 as well.
-> 
-Similar thought as SMCD.
-
->> +	memcpy(clc->hdr.eyecatcher, SMC_EYECATCHER,
->> +	       sizeof(SMC_EYECATCHER));
->> +	clc->hdr.typev1 = SMC_TYPE_R;
->> +	clc->hdr.length = htons(SMCR_CLC_ACCEPT_CONFIRM_LEN);
-> 
-> ^^ this is overwritten below, so no need to set it here.
-> 
-
-Good catch! It will be removed. Thank you.
-
-<...>
