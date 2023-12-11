@@ -2,253 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AF580D3F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED3280D3FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344704AbjLKRfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S1344731AbjLKRfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:35:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344731AbjLKRfj (ORCPT
+        with ESMTP id S1344741AbjLKRfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 12:35:39 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2079.outbound.protection.outlook.com [40.107.94.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC15BD9;
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D8FEA;
+        Mon, 11 Dec 2023 09:35:45 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b9e2a014e8so3139960b6e.2;
+        Mon, 11 Dec 2023 09:35:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702316145; x=1702920945; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M/fg+fv8iUKsYhs2M+RJ0ajm1ojAT51bfa8djh97RvU=;
+        b=CP3Jq4I1Y02qHoqb0qWcgX0JAcPeAVZkT/zrigeAZ63XjOtvmaFoaRPOCh8oGdle/E
+         659t0Cqq9vwxfVzUnZEYkujXvjenFSymFnF2wn5KMkozGqr5VAEkRG4WlLyW6qSrkJpR
+         ZiMwSfge/HSBrgaQeXoCKiaH0gA5DMWKBzfS8IuoYqortNoBw4stEkLTMwT60HdryXyQ
+         GeGxxvBtOSCoCwhz/OOw+onOAKkeI1M152kgV3xzm6VeyJpIKtRKIDZBNxKA1PEyGwcf
+         sdb6SxfnnbCojImLFcgufskb9jZL4zv0rFZRqHyDh4LTWKrxDisbCacPZ+g8PJQdSCo6
+         lc7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702316145; x=1702920945;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M/fg+fv8iUKsYhs2M+RJ0ajm1ojAT51bfa8djh97RvU=;
+        b=YUhCcYXwQUqIJx4Lkbd/hlMATx7JbBIvW3oOzMq6bHBZUODq5nU5sH05YJK4hzCTbY
+         8w3Cas9sOuWDPN/YSVTxDTGJf5xfo0ZwBU80+/yQ5eSQNGhPBQKEp1UxW2kS+5+/ffoZ
+         4+5+CN2So8iix7pQTU3+yO9QbnH3ftpEFCtQTEdfXt0gvAICQH10koS8J07vBmsqrkzK
+         aFOmgv2gD1/VeOcdBtBBD34vUp+VOOOJz9hSBFw1IVXyKwG36TgXxqzm0fv7jpdLItt4
+         133aBOeDtSF3xxD2UELtO+JIKFaFVe8u0nsu7ca8wgClnR7fihy01yA0qg6kvhxj2YIN
+         UicA==
+X-Gm-Message-State: AOJu0YxnsiFvHrrYl7oFnNwzzIs9/IUe+Gjs5b4wISiEyTr0Qu6CMb8V
+        6x9128CNQhUVJhIpn8x0GIQ=
+X-Google-Smtp-Source: AGHT+IGbDAuC5iH0V8rKYwviDyoY8ZqTEAItte85iztX5xcFqTiwSYA17QemR1kL/yaaXqa4VTm8ew==
+X-Received: by 2002:a05:6359:2d02:b0:16e:29eb:98c8 with SMTP id rl2-20020a0563592d0200b0016e29eb98c8mr2011101rwb.30.1702316144995;
         Mon, 11 Dec 2023 09:35:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OYCmc1bB+g7bGjYRT1UaTGXyQG5dRGXSR/oAdtlwvfaok9K6CoEITKDf+llXahhxx7S5r58qYwrIZgoeXg/4ycVO8KNqURGXvYL5NCz4xiXTmZWBMLJxVvHLY4agAGDHVI0Z+s1zQfTsVLklAcAyKU5nQ81iuXt/FniE9sHDQMTH7Wb8qok3rPpKqxBZIKVcff7hp0sQUNQLEEWmI2tGba7G8iYU9uw3DhWVvRSdOh+sa6hoM898oUYaUDJr4eJEJRi2JClJ0aeu36qA0TKZ8oAcEIqBRB2JKgYiAvKojm2bCNH8Guwt3PWmhxIsLiRGmaJy5OECWmDQvprEgvRPdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4yP7u9O2wCz/kSoUjE7dN5iLfsWSkdF7p8Q8EKz5a98=;
- b=OoMIVmRwRoRnldGYDdpSKNhjDWFMDZ4ElRoNDLCfKfd+0Rlu/e5Be0qYb1LXXp8gUjl9oXk+YmMIR2GNuHSeaqzx5MDFTnxsMwWABPtyhN5gtYL/tphqWp1a2s8oyI9xOh4iYvYexzR3xUTS6j5bjzJgCWn0+u/LFoI65OjHzF7OKuErUa1HYdjLlCx1cjg241Oob9USfm/R+K8eVocdpDdihA7t2a/8K6p/XCqD3wTVfXakAnnTnxZWOwxgy8IFn8acmm/tSKyN/pGqCk+7hEBXZrgwYVIdYsavvqb175STAyOHJ+40AyPX91lC8uzDH8AZcqDxZh/+YmTwMkee1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4yP7u9O2wCz/kSoUjE7dN5iLfsWSkdF7p8Q8EKz5a98=;
- b=sFFmAk/l+/+Ad/Laj7RhlVFXgS0o5j+e8EZiB17yU2OC4dMrje6pnx4s6jXa7axQKHoyn9s4ySXSfKgmRufEiRcka0aKKedTEBUoZVPjh3Dzp2Op4v1wpS7vlUc2a0JfzQvjHAKaVzc/u9JUTDo4NScnNFZ+WHhN7KhNj3UTeKQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM8PR12MB5445.namprd12.prod.outlook.com (2603:10b6:8:24::7) by
- DS0PR12MB6438.namprd12.prod.outlook.com (2603:10b6:8:ca::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.32; Mon, 11 Dec 2023 17:35:41 +0000
-Received: from DM8PR12MB5445.namprd12.prod.outlook.com
- ([fe80::e557:fd55:457:12]) by DM8PR12MB5445.namprd12.prod.outlook.com
- ([fe80::e557:fd55:457:12%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 17:35:38 +0000
-Message-ID: <391ab316-79b1-4535-a45b-4c01bfb80de6@amd.com>
-Date:   Tue, 12 Dec 2023 00:35:26 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
-        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
-        Vasant Hegde <vasant.hegde@amd.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, zhenzhong.duan@intel.com,
-        joao.m.martins@oracle.com, xin.zeng@intel.com, yan.y.zhao@intel.com
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231209014726.GA2945299@nvidia.com>
-From:   "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
-In-Reply-To: <20231209014726.GA2945299@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0054.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::13) To DM8PR12MB5445.namprd12.prod.outlook.com
- (2603:10b6:8:24::7)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id i19-20020a056214031300b0067aa164861dsm3467797qvu.35.2023.12.11.09.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 09:35:44 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E6B6A27C005B;
+        Mon, 11 Dec 2023 12:35:43 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 11 Dec 2023 12:35:43 -0500
+X-ME-Sender: <xms:b0h3ZWIE9Yx7UGpn71fZAxZX0HGg4FpbWLeNvatVYsHtlI9MfS2HXw>
+    <xme:b0h3ZeIFkXRRQAI4ffLDQBsIVxj7aRkAq9sHq82eX8drH5G_JdRQmPSmxzB4wzmJ0
+    EcYzaDSd47NCxaYIQ>
+X-ME-Received: <xmr:b0h3ZWvlwExWXMUANLm9vi_qtr7Mr0mpo4kFxAUSQkGozewojwigSVK9NJQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelvddguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
+    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:b0h3ZbY8x4kxdTb793RGNUqtreNFBYEDz_Q58q1IHpHp1QJi2cp2wg>
+    <xmx:b0h3ZdYhbLLNLQpl40sVkGsURrGwBKMPC0gPqvy8-47u-uUJv-BzNw>
+    <xmx:b0h3ZXBIn2Sg4kV8292WFXKiqxnQxTij-1LTv3biM_I2vcAXeTqfLw>
+    <xmx:b0h3ZaRVAf13DBbJgyJmPBC7MynptnzRLYnuMgV3gMCc_4nakVOLLg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 11 Dec 2023 12:35:42 -0500 (EST)
+Date:   Mon, 11 Dec 2023 09:35:40 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
+        brauner@kernel.org, cmllamas@google.com, dan.j.williams@intel.com,
+        dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org,
+        joel@joelfernandes.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
+        rust-for-linux@vger.kernel.org, surenb@google.com,
+        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
+        wedsonaf@gmail.com, willy@infradead.org
+Subject: Re: [PATCH v2 2/7] rust: cred: add Rust abstraction for `struct cred`
+Message-ID: <ZXdIbEqSCTO62BHE@boqun-archlinux>
+References: <ZXZjoOrO5q7no4or@boqun-archlinux>
+ <20231211153429.4161511-1-aliceryhl@google.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5445:EE_|DS0PR12MB6438:EE_
-X-MS-Office365-Filtering-Correlation-Id: 39ebca23-25df-4f8c-f24e-08dbfa6f96e8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2N6tWvti+16Gkp8vc6La8IgS7LEPK+YEVJcJm1v9gLiuHJN3nksfoCRHAJZ7nuWa4DONIV11KTloNdTl9gL2XjtEY7bAqaQxwvb5QOvfl77f1XatQRvda0W1yDV+//SzPec0CBfLdpNjzIo5Ne1YcnjXgARRjjUjMOGDg8gbap3uDjlFbtKHYt+/Hm+7ul59qPi08p99yWHSCTM98gwvza5lgbYhhe7VWMCdcJFk75t/208mrrUGmHsy9q8FVbNz15a8Kcw4ETjSSzm+hVz2u6VQ/TnaXyC/9+bBgB7mmqk9TYMjdqSRTyTYQ7MSNc8rVqUpGcVhHoZjQ304+k+LM/Xv5rnF95ktA+EJ4gkVdSWhlm9PLH/dIpWO8xyqWizhWber93z06zgUKKPRUn2A0xdY/RcQ8DpzONp3zfZa/MW5Vo1Anoc+r+VUl+hHIJ1/ozftjnqoGLPp1CaIMLJ8rPZRHEqSd4pwVbrFcm6K2wLTIq11AzEQAqeK1SA7ikREtjbd7qEQSxUK0qzemRqeaZ4ml0xITN5QM7J1lbgguqyWSXvaUXYGqI2qajefBF1yjtakv8Y7zbRUQa2Qcc4/eaUtzeW7o1rWZL7lv2AcO4yk9dHW26wehZKZ94lZabcGwLDXFHMUhQ0obNJupDYejw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR12MB5445.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(83380400001)(2906002)(41300700001)(478600001)(31686004)(6636002)(66556008)(66476007)(6486002)(66946007)(7416002)(110136005)(316002)(38100700002)(6666004)(86362001)(31696002)(8936002)(8676002)(4326008)(53546011)(6506007)(6512007)(36756003)(5660300002)(26005)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ckZzMXptVFoxRTdKUUE0cHZubENDU25pZzhBOVpSRUh1eW42cU9FZTlrWU1q?=
- =?utf-8?B?cU9pcEl3c2dKWXpkZGMvRG84SGJ0Y0crQTZHOGZ0czJodE5OS1FpTy9ucVla?=
- =?utf-8?B?YlF3N2NwWk1DOGlKNmk4YU5hb3lESGNiKzh4TDkyVHBqejhKelUrT00xYTR1?=
- =?utf-8?B?bytrZ01WbGQycWMzeVp4bVZWZXI1QnZCZG93aDBDNGgzUFcxY0hnbnJyMnRu?=
- =?utf-8?B?M05ZN1RnUzQ1TElYUkVpVmtjenRZSVQ3SjRSS0VZVGVmU01wZlJLcFZwWjE5?=
- =?utf-8?B?Y2YwQnN3YndmaTRDc3pXNEhOVzFNSFozVDRxSUxBMlQ1bjZ1endxY2tFcnNp?=
- =?utf-8?B?T05PODg4WWptS3BjUTZub1R5ZnhCSmYzOWg3cnk3VWVVelhZd3pKdDFjdi9x?=
- =?utf-8?B?YWVvTXZUeEoyeEQzUEZ3Z3RLWmI1MVZhVUpiRXZIckgxOHFZdjhRUEd5UVlz?=
- =?utf-8?B?M0NHY1VZWHR2RDY2ZS9lTGYzUXBrZUh0MzZHQmU5aGxhcWMxR0M1MWlGazBF?=
- =?utf-8?B?U3Q5RWpMQzJ5UzdzR3NmRFBQT1FKa1lRQ29MTGwvMXhTQmprNXhsOTg0T2hC?=
- =?utf-8?B?anNoSHFmOTlpdUYzc0VPdVRDN2F5VHlWUmJGZHFFZEkvdU14OWpMSlFKREVM?=
- =?utf-8?B?ZEoveUJnMDVuUy90b0s4bW1EdWpQTnJPc0JoUUwzbUc3ZnlCdzM4UjlSS21E?=
- =?utf-8?B?aTFqOU0yTlRmYmhPTVF5N3BNQUhvU3RiRW1FWXpWWnYrUEhsTzZMUndrSHEy?=
- =?utf-8?B?MlY1cW9vQTBCcVZnd3JSVmFTRDhGNG5hYW5aNHFRamdxczlPbTh6dXdwZEZi?=
- =?utf-8?B?dytmaFZWNFg2UjFKMUNVNmhjRUwxR1VUc1BIS1dCenB2eXZGU1FJL1ZGTVR1?=
- =?utf-8?B?NUNpTzF5VTYyUWJwSlZhNzFpbkFoSGpYVU9IK2x1ZjdoeFdLUWlPVjBwYnhX?=
- =?utf-8?B?UG5TNXRMNitzVG1JREJNVjQyUDBtVEhpcDlKY2pSKytScFVQdFFqYVBpOXcr?=
- =?utf-8?B?Q2YzSFlyZGVGS2JGZXd1OEl6aWZXRzY2Q3E4dFhhZHVtUUducUt1dWpPZGtP?=
- =?utf-8?B?N3JMVGZweWdUQWdXMy9UTkNmd0F0VzdraittLzAvTlBOSEdvVFpoQ0NpNHZ3?=
- =?utf-8?B?UEFpTy9zUzcvNHRtNHVKNkVFNDQvZTJ6bEM1djZGU284eC9OcW1jN3Z4SHpJ?=
- =?utf-8?B?ZzJYVmFtdGp4V2x4elZkdCsvbjRtNmFwSjB6VWZPMEJPYW5Sam1BWm81bnNB?=
- =?utf-8?B?V05tSE9Ka2I5azhVYW9TZ3I2VFR3RVZ0emIzeVZjVmU2MEVRWC9DUDlIYW9w?=
- =?utf-8?B?Um8xZFZkYVhIQW1FdktwNVkxb2lLU0VDcG15K3VrTmdiN0Nkc280eno3TGp4?=
- =?utf-8?B?Ym5tUDgyZ0F4TndabFJuRXFiVVBnVm1GMHFGNFhNcmRJRjBtWmxXWGpjdlA3?=
- =?utf-8?B?Z1IvbjlPZjM3VXZWVmppMWo0UU5ickEyVk9XcE9jamFFSEF2Zkt6djdHU2Yx?=
- =?utf-8?B?REJXWTRuZDdHRkZqKzhoMUJQRWwrdmcwdEJJRzRSVUxwUnBrNm0vN3B3dzk2?=
- =?utf-8?B?bFZUaUdycXpqWTYxTUkxc0krZGNpWjY3VUVIOTA2UWxuZzNaVFlTRWdVdG5X?=
- =?utf-8?B?b1JBT2ZJN21wQlU2ZEN3K3NtUGtYWW12MEw4cjR0M210Y3NzSElXMlZLcDkx?=
- =?utf-8?B?TVNiNW81N3hZeVNaQnRpNDl2d1ZKbjRiVFJsZGt3NkFaL0ZhR2kwckFMZE1q?=
- =?utf-8?B?dm1lRmVZajlOMjZiS2puWHBnaGl1SThDS0lBajVMMlNiSVh1RitrY013Rm9p?=
- =?utf-8?B?RFJPV2Zuakg5ck4rNVZhS3VHWUxBejd1Q0dPQ3E1SEpvL3E3bVRTVXVNMTRX?=
- =?utf-8?B?Rk1SSHhVUjF6UmVPV1A3emlDMHgvNWYwZUhpcC9ON21UaSt3RHNtWjhjeEdu?=
- =?utf-8?B?bmUxbUVZR3lQa0hXM3RWNFlZOXNlVGNQcVJ6U2J4bXZaU29WWWtxc1VEekd0?=
- =?utf-8?B?RzB6Z2xpTi96dUVvZklQNlJ4bDBEN2VIVnE5VktZeE1OekFHZ2VkN2Q2VHhn?=
- =?utf-8?B?U25XUlNDV2o5ZFROQ21wUnFaZ08rSzZPNDJiUHNQOHdPOG9GYkJVUUg0a2d6?=
- =?utf-8?Q?t9mW4YMODT3vIKvJASdL7YsNP?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39ebca23-25df-4f8c-f24e-08dbfa6f96e8
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR12MB5445.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 17:35:38.4536
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 39tfLCAY6lEHk00XgM6Rw1gkKi9jL+NzzaGvTu6rURTIDhcCNygBfoYoQyXFbINk2pu3V9o0AM2dbijAXgaZ5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6438
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211153429.4161511-1-aliceryhl@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/9/2023 8:47 AM, Jason Gunthorpe wrote:
-> On Fri, Nov 17, 2023 at 05:07:11AM -0800, Yi Liu wrote:
+On Mon, Dec 11, 2023 at 03:34:29PM +0000, Alice Ryhl wrote:
+> Boqun Feng <boqun.feng@gmail.com> writes:
+> > On Wed, Dec 06, 2023 at 11:59:47AM +0000, Alice Ryhl wrote:
+> > [...]
+> > > @@ -151,6 +152,21 @@ pub fn as_ptr(&self) -> *mut bindings::file {
+> > >          self.0.get()
+> > >      }
+> > >  
+> > > +    /// Returns the credentials of the task that originally opened the file.
+> > > +    pub fn cred(&self) -> &Credential {
+> > 
+> > I wonder whether it would be helpful if we use explicit lifetime here:
+> > 
+> >     pub fn cred<'file>(&'file self) -> &'file Credential
+> > 
+> > It might be easier for people to get. For example, the lifetime of the
+> > returned Credential reference is constrainted by 'file, the lifetime of
+> > the file reference.
+> > 
+> > But yes, maybe need to hear others' feedback first.
+> > 
+> > Regards,
+> > Boqun
 > 
->> Take Intel VT-d as an example, the stage-1 translation table is I/O page
->> table. As the below diagram shows, guest I/O page table pointer in GPA
->> (guest physical address) is passed to host and be used to perform the stage-1
->> address translation. Along with it, modifications to present mappings in the
->> guest I/O page table should be followed with an IOTLB invalidation.
+> That would trigger a compiler warning because the lifetime is
+> unnecessary.
 > 
-> I've been looking at what the three HW's need for invalidation, it is
-> a bit messy.. Here is my thinking. Please let me know if I got it right
+
+We can disable that warning if people need the information. Code is
+mostly for reading, less often for compilation and changes.
+
+> The safety comment explains what the signature means. I think that
+> should be enough.
 > 
-> What is the starting point of the guest memory walks:
->   Intel: Single Scalable Mode PASID table entry indexed by a RID & PASID
->   AMD: GCR3 table (a table of PASIDs) indexed by RID
 
-GCR3 table is indexed by PASID.
-Device Table (DTE) is indexted by DeviceID (RID)
+For someone who has a good understanding of Rust lifetime (and the
+elision), yes. But I'm wondering whether all the people feel the same
+way.
 
-> ...
-> Will ATC be forwarded or synthesized:
->   Intel: The (vDomain-ID,PASID) is a unique nesting domain so
->          the hypervisor knows exactly which RIDs this nesting domain is
-> 	linked to and can generate an ATC invalidation. Plan is to
-> 	supress/discard the ATC invalidations from the VM and generate
-> 	them in the hypervisor.
->   AMD: (vDomain-ID,PASID) is ambiguous, it can refer to multiple GCR3
->        tables. We know which maximal set of RIDs it represents, but not
->        the actual set. I expect AMD will forward the ATC invalidation
->        to avoid over invalidation.
+Regards,
+Boqun
 
-Not sure I understand your description here.
-
-For the AMD IOMMU INVALIDE_IOMMU_PAGES (i.e. invalidate the IOMMU TLB), 
-the hypervisor needs to map gDomainId->hDomainId and issue the command 
-on behalf of the VM along with the PASID and GVA (or GVA range) provided 
-by the guest.
-
-For the AMD IOMMU INVALIDE_IOTLB_PAGES (i.e. invalidate the ATC on the 
-device), the hypervisor needs to map gDeviceId->hDeviceId and issue the 
-command on behalf of the VM along with the PASID and GVA (or GVA range) 
-provided by the guest.
-
->   ARM: ASID is ambiguous. We have no idea which Nesting Domain/CD table
->        the ASID is contained in. ARM must forward the ATC invalidation
->        from the guest.
-> 
-> What iommufd object should receive the IOTLB invalidation command list:
->   Intel: The Nesting domain. The command list has to be broken up per
->          (vDomain-ID,PASID) and that batch delivered to the single
-> 	nesting domain. Kernel ignores vDomain-ID/PASID and just
-> 	invalidates whatever the nesting domain is actually attached to
->   AMD: Any Nesting Domain in the vDomain-ID group. The command list has
->        to be broken up per (vDomain-ID). Kernel replaces
->        vDomain-ID with pDomain-ID from the nesting domain and executes
->        the invalidation.
->   ARM: The Nesting Parent domain. Kernel forces the VMID from the
->        Nesting Parent and executes the invalidation.
-> 
-> In all cases the VM issues an ATC invalidation with (vRID, PASID) as
-> the tag. The VMM must translate vRID -> dev_id -> pRID
-> 
-> For a pure SW flow the vRID can be mapped to the dev_id and the ATC
-> invalidation delivered to the device object (eg IOMMUFD_DEV_INVALIDATE)
-> 
-> Finally, we have the HW driven invalidation DMA queues that can be
-> directly assigned to the guest. AMD and SMMUv3+vCMDQ support this. In
-> this case the HW is directly processing invalidation commands without
-> a hypervisor trap.
-> 
-> To make this work the iommu needs to be programmed with:
->   AMD: A vDomain-ID -> pDomain-ID table
->        A vRID -> pRID table
->        This is all bound to some "virtual function"
-
-By "virtual function", I assume you are referring to the AMD vIOMMU 
-instance in the guest?
-
->   ARM: A vRID -> pRID table
->        The vCMDQ is bound to a VM_ID, so to the Nesting Parent
-> 
-> For AMD, as above, I suggest the vDomain-ID be passed when creating
-> the nesting domain
-Sure, we can do this part.
-
-> The AMD "virtual function".. It is probably best to create a new iommufd
-> object for this and it can be passed in to a few places
-
-Something like IOMMUFD_OBJ_VIOMMU? Then operation would include 
-something like:
-   * Init
-   * Destroy
-   * ...
-
-> The vRID->pRID table should be some mostly common
-> IOMMUFD_DEV_ASSIGN_VIRTUAL_ID. AMD will need to pass in the virtual
-> function ID and ARM will need to pass in the Nesting Parent ID.
-
-Ok.
-
-> ...
-> Thus next steps:
->   - Respin this and lets focus on Intel only (this will be tough for
->     the holidays, but if it is available I will try)
->   - Get an ARM patch that just does IOTLB invalidation and add it to my
->     part 3
->   - Start working on IOMMUFD_DEV_INVALIDATE along with an ARM
->     implementation of it
->   - Reorganize the AMD RFC broadly along these lines and lets see it
->     freshened up in the next months as well. I would like to see the
->     AMD support structured to implement the SW paths in first steps and
->     later add in the "virtual function" acceleration stuff. The latter
->     is going to be complex.
-
-Working on refining the part 1 to add HW info reporting and nested 
-translation (minus the invalidation stuff). Should be sending out soon.
-
-Suravee
+> Alice
