@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B18180D0B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5FA80D0B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344184AbjLKQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
+        id S1344313AbjLKQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343941AbjLKQNN (ORCPT
+        with ESMTP id S1344321AbjLKQNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:13:13 -0500
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7531E93
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:13:19 -0800 (PST)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1fb33059466so3188104fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:13:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702311199; x=1702915999; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CMdTBUxR6AVwW86ExWMmPkNHggzo7L+Lz305ZVyo4xo=;
-        b=Fr8cJOnXz/aPRsQZaOI8uvrbvFgFfMW5KzD+pWLuebYlEDt2KvRPiPVRJKZAkKQ1OD
-         GtZt2W4r5EElRuvVNKYnrWtlnKrh9M3ku1xOyrj3xokiG+5H5KZqVLm8ES1K8xsSo04r
-         w46HBjBBMSU91LCb30UDT/hI7619SS4EA6GhdHUx5k031wsQGRfsN9VjMkBdc/5mWvSy
-         fs5d7m39NOHNNK96dgQlSjBW4+lcuF2ipOZjQeeEBMzVpr8mLTYdQvdXyNtq/I8uyjAZ
-         XFdoPHmgDD/VcV4Kj9tHny8VqIRXfgQfoNcVANT5fU5p6TA/dbgPI0Oz5DDXgYDfEUWa
-         2bAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702311199; x=1702915999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CMdTBUxR6AVwW86ExWMmPkNHggzo7L+Lz305ZVyo4xo=;
-        b=wjbFOHmqPUfN9k/+Uy66OdSXakqHoK2V3drQw4sxzfHqor2yBftBDydsQdHU8Vielg
-         Ii2CMp2kYaeEXtb2MDLV5vf4y8QPYd959/ZHAgkjmJccMjaNLJ3qqRGiEvA62HeicH/f
-         0DMuOig0ETJKK7dtFH6oaSqQzfl7Av+BcXoEKx96YjPbH29RfVIwDi1Iionb2JZu8K/t
-         8UAe342wV2wW5KrIEU9KjmbHT7AVK49MjXAgCg3cV0qYI/C2Ae5qPgOvKtX7F0KzBHMA
-         hMtlrseg4gV4R98eh3+bRu2h+GIZi7/3hWi2+rGkgTQAKU5qe3VKRnNs4gWAseyznoLh
-         bT8Q==
-X-Gm-Message-State: AOJu0Yx5PYbQUZ1kEuA5//VUPnjCB4JundgrJej2hDDbXSPVrR7g+k71
-        N6O6KgJ9j2ruYAvrWOigX9TfOQjuAJW8yTVTQSS+sFoK5Eq5V4uU
-X-Google-Smtp-Source: AGHT+IHg2NZrh/AUj7ZQM9me8Y07vZ1PsqzHpRMkWnNDA4LpsvfZNr1RuQfrDp+uriHlNjKbyDxVqea4oc7CbrlMwvw=
-X-Received: by 2002:a05:6870:7817:b0:1fb:75a:6d15 with SMTP id
- hb23-20020a056870781700b001fb075a6d15mr5806790oab.60.1702311197241; Mon, 11
- Dec 2023 08:13:17 -0800 (PST)
+        Mon, 11 Dec 2023 11:13:48 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A647F3;
+        Mon, 11 Dec 2023 08:13:53 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 782621007;
+        Mon, 11 Dec 2023 08:14:39 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 053963F738;
+        Mon, 11 Dec 2023 08:13:48 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com, anshuman.khandual@arm.com
+Cc:     namhyung@gmail.com, James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v7 00/11] arm64: perf: Add support for event counting threshold
+Date:   Mon, 11 Dec 2023 16:13:12 +0000
+Message-Id: <20231211161331.1277825-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231211155453.105409-1-piroyangg@gmail.com> <2023121133-mandatory-idealness-d454@gregkh>
-In-Reply-To: <2023121133-mandatory-idealness-d454@gregkh>
-From:   piro yang <piroyangg@gmail.com>
-Date:   Tue, 12 Dec 2023 00:13:05 +0800
-Message-ID: <CALaNatNpBJ6a-hv3MiV7NzuJ7wYLwHRCs3ppKM5O-UCvTSeiGg@mail.gmail.com>
-Subject: Re: [PATCH] staging:vme_user:fix the issue of using the wrong error code
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev,
-        Linux Outreachy <outreachy@lists.linux.dev>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,93 +63,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=
-=97=A5=E5=91=A8=E4=BA=8C 00:01=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Dec 11, 2023 at 11:54:53PM +0800, Piro Yang wrote:
-> > 1. the error code of ENOSYS indicates Invalid system call number,
-> >    but there is not system call
-> >
-> > 2. unified the logging error message, when slave_set func is NULL
->
-> That is two different things, and as such, should be two different
-> changes, right?
->
-> Yes, it's picky, but that's what the staging driver code is for, to get
-> comfortable doing kernel development changes properly.
->
-> Also, are you sure this second change is correct:
+Changes since v6:
 
-   yes, I'm sure .
-   the vme_slave_set function is diffierent
-/*****************************vme_slave_set***********************/
-int vme_slave_set(struct vme_resource *resource, int enabled,
-                  unsigned long long vme_base, unsigned long long size,
-                  dma_addr_t buf_base, u32 aspace, u32 cycle)
-{
-        ...
-        if (!bridge->slave_set) {
-                 dev_err(bridge->parent, "Function not supported\n");
-                return -ENOSYS;
-        }
+  * Remove inlines from arm_pmuv3.c
+  * Use format attribute mechanism from SPE
+  * Re-arrange attributes so that threshold comes last and can
+    potentially be extended
+  * Emit an error if the max threshold is exceeded rather than clamping
+  * Convert all register fields to GENMASK
 
-/******************other functions like below: *******************/
-int vme_slave_get(struct vme_resource *resource, int *enabled,
-                  unsigned long long *vme_base, unsigned long long *size,
-                  dma_addr_t *buf_base, u32 *aspace, u32 *cycle)
-{
-        ....
-        if (!bridge->slave_get) {
-                dev_err(bridge->parent, "%s not supported\n", __func__);
-                return -EINVAL;
-        }
+Changes since v5:
+  * Restructure the docs and add some more explanations
+  * PMMIR.WIDTH -> PMMIR.THWIDTH in one comment
+  * Don't write EVTYPER.TC if TH is 0. Doesn't have any functional
+    effect but it might be a bit easier to understand the code.
+  * Expand the format field #define names
 
-int vme_master_set(struct vme_resource *resource, int enabled,
-                   unsigned long long vme_base, unsigned long long size,
-                   u32 aspace, u32 cycle, u32 dwidth)
-{
-       ....
-        if (!bridge->master_set) {
-                dev_warn(bridge->parent, "%s not supported\n", __func__);
-                return -EINVAL;
-        }
+Changes since v4:
 
-int vme_master_get(struct vme_resource *resource, int *enabled,
-                   unsigned long long *vme_base, unsigned long long *size,
-                   u32 *aspace, u32 *cycle, u32 *dwidth)
-{
-      ....
-        if (!bridge->master_get) {
-                dev_warn(bridge->parent, "%s not supported\n", __func__);
-                return -EINVAL;
-        }
+  * Rebase onto v6.7-rc1, it no longer depends on kvmarm/next
+  * Remove change that moved ARMV8_PMU_EVTYPE_MASK to the asm files.
+    This actually depended on those files being included in a certain
+    order with arm_pmuv3.h to avoid circular includes. Now the
+    definition is done programmatically in arm_pmuv3.c instead.
 
->
-> >
-> > Signed-off-by: Piro Yang <piroyangg@gmail.com>
-> > ---
-> >  drivers/staging/vme_user/vme.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/=
-vme.c
-> > index 5c416c31ec57..e9461a7a7ab8 100644
-> > --- a/drivers/staging/vme_user/vme.c
-> > +++ b/drivers/staging/vme_user/vme.c
-> > @@ -340,8 +340,8 @@ int vme_slave_set(struct vme_resource *resource, in=
-t enabled,
-> >       image =3D list_entry(resource->entry, struct vme_slave_resource, =
-list);
-> >
-> >       if (!bridge->slave_set) {
-> > -             dev_err(bridge->parent, "Function not supported\n");
-> > -             return -ENOSYS;
-> > +             dev_err(bridge->parent, "%s not supported\n", __func__);
->
-> __func__ is not the same here as "Function", right?  "Function" is the
-> functionality of the thing that is attempted here, so replacing that
-> word with the function name seems odd to me, don't you think?
->
-> thanks,
->
-> greg k-h
+Changes since v3:
+
+  * Drop #include changes to KVM source files because since
+    commit bc512d6a9b92 ("KVM: arm64: Make PMEVTYPER<n>_EL0.NSH RES0 if
+    EL2 isn't advertised"), KVM doesn't use ARMV8_PMU_EVTYPE_MASK
+    anymore
+
+Changes since v2:
+
+  * Split threshold_control attribute into two, threshold_compare and
+    threshold_count so that it's easier to use
+  * Add some notes to the first commit message and the cover letter
+    about the behavior in KVM
+  * Update the docs commit with regards to the split attribute
+ 
+Changes since v1:
+
+  * Fix build on aarch32 by disabling FEAT_PMUv3_TH and splitting event
+    type mask between the platforms
+  * Change armv8pmu_write_evtype() to take unsigned long instead of u64
+    so it isn't unnecessarily wide on aarch32
+  * Add UL suffix to aarch64 event type mask definition
+
+----
+
+FEAT_PMUv3_TH (Armv8.8) is a new feature that allows conditional
+counting of PMU events depending on how much the event increments on
+a single cycle. Two new config fields for perf_event_open have been
+added, and a PMU cap file for reading the max_threshold. See the second
+commit message and the docs in the last commit for more details.
+
+The feature is not currently supported on KVM guests, and PMMIR is set
+to read as zero, so it's not advertised as available. But it can be
+added at a later time. Writes to PMEVTYPER.TC and TH from guests are
+already RES0.
+
+The change has been validated on the Arm FVP model:
+
+  # Zero values, works as expected (as before).
+  $ perf stat -e dtlb_walk/threshold=0,threshold_compare=0/ -- true
+
+    5962      dtlb_walk/threshold=0,threshold_compare=0/
+
+  # Threshold >= 255 causes count to be 0 because dtlb_walk doesn't
+  # increase by more than 1 per cycle.
+  $ perf stat -e dtlb_walk/threshold=255,threshold_compare=2/ -- true
+
+    0      dtlb_walk/threshold=255,threshold_compare=2/
+  
+  # Keeping comparison as >= but lowering the threshold to 1 makes the
+  # count return.
+  $ perf stat -e dtlb_walk/threshold=1,threshold_compare=2/ -- true
+
+    6329      dtlb_walk/threshold=1,threshold_compare=2/
+
+James Clark (11):
+  arm: perf: Remove inlines from arm_pmuv3.c
+  arm: perf/kvm: Use GENMASK for ARMV8_PMU_PMCR_N
+  arm: perf: Use GENMASK for PMMIR fields
+  arm: perf: Convert remaining fields to use GENMASK
+  arm64: perf: Include threshold control fields in PMEVTYPER mask
+  arm: pmu: Share user ABI format mechanism with SPE
+  perf/arm_dmc620: Remove duplicate format attribute #defines
+  KVM: selftests: aarch64: Update tools copy of arm_pmuv3.h
+  arm: pmu: Move error message and -EOPNOTSUPP to individual PMUs
+  arm64: perf: Add support for event counting threshold
+  Documentation: arm64: Document the PMU event counting threshold
+    feature
+
+ Documentation/arch/arm64/perf.rst             |  72 +++++++
+ arch/arm/kernel/perf_event_v7.c               |   6 +-
+ arch/arm64/kvm/pmu-emul.c                     |   8 +-
+ arch/arm64/kvm/sys_regs.c                     |   4 +-
+ drivers/perf/apple_m1_cpu_pmu.c               |   6 +-
+ drivers/perf/arm_dmc620_pmu.c                 |  22 +--
+ drivers/perf/arm_pmu.c                        |  11 +-
+ drivers/perf/arm_pmuv3.c                      | 175 ++++++++++++++----
+ drivers/perf/arm_spe_pmu.c                    |  22 ---
+ include/linux/perf/arm_pmu.h                  |  22 +++
+ include/linux/perf/arm_pmuv3.h                |  34 ++--
+ tools/include/perf/arm_pmuv3.h                |  43 +++--
+ .../kvm/aarch64/vpmu_counter_access.c         |   5 +-
+ 13 files changed, 296 insertions(+), 134 deletions(-)
+
+-- 
+2.34.1
+
