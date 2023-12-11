@@ -2,47 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E667380D0FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A698680D103
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344432AbjLKQR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32924 "EHLO
+        id S1344042AbjLKQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235023AbjLKQRo (ORCPT
+        with ESMTP id S235050AbjLKQSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:17:44 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 895E01BDB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:17:22 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5A1916F2;
-        Mon, 11 Dec 2023 08:18:08 -0800 (PST)
-Received: from [10.57.73.30] (unknown [10.57.73.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAF1B3F738;
-        Mon, 11 Dec 2023 08:17:20 -0800 (PST)
-Message-ID: <d8523f4a-97e0-4d04-8656-661c59f22504@arm.com>
-Date:   Mon, 11 Dec 2023 16:17:19 +0000
+        Mon, 11 Dec 2023 11:18:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6403121;
+        Mon, 11 Dec 2023 08:18:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702311483; x=1733847483;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=pq3tQro7AfQqawP/TcYhRcCE5EHiRcvkpl2Wjvc64Hc=;
+  b=G2diwhM3IrEbzTG7kpWneBvbpsBPECnHEAuQbKCEGUQZ6OBQDYUH1xuu
+   ibJ8QWzn9hN1inCfIz/bBhCZEgLR1/52xPrBxtt8kE3Nx5HHZ3Z+gE5Uw
+   WQmPg8z17F5rX5dJXOjf4d2N+Hq8owfPU8G8Keorl1MtjVI+j39czjjLh
+   P16diuvHYzQ/E4drtIAwy8EY1a8ZwtaQOtv69Oapl7iFUQ1sCNnLcJlS0
+   3e4iasI8aeaZoH+v2vgP58eTg3ay08qzfu6vTnTVYLwUKhn3FKfCpGpX8
+   J9a8I14fOMTg24At6nuqQegMEv76C9zqMbT1l8vvB1zoml1BdUK/C2Kvz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1741822"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1741822"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 08:18:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="916907512"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="916907512"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.46.23])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 08:18:00 -0800
+Message-ID: <71fad7ef-01a1-4dc5-8d02-6339ca77ca6c@intel.com>
+Date:   Mon, 11 Dec 2023 18:17:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 03/39] mm/rmap: introduce and use
- hugetlb_add_file_rmap()
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-References: <20231211155652.131054-1-david@redhat.com>
- <20231211155652.131054-4-david@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231211155652.131054-4-david@redhat.com>
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+Content-Language: en-US
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>, Avri.Altman@wdc.com,
+        ulf.hansson@linaro.org, christian.loehle@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20231204172243.3382495-1-jorge@foundries.io>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231204172243.3382495-1-jorge@foundries.io>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,92 +65,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2023 15:56, David Hildenbrand wrote:
-> hugetlb rmap handling differs quite a lot from "ordinary" rmap code.
-> For example, hugetlb currently only supports entire mappings, and treats
-> any mapping as mapped using a single "logical PTE". Let's move it out
-> of the way so we can overhaul our "ordinary" rmap.
-> implementation/interface.
+On 4/12/23 19:22, Jorge Ramirez-Ortiz wrote:
+> Requesting a retune before switching to the RPMB partition has been
+> observed to cause CRC errors on the RPMB reads (-EILSEQ).
 > 
-> Right now we're using page_dup_file_rmap() in some cases where "ordinary"
-> rmap code would have used page_add_file_rmap(). So let's introduce and
-> use hugetlb_add_file_rmap() instead. We won't be adding a
-> "hugetlb_dup_file_rmap()" functon for the fork() case, as it would be
-> doing the same: "dup" is just an optimization for "add".
+> Since RPMB reads can not be retried, the clients would be directly
+> affected by the errors.
 > 
-> What remains is a single page_dup_file_rmap() call in fork() code.
+> This commit disables the request prior to RPMB switching while allowing
+> the pause interface to still request a retune before the pause for other
+> use cases.
 > 
-> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
+> This was verified with the sdhci-of-arasan driver (ZynqMP) configured
+> for HS200 using two separate eMMC cards (DG4064 and 064GB2). In both
+> cases, the error was easy to reproduce triggering every few tenths of
+> reads.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> Acked-by: Avri Altman <avri.altman@wdc.com>
+> 
 > ---
->  include/linux/rmap.h | 7 +++++++
->  mm/hugetlb.c         | 6 +++---
->  mm/migrate.c         | 2 +-
->  3 files changed, 11 insertions(+), 4 deletions(-)
+>  drivers/mmc/core/block.c | 2 +-
+>  drivers/mmc/core/host.c  | 7 ++++---
+>  drivers/mmc/core/host.h  | 2 +-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
 > 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index d85bd1d4de04..91178d1aa028 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -213,6 +213,13 @@ void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
->  void hugetlb_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
->  		unsigned long address);
->  
-> +static inline void hugetlb_add_file_rmap(struct folio *folio)
-> +{
-> +	VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
-> +
-> +	atomic_inc(&folio->_entire_mapcount);
-> +}
-> +
->  static inline void hugetlb_remove_rmap(struct folio *folio)
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index f9a5cffa64b1..1d69078ad9b2 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -859,7 +859,7 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>  			if (ret)
+>  				return ret;
+>  		}
+> -		mmc_retune_pause(card->host);
+> +		mmc_retune_pause(card->host, false);
+>  	}
+> 
+>  	return ret;
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index 096093f7be00..a9b95aaa2235 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -119,13 +119,14 @@ void mmc_retune_enable(struct mmc_host *host)
+> 
+>  /*
+>   * Pause re-tuning for a small set of operations.  The pause begins after the
+> - * next command and after first doing re-tuning.
+> + * next command and, if retune is set, after first doing re-tuning.
+>   */
+> -void mmc_retune_pause(struct mmc_host *host)
+> +void mmc_retune_pause(struct mmc_host *host, bool retune)
 >  {
->  	atomic_dec(&folio->_entire_mapcount);
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index ef48ae673890..57e898187931 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5408,7 +5408,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
->  			 * sleep during the process.
->  			 */
->  			if (!folio_test_anon(pte_folio)) {
-> -				page_dup_file_rmap(&pte_folio->page, true);
-> +				hugetlb_add_file_rmap(pte_folio);
->  			} else if (page_try_dup_anon_rmap(&pte_folio->page,
->  							  true, src_vma)) {
->  				pte_t src_pte_old = entry;
-> @@ -6279,7 +6279,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->  	if (anon_rmap)
->  		hugetlb_add_new_anon_rmap(folio, vma, haddr);
->  	else
-> -		page_dup_file_rmap(&folio->page, true);
-> +		hugetlb_add_file_rmap(folio);
->  	new_pte = make_huge_pte(vma, &folio->page, ((vma->vm_flags & VM_WRITE)
->  				&& (vma->vm_flags & VM_SHARED)));
->  	/*
-> @@ -6730,7 +6730,7 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
->  		goto out_release_unlock;
->  
->  	if (folio_in_pagecache)
-> -		page_dup_file_rmap(&folio->page, true);
-> +		hugetlb_add_file_rmap(folio);
->  	else
->  		hugetlb_add_new_anon_rmap(folio, dst_vma, dst_addr);
->  
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 4cb849fa0dd2..de9d94b99ab7 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -252,7 +252,7 @@ static bool remove_migration_pte(struct folio *folio,
->  				hugetlb_add_anon_rmap(folio, vma, pvmw.address,
->  						      rmap_flags);
->  			else
-> -				page_dup_file_rmap(new, true);
-> +				hugetlb_add_file_rmap(folio);
->  			set_huge_pte_at(vma->vm_mm, pvmw.address, pvmw.pte, pte,
->  					psize);
->  		} else
+>  	if (!host->retune_paused) {
+>  		host->retune_paused = 1;
+> -		mmc_retune_needed(host);
+> +		if (retune)
+> +			mmc_retune_needed(host);
+
+Better to just drop mmc_retune_needed(host);
+
+>  		mmc_retune_hold(host);
+>  	}
+>  }
+> diff --git a/drivers/mmc/core/host.h b/drivers/mmc/core/host.h
+> index 48c4952512a5..321776b52270 100644
+> --- a/drivers/mmc/core/host.h
+> +++ b/drivers/mmc/core/host.h
+> @@ -18,7 +18,7 @@ void mmc_retune_disable(struct mmc_host *host);
+>  void mmc_retune_hold(struct mmc_host *host);
+>  void mmc_retune_release(struct mmc_host *host);
+>  int mmc_retune(struct mmc_host *host);
+> -void mmc_retune_pause(struct mmc_host *host);
+> +void mmc_retune_pause(struct mmc_host *host, bool retune);
+>  void mmc_retune_unpause(struct mmc_host *host);
+> 
+>  static inline void mmc_retune_clear(struct mmc_host *host)
+> --
+> 2.34.1
 
