@@ -2,74 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF4B80DC79
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B1680DC7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345008AbjLKU74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:59:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
+        id S1344974AbjLKVBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344974AbjLKU7w (ORCPT
+        with ESMTP id S1344942AbjLKVBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:59:52 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79B2CD;
-        Mon, 11 Dec 2023 12:59:57 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BBKxhKC129492;
-        Mon, 11 Dec 2023 14:59:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702328383;
-        bh=/zH9ezNaAZm7yjXTnoBaCKXNFia2jSA2fWzEY7U5mD8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=fT5m72YxdNiEWIyBCoMQrtjmbYM3EIIGgy2pMG1HKrj5OkFNwnkHL1hcCIbsBRtup
-         AhYqcx1XiHaxFkGWDEGCrd3bsn5QJsWCjSZ4y6gco+sH3PHYiIDuzVfrJ0b5Jm87tm
-         OalaeJ9OGWvMxcVRyt0Naa51SfA5OMDsLWBYEXIg=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BBKxhQI037280
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Dec 2023 14:59:43 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Dec 2023 14:59:43 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Dec 2023 14:59:43 -0600
-Received: from udba0500997.dhcp.ti.com (udba0500997.dhcp.ti.com [128.247.81.249])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BBKxRo8003825;
-        Mon, 11 Dec 2023 14:59:43 -0600
-From:   Brandon Brnich <b-brnich@ti.com>
-To:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Robert Beckett <bob.beckett@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Nishanth Menon <nm@ti.com>, Darren Etheridge <detheridge@ti.com>,
-        Brandon Brnich <b-brnich@ti.com>
-Subject: [PATCH v3 2/2] media: chips-media: wave5: Remove K3 References
-Date:   Mon, 11 Dec 2023 14:59:20 -0600
-Message-ID: <20231211205920.698939-3-b-brnich@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231211205920.698939-1-b-brnich@ti.com>
-References: <20231211205920.698939-1-b-brnich@ti.com>
+        Mon, 11 Dec 2023 16:01:31 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772CFB6;
+        Mon, 11 Dec 2023 13:01:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1702328492;
+        bh=hb0HJnb7XD64MfXJbiP0E9xbjutUuP/m+xdyI42u0Cg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UNtNO0CR9RyCkxXQSsJYz9DkegToLIamuGTe9zD0GyWRf0zfIC+nFGr9RvdK5+o1s
+         50xj8IuAHybtVbH+uuqH79xn2Xvmxq91L8H37OQPPaXYwXY88C2v2SpiGaAZeBE8q4
+         91p2y/A0ExxF1XU8tHrfWnI0H15Doeqkz0OqdlkXJvV+NKf+TVWuZO5LLF00fqNArj
+         gA83GSwE4Ghno/NYydATbPx9w2eW/vKgdftDfMYNtDwmVvw28Oopot4WyfBOa0xLmE
+         avldj8cgVjaxRumQjyW4sIJfMSDmxCx7criSwx5LErL2FSokmFUKnyWZRghec0UAye
+         WGrI7MF2OU7Sg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpvLN3BP8z4wc1;
+        Tue, 12 Dec 2023 08:01:32 +1100 (AEDT)
+Date:   Tue, 12 Dec 2023 08:01:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the kunit-next tree
+Message-ID: <20231212080130.7607dbc9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Content-Type: multipart/signed; boundary="Sig_/7Sk0TJj3/7sDirx8XIwzMeB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,30 +51,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change compatible string to match dt bindings for TI devices. K3 family
-prefix should not be included as it deviates from naming convention.
+--Sig_/7Sk0TJj3/7sDirx8XIwzMeB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 9707a6254a8a ("media: chips-media: wave5: Add the v4l2 layer")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/all/CAMuHMdUYOq=q1j=d+Eac28hthOUAaNUkuvxmRu-mUN1pLKq69g@mail.gmail.com/
-Signed-off-by: Brandon Brnich <b-brnich@ti.com>
----
- drivers/media/platform/chips-media/wave5/wave5-vpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-index bfe4caa79cc9..0d90b5820bef 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-@@ -272,7 +272,7 @@ static const struct wave5_match_data ti_wave521c_data = {
- };
- 
- static const struct of_device_id wave5_dt_ids[] = {
--	{ .compatible = "ti,k3-j721s2-wave521c", .data = &ti_wave521c_data },
-+	{ .compatible = "ti,j721s2-wave521c", .data = &ti_wave521c_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, wave5_dt_ids);
--- 
-2.34.1
+The following commit is also in Linus Torvalds' tree as a different
+commit (but the same patch):
 
+  b285ba6f8cc1 ("kunit: test: Use an action wrapper instead of a cast")
+
+This is commit
+
+  1bddcf77ce66 ("kunit: test: Avoid cast warning when adding kfree() as an =
+action")
+
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7Sk0TJj3/7sDirx8XIwzMeB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV3eKoACgkQAVBC80lX
+0Gx1yggAmB5JHCPkLijl6vBdUZn/NyTAGHc179BbdUSp55lgRheSmOiG1LncnZaj
+vdukdvCzN6MxtemJ2+aMvJF5QGR/QgL5p9wh19BZw54WoH60u7gB6T3tGg0J36tm
+eoAZ9sRtMDCEmsHcS1tic4R+Ni3+mvWFaXXV1qvrrj8Qd7mghjsgqwGNTRI0FMK2
+XbLt4WwWJjbG4VsYz/aoMLAKjYMhno8pXI91TFD73qlGfObZBbWpnO8ZF2Tvxqi6
+iWnDDR7WNgGKUsdLlZTrZ7vwxPEP5au0HC0x89j2L7kdo3KAlQ9vPAP/RezKPHxb
+iSO5XulG/DFttupJjd9QXJ/9zwc3VA==
+=zOIM
+-----END PGP SIGNATURE-----
+
+--Sig_/7Sk0TJj3/7sDirx8XIwzMeB--
