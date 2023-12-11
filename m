@@ -2,114 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F7880D0A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B18180D0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343886AbjLKQMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        id S1344184AbjLKQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343941AbjLKQMX (ORCPT
+        with ESMTP id S1343941AbjLKQNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:12:23 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB6CC8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:12:29 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77f320ca2d5so341629585a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:12:29 -0800 (PST)
+        Mon, 11 Dec 2023 11:13:13 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7531E93
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:13:19 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1fb33059466so3188104fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:13:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1702311148; x=1702915948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpS7YigJlvbtafE8s+IgfD2mhqkpNW2HnzWlJXZ6u0Q=;
-        b=hb/jTd2sTBZTQK/zyjqlOJFdtpYmHq/6oAMyodOsF4zZZJ3IzPBpoxcyLYPMRCFipR
-         rOe7gD4ExrSm9Pgw9j5pu8j5nBJy3iUFYDy7KQ6Imaen+MSbBQwSr3AA12Y5Uw+FLAYZ
-         SCIZYnBXSfAJBVYk12WiKHA5G8rmX1ADvwR7pF1+4a7gNzBPrvqABFHGsuEI467Dtg5Z
-         WbU65UzYfqpDHEf+/wgGrEpPsppOOzIUdRwwUxIrHnMw055xTLQnDJccBeLHcpiC2CVT
-         avwaEOJMn86choOT2nYDdqxgGk50bNAoFrURH9KXZ2UNvPUB9eQhBY4O+TtZtomXuh5c
-         9JIg==
+        d=gmail.com; s=20230601; t=1702311199; x=1702915999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CMdTBUxR6AVwW86ExWMmPkNHggzo7L+Lz305ZVyo4xo=;
+        b=Fr8cJOnXz/aPRsQZaOI8uvrbvFgFfMW5KzD+pWLuebYlEDt2KvRPiPVRJKZAkKQ1OD
+         GtZt2W4r5EElRuvVNKYnrWtlnKrh9M3ku1xOyrj3xokiG+5H5KZqVLm8ES1K8xsSo04r
+         w46HBjBBMSU91LCb30UDT/hI7619SS4EA6GhdHUx5k031wsQGRfsN9VjMkBdc/5mWvSy
+         fs5d7m39NOHNNK96dgQlSjBW4+lcuF2ipOZjQeeEBMzVpr8mLTYdQvdXyNtq/I8uyjAZ
+         XFdoPHmgDD/VcV4Kj9tHny8VqIRXfgQfoNcVANT5fU5p6TA/dbgPI0Oz5DDXgYDfEUWa
+         2bAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702311148; x=1702915948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZpS7YigJlvbtafE8s+IgfD2mhqkpNW2HnzWlJXZ6u0Q=;
-        b=pWHdKASF9Iqo8N/PSm1hVPXchNH/p9g4JK6862yxIe4+eQFG3JsCwQulfh/vLjthIF
-         1PZTYKCsUBdwM0UyPm59Z7G72owxFUl1NR/94eXDlMU6lEQaKBdWiLvg8tU/wys8oqi5
-         JdvB4mzbErHLMoDPZOySn+aGXeKnlYIUyDurTzNlT6TduNUKKTll2smsl5Kmvjb9F6Hx
-         YRmKdwiCEr5ArOr4CCIKlR4gsa7U5lWYPCkV7lWopXdNZ6i8FysyDH9D9D0eIgr6uwbr
-         HrCjPikrkPvZZORYLn+l3pSYCGKLHPl0IlroJacUHCNHJtEZNOxbLXHNHx4HvbDsrZhp
-         CZ8Q==
-X-Gm-Message-State: AOJu0YwQCfYKiEZTxZxMKkIqOwvHi+1ctkKN3sPvbXJPlvrK+WKxSZgi
-        OoOMrugpMAeD3yYXwlJO4HAUng==
-X-Google-Smtp-Source: AGHT+IEC8jdvAnetFbqJVF6lQQw8UXKnB/IQiMsN2t2NyqglmpS9Xy9aZsTAJAYPyNV0NsZe4DU6SA==
-X-Received: by 2002:a05:620a:15a8:b0:77d:855d:1b09 with SMTP id f8-20020a05620a15a800b0077d855d1b09mr6457241qkk.0.1702311148452;
-        Mon, 11 Dec 2023 08:12:28 -0800 (PST)
-Received: from ?IPV6:2600:1700:2000:b002:f8a3:26ec:ac85:392e? ([2600:1700:2000:b002:f8a3:26ec:ac85:392e])
-        by smtp.gmail.com with ESMTPSA id a15-20020a05620a066f00b0077d78afc513sm3014865qkh.110.2023.12.11.08.12.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 08:12:28 -0800 (PST)
-Message-ID: <7c40dfe8-f245-413f-a424-bde52ce21b6a@sifive.com>
-Date:   Mon, 11 Dec 2023 10:12:27 -0600
+        d=1e100.net; s=20230601; t=1702311199; x=1702915999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CMdTBUxR6AVwW86ExWMmPkNHggzo7L+Lz305ZVyo4xo=;
+        b=wjbFOHmqPUfN9k/+Uy66OdSXakqHoK2V3drQw4sxzfHqor2yBftBDydsQdHU8Vielg
+         Ii2CMp2kYaeEXtb2MDLV5vf4y8QPYd959/ZHAgkjmJccMjaNLJ3qqRGiEvA62HeicH/f
+         0DMuOig0ETJKK7dtFH6oaSqQzfl7Av+BcXoEKx96YjPbH29RfVIwDi1Iionb2JZu8K/t
+         8UAe342wV2wW5KrIEU9KjmbHT7AVK49MjXAgCg3cV0qYI/C2Ae5qPgOvKtX7F0KzBHMA
+         hMtlrseg4gV4R98eh3+bRu2h+GIZi7/3hWi2+rGkgTQAKU5qe3VKRnNs4gWAseyznoLh
+         bT8Q==
+X-Gm-Message-State: AOJu0Yx5PYbQUZ1kEuA5//VUPnjCB4JundgrJej2hDDbXSPVrR7g+k71
+        N6O6KgJ9j2ruYAvrWOigX9TfOQjuAJW8yTVTQSS+sFoK5Eq5V4uU
+X-Google-Smtp-Source: AGHT+IHg2NZrh/AUj7ZQM9me8Y07vZ1PsqzHpRMkWnNDA4LpsvfZNr1RuQfrDp+uriHlNjKbyDxVqea4oc7CbrlMwvw=
+X-Received: by 2002:a05:6870:7817:b0:1fb:75a:6d15 with SMTP id
+ hb23-20020a056870781700b001fb075a6d15mr5806790oab.60.1702311197241; Mon, 11
+ Dec 2023 08:13:17 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 05/12] lib/raid6: Use CC_FLAGS_FPU for NEON CFLAGS
-Content-Language: en-US
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, linux-arch@vger.kernel.org
-References: <20231208055501.2916202-1-samuel.holland@sifive.com>
- <20231208055501.2916202-6-samuel.holland@sifive.com>
- <ZXczty+Y6dTDL4Xi@infradead.org>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <ZXczty+Y6dTDL4Xi@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_XBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231211155453.105409-1-piroyangg@gmail.com> <2023121133-mandatory-idealness-d454@gregkh>
+In-Reply-To: <2023121133-mandatory-idealness-d454@gregkh>
+From:   piro yang <piroyangg@gmail.com>
+Date:   Tue, 12 Dec 2023 00:13:05 +0800
+Message-ID: <CALaNatNpBJ6a-hv3MiV7NzuJ7wYLwHRCs3ppKM5O-UCvTSeiGg@mail.gmail.com>
+Subject: Re: [PATCH] staging:vme_user:fix the issue of using the wrong error code
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev,
+        Linux Outreachy <outreachy@lists.linux.dev>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-11 10:07 AM, Christoph Hellwig wrote:
->> +CFLAGS_REMOVE_neon1.o += $(CC_FLAGS_NO_FPU)
->> +CFLAGS_REMOVE_neon2.o += $(CC_FLAGS_NO_FPU)
->> +CFLAGS_REMOVE_neon4.o += $(CC_FLAGS_NO_FPU)
->> +CFLAGS_REMOVE_neon8.o += $(CC_FLAGS_NO_FPU)
-> 
-> Btw, do we even really need the extra variables for compiler flags
-> to remove?  Don't gcc/clang options work so that if you add a
-> no-prefixed version of the option later it transparently gets removed?
+Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=
+=97=A5=E5=91=A8=E4=BA=8C 00:01=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Dec 11, 2023 at 11:54:53PM +0800, Piro Yang wrote:
+> > 1. the error code of ENOSYS indicates Invalid system call number,
+> >    but there is not system call
+> >
+> > 2. unified the logging error message, when slave_set func is NULL
+>
+> That is two different things, and as such, should be two different
+> changes, right?
+>
+> Yes, it's picky, but that's what the staging driver code is for, to get
+> comfortable doing kernel development changes properly.
+>
+> Also, are you sure this second change is correct:
 
-Unfortunately, not all of the relevant options can be no-prefixed:
+   yes, I'm sure .
+   the vme_slave_set function is diffierent
+/*****************************vme_slave_set***********************/
+int vme_slave_set(struct vme_resource *resource, int enabled,
+                  unsigned long long vme_base, unsigned long long size,
+                  dma_addr_t buf_base, u32 aspace, u32 cycle)
+{
+        ...
+        if (!bridge->slave_set) {
+                 dev_err(bridge->parent, "Function not supported\n");
+                return -ENOSYS;
+        }
 
-$ cat float.c 
-int main(void) { volatile float f = 123.456; return f / 10; }
-$ aarch64-linux-musl-gcc float.c 
-$ aarch64-linux-musl-gcc -mgeneral-regs-only float.c 
-float.c: In function 'main':
-float.c:1:33: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-    1 | int main(void) { volatile float f = 123.456; return f / 10; }
-      |                                 ^
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-    1 | int main(void) { volatile float f = 123.456; return f / 10; }
-      |                                                     ~~^~~~
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-float.c:1:55: error: '-mgeneral-regs-only' is incompatible with the use of floating-point types
-$ aarch64-linux-musl-gcc -mgeneral-regs-only -mno-general-regs-only float.c 
-aarch64-linux-musl-gcc: error: unrecognized command-line option '-mno-general-regs-only'; did you mean '-mgeneral-regs-only'?
-$ 
+/******************other functions like below: *******************/
+int vme_slave_get(struct vme_resource *resource, int *enabled,
+                  unsigned long long *vme_base, unsigned long long *size,
+                  dma_addr_t *buf_base, u32 *aspace, u32 *cycle)
+{
+        ....
+        if (!bridge->slave_get) {
+                dev_err(bridge->parent, "%s not supported\n", __func__);
+                return -EINVAL;
+        }
 
+int vme_master_set(struct vme_resource *resource, int enabled,
+                   unsigned long long vme_base, unsigned long long size,
+                   u32 aspace, u32 cycle, u32 dwidth)
+{
+       ....
+        if (!bridge->master_set) {
+                dev_warn(bridge->parent, "%s not supported\n", __func__);
+                return -EINVAL;
+        }
+
+int vme_master_get(struct vme_resource *resource, int *enabled,
+                   unsigned long long *vme_base, unsigned long long *size,
+                   u32 *aspace, u32 *cycle, u32 *dwidth)
+{
+      ....
+        if (!bridge->master_get) {
+                dev_warn(bridge->parent, "%s not supported\n", __func__);
+                return -EINVAL;
+        }
+
+>
+> >
+> > Signed-off-by: Piro Yang <piroyangg@gmail.com>
+> > ---
+> >  drivers/staging/vme_user/vme.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/=
+vme.c
+> > index 5c416c31ec57..e9461a7a7ab8 100644
+> > --- a/drivers/staging/vme_user/vme.c
+> > +++ b/drivers/staging/vme_user/vme.c
+> > @@ -340,8 +340,8 @@ int vme_slave_set(struct vme_resource *resource, in=
+t enabled,
+> >       image =3D list_entry(resource->entry, struct vme_slave_resource, =
+list);
+> >
+> >       if (!bridge->slave_set) {
+> > -             dev_err(bridge->parent, "Function not supported\n");
+> > -             return -ENOSYS;
+> > +             dev_err(bridge->parent, "%s not supported\n", __func__);
+>
+> __func__ is not the same here as "Function", right?  "Function" is the
+> functionality of the thing that is attempted here, so replacing that
+> word with the function name seems odd to me, don't you think?
+>
+> thanks,
+>
+> greg k-h
