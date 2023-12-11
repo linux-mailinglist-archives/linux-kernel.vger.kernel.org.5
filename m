@@ -2,151 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8897680BF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FFC80BEFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjLKCVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S230014AbjLKCTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKCVa (ORCPT
+        with ESMTP id S229483AbjLKCTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:21:30 -0500
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6700F1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:21:35 -0800 (PST)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231211022132epoutp04dea995c97fb9f9c897c20f43b4110ab6~fpaBr-0ii2203422034epoutp04K
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:21:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231211022132epoutp04dea995c97fb9f9c897c20f43b4110ab6~fpaBr-0ii2203422034epoutp04K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1702261292;
-        bh=/9hlKlgNIEduibXHRlid8P6boQ3v0KTReFBBYvxqfDo=;
-        h=Date:Subject:To:From:In-Reply-To:References:From;
-        b=QE16c7BYFeqqRMrTrQWCYAq/I1dY4dSrFgMaJEaqyFeXv12RUUaFCthEPfzNRYyt8
-         1kuJ5lRthf8U8JKH37Mryp3Ng6nMFgjpaUrlxcO/qwHpfAUJWbYWonjJ3L1HvXoTz+
-         +tobTGr1sZEpFANEaD32Vm63KBJSPlPC+f1tUwEY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231211022132epcas2p4a0ca9a3b2e11b0de4b82452405efc05d~fpaBNrtSB0900209002epcas2p4a;
-        Mon, 11 Dec 2023 02:21:32 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.91]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SpQV35MlXz4x9QD; Mon, 11 Dec
-        2023 02:21:31 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0C.75.10006.B2276756; Mon, 11 Dec 2023 11:21:31 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231211022131epcas2p3830734b4574587c08762782bf0262e98~fpaAWggl90914109141epcas2p3i;
-        Mon, 11 Dec 2023 02:21:31 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231211022131epsmtrp1f415881c59398ea317c5649c0c2edc27~fpaAUbuhi1061810618epsmtrp1r;
-        Mon, 11 Dec 2023 02:21:31 +0000 (GMT)
-X-AuditID: b6c32a45-179ff70000002716-53-6576722b5c20
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5C.71.08817.A2276756; Mon, 11 Dec 2023 11:21:31 +0900 (KST)
-Received: from [10.229.8.168] (unknown [10.229.8.168]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231211022130epsmtip253fe79bbcfe1b8591827216e2044fb4c~fpaAExUZD0653506535epsmtip2T;
-        Mon, 11 Dec 2023 02:21:30 +0000 (GMT)
-Message-ID: <c63bd0b3-ecb2-d4c6-2147-43f19c1dcfee@samsung.com>
-Date:   Mon, 11 Dec 2023 11:18:40 +0900
+        Sun, 10 Dec 2023 21:19:40 -0500
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22962D0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:19:45 -0800 (PST)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-46484f37549so1367454137.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:19:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702261183; x=1702865983; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XKXPy8iwxJNjhTZTw+LJ8Vv0y/XagWuzrwhYe/uRc+M=;
+        b=KDno01d75+zS4pjfKWKOC9dAezwDOu/J7edfZ8RjonSYjckTSYHquV0lK6Mcw8WZuk
+         ODYUSm58Yr5rRs4hW2FB4dXzn+zzC6MoTADOyE2d7cYFaqG3eoH+c0exuXuVhF0azbBz
+         nngL8Ujwvr6JzAdblvnxQm1mN5kUfWqS2RVuhohJXSaRBAFoyZxXtArAghmTdEF6Qslo
+         EEiq9cBHumbvYvnTjWOSTY9PXIwANV8orhBREH6y2i5C5cHlBXvxFBquDz4eum/rDZpH
+         PTdTI7Pu0ep25NABQXrNiEMd12UzinfvSz30molHN5tK8wa+34XZcO+ZoF/EYcoeYdkh
+         hurg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702261183; x=1702865983;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XKXPy8iwxJNjhTZTw+LJ8Vv0y/XagWuzrwhYe/uRc+M=;
+        b=fY21GzruKns421wwIyUYUaLje1Y8epSFiy7FXbdmGMsIdWQoTmO6kGHwsr2Xsz7qQs
+         NGvhl6CnDoEy8gpLJPouJaXJ4+OgMs8rE482vOTU34ksC+9rTQS+j7V6zws1njDohQLf
+         DbperhchwJILitMfCZ8VAuPuNlWoXQC6Tj4KNLQTlZEfUAlNInsXSQW1swUb3BhB7JM1
+         87OJoV8HSWhO79TxZxEqtcvOo73DijruateMK7bzl61+X2J/5Jwg4BPiwyDbyEyQVOLx
+         xBmlhKUqdzi2jfmz1M2nGL+MalXawGB/45d+Im3TE3yiYMwDCdH8cGVROC1eP3QIQsa0
+         oc4A==
+X-Gm-Message-State: AOJu0YxJqSE3j2+h09Y4sKtTDoxdlWlOZnYAM75CmZnU7vxg1BnZoIkq
+        UR/4f6A8C6xbA1jOcJDqSOdgQaGw4hf5MJj5OcYw8g==
+X-Google-Smtp-Source: AGHT+IHqLx2W8x28H6bfMYCWIzb2TuVsmrzJ0q8h3BKh//7HaVRT5Wf6V41+Foj3np3oJjncompRN0RZYYzrciFWAyY=
+X-Received: by 2002:a67:ef44:0:b0:464:77f2:557 with SMTP id
+ k4-20020a67ef44000000b0046477f20557mr2151093vsr.41.1702261183358; Sun, 10 Dec
+ 2023 18:19:43 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
-        Thunderbird/102.11.0
-Subject: Re: [PATCH] dt-bindings: pinctrl: samsung: correct ExynosAutov920
- wake-up compatibles
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-In-Reply-To: <20231210133915.42112-1-krzysztof.kozlowski@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKJsWRmVeSWpSXmKPExsWy7bCmma52UVmqwepNWhYP5m1js1iz9xyT
-        xfwj51gt9r7eym4x5c9yJotNj6+xWmye/4fR4vKuOWwWM87vY7Jo3XuE3eLwm3ZWi1W7/jA6
-        8HjsnHWX3WPTqk42jzvX9rB5bF5S79G3ZRWjx+dNcgFsUdk2GamJKalFCql5yfkpmXnptkre
-        wfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUA3KimUJeaUAoUCEouLlfTtbIryS0tSFTLy
-        i0tslVILUnIKzAv0ihNzi0vz0vXyUkusDA0MjEyBChOyM44c7mctaGWt6J01lb2BsZ+li5GT
-        Q0LAROLEpk+sXYxcHEICOxglVpy7xAThfGKUWNzxlxnC+cYosf3TZkaYls2HGtggEnsZJV5t
-        u8kOkhASeM0ocXFzGYjNK2AnseZ6N1icRUBVYv+5B+wQcUGJkzOfgO0WFYiWaF12nw3EFhZI
-        kNjy8RfYHSICZ5glZq27DbaNWUBc4taT+UwgNpuAtsT39YtZQWxOAReJ3Vc/Q9XIS2x/Owfs
-        VAmBlRwSfXfvM0Gc6iLR9L4JyhaWeHV8CzuELSXxsr8Nys6XaLtyBsqukdi44BLUm/YSs35v
-        AVrGAbRAU2L9Ln0QU0JAWeLILRaItXwSHYf/skOEeSU62oQgGtUk7k89xwZhy0hMOrIS6gAP
-        iesPTkDDbTqjxJEpP9knMCrMQgqWWUg+noXks1kIRyxgZFnFKJZaUJybnlpsVGAIj+3k/NxN
-        jOD0q+W6g3Hy2w96hxiZOBgPMUpwMCuJ8MocKU4V4k1JrKxKLcqPLyrNSS0+xGgKjJyJzFKi
-        yfnADJBXEm9oYmlgYmZmaG5kamCuJM57r3VuipBAemJJanZqakFqEUwfEwenVAPT9B3hnxWa
-        Koq2dG1RMvadujTsvWXbT5G/02ZMf7TGavWUqi115jONRT80qZvZvGkp0OaVPsvyqeZ9bKqw
-        uuNE5QeR7Ttd17LOyXfcEzN5x/4fLod2aNfz3J3hucOruNn728TgHEuxjiohjdn/9kXcrWjw
-        /r1g8eLgSfof0hRL3Ap+P2kwujgxbvauPRIOK7XsVqy0/HeDK4LldfFCk6m585vFQ39K7/lX
-        5FZ55aquPWfFw+ZOv7J0uZkb8qdzrjp0uFz09uqLDQbv7smnT3JleGzNuqHp64NzdpN+RN1t
-        Paf9+l3HySr7xbxXOCTXZO7ZraRWo1Sd/qHsjxjrnKezZqRbXNKexvl1w86XN615lFiKMxIN
-        tZiLihMBxbLI1EgEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42LZdlhJXle7qCzVoGMLo8WDedvYLNbsPcdk
-        Mf/IOVaLva+3sltM+bOcyWLT42usFpvn/2G0uLxrDpvFjPP7mCxa9x5htzj8pp3VYtWuP4wO
-        PB47Z91l99i0qpPN4861PWwem5fUe/RtWcXo8XmTXABbFJdNSmpOZllqkb5dAlfGkcP9rAWt
-        rBW9s6ayNzD2s3QxcnJICJhIbD7UwNbFyMUhJLCbUWL+5SesEAkZieXP+tggbGGJ+y1HwOJC
-        Ai8ZJeZuKAaxeQXsJNZc72YHsVkEVCX2n3vADhEXlDg58wnYAlGBaInVny+A9QoLJEhs+fiL
-        FWSZiMA5ZontE76wQ2yezijx+/lnsG3MAuISt57MZwKx2QS0Jb6vXwzWzSngIrH76mdGiBoz
-        ia6tXVC2vMT2t3OYJzAKzkKyfBaSUbOQtMxC0rKAkWUVo2RqQXFuem6xYYFRXmq5XnFibnFp
-        Xrpecn7uJkZwbGlp7WDcs+qD3iFGJg7GQ4wSHMxKIrwyR4pThXhTEiurUovy44tKc1KLDzFK
-        c7AoifN+e92bIiSQnliSmp2aWpBaBJNl4uCUamDy8b30MWlx9Jbqb8F8X46lHrGav/UCe/bv
-        CU0HpqR187ByClr1T/z7t93476eoySnxUmds/XoF238vW/sptoAp5uAVka7GR3rJps8ZvLjf
-        qDaovhAs+8TLsJ6l11yOL3l+I+cyU40ErvsXmnvOPO48LHRqx4EHjvtEdp9UL42wmrfue7ng
-        yngHu5qbU6eWuvRfUkrK8Mzq+yWSL3Doq9qhZfsldn1b4KyVrO3IdPNl0gEJqYhtEx8K386f
-        sqgkaeuUn41v1+Uc25Sw5PfjO/vFpvDKFwp+ny1yg+Mx/1v2vW6M6twpO+N2tLmcb/vy9dKL
-        ghYG4Tmzb3a/d7/gb3hpp0uX79G1J679LK3+fuGTEktxRqKhFnNRcSIARHhilhwDAAA=
-X-CMS-MailID: 20231211022131epcas2p3830734b4574587c08762782bf0262e98
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231210133927epcas2p3e2633ad371b03d5ab19f9b44118fcb58
-References: <CGME20231210133927epcas2p3e2633ad371b03d5ab19f9b44118fcb58@epcas2p3.samsung.com>
-        <20231210133915.42112-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-7-almasrymina@google.com> <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
+ <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com> <279a2999-3c0a-4839-aa2e-602864197410@kernel.org>
+In-Reply-To: <279a2999-3c0a-4839-aa2e-602864197410@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Sun, 10 Dec 2023 18:19:29 -0800
+Message-ID: <CAHS8izOJ4jTrq9AD5fe3ZY9veU5NP6dFkXGPRw7yz2uMCMGDTg@mail.gmail.com>
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 23. 12. 10. 22:39, Krzysztof Kozlowski wrote:
-> ExynosAutov920 SoC wake-up pin controller has different register layout
-> than Exynos7, thus it should not be marked as compatible.  Neither DTS
-> nor Linux driver was merged yet, so the change does not impact ABI.
+On Sat, Dec 9, 2023 at 3:29=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
+te:
 >
-> Cc: Jaewon Kim <jaewon02.kim@samsung.com>
-> Fixes: 904140fa4553 ("dt-bindings: pinctrl: samsung: use Exynos7 fallbacks for newer wake-up controllers")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> On 12/8/23 12:22 PM, Mina Almasry wrote:
+> > On Fri, Dec 8, 2023 at 9:48=E2=80=AFAM David Ahern <dsahern@kernel.org>=
+ wrote:
+> >>
+> >> On 12/7/23 5:52 PM, Mina Almasry wrote:
+> > ...
+> >>> +
+> >>> +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
+> >>> +             if (rxq->binding =3D=3D binding) {
+> >>> +                     /* We hold the rtnl_lock while binding/unbindin=
+g
+> >>> +                      * dma-buf, so we can't race with another threa=
+d that
+> >>> +                      * is also modifying this value. However, the d=
+river
+> >>> +                      * may read this config while it's creating its
+> >>> +                      * rx-queues. WRITE_ONCE() here to match the
+> >>> +                      * READ_ONCE() in the driver.
+> >>> +                      */
+> >>> +                     WRITE_ONCE(rxq->binding, NULL);
+> >>> +
+> >>> +                     rxq_idx =3D get_netdev_rx_queue_index(rxq);
+> >>> +
+> >>> +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
+> >>
+> >> Blindly restarting a queue when a dmabuf is heavy handed. If the dmabu=
+f
+> >> has no outstanding references (ie., no references in the RxQ), then no
+> >> restart is needed.
+> >>
+> >
+> > I think I need to stop the queue while binding to a dmabuf for the
+> > sake of concurrency, no? I.e. the softirq thread may be delivering a
+> > packet, and in parallel a separate thread holds rtnl_lock and tries to
+> > bind the dma-buf. At that point the page_pool recreation will race
+> > with the driver doing page_pool_alloc_page(). I don't think I can
+> > insert a lock to handle this into the rx fast path, no?
+>
+> I think it depends on the details of how entries are added and removed
+> from the pool. I am behind on the pp details at this point, so I do need
+> to do some homework.
+>
+
+I think it also depends on the details of how to invalidate buffers
+posted to the rx queue of a particular driver. For GVE as far as I
+understands when the queue is started I believe it allocates a bunch
+of buffers and posts them to the rx queue. Then it processes the
+completion descriptors from the hardware and posts new buffers to
+replace the ones consumed, so any started queue would have postesd
+buffers in it.
+
+As far as I know we also don't support invalidating posted buffers
+without first stopping the queue, replacing the buffers, and starting
+again. But I don't think these are limitations overly specific to GVE,
+I believe non-RDMA NICs work similarly?
+
+But I'd stress that what I'm proposing here should be extensible to
+capabilities of specific drivers. If one has a driver that allows them
+to invalidate posted buffers on the fly, I imagine they can extend the
+queue API to declare that support to the netstack in a genric way, and
+the net stack can invalidate buffers from the previous page pool and
+supply the new one.
+
+> >
+> > Also, this sounds like it requires (lots of) more changes. The
+> > page_pool + driver need to report how many pending references there
+> > are (with locking so we don't race with incoming packets), and have
+> > them reported via an ndo so that we can skip restarting the queue.
+> > Implementing the changes in to a huge issue but handling the
+> > concurrency may be a genuine blocker. Not sure it's worth the upside
+> > of not restarting the single rx queue?
+>
+> It has to do with the usability of this overall solution. As I mentioned
+> most ML use cases can (and will want to) use many memory allocations for
+> receiving packets - e.g., allocations per message and receiving multiple
+> messages per socket connection.
+>
+
+We support that by flow steering different flows to different RX
+queues. Our NICs don't support smart choosing of which page_pool to
+place the packet in (based on ntuple rule or what not). So flows that
+must land on a given dmabuf are flow steered to that dmabuf, and flows
+that need to land host memory and not flow steered and are RSS'd to
+the non-dmabuf bound queues. This should also be extensible by folks
+that have NICs with the appropriate support.
+
+> >
+> >>> +             }
+> >>> +     }
+> >>> +
+> >>> +     xa_erase(&netdev_dmabuf_bindings, binding->id);
+> >>> +
+> >>> +     netdev_dmabuf_binding_put(binding);
+> >>> +}
+> >>> +
+> >>> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> >>> +                             struct netdev_dmabuf_binding *binding)
+> >>> +{
+> >>> +     struct netdev_rx_queue *rxq;
+> >>> +     u32 xa_idx;
+> >>> +     int err;
+> >>> +
+> >>> +     rxq =3D __netif_get_rx_queue(dev, rxq_idx);
+> >>> +
+> >>> +     if (rxq->binding)
+> >>> +             return -EEXIST;
+> >>> +
+> >>> +     err =3D xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_lim=
+it_32b,
+> >>> +                    GFP_KERNEL);
+> >>> +     if (err)
+> >>> +             return err;
+> >>> +
+> >>> +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we=
+ can't
+> >>> +      * race with another thread that is also modifying this value. =
+However,
+> >>> +      * the driver may read this config while it's creating its * rx=
+-queues.
+> >>> +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> >>> +      */
+> >>> +     WRITE_ONCE(rxq->binding, binding);
+> >>> +
+> >>> +     err =3D netdev_restart_rx_queue(dev, rxq_idx);
+> >>
+> >> Similarly, here binding a dmabuf to a queue. I was expecting the dmabu=
+f
+> >> binding to add entries to the page pool for the queue.
+> >
+> > To be honest, I think maybe there's a slight disconnect between how
+> > you think the page_pool works, and my primitive understanding of how
+> > it works. Today, I see a 1:1 mapping between rx-queue and page_pool in
+> > the code. I don't see 1:many or many:1 mappings.
+>
+> I am not referring to 1:N or N:1 for page pool and queues. I am
+> referring to entries within a single page pool for a single Rx queue.
 >
 >
 
-It is reasonable.
+Thanks, glad to hear that. I was afraid there is a miscommunication here.
 
-I will also fix this in v4 patch.
+> >
+> > In theory mapping 1 rx-queue to n page_pools is trivial: the driver
+> > can call page_pool_create() multiple times to generate n queues and
+> > decide for incoming packets which one to use.
+> >
+> > However, mapping n rx-queues to 1 page_pool seems like a can of worms.
+> > I see code in the page_pool that looks to me (and Willem) like it's
+> > safe only because the page_pool is used from the same napi context.
+> > with a n rx-queueue: 1 page_pool mapping, that is no longer true, no?
+> > There is a tail end of issues to resolve to be able to map 1 page_pool
+> > to n queues as I understand and even if resolved I'm not sure the
+> > maintainers are interested in taking the code.
+> >
+> > So, per my humble understanding there is no such thing as "add entries
+> > to the page pool for the (specific) queue", the page_pool is always
+> > used by 1 queue.
+> >
+> > Note that even though this limitation exists, we still support binding
+> > 1 dma-buf to multiple queues, because multiple page pools can use the
+> > same netdev_dmabuf_binding. I should add that to the docs.
+> >
+> >> If the pool was
+> >> previously empty, then maybe the queue needs to be "started" in the
+> >> sense of creating with h/w or just pushing buffers into the queue and
+> >> moving the pidx.
+> >>
+> >>
+> >
+> > I don't think it's enough to add buffers to the page_pool, no? The
+> > existing buffers in the page_pool (host mem) must be purged. I think
+> > maybe the queue needs to be stopped as well so that we don't race with
+> > incoming packets and end up with skbs with devmem and non-devmem frags
+> > (unless you're thinking it becomes a requirement to support that, I
+> > think things are complicated as-is and it's a good simplification).
+> > When we already purge the existing buffers & restart the queue, it's
+> > little effort to migrate this to become in line with Jakub's queue-api
+> > that he also wants to use for per-queue configuration & ndo_stop/open.
+> >
+>
 
 
-Reviewed-by:Jaewon Kim <jaewon02.kim@samsung.com>
-
-
+--=20
 Thanks,
-Jaewon Kim
-
+Mina
