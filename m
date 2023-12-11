@@ -2,69 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A0E80DAB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D5080DAB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344561AbjLKTP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
+        id S1344633AbjLKTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:16:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344349AbjLKTP4 (ORCPT
+        with ESMTP id S1344349AbjLKTQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:15:56 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5684DBD;
-        Mon, 11 Dec 2023 11:16:02 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a00c200782dso646912066b.1;
-        Mon, 11 Dec 2023 11:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702322161; x=1702926961; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ahgS9zwVZdE+3LBYLfhZe4mLB78iOJuc5vl8BeZCpa0=;
-        b=lzTd1am16z4D0f6wkemiMfbzD1aZeHe6FM51Mb4DqXCAWrWn2ugvc9uFRlLq+wGH7v
-         ocgbx8HLbUuyQZ712iFmzAQaGn2ch1Jx3kpUq44N0V5UViWlR3xx3l7ILwStu/c2w3jY
-         S4XQDbEzr47aydRUMjg9+uWSg1Y+onoeD9HCEowcKd1Oo9UM1zMmaBlAK9M3Fn3zTOkp
-         h25uvdW0WXwCZAsMEwVNKeb8mIH23BY2/uqX94zrexTP0jRw+jZVbH80QuN7UnVIYpmW
-         znu5UvsjUfdxweVk6dXHaR3QVIwAEdAFvcWp4Qg4E1rvvD0Xt3j27ITSgjaIYxQi51Bo
-         /t1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702322161; x=1702926961;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ahgS9zwVZdE+3LBYLfhZe4mLB78iOJuc5vl8BeZCpa0=;
-        b=RFWZRyUIA/CzRqHz7xodn/KvuzQcgFUqvyI3yu2l43dpKvScoSbiw+jyPOOwgJd9LD
-         XK/Y/61DsLWMkt5U8Pxr+Lgu044+Do/2ki5cy9MbezWHeD31GiYD/jBmv5svDyYGCNVp
-         CadL6DZIY0XiGO6ngXY61t8u+MLosESOf3MD+LloLnGwZbBW2PMLshcSZ+WyOuBuo1Ga
-         YK0WFluccO8qA6NP+uaizx2lYZLhW8tLuG/kIhWrP7674dr/uKROCFCs1bD5wnNYdRug
-         N9rLv6ufOK4LgwQJbsbxe3nYAddD5I/fzvuYAmbawWlh5kn0p6XIxWA+G5I7o1nVAOSA
-         6dHA==
-X-Gm-Message-State: AOJu0Yy0zBZyueIBho+4MB1X8gDbnw14wl9cgV/6OawWkRhu80Id5Esb
-        cRbAqzcUOBERnxKRFodYLd3mhyCsg0kaejoVxmA=
-X-Google-Smtp-Source: AGHT+IFu2ekM6ytAI0ppxK14hz1GQ5IYXfxsgQJkKS5CKdxdQcBlI7o623MgI4jCnVrt0JDNf7zwd5faEvRWme1B12o=
-X-Received: by 2002:a17:906:21b:b0:a1e:395:da5e with SMTP id
- 27-20020a170906021b00b00a1e0395da5emr1134106ejd.273.1702322160506; Mon, 11
- Dec 2023 11:16:00 -0800 (PST)
+        Mon, 11 Dec 2023 14:16:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE89C2;
+        Mon, 11 Dec 2023 11:16:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702322187; x=1733858187;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=vp3n54VIH/8lz5K1hOpqIdXWwGS8uIgnbwnujeOP4/0=;
+  b=MtQsnBrBPAMnvpFpMY3hr1doUZjT0RlskFVPu/3mZy7BwDwO+dG+zLXK
+   qn0iQHjiLoqpyms81Oo7ns7UshC96NjrOoEqzsAWrkEGXG5TKNmH9DuMH
+   g0MisKCncLvD/Vb2lE4OLq4fd1VRkmcqNxpMBcVLkTMxQQGEKORO5LVeo
+   TUoHKSzVENEIhnjhCAZoXOKljHM2IcbU+KQtZWuXl3PaXztbgf7kdLijo
+   AueT/aQJ2RsrjD6Yp4UQ6LVaK7XUPVxs4X78R1RViBMnVstoTAP2mtt3J
+   JzblQtsx05BBJSW5bBwuAOeVecZfeBLXVsdIFsJGrYqlRvdil0eXOfqJ/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1817725"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1817725"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:16:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="766495034"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="766495034"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 11:16:25 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 11:16:25 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 11:16:25 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 11:16:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H2l5QATGjwv9i3GbUw19Y7R64Q/wpvH2pqYZSZsuXKIQZOtXkvcqefIm+SdxO/1F2DJBcB6Cz7ZYxdsNpvcSGJalkwnighU9oseSlQcdeEQ7lX14hveXYb4Jjd3rmJ2wbXjOmYgl9jnXBd3NrTnO2jCpYZkBwJav0GrbFN0cnoEKPsXpIb8mId34Q/E2xkInidszNO0xWm4k+69lXQjbxxQWTufPfYXurBfVf5hXpivS5LdqUmRGE5xhI6EAUMWz2fvBQkf8pHoZJn34jr77ib+M6ZSfMEQAGvKAHt8QNOLTr4on6gmcUCDRDSouGCKIh0TqXYgbc/zXoRx8rG4dDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cwwggZw/0Hgkq3+HTOtuswsR7SZ5QA1+amu7gRwQ1lI=;
+ b=YafB8+NUjylbArl9MXvzF+pIi+mPmYVXOKv26nsPoYNMrAzjZOZTXl0TqE2gv2RBnRW7a1ereUqenXYvdY4hmP1nGKOf9ge/eQgdz27kFsfYJQCul9W/hRlr1Rq8bjMP0YIdLSHLKy38JRMdgSGAQpUtPFvuGeiYZEuEK2jOeKCr4ajjV/TE9phRQTUjIPViLWrUI9DXz04XD+Fg1hw0pEufeNi9UaFoIcuccGr7Q5x/rMpImwfDvjiC0V1TzhweK16oxbbgt+tfYO2tjhOGktaLn1Xzg6DNRuddbcwDRjDT6x2AaKXLj48qhJOLwXMacdLMzQ0EITiVq9rMTceD2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CH3PR11MB7914.namprd11.prod.outlook.com (2603:10b6:610:12c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 19:16:19 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 19:16:19 +0000
+Date:   Mon, 11 Dec 2023 11:16:10 -0800
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 6/6] cxl/memdev: Register for and process CPER events
+Message-ID: <65775ffa7e529_a04c52941d@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
+ <20230601-cxl-cper-v1-6-d19f1ac18ab6@intel.com>
+ <657279a68c270_b991294e@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <657371eec6ac5_1e7d272948d@iweiny-mobl.notmuch>
+ <65738e9fc239a_45e0129476@dwillia2-xfh.jf.intel.com.notmuch>
+ <65775c98e0b39_1f2db42944f@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <65775c98e0b39_1f2db42944f@iweiny-mobl.notmuch>
+X-ClientProxiedBy: MW4PR04CA0149.namprd04.prod.outlook.com
+ (2603:10b6:303:84::34) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-References: <20231210130001.2050847-1-menglong8.dong@gmail.com>
-In-Reply-To: <20231210130001.2050847-1-menglong8.dong@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Dec 2023 11:15:48 -0800
-Message-ID: <CAEf4BzYUKkpFa5dp4Ye7jzK1RhYtS6Yv55GH18U21Qi6xxQetg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: make the verifier trace the "not qeual" for regs
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CH3PR11MB7914:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7323144-0ee6-4fba-67d2-08dbfa7da785
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pOYEj+WypYczIPT+Ow7Kq2Q7DrE7GTUwmVOzcHftDULE8SmC3smBf5KhCLrHzTCI8XRlF3TSn+bsIol8idRFKIN+IJhWPqYH37R28R0O11XV2l950HiYgTzkdNvtY43Dzuv7JdPf5a8gXJ5SzUhdAMppKgQb05WKYpo1OXX/mrOrslM2v2HSOwUQo3Xci3JebpWi7LI7Bv8s0nmCtE/oJFhtpskdWEUj6hDF7nscJbHCuTSZ0eEe+HuPBi/RtcJ3UCQiVhncktSur4xLylQJowlW/oRfDwga8/zGpIlWJtlivoHYruFJX8rybMGq9xKmH0SAV7KC2A0beEpivhWAvYVJLVB1idiRuZiE4j8Efo8NLMjNuPvbzQ80z3fENWhY7k/dBXSZeqz9gRvpQS4zMh36TTucqNRjlWU8W2eKVQdSxZaoKW86JafsWQwIt6mnze46+Zc9ZHyHe3vE5Hif3m7gTqwm0J/GUWgcsXsT2VM2AdTAhf2L5ep4JF230YaomTF+Zc61uFJvQuypLeLUYtgzYlqAnYnLhygZuRSr3E/2Ee6YM3TtOavymhycriKR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(39860400002)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(107886003)(478600001)(26005)(6666004)(6506007)(6512007)(6486002)(9686003)(82960400001)(38100700002)(86362001)(41300700001)(66946007)(54906003)(5660300002)(66476007)(2906002)(4744005)(316002)(110136005)(4326008)(8936002)(66556008)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?brhrYrZ7jsIHzQD3OvQ2o3ZzV/D9eTBtmfinml70G9rt9+OxBOiFXyhDQ1bE?=
+ =?us-ascii?Q?uzAiXF0Srv6+km9j9A92PzsNdUA/o8SN3mxmxLMQ5bh7hViT/NhSyAv3J0Ud?=
+ =?us-ascii?Q?8rNTHWvauaV/PCqPxqf/Wf87oltyQm0eYTU3r3iV6QXO4WwUSFtftxg2UxoI?=
+ =?us-ascii?Q?+dVmCFY/bnlVYgVAXAazOmQWf86yqVvE2POyz6NO8FeTl2o6j2fgZrs25IpG?=
+ =?us-ascii?Q?DdwwzptLvGhFywzTPgmWo2mcn7iWS/zm9jKweCDmdjBNcNEqkOaRgDYC92ay?=
+ =?us-ascii?Q?q9F0m1mQattjliTQkK6mNfU6VwOU6FzcT7nOCnMdfj3TC2FZr6UPokvW3PqH?=
+ =?us-ascii?Q?EUBI1aW33orK9NUj/9U29zM5KT+Qlapdl6qwhybRYQd/lJce7NVLUFdoNs4y?=
+ =?us-ascii?Q?2/PmESD32WQPH+QAbF9kMsswAdIDFBu4kFvV8birmOTS8N95Nf6Fu03NumbI?=
+ =?us-ascii?Q?Mf0vzOMIeVZs9gkp2e4j0ncGT//VCAAuLDTcpCwsvYzr4SJT564YHnMtmR06?=
+ =?us-ascii?Q?7WW5VwRHDaOFn3mRL3Oot7i0ZbpS8OOe/iqBa/IVWh9ozNpkkw93b6xkhrgO?=
+ =?us-ascii?Q?GG8RggqmznQEF1KoAnuuawUuQ0XdzBO892D/G/6by1ZOuVfjZVB+6YB3tnWg?=
+ =?us-ascii?Q?L5GBrsqwVm1Sqo0JF8LbfvVVsh1/u0fY1rf+cTCv3B/Xec2Jva5n71vXJWt1?=
+ =?us-ascii?Q?VpIoQ3t0YAoQhM3PRMAPbzL28VOhwvnE5xS+4mhIIrypyy6sdBUWaPi8EUsR?=
+ =?us-ascii?Q?OgH4jhwruA0m6bg/3DgbnFxATV5V3Av7R0cMdUhutCONv6Bf90ij5erexGGb?=
+ =?us-ascii?Q?+iOhNCGbKtQePiQLmyfymugAqPEHOFIX8kAIBKP1j2f/E1gEZEOg5TbIIA1x?=
+ =?us-ascii?Q?6ka9lstlDT9z4fmoitL1bntevlYHV2mziKDQkHeOyVe0rDqmVzSgpkZjZG3U?=
+ =?us-ascii?Q?SOP1/gdwD9zQXvg+361+6l1vJcdinK4Z9POCY9zQn9oFJz3C2JxO0VyhL3kT?=
+ =?us-ascii?Q?dUE4uDzQJPSVYBAPioQo+GgU3N7f5qjyEFJWWgvyv04PCwROocT5Pdm/IiZk?=
+ =?us-ascii?Q?/B2a/Pgn4SfgkjeMjmV7584tq9Qk4L5fh0URhBFCwjRjYcVcqWXnmwgBd1ft?=
+ =?us-ascii?Q?kXYZ5yIi4S6aAA0yOncEo++ftJ7nSFPqGPY1XffmDxjTrZBGl1JoqMTV7Atv?=
+ =?us-ascii?Q?S9swmw/AkCJZXb9mbSZBeBQ6vBwBHUOrd5E8CiyKMM4Ra5TwKXMhy2FbgWzA?=
+ =?us-ascii?Q?6g1Ad0BbD1oVGTDCeCRfGZVJSfOhrmSe8cxV9iMCnDgkgiTAoJYTPeupBJH3?=
+ =?us-ascii?Q?p6aFDIxPMCNI4Xk1RVraKL8aPCnYnoVuZ76J0hhMX9HfpY/lI2efOXqTlQTh?=
+ =?us-ascii?Q?cGUrvTGm44T9YiXLH6k6dJtz662/gtSiUO2pvOd4xWsP4lYja0ejcVuMq1Tp?=
+ =?us-ascii?Q?pStRa00meMmSdyiADY3azFLooKXLwsElsIGCqXh57FPqI9WWNl3yHNJnO5NL?=
+ =?us-ascii?Q?7b/XO89c0FPPcdzyd10zlSRP23MBJ4P6cM5bniJanalV9JSmKP1rHOAaqUXH?=
+ =?us-ascii?Q?Fy1JnOIfXfFg7T6FP6VH+LGEz8D84mUswQOfMC1IpOZ6MWX8NoE2eDXQpWJ1?=
+ =?us-ascii?Q?zg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7323144-0ee6-4fba-67d2-08dbfa7da785
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 19:16:19.3929
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JE2P7gShV+qXW4yObM+JDMKTVmpEpm3mxWOoVsNay2GO8w6jmrZVudgcJJRO+k3Ek9mFE6FCxyLUgxySo0XtnO1zF7XTFvF5sETn1xWIPng=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7914
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,114 +161,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 5:00=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
-.com> wrote:
->
-> We can derive some new information for BPF_JNE in regs_refine_cond_op().
-> Take following code for example:
->
->   /* The type of "a" is u16 */
->   if (a > 0 && a < 100) {
->     /* the range of the register for a is [0, 99], not [1, 99],
->      * and will cause the following error:
->      *
->      *   invalid zero-sized read
->      *
->      * as a can be 0.
->      */
->     bpf_skb_store_bytes(skb, xx, xx, a, 0);
->   }
->
-> In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0". I=
-n the
-> TRUE branch, the dst_reg will be marked as known to 0. However, in the
-> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
-> the [min, max] for a is [0, 99], not [1, 99].
->
-> For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
-> const and is exactly the edge of the dst reg.
->
-> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 45 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 44 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 727a59e4a647..7b074ac93190 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1764,6 +1764,40 @@ static void __mark_reg_const_zero(struct bpf_reg_s=
-tate *reg)
->         reg->type =3D SCALAR_VALUE;
->  }
->
-> +#define CHECK_REG_MIN(value)                   \
-> +do {                                           \
-> +       if ((value) =3D=3D (typeof(value))imm)      \
-> +               value++;                        \
-> +} while (0)
-> +
-> +#define CHECK_REG_MAX(value)                   \
-> +do {                                           \
-> +       if ((value) =3D=3D (typeof(value))imm)      \
-> +               value--;                        \
-> +} while (0)
-> +
-> +static void mark_reg32_not_equal(struct bpf_reg_state *reg, u64 imm)
-> +{
-> +               CHECK_REG_MIN(reg->s32_min_value);
-> +               CHECK_REG_MAX(reg->s32_max_value);
-> +               CHECK_REG_MIN(reg->u32_min_value);
-> +               CHECK_REG_MAX(reg->u32_max_value);
-> +}
-> +
-> +static void mark_reg_not_equal(struct bpf_reg_state *reg, u64 imm)
-> +{
-> +               CHECK_REG_MIN(reg->smin_value);
-> +               CHECK_REG_MAX(reg->smax_value);
-> +
-> +               CHECK_REG_MIN(reg->umin_value);
-> +               CHECK_REG_MAX(reg->umax_value);
-> +
-> +               CHECK_REG_MIN(reg->s32_min_value);
-> +               CHECK_REG_MAX(reg->s32_max_value);
-> +               CHECK_REG_MIN(reg->u32_min_value);
-> +               CHECK_REG_MAX(reg->u32_max_value);
-> +}
+Ira Weiny wrote:
+> Dan Williams wrote:
+> > Ira Weiny wrote:
+> > > Dan Williams wrote:
+> > > > Ira Weiny wrote:
+> > > 
+> > 
+> 
+> [snip]
+> 
+> > 
+> > > #define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
+> > > static void cxl_cper_event_call(struct cxl_cper_notifier_data *nd)
+> > 
+> > Is struct cxl_cper_notifier_data needed anymore, just pass the record
+> > reference?
+> 
+> I think so because the type of record is ID'ed by the GUID which is not
+> part of the common record.  So the notifier data adds the cxl_event_type
+> enum.
 
-please don't use macros for this, this code is tricky enough without
-having to jump around double-checking what exactly macros are doing.
-Just code it explicitly.
-
-Also I don't see the need for mark_reg32_not_equal() and
-mark_reg_not_equal() helper functions, there is just one place where
-this logic is going to be called from, so let's add code right there.
-
-> +
->  static void mark_reg_known_zero(struct bpf_verifier_env *env,
->                                 struct bpf_reg_state *regs, u32 regno)
->  {
-> @@ -14332,7 +14366,16 @@ static void regs_refine_cond_op(struct bpf_reg_s=
-tate *reg1, struct bpf_reg_state
->                 }
->                 break;
->         case BPF_JNE:
-> -               /* we don't derive any new information for inequality yet=
- */
-> +               /* try to recompute the bound of reg1 if reg2 is a const =
-and
-> +                * is exactly the edge of reg1.
-> +                */
-> +               if (is_reg_const(reg2, is_jmp32)) {
-> +                       val =3D reg_const_value(reg2, is_jmp32);
-> +                       if (is_jmp32)
-> +                               mark_reg32_not_equal(reg1, val);
-> +                       else
-> +                               mark_reg_not_equal(reg1, val);
-> +               }
->                 break;
->         case BPF_JSET:
->                 if (!is_reg_const(reg2, is_jmp32))
-> --
-> 2.39.2
->
+Ah, yup, but then I wonder if CPER can just do the GUID to type enum
+lookup and keep the CXL side GUID-free? I.e. just pass the type as a
+separate argument.
