@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9BE80CC23
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AC580CD39
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343863AbjLKN5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
+        id S1344282AbjLKOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343893AbjLKN4Z (ORCPT
+        with ESMTP id S1344112AbjLKOIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:56:25 -0500
+        Mon, 11 Dec 2023 09:08:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CF6D64
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:55:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3689C433C8;
-        Mon, 11 Dec 2023 13:55:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE9C2688
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:55:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAA26C433C7;
+        Mon, 11 Dec 2023 13:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302901;
-        bh=Ja4ysBk+qOJJjbCUYxecDH7RVIe4PJVDRV25A70QhEw=;
+        s=k20201202; t=1702302904;
+        bh=3DSGwtvqJ6ypr8hGpbQO6/gzZQ9JGzJSEGoPdr3cbgA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ezvVzsfuETHF+5WmhkWpJfpwNLxx2Pdzi5BPtt5z8P/21vIHJGUv+DX2a62awrtdO
-         Bmen1xi/CSRBLUr8IyNOqLoiPypeIBCfU9v1ymM3H9FlWWtbtG8CIsX5CHN57Rp4QT
-         xnQpVa52uhbreVB1BRmJ6soBuHxxkvK/16gfzpw+IpOQ5Sx8r6K460q5dwEf95OsWT
-         gkCfJHG75IY4+5JhxAye+luBcArCnU5H0pSUWuHid6i1HBVBTO/Wr+9QT4xYEUgw5f
-         lRQQ2KCfAk9v3X8XhhEtN2BV0zuHx+ia+RyYFz7DwrEfHj+7U1d2zr+sjMDE5nRS7t
-         qgPxc1e8d0lzw==
+        b=EZouzXaLwUyiwVUpDuCTK8lABEIDlbzpfGEfYPfwMZw2iUdWRjdW7zVBMFhJZWR5j
+         9oEcd2q1v20yjFUuMP+jwUpsTVFW1a/9upruAZLhcgE25g4cdR09DKrbmwJfapChvu
+         0DGiRv3ZovO7cxLKZxTupfikrgBIfB5dfwlHUzhIYK0m7E5qwpvJ73CtmQce42ey5T
+         IVNqnrz43p6Rm8Qi5QN65J1XFtGfP4Pp8nHvX/Em0AwNg+fQWW/zJYvN/zAX4UQI1/
+         ExXwyuYB+4BcseIUjrpBSINpOGAZZ+iIlv44VdjesSYF6PTrHRlJUxAoMKkou9PcPM
+         EldnFDHZ+oJCw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sasha Levin <sashal@kernel.org>, jonathan.cameron@huawei.com,
-        alexander.shishkin@linux.intel.com
-Subject: [PATCH AUTOSEL 6.1 02/29] hwtracing: hisi_ptt: Don't try to attach a task
-Date:   Mon, 11 Dec 2023 08:53:46 -0500
-Message-ID: <20231211135457.381397-2-sashal@kernel.org>
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, u.kleine-koenig@pengutronix.de,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 03/29] ASoC: wm8974: Correct boost mixer inputs
+Date:   Mon, 11 Dec 2023 08:53:47 -0500
+Message-ID: <20231211135457.381397-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135457.381397-1-sashal@kernel.org>
 References: <20231211135457.381397-1-sashal@kernel.org>
@@ -55,36 +55,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit aff787f64ad7cbb54614b51b82c682fe06411ef3 ]
+[ Upstream commit 37e6fd0cebf0b9f71afb38fd95b10408799d1f0b ]
 
-PTT is an uncore PMU and shouldn't be attached to any task. Block
-the usage in pmu::event_init().
+Bit 6 of INPPGA (INPPGAMUTE) does not control the Aux path, it controls
+the input PGA path, as can been seen from Figure 8 Input Boost Stage in
+the datasheet. Update the naming of things in the driver to match this
+and update the routing to also reflect this.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20231010084731.30450-5-yangyicong@huawei.com
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20231113155916.1741027-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/ptt/hisi_ptt.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/wm8974.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
-index 75a8f24fdafee..0a7190f2ba01d 100644
---- a/drivers/hwtracing/ptt/hisi_ptt.c
-+++ b/drivers/hwtracing/ptt/hisi_ptt.c
-@@ -659,6 +659,9 @@ static int hisi_ptt_pmu_event_init(struct perf_event *event)
- 		return -EOPNOTSUPP;
- 	}
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 010a394c705c1..1becbf2c6ffad 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -186,7 +186,7 @@ SOC_DAPM_SINGLE("PCM Playback Switch", WM8974_MONOMIX, 0, 1, 0),
  
-+	if (event->attach_state & PERF_ATTACH_TASK)
-+		return -EOPNOTSUPP;
-+
- 	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
- 		return -ENOENT;
+ /* Boost mixer */
+ static const struct snd_kcontrol_new wm8974_boost_mixer[] = {
+-SOC_DAPM_SINGLE("Aux Switch", WM8974_INPPGA, 6, 1, 1),
++SOC_DAPM_SINGLE("PGA Switch", WM8974_INPPGA, 6, 1, 1),
+ };
  
+ /* Input PGA */
+@@ -246,8 +246,8 @@ static const struct snd_soc_dapm_route wm8974_dapm_routes[] = {
+ 
+ 	/* Boost Mixer */
+ 	{"ADC", NULL, "Boost Mixer"},
+-	{"Boost Mixer", "Aux Switch", "Aux Input"},
+-	{"Boost Mixer", NULL, "Input PGA"},
++	{"Boost Mixer", NULL, "Aux Input"},
++	{"Boost Mixer", "PGA Switch", "Input PGA"},
+ 	{"Boost Mixer", NULL, "MICP"},
+ 
+ 	/* Input PGA */
 -- 
 2.42.0
 
