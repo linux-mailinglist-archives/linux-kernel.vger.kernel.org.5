@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577D580DE9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360480DE96
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345190AbjLKWqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S1345262AbjLKWq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345116AbjLKWqg (ORCPT
+        with ESMTP id S1345045AbjLKWqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:46:36 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10022CB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:24 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54da61eb366so6700323a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:24 -0800 (PST)
+        Mon, 11 Dec 2023 17:46:37 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154DDD1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:26 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso5774133e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702334783; x=1702939583; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702334784; x=1702939584; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MBfd2uuqperHZy2beeZ5u4uW79Og2tUaQqw2Ydnn8qQ=;
-        b=NIGaauA7vHk5VubRJHMUGOO+xspnNnLe/SRDQWBYHw1pOehrJyx//1srzR47cmaj0G
-         fMtxCsrVMbL8SiwJmTsL+djL/7UFhmAgN0YXft2yFrkRdL0aAu1ODpUqiVjpzTK08BwK
-         fnwN+RoEw1vd+wPL0wUtyMA4u0gv1ZKTwZ3q0qOC/1OxXTkHyTHMYTNfa7IJg+L4v7/b
-         PcSTQbJEhnn1vO6GW78a0nL2/DVgGOAcHzU3BjO+9IOIerAf4wt2sAZov454WEN0wJ9M
-         Q3f5jtZ4rvJrtOrRTgz8m382tS0tOofNqOMFRqi8PhJMBCFFo8PdmwRbDDoKsrJSzv+7
-         X8HA==
+        bh=V6SBbXxp1rC0u/fpb+9pFf6izaqyPLMi0tUsJJJTofc=;
+        b=FYbTTan073cSzq8H8sdwkVyOtGEYySFYpkJhYoOs9krQMB7pSXF+PA7xGvxF1Tpe64
+         8RJT5feQQwaVvIIguK4O8JpZh4DNcXaah4ft/f70N5k24j1DADZEN4NzDvMQiCkLsBmm
+         HUHIwavD7SpP265i+R5SI3sjLRuZTjGbTjWs4oHs+ER/NMadQSjIOaraqwK6eiQojAOx
+         QNNFY09nCDNJkeggOL3X9aHYnqBO/de3NtlHHhx8HN4F//VRKLt/mjesMVSGrzS/4SXZ
+         1g6TBGVQKBkV9Zd1AeudkCoTupl1CmRctmjb4OzkFUFeuchgjRmKV9agCg9A+CXtpmC8
+         Ng/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702334783; x=1702939583;
+        d=1e100.net; s=20230601; t=1702334784; x=1702939584;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MBfd2uuqperHZy2beeZ5u4uW79Og2tUaQqw2Ydnn8qQ=;
-        b=BgJfiZl3jcKdxZxQWdnxCv/Rgr35nidAUpY6cHQKQa4ArNftrHciKbnySzQ3rNBep9
-         3HybVEDGltEaoWfMrx93RIwuexkZ8TqzKEJkTLpFkxirvPcBv3syFTarwPl9FzkmpoDL
-         StL0UNTkd8sdX0f05LKghj6OwoEtrDCMRqmowLis5RrM2r++iuB+r7XISs8pSt7zzfHK
-         u7/uKelAiV88Sj3fN2qPyQhgdoWE5Z9y0Kz1X22ISKjG7LGmlD/903vLJvBGaeNqegO0
-         chjDGyyhuWWmuH7ZOGG5bBMiWQVaRfIDJV34grgQZ8L2Kn/DIBtv2JACgs7aDmZQfM8N
-         /oAQ==
-X-Gm-Message-State: AOJu0YzHTDhPjEp2JHeBxx4wh2gBByioeuvNiHq+zo4GJKSAXuB+MDBh
-        TuhKdfLyY50IjfLgXm9sy1vhiA==
-X-Google-Smtp-Source: AGHT+IEDWWlvefnjyln4Xnarhz7mD4RC77IcmLKQYjZiscTaP21lNiRuzp9IBgrmnyZz+9PA9gniBQ==
-X-Received: by 2002:a50:9e6b:0:b0:54b:5a7:143c with SMTP id z98-20020a509e6b000000b0054b05a7143cmr3531281ede.3.1702334782900;
-        Mon, 11 Dec 2023 14:46:22 -0800 (PST)
+        bh=V6SBbXxp1rC0u/fpb+9pFf6izaqyPLMi0tUsJJJTofc=;
+        b=sGSvUMX5mIeig/6vqFwkSKH+Qnyi7Fg7+Ks6oApQfJpZ6rDCils7EthnomsdXdHepS
+         wdQUEWvWypXaIIyWtjH1IGlOpEktu5Ze7oNP5fyxRa3iN3cV/y1UzfyInVIy1+/U4Q8o
+         MWbV1U6q/OxrJnk0pZKta31YMbyZGF12oJZu7F7UqMlfspA3HM4bt/sKOECaTr7TjFt6
+         SlWuXrg56pp35B2lXVYAYwSOeWJOpL1fWSic4eJzv5jS3dbqkQYnTlTvs/Z8SZJ9PJbo
+         EE3ZkUNhRDv0RPjTGj+ojpWgmjhR3cCf9y5K4y8LDss34rJp7gCU3r6coglSxBicVrlp
+         xdLg==
+X-Gm-Message-State: AOJu0Yzk8MJbbebcK+P0LEJTDbvNi5lIvNmcK5F3LJWzUpJIR1PV3OD/
+        dzkJJTbkyGq3RPe/ihhHkuODfQ==
+X-Google-Smtp-Source: AGHT+IGU+2tfILwLJhzs7kQPmgTaErYi7PnDtJOMrGfhmHQqkhAL0K+AhCToWYVFKbgLgr46Ks4Stw==
+X-Received: by 2002:a05:6512:21d1:b0:50b:f82d:7feb with SMTP id d17-20020a05651221d100b0050bf82d7febmr912392lft.267.1702334784290;
+        Mon, 11 Dec 2023 14:46:24 -0800 (PST)
 Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id if3-20020a0564025d8300b0054afcab0af2sm4091789edb.59.2023.12.11.14.46.21
+        by smtp.gmail.com with ESMTPSA id if3-20020a0564025d8300b0054afcab0af2sm4091789edb.59.2023.12.11.14.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 14:46:22 -0800 (PST)
+        Mon, 11 Dec 2023 14:46:23 -0800 (PST)
 From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Tue, 12 Dec 2023 00:45:48 +0200
-Subject: [PATCH 08/10] clk: qcom: Add GPU clock driver for x1e80100
+Date:   Tue, 12 Dec 2023 00:45:49 +0200
+Subject: [PATCH 09/10] clk: qcom: Add TCSR clock driver for x1e80100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-x1e80100-clock-controllers-v1-8-0de1af44dcb3@linaro.org>
+Message-Id: <20231212-x1e80100-clock-controllers-v1-9-0de1af44dcb3@linaro.org>
 References: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org>
 In-Reply-To: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -72,28 +72,27 @@ To:     Andy Gross <agross@kernel.org>,
         Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>
+        Abel Vesa <abel.vesa@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=19913; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=FIsyvB2hPrGg1MWwWTuvnnzudMFLcTwFu7jBBwZlroU=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBld5EuXFkaB3uLChFFA/e8UuNQLv3D9KNibEPSX
- vked8noBaqJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXeRLgAKCRAbX0TJAJUV
- VmvvD/92ctD+1uE9PLQ0JmWpMMTv/T5iFykEeJ5oui76fpbNgFbIvYOBVmKfLyBsWRKl5j2iNdn
- AWPH5swqFrnTk1Kp/uEbd3aZoUPjxVxMZTDSEL29ED/IeW87USWmmuMqLsVCTyyaaLJcNxSHff9
- PkPZ/GZJCA+bZuY1WOgEaFzIwHFB9eP4fuF7oi1luUe0TNqETz1/H3673QQ/B8MqaTqJKu0Yl5s
- ulBvKjEyK1thihta7Q5/mvCvj1Sr/+vbvhFaT3kK0FenXo2HgW5VUICtoOM2ucBWGOhzDlw65wY
- QxsD0mTNFnGq7P/WG8YqAkllnz4UNP6b+DUmWeoO1Bn/5NkAkti3e4ugwTASgGVwf4l4rVtZs7j
- 45H86zlCRiCyJiryT9lBucvk8UCb7fhOM/z+4h/Ig0qKx6HM79EDVdyr/KcTN+qERZPevritQK7
- HF0pMAApdfIQsn6LjJO66hMHIOnRNDTIV8n0kF7+SCJcYkI1QSPE2gArZqmtfYllhhVbbfyjI/c
- +vWVnx/nYxiOfLkhlA63BVwtMvPV1uiefiW68Y40TaI40lkAPTspxg8Och4neSw8byqIHjbmnp7
- lWsCyTDqu38F9uAh0Ynjswly57r1CtmKO0wVeFp3urZvPRpPzQs1yw/LE+6ss/loQoIzeF5t1f+
- KuHV6f6HqWWTtyA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9556; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=0fdBFTNPdIYtQjQB293LieWvGefC7AByWCScshpPFuQ=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBld5EvAKlivkpOH7ZIwyJuiliGuDvuziEzuHqmQ
+ rBbmoSIgtyJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXeRLwAKCRAbX0TJAJUV
+ Vj/+D/48itRWPDf7e6satHMp6ddPm0SMqmmE5SoTQTLR+VXOpRCsEaTR/UyTRujaLb/HjMQVKTk
+ OTalckEHI49NLdA4mOdA+dwOar5ma7zKqSUCBdyqDRh3lT6pQprQqBOS3tGQmYojaB1QLixBiyE
+ WGIBPN0Sl6EEEfBgsuhXYrPpTqjvgyyTxzcp/JCyn3OCXo8I34hE/ONi/LGepkfoRTZ3XccEHjs
+ vbHr++KVhZ+Z5iGdPD1Ud2L4VmtUIaNCoD2NY34qWM8yayfKhSYAbGuPzy29z/Qy5XVHwBbaxwK
+ zmbRikT15YC3eyabsrDUINC6N3Yggg5kO6WaeJ64Qz7e0How9snakZatJLjX4IYg0vSNyLZB5rp
+ SvDzA1Ka8NxiEl4nGZYswnqX15w31/ZJLMDD6YebTa6QKy6qVtgepHKpmPhHwrDe4RF8O74XCPK
+ PfWsWJEZCVGmlb2/jzVFAKS3QzzdXSbtrb9vJQzSSOw+ZOee0aB9A+HpMb0Fk8D915NsI5SbqA+
+ GdI2EoIKQePOCgZL8+qMuaoC05son2YQnnKOZ5bgeqkMP2zu2mFhSVG7MXOw9piz3G8W89QkcX6
+ VuoJGNp5ef9PWqCeUPY9LVkGVgdbd8ZtEKXQWARuhpCL/NkmtBCYxeBTpVIaISOG6j6mI2TgqLL
+ lP9QV/Cge7Z1r9Q==
 X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
  fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,59 +100,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <quic_rjendra@quicinc.com>
+The TCSR clock controller found on X1E80100 provides refclks
+for PCIE, USB and UFS. Add clock driver for it.
 
-Add Graphics Clock Controller (GPUCC) support for X1E80100 platform.
-
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
 Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/clk/qcom/Kconfig          |   9 +
- drivers/clk/qcom/Makefile         |   1 +
- drivers/clk/qcom/gpucc-x1e80100.c | 659 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 669 insertions(+)
+ drivers/clk/qcom/Kconfig           |   8 ++
+ drivers/clk/qcom/Makefile          |   1 +
+ drivers/clk/qcom/tcsrcc-x1e80100.c | 285 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 294 insertions(+)
 
 diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 29c2deb188c8..d66934ca5e94 100644
+index d66934ca5e94..0633728c870c 100644
 --- a/drivers/clk/qcom/Kconfig
 +++ b/drivers/clk/qcom/Kconfig
-@@ -40,6 +40,15 @@ config CLK_X1E80100_GCC
- 	  Say Y if you want to use peripheral devices such as UART, SPI, I2C,
- 	  USB, UFS, SD/eMMC, PCIe, etc.
+@@ -49,6 +49,14 @@ config CLK_X1E80100_GPUCC
+ 	  Say Y if you want to support graphics controller devices and
+ 	  functionality such as 3D graphics.
  
-+config CLK_X1E80100_GPUCC
-+	tristate "X1E80100 Graphics Clock Controller"
++config CLK_X1E80100_TCSRCC
++	tristate "X1E80100 TCSR Clock Controller"
 +	depends on ARM64 || COMPILE_TEST
-+	select CLK_X1E80100_GCC
++	select QCOM_GDSC
 +	help
-+	  Support for the graphics clock controller on X1E80100 devices.
-+	  Say Y if you want to support graphics controller devices and
-+	  functionality such as 3D graphics.
++	  Support for the TCSR clock controller on X1E80100 devices.
++	  Say Y if you want to use peripheral devices such as SD/UFS.
 +
  config QCOM_A53PLL
  	tristate "MSM8916 A53 PLL"
  	help
 diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index 26478063a270..a037a29e9d61 100644
+index a037a29e9d61..750b084553c6 100644
 --- a/drivers/clk/qcom/Makefile
 +++ b/drivers/clk/qcom/Makefile
-@@ -23,6 +23,7 @@ obj-$(CONFIG_APQ_MMCC_8084) += mmcc-apq8084.o
- obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
+@@ -24,6 +24,7 @@ obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
  obj-$(CONFIG_CLK_X1E80100_DISPCC) += dispcc-x1e80100.o
  obj-$(CONFIG_CLK_X1E80100_GCC) += gcc-x1e80100.o
-+obj-$(CONFIG_CLK_X1E80100_GPUCC) += gpucc-x1e80100.o
+ obj-$(CONFIG_CLK_X1E80100_GPUCC) += gpucc-x1e80100.o
++obj-$(CONFIG_CLK_X1E80100_TCSRCC) += tcsrcc-x1e80100.o
  obj-$(CONFIG_IPQ_APSS_PLL) += apss-ipq-pll.o
  obj-$(CONFIG_IPQ_APSS_6018) += apss-ipq6018.o
  obj-$(CONFIG_IPQ_GCC_4019) += gcc-ipq4019.o
-diff --git a/drivers/clk/qcom/gpucc-x1e80100.c b/drivers/clk/qcom/gpucc-x1e80100.c
+diff --git a/drivers/clk/qcom/tcsrcc-x1e80100.c b/drivers/clk/qcom/tcsrcc-x1e80100.c
 new file mode 100644
-index 000000000000..665d61e4e9ce
+index 000000000000..a815e10ef6f0
 --- /dev/null
-+++ b/drivers/clk/qcom/gpucc-x1e80100.c
-@@ -0,0 +1,659 @@
++++ b/drivers/clk/qcom/tcsrcc-x1e80100.c
+@@ -0,0 +1,285 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2023, Linaro Limited
 + */
 +
 +#include <linux/clk-provider.h>
@@ -162,653 +160,278 @@ index 000000000000..665d61e4e9ce
 +#include <linux/platform_device.h>
 +#include <linux/regmap.h>
 +
-+#include <dt-bindings/clock/qcom,x1e80100-gpucc.h>
-+#include <dt-bindings/reset/qcom,x1e80100-gpucc.h>
++#include <dt-bindings/clock/qcom,x1e80100-tcsr.h>
 +
-+#include "clk-alpha-pll.h"
 +#include "clk-branch.h"
-+#include "clk-rcg.h"
 +#include "clk-regmap.h"
-+#include "clk-regmap-divider.h"
-+#include "clk-regmap-mux.h"
-+#include "gdsc.h"
++#include "common.h"
 +#include "reset.h"
 +
 +enum {
-+	DT_BI_TCXO,
-+	DT_GPLL0_OUT_MAIN,
-+	DT_GPLL0_OUT_MAIN_DIV,
++	DT_BI_TCXO_PAD,
 +};
 +
-+enum {
-+	P_BI_TCXO,
-+	P_GPLL0_OUT_MAIN,
-+	P_GPLL0_OUT_MAIN_DIV,
-+	P_GPU_CC_PLL0_OUT_MAIN,
-+	P_GPU_CC_PLL1_OUT_MAIN,
-+};
-+
-+static const struct pll_vco lucid_ole_vco[] = {
-+	{ 249600000, 2300000000, 0 },
-+};
-+
-+static const struct pll_vco zonda_ole_vco[] = {
-+	{ 700000000, 3600000000, 0 },
-+};
-+
-+static const struct alpha_pll_config gpu_cc_pll0_config = {
-+	.l = 0x29,
-+	.alpha = 0xA000,
-+	.config_ctl_val = 0x08240800,
-+	.config_ctl_hi_val = 0x05008001,
-+	.config_ctl_hi1_val = 0x00000000,
-+	.config_ctl_hi2_val = 0x00000000,
-+	.user_ctl_val = 0x00000000,
-+	.user_ctl_hi_val = 0x02000000,
-+};
-+
-+static struct clk_alpha_pll gpu_cc_pll0 = {
-+	.offset = 0x0,
-+	.vco_table = zonda_ole_vco,
-+	.num_vco = ARRAY_SIZE(zonda_ole_vco),
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_ZONDA_OLE],
++static struct clk_branch tcsr_edp_clkref_en = {
++	.halt_reg = 0x15130,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
++		.enable_reg = 0x15130,
++		.enable_mask = BIT(0),
 +		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_pll0",
-+			.parent_data = &(const struct clk_parent_data) {
-+				.index = DT_BI_TCXO,
++			.name = "tcsr_edp_clkref_en",
++			.ops = &clk_branch2_ops,
++		},
++	},
++};
++
++static struct clk_branch tcsr_pcie_2l_4_clkref_en = {
++	.halt_reg = 0x15100,
++	.halt_check = BRANCH_HALT_DELAY,
++	.clkr = {
++		.enable_reg = 0x15100,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_pcie_2l_4_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.ops = &clk_alpha_pll_zonda_ole_ops,
++			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static const struct alpha_pll_config gpu_cc_pll1_config = {
-+	.l = 0x16,
-+	.alpha = 0xeaaa,
-+	.config_ctl_val = 0x20485699,
-+	.config_ctl_hi_val = 0x00182261,
-+	.config_ctl_hi1_val = 0x82aa299c,
-+	.test_ctl_val = 0x00000000,
-+	.test_ctl_hi_val = 0x00000003,
-+	.test_ctl_hi1_val = 0x00009000,
-+	.test_ctl_hi2_val = 0x00000034,
-+	.user_ctl_val = 0x00000000,
-+	.user_ctl_hi_val = 0x00000005,
-+};
-+
-+static struct clk_alpha_pll gpu_cc_pll1 = {
-+	.offset = 0x1000,
-+	.vco_table = lucid_ole_vco,
-+	.num_vco = ARRAY_SIZE(lucid_ole_vco),
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID_OLE],
++static struct clk_branch tcsr_pcie_2l_5_clkref_en = {
++	.halt_reg = 0x15104,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_pll1",
-+			.parent_data = &(const struct clk_parent_data) {
-+				.index = DT_BI_TCXO,
++		.enable_reg = 0x15104,
++		.enable_mask = BIT(0),
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_pcie_2l_5_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.ops = &clk_alpha_pll_lucid_evo_ops,
++			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static const struct parent_map gpu_cc_parent_map_0[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_GPLL0_OUT_MAIN, 5 },
-+	{ P_GPLL0_OUT_MAIN_DIV, 6 },
-+};
-+
-+static const struct clk_parent_data gpu_cc_parent_data_0[] = {
-+	{ .index = DT_BI_TCXO },
-+	{ .index = DT_GPLL0_OUT_MAIN },
-+	{ .index = DT_GPLL0_OUT_MAIN_DIV },
-+};
-+
-+static const struct parent_map gpu_cc_parent_map_1[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_GPU_CC_PLL0_OUT_MAIN, 1 },
-+	{ P_GPU_CC_PLL1_OUT_MAIN, 3 },
-+	{ P_GPLL0_OUT_MAIN, 5 },
-+	{ P_GPLL0_OUT_MAIN_DIV, 6 },
-+};
-+
-+static const struct clk_parent_data gpu_cc_parent_data_1[] = {
-+	{ .index = DT_BI_TCXO },
-+	{ .hw = &gpu_cc_pll0.clkr.hw },
-+	{ .hw = &gpu_cc_pll1.clkr.hw },
-+	{ .index = DT_GPLL0_OUT_MAIN },
-+	{ .index = DT_GPLL0_OUT_MAIN_DIV },
-+};
-+
-+static const struct parent_map gpu_cc_parent_map_2[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_GPU_CC_PLL1_OUT_MAIN, 3 },
-+	{ P_GPLL0_OUT_MAIN, 5 },
-+	{ P_GPLL0_OUT_MAIN_DIV, 6 },
-+};
-+
-+static const struct clk_parent_data gpu_cc_parent_data_2[] = {
-+	{ .index = DT_BI_TCXO },
-+	{ .hw = &gpu_cc_pll1.clkr.hw },
-+	{ .index = DT_GPLL0_OUT_MAIN },
-+	{ .index = DT_GPLL0_OUT_MAIN_DIV },
-+};
-+
-+static const struct parent_map gpu_cc_parent_map_3[] = {
-+	{ P_BI_TCXO, 0 },
-+};
-+
-+static const struct clk_parent_data gpu_cc_parent_data_3[] = {
-+	{ .index = DT_BI_TCXO },
-+};
-+
-+static const struct freq_tbl ftbl_gpu_cc_ff_clk_src[] = {
-+	F(200000000, P_GPLL0_OUT_MAIN, 3, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 gpu_cc_ff_clk_src = {
-+	.cmd_rcgr = 0x9474,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = gpu_cc_parent_map_0,
-+	.freq_tbl = ftbl_gpu_cc_ff_clk_src,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_ff_clk_src",
-+		.parent_data = gpu_cc_parent_data_0,
-+		.num_parents = ARRAY_SIZE(gpu_cc_parent_data_0),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static const struct freq_tbl ftbl_gpu_cc_gmu_clk_src[] = {
-+	F(19200000, P_BI_TCXO, 1, 0, 0),
-+	F(220000000, P_GPU_CC_PLL1_OUT_MAIN, 2, 0, 0),
-+	F(550000000, P_GPU_CC_PLL1_OUT_MAIN, 2, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 gpu_cc_gmu_clk_src = {
-+	.cmd_rcgr = 0x9318,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = gpu_cc_parent_map_1,
-+	.freq_tbl = ftbl_gpu_cc_gmu_clk_src,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_gmu_clk_src",
-+		.parent_data = gpu_cc_parent_data_1,
-+		.num_parents = ARRAY_SIZE(gpu_cc_parent_data_1),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_shared_ops,
-+	},
-+};
-+
-+static struct clk_rcg2 gpu_cc_hub_clk_src = {
-+	.cmd_rcgr = 0x93ec,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = gpu_cc_parent_map_2,
-+	.freq_tbl = ftbl_gpu_cc_ff_clk_src,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_hub_clk_src",
-+		.parent_data = gpu_cc_parent_data_2,
-+		.num_parents = ARRAY_SIZE(gpu_cc_parent_data_2),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_rcg2 gpu_cc_xo_clk_src = {
-+	.cmd_rcgr = 0x9010,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = gpu_cc_parent_map_3,
-+	.freq_tbl = NULL,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_xo_clk_src",
-+		.parent_data = gpu_cc_parent_data_3,
-+		.num_parents = ARRAY_SIZE(gpu_cc_parent_data_3),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div gpu_cc_demet_div_clk_src = {
-+	.reg = 0x9054,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_demet_div_clk_src",
-+		.parent_hws = (const struct clk_hw*[]) {
-+			&gpu_cc_xo_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div gpu_cc_xo_div_clk_src = {
-+	.reg = 0x9050,
-+	.shift = 0,
-+	.width = 4,
-+	.clkr.hw.init = &(const struct clk_init_data) {
-+		.name = "gpu_cc_xo_div_clk_src",
-+		.parent_hws = (const struct clk_hw*[]) {
-+			&gpu_cc_xo_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_ahb_clk = {
-+	.halt_reg = 0x911c,
-+	.halt_check = BRANCH_HALT_VOTED,
++static struct clk_branch tcsr_pcie_8l_clkref_en = {
++	.halt_reg = 0x15108,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x911c,
++		.enable_reg = 0x15108,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_ahb_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_hub_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_pcie_8l_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_crc_ahb_clk = {
-+	.halt_reg = 0x9120,
-+	.halt_check = BRANCH_HALT_VOTED,
++static struct clk_branch tcsr_usb3_mp0_clkref_en = {
++	.halt_reg = 0x1510c,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x9120,
++		.enable_reg = 0x1510c,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_crc_ahb_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_hub_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb3_mp0_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_cx_ff_clk = {
-+	.halt_reg = 0x914c,
-+	.halt_check = BRANCH_HALT,
++static struct clk_branch tcsr_usb3_mp1_clkref_en = {
++	.halt_reg = 0x15110,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x914c,
++		.enable_reg = 0x15110,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_cx_ff_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_ff_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb3_mp1_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_cx_gmu_clk = {
-+	.halt_reg = 0x913c,
-+	.halt_check = BRANCH_HALT_VOTED,
++static struct clk_branch tcsr_usb2_1_clkref_en = {
++	.halt_reg = 0x15114,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x913c,
++		.enable_reg = 0x15114,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_cx_gmu_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_gmu_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb2_1_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_cxo_aon_clk = {
-+	.halt_reg = 0x9004,
-+	.halt_check = BRANCH_HALT_VOTED,
++static struct clk_branch tcsr_ufs_phy_clkref_en = {
++	.halt_reg = 0x15118,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x9004,
++		.enable_reg = 0x15118,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_cxo_aon_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_xo_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_ufs_phy_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_cxo_clk = {
-+	.halt_reg = 0x9144,
-+	.halt_check = BRANCH_HALT,
++static struct clk_branch tcsr_usb4_1_clkref_en = {
++	.halt_reg = 0x15120,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x9144,
++		.enable_reg = 0x15120,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_cxo_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_xo_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb4_1_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_demet_clk = {
-+	.halt_reg = 0x900c,
-+	.halt_check = BRANCH_HALT,
++static struct clk_branch tcsr_usb4_2_clkref_en = {
++	.halt_reg = 0x15124,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x900c,
++		.enable_reg = 0x15124,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_demet_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_demet_div_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb4_2_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_freq_measure_clk = {
-+	.halt_reg = 0x9008,
-+	.halt_check = BRANCH_HALT,
++static struct clk_branch tcsr_usb2_2_clkref_en = {
++	.halt_reg = 0x15128,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x9008,
++		.enable_reg = 0x15128,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_freq_measure_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_xo_div_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_usb2_2_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_hlos1_vote_gpu_smmu_clk = {
-+	.halt_reg = 0x7000,
-+	.halt_check = BRANCH_HALT_VOTED,
++static struct clk_branch tcsr_pcie_4l_clkref_en = {
++	.halt_reg = 0x1512c,
++	.halt_check = BRANCH_HALT_DELAY,
 +	.clkr = {
-+		.enable_reg = 0x7000,
++		.enable_reg = 0x1512c,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_hlos1_vote_gpu_smmu_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_gx_gmu_clk = {
-+	.halt_reg = 0x90bc,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x90bc,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_gx_gmu_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_gmu_clk_src.clkr.hw,
++		.hw.init = &(struct clk_init_data){
++			.name = "tcsr_pcie_4l_clkref_en",
++			.parent_data = &(const struct clk_parent_data){
++				.index = DT_BI_TCXO_PAD,
 +			},
 +			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
 +		},
 +	},
 +};
 +
-+static struct clk_branch gpu_cc_gx_vsense_clk = {
-+	.halt_reg = 0x90b0,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x90b0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_gx_vsense_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
++static struct clk_regmap *tcsr_cc_x1e80100_clocks[] = {
++	[TCSR_EDP_CLKREF_EN] = &tcsr_edp_clkref_en.clkr,
++	[TCSR_PCIE_2L_4_CLKREF_EN] = &tcsr_pcie_2l_4_clkref_en.clkr,
++	[TCSR_PCIE_2L_5_CLKREF_EN] = &tcsr_pcie_2l_5_clkref_en.clkr,
++	[TCSR_PCIE_8L_CLKREF_EN] = &tcsr_pcie_8l_clkref_en.clkr,
++	[TCSR_USB3_MP0_CLKREF_EN] = &tcsr_usb3_mp0_clkref_en.clkr,
++	[TCSR_USB3_MP1_CLKREF_EN] = &tcsr_usb3_mp1_clkref_en.clkr,
++	[TCSR_USB2_1_CLKREF_EN] = &tcsr_usb2_1_clkref_en.clkr,
++	[TCSR_UFS_PHY_CLKREF_EN] = &tcsr_ufs_phy_clkref_en.clkr,
++	[TCSR_USB4_1_CLKREF_EN] = &tcsr_usb4_1_clkref_en.clkr,
++	[TCSR_USB4_2_CLKREF_EN] = &tcsr_usb4_2_clkref_en.clkr,
++	[TCSR_USB2_2_CLKREF_EN] = &tcsr_usb2_2_clkref_en.clkr,
++	[TCSR_PCIE_4L_CLKREF_EN] = &tcsr_pcie_4l_clkref_en.clkr,
 +};
 +
-+static struct clk_branch gpu_cc_hub_aon_clk = {
-+	.halt_reg = 0x93e8,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x93e8,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_hub_aon_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_hub_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_hub_cx_int_clk = {
-+	.halt_reg = 0x9148,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x9148,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_hub_cx_int_clk",
-+			.parent_hws = (const struct clk_hw*[]) {
-+				&gpu_cc_hub_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_memnoc_gfx_clk = {
-+	.halt_reg = 0x9150,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x9150,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_memnoc_gfx_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_mnd1x_0_gfx3d_clk = {
-+	.halt_reg = 0x9288,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x9288,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_mnd1x_0_gfx3d_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_mnd1x_1_gfx3d_clk = {
-+	.halt_reg = 0x928c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x928c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_mnd1x_1_gfx3d_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch gpu_cc_sleep_clk = {
-+	.halt_reg = 0x9134,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x9134,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(const struct clk_init_data) {
-+			.name = "gpu_cc_sleep_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct gdsc gpu_cc_cx_gdsc = {
-+	.gdscr = 0x9108,
-+	.gds_hw_ctrl = 0x953c,
-+	.en_rest_wait_val = 0x2,
-+	.en_few_wait_val = 0x2,
-+	.clk_dis_wait_val = 0xf,
-+	.pd = {
-+		.name = "gpu_cc_cx_gdsc",
-+	},
-+	.pwrsts = PWRSTS_OFF_ON,
-+	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
-+};
-+
-+static struct gdsc gpu_cc_gx_gdsc = {
-+	.gdscr = 0x905c,
-+	.clamp_io_ctrl = 0x9504,
-+	.en_rest_wait_val = 0x2,
-+	.en_few_wait_val = 0x2,
-+	.clk_dis_wait_val = 0xf,
-+	.pd = {
-+		.name = "gpu_cc_gx_gdsc",
-+		.power_on = gdsc_gx_do_nothing_enable,
-+	},
-+	.pwrsts = PWRSTS_OFF_ON,
-+	.flags = CLAMP_IO | POLL_CFG_GDSCR | RETAIN_FF_ENABLE,
-+};
-+
-+static struct clk_regmap *gpu_cc_x1e80100_clocks[] = {
-+	[GPU_CC_AHB_CLK] = &gpu_cc_ahb_clk.clkr,
-+	[GPU_CC_CRC_AHB_CLK] = &gpu_cc_crc_ahb_clk.clkr,
-+	[GPU_CC_CX_FF_CLK] = &gpu_cc_cx_ff_clk.clkr,
-+	[GPU_CC_CX_GMU_CLK] = &gpu_cc_cx_gmu_clk.clkr,
-+	[GPU_CC_CXO_AON_CLK] = &gpu_cc_cxo_aon_clk.clkr,
-+	[GPU_CC_CXO_CLK] = &gpu_cc_cxo_clk.clkr,
-+	[GPU_CC_DEMET_CLK] = &gpu_cc_demet_clk.clkr,
-+	[GPU_CC_DEMET_DIV_CLK_SRC] = &gpu_cc_demet_div_clk_src.clkr,
-+	[GPU_CC_FF_CLK_SRC] = &gpu_cc_ff_clk_src.clkr,
-+	[GPU_CC_FREQ_MEASURE_CLK] = &gpu_cc_freq_measure_clk.clkr,
-+	[GPU_CC_GMU_CLK_SRC] = &gpu_cc_gmu_clk_src.clkr,
-+	[GPU_CC_GX_GMU_CLK] = &gpu_cc_gx_gmu_clk.clkr,
-+	[GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK] = &gpu_cc_hlos1_vote_gpu_smmu_clk.clkr,
-+	[GPU_CC_GX_VSENSE_CLK] = &gpu_cc_gx_vsense_clk.clkr,
-+	[GPU_CC_HUB_AON_CLK] = &gpu_cc_hub_aon_clk.clkr,
-+	[GPU_CC_HUB_CLK_SRC] = &gpu_cc_hub_clk_src.clkr,
-+	[GPU_CC_HUB_CX_INT_CLK] = &gpu_cc_hub_cx_int_clk.clkr,
-+	[GPU_CC_MEMNOC_GFX_CLK] = &gpu_cc_memnoc_gfx_clk.clkr,
-+	[GPU_CC_MND1X_0_GFX3D_CLK] = &gpu_cc_mnd1x_0_gfx3d_clk.clkr,
-+	[GPU_CC_MND1X_1_GFX3D_CLK] = &gpu_cc_mnd1x_1_gfx3d_clk.clkr,
-+	[GPU_CC_PLL0] = &gpu_cc_pll0.clkr,
-+	[GPU_CC_PLL1] = &gpu_cc_pll1.clkr,
-+	[GPU_CC_SLEEP_CLK] = &gpu_cc_sleep_clk.clkr,
-+	[GPU_CC_XO_CLK_SRC] = &gpu_cc_xo_clk_src.clkr,
-+	[GPU_CC_XO_DIV_CLK_SRC] = &gpu_cc_xo_div_clk_src.clkr,
-+};
-+
-+static struct gdsc *gpu_cc_x1e80100_gdscs[] = {
-+	[GPU_CC_CX_GDSC] = &gpu_cc_cx_gdsc,
-+	[GPU_CC_GX_GDSC] = &gpu_cc_gx_gdsc,
-+};
-+
-+static const struct qcom_reset_map gpu_cc_x1e80100_resets[] = {
-+	[GPUCC_GPU_CC_ACD_BCR] = { 0x9358 },
-+	[GPUCC_GPU_CC_CB_BCR] = { 0x93a0 },
-+	[GPUCC_GPU_CC_CX_BCR] = { 0x9104 },
-+	[GPUCC_GPU_CC_FAST_HUB_BCR] = { 0x93e4 },
-+	[GPUCC_GPU_CC_FF_BCR] = { 0x9470 },
-+	[GPUCC_GPU_CC_GFX3D_AON_BCR] = { 0x9198 },
-+	[GPUCC_GPU_CC_GMU_BCR] = { 0x9314 },
-+	[GPUCC_GPU_CC_GX_BCR] = { 0x9058 },
-+	[GPUCC_GPU_CC_XO_BCR] = { 0x9000 },
-+};
-+
-+static const struct regmap_config gpu_cc_x1e80100_regmap_config = {
++static const struct regmap_config tcsr_cc_x1e80100_regmap_config = {
 +	.reg_bits = 32,
 +	.reg_stride = 4,
 +	.val_bits = 32,
-+	.max_register = 0x9988,
++	.max_register = 0x2f000,
 +	.fast_io = true,
 +};
 +
-+static const struct qcom_cc_desc gpu_cc_x1e80100_desc = {
-+	.config = &gpu_cc_x1e80100_regmap_config,
-+	.clks = gpu_cc_x1e80100_clocks,
-+	.num_clks = ARRAY_SIZE(gpu_cc_x1e80100_clocks),
-+	.resets = gpu_cc_x1e80100_resets,
-+	.num_resets = ARRAY_SIZE(gpu_cc_x1e80100_resets),
-+	.gdscs = gpu_cc_x1e80100_gdscs,
-+	.num_gdscs = ARRAY_SIZE(gpu_cc_x1e80100_gdscs),
++static const struct qcom_cc_desc tcsr_cc_x1e80100_desc = {
++	.config = &tcsr_cc_x1e80100_regmap_config,
++	.clks = tcsr_cc_x1e80100_clocks,
++	.num_clks = ARRAY_SIZE(tcsr_cc_x1e80100_clocks),
 +};
 +
-+static const struct of_device_id gpu_cc_x1e80100_match_table[] = {
-+	{ .compatible = "qcom,x1e80100-gpucc" },
++static const struct of_device_id tcsr_cc_x1e80100_match_table[] = {
++	{ .compatible = "qcom,x1e80100-tcsr" },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, gpu_cc_x1e80100_match_table);
++MODULE_DEVICE_TABLE(of, tcsr_cc_x1e80100_match_table);
 +
-+static int gpu_cc_x1e80100_probe(struct platform_device *pdev)
++static int tcsr_cc_x1e80100_probe(struct platform_device *pdev)
 +{
-+	struct regmap *regmap;
-+
-+	regmap = qcom_cc_map(pdev, &gpu_cc_x1e80100_desc);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	clk_zonda_pll_configure(&gpu_cc_pll0, regmap, &gpu_cc_pll0_config);
-+	clk_lucid_evo_pll_configure(&gpu_cc_pll1, regmap, &gpu_cc_pll1_config);
-+
-+	/*
-+	 * Keep clocks always enabled:
-+	 *	gpu_cc_cb_clk
-+	 */
-+	regmap_update_bits(regmap, 0x93a4, BIT(0), BIT(0));
-+
-+	return qcom_cc_really_probe(pdev, &gpu_cc_x1e80100_desc, regmap);
++	return qcom_cc_probe(pdev, &tcsr_cc_x1e80100_desc);
 +}
 +
-+static struct platform_driver gpu_cc_x1e80100_driver = {
-+	.probe = gpu_cc_x1e80100_probe,
++static struct platform_driver tcsr_cc_x1e80100_driver = {
++	.probe = tcsr_cc_x1e80100_probe,
 +	.driver = {
-+		.name = "gpu_cc-x1e80100",
-+		.of_match_table = gpu_cc_x1e80100_match_table,
++		.name = "tcsr_cc-x1e80100",
++		.of_match_table = tcsr_cc_x1e80100_match_table,
 +	},
 +};
-+module_platform_driver(gpu_cc_x1e80100_driver);
 +
-+MODULE_DESCRIPTION("QTI GPU_CC x1e80100 Driver");
++static int __init tcsr_cc_x1e80100_init(void)
++{
++	return platform_driver_register(&tcsr_cc_x1e80100_driver);
++}
++subsys_initcall(tcsr_cc_x1e80100_init);
++
++static void __exit tcsr_cc_x1e80100_exit(void)
++{
++	platform_driver_unregister(&tcsr_cc_x1e80100_driver);
++}
++module_exit(tcsr_cc_x1e80100_exit);
++
++MODULE_DESCRIPTION("QTI TCSRCC X1E80100 Driver");
 +MODULE_LICENSE("GPL");
 
 -- 
