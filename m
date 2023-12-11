@@ -2,262 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0863B80DD72
+	by mail.lfdr.de (Postfix) with ESMTP id B152780DD74
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345232AbjLKVje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S1345436AbjLKVjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjLKVjc (ORCPT
+        with ESMTP id S230101AbjLKVje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:39:32 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C42E8;
-        Mon, 11 Dec 2023 13:39:37 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-4647e1fd35cso1298769137.0;
-        Mon, 11 Dec 2023 13:39:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702330776; x=1702935576; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2NZ5CJEGXmBj70A7RmBl7daaBdWL8Nh0RLp7iC/TCj0=;
-        b=QhtLoLvADKeYUNW37OkIb1thrqNIut5jFfgRxnIawsV69Sk4KkJwQVMmiDcZ1mjd1/
-         36PnaSPW4ZuxzJcHkcJZO53+TaqiK+gcNbb3oR49VFPHyS5BXedvqyjhTb7Uq07+ll8X
-         cgUr5C+QWD9jmqF9LXAru4eAKDLM4F70tDo+8GR83vuICe/V38IGDwKSqE/tMBUNvYA8
-         sjcoslFUTTXI0Oy8gEbweZCpvw2P6iNsLqyidC5fCV95WlmdPXUn82rerZWAUEvYOri1
-         O+O9ME/isOGjLrU5qabbv0GB0DSE7YjrxSqXeJ6WeMjLE397k9ZxRcjtWPlJnsii25M5
-         df2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702330776; x=1702935576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2NZ5CJEGXmBj70A7RmBl7daaBdWL8Nh0RLp7iC/TCj0=;
-        b=EkbT9b1tsjnLqCE7b4sRQ31cLkp+4O3DlS/661n3dlglL3aUQfjWDdKiJ7d1tSwBh0
-         YgjKM3PML7hAWBFUW4kUyebhQCB9sqPiTUb5ARgskMkKYCYbEwvc8B6rMWJCV6m1pp1s
-         kVGs1IZWMUIp77N1Glj7nMgOqwcMojmbZV4yhvsYHCP9rkkgXRukfWz3D3UKZ3qId/iN
-         l1qzP3aRt2ARuzv9NkVRvsjP4ylqDsaimNX0u7DMtFktAJvhY5+dKB+lw4Bm+pA1/SNq
-         huTN2MLUnyEtpLjFK/iTG0WZDoD3KMSvcleNMlSFBuSPtCup7rSmmlnf1qWY6mzzvSgs
-         RAjw==
-X-Gm-Message-State: AOJu0YzVoCQV6u5HhpIT74JuK7pZJP/kfAUN8v3Z/qCuxXhuTbdFfZNP
-        38p3qHhyKK3sidU8UTW6tcuuJw9Hp6IRHhRgn+lKHjxmTukR+w==
-X-Google-Smtp-Source: AGHT+IGggXsrNXVPAhLoWJQlGqDk3Ep3b86fc2Bfl/RIFEU2YuDNeKRXkOHg1Fk/ZtrfaOCaIz42zHeRpRyFB20LRE8=
-X-Received: by 2002:a05:6102:3ed6:b0:465:e39c:476b with SMTP id
- n22-20020a0561023ed600b00465e39c476bmr3452415vsv.32.1702330776266; Mon, 11
- Dec 2023 13:39:36 -0800 (PST)
+        Mon, 11 Dec 2023 16:39:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F246C4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:39:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D657DC433C7;
+        Mon, 11 Dec 2023 21:39:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702330780;
+        bh=DJzT/+cc0AJqLW4pldSyhoXC+1cJku2DkenpvUYqIfk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UQBlTVCDf58q07TcrYjQ59xXuTWWfl6Vc6U1nDuWsfcVOavgqyypcqYhpVObRG4OQ
+         dx1Y7/wRdLptSr+QtLwviqYjxk81q3yngumwNNl9exR/Fk9rq8lGomGig8+tWo+CWG
+         uEbb9Noi21I2XOUk4Wt5Rwsdfb9RA3AOjX3mHdVIZ2cigw9e9xsSNzn9hX4GfFg9cg
+         9oQAidAd8l8/3+zTLgguS7nsoiLrNdSIAOy7Nl6mdaSlI4wROhyvDUHo9WYI1wYCTT
+         aqSzxiA0in6ktR3FxAoFIylMRdv33A2dbi3By3n/+cs9PsqofjT75rAnbWodoOu3OT
+         m6d59NmWGC58Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 76730CE04B6; Mon, 11 Dec 2023 13:39:40 -0800 (PST)
+Date:   Mon, 11 Dec 2023 13:39:40 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/8] rcu: Fix expedited GP deadlock (and cleanup some
+ nocb stuff)
+Message-ID: <c429620e-53ab-4cd1-b1c2-ca83f4f3cea7@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231208220545.7452-1-frederic@kernel.org>
+ <0be847d6-804e-4f9d-9eb4-beee9efb6c78@paulmck-laptop>
+ <ZXdrNJFCaXAFMITp@localhost.localdomain>
 MIME-Version: 1.0
-References: <cover.1702325874.git.dxu@dxuuu.xyz> <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
-In-Reply-To: <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Mon, 11 Dec 2023 13:39:25 -0800
-Message-ID: <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org,
-        ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
-        andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devel@linux-ipsec.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXdrNJFCaXAFMITp@localhost.localdomain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, Dec 11, 2023 at 09:04:04PM +0100, Frederic Weisbecker wrote:
+> Le Mon, Dec 11, 2023 at 08:38:59AM -0800, Paul E. McKenney a écrit :
+> > On Fri, Dec 08, 2023 at 11:05:37PM +0100, Frederic Weisbecker wrote:
+> > > TREE04 can trigger a writer stall if run with memory pressure. This
+> > > is due to a circular dependency between waiting for expedited grace
+> > > period and polling on expedited grace period when workqueues go back
+> > > to mayday serialization.
+> > > 
+> > > Here is a proposal fix.
+> > 
+> > The torture.sh "acceptance test" with KCSAN and --duration 30 ran
+> > fine except for this in TREE09:
+> > 
+> > kernel/rcu/tree_nocb.h:1785:13: error: unused function '__call_rcu_nocb_wake' [-Werror,-Wunused-function]
+> > 
+> > My guess is that the declaration of __call_rcu_nocb_wake() in
+> > kernel/rcu/tree.h needs an "#ifdef CONFIG_SMP", but you might have a
+> > better fix.
+> 
+> Could be because if CONFIG_RCU_NO_CB_CPU=n, the function is only called
+> (though as dead code) from rcutree_migrate_callbacks() which in turn only
+> exists if CONFIG_HOTPLUG_CPU=y.
+> 
+> Something like that then:
+> 
+> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+> index 35f7af331e6c..e1ff53d5084c 100644
+> --- a/kernel/rcu/tree.h
+> +++ b/kernel/rcu/tree.h
+> @@ -445,6 +445,8 @@ static void rcu_qs(void);
+>  static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp);
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
+> +static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
+> +				 unsigned long flags);
+>  #endif /* #ifdef CONFIG_HOTPLUG_CPU */
+>  static int rcu_print_task_exp_stall(struct rcu_node *rnp);
+>  static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp);
+> @@ -466,8 +468,6 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+>  				  unsigned long j, bool lazy);
+>  static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
+>  			  rcu_callback_t func, unsigned long flags, bool lazy);
+> -static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
+> -				 unsigned long flags);
+>  static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
+>  static bool do_nocb_deferred_wakeup(struct rcu_data *rdp);
+>  static void rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp);
 
-Tiny nits below in case you respin this for other reasons:
+This one passes TREE01 and TINY01, but on TREE09 still gets this:
 
-On Mon, Dec 11, 2023 at 12:20=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> This commit extends test_tunnel selftest to test the new XDP xfrm state
-> lookup kfunc.
->
-> Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
->  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
->  2 files changed, 67 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools=
-/testing/selftests/bpf/prog_tests/test_tunnel.c
-> index 2d7f8fa82ebd..fc804095d578 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
->         SYS(fail,
->             "ip netns exec at_ns0 "
->                 "ip xfrm state add src %s dst %s proto esp "
-> -                       "spi %d reqid 1 mode tunnel "
-> +                       "spi %d reqid 1 mode tunnel replay-window 42 "
->                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s"=
-,
->             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUT=
-H, XFRM_ENC);
->         SYS(fail,
-> @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
->         SYS(fail,
->             "ip netns exec at_ns0 "
->                 "ip xfrm state add src %s dst %s proto esp "
-> -                       "spi %d reqid 2 mode tunnel "
-> +                       "spi %d reqid 2 mode tunnel replay-window 42 "
+kernel/rcu/tree_nocb.h:1785:13: error: ‘__call_rcu_nocb_wake’ defined but not used [-Werror=unused-function]
 
-nit: why do you need to set the replay-window in both directions?
+Huh.  I suppose that there is always __maybe_unused?
 
->                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s"=
-,
->             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUT=
-H, XFRM_ENC);
->         SYS(fail,
-> @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
->          */
->         SYS(fail,
->             "ip xfrm state add src %s dst %s proto esp "
-> -                   "spi %d reqid 1 mode tunnel "
-> +                   "spi %d reqid 1 mode tunnel replay-window 42 "
->                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
->             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUT=
-H, XFRM_ENC);
->         SYS(fail,
-> @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
->         /* root -> at_ns0 */
->         SYS(fail,
->             "ip xfrm state add src %s dst %s proto esp "
-> -                   "spi %d reqid 2 mode tunnel "
-> +                   "spi %d reqid 2 mode tunnel replay-window 42 "
->                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
->             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUT=
-H, XFRM_ENC);
->         SYS(fail,
-> @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
->  {
->         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
->                             .attach_point =3D BPF_TC_INGRESS);
-> +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
->         struct test_tunnel_kern *skel =3D NULL;
->         struct nstoken *nstoken;
-> +       int xdp_prog_fd;
->         int tc_prog_fd;
->         int ifindex;
->         int err;
-> @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
->         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
->                 goto done;
->
-> +       /* attach xdp prog to tunnel dev */
-> +       xdp_prog_fd =3D bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> +               goto done;
-> +       err =3D bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &=
-opts);
-> +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> +               goto done;
-> +
->         /* ping from at_ns0 namespace test */
->         nstoken =3D open_netns("at_ns0");
->         err =3D test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
->                 goto done;
->         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"=
-))
->                 goto done;
-> +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"=
-))
-> +               goto done;
->
->  done:
->         delete_xfrm_tunnel();
-> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools=
-/testing/selftests/bpf/progs/test_tunnel_kern.c
-> index 3a59eb9c34de..c0dd38616562 100644
-> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
->                           struct bpf_fou_encap *encap, int type) __ksym;
->  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
->                           struct bpf_fou_encap *encap) __ksym;
-> +struct xfrm_state *
-> +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *o=
-pts,
-> +                      u32 opts__sz) __ksym;
-> +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
->
->  struct {
->         __uint(type, BPF_MAP_TYPE_ARRAY);
-> @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
->         return TC_ACT_OK;
->  }
->
-> +volatile int xfrm_replay_window =3D 0;
-> +
-> +SEC("xdp")
-> +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> +{
-> +       struct bpf_xfrm_state_opts opts =3D {};
-> +       struct xfrm_state *x =3D NULL;
-> +       struct ip_esp_hdr *esph;
-> +       struct bpf_dynptr ptr;
-> +       u8 esph_buf[8] =3D {};
-> +       u8 iph_buf[20] =3D {};
-> +       struct iphdr *iph;
-> +       u32 off;
-> +
-> +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> +               goto out;
-> +
-> +       off =3D sizeof(struct ethhdr);
-> +       iph =3D bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> +       if (!iph || iph->protocol !=3D IPPROTO_ESP)
-> +               goto out;
-> +
-> +       off +=3D sizeof(struct iphdr);
-> +       esph =3D bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> +       if (!esph)
-> +               goto out;
-> +
-> +       opts.netns_id =3D BPF_F_CURRENT_NETNS;
-> +       opts.daddr.a4 =3D iph->daddr;
-> +       opts.spi =3D esph->spi;
-> +       opts.proto =3D IPPROTO_ESP;
-> +       opts.family =3D AF_INET;
-> +
-> +       x =3D bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> +       if (!x || opts.error)
-
-nit: how can opts.error be non zero if x =3D=3D NULL?
-
-
-Eyal.
-
-
-> +               goto out;
-> +
-> +       if (!x->replay_esn)
-> +               goto out;
-> +
-> +       xfrm_replay_window =3D x->replay_esn->replay_window;
-> +out:
-> +       if (x)
-> +               bpf_xdp_xfrm_state_release(x);
-> +       return XDP_PASS;
-> +}
-> +
->  char _license[] SEC("license") =3D "GPL";
-> --
-> 2.42.1
->
+							Thanx, Paul
