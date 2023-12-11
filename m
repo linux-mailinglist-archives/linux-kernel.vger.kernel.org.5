@@ -2,65 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D0880C671
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195BB80C677
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjLKK0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:26:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S234183AbjLKK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235042AbjLKKZ6 (ORCPT
+        with ESMTP id S235061AbjLKK0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:25:58 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673E591
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:26:04 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54dca2a3f16so7793492a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:26:04 -0800 (PST)
+        Mon, 11 Dec 2023 05:26:04 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFCCC2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:26:09 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c3fe6c1b5so15084155e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:26:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702290363; x=1702895163; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=linaro.org; s=google; t=1702290368; x=1702895168; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=r2aeQLk9tLoU8aAvYRhP9s0o8YVupdtuxQZShU2pq18=;
-        b=L1I1gYtcRj1TYz8DAJFnW0WLaQngd6FE6R5w23Mjj+utws8+hdZgrbfSWJeVHnUIya
-         NbPOCAw4GNzdgRwcxFf0aVwLfzUGsGtUw6nmxC3GfT6x4MVzfrqtac9dME2aS6zIhWZM
-         GFIr0nfdBbidi82aoiaogpXX+hzimgDScWp6KacwgK2Zh1pfguzStyyhavqAvsNgB/ak
-         cMlhuc+GGJR1hIFyqTirWgQvDs2YYiRCAhPO4rkMJHZ64Fs77DAbZTAia4Z3FciM1tCV
-         Y27hnKODEUUiI6ec6epwf0L04deC1qJbmXe/BY02g2YaegkMfzgPBEqQKfosOJcOjsko
-         xHoQ==
+        bh=n2btn1TXIdRL90YK9bKoqfxU9s763ksK+ait2erqVOo=;
+        b=MsDVDkN0RgIMYh+0veu4mOezDm0b7ip7rqcD2eguLM5hi6+y96mKpIvSMUrjmCvYqx
+         O6t89hES4WEZaN6V9Ei5WZA7886baAex0ftviNyL9WZQ2sKIsEEQ1r3dv2gPLUAiCKV5
+         +KyM5ralAAq/HGwekNsctwQknBO1AtzJ9Z5gFngvZx64MFwqb5ivzwJu0OL8Hvpkv5P4
+         jrfJHBLlf6DllS7YtP/L6KvFWTFLu4xE1357dJBjRHVHTxxLXYI/cwUMPraVr6rIm5Xt
+         CYEnDew6vn7qtAF+igosUU5/yvoTA7lsVTRHaxRfUfBUGrBZT/bIWiE89eV/nBRpOo+J
+         PSRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702290363; x=1702895163;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1702290368; x=1702895168;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r2aeQLk9tLoU8aAvYRhP9s0o8YVupdtuxQZShU2pq18=;
-        b=kOH9OB7GWEb9FqD56Q/qmEMa6x+TCz63EshrfhVHB3uQj7Epzw1QoD975WXgZlkPp1
-         vmr+p3chvC2DUKTUqvV2HUdLODsiOtMfc5IJov68++u/pih23JUmqEFwM28nNXvjg+m+
-         WSfcRSqGXmPF7mjq7/zxRIvTBmKkF6YF5a3Vbd6i3Pzod/JazLJOPL5wQB9UFwqhrs2B
-         HbUfJIl4bltk9q8ki051dG+osZ0maq1viWJuQjzqJ9MHd3zvNx+MPUF5e7xEDmt5EIEZ
-         fGlrz1gdXBYzliXEeBvNPP6o5P3jA5q/6VMlQkgnmRVBINlR5C8icSVHWvJQQJ6pHynO
-         FRxA==
-X-Gm-Message-State: AOJu0YxGifueMAbTbjNTXbNcZ5TDu+acBiatwwrU7Ky+L9OpNsNwd6B6
-        H5KPkYbN6vBllBcjbxJErVJHRnWBZK3AAkJdYEc=
-X-Google-Smtp-Source: AGHT+IHnKIDENGCReOWeULMrsPkwpXYOp0bNojasZmK0ptnP+q/0vscN2VYywudbNNMmv4QFdJ40fg==
-X-Received: by 2002:a17:907:20aa:b0:a1c:6e3e:4873 with SMTP id pw10-20020a17090720aa00b00a1c6e3e4873mr3407157ejb.43.1702290362869;
-        Mon, 11 Dec 2023 02:26:02 -0800 (PST)
-Received: from rayden (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
-        by smtp.gmail.com with ESMTPSA id tf7-20020a1709078d8700b00a1f7852c876sm3647282ejc.185.2023.12.11.02.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 02:26:02 -0800 (PST)
-Date:   Mon, 11 Dec 2023 11:26:00 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: [GIT PULL] OP-TEE reserved system thread for 6.8
-Message-ID: <20231211102600.GA571787@rayden>
+        bh=n2btn1TXIdRL90YK9bKoqfxU9s763ksK+ait2erqVOo=;
+        b=wW8sa/jgFTZEv/eHSMWYGk2G3KU42KsrIKiGy7iO9FbHu0d1+diVYVFH33MTrRqU+r
+         MSGpO/CIiXp9RQkRM/7tB7BFVkIDPtTXqWsdKyhrrS+JD97jit3e7hrfyq2U/FcdpvZ4
+         ycp1rJsJOsw3TSnlMOv7YncgM8G/+ddbYUJDUDPp1qWXDKUxi5qK2gTQfP03B3jWPtml
+         09pyPMoLoOxMB/AxlHBUJG2/xOPNORWbSO09WLj71ChGJQJ5pV6Qh0k9qq8QFrsH0yp2
+         QRnh4RcnFXCmWXWlgdA2JYcfwC2AkfWtHrQl5bHFhA1yuTJedgArB6EXP0F1ud1R04Kr
+         V86A==
+X-Gm-Message-State: AOJu0YxKRZ0sWcShNK7Si98zzZhqkDGP5QJJwqJ7VJ9xEOVwy/8FDALl
+        KSK0HDBMAVbaDwfqbwqK9+dRc/V+P2gztCTfsiY=
+X-Google-Smtp-Source: AGHT+IHQJULIJOM8Kxa+TaN7YpI1Yd8nvOxyDK88VFuNJR5Ll0HyxhXm136b7HIWX7tkU1GqQe7Vww==
+X-Received: by 2002:a7b:c416:0:b0:40c:2e1c:8f7f with SMTP id k22-20020a7bc416000000b0040c2e1c8f7fmr1909361wmi.143.1702290367893;
+        Mon, 11 Dec 2023 02:26:07 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id r20-20020a05600c35d400b0040b538047b4sm14815328wmq.3.2023.12.11.02.26.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 02:26:07 -0800 (PST)
+Message-ID: <eafc8adc-d43c-43e6-9561-6e1482545317@linaro.org>
+Date:   Mon, 11 Dec 2023 11:26:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/7] dt-bindings: arm: qcom,ids: add SoC ID for QCS8550
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <20231207092801.7506-1-quic_tengfan@quicinc.com>
+ <20231207092801.7506-5-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231207092801.7506-5-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,47 +121,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On 07/12/2023 10:27, Tengfei Fan wrote:
+> Add the ID for the Qualcomm QCS8550 SoC.
+> 
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
 
-Please pull these patches that enables SCMI with OP-TEE transport to to
-reserve a thread in the secure world to guarentee that requests will not
-have to wait for a thread to become available.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks,
-Jens
+Best regards,
+Krzysztof
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-
-are available in the Git repository at:
-
-  https://git.linaro.org/people/jens.wiklander/linux-tee.git tags/system-thread-for-v6.8
-
-for you to fetch changes up to 4b391c9c37646f25118355f414b9e6d9fefe782f:
-
-  firmware: arm_scmi: optee: use optee system invocation (2023-11-17 15:48:03 +0100)
-
-----------------------------------------------------------------
-OP-TEE add reserved system thread
-
-Add support for a reserved system thread in the SMC-ABI of the OP-TEE driver.
-SCMI with OP-TEE transport uses this to guarantee that it will always have
-a thread available in the secure world.
-
-----------------------------------------------------------------
-Etienne Carriere (4):
-      tee: optee: system thread call property
-      tee: system session
-      tee: optee: support tracking system threads
-      firmware: arm_scmi: optee: use optee system invocation
-
- drivers/firmware/arm_scmi/optee.c |   4 ++
- drivers/tee/optee/call.c          | 130 ++++++++++++++++++++++++++++++++++++--
- drivers/tee/optee/core.c          |   5 +-
- drivers/tee/optee/ffa_abi.c       |  14 ++--
- drivers/tee/optee/optee_private.h |  29 ++++++++-
- drivers/tee/optee/smc_abi.c       |  32 +++++++---
- drivers/tee/tee_core.c            |   8 +++
- include/linux/tee_drv.h           |  16 +++++
- 8 files changed, 211 insertions(+), 27 deletions(-)
