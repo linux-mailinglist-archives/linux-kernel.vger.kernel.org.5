@@ -2,283 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED3580C2AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0581B80C2C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbjLKIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S232227AbjLKILd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:11:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233884AbjLKIFi (ORCPT
+        with ESMTP id S229808AbjLKILb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:05:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3064A100;
-        Mon, 11 Dec 2023 00:05:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702281944; x=1733817944;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=zLKpfEshP81Zk2arI9WmVZOoX9JPFPjvSk5cw9cMK9E=;
-  b=VsmxpWoEYxBsMGtf3hlppe5iLt98+tiXSPKtq5dJIc4Mf3rCDoxGlFJm
-   XOZ9q1ASgF7+rGeQ56OWvitn0WAnmGU5rULedOslGm17zf5TaqGCDG8os
-   3GXJgqT8LKVy5mWue495PVlkA4FTg+OjsHv9FipeRj3XAS84W52Y1Mn9R
-   hFixYY7GtL39L/ZV91HsnRQTsRccTqXtRM1A66cnyGQ6GwsEYSSAty5iZ
-   3w6SIzhR5K80BkayLK56qbcajoyotEOILLFCrQ04j27tkNchame6Dsj7E
-   UPvauv//o2lZKeWievZ+BoOwHEORYtPqqQwy3eWgHmwyG58Mkp+sqILqF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="1738012"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="1738012"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 00:05:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="916744452"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="916744452"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 00:05:42 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 00:05:42 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 00:05:41 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 00:05:41 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Dec 2023 00:05:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K3IipY1w+Fp3RwWOYyV8yBbxSFiFWbqy+6y3g7ZkMN4ZZAnDPY4kkwxWUc8gz0mxl+ZM240OdO0Zm59r8G8AOn/ZFWQuAxN502GkZBfWP2RZ1d4k4sENWH2XY5d9Zz3/aojt7X8crWL/HkAdr+qaFQbykVEAqgH+ZNMaPj9rLnRLNc1eEsIhnvV8AYF0r4hS9vBAYSC/MkKbLaImw0ifA/S4MUx0wTfkJMfyzAZ32/RUYM/Pmsl7JTwsiJmfjKvydllnAFnXyJrgp6ITcHJQc/kYDk/y2Lo8KoVENV0J2TB2S19N8dzmOhfhESqrWThlp1J0tVACsc11PrAeR0ywlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q1J6RsllcLPTEgixrOQdSrtNjWcH7iIJ9Qzk8+VJpQA=;
- b=g2TLpXaiiJ2n1VOLjCY2wf+63EqSdg9WC7oIktXC2BhX+SzMGkTpMZus3NcQk74k7V6Pxsa6mJcxo4/1nKKDJgmGbCP1OnN9MFFVpIdw1Z/HwssJWwcLewNUJ07wjn+joQZygTWAGBEnqQeCIhgeUwg5kylaACvw54cc2TnZBj+vkvafJ9rprydBKU2tJAa6n4BDTdtb/WdR8h0/+2IqQJGDIXcIwbdEoQAb7sTIjhK9tzJy+3MB8GO5356CWHbRNsBcMO6ybwpUD/AacK7c7AYO8Ay0yB9fzcZ0VQU7Hya+X42/Oh9EOY7vNDWiTCyOwP65/e6EhNZU2qB5G27XUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by IA0PR11MB7933.namprd11.prod.outlook.com (2603:10b6:208:407::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 08:05:39 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 08:05:39 +0000
-Message-ID: <0bdae2ca-a200-4db1-a016-059730d1545e@intel.com>
-Date:   Mon, 11 Dec 2023 16:08:11 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] vfio: Report PASID capability via VFIO_DEVICE_FEATURE
- ioctl
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
- <20231127063909.129153-4-yi.l.liu@intel.com>
- <BN9PR11MB527639DBE4C433542F351F6D8C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <BN9PR11MB527639DBE4C433542F351F6D8C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0024.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::12) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+        Mon, 11 Dec 2023 03:11:31 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1081ED
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:11:36 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1c8512349dso552248566b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1702282295; x=1702887095; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=qcJzdfqObNDmtw7E9OrdNF6CpUIv0YRzgPXgPrIHK7o=;
+        b=VndMP9Rqnng4v4Sd3w9eRoLvN0kibuwPDQMdKcLOkKE5tKwpEhsO9CkgEDDEwf2s2Z
+         bS/0oKUdp3/jobvstS8VZgmvh4jNv+F2q1Ixu1sXD8cN6J8/3wgotZZRwjx7vtkKU6ah
+         txq//rzHw5kaFVqN2lTkTINYXHFXCEpRX9f7zUmhVhZpAsqBEQz5ezIkdj3l2eSSGmoh
+         TuNmfWgAi8p4rsHy5Wai/eldjDBPon3mp5usyOCLWZrinHJGUev9KgZczEVAJ1d5Taqe
+         7ll9J5LGC8aT4on1MzpSnyiTH1+42+gjuwcVI5UcKXBcFsJGEhDyzePPBAR0lYR3kARW
+         YISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702282295; x=1702887095;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qcJzdfqObNDmtw7E9OrdNF6CpUIv0YRzgPXgPrIHK7o=;
+        b=Cz5CK0UNsuMhhLcXN3UA1saFVrKcm/xFs8ZkOiUdegzbc1kT1Iun/RpqAKk5TF4xz4
+         f3O2Md9JgfZYBCBc5YZ0vfAakOqwDmgicKnXhGBVNCmRsH5FjKH2g/F0aQBPdr+JGa3I
+         XC2WUfky4YxA1nmLbC+Dnke+71/StaLJDfiIGNupiyHhYikM1PSoFkA4kntihWYasxBA
+         Te0F2G9vMxLfNlLMefUknlipxDEAjuXimCn700ZUqOZbLOlS+JgZEi8a3EBc9FTHyDIh
+         gHAehYkflNYhxTGnjZTEb6dLwvC5GUkYiIcULZtym864qW91UiJr7ZaBlrGprwWqXvZ+
+         CR/g==
+X-Gm-Message-State: AOJu0YyPgjFrZEMeivPNLNk97yYkjZVtDdS/FchBHTQn8lS6hWaYIrkY
+        ZXmEBDDG8I2slqs0mk2f6580Xg==
+X-Google-Smtp-Source: AGHT+IEWPPXjJlNrj3NjX+wLy7GNr35ypGKtIG66b5BUVBjQy06MhULrNT8Tm43Kdd2wfuFP7zdwAw==
+X-Received: by 2002:a17:907:8688:b0:a1d:5b0d:1c42 with SMTP id qa8-20020a170907868800b00a1d5b0d1c42mr2695236ejc.35.1702282295196;
+        Mon, 11 Dec 2023 00:11:35 -0800 (PST)
+Received: from localhost ([194.62.217.2])
+        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm4425472eja.217.2023.12.11.00.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 00:11:34 -0800 (PST)
+References: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
+ <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
+ <20231211064742.63l4cmvxe4uso5us@vireshk-i7>
+User-agent: mu4e 1.10.7; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: rust: Clarify that 'rustup override' applies to
+ build directory
+Date:   Mon, 11 Dec 2023 09:09:22 +0100
+In-reply-to: <20231211064742.63l4cmvxe4uso5us@vireshk-i7>
+Message-ID: <87h6kpf9am.fsf@metaspace.dk>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|IA0PR11MB7933:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1993d188-5b0a-46d9-c3e6-08dbfa1ff615
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LSR+U5ewM0ndpBsN4jQCtYK/SPx4SnuMnoRISO0JId0i/TaY3piGSCIiT2NHBguaxnRo8/VAP6bzh0uBfWwgUuFHk5z5tKrF2mZUH8C+GcHTSx6cj2JiiaxwFxj02QH6tsFs6ZYKmfxbyAWGyB2qNzHubQedAqnI3cHJH/pG4ZPiCDKnGjvo0WHjlGb6MhJvNiRwLqqJYmAnqiXdO5n+AEerWkDD6QQvZ+9nsfxMizYjW6bpG9pI831ILgMG1PBk1C9ZYtjhRH5S3bgn1ySGK3OQiFPq7VXRe1MEbxb83NsMBXJQt3ScjT2ZnP4fJ0s/Mx4q9EOMdww8wFq21M8jwi21nJ7L55lOvyOspugVlmSgO545ADxyZm3eyTtsN6AXPiUwHpf3VWU4NcfEZlC4EGpoRNLhQMBZcQql2xWdVaCjKO2GFBjk/mx32PTiFnu4u65qpSYIzv/bft9Unn7qIdfdGC5IBla+ovbiqniP5Vfvl1XV5byNZAFQtqT7iwdvpMiAcU96ejJA1aM5pnuG/jhQnidgEXaSE00Q787EptrjUUOFPZ2IeJJ1uKgK6QTgACFRtMs2d1yeYRMjFK/2WNvTgKdrQ9mhzImqz36chL0sYJ3lrNQgNlMnZUcwp2N/YZZAUDLrKYVA0IiGp/kJ3g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(136003)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6512007)(6486002)(2616005)(26005)(53546011)(478600001)(6506007)(6666004)(7416002)(5660300002)(41300700001)(2906002)(54906003)(66476007)(66556008)(66946007)(4326008)(8676002)(8936002)(316002)(110136005)(38100700002)(82960400001)(86362001)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXpOWk43cjVpa0UxV25qQndGdGphNHlVN3R6RUxCNkJUTmxDcHplelAzR0xF?=
- =?utf-8?B?b2Q2Q0M3a291dmg0YzVQT0l0N2dUQ0VMU1ZJSnJ6cHR1dmo5cDJVQXBwVHVQ?=
- =?utf-8?B?cTJOZUZ1cjVidG1oeFZZTjhzbTJwaXR5aE1ySkw2MnBBb1JDODVucjExN0Ry?=
- =?utf-8?B?Zzk1WlFyR1FXQXhBaHdFdFk5R29pMU9GWncxT2E4Z21SUG0xRTlSWTJNMlhG?=
- =?utf-8?B?SmhvZU9WSzFzK2FtVHZCcWo4Q1lUMmg2d1RJYjhkTytDb2VBaXozdzZBREdy?=
- =?utf-8?B?d0haOVFSNU5VLzlod3VTQXV0bnBqbkNRQVdkV2tOK2Q5RE00TENuMDJCbmg5?=
- =?utf-8?B?bTNKRHQ0ZVJZVm5wQVd5Vm9DVzhuY1hDa0wvaU5IS1JvR1NCeWJhLzlOZG5q?=
- =?utf-8?B?bGxnMzBFb21veW45cVpjRExmQ2xSMDFQZFJobUFqaHVWNGM5WWtHSm1HTGRi?=
- =?utf-8?B?T01WQzM5WTRtRWY4NnhUS3YxR2NRZDBjQmN2aGVaRkoraUJrM2t6ZmoyTHFl?=
- =?utf-8?B?SHlsOUJsTkx0VVBLSW9mSkV0UFZSbFZkOC9lQkdsanJuK0RENzhyN0ZpMldG?=
- =?utf-8?B?S0g4MndZVDI0K3FLakVBQzRucGo5Vm5MMDUzZCt2ZzJaVlBXaEZLenM3QXVH?=
- =?utf-8?B?cUtwN3Y1NEZhNU9lWlZGelZCWDBNRWhVSHUwVEp0WkV0YXE4czFQUi92MW5L?=
- =?utf-8?B?SExPcXh6MHJPdEZvRm1CWXBvb0hiSUZmWDZZT3NaSjJQb0xjY3NyNSs2SzBs?=
- =?utf-8?B?bStUbEFUbDVaM0hWTFlheENYUmZESHp4OGk4WTlWdk8vWFp1TGdZZHB4b3pU?=
- =?utf-8?B?MHNORjVJb3ZZbWlSOWgwSEo3ZDU4T3l5SnVENUNocnJvdHE5QVJvdHZpWVBq?=
- =?utf-8?B?eHFuY3FReVlxbnRMcWI2eXRuakh3MHdFaWdXeXFTdDFPUHVGbCtLSjBZbWxT?=
- =?utf-8?B?ZWhHNEpUbW9MZUFIdmgvWURJTVd1TC8xcmJrSWkrazVncTBUekM2TTMvbFRu?=
- =?utf-8?B?cjZLRjdIUkVyYk5hK2U5Y1YzYy9WbDFOTEFBUUdmZm02NHZsNStiUk5SY1Ju?=
- =?utf-8?B?YzV5Y2cxWHZOMmxHbXRNa01yQmJQc2F1T084Ui9xOHdHNTZUL0pDYTg4K2My?=
- =?utf-8?B?K2pyL3hQdzdtZ2VjSFFBZmNPbFBnYnFHTG9lcTZKenAzbTJtcWlkRXoreFM5?=
- =?utf-8?B?cHVFOFJ3ck45bjdiMHFOSStDc0lwdUdPbWk4dzVQVzRmTEswQ1grYmRPZVp2?=
- =?utf-8?B?M1JuWkFsdVExUHplR0V3d1JRUzRaRGxSVnVDRFY0T0xEM2FpdE52UFBTNTBn?=
- =?utf-8?B?UVFsVjJvZFAvM3VCZTI0QmoyTXROM01kNnJHYXVvbXJsOXliMzBJWXVTbytw?=
- =?utf-8?B?LzFGbzVCV3htUmxMNHJIVk1aQmI5MGtYanF5UE0wUnlGRWxPK24yOUQ5ZUR2?=
- =?utf-8?B?ZjBvRzhxRW1JbmN6YmhKZ0NZbWdLc2VUcFRvWFhabGRuTHRZYUh0VHBSV0Fs?=
- =?utf-8?B?ekc2TFp6VzRReUNrd3VRNG5VMGNvUHdXbERJWVRjLzRsRU1KcituNzVYYmlj?=
- =?utf-8?B?TzdTRklqcTNXK0tLTi9ZdmdYZlFaK3Rhbnd5ZDR3S1hjT2dKTUZZL3BaaGwv?=
- =?utf-8?B?eFBreXJ5ajJSODZNYnY0dEJVbUJPNUtVaStsVG12KzBXdU1hdVdPOUh2Nnpa?=
- =?utf-8?B?ZlVtcEZhR0JDRzlsaURIekc4dTg5elBxTlRLYlNlbXFob0IxTDFvR1BNdUcz?=
- =?utf-8?B?S1p1SGY3WnA2dFV5d3FUN0tqMW9ZM2VHdVN1aEltR3hLS3dhOTA0ZUpzQi91?=
- =?utf-8?B?ZTlGSmZGMnNVckoxSzFTTmx6QnlSV2JCSHhWKzFUM1cwOE5mY2JUY3RGV2dO?=
- =?utf-8?B?bzhtVUVQSTFwTUtXREZzMHJpeVBoSFZSWkZjcjJhMyt1Q29aVWl3ZnR1RnY2?=
- =?utf-8?B?b0J2RjlTdllONWM1elJWMFk4UnRGbDRKZWo4QnJjZ0VvamdtRi9JOXV3d2xC?=
- =?utf-8?B?RDJiSnRyRjRGb3pHM3Zha3Q1N3B4RS9kR2ZBQVpFQTdpMXpKWlZNRmdLWGgx?=
- =?utf-8?B?Vi9uSnd2NWQ1VGV0Q01XVVpUcWpRK3R2cmVaQVU3NGlSOEhMV242emhqY05w?=
- =?utf-8?Q?0ZW1MoEjOkDCCbiLszj7tjjJA?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1993d188-5b0a-46d9-c3e6-08dbfa1ff615
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 08:05:38.5693
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mUXijNr7TdyX/zVkiGfBD54T2C1oPGmD4/eISDQI0FJKjF8NGFMzOrohHet3md6PQlkpxYBOjsxVT7h2UkD1sw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7933
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/7 16:47, Tian, Kevin wrote:
->> From: Liu, Yi L <yi.l.liu@intel.com>
->> Sent: Monday, November 27, 2023 2:39 PM
->>
->> +static int vfio_pci_core_feature_pasid(struct vfio_device *device, u32 flags,
->> +				       struct vfio_device_feature_pasid __user
->> *arg,
->> +				       size_t argsz)
->> +{
->> +	struct vfio_pci_core_device *vdev =
->> +		container_of(device, struct vfio_pci_core_device, vdev);
->> +	struct vfio_device_feature_pasid pasid = { 0 };
->> +	struct pci_dev *pdev = vdev->pdev;
->> +	u32 capabilities = 0;
->> +	int ret;
->> +
->> +	/* We do not support SET of the PASID capability */
-> 
-> this line alone is meaningless. Please explain the reason e.g. due to
-> no PASID capability per VF...
 
-sure. I think the major reason is we don't allow userspace to change the
-PASID configuration. is it?
+Thanks for fixing this Viresh!
 
-> 
->> +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_GET,
->> +				 sizeof(pasid));
->> +	if (ret != 1)
->> +		return ret;
->> +
->> +	/*
->> +	 * Needs go to PF if the device is VF as VF shares its PF's
->> +	 * PASID Capability.
->> +	 */
-> 
-> /* VF shares the PASID capability of its PF */
+Viresh Kumar <viresh.kumar@linaro.org> writes:
 
-got it.
+> diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
+> index f382914f4191..dee787f92d26 100644
+> --- a/Documentation/rust/quick-start.rst
+> +++ b/Documentation/rust/quick-start.rst
+> @@ -33,14 +33,17 @@ A particular version of the Rust compiler is required. Newer versions may or
+>  may not work because, for the moment, the kernel depends on some unstable
+>  Rust features.
+>
+> -If ``rustup`` is being used, enter the checked out source code directory
+> -and run::
+> +If ``rustup`` is being used, enter the kernel build directory and run::
+>
+>         rustup override set $(scripts/min-tool-version.sh rustc)
 
->> +	if (pdev->is_virtfn)
->> +		pdev = pci_physfn(pdev);
->> +
->> +	if (!pdev->pasid_enabled)
->> +		goto out;
->> +
->> +#ifdef CONFIG_PCI_PASID
->> +	pci_read_config_dword(pdev, pdev->pasid_cap + PCI_PASID_CAP,
->> +			      &capabilities);
->> +#endif
-> 
-> #ifdef is unnecessary. If CONFIG_PCI_PASID is false pdev->pasid_enabled
-> won't be set anyway.
+How about just specifying the path here:
 
-it's sad that the pdev->pasid_cap is defined under #if CONFIG_PCI_PASID.
-Perhaps we can have a wrapper for it.
+         rustup override set --path=<build-dir> $(scripts/min-tool-version.sh rustc)
 
-> and it should read from PCI_PASID_CTRL which indicates whether a
-> capability is actually enabled.
+Best regards,
+Andreas
 
-yes, for the EXEC and PRIV capability, needs to check if it's enabled or
-not before reporting.
-
-> 
->> +/**
->> + * Upon VFIO_DEVICE_FEATURE_GET, return the PASID capability for the
->> device.
->> + * Zero width means no support for PASID.
-> 
-> also mention the encoding of this field according to PCIe spec.
-
-yes.
-
-> or turn it to a plain number field.
-
-It is not exact the same as the spec since bit0 is reserved. But
-here bit0 is used as well.
-
->> + */
->> +struct vfio_device_feature_pasid {
->> +	__u16 capabilities;
->> +#define VFIO_DEVICE_PASID_CAP_EXEC	(1 << 0)
->> +#define VFIO_DEVICE_PASID_CAP_PRIV	(1 << 1)
->> +	__u8 width;
->> +	__u8 __reserved;
->> +};
->> +#define VFIO_DEVICE_FEATURE_PASID 11
->> +
->>   /* -------- API for Type1 VFIO IOMMU -------- */
->>
->>   /**
->> --
->> 2.34.1
-> 
-
--- 
-Regards,
-Yi Liu
