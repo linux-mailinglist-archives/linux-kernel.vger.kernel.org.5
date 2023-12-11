@@ -2,295 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A85880DDF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4780DDFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345506AbjLKWEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        id S1345505AbjLKWFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345291AbjLKWEH (ORCPT
+        with ESMTP id S1345291AbjLKWFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:04:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE76CA1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:04:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702332252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 11 Dec 2023 17:05:01 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BAAA6;
+        Mon, 11 Dec 2023 14:05:06 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F0A2922438;
+        Mon, 11 Dec 2023 22:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702332305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FCxm2ZNk4xG6rdSANJGBUV8Z7ODrKWPtn4AqES4irEA=;
-        b=K5uaWQmvfNDeOfyyS03m06gIuq73TKyC6kwWSJbTSBCZCguXXSk3O2x9SNqlT5sE/W3/wk
-        T61Ki9A0WVxEBnccpUzv15abwGT+0RTfJTFzfjKtSM2qoR0VtXzoPIjKWLIEhOYSbn5uUK
-        xHWt1OZXUqgMd+8hFG5fQPi44fe2wAE=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-255-MEG2z7eMM2CRr9nNwpZJwQ-1; Mon, 11 Dec 2023 17:04:10 -0500
-X-MC-Unique: MEG2z7eMM2CRr9nNwpZJwQ-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d03b873765so34613225ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:04:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702332249; x=1702937049;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCxm2ZNk4xG6rdSANJGBUV8Z7ODrKWPtn4AqES4irEA=;
-        b=OHXHxEbWE6K0g/C1WN+5xZpFDzDqJuWiWGpTbIogoXLb1ednO/bhW4lwbyuQxstQei
-         nZbIel58U7l/+9GvRWJrAY4Rb4BMUDC5F3oJUlv5U3pYW5jizO8tQskccdk+3zvR8R6v
-         w2sVYLPekUQ0MVLZlxP82IIJcrwItI10QGaV48OecfBVHErd0Z3ZkQ77Q+b8eNAtF8c1
-         qHstEaSl4Cr7WqZCyfauiLkB5iulcuPeb+loKVtgE9LYIAdufnWobIt7C8j/h9RGEdfT
-         52ln9glBX9xYvqiUsZcqLYDrkRhJlrSJpia5jSzdVuk1bJn9whu2z38+tOWzC7EYZQlJ
-         IL9Q==
-X-Gm-Message-State: AOJu0YxMI//muEjGoiHflvvARe0YR7Bn7aba3/x6ImUzdhQf5PXhjO2R
-        t8FjtP863pbgt0xp6kKZ/PJ7GII+HuSrBkl66n2Q5XMBf+0h4qbTVucJADENm9x+59eZfFLbmEo
-        FtNFikN5EkWP8zXTXfjzqH6KB
-X-Received: by 2002:a17:903:22ca:b0:1d0:700b:3f7b with SMTP id y10-20020a17090322ca00b001d0700b3f7bmr7952129plg.53.1702332249188;
-        Mon, 11 Dec 2023 14:04:09 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEukaZOlkPqR1TXFO85wGFwXddVUVGVhPviVyN2FuBWvTB40MsESc1PRlfh8WNSzgylWaLcog==
-X-Received: by 2002:a17:903:22ca:b0:1d0:700b:3f7b with SMTP id y10-20020a17090322ca00b001d0700b3f7bmr7952106plg.53.1702332248841;
-        Mon, 11 Dec 2023 14:04:08 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:3102:945e:6f76:fb73:6512])
-        by smtp.gmail.com with ESMTPSA id c21-20020a170902b69500b001d1d1ef8be6sm7133768pls.267.2023.12.11.14.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 14:04:08 -0800 (PST)
-From:   lsoaresp@redhat.com
-X-Google-Original-From: masahiroy@kernel.org
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Leonardo Bras <leobras@redhat.com>, lsoaresp@redhat.com,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
-Date:   Mon, 11 Dec 2023 19:03:50 -0300
-Message-ID: <ZXeHRmTIMmIqeNxn@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAK7LNARUYBS3Nd83M7uEtPt_GjUGK2jDGEJk9SBBedUKgb911g@mail.gmail.com>
-References: <20231208181802.88528-3-leobras@redhat.com> <CAK7LNAQk3Nm53qf95p7yQbSQ_M3phD_n5OMGxFWorGg_4fpQZg@mail.gmail.com> <ZXcLEKSBg9Bd1qEu@LeoBras> <CAK7LNARUYBS3Nd83M7uEtPt_GjUGK2jDGEJk9SBBedUKgb911g@mail.gmail.com>
+        bh=TIaWu3Q8oYRkZTPwzgobmJiblgVb0c4yy3Nx8qquRxQ=;
+        b=SL2SqI/pf6wGaZIXBjed0h9sjebgjCcn6V4gPFu16QE0wvV/cs3fT/AS35F0or8bftmdig
+        SnDuL1LtNjfsncL3CMtWB0oauUAAjFws3Piu+XtdQTbSyyoR+7Qfj35x3/6iIkKh2QCCdv
+        PQrfRRj9TXRecq5nAB63fWyt7U9HdhY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702332305;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIaWu3Q8oYRkZTPwzgobmJiblgVb0c4yy3Nx8qquRxQ=;
+        b=q9fqFzq9qYxH/Wr5JzGIPQk+LhYkXHOZPUfLPenPlTqCDVlW8sn5pgDiZzvtHqPLq0ct3/
+        OzPHlcixACkbIXBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702332304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIaWu3Q8oYRkZTPwzgobmJiblgVb0c4yy3Nx8qquRxQ=;
+        b=kgVyROpGG8i60SOzIhAszuNuNa49rbaHfCsf/ZOFZOrQ/MvilrL+8CYcjSX1rYz8s9H6Ez
+        4vky7kqsf7MNoGaSRoavdo9mfvxLNtr8JwfYtrbAfI1GjCajYTM39jLN5wuVaXPZ+Su8I2
+        blzaYDZFNFrXEUVxvJjTGHr3yM4nO7Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702332304;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIaWu3Q8oYRkZTPwzgobmJiblgVb0c4yy3Nx8qquRxQ=;
+        b=yaNuErKCdqqEPScMw3UXoWSpDS35DQMqneBh50TiUWaxY8utNu3707MdGjLQlvpR3Dar7S
+        3ouKnxxb7XsYW8CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC629132DA;
+        Mon, 11 Dec 2023 22:05:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id RDQvGo2Hd2WqNQAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 11 Dec 2023 22:05:01 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of files.
+In-reply-to: <ZXdck2thv7tz1ee3@tissot.1015granger.net>
+References: <20231208033006.5546-1-neilb@suse.de>,
+ <20231208033006.5546-2-neilb@suse.de>,
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
+ <ZXdck2thv7tz1ee3@tissot.1015granger.net>
+Date:   Tue, 12 Dec 2023 09:04:58 +1100
+Message-id: <170233229855.12910.12943965536699322442@noble.neil.brown.name>
+X-Spam-Level: 
+X-Spam-Score: -4.29
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonardo Bras <leobras@redhat.com>
+On Tue, 12 Dec 2023, Chuck Lever wrote:
+> On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
+> > On Sat, 09 Dec 2023, Chuck Lever wrote:
+> > > On Fri, Dec 08, 2023 at 02:27:26PM +1100, NeilBrown wrote:
+> > > > Calling fput() directly or though filp_close() from a kernel thread l=
+ike
+> > > > nfsd causes the final __fput() (if necessary) to be called from a
+> > > > workqueue.  This means that nfsd is not forced to wait for any work to
+> > > > complete.  If the ->release of ->destroy_inode function is slow for a=
+ny
+> > > > reason, this can result in nfsd closing files more quickly than the
+> > > > workqueue can complete the close and the queue of pending closes can
+> > > > grow without bounces (30 million has been seen at one customer site,
+> > > > though this was in part due to a slowness in xfs which has since been
+> > > > fixed).
+> > > >=20
+> > > > nfsd does not need this.
+> > >=20
+> > > That is technically true, but IIUC, there is only one case where a
+> > > synchronous close matters for the backlog problem, and that's when
+> > > nfsd_file_free() is called from nfsd_file_put(). AFAICT all other
+> > > call sites (except rename) are error paths, so there aren't negative
+> > > consequences for the lack of synchronous wait there...
+> >=20
+> > What you say is technically true but it isn't the way I see it.
+> >=20
+> > Firstly I should clarify that __fput_sync() is *not* a flushing close as
+> > you describe it below.
+> > All it does, apart for some trivial book-keeping, is to call ->release
+> > and possibly ->destroy_inode immediately rather than shunting them off
+> > to another thread.
+> > Apparently ->release sometimes does something that can deadlock with
+> > some kernel threads or if some awkward locks are held, so the whole
+> > final __fput is delay by default.  But this does not apply to nfsd.
+> > Standard fput() is really the wrong interface for nfsd to use. =20
+> > It should use __fput_sync() (which shouldn't have such a scary name).
+> >=20
+> > The comment above flush_delayed_fput() seems to suggest that unmounting
+> > is a core issue.  Maybe the fact that __fput() can call
+> > dissolve_on_fput() is a reason why it is sometimes safer to leave the
+> > work to later.  But I don't see that applying to nfsd.
+> >=20
+> > Of course a ->release function *could* do synchronous writes just like
+> > the XFS ->destroy_inode function used to do synchronous reads.
+>=20
+> I had assumed ->release for NFS re-export would flush due to close-
+> to-open semantics. There seem to be numerous corner cases that
+> might result in pile-ups which would change the situation in your
+> problem statement but might not result in an overall improvement.
 
-On Tue, Dec 12, 2023 at 03:05:38AM +0900, Masahiro Yamada wrote:
-> On Mon, Dec 11, 2023 at 10:14 PM <lsoaresp@redhat.com> wrote:
-> >
-> > From: Leonardo Bras <masahiroy@kernel.org>
-> >
-> > On Sun, Dec 10, 2023 at 04:13:54AM +0900, Masahiro Yamada wrote:
-> > > On Sat, Dec 9, 2023 at 3:19 AM Leonardo Bras <leobras@redhat.com> wrote:
-> > > >
-> > > > When reviewing patches, it looks much nicer to have some changes shown
-> > > > before others, which allow better understanding of the patch before the
-> > > > the .c files reviewing.
-> > > >
-> > > > Introduce a default git.orderFile, in order to help developers getting the
-> > > > best ordering easier.
-> > > >
-> > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > > > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > > >
-> > > > ---
-> > > > Changes since RFCv4:
-> > > > - Added scripts/* into "build system" section
-> > > > - Added "git-specific" section with this script and .gitignore
-> > > > - Thanks for this feedback Nicolas!
-> > > >
-> > > > Changes since RFCv3:
-> > > > - Added "*types.h" matching so type headers appear before regular headers
-> > > > - Removed line ends ($) in patterns: they previously provided a
-> > > >   false-positive
-> > > > - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
-> > > >   in any subdirectory
-> > > >
-> > > > Changes since RFCv2:
-> > > > - Fixed licence comment to from /**/ to #
-> > > > - Fixed filename in how-to comment
-> > > > - Fix build order: Kconfig -> Kbuild -> Makefile
-> > > > - Add *.mk extension
-> > > > - Add line-ends ($) to make sure and get the correct extensions
-> > > > - Thanks Masahiro Yamada for above suggestions!
-> > > > - 1 Ack, thanks Randy!
-> > > >
-> > > > Changes since RFCv1:
-> > > > - Added Kconfig* (thanks Randy Dunlap!)
-> > > > - Changed Kbuild to Kbuild* (improve matching)
-> > > >
-> > > >
-> > > >  scripts/git.orderFile | 39 +++++++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 39 insertions(+)
-> > > >  create mode 100644 scripts/git.orderFile
-> > > >
-> > > > diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> > > > new file mode 100644
-> > > > index 0000000000000..31649ff53d22c
-> > > > --- /dev/null
-> > > > +++ b/scripts/git.orderFile
-> > > > @@ -0,0 +1,39 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +# order file for git, to produce patches which are easier to review
-> > > > +# by diffing the important stuff like header changes first.
-> > > > +#
-> > > > +# one-off usage:
-> > > > +#   git diff -O scripts/git.orderFile ...
-> > > > +#
-> > > > +# add to git config:
-> > > > +#   git config diff.orderFile scripts/git.orderFile
-> > > > +#
-> > > > +
-> > > > +MAINTAINERS
-> > > > +
-> > > > +# Documentation
-> > > > +Documentation/*
-> > > > +*.rst
-> > > > +
-> > > > +# git-specific
-> > > > +.gitignore
-> > > > +scripts/git.orderFile
-> > >
-> >
-> > Hello Masahiro, thanks for the feedback!
-> >
-> > >
-> > >
-> > > I think scripts/git.orderFile should be part of
-> > > "scripts/*" below.
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > > > +
-> > > > +# build system
-> > > > +*Kconfig*
-> > > > +*Kbuild*
-> > > > +*Makefile*
-> > >
-> > > I do not like this because "foo-Makefile-bar"
-> > > is not a Makefile, but would match "*Makefile*".
-> >
-> > That makes sense.
-> >
-> > >
-> > >
-> > > If you do not use wildcard at all, 'Makefile'
-> > > will match to the root-dir and sub-directories.
-> >
-> > I tried a quick test here changing an mm/*.c file and mm/Makefile, and the
-> > above will print the .c file changes first in any situation here, so it
-> > won't have the desired behavior.
-> 
-> 
-> 
-> Hmm, you are right.
-> 
-> 
-> OK, your suggestion below looks good.
-> 
-> 
-> Thanks.
+That's the ->flush call in filp_close().
 
-Thank you for this feedback!
+>=20
+>=20
+> > I don't think we should ever try to hide that by putting it in
+> > a workqueue.  It's probably a bug and it is best if bugs are visible.
+>=20
+>=20
+> I'm not objecting, per se, to this change. I would simply like to
+> see a little more due diligence before moving forward until it is
+> clear how frequently ->release or ->destroy_inode will do I/O (or
+> "is slow for any reason" as you say above).
+>=20
+>=20
+> > Note that the XFS ->release function does call filemap_flush() in some
+> > cases, but that is an async flush, so __fput_sync doesn't wait for the
+> > flush to complete.
+>=20
+> When Jeff was working on the file cache a year ago, I did some
+> performance analysis that shows even an async flush is costly when
+> there is a lot of dirty data in the file being closed. The VFS walks
+> through the whole file and starts I/O on every dirty page. This is
+> quite CPU intensive, and can take on the order of a millisecond
+> before the async flush request returns to its caller.
+>=20
+> IME async flushes are not free.
 
-I will send a v6 shortly.
+True, they aren't free.  But some thread has to pay that price.
+I think nfsd should.
 
-Thank you!
-Leo
+You might argue that nfsd should wait to pay the price until after it
+has sent a reply to the client.  My patches already effectively do that
+for garbage-collected files.  Doing it for all files would probably be
+easy. But is it really worth the (small) complexity?  I don't know.
 
-> 
-> 
-> 
-> 
-> 
-> 
-> >
-> > But if we want to achieve the above we can do so with a slight change in
-> > the suggestion:
-> >
-> > >
-> >>
-> > > Kconfig
-> > > */Kconfig*
-> > > Kbuild
-> > > Makefile
-> > */Makefile
-> > > *.mak
-> > > *.mk
-> > > scripts/*
-> > >
-> > >
-> > > may satisfy your needs mostly.
-> > >
-> >
-> > I have tried the following in the Kernel root:
-> >
-> > $ find . |grep Makefile |grep -v Makefile$
-> > ./arch/arm/mach-s3c/Makefile.s3c64xx
-> > ./arch/mips/Makefile.postlink
-> > ./arch/powerpc/Makefile.postlink
-> > ./arch/um/Makefile-os-Linux
-> > ./arch/um/Makefile-skas
-> > ./arch/um/scripts/Makefile.rules
-> > ./arch/x86/Makefile_32.cpu
-> > ./arch/x86/Makefile.um
-> > ./arch/x86/Makefile.postlink
-> > ./arch/riscv/Makefile.postlink
-> > ./drivers/firmware/efi/libstub/Makefile.zboot
-> > ./drivers/usb/serial/Makefile-keyspan_pda_fw
-> > [...]
-> >
-> > $ find . |grep Kbuild |grep -v Kbuild$
-> > ./arch/mips/Kbuild.platforms
-> > ./scripts/Kbuild.include
-> >
-> > Which leads to an honest question:
-> > Don't we want to show changes on those files before C files, for example?
-> >
-> > If so, we need something like:
-> >
-> > # build system
-> > Kconfig*
-> > */Kconfig*
-> > Kbuild*
-> > */Kbuild*
-> > Makefile*
-> > */Makefile*
-> > *.mak
-> > *.mk
-> > scripts/*
-> >
-> > It would get rid of "foo-Makefile-bar" case but still match
-> > "Makefile-bar" case, which seems to be used around.
-> >
-> > Is that ok?
-> >
-> > Thanks!
-> > Leo
-> >
-> >
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
-> 
+>=20
+>=20
+> > The way I see this patch is that fput() is the wrong interface for nfsd
+> > to use, __fput_sync is the right interface.  So we should change.  1
+> > patch.
+>=20
+> The practical matter is I see this as a change with a greater than
+> zero risk, and we need to mitigate that risk. Or rather, as a
+> maintainer of NFSD, /I/ need to see that the risk is as minimal as
+> is practical.
+>=20
+>=20
+> > The details about exhausting memory explain a particular symptom that
+> > motivated the examination which revealed that nfsd was using the wrong
+> > interface.
+> >=20
+> > If we have nfsd sometimes using fput() and sometimes __fput_sync, then
+> > we need to have clear rules for when to use which.  It is much easier to
+> > have a simple rule: always use __fput_sync().
+>=20
+> I don't agree that we should just flop all these over and hope for
+> the best. In particular:
+>=20
+>  - the changes in fs/nfsd/filecache.c appear to revert a bug
+>    fix, so I need to see data that shows that change doesn't
+>    cause a re-regression
+
+The bug fix you refer to is
+  "nfsd: don't fsync nfsd_files on last close"
+The patch doesn't change when fsync (or ->flush) is called, so
+it doesn't revert this bugfix.
+
+>=20
+>  - the changes in fs/lockd/ can result in long waits while a
+>    global mutex is held (global as in all namespaces and all
+>    locked files on the server), so I need to see data that
+>    demonstrates there won't be a regression
+
+It's probably impossible to provide any such data.
+The patch certainly moves work inside that mutex and so would increase
+the hold time, if only slightly.  Is that lock hot enough to notice?
+Conventional wisdom is that locking is only a tiny fraction of NFS
+traffic.  It might be possible to construct a workload that saturates
+lockd, but I doubt it would be relevant to the real world.
+
+Maybe we should just break up that lock so that the problem becomes moot.
+
+>=20
+>  - the other changes don't appear to have motivation in terms
+>    of performance or behavior, and carry similar (if lesser)
+>    risks as the other two changes. My preferred solution to
+>    potential auditor confusion about the use of __fput_sync()
+>    in some places and fput() in others is to document, and
+>    leave call sites alone if there's no technical reason to
+>    change them at this time.
+
+Sounds to me like a good way to grow technical debt, but I'll do it like
+that if you prefer.
+
+>=20
+> There is enough of a risk of regression that I need to see a clear
+> rationale for each hunk /and/ I need to see data that there is
+> no regression. I know that won't be perfect coverage, but it's
+> better than not having any data at all.
+>=20
+>=20
+> > I'm certainly happy to revise function documentation and provide
+> > wrapper functions if needed.
+> >=20
+> > It might be good to have
+> >=20
+> >   void filp_close_sync(struct file *f)
+> >   {
+> >        get_file(f);
+> >        filp_close(f);
+> >        __fput_sync(f);
+> >   }
+> >=20
+> > but as that would only be called once, it was hard to motivate.
+> > Having it in linux/fs.h would be nice.
+> >=20
+> > Similarly we could wrap __fput_sync() in a more friendly name, but
+> > that would be better if we actually renamed the function.
+> >=20
+> >   void fput_now(struct file *f)
+> >   {
+> >       __fput_sync(f);
+> >   }
+> >=20
+> > ??
+>=20
+> Since this is an issue strictly for nfsd, the place for this
+> utility function is in fs/nfsd/vfs.c, IMO, along with a documenting
+> comment that provides a rationale for why nfsd does not want plain
+> fput() in specific cases.
+>=20
+> When other subsystems need a similar capability, then let's
+> consider a common helper.
+
+fs/smb/server/ probably would benefit from the same helper today.
+
+Thanks,
+NeilBrown
+
+
+>=20
+>=20
+> --=20
+> Chuck Lever
+>=20
 
