@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B3380C4FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A720D80C501
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbjLKJo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S234468AbjLKJoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:44:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234589AbjLKJoZ (ORCPT
+        with ESMTP id S234619AbjLKJo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:44:25 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D022CE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:44:31 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54dccf89cfdso5385384a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:44:31 -0800 (PST)
+        Mon, 11 Dec 2023 04:44:27 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBC5CE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:44:33 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54da61eb366so5658441a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:44:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702287870; x=1702892670; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702287872; x=1702892672; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qp+2/AFV5zmaxe9luf0MNfHGuX9N1n8phVhdPWTto6c=;
-        b=PqGsMHqrjIbOG1jeGkSr5qWqzFYVWDDMX2+ZplyFD6V1BP1jeJixc6eJG8wanxalza
-         CXiDQ3MfUJ9EAWTNColLMQPgdvHbWNX/O1K4KIG3EqHS91lfFYxvlAQuvkw3myANLlM3
-         +ojd0pcWPb0Uk2WrHFdEekbv3bg4U2xQxPaxpPruXY+zEcas+OP+r+YfKQSMt0484S6g
-         IyP9i2L6jjQEo3HC0srDA2vZQWoyQ0Z1PB6cc2BE/KxbMXQKVsoRnx3vsfhCllXlJ7vn
-         VXkirjB5gUuq0Fu1vE88MBFD0JntwDoDy69Aiks7/ee/a9zHigXa21jqUHeIbiRhqEQZ
-         jwUw==
+        bh=mfT6yTigw0JL9rPQ3RLVTHss5/tTMRXlGfMsOm5hiBA=;
+        b=LxX+NeJmku4hhfwrCuLd7Y4EmSUJY/rWF4dkOk0wtCBLRLkUdksgBUIQT/wywyFOiW
+         Ikm6SeMjQX2C/WuocV9tTcrHLtlvFC+zCdsqHQVofwfmntMnxLXnjPhYlOsLJn7rQQ5J
+         MQNXYs1+GQQ6yLePwB5ukueLn4vCbBJPjKTaMmZmRXRCQLLnYQfrIB9HQKxAvUouOAJx
+         NERDYxemmIj9ObiiDjfRn4EluEb/Xlw5nAo5oB1ZkiOxzpriI0MZYTN+U7p0rn+pEhTj
+         ogqsXa/+W2dnuzPl1qe6sM0nLLDS9xJo0Uxiv0TWK5Kn+AvHnk0Fnxx5gfL5vworcrCo
+         emag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702287870; x=1702892670;
+        d=1e100.net; s=20230601; t=1702287872; x=1702892672;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qp+2/AFV5zmaxe9luf0MNfHGuX9N1n8phVhdPWTto6c=;
-        b=rs6GZM+xuL1pxP21uT3taGqAdf7mZe5SjYFEMVLnt5iZIiU66YTE2L1Pv4D7GA5BLX
-         IYJmvn/Ll9JbI6+ztwbZ6aC5Atqfzeuo2zO8rWvsSWI4VcqHVs8MjlBMpUgd9j3FXPaE
-         4UQ/P/x/P2Wx7nk0D6D8mMJz7MBNFmAmstFdHlLJZ/G+WvqrKfCasQ1zCw0zzB1jfQIB
-         YF7tXV99IOzry6ZMrNjIdp6JIvdnk/Ge/4alIcHwYYDXA7d/ZK+GBiMYjSue8YABDRoj
-         CI/GoJT5KVrDXXr8ur5gxBaaYRkbjYGixdiQHjYH5w0zzgenJf1KI7rsfN/T+oHFmLG/
-         VC1A==
-X-Gm-Message-State: AOJu0YwHaAK39W8733Vi94mgztxBdIrXrV/xbu92N6butfOP3KHLtec2
-        rWUIuZHSenGLGTWg05RGsLY=
-X-Google-Smtp-Source: AGHT+IEaDoQFpPnxjlxeSUTzsAQavayOPPXdg/d408f0Mv7GQd3onKpiAY7YqVStGjAikZKqi4sBkw==
-X-Received: by 2002:a50:c908:0:b0:551:12f7:84e with SMTP id o8-20020a50c908000000b0055112f7084emr996214edh.28.1702287869354;
-        Mon, 11 Dec 2023 01:44:29 -0800 (PST)
+        bh=mfT6yTigw0JL9rPQ3RLVTHss5/tTMRXlGfMsOm5hiBA=;
+        b=BH3tTKaQQnnmfJaJcqyXsh3njcIqqBBimppTZ4C0Z2T1koobDg1TrWSg+HJz8ujjsI
+         ICQ9KcSc37boEnV21wKj6cw6xnxF0mKc4w+tpy5dJMWG0gVGFaDEbon4O7lzcKli15Z7
+         oai255l0CeHC+lYsBO2DcnSP4cquKIkF8gBd3TX38OJqzL/yPnuTAxFnN1JCvZ1DY9cr
+         4LcxCp0hTyHqBQpdOa41AqwmWhkspklAujITN+yFFqlnxpeW9iJpV2WKCQZqkZlywuLm
+         kIKh/i0z/WF4BMFlCGHVx0yHfrnF40oXq3JTX1NOF3iVnhUqs3hXAc5gvYzcokSOKcly
+         6jmA==
+X-Gm-Message-State: AOJu0YzilyW7ffo4LQUXiO/t1Xj1UfUhkvGYe1FK/MhoQVoFqgC6U15D
+        A5kRX4bq69GiZkhzkhageoQ=
+X-Google-Smtp-Source: AGHT+IGMxuKPrFTwj2zbLSblfgSfd44OwUT+BQyj3R0X1rt7fU+FpQfB/msMTDFYA5XJOFpr3giP2g==
+X-Received: by 2002:a50:fb8b:0:b0:54c:4837:93f7 with SMTP id e11-20020a50fb8b000000b0054c483793f7mr2864378edq.62.1702287871520;
+        Mon, 11 Dec 2023 01:44:31 -0800 (PST)
 Received: from andrea.wind3.hub ([31.189.124.152])
-        by smtp.gmail.com with ESMTPSA id if3-20020a0564025d8300b0054afcab0af2sm3463505edb.59.2023.12.11.01.44.28
+        by smtp.gmail.com with ESMTPSA id if3-20020a0564025d8300b0054afcab0af2sm3463505edb.59.2023.12.11.01.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 01:44:28 -0800 (PST)
+        Mon, 11 Dec 2023 01:44:31 -0800 (PST)
 From:   Andrea Parri <parri.andrea@gmail.com>
 To:     mathieu.desnoyers@efficios.com, paulmck@kernel.org,
         palmer@dabbelt.com, paul.walmsley@sifive.com, aou@eecs.berkeley.edu
@@ -57,9 +57,9 @@ Cc:     mmaas@google.com, hboehm@google.com, striker@us.ibm.com,
         charlie@rivosinc.com, rehn@rivosinc.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrea Parri <parri.andrea@gmail.com>
-Subject: [PATCH v2 1/4] membarrier: riscv: Add full memory barrier in switch_mm()
-Date:   Mon, 11 Dec 2023 10:44:11 +0100
-Message-Id: <20231211094414.8078-2-parri.andrea@gmail.com>
+Subject: [PATCH v2 2/4] locking: Introduce prepare_sync_core_cmd()
+Date:   Mon, 11 Dec 2023 10:44:12 +0100
+Message-Id: <20231211094414.8078-3-parri.andrea@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231211094414.8078-1-parri.andrea@gmail.com>
 References: <20231211094414.8078-1-parri.andrea@gmail.com>
@@ -75,116 +75,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The membarrier system call requires a full memory barrier after storing
-to rq->curr, before going back to user-space.  The barrier is only
-needed when switching between processes: the barrier is implied by
-mmdrop() when switching from kernel to userspace, and it's not needed
-when switching from userspace to kernel.
+Introduce an architecture function that architectures can use to set
+up ("prepare") SYNC_CORE commands.
 
-Rely on the feature/mechanism ARCH_HAS_MEMBARRIER_CALLBACKS and on the
-primitive membarrier_arch_switch_mm(), already adopted by the PowerPC
-architecture, to insert the required barrier.
+The function will be used by RISC-V to update its "deferred icache-
+flush" data structures (icache_stale_mask).
 
-Fixes: fab957c11efe2f ("RISC-V: Atomic and Locking Code")
+Architectures defining prepare_sync_core_cmd() static inline need to
+select ARCH_HAS_PREPARE_SYNC_CORE_CMD.
+
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 ---
- MAINTAINERS                         |  2 +-
- arch/riscv/Kconfig                  |  1 +
- arch/riscv/include/asm/membarrier.h | 29 +++++++++++++++++++++++++++++
- arch/riscv/mm/context.c             |  2 ++
- kernel/sched/core.c                 |  5 +++--
- 5 files changed, 36 insertions(+), 3 deletions(-)
- create mode 100644 arch/riscv/include/asm/membarrier.h
+ include/linux/sync_core.h | 16 +++++++++++++++-
+ init/Kconfig              |  3 +++
+ kernel/sched/membarrier.c |  1 +
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e2c6187a3ac80..a9166d82ffced 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13807,7 +13807,7 @@ M:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
- M:	"Paul E. McKenney" <paulmck@kernel.org>
- L:	linux-kernel@vger.kernel.org
- S:	Supported
--F:	arch/powerpc/include/asm/membarrier.h
-+F:	arch/*/include/asm/membarrier.h
- F:	include/uapi/linux/membarrier.h
- F:	kernel/sched/membarrier.c
+diff --git a/include/linux/sync_core.h b/include/linux/sync_core.h
+index 013da4b8b3272..67bb9794b8758 100644
+--- a/include/linux/sync_core.h
++++ b/include/linux/sync_core.h
+@@ -17,5 +17,19 @@ static inline void sync_core_before_usermode(void)
+ }
+ #endif
  
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 95a2a06acc6a6..f7db95097caf1 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -27,6 +27,7 @@ config RISCV
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_HAS_KCOV
-+	select ARCH_HAS_MEMBARRIER_CALLBACKS
- 	select ARCH_HAS_MMIOWB
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	select ARCH_HAS_PMEM_API
-diff --git a/arch/riscv/include/asm/membarrier.h b/arch/riscv/include/asm/membarrier.h
-new file mode 100644
-index 0000000000000..4be218fa03b14
---- /dev/null
-+++ b/arch/riscv/include/asm/membarrier.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef _ASM_RISCV_MEMBARRIER_H
-+#define _ASM_RISCV_MEMBARRIER_H
-+
-+static inline void membarrier_arch_switch_mm(struct mm_struct *prev,
-+					     struct mm_struct *next,
-+					     struct task_struct *tsk)
+-#endif /* _LINUX_SYNC_CORE_H */
++#ifdef CONFIG_ARCH_HAS_PREPARE_SYNC_CORE_CMD
++#include <asm/sync_core.h>
++#else
++/*
++ * This is a dummy prepare_sync_core_cmd() implementation that can be used on
++ * all architectures which provide unconditional core serializing instructions
++ * in switch_mm().
++ * If your architecture doesn't provide such core serializing instructions in
++ * switch_mm(), you may need to write your own functions.
++ */
++static inline void prepare_sync_core_cmd(struct mm_struct *mm)
 +{
-+	/*
-+	 * Only need the full barrier when switching between processes.
-+	 * Barrier when switching from kernel to userspace is not
-+	 * required here, given that it is implied by mmdrop(). Barrier
-+	 * when switching from userspace to kernel is not needed after
-+	 * store to rq->curr.
-+	 */
-+	if (IS_ENABLED(CONFIG_SMP) &&
-+	    likely(!(atomic_read(&next->membarrier_state) &
-+		     (MEMBARRIER_STATE_PRIVATE_EXPEDITED |
-+		      MEMBARRIER_STATE_GLOBAL_EXPEDITED)) || !prev))
-+		return;
-+
-+	/*
-+	 * The membarrier system call requires a full memory barrier
-+	 * after storing to rq->curr, before going back to user-space.
-+	 */
-+	smp_mb();
 +}
-+
-+#endif /* _ASM_RISCV_MEMBARRIER_H */
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 217fd4de61342..ba8eb3944687c 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -323,6 +323,8 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	if (unlikely(prev == next))
- 		return;
++#endif
  
-+	membarrier_arch_switch_mm(prev, next, task);
++#endif /* _LINUX_SYNC_CORE_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 9ffb103fc927b..87daf50838f02 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1972,6 +1972,9 @@ source "kernel/Kconfig.locks"
+ config ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	bool
+ 
++config ARCH_HAS_PREPARE_SYNC_CORE_CMD
++	bool
 +
- 	/*
- 	 * Mark the current MM context as inactive, and the next as
- 	 * active.  This is at least used by the icache flushing
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a708d225c28e8..711dc753f7216 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6670,8 +6670,9 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		 *
- 		 * Here are the schemes providing that barrier on the
- 		 * various architectures:
--		 * - mm ? switch_mm() : mmdrop() for x86, s390, sparc, PowerPC.
--		 *   switch_mm() rely on membarrier_arch_switch_mm() on PowerPC.
-+		 * - mm ? switch_mm() : mmdrop() for x86, s390, sparc, PowerPC,
-+		 *   RISC-V.  switch_mm() relies on membarrier_arch_switch_mm()
-+		 *   on PowerPC and on RISC-V.
- 		 * - finish_lock_switch() for weakly-ordered
- 		 *   architectures where spin_unlock is a full barrier,
- 		 * - switch_to() for arm64 (weakly-ordered, spin_unlock
+ config ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+ 	bool
+ 
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index 2ad881d07752c..58f801e013988 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -320,6 +320,7 @@ static int membarrier_private_expedited(int flags, int cpu_id)
+ 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+ 			return -EPERM;
+ 		ipi_func = ipi_sync_core;
++		prepare_sync_core_cmd(mm);
+ 	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
+ 		if (!IS_ENABLED(CONFIG_RSEQ))
+ 			return -EINVAL;
 -- 
 2.34.1
 
