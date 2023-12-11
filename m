@@ -2,68 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5B580C48D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E40580C492
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbjLKJ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:28:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S234329AbjLKJ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbjLKJ2p (ORCPT
+        with ESMTP id S232273AbjLKJ3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:28:45 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18E2F3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:28:51 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67a9febb2bfso32236456d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:28:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702286931; x=1702891731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SBMWe9fjEzMYGTVNkN3TVKk2bWYSlJtyyay5GvzImeU=;
-        b=nXy25PSnz3lhZI2wCgdalz9C71sWzNIDbyp09WyKCtUhoW9HN1tgzpGFlZTa7b2sWs
-         EQcR8jqdJ47ckuSWgptjAB9VISiOF31Rg+O9tq6+kH+BX2Dt2O1t0JcyrqE6E3MlKGmI
-         v64CHuJAmbrZoe9lvai7bpYmWrdvMu4M7KTH1CTMi3HO49DL1Ze6WJ/WItcEzLxDOWIk
-         Oc1KZaDg9hyIInp78bEmAn8jdQGg07f7JMOPbmANeePYZ6BNJFsacV+aI3bbn+9UOuVS
-         M8JhvkAJV/6kiwwrm9xS8svgPhL2GXtA86KEO5xORUaranZjA+0vekdWu0MywNgQwRg9
-         V0LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286931; x=1702891731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBMWe9fjEzMYGTVNkN3TVKk2bWYSlJtyyay5GvzImeU=;
-        b=iBAMCct8FGzIvYRaEeZZL7tbIiLzGzitNG4rCv8MHcP5x5ioqZXBCos9IIJ4EFBbIe
-         JFJ4DFSyIlWJjlF4XQvpmNMQiRwLuFykA+TsXgU/r7FapLUMyU67d1SiX1DZ3kjckaiF
-         LZvtpqkaMyIefEk5J7HyBx2Z6PWUxmc6VH5hvuPpNiE47r6rzPCWzr6fVCleYi7MIogw
-         wY44mE8ahtnIxD0a4Mr6nY2uJDf8vEcMwWGWpKVMRb5ca12L+Odtz0KyxloyGM84+iq1
-         LXteXRBWl596bF+ywEm9S/5aw2uaZLmW8r1BBhIgv30vHSWJrdEW4dp9mfrVkgxelA0j
-         XURg==
-X-Gm-Message-State: AOJu0YyBh63lev/2eJB3q79fZaLY6G/uEwdIxf8qjWwyh1wGm2rPccnf
-        3nl+kqc9PEl2YsDzBOx1AS3IQrOdJlkMRSRIEUTeNQ==
-X-Google-Smtp-Source: AGHT+IGjvKd2niTfmfBjuzNcniW3V5Y/PxsZgGq2OwoKwKwF5abK6keybO2cmeizjiRJtAlZNeODiR9mqdAeK2sKHzQ=
-X-Received: by 2002:a05:6214:808:b0:67a:c636:179c with SMTP id
- df8-20020a056214080800b0067ac636179cmr5674448qvb.37.1702286931005; Mon, 11
- Dec 2023 01:28:51 -0800 (PST)
+        Mon, 11 Dec 2023 04:29:36 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C998AF5;
+        Mon, 11 Dec 2023 01:29:40 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BB9TUX902633390, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BB9TUX902633390
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 11 Dec 2023 17:29:32 +0800
+Received: from alexlu (172.29.36.158) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
+ 2023 17:29:30 +0800
+Date:   Mon, 11 Dec 2023 17:29:21 +0800
+From:   Alex Lu <alex_lu@realsil.com.cn>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Max Chou <max.chou@realtek.com>, Karen Hsu <karenhsu@realtek.com>
+Subject: [PATCH v2] Bluetooth: Add more enc key size check
+Message-ID: <ZXbWcZPq_2zIbqEO@alexlu>
 MIME-Version: 1.0
-References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org> <20231209-b4-arm64-sysreg-additions-v1-12-45284e538474@kernel.org>
-In-Reply-To: <20231209-b4-arm64-sysreg-additions-v1-12-45284e538474@kernel.org>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 11 Dec 2023 09:28:15 +0000
-Message-ID: <CA+EHjTxcY8wT-ztms2+SwJ-zywk08TjuKXLJiyk_9mO9y_y8Pg@mail.gmail.com>
-Subject: Re: [PATCH 12/13] arm64/sysreg: Add definition for FPMR
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [172.29.36.158]
+X-ClientProxiedBy: RSEXH36502.realsil.com.cn (172.29.17.3) To
+ RSEXMBS01.realsil.com.cn (172.29.17.195)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,61 +48,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+From: Alex Lu <alex_lu@realsil.com.cn>
 
-On Sat, Dec 9, 2023 at 1:03=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> DDI0601 2023-09 defines a new sysrem register FPMR (Floating Point Mode
-> Register) which configures the new FP8 features. Add a definition of this
-> register.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
+When we are slave role and receives l2cap conn req when encryption has
+started, we should check the enc key size to avoid KNOB attack or BLUFFS
+attack.
+From SIG recommendation, implementations are advised to reject
+service-level connections on an encrypted baseband link with key
+strengths below 7 octets.
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
+The btmon log below shows the case that lacks enc key size check.
 
-Cheers,
-/fuad
+> HCI Event: Connect Request (0x04) plen 10
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Class: 0x480104
+          Major class: Computer (desktop, notebook, PDA, organizers)
+          Minor class: Desktop workstation
+          Capturing (Scanner, Microphone)
+          Telephony (Cordless telephony, Modem, Headset)
+        Link type: ACL (0x01)
+< HCI Command: Accept Connection Request (0x01|0x0009) plen 7
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Role: Peripheral (0x01)
+> HCI Event: Command Status (0x0f) plen 4
+      Accept Connection Request (0x01|0x0009) ncmd 2
+        Status: Success (0x00)
+> HCI Event: Connect Complete (0x03) plen 11
+        Status: Success (0x00)
+        Handle: 1
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Link type: ACL (0x01)
+        Encryption: Disabled (0x00)
+...
 
->  arch/arm64/tools/sysreg | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-> index 1acec8f5c37d..1c6d1c904750 100644
-> --- a/arch/arm64/tools/sysreg
-> +++ b/arch/arm64/tools/sysreg
-> @@ -2139,6 +2139,29 @@ Field    1       ZA
->  Field  0       SM
->  EndSysreg
->
-> +Sysreg FPMR    3       3       4       4       2
-> +Res0   63:38
-> +Field  37:32   LSCALE2
-> +Field  31:24   NSCALE
-> +Res0   23
-> +Field  22:16   LSCALE
-> +Field  15      OSC
-> +Field  14      OSM
-> +Res0   13:9
-> +UnsignedEnum   8:6     F8D
-> +       0b000   E5M2
-> +       0b001   E4M3
-> +EndEnum
-> +UnsignedEnum   5:3     F8S2
-> +       0b000   E5M2
-> +       0b001   E4M3
-> +EndEnum
-> +UnsignedEnum   2:0     F8S1
-> +       0b000   E5M2
-> +       0b001   E4M3
-> +EndEnum
-> +EndSysreg
-> +
->  SysregFields   HFGxTR_EL2
->  Field  63      nAMAIR2_EL1
->  Field  62      nMAIR2_EL1
->
-> --
-> 2.39.2
->
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Encryption: Enabled with E0 (0x01)
+< HCI Command: Read Encryption Key Size (0x05|0x0008) plen 2
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+> HCI Event: Command Complete (0x0e) plen 7
+      Read Encryption Key Size (0x05|0x0008) ncmd 2
+        Status: Success (0x00)
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Key size: 6
+...
+
+// We should check the enc key size
+> ACL Data RX: Handle 1 flags 0x02 dlen 12
+      L2CAP: Connection Request (0x02) ident 3 len 4
+        PSM: 25 (0x0019)
+        Source CID: 64
+< ACL Data TX: Handle 1 flags 0x00 dlen 16
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 64
+        Source CID: 64
+        Result: Connection pending (0x0001)
+        Status: Authorization pending (0x0002)
+> HCI Event: Number of Completed Packets (0x13) plen 5
+        Num handles: 1
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Count: 1
+        #35: len 16 (25 Kb/s)
+        Latency: 5 msec (2-7 msec ~4 msec)
+< ACL Data TX: Handle 1 flags 0x00 dlen 16
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 64
+        Source CID: 64
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+
+Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+Changes in v2:
+  - Fix compiling issue reported by sparse
+
+ net/bluetooth/l2cap_core.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 17ca13e8c044..a9809fbe6b00 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -1669,7 +1669,13 @@ static void l2cap_conn_start(struct l2cap_conn *conn)
+ 			rsp.dcid = cpu_to_le16(chan->scid);
+ 
+ 			if (l2cap_chan_check_security(chan, false)) {
+-				if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
++				if (!l2cap_check_enc_key_size(conn->hcon)) {
++					l2cap_state_change(chan, BT_DISCONN);
++					__set_chan_timer(chan,
++							 L2CAP_DISC_TIMEOUT);
++					rsp.result = cpu_to_le16(L2CAP_CR_SEC_BLOCK);
++					rsp.status = cpu_to_le16(L2CAP_CS_NO_INFO);
++				} else if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
+ 					rsp.result = cpu_to_le16(L2CAP_CR_PEND);
+ 					rsp.status = cpu_to_le16(L2CAP_CS_AUTHOR_PEND);
+ 					chan->ops->defer(chan);
+@@ -4202,7 +4208,15 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
+ 
+ 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_DONE) {
+ 		if (l2cap_chan_check_security(chan, false)) {
+-			if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
++			/* As slave role, we should check the enc key size when
++			 * l2cap conn req is received.
++			 */
++			if (!l2cap_check_enc_key_size(conn->hcon)) {
++				l2cap_state_change(chan, BT_DISCONN);
++				__set_chan_timer(chan, L2CAP_DISC_TIMEOUT);
++				result = L2CAP_CR_SEC_BLOCK;
++				status = L2CAP_CS_NO_INFO;
++			} else if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
+ 				l2cap_state_change(chan, BT_CONNECT2);
+ 				result = L2CAP_CR_PEND;
+ 				status = L2CAP_CS_AUTHOR_PEND;
+-- 
+2.39.2
+
