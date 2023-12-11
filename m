@@ -2,179 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DB680DC0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE52B80DC17
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344838AbjLKUtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
+        id S1344928AbjLKUvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344816AbjLKUtt (ORCPT
+        with ESMTP id S1344856AbjLKUvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:49:49 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E271FB5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:49:55 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rCnDs-0001wT-1G; Mon, 11 Dec 2023 21:49:52 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rCnDr-00FBHA-DA; Mon, 11 Dec 2023 21:49:51 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rCnDr-0018OB-3U; Mon, 11 Dec 2023 21:49:51 +0100
-Date:   Mon, 11 Dec 2023 21:49:50 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nylon Chen <nylon.chen@sifive.com>
-Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, thierry.reding@gmail.com,
-        emil.renner.berthing@canonical.com, vincent.chen@sifive.com,
-        greentime.hu@sifive.com, zong.li@sifive.com, nylon7717@gmail.com
-Subject: Re: [v5 2/2] pwm: sifive: change the PWM controlled LED algorithm
-Message-ID: <20231211204950.fkaqsnpzb6kixqf2@pengutronix.de>
-References: <20231024101902.6689-1-nylon.chen@sifive.com>
- <20231024101902.6689-3-nylon.chen@sifive.com>
+        Mon, 11 Dec 2023 15:51:21 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F8AC8;
+        Mon, 11 Dec 2023 12:51:27 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67abaab0bc7so30636696d6.2;
+        Mon, 11 Dec 2023 12:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702327886; x=1702932686; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nuKB0tiRMyjq3zqgkwtMyPd6sd/CFmnAl3rOjtlfa4Y=;
+        b=HDi7hLG+u6hDrNOY6XNQhn3+iN0yMIj5GhkNHNOyTOaKDH0H4kevLMhUnvqUAqyfSr
+         g5OIqyEM39TJZHMft5DdYqZgK73AZtW2KKHcP2AqhwVDMhjq+PAj/psKcBJjhYPyaaMm
+         lFo4dUp68Lpd4UaT++5aOa8uPYARlB/3OggWTrJ3+jdDO+1xNBXLfyLu0IDlo+MYJoZS
+         zIGy3Idlb2BuVg3eSnV0CUdsfXp2zq5H6NQSB9oLCYarvkvviMxh0SpVPlgEqg3drEjF
+         Oigh5Mcddod0pmioZSKkY3W8nYbd44se6g9sSdOF4077NM17CcxTXmask6wMh4u9G6kX
+         SODQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702327886; x=1702932686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nuKB0tiRMyjq3zqgkwtMyPd6sd/CFmnAl3rOjtlfa4Y=;
+        b=UhZGUAeZQAx+B9tRgtKAMlG50s5FtWbxXG3honBf65dbPwwaMzwRKwp5WGJxVvF3qN
+         HHNnfwlpGCF8HAfDtpLnptV9w4izlBI9SBaTCVA1gFgXsVPumszM6EsHeXKMlAoEmvNm
+         ptgPqs2hDJngDonlWAjSoSEnAaFUG2dea5Qv0fjs+poOaV42kv6INqpnhTFpF7a4eYzv
+         nnlZKsWbO/Gn8L9h6kd6xoOLkOP5qwkT6TkodfpoRi+lOyy3CVVROk7U8s0PhRREP6+5
+         arhgXCiTNqrI+X4cc5s8GJZR6edxm1srhaoah20S7FGaSs0zo3exiUqRDHiFebMOlSvf
+         UNaQ==
+X-Gm-Message-State: AOJu0YzHJ+HMcuSXYQxslkT+QXNAludms8goILjWVhsL0kHnuKIuxidl
+        VcRBY/6tc0f+qRvF/nUqb/G/XIRMb4lnpknuGYc=
+X-Google-Smtp-Source: AGHT+IEA228JMjM/VLsHZ915V9UbK6f03W9ktXAMmg3SwRsG2mOK7pzB/x28D2m6o+77RCPh7w7+VYTc3YWxTeCaMDE=
+X-Received: by 2002:a0c:d684:0:b0:67a:a721:9ecc with SMTP id
+ k4-20020a0cd684000000b0067aa7219eccmr5100260qvi.125.1702327886385; Mon, 11
+ Dec 2023 12:51:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="u262zj72p5ucybub"
-Content-Disposition: inline
-In-Reply-To: <20231024101902.6689-3-nylon.chen@sifive.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
+ <20231205130449.8e330a26ecbed1f7b5ad5d7a@linux-foundation.org>
+ <CAKwvOdn+VTM+LY6ALcgaZTL57JpiKt5rBPMSPNXsgS3MCENhDQ@mail.gmail.com>
+ <20231205132452.418722bea8f6878dca88142a@linux-foundation.org>
+ <CAKwvOdn=og6h5gVdDCjFDANs3MN-_CD4OZ9oRM=o9YAvoTzkzw@mail.gmail.com>
+ <20231205214359.GF1674809@ZenIV> <CAKwvOdkC0oHWKGJ1Z6k_U9cwkjdcf=iweG-G78jXSJgWFk86Jg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkC0oHWKGJ1Z6k_U9cwkjdcf=iweG-G78jXSJgWFk86Jg@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 11 Dec 2023 22:50:49 +0200
+Message-ID: <CAHp75VeQzjdo1z8-bKSnMNgxvwTzjypADiBu-NJopia9h-YYLg@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>, tanzirh@google.com,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 11, 2023 at 10:48=E2=80=AFPM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+> On Tue, Dec 5, 2023 at 1:44=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> =
+wrote:
+> > On Tue, Dec 05, 2023 at 01:39:47PM -0800, Nick Desaulniers wrote:
+> >
+> > > The tooling Tanzir is working on does wrap IWYU, and does support suc=
+h
+> > > mapping (of 'low level' to 'high level' headers; more so, if it
+> > > recommends X you can override to suggest Y instead).
+> > >
+> > > arch/nios/ also doesn't provide a bug.h, which this patch is
+> > > suggesting we include directly.  I guess the same goes for
+> > > asm/rwonce.h.
+> >
+> > See include/asm-generic/Kbuild:
+> > mandatory-y +=3D bug.h
+> > ...
+> > mandatory-y +=3D rwonce.h
+> >
+> > IOW, sh will have asm/bug.h and as/rwonce.h copied from asm-generic.
+> >
+> > Still, includes of asm/*.h had been a massive headache historically
+> > and breeding more of those shouldn't be overdone.
+> >
+> > More painful problem is arch- and config-dependent stuff, though...
+>
+> Ah, it looks like include/uapi/asm-generic/Kbuild also makes use of
+> this pattern using mandatory-y.
+>
+> So I think we can handle this as a two step translation. We can tell
+> the tooling to 'nevermind recommending X, always replace
+> recommendations for X with Y <for raisins>', so:
+> 1. any recommendation to use asm-generic/foo.h should be replaced with
+> asm/foo.h (always, based on those 2 Kbuild files, could autogenerate)
+> 2. some recommendations to use asm/foo.h should be replaced with
+> linux/foo.h (not necessarily codified anywhere; depends on if there is
+> a linux/foo.h, will manually curate this list for now)
+>
+> Orthogonal but some places in tree can be cleaned up to include
+> linux/foo.h rather than asm/foo.h.
+>
+> Does this sound like an improvement to my mental model of the
+> conventions used for kernel header inclusion within the linux kernel?
+>
+> Tanzir nearly has the above done (for 1, 2 we will probably need to
+> iterate on more).  We've also beefed up our local testing to test more
+> architectures.  I expect Tanzir to send a v2 of this patch (as a
+> series, with the fix for ARCH=3Dsh) later this week, if the above seems
+> correct.
 
---u262zj72p5ucybub
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Nylon,
-
-On Tue, Oct 24, 2023 at 06:19:02PM +0800, Nylon Chen wrote:
-> The `frac` variable represents the pulse inactive time, and the result
-> of this algorithm is the pulse active time. Therefore, we must reverse th=
-e result.
->=20
-> The reference is SiFive FU740-C000 Manual[0]
->=20
-> Link: https://sifive.cdn.prismic.io/sifive/1a82e600-1f93-4f41-b2d8-86ed8b=
-16acba_fu740-c000-manual-v1p6.pdf [0]
->=20
-> Signed-off-by: Nylon Chen <nylon.chen@sifive.com>
-> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> ---
->  drivers/pwm/pwm-sifive.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/pwm/pwm-sifive.c b/drivers/pwm/pwm-sifive.c
-> index eabddb7c7820..353c2342fbf1 100644
-> --- a/drivers/pwm/pwm-sifive.c
-> +++ b/drivers/pwm/pwm-sifive.c
-> @@ -101,7 +101,7 @@ static void pwm_sifive_update_clock(struct pwm_sifive=
-_ddata *ddata,
-> =20
->  	/* As scale <=3D 15 the shift operation cannot overflow. */
->  	num =3D (unsigned long long)NSEC_PER_SEC << (PWM_SIFIVE_CMPWIDTH + scal=
-e);
-> -	ddata->real_period =3D div64_ul(num, rate);
-> +	ddata->real_period =3D DIV_ROUND_UP_ULL(num, rate);
-
-It's unclear to me, why you changed that.
-
->  	dev_dbg(ddata->chip.dev,
->  		"New real_period =3D %u ns\n", ddata->real_period);
->  }
-> @@ -121,13 +121,14 @@ static int pwm_sifive_get_state(struct pwm_chip *ch=
-ip, struct pwm_device *pwm,
->  		state->enabled =3D false;
-> =20
->  	state->period =3D ddata->real_period;
-> +
-> +	duty =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - duty;
-
-I would have placed that directly after
-
-	duty =3D readl(...);
-
-which then also influences
-
-	state->enabled =3D duty > 0;
-
-(as it should?).
-
->  	state->duty_cycle =3D
->  		(u64)duty * ddata->real_period >> PWM_SIFIVE_CMPWIDTH;
-> -	state->polarity =3D PWM_POLARITY_INVERSED;
-> +	state->polarity =3D PWM_POLARITY_NORMAL;
-> =20
->  	return 0;
->  }
-> -
->  static int pwm_sifive_apply(struct pwm_chip *chip, struct pwm_device *pw=
-m,
->  			    const struct pwm_state *state)
->  {
-> @@ -139,7 +140,7 @@ static int pwm_sifive_apply(struct pwm_chip *chip, st=
-ruct pwm_device *pwm,
->  	int ret =3D 0;
->  	u32 frac;
-> =20
-> -	if (state->polarity !=3D PWM_POLARITY_INVERSED)
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
->  		return -EINVAL;
-> =20
->  	cur_state =3D pwm->state;
-> @@ -158,6 +159,7 @@ static int pwm_sifive_apply(struct pwm_chip *chip, st=
-ruct pwm_device *pwm,
->  	num =3D (u64)duty_cycle * (1U << PWM_SIFIVE_CMPWIDTH);
->  	frac =3D DIV64_U64_ROUND_CLOSEST(num, state->period);
->  	/* The hardware cannot generate a 100% duty cycle */
-> +	frac =3D (1U << PWM_SIFIVE_CMPWIDTH) - 1 - frac;
->  	frac =3D min(frac, (1U << PWM_SIFIVE_CMPWIDTH) - 1);
-
-frac can only be > (1U << PWM_SIFIVE_CMPWIDTH) - 1 if an overflow
-happend the line above. Is that what you want here?
-
->  	mutex_lock(&ddata->lock);
-
-Best regards
-Uwe
+Whatever you choose, please make sure it gets documented, so we won't
+go another round in the future for something similar.
 
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---u262zj72p5ucybub
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV3de4ACgkQj4D7WH0S
-/k5Qzwf+LxNerZNq1fsWhPxwliLRort8Hzk5VF2VeREIjSWu6hPHY5Uu2Jx/wumV
-bnRMjYJaLsgFWf6NS4NPrAUTKmsika76v2c6AcQdWtRpc/1xlEwsVrX4nZMruAzv
-mBmCPb5zqeDf4X4LhIR7Y1oAFejSg/uyVY1WDABJzbqt8Z/E4JHXIsxB4C6eqfl3
-bC+q7XOlWu6C6YO3/fsZ/A7W9o+S1/mFMkyggloi5YJyjhn75SqG6IYvE9wsOOQX
-LnRHy2LITZlrzGRIukkQvPIfPWgCaSESmsXIJR0mi0KyCMPd/p2ttcDM6o2y27JM
-4sCF7nZA15bQcx6WfqQyQwexbDoy+A==
-=WoBu
------END PGP SIGNATURE-----
-
---u262zj72p5ucybub--
+With Best Regards,
+Andy Shevchenko
