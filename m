@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1861880CCBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD32580CDF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343971AbjLKODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:03:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S1344332AbjLKOPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344023AbjLKOCp (ORCPT
+        with ESMTP id S1343914AbjLKOOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:02:45 -0500
+        Mon, 11 Dec 2023 09:14:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34996A56
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50FEDC433CC;
-        Mon, 11 Dec 2023 14:00:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5159C6A59
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25541C43391;
+        Mon, 11 Dec 2023 14:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303213;
-        bh=cgWq13eTCqShVtuSidKM+IMg4S/yjNGBKjlrmQi9KeU=;
+        s=k20201202; t=1702303214;
+        bh=dT3TjpU5nkeVbApxHkWNYjJktKleH4Jfc/XG8mWzMKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ccEKTjgJFwb7ru1e9F46pOz5Sr++AMwnhsFJqT1R2M1vp8HPzOQWBvpCLKuMoTB7O
-         6L0R1VfOuMW9tDU8FRqlWCA0g2sdI1fOB8Z1r/UApmc6dPEfGTWN6SY8hKOMUGsrFO
-         INbKpApnkArLWdEdPzhTQrnPV6sy+cVQBGky6DSsr6QRF0gv0Sw9ufW7gxNj6RUhsd
-         WA/Nj1bOqk4K8733cy3dGuCCZbRdtQWxuRFVgDipQzc91Ek3EObZY/Lzlbl7tUYu7p
-         QmPhZOhDAXvIFQWxs/uKohWcGzHSaOUvdyuIjWgyngmhuxEUu2L/dzYlp4hpU4KYxK
-         rqseJgMyDPsvQ==
+        b=UWc7TwGA1vCcS3JtS9qg5KNymYBVaVbV0SjLSDcPmo1PCAf/NOoMowc3PrK/C7f0M
+         DQDPG22tfRh4HaN/WX3p/vHFwwGTHJLAvNh1oM6A51IermLPXJ5899c6JzXxAu9GFX
+         ng1jbJkESdHhnzClfEN3z02QEdQQOyn338Vn0UwoNzuITSXW0lpzhcRZS4VyAFVKbV
+         Gki7Ktne0tEjL2r2VVxi2OGuAcpeFbstsGNb2a52C4mY3mkZp0P3mOiUp+6ZrDY++/
+         wRyn4eChBxNRkS1rXOzzxaQb+gb+B+EbyvBxxdR2Pv7Bt9u45+wvXzmyVC7Z1pPcKm
+         HMRmWjaMCIUPg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/19] ASoC: ops: add correct range check for limiting volume
-Date:   Mon, 11 Dec 2023 08:57:47 -0500
-Message-ID: <20231211135908.385694-13-sashal@kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.15 14/19] nvme: introduce helper function to get ctrl state
+Date:   Mon, 11 Dec 2023 08:57:48 -0500
+Message-ID: <20231211135908.385694-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135908.385694-1-sashal@kernel.org>
 References: <20231211135908.385694-1-sashal@kernel.org>
@@ -55,38 +52,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit fb9ad24485087e0f00d84bee7a5914640b2b9024 ]
+[ Upstream commit 5c687c287c46fadb14644091823298875a5216aa ]
 
-Volume can have ranges that start with negative values, ex: -84dB to
-+40dB. Apply correct range check in snd_soc_limit_volume before setting
-the platform_max. Without this patch, for example setting a 0dB limit on
-a volume range of -84dB to +40dB would fail.
+The controller state is typically written by another CPU, so reading it
+should ensure no optimizations are taken. This is a repeated pattern in
+the driver, so start with adding a convenience function that returns the
+controller state with READ_ONCE().
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Johan Hovold <johan+linaro@kernel.org>
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-Link: https://lore.kernel.org/r/20231204124736.132185-2-srinivas.kandagatla@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/nvme.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 12effaa59fdb7..c56379fac9272 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -644,7 +644,7 @@ int snd_soc_limit_volume(struct snd_soc_card *card,
- 	kctl = snd_soc_card_get_kcontrol(card, name);
- 	if (kctl) {
- 		struct soc_mixer_control *mc = (struct soc_mixer_control *)kctl->private_value;
--		if (max <= mc->max) {
-+		if (max <= mc->max - mc->min) {
- 			mc->platform_max = max;
- 			ret = 0;
- 		}
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 590ffa3e1c497..e523427d8a581 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -360,6 +360,11 @@ struct nvme_ctrl {
+ 	struct nvme_fault_inject fault_inject;
+ };
+ 
++static inline enum nvme_ctrl_state nvme_ctrl_state(struct nvme_ctrl *ctrl)
++{
++	return READ_ONCE(ctrl->state);
++}
++
+ enum nvme_iopolicy {
+ 	NVME_IOPOLICY_NUMA,
+ 	NVME_IOPOLICY_RR,
 -- 
 2.42.0
 
