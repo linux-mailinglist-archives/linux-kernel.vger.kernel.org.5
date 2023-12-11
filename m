@@ -2,115 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EED80C183
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E663080C18A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbjLKGu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 01:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S233541AbjLKGxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbjLKGu5 (ORCPT
+        with ESMTP id S229570AbjLKGxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 01:50:57 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEECED7
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:51:03 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b88f2a37deso3295116b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702277463; x=1702882263; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YctzTYntyd51jqXxmWwWW3nRDYDfU3b8oocrWrVlruk=;
-        b=PbmooSSiw9uJ4wc+pUMLVMJ+tzGzc27nYJ6LbWqBlcYDkBuvMvj+9xItsnmqrY9n7L
-         /E6O7XMaASy4EWQT6CgjHt/1XZ0MJyP3dv41v2IGdGkHiUbR2cidGgVgiD/Dk2opEgb+
-         VdONGiDy5Xhii9oOF44DW2jNY9voV4VAGJR5+GsjZICyy6YFb8ix+RYWh/DeqoeDFUUs
-         StyPig433YmVHsvpH4ghxeGQXhVx0PvImf90XEKy+KHsc9Ts5V+lL0mbAC0vpfyLzt3w
-         6WQ/ilF31Sp6I8zIMP1/fICUEus6WeYh72wqhLG+Fq2fMR3f6isMOwmck7n8qP0Lcl13
-         ufMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702277463; x=1702882263;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YctzTYntyd51jqXxmWwWW3nRDYDfU3b8oocrWrVlruk=;
-        b=MYUhceb6XGX2QsNCOl7Gx/+PZGyNLv9MwdrQVOppuhw7EcaXaaADJcOrBkGyWRk0iI
-         rnYVFHSJDhKid1lpAEZi7nEeBZdFy0cMjC3pXEG2YDqHT9tFUfsnJZ1rypb4kolEJCLy
-         2AKuD6h4iUtArZSV8ZnlTMEiJl1akpe1456eIwJdiPguTOmv7mHjtlYni6SbWtZlDdCz
-         YnS0IJlAkuukGgdHxpYKbDIRBhurXjOK3Ct+6GPC9yCMHYSGbnBZ+WYi3iauCApuXiwd
-         yJHg6mDl4k5nS44csy0XKzdwBOM9eMJYRu74qmO6/mK/H0EnltrNGDbsiKRGERugc/+v
-         U7GA==
-X-Gm-Message-State: AOJu0YzoIn5k3MwN1WkHyHOHRvYXmBD2dFpL51Inspf7P0ssRWMZBkTH
-        j/rcSA1Hl1AbYCTl8rcm7Bs=
-X-Google-Smtp-Source: AGHT+IGeRQ1ftbcejenpH4uWLA+egcIaOW1gMT6Mg14LZVgPoMPZGIReGmd8m7mRuhAK6i30LrPfhQ==
-X-Received: by 2002:a05:6808:208a:b0:3b9:f08f:6846 with SMTP id s10-20020a056808208a00b003b9f08f6846mr5059593oiw.18.1702277462917;
-        Sun, 10 Dec 2023 22:51:02 -0800 (PST)
-Received: from localhost ([156.236.96.164])
-        by smtp.gmail.com with ESMTPSA id 64-20020a630043000000b005c65d432119sm5533968pga.67.2023.12.10.22.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 22:51:02 -0800 (PST)
-Date:   Mon, 11 Dec 2023 14:50:57 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        huyue2@coolpad.com
-Subject: Re: [PATCH 0/5] erofs: basic sub-page compressed data support
-Message-ID: <20231211145057.000067eb.zbestahu@gmail.com>
-In-Reply-To: <20231206091057.87027-1-hsiangkao@linux.alibaba.com>
-References: <20231206091057.87027-1-hsiangkao@linux.alibaba.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+        Mon, 11 Dec 2023 01:53:17 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1772D6;
+        Sun, 10 Dec 2023 22:53:23 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 44E2C20B74C0; Sun, 10 Dec 2023 22:53:23 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 44E2C20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702277603;
+        bh=IUIp4qRLj+juSM9lSpE7OLc2jm7lTxH+OyQdVrgOx4k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KbwpxtwC9323VClNsiQswbDFe/4uaJJl13iaxLQO8xwCtlBQnV8vVxNCW/XyU6KbF
+         wxhnkFwgvejwsC3SZerZo9v6s5SkFMkHk0f1ln0I0KKyJ90x+ukDlr4QS5pxx6D2Bq
+         BptKAhbmgMKsvRxo6c3Dp1ZPsehoWPu9+jcRewGo=
+Date:   Sun, 10 Dec 2023 22:53:23 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 Dec 2023 17:10:52 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-
-> Hi folks,
+On Fri, Dec 08, 2023 at 01:53:51PM -0800, Yury Norov wrote:
+> Few more nits
 > 
-> Recently, there are two new cases so that we need to add a preliminary
-> sub-page block support for compressed files;
+> On Fri, Dec 08, 2023 at 06:03:40AM -0800, Yury Norov wrote:
+> > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > > Existing MANA design assigns IRQ to every CPU, including sibling
+> > > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > > in the same core and may reduce the network performance with RSS.
+> > 
+> > Can you add an IRQ distribution diagram to compare before/after
+> > behavior, similarly to what I did in the other email?
+> > 
+> > > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > > NUMA node. The performance improvement we are getting using ntttcp with
+> > > following patch is around 15 percent with existing design and approximately
+> > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > > if enough cores are present.
+> > 
+> > How did you measure it? In the other email you said you used perf, can
+> > you show your procedure in details?
+> > 
+> > > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > > ---
+> > 
+> > [...]
+> > 
+> > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> > >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > index 6367de0c2c2e..18e8908c5d29 100644
+> > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> > >  	r->size = 0;
+> > >  }
+> > >  
+> > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> > > +{
+> > > +	int w, cnt, cpu, err = 0, i = 0;
+> > > +	int next_node = start_numa_node;
+> > 
+> > What for this?
+> > 
+> > > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > > +	cpumask_var_t curr, cpus;
+> > > +
+> > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
 > 
->  - As Android folks requested, Android ecosystem itself is now switching
->    to 16k page size for their arm64 devices.  They needs an option of
->    4k-block image compatibility on their new 16k devices;
+> alloc_cpumask_var() here and below, because you initialize them by
+> copying
+I have used zalloc here as prev gets initialized after the first hop, before that
+it may contain unwanted values, which may impact cpumask_andnot(curr, next, prev).
+Regarding curr I will change it to alloc_cpumask_var().
+Please let me know if that sounds right.
 > 
->  - Some arm64 cloud servers use 64k page size for their optimized
->    workloads, but 4k-block EROFS container images need to be parsed too.
+> > > +		err = -ENOMEM;
+> > > +		return err;
+> > > +	}
+> > > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
+> > 
+> >                 free(curr);
+> > 
+> > > +		err = -ENOMEM;
+> > > +		return err;
+> > > +	}
+> > > +
+> > > +	rcu_read_lock();
+> > > +	for_each_numa_hop_mask(next, next_node) {
+> > > +		cpumask_andnot(curr, next, prev);
+> > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
 > 
-> So this patchset mainly addresses the requirements above with a very
-> very simple approach as a start: just allocate short-lived temporary
-> buffers all the time to keep compressed data if sub-page blocks are
-> identified.  In other words, no inplace/cache decompression for
-> the preliminary support.
+> OK, if you can't increment inside for-loop, I'd switch it to a
+> while-loop:
+>                 w = cpumask_weight(curr);
+>                 cnt = 0;
 > 
-> This patchset survives EROFS stress test on my own testfarms.
+Thanks will change it to while loop.
+> 		while (cnt < w) {
 > 
-> Thanks,
-> Gao Xiang
+> > > +			cpumask_copy(cpus, curr);
+> > > +			for_each_cpu(cpu, cpus) {
+> > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
+> > > +				if (++i == nvec)
+> > > +					goto done;
+> > 
+> > Think what if you're passed with irq_setup(NULL, 0, 0).
+> > That's why I suggested to place this check at the beginning.
+> > 
+> > 
+> > > +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+> > > +				++cnt;
+> > > +			}
+> > > +		}
+> > > +		prev = next;
+> > > +	}
 > 
-> Gao Xiang (5):
->   erofs: support I/O submission for sub-page compressed blocks
->   erofs: record `pclustersize` in bytes instead of pages
->   erofs: fix up compacted indexes for block size < 4096
->   erofs: refine z_erofs_transform_plain() for sub-page block support
->   erofs: enable sub-page compressed block support
+> Don't hesitate to add even more vertical spacing. It's like: "take a
+> breath folks, this section is done". :)
 > 
->  fs/erofs/decompressor.c |  81 +++++++++------
->  fs/erofs/inode.c        |   6 +-
->  fs/erofs/zdata.c        | 224 ++++++++++++++++++----------------------
->  fs/erofs/zmap.c         |  32 +++---
->  4 files changed, 169 insertions(+), 174 deletions(-)
-> 
-
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
+Sure will add in next version.
+> > > +done:
+> > > +	rcu_read_unlock();
+> > > +	free_cpumask_var(curr);
+> > > +	free_cpumask_var(cpus);
+> > > +	return err;
+> > > +}
+> > > +
+> > >  static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > >  {
+> > > -	unsigned int max_queues_per_port = num_online_cpus();
+> > >  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > > +	unsigned int max_queues_per_port;
+> > >  	struct gdma_irq_context *gic;
+> > >  	unsigned int max_irqs, cpu;
+> > > -	int nvec, irq;
+> > > +	int start_irq_index = 1;
+> > > +	int nvec, *irqs, irq;
+> > >  	int err, i = 0, j;
+> > >  
+> > > +	cpus_read_lock();
+> > > +	max_queues_per_port = num_online_cpus();
+> > >  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+> > >  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
+> > >  
+> > > @@ -1261,6 +1302,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > >  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+> > >  	if (nvec < 0)
+> > >  		return nvec;
+> > > +	if (nvec <= num_online_cpus())
+> > > +		start_irq_index = 0;
+> > > +
+> > > +	irqs = kmalloc_array((nvec - start_irq_index), sizeof(int), GFP_KERNEL);
+> > > +	if (!irqs) {
+> > > +		err = -ENOMEM;
+> > > +		goto free_irq_vector;
+> > > +	}
+> > >  
+> > >  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+> > >  				   GFP_KERNEL);
+> > > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > >  			goto free_irq;
+> > >  		}
+> > >  
+> > > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > -		if (err)
+> > > -			goto free_irq;
+> > > -
+> > > -		cpu = cpumask_local_spread(i, gc->numa_node);
+> > > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > > +		if (!i) {
+> > > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > +			if (err)
+> > > +				goto free_irq;
+> > > +
+> > > +			/* If number of IRQ is one extra than number of online CPUs,
+> > > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
+> > > +			 * same CPU.
+> > > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
+> > > +			 * Also we are using cpumask_local_spread instead of
+> > > +			 * cpumask_first for the node, because the node can be
+> > > +			 * mem only.
+> > > +			 */
+> > > +			if (start_irq_index) {
+> > > +				cpu = cpumask_local_spread(i, gc->numa_node);
+> > 
+> > I already mentioned that: if i == 0, you don't need to spread, just
+> > pick 1st cpu from node.
+> > 
+> > > +				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > > +			} else {
+> > > +				irqs[start_irq_index] = irq;
+> > > +			}
+> > > +		} else {
+> > > +			irqs[i - start_irq_index] = irq;
+> > > +			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
+> > > +					  gic->name, gic);
+> > > +			if (err)
+> > > +				goto free_irq;
+> > > +		}
+> > >  	}
+> > >  
+> > > +	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
+> > > +	if (err)
+> > > +		goto free_irq;
+> > >  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+> > >  	if (err)
+> > >  		goto free_irq;
+> > >  
+> > >  	gc->max_num_msix = nvec;
+> > >  	gc->num_msix_usable = nvec;
+> > > -
+> > > +	cpus_read_unlock();
+> > >  	return 0;
+> > >  
+> > >  free_irq:
+> > > @@ -1314,8 +1386,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > >  	}
+> > >  
+> > >  	kfree(gc->irq_contexts);
+> > > +	kfree(irqs);
+> > >  	gc->irq_contexts = NULL;
+> > >  free_irq_vector:
+> > > +	cpus_read_unlock();
+> > >  	pci_free_irq_vectors(pdev);
+> > >  	return err;
+> > >  }
+> > > -- 
+> > > 2.34.1
