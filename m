@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9159880CED5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC5580CED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbjLKO42 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 09:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
+        id S234961AbjLKO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:56:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKO41 (ORCPT
+        with ESMTP id S234618AbjLKO4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:56:27 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533528E;
-        Mon, 11 Dec 2023 06:56:33 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Spkx31B9fz9xrpQ;
-        Mon, 11 Dec 2023 22:42:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-        by mail.maildlp.com (Postfix) with ESMTP id 2D5B1140429;
-        Mon, 11 Dec 2023 22:56:24 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwA3c3MKI3dlUupYAg--.22303S2;
-        Mon, 11 Dec 2023 15:56:23 +0100 (CET)
-Message-ID: <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Seth Forshee <sforshee@kernel.org>
-Cc:     miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        paul@paul-moore.com, stefanb@linux.ibm.com, jlayton@kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 11 Dec 2023 15:56:06 +0100
-In-Reply-To: <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
-         <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
-         <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 11 Dec 2023 09:56:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3946BC5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:56:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55B8FC433C8;
+        Mon, 11 Dec 2023 14:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702306596;
+        bh=yeGJvoAhrRUdjjLyjIJiQRRidjJWgvKa+3GL2nDVUtM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lr0A/IQzptm9L/e+o5KMT9FMS3j80GX6sEJbS6KS607y4WTzHTs6rXMSTMV+TjcFK
+         46Nr8O+JVoKoj9tJ88rsIM6K6+jL+E7IUF6VFHYLuqvpT2SuSLCb/C4wzJ2PfKSFwL
+         HbgUe7TcvMQgCp+JN5/Xm2LcjIeh7TkbvyEwWxFw=
+Date:   Mon, 11 Dec 2023 15:56:31 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
+Message-ID: <2023121118-snagged-ninja-7efb@gregkh>
+References: <20231205183241.636315882@linuxfoundation.org>
+ <5b0eb360-3765-40e1-854a-9da6d97eb405@roeck-us.net>
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwA3c3MKI3dlUupYAg--.22303S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4DXryktF4rGF1ftw1DZFb_yoWrZFW3pF
-        WYka4UKrs8Jr17uwnavF47Xa40y3yrJa1UXwn8Jrn5AFWDXF1IgrWxt3WUuasrXF1kX34j
-        q3yjk34fZ3s8Z3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj5N17wAAs2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5b0eb360-3765-40e1-854a-9da6d97eb405@roeck-us.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 23:01 +0100, Christian Brauner wrote:
-> On Fri, Dec 08, 2023 at 11:55:19PM +0200, Amir Goldstein wrote:
-> > On Fri, Dec 8, 2023 at 7:25 PM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > 
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > > EVM updates the HMAC in security.evm whenever there is a setxattr or
-> > > removexattr operation on one of its protected xattrs (e.g. security.ima).
-> > > 
-> > > Unfortunately, since overlayfs redirects those xattrs operations on the
-> > > lower filesystem, the EVM HMAC cannot be calculated reliably, since lower
-> > > inode attributes on which the HMAC is calculated are different from upper
-> > > inode attributes (for example i_generation and s_uuid).
-> > > 
-> > > Although maybe it is possible to align such attributes between the lower
-> > > and the upper inode, another idea is to map security.evm to another name
-> > > (security.evm_overlayfs)
+On Fri, Dec 08, 2023 at 10:09:17AM -0800, Guenter Roeck wrote:
+> On 12/5/23 11:22, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.263 release.
+> > There are 90 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
 > > 
-> > If we were to accept this solution, this will need to be trusted.overlay.evm
-> > to properly support private overlay xattr escaping.
+> > Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> > Anything received after that time might be too late.
 > > 
-> > > during an xattr operation, so that it does not
-> > > collide with security.evm set by the lower filesystem.
+> [ ... ]
+> > Qu Wenruo <wqu@suse.com>
+> >      btrfs: add dmesg output for first mount and last unmount of a filesystem
 > > 
-> > You are using wrong terminology and it is very confusing to me.
 > 
-> Same.
+> This patch results in the following code in fs/btrfs/disk-io.c:open_ctree():
+> 
+> 	struct btrfs_super_block *disk_super;
+> 	... (no access to disk_super)
+> 	btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
+> 
+> which I would assume _should_ result in btrfs crashes. No idea why that isn't
+> actually happening or why gcc doesn't complain. Building allmodconfig with
+> clang does complain, but doesn't bail out.
+> 
+> s/btrfs/disk-io.c:2832:55: warning: variable 'disk_super' is uninitialized when used here [-Wuninitialized]
+>         btrfs_info(fs_info, "first mount of filesystem %pU", disk_super->fsid);
+>                                                              ^~~~~~~~~~
+> 
+> The actual log output is:
+> 
+> [    7.302427] BTRFS info (device nvme0n1): first mount of filesystem (efault)
+> 
+> It might be a good idea to either revert this patch or fix it up
+> (though I don't know how to fix it up).
 
-Argh, sorry...
+yeah, that doesn't look good, now reverted, thanks!
 
-> > see the overlay mount command has lowerdir= and upperdir=.
-> > Seems that you are using lower filesystem to refer to the upper fs
-> > and upper filesystem to refer to overlayfs.
-> > 
-> > > 
-> > > Whenever overlayfs wants to set security.evm, it is actually setting
-> > > security.evm_overlayfs calculated with the upper inode attributes. The
-> > > lower filesystem continues to update security.evm.
-> > > 
-> > 
-> > I understand why that works, but I am having a hard time swallowing
-> > the solution, mainly because I feel that there are other issues on the
-> > intersection of overlayfs and IMA and I don't feel confident that this
-> > addresses them all.
-
-This solution is specifically for the collisions on HMACs, nothing
-else. Does not interfere/solve any other problem.
-
-> > If you want to try to convince me, please try to write a complete
-> > model of how IMA/EVM works with overlayfs, using the section
-> > "Permission model" in Documentation/filesystems/overlayfs.rst
-> > as a reference.
-
-Ok, I will try.
-
-I explain first how EVM works in general, and then why EVM does not
-work with overlayfs.
-
-EVM gets called before there is a set/removexattr operation, and after,
-if that operation is successful. Before the set/removexattr operation
-EVM calculates the HMAC on current inode metadata (i_ino, i_generation,
-i_uid, i_gid, i_mode, POSIX ACLs, protected xattrs). Finally, it
-compares the calculated HMAC with the one in security.evm.
-
-If the verification and the set/removexattr operation are successful,
-EVM calculates again the HMAC (in the post hooks) based on the updated
-inode metadata, and sets security.evm with the new HMAC.
-
-The problem is the combination of: overlayfs inodes have different
-metadata than the lower/upper inodes; overlayfs calls the VFS to
-set/remove xattrs.
-
-The first problem basically means the HMAC on lower/upper inodes and
-overlayfs ones is different.
-
-The second problem is that one security.evm is not enough. We need two,
-to store the two different HMACs. And we need both at the same time,
-since when overlayfs is mounted the lower/upper directories can be
-still accessible.
-
-In the example I described, IMA tries to update security.ima, but this
-causes EVM to attempt updating security.evm twice (once after the upper
-filesystem performed the setxattr requested by overlayfs, another after
-overlayfs performed the setxattr requested by IMA; the latter fails
-since EVM does not allow the VFS to directly update the HMAC).
-
-Remapping security.evm to security.evm_overlayfs (now
-trusted.overlay.evm) allows us to store both HMACs separately and to
-know which one to use.
-
-I just realized that the new xattr name should be public, because EVM
-rejects HMAC updates, so we should reject HMAC updates based on the new
-xattr name too.
-
-> I want us to go the other way. Make the overlayfs layer completely
-> irrelevant for EVM and IMA. See a related discussion here:
-
-Not sure it is possible, as long as overlayfs uses VFS xattr calls.
-
-> Subject: Re: [PATCH 09/16] fs: add vfs_set_fscaps()
-> https://lore.kernel.org/r/ZXHZ8uNEg1IK5WMW@do-x1extreme
-
-I will also read this patch, in case I missed something.
-
-Thanks
-
-Roberto
-
+greg k-h
