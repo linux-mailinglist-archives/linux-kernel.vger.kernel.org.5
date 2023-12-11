@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 205E680CA5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE6D80CA63
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbjLKNAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:00:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
+        id S234892AbjLKNAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343569AbjLKNAK (ORCPT
+        with ESMTP id S234916AbjLKNAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:00:10 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E522C3;
-        Mon, 11 Dec 2023 05:00:16 -0800 (PST)
+        Mon, 11 Dec 2023 08:00:16 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41805DB;
+        Mon, 11 Dec 2023 05:00:19 -0800 (PST)
 Received: from umang.jain (unknown [103.251.226.68])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1D33F1515;
-        Mon, 11 Dec 2023 13:59:28 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 12B45922;
+        Mon, 11 Dec 2023 13:59:31 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702299571;
-        bh=nrEAdhHZwA2L0AvxJ6FGfgqEfXwThQSUE+QCVNTuuhs=;
+        s=mail; t=1702299574;
+        bh=dPSuxJaKB+CIuZJvHrsCSRjEJHKIU9bjVIDtso3S4bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxighCXQ1l/fbMew3D4DHzVOHOVrQheuTYk5MLyvbcd2T0B/Py5iVrOursO8VWZTi
-         KIzyYBkzkKkq3Vy8srl0yz3FvAoa0SOAdvNoId6iqSfHP222DugtUir/2acfy5m+lZ
-         0pO4DSI9apyNgWDWuhfW0fnqyZ152HnpUmbr0GWU=
+        b=jjHaR/rQcngM1nQ/l0Xc9DCaiAyJQ4ZinqGTuD+FseBnDZYKTHCAm+cmXtdC/B5U/
+         nbgbcoP3jRqZdIo9F9PebiZf44YtPZ9vFrI8V3vD9QLaJjlJ+/TpbfvJPIeoO+atoP
+         jaS807uwnhmijG54E2egOP2RfEIgxpa3yW7k1PpA=
 From:   Umang Jain <umang.jain@ideasonboard.com>
 To:     devicetree@vger.kernel.org, linux-media@vger.kernel.org
 Cc:     "Paul J . Murphy" <paul.j.murphy@intel.com>,
@@ -32,11 +32,10 @@ Cc:     "Paul J . Murphy" <paul.j.murphy@intel.com>,
         Sakari Ailus <sakari.ailus@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Umang Jain <umang.jain@ideasonboard.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 3/7] media: i2c: imx335: Improve configuration error reporting
-Date:   Mon, 11 Dec 2023 18:29:45 +0530
-Message-ID: <20231211125950.108092-4-umang.jain@ideasonboard.com>
+Subject: [PATCH v4 4/7] media: i2c: imx335: Enable regulator supplies
+Date:   Mon, 11 Dec 2023 18:29:46 +0530
+Message-ID: <20231211125950.108092-5-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231211125950.108092-1-umang.jain@ideasonboard.com>
 References: <20231211125950.108092-1-umang.jain@ideasonboard.com>
@@ -54,44 +53,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-The existing imx335_parse_hw_config function has two paths
-that can be taken without reporting to the user the reason
-for failing to accept the hardware configuration.
+Provide support for enabling and disabling regulator supplies to control
+power to the camera sensor.
 
-Extend the error reporting paths to identify failures when
-probing the device.
+While updating the power on function, document that a sleep is
+represented as 'T4' in the datasheet power on sequence.
 
-Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
 Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 ---
- drivers/media/i2c/imx335.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/media/i2c/imx335.c | 36 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index cbabef968e21..31c612c6bdd8 100644
+index 31c612c6bdd8..b25216b3350e 100644
 --- a/drivers/media/i2c/imx335.c
 +++ b/drivers/media/i2c/imx335.c
-@@ -795,8 +795,10 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+@@ -75,6 +75,12 @@ struct imx335_reg_list {
+ 	const struct imx335_reg *regs;
+ };
+ 
++static const char * const imx335_supply_name[] = {
++	"avdd", /* Analog (2.9V) supply */
++	"ovdd", /* Digital I/O (1.8V) supply */
++	"dvdd", /* Digital Core (1.2V) supply */
++};
++
+ /**
+  * struct imx335_mode - imx335 sensor mode structure
+  * @width: Frame width
+@@ -108,6 +114,7 @@ struct imx335_mode {
+  * @sd: V4L2 sub-device
+  * @pad: Media pad. Only one pad supported
+  * @reset_gpio: Sensor reset gpio
++ * @supplies: Regulator supplies to handle power control
+  * @inclk: Sensor input clock
+  * @ctrl_handler: V4L2 control handler
+  * @link_freq_ctrl: Pointer to link frequency control
+@@ -126,6 +133,8 @@ struct imx335 {
+ 	struct v4l2_subdev sd;
+ 	struct media_pad pad;
+ 	struct gpio_desc *reset_gpio;
++	struct regulator_bulk_data supplies[ARRAY_SIZE(imx335_supply_name)];
++
+ 	struct clk *inclk;
+ 	struct v4l2_ctrl_handler ctrl_handler;
+ 	struct v4l2_ctrl *link_freq_ctrl;
+@@ -781,6 +790,17 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+ 		return PTR_ERR(imx335->reset_gpio);
  	}
  
- 	ep = fwnode_graph_get_next_endpoint(fwnode, NULL);
--	if (!ep)
-+	if (!ep) {
-+		dev_err(imx335->dev, "Failed to get next endpoint\n");
- 		return -ENXIO;
-+	}
- 
- 	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
- 	fwnode_handle_put(ep);
-@@ -821,6 +823,8 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
- 		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
- 			goto done_endpoint_free;
- 
-+	dev_err(imx335->dev, "no compatible link frequencies found\n");
++	for (i = 0; i < ARRAY_SIZE(imx335_supply_name); i++)
++		imx335->supplies[i].supply = imx335_supply_name[i];
 +
- 	ret = -EINVAL;
++	ret = devm_regulator_bulk_get(imx335->dev,
++				      ARRAY_SIZE(imx335_supply_name),
++				      imx335->supplies);
++	if (ret) {
++		dev_err(imx335->dev, "Failed to get regulators\n");
++		return ret;
++	}
++
+ 	/* Get sensor input clock */
+ 	imx335->inclk = devm_clk_get(imx335->dev, NULL);
+ 	if (IS_ERR(imx335->inclk)) {
+@@ -863,6 +883,17 @@ static int imx335_power_on(struct device *dev)
+ 	struct imx335 *imx335 = to_imx335(sd);
+ 	int ret;
  
- done_endpoint_free:
++	ret = regulator_bulk_enable(ARRAY_SIZE(imx335_supply_name),
++				    imx335->supplies);
++	if (ret) {
++		dev_err(dev, "%s: failed to enable regulators\n",
++			__func__);
++		return ret;
++	}
++
++	usleep_range(500, 550); /* Tlow */
++
++	/* Set XCLR */
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 1);
+ 
+ 	ret = clk_prepare_enable(imx335->inclk);
+@@ -871,12 +902,13 @@ static int imx335_power_on(struct device *dev)
+ 		goto error_reset;
+ 	}
+ 
+-	usleep_range(20, 22);
++	usleep_range(20, 22); /* T4 */
+ 
+ 	return 0;
+ 
+ error_reset:
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
++	regulator_bulk_disable(ARRAY_SIZE(imx335_supply_name), imx335->supplies);
+ 
+ 	return ret;
+ }
+@@ -893,8 +925,8 @@ static int imx335_power_off(struct device *dev)
+ 	struct imx335 *imx335 = to_imx335(sd);
+ 
+ 	gpiod_set_value_cansleep(imx335->reset_gpio, 0);
+-
+ 	clk_disable_unprepare(imx335->inclk);
++	regulator_bulk_disable(ARRAY_SIZE(imx335_supply_name), imx335->supplies);
+ 
+ 	return 0;
+ }
 -- 
 2.41.0
 
