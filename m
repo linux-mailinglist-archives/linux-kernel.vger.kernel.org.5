@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB8D80C282
+	by mail.lfdr.de (Postfix) with ESMTP id 35C5E80C281
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 08:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjLKH7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 02:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKH7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232263AbjLKH7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Dec 2023 02:59:06 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7E4CE;
-        Sun, 10 Dec 2023 23:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702281553; x=1733817553;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ahXSbRAJBTiA2MQUihFAGoimJVSEvl5KNWFHCZRfaVs=;
-  b=VljjdstAgcTCa8ZUbKfxzceCxbw+Pj7bpi/pu2QD85PMWjOdo2t6D94G
-   3n10gzEILG/UvKOwRAp1H3LhmvdfSjeQWXrTbF+qRDS0dqeH+5ATRBYfm
-   Si13Zdb8g+lJi/GoelAcjs9wPM7pZ4ltVuAadW1EqzWF/u82iXh6HgA0a
-   F6tnOyzC1LqghptQpGLB3cLQ00OMvMKp3+WVTe5++/QNWNpdCaFksjD3W
-   Pp2QYZKa+56ehHiofKAUsIFftWvS5HhKlksd1POkBcF3yFHC2IRM5zATe
-   MyyLRJ/jh7U4NPm1XN6qeUw2M4yIYzwhqu3NxIgCtC3vJ20xEzSPEhH/R
-   w==;
-X-CSE-ConnectionGUID: 8UrTKvbkTlm7b+wAo40GdQ==
-X-CSE-MsgGUID: /JF1wvFzSLWglB/cfw89gA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="asc'?scan'208";a="180266216"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Dec 2023 00:59:12 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 00:59:06 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Mon, 11 Dec 2023 00:59:02 -0700
-Date:   Mon, 11 Dec 2023 07:58:31 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>
-CC:     Shengyu Qu <wiagn233@outlook.com>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "michal.simek@amd.com" <michal.simek@amd.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        "drew@beagleboard.org" <drew@beagleboard.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive JH8100
- device tree
-Message-ID: <20231211-submerge-vegan-244889f1751c@wendy>
-References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
- <20231201121410.95298-7-jeeheng.sia@starfivetech.com>
- <TY3P286MB2611F70A3D61788E556C8A30988AA@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <358bcdb3f0ab4a7b9d6bbe17ca1a696d@EXMBX066.cuchost.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hd6P+t5VhD/fQIFu"
-Content-Disposition: inline
-In-Reply-To: <358bcdb3f0ab4a7b9d6bbe17ca1a696d@EXMBX066.cuchost.com>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229478AbjLKH7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Dec 2023 02:59:04 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6F3CD;
+        Sun, 10 Dec 2023 23:59:10 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B90D1FB6C;
+        Mon, 11 Dec 2023 07:59:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702281549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+        b=F2EXEQKFjaL8rqwVqqdQBU9hMTkZcxVRfsFW6uSowHHxfUb6IKM5rUc5vyH1u+nz5Gu0Qy
+        c40XaN2A62IIVciP3J+v37MzCtnwTQTQaolpzUO8jfCwFudytNhcgJgDPymwqHGUXV0Gum
+        IS1xPDJ7lZgF1CpgSe05vGUPx5oATRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702281549;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+        b=ZVxx0YFRxMokq+KnjclNVrUIaH9LdO+mntagvBMf6y1V//puLAuAZW+AxTunPqt8UsfUr6
+        BsAvAzr9si24LnAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702281549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+        b=F2EXEQKFjaL8rqwVqqdQBU9hMTkZcxVRfsFW6uSowHHxfUb6IKM5rUc5vyH1u+nz5Gu0Qy
+        c40XaN2A62IIVciP3J+v37MzCtnwTQTQaolpzUO8jfCwFudytNhcgJgDPymwqHGUXV0Gum
+        IS1xPDJ7lZgF1CpgSe05vGUPx5oATRg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702281549;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uu6n7mEvnmXbniOla3rPuD+at6mp806bEoBZqpe8Srs=;
+        b=ZVxx0YFRxMokq+KnjclNVrUIaH9LdO+mntagvBMf6y1V//puLAuAZW+AxTunPqt8UsfUr6
+        BsAvAzr9si24LnAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CE16D132DA;
+        Mon, 11 Dec 2023 07:59:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id UcQTMUzBdmXlHwAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Mon, 11 Dec 2023 07:59:08 +0000
+Date:   Mon, 11 Dec 2023 08:59:08 +0100
+Message-ID: <874jgp5fw3.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Gergo Koteles <soyer@irl.hu>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, stable@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/tas2781: handle missing EFI calibration data
+In-Reply-To: <f1f6583bda918f78556f67d522ca7b3b91cebbd5.1702251102.git.soyer@irl.hu>
+References: <f1f6583bda918f78556f67d522ca7b3b91cebbd5.1702251102.git.soyer@irl.hu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spam-Score: -3.10
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.09
+X-Spamd-Result: default: False [-3.09 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.17)[-0.867];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-2.81)[99.19%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,34 +112,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---hd6P+t5VhD/fQIFu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 11 Dec 2023 00:37:33 +0100,
+Gergo Koteles wrote:
+> 
+> The code does not properly check whether the calibration variable is
+> available in the EFI. If it is not available, it causes a NULL pointer
+> dereference.
+> 
+> Check the return value of the first get_variable call also.
+> 
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> Call Trace:
+>  <TASK>
+>  ? __die+0x23/0x70
+>  ? page_fault_oops+0x171/0x4e0
+>  ? srso_alias_return_thunk+0x5/0x7f
+>  ? schedule+0x5e/0xd0
+>  ? exc_page_fault+0x7f/0x180
+>  ? asm_exc_page_fault+0x26/0x30
+>  ? crc32_body+0x2c/0x120
+>  ? tas2781_save_calibration+0xe4/0x220 [snd_hda_scodec_tas2781_i2c]
+>  tasdev_fw_ready+0x1af/0x280 [snd_hda_scodec_tas2781_i2c]
+>  request_firmware_work_func+0x59/0xa0
+> 
+> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-On Mon, Dec 11, 2023 at 01:38:06AM +0000, JeeHeng Sia wrote:
->=20
-> > From: Shengyu Qu <wiagn233@outlook.com>
-> > Sent: Friday, December 8, 2023 8:09 PM
+Thanks, applied now.
 
-> > Does the dubhe-80 cores actually support vector? Or vector support
-> >=20
-> > doesn't exist on actual silicon?
 
-> We don't have a use case for vector application in JH8100
-
-I am sorry, but I am not clear on what this means. Do the CPUs on
-the JH8100 support vector or not?
-
---hd6P+t5VhD/fQIFu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXbBIwAKCRB4tDGHoIJi
-0qLgAQDdnIyMYOcscMM6Xn9n15BVhbDy7y4Y61q9DeXzpLmYtgD9HbHQYif0r4fF
-BViOKAMeIVjMPAbnlXqZaG4Vt1VXzgY=
-=Z2qE
------END PGP SIGNATURE-----
-
---hd6P+t5VhD/fQIFu--
+Takashi
