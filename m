@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC3880CCF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1065680CCF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344322AbjLKOFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S1343857AbjLKOGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbjLKOEl (ORCPT
+        with ESMTP id S1344073AbjLKOEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:04:41 -0500
+        Mon, 11 Dec 2023 09:04:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279663A85
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:03:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B8D4C433C7;
-        Mon, 11 Dec 2023 14:03:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A549C3A8D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:03:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35BD6C433CB;
+        Mon, 11 Dec 2023 14:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303382;
-        bh=IJpioSTRJ4vBfYbGOTUXezj+GD42AXQJ13SUCUwtDxA=;
+        s=k20201202; t=1702303384;
+        bh=dEY8wU95Ku6BSlduKrl38VC4QUFM33kswIUE/xsPrwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjql207LZgfj4o9ykHXGK0gd1Xwjr2kXeeUALQ5cw8HchBizc9s5UlrcF9YeCy5dC
-         21N+P6DnSRaA4lflezQznwU/Y58Y+xeRDDyJRe6AZ7PSyKmi8aZmYwsJbTBjUEU3X5
-         LSoYdOolaYE6emqBLpZKS69etwpgpLRq3WwvV26K1FmGoqN6ZMQBgZbzV0YBY8w9zl
-         Nh25mSjXRHPL21E63FN8srkbmu/vC6KF1Qm+0zo0BxQvtudrVR1+PKrst4a9ZX1DYK
-         8iOCeA3qJVIBlDUmsJj37IGllCcqcdVmNfklfw2LYKJRkIQNkv5c7M1zADQ88AnlmV
-         +Q+h2JGGfUzrA==
+        b=T+prlJvulJL2yC+d+CbNGdY3BP/q77AWAZ15TTnplvceryPY0FzADCC0nfFu6x5T4
+         l8nTAOR8KH3u0icQGsa/qtXWnI1SM97OxsUJqD15fbSpYMz/xQjBSn8L3cwI3nkRhe
+         Wk7qeWKpDmDbfqqXqEz7ib8iaP8Kc/iUiLBVuWuWjizASUVFGdaZEkRTwrqeampR86
+         eY/VFfzfVFrjj3MKdPWrg0xT+po1clfT0t97/E2nQjz/HRYLqz8NmS/W2vmwXoe2Rm
+         8idIdOR2irZMDy8ujf3BPC3FsX7RFkealKWUBYG30qMaS0RPK6h7MdfTphuK8B2VL8
+         vF+ertrazIDMw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maciej Strozek <mstrozek@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
+Cc:     Shuming Fan <shumingf@realtek.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, james.schulman@cirrus.com,
-        david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
         lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
         linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 3/7] ASoC: cs43130: Fix incorrect frame delay configuration
-Date:   Mon, 11 Dec 2023 09:02:46 -0500
-Message-ID: <20231211140254.392656-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 4/7] ASoC: rt5650: add mutex to avoid the jack detection failure
+Date:   Mon, 11 Dec 2023 09:02:47 -0500
+Message-ID: <20231211140254.392656-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211140254.392656-1-sashal@kernel.org>
 References: <20231211140254.392656-1-sashal@kernel.org>
@@ -58,32 +55,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Strozek <mstrozek@opensource.cirrus.com>
+From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit aa7e8e5e4011571022dc06e4d7a2f108feb53d1a ]
+[ Upstream commit cdba4301adda7c60a2064bf808e48fccd352aaa9 ]
 
-Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20231117141344.64320-3-mstrozek@opensource.cirrus.com
+This patch adds the jd_mutex to protect the jack detection control flow.
+And only the headset type could check the button status.
+
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+Link: https://lore.kernel.org/r/20231122100123.2831753-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs43130.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index 95060ae7dbb40..0ffd935645553 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -581,7 +581,7 @@ static int cs43130_set_sp_fmt(int dai_id, unsigned int bitwidth_sclk,
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		hi_size = bitwidth_sclk;
--		frm_delay = 2;
-+		frm_delay = 0;
- 		frm_phase = 1;
- 		break;
- 	case SND_SOC_DAIFMT_DSP_A:
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index a713e9649b56b..37ad3bee66a47 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -419,6 +419,7 @@ struct rt5645_priv {
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(rt5645_supply_names)];
+ 	struct rt5645_eq_param_s *eq_param;
+ 	struct timer_list btn_check_timer;
++	struct mutex jd_mutex;
+ 
+ 	int codec_type;
+ 	int sysclk;
+@@ -3216,6 +3217,8 @@ static int rt5645_jack_detect(struct snd_soc_component *component, int jack_inse
+ 				rt5645_enable_push_button_irq(component, true);
+ 			}
+ 		} else {
++			if (rt5645->en_button_func)
++				rt5645_enable_push_button_irq(component, false);
+ 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 			snd_soc_dapm_sync(dapm);
+ 			rt5645->jack_type = SND_JACK_HEADPHONE;
+@@ -3296,6 +3299,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 	if (!rt5645->component)
+ 		return;
+ 
++	mutex_lock(&rt5645->jd_mutex);
++
+ 	switch (rt5645->pdata.jd_mode) {
+ 	case 0: /* Not using rt5645 JD */
+ 		if (rt5645->gpiod_hp_det) {
+@@ -3320,7 +3325,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 
+ 	if (!val && (rt5645->jack_type == 0)) { /* jack in */
+ 		report = rt5645_jack_detect(rt5645->component, 1);
+-	} else if (!val && rt5645->jack_type != 0) {
++	} else if (!val && rt5645->jack_type == SND_JACK_HEADSET) {
+ 		/* for push button and jack out */
+ 		btn_type = 0;
+ 		if (snd_soc_component_read32(rt5645->component, RT5645_INT_IRQ_ST) & 0x4) {
+@@ -3376,6 +3381,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 		rt5645_jack_detect(rt5645->component, 0);
+ 	}
+ 
++	mutex_unlock(&rt5645->jd_mutex);
++
+ 	snd_soc_jack_report(rt5645->hp_jack, report, SND_JACK_HEADPHONE);
+ 	snd_soc_jack_report(rt5645->mic_jack, report, SND_JACK_MICROPHONE);
+ 	if (rt5645->en_button_func)
+@@ -4072,6 +4079,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 	timer_setup(&rt5645->btn_check_timer, rt5645_btn_check_callback, 0);
+ 
++	mutex_init(&rt5645->jd_mutex);
+ 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
+ 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
+ 
 -- 
 2.42.0
 
