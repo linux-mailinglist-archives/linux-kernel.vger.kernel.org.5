@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A307580C88E
+	by mail.lfdr.de (Postfix) with ESMTP id 7C62C80C88D
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbjLKLk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S234864AbjLKLlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234414AbjLKLkj (ORCPT
+        with ESMTP id S234641AbjLKLkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:40:39 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB116CF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:40:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1702294842;
-        bh=k4wN68Mq0e2bKIcvTdFsm/pTk95jdSaidC3qaQdYyYU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OjaZsTBT/hWYSnsoSwj4KCR5Jy3sQDTssSNWeIv+komjJmEafPirJrQjpcL7bvPrk
-         pHubtmp3y+48jrCAPndqJnSRDEom1RfPP2CZW9f7GgR5Bu5ZXvldEqJhffcZLmVkeJ
-         O4YvXEPxHVLvoh1AXro+tBs+8DLxe6hu35qbTZSQTWFCfM8gEqU41ehaH5HUKvTQ8z
-         wdX2EmB0csZsywRtzYoH+gG7mbnTpeILo8jzDRhersMGQU9wTju80irAt44wKoMMPe
-         JeLbuGw8o8MmehEJvsGrpwLs/nMtMak6RbETYVZrr7+iKCh5HK9WG+UK/lP1KA+Msr
-         Blm4bLht2iwbA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpfvG0ZmVz4xPL;
-        Mon, 11 Dec 2023 22:40:41 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Luming Yu <luming.yu@shingroup.cn>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu
-Cc:     luming.yu@gmail.com, ke.zhao@shingroup.cn, dawei.li@shingroup.cn,
-        shenghui.qu@shingroup.cn, Luming Yu <luming.yu@shingroup.cn>
-Subject: Re: [PATCH 1/2] powerpc/locking: implement this_cpu_cmpxchg local API
-In-Reply-To: <0EFBD0242622180B+20231204022303.528-1-luming.yu@shingroup.cn>
-References: <0EFBD0242622180B+20231204022303.528-1-luming.yu@shingroup.cn>
-Date:   Mon, 11 Dec 2023 22:40:38 +1100
-Message-ID: <87jzpldl1l.fsf@mail.lhotse>
+        Mon, 11 Dec 2023 06:40:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2AACB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:40:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC12C433C8;
+        Mon, 11 Dec 2023 11:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702294857;
+        bh=5I0PYKVYM7syKP7JCpCzQG2R4ozPV4d953nCGoVm7Qc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MHY8QewYlY5P5h7xtAty4w70caY2eAemqXWDaem4ihpf0udcp1AGjQ8CJd+0P2Z+H
+         6dFyezMHK0Q5fKGDuoRBXC0LNOxWXG+pbx2C8zRxOTGdfSiK/xCn38jxa4KAIjx0pu
+         FnbuzBKl0Gtar/m4aOQhIY19VB8gtYkrrTjwV/1QQYHakllRcgnXvqbmmmfnzca65j
+         ec0bxle9JdPn42qF8uCK62vdAuDzGpMQocyMpb50gn58+jlbCQPUK6j49NH97yHqlF
+         hbS+mG4Oj0ZbQt/bb8n5zqqLeCyYsoJT6AoeSE/cJTg1Pwd0tMWAlws4RXU5uwQHo4
+         E6LydrTH76M3Q==
+Date:   Mon, 11 Dec 2023 17:10:53 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     liu kaiwei <liukaiwei086@gmail.com>
+Cc:     Kaiwei Liu <kaiwei.liu@unisoc.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: Re: [PATCH 1/2] dmaengine: sprd: delete enable opreation in probe
+Message-ID: <ZXb1RWaFWHVDx1wV@matsya>
+References: <20231102121623.31924-1-kaiwei.liu@unisoc.com>
+ <ZWCg9hmfvexyn7xK@matsya>
+ <CAOgAA6FzZ4q=rdmh8ySJRhojkGCgyV4PVjT6JAOUix+CF9PFtw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOgAA6FzZ4q=rdmh8ySJRhojkGCgyV4PVjT6JAOUix+CF9PFtw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,69 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luming Yu,
+On 06-12-23, 17:32, liu kaiwei wrote:
+> On Fri, Nov 24, 2023 at 9:11 PM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > On 02-11-23, 20:16, Kaiwei Liu wrote:
+> > > From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
+> >
+> > Typo is subject line
+> >
+> > >
+> > > In the probe of dma, it will allocate device memory and do some
+> > > initalization settings. All operations are only at the software
+> > > level and don't need the DMA hardware power on. It doesn't need
+> > > to resume the device and set the device active as well. here
+> > > delete unnecessary operation.
+> >
+> > Don't you need to read or write to the device? Without enable that wont
+> > work right?
+> >
+> 
+> Yes, it doesn't need to read or write to the device in the probe of DMA.
+> We will enable the DMA when allocating the DMA channel.
 
-Luming Yu <luming.yu@shingroup.cn> writes:
-> ppc appears to have already supported cmpxchg-local atomic semantics
-> that is defined by the kernel convention of the feature.
-> Add this_cpu_cmpxchg ppc local for the performance benefit of arch
-> sepcific implementation than asm-generic c verison of the locking API.
+So you will probe even if device is not present! I think it makes sense
+to access device registers in probe!
 
-Implementing this has been suggested before but it wasn't clear that it
-was actually going to perform better than the generic version.
-
-On 64-bit we have interrupt soft masking, so disabling interrupts is
-relatively cheap. So the generic this_cpu_cmpxhg using irq disable just
-becomes a few loads & stores, no atomic ops required.
-
-In contrast implementing it using __cmpxchg_local() will use
-ldarx/stdcx etc. which will be more expensive.
-
-Have you done any performance measurements?
-
-It probably is a bit fishy that we don't mask PMU interrupts vs
-this_cpu_cmpxchg() etc., but I don't think it's actually a bug given the
-few places using this_cpu_cmpxchg(). Though I could be wrong about that.
-
-> diff --git a/arch/powerpc/include/asm/percpu.h b/arch/powerpc/include/asm/percpu.h
-> index 8e5b7d0b851c..ceab5df6e7ab 100644
-> --- a/arch/powerpc/include/asm/percpu.h
-> +++ b/arch/powerpc/include/asm/percpu.h
-> @@ -18,5 +18,22 @@
->  #include <asm-generic/percpu.h>
->  
->  #include <asm/paca.h>
-> +#include <asm/cmpxchg.h>
-> +#ifdef this_cpu_cmpxchg_1
-> +#undef this_cpu_cmpxchg_1
- 
-If we need to undef then I think something has gone wrong with the
-header inclusion order, the model should be that the arch defines what
-it has and the generic code provides fallbacks if the arch didn't define
-anything.
-
-> +#define this_cpu_cmpxchg_1(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 1)
-
-I think this is unsafe vs preemption. The raw_cpu_ptr() can generate the
-per-cpu address, but then the task can be preempted and moved to a
-different CPU before the ldarx/stdcx do the cmpxchg.
-
-The arm64 implementation had the same bug until they fixed it.
-
-> +#endif 
-> +#ifdef this_cpu_cmpxchg_2
-> +#undef this_cpu_cmpxchg_2
-> +#define this_cpu_cmpxchg_2(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 2)
-> +#endif
-> +#ifdef this_cpu_cmpxchg_4
-> +#undef this_cpu_cmpxchg_4
-> +#define this_cpu_cmpxchg_4(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 4)
-> +#endif
-> +#ifdef this_cpu_cmpxchg_8
-> +#undef this_cpu_cmpxchg_8
-> +#define this_cpu_cmpxchg_8(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 8)
-> +#endif
->  
->  #endif /* _ASM_POWERPC_PERCPU_H_ */
-
-cheers
+-- 
+~Vinod
