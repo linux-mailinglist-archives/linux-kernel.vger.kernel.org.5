@@ -2,118 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F175980BEB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A731C80BEBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjLKBTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 20:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        id S232276AbjLKBUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 20:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKBTJ (ORCPT
+        with ESMTP id S229483AbjLKBUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 20:19:09 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F324E4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:19:15 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-59064bca27dso2334607eaf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:19:15 -0800 (PST)
+        Sun, 10 Dec 2023 20:20:45 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15AFED;
+        Sun, 10 Dec 2023 17:20:50 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77f552d4179so146145585a.1;
+        Sun, 10 Dec 2023 17:20:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20230601.gappssmtp.com; s=20230601; t=1702257554; x=1702862354; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702257650; x=1702862450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hGvU7asxA57g0O1jsmUyh3UcuObNds20nZHjcCxr4vQ=;
-        b=jCSJEg2ohbVCdgLBWHTXyUU7Jp88la2jwY91060hUMacZbo9GUxVEjDFFKNu8tVAS8
-         Gp6HvI+/83Op8FuK6nhpKUslcz++RTr3Qx3hP2MSZgCKCyPYyqvwUuWeDEm+80tQl+Qg
-         Vi/iuQD0xwrmRMA3MlzLzkb0l0GVuZIXJV2lZyVzVoSaSM4H/q1Q76OBblchFfWbHtj6
-         MH6yRuoLzUcTWef26qQedDZGC067F+iOKenCboS0ertJQLMEtvmPudAkSRU4kaXtP9xZ
-         +OMg/9HoCxgTrW+UzIPKrc65P5+Tf6saI1jEztZ0Yp4YkY5nRdM8/aBRbgD1nl0yktwB
-         h4rQ==
+        bh=Uuz0jwb3PNQkrLULfff6ouksNMtSPtItSVdeK1cdQGc=;
+        b=TdBqw7yyWm8e4PSZC8RkkJuQKv+WvgbrlMhMIGBhK2c5d/zji503YA6MMETsSmFQ18
+         KpzUu5SanjjU/Bpg20H9f+F/ghJjJPbLmrvyyVlPU40fFh3GYeXz0W5xVWiD485Sxgef
+         gaM4vqyNNJ0qqHM1RaKvGeyZQcQkk7F9SPpl1xsS04p2xW9AFabRwXcUO4W4GiibBVpq
+         3j4OwYqClQZKljckgRczi6aTCk31WQi7txKcUuwlf1UJZscDcEPZ14QGqz3YzHGRdyLo
+         MNQcIC+fiVRuWiQ4rAqNqDEljCkXinq9/Q0FzxgYeef44ObQPIVsRpOOZHe9iNbUDVr/
+         Y2CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702257554; x=1702862354;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hGvU7asxA57g0O1jsmUyh3UcuObNds20nZHjcCxr4vQ=;
-        b=C2OLCbMxoIAmC4k0ax5LEggva77Mv6J1vG+4TURwVwgrMVF4L8hTnm0paLoS7b54+a
-         kUqygYqi1jo5kF5I+IOP5C6zc8+eRWavKu7sAmNBG6q0gFDwCHhW1Cpq1G3sk0xNsGgR
-         M56/8sTZEjbDPxBkcBWvyjWGcLQzA/YuymQBlbmBAt4NUXO2VGiIgbVoNo1hOQx7sH93
-         Bkh02WpI0IWWRmAzKOuhQEpFdpqHEyM2GTROiHeaXB2jGqGDjXNl7F0EhlYyqrI9gx0d
-         345Vyo42fNJESZs+TaCg6LKYKwCbBsm9IL2pNiGqZgJyXdBWFbjoAx6y8laoGZBKfhJw
-         37Ew==
-X-Gm-Message-State: AOJu0YxJrYmRSVYLH0e4NX+YfXf9IViz5pAaDp7yGqmz9iG8IDGKUHrt
-        A0enqiJPYCCFbjgBCKYpzJP5ow==
-X-Google-Smtp-Source: AGHT+IECW4R6/zUParI62agJ8IEpAm/jjxRxbg6dABbkClG5rlTe4O6+HgK65GXlYKDAr+2RsBFcTw==
-X-Received: by 2002:a05:6820:1503:b0:590:92bd:d3e9 with SMTP id ay3-20020a056820150300b0059092bdd3e9mr4013791oob.14.1702257554164;
-        Sun, 10 Dec 2023 17:19:14 -0800 (PST)
-Received: from ?IPV6:2603:8080:2300:de:29b1:e1a0:8d3c:63c7? (2603-8080-2300-00de-29b1-e1a0-8d3c-63c7.res6.spectrum.com. [2603:8080:2300:de:29b1:e1a0:8d3c:63c7])
-        by smtp.gmail.com with ESMTPSA id e196-20020a4a55cd000000b0058d8b0c4bbdsm1668225oob.32.2023.12.10.17.19.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Dec 2023 17:19:13 -0800 (PST)
-Message-ID: <58e78693-82d1-451d-a546-51fb64ef6eb5@vt.edu>
-Date:   Sun, 10 Dec 2023 19:19:12 -0600
+        d=1e100.net; s=20230601; t=1702257650; x=1702862450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uuz0jwb3PNQkrLULfff6ouksNMtSPtItSVdeK1cdQGc=;
+        b=oX2XwKUar9zrVKlWm9UAEfRbdaY5SW89TZedSZKBUEwgBmhdsGhGkwMq/KbaMfukI2
+         szdodmxCj9qFwg9AtxuL2aBHKb2DKUaAhEVfeg4ONtI3TzikWDXLOBrYNRIIPzfpDvlR
+         p3TdACaexNQvNLBR10IUza/uF2n10f7/jeyE/854hWEItoo/zn2jq8jfoQZMeyqLvmqa
+         jAK5tOH6SAVi2mI+nk6DgB3dxs2pBH2OenOn83dRiGC5/UFIibOJRjpnaSJSPeKqHo3K
+         as6UsNsvdTydr3CFJbXLKiYtpOaqF2ric9RRa0Ab7c2r+S+9nHXoRS5rcUXsd07dAazX
+         vWAg==
+X-Gm-Message-State: AOJu0YyW2Go8HM6XYYb/yf3UdrdoWLy88PA0i3sjVv3rlCUQ1ZGWuVVy
+        zhCDyr/gaKcQCqIyuIVrrxc=
+X-Google-Smtp-Source: AGHT+IG2YneOH1fjVBLNsKVjeTO1Qmpnmz9N5QGIlgYQK4gwUQlL72tTSLGo67HZ3XBLoMoCCzXdPQ==
+X-Received: by 2002:a05:620a:a58:b0:77f:69ed:7f40 with SMTP id j24-20020a05620a0a5800b0077f69ed7f40mr2501765qka.7.1702257649715;
+        Sun, 10 Dec 2023 17:20:49 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id ov11-20020a05620a628b00b0077d7e9a134bsm2505634qkn.129.2023.12.10.17.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 17:20:49 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id BDCE127C0054;
+        Sun, 10 Dec 2023 20:20:48 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 10 Dec 2023 20:20:48 -0500
+X-ME-Sender: <xms:72N2ZWH4OqLhoJjPIu-xBvNG1v1zh5JUCVUiIYRevqTwampQ8LPuDA>
+    <xme:72N2ZXUDpW0JpLk2NqST1PDbvVCRwbmvSfa1hIp4lnB0qSEc9z5TDM0WXqz0G2Zzc
+    g-S2vOjbDC70WmVGQ>
+X-ME-Received: <xmr:72N2ZQLvmY1VITeM4l9iKaEl6wLLzVzYcPZ2P5n5NiFb7uf5YFci8VfX7gs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeluddgfeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:72N2ZQH8Ae7bUawVz7AvMbaSHc_NeDP9SDt4qb4ksz8_kx3CErPCMg>
+    <xmx:72N2ZcX2cIrtHyoVYeBKE05njYXgchs20UDdwdau7PiJwb_WC9w2DQ>
+    <xmx:72N2ZTOsUETvW2YTjIs0-9juNf4RpCwIZGSqLr80gstqnrWDaiUyXA>
+    <xmx:8GN2ZW-W_Fvq1hey4YOUfIuyPEL3g1x2PM7lmJ5o2fUQC6IyleGmXA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 10 Dec 2023 20:20:46 -0500 (EST)
+Date:   Sun, 10 Dec 2023 17:19:28 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] rust: cred: add Rust abstraction for `struct cred`
+Message-ID: <ZXZjoOrO5q7no4or@boqun-archlinux>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-2-af617c0d9d94@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
-        gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
-        a.hindborg@samsung.com, aliceryhl@google.com,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bilbao@vt.edu
-From:   Carlos Bilbao <bilbao@vt.edu>
-Subject: [PATCH 0/1 RESEND] docs: Include simplified link titles in main
- page's index
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206-alice-file-v2-2-af617c0d9d94@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NOTE: I'm resending because this patch set ended up labeled as Junk/Spam for
-me and I suspect it will happen to others.
+On Wed, Dec 06, 2023 at 11:59:47AM +0000, Alice Ryhl wrote:
+[...]
+> @@ -151,6 +152,21 @@ pub fn as_ptr(&self) -> *mut bindings::file {
+>          self.0.get()
+>      }
+>  
+> +    /// Returns the credentials of the task that originally opened the file.
+> +    pub fn cred(&self) -> &Credential {
 
-The general consensus is that the documentation's website main entry point
-and its sidebar leave room for improvement.
+I wonder whether it would be helpful if we use explicit lifetime here:
 
-Something we can easily fix is that there's too much duplicated text.
+    pub fn cred<'file>(&'file self) -> &'file Credential
 
-To that point, consider the titles "The Linux kernel user's and
-administrator's guide" and "The Linux kernel user-space API guide." We get
-it, it's the Linux kernel. It's assumed that everything listed pertains to
-the Linux kernel, given the overarching title, "The Linux Kernel
-documentation." Constant repetition of "Linux" and "kernel" (45 times
-each), "documentation" (21 times), and "guide" (18 times) are excessive and
-affect UX.
+It might be easier for people to get. For example, the lifetime of the
+returned Credential reference is constrainted by 'file, the lifetime of
+the file reference.
 
-I propose simplifying without altering actual document titles, the text
-linking to these documents on the main page ("link titles"). For example,
-"The Linux kernel user's and administrator's guide" could become "User's
-and Administrator's Guide," and "A guide to the Kernel Development Process"
-could be "Development Process". This is what my patch does.
+But yes, maybe need to hear others' feedback first.
 
-I've uploaded screenshots of the website's main entry before and after [1]
-and I personally find the simplified version cleaner and more user-friendly.
+Regards,
+Boqun
 
-At some point, we could discuss an automated way to collect and display all
-link titles, IMO manually doing it on the main page is a step in the
-right direction for now.
-
-Thanks,
-Carlos
-
-[1] https://github.com/Zildj1an/linux-kernel-docs-compare/blob/main/comparison.png
-
-Carlos Bilbao (1):
-    docs: Include simplified link titles in main page's index
-
-Documentation/index.rst | 50 ++++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
-
+> +        // SAFETY: Since the caller holds a reference to the file, it is guaranteed that its
+> +        // refcount does not hit zero during this function call.
+> +        //
+> +        // It's okay to read the `f_cred` field without synchronization as `f_cred` is never
+> +        // changed after initialization of the file.
+> +        let ptr = unsafe { (*self.as_ptr()).f_cred };
+> +
+> +        // SAFETY: The signature of this function ensures that the caller will only access the
+> +        // returned credential while the file is still valid, and the C side ensures that the
+> +        // credential stays valid at least as long as the file.
+> +        unsafe { Credential::from_ptr(ptr) }
+> +    }
+> +
+>      /// Returns the flags associated with the file.
+>      ///
+>      /// The flags are a combination of the constants in [`flags`].
+> diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+> index ce9abceab784..097fe9bb93ed 100644
+> --- a/rust/kernel/lib.rs
+> +++ b/rust/kernel/lib.rs
+> @@ -33,6 +33,7 @@
+>  #[cfg(not(testlib))]
+>  mod allocator;
+>  mod build_assert;
+> +pub mod cred;
+>  pub mod error;
+>  pub mod file;
+>  pub mod init;
+> 
+> -- 
+> 2.43.0.rc2.451.g8631bc7472-goog
+> 
+> 
