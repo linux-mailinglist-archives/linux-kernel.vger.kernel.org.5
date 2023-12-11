@@ -2,93 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE5680CA72
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878BB80CA79
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343597AbjLKNEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S1343570AbjLKNFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:05:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343576AbjLKNEb (ORCPT
+        with ESMTP id S234350AbjLKNFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:04:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E32C6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:04:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702299877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=giFVLOTqkebo2x+oA3YA6G6HzBfr3m1iYomgrY5Darc=;
-        b=WW+xx/EFCET7haeCoIXNIYTQmBszVT/HZ3owFg/9KMaVldbyeRxSjwM3wSuvNua0IA4fX0
-        MVnJbq/1JLMCcyiZglOIsnteuQKPnCQTSTgnVFZBbBtgITZca/n/ueqIFOwbf3WMVuGJD9
-        s6EFR1vihPoZJXw3pZTGWyUVtVyzt3A=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-111-X5XFshiTM9O69vzQtEUuRQ-1; Mon, 11 Dec 2023 08:04:35 -0500
-X-MC-Unique: X5XFshiTM9O69vzQtEUuRQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D514D830F32;
-        Mon, 11 Dec 2023 13:04:34 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 804F51C060B1;
-        Mon, 11 Dec 2023 13:04:33 +0000 (UTC)
-From:   Daniel Vacek <neelx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Vacek <neelx@redhat.com>
-Subject: [PATCH 2/2] IB/ipoib: Clean up redundant netif_addr_lock
-Date:   Mon, 11 Dec 2023 14:04:25 +0100
-Message-ID: <20231211130426.1500427-3-neelx@redhat.com>
-In-Reply-To: <20231211130426.1500427-1-neelx@redhat.com>
-References: <20231211130426.1500427-1-neelx@redhat.com>
+        Mon, 11 Dec 2023 08:05:54 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2041.outbound.protection.outlook.com [40.107.100.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148A9CB;
+        Mon, 11 Dec 2023 05:06:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jdBAdF66gPa+LIJjaEXXUx8Sj6EoLqcDy+AwlJ1EeNr6kMEes5gi3Z8DrPXdUdPmHoNAb4sWWZ5Qb+2GLoB8etqa2xZdG6w5aIkVkMVOs0GRBdf4mmg7tEOz7Q7Nv5aUrat8LgCrU6DMwE15abV6szUfV00EUwyl9y9GSI/7x3iqSWrn6sfuHcYBS6rYsqgXAYSBnlg/SMPj+srPxRLR2fb4AQ2rjOLHJvJIfAaapMx7wmywchBiZ9+drFUiSVOWZ/GgGgmpwdUsiS15NnVQF+RrskFDKAynccuIvgsi+jhzrtMuAewYk0tukJXBdMuBqPtL1q0gsIB3GrGyA5o5Tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5uuuozPXFWcnqZaLXUZITS6AAVkAkq9II+YK1e6s60Q=;
+ b=kYSNfoh75iGdBzjz9BljVp0HlhmchwFke4QpTi6m4UFLnnWyZQRhwDbz0MjIInAVDMtNphk4eB7loE/co8m7ZMpc6k0VKeyI8/NUYXm8NvmBu5H5qW/kwo3Tcb6acBYIZqnMjeIDFvT+jdSf8MhWJ2QQuuu3hWhcdXbaKNYeW+YAi563EtFdqn5D/MyoH0MB0UhTGsMIkv44EEeBjD/PMN5fU3kujTbXV+rZZdEtyRCw4NZwMn0cT/HA794e5JsT/8E7mpNxWfl6SdHNmtVL4wS4lZVjCiMt0swzbQEr5c39beExGwkc/CuvpTrvmiYGtorjEzJj4nv5qJqCEJuzvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5uuuozPXFWcnqZaLXUZITS6AAVkAkq9II+YK1e6s60Q=;
+ b=ZqvMgi4vNKDQcel7nKNMeGPnHselDmUbBGnbzlgbcNzwieCpHHBoB8//D0CBObLfQk/PdOXQdtFZ5lj5SNfctn+mTC2jd6GBUbyUiQhkPCKGbElL6TQ12PbM7uSzlOUK/6hzkRW3yj6A/Jna4wkHFR4wbDh4FcNx84y24DzLRRxkg7G7QTtapd1JkqvHJNVteMSzdUGPdq+zgWW+pIruSMONFlNhwSZWFt9Fg9ClY5zrcGxDY7WpEXeu3lP8AL9oLxLGzGK3HycLbbv8nqEGWKQQ5SY/R42i0ioyvMwMChZ+rFneYkimnAI6XJnF1bTR3f1x55/NB/DIezQo2hHHRw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ2PR12MB7944.namprd12.prod.outlook.com (2603:10b6:a03:4c5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 13:05:57 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 13:05:56 +0000
+Date:   Mon, 11 Dec 2023 09:05:55 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Message-ID: <20231211130555.GB2944114@nvidia.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+ <BN9PR11MB527647A4DA1620DE354983898C8FA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <3e77a4a3-3be8-4e04-9435-1f66df93078d@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e77a4a3-3be8-4e04-9435-1f66df93078d@intel.com>
+X-ClientProxiedBy: MN2PR05CA0039.namprd05.prod.outlook.com
+ (2603:10b6:208:236::8) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB7944:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0c98f8da-6d53-4fe0-3d6a-08dbfa49e980
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pTFYdRxKZ3Av+GDGYmsDsOVZv28v6tjQftgnlT2MHRFsNMlmrzXP8ExV8iB5TLq0upcu6TThBpcguGRswBTSorG/Op98Qe3hTJyC3GptjfMbWV5KeHE13szFx/fwts8Gxmyir6U5RcleDI0fOx/AlUA66bIy5jci9QCPjyAkntGmHass5XzGlD2BaZ+xetLfvDEPuRuaGlXolx83GXN7NqbGsi5hOX34RSsas0oeBLZQDy/+gTfNi9ElHCuCsayzp4EHa9D4FAdjRfkLyJCe69jXKT6MnN3jdl/hZubP3pNNBUtRXOKs1JqEsQHqlLf4eVREn7XwrP3wcYMe/xdcKxoIa+MZnVWY527IVgA3/3wA0LH5TgzJim5yKSEtLl7QG9gvcu/xP2yLJTvRAVZy8Q2tOh67nBTxC7JgBm79d+AzBX5OMVna9UQYu9gM9Uovtfle8EeUWH52PMv4CA/fv0ylv9BlDOIEE4qKnZViQg97MHMW6Ie4zs/O8YAPPct072J5KAKmR8L1dnbj1wSWMWEf8CeKAXYv9lz9oCMOTdhAykHPyp7qgZ84amyfr+z7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(366004)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(1076003)(26005)(2616005)(83380400001)(33656002)(36756003)(86362001)(38100700002)(5660300002)(316002)(8936002)(8676002)(4326008)(2906002)(7416002)(6512007)(6506007)(53546011)(66476007)(54906003)(66556008)(6916009)(66946007)(478600001)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GQ/0ZnFQbUAgGSwdgKzbrSpYqOjOAt6Tj9bs4RXMn5OWjGL1vEmlHQuBvzdt?=
+ =?us-ascii?Q?LFvBEx9dKc/tyMXjD1VN/Pn4OI2n1upZBJ8OIhqOVoW58ycLhIEquO5qvRrT?=
+ =?us-ascii?Q?jkvAH/Z82tzoVpoJm9aeI4wj7RE9mIlmJhbu4BQsKHigJpPgjVvjHhWps0bX?=
+ =?us-ascii?Q?1xm0c2Dak01ZM27oDVp5X0IYv4vxHjOw6DYUWR/zO1hjowpzdVs3/AOYitDR?=
+ =?us-ascii?Q?b2PjgZM/ETDEweK4IVSVSpPe3vcBD11zvokg7U5mhj3HAvG4JsObLqgbqmYe?=
+ =?us-ascii?Q?o8r27qXAUTeUNHwUyIwe7y70dKIi2rrlDzZB1HRXFVgxU+uwfFmypw2dr9LP?=
+ =?us-ascii?Q?XUC+qesdCfvGf1X2xn3mZMdP6lJ+oV3jPVtPdLG0/sSWai9k4ouTDuByjeda?=
+ =?us-ascii?Q?D+aoyOKTs40XMD1Izmj923KvRn4G89gTKlzbHRjxKt61jk2gE33qCQ5LuGdn?=
+ =?us-ascii?Q?nMuwr5AZMyjp2+W+sgzkuTwA0HLNqTcnDyGD+M0csuVvpxbwRoafppAshXhi?=
+ =?us-ascii?Q?58RtrEAbe1WYbLVcweoHXfLumD3x9sg+AcMGCknKR6oM/MO+wgbGlorN5MX0?=
+ =?us-ascii?Q?eilgZsouDN8GM2fSX6Je2sd5q4wsC6UNswLeJZ/cPf6WC9b0Af3JP7HAI/B+?=
+ =?us-ascii?Q?iPrmgg762lV718vt2ELafJIb5qCedvnidVzZ7rfvD1NHbJRp/3OZNyJomXSp?=
+ =?us-ascii?Q?WytQ1KfaISbS9VNRJ8vhM5Qh6pq0ewjwIDhFzWChZT7e2xFDDxHbvZCxjEyQ?=
+ =?us-ascii?Q?UIXgZHpdAwGHnKmX/zh5+ASD2i9l8j0mK6oJz8hxL6ZmUBZqWKyXfPF7eHTb?=
+ =?us-ascii?Q?gqN3iXfaXswyRmTD0qcfq4tPo2WJ5jXInWoVfSmh86KF9mHfqw06YYkn0Nw0?=
+ =?us-ascii?Q?F36QqToc0BQ+DkV6jPGf6yhJiGl0gBPntlZDeqZfhzQRkiRfvtU/TkZRoc8e?=
+ =?us-ascii?Q?g7tbbiXi3gKZ4G88R8owRvB9kX+QY0E1RPiVlj1PCsclmHUriA+rQc2rce2P?=
+ =?us-ascii?Q?HROCjcp41Xvfra/7O2yG3EMTIXb40Q+yi+73/KHrg4VnZXI089fv8BvztRKs?=
+ =?us-ascii?Q?aYzonZIHgUrHO2iCxTmw5l65EGKNTPME7hewKqtB3WY6KwhY3pqfXAqAVc26?=
+ =?us-ascii?Q?bPzbzbKkU4r0MrBAbguxv7AukOOV8AToRXm4xD7ilr2bNK1UWG4oWSvJqOZC?=
+ =?us-ascii?Q?aal/Pj91osDd2m5jdVwxL0jLD7nFgROwCZxeaVaNLsUpf5B3ZoyKbz9wrXHP?=
+ =?us-ascii?Q?zt6gh2xj/NL/tYOyhb1IegxesQq4a8iFlVr+UqGV5/inZpeCXbndI9N+CJDg?=
+ =?us-ascii?Q?xiPwfYJgAAsSmDoTHyR+iJvSbsHVMXsajT4iyn7hSI4+3VjVZZ2Hon7XKuL2?=
+ =?us-ascii?Q?jTMTyE4kzeadc+BPLOigOL8rP+TFh+OpLpe6/z/RYZNTKKOfVGBllHTJoZZO?=
+ =?us-ascii?Q?x2VD+z+FxCvYo/KRcqiR7UXGMcV3/K2PTvlOpWgvn4s7nHikPh3GJQU+II09?=
+ =?us-ascii?Q?UZbGCsggGk3AzGogW6HpLnL79/K9RnKBMO2SucN5Mu69sGKqBEZjN98RNWtX?=
+ =?us-ascii?Q?hyh3uOh8SXxZRVDacsD5/sLyyXwS7BitP7zS/x00?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c98f8da-6d53-4fe0-3d6a-08dbfa49e980
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 13:05:56.1553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hl1NxMVlPH36fhnI57gL4olEY3poLRAORF97GpV4miv/Q/geFfW8ERCw3gc0wZO7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7944
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A single memory load does not need to be protected by any lock.
-The same priv->flags are fetched 15 lines ago without locking anyways.
+On Mon, Dec 11, 2023 at 08:36:46PM +0800, Yi Liu wrote:
+> On 2023/12/11 10:29, Tian, Kevin wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Saturday, December 9, 2023 9:47 AM
+> > > 
+> > > What is in a Nested domain:
+> > >   Intel: A single IO page table refereed to by a PASID entry
+> > >          Each vDomain-ID,PASID allocates a unique nesting domain
+> > >   AMD: A GCR3 table pointer
+> > >        Nesting domains are created for every unique GCR3 pointer.
+> > >        vDomain-ID can possibly refer to multiple Nesting domains :(
+> > >   ARM: A CD table pointer
+> > >        Nesting domains are created for every unique CD table top pointer.
+> > 
+> > this AMD/ARM difference is not very clear to me.
+> > 
+> > How could a vDomain-ID refer to multiple GCR3 pointers? Wouldn't it
+> > lead to cache tag conflict when a same PASID entry in multiple GCR3 tables
+> > points to different I/O page tables?
+> 
+> Perhaps due to only one DomainID in the DTE table indexed by BDF? Actually,
+> the vDomainID will not be used to tag cache, the host DomainId would be
+> used instead. @Jason?
 
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+The DomainID comes from the DTE table which is indexed by the RID, and
+the DTE entry points to the GCR3 table. So the VM certainly can setup
+a DTE table with multiple entires having the same vDomainID but
+pointing to different GCR3's. So the VMM has to do *something* with
+this.
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 8e4f2c8839be..f54e0d212630 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -572,13 +572,9 @@ void ipoib_mcast_join_task(struct work_struct *work)
- 		return;
- 	}
- 	priv->local_lid = port_attr.lid;
--	netif_addr_lock_bh(dev);
- 
--	if (!test_bit(IPOIB_FLAG_DEV_ADDR_SET, &priv->flags)) {
--		netif_addr_unlock_bh(dev);
-+	if (!test_bit(IPOIB_FLAG_DEV_ADDR_SET, &priv->flags))
- 		return;
--	}
--	netif_addr_unlock_bh(dev);
- 
- 	mutex_lock(&priv->mcast_mutex);
- 	spin_lock_irq(&priv->lock);
--- 
-2.43.0
+Most likely this is not a useful thing to do. However what should the
+VMM do when it sees this? Block a random DTE or push the duplication
+down to real HW would be my options. I'd probably try to do the latter
+just on the basis of better emulation.
 
+Jason
