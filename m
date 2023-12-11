@@ -2,205 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23D580C044
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B2580C046
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbjLKEHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 23:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S232790AbjLKEID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 23:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233036AbjLKEG5 (ORCPT
+        with ESMTP id S229589AbjLKEIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 23:06:57 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2134.outbound.protection.outlook.com [40.107.243.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313CF1B1;
-        Sun, 10 Dec 2023 20:06:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UxkDfQoq8bPOl2LOM8g8IWoR9fwy80r9x3j2IEaCAg5CFBU7rtqV9fhe9ssOmcq9PfnvI5pFr3aAYFHOJgKb52LZ2BfxGJ8SdVQJqX4OqL/mnBHzviIO3ruLPztS3TXAlYiZqHNHr7AR6kdBq6J+Msrj2JnNdPuScR+OiPJvYgg0lHPigGotQemM4fiuYC19dIguNtxLVivKs6oZ0cyI+blRIt5KBQEcQ2SN2Uy6A9h+1POxfpSFFFDr3So7Ejj3p0mpA9KbSRAld7vJ9E5IZ8jUZVpj1kiUJRLyX+fxcWM/gHltkXvTC/mLWdg8KOmbH1Ow26tfAF4BegdxExKUXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b9PZ8wLdI/tjCZz3SSEumfZLJ8UAhLIqL6Kpcg65CFM=;
- b=gCJ07dhR/9VZRmB5PcH/ypqzr7hY5dFDWhRcLz72ulS0dxLneOfdQr60qH3kDwOAvGKOlvvivy1PMHX9VXl5em2W0kMOYPzODESbf/XnkRxh0woyQ+ocxNJdJqzqm18OmDAq6BISvL1S57GMAZ/5eSYY+3iP4JafwkQmdTaPU5/vccjOeISbvrbQi1p5rhZbfRj18C4S/4Byn/qsimpYdKg1YxwdvM4dzurcvW+o7t3NOqbQurtY74axrgmrBaQHoVx3NARxJnfnSA+iYRT0gPOD+yoYSwfPEjjX/R3ERYDSzLf79LRJ5Z14goS3keyg0jeWKJq6BEcc2cQhegtHDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Sun, 10 Dec 2023 23:08:01 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC77F2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:08:08 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-4b2d64a368aso2252151e0c.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b9PZ8wLdI/tjCZz3SSEumfZLJ8UAhLIqL6Kpcg65CFM=;
- b=bgcLN+QdSfDPMUdcqTLSEDvhBXC8e2FG0AyVd3sWIXvnAbin9VpocBDGb+3UBLtk7z2R68yRJyKjAZ6shRRZ3xyabrynU6eP6g54e8AfgHR7UmngFas94K2SMlZBGI5TKGzrMNzjecWJ6fpgvWAfoHDADuHrfxb9M/rgIGST+HM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
- PH7PR01MB7821.prod.exchangelabs.com (2603:10b6:510:1d9::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.32; Mon, 11 Dec 2023 04:06:52 +0000
-Received: from SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
- ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 04:06:51 +0000
-Message-ID: <8822a211-678f-49e5-8e6b-50b46dfc61b3@os.amperecomputing.com>
-Date:   Mon, 11 Dec 2023 11:06:45 +0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] i2c: aspeed: Acknowledge Tx done with and without
- ACK irq late
-Content-Language: en-CA
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Cosmo Chou <chou.cosmo@gmail.com>,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-References: <20231208033142.1673232-1-quan@os.amperecomputing.com>
- <20231208033142.1673232-3-quan@os.amperecomputing.com>
- <20231209204455.jxize3muvx7hhpos@zenone.zhora.eu>
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-In-Reply-To: <20231209204455.jxize3muvx7hhpos@zenone.zhora.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0P221CA0022.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:610:11c::22) To SN4PR01MB7455.prod.exchangelabs.com
- (2603:10b6:806:202::11)
+        d=chromium.org; s=google; t=1702267687; x=1702872487; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jTd+fEPmXY/+K0C4daC2dwAWjvpJ1oG4S1yMkL+8DtM=;
+        b=a5tiSCGGJSQi6zYoydG/chv1IUM2PKow30jCOQPBid5mux2cJydGqc0dYHYeWGfzGE
+         fQV7OCCBzjOVxPhY2Cx1h6uckZl2QANYkvwUmcMoWu2s9yuGaxTnL1U10u2x5J/sBB5E
+         POhd2SLaZClsqe0w/P3hYumcQZD2sGBPvy/XU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702267687; x=1702872487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jTd+fEPmXY/+K0C4daC2dwAWjvpJ1oG4S1yMkL+8DtM=;
+        b=wBXrEse2dTBRoxb3lALUiAuc4TGeSizWGz/OmuQ2rpAqttFn1E4A7wXOrvSwgB+tQQ
+         /dkYcqE2bwoFRsaUnqszJnh1yk8CrtMnbQPgC6rS/tmyan7xkruCMAwsb0nGhOABEIkB
+         nzqKj2O150+c+Fq9l/B1Wl/QBO6Oym92CnUFtFty/eZNuhjpS2K27WG021eZ6i5uH0Xx
+         kw6jrxy/g/Zx3jHXXkQ71OBZs8UcCwpLiGx358zbrNYjd71R97qBZdsTMFxuN0UNAmOF
+         TVRb4H5tvM5cDJYsI5DujuqW/woVS9WnuV4hqHHDJ7PH5c0LRNrmlVQxCUDS/R/L8hhY
+         YCBw==
+X-Gm-Message-State: AOJu0YyVAbuptwbru0eFBZz9d4BdPRQsDtjaVzmUPx771lOK7GASj868
+        dYK9Se/NSu/969EwfjXlTG5cgxArQGvkaHuGKjM=
+X-Google-Smtp-Source: AGHT+IHhYyV3ArFO2os00f6Lew6B/Yr5kg6GGUzqIOJL8VZWWNjt4d4LBnKp/F6BltcdebSEUngcLQ==
+X-Received: by 2002:a1f:ee89:0:b0:4b2:c554:ccfd with SMTP id m131-20020a1fee89000000b004b2c554ccfdmr2528721vkh.9.1702267687039;
+        Sun, 10 Dec 2023 20:08:07 -0800 (PST)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id o189-20020a1f73c6000000b004b2bf0a3e95sm885948vkc.31.2023.12.10.20.08.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Dec 2023 20:08:06 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4b2d64a368aso2252134e0c.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:08:05 -0800 (PST)
+X-Received: by 2002:a05:6102:5114:b0:464:3f78:3cbe with SMTP id
+ bm20-20020a056102511400b004643f783cbemr2701028vsb.4.1702267684761; Sun, 10
+ Dec 2023 20:08:04 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|PH7PR01MB7821:EE_
-X-MS-Office365-Filtering-Correlation-Id: 60100480-8bac-4dbf-ecea-08dbf9fe9aca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zLq2XrWTGEtZO38X6CxnWuJgSUuobT3DF8K7ft+EgCGA3kCg4vdeXgTXvW4yMcDwKrpMXg1k/e0EawGlfmBxs8jrswrpSkeJMu4d5l4JqeVX8FH74HMF/gBrWdQ3LiggxZZG0ZVGVMKCeqm+Zl7XQzJrzZxJygFHPdT1B+OgfX5rEsqRe3/1o8sTDVWPEUzcxPcy14Dlrmfr5uGwP/KUWznWXRWDbPpfWq+bls5inJ2OqDFUPo5pDkN4wTzktefwKCGmY3vRNKrZdCXDQ993nAc1CkW67LXePkrnsyI2Tr75D12X6ihVsibteOqU9PWWcYEzOnYvO4WiSoI7oaEbQgQvYAaCScmVYTvDTNuABqoAKdDfT8XuBt8EhRGh7qUwIxUDG1IxUmpWjXk44Ap+adV40xQiteip1xleVhV1Iixj5FCON0L3PisYkZtognI+/vy5lHFYcLo4nRyhdsXvZQAV4R03Bryy9z29pHIKXW6wVADKiVhu5AHy/HV0XUcCM/cNHUbs9g51YnYao5anwmvM5n0qj1A8p4AzFfeupGAtKiDTVFLByKXZuaVPuBkvEezLMfdMV+j78iAXDV1wXl793YYMt7Wne3vYbsfiZK+A9CoSExMYbhiS4Fai6dnO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39850400004)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(6512007)(6506007)(53546011)(5660300002)(26005)(2616005)(107886003)(7416002)(6916009)(54906003)(66476007)(66556008)(66946007)(6486002)(2906002)(83380400001)(31686004)(41300700001)(478600001)(86362001)(8676002)(8936002)(4326008)(31696002)(316002)(38100700002)(6666004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UGtYbEIrVjE1MVZhQ0s0dHRTejhnck8rOVNhdWg4aGVNdzRVVDk2TjhKM2Z3?=
- =?utf-8?B?ZFIveW5UTUNORVpuQTQ4ZHNXMGJWK09GNERRUE41NTFSeHdLQS8wbzhSNUFG?=
- =?utf-8?B?U1dscUFDcmlNKzdqSTRPYjNLSkRXR1VKRFlqcXlwUWFBdi9qWmhtUGVEM3dN?=
- =?utf-8?B?NkJrUWZSME5Da0k2cXJzcXlWQlc2ZFdFT0NCR0tXN3lBTU1EVTJoNVpZeEN0?=
- =?utf-8?B?c2NDSEcyZGpTMnR1dzg5RU4rU1ArbTBUWUtkWCtwMUxDMENSd0J0dXRnbWlJ?=
- =?utf-8?B?c01IOGt3NTRoZkN5RHQ1aGQ4dGlFWkgrbjZxY3NYZTdJTjhLZTJ2SFFGOWVG?=
- =?utf-8?B?bHN4ZDRTV2gxeHJqTm1YREdsZG5xMDdOS2thallZeUFUWGU0N0tDbVJrSXYy?=
- =?utf-8?B?VWZIRm1rbmJpZFJwRHBhUW9KaEl1bVFsN1F1a1A5UkRDblVLQ3h1TDRYeTNo?=
- =?utf-8?B?eHR3a2VGdmhjem9GUW11KzRNeW9ZYTdhT0t0WDZVajhMU0s5K1RPQjA2Mzcv?=
- =?utf-8?B?OGZKTkIwNkxCME96VVZWZU1UWjhVR1JqM3VQS0I5MHVFODRKRm9ZWkIzb0Jn?=
- =?utf-8?B?YmtSb2ZzREdlbjdMeDVoRlBseGQxY1lJTTRKbFBUbDFTWlNyMkVHTlhiWFhI?=
- =?utf-8?B?Tlk5WjdyRUVSME1SNzZ0K09BZFZxU21LOENoTHRSTHBnZEg2WnVUaFZDRmVp?=
- =?utf-8?B?TFBCSUlSeWtHU1FIUnNwaEQxL2RFeW12ZWdHbTMyUE02Q2QxdjZuWXF2TlQ3?=
- =?utf-8?B?TXZuaGE2MzZSbkN3YzA2UEpoQURlZ2FxeEFaZk9adlFyNDY4dWNlS1dnY2VR?=
- =?utf-8?B?QUFWWlFheTRQbmpGcXhpN2JGVzF1b1BDRUJGNHpmRmZkOTFNbEN3QWdJQTBo?=
- =?utf-8?B?anhmSHhZVVNlc01YNWYvcy9sZTRFMTNwVENYQWthVXBFSVJyd2czTzNtTDd2?=
- =?utf-8?B?ZEdMTDQ0SkJCMEk3Z1VhaHl6MHdqOVFpdElBeHpoMm1IL2huRHozQjdkL2lu?=
- =?utf-8?B?Ny9uUW55aUU0S3pxM09qMFZoSytJMkQzd2lyampZajJkSGR1M1U5K3Btc2x4?=
- =?utf-8?B?SmsxWnRHTjRwd24zN04zQ0l0NnVXNCtpKzZIUWFBTHg5NG1SejVEc0VteTRx?=
- =?utf-8?B?dzhVZGlwS29vWUJ4S25CS0VvU2c1R05rV2wrN1BJQlNxUVp2K0JCQ1c0YXpp?=
- =?utf-8?B?ZmZ6NXhnWm9lYVR4VGpRLzM3ZGNQSVh1SWx1dmdnbU5OVnlDaGhsUHdvYjh4?=
- =?utf-8?B?Z2NieUdGaUxLVFdlaUU5d3JyWWlWa3VsaVRZQmtaNTdrRkNOV1lFWHJCWXpZ?=
- =?utf-8?B?bUg1UmdEenNlSDlHck9SUDVPWXBsL1lNUURsYXoyMG01aStFVTB1L0Z6c09q?=
- =?utf-8?B?ekZKemNNZDlITFFaUG0zcVhyOCs5a2ZmTW9xaFhCMjNCc1pTczFsTk9Fblo3?=
- =?utf-8?B?eDI2UHVRY3lUZ29WSGlYN1ltanNGSlJlUVhtdXNHaFI3TkY2bkVwcWJaamxp?=
- =?utf-8?B?RGJUUjNDYXJ3ZFJYWFp5S1dlK3d4TVQ5bjlDMzFlT3BOeEJyd0NkZEplQnVI?=
- =?utf-8?B?cXJJOURrYXF3b0hQUHBnUVdUR1ZYRXI5cks2d1Bpb1NhUDJXakVIVjMvNFd4?=
- =?utf-8?B?eUVEbWdod3VLUXo5TGRzN0lJUGo0SkFFa21BSy83S25GM1BZM3hVd0VTVGc4?=
- =?utf-8?B?cXp3WnB1WDViNEN1dE9lV1IvMWM2RzVJcnJjRjF5WU9YQTM3ODU2WGl2THZW?=
- =?utf-8?B?clB1L2dUSXFoWEdya1FPUVVZaW9xcXhubmZTK2NnUzdsTUphQitkbFpFM0tB?=
- =?utf-8?B?aDNseVlPa0FCaTRHVFJwbzJsN1pnNGgzTFFmdmdtb3RSbWs5SzUvNG95ZXI3?=
- =?utf-8?B?WGxraGJ6N0F0NFY3OE0rS1pYSkFyNEdGZU5mV2hGRnFPcUZneUV6U0NCb0ls?=
- =?utf-8?B?MFYxMXduVnlyT2xSN0VoaENnc3hPZ01ESTdiczAwaTliSnVsejBDRGRKYU1x?=
- =?utf-8?B?MUJwSW1pL3EvTWQ3elBYTUg1R3hWd29HSVA4bWcwVUo4UnlmY2VTdUZlYmJL?=
- =?utf-8?B?MTV1R2ZHeFFIaHRSVnUxeVR3Z25NdlYwcHJwTzAzd2NrL0Y1QnRsMGVieXIz?=
- =?utf-8?B?YitKSVVzMFllR1V0b2MxZ21abWFXdUxKM0JXdzVlMkx3MUxxaDdVMHFqM3lJ?=
- =?utf-8?Q?KHvCfwAbU3a32V/5UsDqdD8=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60100480-8bac-4dbf-ecea-08dbf9fe9aca
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 04:06:51.8837
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nlGCZmGEW7+CN54hVieLI3Hr5t4zqOvk+qNR0K5FtG49ig1eXdNVlvWKzqH2nZvzU+fCL976A0epgfu/Ler1icknDY7XkNhAWFVDe5FCFzc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR01MB7821
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <98491ec78ab671f5a14fce42d10f9745ebddb112.1702258360.git.daniel@makrotopia.org>
+In-Reply-To: <98491ec78ab671f5a14fce42d10f9745ebddb112.1702258360.git.daniel@makrotopia.org>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Mon, 11 Dec 2023 12:07:27 +0800
+X-Gmail-Original-Message-ID: <CAC=S1nh6twyqoSgeEXDsW=+FZRUxMN=Pkrw45KFq-z5XaGpFtw@mail.gmail.com>
+Message-ID: <CAC=S1nh6twyqoSgeEXDsW=+FZRUxMN=Pkrw45KFq-z5XaGpFtw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt7986: silence error in case of -EPROBE_DEFER
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Maso Huang <maso.huang@mediatek.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
+On Mon, Dec 11, 2023 at 9:33=E2=80=AFAM Daniel Golle <daniel@makrotopia.org=
+> wrote:
+>
+> If probe is defered no error should be printed. Mute it.
+>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  sound/soc/mediatek/mt7986/mt7986-wm8960.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c b/sound/soc/mediat=
+ek/mt7986/mt7986-wm8960.c
+> index c1390b3734101..24a4b943030d7 100644
+> --- a/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+> +++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+> @@ -144,7 +144,9 @@ static int mt7986_wm8960_machine_probe(struct platfor=
+m_device *pdev)
+>
+>         ret =3D devm_snd_soc_register_card(&pdev->dev, card);
+>         if (ret) {
+> -               dev_err(&pdev->dev, "%s snd_soc_register_card fail: %d\n"=
+, __func__, ret);
+> +               if (ret !=3D -EPROBE_DEFER)
+> +                       dev_err(&pdev->dev, "%s snd_soc_register_card fai=
+l: %d\n", __func__, ret);
+> +
+Please consider using dev_err_probe() instead.
 
-On 10/12/2023 03:44, Andi Shyti wrote:
-> Hi Quan,
-> 
-> [...]
-> 
->> -	/* Ack all interrupts except for Rx done */
->> -	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
->> -	       bus->base + ASPEED_I2C_INTR_STS_REG);
->> +
->> +	/*
->> +	 * Early acking of INTR_RX_DONE and INTR_TX_[ACK|NAK] would indicate HW to
->> +	 * start receiving or sending new data, and this may cause a race condition
->> +	 * as the irq handler has not yet handled these irqs but is being acked.
->> +	 * Let's ack them late at the end of the irq handler when those are truly processed.
->> +	 */
->> +	irq_ack_last = ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2CD_INTR_TX_NAK;
->> +	writel(irq_received & ~irq_ack_last, bus->base + ASPEED_I2C_INTR_STS_REG);
-> 
-> I like Andrews suggestion of having irq_ack_last as a define that
-> is already negated, instead of negating it in the writel, which
-> makes it a bit difficult to read.
-> 
+Regards,
+Fei
 
-Yes, but the it still need to negate again when do the write to late ack 
-them later in the end of irq handler. So I'll keep the define as below 
-in my v4:
+>                 goto err_of_node_put;
+>         }
 
-+#define ASPEED_I2CD_INTR_ACK_RX_TX	    \
-+		(ASPEED_I2CD_INTR_RX_DONE | \
-+		 ASPEED_I2CD_INTR_TX_ACK |  \
-+		 ASPEED_I2CD_INTR_TX_NAK)
-
-The early ack will look like this:
-
-+		writel(irq_received & ~ASPEED_I2CD_INTR_ACK_RX_TX,
-+		       bus->base + ASPEED_I2C_INTR_STS_REG);
-+		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-
-And the late ack:
-
--	/* Ack Rx done */
--	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
--		writel(ASPEED_I2CD_INTR_RX_DONE,
-+	if (irq_received & ASPEED_I2CD_INTR_ACK_RX_TX) {
-+		writel(irq_received & ASPEED_I2CD_INTR_ACK_RX_TX,
-  		       bus->base + ASPEED_I2C_INTR_STS_REG);
-  		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-  	}
-
-> Besides, ack_last, as a name is not very meaningful, I'd rather
-> call it irq_ack_rx_tx (or something similar).
-> 
-> But I'm not going to block it for this, up to you if you want to
-> send a new version.
-> 
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> 
-
-Thanks, Andi for the comments.
-
-I will send out v4 to address those.
-
-- Quan
+>
+> --
+> 2.43.0
+>
+>
