@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A5280CBD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE3380CBD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343906AbjLKNy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
+        id S1343876AbjLKNzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343899AbjLKNya (ORCPT
+        with ESMTP id S1343915AbjLKNya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 08:54:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB04D68
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241C5C433CA;
-        Mon, 11 Dec 2023 13:53:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB04268B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 577E0C433C8;
+        Mon, 11 Dec 2023 13:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302808;
-        bh=qYtiDcC3qSccMEwfMny+XoO0Y5TR+OuH65FWb8QitM0=;
+        s=k20201202; t=1702302811;
+        bh=YsRlnuUe4K9wHZHF9mJAsvi2nDDK8UcmxqE7+XJC5K8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kem7GJE3+lywWdbS6QLQJCrlsUJMJHsQ9ljsGrA7DV7te1Gc8j+fWsNcpnyOKT3ky
-         BxivAUnegnpUS6XFd9VGi4LlhYM99Avpk78L6LYjCSCy4xQIXBG2NSd3wD/uwqYCbQ
-         hz714zAIXE5dVh51DpEpEIJwjy5Tldcd/fynRI/zNdSoLPO0CJyYaIBIsHF/gGEo50
-         jgEXvwm++KHAztgXn4CcB5sv1w0koFN5tCzQPK+Z27u2BZCaWISMY94dRdZ4F+63lO
-         8iexR9zbk/ZE1rP6GN5I9zuGWUlR7lmy1gK35zWrqtElknpdI2yPfyP7xDOxQ3oSlN
-         8MRm85wDIXpiw==
+        b=ajiqL3gD8ZT0pzzKGH8o4cMWIIJq8fwsWtFBABB0fI5YaDHTkjldZIMxgTX8gXM3c
+         QfVTOMIw/HuhRVz8jfG3MtL3pvUsgP2AZ8EbQujds6Q4ekB7sbxmgn0BEknKCTTt7T
+         OzKLC+SWLkfQjuZpPMsfwJjf+2iUeHCBE7xLiEwM4PlG9UmpUw6Dqi6aaS1fkK7c1/
+         k2vOOJ7IrQXIGOo8hm+cfW6/Ib11fR7LHIewiulatZpi5OlPORFvjCTZXZvOl9CuRm
+         xSbkLmMMfKSkV0bL8WOerf9/qmw5VvlT7MEF/NrxIGnrnOUg3K9fd9l3XO9rSsovWS
+         IHdBcCL61zwmQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        briannorris@chromium.org, javierm@redhat.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 35/47] arm64: dts: rockchip: Fix PCI node addresses on rk3399-gru
-Date:   Mon, 11 Dec 2023 08:50:36 -0500
-Message-ID: <20231211135147.380223-35-sashal@kernel.org>
+Cc:     Stefan Wiehler <stefan.wiehler@nokia.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
+        jiaxun.yang@flygoat.com, chenhuacai@kernel.org, tglx@linutronix.de,
+        linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 36/47] mips/smp: Call rcutree_report_cpu_starting() earlier
+Date:   Mon, 11 Dec 2023 08:50:37 -0500
+Message-ID: <20231211135147.380223-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -56,76 +56,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Stefan Wiehler <stefan.wiehler@nokia.com>
 
-[ Upstream commit c13c823a78b77ea0e5f1f73112d910e259911101 ]
+[ Upstream commit 55702ec9603ebeffb15e6f7b113623fe1d8872f4 ]
 
-The rk3399-gru PCI node addresses are wrong.
+rcutree_report_cpu_starting() must be called before
+clockevents_register_device() to avoid the following lockdep splat triggered by
+calling list_add() when CONFIG_PROVE_RCU_LIST=y:
 
-In rk3399-gru-scarlet, the bus number in the address should be 0. This is
-because bus number assignment is dynamic and not known up front. For FDT,
-the bus number is simply ignored.
+  WARNING: suspicious RCU usage
+  ...
+  -----------------------------
+  kernel/locking/lockdep.c:3680 RCU-list traversed in non-reader section!!
 
-In rk3399-gru-chromebook, the addresses are simply invalid. The first
-"reg" entry must be the configuration space for the device. The entry
-should be all 0s except for device/slot and function numbers. The existing
-64-bit memory space (0x83000000) entries are not valid because they must
-have the BAR address in the lower byte of the first cell.
+  other info that might help us debug this:
 
-Warnings for these are enabled by adding the missing 'device_type = "pci"'
-for the root port node.
+  RCU used illegally from offline CPU!
+  rcu_scheduler_active = 1, debug_locks = 1
+  no locks held by swapper/1/0.
+  ...
+  Call Trace:
+  [<ffffffff8012a434>] show_stack+0x64/0x158
+  [<ffffffff80a93d98>] dump_stack_lvl+0x90/0xc4
+  [<ffffffff801c9e9c>] __lock_acquire+0x1404/0x2940
+  [<ffffffff801cbf3c>] lock_acquire+0x14c/0x448
+  [<ffffffff80aa4260>] _raw_spin_lock_irqsave+0x50/0x88
+  [<ffffffff8021e0c8>] clockevents_register_device+0x60/0x1e8
+  [<ffffffff80130ff0>] r4k_clockevent_init+0x220/0x3a0
+  [<ffffffff801339d0>] start_secondary+0x50/0x3b8
 
-Signed-off-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/20231130191830.2424361-1-robh@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+raw_smp_processor_id() is required in order to avoid calling into lockdep
+before RCU has declared the CPU to be watched for readers.
+
+See also commit 29368e093921 ("x86/smpboot:  Move rcu_cpu_starting() earlier"),
+commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and commit
+99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
+
+Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi  | 3 +--
- arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts | 4 ++--
- arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi             | 1 +
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/kernel/smp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-index 5c1929d41cc0b..cacbad35cfc85 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-chromebook.dtsi
-@@ -509,8 +509,7 @@ wacky_spi_audio: spi2@0 {
- &pci_rootport {
- 	mvl_wifi: wifi@0,0 {
- 		compatible = "pci1b4b,2b42";
--		reg = <0x83010000 0x0 0x00000000 0x0 0x00100000
--		       0x83010000 0x0 0x00100000 0x0 0x00100000>;
-+		reg = <0x0000 0x0 0x0 0x0 0x0>;
- 		interrupt-parent = <&gpio0>;
- 		interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
-index 853e88455e750..9e4b12ed62cbe 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet-dumo.dts
-@@ -34,8 +34,8 @@ &mipi_panel {
- &pci_rootport {
- 	wifi@0,0 {
- 		compatible = "qcom,ath10k";
--		reg = <0x00010000 0x0 0x00000000 0x0 0x00000000>,
--		      <0x03010010 0x0 0x00000000 0x0 0x00200000>;
-+		reg = <0x00000000 0x0 0x00000000 0x0 0x00000000>,
-+		      <0x03000010 0x0 0x00000000 0x0 0x00200000>;
- 		qcom,ath10k-calibration-variant = "GO_DUMO";
- 	};
- };
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-index c9bf1d5c3a426..789fd0dcc88ba 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi
-@@ -489,6 +489,7 @@ pci_rootport: pcie@0,0 {
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		ranges;
-+		device_type = "pci";
- 	};
- };
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index 8fbef537fb885..82e2e051b4161 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -351,10 +351,11 @@ early_initcall(mips_smp_ipi_init);
+  */
+ asmlinkage void start_secondary(void)
+ {
+-	unsigned int cpu;
++	unsigned int cpu = raw_smp_processor_id();
  
+ 	cpu_probe();
+ 	per_cpu_trap_init(false);
++	rcutree_report_cpu_starting(cpu);
+ 	mips_clockevent_init();
+ 	mp_ops->init_secondary();
+ 	cpu_report();
+@@ -366,7 +367,6 @@ asmlinkage void start_secondary(void)
+ 	 */
+ 
+ 	calibrate_delay();
+-	cpu = smp_processor_id();
+ 	cpu_data[cpu].udelay_val = loops_per_jiffy;
+ 
+ 	set_cpu_sibling_map(cpu);
 -- 
 2.42.0
 
