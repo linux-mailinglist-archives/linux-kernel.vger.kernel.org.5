@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EB080CC22
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0133F80CB5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343845AbjLKN5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
+        id S1343678AbjLKNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344021AbjLKNzw (ORCPT
+        with ESMTP id S234453AbjLKNvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:55:52 -0500
+        Mon, 11 Dec 2023 08:51:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE15E8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:54:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F70CC433C7;
-        Mon, 11 Dec 2023 13:54:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A23C3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:51:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35FF9C433C7;
+        Mon, 11 Dec 2023 13:51:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302851;
-        bh=gmWXl8OnCsDxGnfCAvvdJ9/lz1xt84JHADheam84Pw0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SvBl+m+09oDNEHo5Q4aH4aSNYq1uuGpreTCXZSr+fq6/zGeVIrqeesF+pDMbTWPQz
-         Mty/KJfz/VOiqPxs0kzdlmduh1GRgdiNrg7udScux6bWlfH/1eajcWbom7LejGz1lh
-         Lvdn/CHmwXZpBjjagkDYpW5nboFbbd4uYFO93as7Iduh+QjJ631ExDl+CJngjFQTw5
-         3ECbZyz3lWwqMoGNdSPECQZhZziinpGJ7aWmopuGw7tNLW6qxqwZcSafcaov140a6g
-         IIZJTW7ciKxEdxDSg1kULVGdLxpdGSNwsyZBOI9UFlRmJ5yxw4qSt/xkFIyUa2qW1q
-         qRWJQYfttmrMA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hengqi Chen <hengqi.chen@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        yangtiezhu@loongson.cn, loongarch@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 6.6 47/47] LoongArch: Preserve syscall nr across execve()
-Date:   Mon, 11 Dec 2023 08:50:48 -0500
-Message-ID: <20231211135147.380223-47-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
-References: <20231211135147.380223-1-sashal@kernel.org>
+        s=k20201202; t=1702302708;
+        bh=nIyuqcp4+4582x1GA9+XcGxtdjfRCxJK9Ur7alA/OAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GZTaiK5Hs1zkFuyL8Ccm4MUAI7dzy6fHvQtOQP5QeL4ZU8FE5u/fDIYOIYjBN3ksM
+         VXLRHOlJrkSfItbJ0VGSaF6IZWFQ6e5ZAuJI2A8y665EGsp2SZi4bXQQjn1AhPRjT0
+         YrIoaxY7qCKLgO3d8G70VDMWfyVfQHUe1WI9J1EndI/O/RKfyUNwgVdAvj+QGgfSY1
+         qCMyOvDEoKi/uulMaVKNU5cAG8rytCsqDdDjic5hU7bp75KYKVlPIuzQiBdK+A9YuP
+         Rhja9p0ckqfW5W70JKXViaS8WmchCK1QSc5pFkqul0qwZ+PFlE64nrz3SNx5l7Qsan
+         67WMgQtyjvfZw==
+Date:   Mon, 11 Dec 2023 13:51:42 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Fedor Pchelkin <pchelkin@ispras.ru>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Subject: Re: [PATCH v4] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
+Message-ID: <20231211135142.GO5817@kernel.org>
+References: <10981267.HhOBSzzNiN@silver>
+ <20231206200913.16135-1-pchelkin@ispras.ru>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.5
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206200913.16135-1-pchelkin@ispras.ru>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,48 +59,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hengqi Chen <hengqi.chen@gmail.com>
+On Wed, Dec 06, 2023 at 11:09:13PM +0300, Fedor Pchelkin wrote:
+> If some of p9pdu_readf() calls inside case 'T' in p9pdu_vreadf() fails,
+> the error path is not handled properly. *wnames or members of *wnames
+> array may be left uninitialized and invalidly freed.
+> 
+> Initialize *wnames to NULL in beginning of case 'T'. Initialize the first
+> *wnames array element to NULL and nullify the failing *wnames element so
+> that the error path freeing loop stops on the first NULL element and
+> doesn't proceed further.
+> 
+> Found by Linux Verification Center (linuxtesting.org).
+> 
+> Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 
-[ Upstream commit d6c5f06e46a836e6a70c7cfd95bb38a67d9252ec ]
-
-Currently, we store syscall nr in pt_regs::regs[11] and syscall execve()
-accidentally overrides it during its execution:
-
-    sys_execve()
-      -> do_execve()
-        -> do_execveat_common()
-          -> bprm_execve()
-            -> exec_binprm()
-              -> search_binary_handler()
-                -> load_elf_binary()
-                  -> ELF_PLAT_INIT()
-
-ELF_PLAT_INIT() reset regs[11] to 0, so in syscall_exit_to_user_mode()
-we later get a wrong syscall nr. This breaks tools like execsnoop since
-it relies on execve() tracepoints.
-
-Skip pt_regs::regs[11] reset in ELF_PLAT_INIT() to fix the issue.
-
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/loongarch/include/asm/elf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/loongarch/include/asm/elf.h b/arch/loongarch/include/asm/elf.h
-index b9a4ab54285c1..9b16a3b8e7060 100644
---- a/arch/loongarch/include/asm/elf.h
-+++ b/arch/loongarch/include/asm/elf.h
-@@ -293,7 +293,7 @@ extern const char *__elf_platform;
- #define ELF_PLAT_INIT(_r, load_addr)	do { \
- 	_r->regs[1] = _r->regs[2] = _r->regs[3] = _r->regs[4] = 0;	\
- 	_r->regs[5] = _r->regs[6] = _r->regs[7] = _r->regs[8] = 0;	\
--	_r->regs[9] = _r->regs[10] = _r->regs[11] = _r->regs[12] = 0;	\
-+	_r->regs[9] = _r->regs[10] /* syscall n */ = _r->regs[12] = 0;	\
- 	_r->regs[13] = _r->regs[14] = _r->regs[15] = _r->regs[16] = 0;	\
- 	_r->regs[17] = _r->regs[18] = _r->regs[19] = _r->regs[20] = 0;	\
- 	_r->regs[21] = _r->regs[22] = _r->regs[23] = _r->regs[24] = 0;	\
--- 
-2.42.0
+Reviewed-by: Simon Horman <horms@kernel.org>
 
