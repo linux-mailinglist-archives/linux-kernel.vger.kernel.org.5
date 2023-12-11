@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E30780CC04
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A295F80CC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344209AbjLKN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S1344238AbjLKN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:56:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343875AbjLKNzf (ORCPT
+        with ESMTP id S1343727AbjLKNzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:55:35 -0500
+        Mon, 11 Dec 2023 08:55:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D12930D0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BD7FC43397;
-        Mon, 11 Dec 2023 13:53:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A6C30DB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:54:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EF81C433B7;
+        Mon, 11 Dec 2023 13:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302838;
-        bh=LNKZe5oxRmmzhRFo7D0uuBgWzkAugDhWnM6qObpwv1M=;
+        s=k20201202; t=1702302840;
+        bh=wdNJDgqHvDzQr6q3lTGtBsDgx/ijcaDTNNN6qwjaRC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIFoBYX457j/0DUIE57Az4fRFDFNjArDjKV/wveUcujSXQIP+WdR6+rOoQw6J65Qo
-         vRPIfdV6qyS0JXb6Jx+Af4bu24Uqadc/2AdEB96MhT+cfQvxQaO+IAKR+cCpEL3Hkz
-         x8cjZb0X5nk95aYKC0R4rHGhIx8DpdrtABRbhMwamAbd48y2XEnYJo/Cz6kYIms06Z
-         jJK6UZGxh9oNj82rb+XNwIGSmUHtbNVWhuV8zNZT5QQJ+yHA8okZQC7ha9S8oS3y8r
-         k/EmZuaO+wOtyOGHPG8EI0LCLrz4FYMGY4uqrnryMjTziIVi4AM9FW63I/RPQDR17W
-         PH2yvegunyD8Q==
+        b=L3xjA0mPON5y9hqfrcIgIc/MOZd1DVa6Z+3NRujO/rvhRp39mnwEw7iVmpquAjejI
+         H3xn6oQIsdRUevtkFNo9vcyT8cPC8UKyF91hU9DODbeYBJAVhkaCb1JufSm5xN5TLI
+         70JF6vDwQjfQ3ESCxvTeKjrcUtIHaXZrRw2s0B56n+i96DJwuYmelK7JDgaLYQk10+
+         lx458Ufq4gnd8IeVIFcEJK5jyp9X7UKxsuUoSN2YuRQJgl4CXXanZ3FIMRTu7CVWpJ
+         GlbSyuenluKSisDNOO2vvjhT4pKMExnIdZQmD1Uo0YHUKAAN3WjQ/aQZRnu+KFqJJe
+         yX0SA/+PuKNOA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Armin Wolf <W_Armin@gmx.de>, Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>, wilken.gottwalt@posteo.net,
-        jdelvare@suse.com, linux-hwmon@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 44/47] hwmon: (corsair-psu) Fix probe when built-in
-Date:   Mon, 11 Dec 2023 08:50:45 -0500
-Message-ID: <20231211135147.380223-44-sashal@kernel.org>
+Cc:     WANG Rui <wangrui@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
+        nathan@kernel.org, loongarch@lists.linux.dev, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 45/47] LoongArch: Apply dynamic relocations for LLD
+Date:   Mon, 11 Dec 2023 08:50:46 -0500
+Message-ID: <20231211135147.380223-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -53,55 +54,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Armin Wolf <W_Armin@gmx.de>
+From: WANG Rui <wangrui@loongson.cn>
 
-[ Upstream commit 307004e8b254ad28e150b63f299ab9caa4bc7c3e ]
+[ Upstream commit eea673e9d5ea994c60b550ffb684413d3759b3f4 ]
 
-It seems that when the driver is built-in, the HID bus is
-initialized after the driver is loaded, which whould cause
-module_hid_driver() to fail.
-Fix this by registering the driver after the HID bus using
-late_initcall() in accordance with other hwmon HID drivers.
+For the following assembly code:
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-Link: https://lore.kernel.org/r/20231207210723.222552-1-W_Armin@gmx.de
-[groeck: Dropped "compile tested" comment; the patch has been tested
- but the tester did not provide a Tested-by: tag]
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+     .text
+     .global func
+ func:
+     nop
+
+     .data
+ var:
+     .dword func
+
+When linked with `-pie`, GNU LD populates the `var` variable with the
+pre-relocated value of `func`. However, LLVM LLD does not exhibit the
+same behavior. This issue also arises with the `kernel_entry` in arch/
+loongarch/kernel/head.S:
+
+ _head:
+     .word   MZ_MAGIC                /* "MZ", MS-DOS header */
+     .org    0x8
+     .dword  kernel_entry            /* Kernel entry point */
+
+The correct kernel entry from the MS-DOS header is crucial for jumping
+to vmlinux from zboot. This necessity is why the compressed relocatable
+kernel compiled by Clang encounters difficulties in booting.
+
+To address this problem, it is proposed to apply dynamic relocations to
+place with `--apply-dynamic-relocs`.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1962
+Signed-off-by: WANG Rui <wangrui@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/corsair-psu.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ arch/loongarch/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
-index 904890598c116..2c7c92272fe39 100644
---- a/drivers/hwmon/corsair-psu.c
-+++ b/drivers/hwmon/corsair-psu.c
-@@ -899,7 +899,23 @@ static struct hid_driver corsairpsu_driver = {
- 	.reset_resume	= corsairpsu_resume,
- #endif
- };
--module_hid_driver(corsairpsu_driver);
-+
-+static int __init corsair_init(void)
-+{
-+	return hid_register_driver(&corsairpsu_driver);
-+}
-+
-+static void __exit corsair_exit(void)
-+{
-+	hid_unregister_driver(&corsairpsu_driver);
-+}
-+
-+/*
-+ * With module_init() the driver would load before the HID bus when
-+ * built-in, so use late_initcall() instead.
-+ */
-+late_initcall(corsair_init);
-+module_exit(corsair_exit);
+diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+index fb0fada43197e..390867fc45b84 100644
+--- a/arch/loongarch/Makefile
++++ b/arch/loongarch/Makefile
+@@ -80,7 +80,7 @@ endif
  
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
+ ifeq ($(CONFIG_RELOCATABLE),y)
+ KBUILD_CFLAGS_KERNEL		+= -fPIE
+-LDFLAGS_vmlinux			+= -static -pie --no-dynamic-linker -z notext
++LDFLAGS_vmlinux			+= -static -pie --no-dynamic-linker -z notext $(call ld-option, --apply-dynamic-relocs)
+ endif
+ 
+ cflags-y += $(call cc-option, -mno-check-zero-division)
 -- 
 2.42.0
 
