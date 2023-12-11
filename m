@@ -2,56 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865DF80CED2
+	by mail.lfdr.de (Postfix) with ESMTP id DB78380CED3
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343833AbjLKOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        id S1343745AbjLKOr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbjLKOpD (ORCPT
+        with ESMTP id S234618AbjLKOr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:45:03 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A21EC2;
-        Mon, 11 Dec 2023 06:45:08 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0141FEC;
-        Mon, 11 Dec 2023 06:45:54 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD8A03F738;
-        Mon, 11 Dec 2023 06:45:02 -0800 (PST)
-Date:   Mon, 11 Dec 2023 14:45:00 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Hyesoo Yu <hyesoo.yu@samsung.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 11/27] arm64: mte: Reserve tag storage memory
-Message-ID: <ZXcgbJsFRotjOgUw@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <CGME20231119165840epcas2p2c99f1dd358f716c103c16f47cc23bf2a@epcas2p2.samsung.com>
- <20231119165721.9849-12-alexandru.elisei@arm.com>
- <20231129084424.GA2988384@tiffany>
- <ZWxxJipc2STxHHKn@raptor>
- <20231208050340.GA1359878@tiffany>
+        Mon, 11 Dec 2023 09:47:57 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3F0C2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:48:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1702306084; x=1733842084;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=nDzV/I4m6ILchGYKOHv77/IxeZ8dmi2vBrv9tSnMifE=;
+  b=oWPyA8NPe/yUaKzEEbioNbXIWR6vnPkXrUGBsuUBqmDlCdvIyQlXVJDg
+   nWvKDhiSo+qATRak43q52rG1HBCaWJHz9Ysa9XKLTpBRDat84TZ19UrRZ
+   v6T+Mb0JdtypSYFN955a+kKs+WYLTr2moWkG+jS0P/2KZxDV7QCcBJDCj
+   leIRVrejAGk1/Lh2WHyoR186tdtRN4g3fPwKOSJ7Wxv6Lez1NuUSvrjpe
+   DMMrjVBrY4oAyAMwlKVwvAEFT4CwqxZ0sVpqaAxTR4ODWyYkAuqSbTbOX
+   WobuzMPKw7aUrGOBJHAOW7a4XnJrmOBz6OsQvGm64ct0+xWHi+YnbMqxw
+   g==;
+X-CSE-ConnectionGUID: StUqzDfEQjmm8Wjh6IXPVQ==
+X-CSE-MsgGUID: M2N0vePFSnCugbhf9EE6MA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="243795780"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Dec 2023 07:48:04 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 07:47:47 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 07:47:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UWzADQ+vt3gezaUxqYSefG4/XHqc1lExmit9+Mun1M4kBLJDXw0vMnHYuOZckC3uVh13roKNHJo4EnttVA9EvAgROaQG9tU2CeRhRPnIy5jbJ9J9OtyakRkMB0Ml7hxIimDrp6B5FhDnn7llh216pLKTXr2k2h5QQWDOw7YKH03StOn0Ezkx6uPBB4Gar0aTJe4VJl6+qF7CfsC/J2bc3/u6EQU2hSLjQhR+NspAC627YHo1a8RGl+aH1mv2y4TW8MHpDfBSh7OjVcCyFgQpsijEtQxLPjUAmI6kG0smXMmGr09cqxTq6kr4lZAgplNyDxsTM4/vBfUN7Z3XxoG7ZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nDzV/I4m6ILchGYKOHv77/IxeZ8dmi2vBrv9tSnMifE=;
+ b=oBUBc4wYfqa7LM8rn9DihDw8ZUiXUJTfJQFFRu2QS9izmnsy7l+ZuBZL87pz3d7+x2i0dsbImNXKA9lMaBPNV+YTFNjzVp59LLFfRFI6NU0teTyJ8XAA5W2ckm9MzVcfE0wISj9ssxIsnKqyCBwBt5FmuLvimRYp2BcpZGLhpgn1j6Znc6Zdh2+0BXEgxzFmNi07nAcUFoW+KlSGfDxSVBei9NQb0c0kO9OOWL2K4lZ4dzwXpUzUOvqoZUs9ei4UvI+JWXCBjrQ1yd2/5UF9quFHEgg4J8nWC03fh30F3eAH7mcrh2+unHz1yWa6BNSneoYeCSmtugQXe0BB6WR+EQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nDzV/I4m6ILchGYKOHv77/IxeZ8dmi2vBrv9tSnMifE=;
+ b=Zq0Jyi/9XutGi7uOrn/SOgxoZTg4Yr2qa5CG9q8F3u5h+o7kcG1u0cruxTz73dAoI4o2sCx46addfiZwQ6Mm6mvym5pWZfrSRbGPq2rVDqCl+OTjBRH1VQlBW/bhDMkGYuzYYl/0u0ukcYN7TP9Kiz6VDhXAIWLqDokDRwek9rF5FaIzKiHliUY1sLYnLxJMCwn0Qeka7qdpPsDKzzpyAQQwawQgm3ss+QQwvNTIQgaOEbdw3K2XzEvOXKrEKPPB8Csm+pdH97zvYBvtMXNri7u4TIADxpF1RGL4byJw5Bh4l8Ca8cWk+1czWpOVNUOqRNkafh8byw441/SKuJnRdA==
+Received: from BN7PR11MB2657.namprd11.prod.outlook.com (2603:10b6:406:b1::19)
+ by DS0PR11MB7262.namprd11.prod.outlook.com (2603:10b6:8:13c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 14:47:45 +0000
+Received: from BN7PR11MB2657.namprd11.prod.outlook.com
+ ([fe80::6d44:dac4:d1b:b891]) by BN7PR11MB2657.namprd11.prod.outlook.com
+ ([fe80::6d44:dac4:d1b:b891%5]) with mapi id 15.20.7068.033; Mon, 11 Dec 2023
+ 14:47:45 +0000
+From:   <Ryan.Wanner@microchip.com>
+To:     <claudiu.beznea@tuxon.dev>, <Nicolas.Ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drivers: soc: atmel: Adjust defines to follow
+ aphabetical order
+Thread-Topic: [PATCH v2] drivers: soc: atmel: Adjust defines to follow
+ aphabetical order
+Thread-Index: AQHaKg8jdhQUTdqP/EewoxDOuGTxeLCg6G8AgANFdgA=
+Date:   Mon, 11 Dec 2023 14:47:44 +0000
+Message-ID: <31d470f8-9f82-4c09-a6f9-dac528fda3bf@microchip.com>
+References: <20231208194532.579893-1-Ryan.Wanner@microchip.com>
+ <de0ddb41-8d78-45eb-bcb7-6d318bf154fd@tuxon.dev>
+In-Reply-To: <de0ddb41-8d78-45eb-bcb7-6d318bf154fd@tuxon.dev>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN7PR11MB2657:EE_|DS0PR11MB7262:EE_
+x-ms-office365-filtering-correlation-id: 63aa5702-cd8e-4286-83b4-08dbfa582295
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: y3J60Ef7ggzfRL5Gysau8vDI3rp+kwzOKO2AhNrXm/UgD1lvw9OJeKw4eZw2/dYV4Drhvk4EFjXgRSHUh5nZZv3J6tdwiIzfW21ZxfmRTy95NbBXW04WL/3yxscp7oN8NIZUi8r5SLlEjaQW3x+OFjwdAiuDq87b+u61AIVU42LyHnuXMGk/8OtcFiS2TC4P8KNPvkRm7INzOK8tQtMKrxSbFlO1kKsBuP/h9j6FP/p2z7ENu6YNzCJ7SJB270ftVh3s8IMa+tZm/5MJTXClJpR5LkbuVzjDj+5yUVIGESILUTNQlcCQhswZCNYUzchD7F8g0qW96+xWmhxGJ6PSsHTyQ7PajhbWWeXi0Df46h05+Xp/rng3MLe3miUO5I6GshxnKy2YwDk/plmsiSHiKO0h/5PoXjOSPrL+z84dFk3Ybg1ijDGulwTFBrt3BDM5DhoZVqdUqbi691kDDd9yk8bJdS1JeXG55+hLYd2gzrcx/BlREpAiWqRHQdwbyjvxTfW/aE9ag2XKVTcEZwoXdXOAk3ovpxPz6ulnUuhXq7vEx5+uC9Gt7pRhywMNVGEIMt62mbBlevtSiNuaqgkRSOACf2H+F4pYqCflmVb6fWOgDAY3owgjIFBT6bMgPak57BpNvUXbxlu8WEtKX8B6C/Slwj3wpSkqS+Glepqom+w/jH4Oe7+EVzstCwFqfBPF
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR11MB2657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(366004)(396003)(230273577357003)(230173577357003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(26005)(2616005)(83380400001)(38070700009)(36756003)(86362001)(31696002)(38100700002)(122000001)(5660300002)(316002)(8936002)(8676002)(4326008)(2906002)(6512007)(6506007)(71200400001)(53546011)(66476007)(66446008)(64756008)(54906003)(66556008)(66946007)(91956017)(478600001)(6486002)(110136005)(31686004)(76116006)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OU1nQlFrYVJ1WXFraEVBdExGc0lEM0U4cTJHMGJHaXRvNmIwMklxTGwvTG0r?=
+ =?utf-8?B?NkE5RnhySEVXcVNOT2JMRTVGVzgxMTdqdC9Za05SZXVSMEI0aS9tVnRtejRi?=
+ =?utf-8?B?ay9EMEZlaGttS0h4dUMvZEtjL2cvUm5xdkZESHlrbDd4Qk9Qb21POUxpUkVu?=
+ =?utf-8?B?ZWQ3SW14eHRLNUxMU2VDNk9NQUpsOWg0cGg5U1N2dUd1dU9KY0x6dlRSK3RO?=
+ =?utf-8?B?RGZ3ZnVXRUV5SGNUNVVMZFpBSS9ud0ZrSEVYSzdUQjQ3Wm44MzdMVkRKc29R?=
+ =?utf-8?B?Mk1oSWR6b05CMTNqL21QVFF5dFI2OC9TaXBzS3duU3kwYUloakdOZW9ydHhD?=
+ =?utf-8?B?UERPS1NVS2RjWUhBSEE3Ym5rT1lVTXY4d2NKODFQTzNJelYxRm02aFdSclRv?=
+ =?utf-8?B?WEM5WVBpemo1NDdUMDBWNXBqUWtZZGFJMmRFejl4UUtYaUVKVlRsbjBXTVlN?=
+ =?utf-8?B?bDlFUE5UVlZPbGNBNi9hNTc1TVFTbFplVFhLMXo3S09KbVZyWWdwVVo5NzAr?=
+ =?utf-8?B?a1Z6emlDaW40ZzlkUVJpQmVsN3JhU2RRS2FRL2RtRXNDbXcrTENGd1BEazVh?=
+ =?utf-8?B?UUZXU2s2OVhlUXAzSkIyS1J0emJIUGxhL3ZzWFZRWE9xOTdTaHRuT1VNRlVq?=
+ =?utf-8?B?Y1lpVEd3RmdRL0JWVGdrZkY1Y0RhT09MOHBaVERLZjl4MjZkcFl3cnIvOU1N?=
+ =?utf-8?B?SDYvOEQ2NVk1WTdOUUdKV3FWN1RPWktFNXJDQWtUQ0M1UTN0cXYwdW9yVC9q?=
+ =?utf-8?B?ZkxFUTZmdkVTVkVGaUtsWVZlc0VIa0NoU283eWxGVnUrYk9QWGdCQU1YUFhw?=
+ =?utf-8?B?bks1elp3M2d6RzduOG1RZmRKd2tHSVpjd1MrdE5ZRlBIRXpIQ2oxdGMxcTd3?=
+ =?utf-8?B?bXIvT3Z3L2kvMU9zN0NYRWpyQ0xpMzZUUCtwU2hrRGEzNUFCK3N0ampMaDJR?=
+ =?utf-8?B?OHg0eTkvM0NBaEN6Mzl5cUdnajNXMkpXRWtYdnZic1huWWtpRlFOcVR2R0lF?=
+ =?utf-8?B?TjB5ZnF5M1FwMEhGUHlXWEZBL3ByVFE4aTgwWG1NZDdXUU5aRDBveGNLSGxo?=
+ =?utf-8?B?TXJEeVZMZFpJUGZTbE9mL2NpU1drYW96THl2MEdXaUR2QWZmVzVUeG9MQzRr?=
+ =?utf-8?B?TEoxTzZHYUU2SUk1aVVUZllBeWtYWWxNY3oxc3Y0eHNnZUVYZVYzUGJsaEcz?=
+ =?utf-8?B?MXVmZURldmwzc3hPNk1mT2I0L2FJb3Z2NWRzUEJIVFFVd1hra3RZeWFmR1Ry?=
+ =?utf-8?B?bThwc2s3WGFXTHQ4VGsvTExqZUpBeThiMWtCMHQ3M0NUbE5aOG5uTldFZVRq?=
+ =?utf-8?B?cElLTkplMkVKL2JKWTBiQnpwT2NTekNiT0t4MXRkNVp2R2Q0cXNGcHA0aTRC?=
+ =?utf-8?B?Yjg1dFZSRkpUOGttdlZWR00yRnZHVUY3VDkzY0xDSjFnN3VWYUwyVC9udWtI?=
+ =?utf-8?B?c1podEdxZjh0Z0t5UEZwNll6OU90dmZySXc4ZXhRdERKVnpFcUlpUSsxb3RR?=
+ =?utf-8?B?RlJCUWR3UkNidGNMQVFrZXlQZzROTDRQRVBaY04zU3doNVBvSDJHanlsZUNx?=
+ =?utf-8?B?VURZVVdFak9vUjZqK2VMeDFYaldjek1TMnNVcmd0TnorRkI1UzNqQkhMVGdp?=
+ =?utf-8?B?MGtIcWVKT1NBU1UzOWpOTXBXLzhnQy9uM3VnRVhMTVdYd2h2a0Z0bWhnZzhm?=
+ =?utf-8?B?YTVMOVdSaHNsRmNKdDBHRFBLSThsV1FkbGlkb2JwbUhnemZaNkJVNkFqZXVU?=
+ =?utf-8?B?aWZCa1MvNmo3bEFSSzlSemZTY2ExeDhacTN0b3ZueXZmV0hmdHFxeGtwdnlF?=
+ =?utf-8?B?dDNTM1FsN0ZhMTNKN05YWEViQjBWcjQ1S0FKdzdObXBKeVFnVElkekcxL0cy?=
+ =?utf-8?B?VzE5eGtjSnlhQldvaVZ3ei9FZVQxbitZNDB1WTI1SW5pTTBWUHc2VjQzYU03?=
+ =?utf-8?B?NnRXN3l1L1QzUkRpdXlYU1BGV3EwOWRTNkdhbTM5TDJLRUdJZURMbjMyMkFi?=
+ =?utf-8?B?TjJtT1ErbGlINnJVa3pXVDNUV0pwcXRnbEh6Uy8zcHdhbUQ0aUpzcm5PbkFH?=
+ =?utf-8?B?TWs1MDJ4WkdiSmREZlNVdTlYZWxFcnVNR1kzSXNCODY4b3BXZWgrdjBIb0hW?=
+ =?utf-8?Q?LiHNkmTYTN0dTB+roarXHFJGX?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E2DA5E0B26DF6D4CA0E6A8D22DAB233B@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208050340.GA1359878@tiffany>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR11MB2657.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63aa5702-cd8e-4286-83b4-08dbfa582295
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2023 14:47:44.6833
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YjlNaHaDepJRymk9pGxeev9oTwzvvHQKMYpYX3pMx2f37HnIk/vtMYxnKpCTsLkKNl2n9RxWYLMjd4Ay76SvPmUKiuwG6VKTASk0JuQJdrc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7262
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,320 +160,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Dec 08, 2023 at 02:03:44PM +0900, Hyesoo Yu wrote:
-> Hi, 
-> 
-> I'm sorry for the late response, I was on vacation.
-> 
-> On Sun, Dec 03, 2023 at 12:14:30PM +0000, Alexandru Elisei wrote:
-> > Hi,
-> > 
-> > On Wed, Nov 29, 2023 at 05:44:24PM +0900, Hyesoo Yu wrote:
-> > > Hello.
-> > > 
-> > > On Sun, Nov 19, 2023 at 04:57:05PM +0000, Alexandru Elisei wrote:
-> > > > Allow the kernel to get the size and location of the MTE tag storage
-> > > > regions from the DTB. This memory is marked as reserved for now.
-> > > > 
-> > > > The DTB node for the tag storage region is defined as:
-> > > > 
-> > > >         tags0: tag-storage@8f8000000 {
-> > > >                 compatible = "arm,mte-tag-storage";
-> > > >                 reg = <0x08 0xf8000000 0x00 0x4000000>;
-> > > >                 block-size = <0x1000>;
-> > > >                 memory = <&memory0>;	// Associated tagged memory node
-> > > >         };
-> > > >
-> > > 
-> > > How about using compatible = "shared-dma-pool" like below ?
-> > > 
-> > > &reserved_memory {
-> > > 	tags0: tag0@8f8000000 {
-> > > 		compatible = "arm,mte-tag-storage";
-> > >         	reg = <0x08 0xf8000000 0x00 0x4000000>;
-> > > 	};
-> > > }
-> > > 
-> > > tag-storage {
-> > >         compatible = "arm,mte-tag-storage";
-> > > 	memory-region = <&tag>;
-> > >         memory = <&memory0>;
-> > > 	block-size = <0x1000>;
-> > > }
-> > > 
-> > > And then, the activation of CMA would be performed in the CMA code.
-> > > We just can get the region information from memory-region and allocate it directly
-> > > like alloc_contig_range, take_page_off_buddy. It seems like we can remove a lots of code.
-> >
-> 
-> Sorry, that example was my mistake. Actually I wanted to write like this. 
-> 
-> &reserved_memory {
-> 	tags0: tag0@8f8000000 {
-> 		compatible = "shared-dma-pool";
->         	reg = <0x08 0xf8000000 0x00 0x4000000>;
-> 		reusable;
-> 	};
-> }
-> 
-> tag-storage {
->         compatible = "arm,mte-tag-storage";
->  	memory-region = <&tag>;
->         memory = <&memory0>;
-> 	block-size = <0x1000>;
-> }
-
-I prototyped your suggestion with this change to the device tree:
-
-            reserved-memory {
-                    #address-cells = <0x02>;
-                    #size-cells = <0x02>;
-                    ranges;
-
-                    tags0: tag-storage@8f8000000 {
-                            compatible = "arm,mte-tag-storage";
-                            reg = <0x08 0xf8000000 0x00 0x4000000>;
-                            block-size = <0x1000>;
-                            memory = <&memory0>;
-                            reusable;
-                    };
-            };
-
-Would you mind explaining what we are gaining by using reserved mem?
-
-Struct reserved_mem only has the base and size of the tag storage region,
-and initialization for reserved mem happens before the DTB is unflattened.
-When I prototyped using reserved mem, I still had to write the code to
-parse the memory node address and size. This code was the same as the code
-needed to parse the tag storage region address and size, so having that
-information in struct reserved_mem does not reduce the size of the code by
-a meaningful amount.
-
-> 
-> 
-> > Played with reserved_mem a bit. I don't think that's the correct path
-> > forward.
-> > 
-> > The location of the tag storage is a hardware property, independent of how
-> > Linux is configured.
-> > 
-> > early_init_fdt_scan_reserved_mem() is called from arm64_memblock_init(),
-> > **after** the kernel enforces an upper address for various reasons. One of
-> > the reasons can be that it's been compiled with 39 bits VA.
-> > 
-> 
-> I'm not sure about this part. What is the upper address enforced by the kernel ?
-> Where can I check the code ? Do you means that memblock_end_of_DRAM() ?  
-
-I am referring to arch/arm64/mm/init.c:: arm64_memblock_init(). The
-function initializes reserved mem (in early_init_fdt_scan_reserved_mem())
-**after**removing memory from memblock that the kernel cannot address.
-
-> 
-> > After early_init_fdt_scan_reserved_mem() returns, the kernel sets the
-> > maximum address, stored in the variable "high_memory".
-> >
-> > What can happen is that tag storage is present at an address above the
-> > maximum addressable by the kernel, and the CMA code will trigger an
-> > unrecovrable page fault.
-> > 
-> > I was able to trigger this with the dts change:
-> > 
-> > diff --git a/arch/arm64/boot/dts/arm/fvp-base-revc.dts b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-> > index 60472d65a355..201359d014e4 100644
-> > --- a/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-> > +++ b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
-> > @@ -183,6 +183,13 @@ vram: vram@18000000 {
-> >                         reg = <0x00000000 0x18000000 0 0x00800000>;
-> >                         no-map;
-> >                 };
-> > +
-> > +
-> > +               linux,cma {
-> > +                       compatible = "shared-dma-pool";
-> > +                       reg = <0x100 0x0 0x00 0x4000000>;
-> > +                       reusable;
-> > +               };
-> >         };
-> > 
-> >         gic: interrupt-controller@2f000000 {
-> > 
-> > And the error I got:
-> > 
-> > [    0.000000] Reserved memory: created CMA memory pool at 0x0000010000000000, size 64 MiB
-> > [    0.000000] OF: reserved mem: initialized node linux,cma, compatible id shared-dma-pool
-> > [    0.000000] OF: reserved mem: 0x0000010000000000..0x0000010003ffffff (65536 KiB) map reusable linux,cma
-> > [..]
-> > [    0.793193] WARNING: CPU: 0 PID: 1 at mm/cma.c:111 cma_init_reserved_areas+0xa8/0x378
-> > [..]
-> > [    0.806945] Unable to handle kernel paging request at virtual address 00000001fe000000
-> > [    0.807277] Mem abort info:
-> > [    0.807277]   ESR = 0x0000000096000005
-> > [    0.807693]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > [    0.808110]   SET = 0, FnV = 0
-> > [    0.808443]   EA = 0, S1PTW = 0
-> > [    0.808526]   FSC = 0x05: level 1 translation fault
-> > [    0.808943] Data abort info:
-> > [    0.808943]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-> > [    0.809360]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> > [    0.809776]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> > [    0.810221] [00000001fe000000] user address but active_mm is swapper
-> > [..]
-> > [    0.820887] Call trace:
-> > [    0.821027]  cma_init_reserved_areas+0xc4/0x378
-> > [    0.821443]  do_one_initcall+0x7c/0x1c0
-> > [    0.821860]  kernel_init_freeable+0x1bc/0x284
-> > [    0.822277]  kernel_init+0x24/0x1dc
-> > [    0.822693]  ret_from_fork+0x10/0x20
-> > [    0.823554] Code: 9127a29a cb813321 d37ae421 8b030020 (f8636822)
-> > [    0.823554] ---[ end trace 0000000000000000 ]---
-> > [    0.824360] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > [    0.824443] SMP: stopping secondary CPUs
-> > [    0.825193] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> > 
-> > Should reserved mem check if the reserved memory is actually addressable by
-> > the kernel if it's not "no-map"? Should cma fail gracefully if
-> > !pfn_valid(base_pfn)? Shold early_init_fdt_scan_reserved_mem() be moved
-> > because arm64_bootmem_init()? I don't have the answer to any of those. And
-> > I got a kernel panic because the kernel cannot address that memory (39 bits
-> > VA). I don't know what would happen if the upper limit is reduced for
-> > another reason.
-> > 
-> 
-> My answer may not be accurate because I don't understand what this upper limit is.
-> Is this a problem caused by the tag storage area not being included in the memory node ?
-
-This problem is caused by the kernel cannot using virtual addresses in the
-linear map (where VA == PA) to access the tag storage region.
-
-> 
-> The reason for not including it in the memory node is to enable static mte when dmte
-> initilization fails, right ? I think I missed that. I thought the tag storage is included
-> in the memory node and registered as cma.
-> 
-> > What I think should happen:
-> > 
-> > 1. Add the tag storage memory before any limits are enforced by
-> > arm64_bootmem_init().
-> >
-> > 2. Call cma_declare_contiguous_nid() after arm64_bootmem_init(), because
-> > the function will check the memory limit.
-> > 
-> > 3. Have an arch initcall that checks that the CMA regions corresponding to
-> > the tag storage have been activated successfully (cma_init_reserved_areas()
-> > is a core initcall). If not, then don't enable tag storage.
-> > 
-> > How does that sound to you?
-> > 
-> > Thanks,
-> > Alex
-> > 
-> 
-> I think this is a good way to utilize the cma code !
-
-Cool, thanks!
-
-Alex
-
-> 
-> Thanks,
-> Regards.
-> 
-> > > > +	ret = tag_storage_of_flat_read_u32(node, "block-size", &block_size_bytes);
-> > > > +	if (ret || block_size_bytes == 0) {
-> > > > +		pr_err("Invalid or missing 'block-size' property");
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +	region->block_size = get_block_size_pages(block_size_bytes);
-> > > > +	if (range_len(tag_range) % region->block_size != 0) {
-> > > > +		pr_err("Tag storage region size 0x%llx is not a multiple of block size %u",
-> > > > +		       PFN_PHYS(range_len(tag_range)), region->block_size);
-> > > > +		return -EINVAL;
-> > > > +	}
-> > > > +
-> > > 
-> > > I was confused about the variable "block_size", The block size declared in the device tree is
-> > > in bytes, but the actual block size used is in pages. I think the term "block_size" can cause
-> > > confusion as it might be interpreted as bytes. If possible, I suggest changing the term "block_size"
-> > > to something more readable, such as "block_nr_pages" (This is just a example!)
-> > > 
-> > > Thanks,
-> > > Regards.
-> >>
-> 
-> What do you think about this ?
-> 
-> Thanks,
-> Regards.
-> 
-> > > > +	ret = tag_storage_of_flat_read_u32(mem_node, "numa-node-id", &nid);
-> > > > +	if (ret)
-> > > > +		nid = numa_node_id();
-> > > > +
-> > > > +	ret = memblock_add_node(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)),
-> > > > +				nid, MEMBLOCK_NONE);
-> > > > +	if (ret) {
-> > > > +		pr_err("Error adding tag memblock (%d)", ret);
-> > > > +		return ret;
-> > > > +	}
-> > > > +	memblock_reserve(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)));
-> > > > +
-> > > > +	pr_info("Found tag storage region 0x%llx-0x%llx, block size %u pages",
-> > > > +		PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end), region->block_size);
-> > > > +
-> > > > +	num_tag_regions++;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > > +void __init mte_tag_storage_init(void)
-> > > > +{
-> > > > +	struct range *tag_range;
-> > > > +	int i, ret;
-> > > > +
-> > > > +	ret = of_scan_flat_dt(fdt_init_tag_storage, NULL);
-> > > > +	if (ret) {
-> > > > +		for (i = 0; i < num_tag_regions; i++) {
-> > > > +			tag_range = &tag_regions[i].tag_range;
-> > > > +			memblock_remove(PFN_PHYS(tag_range->start), PFN_PHYS(range_len(tag_range)));
-> > > > +		}
-> > > > +		num_tag_regions = 0;
-> > > > +		pr_info("MTE tag storage region management disabled");
-> > > > +	}
-> > > > +}
-> > > > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> > > > index 417a8a86b2db..1b77138c1aa5 100644
-> > > > --- a/arch/arm64/kernel/setup.c
-> > > > +++ b/arch/arm64/kernel/setup.c
-> > > > @@ -42,6 +42,7 @@
-> > > >  #include <asm/cpufeature.h>
-> > > >  #include <asm/cpu_ops.h>
-> > > >  #include <asm/kasan.h>
-> > > > +#include <asm/mte_tag_storage.h>
-> > > >  #include <asm/numa.h>
-> > > >  #include <asm/scs.h>
-> > > >  #include <asm/sections.h>
-> > > > @@ -342,6 +343,12 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
-> > > >  			   FW_BUG "Booted with MMU enabled!");
-> > > >  	}
-> > > >  
-> > > > +	/*
-> > > > +	 * Must be called before memory limits are enforced by
-> > > > +	 * arm64_memblock_init().
-> > > > +	 */
-> > > > +	mte_tag_storage_init();
-> > > > +
-> > > >  	arm64_memblock_init();
-> > > >  
-> > > >  	paging_init();
-> > > > -- 
-> > > > 2.42.1
-> > > > 
-> > > > 
-> > 
-> > 
-> > 
-
-
+T24gMTIvOS8yMyAwNTo1MCwgY2xhdWRpdSBiZXpuZWEgd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlM
+OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
+dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gSGksIFJ5YW4sDQo+IA0KPiBPbiAwOC4xMi4yMDIz
+IDIxOjQ1LCBSeWFuLldhbm5lckBtaWNyb2NoaXAuY29tIHdyb3RlOg0KPj4gRnJvbTogUnlhbiBX
+YW5uZXIgPFJ5YW4uV2FubmVyQG1pY3JvY2hpcC5jb20+DQo+Pg0KPj4gTW92ZSB0aGUgZGVmaW5l
+cyBzbyB0aGF0IHRoZXkgYXJlIGluIGFwaGFiZXRpY2FsIG9yZGVyIGJhc2VkIG9uIFNPQy4NCj4g
+DQo+IHMvYXBoYWJldGljYWwvYWxwaGFiZXRpY2FsIGJ1dCBtYXliZSBhbHBoYW51bWVyaWNhbCBh
+IGJldHRlciB0ZXJtLg0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBleHBsYWluIHdoYXQgbGV2ZWwg
+b2YgYWxwaGFiZXRpY2FsIHNvcnQgeW91IHdhbnRlZCB0bw0KPiBhY2hpZXZlPyBJIHNlZSBTQU05
+WDYwL1NBTUE3RzUgYi93IEFUOTFTQU05WDVfQ0lEUl9NQVRDSCBhbmQNCj4gQVQ5MVNBTTlNMTFf
+RVhJRF9NQVRDSCBvciwgZS5nLiwgQVQ5MVNBTTlHMzVfRVhJRF9NQVRDSCBhZnRlcg0KPiBBVDkx
+U0FNOU0xMF9FWElEX01BVENILg0KDQpJIHdhbnRlZCB0byBtYWtlIHRoZSBDSURSIG1hdGNoIGlu
+IGFscGhhbnVtZXJpYywgZm9yIHRoZSBFWElEIEkgd2FudGVkDQp0byBrZWVwIHRoZW0gYWxwaGFu
+dW1lcmljIGJ1dCBrZWVwaW5nIHRoZW0gaW4gdGhlIG9yaWdpbmFsIFNPQyBncm91cGluZy4NCj4g
+DQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogUnlhbiBXYW5uZXIgPFJ5YW4uV2FubmVyQG1pY3JvY2hp
+cC5jb20+DQo+PiAtLS0NCj4+IENoYW5nZXMgZnJvbSB2MSAtPiB2MjoNCj4+IC0gUmVtb3ZlIGRl
+ZmluZXMgdGhhdCBhcmUgbm90IHlldCBpbiB2Ni43Lg0KPj4NCj4+ICBkcml2ZXJzL3NvYy9hdG1l
+bC9zb2MuaCB8IDM4ICsrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiAg
+MSBmaWxlIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDE5IGRlbGV0aW9ucygtKQ0KPj4NCj4+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9hdG1lbC9zb2MuaCBiL2RyaXZlcnMvc29jL2F0bWVs
+L3NvYy5oDQo+PiBpbmRleCA3YTlmNDdjZTg1ZmIuLjFmMmFmNmY3NDE2MCAxMDA2NDQNCj4+IC0t
+LSBhL2RyaXZlcnMvc29jL2F0bWVsL3NvYy5oDQo+PiArKysgYi9kcml2ZXJzL3NvYy9hdG1lbC9z
+b2MuaA0KPj4gQEAgLTM5LDEwICszOSwxMCBAQCBhdDkxX3NvY19pbml0KGNvbnN0IHN0cnVjdCBh
+dDkxX3NvYyAqc29jcyk7DQo+PiAgI2RlZmluZSBBVDkxU0FNOTI2MV9DSURSX01BVENIICAgICAg
+ICAgICAgICAgMHgwMTk3MDNhMA0KPj4gICNkZWZpbmUgQVQ5MVNBTTkyNjNfQ0lEUl9NQVRDSCAg
+ICAgICAgICAgICAgIDB4MDE5NjA3YTANCj4+ICAjZGVmaW5lIEFUOTFTQU05RzIwX0NJRFJfTUFU
+Q0ggICAgICAgICAgICAgICAweDAxOTkwNWEwDQo+PiAtI2RlZmluZSBBVDkxU0FNOVJMNjRfQ0lE
+Ul9NQVRDSCAgICAgICAgICAgICAgMHgwMTliMDNhMA0KPj4gICNkZWZpbmUgQVQ5MVNBTTlHNDVf
+Q0lEUl9NQVRDSCAgICAgICAgICAgICAgIDB4MDE5YjA1YTANCj4+IC0jZGVmaW5lIEFUOTFTQU05
+WDVfQ0lEUl9NQVRDSCAgICAgICAgICAgICAgICAweDAxOWEwNWEwDQo+PiAgI2RlZmluZSBBVDkx
+U0FNOU4xMl9DSURSX01BVENIICAgICAgICAgICAgICAgMHgwMTlhMDdhMA0KPj4gKyNkZWZpbmUg
+QVQ5MVNBTTlSTDY0X0NJRFJfTUFUQ0ggICAgICAgICAgICAgIDB4MDE5YjAzYTANCj4+ICsjZGVm
+aW5lIEFUOTFTQU05WDVfQ0lEUl9NQVRDSCAgICAgICAgICAgICAgICAweDAxOWEwNWEwDQo+PiAg
+I2RlZmluZSBTQU05WDYwX0NJRFJfTUFUQ0ggICAgICAgICAgIDB4MDE5YjM1YTANCj4+ICAjZGVm
+aW5lIFNBTUE3RzVfQ0lEUl9NQVRDSCAgICAgICAgICAgMHgwMDE2MjEwMA0KPj4NCj4+IEBAIC02
+MSwyMyArNjEsMTUgQEAgYXQ5MV9zb2NfaW5pdChjb25zdCBzdHJ1Y3QgYXQ5MV9zb2MgKnNvY3Mp
+Ow0KPj4gICNkZWZpbmUgQVQ5MVNBTTlOMTJfRVhJRF9NQVRDSCAgICAgICAgICAgICAgIDB4MDAw
+MDAwMDYNCj4+ICAjZGVmaW5lIEFUOTFTQU05Q04xMV9FWElEX01BVENIICAgICAgICAgICAgICAw
+eDAwMDAwMDA5DQo+Pg0KPj4gKyNkZWZpbmUgQVQ5MVNBTTlYRTEyOF9DSURSX01BVENIICAgICAw
+eDMyOTk3M2EwDQo+PiArI2RlZmluZSBBVDkxU0FNOVhFMjU2X0NJRFJfTUFUQ0ggICAgIDB4MzI5
+YTkzYTANCj4+ICsjZGVmaW5lIEFUOTFTQU05WEU1MTJfQ0lEUl9NQVRDSCAgICAgMHgzMjlhYTNh
+MA0KPj4gKw0KPj4gICNkZWZpbmUgU0FNOVg2MF9FWElEX01BVENIICAgICAgICAgICAweDAwMDAw
+MDAwDQo+PiAgI2RlZmluZSBTQU05WDYwX0Q1TV9FWElEX01BVENIICAgICAgICAgICAgICAgMHgw
+MDAwMDAwMQ0KPj4gICNkZWZpbmUgU0FNOVg2MF9EMUdfRVhJRF9NQVRDSCAgICAgICAgICAgICAg
+IDB4MDAwMDAwMTANCj4+ICAjZGVmaW5lIFNBTTlYNjBfRDZLX0VYSURfTUFUQ0ggICAgICAgICAg
+ICAgICAweDAwMDAwMDExDQo+Pg0KPj4gLSNkZWZpbmUgU0FNQTdHNTFfRVhJRF9NQVRDSCAgICAg
+ICAgICAweDMNCj4+IC0jZGVmaW5lIFNBTUE3RzUyX0VYSURfTUFUQ0ggICAgICAgICAgMHgyDQo+
+PiAtI2RlZmluZSBTQU1BN0c1M19FWElEX01BVENIICAgICAgICAgIDB4MQ0KPj4gLSNkZWZpbmUg
+U0FNQTdHNTRfRVhJRF9NQVRDSCAgICAgICAgICAweDANCj4+IC0jZGVmaW5lIFNBTUE3RzU0X0Qx
+R19FWElEX01BVENIICAgICAgICAgICAgICAweDAwMDAwMDE4DQo+PiAtI2RlZmluZSBTQU1BN0c1
+NF9EMkdfRVhJRF9NQVRDSCAgICAgICAgICAgICAgMHgwMDAwMDAyMA0KPj4gLSNkZWZpbmUgU0FN
+QTdHNTRfRDRHX0VYSURfTUFUQ0ggICAgICAgICAgICAgIDB4MDAwMDAwMjgNCj4+IC0NCj4+IC0j
+ZGVmaW5lIEFUOTFTQU05WEUxMjhfQ0lEUl9NQVRDSCAgICAgMHgzMjk5NzNhMA0KPj4gLSNkZWZp
+bmUgQVQ5MVNBTTlYRTI1Nl9DSURSX01BVENIICAgICAweDMyOWE5M2EwDQo+PiAtI2RlZmluZSBB
+VDkxU0FNOVhFNTEyX0NJRFJfTUFUQ0ggICAgIDB4MzI5YWEzYTANCj4+IC0NCj4+ICAjZGVmaW5l
+IFNBTUE1RDJfQ0lEUl9NQVRDSCAgICAgICAgICAgMHgwYTVjMDhjMA0KPj4gICNkZWZpbmUgU0FN
+QTVEMjFDVV9FWElEX01BVENIICAgICAgICAgICAgICAgIDB4MDAwMDAwNWENCj4+ICAjZGVmaW5l
+IFNBTUE1RDIyNUNfRDFNX0VYSURfTUFUQ0ggICAgMHgwMDAwMDA1Mw0KPj4gQEAgLTExMyw2ICsx
+MDUsMTQgQEAgYXQ5MV9zb2NfaW5pdChjb25zdCBzdHJ1Y3QgYXQ5MV9zb2MgKnNvY3MpOw0KPj4g
+ICNkZWZpbmUgU0FNQTVENDNfRVhJRF9NQVRDSCAgICAgICAgICAweDAwMDAwMDAzDQo+PiAgI2Rl
+ZmluZSBTQU1BNUQ0NF9FWElEX01BVENIICAgICAgICAgIDB4MDAwMDAwMDQNCj4+DQo+PiArI2Rl
+ZmluZSBTQU1BN0c1MV9FWElEX01BVENIICAgICAgICAgIDB4Mw0KPj4gKyNkZWZpbmUgU0FNQTdH
+NTJfRVhJRF9NQVRDSCAgICAgICAgICAweDINCj4+ICsjZGVmaW5lIFNBTUE3RzUzX0VYSURfTUFU
+Q0ggICAgICAgICAgMHgxDQo+PiArI2RlZmluZSBTQU1BN0c1NF9FWElEX01BVENIICAgICAgICAg
+IDB4MA0KPj4gKyNkZWZpbmUgU0FNQTdHNTRfRDFHX0VYSURfTUFUQ0ggICAgICAgICAgICAgIDB4
+MDAwMDAwMTgNCj4+ICsjZGVmaW5lIFNBTUE3RzU0X0QyR19FWElEX01BVENIICAgICAgICAgICAg
+ICAweDAwMDAwMDIwDQo+PiArI2RlZmluZSBTQU1BN0c1NF9ENEdfRVhJRF9NQVRDSCAgICAgICAg
+ICAgICAgMHgwMDAwMDAyOA0KPj4gKw0KPj4gICNkZWZpbmUgU0FNRTcwUTIxX0NJRFJfTUFUQ0gg
+ICAgICAgICAweDIxMDIwZTAwDQo+PiAgI2RlZmluZSBTQU1FNzBRMjFfRVhJRF9NQVRDSCAgICAg
+ICAgIDB4MDAwMDAwMDINCj4+ICAjZGVmaW5lIFNBTUU3MFEyMF9DSURSX01BVENIICAgICAgICAg
+MHgyMTAyMGMwMA0KPj4gQEAgLTEyNyw2ICsxMjcsMTEgQEAgYXQ5MV9zb2NfaW5pdChjb25zdCBz
+dHJ1Y3QgYXQ5MV9zb2MgKnNvY3MpOw0KPj4gICNkZWZpbmUgU0FNUzcwUTE5X0NJRFJfTUFUQ0gg
+ICAgICAgICAweDIxMWQwYTAwDQo+PiAgI2RlZmluZSBTQU1TNzBRMTlfRVhJRF9NQVRDSCAgICAg
+ICAgIDB4MDAwMDAwMDINCj4+DQo+PiArI2RlZmluZSBTQU1WNzBRMjBfQ0lEUl9NQVRDSCAgICAg
+ICAgIDB4MjEzMjBjMDANCj4+ICsjZGVmaW5lIFNBTVY3MFEyMF9FWElEX01BVENIICAgICAgICAg
+MHgwMDAwMDAwMg0KPj4gKyNkZWZpbmUgU0FNVjcwUTE5X0NJRFJfTUFUQ0ggICAgICAgICAweDIx
+M2QwYTAwDQo+PiArI2RlZmluZSBTQU1WNzBRMTlfRVhJRF9NQVRDSCAgICAgICAgIDB4MDAwMDAw
+MDINCj4+ICsNCj4+ICAjZGVmaW5lIFNBTVY3MVEyMV9DSURSX01BVENIICAgICAgICAgMHgyMTIy
+MGUwMA0KPj4gICNkZWZpbmUgU0FNVjcxUTIxX0VYSURfTUFUQ0ggICAgICAgICAweDAwMDAwMDAy
+DQo+PiAgI2RlZmluZSBTQU1WNzFRMjBfQ0lEUl9NQVRDSCAgICAgICAgIDB4MjEyMjBjMDANCj4+
+IEBAIC0xMzQsOSArMTM5LDQgQEAgYXQ5MV9zb2NfaW5pdChjb25zdCBzdHJ1Y3QgYXQ5MV9zb2Mg
+KnNvY3MpOw0KPj4gICNkZWZpbmUgU0FNVjcxUTE5X0NJRFJfTUFUQ0ggICAgICAgICAweDIxMmQw
+YTAwDQo+PiAgI2RlZmluZSBTQU1WNzFRMTlfRVhJRF9NQVRDSCAgICAgICAgIDB4MDAwMDAwMDIN
+Cj4+DQo+PiAtI2RlZmluZSBTQU1WNzBRMjBfQ0lEUl9NQVRDSCAgICAgICAgIDB4MjEzMjBjMDAN
+Cj4+IC0jZGVmaW5lIFNBTVY3MFEyMF9FWElEX01BVENIICAgICAgICAgMHgwMDAwMDAwMg0KPj4g
+LSNkZWZpbmUgU0FNVjcwUTE5X0NJRFJfTUFUQ0ggICAgICAgICAweDIxM2QwYTAwDQo+PiAtI2Rl
+ZmluZSBTQU1WNzBRMTlfRVhJRF9NQVRDSCAgICAgICAgIDB4MDAwMDAwMDINCj4+IC0NCj4+ICAj
+ZW5kaWYgLyogX19BVDkxX1NPQ19IICovDQoNCg==
