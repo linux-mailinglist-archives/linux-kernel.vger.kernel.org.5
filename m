@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E0B80D05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75080D064
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344779AbjLKQBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S1343982AbjLKQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344651AbjLKQAu (ORCPT
+        with ESMTP id S1344655AbjLKQB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:00:50 -0500
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7602682
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:59:16 -0800 (PST)
-Date:   Mon, 11 Dec 2023 10:58:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702310354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iTqyHUAM8Y8CTQWaVxNypmVJd4cL32JtHj8W07cIG1s=;
-        b=oZlTzftu1xM4Uy81K6BPPht40D6wXyU4rig7xmFxREm4jat2OGKs5vZf7ecwRdgGMbe+oH
-        2eAWXtolC9pbNA7LfWV6t2s6db/Ow437NkbOSNWN0d+IDCiuPRtJBmBU3uQp6mJ/iSkfPn
-        nBqIe+mIXVbyFDYiKbV0mZMkknokXF4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
-Message-ID: <20231211155836.4qb4pfcfaguhuzo7@moria.home.lan>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-5-af617c0d9d94@google.com>
- <jtCKrRw-FNajNJOXOuI1sweeDxI8T_uYnJ7DxMuqnJc9sgWjS0zouT_XIS-KmPferL7lU51BwD6nu73jZtzzB0T17pDeQP0-sFGRQxdjnaA=@proton.me>
- <ZXNHp5BoR2LJuv7D@Boquns-Mac-mini.home>
+        Mon, 11 Dec 2023 11:01:58 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B5C3A82
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:59:59 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d8ddcc433fso33609987b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702310398; x=1702915198; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GmodIMBO1Qk0Y+vje8OUGjZ5BvXR/87b/qmy8RMt3ic=;
+        b=N6ANyIU/Iqty41xTVjLfK56B/eG/p+DgA4Fejlp4xJ3B9XMIlpMjFcXaS1bJ885eJJ
+         eNmXAx1VMv5fmsQdpUSOzTZpggUpzFVxfbRnVM6EttZVQY7Ccl+JWmh/i68cwRpbWfEK
+         VTln0just8rOyquVPzNZv3FlU4KNSaL8uP7q4aEmJXf/U0weYeH+bPtuyeeRk2IEm5dh
+         IWh8sbYzBSU0RKPVvZAo6yvn3LrC4oX9JNcr8XRWEwrD8FLwazL3TdKzsUFjzvheYFPv
+         xeimrXxXgtfTfxYnjO1GZCjiMjcxkyToqevAAZPPWkVrXOrs3TzokhkDUZOQe/TpWdvU
+         B73Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702310398; x=1702915198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GmodIMBO1Qk0Y+vje8OUGjZ5BvXR/87b/qmy8RMt3ic=;
+        b=SP8YjEPA/dI1v9yYA8Qs/3CMPemna0yayhGQ9CEpp//9G4iVcfviEzDnYksrPWcw/0
+         EYVr+Qy3Y/ZQOWfLu7wgsAgIlsWF8IIkZvO2pnRWZlcyvwa1SRQz2FC2GK2TcvNIiQB6
+         pD4xrbS34tV3DVcPmx6JGtRO6VVX7ogn7WW8NhU9LAB2HbNI3paXzENGJr11pcOlfAqJ
+         uBfRkQ/TH8IH0IGC4BRI9SZvHAeChDpCMUT9GzJAH2sMM7XHl5FvMIANuTmJVMbDiRXv
+         xwtSWH0YHDJTwSTiHruRHoc4Jc+xBXYGZYShHSIHRwKZaPnPq2RJFYjyY5h9YD6QoIj3
+         F6TQ==
+X-Gm-Message-State: AOJu0YyL1jUNXe1JvdyK/ozZRhzuGFI5RGAAFMCSaYYzZ3YC/7pqfGcN
+        alB35W7YOsKRvcvVB4d4mpjsAcVuetljpJsLmWc=
+X-Google-Smtp-Source: AGHT+IFJDzAr52fuc8/1ih2Utb+8daDqbEMt410Vgn3UCnD00YsjCaesHmI6CL7seE5geyt+WYpNkQ==
+X-Received: by 2002:a81:7b42:0:b0:5d7:1940:8dd4 with SMTP id w63-20020a817b42000000b005d719408dd4mr1675599ywc.59.1702310397969;
+        Mon, 11 Dec 2023 07:59:57 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id s129-20020a0dd087000000b005d361dd6454sm3061847ywd.87.2023.12.11.07.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 07:59:57 -0800 (PST)
+Date:   Mon, 11 Dec 2023 15:59:55 +0000
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] MAINTAINERS: add myself as counter watch events
+ tool maintainer
+Message-ID: <ZXcx+94QW2pWDBxM@ubuntu-server-vm-macos>
+References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+ <20231206164726.418990-3-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PZCr3blPdUWJymRC"
 Content-Disposition: inline
-In-Reply-To: <ZXNHp5BoR2LJuv7D@Boquns-Mac-mini.home>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231206164726.418990-3-fabrice.gasnier@foss.st.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_XBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,20 +73,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 08:43:19AM -0800, Boqun Feng wrote:
-> On Fri, Dec 08, 2023 at 04:40:09PM +0000, Benno Lossin wrote:
-> > On 12/6/23 12:59, Alice Ryhl wrote:
-> > > +    /// Returns the given task's pid in the current pid namespace.
-> > > +    pub fn pid_in_current_ns(&self) -> Pid {
-> > > +        // SAFETY: Calling `task_active_pid_ns` with the current task is always safe.
-> > > +        let namespace = unsafe { bindings::task_active_pid_ns(bindings::get_current()) };
-> > 
-> > Why not create a safe wrapper for `bindings::get_current()`?
-> > This patch series has three occurrences of `get_current`, so I think it
-> > should be ok to add a wrapper.
-> > I would also prefer to move the call to `bindings::get_current()` out of
-> > the `unsafe` block.
-> 
-> FWIW, we have a current!() macro, we should use it here.
 
-Why does it need to be a macro?
+--PZCr3blPdUWJymRC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Dec 06, 2023 at 05:47:26PM +0100, Fabrice Gasnier wrote:
+> Add MAINTAINERS entry for the counter watch events tool. William has
+> been asking to add at least me as the point of contact for this utility.
+>=20
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+> Changes in v3: Add MAINTAINERS entry. This is a split of another patch
+> series[1].
+> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier=
+@foss.st.com/
+> ---
+>  MAINTAINERS | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index dd5de540ec0b..b8541ab7866a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5322,6 +5322,11 @@ F:	include/linux/counter.h
+>  F:	include/uapi/linux/counter.h
+>  F:	tools/counter/
+> =20
+> +COUNTER WATCH EVENTS TOOL
+> +M:	Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> +S:	Maintained
+> +F:	tools/counter/counter_watch_events.c
+
+Add an L line as well for the linux-iio@vger.kernel.org address so
+discussions get sent to our public mailing list.
+
+Thanks,
+
+William Breathitt Gray
+
+--PZCr3blPdUWJymRC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZXcx+wAKCRC1SFbKvhIj
+K3moAQClczPRsK4fQOXT/SzSTFuFwbEXiJr0jHN4XFmq+4XImAEAqAkugSYm34wr
+oGcCtS70zcIffl2iy1cXE4etZ+etxQ8=
+=QVg4
+-----END PGP SIGNATURE-----
+
+--PZCr3blPdUWJymRC--
