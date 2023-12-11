@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E52A80C538
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AAF80C547
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbjLKJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S234612AbjLKJw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234619AbjLKJuT (ORCPT
+        with ESMTP id S229608AbjLKJw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:50:19 -0500
-Received: from m1345.mail.163.com (m1345.mail.163.com [220.181.13.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A14E8E;
-        Mon, 11 Dec 2023 01:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=Le9S3rlswY7wsWpZpFPJ1/zOzeuR21eJrjPWtQDnFmw=; b=R
-        BWlbPA99UveIgqwBMNsovL7c9E9Qjxlt7FC/oDBdkpzkh2wknCpH9RQu8bIPbiq1
-        7AJILkrhd+a07N6G9vDSylwE+q56fk/K48Vx1K2LNDYPQT0xSi+sEPYADuvWymDJ
-        1L8QIDVu/8l+8vxJY1TT0q9PZS4pHQagY9tpI5UBI8=
-Received: from andyshrk$163.com ( [58.22.7.114] ) by ajax-webmail-wmsvr45
- (Coremail) ; Mon, 11 Dec 2023 17:49:58 +0800 (CST)
-X-Originating-IP: [58.22.7.114]
-Date:   Mon, 11 Dec 2023 17:49:58 +0800 (CST)
-From:   "Andy Yan" <andyshrk@163.com>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-Cc:     heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re:Re: [PATCH v2 5/5] arm64: dts: rockchip: Add support for rk3588
- based board Cool Pi CM5 EVB
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <2b58450a-1bde-424b-ab69-a3834914522c@linaro.org>
-References: <20231210080313.1667013-1-andyshrk@163.com>
- <20231210080629.1667589-1-andyshrk@163.com>
- <2b58450a-1bde-424b-ab69-a3834914522c@linaro.org>
-X-NTES-SC: AL_Qu2bAP6Tt0ki7iabbOkXn0kXhec2W8Czvvgg34JRP5k0hynnwAEvc0JFOEPk/d2MNhKrjSWXaid/wONHUYtdeq32EJv2by2Fsmbt0bCXqxA3
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Mon, 11 Dec 2023 04:52:56 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A208E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:53:01 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1ef36a04931so2989316fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:53:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702288381; x=1702893181; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RkurISIjMkn+2I3PnXKwVyMchslMNcfqaTJxR0Aia2Q=;
+        b=udy+8h0q8QeRXLg6Y8Lf1YaXitekzhJ6Fuy8N8wiD1ZtVKdAj1LtzAiourNjqmAqx6
+         tBJeWHglUuQFV0Gn2tT2iRpWaGKbRZF5awcJtJdZ3A46oU7GSFyvi0Gtl7c6q8T2uIPC
+         p+NVuX9kKXc3lifBaXq34GtoBLQztFF3CYGJhOaJqH3/EIRkfD2iGW/sxUy3goEy1/WY
+         EGAMzUAE+7tZR8wm6NraWDBqa3HcFqdrgJ2i9cBwANf/kFVxoyg6XA4x4MEtMKikxW90
+         yPFn4vH9pcnBooUehdBW3XPsT96jXeftx59DcSwUUVTo3eHXydZ6fQhvr8PsI/QV7s1h
+         /9VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702288381; x=1702893181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RkurISIjMkn+2I3PnXKwVyMchslMNcfqaTJxR0Aia2Q=;
+        b=SoGGi1jAmgazIt+4Gv8LUNguDYf/bQHWJYEEI0xNfM0G/rAOTtpz3A8JlRCx9At0KV
+         Wl+GBUqFPOFla4aVHbng+O06L77gN8bNAZ5lW7gCBRJtkAm2+34ArPU0wjMq0l1VUhql
+         8zkSl/2bTIvT+Oyltygs1o+5ZcvSkxNYcvBTw5mR8H/pWqila1tqWiKlHTAW4QVfyT1M
+         J81p0o+x1WdwsDKCWeigmNllCqJo5JV6875pn7F3sgs42va8xksxaOia5HpSTRKJpJC4
+         F7hmSZ+SJ+oVjRMDu5040Y/YHcyQeLtYrdegwkI7AAvshFkycBKNBHPzWneP+AQ/Hriw
+         12kg==
+X-Gm-Message-State: AOJu0YxldYBJj3O2lZ8FYNpO1LhIyV+nTzVSkwJp4EIfl9azd5Utuqp1
+        3N8Y2wGd9RObl+HGBG3rvqYdzPk0M/4uhFMSQiEmTQ==
+X-Google-Smtp-Source: AGHT+IHBzcyPtkbQDFQr+6LIt2oxnTSj1NsMCf/LD4g/EkcctNVYyjvt6+1REaXUAWomwb2Qz0o/56s8V04JUzAkCQ8=
+X-Received: by 2002:a05:6870:418c:b0:1fa:406c:219 with SMTP id
+ y12-20020a056870418c00b001fa406c0219mr4019357oac.28.1702288380928; Mon, 11
+ Dec 2023 01:53:00 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <14ab4c8c.4fa1.18c58488bf2.Coremail.andyshrk@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LcGowADH_mtG23ZleJAsAA--.19192W
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqApDXmVOA4wwdAACsd
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-6-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-6-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 11 Dec 2023 10:52:20 +0100
+Message-ID: <CAG_fn=UZs3-J-ay9yOovUZZr60vbQz+HC0-peRxuKPvq6N5Gwg@mail.gmail.com>
+Subject: Re: [PATCH v2 05/33] kmsan: Fix is_bad_asm_addr() on arches with
+ overlapping address spaces
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkhpIEtyenlzenRvZu+8mgoKQXQgMjAyMy0xMi0xMCAxOToxMjoxNSwgIktyenlzenRvZiBLb3ps
-b3dza2kiIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+IHdyb3RlOgo+T24gMTAvMTIv
-MjAyMyAwOTowNiwgQW5keSBZYW4gd3JvdGU6Cj4+IENvb2wgUGkgQ001IEVWQiBpcyBhIGJvYXJk
-IGJhc2VkIG9uIHJrMzU4OC4KPj4gCj4+IFNwZWNpZmljYXRpb246Cj4+IC0gUm9ja2NoaXAgUksz
-NTg4Cj4+IC0gTFBERFI0IDIvNC84LzE2IEdCCj4+IC0gVEYgc2NhcmQgc2xvdAo+PiAtIGVNTUMg
-OC8zMi82NC8xMjggR0IgbW9kdWxlCj4+IC0gR2lnYWJpdCBldGhlcm5ldCB4IDEgd2l0aCBQSFkg
-WVQ4NTMxCj4+IC0gR2lnYWJpdCBldGhlcm5ldCB4IDEgZHJpdmVkIGJ5IFBDSUUgd2l0aCBZVDY4
-MDFTCj4+IC0gSERNSSBUeXBlIEEgb3V0IHggMgo+PiAtIEhETUkgVHlwZSBEIGluIHggMQo+PiAt
-IFVTQiAyLjAgSG9zdCB4IDIKPj4gLSBVU0IgMy4wIE9URyB4IDEKPj4gLSBVU0IgMy4wIEhvc3Qg
-eCAxCj4+IC0gUENJRSBNLjIgRSBLZXkgZm9yIFdpcmVsZXNzIGNvbm5lY3Rpb24KPj4gLSBQQ0lF
-IE0uMiBNIEtleSBmb3IgTlZNRSBjb25uZWN0aW9uCj4+IC0gNDAgcGluIGhlYWRlcgo+Cj4KPj4g
-Kwo+PiArCWJhY2tsaWdodDogYmFja2xpZ2h0IHsKPj4gKwkJY29tcGF0aWJsZSA9ICJwd20tYmFj
-a2xpZ2h0IjsKPj4gKwkJcG93ZXItc3VwcGx5ID0gPCZ2Y2MxMnZfZGNpbj47Cj4+ICsJCXB3bXMg
-PSA8JnB3bTIgMCAyNTAwMCAwPjsKPj4gKwkJZW5hYmxlLWdwaW9zID0gPCZncGlvNCBSS19QQTMg
-R1BJT19BQ1RJVkVfSElHSD47Cj4+ICsJCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7Cj4+ICsJ
-CXBpbmN0cmwtMCA9IDwmYmxfZW4+Owo+PiArCQlzdGF0dXMgPSAib2theSI7Cj4KPlRoaXMgaXMg
-YSBmcmllbmRseSByZW1pbmRlciBkdXJpbmcgdGhlIHJldmlldyBwcm9jZXNzLgo+Cj5JdCBzZWVt
-cyBteSBvciBvdGhlciByZXZpZXdlcidzIHByZXZpb3VzIGNvbW1lbnRzIHdlcmUgbm90IGZ1bGx5
-Cj5hZGRyZXNzZWQuIE1heWJlIHRoZSBmZWVkYmFjayBnb3QgbG9zdCBiZXR3ZWVuIHRoZSBxdW90
-ZXMsIG1heWJlIHlvdQo+anVzdCBmb3Jnb3QgdG8gYXBwbHkgaXQuIFBsZWFzZSBnbyBiYWNrIHRv
-IHRoZSBwcmV2aW91cyBkaXNjdXNzaW9uIGFuZAo+ZWl0aGVyIGltcGxlbWVudCBhbGwgcmVxdWVz
-dGVkIGNoYW5nZXMgb3Iga2VlcCBkaXNjdXNzaW5nIHRoZW0uCgpZZXPvvIwgaXQgc2VlbXMgdGhh
-dCB0aGUgY29tbWVudHMgd2VyZSBsb3N077yMIEkgZGlkbid0IGdldCBhbnkgY29tbWVudHMgYWJv
-dXQgUEFUQ0ggNSBpbiBteSBWMS4KQW55d2F5LCBJIHdpbGwgY2hlY2sgdGhpcyBwYXRjaCBhZ2Fp
-biwgYW5kIGZpeCB0aGUgaXNzdWUgSSBmaW5kIGJ5IG15c2VsZi4KPgo+VGhhbmsgeW91Lgo+Cj5C
-ZXN0IHJlZ2FyZHMsCj5Lcnp5c3p0b2YKPgo+Cj5fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+bGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKPmxpbnV4
-LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwo+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
+On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
+m> wrote:
+>
+> Comparing pointers with TASK_SIZE does not make sense when kernel and
+> userspace overlap. Skip the comparison when this is the case.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
