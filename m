@@ -2,30 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A129280D4ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A38880D4F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345193AbjLKSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S1345208AbjLKSGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:06:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345117AbjLKSF3 (ORCPT
+        with ESMTP id S1345205AbjLKSGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:05:29 -0500
+        Mon, 11 Dec 2023 13:06:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C38793
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:05:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCC54C433C7;
-        Mon, 11 Dec 2023 18:05:34 +0000 (UTC)
-Date:   Mon, 11 Dec 2023 13:06:14 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D6F99
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:06:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E92C433C8;
+        Mon, 11 Dec 2023 18:06:39 +0000 (UTC)
+Date:   Mon, 11 Dec 2023 13:07:19 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     LKML <linux-kernel@vger.kernel.org>,
         Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v2] ring-buffer: Add offset of events in dump on mismatch
-Message-ID: <20231211130614.43ff4462@gandalf.local.home>
+Subject: Re: [PATCH v2] ring-buffer: Add offset of events in dump on
+ mismatch
+Message-ID: <20231211130719.771cb5ed@gandalf.local.home>
+In-Reply-To: <20231211130614.43ff4462@gandalf.local.home>
+References: <20231211130614.43ff4462@gandalf.local.home>
 X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -40,73 +43,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon, 11 Dec 2023 13:06:14 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On bugs that have the ring buffer timestamp get out of sync, the config
-CONFIG_RING_BUFFER_VALIDATE_TIME_DELTAS, that checks for it and if it is
-detected it causes a dump of the bad sub buffer.
+>  
+>  		case RINGBUF_TYPE_DATA:
+>  			ts += event->time_delta;
+> -			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
+> +			pr_warn(" 0x%x:  [%lld] delta:%d\n",
+> +				e, ts, event->time_delta);
+>  			break;
+>  
+>  		default:
+>  			break;
+>  		}
+>  	}
+> +	pr_warn("expected end:%ld last event actually ended at:%d\n", tail, e);
+>  }
+>  
 
-It shows each event and their timestamp as well as the delta in the event.
-But it's also good to see the offset into the subbuffer for that event to
-know if how close to the end it is.
+Bah, all offsets were in hex, the above was supposed to be in hex too. I
+sent out the wrong version.
 
-Also print where the last event actually ended compared to where it was
-expected to end.
+Will send a v3 with that update.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231207173108.484b912c@gandalf.local.home
-
-- Also show where the last event added and where it expected to end.
-
-
- kernel/trace/ring_buffer.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index bc70cb9bbdb7..c28513624ab3 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3429,29 +3429,34 @@ static void dump_buffer_page(struct buffer_data_page *bpage,
- 		case RINGBUF_TYPE_TIME_EXTEND:
- 			delta = rb_event_time_stamp(event);
- 			ts += delta;
--			pr_warn("  [%lld] delta:%lld TIME EXTEND\n", ts, delta);
-+			pr_warn(" 0x%x: [%lld] delta:%lld TIME EXTEND\n",
-+				e, ts, delta);
- 			break;
- 
- 		case RINGBUF_TYPE_TIME_STAMP:
- 			delta = rb_event_time_stamp(event);
- 			ts = rb_fix_abs_ts(delta, ts);
--			pr_warn("  [%lld] absolute:%lld TIME STAMP\n", ts, delta);
-+			pr_warn(" 0x%x:  [%lld] absolute:%lld TIME STAMP\n",
-+				e, ts, delta);
- 			break;
- 
- 		case RINGBUF_TYPE_PADDING:
- 			ts += event->time_delta;
--			pr_warn("  [%lld] delta:%d PADDING\n", ts, event->time_delta);
-+			pr_warn(" 0x%x:  [%lld] delta:%d PADDING\n",
-+				e, ts, event->time_delta);
- 			break;
- 
- 		case RINGBUF_TYPE_DATA:
- 			ts += event->time_delta;
--			pr_warn("  [%lld] delta:%d\n", ts, event->time_delta);
-+			pr_warn(" 0x%x:  [%lld] delta:%d\n",
-+				e, ts, event->time_delta);
- 			break;
- 
- 		default:
- 			break;
- 		}
- 	}
-+	pr_warn("expected end:%ld last event actually ended at:%d\n", tail, e);
- }
- 
- static DEFINE_PER_CPU(atomic_t, checking);
--- 
-2.42.0
-
+-- Steve
