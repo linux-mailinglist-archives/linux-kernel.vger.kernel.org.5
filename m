@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 177F780DAB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C1980DABF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbjLKTRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        id S1344597AbjLKTVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344349AbjLKTRT (ORCPT
+        with ESMTP id S1344349AbjLKTVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:17:19 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C92BD;
-        Mon, 11 Dec 2023 11:17:26 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-58d06bfadf8so3024304eaf.1;
-        Mon, 11 Dec 2023 11:17:26 -0800 (PST)
+        Mon, 11 Dec 2023 14:21:43 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B2FBD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:21:47 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4258e0a0dc1so28812331cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:21:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702322245; x=1702927045; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZEOt5yTQPrFy3hfdqmgP7F6Z7u2ECJR4HRXNBsOBgo=;
-        b=PHVfjKW7l6I9r0WsQoDS8vLcYXqLY0GuRt8pi+J6bPucFR2jP7Ep5CKoLiiGUylgp1
-         L3eedKsDK2RC8J+XWPdjwGJC4fGJtKqbE5Ar0uKfyX47bEU6hCSUjqqj/akeH8y4OFwX
-         GoRlyHL0IXma+YCMNmZMOz/qgPy4wUkHu3aBGw/Ew2fxEte4rcx6qO2b/OFLPahL/MRa
-         eesVPg97Vuqr151f/ahFDuojjM0sKp6ASMpiKd1fKjDNrVzYs9T4sZtVtQtwfabtd5yc
-         FS9MuuYzAJdDJh+Yq+Ugl+DrRt8vtu1qpi2AzY/ltpGnShoQ1M2iYmuMx2HEZteE8CjG
-         UwdA==
+        d=profusion.mobi; s=google; t=1702322507; x=1702927307; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+q3XVK2i6i8i/tjsGLnz+6VEGZ+iQwH0e6JsQ2ll1sM=;
+        b=Zc9cWKgnpgTasLeSYbIzVrJOFJCb9Mu1DiRtrfyj3VOI5ZC+dttClG2fLN2ZB5Mh9D
+         8Ae8yMeM5D5KPUZqY1WD1I9LIPFouqDeIk08AtIr/qILKuO+CzVTWqLvapPiMMRLPHdv
+         DlTpIUnVUjPOsEgV7xJThkZNad4nkBcraqNvSP0N5xpn8Jp8+H1pAa+gKo5/UfIn7QmV
+         FNbTpRxJWlbzrHPWzd2SZQJmWdXkBZFjYhPkkw0yCB5HuUJHXu0tI+ArPM+g0UOfmayB
+         F2g/+L5BXENNrzTolp+uQt3MtlEwCNGXnO0awJW0ym4IZOeItjrb5g7Jc+IuGgCIEL4q
+         W5mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702322245; x=1702927045;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZEOt5yTQPrFy3hfdqmgP7F6Z7u2ECJR4HRXNBsOBgo=;
-        b=JWHfa2w52IVPUFGOZUlgJ+ejmQzKK+Box7N6bNSsG0aCYME5xpvRm7fHnuaEkXqfxt
-         BUYtXRUgESujcKMhReDW3Y10x9cYlWNad1pG3i1zbiLSP/7Wav/L4VEfk8QRm0b8IQ5l
-         mRv7Aq499azOVxMgAEbAGaVRsiJAHiaXZS0OBKgA1lU1+6BNsrCU7jFYSd4sqJxkoQGf
-         BZ4vIHRrv0fo5xBWZju9SCcYhZudxxxXvnZqbC/qfzC9FWsUz07LvWA/sxtxpWOhkY/g
-         YpKZGj6gs9FEMWoWYx1PIKUHrgzXdrPllhT5gvg/FvOs7PO2xExJsE70Pmz6ev00yfmk
-         AUew==
-X-Gm-Message-State: AOJu0YyfC+T+Ju/1FgJLl3IJobT8lmLWUieMZAyQ0qcV3VzIt0M21N3K
-        kDuQBU3+Hpe3MA7wU0XRBV0=
-X-Google-Smtp-Source: AGHT+IGMffK+4fGed3ByrNcSTaR9TiAU6EQW9eZYutuCQshnUEbfwUwoDjlvUoERbVwB2u3pQ0vzNA==
-X-Received: by 2002:a05:6359:5e95:b0:170:17eb:9c53 with SMTP id px21-20020a0563595e9500b0017017eb9c53mr3911948rwb.52.1702322245416;
-        Mon, 11 Dec 2023 11:17:25 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id o63-20020a634142000000b005898df17ea4sm6712171pga.27.2023.12.11.11.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 11:17:24 -0800 (PST)
-Message-ID: <ef53615b-cd47-4635-b348-eede25802527@gmail.com>
-Date:   Mon, 11 Dec 2023 11:17:20 -0800
+        d=1e100.net; s=20230601; t=1702322507; x=1702927307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+q3XVK2i6i8i/tjsGLnz+6VEGZ+iQwH0e6JsQ2ll1sM=;
+        b=QnLVGQRVItFeDOtxJUzT72GKRMwCxznc8o0oqz3PjJR/czk9bw/1pGpHqvpF/0W7Jh
+         woL8Z1D090t7+9scDPsSVLgzKUgfDvBFH7qhUqld0afD9VbXjzMgWryzCPEwej9iC8b4
+         MsJg09u2sd21hxJ6qzZfoQhNkf3cWILliku7/f0MxP+yvLKZivSHuRjIbWxKBs9I0QrL
+         LcjbJvd8/afdGCu3CTkQgU6ENTXiqI9stTnFo3d+l8YYMmhfhGfKkwdBbbxjroXu3642
+         C6N+h07ZmXLXV62vdD3MKPPU2oF5LiTLjB79HPxLptYchVo+P2giY9r6KPCPhh7VNjl+
+         8Muw==
+X-Gm-Message-State: AOJu0YxMNd+E2Nma/zJbE6R69+XatO1zCsrZokip/0dJS1P8oRpGWtpS
+        GItw8OTZ+sx1Av8vHMctmMFdxqRgOiqeer/68HVWLg==
+X-Google-Smtp-Source: AGHT+IEcvhBhDFbIc8qohR/ciuBi295P5AkeYB2ByIm3POtNdTKXzF/65y2z3RoKGb0Mlsg5F20kQGLflz4nMRZdc0I=
+X-Received: by 2002:ac8:5fce:0:b0:423:77aa:163b with SMTP id
+ k14-20020ac85fce000000b0042377aa163bmr7007200qta.51.1702322506786; Mon, 11
+ Dec 2023 11:21:46 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 00/97] 5.10.204-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231211182019.802717483@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231211182019.802717483@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <5d48c1fa-d577-6f4c-5d3c-37884053e1a9@collabora.com>
+In-Reply-To: <5d48c1fa-d577-6f4c-5d3c-37884053e1a9@collabora.com>
+From:   Ricardo Dourado <ricardo.dourado@profusion.mobi>
+Date:   Mon, 11 Dec 2023 16:21:35 -0300
+Message-ID: <CAHrXaCvAf=bB-mHix4ai_J3vkzMmzm37QzdPgPzKx8gs2GLtQg@mail.gmail.com>
+Subject: Re: KernelCI is designing a new Web Dashboard: we want your feedback!
+To:     Gustavo Padovan <gustavo.padovan@collabora.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
+        "automated-testing@lists.yoctoproject.org" 
+        <automated-testing@lists.yoctoproject.org>,
+        "kernelci-webdashboard@groups.io" <kernelci-webdashboard@groups.io>,
+        =?UTF-8?Q?Jo=C3=A3o_Bertacchi?= <joaobertacchi@profusion.mobi>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_GREY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 10:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.204 release.
-> There are 97 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.204-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hi community members,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+We value your input! Please take a moment to share your thoughts on
+the KernelCI Web Dashboard through our quick survey:
+https://www.surveymonkey.com/r/PHG2BC5
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+This is going to take only 5 minutes.
 
+Your feedback is crucial in enhancing the KernelCI Web dashboard's
+user experience, saving time, and increasing productivity. We
+appreciate your time and contribution.
+
+Best,
+
+
+On Tue, Dec 5, 2023 at 8:38=E2=80=AFPM Gustavo Padovan
+<gustavo.padovan@collabora.com> wrote:
+>
+> Hello,
+>
+> TL;DR: KernelCI engaged with an UX speacialist vendor to design a new
+> web dashboard to show our test results data. If you want to give your
+> feedback, let us know. We still have a few spots for UX interviews!
+>
+>
+> As we shared previously, we are in the process of designing a new Web
+> Dashboard for KernelCI. As you may know, at same time, we are putting
+> together a new core infra to replace our legacy and limited system.
+>
+> Ultimately, we will have a CI pipeline that allows tests to be run not
+> only in KernelCI labs but outside of it too, but with test results
+> contributed back to the already available common database. Then on top
+> that, we want to have a powerful dashboard to help the community
+> evaluate the test results in the best manner possible.
+>
+> You can read our blog post for a quick summary of the UX redesign
+> project: https://kernelci.org/blog/posts/2023/ux-analysis/
+>
+> We have just started the first phase with the UX team interviewing
+> kernel maintainers and other users of KernelCI.
+>
+> If you are interested in providing your feedback just reply to this
+> email or reach out to me directly. We will try to accommodate everyone
+> that is interested.
+>
+> Regards,
+>
+> - Gus (as Project Manager for the KernelCI project)
+>
+> --
+> Gustavo Padovan
+> Kernel Lead
+>
+> Collabora Ltd.
+> Platinum Building, St John's Innovation Park
+> Cambridge CB4 0DS, UK
+> Registered in England & Wales, no. 5513718
+>
+
+--=20
+Ricardo Gej=C3=A3o
+
+Senior User Experience Designer for KernelCI Web Dashboard
