@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A0380C594
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8C180C591
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbjLKKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
+        id S234682AbjLKKEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:04:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234610AbjLKKEn (ORCPT
+        with ESMTP id S234742AbjLKKEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:04:43 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE3EBD;
-        Mon, 11 Dec 2023 02:04:50 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB8ZbvM016523;
-        Mon, 11 Dec 2023 10:04:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=bn9m6ZHBOEK4aU3igY1lQ1CdMDbIryMawx9SyqHE66I=;
- b=oHe1yCB31T5UnQ2TVjabMHAUg6WSCMqcuCWAZhInrwTjM9SJF2RfLDAfnKeDIIlMUTOa
- zTxg0oZShCe6aKkDHs842OkavKTqCd5I2yEGHZqVFe4PnoT5RwmzsYk+j92fgbOAGvsK
- whZm8MuhSXq93TQjrEVE3YfTeadB4xy3R9APX+PBb87xZrWa065IxdWQG+RO9fAKnfp/
- GA3EIjTI+4dyvy/eNtgLmCZv9OkZJPNDEzOCeFNhhL/rgZXq6pmgp3JtoGS/OApU/9Cu
- k81yoZcoU7mQY7TAglqqOtNASAGpND3NHUVLK/p/MhdNeBF8FTzOlV1FEMGHnjy1ZluJ Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uvtckdsn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:04:49 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BB8oWMg024676;
-        Mon, 11 Dec 2023 10:04:49 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uvtckdsmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:04:49 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB93HCP004139;
-        Mon, 11 Dec 2023 10:04:47 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sk06q5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:04:47 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBA4glQ11993628
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 10:04:43 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E067420063;
-        Mon, 11 Dec 2023 10:04:42 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4F3E20067;
-        Mon, 11 Dec 2023 10:04:42 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Dec 2023 10:04:42 +0000 (GMT)
-Date:   Mon, 11 Dec 2023 11:04:40 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, agordeev@linux.ibm.com,
-        gor@linux.ibm.com
-Subject: Re: [GIT PULL v1 0/2] KVM: s390: two small but important fixes
-Message-ID: <20231211110440.3e4e8346@p-imbrenda>
-In-Reply-To: <CABgObfYVfNsfjy36iBeq7qiV_m3smRKCyOSWQRV2E0OMH1bqAA@mail.gmail.com>
-References: <20231115125111.28217-1-imbrenda@linux.ibm.com>
-        <CABgObfYt3VH-zPwT1whA0N7uE2ioq9GznTt-QhnES8B5tX76jQ@mail.gmail.com>
-        <CABgObfYVfNsfjy36iBeq7qiV_m3smRKCyOSWQRV2E0OMH1bqAA@mail.gmail.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Dec 2023 05:04:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4948E8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702289087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zTI8ORsYY/KaDfknA8aoZfsjhbA8xLRWljuvGCGEoQY=;
+        b=Sb2yF3EcXLrIpwa+SJcvjhl54Jsc2ot6jpAmBnCif8fP5bVVHOlOviObqxtkK5CUlOI5U8
+        8S7k2QeutUNchRV3X8b88G0F2nIQsfV6tTzjCvr759zI6ql5STzHlyFF7tTrEHvYKHsgE3
+        ysXfZymgxHSAEHK50fXK50ypETyiNxw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-_GqimkH9NnyKeOeaacGjjQ-1; Mon, 11 Dec 2023 05:04:46 -0500
+X-MC-Unique: _GqimkH9NnyKeOeaacGjjQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1f99db3dd0so62257466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:04:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702289085; x=1702893885;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zTI8ORsYY/KaDfknA8aoZfsjhbA8xLRWljuvGCGEoQY=;
+        b=RIGX14terkFWIY8Cyic8dJPsmkMVjL3/GMz4SoSv95Rf6JwIuTb6Ed6sym3fGW5xZn
+         hL76IQBTaRVhvIBaKMjd+mTSvCvZZWX4nFHxfD85fXML1SN4dMwkyF3OEZSHjqFz9RPQ
+         /zaVSnjZhXTCLroix+dwcOrE0v9UcpCSLNKDa2yLu2HTnhf6sMkG966uwbc7MrQMcRuY
+         ivTK9+q4OkLgdFV+HIC2IFGROt6fLQ/13XnuSsJvIjUlmtdW/RXB/Vx4v5HWwakDyyGI
+         ZYn7srGKlho2dpLUbCJNvjuZLDzaSHoyO2fimN+aCW3uUaIAVzKexPRdomRAv0WiD+cA
+         POHA==
+X-Gm-Message-State: AOJu0YxBKlTDNbHzKtZTj3/8oaeUsu3+SlghK9L5to8RHl7i2JNRlDdP
+        ZmK4x6fUcnN3cZBFK6zaqMHqQFXK6NikLsGrhfvP8QQ+fnUTJk9PS9ktTyXBCiVjuLetR55PcJF
+        IuDxm3DNSBXIvCA9urEjUpG2k
+X-Received: by 2002:a17:906:22d8:b0:a1e:7be8:9564 with SMTP id q24-20020a17090622d800b00a1e7be89564mr1585300eja.57.1702289085238;
+        Mon, 11 Dec 2023 02:04:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFQxXHVdGAsaXewCyy8e6XmNCwLR86ivVqJcefy3RPgEgbK280kkHNwsj+v2/GrQb5QUMERWQ==
+X-Received: by 2002:a17:906:22d8:b0:a1e:7be8:9564 with SMTP id q24-20020a17090622d800b00a1e7be89564mr1585295eja.57.1702289084910;
+        Mon, 11 Dec 2023 02:04:44 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id ss20-20020a170907c01400b00a18850d2240sm4661237ejc.143.2023.12.11.02.04.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 02:04:44 -0800 (PST)
+Message-ID: <e779d481-0953-4ac6-86a9-711d88e9ffcd@redhat.com>
+Date:   Mon, 11 Dec 2023 11:04:44 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] clk: x86: lpss-atom: Drop unneeded 'extern' in the
+ header
+Content-Language: en-US, nl
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+References: <20231208165238.3309058-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231208165238.3309058-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DrLjTXKdKomyw_z-kYeAKZKBqG2kkePm
-X-Proofpoint-GUID: Q2MkdVnMeB_A4Rcp0-hj5Ek_Eo7tQoFR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_04,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- clxscore=1015 suspectscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
- phishscore=0 priorityscore=1501 mlxlogscore=794 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312110082
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 22:02:43 +0100
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+Hi,
 
-> On Fri, Dec 8, 2023 at 7:13=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com=
-> wrote:
-> > >       KVM: s390/mm: Properly reset no-dat =20
->=20
-> A small question on this one, would it make sense to clear _all_
-> gmap-related bits, including _PGSTE_GPS_ZERO?
+On 12/8/23 17:52, Andy Shevchenko wrote:
+> 'extern' for the functions is not needed, drop it.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-That's a good question, I'll have to think about it.
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-In general, though, not resetting it will not cause issues in the guest.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  include/linux/platform_data/x86/clk-lpss.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/platform_data/x86/clk-lpss.h b/include/linux/platform_data/x86/clk-lpss.h
+> index 41df326583f9..7f132029316a 100644
+> --- a/include/linux/platform_data/x86/clk-lpss.h
+> +++ b/include/linux/platform_data/x86/clk-lpss.h
+> @@ -15,6 +15,6 @@ struct lpss_clk_data {
+>  	struct clk *clk;
+>  };
+>  
+> -extern int lpss_atom_clk_init(void);
+> +int lpss_atom_clk_init(void);
+>  
+>  #endif /* __CLK_LPSS_H */
+
