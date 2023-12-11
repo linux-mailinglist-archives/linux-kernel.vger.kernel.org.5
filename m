@@ -2,135 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8D880C48F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D2680C49D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbjLKJ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:29:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S229908AbjLKJbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjLKJ3a (ORCPT
+        with ESMTP id S229521AbjLKJbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:29:30 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BC4B4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:29:36 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so5913190a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:29:36 -0800 (PST)
+        Mon, 11 Dec 2023 04:31:19 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDECB3;
+        Mon, 11 Dec 2023 01:31:24 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9f4bb2e5eso57376971fa.1;
+        Mon, 11 Dec 2023 01:31:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702286975; x=1702891775; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=79EgeYCkyCKvn/OBzhQRhk5MkzP9XFW19UfY2+j2XKY=;
-        b=CDQTswnT+1dx+XouOBuNGkim+zWN7+1sU879Y4xiJYkPYMRNxklx0Hj/Dri10xt1bW
-         vJflQRAdOOw3qPTydkOYK9oA13c8PSj5GYGEw7Hb2xHYxX0U5dTRK6MaR5jSSycZcFXn
-         ID4jVt97dX1vxiYRFYQBfXe+fLHTPZ8SAInRa8XaiZzEH2YvLa1tkX5U2yIUb1UxUEwB
-         +myx3DdviFxn0C36/w1AKMGPB3+CctSBN3EjqV98w0BdYMxw7JKVoNPOAacvWPzEOOty
-         uytTXPzRZ1/lJinLy4esU4Z50y2TWF7ZAA3ew4NDHbKw+kI9qM7EXocVukmZHZY0nNhv
-         Ot0Q==
+        d=gmail.com; s=20230601; t=1702287083; x=1702891883; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bJe20/B6V+1jA/nSiEGTI9TatZJ/dlgC/IshXSznt1k=;
+        b=DQkLaLJkD7Ex8oJ6wG0A2SxJgSrP3q0wpHNRu56Evzs2Y09MLLq9R6njYRbZMhPYu8
+         75WOEaZ18/CO2Dkkf0NjW/gMYrB+XN0vCnXwlYXb/Y90s5+SWR4agqPy54HKJ23d8yia
+         2sKiEZCYcpjwKea6m2ivPmf0dqcX1MtMITStzPJCJNyhOihXxR28ZCaKYwd7TXqu5sof
+         dRHkeZ4hfUw0HgEgzmCx7MI4Pl8fXR4RutrhkPeI8JvIP/FzZ0KLans5NBEfGitFAwZX
+         kVWAFj4TS8oYTaQuFS5S8lUKM+pittOV9cT2D/rEzlCby2m0lTBT4KAXl8/l4AQM7Pqy
+         ZcMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286975; x=1702891775;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=79EgeYCkyCKvn/OBzhQRhk5MkzP9XFW19UfY2+j2XKY=;
-        b=TGWlOu0OqpQ8y9Uc7JsiFQxIuvHiOOqOxwS86+3TPGBjDW8HiwharHBCiy+s+aWl7g
-         p7R1JijK033MjzcxnnemR4WvlGJ4PKKDmDRCkgIhRkaKr2fedgi9PY+myT2h2J49qwW8
-         JkdmmfkwYLBN04eb7I4SCrrkSWDkh+XyeaKWQsrfNLrE56/Zc4RxjC5vLXTC5IX5N6Av
-         x1xsNs23aqPo2fm5U14FPymSqS03B/mJC7ERruJqBHlnS8RWwewIWhlru82EO8391WSK
-         IoTusKvjVc4fwItPNG9euzAZ3gzfON+m8Nr+4geNbXdZpVD/WrxtLT2WbSu/zCyfCSFV
-         yUHQ==
-X-Gm-Message-State: AOJu0YxRvSSCRS+QrSJjqw14EdQ9QrFrJB4hVhuoVCEkg6Tl13pYvA5I
-        z+ZbXpc/js/GYN2t4/VkXiJhcr/PI5YbFwLgxs4=
-X-Google-Smtp-Source: AGHT+IGzOR48/XHbDWNVCHEXOISHKkxYEPM0zBQxIaHy1hcDhfzPMLLA21971qfvNrlp38ESOSdW2w==
-X-Received: by 2002:a05:6402:5c2:b0:550:e341:8eaf with SMTP id n2-20020a05640205c200b00550e3418eafmr1559565edx.1.1702286974786;
-        Mon, 11 Dec 2023 01:29:34 -0800 (PST)
-Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
-        by smtp.gmail.com with ESMTPSA id cm27-20020a0564020c9b00b0054db088c437sm3445802edb.27.2023.12.11.01.29.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 01:29:34 -0800 (PST)
-Message-ID: <0b5e5f46-0af8-4367-a39e-08b8c3f03327@linaro.org>
-Date:   Mon, 11 Dec 2023 10:29:31 +0100
+        d=1e100.net; s=20230601; t=1702287083; x=1702891883;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bJe20/B6V+1jA/nSiEGTI9TatZJ/dlgC/IshXSznt1k=;
+        b=VpLAM/MUCeSoI66NUiqfyhL2wDzSEg2uh+ozXrXGN8/jOvUdFYJ/DoRjv4I7KoZadz
+         oOiIUtaFQ1j6bq8os8AKHXtKoHGDZkQfsMXRP6IBhzaQeD60Qn5jKqZ7C/kZ1tZeGsQP
+         GSLvnnl58ax2v013kChnz/HCsGdywO3wNJuWZMVX9Cpjl3+EY0riE1rXtL32cb3Rtpfs
+         je+JUZd/O+/JSVS9R2TY4RpatRBzYVuBVIHXnvANxs8FpaFvqo2R595Ym9wxZ29yhOVW
+         +2B3rc8OvjTsN2nyTaKJ5fTszD19fl2zW2UvTCQPzXaw/WBf1nNltOhWnyNTL7mXso9+
+         kSTQ==
+X-Gm-Message-State: AOJu0Yy+0XKQVtvqGOHNPna3owcKgHMfSoNRwasve/uHYPb3g9/NGudb
+        uBRx9uRPQUjpJEZRSseieMTssbp+JiCN0/d5gYU=
+X-Google-Smtp-Source: AGHT+IGs39bCZR/J9n/341WQqL87l74iYPcz4l7EGywr8Hox9WXsoI1JGYf+LpYEvAbBya6DsiE1yELvbtVHng+G+uQ=
+X-Received: by 2002:a05:651c:19a4:b0:2cc:1db0:4a6f with SMTP id
+ bx36-20020a05651c19a400b002cc1db04a6fmr839578ljb.32.1702287082654; Mon, 11
+ Dec 2023 01:31:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: Add pm8010 regulators for sm8550
- boards
-Content-Language: en-US
-To:     quic_fenglinw@quicinc.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@quicinc.com
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_collinsd@quicinc.com,
-        quic_subbaram@quicinc.com, quic_jprakash@quicinc.com
-References: <20231211-pm8010-regulator-v1-0-571e05fb4ecc@quicinc.com>
- <20231211-pm8010-regulator-v1-4-571e05fb4ecc@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231211-pm8010-regulator-v1-4-571e05fb4ecc@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com> <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+In-Reply-To: <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Mon, 11 Dec 2023 17:31:05 +0800
+Message-ID: <CAMgjq7AjO=Z4Wa3DYaOJdWA+8aNQ1JHZQYKYOm5-SvvgPPOGKg@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz, Minchan Kim <minchan@google.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.2023 04:17, Fenglin Wu via B4 Relay wrote:
-> From: Fenglin Wu <quic_fenglinw@quicinc.com>
-> 
-> Add PM8010 regulator device nodes for sm8550-mtp and sm8550-qrd boards.
-> 
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-> ---
-Please create separate commits with board name prefixes:
+Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B412=E6=9C=889=E6=97=A5=E5=
+=91=A8=E5=85=AD 07:56=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi Nhat,
+>
+> On Thu, Dec 7, 2023 at 5:03=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+> >
+> > On Thu, Dec 7, 2023 at 4:19=E2=80=AFPM Chris Li <chrisl@kernel.org> wro=
+te:
+> > >
+> > > Hi Nhat,
+> > >
+> > >
+> > > On Thu, Dec 7, 2023 at 11:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com>=
+ wrote:
+> > > >
+> > > > During our experiment with zswap, we sometimes observe swap IOs due=
+ to
+> > > > occasional zswap store failures and writebacks-to-swap. These swapp=
+ing
+> > > > IOs prevent many users who cannot tolerate swapping from adopting z=
+swap
+> > > > to save memory and improve performance where possible.
+> > > >
+> > > > This patch adds the option to disable this behavior entirely: do no=
+t
+> > > > writeback to backing swapping device when a zswap store attempt fai=
+l,
+> > > > and do not write pages in the zswap pool back to the backing swap
+> > > > device (both when the pool is full, and when the new zswap shrinker=
+ is
+> > > > called).
+> > > >
+> > > > This new behavior can be opted-in/out on a per-cgroup basis via a n=
+ew
+> > > > cgroup file. By default, writebacks to swap device is enabled, whic=
+h is
+> > > > the previous behavior. Initially, writeback is enabled for the root
+> > > > cgroup, and a newly created cgroup will inherit the current setting=
+ of
+> > > > its parent.
+> > > >
+> > > > Note that this is subtly different from setting memory.swap.max to =
+0, as
+> > > > it still allows for pages to be stored in the zswap pool (which its=
+elf
+> > > > consumes swap space in its current form).
+> > > >
+> > > > This patch should be applied on top of the zswap shrinker series:
+> > > >
+> > > > https://lore.kernel.org/linux-mm/20231130194023.4102148-1-nphamcs@g=
+mail.com/
+> > > >
+> > > > as it also disables the zswap shrinker, a major source of zswap
+> > > > writebacks.
+> > >
+> > > I am wondering about the status of "memory.swap.tiers" proof of conce=
+pt patch?
+> > > Are we still on board to have this two patch merge together somehow s=
+o
+> > > we can have
+> > > "memory.swap.tiers" =3D=3D "all" and "memory.swap.tiers" =3D=3D "zswa=
+p" cover the
+> > > memory.zswap.writeback =3D=3D 1 and memory.zswap.writeback =3D=3D 0 c=
+ase?
+> > >
+> > > Thanks
+> > >
+> > > Chris
+> > >
+> >
+> > Hi Chris,
+> >
+> > I briefly summarized my recent discussion with Johannes here:
+> >
+> > https://lore.kernel.org/all/CAKEwX=3DNwGGRAtXoNPfq63YnNLBCF0ZDOdLVRsvzU=
+mYhK4jxzHA@mail.gmail.com/
+>
+> Sorry I am traveling in a different time zone so not able to get to
+> that email sooner. That email is only sent out less than one day
+> before the V6 patch right?
+>
+> >
+> > TL;DR is we acknowledge the potential usefulness of swap.tiers
+> > interface, but the use case is not quite there yet, so it does not
+>
+> I disagree about no use case. No use case for Meta !=3D no usage case
+> for the rest of the linux kernel community. That mindset really needs
+> to shift to do Linux kernel development. Respect other's usage cases.
+> It is not just Meta's Linux kernel. It is everybody's Linux kernel.
+>
+> I can give you three usage cases right now:
+> 1) Google producting kernel uses SSD only swap, it is currently on
+> pilot. This is not expressible by the memory.zswap.writeback. You can
+> set the memory.zswap.max =3D 0 and memory.zswap.writeback =3D 1, then SSD
+> backed swapfile. But the whole thing feels very clunky, especially
+> what you really want is SSD only swap, you need to do all this zswap
+> config dance. Google has an internal memory.swapfile feature
+> implemented per cgroup swap file type by "zswap only", "real swap file
+> only", "both", "none" (the exact keyword might be different). running
+> in the production for almost 10 years. The need for more than zswap
+> type of per cgroup control is really there.
+>
+> 2) As indicated by this discussion, Tencent has a usage case for SSD
+> and hard disk swap as overflow.
+> https://lore.kernel.org/linux-mm/20231119194740.94101-9-ryncsn@gmail.com/
+> +Kairui
 
-arm64: dts: qcom: sm8550-mtp:
-arm64: dts: qcom: sm8550-qrd:
+Yes, we are not using zswap. We are using ZRAM for swap since we have
+many different varieties of workload instances, with a very flexible
+storage setup. Some of them don't have the ability to set up a
+swapfile. So we built a pack of kernel infrastructures based on ZRAM,
+which so far worked pretty well.
 
-Otherwise lgtm
+The concern from some teams is that ZRAM (or zswap) can't always free
+up memory so they may lead to higher risk of OOM compared to a
+physical swap device, and they do have suitable devices for doing swap
+on some of their machines. So a secondary swap support is very helpful
+in case of memory usage peak.
 
-Konrad
+Besides this, another requirement is that different containers may
+have different priority, some containers can tolerate high swap
+overhead while some cannot, so swap tiering is useful for us in many
+ways.
+
+And thanks to cloud infrastructure the disk setup could change from
+time to time depending on workload requirements, so our requirement is
+to support ZRAM (always) + SSD (optional) + HDD (also optional) as
+swap backends, while not making things too complex to maintain.
+
+Currently we have implemented a cgroup based ZRAM compression
+algorithm control, per-cgroup ZRAM accounting and limit, and a
+experimental kernel worker to migrate cold swap entry from high
+priority device to low priority device at very small scale (lack of
+basic mechanics to do this at large scale, however due to the low IOPS
+of slow device and cold pages are rarely accessed, this wasn't too
+much of a problem so far but kind of ugly). The rest of swapping (eg.
+secondary swap when ZRAM if full) will depend on the kernel's native
+ability.
+
+So far it works, not in the best form, need more patches to make it
+work better (eg. the swapin/readahead patch I sent previously). Some
+of our design may also need to change in the long term, and we also
+want a well built interface and kernel mechanics to manage multi tier
+swaps, I'm very willing to talk and collaborate on this.
