@@ -2,150 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076C080C573
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052F180C579
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234745AbjLKKBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        id S234715AbjLKKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:02:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjLKKBM (ORCPT
+        with ESMTP id S232148AbjLKKCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:01:12 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CECCB;
-        Mon, 11 Dec 2023 02:01:16 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BBA0xGK071011;
-        Mon, 11 Dec 2023 04:00:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702288859;
-        bh=2paImWByJrTjROw8WnVv5FUglPWngDhuD4VbnvfawPM=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=B0YIoYlxNaGFRmSHJRHWKi7aKMPn/PNqAExXc/pG/Nk0UbP7+EZZzVBmRvqYU2WVS
-         ye2rxb24vGGRjBepVSPA/FCElOT95q258sYgoaJ0lyCgiPE5wEEjuii6c8seGzG3sm
-         m/JeElUwD/DBIwhhYcUyaMzH6gl2MmubDWz0AmrY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BBA0xrC034776
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Dec 2023 04:00:59 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Dec 2023 04:00:59 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Dec 2023 04:00:59 -0600
-Received: from [10.24.69.31] (danish-tpc.dhcp.ti.com [10.24.69.31])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BBA0s88080210;
-        Mon, 11 Dec 2023 04:00:55 -0600
-Message-ID: <9f63b81d-1826-411f-b310-e726e5eb5cb3@ti.com>
-Date:   Mon, 11 Dec 2023 15:30:54 +0530
+        Mon, 11 Dec 2023 05:02:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C87B8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:02:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74909C433D9;
+        Mon, 11 Dec 2023 10:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702288958;
+        bh=eAwxe+wbZjnFN8IQhgxn8NYgDvrFF2z1Bra2csTbQ4U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fICvlCcOS+b9q410MSV2ASCjV4ED9iDh8/Ge0iqss0UlInytbPmbBLFNAdqLMNuN5
+         bDyVbcKA9p+saXmMvnMHs+/qFE5o73lqjWk7VxUvZdsssu2Kpn4fNW5U2mqFEQ1JZ1
+         XMOlXMGHQYmEwz/YM9q3iq4TuGw1arewsUTGLd/+6JiHK4UlDh8ALaZJtcaMkqk6GG
+         bNZke65K6R6pSVIdp8LgnbKk5sEqHKq8566gGupGXBF00HPa5NylBPCZ6QFXrCylMN
+         OIrdm7S+5MLRdabXlaPO2VBVNYemIOD80E2IIoUDUHChBVxkFO9OywuX3f1PgDRLpX
+         LhB5aHnrfSItg==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50c05ea5805so4958400e87.0;
+        Mon, 11 Dec 2023 02:02:38 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy15zmwBTPRu4qE3zo2Omyjrh7JieNangVGChSSGPUkGx1ozvVs
+        OG7o+NFWPciJxXtvpjGBPI4nlRkr1oMhPr30Rfk=
+X-Google-Smtp-Source: AGHT+IGnQ16kG944bQzQjF2krGAZzVThyv9bnsdPYoEJI/S2YT8/5eQ3Iub1+9EezCji/mwREiZhDJF7N123bhkP+7c=
+X-Received: by 2002:a19:8c4d:0:b0:50b:f803:460b with SMTP id
+ i13-20020a198c4d000000b0050bf803460bmr1462938lfj.11.1702288956536; Mon, 11
+ Dec 2023 02:02:36 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-am642-evm: add overlay for icssg1
- 2nd port
-Content-Language: en-US
-To:     "Anwar, Md Danish" <a0501179@ti.com>, Andrew Lunn <andrew@lunn.ch>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>
-References: <20231207081917.340167-1-danishanwar@ti.com>
- <20231207081917.340167-4-danishanwar@ti.com>
- <fe6499b3-fbda-4e2d-9b5e-92cc60d3a79c@lunn.ch>
- <afec7eaa-9ef5-447f-9619-9721937fe805@ti.com>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <afec7eaa-9ef5-447f-9619-9721937fe805@ti.com>
+References: <20231013074540.8980-1-masahisa.kojima@linaro.org> <20231013074540.8980-5-masahisa.kojima@linaro.org>
+In-Reply-To: <20231013074540.8980-5-masahisa.kojima@linaro.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 11 Dec 2023 11:02:25 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEFPwqd=Ksc_HuoNSwRUyCNka4E7cWZgkgMq7XHcu2VFA@mail.gmail.com>
+Message-ID: <CAMj1kXEFPwqd=Ksc_HuoNSwRUyCNka4E7cWZgkgMq7XHcu2VFA@mail.gmail.com>
+Subject: Re: [PATCH v9 4/6] efivarfs: automatically update super block flag
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Fri, 13 Oct 2023 at 09:47, Masahisa Kojima
+<masahisa.kojima@linaro.org> wrote:
+>
+> efivar operation is updated when the tee_stmm_efi module is probed.
+> tee_stmm_efi module supports SetVariable runtime service,
+> but user needs to manually remount the efivarfs as RW to enable
+> the write access if the previous efivar operation does not support
+> SerVariable and efivarfs is mounted as read-only.
+>
+> This commit notifies the update of efivar operation to
+> efivarfs subsystem, then drops SB_RDONLY flag if the efivar
+> operation supports SetVariable.
+>
+> Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
 
-On 08/12/23 12:58 pm, Anwar, Md Danish wrote:
-> On 12/8/2023 3:10 AM, Andrew Lunn wrote:
->>> +	mdio-mux-2 {
->>> +		compatible = "mdio-mux-multiplexer";
->>> +		mux-controls = <&mdio_mux>;
->>> +		mdio-parent-bus = <&icssg1_mdio>;
->>> +		#address-cells = <1>;
->>> +		#size-cells = <0>;
->>> +
->>> +		mdio@0 {
->>> +			reg = <0x0>;
->>> +			#address-cells = <1>;
->>> +			#size-cells = <0>;
->>> +
->>> +			icssg1_phy2: ethernet-phy@3 {
->>> +				reg = <3>;
->>> +				tx-internal-delay-ps = <250>;
->>> +				rx-internal-delay-ps = <2000>;
->>> +			};
->>> +		};
->>
->> That looks odd. A mux generally has > 1 mdio bus. Otherwise its not
->> really a mux.
->>
-> 
-> We are disabling node `mdio-mux-1` which has the `cpsw3g_mdio` bus and
-> then adding a new node `mdio-mux-2` which has the `icssg1_mdio` bus. The
-> mux can actually have two different mdio buses. The patch actually
-> disables the mux1 node and creates a new node for icssg1_mdio bus so
-> that cpsw3g mdio bus is disabled properly.
-> 
-> We can modify the existing `mdio-mux-1` as well (added the code below)
-> instead of disabling mux1 and creating mux2 node.
-> 
-> &mdio_mux_1 {
-> 	mdio-parent-bus = <&icssg1_mdio>;
-> 	#address-cells = <1>;
-> 	#size-cells = <0>;
-> 
-> 	mdio@0 {
-> 		reg = <0x0>;
-> 		#address-cells = <1>;
-> 		#size-cells = <0>;
-> 
-> 		icssg1_phy2: ethernet-phy@3 {
-> 			reg = <3>;
-> 			tx-internal-delay-ps = <250>;
-> 			rx-internal-delay-ps = <2000>;
-> 		};
-> 	};
-> };
-> 
-> Let me know what do you think. Is the approach in the patch correct or
-> should I modify existing mux node only?
-> 
+Unfortunately, I have identified a problem with this approach.
 
-Can you please let me know which approach should I follow here?
+There are cases where there are multiple instances of struct
+superblock are associated with the efivarfs file system [0].
 
->> And this mux hardware exists all the time right? So it should be in
->> the .dtsi file.
->>
-> 
-> Agreed. But the mdio-mux-1 node was added in k3-am642-evm.dts by the
-> commit 985204ecae1c37d55372874ff9146231d28fccc6. I did the same with
-> mdio-mux-2 node.
-> 
->> 	Andrew
-> 
+So I reworked the patch a little - please take the time to double
+check that I did not make any mistakes here.
 
--- 
-Thanks and Regards,
-Danish
+[0] https://lore.kernel.org/linux-efi/20231208163925.3225018-8-ardb@google.com/T/#u
+
+
+> ---
+>  drivers/firmware/efi/efi.c  |  6 ++++++
+>  drivers/firmware/efi/vars.c |  8 ++++++++
+>  fs/efivarfs/super.c         | 33 +++++++++++++++++++++++++++++++++
+>  include/linux/efi.h         |  8 ++++++++
+>  4 files changed, 55 insertions(+)
+>
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 53ae25bbb6ac..d2eec5ed8e5e 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/ucs2_string.h>
+>  #include <linux/memblock.h>
+>  #include <linux/security.h>
+> +#include <linux/notifier.h>
+>
+>  #include <asm/early_ioremap.h>
+>
+> @@ -187,6 +188,9 @@ static const struct attribute_group efi_subsys_attr_group = {
+>         .is_visible = efi_attr_is_visible,
+>  };
+>
+> +struct blocking_notifier_head efivar_ops_nh;
+> +EXPORT_SYMBOL_GPL(efivar_ops_nh);
+> +
+>  static struct efivars generic_efivars;
+>  static struct efivar_operations generic_ops;
+>
+> @@ -427,6 +431,8 @@ static int __init efisubsys_init(void)
+>                 platform_device_register_simple("efivars", 0, NULL, 0);
+>         }
+>
+> +       BLOCKING_INIT_NOTIFIER_HEAD(&efivar_ops_nh);
+> +
+>         error = sysfs_create_group(efi_kobj, &efi_subsys_attr_group);
+>         if (error) {
+>                 pr_err("efi: Sysfs attribute export failed with error %d.\n",
+> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+> index e9dc7116daf1..f654e6f6af87 100644
+> --- a/drivers/firmware/efi/vars.c
+> +++ b/drivers/firmware/efi/vars.c
+> @@ -63,6 +63,7 @@ int efivars_register(struct efivars *efivars,
+>                      const struct efivar_operations *ops)
+>  {
+>         int rv;
+> +       int event;
+>
+>         if (down_interruptible(&efivars_lock))
+>                 return -EINTR;
+> @@ -77,6 +78,13 @@ int efivars_register(struct efivars *efivars,
+>
+>         __efivars = efivars;
+>
+> +       if (efivar_supports_writes())
+> +               event = EFIVAR_OPS_RDWR;
+> +       else
+> +               event = EFIVAR_OPS_RDONLY;
+> +
+> +       blocking_notifier_call_chain(&efivar_ops_nh, event, NULL);
+> +
+>         pr_info("Registered efivars operations\n");
+>         rv = 0;
+>  out:
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index e028fafa04f3..0f6e4d223aea 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -14,11 +14,36 @@
+>  #include <linux/slab.h>
+>  #include <linux/magic.h>
+>  #include <linux/statfs.h>
+> +#include <linux/notifier.h>
+>
+>  #include "internal.h"
+>
+>  LIST_HEAD(efivarfs_list);
+>
+> +struct efivarfs_info {
+> +       struct super_block *sb;
+> +       struct notifier_block nb;
+> +};
+> +
+> +static struct efivarfs_info info;
+> +
+> +static int efivarfs_ops_notifier(struct notifier_block *nb, unsigned long event,
+> +                                void *data)
+> +{
+> +       switch (event) {
+> +       case EFIVAR_OPS_RDONLY:
+> +               info.sb->s_flags |= SB_RDONLY;
+> +               break;
+> +       case EFIVAR_OPS_RDWR:
+> +               info.sb->s_flags &= ~SB_RDONLY;
+> +               break;
+> +       default:
+> +               return NOTIFY_DONE;
+> +       }
+> +
+> +       return NOTIFY_OK;
+> +}
+> +
+>  static void efivarfs_evict_inode(struct inode *inode)
+>  {
+>         clear_inode(inode);
+> @@ -255,6 +280,12 @@ static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>         if (!root)
+>                 return -ENOMEM;
+>
+> +       info.sb = sb;
+> +       info.nb.notifier_call = efivarfs_ops_notifier;
+> +       err = blocking_notifier_chain_register(&efivar_ops_nh, &info.nb);
+> +       if (err)
+> +               return err;
+> +
+>         INIT_LIST_HEAD(&efivarfs_list);
+>
+>         err = efivar_init(efivarfs_callback, (void *)sb, true, &efivarfs_list);
+> @@ -281,6 +312,8 @@ static int efivarfs_init_fs_context(struct fs_context *fc)
+>
+>  static void efivarfs_kill_sb(struct super_block *sb)
+>  {
+> +       blocking_notifier_chain_unregister(&efivar_ops_nh, &info.nb);
+> +       info.sb = NULL;
+>         kill_litter_super(sb);
+>
+>         if (!efivar_is_available())
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index 4776a3dd9a72..489707b9b0b0 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -1355,6 +1355,14 @@ bool efi_config_table_is_usable(const efi_guid_t *guid, unsigned long table)
+>
+>  umode_t efi_attr_is_visible(struct kobject *kobj, struct attribute *attr, int n);
+>
+> +/*
+> + * efivar ops event type
+> + */
+> +#define EFIVAR_OPS_RDONLY 0
+> +#define EFIVAR_OPS_RDWR 1
+> +
+> +extern struct blocking_notifier_head efivar_ops_nh;
+> +
+>  void efivars_generic_ops_register(void);
+>  void efivars_generic_ops_unregister(void);
+>
+> --
+> 2.30.2
+>
