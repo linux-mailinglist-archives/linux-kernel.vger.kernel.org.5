@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DF380CF8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378D080CF92
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343922AbjLKPap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S1343917AbjLKPbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343955AbjLKPan (ORCPT
+        with ESMTP id S1343865AbjLKPbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:30:43 -0500
+        Mon, 11 Dec 2023 10:31:23 -0500
 Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74799E5;
-        Mon, 11 Dec 2023 07:30:49 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-db4422fff15so3624794276.1;
-        Mon, 11 Dec 2023 07:30:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8580BE8;
+        Mon, 11 Dec 2023 07:31:28 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-db8892a5f96so4299088276.2;
+        Mon, 11 Dec 2023 07:31:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702308648; x=1702913448; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AJli/Fl4nQv2y3bmONq0d38NoKPmHuZ4V9AFdDvJZ+M=;
-        b=mCUeV7KzaOPJ5y+Q25Xdn67U+Lr4fhNbBjF2k2cth2D6BAezIbdwOLdbx6R55gyu6V
-         qLDhwybSBOd6UfYBJujtyn4wuX7mJ9fU9DExExGefnw/TymEx1HtKeydzFmaB5W3+eUL
-         cQ++UhnmZwvJLzGt5RtG4leUysIwStkJX6qVMpIZtUQ3MK3uW+3hO6k1MNTLBLQuRlxk
-         CjaknEswwtZWMftAQrJp0R5TmVZGtokehPz4GN9H3VsRWXwt6T9N11yaH4XHfEwu9XOf
-         r+zZBW2f0j1aKio3uWg4Pzg8xq4xw6h/z/7mdWT/8pAzIVWMa98gnfxbVC49j2sgTYiA
-         29uw==
+        d=gmail.com; s=20230601; t=1702308688; x=1702913488; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CEhWuihaJ1mm2Ofkvr3IMNsaBmNLx1/iTtyp+xC8zlg=;
+        b=DZ2vTxdkRUi7QYVqAh2d5mlNQs22GIxOWwynTxxH4HpKgvmgWjQHgzt/z/m6Gz2PZM
+         YVWPqe7xKL/SM8Eqsdiqen7L4QYBlx0R7+BnEkTBuaTmpaUrHtxb4SMg2h1W9obOiTjJ
+         EoVMp4M/Bj0T7ZSKANjdCGDYCGsbgxyV1KQNv6XdjTMvZem6I2c6dVBLYjr7bCM5v06Y
+         XXErDpHxRbMIYyBQw3tl4FdtoKzGpcHth+Ap7TTAfg5Ip7jAyjqgb6Gg379+GiGTZh5V
+         uTPONbZVGl93Tkw5nUjDd9ZuzWCBXJ15+5qIRz2He5U66NdymldU9WFKnZCU5xsJg8DV
+         G0mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308648; x=1702913448;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AJli/Fl4nQv2y3bmONq0d38NoKPmHuZ4V9AFdDvJZ+M=;
-        b=o/xNmYjyfVP11J9b9uyfdfeUeHu/C8hAGwow+UcvA2StTMSvqjTBEpifhtFFD/mpfn
-         tCiLj1qVcB7sRdFSaLpYLGXhMezrnB8tQrBgkJcECz4RhKkmNlGMTHKa47Afg7eNynx5
-         dCdZUU3R/i9xYMwG5cbItUTCMC5MLNJIr1VucP5f92l4V33n1QJr0rH4AG94car2JqcJ
-         580RJiHeGJoNT10kPJpz5Mb0E/+KrqkgYu2qXikon67pQ5FRm3Qzi/3Bx6gWRuBi78p1
-         dZqAWn7iumwveei/OKhsIeSS6M5O3Cyf/FMDwsQs8SPtiDPoW8rbUw51deNz7nsLip06
-         wUqg==
-X-Gm-Message-State: AOJu0YxMPIWbi62xG0Fc1H3Kt1PwFQv6tLSH3Vr25b2/bEwdxCsQ+cSt
-        M4BP7mfaqbVV73c7fH9eu/E=
-X-Google-Smtp-Source: AGHT+IEJtgcUac+Z3n31MvZ7wAHTIEJmsqKX5zPJpOSYLbbdmRzecf65IMrJ+9fZl7eV4jXjOkuvSw==
-X-Received: by 2002:a25:cacf:0:b0:dbc:514f:d76 with SMTP id a198-20020a25cacf000000b00dbc514f0d76mr2515227ybg.101.1702308648363;
-        Mon, 11 Dec 2023 07:30:48 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:f798:e824:429f:84b0])
-        by smtp.gmail.com with ESMTPSA id k15-20020a5b0a0f000000b00db54cf1383esm2558799ybq.10.2023.12.11.07.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 07:30:47 -0800 (PST)
-Date:   Mon, 11 Dec 2023 07:30:46 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        d=1e100.net; s=20230601; t=1702308688; x=1702913488;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CEhWuihaJ1mm2Ofkvr3IMNsaBmNLx1/iTtyp+xC8zlg=;
+        b=NlKr+MLAwO6fwBaSYPN/2Y5CFuZmlqvfZ7UO7HR4ANxmQGLFt06yV6zm7sKr1/hGer
+         dZ4KWoEfsXruLPv2triWHol1cxubxHBjRYnnDdot5LUeyAQyg+ZHSnnHi3mIq7yObwoz
+         cK+yi7vCra9RzkQ1/7QlrqGYWTvsFH5QjzHmvhG09mOn1o/anS5I+xsg28r7PYmV+9b7
+         /QMMCCe99ERGSPH/axmY1xfic9pFqjtZwwqssEfXoIHOrRuUspdvVhjTvY58TZ6g799H
+         deqV5oE7r8AXd6IqEkto6P8seOksEKyRAwnP95sgD3ky+/BLADswhCqdd7uQzH5QzbSE
+         CnPw==
+X-Gm-Message-State: AOJu0YzBPScknGBZMtwLMOAi8bqiunMNjJ/H0eahlgY3eQYV/vV7onVX
+        S8aYB7WS8ouMuXABTn+eNS4ov0Y7rD+aMBfrMWeUTcD5rQ==
+X-Google-Smtp-Source: AGHT+IFUOI0znCcfv80KSUJ9i/zGSe3JbVSfhldQt3kesmcBJACiFkxN/65aWKU3jjlmAER04eZsmoZ8UVypvgzRYY8=
+X-Received: by 2002:a25:a481:0:b0:db7:dacf:620a with SMTP id
+ g1-20020a25a481000000b00db7dacf620amr2269476ybi.92.1702308687517; Mon, 11 Dec
+ 2023 07:31:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 11 Dec 2023 16:31:16 +0100
+Message-ID: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+Subject: [Bug Report] bpf: incorrectly pruning runtime execution path
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
@@ -80,202 +66,299 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 10:37:26PM -0800, Souradeep Chakrabarti wrote:
-> On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
-> > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
-> > > Existing MANA design assigns IRQ to every CPU, including sibling
-> > > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > > in the same core and may reduce the network performance with RSS.
-> > 
-> > Can you add an IRQ distribution diagram to compare before/after
-> > behavior, similarly to what I did in the other email?
-> > 
-> Let's consider this topology:
+Hi,
 
-Not here - in commit message, please.
+The verifier incorrectly prunes a path expected to be executed at
+runtime. In the following program, the execution path is:
+    from 6 to 8 (taken) -> from 11 to 15 (taken) -> from 18 to 22
+(taken) -> from 26 to 27 (fall-through) -> from 29 to 30
+(fall-through)
+The verifier prunes the checking path at #26, skipping the actual
+execution path.
 
-> 
-> Node            0               1
-> Core        0       1       2       3
-> CPU       0   1   2   3   4   5   6   7
-> 
->  Before  
->  IRQ     Nodes   Cores   CPUs
->  0       1       0       0
->  1       1       1       2
->  2       1       0       1
->  3       1       1       3
->  4       2       2       4
->  5       2       3       6
->  6       2       2       5
->  7       2       3       7
->  
->  Now
->  IRQ     Nodes   Cores   CPUs
->  0       1       0       0-1
->  1       1       1       2-3
->  2       1       0       0-1
->  3       1       1       2-3
->  4       2       2       4-5
->  5       2       3       6-7
->  6       2       2       4-5
->  7       2       3       6-7
+   0: (18) r2 = 0x1a000000be
+   2: (bf) r5 = r1
+   3: (bf) r8 = r2
+   4: (bc) w4 = w5
+   5: (85) call bpf_get_current_cgroup_id#680112
+   6: (36) if w8 >= 0x69 goto pc+1
+   7: (95) exit
+   8: (18) r4 = 0x52
+  10: (84) w4 = -w4
+  11: (45) if r0 & 0xfffffffe goto pc+3
+  12: (1f) r8 -= r4
+  13: (0f) r0 += r0
+  14: (2f) r4 *= r4
+  15: (18) r3 = 0x1f00000034
+  17: (c4) w4 s>>= 29
+  18: (56) if w8 != 0xf goto pc+3
+  19: r3 = bswap32 r3
+  20: (18) r2 = 0x1c
+  22: (67) r4 <<= 2
+  23: (bf) r5 = r8
+  24: (18) r2 = 0x4
+  26: (7e) if w8 s>= w0 goto pc+5
+  27: (4f) r8 |= r8
+  28: (0f) r8 += r8
+  29: (d6) if w5 s<= 0x1d goto pc+2
+  30: (18) r0 = 0x4 ; incorrectly pruned here
+  32: (95) exit
 
-If you decided to take my wording, please give credits.
+-------- Verifier Log --------
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (18) r2 = 0x1a000000be             ; R2_w=0x1a000000be
+2: (bf) r5 = r1                       ; R1=ctx() R5_w=ctx()
+3: (bf) r8 = r2                       ; R2_w=0x1a000000be R8_w=0x1a000000be
+4: (bc) w4 = w5                       ;
+R4_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
+R5_w=ctx()
+5: (85) call bpf_get_current_cgroup_id#80     ; R0_w=scalar()
+6: (36) if w8 >= 0x69 goto pc+1
+mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
+mark_precise: frame0: regs=r8 stack= before 5: (85) call
+bpf_get_current_cgroup_id#80
+mark_precise: frame0: regs=r8 stack= before 4: (bc) w4 = w5
+mark_precise: frame0: regs=r8 stack= before 3: (bf) r8 = r2
+mark_precise: frame0: regs=r2 stack= before 2: (bf) r5 = r1
+mark_precise: frame0: regs=r2 stack= before 0: (18) r2 = 0x1a000000be
+6: R8_w=0x1a000000be
+8: (18) r4 = 0x52                     ; R4_w=82
+10: (84) w4 = -w4                     ; R4=scalar()
+11: (45) if r0 & 0xfffffffe goto pc+3         ;
+R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
+12: (1f) r8 -= r4                     ; R4=scalar() R8_w=scalar()
+13: (0f) r0 += r0                     ;
+R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3))
+14: (2f) r4 *= r4                     ; R4_w=scalar()
+15: (18) r3 = 0x1f00000034            ; R3_w=0x1f00000034
+17: (c4) w4 s>>= 29                   ;
+R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff))
+18: (56) if w8 != 0xf goto pc+3       ;
+R8_w=scalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000))
+19: (d7) r3 = bswap32 r3              ; R3_w=scalar()
+20: (18) r2 = 0x1c                    ; R2=28
+22: (67) r4 <<= 2                     ;
+R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc))
+23: (bf) r5 = r8                      ;
+R5_w=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000))
+R8=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000))
+24: (18) r2 = 0x4                     ; R2_w=4
+26: (7e) if w8 s>= w0 goto pc+5
+mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
+mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
+mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
+mark_precise: frame0: parent state regs=r8 stack=:
+R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2_w=28 R3_w=scalar()
+R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_rw=Pscalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000)) R10=fp0
+mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+mark_precise: frame0: regs=r8 stack= before 20: (18) r2 = 0x1c
+mark_precise: frame0: regs=r8 stack= before 19: (d7) r3 = bswap32 r3
+mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
+mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
+mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
+mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
+mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
+mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
+0xfffffffe goto pc+3
+mark_precise: frame0: parent state regs=r4,r8 stack=:  R0_rw=scalar()
+R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
+mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+mark_precise: frame0: regs=r4,r8 stack= before 10: (84) w4 = -w4
+mark_precise: frame0: regs=r4,r8 stack= before 8: (18) r4 = 0x52
+mark_precise: frame0: regs=r8 stack= before 6: (36) if w8 >= 0x69 goto pc+1
+mark_precise: frame0: regs=r8 stack= before 5: (85) call
+bpf_get_current_cgroup_id#80
+mark_precise: frame0: regs=r8 stack= before 4: (bc) w4 = w5
+mark_precise: frame0: regs=r8 stack= before 3: (bf) r8 = r2
+mark_precise: frame0: regs=r2 stack= before 2: (bf) r5 = r1
+mark_precise: frame0: regs=r2 stack= before 0: (18) r2 = 0x1a000000be
+mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+mark_precise: frame0: regs=r0 stack= before 24: (18) r2 = 0x4
+mark_precise: frame0: regs=r0 stack= before 23: (bf) r5 = r8
+mark_precise: frame0: regs=r0 stack= before 22: (67) r4 <<= 2
+mark_precise: frame0: parent state regs=r0 stack=:
+R0_rw=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2_w=28 R3_w=scalar()
+R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_rw=Pscalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000)) R10=fp0
+mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+mark_precise: frame0: regs=r0 stack= before 20: (18) r2 = 0x1c
+mark_precise: frame0: regs=r0 stack= before 19: (d7) r3 = bswap32 r3
+mark_precise: frame0: regs=r0 stack= before 18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: regs=r0 stack= before 17: (c4) w4 s>>= 29
+mark_precise: frame0: regs=r0 stack= before 15: (18) r3 = 0x1f00000034
+mark_precise: frame0: regs=r0 stack= before 14: (2f) r4 *= r4
+mark_precise: frame0: regs=r0 stack= before 13: (0f) r0 += r0
+mark_precise: frame0: regs=r0 stack= before 12: (1f) r8 -= r4
+mark_precise: frame0: regs=r0 stack= before 11: (45) if r0 &
+0xfffffffe goto pc+3
+mark_precise: frame0: parent state regs=r0 stack=:  R0_rw=Pscalar()
+R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
+mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+mark_precise: frame0: regs=r0 stack= before 10: (84) w4 = -w4
+mark_precise: frame0: regs=r0 stack= before 8: (18) r4 = 0x52
+mark_precise: frame0: regs=r0 stack= before 6: (36) if w8 >= 0x69 goto pc+1
+mark_precise: frame0: regs=r0 stack= before 5: (85) call
+bpf_get_current_cgroup_id#80
+26: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R8=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
+0xffffffff00000000))
+32: (95) exit
 
-> > > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > > NUMA node. The performance improvement we are getting using ntttcp with
-> > > following patch is around 15 percent with existing design and approximately
-> > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-> > > if enough cores are present.
-> > 
-> > How did you measure it? In the other email you said you used perf, can
-> > you show your procedure in details?
-> I have used ntttcp for performance analysis, by perf I had meant performance
-> analysis. I have used ntttcp with following parameters
-> ntttcp -r -m 64 <receiver> 
-> 
-> ntttcp -s <receiver side ip address>  -m 64 <sender>
-> Both the VMs are in same Azure subnet and private IP address is used.
-> MTU and tcp buffer is set accordingly and number of channels are set using ethtool
-> accordingly for best performance. Also irqbalance was disabled.
-> https://github.com/microsoft/ntttcp-for-linux
-> https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
+from 18 to 22: R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R3_w=0x1f00000034
+R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_w=scalar() R10=fp0
+22: R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R3_w=0x1f00000034
+R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_w=scalar() R10=fp0
+22: (67) r4 <<= 2                     ;
+R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc))
+23: (bf) r5 = r8                      ; R5_w=scalar(id=2) R8_w=scalar(id=2)
+24: (18) r2 = 0x4                     ; R2=4
+26: (7e) if w8 s>= w0 goto pc+5       ;
+R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))
+R8=scalar(id=2,smax32=1)
+27: (4f) r8 |= r8                     ; R8_w=scalar()
+28: (0f) r8 += r8                     ; R8_w=scalar()
+29: (d6) if w5 s<= 0x1d goto pc+2
+mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+mark_precise: frame0: regs=r5 stack= before 28: (0f) r8 += r8
+mark_precise: frame0: regs=r5 stack= before 27: (4f) r8 |= r8
+mark_precise: frame0: regs=r5 stack= before 26: (7e) if w8 s>= w0 goto pc+5
+mark_precise: frame0: parent state regs=r5 stack=:
+R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2_w=4 R3_w=0x1f00000034
+R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc)) R5_rw=Pscalar(id=2) R8_rw=scalar(id=2) R10=fp0
+mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
+mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
+mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
+mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
+mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
+mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
+mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
+mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
+mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
+0xfffffffe goto pc+3
+mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
+R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
+29: R5=scalar(id=2,smax32=1)
+32: (95) exit
 
-OK. Can you also print the before/after outputs of ntttcp that demonstrate
-+15%?
+from 26 to 32: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2=4 R3=0x1f00000034
+R4=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc)) R5=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff))
+R8=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff)) R10=fp0
+32: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2=4 R3=0x1f00000034
+R4=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc)) R5=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff))
+R8=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff)) R10=fp0
+32: (95) exit
 
-> > > Suggested-by: Yury Norov <yury.norov@gmali.com>
-> > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > > ---
-> > 
-> > [...]
-> > 
-> > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
-> > >  1 file changed, 83 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > index 6367de0c2c2e..18e8908c5d29 100644
-> > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > >  	r->size = 0;
-> > >  }
-> > >  
-> > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+from 11 to 15: R0=scalar() R4=scalar() R8=0x1a000000be R10=fp0
+15: R0=scalar() R4=scalar() R8=0x1a000000be R10=fp0
+15: (18) r3 = 0x1f00000034            ; R3_w=0x1f00000034
+17: (c4) w4 s>>= 29                   ;
+R4=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff))
+18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: last_idx 18 first_idx 18 subseq_idx -1
+mark_precise: frame0: parent state regs=r8 stack=:  R0=scalar()
+R3_w=0x1f00000034
+R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_r=P0x1a000000be R10=fp0
+mark_precise: frame0: last_idx 17 first_idx 11 subseq_idx 18
+mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
+mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
+mark_precise: frame0: regs=r8 stack= before 11: (45) if r0 &
+0xfffffffe goto pc+3
+mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
+R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
+18: R8=0x1a000000be
+22: (67) r4 <<= 2                     ;
+R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc))
+23: (bf) r5 = r8                      ; R5_w=0x1a000000be R8=0x1a000000be
+24: (18) r2 = 0x4
+frame 0: propagating r5
+mark_precise: frame0: last_idx 26 first_idx 18 subseq_idx -1
+mark_precise: frame0: regs=r5 stack= before 24: (18) r2 = 0x4
+mark_precise: frame0: regs=r5 stack= before 23: (bf) r5 = r8
+mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
+mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: parent state regs= stack=:  R0_r=scalar()
+R3_w=0x1f00000034
+R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
+0xffffffff)) R8_r=P0x1a000000be R10=fp0
+26: safe
+processed 38 insns (limit 1000000) max_states_per_insn 1 total_states
+4 peak_states 4 mark_read 2
 
-Is it intentional that irqs and nvec are signed? If not, please make
-them unsigned.
+-------- End of Verifier Log --------
 
-> > > +{
-> > > +	int w, cnt, cpu, err = 0, i = 0;
-> > > +	int next_node = start_numa_node;
-> > 
-> > What for this?
-> This is the local numa node, from where to start hopping.
-> Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
-> number of irqs allocated, and the local numa node to the device.
+When the verifier backtracks from #29, I expected w0 at #26 (if w8 s>=
+w0 goto pc+5) to be marked as precise since R8 and R5 share the same
+id:
 
-I'll ask again: you copy parameter (start_numa_node) to a local
-variable (next_node), and never use start_numa_node after that.
+29: (d6) if w5 s<= 0x1d goto pc+2
+mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+mark_precise: frame0: regs=r5 stack= before 28: (0f) r8 += r8
+mark_precise: frame0: regs=r5 stack= before 27: (4f) r8 |= r8
+mark_precise: frame0: regs=r5 stack= before 26: (7e) if w8 s>= w0 goto pc+5
+mark_precise: frame0: parent state regs=r5 stack=:
+R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
+0x3)) R2_w=4 R3_w=0x1f00000034
+R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
+0x3fffffffc)) R5_rw=Pscalar(id=2) R8_rw=scalar(id=2) R10=fp0
+mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
+mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
+mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
+mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
+mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
+mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
+mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
+mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
+mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
+mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
+0xfffffffe goto pc+3
+mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
+R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
+29: R5=scalar(id=2,smax32=1)
 
-You can just use the parameter, and avoid creating local variable at
-all, so what for the latter exist?
+However, seems it's not, so the next time when the verifier checks
+#26, R0 is incorrectly ignored.
+We have mark_precise_scalar_ids(), but it's called before calculating
+the mask once.
+I investigated for quite a while, but mark_chain_pricision() is really
+hard to follow.
 
-The naming is confusing. I think just 'node' is OK here.
+Here is a reduced C repro, maybe someone else can shed some light on this.
+C repro: https://pastebin.com/raw/chrshhGQ
 
-> > > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > > +	cpumask_var_t curr, cpus;
-> > > +
-> > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-> > > +		err = -ENOMEM;
-> > > +		return err;
-> > > +	}
-> > > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
-> > 
-> >                 free(curr);
-> Will fix it in next version. Thanks for pointing.
-
-And also drop 'err' - just 'return -ENOMEM'.
-
-> > 
-> > > +		err = -ENOMEM;
-> > > +		return err;
-> > > +	}
-> > > +
-> > > +	rcu_read_lock();
-> > > +	for_each_numa_hop_mask(next, next_node) {
-> > > +		cpumask_andnot(curr, next, prev);
-> > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-> > > +			cpumask_copy(cpus, curr);
-> > > +			for_each_cpu(cpu, cpus) {
-> > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
-> > > +				if (++i == nvec)
-> > > +					goto done;
-> > 
-> > Think what if you're passed with irq_setup(NULL, 0, 0).
-> > That's why I suggested to place this check at the beginning.
-> > 
-> irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
-> care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
-> 
-> nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> if (nvec < 0)
-> 	return nvec;
-
-I know that. But still it's a bug. The common convention is that if a
-0-length array is passed to a function, it should not dereference the
-pointer.
-
-...
-
-> > > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> > >  			goto free_irq;
-> > >  		}
-> > >  
-> > > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > > -		if (err)
-> > > -			goto free_irq;
-> > > -
-> > > -		cpu = cpumask_local_spread(i, gc->numa_node);
-> > > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> > > +		if (!i) {
-> > > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > > +			if (err)
-> > > +				goto free_irq;
-> > > +
-> > > +			/* If number of IRQ is one extra than number of online CPUs,
-> > > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-> > > +			 * same CPU.
-> > > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
-> > > +			 * Also we are using cpumask_local_spread instead of
-> > > +			 * cpumask_first for the node, because the node can be
-> > > +			 * mem only.
-> > > +			 */
-> > > +			if (start_irq_index) {
-> > > +				cpu = cpumask_local_spread(i, gc->numa_node);
-> > 
-> > I already mentioned that: if i == 0, you don't need to spread, just
-> > pick 1st cpu from node.
-> The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
-> can be a memory only node, in that case we need to jump to next node to get the CPU.
-> Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
-
-OK, makes sense.
-
-What if you need to distribute more IRQs than the number of CPUs? In
-that case you'd call the function many times. But because you return
-0, user has no chance catch that. I think you should handle it inside
-the helper, or do like this:
-
-        while (nvec) {
-                distributed = irq_setup(irqs, nvec, node);
-                if (distributed < 0)
-                        break;
-
-                irq += distributed;
-                nvec -= distributed;
-        }
-
-Thanks,
-Yury
+Thanks
+Hao
