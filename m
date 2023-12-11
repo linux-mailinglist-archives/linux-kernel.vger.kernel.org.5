@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB2880C918
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3483E80C91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbjLKMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
+        id S234323AbjLKMLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234454AbjLKMLq (ORCPT
+        with ESMTP id S234760AbjLKMLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:11:46 -0500
+        Mon, 11 Dec 2023 07:11:52 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92068D1;
-        Mon, 11 Dec 2023 04:11:52 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBBua0M017947;
-        Mon, 11 Dec 2023 12:11:47 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5A7CF;
+        Mon, 11 Dec 2023 04:11:58 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBBuWVl023588;
+        Mon, 11 Dec 2023 12:11:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=JeeQVzjwHlmpiqbNj8CxGEhWwh6P3e1lA0qcFGvOn14=; b=pQ
-        m72qtaGTUdLoNa7qOWs71TadYlUqgMqyGbYLKhSoIo1NfF/7IzFFhJTkKM33XYRC
-        c5asYqyGsAdRWN1kIJIYnGzafA5LHeZN7D3cF0sGFfa04Toc8vl0+Ik5DIw0jaxG
-        Ori96cHk0cFp8piqOQnF0NCA4EeTalCGQknnFyjZnd6Bc3Tl+NlUgdlY4H61Nzzc
-        YVdRlIaiP1pbB0adnfAbHqL7mNzDHHGI5uuY9jLmT/pncILkpP3zIVD9StujajRW
-        BIWCA2E3EDUYIcmZX5By6vrd1zZ5JWoivML0ICVeA9OcGVx7V2D42+27g1LRwoet
-        ARA7jO0hEDUDnPt1xiTw==
+        qcppdkim1; bh=BMcIK6+tF1WzlJAS4gMMrCiHhLdtiy0eQaT/jyXeihI=; b=O2
+        Dgnx5NFv6UxXMoOKACJutyLqG3l4k17gpP0pqxmpPx4viUOkD5phYnIY9W5mIfAg
+        1QIfRR3KLhOOeL5g6DvPVYMzbb+RCy2oaH/pBaQmEU84Pa4UF9Zr7u9FbWUxl7ye
+        ezxScdyw6IGmziURwHEaeclGGpvqA7ip/jxBdDEH5VyFRpyAOSBjN5rWKBBvmNy4
+        0NOPmarXBz3Qw+sf+jhrd7J8UXf4ujk1mRmgwG3o3uuyenjFbs0domLCjuN0kyRE
+        Ydl/KO1oEf1YX7IkqIt7G8Gela5Oh2kwkywxhE/+VS1cjIO20VevbbqMqiuuQH7i
+        Tb6Gzrl8/VTxCg4Ra/Eg==
 Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnuvk7d1-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uwjyjshes-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 12:11:47 +0000 (GMT)
+        Mon, 11 Dec 2023 12:11:53 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBCBkIM005870
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBCBqpV005898
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 12:11:46 GMT
+        Mon, 11 Dec 2023 12:11:52 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 04:11:41 -0800
+ 15.2.1118.40; Mon, 11 Dec 2023 04:11:47 -0800
 From:   Krishna Kurapati <quic_kriskura@quicinc.com>
 To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -55,9 +55,9 @@ CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati <quic_kriskura@quicinc.com>
-Subject: [PATCH v3 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in bindings
-Date:   Mon, 11 Dec 2023 17:41:23 +0530
-Message-ID: <20231211121124.4194-2-quic_kriskura@quicinc.com>
+Subject: [PATCH v3 2/2] usb: dwc3: qcom: Rename hs_phy_irq to qusb2_phy_irq
+Date:   Mon, 11 Dec 2023 17:41:24 +0530
+Message-ID: <20231211121124.4194-3-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211121124.4194-1-quic_kriskura@quicinc.com>
 References: <20231211121124.4194-1-quic_kriskura@quicinc.com>
@@ -69,16 +69,16 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -eKA3A1GqCLVlxuxMfGxUUf2UM-XPZO9
-X-Proofpoint-ORIG-GUID: -eKA3A1GqCLVlxuxMfGxUUf2UM-XPZO9
+X-Proofpoint-GUID: 0U5SbUCJBZ6u8knha8K-oE2_sjwNtww8
+X-Proofpoint-ORIG-GUID: 0U5SbUCJBZ6u8knha8K-oE2_sjwNtww8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312110098
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=722 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312110098
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -89,265 +89,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The high speed related interrupts present on QC targets are as follows:
+For wakeup to work, driver needs to enable interrupts that depict what is
+happening on the DP/DM lines. On QUSB targets, this is identified by
+qusb2_phy whereas on SoCs using Femto PHY, separate {dp,dm}_hs_phy_irq's
+are used instead.
 
-dp/dm irq's
-These IRQ's directly reflect changes on the DP/DM pads of the SoC. These
-are used as wakeup interrupts only on SoCs with non-QUSB2 targets with
-exception of SDM670/SDM845/SM6350.
+The implementation incorrectly names qusb2_phy interrupts as "hs_phy_irq".
+Clean this up so that driver would be using only qusb2/(dp & dm) for wakeup
+purposes.
 
-qusb2_phy irq
-SoCs with QUSB2 PHY do not have separate DP/DM IRQs and expose only a
-single IRQ whose behavior can be modified by the QUSB2PHY_INTR_CTRL
-register. The required DPSE/DMSE configuration is done in
-QUSB2PHY_INTR_CTRL register of phy address space.
-
-hs_phy_irq
-This is completely different from the above two and is present on all
-targets with exception of a few IPQ ones. The interrupt is not enabled by
-default and its functionality is mutually exclusive of qusb2_phy on QUSB
-targets and DP/DM on femto phy targets.
-
-The DTs of several QUSB2 PHY based SoCs incorrectly define "hs_phy_irq"
-when they should have been "qusb2_phy_irq". On Femto phy targets, the
-"hs_phy_irq" mentioned is either the actual "hs_phy_irq" or "pwr_event",
-neither of which would never be triggered directly are non-functional
-currently. The implementation tries to clean up this issue by addressing
-the discrepencies involved and fixing the hs_phy_irq's in respective DT's.
-
-Classiffy SoC's into four groups based on whether qusb2_phy interrupt
-or {dp/dm}_hs_phy_irq is used for wakeup in high speed and whether the
-SoCs have hs_phy_irq present in them or not.
-
-The ss_phy_irq is optional interrupt because there are mutliple SoC's
-which either support only High Speed or there are multiple controllers
-within same Soc and the secondary controller is High Speed only capable.
-
-This breaks ABI on targets running older kernels, but since the interrupt
-definitions are given wrong on many targets and to establish proper rules
-for usage of DWC3 interrupts on Qualcomm platforms, DT binding update is
-necessary.
+For devices running older kernels, this won't break any functionality
+because the interrupt configurations in QUSB2 PHY based SoCs is done
+by configuring QUSB2PHY_INTR_CTRL register in PHY address space and it was
+never armed properly right from the start.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 ---
- .../devicetree/bindings/usb/qcom,dwc3.yaml    | 138 ++++++++----------
- 1 file changed, 59 insertions(+), 79 deletions(-)
+ drivers/usb/dwc3/dwc3-qcom.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 3ec62027f663..602949d64586 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -98,12 +98,29 @@ properties:
-       - const: apps-usb
+diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+index fdf6d5d3c2ad..dbd6a5b2b289 100644
+--- a/drivers/usb/dwc3/dwc3-qcom.c
++++ b/drivers/usb/dwc3/dwc3-qcom.c
+@@ -57,7 +57,7 @@ struct dwc3_acpi_pdata {
+ 	u32			qscratch_base_offset;
+ 	u32			qscratch_base_size;
+ 	u32			dwc3_core_base_size;
+-	int			hs_phy_irq_index;
++	int			qusb2_phy_irq_index;
+ 	int			dp_hs_phy_irq_index;
+ 	int			dm_hs_phy_irq_index;
+ 	int			ss_phy_irq_index;
+@@ -73,7 +73,7 @@ struct dwc3_qcom {
+ 	int			num_clocks;
+ 	struct reset_control	*resets;
  
-   interrupts:
--    minItems: 1
--    maxItems: 4
-+    description: |
-+      Different types of interrupts are used based on HS PHY used on target:
-+        - pwr_event: Used for wakeup based on other power events.
-+        - hs_phY_irq: Apart from DP/DM/QUSB2 PHY interrupts, there is
-+                       hs_phy_irq which is not triggered by default and its
-+                       functionality is mutually exclusive to that of
-+                       {dp/dm}_hs_phy_irq and qusb2_phy_irq.
-+        - qusb2_phy: SoCs with QUSB2 PHY do not have separate DP/DM IRQs and
-+                      expose only a single IRQ whose behavior can be modified
-+                      by the QUSB2PHY_INTR_CTRL register. The required DPSE/
-+                      DMSE configuration is done in QUSB2PHY_INTR_CTRL register
-+                      of PHY address space.
-+        - {dp/dm}_hs_phy_irq: These IRQ's directly reflect changes on the DP/
-+                               DM pads of the SoC. These are used for wakeup
-+                               only on SoCs with non-QUSB2 targets with
-+                               exception of SDM670/SDM845/SM6350.
-+        - ss_phy_irq: Used for remote wakeup in Super Speed mode of operation.
-+    minItems: 2
-+    maxItems: 5
+-	int			hs_phy_irq;
++	int			qusb2_phy_irq;
+ 	int			dp_hs_phy_irq;
+ 	int			dm_hs_phy_irq;
+ 	int			ss_phy_irq;
+@@ -372,7 +372,7 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
  
-   interrupt-names:
--    minItems: 1
--    maxItems: 4
-+    minItems: 2
-+    maxItems: 5
+ static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
+ {
+-	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
++	dwc3_qcom_disable_wakeup_irq(qcom->qusb2_phy_irq);
  
-   qcom,select-utmi-as-pipe-clk:
-     description:
-@@ -359,60 +376,21 @@ allOf:
-         compatible:
-           contains:
-             enum:
--              - qcom,ipq4019-dwc3
-+              - qcom,ipq5018-dwc3
-               - qcom,ipq6018-dwc3
--              - qcom,ipq8064-dwc3
-               - qcom,ipq8074-dwc3
--              - qcom,msm8994-dwc3
--              - qcom,qcs404-dwc3
--              - qcom,sc7180-dwc3
--              - qcom,sdm670-dwc3
--              - qcom,sdm845-dwc3
--              - qcom,sdx55-dwc3
--              - qcom,sdx65-dwc3
--              - qcom,sdx75-dwc3
--              - qcom,sm4250-dwc3
--              - qcom,sm6350-dwc3
--              - qcom,sm8150-dwc3
--              - qcom,sm8250-dwc3
--              - qcom,sm8350-dwc3
--              - qcom,sm8450-dwc3
--              - qcom,sm8550-dwc3
--              - qcom,sm8650-dwc3
--    then:
--      properties:
--        interrupts:
--          items:
--            - description: The interrupt that is asserted
--                when a wakeup event is received on USB2 bus.
--            - description: The interrupt that is asserted
--                when a wakeup event is received on USB3 bus.
--            - description: Wakeup event on DM line.
--            - description: Wakeup event on DP line.
--        interrupt-names:
--          items:
--            - const: hs_phy_irq
--            - const: ss_phy_irq
--            - const: dm_hs_phy_irq
--            - const: dp_hs_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
-               - qcom,msm8953-dwc3
--              - qcom,msm8996-dwc3
-               - qcom,msm8998-dwc3
--              - qcom,sm6115-dwc3
--              - qcom,sm6125-dwc3
-+              - qcom,qcm2290-dwc3
-     then:
-       properties:
-         interrupts:
--          maxItems: 2
-+          minItems: 2
-+          maxItems: 3
-         interrupt-names:
-           items:
--            - const: hs_phy_irq
-+            - const: pwr_event
-+            - const: qusb2_phy
-             - const: ss_phy_irq
+ 	if (qcom->usb2_speed == USB_SPEED_LOW) {
+ 		dwc3_qcom_disable_wakeup_irq(qcom->dm_hs_phy_irq);
+@@ -389,7 +389,7 @@ static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
  
-   - if:
-@@ -420,37 +398,21 @@ allOf:
-         compatible:
-           contains:
-             enum:
--              - qcom,ipq5018-dwc3
--              - qcom,ipq5332-dwc3
-+              - qcom,msm8996-dwc3
-+              - qcom,qcs404-dwc3
-               - qcom,sdm660-dwc3
--    then:
--      properties:
--        interrupts:
--          minItems: 1
--          maxItems: 2
--        interrupt-names:
--          minItems: 1
--          items:
--            - const: hs_phy_irq
--            - const: ss_phy_irq
--
--  - if:
--      properties:
--        compatible:
--          contains:
--            enum:
--              - qcom,sc7280-dwc3
-+              - qcom,sm6115-dwc3
-+              - qcom,sm6125-dwc3
-     then:
-       properties:
-         interrupts:
-           minItems: 3
-           maxItems: 4
-         interrupt-names:
--          minItems: 3
-           items:
-+            - const: pwr_event
-             - const: hs_phy_irq
--            - const: dp_hs_phy_irq
--            - const: dm_hs_phy_irq
-+            - const: qusb2_phy
-             - const: ss_phy_irq
+ static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+ {
+-	dwc3_qcom_enable_wakeup_irq(qcom->hs_phy_irq, 0);
++	dwc3_qcom_enable_wakeup_irq(qcom->qusb2_phy_irq, 0);
  
-   - if:
-@@ -458,10 +420,12 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq5332-dwc3
-               - qcom,sc8280xp-dwc3
-     then:
-       properties:
-         interrupts:
-+          minItems: 3
-           maxItems: 4
-         interrupt-names:
-           items:
-@@ -476,15 +440,30 @@ allOf:
-           contains:
-             enum:
-               - qcom,sa8775p-dwc3
-+              - qcom,sc7180-dwc3
-+              - qcom,sc7280-dwc3
-+              - qcom,sdm670-dwc3
-+              - qcom,sdm845-dwc3
-+              - qcom,sdx55-dwc3
-+              - qcom,sdx65-dwc3
-+              - qcom,sdx75-dwc3
-+              - qcom,sm6350-dwc3
-+              - qcom,sm6375-dwc3
-+              - qcom,sm8150-dwc3
-+              - qcom,sm8250-dwc3
-+              - qcom,sm8350-dwc3
-+              - qcom,sm8450-dwc3
-+              - qcom,sm8550-dwc3
-+              - qcom,sm8650-dwc3
-     then:
-       properties:
-         interrupts:
--          minItems: 3
--          maxItems: 4
-+          minItems: 4
-+          maxItems: 5
-         interrupt-names:
--          minItems: 3
-           items:
-             - const: pwr_event
-+            - const: hs_phy_irq
-             - const: dp_hs_phy_irq
-             - const: dm_hs_phy_irq
-             - const: ss_phy_irq
-@@ -522,12 +501,13 @@ examples:
-                           <&gcc GCC_USB30_PRIM_MASTER_CLK>;
-             assigned-clock-rates = <19200000>, <150000000>;
+ 	/*
+ 	 * Configure DP/DM line interrupts based on the USB2 device attached to
+@@ -542,19 +542,19 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 	int irq;
+ 	int ret;
  
--            interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
--                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
-+            interrupts = <GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>,
-                          <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
--                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
--            interrupt-names = "hs_phy_irq", "ss_phy_irq",
--                          "dm_hs_phy_irq", "dp_hs_phy_irq";
-+                         <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>;
-+            interrupt-names = "pwr_event", "hs_phy_irq",
-+                          "dp_hs_phy_irq", "dm_hs_phy_irq", "ss_phy_irq";
+-	irq = dwc3_qcom_get_irq(pdev, "hs_phy_irq",
+-				pdata ? pdata->hs_phy_irq_index : -1);
++	irq = dwc3_qcom_get_irq(pdev, "qusb2_phy",
++				pdata ? pdata->qusb2_phy_irq_index : -1);
+ 	if (irq > 0) {
+ 		/* Keep wakeup interrupts disabled until suspend */
+ 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+ 					qcom_dwc3_resume_irq,
+ 					IRQF_ONESHOT | IRQF_NO_AUTOEN,
+-					"qcom_dwc3 HS", qcom);
++					"qcom_dwc3 QUSB2", qcom);
+ 		if (ret) {
+-			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
++			dev_err(qcom->dev, "qusb2_phy_irq failed: %d\n", ret);
+ 			return ret;
+ 		}
+-		qcom->hs_phy_irq = irq;
++		qcom->qusb2_phy_irq = irq;
+ 	}
  
-             power-domains = <&gcc USB30_PRIM_GDSC>;
- 
+ 	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
+@@ -1058,7 +1058,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_pdata = {
+ 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
+ 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
+ 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
+-	.hs_phy_irq_index = 1,
++	.qusb2_phy_irq_index = 1,
+ 	.dp_hs_phy_irq_index = 4,
+ 	.dm_hs_phy_irq_index = 3,
+ 	.ss_phy_irq_index = 2
+@@ -1068,7 +1068,7 @@ static const struct dwc3_acpi_pdata sdm845_acpi_urs_pdata = {
+ 	.qscratch_base_offset = SDM845_QSCRATCH_BASE_OFFSET,
+ 	.qscratch_base_size = SDM845_QSCRATCH_SIZE,
+ 	.dwc3_core_base_size = SDM845_DWC3_CORE_SIZE,
+-	.hs_phy_irq_index = 1,
++	.qusb2_phy_irq_index = 1,
+ 	.dp_hs_phy_irq_index = 4,
+ 	.dm_hs_phy_irq_index = 3,
+ 	.ss_phy_irq_index = 2,
 -- 
 2.42.0
 
