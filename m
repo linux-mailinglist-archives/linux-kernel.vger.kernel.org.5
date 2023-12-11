@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB280CCE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652D380CCE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344145AbjLKOEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S1344198AbjLKOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344141AbjLKOEB (ORCPT
+        with ESMTP id S1344175AbjLKOEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:04:01 -0500
+        Mon, 11 Dec 2023 09:04:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D619E324F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:02:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4054BC433C7;
-        Mon, 11 Dec 2023 14:02:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ADA3270
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:02:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E86A6C433C8;
+        Mon, 11 Dec 2023 14:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303357;
-        bh=W8z/V1J+kQQgJl8vpppyt8tRZzignvSSZAIvWfbDU/0=;
+        s=k20201202; t=1702303361;
+        bh=dwADcyDW2WetwqIR+D9TN1Bko6rQzL3C8eVoG+twuIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hzitmElRSylMirlt+/+d7UESg2IwtN7ABdg0+mckhhnINuj33VT22DcadPcmY1CXu
-         LDakS1yLIClZy0fzVR7gSmMqNaXv94+Hbj4VyWLxElHLq8S6VvB7wSc/PLk+tLAnCQ
-         hsJ/RknHbsx9wl1VbA3ky8LRtTnZMOggdJVO8/3/mMG4I+HeLEkY7EQ76+ykimV5D2
-         v30NEGLCzr+iGqDiQG2Le2Gk3EyoClnSQYsadaUbykHuk3ZMF6lWm8httykeLlnkum
-         QaxXaiedpQoing9D52KqXKEfHE3fZr6Atu7OtWlZ+gIynZZuV6QBeuP++BmPM8BbUp
-         sShll9lB3O7OQ==
+        b=ou+HrEbRml9VFOMv2ULe/9Mmm7HNDGvmaEz2TAX/ujlWUf2PpL1sjJkgjXLX5g8kc
+         z6ZozXwFsDoJrwRVEAyVIZXri0iVgJRcyq89BIIPGsiok3exLmcplzWWE58fPSNvJO
+         NHgGQNYFQ1nE+vWMOrtFZ19TA98lYnA9tcCgCHHCYB6ZsUOZLpk6DKJvmm2vEfZvpz
+         n43QPgJln4hOoi5G2XIdyYsLJ3FQYwURe7N3gRVffyVngSJGIkNykYd5b9e1InGjfs
+         PXZ2uqih42ykbu7MTWC9fzh1iYoEJEji+CsczFQfUPtg7hOSYs8pZQjx1Pt+cDRbQ1
+         xZSd7fKrC7Jxw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/12] ASoC: rt5650: add mutex to avoid the jack detection failure
-Date:   Mon, 11 Dec 2023 09:01:59 -0500
-Message-ID: <20231211140219.392379-6-sashal@kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, kherbst@redhat.com,
+        lyude@redhat.com, airlied@gmail.com, daniel@ffwll.ch,
+        bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 07/12] nouveau/tu102: flush all pdbs on vmm flush
+Date:   Mon, 11 Dec 2023 09:02:00 -0500
+Message-ID: <20231211140219.392379-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211140219.392379-1-sashal@kernel.org>
 References: <20231211140219.392379-1-sashal@kernel.org>
@@ -55,76 +56,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Dave Airlie <airlied@redhat.com>
 
-[ Upstream commit cdba4301adda7c60a2064bf808e48fccd352aaa9 ]
+[ Upstream commit cb9c919364653eeafb49e7ff5cd32f1ad64063ac ]
 
-This patch adds the jd_mutex to protect the jack detection control flow.
-And only the headset type could check the button status.
+This is a hack around a bug exposed with the GSP code, I'm not sure
+what is happening exactly, but it appears some of our flushes don't
+result in proper tlb invalidation for out BAR2 and we get a BAR2
+fault from GSP and it all dies.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231122100123.2831753-1-shumingf@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231130010852.4034774-1-airlied@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 9fda0e5548dc6..c9512e97c12e5 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -421,6 +421,7 @@ struct rt5645_priv {
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(rt5645_supply_names)];
- 	struct rt5645_eq_param_s *eq_param;
- 	struct timer_list btn_check_timer;
-+	struct mutex jd_mutex;
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
+index be91cffc3b52a..315000b2f8e3e 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
+@@ -32,7 +32,7 @@ tu102_vmm_flush(struct nvkm_vmm *vmm, int depth)
  
- 	int codec_type;
- 	int sysclk;
-@@ -3179,6 +3180,8 @@ static int rt5645_jack_detect(struct snd_soc_component *component, int jack_inse
- 				rt5645_enable_push_button_irq(component, true);
- 			}
- 		} else {
-+			if (rt5645->en_button_func)
-+				rt5645_enable_push_button_irq(component, false);
- 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
- 			snd_soc_dapm_sync(dapm);
- 			rt5645->jack_type = SND_JACK_HEADPHONE;
-@@ -3259,6 +3262,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 	if (!rt5645->component)
- 		return;
+ 	type = 0x00000001; /* PAGE_ALL */
+ 	if (atomic_read(&vmm->engref[NVKM_SUBDEV_BAR]))
+-		type |= 0x00000004; /* HUB_ONLY */
++		type |= 0x00000006; /* HUB_ONLY | ALL PDB (hack) */
  
-+	mutex_lock(&rt5645->jd_mutex);
-+
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
- 		if (rt5645->gpiod_hp_det) {
-@@ -3283,7 +3288,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 
- 	if (!val && (rt5645->jack_type == 0)) { /* jack in */
- 		report = rt5645_jack_detect(rt5645->component, 1);
--	} else if (!val && rt5645->jack_type != 0) {
-+	} else if (!val && rt5645->jack_type == SND_JACK_HEADSET) {
- 		/* for push button and jack out */
- 		btn_type = 0;
- 		if (snd_soc_component_read32(rt5645->component, RT5645_INT_IRQ_ST) & 0x4) {
-@@ -3339,6 +3344,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 		rt5645_jack_detect(rt5645->component, 0);
- 	}
- 
-+	mutex_unlock(&rt5645->jd_mutex);
-+
- 	snd_soc_jack_report(rt5645->hp_jack, report, SND_JACK_HEADPHONE);
- 	snd_soc_jack_report(rt5645->mic_jack, report, SND_JACK_MICROPHONE);
- 	if (rt5645->en_button_func)
-@@ -4041,6 +4048,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 	}
- 	timer_setup(&rt5645->btn_check_timer, rt5645_btn_check_callback, 0);
- 
-+	mutex_init(&rt5645->jd_mutex);
- 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
- 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
+ 	mutex_lock(&subdev->mutex);
  
 -- 
 2.42.0
