@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FE080C9C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E073780C9CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbjLKMaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S234843AbjLKMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbjLKMaO (ORCPT
+        with ESMTP id S234652AbjLKMaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:30:14 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F540101;
-        Mon, 11 Dec 2023 04:30:20 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E42451FB8A;
-        Mon, 11 Dec 2023 12:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702297818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pV78XzILgikwq9fxdiYEdF0PF3nysXH8O8vZMrG/+P0=;
-        b=uSQ9GuT9OV1qMWqEr5Jk27bRTbNJDxoDrmDMomPeMkSB1ToLPUvYnyC6oPxYKT54MrY2dR
-        hPbblSXwWVc0TueJtj8S5dGOqAaEO2m71ZEEdyMscQfKxTSWBwj4AMBLNWEKnNoI8Vi1X6
-        CHBJdr/ZXUsVEzPghOVVFCBYMgWUcrU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702297818;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pV78XzILgikwq9fxdiYEdF0PF3nysXH8O8vZMrG/+P0=;
-        b=WlYGjskXnZHv3rmOSP3P0ZFcW4lu/7dwcr5k3rbnObRvPZIU5Lb4XIana9QVf3fzWGwk6/
-        85YuEvPNPngoazDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702297816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pV78XzILgikwq9fxdiYEdF0PF3nysXH8O8vZMrG/+P0=;
-        b=OOJzuaHayNm/cjYIFgcNZ80dtLxJDbDCGQQDrBesaDeeSTf22pOlILv4AgScPwQRP4i0yl
-        vgu0k9Y8VdVmybHYQjhksmmamBKkGvu1c0qc4haS/jVBmFgWHf15FafzJdpX3Df+REzAQ4
-        BAiZzQOKK6cdGzsdaf9j+a5WliDyu7c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702297816;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pV78XzILgikwq9fxdiYEdF0PF3nysXH8O8vZMrG/+P0=;
-        b=6WZ11VbIXreZyDmns+xURE6vpolRTcYuydR0ADViB4/g+Lp76JGdz0+yVfvfJXR/S6AVWU
-        DveKn1TQD9/20LAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D102A138FF;
-        Mon, 11 Dec 2023 12:30:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id n9WxMtgAd2XlRQAAn2gu4w
-        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 12:30:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 765A2A07E3; Mon, 11 Dec 2023 13:30:12 +0100 (CET)
-Date:   Mon, 11 Dec 2023 13:30:12 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] eventfd: Remove usage of the deprecated ida_simple_xx()
- API
-Message-ID: <20231211123012.mrxfakg2wxdlsthb@quack3>
-References: <575dcecd51097dd30c5515f9f0ed92076b4ef403.1702229520.git.christophe.jaillet@wanadoo.fr>
+        Mon, 11 Dec 2023 07:30:25 -0500
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60A4F2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:30:30 -0800 (PST)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b9e53e2e60so5275675b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:30:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702297830; x=1702902630;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TroM8i2HOXF8HABtdpTxK6kxc9z46RqWekbDF5+jh+Q=;
+        b=eArM83qN7OwZ26/4d1mKwpKHUI9qcyQb7fF/I9qv2n7QgHI84pqsF6Z3Qza5mm+8W8
+         E00f49LR3PUa361nQT3V+wa6puety316lubY4BqhwrrsroRqRpyHrWNPK+5gYrvaTVCn
+         SSAhx6ehW3F9mGPSgFRSO+1crF2oBu7MnXXdAmNNhIIqZwh0ilcaDPvvVz57u8IQ9xF/
+         Gn7uHRjC9HrvV1Iz7wGOCglvmXQ7MkmmYvsO9HtNkLPwbdt5Hr+puOEJoDLmruOcDPRz
+         tncBr4F2ouIj7jjbcU22mMwc7jErBaA0tuVnLddbxB4XfxcqWU+bkkeB28ukFPqmX8Xa
+         ozSw==
+X-Gm-Message-State: AOJu0YyJQcFQ4k6ISuAMtSxPilL+i7CQIBl1NXC5g/zrTAMbD10/R7/w
+        yakDPsCBbk53t5lxXJ6PCT2y0Z3UFKukxN5zhxMMc1LcWTJuOqU=
+X-Google-Smtp-Source: AGHT+IHX3Qmjzdnn3JXBXPXaHU8K0mWr87/HawTCPXSJD+F7Wv97CMnjOWcKrB7gAQJ9POTCEE1wZQ9SQgkXPKoTso6QgqGW5rCQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <575dcecd51097dd30c5515f9f0ed92076b4ef403.1702229520.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Level: 
-X-Spam-Score: -0.93
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -0.93
-X-Spamd-Result: default: False [-0.93 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FREEMAIL_TO(0.00)[wanadoo.fr];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.13)[67.30%]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:18a8:b0:3b6:dd92:7372 with SMTP id
+ bi40-20020a05680818a800b003b6dd927372mr4290950oib.8.1702297830117; Mon, 11
+ Dec 2023 04:30:30 -0800 (PST)
+Date:   Mon, 11 Dec 2023 04:30:30 -0800
+In-Reply-To: <00000000000062a4cc060c2217de@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000775780060c3b19d2@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diNewExt
+From:   syzbot <syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 10-12-23 18:32:18, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
-> 
-> This is less verbose.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Looks good. Feel free to add:
+***
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Subject: [jfs?] UBSAN: array-index-out-of-bounds in diNewExt
+Author: eadavis@qq.com
 
-								Honza
+please test array-index-out-of-bounds in diNewExt
 
-> ---
->  fs/eventfd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/eventfd.c b/fs/eventfd.c
-> index 16bea05a7c78..ad8186d47ba7 100644
-> --- a/fs/eventfd.c
-> +++ b/fs/eventfd.c
-> @@ -82,7 +82,7 @@ EXPORT_SYMBOL_GPL(eventfd_signal_mask);
->  static void eventfd_free_ctx(struct eventfd_ctx *ctx)
->  {
->  	if (ctx->id >= 0)
-> -		ida_simple_remove(&eventfd_ida, ctx->id);
-> +		ida_free(&eventfd_ida, ctx->id);
->  	kfree(ctx);
->  }
->  
-> @@ -395,7 +395,7 @@ static int do_eventfd(unsigned int count, int flags)
->  	init_waitqueue_head(&ctx->wqh);
->  	ctx->count = count;
->  	ctx->flags = flags;
-> -	ctx->id = ida_simple_get(&eventfd_ida, 0, 0, GFP_KERNEL);
-> +	ctx->id = ida_alloc(&eventfd_ida, GFP_KERNEL);
->  
->  	flags &= EFD_SHARED_FCNTL_FLAGS;
->  	flags |= O_RDWR;
-> -- 
-> 2.34.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git bee0e7762ad2
+
+diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+index a037ee59e398..8fc28b655060 100644
+--- a/fs/jfs/jfs_imap.c
++++ b/fs/jfs/jfs_imap.c
+@@ -1341,6 +1341,7 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
+ 	 */
+ 	if (dir) {
+ 		agno = dbNextAG(JFS_SBI(pip->i_sb)->ipbmap);
++		printk("agno/dbNextAG: %d, %s\n", agno, __func__);
+ 		AG_LOCK(imap, agno);
+ 		goto tryag;
+ 	}
+@@ -1356,6 +1357,7 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
+ 
+ 	/* get the ag number of this iag */
+ 	agno = BLKTOAG(JFS_IP(pip)->agstart, JFS_SBI(pip->i_sb));
++	printk("agno/agstart: %d, %s\n", agno, __func__);
+ 	dn_numag = JFS_SBI(pip->i_sb)->bmap->db_numag;
+ 	if (agno < 0 || agno > dn_numag)
+ 		return -EIO;
+@@ -1584,6 +1586,7 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
+ 	/*
+ 	 * try to allocate anywhere within the same AG as the parent inode.
+ 	 */
++	printk("agno: %d, %s\n", agno, __func__);
+ 	rc = diAllocAG(imap, agno, dir, ip);
+ 
+ 	AG_UNLOCK(imap, agno);
+@@ -2179,6 +2182,9 @@ static int diNewExt(struct inomap * imap, struct iag * iagp, int extno)
+ 	/* get the ag and iag numbers for this iag.
+ 	 */
+ 	agno = BLKTOAG(le64_to_cpu(iagp->agstart), sbi);
++	if (agno > MAXAG || agno < 0)
++		return -EINVAL;
++
+ 	iagno = le32_to_cpu(iagp->iagnum);
+ 
+ 	/* check if this is the last free extent within the
+
