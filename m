@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A0480C32E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:29:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C69780C334
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbjLKI3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:29:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        id S229523AbjLKIaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjLKI3i (ORCPT
+        with ESMTP id S229463AbjLKIaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:29:38 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B7AED;
-        Mon, 11 Dec 2023 00:29:43 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB8Jhau008959;
-        Mon, 11 Dec 2023 08:29:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=fTPVzx3Xt7cgea3USz4oMf08V0jVZnDMR8c+j2HEy40=;
- b=MQL7BxbA4heCJ0e5/jrwxQSm1VIfowoVbFHq+lVUr2A34EWcRL5US7YCKTVB132hFhwv
- 4p3YGz5gP0BwUFVKhDCSUuKtVnurMlNAxpRZxuQ81btHRVw2Wu7RzwroBFnqsqCKmdXX
- 2tIbAGhzYzr5k1Qx1wW4okMpCxJgO+sy7SLbit3SEnGxP9+5dNnxa3O/qD1tag7dQvKI
- +EQU5mcDXCuEtLucfBe19J5urrv3WI+PN7mkiEBbnyFqa1i7Cce/xWC1FpdjP1AkUah+
- VF3X3WM1YKpQhyMbobV42Ybzs5gjTDsiUT6kuMmxjyFJrd7Wxelm0Yu0/gVTu88EJbJJ ZA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4tx874-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 08:29:38 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BB8KQcO012570;
-        Mon, 11 Dec 2023 08:29:38 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4tx86q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 08:29:38 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB62WIu005066;
-        Mon, 11 Dec 2023 08:29:37 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sjyqd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 08:29:37 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BB8TYr543844250
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 08:29:34 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7FF842004B;
-        Mon, 11 Dec 2023 08:29:34 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D72E20040;
-        Mon, 11 Dec 2023 08:29:33 +0000 (GMT)
-Received: from [9.171.1.164] (unknown [9.171.1.164])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Dec 2023 08:29:33 +0000 (GMT)
-Message-ID: <1602d546-636a-4144-9e9f-bad4b5f2fd9f@linux.ibm.com>
-Date:   Mon, 11 Dec 2023 09:29:33 +0100
+        Mon, 11 Dec 2023 03:30:08 -0500
+Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D29E8;
+        Mon, 11 Dec 2023 00:30:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1702283410; bh=bMk50ArkFZn/A6zyDTd+gORFOrRBh0Vv7u/HdHRDSdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GlrMhEoMcOOmT9hZVPZID5jh68eRiPW06fPO3FGYZ1O+ZkJhZ5iYrEyZli7NmY3Jb
+         mP6E5Y/RsBzD8XmsI0DeRez1i3fS5OY4s4i3iL5i3Up4IhuIph5zCkc2KO42esii6L
+         vIeS7eQJwbupke3WsUAoWi+TWJnbLT2PFJXpTGsgmlofKXYcdyDgLVwZv2+PY2kBQP
+         EhFFrETlCgHvrzyXGKVjF/TNO3GPfFI0OhBjaAdUZb7jPqcgSAXUyBNLE6S6OIMLF9
+         sOuJCffDus+Qy6X/clIMoJnbtuOg5ihgJL7dWMQOPy0Jk4c0FuC3BPGCYpx36iuzpm
+         xfRjdtTrrqIKA==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 9DCBD10008F; Mon, 11 Dec 2023 08:30:10 +0000 (GMT)
+Date:   Mon, 11 Dec 2023 08:30:10 +0000
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Jani Nikula <jani.nikula@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v6 1/4] pwm: rename pwm_apply_state() to
+ pwm_apply_might_sleep()
+Message-ID: <ZXbIknpNVxb5Mh2B@gofer.mess.org>
+References: <cover.1701248996.git.sean@mess.org>
+ <37090c1d8d8f42f1e12fa84942027d995189a99e.1701248996.git.sean@mess.org>
+ <20231209135742.3ieusuq3h3xlvjfn@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 9/9] net/smc: manage system EID in SMC stack
- instead of ISM driver
-Content-Language: en-US
-To:     Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-10-git-send-email-guwen@linux.alibaba.com>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <1702021259-41504-10-git-send-email-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: bqbdL5zNIWrLfA0QxrleQYkPkdYvLS5c
-X-Proofpoint-GUID: xgNRHnxNnaVoXruZgtJ9ZPfUo6fxlzYi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
- spamscore=0 mlxlogscore=599 lowpriorityscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312110070
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231209135742.3ieusuq3h3xlvjfn@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -101,17 +85,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08.12.23 08:40, Wen Gu wrote:
-> The System EID (SEID) is an internal EID that is used by the SMCv2
-> software stack that has a predefined and constant value representing
-> the s390 physical machine that the OS is executing on. So it should
-> be managed by SMC stack instead of ISM driver and be consistent for
-> all ISMv2 device (including virtual ISM devices) on s390 architecture.
+On Sat, Dec 09, 2023 at 02:57:42PM +0100, Uwe Kleine-König wrote:
+> On Wed, Nov 29, 2023 at 09:13:34AM +0000, Sean Young wrote:
+> > In order to introduce a pwm api which can be used from atomic context,
+> > we will need two functions for applying pwm changes:
+> > 
+> > 	int pwm_apply_might_sleep(struct pwm *, struct pwm_state *);
+> > 	int pwm_apply_atomic(struct pwm *, struct pwm_state *);
+> > 
+> > This commit just deals with renaming pwm_apply_state(), a following
+> > commit will introduce the pwm_apply_atomic() function.
+> > 
+> > Acked-by: Hans de Goede <hdegoede@redhat.com>
+> > Acked-by: Jani Nikula <jani.nikula@intel.com>
+> > Acked-by: Lee Jones <lee@kernel.org>
+> > Signed-off-by: Sean Young <sean@mess.org>
 > 
-> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
+> Not a in-detail-review, but I just noticed again, that we have
+> 
+> 	K:      pwm_(config|apply_state|ops)
+> 
+> in MAINTAINERS. That one needs adaption, too.
 
-I've sent you a Reviewed-by for v3 of this patch. Did you lose it?
+Fixed in v7.
+
+Thanks,
+
+Sean
