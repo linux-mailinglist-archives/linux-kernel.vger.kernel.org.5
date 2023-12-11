@@ -2,166 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 827CD80CF5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4743B80CF73
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343887AbjLKPX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        id S1343899AbjLKPYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:24:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKPX4 (ORCPT
+        with ESMTP id S1343865AbjLKPYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:23:56 -0500
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009EEDC;
-        Mon, 11 Dec 2023 07:24:01 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyJONX._1702308238;
-Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyJONX._1702308238)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Dec 2023 23:23:59 +0800
-Message-ID: <7ff3001a-4254-0382-f8c8-6ebf2807346a@linux.alibaba.com>
-Date:   Mon, 11 Dec 2023 23:23:57 +0800
+        Mon, 11 Dec 2023 10:24:52 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85C7DF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:57 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5906df1d2adso1807733eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1702308297; x=1702913097; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z3xtaErerlt4nlnnOzSlabRBtDSO5G3MlJlaHfuuRQ8=;
+        b=UohwAyJmU+Kj9oPGjLSbDNlsjNYf3kkih/ccgSBZ4ow6gwDGBIxWh00uyeG3ArqVt+
+         I7+7mw9JMgO3fRC6OtK9gJnheo814dvWavnX3uLyYwkeWUl8QPhM9ZBlBRZxAi0WVA6R
+         gJGrI0HKrg/Pm88HEqUIzmXaWMXtEfv81/1jrw/GsOobuJzWRCpJP3ImEE3O687aQe9V
+         12vQJqPrTkUO6OUqCuFUuxJiLzNPiyzKIi7BY+frlOSLqNCvXaaF264ZhlVWrh7aD7ad
+         I5jXz4RfhKqJHW1dwSYUgxsD9gZPynbtIOzs9CPj3zM6CyUXJhLUfD5P4k4Zp072wJ1J
+         bWoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702308297; x=1702913097;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z3xtaErerlt4nlnnOzSlabRBtDSO5G3MlJlaHfuuRQ8=;
+        b=iFvu2Ly2j9o+cH8Zd55O3/ji1DnicmEqe8ohIVx9sbBr/9vQt8n2lik3nOz/IWBMeG
+         gWMIsYwYVSdbNfGjmDsW66Phdm1yADwrYOrcuVV2cEmRvAiDXQjEMOlsFsDCHQO1j+aU
+         FMDXMHtNrrCb8vcYacaUk9vs+FYPXn58H31YRsxa8xiKRJgbMssXaesY3/EM+yKp0axT
+         dMyxbAE8A6TnBRm0ZesBbcJZYOuP+JLnOy3nCx9lmMAkufq23VdpTAlYeIUWipgqc4FK
+         0Xl0hD3e0ONIxI41xMTAquy0IP9GdLhnxsjQj4HJHgN9AWWRXHhr8zFu+Y/flYp+K3i4
+         WgkA==
+X-Gm-Message-State: AOJu0Yx2OfKvC+HiRL+4lbDL2CV0hAMFwXvCEskYOKey9PRBDPMHmI1Q
+        rBe74aC32hiL3WnsQrpCJNjGLg==
+X-Google-Smtp-Source: AGHT+IE0Zf78g8ypnJBYnHHcuYVxNHlZOXYBWbQ4OhuKwmXbnnnqqiXckwuMpS1xSNOWaCdBv28c9A==
+X-Received: by 2002:a05:6359:628c:b0:170:17eb:2fc6 with SMTP id se12-20020a056359628c00b0017017eb2fc6mr834223rwb.63.1702308297235;
+        Mon, 11 Dec 2023 07:24:57 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id t11-20020a056214154b00b0065b13180892sm3375747qvw.16.2023.12.11.07.24.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 07:24:56 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1rCi9Q-00CcQj-Ag;
+        Mon, 11 Dec 2023 11:24:56 -0400
+Date:   Mon, 11 Dec 2023 11:24:56 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Longfang Liu <liulongfang@huawei.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 12/12] iommu: Use refcount for fault data access
+Message-ID: <20231211152456.GB1489931@ziepe.ca>
+References: <20231207064308.313316-1-baolu.lu@linux.intel.com>
+ <20231207064308.313316-13-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
- smc_clc_send_confirm_accept()
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
- <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
- <9a6d57c0-f5b4-9b2c-dc5f-dc47d0518141@linux.alibaba.com>
- <fb2365f6-1237-4f22-9897-5676757e5157@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <fb2365f6-1237-4f22-9897-5676757e5157@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207064308.313316-13-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 07, 2023 at 02:43:08PM +0800, Lu Baolu wrote:
+> @@ -217,12 +250,9 @@ int iommu_page_response(struct device *dev,
+>  	if (!ops->page_response)
+>  		return -ENODEV;
+>  
+> -	mutex_lock(&param->lock);
+> -	fault_param = param->fault_param;
+> -	if (!fault_param) {
+> -		mutex_unlock(&param->lock);
+> +	fault_param = iopf_get_dev_fault_param(dev);
+> +	if (!fault_param)
+>  		return -EINVAL;
+> -	}
 
+The refcounting should work by passing around the fault_param object,
+not re-obtaining it from the dev from a work.
 
-On 2023/12/11 21:35, Alexandra Winter wrote:
-> 
-> 
-> On 11.12.23 13:15, Wen Gu wrote:
->>>> +    clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
->>>
->>> Why is this cast neccessary? (Here as well as in smcr_clc_prep_confirm_accept
->>> and in smc_clc_send_confirm_accept)
->>> smc_clc_msg_accept_confirm_v2 has hdr and d0 as well.
->>
->> I think the cast is to imply that v2 is an expansion of v1, or v1 is the base of v2.
->> So here using clc(v1) reperesents their common set.
->>
->> If we use smc_clc_msg_accept_confirm_v2 for all, I think readers may be tempted to
->> check whether the hdr and d0 in 'smc_clc_msg_accept_confirm_v2' are also applicable to v1.
->>
->> And there are settings below that are specific for v1. It may be confusing if we
->> change it like this:
->>
->> if (version == SMC_V1) {
->>      clc_v2->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
->> } else {
->>
->>
->>>
->>> IMO, it would be a nice seperate patch to get rid of the 2 type defs for
->>> smc_clc_msg_accept_confirm and smc_clc_msg_accept_confirm_v2
->>> and all the related casting anyhow.
->>>
->>
->> Do you mean to define only smc_clc_msg_accept_confirm_v2 or define with the name
->> of smc_clc_msg_accept_confirm but the contents of smc_clc_msg_accept_confirm_v2?
->>
->> I have a different opinion on this, since I think the smc_clc_msg_accept_confirm
->> and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
->> v2 messages and remind people what is currently working on. So I perfer to keep them.
->> Am I missing something?
->>
-> 
-> 
-> This is a discussion about coding style, readability and maintainability (avoid future errors).
-> And the code works today and the rest is opinions. That said, let me list some arguments why
-> I don't like the casts.
-> 
-> Casts in general break the type checking of the compiler.
-> 
-> In some places e.g. clc.d0 points to struct smc_clc_msg_accept_confirm in other
-> places it points to struct smc_clc_msg_accept_confirm_v2.
-> This makes it hard to find all places where e.g. d0 is altered. (e.g. with an IDE).
-> 
-> You say: "smc_clc_msg_accept_confirm
->> and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
->> v2 messages"
-> But that is not even the case in the code that this patch changes:
-> In smcd_clc_prep_confirm_accept() you pass a struct smc_clc_msg_accept_confirm_v2
-> cast it to v1 (even in the v2 case) and then use the v1 layout for the common fields and
-> the v1-only fields. So I don't think that helps very much.
-> 
-> The v2 messages were explicitely defined for compatibility. i.e.
-> all v1 fields are still available. It would be good to see that in the code as well.
-> With 2 differnet structs you don't emphasize that.
-> 
-> With future changes somebody could easily make a mistake that the 2 structures don't
-> have the same size anymore. And then the casting can lead to out-of-bound error that
-> are hard to find.
-> 
-> We want v2 to be the usual case and v1 to be the exception for backwards compatibility.
-> FOr historic reasons, the code looks as if v2 is the exception. I'd rather point out the
-> remaining v1 cases.
-> 
-> 
-> 
-> I could envision something like:
-> 
-> struct smc_clc_msg_accept_confirm {	/* clc accept / confirm message */
-> 	struct smc_clc_msg_hdr hdr;
-> 	union {
-> 		struct { /* SMC-R */
-> 			struct smcr_clc_msg_accept_confirm r0;
-> 			/* v2 only, reserved and ignored in v1: */
-> 			u8 eid[SMC_MAX_EID_LEN];
-> 			u8 reserved6[8];
-> 		} r1;
-> 		struct { /* SMC-D */
-> 			struct smcd_clc_msg_accept_confirm_common d0;
-> 			/* v2 only, reserved and ignored in v1: */
-> 			__be16 chid;
-> 			u8 eid[SMC_MAX_EID_LEN];
-> 			__be64 gid_ext;
-> 		} __packed d1;
-> 	};
-> };
-> 
-> And then only use this one structure.
-> 
+The work should be locked to the iommu_fault_param that was active
+when the work was launched.
 
-Thank you Sandy for the detailed explanation.
+When we get to iommu_page_response it does this:
 
-What I considered, as mentioned above, is that if the two are combined,
-it may be difficult to distinguish according to the name what situation
-I am in, v1 or v2?
+	/* Only send response if there is a fault report pending */
+	mutex_lock(&fault_param->lock);
+	if (list_empty(&fault_param->faults)) {
+		dev_warn_ratelimited(dev, "no pending PRQ, drop response\n");
+		goto done_unlock;
+	}
 
-But I do agree with your concern about the potential errors that caused
-by future divergence of the two struct if they are defined separately.
+Which determines that the iommu_fault_param is stale and pending
+free..
 
-I will try to combine them into one struct in a seperate patch.
+Also iopf_queue_remove_device() is messed up - it returns an error
+code but nothing ever does anything with it :( Remove functions like
+this should never fail.
 
-Thank you.
+Removal should be like I explained earlier:
+ - Disable new PRI reception
+ - Ack all outstanding PRQ to the device
+ - Disable PRI on the device
+ - Tear down the iopf infrastructure
 
+So under this model if the iopf_queue_remove_device() has been called
+it should be sort of a 'disassociate' action where fault_param is
+still floating out there but iommu_page_response() does nothing.
+
+IOW pass the refcount from the iommu_report_device_fault() down into
+the fault handler, into the work and then into iommu_page_response()
+which will ultimately put it back.
+
+> @@ -282,22 +313,15 @@ EXPORT_SYMBOL_GPL(iommu_page_response);
+>   */
+>  int iopf_queue_flush_dev(struct device *dev)
+>  {
+> -	int ret = 0;
+> -	struct iommu_fault_param *iopf_param;
+> -	struct dev_iommu *param = dev->iommu;
+> +	struct iommu_fault_param *iopf_param = iopf_get_dev_fault_param(dev);
+>  
+> -	if (!param)
+> +	if (!iopf_param)
+>  		return -ENODEV;
+
+And this also seems unnecessary, it is a bug to call this after
+iopf_queue_remove_device() right? Just
+rcu_derefernce(param->fault_param, true) and WARN_ON NULL.
+
+Jason
