@@ -2,194 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAC080DCB0
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBAA80DCB1
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjLKVLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S1344830AbjLKVMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLKVLR (ORCPT
+        with ESMTP id S229539AbjLKVMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:11:17 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48077D0;
-        Mon, 11 Dec 2023 13:11:23 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=capwhdIMFl+GDO48A1JbOhlj9F3a3lDD5wbQn2ZI+MHEmc9HmocAlsRwdOCi1a9Bh5M6BOtbyQd6+D/G/yXtSdM5G3HpXkdsRQpFcoBOnCN8RDwjdG3hm6BReVLrSnhmjWNX423QQEIhRZ3iO9vQycUc3sg5bGV5PAjtzIRhWchWpztS9cioTCr5gIkPAD1OpgUzvpVqHEEJvTydIeVtd8oS2HbWk/eA1+AmlJgHRqD9hjl9Hok69BcOmMwgxis85MuZJWAMqc3B23yYs033iRs9gRy45isxwnLUMpgeVwxiP4hVsadJa6Xh7VjCC7+15lHAqJDeMFwMFh/75q29MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iCQlNXeMh3MMrKodn3KJZTEiTKuKflU4pnh41nCxQs8=;
- b=GTqBpSb05mmlZ+UxVTF6rLsKrJnmJ8WyXiUOdKUuFMgZXxsCduFVHidrp5GHcngzRk0RPUYAg/GS8WPfP9ocQx5s9TsXhY5EaDcBTBn8jfY2CnqKl4gRe/oW5F/+DnefUsBykvRVCoeosKhOMuDxsLEV/vVZ5tznTslW6EL48PKb3NfCO7oxCsfqSukRvdHWYm/YSrHiYPzmVRVHAMqT1wLF1TKAoe5AJ04LxJcpmHi63SZ7+cF/ffQSlf8vcqDDUyLY1sphGNjAW7nt6ikXjmxkcc6Yv6HAuDGMwa9k2/P1Z0DZYHt3qTdsZJjGSaCjZ2pZLhWW9lmSdjDBmCrXfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iCQlNXeMh3MMrKodn3KJZTEiTKuKflU4pnh41nCxQs8=;
- b=gNK5nIAEB9BxNGpLgE6+Pilz0tPrNzNecO+4zV6G//+C1o9A3Yg07ROu7hc69CjzMYlaHZNStdtmickIkpN591M2ZuJw1G4dlQlt0DVuwd4dcdlrIaGsD1m85OZDskoSC9KA+K7S2KAzkkboRMDJuyQyNPEeMJc3YmUzHdLBPnY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by CH3PR12MB8536.namprd12.prod.outlook.com (2603:10b6:610:15e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 21:11:20 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3341:faaf:5974:f152]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3341:faaf:5974:f152%7]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 21:11:20 +0000
-Message-ID: <2800d4d6-8ae9-e6c9-287a-301beb0a2f50@amd.com>
-Date:   Mon, 11 Dec 2023 15:11:17 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v10 14/50] crypto: ccp: Add support to initialize the
- AMD-SP for SEV-SNP
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Jarkko Sakkinen <jarkko@profian.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-15-michael.roth@amd.com>
- <20231127095937.GLZWRoiaqGlJMX54Xb@fat_crate.local>
- <d5242390-8904-7ec5-d8a1-9e3fb8f6423c@amd.com>
- <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
- <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
- <20231209162015.GBZXSTv738J09Htf51@fat_crate.local>
-From:   "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <20231209162015.GBZXSTv738J09Htf51@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR03CA0021.namprd03.prod.outlook.com
- (2603:10b6:806:20::26) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        Mon, 11 Dec 2023 16:12:40 -0500
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D3ACF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:12:46 -0800 (PST)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-67ad277a06bso32166326d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:12:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702329165; x=1702933965;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x2FHjW16YFOZ98zKJ6t95OyWB+xQ0Ae6fs2r8OG+Q9U=;
+        b=TJ1z3eo0L8LNiBPgjEjY7w/2VDegy5LXkOF3wLSx4gTEgLj+9AMGo2gERB3oGP73Uw
+         A4hqVGoPHI5yu7ZUDUXBgzvLr0/5ar0917w3C0aawxA09kB99XlaSDu1LRZMGwm2k3fl
+         ow/VWJazaFGWpXGZKoNvC0J/85cxQ+7VeqE2EWCzckJRD6kO50itO6zGESEuiCYkBfcp
+         JdNA1GGZztB2P4Ukft9EKlmuGiY/BdOsyaasnxcHOVAhDTx9DxoC4qHCwUotBGaKoepp
+         rpv666wbIblYIzTLHIEgQ3eeihjnH0v8jYUwHbI6bYXISQg/eyuDuB2rWXyza10ERYS4
+         kLTw==
+X-Gm-Message-State: AOJu0YwwGTBqEyQJdGHyPrDA88ueQhp7j5wPCnVvk0Xhq6liWi7drrUY
+        6Kohm04Qi21jBMggdsJ+yuKe
+X-Google-Smtp-Source: AGHT+IFQYUfCwkf5CHJtat4VEH6Mao0v/I/DCRJ7nP89ZfELyH4njHovv1IR2E2cZQRTvHoj0K6qXw==
+X-Received: by 2002:ad4:58b0:0:b0:67a:a721:cb0d with SMTP id ea16-20020ad458b0000000b0067aa721cb0dmr6331049qvb.110.1702329165524;
+        Mon, 11 Dec 2023 13:12:45 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id pz8-20020ad45508000000b0067ad69c7276sm3603083qvb.75.2023.12.11.13.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 13:12:44 -0800 (PST)
+Date:   Mon, 11 Dec 2023 16:12:43 -0500
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Hongyu Jin <hongyu.jin.cn@gmail.com>, Jan Kara <jack@suse.cz>
+Cc:     agk@redhat.com, mpatocka@redhat.com, axboe@kernel.dk,
+        ebiggers@kernel.org, zhiguo.niu@unisoc.com, ke.wang@unisoc.com,
+        yibin.ding@unisoc.com, hongyu.jin@unisoc.com,
+        linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] block: Optimize bio io priority setting
+Message-ID: <ZXd7S9V8SQ3HSEbJ@redhat.com>
+References: <df68c38e-3e38-eaf1-5c32-66e43d68cae3@ewheeler.net>
+ <20231211090000.9578-1-hongyu.jin.cn@gmail.com>
+ <20231211090000.9578-2-hongyu.jin.cn@gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|CH3PR12MB8536:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00676926-4538-482a-3040-08dbfa8db8f1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oxANGmkK9i6dSjxMlkK8iN0EktOb5EQa8Grx4IZ4SCKX3SJeclXE23LXtTJrEorLJ1Hr5j00vhl9mJGi6Akjy44VJ0gK7s6ZcxJrgSjleaJi+v3htS8BKUX4ZQZW1JeN4bpxxd/kYU31eU4+h2hAMxWiIobZrYGoMYrxjOerFB6LPOI0Pmiz5BbqGNR1SHZGWYzJN1lqQsY5ORR2w4CbCWWqzrFrfhaWnHKqsGgPYDrihQHPldrFg2yiYRztkXiusXyrqtpUsJr/i2bq6cqG1Z71wOx+ADyPCGmKgBvNTpFL7XicVUSjKX1PjIk6kIt5j2SAbBopHGQfQoMOXBQXojah3pm6JU8sjtKaR8U8Mr3cxVx2akgj2+4zj8tXe4qHd/bSt8nVZN8V2GITHBCf0JzJlTV9PqO1Wx95Youty9D/nSeBOZdS9CuItrLybtpdk8va/Dluf6X6uAEPppSSrnCaT/yFvz9WWZrpSV0p2euaTi2MpEkrPdIRTHAnLqGsVSKJXa3ZfZLqgv8moVm1iXTm1YhikGyelmO3dty4cXehWArbt31iqqtYjHpK4rR5QG9LucIAcXSie0S/a3L5AdKvT0B75VcBSLz4ysueySbqNjZHCjelnc3i3J7BDn4qkpGaVQZdwuXQEVAhm4M9KA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(41300700001)(5660300002)(7416002)(7406005)(2906002)(6512007)(53546011)(6506007)(2616005)(31686004)(36756003)(478600001)(6666004)(6486002)(38100700002)(83380400001)(8936002)(26005)(4326008)(6916009)(66476007)(86362001)(66556008)(54906003)(316002)(66946007)(31696002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVg5dHp4S3UvejJPVnFTeFpiSDcwSW1reElnT1RKQXMrZEh5SUtkZmNkeVVi?=
- =?utf-8?B?ZW9QYk9scG1NSWFUVnpFNUlObHFwbjcydWNtQ09pWnpGZ3dvZzNyTWVYREhD?=
- =?utf-8?B?b0Y1aStkRjhBSFJ6ZU5SQzY4M3JFZnhRS0NmSXM4c09PWjliT0tpcGJZNUlx?=
- =?utf-8?B?a3kwSWIvUlVOU1ovNmlvTEdOOEh5WHRHRjF1VUwvWGpsUE9ESDJEUC8zY0ls?=
- =?utf-8?B?MkxCdmk5QXg3M3pBK3VIVTFzTWJMNk1ZM0txSkZmWHU5R21YNDdGT1J2QVYy?=
- =?utf-8?B?Mm9yRzFJaHNId01pU0pkOUR4QkpCYWdUMjdJR3dNc0hDVjR1UENjdjFXMHZS?=
- =?utf-8?B?ZEV3dlpnNGRIbEw1LzMxODRldUh0UzNobHVPNE52WTVBd2xDVmNhZlRMNi9t?=
- =?utf-8?B?aWptUURMVnNPK0o5RURJMXM1OVJOMlVjaGNqVDRpZHE3R0tmdE4vT3BmWis2?=
- =?utf-8?B?TWhCZkNSbXFhK1hXWHFzTHNBTzJJWTZRb0w4dVpqWU9Ed1Qvc1d0U1VvSGMr?=
- =?utf-8?B?bXg4QmQvM3h5V2xEUUdjYmtsbWpTR29GUVRPK2JoZzJHUHM1YmtuL3gxWWRs?=
- =?utf-8?B?S1RiRlMrNWdkajZkOFZzakxRRHhqaHRvRmRVdWFNakNqc0lUY3lGUzlWL0E1?=
- =?utf-8?B?NFVQSmEzdEZLVGE2N3lYMUY4V3UvOVZrc2ZVKzhPdjRwaUUybU5TTFBKWDkv?=
- =?utf-8?B?OHN2OG1KeHFLdVorNURLMDlOTW9mend3R3hoZitLV3VyZ0FRTjhta2NhU0xx?=
- =?utf-8?B?NDBFeFZOMDZRbDdiUk1TY3dPSkEwaUtWWThoMGNFZDNoTFB0bmptY1hSUmE3?=
- =?utf-8?B?b3BlS3NaallTTlhFMXpPbDhwOHNvM21lMHZZSExFU1d0c2NRUzloblh1OHlS?=
- =?utf-8?B?RXdhVGF1aG5xRUhZV1k1SkxJbCtUd2Rna0ZuYXpXMVJqdE5ENEFXVVJiRlhz?=
- =?utf-8?B?MEtwdlZDSU1rY1lWYXg3TVBsbU84VjRTcnROOEdKN2NhaFNUR3BnUkNISFY1?=
- =?utf-8?B?TUFZL2FGalQ1NUJ6djJWdHpZQjJob2pzc2RyVllyOSt6WnhPeGpiWUEycGF6?=
- =?utf-8?B?N2F6ajRsN0dYS1JZY1BUcXc3T2pkUXl1QkM5dE85Y25RWUdSUG1JVDE1OU8w?=
- =?utf-8?B?Wnkxbi9yUVhCRDZqSFhmNjhyczdXNGFwV2Q4Z3N0MWV6MjZ4MkRrcmNETzhV?=
- =?utf-8?B?UGlSNitUNXRscVdPRzlxT1pzcVJBOWhqSHFjVmt0a3g1SDh4b3FZRFgwOGNl?=
- =?utf-8?B?eGh0Ynl3SFhVVmVVbVdYZGNTN0N3ckd0dUg0eWtDSTFEUjcrVFd2dml5RnRq?=
- =?utf-8?B?Sy93QWhTdVBxYmRUcmdxQUxBQlhUc0RTYlBna0F6TnNYaTM2b01kWDRwdXc2?=
- =?utf-8?B?MXl4SGhTSjczeEsrNW43T2RGSXN0WGdYQnNhZVFzUWxqL3hXUXpnbmxYdWxs?=
- =?utf-8?B?WXZyNnFjWHRsS3I2OHkwL3Uvd0E3c0R5bGFLbWNMODF6eDQ1cEVwZnNrTFYv?=
- =?utf-8?B?SVlINkRwNnRtcWcrcjVxK0JadEs3WFh0eG1ZZHhVNGVucFoxTXVoOW51MXBw?=
- =?utf-8?B?eE5KQy9hendxTG1vTGVXN2I2WThqYzErM1EwY0VocWllOTl5OEFhQUc1bWsx?=
- =?utf-8?B?V3FoWWtCbkpBbTY3U1BDUndNRmdMckZhaEdhZXhxOFlsYjg4bm8vZy95ZTcz?=
- =?utf-8?B?OXRHbDUyWDhkSU91Q1UzY21VMytMd3EzUW5YZ1A4b0hBa2RxWFRTM25icGtX?=
- =?utf-8?B?TDVXbmhlZ3hFOVdKT0YrUVJFYndnZE1iZHM2Tjc2bDlPWmhrd2NnSFhnYlB2?=
- =?utf-8?B?UHRxZ2kvRHhaL3ZoU3JkRmlDYUZWeDM5dnRMUDV5Wjh2Qkx1ZFRMT0NJb2w1?=
- =?utf-8?B?UzBXanJZRXZyQ3hQdkVZWUhkcVhYMFAxanNTWFlRL2J5UlhraVJROWIvMWll?=
- =?utf-8?B?b1RXNm1OazlZUVNXMXpwdGFaWWdlT25SQk1jaHVQdjU3cGE0a3grcldRVXNq?=
- =?utf-8?B?ZGl4ZHovTjVSWUNkM0orL01GMEJqdHUrY3pMZ1ovTVlUdXUxOHpNdzg1M1Z5?=
- =?utf-8?B?TDZjbE5NYUUvaTVkdFM3RXg2bDNIb1dyNXJSWmdnbW1Vdm9WTzdsbXA4dGJz?=
- =?utf-8?Q?AjiPlVankMZrjAta98nkmPd/m?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00676926-4538-482a-3040-08dbfa8db8f1
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 21:11:20.4626
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3+BulLT4SX+uX5bhtXDQfEiQbtN04MWxqwBEz6rC/Fi+xgehfBTODKu6j0kOxLhJtnVSK4WAepgGtcyGmDH89A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8536
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211090000.9578-2-hongyu.jin.cn@gmail.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Boris,
+On Mon, Dec 11 2023 at  3:59P -0500,
+Hongyu Jin <hongyu.jin.cn@gmail.com> wrote:
 
-On 12/9/2023 10:20 AM, Borislav Petkov wrote:
-> On Wed, Dec 06, 2023 at 02:35:28PM -0600, Kalra, Ashish wrote:
->> The main use case for the probe parameter is to control if we want to doHl
->> legacy SEV/SEV-ES INIT during probe. There is a usage case where we want to
->> delay legacy SEV INIT till an actual SEV/SEV-ES guest is being launched. So
->> essentially the probe parameter controls if we want to
->> execute __sev_do_init_locked() or not.
->>
->> We always want to do SNP INIT at probe time.
+> From: Hongyu Jin <hongyu.jin@unisoc.com>
 > 
-> Here's what I mean (diff ontop):
+> Current call bio_set_ioprio() for each cloned bio and splited bio,
+> and the io priority can't be passed to module that implement
+> struct gendisk::fops::submit_bio, such as device-mapper.
 > 
+> Move bio_set_ioprio() into submit_bio(), only call bio_set_ioprio()
+> once set the priority of origin bio, cloned and splited bio
+> auto inherit the priority of origin bio in clone process.
+> 
+> Co-developed-by: Yibin Ding <yibin.ding@unisoc.com>
+> Signed-off-by: Yibin Ding <yibin.ding@unisoc.com>
+> Signed-off-by: Hongyu Jin <hongyu.jin@unisoc.com>
 
-See my comments below on this patch:
+This patch's subject needs fixing (this is a fix, not an optimization)
+and the header needs fixing (various issues that make it hard to
+read).
 
-> +int sev_platform_init(int *error)
->   {
->   	int rc;
->   
->   	mutex_lock(&sev_cmd_mutex);
-> -	rc = ___sev_platform_init_locked(error, true);
-> +	rc = _sev_platform_init_locked(error, false);
->   	mutex_unlock(&sev_cmd_mutex);
->   
->   	return rc;
->   }
-> +EXPORT_SYMBOL_GPL(sev_platform_init);
->   
+This should also be tagged with:
+Fixes: a78418e6a04c9 ("block: Always initialize bio IO priority on submit")
 
-What we need is a mechanism to do legacy SEV/SEV-ES INIT only if a 
-SEV/SEV-ES guest is being launched, hence, we want an additional 
-parameter added to sev_platform_init() exported interface so that 
-kvm_amd module can call this interface during guest launch and indicate 
-if SNP/legacy guest is being launched.
+(commit 82b74cac28493 was commit immediately prior that placed the
+direct call incorrectly)
 
-That's the reason we want to add the probe parameter to
-sev_platform_init().
+Reviewed-by: Mike Snitzer <snitzer@kernel.org>
 
-And to address your previous comments, this will remain a clean 
-interface, there are going to be only two functions:
-sev_platform_init() & __sev_platform_init_locked().
-
-Thanks,
-Ashish
+> ---
+>  block/blk-core.c | 10 ++++++++++
+>  block/blk-mq.c   | 11 -----------
+>  2 files changed, 10 insertions(+), 11 deletions(-)
+> 
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index fdf25b8d6e78..68158c327aea 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -49,6 +49,7 @@
+>  #include "blk-pm.h"
+>  #include "blk-cgroup.h"
+>  #include "blk-throttle.h"
+> +#include "blk-ioprio.h"
+>  
+>  struct dentry *blk_debugfs_root;
+>  
+> @@ -809,6 +810,14 @@ void submit_bio_noacct(struct bio *bio)
+>  }
+>  EXPORT_SYMBOL(submit_bio_noacct);
+>  
+> +static void bio_set_ioprio(struct bio *bio)
+> +{
+> +	/* Nobody set ioprio so far? Initialize it based on task's nice value */
+> +	if (IOPRIO_PRIO_CLASS(bio->bi_ioprio) == IOPRIO_CLASS_NONE)
+> +		bio->bi_ioprio = get_current_ioprio();
+> +	blkcg_set_ioprio(bio);
+> +}
+> +
+>  /**
+>   * submit_bio - submit a bio to the block device layer for I/O
+>   * @bio: The &struct bio which describes the I/O
+> @@ -831,6 +840,7 @@ void submit_bio(struct bio *bio)
+>  		count_vm_events(PGPGOUT, bio_sectors(bio));
+>  	}
+>  
+> +	bio_set_ioprio(bio);
+>  	submit_bio_noacct(bio);
+>  }
+>  EXPORT_SYMBOL(submit_bio);
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index e2d11183f62e..a6e2609df9c9 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -40,7 +40,6 @@
+>  #include "blk-stat.h"
+>  #include "blk-mq-sched.h"
+>  #include "blk-rq-qos.h"
+> -#include "blk-ioprio.h"
+>  
+>  static DEFINE_PER_CPU(struct llist_head, blk_cpu_done);
+>  static DEFINE_PER_CPU(call_single_data_t, blk_cpu_csd);
+> @@ -2922,14 +2921,6 @@ static inline struct request *blk_mq_get_cached_request(struct request_queue *q,
+>  	return rq;
+>  }
+>  
+> -static void bio_set_ioprio(struct bio *bio)
+> -{
+> -	/* Nobody set ioprio so far? Initialize it based on task's nice value */
+> -	if (IOPRIO_PRIO_CLASS(bio->bi_ioprio) == IOPRIO_CLASS_NONE)
+> -		bio->bi_ioprio = get_current_ioprio();
+> -	blkcg_set_ioprio(bio);
+> -}
+> -
+>  /**
+>   * blk_mq_submit_bio - Create and send a request to block device.
+>   * @bio: Bio pointer.
+> @@ -2963,8 +2954,6 @@ void blk_mq_submit_bio(struct bio *bio)
+>  	if (!bio_integrity_prep(bio))
+>  		return;
+>  
+> -	bio_set_ioprio(bio);
+> -
+>  	rq = blk_mq_get_cached_request(q, plug, &bio, nr_segs);
+>  	if (!rq) {
+>  		if (!bio)
+> -- 
+> 2.34.1
+> 
+> 
