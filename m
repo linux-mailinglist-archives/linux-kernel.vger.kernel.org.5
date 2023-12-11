@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E62E980CED6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C2980CED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343714AbjLKOuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
+        id S1343856AbjLKOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:50:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKOuA (ORCPT
+        with ESMTP id S1343819AbjLKOuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:50:00 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2D0C3;
-        Mon, 11 Dec 2023 06:50:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=kEmVlye6CMrVPDyTmVFhOQ15lLv0MDG5hDAupVdWbcI=; b=gsXMqkQARmulOgWXmYNgBvmkpk
-        3QX7SSPv47Y/AVWozhPBPlR3/0omDCt9HHk4eqe6vmnzVKA7eVEaC4Koa0om8RkdVuOfFXTorn8uT
-        48s2HbOm9zme/QgYf6307hmA/tZ4eEF9MgEtFDUKBDlmtCuh2eu5hicPLqCCTdnl023w=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:45548 helo=debian-acer)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1rChbI-0002gh-29; Mon, 11 Dec 2023 09:49:40 -0500
-Date:   Mon, 11 Dec 2023 09:49:38 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        ilpo.jarvinen@linux.intel.com, u.kleine-koenig@pengutronix.de,
-        shawnguo@kernel.org, s.hauer@pengutronix.de,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        cniedermaier@dh-electronics.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, LinoSanfilippo@gmx.de,
-        lukas@wunner.de, p.rosenberger@kunbus.com, stable@vger.kernel.org
-Message-Id: <20231211094938.11c3322b80c2b827b46725c5@hugovil.com>
-In-Reply-To: <20231209125836.16294-2-l.sanfilippo@kunbus.com>
-References: <20231209125836.16294-1-l.sanfilippo@kunbus.com>
-        <20231209125836.16294-2-l.sanfilippo@kunbus.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Mon, 11 Dec 2023 09:50:19 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D858CD0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:50:24 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-77f70206016so86781585a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:50:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1702306224; x=1702911024; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4zY0//tl2g5UpTN9HNsgH35wUdWi0GHrJKuCe+zbVGE=;
+        b=Xjc7iupaamSqycEZxtXjRUpda9bS7qh8w9aLQI6uJQc97vVtsKr4ORiBvDdeB34D79
+         QP7QZpyXgVHbZIMK9rnqj0cWCf0+IOFkPDLoxMWly0n7IENTEeqCBPFT4FvAJNk7v9+T
+         KKuagUDwlA3CLi8mC6jkTvZ9S+WvcLKKJYXakUl/Y9b7x93IJdQrtzyBXXzXHB8Wh5Db
+         KWDTvXbDE2Tbszg8oVrHLK7S4rOQD+VuTu4opvjxwVcZbT1nzEmcTv6XNZJzriGyVr3P
+         X9Bd9XBEdaSf17vsPXxRA555BZ4QW73G1w2yq2TOjLK0MOuGkKHsnFvI7Dw69tX41neG
+         IfaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702306224; x=1702911024;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4zY0//tl2g5UpTN9HNsgH35wUdWi0GHrJKuCe+zbVGE=;
+        b=HoqvU1KbdQE2ubyavgdpsWW7mCYOIBCMeNl9tWHuJ3Ml9lZc31lL20t7am4kQkceGN
+         HAOlCLo/u3KDshyZJm9MgPX2cfXDwmNeiJJ1ywujOYZiCCSAdq8VtyWJjBVUc5g/LV2V
+         6h7PCdUHulrKGVwn1NvQNZ+51fqTIXcyp4liGthkyKjUWQVY8ZDCdzP2w2MhhFY11NTU
+         B4OpzaduVim6I/hcGDw6LYGnv/VEQi73AAWLIP44UEY3xBdyK/JV3ICVakOFmihv8M9L
+         CB8gpWskg5q4BLjWSlxY6n8Tfek126wUCDIiwsRaG3JVF+KGaxg60NVKYb+e+12gogcW
+         rMsw==
+X-Gm-Message-State: AOJu0YwRcqpFfCWi8l26JWy4wM+f0+PxhZJF/xHJYxTvT+ECdnTE5Brn
+        USuUGsSu0DpU9O/AKODPj3jV5W0tMVEbpfygOzk=
+X-Google-Smtp-Source: AGHT+IHGkLg/syuCG85iyYo/XNSnvoZo038HyAe/rHk+Y5RIFg9FCabNPYR9leNiDmLw0NWrT9WPlw==
+X-Received: by 2002:a05:620a:36f1:b0:77f:7898:8a73 with SMTP id cz49-20020a05620a36f100b0077f78988a73mr1500354qkb.6.1702306223919;
+        Mon, 11 Dec 2023 06:50:23 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id a10-20020a05620a124a00b0077d78c5b575sm2956728qkl.111.2023.12.11.06.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 06:50:23 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1rChby-00Cbmb-Rh;
+        Mon, 11 Dec 2023 10:50:22 -0400
+Date:   Mon, 11 Dec 2023 10:50:22 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Longfang Liu <liulongfang@huawei.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 11/12] iommu: Refine locking for per-device fault data
+ management
+Message-ID: <20231211145022.GZ1489931@ziepe.ca>
+References: <20231207064308.313316-1-baolu.lu@linux.intel.com>
+ <20231207064308.313316-12-baolu.lu@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207064308.313316-12-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v5 1/7] serial: Do not hold the port lock when setting
- rx-during-tx GPIO
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 Dec 2023 13:58:30 +0100
-Lino Sanfilippo <l.sanfilippo@kunbus.com> wrote:
-
-> Both the imx and stm32 driver set the rx-during-tx GPIO in rs485_config().
-> Since this function is called with the port lock held, this can be an
-> problem in case that setting the GPIO line can sleep (e.g. if a GPIO
-> expander is used which is connected via SPI or I2C).
+On Thu, Dec 07, 2023 at 02:43:07PM +0800, Lu Baolu wrote:
+> The per-device fault data is a data structure that is used to store
+> information about faults that occur on a device. This data is allocated
+> when IOPF is enabled on the device and freed when IOPF is disabled. The
+> data is used in the paths of iopf reporting, handling, responding, and
+> draining.
 > 
-> Avoid this issue by moving the GPIO setting outside of the port lock into
-> the serial core and thus making it a generic feature.
+> The fault data is protected by two locks:
 > 
-> Fixes: c54d48543689 ("serial: stm32: Add support for rs485 RX_DURING_TX output GPIO")
-> Fixes: ca530cfa968c ("serial: imx: Add support for RS485 RX_DURING_TX output GPIO")
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> - dev->iommu->lock: This lock is used to protect the allocation and
+>   freeing of the fault data.
+> - dev->iommu->fault_parameter->lock: This lock is used to protect the
+>   fault data itself.
+> 
+> Apply the locking mechanism to the fault reporting and responding paths.
+> 
+> The fault_parameter->lock is also added in iopf_queue_discard_partial().
+> It does not fix any real issue, as iopf_queue_discard_partial() is only
+> used in the VT-d driver's prq_event_thread(), which is a single-threaded
+> path that reports the IOPFs.
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
+> Tested-by: Longfang Liu <liulongfang@huawei.com>
 > ---
->  drivers/tty/serial/imx.c         |  4 ----
->  drivers/tty/serial/serial_core.c | 12 ++++++++++++
->  drivers/tty/serial/stm32-usart.c |  5 +----
->  3 files changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 708b9852a575..9cffeb23112b 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -1943,10 +1943,6 @@ static int imx_uart_rs485_config(struct uart_port *port, struct ktermios *termio
->  	    rs485conf->flags & SER_RS485_RX_DURING_TX)
->  		imx_uart_start_rx(port);
->  
-> -	if (port->rs485_rx_during_tx_gpio)
-> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
-> -
->  	return 0;
->  }
->  
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index f1348a509552..a0290a5fe8b3 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -1402,6 +1402,16 @@ static void uart_set_rs485_termination(struct uart_port *port,
->  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
->  }
->  
-> +static void uart_set_rs485_rx_during_tx(struct uart_port *port,
-> +					const struct serial_rs485 *rs485)
-> +{
-> +	if (!(rs485->flags & SER_RS485_ENABLED))
-> +		return;
-> +
-> +	gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> +				 !!(rs485->flags & SER_RS485_RX_DURING_TX));
-> +}
-> +
->  static int uart_rs485_config(struct uart_port *port)
->  {
->  	struct serial_rs485 *rs485 = &port->rs485;
-> @@ -1413,6 +1423,7 @@ static int uart_rs485_config(struct uart_port *port)
->  
->  	uart_sanitize_serial_rs485(port, rs485);
->  	uart_set_rs485_termination(port, rs485);
-> +	uart_set_rs485_rx_during_tx(port, rs485);
->  
->  	uart_port_lock_irqsave(port, &flags);
->  	ret = port->rs485_config(port, NULL, rs485);
-> @@ -1457,6 +1468,7 @@ static int uart_set_rs485_config(struct tty_struct *tty, struct uart_port *port,
->  		return ret;
->  	uart_sanitize_serial_rs485(port, &rs485);
->  	uart_set_rs485_termination(port, &rs485);
-> +	uart_set_rs485_rx_during_tx(port, &rs485);
->  
->  	uart_port_lock_irqsave(port, &flags);
->  	ret = port->rs485_config(port, &tty->termios, &rs485);
-> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-> index 3048620315d6..ec9a72a5bea9 100644
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-> @@ -226,10 +226,7 @@ static int stm32_usart_config_rs485(struct uart_port *port, struct ktermios *ter
->  
->  	stm32_usart_clr_bits(port, ofs->cr1, BIT(cfg->uart_enable_bit));
->  
-> -	if (port->rs485_rx_during_tx_gpio)
-> -		gpiod_set_value_cansleep(port->rs485_rx_during_tx_gpio,
-> -					 !!(rs485conf->flags & SER_RS485_RX_DURING_TX));
-> -	else
-> +	if (!port->rs485_rx_during_tx_gpio)
->  		rs485conf->flags |= SER_RS485_RX_DURING_TX;
->  
->  	if (rs485conf->flags & SER_RS485_ENABLED) {
-> -- 
-> 2.42.0
-> 
+>  drivers/iommu/io-pgfault.c | 61 +++++++++++++++++++-------------------
+>  1 file changed, 30 insertions(+), 31 deletions(-)
 
-Reviewed-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Hugo
+Jason
