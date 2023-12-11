@@ -2,463 +2,742 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B80880CFFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7CB80CFFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343877AbjLKPpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        id S1344384AbjLKPqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343865AbjLKPpW (ORCPT
+        with ESMTP id S1343918AbjLKPqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:45:22 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF160BD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:45:27 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso48317555e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:45:27 -0800 (PST)
+        Mon, 11 Dec 2023 10:46:45 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5420EA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:46:47 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4257ba1bc5fso37206711cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:46:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1702309526; x=1702914326; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dzsvg2JRhp2WBCViewjz9B5ntQdfpn6OWyFZlX5XA+0=;
-        b=LNpaO8Kq1lRUw7FOPTOX77j4RC8xoNsYpuMfsrMTEmt1bEo9oo7H9K5WwmG1iLDNUU
-         khuDdEGbWMKpUxudJzE2p9FbsPqG661K+pH/u4qS0JJr42yu5k0wcisrJZhrja4IqrUN
-         j3GsPTKHZtqSQOShFL3xMY1jlULolPhwv/vW4=
+        d=soleen.com; s=google; t=1702309607; x=1702914407; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zuh/+jVS6AsBq9xlz/Krcs+YX0xUlKwbVJGm8a3wXOc=;
+        b=JYxR/T+GBFlxJPUKFCEA6ADfuUPlP27vtq0HvNpcBHa68r08T+WlhH+y0mSSZIgJdW
+         I39f0lYlKvLDv0q0omsbTPvNC8/YI6ruXqdEUSZzNrQIs9KAn4UpETKqYuWWHnA+IpSI
+         3qAAaVv/PAu3xJFeAodGFab4FX9B+kOL/gGUmZeX5VS36QtueiJcZ4wR5RI5pOhW8Vyr
+         ZBzVflcuWdfjrZKX6JH7OweLTethUnp3p7WPszKDupFOfIlKYRmb0jnEhciCRVaP9pTk
+         rtiZTjyTmvhMMutH8xkovS7Fg3ervLtkCJpVPV0zGfi/38Q7KMwkNpT1ErgqVGSAD+8T
+         imXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702309526; x=1702914326;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dzsvg2JRhp2WBCViewjz9B5ntQdfpn6OWyFZlX5XA+0=;
-        b=dhZ7Yb9opyiE7bBiX8v9m0XlVDeXAikQyJdifoXK0Qhz0J7km7zauotpcmMbYAO40k
-         Mi/epC7P91tUkCH3O0FSxxt6rvMXvrT7XlB7VSEVLkEHvpiQ4071K4hN+pgTFjknxHnU
-         O99WkQ4uy/ILPPFuuTDm2gn5BfIAdmTpkT6cVcIjITWu2EAP/S7PskpmO/o4dKdsdJfm
-         fCSnzkhEyH7WVWc2/ZVaTCvpWUS2sJTLUJ1erW1s5JP6+NoOgYcaFxoFynhlichRPkb4
-         6nzImQiR/cT8TIFDy2dSHgzhMAaE5V08daCktp8nJeLJwjolO4EznrHlF+RMc7r2pWTF
-         ZT+Q==
-X-Gm-Message-State: AOJu0Yz4tSz7Kd1DKU09hnRDr/fIdwSl6HH5H8F+vQO9SULXRvtO9/j+
-        dNxS4kHvXxhr/DFnVMWIez3gfQ==
-X-Google-Smtp-Source: AGHT+IFOoz6gzBFRlNCmm85TMu3iYATT7VeIaUXZXZII0A7jooZZJmYbocvfHglY0hU190etWOKWUQ==
-X-Received: by 2002:a05:600c:331b:b0:40c:1bff:f707 with SMTP id q27-20020a05600c331b00b0040c1bfff707mr2291731wmp.156.1702309526222;
-        Mon, 11 Dec 2023 07:45:26 -0800 (PST)
-Received: from localhost ([213.195.113.99])
-        by smtp.gmail.com with ESMTPSA id n19-20020a05600c3b9300b0040b4b66110csm13379594wms.22.2023.12.11.07.45.25
+        d=1e100.net; s=20230601; t=1702309607; x=1702914407;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zuh/+jVS6AsBq9xlz/Krcs+YX0xUlKwbVJGm8a3wXOc=;
+        b=hq2iaTD3bS0yNoJzNEZYI34iqam1Xt5wEUJR7OBZkygQMgadfHBjnRxH1O1pgMegz1
+         +sdRjkwHoCcvY56cVSIn3pOadPLDsCI1Y2Sg0h8vEmeU0yv6ro6WdbWB3HFk5r6Cl+U1
+         IY8ktVQipyXCRizLo2sE9j5DRWQ3qAGEGWX2enVGYP7WPEuxPMoJVUQVIwp2q0cOJHrZ
+         4j8OD1Tu0BRUBnLK8TCZafVujrzu6pRIs/kZEdI/r6utkgsKaqHBR1CnrMsU2fz5C40m
+         oWbhJFF7ojY6yx6APrt/O4UWp6vfdP8SakI9d14Sc7Nq2xhIpGpwI2RcfTFuHec/gxM6
+         pwwg==
+X-Gm-Message-State: AOJu0YxJNSWzCs7gWtNytTxx2nI0KPqppnELHg9C6Jm91ZCG/JptlkDb
+        lGSnN8QnUnq8/MkPBfGUySl8Qg==
+X-Google-Smtp-Source: AGHT+IGmLkBk83s1LHXUD8pr2QKWpTLVK1bZQwSLK9jpBLvNVN09fJ5oXlCiPPCLEFB267sp93IffQ==
+X-Received: by 2002:a05:622a:15c1:b0:423:6fd1:40c with SMTP id d1-20020a05622a15c100b004236fd1040cmr7500453qty.16.1702309606865;
+        Mon, 11 Dec 2023 07:46:46 -0800 (PST)
+Received: from soleen.c.googlers.com.com (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id fh3-20020a05622a588300b00425b356b919sm2113603qtb.55.2023.12.11.07.46.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 07:45:25 -0800 (PST)
-Date:   Mon, 11 Dec 2023 16:45:24 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>
-Cc:     Jan Beulich <jbeulich@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
-        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
-        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
-        "Zhang, Julia" <Julia.Zhang@amd.com>,
-        "Huang, Ray" <Ray.Huang@amd.com>
-Subject: Re: [RFC KERNEL PATCH v2 2/3] xen/pvh: Unmask irq for passthrough
- device in PVH dom0
-Message-ID: <ZXculMdLgwGaRC7i@macbook>
-References: <alpine.DEB.2.22.394.2311291950350.3533093@ubuntu-linux-20-04-desktop>
- <ZWiyBP4Lzz5lXraP@macbook>
- <alpine.DEB.2.22.394.2311301912350.110490@ubuntu-linux-20-04-desktop>
- <ZWmgJNidFsfkDp7q@macbook>
- <alpine.DEB.2.22.394.2312011857260.110490@ubuntu-linux-20-04-desktop>
- <ZW2ptexPQXrWBiOS@macbook>
- <alpine.DEB.2.22.394.2312041413000.110490@ubuntu-linux-20-04-desktop>
- <ZW7rDjjC0gxEI1cq@macbook>
- <15275706-5c31-4e29-aa29-9f5e90526219@suse.com>
- <BL1PR12MB5849C871B0B9577D1E0BF576E784A@BL1PR12MB5849.namprd12.prod.outlook.com>
+        Mon, 11 Dec 2023 07:46:46 -0800 (PST)
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, surenb@google.com,
+        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, souravpanda@google.com
+Subject: [PATCH] vmstat: don't auto expand the sysfs files
+Date:   Mon, 11 Dec 2023 15:46:44 +0000
+Message-ID: <20231211154644.4103495-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BL1PR12MB5849C871B0B9577D1E0BF576E784A@BL1PR12MB5849.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 06:07:26AM +0000, Chen, Jiqian wrote:
-> On 2023/12/5 18:32, Jan Beulich wrote:
-> > On 05.12.2023 10:19, Roger Pau Monné wrote:
-> >> On Mon, Dec 04, 2023 at 02:19:33PM -0800, Stefano Stabellini wrote:
-> >>> On Mon, 4 Dec 2023, Roger Pau Monné wrote:
-> >>>> On Fri, Dec 01, 2023 at 07:37:55PM -0800, Stefano Stabellini wrote:
-> >>>>> On Fri, 1 Dec 2023, Roger Pau Monné wrote:
-> >>>>>> On Thu, Nov 30, 2023 at 07:15:17PM -0800, Stefano Stabellini wrote:
-> >>>>>>> On Thu, 30 Nov 2023, Roger Pau Monné wrote:
-> >>>>>>>> On Wed, Nov 29, 2023 at 07:53:59PM -0800, Stefano Stabellini wrote:
-> >>>>>>>>> On Fri, 24 Nov 2023, Jiqian Chen wrote:
-> >>>>>>>>>> This patch is to solve two problems we encountered when we try to
-> >>>>>>>>>> passthrough a device to hvm domU base on Xen PVH dom0.
-> >>>>>>>>>>
-> >>>>>>>>>> First, hvm guest will alloc a pirq and irq for a passthrough device
-> >>>>>>>>>> by using gsi, before that, the gsi must first has a mapping in dom0,
-> >>>>>>>>>> see Xen code pci_add_dm_done->xc_domain_irq_permission, it will call
-> >>>>>>>>>> into Xen and check whether dom0 has the mapping. See
-> >>>>>>>>>> XEN_DOMCTL_irq_permission->pirq_access_permitted, "current" is PVH
-> >>>>>>>>>> dom0 and it return irq is 0, and then return -EPERM.
-> >>>>>>>>>> This is because the passthrough device doesn't do PHYSDEVOP_map_pirq
-> >>>>>>>>>> when thay are enabled.
-> >>>>>>>>>>
-> >>>>>>>>>> Second, in PVH dom0, the gsi of a passthrough device doesn't get
-> >>>>>>>>>> registered, but gsi must be configured for it to be able to be
-> >>>>>>>>>> mapped into a domU.
-> >>>>>>>>>>
-> >>>>>>>>>> After searching codes, we can find map_pirq and register_gsi will be
-> >>>>>>>>>> done in function vioapic_write_redirent->vioapic_hwdom_map_gsi when
-> >>>>>>>>>> the gsi(aka ioapic's pin) is unmasked in PVH dom0. So the problems
-> >>>>>>>>>> can be conclude to that the gsi of a passthrough device doesn't be
-> >>>>>>>>>> unmasked.
-> >>>>>>>>>>
-> >>>>>>>>>> To solve the unmaske problem, this patch call the unmask_irq when we
-> >>>>>>>>>> assign a device to be passthrough. So that the gsi can get registered
-> >>>>>>>>>> and mapped in PVH dom0.
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> Roger, this seems to be more of a Xen issue than a Linux issue. Why do
-> >>>>>>>>> we need the unmask check in Xen? Couldn't we just do:
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/xen/arch/x86/hvm/vioapic.c b/xen/arch/x86/hvm/vioapic.c
-> >>>>>>>>> index 4e40d3609a..df262a4a18 100644
-> >>>>>>>>> --- a/xen/arch/x86/hvm/vioapic.c
-> >>>>>>>>> +++ b/xen/arch/x86/hvm/vioapic.c
-> >>>>>>>>> @@ -287,7 +287,7 @@ static void vioapic_write_redirent(
-> >>>>>>>>>              hvm_dpci_eoi(d, gsi);
-> >>>>>>>>>      }
-> >>>>>>>>>  
-> >>>>>>>>> -    if ( is_hardware_domain(d) && unmasked )
-> >>>>>>>>> +    if ( is_hardware_domain(d) )
-> >>>>>>>>>      {
-> >>>>>>>>>          /*
-> >>>>>>>>>           * NB: don't call vioapic_hwdom_map_gsi while holding hvm.irq_lock
-> >>>>>>>>
-> >>>>>>>> There are some issues with this approach.
-> >>>>>>>>
-> >>>>>>>> mp_register_gsi() will only setup the trigger and polarity of the
-> >>>>>>>> IO-APIC pin once, so we do so once the guest unmask the pin in order
-> >>>>>>>> to assert that the configuration is the intended one.  A guest is
-> >>>>>>>> allowed to write all kind of nonsense stuff to the IO-APIC RTE, but
-> >>>>>>>> that doesn't take effect unless the pin is unmasked.
-> >>>>>>>>
-> >>>>>>>> Overall the question would be whether we have any guarantees that
-> >>>>>>>> the hardware domain has properly configured the pin, even if it's not
-> >>>>>>>> using it itself (as it hasn't been unmasked).
-> >>>>>>>>
-> >>>>>>>> IIRC PCI legacy interrupts are level triggered and low polarity, so we
-> >>>>>>>> could configure any pins that are not setup at bind time?
-> >>>>>>>
-> >>>>>>> That could work.
-> >>>>>>>
-> >>>>>>> Another idea is to move only the call to allocate_and_map_gsi_pirq at
-> >>>>>>> bind time? That might be enough to pass a pirq_access_permitted check.
-> >>>>>>
-> >>>>>> Maybe, albeit that would change the behavior of XEN_DOMCTL_bind_pt_irq
-> >>>>>> just for PT_IRQ_TYPE_PCI and only when called from a PVH dom0 (as the
-> >>>>>> parameter would be a GSI instead of a previously mapped IRQ).  Such
-> >>>>>> difference just for PT_IRQ_TYPE_PCI is slightly weird - if we go that
-> >>>>>> route I would recommend that we instead introduce a new dmop that has
-> >>>>>> this syntax regardless of the domain type it's called from.
-> >>>>>
-> >>>>> Looking at the code it is certainly a bit confusing. My point was that
-> >>>>> we don't need to wait until polarity and trigger are set appropriately
-> >>>>> to allow Dom0 to pass successfully a pirq_access_permitted() check. Xen
-> >>>>> should be able to figure out that Dom0 is permitted pirq access.
-> >>>>
-> >>>> The logic is certainly not straightforward, and it could benefit from
-> >>>> some comments.
-> >>>>
-> >>>> The irq permissions are a bit special, in that they get setup when the
-> >>>> IRQ is mapped.
-> >>>>
-> >>>> The problem however is not so much with IRQ permissions, that we can
-> >>>> indeed sort out internally in Xen.  Such check in dom0 has the side
-> >>>> effect of preventing the IRQ from being assigned to a domU without the
-> >>>> hardware source being properly configured AFAICT.
-> >>>
-> >>> Now I understand why you made a comment previously about Xen having to
-> >>> configure trigger and polarity for these interrupts on its own.
-> >>>
-> >>>
-> >>>>> So the idea was to move the call to allocate_and_map_gsi_pirq() earlier
-> >>>>> somewhere because allocate_and_map_gsi_pirq doesn't require trigger or
-> >>>>> polarity to be configured to work. But the suggestion of doing it a
-> >>>>> "bind time" (meaning: XEN_DOMCTL_bind_pt_irq) was a bad idea.
-> >>>>>
-> >>>>> But maybe we can find another location, maybe within
-> >>>>> xen/arch/x86/hvm/vioapic.c, to call allocate_and_map_gsi_pirq() before
-> >>>>> trigger and polarity are set and before the interrupt is unmasked.
-> >>>>>
-> >>>>> Then we change the implementation of vioapic_hwdom_map_gsi to skip the
-> >>>>> call to allocate_and_map_gsi_pirq, because by the time
-> >>>>> vioapic_hwdom_map_gsi we assume that allocate_and_map_gsi_pirq had
-> >>>>> already been done.
-> >>>>
-> >>>> But then we would end up in a situation where the
-> >>>> pirq_access_permitted() check will pass, but the IO-APIC pin won't be
-> >>>> configured, which I think it's not what we want.
-> >>>>
-> >>>> One option would be to allow mp_register_gsi() to be called multiple
-> >>>> times, and update the IO-APIC pin configuration as long as the pin is
-> >>>> not unmasked.  That would propagate each dom0 RTE update to the
-> >>>> underlying IO-APIC.  However such approach relies on dom0 configuring
-> >>>> all possible IO-APIC pins, even if no device on dom0 is using them, I
-> >>>> think it's not a very reliable option.
-> >>>>
-> >>>> Another option would be to modify the toolstack to setup the GSI
-> >>>> itself using the PHYSDEVOP_setup_gsi hypercall.  As said in a previous
-> >>>> email, since we only care about PCI device passthrough the legacy INTx
-> >>>> should always be level triggered and low polarity.
-> >>>>
-> >>>>> I am not familiar with vioapic.c but to give you an idea of what I was
-> >>>>> thinking:
-> >>>>>
-> >>>>>
-> >>>>> diff --git a/xen/arch/x86/hvm/vioapic.c b/xen/arch/x86/hvm/vioapic.c
-> >>>>> index 4e40d3609a..16d56fe851 100644
-> >>>>> --- a/xen/arch/x86/hvm/vioapic.c
-> >>>>> +++ b/xen/arch/x86/hvm/vioapic.c
-> >>>>> @@ -189,14 +189,6 @@ static int vioapic_hwdom_map_gsi(unsigned int gsi, unsigned int trig,
-> >>>>>          return ret;
-> >>>>>      }
-> >>>>>  
-> >>>>> -    ret = allocate_and_map_gsi_pirq(currd, pirq, &pirq);
-> >>>>> -    if ( ret )
-> >>>>> -    {
-> >>>>> -        gprintk(XENLOG_WARNING, "vioapic: error mapping GSI %u: %d\n",
-> >>>>> -                 gsi, ret);
-> >>>>> -        return ret;
-> >>>>> -    }
-> >>>>> -
-> >>>>>      pcidevs_lock();
-> >>>>>      ret = pt_irq_create_bind(currd, &pt_irq_bind);
-> >>>>>      if ( ret )
-> >>>>> @@ -287,6 +279,17 @@ static void vioapic_write_redirent(
-> >>>>>              hvm_dpci_eoi(d, gsi);
-> >>>>>      }
-> >>>>>  
-> >>>>> +    if ( is_hardware_domain(d) ) 
-> >>>>> +    {
-> >>>>> +        int pirq = gsi, ret;
-> >>>>> +        ret = allocate_and_map_gsi_pirq(currd, pirq, &pirq);
-> >>>>> +        if ( ret )
-> >>>>> +        {
-> >>>>> +            gprintk(XENLOG_WARNING, "vioapic: error mapping GSI %u: %d\n",
-> >>>>> +                    gsi, ret);
-> >>>>> +            return ret;
-> >>>>> +        }
-> >>>>> +    }
-> >>>>>      if ( is_hardware_domain(d) && unmasked )
-> >>>>>      {
-> >>>>>          /*
-> >>>>
-> >>>> As said above, such approach relies on dom0 writing to the IO-APIC RTE
-> >>>> of likely each IO-APIC pin, which is IMO not quite reliable.  In there
-> >>>> are two different issues here that need to be fixed for PVH dom0:
-> >>>>
-> >>>>  - Fix the XEN_DOMCTL_irq_permission pirq_access_permitted() call to
-> >>>>    succeed for a PVH dom0, even if dom0 is not using the GSI itself.
-> >>>
-> >>> Yes makes sense
-> >>>
-> >>>
-> >>>>  - Configure IO-APIC pins for PCI interrupts even if dom0 is not using
-> >>>>    the IO-APIC pin itself.
-> >>>>
-> >>>> First one needs to be fixed internally in Xen, second one will require
-> >>>> the toolstack to issue an extra hypercall in order to ensure the
-> >>>> IO-APIC pin is properly configured.
-> >>>  
-> >>> On ARM, Xen doesn't need to wait for dom0 to configure interrupts
-> >>> correctly. Xen configures them all on its own at boot based on Device
-> >>> Tree information. I guess it is not possible to do the same on x86?
-> >>
-> >> No, not exactly.  There's some interrupt information in the ACPI MADT,
-> >> but that's just for very specific sources (Interrupt Source Override
-> >> Structures)
-> >>
-> >> Then on AML devices can have resource descriptors that contain
-> >> information about how interrupts are setup.  However Xen is not able
-> >> to read any of this information on AML.
-> >>
-> >> Legacy PCI interrupts are (always?) level triggered and low polarity,
-> >> because it's assumed that an interrupt source can be shared between
-> >> multiple devices.
-> > 
-> > Except that as per what you said just in the earlier paragraph ACPI can
-> > tell us otherwise.
-> > 
-> >> I'm however not able to find any reference to this in the PCI spec,
-> >> hence I'm reluctant to take this for granted in Xen, and default all
-> >> GSIs >= 16 to such mode.
-> >>
-> >> OTOH legacy PCI interrupts are not that used anymore, as almost all
-> >> devices will support MSI(-X) (because PCIe mandates it) and OSes
-> >> should prefer the latter.  SR-IOV VF don't even support legacy PCI
-> >> interrupts anymore.
-> >>
-> >>> If
-> >>> not, then I can see why we would need 1 extra toolstack hypercall for
-> >>> that (or to bundle the operation of configuring IO-APIC pins together
-> >>> with an existing toolstack hypercall).
-> >>
-> >> One suitable compromise would be to default unconfigured GSIs >= 16 to
-> >> level-triggered and low-polarity, as I would expect that to work in
-> >> almost all cases.  We can always introduce the usage of
-> >> PHYSDEVOP_setup_gsi later if required.
-> >>
-> >> Maybe Jan has more input here, would you agree to defaulting non-ISA
-> >> GSIs to level-triggered, low-polarity in the absence of a specific
-> >> setup provided by dom0?
-> > 
-> > Well, such defaulting is an option, but in case it's wrong we might
-> > end up with hard to diagnose issues. Personally I'd prefer if we
-> > didn't take shortcuts here, i.e. if we followed what Dom0 is able
-> > to read from ACPI.
-> 
-> When PVH dom0 enable a device, it will get trigger and polarity from ACPI (see acpi_pci_irq_enable)
-> I have a version of patch which tried that way, see below:
-> 
-> diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
-> index ada3868c02c2..43e1bda9f946 100644
-> --- a/arch/x86/xen/enlighten_pvh.c
-> +++ b/arch/x86/xen/enlighten_pvh.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/acpi.h>
->  #include <linux/export.h>
-> +#include <linux/pci.h>
-> 
->  #include <xen/hvc-console.h>
-> 
-> @@ -25,6 +26,127 @@
->  bool __ro_after_init xen_pvh;
->  EXPORT_SYMBOL_GPL(xen_pvh);
-> 
-> +typedef struct gsi_info {
-> +       int gsi;
-> +       int trigger;
-> +       int polarity;
-> +       int pirq;
-> +} gsi_info_t;
-> +
-> +struct acpi_prt_entry {
-> +       struct acpi_pci_id      id;
-> +       u8                      pin;
-> +       acpi_handle             link;
-> +       u32                     index;          /* GSI, or link _CRS index */
-> +};
-> +
-> +static int xen_pvh_get_gsi_info(struct pci_dev *dev,
-> +                                                               gsi_info_t *gsi_info)
-> +{
-> +       int gsi;
-> +       u8 pin = 0;
-> +       struct acpi_prt_entry *entry;
-> +       int trigger = ACPI_LEVEL_SENSITIVE;
-> +       int polarity = acpi_irq_model == ACPI_IRQ_MODEL_GIC ?
-> +                                     ACPI_ACTIVE_HIGH : ACPI_ACTIVE_LOW;
-> +
-> +       if (dev)
-> +               pin = dev->pin;
-> +       if (!pin) {
-> +               xen_raw_printk("No interrupt pin configured\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       entry = acpi_pci_irq_lookup(dev, pin);
-> +       if (entry) {
-> +               if (entry->link)
-> +                       gsi = acpi_pci_link_allocate_irq(entry->link,
-> +                                                        entry->index,
-> +                                                        &trigger, &polarity,
-> +                                                        NULL);
-> +               else
-> +                       gsi = entry->index;
-> +       } else
-> +               return -EINVAL;
-> +
-> +       gsi_info->gsi = gsi;
-> +       gsi_info->trigger = trigger;
-> +       gsi_info->polarity = polarity;
-> +
-> +       return 0;
-> +}
-> +
-> +static int xen_pvh_map_pirq(gsi_info_t *gsi_info)
-> +{
-> +       struct physdev_map_pirq map_irq;
-> +       int ret;
-> +
-> +       map_irq.domid = DOMID_SELF;
-> +       map_irq.type = MAP_PIRQ_TYPE_GSI;
-> +       map_irq.index = gsi_info->gsi;
-> +       map_irq.pirq = gsi_info->gsi;
-> +
-> +       ret = HYPERVISOR_physdev_op(PHYSDEVOP_map_pirq, &map_irq);
-> +       gsi_info->pirq = map_irq.pirq;
-> +
-> +       return ret;
-> +}
-> +
-> +static int xen_pvh_unmap_pirq(gsi_info_t *gsi_info)
-> +{
-> +       struct physdev_unmap_pirq unmap_irq;
-> +
-> +       unmap_irq.domid = DOMID_SELF;
-> +       unmap_irq.pirq = gsi_info->pirq;
-> +
-> +       return HYPERVISOR_physdev_op(PHYSDEVOP_unmap_pirq, &unmap_irq);
-> +}
-> +
-> +static int xen_pvh_setup_gsi(gsi_info_t *gsi_info)
-> +{
-> +       struct physdev_setup_gsi setup_gsi;
-> +
-> +       setup_gsi.gsi = gsi_info->gsi;
-> +       setup_gsi.triggering = (gsi_info->trigger == ACPI_EDGE_SENSITIVE ? 0 : 1);
-> +       setup_gsi.polarity = (gsi_info->polarity == ACPI_ACTIVE_HIGH ? 0 : 1);
-> +
-> +       return HYPERVISOR_physdev_op(PHYSDEVOP_setup_gsi, &setup_gsi);
-> +}
+Whenever a new fields are added one of the following: node_stat_item
+numa_stat_item zone_stat_item, the /sys/devices/system/node/nodeX/vmstat
+files are auto expanded.
 
-Hm, why not simply call pcibios_enable_device() from pciback?  What
-you are doing here using the hypercalls is a backdoor into what's done
-automatically by Xen on IO-APIC accesses by a PVH dom0.
+This is a problem, as sysfs files should be only one value per file.
+Also, once a field is exported via vmstat it is hard to remove it as
+there could be user applications that rely on this field. This is why
+we still cary "nr_unstable 0" in /proc/vmstat that is not used.
 
-It will be much more natural for the PVH dom0 model to simply use the
-native way to configure and unmask the IO-APIC pin, and that would
-correctly setup the triggering/polarity and bind it to dom0 without
-requiring the usage of any hypercalls.
+Also, since vmstat is auto-expanded the fields are not documented, so
+users do not know whether they are counted in bytes/kilobytes/pages,
+and the exact meaning of these fields.
 
-Is that an issue since in that case the gsi will get mapped and bound
-to dom0?
+Modify the code that the new fields do not auto-expand the vmstat in
+sysfs. The new fields can still be exported via their own files in
+sysfs, and be properly documents.
 
-Otherwise I would prefer if the gsi is just configured from pciback
-(PHYSDEVOP_setup_gsi) but not mapped, as allowing a PVH dom0 to map
-interrupts using PHYSDEVOP_{,un}map_pirq to itself introduces a new
-interface to manage interrupts that clashes with the native way that a
-PVH dom0 uses.
+vmstat values are named using vmstat_text[] array, which contains names
+for zone_stat, numa_stat, node_stat, lru_list, writeback_stat,
+vm_event.
 
-Thanks, Roger.
+Change vmstat_text[] to be an array of structs that contain two values:
+name, and flags.  The new flags field contains information whether to
+show stat value in vmstat files in sysfs (VMSTAT_SHOW_SYSFS), and in
+procfs (VMSTAT_SHOW_PROCFS). The comment above VMSTAT_SHOW_SYSFS
+documents that this flag should not be used for new stat values when
+they are added.
+
+Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+---
+ drivers/base/node.c    |  34 ++--
+ include/linux/vmstat.h |  48 ++++--
+ mm/vmstat.c            | 377 +++++++++++++++++++++--------------------
+ 3 files changed, 244 insertions(+), 215 deletions(-)
+
+Examples of the projects that are currently under review and that add new
+fields to the one of the vmstat items:
+
+[1] mm: report per-page metadata information
+https://lore.kernel.org/all/20231205223118.3575485-1-souravpanda@google.com
+
+[2] IOMMU memory observability
+https://lore.kernel.org/all/20231130201504.2322355-1-pasha.tatashin@soleen.com
+
+Greg KH has been requesting for these files not to grow:
+https://lore.kernel.org/all/2023120731-deception-handmade-8d49@gregkh
+
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 493d533f8375..f139d7ab58f5 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -520,26 +520,34 @@ static ssize_t node_read_vmstat(struct device *dev,
+ 	int i;
+ 	int len = 0;
+ 
+-	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+-		len += sysfs_emit_at(buf, len, "%s %lu\n",
+-				     zone_stat_name(i),
+-				     sum_zone_node_page_state(nid, i));
++	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
++		if (vmstat_text[ZONE_STAT_NAME_IDX(i)].flags & VMSTAT_SHOW_SYSFS) {
++			len += sysfs_emit_at(buf, len, "%s %lu\n",
++					     zone_stat_name(i),
++					     sum_zone_node_page_state(nid, i));
++		}
++	}
+ 
+ #ifdef CONFIG_NUMA
+ 	fold_vm_numa_events();
+-	for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++)
+-		len += sysfs_emit_at(buf, len, "%s %lu\n",
+-				     numa_stat_name(i),
+-				     sum_zone_numa_event_state(nid, i));
++	for (i = 0; i < NR_VM_NUMA_EVENT_ITEMS; i++) {
++		if (vmstat_text[NUMA_STAT_NAME_IDX(i)].flags & VMSTAT_SHOW_SYSFS) {
++			len += sysfs_emit_at(buf, len, "%s %lu\n",
++					     numa_stat_name(i),
++					     sum_zone_numa_event_state(nid, i));
++		}
++	}
+ 
+ #endif
+ 	for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+-		unsigned long pages = node_page_state_pages(pgdat, i);
++		if (vmstat_text[NODE_STAT_NAME_IDX(i)].flags & VMSTAT_SHOW_SYSFS) {
++			unsigned long pages = node_page_state_pages(pgdat, i);
+ 
+-		if (vmstat_item_print_in_thp(i))
+-			pages /= HPAGE_PMD_NR;
+-		len += sysfs_emit_at(buf, len, "%s %lu\n", node_stat_name(i),
+-				     pages);
++			if (vmstat_item_print_in_thp(i))
++				pages /= HPAGE_PMD_NR;
++			len += sysfs_emit_at(buf, len, "%s %lu\n", node_stat_name(i),
++					     pages);
++		}
+ 	}
+ 
+ 	return len;
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index fed855bae6d8..2dd46daf69aa 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -495,26 +495,44 @@ static inline void __mod_zone_freepage_state(struct zone *zone, int nr_pages,
+ 		__mod_zone_page_state(zone, NR_FREE_CMA_PAGES, nr_pages);
+ }
+ 
+-extern const char * const vmstat_text[];
+ 
++/*
++ * Show this stat in /sys/devices/system/node/nodeX/vmstat
++ * IMPORTANT: Don't use this flag for new stats, as the right way to output only
++ * one stat per file in sysfs. Instead, add new individual sysfs files for new
++ * stats, and document them in Documentation/ABI/TYPE/sysfs-new_field_name.
++ */
++#define VMSTAT_SHOW_SYSFS	BIT(0)
++
++/* Show this stat in /proc/vmstat */
++#define VMSTAT_SHOW_PROCFS	BIT(1)
++
++struct vmstat_text {
++	const char *name;
++	char flags;
++};
++
++extern const struct vmstat_text vmstat_text[];
++
++#define ZONE_STAT_NAME_IDX(item)	((int)(item))
+ static inline const char *zone_stat_name(enum zone_stat_item item)
+ {
+-	return vmstat_text[item];
++	return vmstat_text[ZONE_STAT_NAME_IDX(item)].name;
+ }
+ 
+ #ifdef CONFIG_NUMA
++#define NUMA_STAT_NAME_IDX(item)	(NR_VM_ZONE_STAT_ITEMS + (int)(item))
+ static inline const char *numa_stat_name(enum numa_stat_item item)
+ {
+-	return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+-			   item];
++	return vmstat_text[NUMA_STAT_NAME_IDX(item)].name;
+ }
+ #endif /* CONFIG_NUMA */
+ 
++#define NODE_STAT_NAME_IDX(item)	(NR_VM_NUMA_EVENT_ITEMS +	\
++	NR_VM_ZONE_STAT_ITEMS + (int)(item))
+ static inline const char *node_stat_name(enum node_stat_item item)
+ {
+-	return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+-			   NR_VM_NUMA_EVENT_ITEMS +
+-			   item];
++	return vmstat_text[NODE_STAT_NAME_IDX(item)].name;
+ }
+ 
+ static inline const char *lru_list_name(enum lru_list lru)
+@@ -522,22 +540,20 @@ static inline const char *lru_list_name(enum lru_list lru)
+ 	return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+ }
+ 
++#define WRITEBACK_STAT_NAME_IDX(item)	(NR_VM_NODE_STAT_ITEMS +	\
++	NR_VM_NUMA_EVENT_ITEMS + NR_VM_ZONE_STAT_ITEMS + (int)(item))
+ static inline const char *writeback_stat_name(enum writeback_stat_item item)
+ {
+-	return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+-			   NR_VM_NUMA_EVENT_ITEMS +
+-			   NR_VM_NODE_STAT_ITEMS +
+-			   item];
++	return vmstat_text[WRITEBACK_STAT_NAME_IDX(item)].name;
+ }
+ 
+ #if defined(CONFIG_VM_EVENT_COUNTERS) || defined(CONFIG_MEMCG)
++#define VM_EVENT_NAME_IDX(item)	(NR_VM_WRITEBACK_STAT_ITEMS +		\
++	NR_VM_NODE_STAT_ITEMS + NR_VM_NUMA_EVENT_ITEMS +		\
++	NR_VM_ZONE_STAT_ITEMS + (int)(item))
+ static inline const char *vm_event_name(enum vm_event_item item)
+ {
+-	return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+-			   NR_VM_NUMA_EVENT_ITEMS +
+-			   NR_VM_NODE_STAT_ITEMS +
+-			   NR_VM_WRITEBACK_STAT_ITEMS +
+-			   item];
++	return vmstat_text[VM_EVENT_NAME_IDX(item)].name;
+ }
+ #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
+ 
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 359460deb377..691d8c90b4ac 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1142,278 +1142,281 @@ int fragmentation_index(struct zone *zone, unsigned int order)
+ #if defined(CONFIG_PROC_FS) || defined(CONFIG_SYSFS) || \
+     defined(CONFIG_NUMA) || defined(CONFIG_MEMCG)
+ #ifdef CONFIG_ZONE_DMA
+-#define TEXT_FOR_DMA(xx) xx "_dma",
++#define TEXT_FOR_DMA(xx) {xx "_dma",	VMSTAT_SHOW_PROCFS},
+ #else
+ #define TEXT_FOR_DMA(xx)
+ #endif
+ 
+ #ifdef CONFIG_ZONE_DMA32
+-#define TEXT_FOR_DMA32(xx) xx "_dma32",
++#define TEXT_FOR_DMA32(xx) {xx "_dma32",	VMSTAT_SHOW_PROCFS},
+ #else
+ #define TEXT_FOR_DMA32(xx)
+ #endif
+ 
+ #ifdef CONFIG_HIGHMEM
+-#define TEXT_FOR_HIGHMEM(xx) xx "_high",
++#define TEXT_FOR_HIGHMEM(xx) {xx "_high",	VMSTAT_SHOW_PROCFS},
+ #else
+ #define TEXT_FOR_HIGHMEM(xx)
+ #endif
+ 
+ #ifdef CONFIG_ZONE_DEVICE
+-#define TEXT_FOR_DEVICE(xx) xx "_device",
++#define TEXT_FOR_DEVICE(xx) {xx "_device",	VMSTAT_SHOW_PROCFS},
+ #else
+ #define TEXT_FOR_DEVICE(xx)
+ #endif
+ 
+-#define TEXTS_FOR_ZONES(xx) TEXT_FOR_DMA(xx) TEXT_FOR_DMA32(xx) xx "_normal", \
+-					TEXT_FOR_HIGHMEM(xx) xx "_movable", \
+-					TEXT_FOR_DEVICE(xx)
++#define TEXT_FOR_NORMAL(xx) {xx "_normal", VMSTAT_SHOW_PROCFS},
++#define TEXT_FOR_MOVABLE(xx) {xx "_movable", VMSTAT_SHOW_PROCFS},
+ 
+-const char * const vmstat_text[] = {
++#define TEXTS_FOR_ZONES(xx) TEXT_FOR_DMA(xx) TEXT_FOR_DMA32(xx)		\
++	TEXT_FOR_NORMAL(xx) TEXT_FOR_HIGHMEM(xx) TEXT_FOR_MOVABLE(xx)	\
++	TEXT_FOR_DEVICE(xx)
++
++const struct vmstat_text vmstat_text[] = {
+ 	/* enum zone_stat_item counters */
+-	"nr_free_pages",
+-	"nr_zone_inactive_anon",
+-	"nr_zone_active_anon",
+-	"nr_zone_inactive_file",
+-	"nr_zone_active_file",
+-	"nr_zone_unevictable",
+-	"nr_zone_write_pending",
+-	"nr_mlock",
+-	"nr_bounce",
++	{"nr_free_pages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_inactive_anon",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_active_anon",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_inactive_file",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_active_file",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_unevictable",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_zone_write_pending",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_mlock",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_bounce",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #if IS_ENABLED(CONFIG_ZSMALLOC)
+-	"nr_zspages",
++	{"nr_zspages",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+-	"nr_free_cma",
++	{"nr_free_cma",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #ifdef CONFIG_UNACCEPTED_MEMORY
+-	"nr_unaccepted",
++	{"nr_unaccepted",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+ 
+ 	/* enum numa_stat_item counters */
+ #ifdef CONFIG_NUMA
+-	"numa_hit",
+-	"numa_miss",
+-	"numa_foreign",
+-	"numa_interleave",
+-	"numa_local",
+-	"numa_other",
++	{"numa_hit",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"numa_miss",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"numa_foreign",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"numa_interleave",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"numa_local",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"numa_other",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+-
+ 	/* enum node_stat_item counters */
+-	"nr_inactive_anon",
+-	"nr_active_anon",
+-	"nr_inactive_file",
+-	"nr_active_file",
+-	"nr_unevictable",
+-	"nr_slab_reclaimable",
+-	"nr_slab_unreclaimable",
+-	"nr_isolated_anon",
+-	"nr_isolated_file",
+-	"workingset_nodes",
+-	"workingset_refault_anon",
+-	"workingset_refault_file",
+-	"workingset_activate_anon",
+-	"workingset_activate_file",
+-	"workingset_restore_anon",
+-	"workingset_restore_file",
+-	"workingset_nodereclaim",
+-	"nr_anon_pages",
+-	"nr_mapped",
+-	"nr_file_pages",
+-	"nr_dirty",
+-	"nr_writeback",
+-	"nr_writeback_temp",
+-	"nr_shmem",
+-	"nr_shmem_hugepages",
+-	"nr_shmem_pmdmapped",
+-	"nr_file_hugepages",
+-	"nr_file_pmdmapped",
+-	"nr_anon_transparent_hugepages",
+-	"nr_vmscan_write",
+-	"nr_vmscan_immediate_reclaim",
+-	"nr_dirtied",
+-	"nr_written",
+-	"nr_throttled_written",
+-	"nr_kernel_misc_reclaimable",
+-	"nr_foll_pin_acquired",
+-	"nr_foll_pin_released",
+-	"nr_kernel_stack",
++	{"nr_inactive_anon",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_active_anon",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_inactive_file",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_active_file",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_unevictable",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_slab_reclaimable",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_slab_unreclaimable",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_isolated_anon",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_isolated_file",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_nodes",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_refault_anon",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_refault_file",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_activate_anon",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_activate_file",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_restore_anon",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_restore_file",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"workingset_nodereclaim",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_anon_pages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_mapped",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_file_pages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_dirty",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_writeback",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_writeback_temp",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_shmem",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_shmem_hugepages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_shmem_pmdmapped",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_file_hugepages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_file_pmdmapped",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_anon_transparent_hugepages", VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_vmscan_write",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_vmscan_immediate_reclaim",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_dirtied",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_written",			VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_throttled_written",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_kernel_misc_reclaimable",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_foll_pin_acquired",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_foll_pin_released",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_kernel_stack",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+-	"nr_shadow_call_stack",
++	{"nr_shadow_call_stack",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+-	"nr_page_table_pages",
+-	"nr_sec_page_table_pages",
++	{"nr_page_table_pages",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"nr_sec_page_table_pages",	VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #ifdef CONFIG_SWAP
+-	"nr_swapcached",
++	{"nr_swapcached",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+ #ifdef CONFIG_NUMA_BALANCING
+-	"pgpromote_success",
+-	"pgpromote_candidate",
++	{"pgpromote_success",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
++	{"pgpromote_candidate",		VMSTAT_SHOW_PROCFS | VMSTAT_SHOW_SYSFS},
+ #endif
+ 
+ 	/* enum writeback_stat_item counters */
+-	"nr_dirty_threshold",
+-	"nr_dirty_background_threshold",
++	{"nr_dirty_threshold",		VMSTAT_SHOW_PROCFS},
++	{"nr_dirty_background_threshold", VMSTAT_SHOW_PROCFS},
+ 
+ #if defined(CONFIG_VM_EVENT_COUNTERS) || defined(CONFIG_MEMCG)
+ 	/* enum vm_event_item counters */
+-	"pgpgin",
+-	"pgpgout",
+-	"pswpin",
+-	"pswpout",
++	{"pgpgin",			VMSTAT_SHOW_PROCFS},
++	{"pgpgout",			VMSTAT_SHOW_PROCFS},
++	{"pswpin",			VMSTAT_SHOW_PROCFS},
++	{"pswpout",			VMSTAT_SHOW_PROCFS},
+ 
+ 	TEXTS_FOR_ZONES("pgalloc")
+ 	TEXTS_FOR_ZONES("allocstall")
+ 	TEXTS_FOR_ZONES("pgskip")
+ 
+-	"pgfree",
+-	"pgactivate",
+-	"pgdeactivate",
+-	"pglazyfree",
+-
+-	"pgfault",
+-	"pgmajfault",
+-	"pglazyfreed",
+-
+-	"pgrefill",
+-	"pgreuse",
+-	"pgsteal_kswapd",
+-	"pgsteal_direct",
+-	"pgsteal_khugepaged",
+-	"pgdemote_kswapd",
+-	"pgdemote_direct",
+-	"pgdemote_khugepaged",
+-	"pgscan_kswapd",
+-	"pgscan_direct",
+-	"pgscan_khugepaged",
+-	"pgscan_direct_throttle",
+-	"pgscan_anon",
+-	"pgscan_file",
+-	"pgsteal_anon",
+-	"pgsteal_file",
++	{"pgfree",			VMSTAT_SHOW_PROCFS},
++	{"pgactivate",			VMSTAT_SHOW_PROCFS},
++	{"pgdeactivate",		VMSTAT_SHOW_PROCFS},
++	{"pglazyfree",			VMSTAT_SHOW_PROCFS},
++
++	{"pgfault",			VMSTAT_SHOW_PROCFS},
++	{"pgmajfault",			VMSTAT_SHOW_PROCFS},
++	{"pglazyfreed",			VMSTAT_SHOW_PROCFS},
++
++	{"pgrefill",			VMSTAT_SHOW_PROCFS},
++	{"pgreuse",			VMSTAT_SHOW_PROCFS},
++	{"pgsteal_kswapd",		VMSTAT_SHOW_PROCFS},
++	{"pgsteal_direct",		VMSTAT_SHOW_PROCFS},
++	{"pgsteal_khugepaged",		VMSTAT_SHOW_PROCFS},
++	{"pgdemote_kswapd",		VMSTAT_SHOW_PROCFS},
++	{"pgdemote_direct",		VMSTAT_SHOW_PROCFS},
++	{"pgdemote_khugepaged",		VMSTAT_SHOW_PROCFS},
++	{"pgscan_kswapd",		VMSTAT_SHOW_PROCFS},
++	{"pgscan_direct",		VMSTAT_SHOW_PROCFS},
++	{"pgscan_khugepaged",		VMSTAT_SHOW_PROCFS},
++	{"pgscan_direct_throttle",	VMSTAT_SHOW_PROCFS},
++	{"pgscan_anon",			VMSTAT_SHOW_PROCFS},
++	{"pgscan_file",			VMSTAT_SHOW_PROCFS},
++	{"pgsteal_anon",		VMSTAT_SHOW_PROCFS},
++	{"pgsteal_file",		VMSTAT_SHOW_PROCFS},
+ 
+ #ifdef CONFIG_NUMA
+-	"zone_reclaim_failed",
++	{"zone_reclaim_failed",		VMSTAT_SHOW_PROCFS},
+ #endif
+-	"pginodesteal",
+-	"slabs_scanned",
+-	"kswapd_inodesteal",
+-	"kswapd_low_wmark_hit_quickly",
+-	"kswapd_high_wmark_hit_quickly",
+-	"pageoutrun",
++	{"pginodesteal",		VMSTAT_SHOW_PROCFS},
++	{"slabs_scanned",		VMSTAT_SHOW_PROCFS},
++	{"kswapd_inodesteal",		VMSTAT_SHOW_PROCFS},
++	{"kswapd_low_wmark_hit_quickly", VMSTAT_SHOW_PROCFS},
++	{"kswapd_high_wmark_hit_quickly", VMSTAT_SHOW_PROCFS},
++	{"pageoutrun",			VMSTAT_SHOW_PROCFS},
+ 
+-	"pgrotated",
++	{"pgrotated",			VMSTAT_SHOW_PROCFS},
+ 
+-	"drop_pagecache",
+-	"drop_slab",
+-	"oom_kill",
++	{"drop_pagecache",		VMSTAT_SHOW_PROCFS},
++	{"drop_slab",			VMSTAT_SHOW_PROCFS},
++	{"oom_kill",			VMSTAT_SHOW_PROCFS},
+ 
+ #ifdef CONFIG_NUMA_BALANCING
+-	"numa_pte_updates",
+-	"numa_huge_pte_updates",
+-	"numa_hint_faults",
+-	"numa_hint_faults_local",
+-	"numa_pages_migrated",
++	{"numa_pte_updates",		VMSTAT_SHOW_PROCFS},
++	{"numa_huge_pte_updates",	VMSTAT_SHOW_PROCFS},
++	{"numa_hint_faults",		VMSTAT_SHOW_PROCFS},
++	{"numa_hint_faults_local",	VMSTAT_SHOW_PROCFS},
++	{"numa_pages_migrated",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_MIGRATION
+-	"pgmigrate_success",
+-	"pgmigrate_fail",
+-	"thp_migration_success",
+-	"thp_migration_fail",
+-	"thp_migration_split",
++	{"pgmigrate_success",		VMSTAT_SHOW_PROCFS},
++	{"pgmigrate_fail",		VMSTAT_SHOW_PROCFS},
++	{"thp_migration_success",	VMSTAT_SHOW_PROCFS},
++	{"thp_migration_fail",		VMSTAT_SHOW_PROCFS},
++	{"thp_migration_split",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_COMPACTION
+-	"compact_migrate_scanned",
+-	"compact_free_scanned",
+-	"compact_isolated",
+-	"compact_stall",
+-	"compact_fail",
+-	"compact_success",
+-	"compact_daemon_wake",
+-	"compact_daemon_migrate_scanned",
+-	"compact_daemon_free_scanned",
++	{"compact_migrate_scanned",	VMSTAT_SHOW_PROCFS},
++	{"compact_free_scanned",	VMSTAT_SHOW_PROCFS},
++	{"compact_isolated",		VMSTAT_SHOW_PROCFS},
++	{"compact_stall",		VMSTAT_SHOW_PROCFS},
++	{"compact_fail",		VMSTAT_SHOW_PROCFS},
++	{"compact_success",		VMSTAT_SHOW_PROCFS},
++	{"compact_daemon_wake",		VMSTAT_SHOW_PROCFS},
++	{"compact_daemon_migrate_scanned", VMSTAT_SHOW_PROCFS},
++	{"compact_daemon_free_scanned",	VMSTAT_SHOW_PROCFS},
+ #endif
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+-	"htlb_buddy_alloc_success",
+-	"htlb_buddy_alloc_fail",
++	{"htlb_buddy_alloc_success",	VMSTAT_SHOW_PROCFS},
++	{"htlb_buddy_alloc_fail",	VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_CMA
+-	"cma_alloc_success",
+-	"cma_alloc_fail",
++	{"cma_alloc_success",		VMSTAT_SHOW_PROCFS},
++	{"cma_alloc_fail",		VMSTAT_SHOW_PROCFS},
+ #endif
+-	"unevictable_pgs_culled",
+-	"unevictable_pgs_scanned",
+-	"unevictable_pgs_rescued",
+-	"unevictable_pgs_mlocked",
+-	"unevictable_pgs_munlocked",
+-	"unevictable_pgs_cleared",
+-	"unevictable_pgs_stranded",
++	{"unevictable_pgs_culled",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_scanned",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_rescued",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_mlocked",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_munlocked",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_cleared",	VMSTAT_SHOW_PROCFS},
++	{"unevictable_pgs_stranded",	VMSTAT_SHOW_PROCFS},
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	"thp_fault_alloc",
+-	"thp_fault_fallback",
+-	"thp_fault_fallback_charge",
+-	"thp_collapse_alloc",
+-	"thp_collapse_alloc_failed",
+-	"thp_file_alloc",
+-	"thp_file_fallback",
+-	"thp_file_fallback_charge",
+-	"thp_file_mapped",
+-	"thp_split_page",
+-	"thp_split_page_failed",
+-	"thp_deferred_split_page",
+-	"thp_split_pmd",
+-	"thp_scan_exceed_none_pte",
+-	"thp_scan_exceed_swap_pte",
+-	"thp_scan_exceed_share_pte",
++	{"thp_fault_alloc",		VMSTAT_SHOW_PROCFS},
++	{"thp_fault_fallback",		VMSTAT_SHOW_PROCFS},
++	{"thp_fault_fallback_charge",	VMSTAT_SHOW_PROCFS},
++	{"thp_collapse_alloc",		VMSTAT_SHOW_PROCFS},
++	{"thp_collapse_alloc_failed",	VMSTAT_SHOW_PROCFS},
++	{"thp_file_alloc",		VMSTAT_SHOW_PROCFS},
++	{"thp_file_fallback",		VMSTAT_SHOW_PROCFS},
++	{"thp_file_fallback_charge",	VMSTAT_SHOW_PROCFS},
++	{"thp_file_mapped",		VMSTAT_SHOW_PROCFS},
++	{"thp_split_page",		VMSTAT_SHOW_PROCFS},
++	{"thp_split_page_failed",	VMSTAT_SHOW_PROCFS},
++	{"thp_deferred_split_page",	VMSTAT_SHOW_PROCFS},
++	{"thp_split_pmd",		VMSTAT_SHOW_PROCFS},
++	{"thp_scan_exceed_none_pte",	VMSTAT_SHOW_PROCFS},
++	{"thp_scan_exceed_swap_pte",	VMSTAT_SHOW_PROCFS},
++	{"thp_scan_exceed_share_pte",	VMSTAT_SHOW_PROCFS},
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+-	"thp_split_pud",
++	{"thp_split_pud",		VMSTAT_SHOW_PROCFS},
+ #endif
+-	"thp_zero_page_alloc",
+-	"thp_zero_page_alloc_failed",
+-	"thp_swpout",
+-	"thp_swpout_fallback",
++	{"thp_zero_page_alloc",		VMSTAT_SHOW_PROCFS},
++	{"thp_zero_page_alloc_failed",	VMSTAT_SHOW_PROCFS},
++	{"thp_swpout",			VMSTAT_SHOW_PROCFS},
++	{"thp_swpout_fallback",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_MEMORY_BALLOON
+-	"balloon_inflate",
+-	"balloon_deflate",
++	{"balloon_inflate",		VMSTAT_SHOW_PROCFS},
++	{"balloon_deflate",		VMSTAT_SHOW_PROCFS},
+ #ifdef CONFIG_BALLOON_COMPACTION
+-	"balloon_migrate",
++	{"balloon_migrate",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #endif /* CONFIG_MEMORY_BALLOON */
+ #ifdef CONFIG_DEBUG_TLBFLUSH
+-	"nr_tlb_remote_flush",
+-	"nr_tlb_remote_flush_received",
+-	"nr_tlb_local_flush_all",
+-	"nr_tlb_local_flush_one",
++	{"nr_tlb_remote_flush",		VMSTAT_SHOW_PROCFS},
++	{"nr_tlb_remote_flush_received", VMSTAT_SHOW_PROCFS},
++	{"nr_tlb_local_flush_all",	VMSTAT_SHOW_PROCFS},
++	{"nr_tlb_local_flush_one",	VMSTAT_SHOW_PROCFS},
+ #endif /* CONFIG_DEBUG_TLBFLUSH */
+ 
+ #ifdef CONFIG_SWAP
+-	"swap_ra",
+-	"swap_ra_hit",
++	{"swap_ra",			VMSTAT_SHOW_PROCFS},
++	{"swap_ra_hit",			VMSTAT_SHOW_PROCFS},
+ #ifdef CONFIG_KSM
+-	"ksm_swpin_copy",
++	{"ksm_swpin_copy",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #endif
+ #ifdef CONFIG_KSM
+-	"cow_ksm",
++	{"cow_ksm",			VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_ZSWAP
+-	"zswpin",
+-	"zswpout",
++	{"zswpin",			VMSTAT_SHOW_PROCFS},
++	{"zswpout",			VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_X86
+-	"direct_map_level2_splits",
+-	"direct_map_level3_splits",
++	{"direct_map_level2_splits",	VMSTAT_SHOW_PROCFS},
++	{"direct_map_level3_splits",	VMSTAT_SHOW_PROCFS},
+ #endif
+ #ifdef CONFIG_PER_VMA_LOCK_STATS
+-	"vma_lock_success",
+-	"vma_lock_abort",
+-	"vma_lock_retry",
+-	"vma_lock_miss",
++	{"vma_lock_success",		VMSTAT_SHOW_PROCFS},
++	{"vma_lock_abort",		VMSTAT_SHOW_PROCFS},
++	{"vma_lock_retry",		VMSTAT_SHOW_PROCFS},
++	{"vma_lock_miss",		VMSTAT_SHOW_PROCFS},
+ #endif
+ #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
+ };
++
+ #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG */
+ 
+ #if (defined(CONFIG_DEBUG_FS) && defined(CONFIG_COMPACTION)) || \
+@@ -1845,9 +1848,11 @@ static int vmstat_show(struct seq_file *m, void *arg)
+ 	unsigned long *l = arg;
+ 	unsigned long off = l - (unsigned long *)m->private;
+ 
+-	seq_puts(m, vmstat_text[off]);
+-	seq_put_decimal_ull(m, " ", *l);
+-	seq_putc(m, '\n');
++	if (vmstat_text[off].flags & VMSTAT_SHOW_PROCFS) {
++		seq_puts(m, vmstat_text[off].name);
++		seq_put_decimal_ull(m, " ", *l);
++		seq_putc(m, '\n');
++	}
+ 
+ 	if (off == NR_VMSTAT_ITEMS - 1) {
+ 		/*
+-- 
+2.43.0.472.g3155946c3a-goog
+
