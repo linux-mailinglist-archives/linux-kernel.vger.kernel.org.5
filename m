@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A356180DCDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 397B780DCE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345035AbjLKVPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S1345051AbjLKVQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjLKVPr (ORCPT
+        with ESMTP id S229625AbjLKVQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:15:47 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7445CF;
-        Mon, 11 Dec 2023 13:15:53 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77f3790a187so253183685a.1;
-        Mon, 11 Dec 2023 13:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702329353; x=1702934153; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f7MVcu7o/NtINowl0l8HYwXfyv01ZrwZ3Kxgw8afM7E=;
-        b=UO3RYCBCs/OYVrVrh8TvyWr1C97c3buT477coH5ui2VG/FAaZe6z/tJNXNSsR7dAXP
-         7BvvMu3xOdurdhJieurgbQNCEu0t9djqP73m+sK2IqRFWPDISL4TQzs/J15OwEmUcUHG
-         7HHjpWXnbfgQ7qqAiTS8s8cLM5/EHp+V3xnXxSC2FpgxWsJ13Ij70qVuXUOAftNaOtaE
-         9W+oyD2mlGFqtnfAAK1Wo3MhYgU2RvwQHjErrNRwsXM0q1S96LE5SmmRQYP9jSyxil3P
-         BZ+QNlgAz0BPjxBcvx+qAiSOx1lnejIa7spl7RNfKQm1YeoNpKK5/C9s9SstPAyrMpqZ
-         YKrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702329353; x=1702934153;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f7MVcu7o/NtINowl0l8HYwXfyv01ZrwZ3Kxgw8afM7E=;
-        b=KZJtBndU/90X9ohrD+gnMSl2MLifHA0YzlOEAwZYnuxfcI+TexpyfvvXi96fa1LFah
-         ccxmjctzORtATqd1+cCYGTwWK+26E8BRTF8r0VIvO5Byy1FCzmUytZ7MW1YUelV5RXkj
-         PSXJzvppC3PPet8mtukb95QB8PJgD/E9hc1PBJydCKRh5sfCJfFOYSonzMW0JPRHfdX2
-         gAS03E2hRtXYluqpNoT8DjjE8pbnVVewSU7+aYvaf7darJlAmhn2zNwAhsnaK5IUeh+U
-         feLsPh5Hy+uwJlA1+s+fDBkAqeB1UvMuXJKNJMNU+/khNMwbNGx44w/gpOEO2XLCAAkU
-         0kHw==
-X-Gm-Message-State: AOJu0YzPgDEW6LpuZGS2UPFPUmm+1EXyL/GWKJ22Ba1bK8K3HCPtWx5i
-        Vm5WcxLTKGP67cJbF2eJaFk=
-X-Google-Smtp-Source: AGHT+IGsNhakLJTeZI6++7Are4btlVbr4oMf0+N+oBzUW+gS4V/RE/+UjPoePWZB+K/aoxk4RzxQkw==
-X-Received: by 2002:a05:620a:1aa6:b0:77f:c96:bb8d with SMTP id bl38-20020a05620a1aa600b0077f0c96bb8dmr6908517qkb.6.1702329352929;
-        Mon, 11 Dec 2023 13:15:52 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bs36-20020a05620a472400b0077d8a162babsm3200309qkb.13.2023.12.11.13.15.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 13:15:52 -0800 (PST)
-Message-ID: <41909d24-db7a-4a11-8983-7101e87582e0@gmail.com>
-Date:   Mon, 11 Dec 2023 13:15:47 -0800
+        Mon, 11 Dec 2023 16:16:16 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D68BDC;
+        Mon, 11 Dec 2023 13:16:22 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBLBeB9010925;
+        Mon, 11 Dec 2023 21:16:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=2qwVnVRGiEz/dK94uWiVqAw4mV6RqHCm04gqd/tWgq4=; b=HZ
+        KwN9dB7BeT11lSZUyYqf/a3AzIVBFZXcwbJ/GfgYao+iECrqGjQF9ihdFdXjhWqj
+        MMVTdYB/rTJriUzs5QIUJ3ZBZ28hNdhLemaFvLhpE/g19UfvWWgPZ7cAegzWX/Ea
+        +WwCzCySJS4qQkrkiKu2sZzmIJ6LKj7Fxr1OutFKrpuDlPSOyJy570FreuREuizI
+        wXGJmymEpgVdHbQZ9nk50B8K1VQVzpqg+KQ4BhpzOiBFqCNZU/+pHI9pMsOU134H
+        FloY2TLTJmu1YRPAeq5p3sQMqQb0NbuifswmMUlEw9JPokKpA9bLlRBaZu9tmYjz
+        Wu2SUmsfGPHGYzaMQKcw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux6530kbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 21:16:15 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBLGEhF001383
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 21:16:14 GMT
+Received: from [10.110.62.164] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
+ 2023 13:16:11 -0800
+Message-ID: <4966bfa0-ef50-a02d-a917-86d82429e45e@quicinc.com>
+Date:   Mon, 11 Dec 2023 13:16:09 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/194] 6.1.68-rc1 review
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 05/16] drm/msm/dpu: add cdm blocks to sc7280
+ dpu_hw_catalog
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231211182036.606660304@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231211182036.606660304@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <quic_parellan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231208050641.32582-1-quic_abhinavk@quicinc.com>
+ <20231208050641.32582-6-quic_abhinavk@quicinc.com>
+ <CAA8EJprR92=TRvYNu1dSTUcphUu3v-cD326AK2+80Ex8ppYBBw@mail.gmail.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJprR92=TRvYNu1dSTUcphUu3v-cD326AK2+80Ex8ppYBBw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _IdRM85cYEHTaM5NNQCQj9nhy5luii2s
+X-Proofpoint-GUID: _IdRM85cYEHTaM5NNQCQj9nhy5luii2s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312110175
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,29 +89,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 10:19, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.68 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.68-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+On 12/8/2023 3:19 AM, Dmitry Baryshkov wrote:
+> On Fri, 8 Dec 2023 at 07:07, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> Add CDM blocks to the sc7280 dpu_hw_catalog to support
+>> YUV format output from writeback block.
+>>
+>> changes in v2:
+>>          - remove explicit zero assignment for features
+>>          - move sc7280_cdm to dpu_hw_catalog from the sc7280
+>>            catalog file as its definition can be re-used
+>>
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   .../gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h  |  1 +
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c      | 10 ++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h      | 13 +++++++++++++
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h         |  5 +++++
+>>   4 files changed, 29 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> index 209675de6742..19c2b7454796 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_7_2_sc7280.h
+>> @@ -248,6 +248,7 @@ const struct dpu_mdss_cfg dpu_sc7280_cfg = {
+>>          .mdss_ver = &sc7280_mdss_ver,
+>>          .caps = &sc7280_dpu_caps,
+>>          .mdp = &sc7280_mdp,
+>> +       .cdm = &sc7280_cdm,
+>>          .ctl_count = ARRAY_SIZE(sc7280_ctl),
+>>          .ctl = sc7280_ctl,
+>>          .sspp_count = ARRAY_SIZE(sc7280_sspp),
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> index d52aae54bbd5..1be3156cde05 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+>> @@ -426,6 +426,16 @@ static const struct dpu_dsc_sub_blks dsc_sblk_1 = {
+>>          .ctl = {.name = "ctl", .base = 0xF80, .len = 0x10},
+>>   };
+>>
+>> +/*************************************************************
+>> + * CDM sub block config
+> 
+> Nit: it is not a subblock config.
+> 
 
+Ack.
+
+>> + *************************************************************/
+>> +static const struct dpu_cdm_cfg sc7280_cdm = {
+> 
+> I know that I have r-b'ed this patch. But then one thing occurred to
+> me. If this definition is common to all (or almost all) platforms, can
+> we just call it dpu_cdm or dpu_common_cdm?
+> 
+>> +       .name = "cdm_0",
+>> +       .id = CDM_0,
+>> +       .len = 0x228,
+>> +       .base = 0x79200,
+>> +};
+
+hmmm .... almost common but not entirely ... msm8998's CDM has a shorter 
+len of 0x224 :(
+
+>> +
+>>   /*************************************************************
+>>    * VBIF sub blocks config
+>>    *************************************************************/
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> index e3c0d007481b..ba82ef4560a6 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
+>> @@ -682,6 +682,17 @@ struct dpu_vbif_cfg {
+>>          u32 memtype[MAX_XIN_COUNT];
+>>   };
+>>
+>> +/**
+>> + * struct dpu_cdm_cfg - information of chroma down blocks
+>> + * @name               string name for debug purposes
+>> + * @id                 enum identifying this block
+>> + * @base               register offset of this block
+>> + * @features           bit mask identifying sub-blocks/features
+>> + */
+>> +struct dpu_cdm_cfg {
+>> +       DPU_HW_BLK_INFO;
+>> +};
+>> +
+>>   /**
+>>    * Define CDP use cases
+>>    * @DPU_PERF_CDP_UDAGE_RT: real-time use cases
+>> @@ -805,6 +816,8 @@ struct dpu_mdss_cfg {
+>>          u32 wb_count;
+>>          const struct dpu_wb_cfg *wb;
+>>
+>> +       const struct dpu_cdm_cfg *cdm;
+>> +
+>>          u32 ad_count;
+>>
+>>          u32 dspp_count;
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> index a6702b2bfc68..f319c8232ea5 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+>> @@ -185,6 +185,11 @@ enum dpu_dsc {
+>>          DSC_MAX
+>>   };
+>>
+>> +enum dpu_cdm {
+>> +       CDM_0 = 1,
+>> +       CDM_MAX
+>> +};
+>> +
+>>   enum dpu_pingpong {
+>>          PINGPONG_NONE,
+>>          PINGPONG_0,
+>> --
+>> 2.40.1
+>>
+> 
+> 
