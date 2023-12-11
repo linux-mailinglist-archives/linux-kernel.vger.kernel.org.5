@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9516A80D3D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D391480D3DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344647AbjLKRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S1344586AbjLKRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:32:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344543AbjLKRb5 (ORCPT
+        with ESMTP id S1344543AbjLKRcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:31:57 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86616C3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:32:03 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a1e83adfe72so451784266b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:32:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702315922; x=1702920722; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s/UnhJJFhJv72Mo0GfEYdwGM1aW2h/5wD9gbIJDTJ8E=;
-        b=WQpYFpDWEDJQ4oDo+6PPYIbPSsM7N+e0QXdC5CgSa5Jo88oXRLu031YG2Pn2dX0pR7
-         lg/nVJx92dd0y703E/Y9Pf9z/FL4ChEcp/QneASVNxAiuWWx3kksp00J5CwpFmm7vKKe
-         2qox0moch0OXz2AHkikl6VLxxt3JGT/xGofZYKfhMZzBJXLmnFXa9m4t7R4JdSej906E
-         GzfRKSdfH5kFCNK2qDY8WwNt/NdiTBlQPvK3bZsMEn5JEv+wMJpcKJKMxZdZEd02RWDd
-         Sl0LP2N4ngMbWLGnW5tQu1DOoGUNyyYmFB9yWVQBejb2umYPDF1vDgt+joUAEM/XvLbX
-         TyRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702315922; x=1702920722;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/UnhJJFhJv72Mo0GfEYdwGM1aW2h/5wD9gbIJDTJ8E=;
-        b=Qf2OXRCSWAb3brh39jfrnYGcyVQ8ZAq8ltYCny06JhZyJP9ZPMfLffvG38shSJhWDN
-         hOhenRivTBausEuLHsac8+2N/apX0acSh18oW9XreEFwWKLHEQaPc3l1XCuN+SoC0MwV
-         8p1tzLjQFNLpsHHUKOkNnOvEvClJwu4fiK2sXRo7AOFhs0gWya/ejY95whwpu3E1otu+
-         /SHp8JRoA0XMAJJXl+VGMA4wh6cWyx6hzZUU5c7xyxCJedMfuWJG6cEpMzhVks2TegBK
-         4UwNoRxzem33+pPRpTAtb8hMKalM74LHzlSTvO6xDidWbXx1v1aeORn87dVgcgCoGa3G
-         049A==
-X-Gm-Message-State: AOJu0Yyxn+8uRohpQaamg7YacZl8yO+Q5uVCUVve+b5IAyypsKPRmXEv
-        8DaTapXvqIw7fBWItxfmqeNUpA==
-X-Google-Smtp-Source: AGHT+IHReIaY/WQ2l+1mkKbAFPvx2OncWPm7jOMW3JeO0fS+svIC6pbCoCqaSAGs6aNZU8LI3n1mXg==
-X-Received: by 2002:a17:907:6d02:b0:a16:3da0:dd36 with SMTP id sa2-20020a1709076d0200b00a163da0dd36mr3238682ejc.48.1702315921972;
-        Mon, 11 Dec 2023 09:32:01 -0800 (PST)
-Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
-        by smtp.gmail.com with ESMTPSA id vu8-20020a170907a64800b00a1d5c52d628sm5087827ejc.3.2023.12.11.09.32.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 09:32:01 -0800 (PST)
-Message-ID: <b7eafdba-5f10-45f1-bed8-55585fb61e94@linaro.org>
-Date:   Mon, 11 Dec 2023 18:31:59 +0100
+        Mon, 11 Dec 2023 12:32:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A084F9B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:32:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE08C433C7;
+        Mon, 11 Dec 2023 17:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702315949;
+        bh=WCZbx2NHItGvVYJdNm3seZiECC9kBcXrBMakH/5y2GM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QLD55wAhi415G5i1FOx5XSlKU0PD4PfNfCROijwQrJ6ISBIgW0yYA+UQgGXuyrBxM
+         PV5qRRb+bo58o/Io89rRoNyx+5JWppYxFQko24Y9U5IZPxbpcTz15c5RH5Luz7A7qA
+         d6vbV1nMzZ/DXJiPRp0u/5zZIAFECeUsvgezaPjUfpCPWuhj36oo4NJwUK303xXRsC
+         FCLD+4SN2kjOP/MUx8b5uPvRjiuVwoOBJXMGANXfGG+IS3I8sASO1XWr749u2cKJ2X
+         lKAaz9Sm59kQ4iMlxCcO9iRB/0dVlEwdpmvsJm7EA8ZQPgjInsr62/cslhs+9Je9PE
+         uogNKYKDLWVQA==
+Date:   Mon, 11 Dec 2023 17:32:20 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Message-ID: <052dc756-cc05-4aa8-9724-14d42853089c@sirena.org.uk>
+References: <ZXXJ9NdH61YZfC4c@finisterre.sirena.org.uk>
+ <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
+ <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
+ <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
+ <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
+ <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+ <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
+ <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
+ <1368c558-c58c-4574-907e-36b07dee31bb@sirena.org.uk>
+ <6ee5d68a-fa54-4ed6-bc41-2bff0d9eb12f@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add X1E80100
- LPASS RX
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231211123104.72963-1-krzysztof.kozlowski@linaro.org>
- <20231211-cardstock-elevator-3e19f9d41ac2@spud>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231211-cardstock-elevator-3e19f9d41ac2@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wtM8tjuv5dS/G0Kr"
+Content-Disposition: inline
+In-Reply-To: <6ee5d68a-fa54-4ed6-bc41-2bff0d9eb12f@redhat.com>
+X-Cookie: Better dead than mellow.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.2023 18:29, Conor Dooley wrote:
-> On Mon, Dec 11, 2023 at 01:31:01PM +0100, Krzysztof Kozlowski wrote:
->> Add bindings for Qualcomm X1E80100 SoC Low Power Audio SubSystem (LPASS)
->> RX macro codec, which looks like compatible with earlier SM8550.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> I wish you'd send cover letters when you send series of trivial patches
-> like this that could be acked in one go.
-(+1)
 
-Konrad
+--wtM8tjuv5dS/G0Kr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 11, 2023 at 05:53:59PM +0100, David Hildenbrand wrote:
+
+> > > (3) avoids dirtying the tree as a "make headers_install" would, but it also
+> > > means that each test that makes use of new uapi has to update the relevant
+> > > headers (what people working on QEMU are used to).
+
+> > Note that you can do an out of tree build to avoid dirtying things.
+
+> Yes, but apparently the simple "make headers_install" will dirty the kernel.
+
+> See (and ideally comment on)
+
+> https://lkml.kernel.org/r/20231209020144.244759-1-jhubbard@nvidia.com
+
+I mean, I guess people who don't want to install the headers are just
+not going to be able to build a bunch of tests?  There definitely are a
+bunch of tests where it's not needed so I can see why people would not
+like being forced to do the headers step if they're only interested in
+those tests.
+
+--wtM8tjuv5dS/G0Kr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV3R6MACgkQJNaLcl1U
+h9D+Igf/ZMvHWGlrE+b/Z+ooB6z2lP/fcPq9HkLDAGQE9oEBoV9NPQXZS9zKxN6x
+mVXihH5FBismZ/3eXmS4pzsMQpdnWSS97iGY5KgrS4qATy3EmFHnYTiNyW3vocyW
+7OV8t61FaEctCaQ7gMkb3pKokm3XdGqhUAEMUml1+PfiTHa0iAhcFEI0VBukmKdG
+ugBUMNVSRoF4OppkOiolHALCnffAFLu6X6ISsCVAwORGy73NnwqTUEQ3VpKlP6II
+qwmwnifh5MCg4Dsj9x3gfGJBkqTYVtNUA4cnOz7KTmv4z8MTlWpZc00FNXGFMqlX
+71mkGz7FGIrGTGB5MQGJwP4eLTX2gA==
+=pC6/
+-----END PGP SIGNATURE-----
+
+--wtM8tjuv5dS/G0Kr--
