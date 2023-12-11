@@ -2,147 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D3080BFA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1E880BFAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbjLKCv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S229653AbjLKC4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233591AbjLKCvk (ORCPT
+        with ESMTP id S229483AbjLKC4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:51:40 -0500
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629EF1FE8;
-        Sun, 10 Dec 2023 18:51:02 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 0DB723200A9D;
-        Sun, 10 Dec 2023 21:50:58 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 10 Dec 2023 21:50:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1702263058; x=1702349458; bh=4J
-        cWAGFDAKqU0mXy71u7gfYt92DBUCLVc/XBkrUumIY=; b=KDltS9ScE28iWnXFTe
-        ybWLpPM5SNGL1hKC3iFLgi4DGgPmzez4toJ7OzOxoetvY1O5TJJLXLQ626mJZDNP
-        +2PVp9UbADk8jzX41Z/y5AxH+G5lj4qaUecXJxbo2Gh3UXN1OiylX0AVDIkA3S/N
-        wydlgo73UbFcnvvFfTQqr1UWZklZdyj+6Cqck3MFI/TJJ0u0OiFXGc9ke9v9PONq
-        7vjp7SgpiCrCuW/7UUYRP2rWACoG/YNV/Gw8g+D4M4NrNCXmXk+FScsw4seroNof
-        1SRJa2OLDSTV0cdEJbuuRF/qnYwAMWIKDGVXL0hBUan/Ftuak9MzTaSGf1W945dI
-        5AyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1702263058; x=1702349458; bh=4JcWAGFDAKqU0
-        mXy71u7gfYt92DBUCLVc/XBkrUumIY=; b=2/JLh+Kl9NVINPXq99u/g7xozl+y6
-        ns4zJpIPDx7EPWdOL24RYzBJxS5RgiPFgxNPYSgMB1sgL2ooPV1/ByP8MbuslhN1
-        xC90YXnTcUz88isHTmm6nznXLzaI5OTL00ZR+fQjqHFfZ3s622vdVyWrCFUTCOwe
-        T70A2SfDjwKC4ARgEdhI4qcFp20n1SiWWmNOmi9JKlSjFU+ihtf08odUcNRCKr91
-        ALVADD0TAle9BYTcrlLp9rwM3Og64DLiWSnhh7YFvqSVpEZ/iwstw9+UKVzhQ+wY
-        zgxjij66HG/K5+peBjiShENXypMjSAnMfH2r40kBQqIiSo0Ciw0cgizLg==
-X-ME-Sender: <xms:Enl2ZZ-guBsx3FebNJixt9YSkFIbwssNqnVCm0IUZzYC0PGeL6UGwQ>
-    <xme:Enl2ZdtZdeq0-3H-VrPb4eQ2qDGIkJWNgBC4LcR-9CnFxYl8FiovBWCkAfNtBe9E4
-    MV1PTJccHFFwc7ONag>
-X-ME-Received: <xmr:Enl2ZXBc9vn8rXvaDZmt1Y_Zna_6X2UOkfc7OIwacvpwGJlW86utDiVZ8vw4PGqhOasWnsUYoxaxh7r0pSdOv371Z5BQdg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeluddghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpefrrghtrhhitghkucghihhl
-    lhhirghmshcuoehprghtrhhitghksehsthiftgigrdighiiiqeenucggtffrrghtthgvrh
-    hnpeehfeejheeftdejiedvfeekffehledukeduleelffekgfdtleduledvtdegtdehkeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehprghtrh
-    hitghksehsthiftgigrdighiii
-X-ME-Proxy: <xmx:Enl2ZddnFWEtlkdUchpd_LhaZLfvFstGsYtlS__Zfi0jdoNC9mpJ3Q>
-    <xmx:Enl2ZeMk4PmFi5xsqngbgl8_-ol2ZtavQcMDAiG5jn-iVs2ga-0CpQ>
-    <xmx:Enl2ZflCviGy2JFRWnVjz0_x0-_3NdtvF8xhv8Go6kw-2UW7RXsZww>
-    <xmx:Enl2ZdcQJTz8R22Q8VWEOFNrywA377FsFj1U05_cESBtm1Vm4mQ7xQ>
-Feedback-ID: i68a1478a:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 10 Dec 2023 21:50:57 -0500 (EST)
-Date:   Sun, 10 Dec 2023 20:50:56 -0600
-From:   Patrick Williams <patrick@stwcx.xyz>
-To:     Ivan Mikhaylov <fr0st61te@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, peter@pjd.dev, sam@mendozajonas.com
-Subject: Re: [PATCH net-next v2 3/3] net/ncsi: Add NC-SI 1.2 Get MC MAC
- Address command
-Message-ID: <ZXZ5EOSJAekCiT44@heinlein.vulture-banana.ts.net>
-References: <20231114160737.3209218-4-patrick@stwcx.xyz>
- <20231210215356.4154-1-fr0st61te@gmail.com>
+        Sun, 10 Dec 2023 21:56:31 -0500
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A485BCE;
+        Sun, 10 Dec 2023 18:56:33 -0800 (PST)
+X-UUID: e166d0de97d011eea5db2bebc7c28f94-20231211
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=cV6riP0Ow3bKYWIQlnMOTDlEkCQ8oQ7sgKAuWFgdgY4=;
+        b=X1clbtpVx7GagyIQVEFgpQjRHJvp5ECvLto8GaNbHHoWbkpLCnWOr0btlwetlO29Dinn1YDOeY2WGNgQV7Z7gHB0ix3am/vz2X12kTbVcgqdkuwQzilnx6auEQ5BvaaUmgv0/YNoXY9LXsghA6N0lH8wIfJM9WNeACHnt5HmHHU=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:7ee2fb62-41cf-48af-8961-e35025077681,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5d391d7,CLOUDID:3bc1a173-1bd3-4f48-b671-ada88705968c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: e166d0de97d011eea5db2bebc7c28f94-20231211
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 102566418; Mon, 11 Dec 2023 10:56:28 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Dec 2023 10:56:26 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 11 Dec 2023 10:56:26 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH v2 1/2] dt-bindings: phy: mediatek: tphy: add a property for force-mode switch
+Date:   Mon, 11 Dec 2023 10:56:23 +0800
+Message-ID: <20231211025624.28991-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="+15r0ml6tBo+jei6"
-Content-Disposition: inline
-In-Reply-To: <20231210215356.4154-1-fr0st61te@gmail.com>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--11.360500-8.000000
+X-TMASE-MatchedRID: RRfbWjdhZrr4Q348LKfXOO7KTDtx8CggtjHGWON8yeP9Ez/5IpHqp/pZ
+        jWQiqBlh8/nBmhGQ+G7kiLqWsGi3RpShxRaS8Dn10FfSApnujPiAfODDLypXmtzOQo7mTgA+FVk
+        w4X07kmjaFM5TPGLdCHBSByhCpcr+QdZuZ42vrpFu4W5gEinK6fMfibAjlaopIZUd3wirJi2jxY
+        yRBa/qJcFwgTvxipFajoczmuoPCq0+xoUgd8obQZ05FFJdMwGG0mrAuei0ALC9AvG/HBY0xoHcO
+        amUia0t
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--11.360500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 10541A3B766F5DABAF750EE74B7A1B24E217417B7A2FC9C7B112FDA6E978F3FF2000:8
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Due to some old SoCs with shared t-phy between usb3 and pcie only support
+force-mode switch, and shared and non-shared t-phy may exist at the same
+time on a SoC, can't use compatible to distinguish between shared and
+non-shared t-phy, add a property to supported it.
+Currently, only support switch from default pcie mode to usb3 mode.
+But now prefer to use "mediatek,syscon-type" on new SoC as far as possible.
 
---+15r0ml6tBo+jei6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v2: modify commit message, and property description 
+---
+ Documentation/devicetree/bindings/phy/mediatek,tphy.yaml | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-On Mon, Dec 11, 2023 at 12:53:56AM +0300, Ivan Mikhaylov wrote:
->=20
-> seems very similar to ncsi_rsp_handler_oem_gma except address_count, why =
-it
-> shouldn't be part of this call with additional param? What's inside it ju=
-st
-> code duplicity of ncsi_rsp_handler_oem_gma.
->=20
-> And as we talked in openbmc mailing list, ndo_set_mac_address do not noti=
-fy
-> network layer about mac change and this fixed part already in
-> ncsi_rsp_handler_oem_gma with 790071347a0a1a89e618eedcd51c687ea783aeb3 .
->=20
-> David, any actions should be needed about fixing it in net-next? Need it =
-to
-> put patch above with fix or do the revert from net-next and make it right?
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index 2bb91542e984..acba0720125d 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -235,6 +235,15 @@ patternProperties:
+           Specify the flag to enable BC1.2 if support it
+         type: boolean
+ 
++      mediatek,force-mode:
++        description:
++          The force mode is used to manually switch the shared phy mode between
++          USB3 and PCIe, when USB3 phy type is selected by the consumer, and
++          force-mode is set, will cause phy's power and pipe toggled and force
++          phy as USB3 mode which switched from default PCIe mode. But perfer to
++          use the property "mediatek,syscon-type" for newer SoCs that support it.
++        type: boolean
++
+       mediatek,syscon-type:
+         $ref: /schemas/types.yaml#/definitions/phandle-array
+         maxItems: 1
+-- 
+2.18.0
 
-I agree that both of your recommendations might make the code better,
-but I don't see why we would need to revert it.  The code does the
-intended function for many use cases, even if you've identified a few
-where calling `dev_set_mac_address` would be better.
-
-Either you or I can send a "Fixes: " on this commit to improve the
-handling as you're proposing.  While the change is likely trivial, I
-have not had any chance to test it yet, so I've not sent it up myself.
-If you want to refactor the code to reduce duplication, I think that should
-be an entirely separate proposal.
-
---=20
-Patrick Williams
-
---+15r0ml6tBo+jei6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEBGD9ii4LE9cNbqJBqwNHzC0AwRkFAmV2eQ8ACgkQqwNHzC0A
-wRmp3A/+NnxL8+c3M1OsmMuJUdi5Fe2npPOc/1Xl5ZNPQQ7JrAb4bOjLNcWpUD9b
-Z3R2rEzRHNoWQvI4f2T34Sx/z2/Pelmvii9P85YkubOfl6tq+YXY5sDDomjtZmnI
-CTQmO8QU8AB7tVS+4t3ElcRE/hKmKzpZNcTFk7mOFXOphO6jpNiVphqHsJoLv9pL
-VaPuRdyKoEfRjjAF05wkjnFW95SyyNnwd4GpxCX1gaem44mLXtISPy8TxI9W8XFU
-EVVW+MItPTNtpm8daHgBN7dojAZjlD8To9hcrLCYq0jOHuPD2XZT2yIiPYba4rpx
-Ee/hR3u32P0NYqbku8L7eut7JXD0ThjPvvZaUUd72vI2HjkTG0Wep08kUxbokD7+
-iU2E7SOhT7PxpceUcTpuGVYDFPfcr0JtET7b4fxl41XVQiXHP33RqYipIVNX3w/1
-ZS5aSoflE5a8YRMSXUtq69cMbJgcHvjzlxHKZt1boL7l3rWBgeEWX+dXWrO3rVmX
-IUh7cxQJQIey30+8Ld1E28mhomykNGwb+zajV5fZhEO2MANi5mOn+QXGgzAi+bTX
-Fl4Awrg2B6uO+F5SDGGhv11rtKPUMZBVABEsitvI0cCTGbfEkNdaRqOxG3w0WR9f
-65KwbXs0uMKSsIz2THSXnQ/kww2jOfJtNfCAVwl+OP5PZWBMks0=
-=Fw1V
------END PGP SIGNATURE-----
-
---+15r0ml6tBo+jei6--
