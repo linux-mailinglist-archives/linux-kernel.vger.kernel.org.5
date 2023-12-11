@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300C480CF10
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ED980CF16
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343985AbjLKPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        id S1344000AbjLKPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:11:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343865AbjLKPHv (ORCPT
+        with ESMTP id S1343701AbjLKPLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:07:51 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73716CF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:07:57 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbc5f7781faso1933481276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:07:57 -0800 (PST)
+        Mon, 11 Dec 2023 10:11:10 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E3ED8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:11:14 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d0bcc0c313so24686615ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:11:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702307276; x=1702912076; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kG29XMk3lTrWBF1GpEp92hAzbHx2RURAGojiIVdfRzw=;
-        b=mMk0d+CFvuFQRNww/Zwa8Y4syNdv2EZe3KAgWqe35+lpTCdXFnwz6HqhnKkxY+q+jj
-         QpXC8pM1AGnqJa+Uu/JEZatWYzfLjJU6MufThSFhw7KlupHtt8c2sB8DFeGmTS7UoCVh
-         HKXls9wnaCFmFvq1LoaqPRByTPNXdZyKjTpezWjjxHLE1ivkydgx6i2XkHhaRNBoi1Hr
-         kUf1OCSwgTkhk8E/eDfG6inlw6SFcvmnDCzD2OwNQQ5kD8mG7v6CaF71VO6uow8citWe
-         U5zUxvMBHWi9B7uFZjka+BCphBAlxI8UfiNI2McZ879N8mDokG8HGk/HgLhsbYtJy8Xs
-         WS0Q==
+        d=chromium.org; s=google; t=1702307473; x=1702912273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QjZ1Q3i+wwEmoaOAEivvc7ulbH4UVbA72KsZePqHS/s=;
+        b=HOuflSDFImwQKauYTvTgDYF3QpXRZVnrThFvyJyMCZ1o4kJUJnqppZbYcddW2t+cGE
+         +Q8mqfPOdC5SmVxey9C1YiXiL2Ova2ht6hGA6rnX74X3GJCTCEEWW+lGv9tJu/HR7L3M
+         /LWmrEb42+9zVbmB/HvszMEjHqWoYb4G/jX/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702307276; x=1702912076;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kG29XMk3lTrWBF1GpEp92hAzbHx2RURAGojiIVdfRzw=;
-        b=jmqWJDhUGEjAS3fBlw1u4nGOec0g5SaoQrgVnonfGMCdhH17MmM23NdlgTHycqh0Lm
-         mpk5NDe/qnVQUBroTOE2Pg5UJtMRi0LVa9nrQm74XSAamQgQGXCS3kA6OIJZPGT4KpiB
-         qzvOR3Ff180JCXGs6H/ODBGMicLkxoppYD/Gxhnc3TsWgX5Whsy4QfaFjiDvobkOPdh9
-         SyqbvNAhm6damlXvtlRqWSAb3InbyjXvDq5kZmSQlQynHYH3rr2IEkToU6XcMwr5KfoO
-         JYgNEQn6e16KN8O2iJz8UkRTVjT1gWW9ANHO1An58oEnVUTg9wFC6xWMGSgSN1ZH0jdx
-         J4oQ==
-X-Gm-Message-State: AOJu0YzlSW1CG0NwlY/vVZ5uetGSeK/HvIQamn095iUlS3Jd0NPQjAXA
-        Anx1IA/zoF4OA7aYTw5BGQQGD9m8yvAa
-X-Google-Smtp-Source: AGHT+IFaiZEd7+b47BpPdyNVHldfy1fqi8OR1OodEiQIP1OrN47EutSHqBJsH0N98hqvXd26gcgUe+ORfXY6
-X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
- (user=mmaurer job=sendgmr) by 2002:a05:6902:242:b0:d9a:ec95:9687 with SMTP id
- k2-20020a056902024200b00d9aec959687mr30873ybs.11.1702307276664; Mon, 11 Dec
- 2023 07:07:56 -0800 (PST)
-Date:   Mon, 11 Dec 2023 15:07:49 +0000
-Mime-Version: 1.0
+        d=1e100.net; s=20230601; t=1702307473; x=1702912273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QjZ1Q3i+wwEmoaOAEivvc7ulbH4UVbA72KsZePqHS/s=;
+        b=sOGBIIr3C1PkU98qKkcW5F90vq50hFru2jcGstD4usYCq+VYdaOv/NpIqKeBhD3F0s
+         PDi+MIr3PMOevKSJKR558F51y7G34PCIVRGozK1PuIamBWlOLpRBZUxYqL26z0KnZ6A+
+         EXJvMkglHGSny5YX4nGH/9QewVVthMJ20rBjLLji3MyW4r88TaZpUU9hXqWEMmx9YVzI
+         D9V0ZKvPxzN3w/REUa4N2I+/dBY19CKVBdg+5Xs9I3qIUb9Ijh0bC6RalphwxK6EF3GE
+         nY1lYyvNmVfnl0RzVUlYdZdv4ch8ov8Ip7Gp85HcdJPsUIKaBlg3b/b2dqwm3DDz9R3K
+         Cs9w==
+X-Gm-Message-State: AOJu0Yy9c++mNB0iHvenvbQ/+fovJy+iy4IDT75LgaPKo7phFrZiYAig
+        hfFPJbMJgpPM1GI4c+voWk3OYg==
+X-Google-Smtp-Source: AGHT+IFpOCNYQ3yPBkwpNjfl9h9ryDhS2AHuurPpRtWodHZQ65S7qlnZant5AJQUmuF43IAOCxjBCg==
+X-Received: by 2002:a17:902:e74e:b0:1d0:6d5d:5e4d with SMTP id p14-20020a170902e74e00b001d06d5d5e4dmr1735616plf.59.1702307473507;
+        Mon, 11 Dec 2023 07:11:13 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:5c08:e1ed:d922:d30c])
+        by smtp.gmail.com with ESMTPSA id a18-20020a170902ecd200b001d058ad8770sm6787897plh.306.2023.12.11.07.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 07:11:12 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Brian Geffon <bgeffon@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Simon Horman <horms@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Grant Grundler <grundler@chromium.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] usb: core: Fix crash w/ usb_choose_configuration() if no driver
+Date:   Mon, 11 Dec 2023 07:08:14 -0800
+Message-ID: <20231211070808.v2.1.If27eb3bf7812f91ab83810f232292f032f4203e0@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231211150753.293883-1-mmaurer@google.com>
-Subject: [PATCH] x86/Kconfig: rust: Patchable function Rust compat
-From:   Matthew Maurer <mmaurer@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Matthew Maurer <mmaurer@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rust doesn't yet support patchable entry, but likely will soon. Disable
-function padding when Rust is used but doesn't support it, and propagate
-the flag when it does.
+It's possible that usb_choose_configuration() can get called when a
+USB device has no driver. In this case the recent commit a87b8e3be926
+("usb: core: Allow subclassed USB drivers to override
+usb_choose_configuration()") can cause a crash since it dereferenced
+the driver structure without checking for NULL. Let's add a check.
 
-Signed-off-by: Matthew Maurer <mmaurer@google.com>
+A USB device with no driver is an anomaly, so make
+usb_choose_configuration() return immediately if there is no driver.
+
+This was seen in the real world when usbguard got ahold of a r8152
+device at the wrong time. It can also be simulated via this on a
+computer with one r8152-based USB Ethernet adapter:
+  cd /sys/bus/usb/drivers/r8152-cfgselector
+  to_unbind="$(ls -d *-*)"
+  real_dir="$(readlink -f "${to_unbind}")"
+  echo "${to_unbind}" > unbind
+  cd "${real_dir}"
+  echo 0 > authorized
+  echo 1 > authorized
+
+Fixes: a87b8e3be926 ("usb: core: Allow subclassed USB drivers to override usb_choose_configuration()")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- arch/x86/Kconfig  | 6 +++++-
- arch/x86/Makefile | 2 ++
- 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 18b9fb7df95b..e9f1814217b5 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2452,6 +2452,10 @@ config CC_HAS_RETURN_THUNK
- config CC_HAS_ENTRY_PADDING
- 	def_bool $(cc-option,-fpatchable-function-entry=16,16)
- 
-+config RUSTC_HAS_ENTRY_PADDING
-+	depends RUST
-+	def_bool $(rs-option,-Zpatchable-function-entry=16,16)
+Changes in v2:
+- Return immediately if no driver, as per Alan.
+
+ drivers/usb/core/generic.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
+index dcb897158228..2be1e8901e2f 100644
+--- a/drivers/usb/core/generic.c
++++ b/drivers/usb/core/generic.c
+@@ -59,7 +59,11 @@ int usb_choose_configuration(struct usb_device *udev)
+ 	int num_configs;
+ 	int insufficient_power = 0;
+ 	struct usb_host_config *c, *best;
+-	struct usb_device_driver *udriver = to_usb_device_driver(udev->dev.driver);
++	struct usb_device_driver *udriver;
 +
- config FUNCTION_PADDING_CFI
- 	int
- 	default 59 if FUNCTION_ALIGNMENT_64B
-@@ -2469,7 +2473,7 @@ config FUNCTION_PADDING_BYTES
++	if (!udev->dev.driver)
++		return -1;
++	udriver = to_usb_device_driver(udev->dev.driver);
  
- config CALL_PADDING
- 	def_bool n
--	depends on CC_HAS_ENTRY_PADDING && OBJTOOL
-+	depends on CC_HAS_ENTRY_PADDING && (!RUST || RUST_HAS_ENTRY_PADDING) && OBJTOOL
- 	select FUNCTION_ALIGNMENT_16B
- 
- config FINEIBT
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 1a068de12a56..0228af62742e 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -211,7 +211,9 @@ endif
- 
- ifdef CONFIG_CALL_PADDING
- PADDING_CFLAGS := -fpatchable-function-entry=$(CONFIG_FUNCTION_PADDING_BYTES),$(CONFIG_FUNCTION_PADDING_BYTES)
-+PADDING_RUSTFLAGS := -Zpatchable-function-entry=$(CONFIG_FUNCTION_PADDING_BYTES),$(CONFIG_FUNCTION_PADDING_BYTES)
- KBUILD_CFLAGS += $(PADDING_CFLAGS)
-+KBUILD_RUSTFLAGS += $(PADDING_RUSTFLAGS)
- export PADDING_CFLAGS
- endif
- 
+ 	if (usb_device_is_owned(udev))
+ 		return 0;
 -- 
 2.43.0.472.g3155946c3a-goog
 
