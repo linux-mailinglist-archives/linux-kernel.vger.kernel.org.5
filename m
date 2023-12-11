@@ -2,317 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A469180D374
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E16980D381
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344502AbjLKRQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:16:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S1344514AbjLKRSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjLKRQi (ORCPT
+        with ESMTP id S229663AbjLKRR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:16:38 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D657CCD;
-        Mon, 11 Dec 2023 09:16:43 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DB0321FBA5;
-        Mon, 11 Dec 2023 17:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702315002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMM9MhtfbhX3ac2GwN2bNfaO9rysjcTZQxYvC7ZInFI=;
-        b=iayBRXoRt1U9Tx06ZmstRbm2XveoOAJmb3H+XQyGqUT3P+zbvLC3fS/O5gdFufKvW1RJbL
-        HMAZWuUZsMPyvABJ9A7pruDU4AcTDQzuM5BmFOcMpPg01XOr3SfxgwFxns6FxAg/2+qgul
-        KHf+4YKjdBDiM3v+jN0kV6uOJtPm9mE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702315002;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMM9MhtfbhX3ac2GwN2bNfaO9rysjcTZQxYvC7ZInFI=;
-        b=gq4/V/ApNSLd8arCAs4Cj0nWb4kzCJLFsxslfo8GpIg7puEZ0qyubbSAqtkLM29rFvPuF8
-        ndIRhrA/lTNRnYCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702315001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMM9MhtfbhX3ac2GwN2bNfaO9rysjcTZQxYvC7ZInFI=;
-        b=JWHgZqlEi7oldnItx6+BGXsreHUxl8R9ft/84suL5jG5LaRmqAKzMeY6LughDoVWTxSxb9
-        rW5hIssnw8gI0rAEpLlvK9UAsO7fbGs1YIoSbw2xr16Qo/X5Ibe7jENGrdL9fXsCKZpUqp
-        y3jHwJaYT0d5U78xPtPgc7mX/juPtCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702315001;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMM9MhtfbhX3ac2GwN2bNfaO9rysjcTZQxYvC7ZInFI=;
-        b=LOT2l8ZTpVnEcJMtm2mTePZcOc0vT6wlx3GQAnb7ighTwutmzdGsMJruFV/tFdhmn/grFg
-        7iaP+/qqGQPJ6eBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A98A0134B0;
-        Mon, 11 Dec 2023 17:16:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id /jojKflDd2VgGwAAn2gu4w
-        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:16:41 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C28F8A07E3; Mon, 11 Dec 2023 18:16:40 +0100 (CET)
-Date:   Mon, 11 Dec 2023 18:16:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, willy@infradead.org,
-        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 16/18] ext4: use new helper to read
- sb block
-Message-ID: <20231211171640.teuuedr3dqzsvsmw@quack3>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140808.975527-1-yukuai1@huaweicloud.com>
+        Mon, 11 Dec 2023 12:17:58 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DA5AC;
+        Mon, 11 Dec 2023 09:18:03 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBDsDfA019781;
+        Mon, 11 Dec 2023 09:17:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=pfpt0220; bh=HQjl/rzZ
+        4A3I+hdnOYUB1SUF3E3e3z2HKcp84M2sxEc=; b=H4+s839wVTGmKuqyg9l0B5lU
+        OWkAwoqPH6bw0z+B8BzF8c7gOACzg9ICbTtoytiTiukj0Wh9YLm//jGE0cZC7ChP
+        LHWkXOjCxAtMrHEDEFYd/4Lss7Vpoa9oUR2PHpjtb4YXMx8JpjI7MeRFJb8yR6w7
+        xo/kZqObhJmlT9uYI4DBwjxDW3j1IP/TAznAxHDNBtEz3eyUy4tsqQ0ejGVFFCOW
+        kQZgxIZZpxGML4/92IWpGbMyJpRYIWAITuXoT1hGDqu/JtWBBBZLb5yoo4Y3nb85
+        nyGPQq+wqc4lOH+Y4UyKSLw2CS8Tit0LEq2n+YVJKnhzomOhYI/mVy6zMfI8LQ==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uvrmjnfn6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 09:17:47 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Dec
+ 2023 09:17:44 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 11 Dec 2023 09:17:44 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id 6E1833F7045;
+        Mon, 11 Dec 2023 09:17:41 -0800 (PST)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>,
+        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
+        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
+        <chris.packham@alliedtelesis.co.nz>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v8 0/3] arm64: dts: cn913x: add COM Express boards
+Date:   Mon, 11 Dec 2023 19:17:36 +0200
+Message-ID: <20231211171739.4090179-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211140808.975527-1-yukuai1@huaweicloud.com>
-X-Spam-Score: 5.80
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: 5.81
-X-Spamd-Result: default: False [5.81 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         R_RATELIMIT(0.00)[to_ip_from(RLg7z3ka1nnoi3zj4x13ixbdfk)];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.19)[-0.963];
-         RCPT_COUNT_GT_50(0.00)[50];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,huawei.com:email,suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,redhat.com,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,huawei.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Q40hGiHm4nDp6pJNgceDEURyVu5N7B6b
+X-Proofpoint-ORIG-GUID: Q40hGiHm4nDp6pJNgceDEURyVu5N7B6b
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-12-23 22:08:08, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Remove __ext4_sb_bread_gfp() and ext4_buffer_uptodate() that is defined
-> by ext4, and convert to use common helper __bread_gfp2() and
-> buffer_uptodate_or_error().
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+From: Elad Nachman <enachman@marvell.com>
 
-Looks good. Feel free to add:
+Add support for CN9130 and CN9131 COM Express Type 7 CPU
+module boards by Marvell.
+Add device tree bindings for this board.
+Define these COM Express CPU modules as dtsi, and
+provide a dtsi file for a carrier board (Marvell AC5X RD
+COM Express type 7 carrier board).
+This Carrier board only utilizes the PCIe link, hence no
+special device / driver support is provided by this dtsi file.
+Finally, add dts file for the combined carrier and CPU module.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+v8:
+   1) swap enum for const in dt bindings
 
-								Honza
+v7:
+   1) update MAINTAINERS file to contain all marvell arm64
+      dts file in one line, covering all files
+   2) Add Documentation to carrier dtsi and combined carrier
+      and CPU module dts, explaining the configuration and
+      modes of operations of the carrier and the combined
+      system.
 
-> ---
->  fs/ext4/ext4.h    | 13 -------------
->  fs/ext4/inode.c   |  8 ++++----
->  fs/ext4/super.c   | 45 ++++++++++-----------------------------------
->  fs/ext4/symlink.c |  2 +-
->  4 files changed, 15 insertions(+), 53 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index a5d784872303..8377f6c5264f 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3824,19 +3824,6 @@ extern const struct iomap_ops ext4_iomap_ops;
->  extern const struct iomap_ops ext4_iomap_overwrite_ops;
->  extern const struct iomap_ops ext4_iomap_report_ops;
->  
-> -static inline int ext4_buffer_uptodate(struct buffer_head *bh)
-> -{
-> -	/*
-> -	 * If the buffer has the write error flag, we have failed
-> -	 * to write out data in the block.  In this  case, we don't
-> -	 * have to read the block because we may read the old data
-> -	 * successfully.
-> -	 */
-> -	if (buffer_write_io_error(bh))
-> -		set_buffer_uptodate(bh);
-> -	return buffer_uptodate(bh);
-> -}
-> -
->  #endif	/* __KERNEL__ */
->  
->  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 61277f7f8722..efb0af6f02f7 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -887,7 +887,7 @@ struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,
->  	bh = ext4_getblk(handle, inode, block, map_flags);
->  	if (IS_ERR(bh))
->  		return bh;
-> -	if (!bh || ext4_buffer_uptodate(bh))
-> +	if (!bh || buffer_uptodate_or_error(bh))
->  		return bh;
->  
->  	ret = ext4_read_bh_lock(bh, REQ_META | REQ_PRIO, true);
-> @@ -915,7 +915,7 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
->  
->  	for (i = 0; i < bh_count; i++)
->  		/* Note that NULL bhs[i] is valid because of holes. */
-> -		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
-> +		if (bhs[i] && !buffer_uptodate_or_error(bhs[i]))
->  			ext4_read_bh_lock(bhs[i], REQ_META | REQ_PRIO, false);
->  
->  	if (!wait)
-> @@ -4392,11 +4392,11 @@ static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
->  	bh = sb_getblk(sb, block);
->  	if (unlikely(!bh))
->  		return -ENOMEM;
-> -	if (ext4_buffer_uptodate(bh))
-> +	if (buffer_uptodate_or_error(bh))
->  		goto has_buffer;
->  
->  	lock_buffer(bh);
-> -	if (ext4_buffer_uptodate(bh)) {
-> +	if (buffer_uptodate_or_error(bh)) {
->  		/* Someone brought it uptodate while we waited */
->  		unlock_buffer(bh);
->  		goto has_buffer;
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index c5fcf377ab1f..ae41204f52d4 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -180,7 +180,7 @@ void ext4_read_bh_nowait(struct buffer_head *bh, blk_opf_t op_flags,
->  {
->  	BUG_ON(!buffer_locked(bh));
->  
-> -	if (ext4_buffer_uptodate(bh)) {
-> +	if (buffer_uptodate_or_error(bh)) {
->  		unlock_buffer(bh);
->  		return;
->  	}
-> @@ -191,7 +191,7 @@ int ext4_read_bh(struct buffer_head *bh, blk_opf_t op_flags, bh_end_io_t *end_io
->  {
->  	BUG_ON(!buffer_locked(bh));
->  
-> -	if (ext4_buffer_uptodate(bh)) {
-> +	if (buffer_uptodate_or_error(bh)) {
->  		unlock_buffer(bh);
->  		return 0;
->  	}
-> @@ -214,49 +214,24 @@ int ext4_read_bh_lock(struct buffer_head *bh, blk_opf_t op_flags, bool wait)
->  	return ext4_read_bh(bh, op_flags, NULL);
->  }
->  
-> -/*
-> - * This works like __bread_gfp() except it uses ERR_PTR for error
-> - * returns.  Currently with sb_bread it's impossible to distinguish
-> - * between ENOMEM and EIO situations (since both result in a NULL
-> - * return.
-> - */
-> -static struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
-> -					       sector_t block,
-> -					       blk_opf_t op_flags, gfp_t gfp)
-> -{
-> -	struct buffer_head *bh;
-> -	int ret;
-> -
-> -	bh = sb_getblk_gfp(sb, block, gfp);
-> -	if (bh == NULL)
-> -		return ERR_PTR(-ENOMEM);
-> -	if (ext4_buffer_uptodate(bh))
-> -		return bh;
-> -
-> -	ret = ext4_read_bh_lock(bh, REQ_META | op_flags, true);
-> -	if (ret) {
-> -		put_bh(bh);
-> -		return ERR_PTR(ret);
-> -	}
-> -	return bh;
-> -}
-> -
->  struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
->  				   blk_opf_t op_flags)
->  {
-> -	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
-> -			~__GFP_FS) | __GFP_MOVABLE;
-> +	struct buffer_head *bh = __bread_gfp2(sb->s_bdev, block,
-> +					      sb->s_blocksize,
-> +					      REQ_META | op_flags,
-> +					      __GFP_MOVABLE);
->  
-> -	return __ext4_sb_bread_gfp(sb, block, op_flags, gfp);
-> +	return bh ? bh : ERR_PTR(-EIO);
->  }
->  
->  struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
->  					    sector_t block)
->  {
-> -	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
-> -			~__GFP_FS);
-> +	struct buffer_head *bh = __bread_gfp2(sb->s_bdev, block,
-> +					      sb->s_blocksize, 0, 0);
->  
-> -	return __ext4_sb_bread_gfp(sb, block, 0, gfp);
-> +	return bh ? bh : ERR_PTR(-EIO);
->  }
->  
->  void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
-> diff --git a/fs/ext4/symlink.c b/fs/ext4/symlink.c
-> index 75bf1f88843c..49e918221aac 100644
-> --- a/fs/ext4/symlink.c
-> +++ b/fs/ext4/symlink.c
-> @@ -94,7 +94,7 @@ static const char *ext4_get_link(struct dentry *dentry, struct inode *inode,
->  		bh = ext4_getblk(NULL, inode, 0, EXT4_GET_BLOCKS_CACHED_NOWAIT);
->  		if (IS_ERR(bh))
->  			return ERR_CAST(bh);
-> -		if (!bh || !ext4_buffer_uptodate(bh))
-> +		if (!bh || !buffer_uptodate_or_error(bh))
->  			return ERR_PTR(-ECHILD);
->  	} else {
->  		bh = ext4_bread(NULL, inode, 0, 0);
-> -- 
-> 2.39.2
-> 
+v6:
+   1) Add cn9130 COM Express system
+
+   2) Drop with from compatibility name of COM Express system
+
+   3) Fix indentation issues of dt bindings
+
+v5:
+
+   1) List only carrier compatibility on carrier dtsi
+
+   2) Fix dt_bindings_check warnings using latest yamllint/dtschema
+
+   3) Fix subject lines to remove unnecessary wordings.
+
+   4) Remove dt bindings for standalone CPU modules
+
+   5) Move CN913x dt bindings to A7K dt bindings file
+
+   6) Fix dtbs_check warnings for dtb and bindings,
+      using latest yamllint/dtschema.
+
+   7) Move memory definition to main dts file, as memory
+      is socket based.
+
+v4:
+   1) reorder patches - dt bindings before dts/dtsi files
+
+   2) correct description in dt bindings
+
+   3) separate dt bindings for CPU module, carrier and combination
+
+   4) make carrier board dts into dtsi, make dts for combination of
+      carrier and CPU module
+
+   5) correct compatibility strings and file names to use dashes
+      instead of underscores
+
+v3:
+   1) Remove acronym which creates warnings for checkpatch.pl
+
+   2) Correct compatibility string for ac5x rd board
+
+   3) Add above compatibility string to dt bindings
+
+   4) update MAINTAINERS file with ac5 series dts files
+
+   5) remove memory property from carrier dts
+
+   6) add comment explaining that OOB RGMII ethernet port
+      connector and PHY are both on CPU module
+
+v2:
+   1) add compatibility string for the board
+
+   2) remove unneeded hard-coded PHY LED blinking mode initialization
+
+   3) Split the CPU portion of the carrier board to
+      dtsi files, and define a dts file for the AC5X RD
+      carrier board.
+
+Elad Nachman (3):
+  MAINTAINERS: add ac5 to list of maintained Marvell dts files
+  dt-bindings: arm64: add Marvell COM Express boards
+  arm64: dts: cn913x: add device trees for COM Express boards
+
+ .../bindings/arm/marvell/armada-7k-8k.yaml    |  22 ++++
+ MAINTAINERS                                   |   3 +-
+ arch/arm64/boot/dts/marvell/Makefile          |   1 +
+ .../dts/marvell/ac5x-rd-carrier-cn9131.dts    |  44 +++++++
+ .../boot/dts/marvell/ac5x-rd-carrier.dtsi     |  34 ++++++
+ .../dts/marvell/cn9130-db-comexpress.dtsi     |  96 ++++++++++++++++
+ .../dts/marvell/cn9131-db-comexpress.dtsi     | 108 ++++++++++++++++++
+ 7 files changed, 306 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts
+ create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
+ create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
