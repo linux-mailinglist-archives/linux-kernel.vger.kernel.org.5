@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D64580D366
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3439080D358
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344477AbjLKROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbjLKRN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229984AbjLKRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Dec 2023 12:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbjLKRN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Dec 2023 12:13:58 -0500
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2834BD;
-        Mon, 11 Dec 2023 09:14:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36576B7;
+        Mon, 11 Dec 2023 09:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
         ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
         :From:subject:date:message-id:reply-to;
-        bh=aaEer9pudS/c8D2BByKXGhQ3YN3/xyWWrP78YkybY7w=; b=Qgm79yfyq7y322Vd2gcF4MfK4v
-        mLJF4PM/q+uGiyL8NpxAYe515C3j8JKzIHgSc3E1gbfNUfv8Ej9jpOi9w/gw2FnS7zzH7HHOSm99c
-        L7mc69O1xHKEWiCZME7gP8JbSRLJR+5tzSEaihh5X/tYBsmNqQXPxXMk5j7NKf55gHak=;
+        bh=UjY/SqcnuoIIZGPSigiloYYgE/ckdvncJIsQwgfXK6g=; b=zx/1HOWJu3dwD3NF7YrNWIMhn2
+        l9FAXqfehcRlbwCGdiEaOMjBBSS4omjqOlxNGQ8bj/0fnFYJfdLdCNQrpM1ZSIYQPhxILMm1dp1iZ
+        48CQ+S74gPSiXF4taNAQY+eVkN1+RxYJlHD4+8Rx76Kh68ee/HMwS51lSXe1KiVfVM+k=;
 Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:56730 helo=pettiford.lan)
         by mail.hugovil.com with esmtpa (Exim 4.92)
         (envelope-from <hugo@hugovil.com>)
-        id 1rCjqw-0003yC-1y; Mon, 11 Dec 2023 12:13:59 -0500
+        id 1rCjqx-0003yC-Kn; Mon, 11 Dec 2023 12:14:00 -0500
 From:   Hugo Villeneuve <hugo@hugovil.com>
 To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
         hvilleneuve@dimonoff.com, jringle@gridpoint.com,
         tomasz.mon@camlingroup.com
 Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        hugo@hugovil.com
-Date:   Mon, 11 Dec 2023 12:13:47 -0500
-Message-Id: <20231211171353.2901416-1-hugo@hugovil.com>
+        hugo@hugovil.com, stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 11 Dec 2023 12:13:48 -0500
+Message-Id: <20231211171353.2901416-2-hugo@hugovil.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231211171353.2901416-1-hugo@hugovil.com>
+References: <20231211171353.2901416-1-hugo@hugovil.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 70.80.174.168
@@ -45,7 +48,7 @@ X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS autolearn=ham
         autolearn_force=no version=3.4.6
-Subject: [PATCH v2 0/6] serial: sc16is7xx: regmap fixes and improvements
+Subject: [PATCH v2 1/6] serial: sc16is7xx: remove wasteful static buffer in sc16is7xx_regmap_name()
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
@@ -54,57 +57,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Hello,
-this patch series brings fixes and improvements related to regmap access
-for the sc16is7xx driver.
+Using a static buffer inside sc16is7xx_regmap_name() was a convenient and
+simple way to set the regmap name without having to allocate and free a
+buffer each time it is called. The drawback is that the static buffer
+wastes memory for nothing once regmap is fully initialized.
 
-Most of the patches are related to commit 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port").
+Remove static buffer and use constant strings instead.
 
-I did not originally add a "Cc: stable" tag for the above mentioned commit,
-as it was intended only to improve debugging using debugfs. But since then,
-I have been able to confirm that it also fixes a long standing bug in our
-system where the Tx interrupt are no longer enabled at some point when
-transmitting large RS-485 paquets that completely fill the FIFO and thus
-require multiple and subsequent writes to the FIFO once space in it becomes
-available. I have been investigating why, but so far I haven't found the
-exact cause, altough I suspect it has something to do with regmap caching.
-Therefore, I have added this commit as a prerequisite for some of the
-patches in this series so that it is automatically added to the stable
-kernels.
+This also avoids a truncation warning when using "%d" or "%u" in snprintf
+which was flagged by kernel test robot.
 
-I have tested the changes on a custom board with two SC16IS752 DUART over
-a SPI interface using a Variscite IMX8MN NANO SOM. The four UARTs are
-configured in RS-485 mode.
+Fixes: 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port")
+Cc: stable@vger.kernel.org # 6.1.x: 3837a03 serial: sc16is7xx: improve regmap debugfs by using one regmap per port
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+---
+ drivers/tty/serial/sc16is7xx.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-I did not test the change on a SC16is7xx using I2C interface, as my custom
-board is only using SPI.
-
-Thank you.
-
-Link: [v1] https://lore.kernel.org/all/20231130191050.3165862-1-hugo@hugovil.com
-
-Changes for V2:
- - Refactor patch 1 to avoid a truncation warning when using "%u" in
-   snprintf.
- - Keep only fixing patches in this series. Non-fixes patches will be
-   resubmitted in a new separate series.
- - Add 3 new fixing patches (4 to 6).
-
-Hugo Villeneuve (6):
-  serial: sc16is7xx: remove wasteful static buffer in
-    sc16is7xx_regmap_name()
-  serial: sc16is7xx: remove global regmap from struct sc16is7xx_port
-  serial: sc16is7xx: remove unused line structure member
-  serial: sc16is7xx: change EFR lock to operate on each channels
-  serial: sc16is7xx: convert from _raw_ to _noinc_ regmap functions for
-    FIFO
-  serial: sc16is7xx: fix unconditional activation of THRI interrupt
-
- drivers/tty/serial/sc16is7xx.c | 104 ++++++++++++++++++---------------
- 1 file changed, 56 insertions(+), 48 deletions(-)
-
-
-base-commit: e045e18dbf3eaac32cdeb2799a5ec84fa694636c
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index 9cb503169a48..8d1de4982b65 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -1708,13 +1708,15 @@ static struct regmap_config regcfg = {
+ 	.max_register = SC16IS7XX_EFCR_REG,
+ };
+ 
+-static const char *sc16is7xx_regmap_name(unsigned int port_id)
++static const char *sc16is7xx_regmap_name(u8 port_id)
+ {
+-	static char buf[6];
+-
+-	snprintf(buf, sizeof(buf), "port%d", port_id);
+-
+-	return buf;
++	switch (port_id) {
++	case 0:	return "port0";
++	case 1:	return "port1";
++	default:
++		WARN_ON(true);
++		return NULL;
++	}
+ }
+ 
+ static unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id)
 -- 
 2.39.2
 
