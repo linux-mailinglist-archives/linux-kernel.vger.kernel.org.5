@@ -2,175 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC0780BECC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D242680BED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjLKBlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 20:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S229655AbjLKBmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 20:42:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKBlD (ORCPT
+        with ESMTP id S229483AbjLKBmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 20:41:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A387BD7
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:41:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F14A9C43395;
-        Mon, 11 Dec 2023 01:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702258866;
-        bh=MBOze/c93zYR/s0Tv/psL8lZsa2zAA8epMJdS8MTA48=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qR17lPs4JMPnH4HZ6ahTIg4TYdw9Z4XEBYFJPU0HqGvQbsEA0QxrteiBI65X0D8wM
-         OnS+34BNKvsvb7nxZvu3bIFA/LezLHP88kiCw7rXdNOBkbjqjORpXBWYYfYSJCt0q9
-         2d3TkFNtGktLG+F+95I8YIUrrIFrV4hwTZwW72HEi/SKVOS1p3IekzaLsbSF2ikZnw
-         q4UCfhQejMRxVHD94ZpJUBrJHFFEQ4e/M/LidZJOEs1GY6tmxMEXinp2TyJHkLSskv
-         luB8LytAXsQ1RptemeRh0Va7+XGeR/CIiqGvs2FQEEeVPQAslDf3xAlhmqNbBDGsst
-         uW9/xpQAU60RA==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c9efa1ab7fso47837391fa.0;
-        Sun, 10 Dec 2023 17:41:05 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzf2HbO/DTwEGwALmGOL/a6eS7TlzY/75tCyFtE4vopVXpWSqon
-        1GzTgWGdsTC+GxU8ePqYW/9pUC01i5WRXgv5Cas=
-X-Google-Smtp-Source: AGHT+IHifpFa36iHpb1+GyluGw6IQnLTC075/8t8iOHLtdbD3dWDzZ8fH9kQh4f8GxIkuv9w02XPsx/dXrcydyPkjDw=
-X-Received: by 2002:a2e:7e05:0:b0:2ca:1bb4:4426 with SMTP id
- z5-20020a2e7e05000000b002ca1bb44426mr543816ljc.207.1702258864030; Sun, 10 Dec
- 2023 17:41:04 -0800 (PST)
+        Sun, 10 Dec 2023 20:42:02 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3D9D7;
+        Sun, 10 Dec 2023 17:42:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=DodnFSVXUrv+dYqEJmTFxfTJUgoqYPQKyRrSoXKQiis=; b=KovonbwySyDVaBHuxdMEzRfnQY
+        Y6cB+On3e3V/hG6OnJ0GvxbiyG5DOEqSx9j5nTJa101UXBu2MPPI+oz3A9/E4PYRD37lp4eoiqaQi
+        v3dOeiDQ6Hn63pElBUjJSq2T4wH3H3WQUQgZ1VfmQp2HLElZWPSd2kma9a/SllVvHA+qtf2/GUBsH
+        SQvVLQjqP4F4m4qzr8zzoHNhcrBhZUnRKoEvsotbzYex9e5gY4e3pUCl+wojO2r+Xn4Ib4M/6nTFn
+        zVNaBCR+Db0emQJ10y+XOHrpt/TedJsSn7vWBoo2lTPyu9mYm3Yyvi40PgJHLXVzHSWkFlLkALIC4
+        FHoBxlZg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rCVIs-003jq4-1a;
+        Mon, 11 Dec 2023 01:41:50 +0000
+Message-ID: <9b52c145-7466-4e81-a911-25f472c2a2ea@infradead.org>
+Date:   Sun, 10 Dec 2023 17:41:49 -0800
 MIME-Version: 1.0
-References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
- <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
- <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
- <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
- <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
- <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
- <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
- <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com> <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
- <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com> <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
- <664003d3-aadb-4938-80f6-67fab1c9dcdd@daynix.com> <d30a038b-d10f-468d-8879-478a6c5b814b@daynix.com>
-In-Reply-To: <d30a038b-d10f-468d-8879-478a6c5b814b@daynix.com>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 10 Dec 2023 17:40:52 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5CMYiOMUDCgfQyo=K31igZZ+BgXyL6yfq1OG3r2CzQ4g@mail.gmail.com>
-Message-ID: <CAPhsuW5CMYiOMUDCgfQyo=K31igZZ+BgXyL6yfq1OG3r2CzQ4g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1 RESEND] docs: Include simplified link titles in main
+ page's index
+Content-Language: en-US
+To:     Carlos Bilbao <bilbao@vt.edu>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
+        gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
+        a.hindborg@samsung.com, aliceryhl@google.com,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <58e78693-82d1-451d-a546-51fb64ef6eb5@vt.edu>
+ <dcab1e08-c054-441b-8d4e-f46e2f22605c@vt.edu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <dcab1e08-c054-441b-8d4e-f46e2f22605c@vt.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 9, 2023 at 11:03=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
->
-> On 2023/11/22 14:36, Akihiko Odaki wrote:
-> > On 2023/11/22 14:25, Song Liu wrote:
-[...]
->
-> Now the discussion is stale again so let me summarize the discussion:
->
-> A tuntap device can have an eBPF steering program to let the userspace
-> decide which tuntap queue should be used for each packet. QEMU uses this
-> feature to implement the RSS algorithm for virtio-net emulation. Now,
-> the virtio specification has a new feature to report hash values
-> calculated with the RSS algorithm. The goal of this RFC is to report
-> such hash values from the eBPF steering program to the userspace.
->
-> There are currently three ideas to implement the proposal:
->
-> 1. Abandon eBPF steering program and implement RSS in the kernel.
->
-> It is possible to implement the RSS algorithm in the kernel as it's
-> strictly defined in the specification. However, there are proposals for
-> relevant virtio specification changes, and abandoning eBPF steering
-> program will loose the ability to implement those changes in the
-> userspace. There are concerns that this lead to more UAPI changes in the
-> end.
->
-> 2. Add BPF kfuncs.
->
-> Adding BPF kfuncs is *the* standard way to add BPF interfaces. hid-bpf
-> is a good reference for this.
->
-> The problem with BPF kfuncs is that kfuncs are not considered as stable
-> as UAPI. In my understanding, it is not problematic for things like
-> hid-bpf because programs using those kfuncs affect the entire system
-> state and expected to be centrally managed. Such BPF programs can be
-> updated along with the kernel in a manner similar to kernel modules.
->
-> The use case of tuntap steering/hash reporting is somewhat different
-> though; the eBPF program is more like a part of application (QEMU or
-> potentially other VMM) and thus needs to be portable. For example, a
-> user may expect a Debian container with QEMU installed to work on Fedora.
->
-> BPF kfuncs do still provide some level of stability, but there is no
-> documentation that tell how stable they are. The worst case scenario I
-> can imagine is that a future legitimate BPF change breaks QEMU, letting
-> the "no regressions" rule force the change to be reverted. Some
-> assurance that kind scenario will not happen is necessary in my opinion.
+Hi Carlos,
 
-I don't think we can provide stability guarantees before seeing something
-being used in the field. How do we know it will be useful forever? If a
-couple years later, there is only one person using it somewhere in the
-world, why should we keep supporting it? If there are millions of virtual
-machines using it, why would you worry about it being removed?
+On 12/10/23 17:20, Carlos Bilbao wrote:
+> Include simplified link titles in the main page's documentation index to
+> enhance website's readability and UX. Update the text that directs users to
+> various documents without changing the actual titles chosen by the authors.
+> 
+> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+> ---
+>  Documentation/index.rst | 50 ++++++++++++++++++++---------------------
+>  1 file changed, 25 insertions(+), 25 deletions(-)
+> 
+> diff --git a/Documentation/index.rst b/Documentation/index.rst
+> index 9dfdc826618c..be395d0a4318 100644
+> --- a/Documentation/index.rst
+> +++ b/Documentation/index.rst
+> @@ -22,10 +22,10 @@ community and getting your work upstream.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   process/development-process
+> -   process/submitting-patches
+> +   Development process <process/development-process>
+> +   Submitting patches <process/submitting-patches>
+>     Code of conduct <process/code-of-conduct>
+> -   maintainer/index
+> +   Maintainer handbook <maintainer/index>
+>     All development-process docs <process/index>
+>  
+>  
+> @@ -38,10 +38,10 @@ kernel.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   core-api/index
+> -   driver-api/index
+> -   subsystem-apis
+> -   Locking in the kernel <locking/index>
+> +   Core API <core-api/index>
+> +   Driver implementation API <driver-api/index>
+> +   Subsystems <subsystem-apis>
+> +   Locking <locking/index>
+>  
+>  Development tools and processes
+>  ===============================
+> @@ -51,15 +51,15 @@ Various other manuals with useful information for all kernel developers.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   process/license-rules
+> -   doc-guide/index
+> -   dev-tools/index
+> -   dev-tools/testing-overview
+> -   kernel-hacking/index
+> -   trace/index
+> -   fault-injection/index
+> -   livepatch/index
+> -   rust/index
+> +   Licensing rules <process/license-rules>
+> +   Writing documentation <doc-guide/index>
+> +   Development tools <dev-tools/index>
+> +   Testing <dev-tools/testing-overview>
+> +   Hacking <kernel-hacking/index>
+> +   Tracing <trace/index>
+> +   Fault injection <fault-injection/index>
+> +   Livepatching <livepatch/index>
+> +   Rust <rust/index>
+>  
+>  
+>  User-oriented documentation
+> @@ -72,11 +72,11 @@ developers seeking information on the kernel's user-space APIs.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   admin-guide/index
+> -   The kernel build system <bailed/index>
 
->
-> 3. Add BPF program type derived from the conventional steering program ty=
-pe
->
-> In principle, it's just to add a feature to report four more bytes to
-> the conventional steering program. However, BPF program types are frozen
-> for feature additions and the proposed change will break the feature free=
-ze.
->
-> So what's next? I'm inclined to option 3 due to its minimal ABI/API
-> change, but I'm also fine with option 2 if it is possible to guarantee
-> the ABI/API stability necessary to run pre-built QEMUs on future kernel
-> versions by e.g., explicitly stating the stability of kfuncs. If no
-> objection arises, I'll resend this series with the RFC prefix dropped
-> for upstream inclusion. If it's decided to go for option 1 or 2, I'll
-> post a new version of the series implementing the idea.
+Where do the subdir names "bailed" above and "bugled" below come from?
 
-Probably a dumb question, but does this RFC fall into option 3? If
-that's the case, I seriously don't think it's gonna happen.
+> -   admin-guide/reporting-issues.rst
+> +   Administration <admin-guide/index>
+> +   Build system <bugled/index>
 
-I would recommend you give option 2 a try and share the code. This is
-probably the best way to move the discussion forward.
+                    ^^^^^^
 
-Thanks,
-Song
+
+Thanks.
+
+> +   Reporting issues <admin-guide/reporting-issues.rst>
+>     User-space tools <tools/index>
+> -   userspace-api/index
+> +   User-space API <userspace-api/index>
+>  
+>  See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
+>  which are kept separately from the kernel's own documentation.
+> @@ -89,8 +89,8 @@ platform firmwares.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   firmware-guide/index
+> -   devicetree/index
+> +   Firmware <firmware-guide/index>
+> +   Firmware and Devicetree <devicetree/index>
+>  
+>  
+>  Architecture-specific documentation
+> @@ -99,7 +99,7 @@ Architecture-specific documentation
+>  .. toctree::
+>     :maxdepth: 2
+>  
+> -   arch/index
+> +   CPU Architectures <arch/index>
+>  
+>  
+>  Other documentation
+> @@ -112,7 +112,7 @@ to ReStructured Text format, or are simply too old.
+>  .. toctree::
+>     :maxdepth: 1
+>  
+> -   staging/index
+> +   Unsorted documentation <staging/index>
+>  
+>  
+>  Translations
+> @@ -121,7 +121,7 @@ Translations
+>  .. toctree::
+>     :maxdepth: 2
+>  
+> -   translations/index
+> +   Translations <translations/index>
+>  
+>  Indices and tables
+>  ==================
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
