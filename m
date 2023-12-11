@@ -2,187 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7BD80C096
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AE880C09D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjLKFOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        id S233040AbjLKFPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKFOG (ORCPT
+        with ESMTP id S229483AbjLKFPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:14:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6829D9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:14:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0966C433C8;
-        Mon, 11 Dec 2023 05:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702271651;
-        bh=1RaacpWnTkL7X+JkkZCzrmMSUdmiLmbVja5/lwCyjQE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j1k87/K7XA8EUz7Zf98AZPRZyBK3naglI6189/lN0rxULeWuXjMdwpoAWl6KaQDu7
-         3blzWA81dIIb5kC62NvxjL2YeGPGNpo134fVU1OIWCZ8wISzfCfIHLmlVGVMjdoPZG
-         ypL9U5OwRcNAf1U7n98XUq7ZJFwB4M6SkzSNXqE+3pRpe0S0TGnprKad8mHpY0EmG7
-         5em7IPy2y3vOan4UyOPX4/fva1R2mmdUqcqVGk1AiRcjfacx76VCU6M0WuYEAjcXh4
-         T6ORZDmE3uH9ZfnxzMcYRaWZ9lpYmUfPqCmUtVmz1kaPKNOxj7IfYhmyOtAPd0VHzM
-         xA7qcayxQqJ7Q==
-Date:   Mon, 11 Dec 2023 14:14:03 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Xin Li <xin3.li@intel.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com, nik.borisov@suse.com, shan.kang@intel.com
-Subject: Re: [PATCH v13 01/35] x86/cpufeatures,opcode,msr: Add the WRMSRNS
- instruction support
-Message-Id: <20231211141403.09e3f2d81eb499ba44035fef@kernel.org>
-In-Reply-To: <20231205105030.8698-2-xin3.li@intel.com>
-References: <20231205105030.8698-1-xin3.li@intel.com>
-        <20231205105030.8698-2-xin3.li@intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 00:15:38 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258A6D7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:15:45 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb1eef9152so7435529fac.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:15:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702271744; x=1702876544;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JG2XORsdR115LsbeGIZEzwq2wnIFBYmqu8Ot+ew7E7Y=;
+        b=jR4+0FYe1tSGWS6la0/4/s2HFq3OcQ4HflnLUfhafZEZrLGgDMNgAGF0BW4wQYzYQv
+         33bhHdnTr0J0gz6XpepLJNlovs0IVHIAEDiIR7mzCuwRsEfrOxBu6KPGh6XY3EU/VILA
+         6kDY4WwQatcdQK/PMW+DcQCpqcaFVmQLMx4rOFvCXkMdtYeFKjR5kQ3XYSXRwqqY62pR
+         CeM2dHeQMZA1LNKPPT52J6jnKU+cJW3+ylEuWmR7dYkbEadX12MnQkd/Ob35mmcf/eei
+         uomqCH8346ZGsB1+FM10Vrg2Qp5xC43VXONh3nPBwMRzhYEmVIdg2XRLjkgWfxqgDc8H
+         8n4A==
+X-Gm-Message-State: AOJu0YzvIieO+Lz9KZFf6NkF1+E7BQGYXr+LKtounWSQz9K1XB+wftDO
+        /TOXHqiC7IfxMn5/BJ+ZF/t6mWwXHaAQoJ34MQE7+xqfue8XLfc=
+X-Google-Smtp-Source: AGHT+IHcstbMsDAvfvjMb8l0Mi7v+dMvWdqdFUXnz6238N4Njdc992DM9mcexIf/BdeKwpIiIJZ4U+AI0YWuHMcynu28wGJi5X0P
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:239a:b0:202:d78c:c4d7 with SMTP id
+ e26-20020a056870239a00b00202d78cc4d7mr26331oap.7.1702271744587; Sun, 10 Dec
+ 2023 21:15:44 -0800 (PST)
+Date:   Sun, 10 Dec 2023 21:15:44 -0800
+In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a5bb71060c350667@google.com>
+Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
+From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 Dec 2023 02:49:50 -0800
-Xin Li <xin3.li@intel.com> wrote:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-> WRMSRNS is an instruction that behaves exactly like WRMSR, with
-> the only difference being that it is not a serializing instruction
-> by default. Under certain conditions, WRMSRNS may replace WRMSR to
-> improve performance.
-> 
-> Add its CPU feature bit, opcode to the x86 opcode map, and an
-> always inline API __wrmsrns() to embed WRMSRNS into the code.
-> 
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
+***
 
-Looks good to me.
+Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
+Author: lizhi.xu@windriver.com
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
 
-Thanks,
-
-> ---
-> 
-> Changes since v12:
-> * Merge the 3 WRMSRNS patches into one (Borislav Petkov).
-> * s/cpu/CPU/g (Borislav Petkov).
-> * Shorten the WRMSRNS description (Borislav Petkov).
-> ---
->  arch/x86/include/asm/cpufeatures.h       |  1 +
->  arch/x86/include/asm/msr.h               | 18 ++++++++++++++++++
->  arch/x86/lib/x86-opcode-map.txt          |  2 +-
->  tools/arch/x86/include/asm/cpufeatures.h |  1 +
->  tools/arch/x86/lib/x86-opcode-map.txt    |  2 +-
->  5 files changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 149cc5d5c2ae..a903fc130e49 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -325,6 +325,7 @@
->  #define X86_FEATURE_FSRS		(12*32+11) /* "" Fast short REP STOSB */
->  #define X86_FEATURE_FSRC		(12*32+12) /* "" Fast short REP {CMPSB,SCASB} */
->  #define X86_FEATURE_LKGS		(12*32+18) /* "" Load "kernel" (userspace) GS */
-> +#define X86_FEATURE_WRMSRNS		(12*32+19) /* "" Non-serializing WRMSR */
->  #define X86_FEATURE_AMX_FP16		(12*32+21) /* "" AMX fp16 Support */
->  #define X86_FEATURE_AVX_IFMA            (12*32+23) /* "" Support for VPMADD52[H,L]UQ */
->  #define X86_FEATURE_LAM			(12*32+26) /* Linear Address Masking */
-> diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
-> index 65ec1965cd28..c284ff9ebe67 100644
-> --- a/arch/x86/include/asm/msr.h
-> +++ b/arch/x86/include/asm/msr.h
-> @@ -97,6 +97,19 @@ static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
->  		     : : "c" (msr), "a"(low), "d" (high) : "memory");
->  }
->  
-> +/*
-> + * WRMSRNS behaves exactly like WRMSR with the only difference being
-> + * that it is not a serializing instruction by default.
-> + */
-> +static __always_inline void __wrmsrns(u32 msr, u32 low, u32 high)
-> +{
-> +	/* Instruction opcode for WRMSRNS; supported in binutils >= 2.40. */
-> +	asm volatile("1: .byte 0x0f,0x01,0xc6\n"
-> +		     "2:\n"
-> +		     _ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_WRMSR)
-> +		     : : "c" (msr), "a"(low), "d" (high));
-> +}
-> +
->  #define native_rdmsr(msr, val1, val2)			\
->  do {							\
->  	u64 __val = __rdmsr((msr));			\
-> @@ -297,6 +310,11 @@ do {							\
->  
->  #endif	/* !CONFIG_PARAVIRT_XXL */
->  
-> +static __always_inline void wrmsrns(u32 msr, u64 val)
-> +{
-> +	__wrmsrns(msr, val, val >> 32);
-> +}
-> +
->  /*
->   * 64-bit version of wrmsr_safe():
->   */
-> diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-> index 5168ee0360b2..1efe1d9bf5ce 100644
-> --- a/arch/x86/lib/x86-opcode-map.txt
-> +++ b/arch/x86/lib/x86-opcode-map.txt
-> @@ -1051,7 +1051,7 @@ GrpTable: Grp6
->  EndTable
->  
->  GrpTable: Grp7
-> -0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B)
-> +0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
->  1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
->  2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
->  3: LIDT Ms
-> diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
-> index 4af140cf5719..26a73ae18a86 100644
-> --- a/tools/arch/x86/include/asm/cpufeatures.h
-> +++ b/tools/arch/x86/include/asm/cpufeatures.h
-> @@ -322,6 +322,7 @@
->  #define X86_FEATURE_FSRS		(12*32+11) /* "" Fast short REP STOSB */
->  #define X86_FEATURE_FSRC		(12*32+12) /* "" Fast short REP {CMPSB,SCASB} */
->  #define X86_FEATURE_LKGS		(12*32+18) /* "" Load "kernel" (userspace) GS */
-> +#define X86_FEATURE_WRMSRNS		(12*32+19) /* "" Non-serializing WRMSR */
->  #define X86_FEATURE_AMX_FP16		(12*32+21) /* "" AMX fp16 Support */
->  #define X86_FEATURE_AVX_IFMA            (12*32+23) /* "" Support for VPMADD52[H,L]UQ */
->  #define X86_FEATURE_LAM			(12*32+26) /* Linear Address Masking */
-> diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-> index 5168ee0360b2..1efe1d9bf5ce 100644
-> --- a/tools/arch/x86/lib/x86-opcode-map.txt
-> +++ b/tools/arch/x86/lib/x86-opcode-map.txt
-> @@ -1051,7 +1051,7 @@ GrpTable: Grp6
->  EndTable
->  
->  GrpTable: Grp7
-> -0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B)
-> +0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B) | PCONFIG (101),(11B) | ENCLV (000),(11B) | WRMSRNS (110),(11B)
->  1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B) | ENCLS (111),(11B)
->  2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B) | ENCLU (111),(11B)
->  3: LIDT Ms
-> -- 
-> 2.43.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+diff --git a/lib/radix-tree.c b/lib/radix-tree.c
+index a89df8afa510..301a8c01816a 100644
+--- a/lib/radix-tree.c
++++ b/lib/radix-tree.c
+@@ -613,12 +613,13 @@ static int __radix_tree_create(struct radix_tree_root *root,
+ 		unsigned long index, struct radix_tree_node **nodep,
+ 		void __rcu ***slotp)
+ {
+-	struct radix_tree_node *node = NULL, *child;
++	struct radix_tree_node *node = NULL, *child, *orig;
+ 	void __rcu **slot = (void __rcu **)&root->xa_head;
+ 	unsigned long maxindex;
+-	unsigned int shift, offset = 0;
++	unsigned int shift, offset = 0, mmshift = 0;
+ 	unsigned long max = index;
+ 	gfp_t gfp = root_gfp_mask(root);
++	int ret;
+ 
+ 	shift = radix_tree_load_root(root, &child, &maxindex);
+ 
+@@ -628,6 +629,7 @@ static int __radix_tree_create(struct radix_tree_root *root,
+ 		if (error < 0)
+ 			return error;
+ 		shift = error;
++		mmshift = error;
+ 		child = rcu_dereference_raw(root->xa_head);
+ 	}
+ 
+@@ -637,8 +639,11 @@ static int __radix_tree_create(struct radix_tree_root *root,
+ 			/* Have to add a child node.  */
+ 			child = radix_tree_node_alloc(gfp, node, root, shift,
+ 							offset, 0, 0);
+-			if (!child)
+-				return -ENOMEM;
++			printk("nc: %p\n", child);
++			if (!child) {
++				 ret = -ENOMEM;
++				 goto freec;
++			}
+ 			rcu_assign_pointer(*slot, node_to_entry(child));
+ 			if (node)
+ 				node->count++;
+@@ -656,6 +661,18 @@ static int __radix_tree_create(struct radix_tree_root *root,
+ 	if (slotp)
+ 		*slotp = slot;
+ 	return 0;
++freec:
++	if (mmshift > 0) {
++		struct radix_tree_node *pn;
++		while (shift < mmshift && node) {
++			printk("dc: %p\n", node);
++			pn = node->parent;
++			radix_tree_node_rcu_free(&node->rcu_head);
++			shift += RADIX_TREE_MAP_SHIFT;
++			node = pn;
++		}
++	}
++	return ret;
+ }
+ 
+ /*
