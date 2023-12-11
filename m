@@ -2,360 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E86B80D50A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0A80D512
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235006AbjLKSOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:14:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S1344797AbjLKSPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:15:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjLKSOM (ORCPT
+        with ESMTP id S231745AbjLKSPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:14:12 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E797A9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:14:17 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b9f111c114so1753018b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:14:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702318456; x=1702923256; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zbiqO7RxhSXNHZRSCjwyZy4HmqVXPvY1sANPCgpMBIA=;
-        b=2ZR9oew+tVsgkdbtVJPAIjNlqjQeakbUN08vwSybi21pD7JMCR0VjzZNIAL4Ql+O9C
-         7+xRmtnoHMGO7vGqublUTMIoEUpQyMp5C/Q15mq28NKrqJo84IPm+I27gcHRRz1QvPk9
-         3Bt0ieiBUMQ0b50x1yG5uZKdQu7gk0sJiVHr4pFlWY1CWFkqiCt1k94Yr+K2ec94ewBv
-         sGZGHVvgxwJoJpWq6xDMFSAIbxsm7+NGgyHh/5zNQOFLdwzCn7Q68XHR3R3Iw0Y85XfS
-         0z1l8SQXvz9P1h9Rve0ew1xgE2nb8v3ipP5ZhXKhMFwu497xQ+GX8qKpLGznUFXJdDtR
-         VuLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702318456; x=1702923256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zbiqO7RxhSXNHZRSCjwyZy4HmqVXPvY1sANPCgpMBIA=;
-        b=Y3JNgsuWPQoIqnBFDRTKIwgeXP75IGpExX4+LVqYpLPpNa7749usKoZG55vO5bl/fA
-         WieEz2Io9jGoj5gMWrvzk5ZZKsX3Hopb2KIljC3Uh2kwFTo72XmxVsNsKD3jlwk3aFFK
-         I3YE5SfTZsxrLRIIhOA5Jjy8mK0Ez+Stn5/MsW4soPYLBA5bUNimyUe9tmbgOwoVLC/x
-         L5FepMHXZdnxoLU63aUAhis2xWoIIMlh4k+ktpHnbN5CYAMacdBDt7ru+93/EzytDr0s
-         z+5gDz+Nrep+/5l4JAgTnwIHSThs8qXVo3T/yU6vTIkrUW+vGHVC0qC0C74vLhxZEwq3
-         Am1A==
-X-Gm-Message-State: AOJu0Yy+IjDIzPyTIsp3RGZkd3QSQGGwyshbM39p53cmw0H5J75bT8aV
-        Y0VCs3DXD/DQjtmydEKtLofC7onoNAQdhlnIAxUaig==
-X-Google-Smtp-Source: AGHT+IE8095BrfyI+kTIXDm8hNguhYybzjvVGensk2JElZVZdZ4bLJQ+s/d+dDYVGThzdPiv+aq1lB4rQf1PXQGNIdE=
-X-Received: by 2002:a05:6830:164a:b0:6d9:d902:44f0 with SMTP id
- h10-20020a056830164a00b006d9d90244f0mr4280561otr.50.1702318456301; Mon, 11
- Dec 2023 10:14:16 -0800 (PST)
+        Mon, 11 Dec 2023 13:15:15 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B556C7;
+        Mon, 11 Dec 2023 10:15:20 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DC060922;
+        Mon, 11 Dec 2023 19:14:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702318475;
+        bh=8eSow/3dFTG1DAJOMkS/gxZZoikGXWE51x4cXT/zPqM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GoRnpURY/6iclbnSYFnh+4jlqpz91ialh+KlheDfqIjgavbbwopABrkd9RpdD3cIE
+         Owl7/f8IETX30TzkFtqrc+h+7LmnKHeaoqzqfU2eyCNGhGfgpGlR42IC41WTUxf7e1
+         FfP28n4m2pFYTCC/kv+i+zuPsZ54nOA7pMfhveL0=
+Date:   Mon, 11 Dec 2023 20:15:26 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 07/19] media: i2c: ov4689: Use sub-device active state
+Message-ID: <20231211181526.GF27535@pendragon.ideasonboard.com>
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-8-mike.rudenko@gmail.com>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com> <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
- <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com> <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
- <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com> <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
-In-Reply-To: <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 11 Dec 2023 10:14:05 -0800
-Message-ID: <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231211175023.1680247-8-mike.rudenko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 3:51=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/12/11 12:04, Mina Almasry wrote:
-> > On Sun, Dec 10, 2023 at 6:26=E2=80=AFPM Mina Almasry <almasrymina@googl=
-e.com> wrote:
-> >>
-> >> On Sun, Dec 10, 2023 at 6:04=E2=80=AFPM Yunsheng Lin <linyunsheng@huaw=
-ei.com> wrote:
-> >>>
-> >>> On 2023/12/9 0:05, Mina Almasry wrote:
-> >>>> On Fri, Dec 8, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@hua=
-wei.com> wrote:
-> >>>>>
-> >>>>>
-> >>>>> As mentioned before, it seems we need to have the above checking ev=
-ery
-> >>>>> time we need to do some per-page handling in page_pool core, is the=
-re
-> >>>>> a plan in your mind how to remove those kind of checking in the fut=
-ure?
-> >>>>>
-> >>>>
-> >>>> I see 2 ways to remove the checking, both infeasible:
-> >>>>
-> >>>> 1. Allocate a wrapper struct that pulls out all the fields the page =
-pool needs:
-> >>>>
-> >>>> struct netmem {
-> >>>>         /* common fields */
-> >>>>         refcount_t refcount;
-> >>>>         bool is_pfmemalloc;
-> >>>>         int nid;
-> >>>>         ...
-> >>>>         union {
-> >>>>                 struct dmabuf_genpool_chunk_owner *owner;
-> >>>>                 struct page * page;
-> >>>>         };
-> >>>> };
-> >>>>
-> >>>> The page pool can then not care if the underlying memory is iov or
-> >>>> page. However this introduces significant memory bloat as this struc=
-t
-> >>>> needs to be allocated for each page or ppiov, which I imagine is not
-> >>>> acceptable for the upside of removing a few static_branch'd if
-> >>>> statements with no performance cost.
-> >>>>
-> >>>> 2. Create a unified struct for page and dmabuf memory, which the mm
-> >>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
-> >>>> the future.
-> >>>>
-> >>>> So I imagine the special handling of ppiov in some form is critical
-> >>>> and the checking may not be removable.
-> >>>
-> >>> If the above is true, perhaps devmem is not really supposed to be int=
-ergated
-> >>> into page_pool.
-> >>>
-> >>> Adding a checking for every per-page handling in page_pool core is ju=
-st too
-> >>> hacky to be really considerred a longterm solution.
-> >>>
-> >>
-> >> The only other option is to implement another page_pool for ppiov and
-> >> have the driver create page_pool or ppiov_pool depending on the state
-> >> of the netdev_rx_queue (or some helper in the net stack to do that for
-> >> the driver). This introduces some code duplication. The ppiov_pool &
-> >> page_pool would look similar in implementation.
->
-> I think there is a design pattern already to deal with this kind of probl=
-em,
-> refactoring common code used by both page_pool and ppiov into a library t=
-o
-> aovid code duplication if most of them have similar implementation.
->
+Hi Mikhail,
 
-Code can be refactored if it's identical, not if it is similar. I
-suspect the page_pools will be only similar, and if you're not willing
-to take devmem handling into the page pool then refactoring page_pool
-code into helpers that do devmem handling may also not be an option.
+Thank you for the patch.
 
-> >>
-> >> But this was all discussed in detail in RFC v2 and the last response I
-> >> heard from Jesper was in favor if this approach, if I understand
-> >> correctly:
-> >>
-> >> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@re=
-dhat.com/
-> >>
-> >> Would love to have the maintainer weigh in here.
-> >>
-> >
-> > I should note we may be able to remove some of the checking, but maybe =
-not all.
-> >
-> > - Checks that disable page fragging for ppiov can be removed once
-> > ppiov has frag support (in this series or follow up).
-> >
-> > - If we use page->pp_frag_count (or page->pp_ref_count) for
-> > refcounting ppiov, we can remove the if checking in the refcounting.
-> >
+On Mon, Dec 11, 2023 at 08:50:10PM +0300, Mikhail Rudenko wrote:
+> Use sub-device active state. Employ control handler lock to
+> synchronize access to the active state and s_stream.
+> 
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> ---
+>  drivers/media/i2c/ov4689.c | 68 +++++++++++++++-----------------------
+>  1 file changed, 27 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index 5392f650960c..2eef64cd0070 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -86,7 +86,6 @@ struct ov4689 {
+>  
+>  	u32 clock_rate;
+>  
+> -	struct mutex mutex; /* lock to protect ctrls and cur_mode */
+>  	struct v4l2_ctrl_handler ctrl_handler;
+>  	struct v4l2_ctrl *exposure;
+>  
+> @@ -319,19 +318,6 @@ static int ov4689_set_fmt(struct v4l2_subdev *sd,
+>  	return 0;
+>  }
+>  
+> -static int ov4689_get_fmt(struct v4l2_subdev *sd,
+> -			  struct v4l2_subdev_state *sd_state,
+> -			  struct v4l2_subdev_format *fmt)
+> -{
+> -	struct v4l2_mbus_framefmt *mbus_fmt = &fmt->format;
+> -	struct ov4689 *ov4689 = to_ov4689(sd);
+> -
+> -	/* only one mode supported for now */
+> -	ov4689_fill_fmt(ov4689->cur_mode, mbus_fmt);
+> -
+> -	return 0;
+> -}
+> -
+>  static int ov4689_enum_mbus_code(struct v4l2_subdev *sd,
+>  				 struct v4l2_subdev_state *sd_state,
+>  				 struct v4l2_subdev_mbus_code_enum *code)
+> @@ -405,10 +391,11 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+>  static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+>  {
+>  	struct ov4689 *ov4689 = to_ov4689(sd);
+> +	struct v4l2_subdev_state *sd_state;
+>  	struct device *dev = ov4689->dev;
+>  	int ret = 0;
+>  
+> -	mutex_lock(&ov4689->mutex);
+> +	sd_state = v4l2_subdev_lock_and_get_active_state(&ov4689->subdev);
+>  
+>  	if (on) {
+>  		ret = pm_runtime_resume_and_get(dev);
+> @@ -443,7 +430,7 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+>  	}
+>  
+>  unlock_and_return:
+> -	mutex_unlock(&ov4689->mutex);
+> +	v4l2_subdev_unlock_state(sd_state);
+>  
+>  	return ret;
+>  }
+> @@ -506,19 +493,15 @@ static int __maybe_unused ov4689_power_off(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static int ov4689_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+> +static int ov4689_init_cfg(struct v4l2_subdev *sd,
+> +			   struct v4l2_subdev_state *sd_state)
+>  {
+> -	struct ov4689 *ov4689 = to_ov4689(sd);
+> -	struct v4l2_mbus_framefmt *try_fmt;
+> -
+> -	mutex_lock(&ov4689->mutex);
+> +	struct v4l2_mbus_framefmt *try_fmt =
+> +		v4l2_subdev_state_get_format(sd_state, 0);
+>  
+> -	try_fmt = v4l2_subdev_state_get_format(fh->state, 0);
+>  	/* Initialize try_fmt */
 
-I'm not sure this is actually possible in the short term. The
-page_pool uses both page->_refcount and page->pp_frag_count for
-refcounting, and I will not be able to remove the special handling
-around page->_refcount as i'm not allowed to call page_ref_*() APIs on
-a non-struct page.
+It's not necessarily a "try format" anymore, so you cand rop this
+comment, and rename the variable from try_fmt to fmt.
 
-> > - We may be able to store the dma_addr of the ppiov in page->dma_addr,
-> > but I'm unsure if that actually works, because the dma_buf dmaddr is
-> > dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
-> > I think). But if it works for pages I may be able to make it work for
-> > ppiov as well.
-> >
-> > - Checks that obtain the page->pp can work with ppiov if we align the
-> > offset of page->pp and ppiov->pp.
-> >
-> > - Checks around page->pp_magic can be removed if we also have offset
-> > aligned ppiov->pp_magic.
-> >
-> > Sadly I don't see us removing the checking for these other cases:
-> >
-> > - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
-> > that helper.
->
-> We can do similar trick like above as bit 1 of page->pp_magic is used to
-> indicate that if it is a pfmemalloc page.
->
+>  	ov4689_fill_fmt(&supported_modes[OV4689_MODE_2688_1520], try_fmt);
+>  
+> -	mutex_unlock(&ov4689->mutex);
+> -
+>  	return 0;
+>  }
+>  
+> @@ -526,18 +509,15 @@ static const struct dev_pm_ops ov4689_pm_ops = {
+>  	SET_RUNTIME_PM_OPS(ov4689_power_off, ov4689_power_on, NULL)
+>  };
+>  
+> -static const struct v4l2_subdev_internal_ops ov4689_internal_ops = {
+> -	.open = ov4689_open,
+> -};
+> -
+>  static const struct v4l2_subdev_video_ops ov4689_video_ops = {
+>  	.s_stream = ov4689_s_stream,
+>  };
+>  
+>  static const struct v4l2_subdev_pad_ops ov4689_pad_ops = {
+> +	.init_cfg = ov4689_init_cfg,
 
-Likely yes.
+Please rebase on top of the latest media tree for the next version, the
+.init_cfg() operation has been renamed to .init_state() and moved to
+v4l2_subdev_internal_ops.
 
-> >
-> > - page_to_nid(): I'm not allowed to pass a non-struct page into that he=
-lper.
->
-> Yes, this one need special case.
->
-> >
-> > - page_pool_free_va(): ppiov have no va.
->
-> Doesn't the skb_frags_readable() checking will protect the page_pool_free=
-_va()
-> from being called on devmem?
->
+Other than that, this patch looks good.
 
-This function seems to be only called from veth which doesn't support
-devmem. I can remove the handling there.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> >
-> > - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
-> > fundamentally can't get mapped again.
->
-> Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
-> DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
->
+>  	.enum_mbus_code = ov4689_enum_mbus_code,
+>  	.enum_frame_size = ov4689_enum_frame_sizes,
+> -	.get_fmt = ov4689_get_fmt,
+> +	.get_fmt = v4l2_subdev_get_fmt,
+>  	.set_fmt = ov4689_set_fmt,
+>  	.get_selection = ov4689_get_selection,
+>  };
+> @@ -649,7 +629,6 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>  	ret = v4l2_ctrl_handler_init(handler, 10);
+>  	if (ret)
+>  		return ret;
+> -	handler->lock = &ov4689->mutex;
+>  
+>  	ctrl = v4l2_ctrl_new_int_menu(handler, NULL, V4L2_CID_LINK_FREQ, 0, 0,
+>  				      link_freq_menu_items);
+> @@ -862,13 +841,14 @@ static int ov4689_probe(struct i2c_client *client)
+>  		return dev_err_probe(dev, ret,
+>  				     "Failed to get power regulators\n");
+>  
+> -	mutex_init(&ov4689->mutex);
+> -
+>  	sd = &ov4689->subdev;
+>  	v4l2_i2c_subdev_init(sd, client, &ov4689_subdev_ops);
+> +
+>  	ret = ov4689_initialize_controls(ov4689);
+> -	if (ret)
+> -		goto err_destroy_mutex;
+> +	if (ret) {
+> +		dev_err(dev, "Failed to initialize controls\n");
+> +		return ret;
+> +	}
+>  
+>  	ret = ov4689_power_on(dev);
+>  	if (ret)
+> @@ -878,19 +858,26 @@ static int ov4689_probe(struct i2c_client *client)
+>  	if (ret)
+>  		goto err_power_off;
+>  
+> -	sd->internal_ops = &ov4689_internal_ops;
+>  	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
+>  
+>  	ov4689->pad.flags = MEDIA_PAD_FL_SOURCE;
+> -	sd->entity.function = MEDIA_ENT_F_CAM_SENSOR;
+>  	ret = media_entity_pads_init(&sd->entity, 1, &ov4689->pad);
+>  	if (ret < 0)
+>  		goto err_power_off;
+>  
+> +	sd->state_lock = ov4689->ctrl_handler.lock;
+> +	ret = v4l2_subdev_init_finalize(sd);
+> +
+> +	if (ret) {
+> +		dev_err(dev, "Could not register v4l2 device\n");
+> +		goto err_clean_entity;
+> +	}
+> +
+>  	ret = v4l2_async_register_subdev_sensor(sd);
+>  	if (ret) {
+>  		dev_err(dev, "v4l2 async register subdev failed\n");
+> -		goto err_clean_entity;
+> +		goto err_clean_subdev;
+>  	}
+>  
+>  	pm_runtime_set_active(dev);
+> @@ -899,14 +886,14 @@ static int ov4689_probe(struct i2c_client *client)
+>  
+>  	return 0;
+>  
+> +err_clean_subdev:
+> +	v4l2_subdev_cleanup(sd);
+>  err_clean_entity:
+>  	media_entity_cleanup(&sd->entity);
+>  err_power_off:
+>  	ov4689_power_off(dev);
+>  err_free_handler:
+>  	v4l2_ctrl_handler_free(&ov4689->ctrl_handler);
+> -err_destroy_mutex:
+> -	mutex_destroy(&ov4689->mutex);
+>  
+>  	return ret;
+>  }
+> @@ -918,9 +905,8 @@ static void ov4689_remove(struct i2c_client *client)
+>  
+>  	v4l2_async_unregister_subdev(sd);
+>  	media_entity_cleanup(&sd->entity);
+> -
+> +	v4l2_subdev_cleanup(sd);
+>  	v4l2_ctrl_handler_free(&ov4689->ctrl_handler);
+> -	mutex_destroy(&ov4689->mutex);
+>  
+>  	pm_runtime_disable(&client->dev);
+>  	if (!pm_runtime_status_suspended(&client->dev))
 
-Jakub says PP_FLAG_DMA_MAP must be enabled for devmem, such that the
-page_pool handles the dma mapping of the devmem and the driver doesn't
-use it on its own.
+-- 
+Regards,
 
-We may fail creating the page pool on  PP_FLAG_DMA_SYNC_DEV maybe, and
-remove the checking from page_pool_sync_for_dev(), I think.
-
-> >
-> > Are the removal (or future removal) of these checks enough to resolve t=
-his?
->
-> Yes, that is somewhat similar to my proposal, the biggest objection seems=
- to
-> be that we need to have a safe type checking for it to work correctly.
->
-> >
-> >>> It is somewhat ironical that devmem is using static_branch to allivia=
-te the
-> >>> performance impact for normal memory at the possible cost of performa=
-nce
-> >>> degradation for devmem, does it not defeat some purpose of intergatin=
-g devmem
-> >>> to page_pool?
-> >>>
-> >>
-> >> I don't see the issue. The static branch sets the non-ppiov path as
-> >> default if no memory providers are in use, and flips it when they are,
-> >> making the default branch prediction ideal in both cases.
->
-> You are assuming the we are not using page pool for both normal memory an=
-d
-> devmem at the same. But a generic solution should not have that assumptio=
-n
-> as my understanding.
->
-> >>
-> >>>>
-> >>>>> Even though a static_branch check is added in page_is_page_pool_iov=
-(), it
-> >>>>> does not make much sense that a core has tow different 'struct' for=
- its
-> >>>>> most basic data.
-> >>>>>
-> >>>>> IMHO, the ppiov for dmabuf is forced fitting into page_pool without=
- much
-> >>>>> design consideration at this point.
-> >>>>>
-> >>>> ...
-> >>>>>
-> >>>>> For now, the above may work for the the rx part as it seems that yo=
-u are
-> >>>>> only enabling rx for dmabuf for now.
-> >>>>>
-> >>>>> What is the plan to enable tx for dmabuf? If it is also intergrated=
- into
-> >>>>> page_pool? There was a attempt to enable page_pool for tx, Eric see=
-med to
-> >>>>> have some comment about this:
-> >>>>> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005=
-@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
-> >>>>>
-> >>>>> If tx is not intergrated into page_pool, do we need to create a new=
- layer for
-> >>>>> the tx dmabuf?
-> >>>>>
-> >>>>
-> >>>> I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
-> >>>> helpers, and page_pool_page_*() helpers, but will not need any core
-> >>>> page_pool changes. This is because the TX path will have to piggybac=
-k
-> >>>
-> >>> We may need another bit/flags checking to demux between page_pool own=
-ed
-> >>> devmem and non-page_pool owned devmem.
-> >>>
-> >>
-> >> The way I'm imagining the support, I don't see the need for such
-> >> flags. We'd be re-using generic helpers like
-> >> page_pool_iov_get_dma_address() and what not that don't need that
-> >> checking.
-> >>
-> >>> Also calling page_pool_*() on non-page_pool owned devmem is confusing
-> >>> enough that we may need a thin layer handling non-page_pool owned dev=
-mem
-> >>> in the end.
-> >>>
-> >>
-> >> The page_pool_page* & page_pool_iov* functions can be renamed if
-> >> confusing. I would think that's no issue (note that the page_pool_*
->
-> When you rename those functions, you will have a thin layer automatically=
-.
->
-> >> functions need not be called for TX path).
-> >>
-> >>>> on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation fr=
-om
-> >>>> the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
-> >>>> implementation based on dmabuf pages without page_pool involvement, =
-I
-> >>>> imagine I'll do something similar.
-> >>> It would be good to have a tx implementation for the next version, so
-> >>> that we can have a whole picture of devmem.
-
-
-
---=20
-Thanks,
-Mina
+Laurent Pinchart
