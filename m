@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529A880C452
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182CD80C453
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbjLKJU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S234548AbjLKJU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbjLKJUY (ORCPT
+        with ESMTP id S234537AbjLKJUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:20:24 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07544EB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:20:31 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77f48aef0a5so105292985a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:20:30 -0800 (PST)
+        Mon, 11 Dec 2023 04:20:54 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1F3FC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:21:00 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a00cbb83c80so475258366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:21:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702286430; x=1702891230; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CkQyC8qFnyrcySWzH4BIJrjlesqwo2s878+l8TczGJI=;
-        b=YPHpmF2PKTtqfCENjd92kOwCDrNUn1FBQC6P6NHDzQ8zcMBj3EM/Btj6XnXgQOOWEZ
-         IBtFNTfEM/Qlh+CkK5aOdgc0a6g9WiQCGjAHKRH4froar7OlQcfcdJLaGHAFBD3sxnS9
-         0B1DwTj7MJBhZs0r3Bga9khGyET2GAMLQU1ri2gd6aFIUtLK0lQjP4b5h4pAPEUDaCBs
-         jPmN17UU/KD0l2QInl2Q3S6NxqhgqiVrp3W3hadjk851Tlw+pX2u4avyLPztydqj0lg4
-         eY+QdiUZCaleSMd1pS8t2ZDdQ3u0eRKq195MpOvv1ZoAvULznus3L9ymC+RjRDyiYH93
-         tD5Q==
+        d=linaro.org; s=google; t=1702286459; x=1702891259; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hN+CJ3w7q/df9bALZ7g35NJQaW3e9h8XttYQl2GGtCE=;
+        b=r4Zhlf61PUBDW0mExe7WJg8RjydKno7T4otG8B7SQBbvnsaHrkfIFsXPOVUqxPKwGM
+         qf2XlmVpl2e6G2f/i5lUCUN1qRj2ZTY8PrzAt0DiqEJuyMK2iN5VRgGeQ3j2BDf9XrCZ
+         BQDbBg/v2VUf873dcIs9tlb5vFfOfncWX+xLPTK07IPcLPub6fPL2zDA2W2zgAWqoUk5
+         2dT5S9fKTlUsJcXTZFcQJtSWVVqrHRBFFOOfP2D/2vYzXtCP+yMT9TNH4q5wc5vJ5nm4
+         u/OvePxYTWuJqPaevj/y7y/dKcWFL3uQuFaE4uS9UNZzj6Hf83uCC6FBYsebvBW5oyMK
+         2XQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702286430; x=1702891230;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CkQyC8qFnyrcySWzH4BIJrjlesqwo2s878+l8TczGJI=;
-        b=ZBmdGHZ6vb/yZRlsawaJ6ZdZoaEMO/oZx1x0ZZZv1XwVumP7Zc40Ue7m2XYRN5QJ2z
-         QI2NPa9gpe3Af+qE+gloOaaRlqc5QQVX9/5FMsnaHdQ0whjGcvl5qHqBCWT09qAK/cbQ
-         VCCIfuhKOUBQ7Noc2e+Lmpm9MRRQ1Mvhq2r4e1SvENZCtzYx2sqKGipPOLyRnZJ7GLtt
-         hMyR+kLHUFrLiXjTYwY+0o9KoqBNNUB18kZck6wnWzVxN3w3eCxZ6Zr1pWfY1DyIcxDU
-         633x6cqpncBWH4yYjWnCxKHDRm6f8Ge481nxReEKvfD0kkPMjN47mkmG7F1+H15LcKhJ
-         otmw==
-X-Gm-Message-State: AOJu0Yxlbmwg/U1x3YaFZfmBHRKxDWLWtbZ569kE31uDtld5mdEnW5WM
-        WrVgmZRMRq78tDpQTGDHyoRQC51Xr5LheicbYNBqbg==
-X-Google-Smtp-Source: AGHT+IEMLIIdkzsoAIO9xJXzDXYz/jLCMVkJhwb8VEqBs3xjA2Hz7GGV50RgaEP0JeLipY2cu3trQ6vcJ29NW/wcCY0=
-X-Received: by 2002:a05:6214:528f:b0:67a:a721:ec1a with SMTP id
- kj15-20020a056214528f00b0067aa721ec1amr2544549qvb.94.1702286430060; Mon, 11
- Dec 2023 01:20:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702286459; x=1702891259;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hN+CJ3w7q/df9bALZ7g35NJQaW3e9h8XttYQl2GGtCE=;
+        b=A52xAU6RMozgoSF1ghLUNhODwguNgbRrImjXzpuBPSKVqooe82Wav+GvpoDsJt0HMn
+         R1qLXYiVSEdekr4DBxewx6uHPNW55XfQKAC4g9NAMXkoZk0aAK0C0bZMhej8UeEd9cqD
+         k2i/FvdJ+yywjq0gmbKj+X2G5B04Rj6Si5cfOnNW7QC4QbpAlRRmBF867zN9CI5TLkAK
+         Pd9FmG/jRN7QPcPNj6vCU81MOm0/6Vcvw5kEirSLEd3YRH9rzJLiAGShNE70qpCsfANN
+         nmE7dbAibglJlstdMBzoe/DwSZDLLQaggmLmTd75XAIdB8HML7dpB8pAjBEzz0ZP5b4B
+         W6Lw==
+X-Gm-Message-State: AOJu0YzCmXhftvD/2hgTmcPbZBBAMVy3uiuE1iDGC9wXLt36c9r2Op+e
+        yLOQIBMyF6TJLTjDJpo5fUSurA==
+X-Google-Smtp-Source: AGHT+IGy8jlvdTQNrWexyIWNv7QFqUyuj5rIKOgxc8G3VH+P6wwuj5BChQ8ExgA2U6UPeA1HdzQw2A==
+X-Received: by 2002:a17:906:3f5b:b0:a19:a19a:eab5 with SMTP id f27-20020a1709063f5b00b00a19a19aeab5mr1726017ejj.110.1702286459020;
+        Mon, 11 Dec 2023 01:20:59 -0800 (PST)
+Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
+        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1e443bc037sm4562265ejc.147.2023.12.11.01.20.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 01:20:58 -0800 (PST)
+Message-ID: <71469a1c-ab6b-4463-99ee-5000e490db3d@linaro.org>
+Date:   Mon, 11 Dec 2023 10:20:56 +0100
 MIME-Version: 1.0
-References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org> <20231209-b4-arm64-sysreg-additions-v1-10-45284e538474@kernel.org>
-In-Reply-To: <20231209-b4-arm64-sysreg-additions-v1-10-45284e538474@kernel.org>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 11 Dec 2023 09:19:53 +0000
-Message-ID: <CA+EHjTzJNvH5gF7U-An+Tq6ySMnUUABuUFTz0qxTe-hqu6xZhw@mail.gmail.com>
-Subject: Re: [PATCH 10/13] arm64/sysreg: Update SCTLR_EL1 for DDI0601 2023-09
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] ARM: dts: qcom: ipq4019: add dedicated SDHCI
+ compatible
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
+ <20231211085830.25380-2-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231211085830.25380-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-
-On Sat, Dec 9, 2023 at 1:03=E2=80=AFAM Mark Brown <broonie@kernel.org> wrot=
-e:
->
-> DDI0601 2023-09 defines some new fields in SCTLR_EL1 controlling new MTE
-> and floating point features. Update our sysreg definition to reflect thes=
-e.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On 11.12.2023 09:58, Krzysztof Kozlowski wrote:
+> Add dedicated compatible for the SDHCI MMC controller, because usage of
+> generic qcom,sdhci-msm-v4 compatible alone is deprecated.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
-
-Cheers,
-/fuad
-
->  arch/arm64/tools/sysreg | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-> index 839f7cca53e0..4137179e7570 100644
-> --- a/arch/arm64/tools/sysreg
-> +++ b/arch/arm64/tools/sysreg
-> @@ -1791,7 +1791,8 @@ Field     63      TIDCP
->  Field  62      SPINTMASK
->  Field  61      NMI
->  Field  60      EnTP2
-> -Res0   59:58
-> +Field  59      TCSO
-> +Field  58      TCSO0
->  Field  57      EPAN
->  Field  56      EnALS
->  Field  55      EnAS0
-> @@ -1820,7 +1821,7 @@ EndEnum
->  Field  37      ITFSB
->  Field  36      BT1
->  Field  35      BT0
-> -Res0   34
-> +Field  34      EnFPM
->  Field  33      MSCEn
->  Field  32      CMOW
->  Field  31      EnIA
->
-> --
-> 2.39.2
->
+Konrad
