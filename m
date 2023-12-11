@@ -2,248 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D26D80DB75
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F34B80DB7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345082AbjLKUVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
+        id S1345179AbjLKUVW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 15:21:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345203AbjLKUUv (ORCPT
+        with ESMTP id S1345102AbjLKUVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:20:51 -0500
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AD4EA;
-        Mon, 11 Dec 2023 12:20:50 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 32F8A580969;
-        Mon, 11 Dec 2023 15:20:49 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 11 Dec 2023 15:20:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1702326049; x=
-        1702333249; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=a
-        eW1ti57qzoaxP6yiQ6R8Uzqrl/PgidoKozz4Oi4F0HhFC6v/EYY8CEv6EnN+19tt
-        WMDFRVTyeSRIFMTUiDOeDiNKa5bVQ4xMdGqANf35W6qPGQWo1dNtTMpBaG+oR1Mg
-        uz+xCU5+YccjVRyzqf9KAZo3C3cZmmx5GZpoDpwzJ+X1CDt+SAPbFyeYuu1Ohbqd
-        6U9L5ECSjewM1QqaOLS9J8Ns85jcDi8btJAhwaPLTXXIK2Hm7wsEp+pbVrifkAk3
-        A9FBJln3a9zOzgytPqA2C9aa+EyE7lRF99TzFVGkx+fcX8qxH+4E/dmeIrdW6k+c
-        r6deCuRVQTwQ743QpxRUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702326049; x=
-        1702333249; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=0
-        88O33oFs9OE2kSeXuCcfbIPuXTF08SvbIK63kJo7adenS35G5cIJ1X8sIgt5ENGs
-        RDi5fyMwE5T4IZmUUCiEHSJ1iNRytRRA3/llORpNphsG1AxpLsvyilZb1wbWLzgb
-        4vZcFZqo0B8IUT7j2oEXvlI9w5Jy7bdiCxmBdUkHz2ijSVLgrbpfPjSMi+90DC/s
-        2U4B61+4CqxluOoHWBIFiRtCxQsF/0QXVF1Bs02xBf8ymzDAnHcdBQiaZFd9GGzs
-        rynoEhHPfuLFjv6LrQ6XVRTvOY+wGSh7ngrYn250BAZuOSRc1DJGWSyQBugvkluX
-        Vi0SBk94P5EykoLKvlI4Q==
-X-ME-Sender: <xms:IG93ZflDiZHZu17F1siOQ3VKnF7SzkZgZn6pYC0TJ-zNI7SjBlGSXA>
-    <xme:IG93ZS3DBSofpNMRclotQiNLlfNvnNIkDRz5ibPawVVVuAnXvU99OQalhTxeociOG
-    kdSqY7WX06ZYrV2oQ>
-X-ME-Received: <xmr:IG93ZVrgqvwHp_WPvd_RsUPkKQP57JPzijk06MAHqHKeAgAbtUrZuH6IZJgCC2bV8hiyeSUcV3qYKAHs94qbuF6EBHRem0HHtYEx_l1xcCE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelvddgudefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:IW93ZXnOLT6Vwk8S9VkBL1Aufd1VnURaJLkiUqt0XNxEkOlCUU_y_Q>
-    <xmx:IW93Zd1j0SJNITU2HkKjR5bQb83dGRcEmmzKB5RfY8fMWPH9KVAcdg>
-    <xmx:IW93ZWuvgimhpgg7RijojC_Tfcjuo8WKSxid7fE-Nt5dtDM9joje5A>
-    <xmx:IW93ZYH32qoE11hM9hbqa8-cMM6TJzfV5Vz70FHhPfqafmYVjkWR7w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 15:20:47 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org,
-        ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
-        andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, eyal.birger@gmail.com
-Cc:     mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date:   Mon, 11 Dec 2023 13:20:13 -0700
-Message-ID: <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1702325874.git.dxu@dxuuu.xyz>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
+        Mon, 11 Dec 2023 15:21:09 -0500
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D68C4;
+        Mon, 11 Dec 2023 12:20:58 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5907b9c3fd6so407938eaf.0;
+        Mon, 11 Dec 2023 12:20:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702326057; x=1702930857;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KdR2OSdlfkd+7aN8MdL4iIUqAicY4t8Ra3rktJ3z8SE=;
+        b=tJRUYbsXOW31TXaf6p1jCDSBV56XVDINPMmvMkAFpy8+EyMeuDKAEPM0E7Dab+GTu5
+         93GRqxXv/0BwXCXOnLsSKd1Gy32m3GGx95wslMqvcbqdoAt6KLVyxUnyK5G7QqMlgoJB
+         KTHh8m5y24oepm17LsJcJRoiSJ9EWhXXjUDf9woiDtWcsqkF8wThcKyCqlpJ/W4viW1P
+         /AnjaCPYsb97q6ixNGzJ1AEI6V4gIx5t5o4cCnRMjfCO1hm+KUdE/MA9DBlOPKeTwTA0
+         mHBGoRcc0jP7ZHfBeF2UW0PqvOy8dbOJ4f7Qz+SpyeT2NeBJ66W+sMCgkBs5hXMu08sN
+         XRrw==
+X-Gm-Message-State: AOJu0Yx0aVLnqSuOwW6sogzy7LIVnl5QGqxuQ7VDIOi2kCrzxhWfS+L9
+        dOjUUzoQu1AHy1VNkd8H+1rfzI1RMfpmnRNs0es=
+X-Google-Smtp-Source: AGHT+IEQRGRF5nvWrjxXfEGtm15kh9H0lNY8Rthoy64xk0jPRWIg20xykSPP6T/ww8c2kWzq33udXAnpjkj7vrW2OME=
+X-Received: by 2002:a05:6820:220d:b0:58d:5302:5b18 with SMTP id
+ cj13-20020a056820220d00b0058d53025b18mr10519759oob.1.1702326057573; Mon, 11
+ Dec 2023 12:20:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208002342.367117-1-qyousef@layalina.io> <20231208002342.367117-8-qyousef@layalina.io>
+ <CAJZ5v0iYUY-LrL3LNdMqxyMntBij_pkpETB2esYPraPekqtbhw@mail.gmail.com> <20231210204032.fficzltp2gq66pne@airbuntu>
+In-Reply-To: <20231210204032.fficzltp2gq66pne@airbuntu>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Dec 2023 21:20:46 +0100
+Message-ID: <CAJZ5v0iKwcwkUBYaKkSkz0sPoHxrG_5pD295v_Z0jFDhR4FRFA@mail.gmail.com>
+Subject: Re: [PATCH v2 7/8] sched/schedutil: Add a new tunable to dictate
+ response time
+To:     Qais Yousef <qyousef@layalina.io>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+        Rick Yiu <rickyiu@google.com>,
+        Chung-Kai Mei <chungkai@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+On Sun, Dec 10, 2023 at 9:40 PM Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 12/08/23 19:06, Rafael J. Wysocki wrote:
+> > On Fri, Dec 8, 2023 at 1:24 AM Qais Yousef <qyousef@layalina.io> wrote:
+> > >
+> > > The new tunable, response_time_ms,  allow us to speed up or slow down
+> > > the response time of the policy to meet the perf, power and thermal
+> > > characteristic desired by the user/sysadmin. There's no single universal
+> > > trade-off that we can apply for all systems even if they use the same
+> > > SoC. The form factor of the system, the dominant use case, and in case
+> > > of battery powered systems, the size of the battery and presence or
+> > > absence of active cooling can play a big role on what would be best to
+> > > use.
+> > >
+> > > The new tunable provides sensible defaults, but yet gives the power to
+> > > control the response time to the user/sysadmin, if they wish to.
+> > >
+> > > This tunable is applied before we apply the DVFS headroom.
+> > >
+> > > The default behavior of applying 1.25 headroom can be re-instated easily
+> > > now. But we continue to keep the min required headroom to overcome
+> > > hardware limitation in its speed to change DVFS. And any additional
+> > > headroom to speed things up must be applied by userspace to match their
+> > > expectation for best perf/watt as it dictates a type of policy that will
+> > > be better for some systems, but worse for others.
+> > >
+> > > There's a whitespace clean up included in sugov_start().
+> > >
+> > > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> >
+> > I thought that there was an agreement to avoid adding any new tunables
+> > to schedutil.
+>
+> Oh. I didn't know that.
+>
+> What alternatives do we have? I couldn't see how can we universally make the
+> response work for every possible system (not just SoC, but different platforms
+> with same SoC even) and workloads. We see big power saving with no or little
+> perf impact on many workloads when not applying the current 125%. Others want
+> to push it faster under gaming scenarios etc to get more stable FPS.
+>
+> Hopefully uclamp will make the need for this tuning obsolete over time. But
+> until userspace gains critical mass; I can't see how we can know best
+> trade-offs for all myriads of use cases/systems.
+>
+> Some are happy to gain more perf and lose power. Others prefer to save power
+> over perf. DVFS response time plays a critical role in this trade-off and I'm
+> not sure how we can crystal ball it without delegating.
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 4 deletions(-)
+I understand the motivation, but counter-arguments are based on the
+experience with the cpufreq governors predating schedutil, especially
+ondemand.  Namely, at one point people focused on adjusting all of the
+governor tunables to their needs without contributing any code or even
+insights back, so when schedutil was introduced, a decision was made
+to reduce the tunability to a minimum (preferably no tunables at all,
+but it turned out to be hard to avoid the one tunable existing today).
+Peter was involved in those discussions and I think that the point
+made then is still valid.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 2d7f8fa82ebd..fc804095d578 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 1 mode tunnel "
-+			"spi %d reqid 1 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 2 mode tunnel "
-+			"spi %d reqid 2 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
- 	 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 1 mode tunnel "
-+		    "spi %d reqid 1 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
- 	/* root -> at_ns0 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 2 mode tunnel "
-+		    "spi %d reqid 2 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
- 	struct test_tunnel_kern *skel = NULL;
- 	struct nstoken *nstoken;
-+	int xdp_prog_fd;
- 	int tc_prog_fd;
- 	int ifindex;
- 	int err;
-@@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
- 		goto done;
- 
-+	/* attach xdp prog to tunnel dev */
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-+	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-+	if (!ASSERT_OK(err, "bpf_xdp_attach"))
-+		goto done;
-+
- 	/* ping from at_ns0 namespace test */
- 	nstoken = open_netns("at_ns0");
- 	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-@@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
- 		goto done;
- 	if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
- 		goto done;
-+	if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-+		goto done;
- 
- done:
- 	delete_xfrm_tunnel();
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3a59eb9c34de..c0dd38616562 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+volatile int xfrm_replay_window = 0;
-+
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS;
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	xfrm_replay_window = x->replay_esn->replay_window;
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
+The headroom formula was based on the observation that it would be a
+good idea to have some headroom in the majority of cases and on the
+balance between the simplicity of computation and general suitability.
 
+Of course, it is hard to devise a single value that will work for
+everyone, but tunables complicate things from the maintenance
+perspective.  For example, the more tunables there are, the harder it
+is to make changes without altering the behavior in ways that will
+break someone's setup.
