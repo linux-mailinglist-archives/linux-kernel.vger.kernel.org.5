@@ -2,166 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327A280D4F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:08:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B204680D4FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345247AbjLKSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
+        id S1345273AbjLKSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345205AbjLKSId (ORCPT
+        with ESMTP id S1345261AbjLKSJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:08:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8679595;
-        Mon, 11 Dec 2023 10:08:39 -0800 (PST)
+        Mon, 11 Dec 2023 13:09:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8570999;
+        Mon, 11 Dec 2023 10:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702318119; x=1733854119;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=zsHw8c+yNsgNCrRgEh9GvMAaMJXHxP/gdyNdElE3dk0=;
-  b=HQlnKKQiDoZ3kwztSPtqoh1ltPlKiqIBzO9SxKKDOFpYKye8GAJqAlD/
-   RtjEEhGVylp02QZuArCpPGYvMiMEWl3p5m0AjlmsD9+zwjtKkRb17iuPy
-   fUrvHFxmiPkihDEyq0fewHilmfaTq8X06f8TQKXryhB0oLN8U8zEhH3Mc
-   oIrAnJNiXWPL7YKvB8dgwmPM66FIF3HeHzC4SFt1oIeXCrSCY7OYRAkGY
-   xtFd5mQqUoDVzaODK5jsBeqNSLq7or0eiCh5fgQEmUdEYASFDG2YHG1s0
-   GVzCSkssnwhs+j5OW8QNsZB/WXTuz3OlkWkJ3T4i3kXqV1Xxd2kA9WL4v
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="425810997"
+  t=1702318181; x=1733854181;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ghjTfbSH+fXK6Gs9YVXjvfTHrHTvBn/enjq1gPsZCAE=;
+  b=amz4IF/bG74OltUaqDkL0y2xQ9DPlyn57/22xoH0I7qW54Ju77kGc9a5
+   MDl/y24yb8LbSo1z7qDOf9m7C0EeppjexdVscpKNR9UIhV++EXSlqe6Kl
+   uHLJ2vjFFql8FZK010hwSU3VJ0yKbZjKUSkc6g0V5Yi6AArxS53W/AU36
+   thXnEkZmiPvwUMu8cDbv3jJwmAe7rmf/v8b9ENGOry508fatBkhXDY6a3
+   3oJwqXVcJlFPGSMP1AMOf5ojXVcLAw5Gt1QlP+ph9B61DaHIEzcWc5TKR
+   7Q9iuHW5pzXWVsSgmXW1l4GsJtiNW/f09R8NERModyza9Fz5Yz+jnU46L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="398538690"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="425810997"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:08:38 -0800
+   d="scan'208";a="398538690"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:09:40 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1020337252"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="17595834"
-Received: from ashnaupa-mobl1.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.96.90])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:08:37 -0800
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Rodrigo CADORE CATALDO <rodrigo.cadore@l-acoustics.com>,
-        Rodrigo Cataldo via B4 Relay 
-        <devnull+rodrigo.cadore.l-acoustics.com@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Aravindhan Gunasekaran <aravindhan.gunasekaran@intel.com>,
-        Mallikarjuna Chilakala <mallikarjuna.chilakala@intel.com>
-Cc:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Subject: RE: [PATCH iwl-net] igc: Fix hicredit calculation
-In-Reply-To: <PR0P264MB1930850228C3F58EE8B7F9FAC88FA@PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM>
-References: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
- <871qbwry9y.fsf@intel.com>
- <PR0P264MB1930850228C3F58EE8B7F9FAC88FA@PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM>
-Date:   Mon, 11 Dec 2023 10:08:37 -0800
-Message-ID: <87v894r4re.fsf@intel.com>
+   d="scan'208";a="1020337252"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:09:40 -0800
+Received: from [10.212.109.181] (unknown [10.212.109.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 785D9580DA9;
+        Mon, 11 Dec 2023 10:09:36 -0800 (PST)
+Message-ID: <2a3caf68-3a84-4963-aa61-3063d12c4c2a@linux.intel.com>
+Date:   Mon, 11 Dec 2023 13:09:34 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/5] perf mem: Clean up perf_mem_events__ptr()
+Content-Language: en-US
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-3-kan.liang@linux.intel.com>
+ <20231209043135.GA2116834@leoy-yangtze.lan>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231209043135.GA2116834@leoy-yangtze.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rodrigo CADORE CATALDO <rodrigo.cadore@l-acoustics.com> writes:
-
->> -----Original Message-----
->> From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->> 
->> Rodrigo Cataldo via B4 Relay
->> <devnull+rodrigo.cadore.l-acoustics.com@kernel.org> writes:
->> 
->> > From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->> >
->> > According to the Intel Software Manual for I225, Section 7.5.2.7,
->> > hicredit should be multiplied by the constant link-rate value, 0x7736.
->> >
->> > Currently, the old constant link-rate value, 0x7735, from the boards
->> > supported on igb are being used, most likely due to a copy'n'paste, as
->> > the rest of the logic is the same for both drivers.
->> >
->> > Update hicredit accordingly.
->> >
->> > Fixes: 1ab011b0bf07 ("igc: Add support for CBS offloading")
->> > Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
->> > Signed-off-by: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->> > ---
->> 
->> Very good catch.
->> 
->> Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->> 
->> Just for curiosity, my test machines are busy right now, what kind of
->> difference are you seeing?
->> 
->
-> Hello Vinicius, thank you for the ACK.
->
-> For our internal setup, this does not make a difference. My understanding is 
-> that hicredit is used for non-SR traffic mixed with SR traffic (i.e., hicredit is
-> directly related to the max non-SR frame size). But our setup does not mix
-> them (q0 is used only for milan audio/clock SR class A).
-
-I see.
-
->
-> Let me know if you think we need a testcase for this.
->
-
-It was just curiority. No need. Thanks.
-
->> > This is a simple fix for the credit calculation on igc devices
->> > (i225/i226) to match the Intel software manual.
->> >
->> > This is my first contribution to the Linux Kernel. Apologies for any
->> > mistakes and let me know if I improve anything.
->> > ---
->> >  drivers/net/ethernet/intel/igc/igc_tsn.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c
->> b/drivers/net/ethernet/intel/igc/igc_tsn.c
->> > index a9c08321aca9..22cefb1eeedf 100644
->> > --- a/drivers/net/ethernet/intel/igc/igc_tsn.c
->> > +++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
->> > @@ -227,7 +227,7 @@ static int igc_tsn_enable_offload(struct igc_adapter
->> *adapter)
->> >                       wr32(IGC_TQAVCC(i), tqavcc);
->> >
->> >                       wr32(IGC_TQAVHC(i),
->> > -                          0x80000000 + ring->hicredit * 0x7735);
->> > +                          0x80000000 + ring->hicredit * 0x7736);
->> >               } else {
->> >                       /* Disable any CBS for the queue */
->> >                       txqctl &= ~(IGC_TXQCTL_QAV_SEL_MASK);
->> >
->> > ---
->> > base-commit: 2078a341f5f609d55667c2dc6337f90d8f322b8f
->> > change-id: 20231206-igc-fix-hicredit-calc-028bf73c50a8
->> >
->> > Best regards,
->> > --
->> > Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
->> >
->> 
->> Cheers,
->> --
->> Vinicius
->
-> Best Regards,
-> Rodrigo Cataldo
 
 
-Cheers,
--- 
-Vinicius
+On 2023-12-08 11:31 p.m., Leo Yan wrote:
+> On Thu, Dec 07, 2023 at 11:23:35AM -0800, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> The mem_events can be retrieved from the struct perf_pmu now. An ARCH
+>> specific perf_mem_events__ptr() is not required anymore. Remove all of
+>> them.
+>>
+>> The Intel hybrid has multiple mem-events-supported PMUs. But they share
+>> the same mem_events. Other ARCHs only support one mem-events-supported
+>> PMU. In the configuration, it's good enough to only configure the
+>> mem_events for one PMU. Add perf_mem_events_find_pmu() which returns the
+>> first mem-events-supported PMU.
+>>
+>> In the perf_mem_events__init(), the perf_pmus__scan() is not required
+>> anymore. It avoids checking the sysfs for every PMU on the system.
+>>
+>> Make the perf_mem_events__record_args() more generic. Remove the
+>> perf_mem_events__print_unsupport_hybrid().
+>>
+>> Since pmu is added as a new parameter, rename perf_mem_events__ptr() to
+>> perf_pmu__mem_events_ptr(). Several other functions also do a similar
+>> rename.
+>>
+>> Reviewed-by: Ian Rogers <irogers@google.com>
+>> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>  tools/perf/arch/arm64/util/mem-events.c |  10 +--
+>>  tools/perf/arch/x86/util/mem-events.c   |  18 ++---
+>>  tools/perf/builtin-c2c.c                |  28 +++++--
+>>  tools/perf/builtin-mem.c                |  28 +++++--
+>>  tools/perf/util/mem-events.c            | 103 ++++++++++++------------
+>>  tools/perf/util/mem-events.h            |   9 ++-
+>>  6 files changed, 104 insertions(+), 92 deletions(-)
+>>
+>> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/arm64/util/mem-events.c
+>> index aaa4804922b4..2602e8688727 100644
+>> --- a/tools/perf/arch/arm64/util/mem-events.c
+>> +++ b/tools/perf/arch/arm64/util/mem-events.c
+>> @@ -12,17 +12,9 @@ struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] = {
+>>  
+>>  static char mem_ev_name[100];
+>>  
+>> -struct perf_mem_event *perf_mem_events__ptr(int i)
+>> -{
+>> -	if (i >= PERF_MEM_EVENTS__MAX)
+>> -		return NULL;
+>> -
+>> -	return &perf_mem_events_arm[i];
+>> -}
+>> -
+>>  const char *perf_mem_events__name(int i, const char *pmu_name __maybe_unused)
+>>  {
+>> -	struct perf_mem_event *e = perf_mem_events__ptr(i);
+>> +	struct perf_mem_event *e = &perf_mem_events_arm[i];
+>>  
+>>  	if (i >= PERF_MEM_EVENTS__MAX)
+>>  		return NULL;
+> 
+> Nitpick: it's good to check if 'i' is a valid value and then access the
+> array with a valid index.
+> 
+>         if (i >= PERF_MEM_EVENTS__MAX)
+>                 return NULL;
+> 
+>         e = &perf_mem_events_arm[i];
+> 
+>> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+>> index 2b81d229982c..5fb41d50118d 100644
+>> --- a/tools/perf/arch/x86/util/mem-events.c
+>> +++ b/tools/perf/arch/x86/util/mem-events.c
+>> @@ -28,17 +28,6 @@ struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] = {
+>>  	E("mem-ldst",	"ibs_op//",	"ibs_op"),
+>>  };
+>>  
+>> -struct perf_mem_event *perf_mem_events__ptr(int i)
+>> -{
+>> -	if (i >= PERF_MEM_EVENTS__MAX)
+>> -		return NULL;
+>> -
+>> -	if (x86__is_amd_cpu())
+>> -		return &perf_mem_events_amd[i];
+>> -
+>> -	return &perf_mem_events_intel[i];
+>> -}
+>> -
+>>  bool is_mem_loads_aux_event(struct evsel *leader)
+>>  {
+>>  	struct perf_pmu *pmu = perf_pmus__find("cpu");
+>> @@ -54,7 +43,12 @@ bool is_mem_loads_aux_event(struct evsel *leader)
+>>  
+>>  const char *perf_mem_events__name(int i, const char *pmu_name)
+>>  {
+>> -	struct perf_mem_event *e = perf_mem_events__ptr(i);
+>> +	struct perf_mem_event *e;
+> 
+> A nitpick as well:
+> 
+> Given perf's mem/c2c, callers will almostly invoke a valid index via the
+> argument 'i', but I still think here is a best place to return NULL
+> pointer for an invalid index rather than returning a wild pointer.
+> 
+> Thus I suggest to apply checking for x86 and other archs:
+> 
+>         if (i >= PERF_MEM_EVENTS__MAX)
+>                 return NULL;
+> 
+>> +
+>> +	if (x86__is_amd_cpu())
+>> +		e = &perf_mem_events_amd[i];
+>> +	else
+>> +		e = &perf_mem_events_intel[i];
+>>  
+>>  	if (!e)
+>>  		return NULL;
+> 
+> [...]
+> 
+>>  int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+>>  				 char **rec_tmp, int *tmp_nr)
+>>  {
+>>  	const char *mnt = sysfs__mount();
+>> +	struct perf_pmu *pmu = NULL;
+>>  	int i = *argv_nr, k = 0;
+>>  	struct perf_mem_event *e;
+>>  
+>> -	for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+>> -		e = perf_mem_events__ptr(j);
+>> -		if (!e->record)
+>> -			continue;
+>>  
+>> -		if (perf_pmus__num_mem_pmus() == 1) {
+>> -			if (!e->supported) {
+>> -				pr_err("failed: event '%s' not supported\n",
+>> -				       perf_mem_events__name(j, NULL));
+>> -				return -1;
+>> -			}
+>> +	while ((pmu = perf_pmus__scan_mem(pmu)) != NULL) {
+>> +		for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+>> +			e = perf_pmu__mem_events_ptr(pmu, j);
+>>  
+>> -			rec_argv[i++] = "-e";
+>> -			rec_argv[i++] = perf_mem_events__name(j, NULL);
+>> -		} else {
+>> -			struct perf_pmu *pmu = NULL;
+>> +			if (!e->record)
+>> +				continue;
+>>  
+>>  			if (!e->supported) {
+>> -				perf_mem_events__print_unsupport_hybrid(e, j);
+>> +				pr_err("failed: event '%s' not supported\n",
+>> +					perf_mem_events__name(j, pmu->name));
+>>  				return -1;
+>>  			}
+>>  
+>> -			while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+>> +			if (perf_pmus__num_mem_pmus() == 1) {
+>> +				rec_argv[i++] = "-e";
+>> +				rec_argv[i++] = perf_mem_events__name(j, NULL);
+>> +			} else {
+>>  				const char *s = perf_mem_events__name(j, pmu->name);
+>>  
+>>  				if (!perf_mem_event__supported(mnt, pmu, e))
+> 
+> I think we can improve a bit for this part.
+> 
+> Current implementation uses perf_pmus__num_mem_pmus() to decide if
+> system has only one memory PMU or multiple PMUs, and multiple PMUs
+> the tool iterates all memory PMUs to synthesize event options.
+> 
+> In this patch, it has changed to iterate all memory PMUs, no matter the
+> system has only one memory PMU or multiple PMUs. Thus, I don't see the
+> point for the condition checking for "perf_pmus__num_mem_pmus() == 1".
+> We can consolidate into the unified code like:
+
+Yep, I think it's doable. Also, it seems we can further clean up the
+perf_pmus__num_mem_pmus(), which is a __weak function now.
+
+It seems we just need to change the perf_mem_events_find_pmu() a little
+bit and let it give both the first mem_events_pmu and the number of
+mem_pmus.
+> 
+>         char *copy;
+>         const char *s = perf_pmu__mem_events_name(j, pmu);
+> 
+>         if (!s)
+>                 continue;
+> 
+>         if (!perf_pmu__mem_events_supported(mnt, pmu, e))
+>                 continue;
+> 
+>         copy = strdup(s);
+>         if (!copy)
+>                 return -1;
+> 
+>         rec_argv[i++] = "-e";
+>         rec_argv[i++] = copy;
+>         rec_tmp[k++] = copy;
+
+Not sure what's the rec_tmp for. It seems no one use it.
+I will try if it can be removed.
+
+Thanks,
+Kan
+
+> 
+> Thanks,
+> Leo
