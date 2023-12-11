@@ -2,128 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8349D80C9DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B2180C9EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343537AbjLKMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S1343554AbjLKMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbjLKMbi (ORCPT
+        with ESMTP id S234834AbjLKMdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:31:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBF21A8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:31:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64061C433C7;
-        Mon, 11 Dec 2023 12:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702297898;
-        bh=2YrHH+HuC91ba8HcfvIfejtI7HytiTGHhIwK+ff//AE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BCtBzmDCymkLD2leoITdd8OLzwp7C+lqgyb+dP2XCyEF7n+M0IhYKTAIbTLYeSC1X
-         4m6EW/Il7Pd0/N5kPwnP3vLAmueP90GzVxL1Y2QF+m/O7v2M2aRpVWWq5WD+wOENzb
-         8nYHB2SyWaonh1wsCYeepu1ECCcP7nXzme8fLFPU84oeoQ4Tiwbl3hVjCCJ8jOUiVy
-         dC1PqKNHVQclRJyaIputlbl+Ou2QRlhnrQOhidGVdaY/pHNAqE6Kz0h+zUmMi90Xr7
-         sSiN73BRSvdBYw1PEdcxm0O9U3UbD7PY9aC9jEqISaAx8WljylQjCS13o7IywV36ac
-         C+q8gOhuaLaEQ==
-Date:   Mon, 11 Dec 2023 21:31:34 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing: Update snapshot buffer on resize if it is
- allocated
-Message-Id: <20231211213134.bd21cf745b8c5a0892891946@kernel.org>
-In-Reply-To: <20231210225447.48476a6a@rorschach.local.home>
-References: <20231210225447.48476a6a@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 07:33:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BCA8E;
+        Mon, 11 Dec 2023 04:33:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702298011; x=1733834011;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LkVViNkwO7QQP+f8k/J3d57xIdGBSObZp2X787WTBXs=;
+  b=Bz0iL+yRQ4my/Xg8WPzBa8nIHN6ETCgKeA0PaAU7rwLBqh0xqG0MZApF
+   a3nNbkEmp9x6mTX2FastmZ0x57K2RZxAVsHZEVR29JH9f108f2j0+1X3J
+   w7cfNeMNejTZEIZd1+m9DUmiR0FhHK9A+HwqLDYhgsdlLt3BYNHyi+8kI
+   zXeJt1/zRf3vXGXG4zLf6XQ+ITI7NyLY55e8UGxs/7O6yqep+K/V16GGZ
+   opLvv6BRhQI+kUsCx1FKpyO9lGPpxKqzdTpwxNkdwUTj73VygGPola4X7
+   Ste8tYUiuTrU7axYDyQcUJDddK0Mym6TnbS5MriIasL8hsHWUgVwVzSbB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="391808850"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="391808850"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:33:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="21069107"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa001.jf.intel.com with ESMTP; 11 Dec 2023 04:33:28 -0800
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH iwl-net v2] idpf: fix corrupted frames and skb leaks in singleq mode
+Date:   Mon, 11 Dec 2023 13:31:44 +0100
+Message-ID: <20231211123144.3759488-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 22:54:47 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+idpf_ring::skb serves only for keeping an incomplete frame between
+several NAPI Rx polling cycles, as one cycle may end up before
+processing the end of packet descriptor. The pointer is taken from
+the ring onto the stack before entering the loop and gets written
+there after the loop exits. When inside the loop, only the onstack
+pointer is used.
+For some reason, the logics is broken in the singleq mode, where the
+pointer is taken from the ring each iteration. This means that if a
+frame got fragmented into several descriptors, each fragment will have
+its own skb, but only the last one will be passed up the stack
+(containing garbage), leaving the rest leaked.
+Then, on ifdown, rxq::skb is being freed only in the splitq mode, while
+it can point to a valid skb in singleq as well. This can lead to a yet
+another skb leak.
+Just don't touch the ring skb field inside the polling loop, letting
+the onstack skb pointer work as expected: build a new skb if it's the
+first frame descriptor and attach a frag otherwise. On ifdown, free
+rxq::skb unconditionally if the pointer is non-NULL.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The snapshot buffer is to mimic the main buffer so that when a snapshot is
-> needed, the snapshot and main buffer are swapped. When the snapshot buffer
-> is allocated, it is set to the minimal size that the ring buffer may be at
-> and still functional. When it is allocated it becomes the same size as the
-> main ring buffer, and when the main ring buffer changes in size, it should
-> do.
+Fixes: a5ab9ee0df0b ("idpf: add singleq start_xmit and napi poll")
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+---
+Tony, please add it to dev-queue instead of the first revision.
 
-nit: There seems two "when the snapshot buffer is allocated" case, maybe latter
-"it" means main buffer?
+From v1[0]:
+* fix the related skb leak on ifdown;
+* fix subject prefix;
+* pick Reviewed-bys.
 
-> 
-> Currently, the resize only updates the snapshot buffer if it's used by the
-> current tracer (ie. the preemptirqsoff tracer). But it needs to be updated
-> anytime it is allocated.
-> 
-> When changing the size of the main buffer, instead of looking to see if
-> the current tracer is utilizing the snapshot buffer, just check if it is
-> allocated to know if it should be updated or not.
-> 
-> Also fix typo in comment just above the code change.
-> 
+[0] https://lore.kernel.org/all/20231201143821.1091005-1-aleksander.lobakin@intel.com
+---
+ drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c | 1 -
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c         | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-BTW, the historical naming leads this kind of issues.
-Maybe we'd better to rename 'max_buffer' to 'snapshot_buffer'?
-
-Thanks,
-
-
-> Cc: stable@vger.kernel.org
-> Fixes: ad909e21bbe69 ("tracing: Add internal tracing_snapshot() functions")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index aa8f99f3e5de..6c79548f9574 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -6348,7 +6348,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
->  	if (!tr->array_buffer.buffer)
->  		return 0;
->  
-> -	/* Do not allow tracing while resizng ring buffer */
-> +	/* Do not allow tracing while resizing ring buffer */
->  	tracing_stop_tr(tr);
->  
->  	ret = ring_buffer_resize(tr->array_buffer.buffer, size, cpu);
-> @@ -6356,7 +6356,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
->  		goto out_start;
->  
->  #ifdef CONFIG_TRACER_MAX_TRACE
-> -	if (!tr->current_trace->use_max_tr)
-> +	if (!tr->allocated_snapshot)
->  		goto out;
->  
->  	ret = ring_buffer_resize(tr->max_buffer.buffer, size, cpu);
-> -- 
-> 2.42.0
-> 
-
-
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
+index 81288a17da2a..20c4b3a64710 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_singleq_txrx.c
+@@ -1044,7 +1044,6 @@ static int idpf_rx_singleq_clean(struct idpf_queue *rx_q, int budget)
+ 		}
+ 
+ 		idpf_rx_sync_for_cpu(rx_buf, fields.size);
+-		skb = rx_q->skb;
+ 		if (skb)
+ 			idpf_rx_add_frag(rx_buf, skb, fields.size);
+ 		else
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+index 1f728a9004d9..9e942e5baf39 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+@@ -396,7 +396,7 @@ static void idpf_rx_desc_rel(struct idpf_queue *rxq, bool bufq, s32 q_model)
+ 	if (!rxq)
+ 		return;
+ 
+-	if (!bufq && idpf_is_queue_model_split(q_model) && rxq->skb) {
++	if (rxq->skb) {
+ 		dev_kfree_skb_any(rxq->skb);
+ 		rxq->skb = NULL;
+ 	}
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0
+
