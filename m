@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8019380CBDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB4280CBDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343975AbjLKNzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S235007AbjLKNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:55:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343952AbjLKNyh (ORCPT
+        with ESMTP id S1343842AbjLKNyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:54:37 -0500
+        Mon, 11 Dec 2023 08:54:53 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F6018D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CCCDC433C8;
-        Mon, 11 Dec 2023 13:53:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505E519B7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:53:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63448C433C7;
+        Mon, 11 Dec 2023 13:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302815;
-        bh=lwKy+lY0I4t6JD+inUnKQb7hfXk6DjIgfY2rpHK+CfQ=;
+        s=k20201202; t=1702302820;
+        bh=E3HvMWrzxH7i22ZqpKfLSV8bBoSMTUJVt3sCZ2TVNJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tz9t/wNrTu7I6xSJc+IPSW2dbqWTJ539ityECh2Is/fYUbvLkhA+VPzKgbrqd9Ar7
-         0M1bvl3tDGD+jnsQcnR7sm1Kvu17zGsMj0omHw2BUL1Gb0Q9R5k1AO4AFe2plzZSRS
-         YCHZEgx7Ut/z1PkPG1Oy+GyT6IUEN+fMUdo00PfMsa+/Ml/R3Rs7wC0YUDuDnTFsEN
-         XJm6yxr+Qm3DJuMZ14l3nNxoQ8r1Xj3bwGw23btdxUC6IceluhIPfkgFk4y6i6k0k2
-         WWid7fhDPTkS/h2p66kMIDLtVnrwXcApxBquOI8r5OnjZrzOb4NkYqNSif77G7Es9P
-         buFM8kaJ8GZkQ==
+        b=O2PL0dBut2fzPOgbpOTfEs6o0D/tbaqSAcl9piB+ItcTASzeoEc9k+j5+M7cuvs6w
+         4jVRJHEv3D+QezKn64Q0Q2jzGl6wv2/9j5l22t+bpV4MwhtOtDg0s1byp8PX7W1yUk
+         amly+WgNHYr7M/lbLLUzv2mWuMJPCzjiGvTeT08evlCj5QRLgM20nrC4DgOtnHh6cS
+         kYzQBp/xThy8sjwXbvF4I7sHN3On3w2dxWLb3fYOaCOLBVMT9iYKgbNQ2pXXFSKIuk
+         gxW6qZ5TQTe/4NoLbBMKZustWyuC2vYv4zkNnwUWXRCVYxbJd8MZspNKAYrj9Iq07/
+         5rtQp6K5dRqkg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kelly Kane <kelly@hawknetworks.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, gregkh@linuxfoundation.org,
-        hayeswang@realtek.com, dianders@chromium.org,
-        grundler@chromium.org, bjorn@mork.no, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 37/47] r8152: add vendor/device ID pair for ASUS USB-C2500
-Date:   Mon, 11 Dec 2023 08:50:38 -0500
-Message-ID: <20231211135147.380223-37-sashal@kernel.org>
+Cc:     Alvin Lee <alvin.lee2@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Samson Tam <samson.tam@amd.com>,
+        Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
+        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, tony.tascioglu@amd.com, felipe.clark@amd.com,
+        drv@mailo.com, ruanjinjie@huawei.com, sunran001@208suo.com,
+        mario.limonciello@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 38/47] drm/amd/display: Use channel_width = 2 for vram table 3.0
+Date:   Mon, 11 Dec 2023 08:50:39 -0500
+Message-ID: <20231211135147.380223-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -57,48 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kelly Kane <kelly@hawknetworks.com>
+From: Alvin Lee <alvin.lee2@amd.com>
 
-[ Upstream commit 7037d95a047cd89b1f680eed253c6ab586bef1ed ]
+[ Upstream commit fec05adc40c25a028c9dfa9d540f800a2d433f80 ]
 
-The ASUS USB-C2500 is an RTL8156 based 2.5G Ethernet controller.
+VBIOS has suggested to use channel_width=2 for any ASIC that uses vram
+info 3.0. This is because channel_width in the vram table no longer
+represents the memory width
 
-Add the vendor and product ID values to the driver. This makes Ethernet
-work with the adapter.
-
-Signed-off-by: Kelly Kane <kelly@hawknetworks.com>
-Link: https://lore.kernel.org/r/20231203011712.6314-1-kelly@hawknetworks.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Reviewed-by: Samson Tam <samson.tam@amd.com>
+Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/r8152.c   | 1 +
- include/linux/usb/r8152.h | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index be18d72cefcce..7a669f2c77fc0 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -10001,6 +10001,7 @@ static const struct usb_device_id rtl8152_table[] = {
- 	{ USB_DEVICE(VENDOR_ID_NVIDIA,  0x09ff) },
- 	{ USB_DEVICE(VENDOR_ID_TPLINK,  0x0601) },
- 	{ USB_DEVICE(VENDOR_ID_DLINK,   0xb301) },
-+	{ USB_DEVICE(VENDOR_ID_ASUS,    0x1976) },
- 	{}
- };
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+index 484d62bcf2c2e..c523561471484 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+@@ -2398,7 +2398,13 @@ static enum bp_result get_vram_info_v30(
+ 		return BP_RESULT_BADBIOSTABLE;
  
-diff --git a/include/linux/usb/r8152.h b/include/linux/usb/r8152.h
-index 287e9d83fb8bc..33a4c146dc19c 100644
---- a/include/linux/usb/r8152.h
-+++ b/include/linux/usb/r8152.h
-@@ -30,6 +30,7 @@
- #define VENDOR_ID_NVIDIA		0x0955
- #define VENDOR_ID_TPLINK		0x2357
- #define VENDOR_ID_DLINK			0x2001
-+#define VENDOR_ID_ASUS			0x0b05
+ 	info->num_chans = info_v30->channel_num;
+-	info->dram_channel_width_bytes = (1 << info_v30->channel_width) / 8;
++	/* As suggested by VBIOS we should always use
++	 * dram_channel_width_bytes = 2 when using VRAM
++	 * table version 3.0. This is because the channel_width
++	 * param in the VRAM info table is changed in 7000 series and
++	 * no longer represents the memory channel width.
++	 */
++	info->dram_channel_width_bytes = 2;
  
- #if IS_REACHABLE(CONFIG_USB_RTL8152)
- extern u8 rtl8152_get_version(struct usb_interface *intf);
+ 	return result;
+ }
 -- 
 2.42.0
 
