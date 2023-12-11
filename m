@@ -2,59 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDE580D2D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812F480D259
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345039AbjLKQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
+        id S234979AbjLKQlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:41:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345031AbjLKQlD (ORCPT
+        with ESMTP id S229820AbjLKQli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:41:03 -0500
+        Mon, 11 Dec 2023 11:41:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDA391
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:41:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 496FEC433D9;
-        Mon, 11 Dec 2023 16:41:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B749A98
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:41:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BD94C433C9;
+        Mon, 11 Dec 2023 16:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702312869;
-        bh=bKmMULTYsuSllJVEHqdoJyJKTDlPdL6U+d4em8AhrDw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e+O2+cyr0Ow0bTjD7aQgSyUuwcPnz+W58M1X/hMZMH6mTPP0KtWQL2Rd0JsTU8DED
-         GbQJJUOAkOzHkaEweslmal86k3XFyRlxvZThN01IvBUF796P1U4UiR+voBWdt0udY2
-         /cJsxVWcjz69xBji+/Djrbtxpk6yRQB8HrTqQtYHZI5IXlYvMXL7LuKjTY9rT6LsGy
-         mT7ofxhtXDDcohS2bLM1d7Hrhj/Vu169eAFUYl1XlEfd35m7F6ZHkeFpEG4nBCg6Fn
-         HuPj1JuZ9PhscMgjdD+j0PLqMuSQhLko2mjES3HtHaI46esb7OeUcSTyETlP13Itk2
-         8bFyWWb1AwvGw==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50bfa5a6cffso5309544e87.0;
-        Mon, 11 Dec 2023 08:41:09 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxb0jBWxyrAjPn70I6YvEUmzaSvehSFqxFG1sU7vySQZpUM0+BO
-        0D6In5W05A+DXYyz9MJ3F0HwQORg8Gk/9BuzHw==
-X-Google-Smtp-Source: AGHT+IGHwgxj0Odwen0XypIV0RWrJWS+u+chOgGSSFM27JLjV+387RdpxEQeeD/BVoSoFRX9TErbSIxjTxRsenSuHzE=
-X-Received: by 2002:a05:6512:4804:b0:50b:f80d:a330 with SMTP id
- eo4-20020a056512480400b0050bf80da330mr1621928lfb.135.1702312867373; Mon, 11
- Dec 2023 08:41:07 -0800 (PST)
+        s=k20201202; t=1702312904;
+        bh=YplM3Lc/uJviJ/vwXKtb5pm7aSZ8QLfQpUexo4dL2iE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilzGVkJzyKnUP6gPXSvqDBkQBAoL+Io3eCfft5PJ0awXLjCb2xy6GuIudA1K9GNrB
+         7wKnCVX8v0WTs9Z5ZHYJrJbtJLl/e3oWgoC10v8rkC6ePTUdHII+s+apjgkRPSkJpD
+         eOav2dWutOfiz4a/u3HCfW9Wk8hQh6GGcVNOzn6PryrhpMzgapCucZVXhS+x49k1mN
+         PXFtZObnI46GWdojijwSscsskbLmv97FkYIMMQ7jJc5kWibMWG6EIRJTc5q+RNMMwC
+         WIH4HennPImHllcStg1cr7c6udBqJTeLk7vD1mLabZJy5Z8xsZkAkhDR9RsAA6OkzU
+         2Fp8UL+NH3yVQ==
+Date:   Mon, 11 Dec 2023 16:41:35 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Message-ID: <1368c558-c58c-4574-907e-36b07dee31bb@sirena.org.uk>
+References: <20231206103702.3873743-1-surenb@google.com>
+ <20231206103702.3873743-6-surenb@google.com>
+ <ZXXJ9NdH61YZfC4c@finisterre.sirena.org.uk>
+ <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
+ <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
+ <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
+ <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
+ <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+ <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
+ <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
 MIME-Version: 1.0
-References: <20231205061002.30759-1-quic_sibis@quicinc.com> <20231205061002.30759-3-quic_sibis@quicinc.com>
-In-Reply-To: <20231205061002.30759-3-quic_sibis@quicinc.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 11 Dec 2023 10:40:55 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+UhWuFdd=o=W_5iaHpLqQxQ13YOGBjnPAm46LO90hGqA@mail.gmail.com>
-Message-ID: <CAL_Jsq+UhWuFdd=o=W_5iaHpLqQxQ13YOGBjnPAm46LO90hGqA@mail.gmail.com>
-Subject: Re: [PATCH V3 2/4] clk: qcom: Add Global Clock controller (GCC)
- driver for X1E80100
-To:     Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     andersson@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
-        conor+dt@kernel.org, quic_tdas@quicinc.com,
-        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
-        abel.vesa@linaro.org, quic_tsoni@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BnXU97Dc8NyxrdI0"
+Content-Disposition: inline
+In-Reply-To: <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
+X-Cookie: Better dead than mellow.
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,90 +70,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 12:11=E2=80=AFAM Sibi Sankar <quic_sibis@quicinc.com=
-> wrote:
->
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
->
-> Add support for the global clock controller found on X1E80100
-> based devices.
->
-> Co-developed-by: Abel Vesa <abel.vesa@linaro.org>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->
-> v3:
-> * Rename gcc config to CLK_X1E80100_GCC [Krzysztof/Abel/Bryan]
-> * Pickup Rbs.
->
->  drivers/clk/qcom/Kconfig        |   10 +
->  drivers/clk/qcom/Makefile       |    1 +
->  drivers/clk/qcom/gcc-x1e80100.c | 6807 +++++++++++++++++++++++++++++++
->  3 files changed, 6818 insertions(+)
->  create mode 100644 drivers/clk/qcom/gcc-x1e80100.c
->
-> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> index ad1acd9b7426..a9bb50da4de5 100644
-> --- a/drivers/clk/qcom/Kconfig
-> +++ b/drivers/clk/qcom/Kconfig
-> @@ -20,6 +20,16 @@ menuconfig COMMON_CLK_QCOM
->
->  if COMMON_CLK_QCOM
->
-> +config CLK_X1E80100_GCC
-> +       tristate "X1E80100 Global Clock Controller"
-> +       depends on ARM64 || COMPILE_TEST
-> +       select QCOM_GDSC
-> +       help
-> +         Support for the global clock controller on Qualcomm Technologie=
-s, Inc
-> +         X1E80100 devices.
-> +         Say Y if you want to use peripheral devices such as UART, SPI, =
-I2C,
-> +         USB, UFS, SD/eMMC, PCIe, etc.
-> +
->  config QCOM_A53PLL
->         tristate "MSM8916 A53 PLL"
->         help
-> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-> index 17edd73f9839..a8498ee3595e 100644
-> --- a/drivers/clk/qcom/Makefile
-> +++ b/drivers/clk/qcom/Makefile
-> @@ -21,6 +21,7 @@ clk-qcom-$(CONFIG_QCOM_GDSC) +=3D gdsc.o
->  obj-$(CONFIG_APQ_GCC_8084) +=3D gcc-apq8084.o
->  obj-$(CONFIG_APQ_MMCC_8084) +=3D mmcc-apq8084.o
->  obj-$(CONFIG_CLK_GFM_LPASS_SM8250) +=3D lpass-gfm-sm8250.o
-> +obj-$(CONFIG_CLK_X1E80100_GCC) +=3D gcc-x1e80100.o
->  obj-$(CONFIG_IPQ_APSS_PLL) +=3D apss-ipq-pll.o
->  obj-$(CONFIG_IPQ_APSS_6018) +=3D apss-ipq6018.o
->  obj-$(CONFIG_IPQ_GCC_4019) +=3D gcc-ipq4019.o
-> diff --git a/drivers/clk/qcom/gcc-x1e80100.c b/drivers/clk/qcom/gcc-x1e80=
-100.c
-> new file mode 100644
-> index 000000000000..74db7fef237b
-> --- /dev/null
-> +++ b/drivers/clk/qcom/gcc-x1e80100.c
-> @@ -0,0 +1,6807 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reser=
-ved.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
 
-Probably not a header you need as reported for linux-next. You need
-platform_device.h and either of.h or mod_devicetable.h.
+--BnXU97Dc8NyxrdI0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Rob
+On Mon, Dec 11, 2023 at 05:32:16PM +0100, David Hildenbrand wrote:
+> On 11.12.23 17:15, Suren Baghdasaryan wrote:
 
-> --
-> 2.17.1
->
+> > Ok, I was updating my headers and that's why I could not reproduce it.
+> > David, should the test be modified to handle old linux headers
+> > (disable the new tests #ifndef _UFFDIO_MOVE or some other way)?
+
+> That's an open question: do we want to be able to build selftests against
+> any host headers, and not the in-tree headers that have to be manually
+> installed and dirty the git tree?
+
+Quite a lot of existing selftests rely on the headers being installed to
+build...
+
+> One obvious drawbacks is that we'll have to deal with all that using a bunch
+> of #ifdef, and the tests that will be built+run will depend on the host
+> headers.
+
+> Especially the letter is relevant I think: Our upstream testing won't be
+> able to build+run tests that rely on new upstream features. But that's what
+> some key benefit of these selftests, and being able to run them
+> automatically on a bunch of different combinations upstream.
+
+...for exactly this reason.  It causes real pain testing new interfaces.
+
+> Further, the tests are closely related to the given kernel version, they are
+> not some completely separate tests.
+
+Note that there's a general desire for the tests to *run* with older
+kernels and use whatever feature test mechanisms exist to skip tests
+that won't run.  That's often needed anyway for configurable things.
+
+> (3) avoids dirtying the tree as a "make headers_install" would, but it also
+> means that each test that makes use of new uapi has to update the relevant
+> headers (what people working on QEMU are used to).
+
+Note that you can do an out of tree build to avoid dirtying things.
+
+--BnXU97Dc8NyxrdI0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV3O74ACgkQJNaLcl1U
+h9B0dgf/WZJDnoE/dzWYhyYWKPFZlpPobwsO1rVstQxD6dR5DNJh0GyPL11T0jn6
+EJgVd8Esw3KE2twbk7SgsRpf3nz55wD4zyJKiE9po7nyCDwG+xsehhfRtdajnW+p
+MSubtQFkjCS6tZWnOwAeYlIfXEQ6f8LscjulZxDX4HZxbqYn2KF61jn8BzmUiRQ+
+aZFTB3qQ1DLZwOSNMT5WhAedVLN9B7joTDT5rFxftNvOvEWyLk95ugvqsK13GDEe
+0u1r4u2jYv4TFr805sq7o1vedsZ50jWRjapAlTu1+8WZcNV15s4Mokb7TELPc4CI
+KqdTkJiBtDz0xu9dIxjmNccqT3j0YQ==
+=NqsE
+-----END PGP SIGNATURE-----
+
+--BnXU97Dc8NyxrdI0--
