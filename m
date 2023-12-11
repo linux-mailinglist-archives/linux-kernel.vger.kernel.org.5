@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 299C980DD8E
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2BF80DD8F
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345324AbjLKVso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48394 "EHLO
+        id S1345455AbjLKVss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKVsm (ORCPT
+        with ESMTP id S1345291AbjLKVsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:48:42 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51057D6;
-        Mon, 11 Dec 2023 13:48:48 -0800 (PST)
+        Mon, 11 Dec 2023 16:48:45 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E46CD5;
+        Mon, 11 Dec 2023 13:48:50 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ftekHBuwatFCU2V+0FbcubwNhywkbXqcztlkNQvWsdHUkJNRDnK5zBjUFzPdpTUqayP+c8xwPTPRI9naZz7mxMrQ3QRHkF5SbKQX85Ll1gLotwi+rmLfjXi5FcX+7LM2UicW/YGUPeVEJZyCEQ9+LWt9HPSYl+tjzi+cqBIBbbo1iuanQOHBR5A94lMQ1YTX/B48gPzdua1//+2F/GAQ6TdN+vmbRtJ9Nxg083VY6jzX0hP6eODApkOvEh13lBSJprpLKTR+I2e7xRe98aFMh5aRSc3rH96qGVfmElYndx2zX4cy95FmAVSUVwlvzrmeIioPSp8Z3cDw6qDv1UrWCQ==
+ b=WBpxw8+Xic6YoM9bj/HrqoVUVrrPGA1uo+ncozHX04/cCrhDeo0a83EW0txzUPC5y0LrgGxXDl4h12xqmuL2vStkS9XjoLpaGSzZ0uKNPC/9nsIEQRElfxnwzW3qwwaBo0M1p0+E5+noBVf+b0GKHMHu0DpjHY00ObPCR70pWfra/Ya/DCcbTzu26qhgNNx3UMUwbxzR9BWfhMfTVYuN/etQXJRsf5GT8vhbhgitmaf6OSCkJUxBu31tVH2bzYtbJ4nxShAFG1ZkyjWsPB+jrEVI75JsMQvp07QgrWJpxC7uwATqN+IvOI0hXC1rsuRqBt1xhKHm0G9HDPrrIhutQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5qeK8jqiEuWlbOO9DE108xlAgp1LeHKcxg+LrIejZP8=;
- b=WVSHh6vgpAXsmDdtLJj6XFBu0dxrpfgYX31xbZQ6vm94kmb3NgXLlbuYLlihOgCOMQ8oh8v6RWjuShGgy1L3FeBlJ2xNOHqkcD2MhFnjXjhd/Y0tpCWocsBaGN1TgvZo+jBv4cZV1yOdMR6nzz4ZHvJMvobqQtC/c6xWh4lRGqbUplpQqcbLKtCStr1P34P6BjUOGWxJ/OLvgbtbuzU3Hl4lgXmGpzMmVAVqFTBORVNf4E2pQh1nIDIwqcjZHURhlShSrIuHutPg5+/BusiaousQRYmw2Ht6jcOHGMAg2muuz0S+eKtIafpDqOihzYW+JGBu3ZkSsgspkQhDImjneg==
+ bh=TX0lSt+o+2FnjAgjWeFMslPvvVURHD8S0u7zd9l7UjQ=;
+ b=ci5bJFl+EX7ppH8QtabAAmxjqOA734g0z8CHzHYlURnBWl5GExiDTgyvsRxqhoJ1Dwvc5zulv8HfuddZoWHJ1kE36JOAIFbbBu1BMKxZMo3P05ppLqm/oHxbK1MZN4vFCg+tAra2Hx2755XoxGlHZ1tJR4BCf6Kcso3aNiGX13HWXvJpTWY+XI+p/aqee9t+m7AO7zP3VBgWhbRFN3trMD8zmV/9tw03FMnRCKDhmQjGpKOjLIwDpK1OYCg5XRnzOOpjZghUag19WXbhkAcmA+0sGL2v1UbL4IW+S6M7OX3cqyToRr0R+wn2MAsp0QMd5SUXScjN4FUa76nQd/NhSA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qeK8jqiEuWlbOO9DE108xlAgp1LeHKcxg+LrIejZP8=;
- b=dpichDUYAY1IbMV2FS/lT2gl1PMElEHAF/wD/BUSg/H4lHNRSFwt0ussR9R+8JDKuJL1ZW1dcmfgBkUU8+x4G++AQ8pTp4r1tUjzFJDw5ErUV87Nan9kxSjhaUCXYuKbFp4kiy0WnTEE1mwhud5CXaC31v6wjSW/HqY/NqtllgM=
+ bh=TX0lSt+o+2FnjAgjWeFMslPvvVURHD8S0u7zd9l7UjQ=;
+ b=CMP/RVUxF8vyhjjV8MO5Kv9noxCEBBvNutmT9Z9Ki0LshziKzOEH1PgzVUWPa7RqDHbc7eUxgtHeA4N7mdTaUfmnYfsRuFTovnB7ioKcQFEQzuIrZOvG7HX9v9cQ8CAgmtlfGVf8F0LmqgzZ7PoPa58Fe+ZSTqRsE64Mt9iLu2UPxiQ2spjucbsFc9DZ+DTH3N8P8yS1bfDfMbK1QxNFRvnN1RscIhF5TetevEB9dXZnh7dFnqSdH/BX8nnP0n3Vc4rOwKxBdKf2GSXtQKVNu9f2Sc4vdQygGY6GJ7zAnzmnZXfpeseDUdt97AWKagIm+w0NWu8RPlPhioD+n332Wg==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by PH7PR12MB8828.namprd12.prod.outlook.com (2603:10b6:510:26b::17) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB9171.namprd12.prod.outlook.com (2603:10b6:610:1a2::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 21:48:44 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.033; Mon, 11 Dec 2023
- 21:48:43 +0000
-Message-ID: <abd45ee8-364e-495f-bb62-3871d5ca1d80@amd.com>
-Date:   Mon, 11 Dec 2023 15:48:41 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
- the daisy chain
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Sanath S <Sanath.S@amd.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-References: <20231208224400.GA835068@bhelgaas>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20231208224400.GA835068@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR02CA0126.namprd02.prod.outlook.com
- (2603:10b6:5:1b4::28) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Mon, 11 Dec
+ 2023 21:48:47 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 21:48:47 +0000
+Date:   Mon, 11 Dec 2023 17:48:46 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, zhenzhong.duan@intel.com,
+        joao.m.martins@oracle.com, xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Message-ID: <20231211214846.GA3014157@nvidia.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+ <77ac47d0-2ef0-41fa-86c2-091358541465@intel.com>
+ <20231211132041.GE2944114@nvidia.com>
+ <ZXds7V0Dz0ycF5IR@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXds7V0Dz0ycF5IR@Asurada-Nvidia>
+X-ClientProxiedBy: MN2PR02CA0025.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::38) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH7PR12MB8828:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c940e3d-f11e-4ead-6eb3-08dbfa92f21e
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB9171:EE_
+X-MS-Office365-Filtering-Correlation-Id: cfc646f7-810b-4600-780d-08dbfa92f454
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qa7fIYNYUMvnpQSxlDXy75aBIRZaxFeX8DIqVLe00DBLI5oWT6DRlgdM6exuM+b0ahRZjdW4gKxwD3ypd304jKGOJk7DDqrDYn2/1bbKEotCosDrG6PjC23luiK4v5pl6x7BGN9u6vxZEkxK7n8C5PYGPjrzcdJzwIDGLiLn8LZfVk3XzJBZFK2InUudjwgXLel2LYBVmLm9hggxkgUYNg3hTeL2oTrBMkMtfX6DBQ3PFM2sVvq3yGPrbXC22VMMjVdFRWgPVSxyduU8DOvqY1ldbZLvTcqDH94AgTaPJYlWWh0nmUO6UlqxCSjCtR0WEmGEIwXFC8Wr82b5GIwUM9wYeOypQVCHG3upv6/KPy/GPl1dxlTRLCfxygaqqX1/gTkBf6S8GMalP19UyByw1WljGFW8HaKm9gViW3FUtT4rJeZFn2f1j+2L/Lm0dAE8hZu2dTarK4OSIJUeLOEHgidjNqoaoXsFQVSxtYgY8CqWqZM/QVJGY2cpz28DdZXZMYkJi06mb6XRz6oee79Tccl8XzPGCo97GLK+PP0WvzBLhmZ0V32olJWOsFDPgrYGlSx1Xmv8/iP063k7LFAkJaB7Vi1ZuIdhwLqjmDw/JB3sQiFNguEgUARjNbh+5phnY/FptRyKmd7N7O2Gowz4TquErCYzIKUwkJQFmVZEmco=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(66574015)(26005)(2616005)(6506007)(6512007)(83380400001)(5660300002)(53546011)(44832011)(478600001)(41300700001)(2906002)(66946007)(6486002)(8676002)(8936002)(4326008)(66556008)(54906003)(66476007)(316002)(966005)(6916009)(31696002)(38100700002)(86362001)(36756003)(31686004)(131093003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: PzAJQwCJbPtkTQtMY3SwuQO7U3iIw4moJLm5Og4fjYV4wpdF+NTc0rhg+sxBU/BZo147qt5XFkNH1MZA/UrSwrfmI8or12VfmivRjJNAkQPCDwDg65zZb5RAl+a33wf0ddGujnxPW5r9tj2dlUmlnLgyBXg9TGefythsFgVA8HSrL3rA76uIzdWyRAIWGDcAas2i2Vn7BzRrlqiDjRkdEV4aZclklXgCaYo+JsON/wopXsxFQryDKzgGnIMJb/O+b3nZqak9keyY/Ag4hsvEH/mgBX0dXSVsx8plF8s8AKOkPjmiEsDH5VlPeyQ2sLvj6cETjiFOo5dBBMQ+NG8ZwhiKrk4pY95Nuzrx94HSy2VcQxydYSQDQOSPfBbpokqe9lA5cEl8eMMX2JjupsgkstCM4JR7CWJat48ob4Ilf8BQ4L+Jj1N5YdZCgml8JNRR2taWFIdn1J9W5HQi89cwDTdH/WKmzyQvPHu6aKSnUanP2WsQuaQxzP9OkssUJmVmCWkt6c1yaLYqc8voSG8PRhGYJ2Vf2/Wo7sdrWkh1dehHWUkJygEoV40o1gJ2t+WB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(346002)(39860400002)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(2906002)(41300700001)(86362001)(478600001)(66556008)(66476007)(6636002)(54906003)(7416002)(66946007)(6486002)(316002)(38100700002)(37006003)(8676002)(6862004)(4326008)(8936002)(6506007)(6512007)(66899024)(36756003)(33656002)(1076003)(5660300002)(26005)(2616005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZHFvSmxTRzY3RytDajNva3hxYzg4ZkZIQW1nc0tlSlNZRHhubTMrQVhYWUN5?=
- =?utf-8?B?U0lRbUxyNHl1RjFZZGYvSHMxSEtXSVdVSTJueDYvdmJVWVYvcm9mOGlHeEN4?=
- =?utf-8?B?a1lHUzlaUDdkUzFmSzRtTWFFSlB1Z2NPT0kzbVhjcGE3bjNLSGVXUndTdEkz?=
- =?utf-8?B?SjZxUXNKc09QQnlZS1hFbXMweEoyYUFFSm0xdm1RdGQvdWFCUlVJVExLendW?=
- =?utf-8?B?K3ZQeVpDVjhYVWJFSW82dXNZMmFHaTgyaFZ2MWZWUHBKYUFhQ25yWmZYYVo5?=
- =?utf-8?B?c1FhWC9zTDc5dDhmdzQ0d2VSQUc3SFhVYkQ5Y2d2NVRXeE1BK2Fsbk1wcUx4?=
- =?utf-8?B?Q0NwVW93RGJOQjVGQmxlZXZidkx4MjQrbHVRVXRBNUQ3d3R2Vyt4QkVwV1Aw?=
- =?utf-8?B?TnFVZGtiRVRweDJZYWZkekpHM0FjN0k3MGkrTXRSV242eHBJQ21DRWMwdUZm?=
- =?utf-8?B?UUpjTVcrOEZoS3dWU3JwWXV6MW1zaGUvZjBmTWZuMjBhS3B0QXJOcWpCN3dN?=
- =?utf-8?B?Q0ZyVng4ajk4SElVMUxZb2RJeWJKUXZ5N29NQS9PczRYRS81dyt5WnVIckJU?=
- =?utf-8?B?K3ErQjZVVzZoeXdXcFZJT0pFYVRkYzY2d3QvdGF1WU5Fc1ZrNFp1SWlOSG1F?=
- =?utf-8?B?eTBPY0xvY0lJc2NWc09TZjNpZ3lEZDF3YWhtZ0M1V2o3UE9UTTlYMTkrWWM4?=
- =?utf-8?B?RDlSdFJBVEpGU3BYZUJZRGFkY1hZTzZwMHhSU0FNSVhlMXZaTEZ2UG1hbGRT?=
- =?utf-8?B?M20vNGtXalhwUnNpa2hHb25FRVlkUGM5Qi93bDJHejZQWWw5V0k0ZGQ4RklL?=
- =?utf-8?B?S0FvalliZzNuS3h1SVpNMUtoQlNwc0RzN1BQbkhReWI2dU5sTSszakJwTHhZ?=
- =?utf-8?B?eHNlMjZNSnRnOUtHYWlkY1JwVTRqTGVaZXFHWTB4UGhUNXRhVnBlbGFqVFNl?=
- =?utf-8?B?T2Z3OVJtK2xGeC9uYXJrSVlwYlJMVldhY1d1TWJ2ekc4TGtOUUNkMEo2TXd5?=
- =?utf-8?B?aVdROUNaK1JNNVdveitWUVFQUzdxWFdJcmt1REVTS2IvRzJRQXFCaHVUeWJn?=
- =?utf-8?B?QUJXNGdMdkpWakFkY3pmYldmekhsY2ZiUWJsVDNTdWNKN3hhR0lnVmhDekJB?=
- =?utf-8?B?TGxUaXEvZHpiNS8yWXN5cUdYbUt0elpQeTE1Y1ZWZ0VrRkRFS2hXSjEwV2du?=
- =?utf-8?B?blJLOUxsMCs2VG84YlNGblRnbExRVUtwMVdrS1Y2MDBrNjUwdjNYcER1dE5j?=
- =?utf-8?B?azF2Z0ZXdGhtbHpaaCtLS3JlRFh6cGpxSU5ITTFhMHRjaFVmRjBMYkxsdDNP?=
- =?utf-8?B?TFFzS3NGcXoyNmVSNWRtWEJxeWVEdjR4YnVhTWRHV3B2ZDR3MmVPVGVpRmxw?=
- =?utf-8?B?MUkyWHQxajNhT3dPcWY5MTBKeVYxbTducWR6RzR5VUpQQ0ptUmZQa3h2TzhY?=
- =?utf-8?B?TVRBTzVuVDA0SEp5U3ZvNGlxUTlRaUt5WGtNV2pIY1R4Ly8xVmFDZ1NhMFla?=
- =?utf-8?B?Ny9JdzRVMzdQa2xUWHBtcWh6VGJMUnhUVjVJYVRXWFlCYWxsM0FnSDlua0JW?=
- =?utf-8?B?WjR5U1NWaDcxZmh4akFXd2dTZUM4ckdYUGtEekFzUS9iOEJyMmM2a0JsaStw?=
- =?utf-8?B?dS9vek42aXVJb2l1UUxQK2haZkUyS1FrQUlXdFN5SDVack5qaXFpY05ZbHJJ?=
- =?utf-8?B?OTZZQk9IakZObFAyYnN6ZjBod0ZzUTlQNXRzc1ppUGRYbzBrSW85ZXBwZUt2?=
- =?utf-8?B?S2I1SFhFKzBFc05mNjNzaEhyV1FHZkxzeDUyTndnNFgzVVRySUlzTlNrY2U0?=
- =?utf-8?B?WHZsNHZLMkJEb2JGMjRUbGNTaUdMVk9tcnBSazBzUlYrYWllZDY1QUgzelJi?=
- =?utf-8?B?elppYXZXMzBIa2h3N2U5MG1YTTZqdVlzYzFzMjdwTTgzNThyL1dRbDBBWDVI?=
- =?utf-8?B?MDB6VC9YWnJlRGdJS1BwZmtDNkZHREExdCtpeUNJQjNES1V0ZDkvRytJVjVE?=
- =?utf-8?B?b2F0eHBhcDljdnZINUtxclNQMzAyc1FzcTVUbElxdWxnWEkxUTFYRUovb0p4?=
- =?utf-8?B?cFovdjlRb0JTK3doMWFoUVpHVHlLb1dneE54cnBMYkhSckh1UHBTcWlPb1Zy?=
- =?utf-8?Q?cfNKVdDQWwl3z3muzVGJPnlQY?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c940e3d-f11e-4ead-6eb3-08dbfa92f21e
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VyBfoeU43U/AIzoA/551ueGOliW2d0OGw8kG/z2AZWtQ76kQHxmsnAIda0RP?=
+ =?us-ascii?Q?b/tYDe0I7uB7ooWkl4/wtZha0Kpj/J16AFNFx4DVU1381xGPLCqlTBai+Mvx?=
+ =?us-ascii?Q?ZX+3DIJFww5ojTl/ML+Wvw5AmgsnKY+RIckeMpSwmj+ITNfx4OhfpZes69jD?=
+ =?us-ascii?Q?cjvi+x7nfi0l6IkjbsH8XckuGHiZkuLAmuafUFPoCp3HjvGHIEpAjmIJvc2l?=
+ =?us-ascii?Q?dysbhxYIMnEoHFaMaPQTrV+w4QK+0SMED6yInxrhJz/RXOKu3m+fmTlp1hG9?=
+ =?us-ascii?Q?PWQAFWaGqPkO8uacvUT1KsAtmllNKq87l6uO5t79dfL5wP0E4XtGO2lSwLcJ?=
+ =?us-ascii?Q?QhfqvWQqVJDso8OrYOwSrj2ZNsrvDH0zayQHnVu95545rT75MsjPuCVQrhR8?=
+ =?us-ascii?Q?xV4UWFZJaNHj8pRJU8oUZE4S25esuqIT2mKKFfBrxL4OkhvknmiSzxi7rNaW?=
+ =?us-ascii?Q?6ki20i61LJPe7uVtiS14VklX/Ry8s1csJqxVjROEorAvcTnZ9FJ/rBxKFTDM?=
+ =?us-ascii?Q?C6tPBIdx6MW9Z9LM0Z1WOWyYyZKt7jymtWEpPopacy1pRxVoBpcRZuboCwZ7?=
+ =?us-ascii?Q?2pU/HgQzVOizP4zzO4QLeUByi4l9zJ9ctXGHWeVr893tfvk6M6yB9dn7HFyH?=
+ =?us-ascii?Q?qo0a3Pr1UAJ8RVRT8ukRXu+Z/qfteiT+r0Pyv3P71wjY4ZVP5DJR3QAmVSn/?=
+ =?us-ascii?Q?yBmF48RZhd2FKQAMNUevSpaFA8p3Dlebf5iJ1pWDqW1mjkx9+ZF012G+gFQ3?=
+ =?us-ascii?Q?WWBsXE1PuFItgCTvY/BDyUGSsdDA2Mq4tGnHFbsLZzByjHG6cVCDGJCLzQSZ?=
+ =?us-ascii?Q?S/FeHtblW4VO9/FiB1sAcj8Z8WXl1Zdqjoq7vffQaQFisDCd4CjNayBqySnF?=
+ =?us-ascii?Q?zACFLPuc8vYk8v1iHvjwOd5+VZ95vg1K2UUy5QwD6SjYbw/FDCM7U2O4uZhP?=
+ =?us-ascii?Q?tWZWaQOi89PnokxZppNDydjLDxx+VDDoG/n+fn7O4wvmfiE3UpsbTUimK/7l?=
+ =?us-ascii?Q?OFHnu5FXIC8IhrzOlNlSjpCbcZerxgHKAqAHaAgNkS0Nm/SkwHFqik0HG+ov?=
+ =?us-ascii?Q?nUrpYsDdDBRAVkZqwJ9zkfbM57vxEShdlSG84TXzt77HrbsTuIOjMGFnuwyT?=
+ =?us-ascii?Q?mLWezcMYwxZcWb1RGmjHsc7K1Mehlc6GnIDQVd2JcIwZki5pa6gamLzblVg7?=
+ =?us-ascii?Q?VBYjztUiM5M1bz3EoWWH387SfmnXQ9KyYsvCw1M8psgD59mxp+W4iZ3egBVE?=
+ =?us-ascii?Q?24ZCIQjHA92+i2yrbM6KNsHDNMSA9S54JAjElZeBOb76Z0pLOyx8Jtnm2fv9?=
+ =?us-ascii?Q?pNm3tFWHteoElvKClK55tfNKuxZO8Q/kWl1vNuUq1UGhWvqI5UnNeI3VzwBE?=
+ =?us-ascii?Q?q96tJvD3i/ZBDR9GUtvx1ZEY7YPaTbTo065rO+eSLb1hZjI0sX6sKWpjc7pR?=
+ =?us-ascii?Q?riGSnyPB7usfwgNKD4L1RETilPLdAAKkt3FakJjLR6QK8JgF0giZzNP/w5Yv?=
+ =?us-ascii?Q?FG1KqQx2rzaGvrQQlphBo+lH4fHFImCTnwll2NGZW5KBky+Df7EUM/JqbE36?=
+ =?us-ascii?Q?ZWPUE7Q6vGffs1Z8g4ArmSU61VwcrdV12llkV7xY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cfc646f7-810b-4600-780d-08dbfa92f454
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 21:48:43.9002
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 21:48:47.6339
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GMuZhST2xiyunBTKkj+lpibvr/yDNXSI1vQ86gRt12Z6B7UK6RqDzbrjI9af5aWxpHaiWY6p/vp0VrVUpfB3Yg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8828
+X-MS-Exchange-CrossTenant-UserPrincipalName: fk3cZcqCs+daPBsL4zhGPWmZhEUj35f9f7cpSmA4kc7z8w2Hf19qJVA+SaVQYqg3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9171
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -127,89 +128,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/2023 16:44, Bjorn Helgaas wrote:
-> On Fri, Dec 08, 2023 at 04:29:42PM -0600, Mario Limonciello wrote:
->> On 12/8/2023 16:24, Bjorn Helgaas wrote:
->>> On Wed, Aug 16, 2023 at 10:49:23AM +0530, Sanath S wrote:
->>>> In the case of Thunderbolt, it contains a PCIe switch and one or
->>>> more hotplug-capable PCIe downstream ports where the daisy chain
->>>> can be extended.
->>>>
->>>> Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
->>>> System BIOS allocates a very minimal number of buses for bridges and
->>>> hot-plug capable PCIe downstream ports to enumerate the dock during
->>>> boot. Because of this, we run out of bus space pretty quickly when
->>>> more PCIe devices are attached to hotplug downstream ports in order
->>>> to extend the chain.
->>>>
->>>> Before:
->>>>              +-04.0
->>>>              +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
->>>>              |                               +-01.0-[66]--
->>>>              |                               +-02.0-[67]--
->>>>              |                               +-03.0-[68]--
->>>>              |                               \-04.0-[69]--
->>>>              +-08.0
->>>
->>> Looks like a clear issue here because there's no other use for
->>> buses 70-c1.  But what would happen if there were more hotplug-capable
->>> downstream ports, e.g., assume one at 08.1 leading to [bus c2-c7]?
->>>
->>> The 04.1 bridge has a lot of space, but 08.1 has very little.  With
->>> this patch, would we distribute it more evenly across 04.1 and 08.1?
->>> If not, I think we'll just have the same problem when somebody plugs
->>> in a similar hierarchy at 08.1.
->>>
->>>> In case of a thunderbolt capable bridge, reconfigure the buses allocated
->>>> by BIOS to the maximum available buses. So that the hot-plug bridges gets
->>>> maximum buses and chain can be extended to accommodate more PCIe devices.
->>>> This fix is necessary for all the PCIe downstream ports where the daisy
->>>> chain can be extended.
->>>>
->>>> After:
->>>>              +-04.0
->>>>              +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
->>>>              |                               +-01.0-[66-84]--
->>>>              |                               +-02.0-[85-a3]--
->>>>              |                               +-03.0-[a4-c0]--
->>>>              |                               \-04.0-[c1]--
->>>>              +-08.0
->>>
->>> This doesn't look like anything specific to Thunderbolt; it's just
->>> that we don't do a good job of reassigning bus numbers in general,
->>> right?  We shouldn't just punt and say "BIOS should have done
->>> something" because not all machines *have* BIOS, and the OS can
->>> reconfigure bus numbers as needed.  The patch certainly isn't
->>> Thunderbolt-specific.
->>
->>  From the discussions Sanath and I have been in related to this issue
->> the BIOS is pretty static with it's initialization under the
->> presumption that the OS will rebalance things if necessary.
->> ...
+On Mon, Dec 11, 2023 at 12:11:25PM -0800, Nicolin Chen wrote:
+> On Mon, Dec 11, 2023 at 09:20:41AM -0400, Jason Gunthorpe wrote:
+> > On Mon, Dec 11, 2023 at 08:35:09PM +0800, Yi Liu wrote:
+> > > > So.. In short.. Invalidation is a PITA. The idea is the same but
+> > > > annoying little details interfere with actually having a compltely
+> > > > common API here. IMHO the uAPI in this series is fine. It will support
+> > > > Intel invalidation and non-ATC invalidation on AMD/ARM. It should be
+> > > > setup to allow that the target domain object can be any HWPT.
+> > > 
+> > > This HWPT is still nested domain. Is it? But it can represent a guest I/O
+> > > page table (VT-d), guest CD table (ARM), guest CR3 Table (AMD, it seems to
+> > > be a set of guest CR3 table pointers). May ARM and AMD guys keep me honest
+> > > here.
+> > 
+> > I was thinking ARM would not want to use a nested domain because
+> > really the invalidation is global to the entire nesting parent.
+> > 
+> > But, there is an issue with that - the nesting parent could be
+> > attached to multiple iommu instances but we only want to invalidate a
+> > single instance. 
 > 
->> For this particular issue it's being approached a different way.
->>
->> Windows never rebalances things but doesn't suffer from this issue.
->> That's because Windows actually does a "Downstream port reset" when
->> it encounters a USB4 router.
->>
->> Sanath posted a quirk that aligned this behavior when encountering
->> an AMD USB4 router, but as part of the discussion I suggested that
->> we do it for everyone.
->>
->> https://lore.kernel.org/linux-usb/20231123065739.GC1074920@black.fi.intel.com/
->>
->> So Sanath has a new patch that does this that is under testing right
->> now and will be posted soon.
-> 
-> Hmm, ok.  I don't know what a "downstream port reset" does or how it
-> resolves the bus number allocation issue, but I'm happy if you have a
-> fix that doesn't need PCI core changes.
-> 
-> Bjorn
+> I am still not sure about attaching an S2 domain to multiple
+> SMMUs. An S2 domain is created per SMMU, and we have such a
+> rejection in arm_smmu_attach_dev():
+> 	} else if (smmu_domain->smmu != smmu)
+> 		ret = -EINVAL;
 
-The issue is specifically with resources that were assigned with BIOS in 
-this "static case".  The downstream port reset ends up resetting the 
-topology and thus the resources get assigned by Linux instead and will
-be better balanced for more devices to be daisy chained.
+I intend to remove that eventually
 
+> I understand that it would be probably ideal to share the S2
+> iopt among the SMMUs. But in the driver the objects (domain)
+> holding a shared S2 iopt must be different to allocate their
+> own VMIDs, right?
+
+No, the vmid will be moved into the struct arm_smmu_master_domain
+
+Jason
