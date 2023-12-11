@@ -2,82 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0523780C788
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220F280C7AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbjLKLAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:00:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
+        id S234692AbjLKLI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:08:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKLAR (ORCPT
+        with ESMTP id S231734AbjLKLI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:00:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E99D9A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:00:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 94B90C433C8;
-        Mon, 11 Dec 2023 11:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702292423;
-        bh=EwaYZi8lnrqN42d+cQ73ITwWtF2b2+uMdvgzEC4w3m8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NoBPf+Vu+FUCIj+/MPxSIZT13YpM8n/viTikNMBMMmQv9hypsXNMB7ei+1jLJVhhO
-         QJg0YAPAtMGyyPK+qAJWRaWLzHDbUlGXapC4CSmvWLdTj/pRaW37Q0AesdLX2hIdJf
-         OjWiqraacvRoyj1bcv06kVHAzPvLT7sCwYWWzz2fxwBeX+7mCOmE2k/NfSJYdW7AFV
-         0HGCMKNUlHmNat/Y1xcIms2cEpCt3MkW2mTspVUQwUwgdjuyss2ymGGUTy8p6dL1PG
-         eiaUcPSUk19Hq0rlI5ckicqnSzIQCdCqg9ma0NR+YAQtS6xlpHZLLSy54Y+AzIEjEE
-         MRPU+D+GWPjwQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7309EDD4F0F;
-        Mon, 11 Dec 2023 11:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 11 Dec 2023 06:08:26 -0500
+X-Greylist: delayed 445 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 03:08:31 PST
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8A9B0;
+        Mon, 11 Dec 2023 03:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702292463;
+        bh=wib/6cysoLS1GsZLFc9O493Nd0EM/CV957JsOjYbBew=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=sRrefK8Yr5bj87ARlFcoM3qcvIMPxtbiqX9y9jFqY23cE3yDxMkxj+5ccVJgqwbKj
+         R528HS8yn4UkqP6hCznbTvGkmmlwjdio3U+IoBFnYcrFPWv0TgYAaPVryigG/I6LVv
+         JRh1hd2NDy5gYta04N7q+hpOohGWFbh00ufdy9QmvDqgZaV9GtyhNOfPV/3J9vOiaR
+         FrFGIjWDsHSrVhY5s/1USXPp4sUMM1jT6HjloCzsR79g+Oh7qzWWaPhWtNF8p6wiFA
+         I1qyA0qOcnsgQZcqSxongHbvAVzJR35M2MFdpWjUBhkQnQhPPVcbZdpBoR7ikI29/w
+         J1AEQjJ2jgbAA==
+Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5BC693781417;
+        Mon, 11 Dec 2023 11:00:57 +0000 (UTC)
+Message-ID: <0b35fcbd-ce8c-4c12-9725-01f18ade9fc0@collabora.com>
+Date:   Mon, 11 Dec 2023 16:00:53 +0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net] octeontx2-af: Fix pause frame configuration
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170229242346.25377.10383723431789286643.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Dec 2023 11:00:23 +0000
-References: <20231208092754.23462-1-hkelam@marvell.com>
-In-Reply-To: <20231208092754.23462-1-hkelam@marvell.com>
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net, sgoutham@marvell.com,
-        gakula@marvell.com, jerinj@marvell.com, lcherian@marvell.com,
-        sbhatta@marvell.com, naveenm@marvell.com, edumazet@google.com,
-        pabeni@redhat.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        David Hildenbrand <david@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] Revert "selftests: error out if kernel header files are
+ not yet built"
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20231209020144.244759-1-jhubbard@nvidia.com>
+Content-Language: en-US
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20231209020144.244759-1-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 12/9/23 7:01 AM, John Hubbard wrote:
+> This reverts commit 9fc96c7c19df ("selftests: error out if kernel header
+> files are not yet built").
+I don't think whole of this commit needs to be reverted. Lets leave the
+warning message as it is and just remove the condition to abort the
+compilation.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 8 Dec 2023 14:57:54 +0530 you wrote:
-> The current implementation's default Pause Forward setting is causing
-> unnecessary network traffic. This patch disables Pause Forward to
-> address this issue.
 > 
-> Fixes: 1121f6b02e7a ("octeontx2-af: Priority flow control configuration support")
-> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> It turns out that requiring the kernel headers to be built as a
+> prerequisite to building selftests, does not work in many cases. For
+> example, Peter Zijlstra writes:
 > 
-> [...]
+> "My biggest beef with the whole thing is that I simply do not want to use
+> 'make headers', it doesn't work for me.
+> 
+> I have a ton of output directories and I don't care to build tools into
+> the output dirs, in fact some of them flat out refuse to work that way
+> (bpf comes to mind)." [1]
+> 
+> Therefore, stop erroring out on the selftests build. Additional patches
+> will be required in order to change over to not requiring the kernel
+> headers.
+> 
+> [1] https://lore.kernel.org/20231208221007.GO28727@noisy.programming.kicks-ass.net
+> 
+> Cc: Anders Roxell <anders.roxell@linaro.org>
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  tools/testing/selftests/Makefile | 21 +----------------
+>  tools/testing/selftests/lib.mk   | 40 +++-----------------------------
+>  2 files changed, 4 insertions(+), 57 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+> index 3b2061d1c1a5..8247a7c69c36 100644
+> --- a/tools/testing/selftests/Makefile
+> +++ b/tools/testing/selftests/Makefile
+> @@ -155,12 +155,10 @@ ifneq ($(KBUILD_OUTPUT),)
+>    abs_objtree := $(realpath $(abs_objtree))
+>    BUILD := $(abs_objtree)/kselftest
+>    KHDR_INCLUDES := -isystem ${abs_objtree}/usr/include
+> -  KHDR_DIR := ${abs_objtree}/usr/include
+>  else
+>    BUILD := $(CURDIR)
+>    abs_srctree := $(shell cd $(top_srcdir) && pwd)
+>    KHDR_INCLUDES := -isystem ${abs_srctree}/usr/include
+> -  KHDR_DIR := ${abs_srctree}/usr/include
+>    DEFAULT_INSTALL_HDR_PATH := 1
+>  endif
+>  
+> @@ -174,7 +172,7 @@ export KHDR_INCLUDES
+>  # all isn't the first target in the file.
+>  .DEFAULT_GOAL := all
+>  
+> -all: kernel_header_files
+> +all:
+>  	@ret=1;							\
+>  	for TARGET in $(TARGETS); do				\
+>  		BUILD_TARGET=$$BUILD/$$TARGET;			\
+> @@ -185,23 +183,6 @@ all: kernel_header_files
+>  		ret=$$((ret * $$?));				\
+>  	done; exit $$ret;
+>  
+> -kernel_header_files:
+> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                          \
+> -	if [ $$? -ne 0 ]; then                                                     \
+> -            RED='\033[1;31m';                                                  \
+> -            NOCOLOR='\033[0m';                                                 \
+> -            echo;                                                              \
+> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
+> -            echo "Please run this and try again:";                             \
+> -            echo;                                                              \
+> -            echo "    cd $(top_srcdir)";                                       \
+> -            echo "    make headers";                                           \
+> -            echo;                                                              \
+> -	    exit 1;                                                                \
+> -	fi
+> -
+> -.PHONY: kernel_header_files
+> -
+>  run_tests: all
+>  	@for TARGET in $(TARGETS); do \
+>  		BUILD_TARGET=$$BUILD/$$TARGET;	\
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index 118e0964bda9..aa646e0661f3 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -44,26 +44,10 @@ endif
+>  selfdir = $(realpath $(dir $(filter %/lib.mk,$(MAKEFILE_LIST))))
+>  top_srcdir = $(selfdir)/../../..
+>  
+> -ifeq ("$(origin O)", "command line")
+> -  KBUILD_OUTPUT := $(O)
+> +ifeq ($(KHDR_INCLUDES),)
+> +KHDR_INCLUDES := -isystem $(top_srcdir)/usr/include
+>  endif
+>  
+> -ifneq ($(KBUILD_OUTPUT),)
+> -  # Make's built-in functions such as $(abspath ...), $(realpath ...) cannot
+> -  # expand a shell special character '~'. We use a somewhat tedious way here.
+> -  abs_objtree := $(shell cd $(top_srcdir) && mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTPUT) && pwd)
+> -  $(if $(abs_objtree),, \
+> -    $(error failed to create output directory "$(KBUILD_OUTPUT)"))
+> -  # $(realpath ...) resolves symlinks
+> -  abs_objtree := $(realpath $(abs_objtree))
+> -  KHDR_DIR := ${abs_objtree}/usr/include
+> -else
+> -  abs_srctree := $(shell cd $(top_srcdir) && pwd)
+> -  KHDR_DIR := ${abs_srctree}/usr/include
+> -endif
+> -
+> -KHDR_INCLUDES := -isystem $(KHDR_DIR)
+> -
+>  # The following are built by lib.mk common compile rules.
+>  # TEST_CUSTOM_PROGS should be used by tests that require
+>  # custom build rule and prevent common build rule use.
+> @@ -74,25 +58,7 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
+>  TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
+>  TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
+>  
+> -all: kernel_header_files $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) \
+> -     $(TEST_GEN_FILES)
+> -
+> -kernel_header_files:
+> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                      \
+> -	if [ $$? -ne 0 ]; then                                                 \
+> -            RED='\033[1;31m';                                                  \
+> -            NOCOLOR='\033[0m';                                                 \
+> -            echo;                                                              \
+> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
+> -            echo "Please run this and try again:";                             \
+> -            echo;                                                              \
+> -            echo "    cd $(top_srcdir)";                                       \
+> -            echo "    make headers";                                           \
+> -            echo;                                                              \
+> -	    exit 1; \
+> -	fi
+> -
+> -.PHONY: kernel_header_files
+> +all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
+>  
+>  define RUN_TESTS
+>  	BASE_DIR="$(selfdir)";			\
 
-Here is the summary with links:
-  - [net] octeontx2-af: Fix pause frame configuration
-    https://git.kernel.org/netdev/net/c/e307b5a845c5
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+BR,
+Muhammad Usama Anjum
