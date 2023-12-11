@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A560A80D456
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A44D80D455
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344571AbjLKRn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        id S235001AbjLKRnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235006AbjLKRnZ (ORCPT
+        with ESMTP id S229618AbjLKRnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:43:25 -0500
+        Mon, 11 Dec 2023 12:43:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C38CD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:43:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D4E9C433CA;
-        Mon, 11 Dec 2023 17:43:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F42FF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:43:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B47C433C7;
+        Mon, 11 Dec 2023 17:43:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702316609;
-        bh=XO5UnE3l9FoJonkWKncREOJcAIBzPv6VU7wsH1kOpxM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pBGWQZBu3OtoFtjr3cSc29srAxT/KHzA081G8QCNhH9Dha5xJWMwCZ//QqbRAy4Wg
-         cl/vLS7ULMNtY/bVFEgE6Ub8DY8LFGN3E/CsKLqMxpIOj6NjaPMDEb1FzjswlG++hn
-         6+JYb+gsKdnA/z3vNNLxwsQK+Ne+Betq0yHK1LhkMunfBMRZdyY4vTVOcqKH1DBFGL
-         DrWZ640hjOioGS+/41LrmWYW4Mwo9tSJXFeQ7cKHOoVjljaSMW/2LEHy04jyMBYeJe
-         w0l9OLMZ1DyrvpzoIelVA88VjbAYbzP36dTAMzH7pXwT+4YTtJh1XsJqfWSUMA7FVs
-         MeLyCIyPYZkGA==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2c9e9c2989dso63235771fa.0;
-        Mon, 11 Dec 2023 09:43:29 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy2+BTDVOXBZExySzOoMvQAtmqCB/DB9ntcJDuUGcrS4GCeMW2H
-        xZ9EmLxe/QeA2dJUzm25vtOMoH204msdz76Rzw==
-X-Google-Smtp-Source: AGHT+IGc6D0UVRfS6W81ZqHgRyau/738i7lc5EmYgEf+WLZ/K6dTwMaHtj36ALgXX389kp1ZtWpPh9DW0XRQKLSG3HA=
-X-Received: by 2002:a05:6512:b9c:b0:50c:180:2162 with SMTP id
- b28-20020a0565120b9c00b0050c01802162mr2102140lfv.99.1702316607874; Mon, 11
- Dec 2023 09:43:27 -0800 (PST)
+        s=k20201202; t=1702316603;
+        bh=Xrsi+3PuSnsXMklZ6G2qnpKJr2/IDaNfFsWL8VpO5f8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FBRGtPT1QpzPrQqn9ZWXvcuicsRwZrKH77dTgVAvpBpN800WmF6F/a0YLfAo1tM18
+         jmPxjw7FybqnMY3ndobGNTDGZk9mpztbBWbcqscQuuiHVkNQSXnCOuajtRgxpo5fnk
+         Qn6I6mujyhKaDRCpZZb60scTr3l/gu2fCXKHCTYNsF5cF0We5DFgfJSfeZPNOxxUPm
+         wccJl+Y2tOJmckw26GAH7eJhhiZB58WjBngmy4X4IkcOzBGdXYWT8MW2EPexqCnznY
+         wAYRK69areNhIN9DAvtG8qNcqJKG07M4cHKGqTGHfR4Zh/xXXtl0uqg4hZUCVtKoyf
+         4jL0V4DHIMObw==
+Date:   Mon, 11 Dec 2023 17:43:17 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Shengyu Qu <wiagn233@outlook.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "michal.simek@amd.com" <michal.simek@amd.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive JH8100
+ device tree
+Message-ID: <20231211-vacant-tracing-0f5bfc3b23fd@spud>
+References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
+ <20231201121410.95298-7-jeeheng.sia@starfivetech.com>
+ <TY3P286MB2611F70A3D61788E556C8A30988AA@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+ <358bcdb3f0ab4a7b9d6bbe17ca1a696d@EXMBX066.cuchost.com>
+ <20231211-submerge-vegan-244889f1751c@wendy>
+ <b3690246eb1e48428238ceb26b046297@EXMBX066.cuchost.com>
 MIME-Version: 1.0
-References: <20231205074723.3546295-1-chou.cosmo@gmail.com> <20231205074723.3546295-4-chou.cosmo@gmail.com>
-In-Reply-To: <20231205074723.3546295-4-chou.cosmo@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 11 Dec 2023 11:43:15 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+xPAvQoUX=Td4QgbbL7Xhs-3hj8pQLCdOj6fDvCz0_ug@mail.gmail.com>
-Message-ID: <CAL_Jsq+xPAvQoUX=Td4QgbbL7Xhs-3hj8pQLCdOj6fDvCz0_ug@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: Add driver for Astera Labs PT516XX retimer
-To:     Cosmo Chou <chou.cosmo@gmail.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, heiko@sntech.de, jernej.skrabec@gmail.com,
-        macromorgan@hotmail.com, linus.walleij@linaro.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        cosmo.chou@quantatw.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XS9oPw+vMXVv7R2u"
+Content-Disposition: inline
+In-Reply-To: <b3690246eb1e48428238ceb26b046297@EXMBX066.cuchost.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,49 +77,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 1:49=E2=80=AFAM Cosmo Chou <chou.cosmo@gmail.com> wr=
-ote:
->
-> This driver implements support for temperature monitoring of Astera Labs
-> PT5161L series PCIe retimer chips.
->
-> This driver implementation originates from the CSDK available at
-> Link: https://github.com/facebook/openbmc/tree/helium/common/recipes-lib/=
-retimer-v2.14
-> The communication protocol utilized is based on the I2C/SMBus standard.
->
-> Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
-> ---
->  Documentation/hwmon/index.rst   |   1 +
->  Documentation/hwmon/pt516xx.rst |  48 +++
->  MAINTAINERS                     |   8 +
->  drivers/hwmon/Kconfig           |  10 +
->  drivers/hwmon/Makefile          |   1 +
->  drivers/hwmon/pt516xx.c         | 648 ++++++++++++++++++++++++++++++++
->  6 files changed, 716 insertions(+)
->  create mode 100644 Documentation/hwmon/pt516xx.rst
->  create mode 100644 drivers/hwmon/pt516xx.c
 
-> diff --git a/drivers/hwmon/pt516xx.c b/drivers/hwmon/pt516xx.c
-> new file mode 100644
-> index 000000000000..824798559fe1
-> --- /dev/null
-> +++ b/drivers/hwmon/pt516xx.c
-> @@ -0,0 +1,648 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/of_device.h>
+--XS9oPw+vMXVv7R2u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You probably don't need this header and the implicit includes it makes
-are dropped now in linux-next. Please check what you actually need and
-make them explicit.
+On Mon, Dec 11, 2023 at 09:38:03AM +0000, JeeHeng Sia wrote:
+>=20
+>=20
+> > -----Original Message-----
+> > From: Conor Dooley <conor.dooley@microchip.com>
+> > Sent: Monday, December 11, 2023 3:59 PM
+> > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
+> > Cc: Shengyu Qu <wiagn233@outlook.com>; kernel@esmil.dk; robh+dt@kernel.=
+org; krzysztof.kozlowski+dt@linaro.org;
+> > krzk@kernel.org; conor+dt@kernel.org; paul.walmsley@sifive.com; palmer@=
+dabbelt.com; aou@eecs.berkeley.edu;
+> > daniel.lezcano@linaro.org; tglx@linutronix.de; conor@kernel.org; anup@b=
+rainfault.org; gregkh@linuxfoundation.org;
+> > jirislaby@kernel.org; michal.simek@amd.com; Michael Zhu <michael.zhu@st=
+arfivetech.com>; drew@beagleboard.org;
+> > devicetree@vger.kernel.org; linux-riscv@lists.infradead.org; linux-kern=
+el@vger.kernel.org; Leyfoon Tan
+> > <leyfoon.tan@starfivetech.com>
+> > Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive =
+JH8100 device tree
+> >=20
+> > On Mon, Dec 11, 2023 at 01:38:06AM +0000, JeeHeng Sia wrote:
+> > >
+> > > > From: Shengyu Qu <wiagn233@outlook.com>
+> > > > Sent: Friday, December 8, 2023 8:09 PM
+> >=20
+> > > > Does the dubhe-80 cores actually support vector? Or vector support
+> > > >
+> > > > doesn't exist on actual silicon?
+> >=20
+> > > We don't have a use case for vector application in JH8100
+> >=20
+> > I am sorry, but I am not clear on what this means. Do the CPUs on
+> > the JH8100 support vector or not?
+> The JH8100 CPU does not support vector operation.
 
-Rob
+Thanks for clarifiying.
+
+--XS9oPw+vMXVv7R2u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXdKNQAKCRB4tDGHoIJi
+0rZPAQCEsghqtswjmJygCWPmWVFvcHsL1UQuaSfdgVrpv2pGKwD+KS8NbHc9i8YD
+aj/NuPnffcLulHXB2Efddk4kEgoIdQE=
+=tBgs
+-----END PGP SIGNATURE-----
+
+--XS9oPw+vMXVv7R2u--
