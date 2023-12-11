@@ -2,65 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A87A180C9AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A084580C986
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbjLKMXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S1343583AbjLKMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbjLKMXd (ORCPT
+        with ESMTP id S234998AbjLKMUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:23:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393191FCA;
-        Mon, 11 Dec 2023 04:23:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702297381; x=1733833381;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dfZf4sHJCZjWtcW+3k/zvEdVAH3BOuwxHN/qA+pRkPA=;
-  b=RH0rDKgLvJ97gi1pi3dGHijRfQbvxf90VatBgsvCrW412gyZGvnMzOKc
-   wi7bTqlVWM8Tp/oTlAUqRBy2g+moM9Xi0iQ9hMepxZZqy0pWeFVtBloUn
-   QkvorkaA/xH09DstXkcUnu0st5Lp28bglo1J+MQ5vB6IL3KbXZAX8KLbU
-   B+wjPsu7dmW6RWsfD5+j/of4IJvXPmRfdojmDKdxfffYTnZk1JZwpET/f
-   2DakBQRl4RksIMEGm1gdgWG2NTzB56Bh/l16PfoNwZyNQ0EKLnPJXwTS/
-   8edEyclwWJAVE3eo+JjIMjgr7YmMKnd4RyA3MJcZt2OEF4DTvuRxpJ0XT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="1450215"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="1450215"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:22:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="839012104"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="839012104"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.50.188])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:22:54 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 29/29] selftests/resctrl: Get domain id from cache id
-Date:   Mon, 11 Dec 2023 14:18:26 +0200
-Message-Id: <20231211121826.14392-30-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
-References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+        Mon, 11 Dec 2023 07:20:41 -0500
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687F51BB;
+        Mon, 11 Dec 2023 04:20:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1702297239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5PUQntp9MfQXMF/o3JsAZeuDX9zDVymP5JQbOOqzVG4=;
+        b=bd8pBHIjpQVk2PjI7aE3jVxZcuLys8R+uLcu3rQchIbm/IdNmt5nlLLRgl8xF0E9dDFzGw
+        kwg4ZlRmQQawLkzU600RwEOTMeU++hpAbTnGd1vGdMKvsE8gHhQFoYBPKdKnsJi5lyZZht
+        dPlqzjsWQI5uZ6nhpA/mA+raoK/Xcwg=
+Message-ID: <381267f0a20d162f87b83c0af6949a9f997ea83e.camel@crapouillou.net>
+Subject: Re: [PATCH 4/4] dmaengine: axi-dmac: Use only EOT interrupts when
+ doing scatter-gather
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 11 Dec 2023 13:20:38 +0100
+In-Reply-To: <ZXb6FE5Z1zcmRFKO@matsya>
+References: <20231204140352.30420-1-paul@crapouillou.net>
+         <20231204140352.30420-5-paul@crapouillou.net> <ZXb6FE5Z1zcmRFKO@matsya>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+        YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,127 +54,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Domain id is acquired differently depending on CPU. AMD tests use id
-from L3 cache, whereas CPUs from other vendors base the id on topology
-package id. In order to support L2 CAT test, this has to be
-generalized.
+Hi Vinod,
 
-The driver side code seems to get the domain ids from cache ids so the
-approach used by the AMD branch seems to match the kernel-side code. It
-will also work with L2 domain IDs as long as the cache level is
-generalized.
+Le lundi 11 d=C3=A9cembre 2023 =C3=A0 17:31 +0530, Vinod Koul a =C3=A9crit=
+=C2=A0:
+> On 04-12-23, 15:03, Paul Cercueil wrote:
+> > Instead of notifying userspace in the end-of-transfer (EOT)
+> > interrupt
+> > and program the hardware in the start-of-transfer (SOT) interrupt,
+> > we
+> > can do both things in the EOT, allowing us to mask the SOT, and
+> > halve
+> > the number of interrupts sent by the HDL core.
+> >=20
+> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > ---
+> > =C2=A0drivers/dma/dma-axi-dmac.c | 7 ++++++-
+> > =C2=A01 file changed, 6 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-
+> > dmac.c
+> > index 5109530b66de..beed91a8238c 100644
+> > --- a/drivers/dma/dma-axi-dmac.c
+> > +++ b/drivers/dma/dma-axi-dmac.c
+> > @@ -415,6 +415,7 @@ static bool axi_dmac_transfer_done(struct
+> > axi_dmac_chan *chan,
+> > =C2=A0			list_del(&active->vdesc.node);
+> > =C2=A0			vchan_cookie_complete(&active->vdesc);
+> > =C2=A0			active =3D axi_dmac_active_desc(chan);
+> > +			start_next =3D !!active;
+>=20
+> Should this be in current patch, sounds like this should be a
+> different
+> patch?
 
-Using the topology id was always fragile due to mismatch with the
-kernel-side way to acquire the domain id. It got incorrect domain id,
-e.g., when Cluster-on-Die (CoD) is enabled for CPU (but CoD is not well
-suited for resctrl in the first place so it has not been a big issue if
-tests don't work correctly with it).
+It belongs here. This line is what allows a new transfer to be
+programmed from the EOT. Since we disable the SOT interrupt, if we
+remove that line, the driver won't work.
 
-Taking all the above into account, generalize acquiring the domain id
-by taking it from the cache id and do not hard-code the cache level.
+Cheers,
+-Paul
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
- tools/testing/selftests/resctrl/resctrl.h     |  2 +-
- tools/testing/selftests/resctrl/resctrl_val.c |  4 +--
- tools/testing/selftests/resctrl/resctrlfs.c   | 27 ++++++++++++-------
- 3 files changed, 21 insertions(+), 12 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 4d8cd8535749..c54efcf1412a 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -129,7 +129,7 @@ extern char llc_occup_path[1024];
- int get_vendor(void);
- bool check_resctrlfs_support(void);
- int filter_dmesg(void);
--int get_domain_id(int cpu_no, int *domain_id);
-+int get_domain_id(const char *resource, int cpu_no, int *domain_id);
- int mount_resctrlfs(void);
- int umount_resctrlfs(void);
- int validate_bw_report_request(char *bw_report);
-diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-index 47394e434c11..9743344fb040 100644
---- a/tools/testing/selftests/resctrl/resctrl_val.c
-+++ b/tools/testing/selftests/resctrl/resctrl_val.c
-@@ -415,7 +415,7 @@ static void initialize_mem_bw_resctrl(const char *ctrlgrp, const char *mongrp,
- {
- 	int domain_id;
- 
--	if (get_domain_id(cpu_no, &domain_id) < 0) {
-+	if (get_domain_id("MB", cpu_no, &domain_id) < 0) {
- 		ksft_print_msg("Could not get domain ID\n");
- 		return;
- 	}
-@@ -584,7 +584,7 @@ static void initialize_llc_occu_resctrl(const char *ctrlgrp, const char *mongrp,
- {
- 	int domain_id;
- 
--	if (get_domain_id(cpu_no, &domain_id) < 0) {
-+	if (get_domain_id("L3", cpu_no, &domain_id) < 0) {
- 		ksft_print_msg("Could not get domain ID\n");
- 		return;
- 	}
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index a00f512fb64f..0e97036a64b8 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -111,28 +111,37 @@ static int get_cache_level(const char *cache_type)
- 	return -1;
- }
- 
-+static int get_resource_cache_level(const char *resource)
-+{
-+	/* "MB" use L3 (LLC) as resource */
-+	if (!strcmp(resource, "MB"))
-+		return 3;
-+	return get_cache_level(resource);
-+}
-+
- /*
-  * get_domain_id - Get resctrl domain ID for a specified CPU
-+ * @resource:	resource name
-  * @cpu_no:	CPU number
-  * @domain_id:	domain ID (cache ID; for MB, L3 cache ID)
-  *
-  * Return: >= 0 on success, < 0 on failure.
-  */
--int get_domain_id(int cpu_no, int *domain_id)
-+int get_domain_id(const char *resource, int cpu_no, int *domain_id)
- {
- 	char phys_pkg_path[1024];
-+	int cache_num;
- 	FILE *fp;
- 
--	if (get_vendor() == ARCH_AMD)
--		sprintf(phys_pkg_path, "%s%d/cache/index3/id",
--			PHYS_ID_PATH, cpu_no);
--	else
--		sprintf(phys_pkg_path, "%s%d/topology/physical_package_id",
--			PHYS_ID_PATH, cpu_no);
-+	cache_num = get_resource_cache_level(resource);
-+	if (cache_num < 0)
-+		return cache_num;
-+
-+	sprintf(phys_pkg_path, "%s%d/cache/index%d/id", PHYS_ID_PATH, cpu_no, cache_num);
- 
- 	fp = fopen(phys_pkg_path, "r");
- 	if (!fp) {
--		ksft_perror("Failed to open physical_package_id");
-+		ksft_perror("Failed to open cache id file");
- 
- 		return -1;
- 	}
-@@ -559,7 +568,7 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, const char *resour
- 		return -1;
- 	}
- 
--	if (get_domain_id(cpu_no, &domain_id) < 0) {
-+	if (get_domain_id(resource, cpu_no, &domain_id) < 0) {
- 		sprintf(reason, "Failed to get domain ID");
- 		ret = -1;
- 
--- 
-2.30.2
+>=20
+> > =C2=A0		}
+> > =C2=A0	} else {
+> > =C2=A0		do {
+> > @@ -1000,6 +1001,7 @@ static int axi_dmac_probe(struct
+> > platform_device *pdev)
+> > =C2=A0	struct axi_dmac *dmac;
+> > =C2=A0	struct regmap *regmap;
+> > =C2=A0	unsigned int version;
+> > +	u32 irq_mask =3D 0;
+> > =C2=A0	int ret;
+> > =C2=A0
+> > =C2=A0	dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac),
+> > GFP_KERNEL);
+> > @@ -1067,7 +1069,10 @@ static int axi_dmac_probe(struct
+> > platform_device *pdev)
+> > =C2=A0
+> > =C2=A0	dma_dev->copy_align =3D (dmac->chan.address_align_mask + 1);
+> > =C2=A0
+> > -	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, 0x00);
+> > +	if (dmac->chan.hw_sg)
+> > +		irq_mask |=3D AXI_DMAC_IRQ_SOT;
+> > +
+> > +	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, irq_mask);
+> > =C2=A0
+> > =C2=A0	if (of_dma_is_coherent(pdev->dev.of_node)) {
+> > =C2=A0		ret =3D axi_dmac_read(dmac,
+> > AXI_DMAC_REG_COHERENCY_DESC);
+> > --=20
+> > 2.42.0
+> >=20
+>=20
 
