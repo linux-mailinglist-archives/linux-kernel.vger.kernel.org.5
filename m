@@ -2,41 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB2180CB86
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177C180CB8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343768AbjLKNww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:52:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S1343832AbjLKNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343799AbjLKNw2 (ORCPT
+        with ESMTP id S1343757AbjLKNwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:52:28 -0500
+        Mon, 11 Dec 2023 08:52:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0305EE4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:52:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DA44C433CB;
-        Mon, 11 Dec 2023 13:52:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFC21985
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:52:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86A74C433C9;
+        Mon, 11 Dec 2023 13:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302746;
-        bh=TwBsCVoS01dNUTRVjNX179o/X29XCr+Cl+USvV4vFP8=;
+        s=k20201202; t=1702302750;
+        bh=ZqDHnId5/TbfAm+FTvYjpxxf2wubBNQ9vZpZbZSbxtA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sq6UE4GFcVq2Sg0pY7271JHYD8bF6tCs7gn5cWENvbkvEJ8nWsJuwb30TGm5OaYit
-         G9ffoeAkEJ7w4ro5Y3RNBuWQXQMF0pjglDdhFDZiL6ynZ6h9Agtxi9owJgVDWTo/hq
-         SnkawQizvI0o7lQoTQHQzeD64haE4zVjQEV1TQeUodHg0dOgSmO8YnRhV1z+VgX4eg
-         BChyOup3DzWi1azdWZOmL4wX/y6uejpFID0qEoEdCd1MT78gEDJ74Am9nOb36QcH1M
-         OTUzcmzmPXTCUGJBtBAL8s8F24ZBFOf0gm9ff4LLCBEMFqZMJYeoEPtoAnFg0vJLZw
-         MRoXc1w1c4O0g==
+        b=eXG/B9bCjRNf6cvlbaoz17MKFGDfYgFlzMEFpZEitLxS3BA6QsDPypy3fMrvJhp4b
+         H4ZkSdE9V9QUvs6UoDn3AqOc/bpPNdXJrVQngoXvcuju7yLgEr1klfgLbIH+Wc7UHx
+         Mlcy+BF/rEkUXv+UUtEKw5/sDY5GLEOuJBqGocZ2Yu5XqH+4WBkRVEC0jYH71Cedu9
+         nqhoutwcXYTOzdp3ItxzAb4mor8N1oJ4o/+uwdSYL5752g5HwTdmHR08UfR3gi0QZ2
+         dpUqlJOt+LC4LLA7KVIYn54FA9XdePHFTaGWFnwAgPvBXQd6CAFysbgBEfFesjc6wU
+         t2kEO9qtU7aaQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuming Fan <shumingf@realtek.com>,
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
         Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 13/47] ASoC: rt5650: add mutex to avoid the jack detection failure
-Date:   Mon, 11 Dec 2023 08:50:14 -0500
-Message-ID: <20231211135147.380223-13-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>,
+        pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
+        perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
+        trevor.wu@mediatek.com, tinghan.shen@mediatek.com,
+        kuninori.morimoto.gx@renesas.com,
+        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 14/47] ASoC: SOF: mediatek: mt8186: Add Google Steelix topology compatible
+Date:   Mon, 11 Dec 2023 08:50:15 -0500
+Message-ID: <20231211135147.380223-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135147.380223-1-sashal@kernel.org>
 References: <20231211135147.380223-1-sashal@kernel.org>
@@ -55,77 +63,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-[ Upstream commit cdba4301adda7c60a2064bf808e48fccd352aaa9 ]
+[ Upstream commit 505c83212da5bfca95109421b8f5d9f8c6cdfef2 ]
 
-This patch adds the jd_mutex to protect the jack detection control flow.
-And only the headset type could check the button status.
+Add the machine compatible and topology filename for the Google Steelix
+MT8186 Chromebook to load the correct SOF topology file.
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
-Link: https://lore.kernel.org/r/20231122100123.2831753-1-shumingf@realtek.com
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20231123084454.20471-1-angelogioacchino.delregno@collabora.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 7938b52d741d8..a0d01d71d8b56 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -448,6 +448,7 @@ struct rt5645_priv {
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(rt5645_supply_names)];
- 	struct rt5645_eq_param_s *eq_param;
- 	struct timer_list btn_check_timer;
-+	struct mutex jd_mutex;
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+index f587edf9e0a70..35f5c2cfb6e45 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+@@ -599,6 +599,9 @@ static struct snd_sof_dsp_ops sof_mt8186_ops = {
  
- 	int codec_type;
- 	int sysclk;
-@@ -3193,6 +3194,8 @@ static int rt5645_jack_detect(struct snd_soc_component *component, int jack_inse
- 				rt5645_enable_push_button_irq(component, true);
- 			}
- 		} else {
-+			if (rt5645->en_button_func)
-+				rt5645_enable_push_button_irq(component, false);
- 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
- 			snd_soc_dapm_sync(dapm);
- 			rt5645->jack_type = SND_JACK_HEADPHONE;
-@@ -3295,6 +3298,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 	if (!rt5645->component)
- 		return;
- 
-+	mutex_lock(&rt5645->jd_mutex);
-+
- 	switch (rt5645->pdata.jd_mode) {
- 	case 0: /* Not using rt5645 JD */
- 		if (rt5645->gpiod_hp_det) {
-@@ -3321,7 +3326,7 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 
- 	if (!val && (rt5645->jack_type == 0)) { /* jack in */
- 		report = rt5645_jack_detect(rt5645->component, 1);
--	} else if (!val && rt5645->jack_type != 0) {
-+	} else if (!val && rt5645->jack_type == SND_JACK_HEADSET) {
- 		/* for push button and jack out */
- 		btn_type = 0;
- 		if (snd_soc_component_read(rt5645->component, RT5645_INT_IRQ_ST) & 0x4) {
-@@ -3377,6 +3382,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
- 		rt5645_jack_detect(rt5645->component, 0);
- 	}
- 
-+	mutex_unlock(&rt5645->jd_mutex);
-+
- 	snd_soc_jack_report(rt5645->hp_jack, report, SND_JACK_HEADPHONE);
- 	snd_soc_jack_report(rt5645->mic_jack, report, SND_JACK_MICROPHONE);
- 	if (rt5645->en_button_func)
-@@ -4150,6 +4157,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c)
- 	}
- 	timer_setup(&rt5645->btn_check_timer, rt5645_btn_check_callback, 0);
- 
-+	mutex_init(&rt5645->jd_mutex);
- 	INIT_DELAYED_WORK(&rt5645->jack_detect_work, rt5645_jack_detect_work);
- 	INIT_DELAYED_WORK(&rt5645->rcclock_work, rt5645_rcclock_work);
- 
+ static struct snd_sof_of_mach sof_mt8186_machs[] = {
+ 	{
++		.compatible = "google,steelix",
++		.sof_tplg_filename = "sof-mt8186-google-steelix.tplg"
++	}, {
+ 		.compatible = "mediatek,mt8186",
+ 		.sof_tplg_filename = "sof-mt8186.tplg",
+ 	},
 -- 
 2.42.0
 
