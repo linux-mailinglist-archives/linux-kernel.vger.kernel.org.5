@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DD580DB1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD2A80DB20
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344908AbjLKTwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55074 "EHLO
+        id S1344907AbjLKTwn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 14:52:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344903AbjLKTwG (ORCPT
+        with ESMTP id S1344872AbjLKTwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:52:06 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3745D8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:52:12 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d9dcb2cb45so674871a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702324332; x=1702929132; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sNw0BusrwKrlo9GGK5hacebZDq8UXclz0dZqKDQCG44=;
-        b=fxoZr5GSJ0pBhPOhqWsaS8/kEyltM8kdsP7hq6xKyY8yFlpVLeTUdvN3aL0ZQuhD7b
-         XWBn3N1om42K/JIrULiQ000bX1WwlOjR0kwLz5T123kKShVwcoPztlNNb2LR5o70KGFS
-         H88w3D0LKekVsbokkvmCKrSLqfipSa/dvNb20=
+        Mon, 11 Dec 2023 14:52:42 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD73D2;
+        Mon, 11 Dec 2023 11:52:49 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d9f4682c7bso404565a34.1;
+        Mon, 11 Dec 2023 11:52:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702324332; x=1702929132;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sNw0BusrwKrlo9GGK5hacebZDq8UXclz0dZqKDQCG44=;
-        b=R4/BMCViPRSAf2FczvmmaJX5FiEZn47xFQkog6uQEnY/lGD0uRMZyrDuwOVOQVeC8c
-         TZUAr5TLdyRq9IkOnnLn1q9rW1/gC34htaVD5Ford9HJwlsfPpDzy1Go2Q6/0Xe1NByJ
-         LxudbSe3FAsKbRQrIC295RLbFdx5NaF93xgjdKRmfqIGQq4YpUZeZJq2mFwbtP6sn+Zq
-         6p8W0ThzH6v/wpd+HpDScgSSSQglt6FdMmjlYcddvepyZtZbxGNoOULOBwjMKd6zHYAb
-         4HWny1jRnxXWnzh5XkHwhSglphm5P+/e6u8gHpUA5ij4yomD1e+1pVIq7qajpu9DW7z5
-         gy6A==
-X-Gm-Message-State: AOJu0Yzp0dlzJ4crwr+MMrTu5oe/BUkyDTCwq8hdsUCZaM+LE+3AoWMV
-        gN4UYKLxObLO2Q6WjFyDG5UOlsP7pxaW1DR+8yQ=
-X-Google-Smtp-Source: AGHT+IFztSJZaqgNDIycbBd/5v9onraVjBCYkUV3Y+176XHIqc/OenAwmwPiASNYdiiR/6pMFmu4HQ==
-X-Received: by 2002:a05:6830:4428:b0:6d9:e192:569d with SMTP id q40-20020a056830442800b006d9e192569dmr11620214otv.1.1702324331886;
-        Mon, 11 Dec 2023 11:52:11 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id h16-20020a9d7990000000b006d9d8abcdeesm1871829otm.40.2023.12.11.11.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 11:52:11 -0800 (PST)
-Message-ID: <4074b0bc-e89b-4b2e-ad11-cb3a9517b725@linuxfoundation.org>
-Date:   Mon, 11 Dec 2023 12:52:10 -0700
+        d=1e100.net; s=20230601; t=1702324368; x=1702929168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=shxc1fqYRYQGn0MQr4gOJAnY5PC0ECh8gGcd5gbYepM=;
+        b=PjbSw0vv51/y19nexWN70ndxFKOOMoNqhRLg65WjyFTVfQ+/CL4WYXiajnEBHKt8Pa
+         kOhzOFdT8XuFhJuYArj0x0fOjb6qiH1lakXlq81W/BdbmH7x0QGzzPp2+wS/9jduUQFx
+         1UeW0E7UhRKei+vqYIVEd+ofXdsh8wj3eHQmQDKvYGMB0UdkqF0n965RfWrMIsdhpiXc
+         PFlerj41b4zHNFxdgSGmAca9MjOsOX+x2aYvQ8finIZjy0uQ1VgVO+KO6oFeWkLmImVr
+         qXtSETW0C8G8rEVxC0QjxjYtBx/iOp5TVFwCRtsPLqpFXoD7i64qLC3eEdmoQdzMAksn
+         PINg==
+X-Gm-Message-State: AOJu0Yxu/abKvJmzQJUv6KQ7P1t3O5cqc6hN2M825dGUj3ARI8r4XDs4
+        TlUUANmcxIRCFtio8cpVQVN28xuDsgmum3imxeg=
+X-Google-Smtp-Source: AGHT+IGjJ9dqMdEvqbPS4C+aNBObN65m/Uv+AIgbHvjx5d2sI4uQBJx39nF2HMC2W+Wq43gY2UcNwwiDLRyn45Z6BNI=
+X-Received: by 2002:a05:6820:2a18:b0:590:9027:7ab0 with SMTP id
+ dr24-20020a0568202a1800b0059090277ab0mr7447038oob.0.1702324368365; Mon, 11
+ Dec 2023 11:52:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: nolibc changes for 6.8
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, WillyTarreauw@lwt.eu,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <4208adae-d185-44a6-a564-ec9bc4c6eb2a@t-8ch.de>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <4208adae-d185-44a6-a564-ec9bc4c6eb2a@t-8ch.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231211104855.558096-1-vincent.guittot@linaro.org>
+In-Reply-To: <20231211104855.558096-1-vincent.guittot@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Dec 2023 20:52:37 +0100
+Message-ID: <CAJZ5v0i37gGqt=oGC4BxJ4hT5pxhAdL7dPxGf7w3D8THqwAOwQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/7] consolidate and cleanup CPU capacity
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org, beata.michalska@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/23 10:09, Thomas Weißschuh wrote:
-> Hi Paul,
-> 
-> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
-> 
->    Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
-> 
-> are available in the Git repository at:
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/nolibc/linux-nolibc.git/ next
-> 
-> for you to fetch changes up to b99c3b15310e7c7cd5f2d843289fe115ab3f8043:
-> 
->    selftests/nolibc: disable coredump via setrlimit (2023-11-26 11:39:52 +0100)
-> 
-> ----------------------------------------------------------------
-> Summary:
-> 
-> * Support for PIC mode on MIPS.
-> * Support for getrlimit()/setrlimit().
-> * Replace some custom declarations with UAPI includes.
-> * A new script "run-tests.sh" to run the testsuite over different architectures
->    and configurations.
-> * A few non-functional code cleanups.
-> * Minor improvements to nolibc-test, primarily to support the test script.
-> 
-> There are no urgent fixes available at this time.
-> 
-> ----------------------------------------------------------------
-> Mark Brown (1):
->        tools/nolibc: Use linux/wait.h rather than duplicating it
+On Mon, Dec 11, 2023 at 11:49 AM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> This is the 1st part of consolidating how the max compute capacity is
+> used in the scheduler and how we calculate the frequency for a level of
+> utilization.
+>
+> Fix some unconsistancy when computing frequency for an utilization. There
+> can be a mismatch between energy model and schedutil.
+>
+> Next step will be to make a difference between the original
+> max compute capacity of a CPU and what is currently available when
+> there is a capping applying forever (i.e. seconds or more).
+>
+> Changes since v6:
+> - Rebase on tip/sched/core and fix a conflict
+> - Add tags
+>
+> Changes since v5:
+> - Remove useless return in freq_inv_set_max_ratio()
+> - Add tags
+>
+> Changes since v4:
+> - Capitalize the verb in subject
+> - Remove usless parentheses in cppc_get_dmi_max_khz()
+> - Use freq_ref pattern everywhere
+> - Fix MHz / kHz units conversion for cppc_cpufreq
+> - Move default definition of arch_scale_freq_ref() in
+>   include/linux/sched/topology.h beside arch_scale_cpu_capacity
+>   which faces similar default declaration behavior. This location covers
+>   all cases with arch and CONFIG_* which was not the case with previous
+>   attempts.
+>
+> Changes since v3:
+> - Split patch 5 cpufreq/cppc
+> - Fix topology_init_cpu_capacity_cppc()
+> - Fix init if AMU ratio
+> - Added some tags
+>
+> Changes since v2:
+> - Remove the 1st patch which has been queued in tip
+> - Rework how to initialize the reference frequency for cppc_cpufreq and
+>   change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
+> - Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
+>   of the AMU ratio to be done when intializing cpu capacity and
+>   capacity_ref_freq
+> - Added some tags
+>
+> Changes since v1:
+> - Fix typos
+> - Added changes in cpufreq to use arch_scale_freq_ref() when calling
+>   arch_set_freq_scale (patch 3).
+> - arch_scale_freq_ref() is always defined and returns 0 (as proposed
+>   by Ionela) when not defined by the arch. This simplifies the code with
+>   the addition of patch 3.
+> - Simplify Energy Model which always uses arch_scale_freq_ref(). The
+>   latter returns 0 when not defined by arch instead of last item of the
+>   perf domain. This is not a problem because the function is only defined
+>   for compilation purpose in this case and we don't care about the
+>   returned value. (patch 5)
+> - Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
+> - Added reviewed tag for patch 1 which got a minor change but not for
+>   others as I did some changes which could make previous reviewed tag
+>   no more relevant.
+>
+> Vincent Guittot (7):
+>   topology: Add a new arch_scale_freq_reference
+>   cpufreq: Use the fixed and coherent frequency for scaling capacity
+>   cpufreq/schedutil: Use a fixed reference frequency
+>   energy_model: Use a fixed reference frequency
+>   cpufreq/cppc: Move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
+>   cpufreq/cppc: Set the frequency used for computing the capacity
+>   arm64/amu: Use capacity_ref_freq to set AMU ratio
 
-
-I am seeing the following problem when I run my verify_signedoff.sh
-
-verify_signedoff.sh HEAD~22...HEAD /linux/linux_kselftest/
-Commit a0fa60e42bbe ("tools/nolibc: Use linux/wait.h rather than duplicating it")
-	committer Signed-off-by missing
-	author email:    broonie@kernel.org
-	committer email: linux@weissschuh.net
-	Signed-off-by: Mark Brown <broonie@kernel.org>
-	Signed-off-by: Willy Tarreau <w@1wt.eu>
-
-Errors in  with Signed-off-by, please fix!
-
-Is it possible to fix this? It appears commiter signed-off is missing.
-
-thanks,
--- Shuah
-
+This series touches multiple places, but mostly schedutil, cpufreq and
+the EM, so please let me know if you want me to pick it up.
