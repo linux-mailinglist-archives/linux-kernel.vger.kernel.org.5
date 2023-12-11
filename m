@@ -2,202 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5243780BEB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D6880BEBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbjLKBUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 20:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        id S232285AbjLKBV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 20:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKBUN (ORCPT
+        with ESMTP id S229643AbjLKBVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 20:20:13 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AFBCE
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:20:19 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5908a63a83fso1804160eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:20:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20230601.gappssmtp.com; s=20230601; t=1702257619; x=1702862419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hz/MrfMXgmVrT9CiBQSZF3wf7//eTcS99U2COnSPC44=;
-        b=hedIb1QnNAScnSWnnSjEIMS2X3mPMHNDxunIz+tlDCAU9aqJ8Cf2eOaLiXVo8QNXeQ
-         JVYrhmSh/MZu3aaZ8ilM4q+gcd/Ew0zQ3T3cw2yCAeV4QYR5CdkTvTkFgk2nJK96x8Gk
-         9vtZ1P3L0YhAF9dPp1JmcWaQdNzw24J+tapM0+36WXY9fF6Vrq877++FWNHd7RLbhdoq
-         Kt+id2PXk3MWC9SQ4mRsFk7djwyTn0uH5JukqH9IiknRpBL2Q+MyIyaRijplGfPFY4C3
-         +AHaEmtgNAW5giiytnxL47J0ISnxKVTy4ryJwoL8/7TZxpd7Ny1bwLXLabmbsph7qAP4
-         lZPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702257619; x=1702862419;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hz/MrfMXgmVrT9CiBQSZF3wf7//eTcS99U2COnSPC44=;
-        b=fMieMv5/oqMibOY+kjPdDV0nRxeB3s8U26vubn/gnIBv5mFgg6RQIT3UxI9dBqz5A9
-         uM/3JnJ6GofzX5uJb7Z2T0SU9kq7kbq6KoM4zLClDG+X+yTVYRBqeLJ/QGGCyyhaIQQY
-         YHCTmijnj3K7QBGX2CwsJT/5gejBMQdvRxngm2CufbdmgNSSmgDKbeReBI0oE/yA7Dy4
-         zHhe5KEjkbcULLGcmVKOK9aXs4b3gFHlZAuALZCK8S03oKg/rCHqITDELwZvzeMxw+u9
-         BEYZXm0RwKjfwvsSYHOqWs1B+uCtlHUeatJ9kgnpk6ZTuY6Lq16ysHbMJC2coIRAMQH+
-         ouPA==
-X-Gm-Message-State: AOJu0YxoUbfLVsYCTu1zIJqI0r01PTzdYmiIjaVp0+asf5qvREtG6U1a
-        QDyMgLFj1hBjgvqG1tO0ls1b5g==
-X-Google-Smtp-Source: AGHT+IEhtKouvEr/wVgn8kHMoq6zjNeaM5Zyodtwbt+2BDl/3XjZw3RXGMlkdOMU1rBvcjkDaaJXkg==
-X-Received: by 2002:a05:6820:168b:b0:590:66ca:30bb with SMTP id bc11-20020a056820168b00b0059066ca30bbmr2734441oob.9.1702257618995;
-        Sun, 10 Dec 2023 17:20:18 -0800 (PST)
-Received: from ?IPV6:2603:8080:2300:de:29b1:e1a0:8d3c:63c7? (2603-8080-2300-00de-29b1-e1a0-8d3c-63c7.res6.spectrum.com. [2603:8080:2300:de:29b1:e1a0:8d3c:63c7])
-        by smtp.gmail.com with ESMTPSA id e196-20020a4a55cd000000b0058d8b0c4bbdsm1668225oob.32.2023.12.10.17.20.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Dec 2023 17:20:18 -0800 (PST)
-Message-ID: <dcab1e08-c054-441b-8d4e-f46e2f22605c@vt.edu>
-Date:   Sun, 10 Dec 2023 19:20:17 -0600
+        Sun, 10 Dec 2023 20:21:25 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CCFFCE;
+        Sun, 10 Dec 2023 17:21:31 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SpP8h1F1RzsS4X;
+        Mon, 11 Dec 2023 09:21:24 +0800 (CST)
+Received: from kwepemm000005.china.huawei.com (unknown [7.193.23.27])
+        by mail.maildlp.com (Postfix) with ESMTPS id DD11318005A;
+        Mon, 11 Dec 2023 09:21:28 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm000005.china.huawei.com (7.193.23.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 09:21:28 +0800
+Subject: Re: [PATCH v19 0/3] add debugfs to migration driver
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <bcreeley@amd.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+References: <20231106072225.28577-1-liulongfang@huawei.com>
+ <20231204170040.7703f1e1.alex.williamson@redhat.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <4744fd4d-e8de-e079-0acf-acc363d5caaf@huawei.com>
+Date:   Mon, 11 Dec 2023 09:21:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 1/1 RESEND] docs: Include simplified link titles in main
- page's index
-Content-Language: en-US
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
-        gary@garyguo.net, bjorn3_gh@protonmail.com, benno.lossin@proton.me,
-        a.hindborg@samsung.com, aliceryhl@google.com,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <58e78693-82d1-451d-a546-51fb64ef6eb5@vt.edu>
-From:   Carlos Bilbao <bilbao@vt.edu>
-In-Reply-To: <58e78693-82d1-451d-a546-51fb64ef6eb5@vt.edu>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20231204170040.7703f1e1.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.121.110]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000005.china.huawei.com (7.193.23.27)
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include simplified link titles in the main page's documentation index to
-enhance website's readability and UX. Update the text that directs users to
-various documents without changing the actual titles chosen by the authors.
+On 2023/12/5 8:00, Alex Williamson wrote:
+> On Mon, 6 Nov 2023 15:22:22 +0800
+> Longfang Liu <liulongfang@huawei.com> wrote:
+> 
+>> Add a debugfs function to the migration driver in VFIO to provide
+>> a step-by-step debugfs information for the migration driver.
+>>
+>> Changes v18 -> v19
+>> 	maintainers add a patch.
+>>
+>> Changes v17 -> v18
+>> 	Replace seq_printf() with seq_puts().
+>>
+>> Changes v16 -> v17
+>> 	Add separate VFIO_DEBUGFS Kconfig entries.
+>>
+>> Changes v15 -> v16
+>> 	Update the calling order of functions to maintain symmetry
+>>
+>> Changes v14 -> v15
+>> 	Update the output status value of live migration.
+>>
+>> Changes v13 -> v14
+>> 	Split the patchset and keep the vfio debugfs frame.
+>>
+>> Changes v12 -> v13
+>> 	Solve the problem of open and close competition to debugfs.
+>>
+>> Changes v11 -> v12
+>> 	Update loading conditions of vfio debugfs.
+>>
+>> Changes v10 -> v11
+>> 	Delete the device restore function in debugfs.
+>>
+>> Changes v9 -> v10
+>> 	Update the debugfs file of the live migration driver.
+>>
+>> Changes v8 -> v9
+>> 	Update the debugfs directory structure of vfio.
+>>
+>> Changes v7 -> v8
+>> 	Add support for platform devices.
+>>
+>> Changes v6 -> v7
+>> 	Fix some code style issues.
+>>
+>> Changes v5 -> v6
+>> 	Control the creation of debugfs through the CONFIG_DEBUG_FS.
+>>
+>> Changes v4 -> v5
+>> 	Remove the newly added vfio_migration_ops and use seq_printf
+>> 	to optimize the implementation of debugfs.
+>>
+>> Changes v3 -> v4
+>> 	Change the migration_debug_operate interface to debug_root file.
+>>
+>> Changes v2 -> v3
+>> 	Extend the debugfs function from hisilicon device to vfio.
+>>
+>> Changes v1 -> v2
+>> 	Change the registration method of root_debugfs to register
+>> 	with module initialization. 
+>>
+>> Longfang Liu (3):
+>>   vfio/migration: Add debugfs to live migration driver
+>>   Documentation: add debugfs description for vfio
+>>   MAINTAINERS: Update the maintenance directory of vfio driver
+>>
+>>  Documentation/ABI/testing/debugfs-vfio | 25 +++++++
+>>  MAINTAINERS                            |  1 +
+>>  drivers/vfio/Kconfig                   | 10 +++
+>>  drivers/vfio/Makefile                  |  1 +
+>>  drivers/vfio/debugfs.c                 | 90 ++++++++++++++++++++++++++
+>>  drivers/vfio/vfio.h                    | 14 ++++
+>>  drivers/vfio/vfio_main.c               |  4 ++
+>>  include/linux/vfio.h                   |  7 ++
+>>  include/uapi/linux/vfio.h              |  1 +
+>>  9 files changed, 153 insertions(+)
+>>  create mode 100644 Documentation/ABI/testing/debugfs-vfio
+>>  create mode 100644 drivers/vfio/debugfs.c
+>>
+> 
+> Applied to vfio next branch for v6.8.  I resolved some whitespace
+> issues and updated the date and kernel release version in the
+> Documentation as well.  Thanks,
+> 
 
-Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
----
- Documentation/index.rst | 50 ++++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+OK, thank you very much!
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 9dfdc826618c..be395d0a4318 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -22,10 +22,10 @@ community and getting your work upstream.
- .. toctree::
-    :maxdepth: 1
- 
--   process/development-process
--   process/submitting-patches
-+   Development process <process/development-process>
-+   Submitting patches <process/submitting-patches>
-    Code of conduct <process/code-of-conduct>
--   maintainer/index
-+   Maintainer handbook <maintainer/index>
-    All development-process docs <process/index>
- 
- 
-@@ -38,10 +38,10 @@ kernel.
- .. toctree::
-    :maxdepth: 1
- 
--   core-api/index
--   driver-api/index
--   subsystem-apis
--   Locking in the kernel <locking/index>
-+   Core API <core-api/index>
-+   Driver implementation API <driver-api/index>
-+   Subsystems <subsystem-apis>
-+   Locking <locking/index>
- 
- Development tools and processes
- ===============================
-@@ -51,15 +51,15 @@ Various other manuals with useful information for all kernel developers.
- .. toctree::
-    :maxdepth: 1
- 
--   process/license-rules
--   doc-guide/index
--   dev-tools/index
--   dev-tools/testing-overview
--   kernel-hacking/index
--   trace/index
--   fault-injection/index
--   livepatch/index
--   rust/index
-+   Licensing rules <process/license-rules>
-+   Writing documentation <doc-guide/index>
-+   Development tools <dev-tools/index>
-+   Testing <dev-tools/testing-overview>
-+   Hacking <kernel-hacking/index>
-+   Tracing <trace/index>
-+   Fault injection <fault-injection/index>
-+   Livepatching <livepatch/index>
-+   Rust <rust/index>
- 
- 
- User-oriented documentation
-@@ -72,11 +72,11 @@ developers seeking information on the kernel's user-space APIs.
- .. toctree::
-    :maxdepth: 1
- 
--   admin-guide/index
--   The kernel build system <bailed/index>
--   admin-guide/reporting-issues.rst
-+   Administration <admin-guide/index>
-+   Build system <bugled/index>
-+   Reporting issues <admin-guide/reporting-issues.rst>
-    User-space tools <tools/index>
--   userspace-api/index
-+   User-space API <userspace-api/index>
- 
- See also: the `Linux man pages <https://www.kernel.org/doc/man-pages/>`_,
- which are kept separately from the kernel's own documentation.
-@@ -89,8 +89,8 @@ platform firmwares.
- .. toctree::
-    :maxdepth: 1
- 
--   firmware-guide/index
--   devicetree/index
-+   Firmware <firmware-guide/index>
-+   Firmware and Devicetree <devicetree/index>
- 
- 
- Architecture-specific documentation
-@@ -99,7 +99,7 @@ Architecture-specific documentation
- .. toctree::
-    :maxdepth: 2
- 
--   arch/index
-+   CPU Architectures <arch/index>
- 
- 
- Other documentation
-@@ -112,7 +112,7 @@ to ReStructured Text format, or are simply too old.
- .. toctree::
-    :maxdepth: 1
- 
--   staging/index
-+   Unsorted documentation <staging/index>
- 
- 
- Translations
-@@ -121,7 +121,7 @@ Translations
- .. toctree::
-    :maxdepth: 2
- 
--   translations/index
-+   Translations <translations/index>
- 
- Indices and tables
- ==================
--- 
+Longfang.
 
+> Alex
+> 
+> .
+> 
