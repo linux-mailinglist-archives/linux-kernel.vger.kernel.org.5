@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5981780CE6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB42580CE73
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343741AbjLKOcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:32:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        id S1343763AbjLKOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbjLKOcX (ORCPT
+        with ESMTP id S1343710AbjLKOdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:32:23 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B679DC3;
-        Mon, 11 Dec 2023 06:32:30 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-28aabe4a728so220606a91.3;
-        Mon, 11 Dec 2023 06:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702305150; x=1702909950; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M4T42pMM+lOegJCe1HFIlB1ZP3arDImtXfzEjv6FDZc=;
-        b=hadUpPsk75xdo1BdTPC6mh1dbht08J5g49dL0r71RVXc0p45dy+3/Kgf8ydTXsFXcC
-         QXbml0a27k4/yc3wG1/14BxJp50XM/QrtNGJmd5MCNiqm/Ul/S2alFwk/455QTCfJ9NZ
-         m0aTUgZt92Aa/odjWU+zENx6h47xku+lJypPLxoTr2BZa+fQFIWmase/Q3bzjbB4q1hU
-         xGab5LJMmdReWkdS0plFkCkcb56ptH7h7/JVEgJx4uWDfzpqQk5kN7IKoBlXR80GC+Wh
-         I31/JB0sgHDgR37mjFOBzXn7MSzq4gcdkBTqhKYTEac+oTSqcRZaqvfd+PWnrAQvsw6Y
-         Iwhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702305150; x=1702909950;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M4T42pMM+lOegJCe1HFIlB1ZP3arDImtXfzEjv6FDZc=;
-        b=SZvUtZ7VmytkmJT8gjR/uCIZoMHBSQ2cSVtlGVoXxuV+1UQsn6tXO8cA0lMkgUD4rz
-         bUw4oeMFS8idZFSvyO4YW0MB+w6qqgs4rFo4kOHPC8MwtroqhyQOlUZMvstb04rGKqY6
-         uCHoFopNGMqnMvSnGmrx2qT/DNXDJDlEvogh6KmDLutwzFpa1sXdTbTCdTdluV54pqra
-         Hy3S78r+BpSKXoc4/ZDVMStSurs9v/XTudq9fb3UyBwyREi6cwsImc9XKjoGQ+/skqZY
-         spAupVkMiQebReWxgM+vTc2CTyTWZFaD0K8pQ5Y4tRXF/2SCrxAqjDi1vOvwNZEVozV1
-         l/8Q==
-X-Gm-Message-State: AOJu0YzbON625sXbFBiqMeVA7e6HpSBz7LNw3QwSzOOK2PeBaEbSiNbk
-        mOAJkiSOHabuLYFirqr33xo=
-X-Google-Smtp-Source: AGHT+IEQkYkTZC+r8SjpiBendOi3zHCvQ4uKeqztoZtzBJofctThTRrwnsZ9xq6Ag8OLvBeGRoQaUQ==
-X-Received: by 2002:a17:90a:f487:b0:286:6cc0:884c with SMTP id bx7-20020a17090af48700b002866cc0884cmr1817096pjb.57.1702305150102;
-        Mon, 11 Dec 2023 06:32:30 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id st8-20020a17090b1fc800b0028656e226efsm7051238pjb.1.2023.12.11.06.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:32:29 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Dec 2023 06:32:28 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] MAINTAINERS: Add maintainer for Baikal-T1 PVT hwmon
- driver
-Message-ID: <1ab63238-5411-4e31-9248-b494c29f2182@roeck-us.net>
-References: <20231122170506.27267-1-Sergey.Semin@baikalelectronics.ru>
- <20231122170506.27267-2-Sergey.Semin@baikalelectronics.ru>
+        Mon, 11 Dec 2023 09:33:08 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14992C3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:33:15 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49D43FEC;
+        Mon, 11 Dec 2023 06:34:01 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E6943F738;
+        Mon, 11 Dec 2023 06:33:12 -0800 (PST)
+Message-ID: <27ddb859-a67e-9a9d-7135-c4829c5b27db@arm.com>
+Date:   Mon, 11 Dec 2023 14:33:06 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122170506.27267-2-Sergey.Semin@baikalelectronics.ru>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by
+ index
+Content-Language: en-GB
+To:     Amit Singh Tomar <amitsinght@marvell.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+        "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>,
+        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>,
+        "peternewman@google.com" <peternewman@google.com>,
+        "dfustini@baylibre.com" <dfustini@baylibre.com>,
+        "muhammad.zahid@nokia.com" <muhammad.zahid@nokia.com>
+References: <20231025180345.28061-1-james.morse@arm.com>
+ <20231025180345.28061-7-james.morse@arm.com>
+ <MW4PR18MB5084AC18E19386E5B83C0F0EC6A0A@MW4PR18MB5084.namprd18.prod.outlook.com>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <MW4PR18MB5084AC18E19386E5B83C0F0EC6A0A@MW4PR18MB5084.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 08:04:50PM +0300, Serge Semin wrote:
-> Add myself as a maintainer of the Baikal-T1 PVT sensors driver.
+Hi Amit,
+
+On 31/10/2023 07:43, Amit Singh Tomar wrote:
+> -----Original Message-----
+> From: James Morse <james.morse@arm.com> 
+> Sent: Wednesday, October 25, 2023 11:33 PM
+> Subject: [EXT] [PATCH v7 06/24] x86/resctrl: Access per-rmid structures by index
+
+Looks like you are afflicted with outlook - let me know if I didn't find all the changes
+you made to the original message ...
+
+[..]
+
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index 2a0233cd0bc9..c02cf32cd17c 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -735,19 +768,20 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+>  
+>  static int dom_data_init(struct rdt_resource *r)  {
+> +	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+>  	struct rmid_entry *entry = NULL;
+> -	int i, nr_rmids;
+> +	u32 idx;
+> +	int i;
+>  
+> -	nr_rmids = r->num_rmid;
+> -	rmid_ptrs = kcalloc(nr_rmids, sizeof(struct rmid_entry), GFP_KERNEL);
+> +	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> [>>] Is there a chance, it could result in "ZERO_SIZE_PTR", and we should guard it against ZERO_OR_NULL_PTR in the following if condition?
+>         It might be related, while testing the snapshot[1] (and subsequent snapshots has similar change) on x86 platform, Zahid is seeing Kernel panic:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/fs/resctrl/monitor.c?h=mpam/snapshot/v6.2#n695
 
-Applied.
+Interesting - I didn't think this could happen. Could you share the full splat?
 
-Guenter
+This would imply idx_limit was zero, so boot_cpu_data.x86_cache_max_rmid would be -1.
+But wouldn't this happen before this patch? idx_limit has the same value as nr_rmids on
+x86, its only MPAM that needs a different value.
+
+
+Thanks,
+
+James
