@@ -2,103 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED3280D3FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A2E80D3F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344731AbjLKRfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S1344730AbjLKRfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344741AbjLKRfj (ORCPT
+        with ESMTP id S1344741AbjLKRez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:35:39 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D8FEA;
-        Mon, 11 Dec 2023 09:35:45 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b9e2a014e8so3139960b6e.2;
-        Mon, 11 Dec 2023 09:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702316145; x=1702920945; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M/fg+fv8iUKsYhs2M+RJ0ajm1ojAT51bfa8djh97RvU=;
-        b=CP3Jq4I1Y02qHoqb0qWcgX0JAcPeAVZkT/zrigeAZ63XjOtvmaFoaRPOCh8oGdle/E
-         659t0Cqq9vwxfVzUnZEYkujXvjenFSymFnF2wn5KMkozGqr5VAEkRG4WlLyW6qSrkJpR
-         ZiMwSfge/HSBrgaQeXoCKiaH0gA5DMWKBzfS8IuoYqortNoBw4stEkLTMwT60HdryXyQ
-         GeGxxvBtOSCoCwhz/OOw+onOAKkeI1M152kgV3xzm6VeyJpIKtRKIDZBNxKA1PEyGwcf
-         sdb6SxfnnbCojImLFcgufskb9jZL4zv0rFZRqHyDh4LTWKrxDisbCacPZ+g8PJQdSCo6
-         lc7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702316145; x=1702920945;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M/fg+fv8iUKsYhs2M+RJ0ajm1ojAT51bfa8djh97RvU=;
-        b=YUhCcYXwQUqIJx4Lkbd/hlMATx7JbBIvW3oOzMq6bHBZUODq5nU5sH05YJK4hzCTbY
-         8w3Cas9sOuWDPN/YSVTxDTGJf5xfo0ZwBU80+/yQ5eSQNGhPBQKEp1UxW2kS+5+/ffoZ
-         4+5+CN2So8iix7pQTU3+yO9QbnH3ftpEFCtQTEdfXt0gvAICQH10koS8J07vBmsqrkzK
-         aFOmgv2gD1/VeOcdBtBBD34vUp+VOOOJz9hSBFw1IVXyKwG36TgXxqzm0fv7jpdLItt4
-         133aBOeDtSF3xxD2UELtO+JIKFaFVe8u0nsu7ca8wgClnR7fihy01yA0qg6kvhxj2YIN
-         UicA==
-X-Gm-Message-State: AOJu0YxnsiFvHrrYl7oFnNwzzIs9/IUe+Gjs5b4wISiEyTr0Qu6CMb8V
-        6x9128CNQhUVJhIpn8x0GIQ=
-X-Google-Smtp-Source: AGHT+IGbDAuC5iH0V8rKYwviDyoY8ZqTEAItte85iztX5xcFqTiwSYA17QemR1kL/yaaXqa4VTm8ew==
-X-Received: by 2002:a05:6359:2d02:b0:16e:29eb:98c8 with SMTP id rl2-20020a0563592d0200b0016e29eb98c8mr2011101rwb.30.1702316144995;
-        Mon, 11 Dec 2023 09:35:44 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id i19-20020a056214031300b0067aa164861dsm3467797qvu.35.2023.12.11.09.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:35:44 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id E6B6A27C005B;
-        Mon, 11 Dec 2023 12:35:43 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 11 Dec 2023 12:35:43 -0500
-X-ME-Sender: <xms:b0h3ZWIE9Yx7UGpn71fZAxZX0HGg4FpbWLeNvatVYsHtlI9MfS2HXw>
-    <xme:b0h3ZeIFkXRRQAI4ffLDQBsIVxj7aRkAq9sHq82eX8drH5G_JdRQmPSmxzB4wzmJ0
-    EcYzaDSd47NCxaYIQ>
-X-ME-Received: <xmr:b0h3ZWvlwExWXMUANLm9vi_qtr7Mr0mpo4kFxAUSQkGozewojwigSVK9NJQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelvddguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:b0h3ZbY8x4kxdTb793RGNUqtreNFBYEDz_Q58q1IHpHp1QJi2cp2wg>
-    <xmx:b0h3ZdYhbLLNLQpl40sVkGsURrGwBKMPC0gPqvy8-47u-uUJv-BzNw>
-    <xmx:b0h3ZXBIn2Sg4kV8292WFXKiqxnQxTij-1LTv3biM_I2vcAXeTqfLw>
-    <xmx:b0h3ZaRVAf13DBbJgyJmPBC7MynptnzRLYnuMgV3gMCc_4nakVOLLg>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 12:35:42 -0500 (EST)
-Date:   Mon, 11 Dec 2023 09:35:40 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        brauner@kernel.org, cmllamas@google.com, dan.j.williams@intel.com,
-        dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Subject: Re: [PATCH v2 2/7] rust: cred: add Rust abstraction for `struct cred`
-Message-ID: <ZXdIbEqSCTO62BHE@boqun-archlinux>
-References: <ZXZjoOrO5q7no4or@boqun-archlinux>
- <20231211153429.4161511-1-aliceryhl@google.com>
+        Mon, 11 Dec 2023 12:34:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8D7107
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:35:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF17FC433C7;
+        Mon, 11 Dec 2023 17:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702316100;
+        bh=C+xcU0YxoxqS8wlJs7ViUOBkcKRqhoDYHPQNqHhIU7o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EgSMMg5SQJwi9ZJO7tXgJEZ8pHAb3w7OZkogzS3Vi50kwtTf5HzMgpP5nN5vWAACB
+         Pyqh7ZY1N0JJW//s5JpHyEWGivj5qKUnPZwMuMawSeLSxZfzAWUtekk03NYwWZW7fh
+         HCmTvpukqTsjl/PGl+tlwztLweC4X2P1pkS50mmfQlyq+yxRTcDqPLLuA4Wuo6GkD1
+         nUL/EFoKOQgGjFjeBMa1XyCflVMHEM/CBaI0I3ZKdIhQC7RawnnwuqhzgudYwxaj+y
+         ovVrVLkKBqLhpce2H6hxJb4GMaIilOVFDuWXqLBcoh75FfAUTqzjwrE6WBnXcJiwXl
+         KLmZ4++vOhNww==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rCkC2-0006Jn-1R;
+        Mon, 11 Dec 2023 18:35:47 +0100
+Date:   Mon, 11 Dec 2023 18:35:46 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] PCI: Fix deadlocks when enabling ASPM
+Message-ID: <ZXdIcle5oKJTaQB6@hovoldconsulting.com>
+References: <20231128081512.19387-1-johan+linaro@kernel.org>
+ <20231208175312.GA803148@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231211153429.4161511-1-aliceryhl@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <20231208175312.GA803148@bhelgaas>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -107,46 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:34:29PM +0000, Alice Ryhl wrote:
-> Boqun Feng <boqun.feng@gmail.com> writes:
-> > On Wed, Dec 06, 2023 at 11:59:47AM +0000, Alice Ryhl wrote:
-> > [...]
-> > > @@ -151,6 +152,21 @@ pub fn as_ptr(&self) -> *mut bindings::file {
-> > >          self.0.get()
-> > >      }
-> > >  
-> > > +    /// Returns the credentials of the task that originally opened the file.
-> > > +    pub fn cred(&self) -> &Credential {
-> > 
-> > I wonder whether it would be helpful if we use explicit lifetime here:
-> > 
-> >     pub fn cred<'file>(&'file self) -> &'file Credential
-> > 
-> > It might be easier for people to get. For example, the lifetime of the
-> > returned Credential reference is constrainted by 'file, the lifetime of
-> > the file reference.
-> > 
-> > But yes, maybe need to hear others' feedback first.
-> > 
-> > Regards,
-> > Boqun
-> 
-> That would trigger a compiler warning because the lifetime is
-> unnecessary.
-> 
+Hi Bjorn,
 
-We can disable that warning if people need the information. Code is
-mostly for reading, less often for compilation and changes.
+On Fri, Dec 08, 2023 at 11:53:12AM -0600, Bjorn Helgaas wrote:
+> On Tue, Nov 28, 2023 at 09:15:06AM +0100, Johan Hovold wrote:
 
-> The safety comment explains what the signature means. I think that
-> should be enough.
-> 
+> > Johan Hovold (6):
+> >   PCI/ASPM: Add locked helper for enabling link state
+> >   PCI: vmd: Fix deadlock when enabling ASPM
+> >   PCI: qcom: Fix deadlock when enabling ASPM
+> >   PCI: qcom: Clean up ASPM comment
+> >   PCI/ASPM: Clean up disable link state parameter
+> >   PCI/ASPM: Add lockdep assert to link state helper
 
-For someone who has a good understanding of Rust lifetime (and the
-elision), yes. But I'm wondering whether all the people feel the same
-way.
+> Applied to for-linus for v6.7, thanks, Johan!
 
-Regards,
-Boqun
+I've noticed that you're pretty keen on amending commit messages.
 
-> Alice
+For this series, for example, I noticed that you added an American comma
+after "e.g." even though this is not expected in British English that I
+(try to) use. This risks introducing inconsistencies and frankly I see no
+reason for this kind of editing. British English is not an error. :)
+
+You also added a plus sign after the stable kernel versions in the
+comments after the CC-stable tags even though this is not the right
+notation for this (see the stable kernel rules).
+
+I'm more OK with you preferring to use function names over free text in
+commit messages even if that is not my preferred style.
+
+But generally I find it a bit odd that you insist on rewriting commit
+messages like this and would prefer if you did not (especially since
+there's no record of you having done this in the commits themselves).
+
+Fixing typos and grammar issues, or rewriting bad commit messages, is
+another thing of course.
+
+Johan
