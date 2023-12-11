@@ -2,244 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAAF80C901
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4957280C8CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234417AbjLKMHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        id S234968AbjLKMAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234514AbjLKMHJ (ORCPT
+        with ESMTP id S234792AbjLKMAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:07:09 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4B8106;
-        Mon, 11 Dec 2023 04:07:11 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 9F018120009;
-        Mon, 11 Dec 2023 15:07:07 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9F018120009
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702296427;
-        bh=JzRw1YBG7f3oyr2RSRgTAcTcb1RpGTdfB0MlDiBeNMY=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=Fl9xYbyE7vkGTZbfOZpwHZYW6bqdqx7Lvrfr+nuUwVECVTntTRMjTx1hiF0x1o0kT
-         Va2C9poiamtVwx8OqqpCvLIRuKG13doXix1Ai3CBcuAJGBar3kahzvqIOWRgvQ4JaW
-         AGNNeoLkvJHb2+mRdEe0jlco0xf6H5i9Lh0OjlxpD/uUrYB5EErAqIGHPcdrO0in1Q
-         hygPPibh8o5xek6aHo/tl6QmZUkoy4EXMmT5ZOa9Y0Vb0RCCb4vVgHEnNf4hjeC5SW
-         R5lKIxP3Kc6KXS2f8AixqWHtyKnAtB9DuNr454OkSFEWyUuqPxrP1ZFMp8KUyzW2eJ
-         B9S+Y3Rcb/LWA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 11 Dec 2023 15:07:07 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 15:07:07 +0300
-Message-ID: <8687bc31-92a7-8ff4-168f-f194180d0cbf@salutedevices.com>
-Date:   Mon, 11 Dec 2023 14:58:49 +0300
+        Mon, 11 Dec 2023 07:00:05 -0500
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8402172A;
+        Mon, 11 Dec 2023 03:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=RAY85
+        vW0eZ067YcH3KySYDrKU07gygVkucbXL81kK7Q=; b=NQoceVUXnczOA5LnD0Yir
+        7rKlDs74rEl+EqdMaL9Ty5NVnmMiWvM8I9OxEdwWyzR6nHJ9vCSE5fYI9BAScrbg
+        NnVSl/G1WxGAjPNgFqILDt1uHWt2u5EOfETv/Rbt41g/hPtfWnrjd4PdcSfWzwQR
+        aUaD7k7LxGiyw3x4QlwnKs=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g3-3 (Coremail) with SMTP id _____wCnd+N7+XZlVD6+Dw--.13391S2;
+        Mon, 11 Dec 2023 19:58:55 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v5 10/16] dt-bindings: display: vop2: Add rk3588 support
+Date:   Mon, 11 Dec 2023 19:58:50 +0800
+Message-Id: <20231211115850.1785311-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231211115547.1784587-1-andyshrk@163.com>
+References: <20231211115547.1784587-1-andyshrk@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v7 3/4] virtio/vsock: fix logic which reduces
- credit update messages
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231206211849.2707151-1-avkrasnov@salutedevices.com>
- <20231206211849.2707151-4-avkrasnov@salutedevices.com>
- <20231206165045-mutt-send-email-mst@kernel.org>
- <d9d1ec6a-dd9b-61d9-9211-52e9437cbb1f@salutedevices.com>
- <20231206170640-mutt-send-email-mst@kernel.org>
- <d30a1df7-ecda-652d-8c98-853308a560c9@salutedevices.com>
- <s5v5hbr2memhwoqm3fxbkq6qsocs43qgyhx432zzy6ugbqhuu2@rsnm3kiwfwjm>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <s5v5hbr2memhwoqm3fxbkq6qsocs43qgyhx432zzy6ugbqhuu2@rsnm3kiwfwjm>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182013 [Dec 11 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 6 0.3.6 62f5a4619c57459c9a142aa1486ed27913162963, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/11 10:21:00 #22658245
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: _____wCnd+N7+XZlVD6+Dw--.13391S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAF1DWF13uw13XFWxCw47XFb_yoWrKFyxpa
+        s3C3W8JrZ7Gr13Xr4kt3WrCw4SgFn5Aw4jyrs7Jr43ta1aqFW0vF4akwn8XayUCFn7Zay2
+        9FWUua4xJ3W7ZF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jw4SOUUUUU=
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBnARDXlghl75eowAAso
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Andy Yan <andy.yan@rock-chips.com>
 
+The vop2 on rk3588 is similar to which on rk356x
+but with 4 video ports and need to reference
+more grf modules.
 
-On 11.12.2023 15:01, Stefano Garzarella wrote:
-> On Thu, Dec 07, 2023 at 01:50:05AM +0300, Arseniy Krasnov wrote:
->>
->>
->> On 07.12.2023 01:08, Michael S. Tsirkin wrote:
->>> On Thu, Dec 07, 2023 at 12:52:51AM +0300, Arseniy Krasnov wrote:
->>>>
->>>>
->>>> On 07.12.2023 00:53, Michael S. Tsirkin wrote:
->>>>> On Thu, Dec 07, 2023 at 12:18:48AM +0300, Arseniy Krasnov wrote:
->>>>>> Add one more condition for sending credit update during dequeue from
->>>>>> stream socket: when number of bytes in the rx queue is smaller than
->>>>>> SO_RCVLOWAT value of the socket. This is actual for non-default value
->>>>>> of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
->>>>>> transmission, because we need at least SO_RCVLOWAT bytes in our rx
->>>>>> queue to wake up user for reading data (in corner case it is also
->>>>>> possible to stuck both tx and rx sides, this is why 'Fixes' is used).
->>>>>> Also handle case when 'fwd_cnt' wraps, while 'last_fwd_cnt' is still
->>>>>> not.
->>>>>>
->>>>>> Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
->>>>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->>>>>> ---
->>>>>>  Changelog:
->>>>>>  v6 -> v7:
->>>>>>   * Handle wrap of 'fwd_cnt'.
->>>>>>   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
->>>>>>
->>>>>>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++++++++---
->>>>>>  1 file changed, 15 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>>> index e137d740804e..39f8660d825d 100644
->>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>>> @@ -558,6 +558,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>>>      struct virtio_vsock_sock *vvs = vsk->trans;
->>>>>>      size_t bytes, total = 0;
->>>>>>      struct sk_buff *skb;
->>>>>> +    u32 fwd_cnt_delta;
->>>>>> +    bool low_rx_bytes;
->>>>>>      int err = -EFAULT;
->>>>>>      u32 free_space;
->>>>>>
->>>>>> @@ -601,7 +603,15 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>>>          }
->>>>>>      }
->>>>>>
->>>>>> -    free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
->>>>>> +    /* Handle wrap of 'fwd_cnt'. */
->>>>>> +    if (vvs->fwd_cnt < vvs->last_fwd_cnt)
->>>>>> +        fwd_cnt_delta = vvs->fwd_cnt + (U32_MAX - vvs->last_fwd_cnt);
->>>>>
->>>>> Are you sure there's no off by one here? for example if fwd_cnt is 0
->>>>> and last_fwd_cnt is 0xfffffffff then apparently delta is 0.
->>>>
->>>> Seems yes, I need +1 here
->>>
->>> And then you will get a nop, because assigning U32_MAX + 1 to u32
->>> gives you 0. Adding () does nothing to change the result,
->>> + and - are commutative.
->>
->> Ahh, unsigned here, yes.
-> 
-> Ooops, sorry I was confused here!
-> 
->>
->> @Stefano, what did You mean about wrapping here?
->>
->> I think Michael is right, for example
-> 
-> Yep, I agree!
-> Sorry for this wrong suggestion!
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Got it! I'll remove it, no problem 
+---
 
-Thanks, Arseniy
+(no changes since v4)
 
-> 
-> Stefano
-> 
->>
->> vvs->fwd_cnt wraps and now == 5
->> vvs->last_fwd_cnt == 0xffffffff
->>
->> now delta before this patch will be 6 - correct value
->>
->> May be I didn't get your idea, so implement it very naive?
->>
->> Thanks, Arseniy
->>
->>>
->>>
->>>>>
->>>>>
->>>>>> +    else
->>>>>> +        fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt;
->>>>>
->>>>> I actually don't see what is wrong with just
->>>>>     fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt
->>>>> 32 bit unsigned math will I think handle wrap around correctly.
->>>>>
->>>>> And given buf_alloc is also u32 - I don't see where the bug is in
->>>>> the original code.
->>>>
->>>> I think problem is when fwd_cnt wraps, while last_fwd_cnt is not. In this
->>>> case fwd_cnt_delta will be too big, so we won't send credit update which
->>>> leads to stall for sender
->>>>
->>>> Thanks, Arseniy
->>>
->>> Care coming up with an example?
->>>
->>>
->>>>>
->>>>>
->>>>>> +
->>>>>> +    free_space = vvs->buf_alloc - fwd_cnt_delta;
->>>>>> +    low_rx_bytes = (vvs->rx_bytes <
->>>>>> +            sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
->>>>>>
->>>>>>      spin_unlock_bh(&vvs->rx_lock);
->>>>>>
->>>>>> @@ -611,9 +621,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>>>       * too high causes extra messages. Too low causes transmitter
->>>>>>       * stalls. As stalls are in theory more expensive than extra
->>>>>>       * messages, we set the limit to a high value. TODO: experiment
->>>>>> -     * with different values.
->>>>>> +     * with different values. Also send credit update message when
->>>>>> +     * number of bytes in rx queue is not enough to wake up reader.
->>>>>>       */
->>>>>> -    if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
->>>>>> +    if (fwd_cnt_delta &&
->>>>>> +        (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE || low_rx_bytes))
->>>>>>          virtio_transport_send_credit_update(vsk);
->>>>>>
->>>>>>      return total;
->>>>>> -- 
->>>>>> 2.25.1
->>>>>
->>>
->>
-> 
+Changes in v4:
+- drop redundant description.
+- use full stop at all the description's end.
+- address Krzysztof's review in v3
+
+Changes in v3:
+- constrain properties in allOf:if:then
+- some description updates
+
+Changes in v2:
+- fix errors when running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+
+ .../display/rockchip/rockchip-vop2.yaml       | 100 ++++++++++++++----
+ 1 file changed, 81 insertions(+), 19 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+index b60b90472d42..2531726af306 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
++++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+@@ -8,8 +8,8 @@ title: Rockchip SoC display controller (VOP2)
+ 
+ description:
+   VOP2 (Video Output Processor v2) is the display controller for the Rockchip
+-  series of SoCs which transfers the image data from a video memory
+-  buffer to an external LCD interface.
++  series of SoCs which transfers the image data from a video memory buffer to
++  an external LCD interface.
+ 
+ maintainers:
+   - Sandy Huang <hjc@rock-chips.com>
+@@ -20,6 +20,7 @@ properties:
+     enum:
+       - rockchip,rk3566-vop
+       - rockchip,rk3568-vop
++      - rockchip,rk3588-vop
+ 
+   reg:
+     items:
+@@ -27,8 +28,8 @@ properties:
+           Must contain one entry corresponding to the base address and length
+           of the register space.
+       - description:
+-          Can optionally contain a second entry corresponding to
+-          the CRTC gamma LUT address.
++          Can optionally contain a second entry corresponding to the CRTC gamma
++          LUT address.
+ 
+   reg-names:
+     items:
+@@ -41,45 +42,63 @@ properties:
+       The VOP interrupt is shared by several interrupt sources, such as
+       frame start (VSYNC), line flag and other status interrupts.
+ 
++  # See compatible-specific constraints below.
+   clocks:
++    minItems: 5
+     items:
+-      - description: Clock for ddr buffer transfer.
+-      - description: Clock for the ahb bus to R/W the phy regs.
++      - description: Clock for ddr buffer transfer via axi.
++      - description: Clock for the ahb bus to R/W the regs.
+       - description: Pixel clock for video port 0.
+       - description: Pixel clock for video port 1.
+       - description: Pixel clock for video port 2.
++      - description: Pixel clock for video port 3.
++      - description: Peripheral(vop grf/dsi) clock.
+ 
+   clock-names:
++    minItems: 5
+     items:
+       - const: aclk
+       - const: hclk
+       - const: dclk_vp0
+       - const: dclk_vp1
+       - const: dclk_vp2
++      - const: dclk_vp3
++      - const: pclk_vop
+ 
+   rockchip,grf:
+     $ref: /schemas/types.yaml#/definitions/phandle
+     description:
+-      Phandle to GRF regs used for misc control
++      Phandle to GRF regs used for control the polarity of dclk/hsync/vsync of DPI,
++      also used for query vop memory bisr enable status, etc.
++
++  rockchip,vo1-grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to VO GRF regs used for control the polarity of dclk/hsync/vsync of hdmi
++      on rk3588.
++
++  rockchip,vop-grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to VOP GRF regs used for control data path between vopr and hdmi/edp.
++
++  rockchip,pmu:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Phandle to PMU GRF used for query vop memory bisr status on rk3588.
+ 
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+-    properties:
+-      port@0:
++    patternProperties:
++      "^port@[0-3]$":
+         $ref: /schemas/graph.yaml#/properties/port
+-        description:
+-          Output endpoint of VP0
++        description: Output endpoint of VP0/1/2/3.
+ 
+-      port@1:
+-        $ref: /schemas/graph.yaml#/properties/port
+-        description:
+-          Output endpoint of VP1
++    required:
++      - port@0
+ 
+-      port@2:
+-        $ref: /schemas/graph.yaml#/properties/port
+-        description:
+-          Output endpoint of VP2
++    unevaluatedProperties: false
+ 
+   iommus:
+     maxItems: 1
+@@ -96,6 +115,49 @@ required:
+   - clock-names
+   - ports
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: rockchip,rk3588-vop
++    then:
++      properties:
++        clocks:
++          minItems: 7
++        clock-names:
++          minItems: 7
++
++        ports:
++          required:
++            - port@0
++            - port@1
++            - port@2
++            - port@3
++
++      required:
++        - rockchip,grf
++        - rockchip,vo1-grf
++        - rockchip,vop-grf
++        - rockchip,pmu
++
++    else:
++      properties:
++        rockchip,vo1-grf: false
++        rockchip,vop-grf: false
++        rockchip,pmu: false
++
++        clocks:
++          maxItems: 5
++        clock-names:
++          maxItems: 5
++
++        ports:
++          required:
++            - port@0
++            - port@1
++            - port@2
++
+ additionalProperties: false
+ 
+ examples:
+-- 
+2.34.1
+
