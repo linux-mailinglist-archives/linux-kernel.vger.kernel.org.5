@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E34580C576
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586A080C56C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjLKKBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S234737AbjLKKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbjLKKBM (ORCPT
+        with ESMTP id S234537AbjLKKAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:01:12 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FC4FF;
-        Mon, 11 Dec 2023 02:01:18 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB9HGKE006096;
-        Mon, 11 Dec 2023 10:00:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        qcppdkim1; bh=HrbNGKc9c8Hdepur86brTCu3qTE1i5488eCvql/PcFM=; b=T9
-        SQqgKTLxQOv/Ord+RYhfESXfSqgbkZwMQk2sThgpMBtdTs1apqJfqLcIf36eMDYS
-        dx+HWjcCSq7WZsYS263zPPOu37en99xe0nghWoTAi9VUmi6LkrZ6qWaAu7GG4SBP
-        jPVHsyVK287t9qR5fg/kM1ZCFUZRMvXeeGMLd26zygrgI6ledDRmonh5ExdzIUXX
-        tbWURVa1lHTtxSG/CmPaIotJ7XtXPC6kyr+fN/7NaaaS9gsWZkQLFmPrVEVhAETR
-        eGkw5kUsb8AhFVvt8Gc+5cOtbnQhQd/YGaYgPGiMR9f22jFBSCIrwwQVfZ3QjJvr
-        Ldc2ydFzFFTM8BNxEE4g==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnnstvfd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:00:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBA0BbB026343
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:00:11 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 02:00:04 -0800
-Date:   Mon, 11 Dec 2023 15:30:02 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Naresh Maramaina <quic_mnaresh@quicinc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Peter Wang <peter.wang@mediatek.com>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <chu.stanley@gmail.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
-        <quic_nguyenb@quicinc.com>
-Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
- driver
-Message-ID: <eb0b15c5-a7e0-4144-b5f8-a8e1818b1d9f@quicinc.com>
-References: <20231204143101.64163-2-quic_mnaresh@quicinc.com>
- <590ade27-b4da-49be-933b-e9959aa0cd4c@acm.org>
- <692cd503-5b14-4be6-831d-d8e9c282a95e@quicinc.com>
- <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
- <b9373252-710c-4a54-95cc-046314796960@quicinc.com>
- <20231206153242.GI12802@thinkpad>
- <effb603e-ca7a-4f24-9783-4d62790165ae@acm.org>
- <20231207094357.GI2932@thinkpad>
- <286b6f8a-c634-19ed-cf53-276cfe05d03f@quicinc.com>
- <20231207112101.GK2932@thinkpad>
+        Mon, 11 Dec 2023 05:00:18 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523E0B7;
+        Mon, 11 Dec 2023 02:00:24 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50c05ea5805so4955479e87.0;
+        Mon, 11 Dec 2023 02:00:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702288822; x=1702893622; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kGMaAvNkf13KTNtEI35Ww6Ch0iXZrDDVN4YHlrZP/Rs=;
+        b=IElQ2OjfXuPDAeGOMZ/EjnU4S7AWtOwqIGT66jNwoiiWeDjeLJdZFjD02yJlhw5r4U
+         kUGB6YDTpTCwCu3ZdZh1jH8QbWh5KZjNHr7IOp4qRv/NXpYhIhYyKbvrSPM/zwlkiCbJ
+         lA9mF1usqnY2IJoofJsb2prLqrzsaXMqHMivdSsBN0VYpFkqXvqvv5fhUq/4hOJvOp1e
+         UTiQbQEgOO5iUg3zBmWJRqfl9wRKh+py2zRXz0sL5WhCv7wtYHn7yZDB1Q+0krOKVsI5
+         RDwJr1vGychsEnmVI0tJYX44xz35/M3dAK3IHoYjrwyLDhFQZI2pc5LOR7b5rck0gSgx
+         pctw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702288822; x=1702893622;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kGMaAvNkf13KTNtEI35Ww6Ch0iXZrDDVN4YHlrZP/Rs=;
+        b=UGY7Ug33pEF5XYf3llA48m0K+/evE6G7D6qwtj9XEtKq8f2NckrV4+NHDTRp8286ag
+         1VExxR//IoQdPFfFK+/QM/dTkyVH4LLUYG/hjb11Ugs7Jwe2z5AdREEqtVhbjCJn30Z6
+         VuLAa4/x6KfHGExOVx9Y07YQDDz/+f1wC3u1koeeL1rsrT3NptdamcaOqpVEeMDGmEIu
+         39RBHwCoZ3+9ms77CRFC6HvR7BFto94TK9mTnq8mvuLTTZeu06twh4rq2rmdOBzgONOe
+         VDQ6mAJNkiCj0vz/PiN2GrSPwg4NxDAf5/2tH2/ea//t2CvcIcznFviwI3HRHm2qfTRE
+         hDVw==
+X-Gm-Message-State: AOJu0YwGtp2jVxnV3RKcfYI96/VHRdN7AMCJ866th5/G1hJawl6JRLh1
+        tC3khC9YbNu+gVzqxF07wmk=
+X-Google-Smtp-Source: AGHT+IErNr5wT1OqJdBAWPwdSo/P2wNmv6BuRcCssiJsnTb1QT67Tto3UHYRZ37cvI4cE2N9nqUJaQ==
+X-Received: by 2002:ac2:47ee:0:b0:50c:a39:ee20 with SMTP id b14-20020ac247ee000000b0050c0a39ee20mr1781746lfp.103.1702288822181;
+        Mon, 11 Dec 2023 02:00:22 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id dx5-20020a0565122c0500b0050bfb2d3ab8sm1049986lfb.305.2023.12.11.02.00.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 02:00:21 -0800 (PST)
+Date:   Mon, 11 Dec 2023 13:00:18 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Sneh Shah <quic_snehshah@quicinc.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, Andrew Halaney <ahalaney@redhat.com>
+Subject: Re: [PATCH net v3] net: stmmac: update Rx clk divider for 10M SGMII
+Message-ID: <3bwuo4lpo5h75wbscsgi2jtn5ex45vx5fvezocwjbetnbwriyr@ltdd5axuri6e>
+References: <20231208062502.13124-1-quic_snehshah@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231207112101.GK2932@thinkpad>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RQ-aGuO_TVH_PzmVmaVzxjtGAjG6-LM_
-X-Proofpoint-GUID: RQ-aGuO_TVH_PzmVmaVzxjtGAjG6-LM_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- spamscore=0 priorityscore=1501 adultscore=0 malwarescore=0 mlxlogscore=999
- clxscore=1011 mlxscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312110081
+In-Reply-To: <20231208062502.13124-1-quic_snehshah@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 04:51:01PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Dec 07, 2023 at 03:56:43PM +0530, Nitin Rawat wrote:
-> > 
-> > 
-> > On 12/7/2023 3:13 PM, Manivannan Sadhasivam wrote:
-> > > On Wed, Dec 06, 2023 at 03:02:04PM -1000, Bart Van Assche wrote:
-> > > > On 12/6/23 05:32, Manivannan Sadhasivam wrote:
-> > > > > On Wed, Dec 06, 2023 at 07:32:54PM +0530, Naresh Maramaina wrote:
-> > > > > > On 12/5/2023 10:41 PM, Bart Van Assche wrote:
-> > > > > > > On 12/4/23 21:58, Naresh Maramaina wrote:
-> > > > > > > > On 12/5/2023 12:30 AM, Bart Van Assche wrote:
-> > > > > > > > > On 12/4/23 06:30, Maramaina Naresh wrote:
-> > > > > > > > > > +    /* This capability allows the host controller driver to
-> > > > > > > > > > use the PM QoS
-> > > > > > > > > > +     * feature.
-> > > > > > > > > > +     */
-> > > > > > > > > > +    UFSHCD_CAP_PM_QOS                = 1 << 13,
-> > > > > > > > > >     };
-> > > > > > > > > 
-> > > > > > > > > Why does it depend on the host driver whether or not PM QoS is
-> > > > > > > > > enabled? Why isn't it enabled unconditionally?
-> > > > > > > > 
-> > > > > > > > For some platform vendors power KPI might be more important than
-> > > > > > > > random io KPI. Hence this flag is disabled by default and can be
-> > > > > > > > enabled based on platform requirement.
-> > > > > > > 
-> > > > > > > How about leaving this flag out unless if a host vendor asks explicitly
-> > > > > > > for this flag?
-> > > > > > 
-> > > > > > IMHO, instead of completely removing this flag, how about having
-> > > > > > flag like "UFSHCD_CAP_DISABLE_PM_QOS" which will make PMQOS enable
-> > > > > > by default and if some host vendor wants to disable it explicitly,
-> > > > > > they can enable that flag.
-> > > > > > Please let me know your opinion.
-> > > > 
-> > > > That would result in a flag that is tested but that is never set by
-> > > > upstream code. I'm not sure that's acceptable.
-> > > > 
-> > > 
-> > > Agree. The flag shouldn't be introduced if there are no users.
-> > > 
-> > > > > If a vendor wants to disable this feature, then the driver has to be modified.
-> > > > > That won't be very convenient. So either this has to be configured through sysfs
-> > > > > or Kconfig if flexibility matters.
-> > > > 
-> > > > Kconfig sounds worse to me because changing any Kconfig flag requires a
-> > > > modification of the Android GKI kernel.
-> > > > 
-> > > 
-> > > Hmm, ok. Then I think we can have a sysfs hook to toggle the enable switch.
-> > 
-> > Hi Bart, Mani
-> > 
-> > How about keeping this feature enabled by default and having a module
-> > parameter to disable pmqos feature if required ?
-> > 
+On Fri, Dec 08, 2023 at 11:55:02AM +0530, Sneh Shah wrote:
+> SGMII 10MBPS mode needs RX clock divider to avoid drops in Rx.
+> Update configure SGMII function with rx clk divider programming.
+
+One more time:
+
+> [PATCH v3] net: stmmac: update Rx clk divider for 10M SGMII
+
+It would be better to add "dwmac-qcom-ethqos" prefix to the subject
+since the patch concerns the Qualcomm Eth MAC only. This time don't
+forget to do that on v4.
+
+-Serge(y)
+
 > 
-> Module params not encouraged these days unless there are no other feasible
-> options available.
-
-Yeah, one of the problem with module param is that we can't have
-different settings for two two UFS controllers. Anyways, this setting
-need not be a module param, there is nothing special about this setting
-that is tied to module loading (driver probe) time, AFAICT.
-
-Thanks,
-Pavan
+> Fixes: 463120c31c58 ("net: stmmac: dwmac-qcom-ethqos: add support for SGMII")
+> Signed-off-by: Sneh Shah <quic_snehshah@quicinc.com>
+> ---
+> v3 changelog:
+> - Added comment to explain why MAC needs to be reconfigured for SGMII
+> v2 changelog:
+> - Use FIELD_PREP to prepare bifield values in place of GENMASK
+> - Add fixes tag
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> index d3bf42d0fceb..ab2245995bc6 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+> @@ -34,6 +34,7 @@
+>  #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
+>  #define RGMII_CONFIG_PROG_SWAP			BIT(1)
+>  #define RGMII_CONFIG_DDR_MODE			BIT(0)
+> +#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
+>  
+>  /* SDCC_HC_REG_DLL_CONFIG fields */
+>  #define SDCC_DLL_CONFIG_DLL_RST			BIT(30)
+> @@ -598,6 +599,9 @@ static int ethqos_configure_rgmii(struct qcom_ethqos *ethqos)
+>  	return 0;
+>  }
+>  
+> +/* On interface toggle MAC registetrs gets reset.
+> + * Configure MAC block for SGMII on ethernet phy link up
+> + */
+>  static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>  {
+>  	int val;
+> @@ -617,6 +621,9 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>  	case SPEED_10:
+>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+> +		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR,
+> +			      FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 0x31),
+> +			      RGMII_IO_MACRO_CONFIG);
+>  		break;
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
+> 
