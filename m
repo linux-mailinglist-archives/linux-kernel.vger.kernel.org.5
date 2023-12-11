@@ -2,181 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD20980D1F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C313D80D204
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344876AbjLKQfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:35:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        id S1344870AbjLKQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344896AbjLKQfl (ORCPT
+        with ESMTP id S1344433AbjLKQhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:35:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF0991
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:35:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702312547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=CJNLvfM2+sDAhtWtWSLZKEEHZZTVIXo/koGlz70aoJA=;
-        b=WdyiiIjUC/6NiLW9uyhp9dRL4N+KcB8wBqwsX1bkgmqiAMYrr4Dc9cDb6mi1UjalCv+yXw
-        EQ9Uv9hHDazVt88c4rxyxEeIPUG9NiUS/C36n/QLRbffvbEz3xuMSQ6zga8zdftPNUtJJz
-        hW4VKTnoilfDY6XftI8w/7snaLT7oz8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-112-1rKjXzZ-OhO46RtB6_ZBBA-1; Mon, 11 Dec 2023 11:35:46 -0500
-X-MC-Unique: 1rKjXzZ-OhO46RtB6_ZBBA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3333c009305so4102925f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:35:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702312545; x=1702917345;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Mon, 11 Dec 2023 11:37:23 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C0ED8E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:37:30 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-db99bad7745so4237906276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702312649; x=1702917449; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CJNLvfM2+sDAhtWtWSLZKEEHZZTVIXo/koGlz70aoJA=;
-        b=Hn65yJ5zqquiBY3vJwr2BP/hTwLp8EYiWLLBq6E2ilb2b+1PTg57uW+car5gzr7OfB
-         wYsufKfOhKNgruN7wACEhEfS5YAtyo9WBVeliJDLwB4xa6YPRFWuA6Dno26fJAkYave4
-         lTrN5o7rEMRH+nDE35LRDQz733O5Oi3FlWYXGXOOtxAyFA5uf4bGSMLWCR5NmeUxQyhb
-         wD3VsNRZfkiGYXN/KLaxnzbJzLYoR3+PqldZ1V/91L/BTobwJMGRPDhd6eqPEnb0/k+6
-         IU5W8+DVLFYJC+h15CHq+/KjxV23etr5A+UjWzXmZ3LILbIon9MU1ttUmG5wJtpP6asR
-         Zlpw==
-X-Gm-Message-State: AOJu0YyJV7/j+6KLqWmRmoyaEMRODaNVb3qXgaBsYXfFoSeV3A9gb5QC
-        b3O/xThIM19XXFt9EgeDTc/g1dea5VfhDIplklizfQb+P7ZbnO3uwcM3Wy3RvN/Iz4zB4JW6Ezo
-        hOVYTbuwlMi6DnK4g2uEDS+y5
-X-Received: by 2002:a05:600c:1ca7:b0:40c:3548:1ee9 with SMTP id k39-20020a05600c1ca700b0040c35481ee9mr2210708wms.164.1702312544772;
-        Mon, 11 Dec 2023 08:35:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGSu8LMQMyz10AqPy+OD7tQjIn+2fu2jth+qRBYVSNjxt4c31O/ASrWWAwBdpX3Jke3U8VNPQ==
-X-Received: by 2002:a05:600c:1ca7:b0:40c:3548:1ee9 with SMTP id k39-20020a05600c1ca700b0040c35481ee9mr2210695wms.164.1702312544417;
-        Mon, 11 Dec 2023 08:35:44 -0800 (PST)
-Received: from ?IPV6:2003:cb:c742:ae00:6e5f:7195:98f6:3ed1? (p200300cbc742ae006e5f719598f63ed1.dip0.t-ipconnect.de. [2003:cb:c742:ae00:6e5f:7195:98f6:3ed1])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm15751231wms.30.2023.12.11.08.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 08:35:44 -0800 (PST)
-Message-ID: <c6cbf488-89d6-48fc-bd0f-7d666a95e035@redhat.com>
-Date:   Mon, 11 Dec 2023 17:35:43 +0100
+        bh=O48C/CJEj4wZSfp3763oo3jCjp+8dc3hHNx68ntAz6g=;
+        b=BO/7rcWFEhp/VwQabSaee6vkn4rgn0CM67Ubd9rEsss57tZcMZy3AduJsfi6JD8bxS
+         8cHtVrKQsi3udX1Kv9XCyEj2IH5acjAItfMzyCvSyP17GRM+SgKinhddNCEPBalz8cn8
+         rYeLTpW2epEF7LQM0GOyZl8ZDnFTTbpK5kQlyWgUll4f4deRsxWZgr5o8MAUfRUeFNLz
+         3l2UxIKnwGS/WFjExWmUWCI8WHw4GlK8JlylS9jUOCFMYGA1SFrSkrN5uSFnyCPcChFR
+         PMIDmqtQc50ogm63p1l04fGEo6M/ol1X+EJ00Ffba5x0Fr8K8DxUB8nxVyTxR9FDRjQP
+         JS+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702312649; x=1702917449;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O48C/CJEj4wZSfp3763oo3jCjp+8dc3hHNx68ntAz6g=;
+        b=VypJ7YQDkn3ltvUIYDuYkRQetVnC2x0jJIzFlfqVTuquGVKbJxxrZNIDn5VqiX9/Ro
+         nB5GiJhB3cLwvdOrZcMoWbq/6mzNNc/9/SEzffw8XIbYpJ1b4Bkom+1yTVATDmq3+Ekq
+         lnPgpi9WYQNVcW6vU037o7SjuCOYor5RQ4Wdt04yX6b15ksOAFuuMfDNNfhzxhsPpxkM
+         YTMq5wcl38GtN/HZSWqrK7aqxFfcOx03z7u2YXA6HUkjbezySP0IGlTpcbxXnSlZ78nc
+         15veJVslU0SxFFlDwuycSK8QfZu8lysD1S6UPihk46n+Sho6NEC9XbeLdCSOYOMvUlJO
+         mveA==
+X-Gm-Message-State: AOJu0Yw7gYb/T/HpDG4jUsvi1tAnXqp5leU4WGacpO7Vj71rhxeq4tXM
+        a14Sf7caPh9NREAQC6tH9NnktaZK5kgWJuq8MwYVFfSx/xRDU2Pt
+X-Google-Smtp-Source: AGHT+IHsWOfhNhkuofOaAYc2UYyIkxsHju3N7BW8qPIaRgg3fnWoQDF/kzVyr8SDxt0NmDZv8bmumLbnqk6nJmdnXyA=
+X-Received: by 2002:a05:6902:1ac2:b0:db7:dacf:2eff with SMTP id
+ db2-20020a0569021ac200b00db7dacf2effmr3523938ybb.70.1702312649072; Mon, 11
+ Dec 2023 08:37:29 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 02/39] mm/rmap: introduce and use hugetlb_remove_rmap()
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-References: <20231211155652.131054-1-david@redhat.com>
- <20231211155652.131054-3-david@redhat.com>
- <ZXc54xgLxaBSTuaq@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZXc54xgLxaBSTuaq@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231211155453.105409-1-piroyangg@gmail.com> <2023121133-mandatory-idealness-d454@gregkh>
+ <CALaNatNpBJ6a-hv3MiV7NzuJ7wYLwHRCs3ppKM5O-UCvTSeiGg@mail.gmail.com>
+In-Reply-To: <CALaNatNpBJ6a-hv3MiV7NzuJ7wYLwHRCs3ppKM5O-UCvTSeiGg@mail.gmail.com>
+From:   piro yang <piroyangg@gmail.com>
+Date:   Tue, 12 Dec 2023 00:37:16 +0800
+Message-ID: <CALaNatM_2UKo5jS=9FWjCCrj0dA-01JDndc+Q2RF=1LTCbHfZQ@mail.gmail.com>
+Subject: Re: [PATCH] staging:vme_user:fix the issue of using the wrong error code
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev,
+        Linux Outreachy <outreachy@lists.linux.dev>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.23 17:33, Matthew Wilcox wrote:
-> On Mon, Dec 11, 2023 at 04:56:15PM +0100, David Hildenbrand wrote:
->> hugetlb rmap handling differs quite a lot from "ordinary" rmap code.
->> For example, hugetlb currently only supports entire mappings, and treats
->> any mapping as mapped using a single "logical PTE". Let's move it out
->> of the way so we can overhaul our "ordinary" rmap.
->> implementation/interface.
->>
->> Let's introduce and use hugetlb_remove_rmap() and remove the hugetlb
->> code from page_remove_rmap(). This effectively removes one check on the
->> small-folio path as well.
->>
->> Note: all possible candidates that need care are page_remove_rmap() that
->>        pass compound=true.
->>
->> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
-> 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
->> +++ b/mm/rmap.c
->> @@ -1482,13 +1482,6 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->>   
->>   	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
->>   
->> -	/* Hugetlb pages are not counted in NR_*MAPPED */
->> -	if (unlikely(folio_test_hugetlb(folio))) {
->> -		/* hugetlb pages are always mapped with pmds */
->> -		atomic_dec(&folio->_entire_mapcount);
->> -		return;
->> -	}
-> 
-> Maybe add
-> 	VM_BUG_ON_FOLIO(folio_test_hugetlb(folio), folio);
-> 
+piro yang <piroyangg@gmail.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=97=
+=A5=E5=91=A8=E4=BA=8C 00:13=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=
+=E6=97=A5=E5=91=A8=E4=BA=8C 00:01=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Dec 11, 2023 at 11:54:53PM +0800, Piro Yang wrote:
+> > > 1. the error code of ENOSYS indicates Invalid system call number,
+> > >    but there is not system call
+> > >
+> > > 2. unified the logging error message, when slave_set func is NULL
+> >
+> > That is two different things, and as such, should be two different
+> > changes, right?
+> >
+> > Yes, it's picky, but that's what the staging driver code is for, to get
+> > comfortable doing kernel development changes properly.
+> >
+> > Also, are you sure this second change is correct:
+>
+>    yes, I'm sure .
+>    the vme_slave_set function is diffierent
+> /*****************************vme_slave_set***********************/
+> int vme_slave_set(struct vme_resource *resource, int enabled,
+>                   unsigned long long vme_base, unsigned long long size,
+>                   dma_addr_t buf_base, u32 aspace, u32 cycle)
+> {
+>         ...
+>         if (!bridge->slave_set) {
+>                  dev_err(bridge->parent, "Function not supported\n");
+>                 return -ENOSYS;
+>         }
+>
+> /******************other functions like below: *******************/
+> int vme_slave_get(struct vme_resource *resource, int *enabled,
+>                   unsigned long long *vme_base, unsigned long long *size,
+>                   dma_addr_t *buf_base, u32 *aspace, u32 *cycle)
+> {
+>         ....
+>         if (!bridge->slave_get) {
+>                 dev_err(bridge->parent, "%s not supported\n", __func__);
+>                 return -EINVAL;
+>         }
+>
+> int vme_master_set(struct vme_resource *resource, int enabled,
+>                    unsigned long long vme_base, unsigned long long size,
+>                    u32 aspace, u32 cycle, u32 dwidth)
+> {
+>        ....
+>         if (!bridge->master_set) {
+>                 dev_warn(bridge->parent, "%s not supported\n", __func__);
+>                 return -EINVAL;
+>         }
+>
+> int vme_master_get(struct vme_resource *resource, int *enabled,
+>                    unsigned long long *vme_base, unsigned long long *size=
+,
+>                    u32 *aspace, u32 *cycle, u32 *dwidth)
+> {
+>       ....
+>         if (!bridge->master_get) {
+>                 dev_warn(bridge->parent, "%s not supported\n", __func__);
+>                 return -EINVAL;
+>         }
+>
+> >
+> > >
+> > > Signed-off-by: Piro Yang <piroyangg@gmail.com>
+> > > ---
+> > >  drivers/staging/vme_user/vme.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_use=
+r/vme.c
+> > > index 5c416c31ec57..e9461a7a7ab8 100644
+> > > --- a/drivers/staging/vme_user/vme.c
+> > > +++ b/drivers/staging/vme_user/vme.c
+> > > @@ -340,8 +340,8 @@ int vme_slave_set(struct vme_resource *resource, =
+int enabled,
+> > >       image =3D list_entry(resource->entry, struct vme_slave_resource=
+, list);
+> > >
+> > >       if (!bridge->slave_set) {
+> > > -             dev_err(bridge->parent, "Function not supported\n");
+> > > -             return -ENOSYS;
+> > > +             dev_err(bridge->parent, "%s not supported\n", __func__)=
+;
+> >
+> > __func__ is not the same here as "Function", right?  "Function" is the
+> > functionality of the thing that is attempted here, so replacing that
+> > word with the function name seems odd to me, don't you think?
+> >
+    yes, __func__ is not the same here as "Function".
+    but I think the logging error message format  shoud be unified
+with other functions.
+    like:  vme_slave_get(){
+             .....
+             if (!bridge->slave_get) {
+                dev_err(bridge->parent, "%s not supported\n", __func__);
 
-A bulk-add that in patch #6.
 
-Thanks!
-
--- 
-Cheers,
-
-David / dhildenb
-
+> > thanks,
+> >
+> > greg k-h
