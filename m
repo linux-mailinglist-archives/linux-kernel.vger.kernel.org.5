@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DF880D0C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF3C80D0CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344407AbjLKQON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:14:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        id S1344441AbjLKQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344309AbjLKQOL (ORCPT
+        with ESMTP id S1344508AbjLKQOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:14:11 -0500
+        Mon, 11 Dec 2023 11:14:23 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE103B4;
-        Mon, 11 Dec 2023 08:14:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1799010F;
+        Mon, 11 Dec 2023 08:14:30 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0874E169C;
-        Mon, 11 Dec 2023 08:15:04 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AD1C16A3;
+        Mon, 11 Dec 2023 08:15:16 -0800 (PST)
 Received: from e127643.broadband (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8BA3F3F738;
-        Mon, 11 Dec 2023 08:14:13 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DBC793F738;
+        Mon, 11 Dec 2023 08:14:25 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
@@ -48,9 +48,9 @@ Cc:     namhyung@gmail.com, James Clark <james.clark@arm.com>,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev, kvm@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH v7 02/11] arm: perf/kvm: Use GENMASK for ARMV8_PMU_PMCR_N
-Date:   Mon, 11 Dec 2023 16:13:14 +0000
-Message-Id: <20231211161331.1277825-3-james.clark@arm.com>
+Subject: [PATCH v7 03/11] arm: perf: Use GENMASK for PMMIR fields
+Date:   Mon, 11 Dec 2023 16:13:15 +0000
+Message-Id: <20231211161331.1277825-4-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231211161331.1277825-1-james.clark@arm.com>
 References: <20231211161331.1277825-1-james.clark@arm.com>
@@ -70,96 +70,63 @@ are in a consistent format to arm64/tools/sysreg
 
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/arm64/kvm/pmu-emul.c      | 8 +++-----
- arch/arm64/kvm/sys_regs.c      | 4 ++--
- drivers/perf/arm_pmuv3.c       | 4 ++--
- include/linux/perf/arm_pmuv3.h | 3 +--
- 4 files changed, 8 insertions(+), 11 deletions(-)
+ drivers/perf/arm_pmuv3.c       | 8 +++-----
+ include/linux/perf/arm_pmuv3.h | 9 +++------
+ 2 files changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index fe99b3dab6ce..3d9467ff73bc 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -267,9 +267,8 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
- 
- u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
- {
--	u64 val = kvm_vcpu_read_pmcr(vcpu) >> ARMV8_PMU_PMCR_N_SHIFT;
-+	u64 val = FIELD_GET(ARMV8_PMU_PMCR_N, kvm_vcpu_read_pmcr(vcpu));
- 
--	val &= ARMV8_PMU_PMCR_N_MASK;
- 	if (val == 0)
- 		return BIT(ARMV8_PMU_CYCLE_IDX);
- 	else
-@@ -1136,8 +1135,7 @@ u8 kvm_arm_pmu_get_pmuver_limit(void)
-  */
- u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
- {
--	u64 pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0) &
--			~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
-+	u64 pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0);
- 
--	return pmcr | ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
-+	return u64_replace_bits(pmcr, vcpu->kvm->arch.pmcr_n, ARMV8_PMU_PMCR_N);
- }
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 4735e1b37fb3..ff45d688bd7d 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -877,7 +877,7 @@ static bool pmu_counter_idx_valid(struct kvm_vcpu *vcpu, u64 idx)
- 	u64 pmcr, val;
- 
- 	pmcr = kvm_vcpu_read_pmcr(vcpu);
--	val = (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
-+	val = FIELD_GET(ARMV8_PMU_PMCR_N, pmcr);
- 	if (idx >= val && idx != ARMV8_PMU_CYCLE_IDX) {
- 		kvm_inject_undefined(vcpu);
- 		return false;
-@@ -1143,7 +1143,7 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
- static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
- 		    u64 val)
- {
--	u8 new_n = (val >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
-+	u8 new_n = FIELD_GET(ARMV8_PMU_PMCR_N, val);
- 	struct kvm *kvm = vcpu->kvm;
- 
- 	mutex_lock(&kvm->arch.config_lock);
 diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-index 9184a75435e2..e424de5dd44f 100644
+index e424de5dd44f..7b2c1d03464a 100644
 --- a/drivers/perf/arm_pmuv3.c
 +++ b/drivers/perf/arm_pmuv3.c
-@@ -15,6 +15,7 @@
- #include <clocksource/arm_arch_timer.h>
+@@ -328,7 +328,7 @@ static ssize_t slots_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
+ 	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+-	u32 slots = cpu_pmu->reg_pmmir & ARMV8_PMU_SLOTS_MASK;
++	u32 slots = FIELD_GET(ARMV8_PMU_SLOTS, cpu_pmu->reg_pmmir);
  
- #include <linux/acpi.h>
-+#include <linux/bitfield.h>
- #include <linux/clocksource.h>
- #include <linux/of.h>
- #include <linux/perf/arm_pmu.h>
-@@ -1107,8 +1108,7 @@ static void __armv8pmu_probe_pmu(void *info)
- 	probe->present = true;
+ 	return sysfs_emit(page, "0x%08x\n", slots);
+ }
+@@ -340,8 +340,7 @@ static ssize_t bus_slots_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
+ 	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+-	u32 bus_slots = (cpu_pmu->reg_pmmir >> ARMV8_PMU_BUS_SLOTS_SHIFT)
+-			& ARMV8_PMU_BUS_SLOTS_MASK;
++	u32 bus_slots = FIELD_GET(ARMV8_PMU_BUS_SLOTS, cpu_pmu->reg_pmmir);
  
- 	/* Read the nb of CNTx counters supported from PMNC */
--	cpu_pmu->num_events = (armv8pmu_pmcr_read() >> ARMV8_PMU_PMCR_N_SHIFT)
--		& ARMV8_PMU_PMCR_N_MASK;
-+	cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
+ 	return sysfs_emit(page, "0x%08x\n", bus_slots);
+ }
+@@ -353,8 +352,7 @@ static ssize_t bus_width_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct pmu *pmu = dev_get_drvdata(dev);
+ 	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+-	u32 bus_width = (cpu_pmu->reg_pmmir >> ARMV8_PMU_BUS_WIDTH_SHIFT)
+-			& ARMV8_PMU_BUS_WIDTH_MASK;
++	u32 bus_width = FIELD_GET(ARMV8_PMU_BUS_WIDTH, cpu_pmu->reg_pmmir);
+ 	u32 val = 0;
  
- 	/* Add the CPU cycles counter */
- 	cpu_pmu->num_events += 1;
+ 	/* Encoded as Log2(number of bytes), plus one */
 diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
-index 9c226adf938a..ed62bd75cec7 100644
+index ed62bd75cec7..1bc7678c10d4 100644
 --- a/include/linux/perf/arm_pmuv3.h
 +++ b/include/linux/perf/arm_pmuv3.h
-@@ -215,8 +215,7 @@
- #define ARMV8_PMU_PMCR_DP	(1 << 5) /* Disable CCNT if non-invasive debug*/
- #define ARMV8_PMU_PMCR_LC	(1 << 6) /* Overflow on 64 bit cycle counter */
- #define ARMV8_PMU_PMCR_LP	(1 << 7) /* Long event counter enable */
--#define ARMV8_PMU_PMCR_N_SHIFT	11  /* Number of counters supported */
--#define ARMV8_PMU_PMCR_N_MASK	0x1f
-+#define ARMV8_PMU_PMCR_N	GENMASK(15, 11) /* Number of counters supported */
- #define ARMV8_PMU_PMCR_MASK	0xff    /* Mask for writable bits */
+@@ -250,12 +250,9 @@
+ #define ARMV8_PMU_USERENR_ER	(1 << 3) /* Event counter can be read at EL0 */
+ 
+ /* PMMIR_EL1.SLOTS mask */
+-#define ARMV8_PMU_SLOTS_MASK	0xff
+-
+-#define ARMV8_PMU_BUS_SLOTS_SHIFT 8
+-#define ARMV8_PMU_BUS_SLOTS_MASK 0xff
+-#define ARMV8_PMU_BUS_WIDTH_SHIFT 16
+-#define ARMV8_PMU_BUS_WIDTH_MASK 0xf
++#define ARMV8_PMU_SLOTS		GENMASK(7, 0)
++#define ARMV8_PMU_BUS_SLOTS	GENMASK(15, 8)
++#define ARMV8_PMU_BUS_WIDTH	GENMASK(19, 16)
  
  /*
+  * This code is really good
 -- 
 2.34.1
 
