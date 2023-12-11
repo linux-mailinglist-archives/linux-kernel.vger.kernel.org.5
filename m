@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B3180C0A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC3C80C0B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbjLKFYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:24:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        id S230210AbjLKFbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKFYP (ORCPT
+        with ESMTP id S229478AbjLKFbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:24:15 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E387FC3;
-        Sun, 10 Dec 2023 21:24:21 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB3T42R013989;
-        Mon, 11 Dec 2023 05:24:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=BSoh5DNo4RPdGyiQXkB5TaMxmdd0nuO8yq4OLyw7zZc=; b=Gv
-        FI3s8/04Wgx5X2sQ/cRny7rUx9fJebDdVCWf/HXNZUOHRQ1U6fc6nmgDbr1CezRX
-        NL4/QrddtNjJfBEecbPYMHJLttgjV2gPTb16loRrwe2xGy30ftuBn1OrX0EHoAwp
-        xbS7/8n58eZqp9QPXOsiAW352wzKngMnpdMokLXFbvDpTCSbP9yF8VfJ4696XjpZ
-        zYvHeVAMq1tjpliY5rwoTM3Qxryjihv3Nzgl95QuUXRt35xMekzplYgbIXXFbrSA
-        WJi0PdJbMeCjBCDcV6PHDAldeg8KPgKA6iMW4ijkiUXlgagjJAs82GX3FpmT3OXz
-        evx06I+3ulw7JjGqXnbA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnk5tb5c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 05:24:06 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BB5O58C017881
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 05:24:05 GMT
-Received: from [10.216.5.30] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 10 Dec
- 2023 21:23:54 -0800
-Message-ID: <ff71793b-eab1-4dc2-b58a-fc2d34b2d0d9@quicinc.com>
-Date:   Mon, 11 Dec 2023 10:53:49 +0530
+        Mon, 11 Dec 2023 00:31:37 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC06D7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:31:43 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c26a45b2dso21583665e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702272702; x=1702877502; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hfVl0zhVcrsmg6t5d7DiGBu3+0T17ial1OcP+myLVb8=;
+        b=BhpzvzDnVg1dT61O231xo5wbAC/dd+BxrnVi2IjgSK8DJ7wpFWtYr48ix6OuJcFoNk
+         auDwa/hlJpEbELeui/V0rrtwEJCqvEcaO4qYhFN1v6YSZf9VAL5eCyZlEk8dqPBFlXtV
+         9TdWl3ibMLp2C/kJ/VvcIBrBoATEeHLfd5xtFqk5JfthOc5AhalUx5FZpl9Hdsom5Fy1
+         /q74wH6iSEZRlREpgd/cVpuU0l16D9smAzaCCA1Tbzj72k58VI0iN9hI3UgARCEVoQoT
+         1u22fU/UuRDhXeV7SkUu2AEoizNpA/4UOW8D5R//6NKgP+cKVttU+PW+zubG/rN9O9mp
+         B8WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702272702; x=1702877502;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hfVl0zhVcrsmg6t5d7DiGBu3+0T17ial1OcP+myLVb8=;
+        b=QhwL+d33++N4g/xgI4CMGAkYYZ61D5hBL19TvdxOe9aSvIGYUPs0e+imqb/705DPLv
+         q2o1Wken1wWAptO8C6X3NIInwmXkvOupmBMYhzNruZwFnkxi/epBRQhAianl46384IQU
+         rnzlSL4Rmntlr+m+l7LzSxaDKYX2vYICQcyJvtzgDlZZ4Q7atlMLHmpHP66CKAVw/QOI
+         Ir/6Y8lD06YP34Ru3P5QIHKYhtXaNO+ISumqUGOd7Q90RRl7AYsBwvXc5++jN8JfVDmC
+         iiNvBGTQ5uFjOVFlgOO58W46lUtAvheqBDEltkhx3xoVueJpbwcVc4j9rEvBnVRgfbyo
+         VSCw==
+X-Gm-Message-State: AOJu0YzG43CRuL9bnEmynunFuViVb+xFcAMyPcOmwx1g9yPbQC8OSvie
+        +iU1B82UP3z9LXRv0iDmpER+TDktIWs=
+X-Google-Smtp-Source: AGHT+IEiQ4QgKPKV/U7Lb6+Z9COydKtpepYMIbLwN5oMu2crN6GwNUoXPrwTU7yu4C6cSnG6bcw1Hg==
+X-Received: by 2002:a05:600c:3503:b0:40c:32f9:afd4 with SMTP id h3-20020a05600c350300b0040c32f9afd4mr1873235wmq.9.1702272702050;
+        Sun, 10 Dec 2023 21:31:42 -0800 (PST)
+Received: from eagle-5590.. ([193.160.245.66])
+        by smtp.gmail.com with ESMTPSA id m8-20020adffa08000000b00333332a8d39sm7639223wrr.55.2023.12.10.21.31.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 21:31:41 -0800 (PST)
+From:   Ronald Monthero <debug.penguin32@gmail.com>
+Cc:     sjenning@redhat.com, akpm@linux-foundation.org,
+        Ronald Monthero <debug.penguin32@gmail.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/zswap: Improve with alloc_workqueue() call
+Date:   Mon, 11 Dec 2023 15:28:49 +1000
+Message-Id: <20231211052850.3513230-1-debug.penguin32@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 1/3] dt-bindings: net: qcom,ethqos: add
- binding doc for safety IRQ for sa8775p
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>
-CC:     <kernel@quicinc.com>
-References: <cover.1701939695.git.quic_jsuraj@quicinc.com>
- <87bdedf3c752d339bf7f45a631aa8d5bf5d07763.1701939695.git.quic_jsuraj@quicinc.com>
- <0af91794-69d6-459a-8566-c8c408489f2b@linaro.org>
-From:   Suraj Jaiswal <quic_jsuraj@quicinc.com>
-In-Reply-To: <0af91794-69d6-459a-8566-c8c408489f2b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Os34XW_GzOcrfJPdr_qXjunD5rB5DdhM
-X-Proofpoint-GUID: Os34XW_GzOcrfJPdr_qXjunD5rB5DdhM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=731
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312110042
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure . will expand below .
+Use alloc_workqueue() to create and set finer
+work item attributes instead of create_workqueue()
+which is to be deprecated.
 
+Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
+---
+ mm/zswap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On 12/9/2023 11:17 PM, Konrad Dybcio wrote:
-> On 7.12.2023 10:21, Suraj Jaiswal wrote:
->> Add binding doc for safety IRQ. The safety IRQ will be
->> triggered for ECC, DPP, FSM error.
-> ECC is widely understood, but the DPP and FSM acronyms could be
-> expanded..
-> 
-> Konrad
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 74411dfdad92..64dbe3e944a2 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1620,7 +1620,8 @@ static int zswap_setup(void)
+ 		zswap_enabled = false;
+ 	}
+ 
+-	shrink_wq = create_workqueue("zswap-shrink");
++	shrink_wq = alloc_workqueue("zswap-shrink",
++			WQ_UNBOUND|WQ_MEM_RECLAIM, 0);
+ 	if (!shrink_wq)
+ 		goto fallback_fail;
+ 
+-- 
+2.34.1
+
