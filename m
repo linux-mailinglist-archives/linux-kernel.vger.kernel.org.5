@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998BC80C5F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E599A80C5F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbjLKKJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S234785AbjLKKJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234861AbjLKKJe (ORCPT
+        with ESMTP id S234814AbjLKKJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:09:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D76D18B;
-        Mon, 11 Dec 2023 02:09:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702289377; x=1733825377;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=TQRhBF4KvDlaLwm69w1dNBqRhLLQ2db1I6CDDBLiMnU=;
-  b=Ov+fHzptOLrmK8PBYWd4RO3QEfa7JAJyVYm4mHlLwualsstRpy3SkgmF
-   HiwiQZDnsD6tIi9WcBMrETYpN2I+kRHCqXEe0G5u6R9Ku0GpCcasdGpzz
-   7uJ27LKm7LomQTVhQCFOgJ1v9Vs4ppRl0na4+WKlfzAwdhcbXG8l5xFTT
-   txnLGUP68n6y+UsHkGSOkPj+Rd6INo+gDCX7+oCs7JNgyKeV72D8b5g8X
-   BUiLfdmekkiIRX2GjVJojkQvdnGG7oegVGtVPg4RHB8ARe8qK8XqP5sOI
-   vFioMx2vxUWTn00AHIZkHi6bjZ0EPatMvOlSe3+la7RwckOcjogyPimik
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="1740762"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="1740762"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:09:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="21023237"
-Received: from lmckeon-mobl.ger.corp.intel.com (HELO iboscu-mobl2.ger.corp.intel.com) ([10.252.48.111])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:08:58 -0800
-Date:   Mon, 11 Dec 2023 12:08:56 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Armin Wolf <W_Armin@gmx.de>
-cc:     Hans de Goede <hdegoede@redhat.com>, corbet@lwn.net,
-        Dell.Client.Kernel@dell.com, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] platform/x86: dell-smbios-wmi: Use
- devm_get_free_pages()
-In-Reply-To: <20231210202443.646427-4-W_Armin@gmx.de>
-Message-ID: <a0cd5b8-304d-1e8-7923-fe5ad9f7c469@linux.intel.com>
-References: <20231210202443.646427-1-W_Armin@gmx.de> <20231210202443.646427-4-W_Armin@gmx.de>
+        Mon, 11 Dec 2023 05:09:45 -0500
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B855107;
+        Mon, 11 Dec 2023 02:09:51 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyFRZUV_1702289387;
+Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyFRZUV_1702289387)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Dec 2023 18:09:49 +0800
+Message-ID: <1c14f769-8da2-fdac-cec2-a59ab69284ad@linux.alibaba.com>
+Date:   Mon, 11 Dec 2023 18:09:45 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-471716995-1702289340=:1867"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v5 7/9] net/smc: support extended GID in SMC-D
+ lgr netlink attribute
+To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
+ <1702021259-41504-8-git-send-email-guwen@linux.alibaba.com>
+ <8b651c68-c51d-49a9-9df0-58e9110fa47d@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <8b651c68-c51d-49a9-9df0-58e9110fa47d@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-471716995-1702289340=:1867
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
 
-On Sun, 10 Dec 2023, Armin Wolf wrote:
-
-> Use devres version of __get_free_pages() to simplify the
-> error handling code.
+On 2023/12/11 17:39, Alexandra Winter wrote:
 > 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> 
+> On 08.12.23 08:40, Wen Gu wrote:
+>> Virtual ISM devices introduced in SMCv2.1 requires a 128 bit extended
+>> GID vs. the existing ISM 64bit GID. So the 2nd 64 bit of extended GID
+>> should be included in SMC-D linkgroup netlink attribute as well.
+>>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+> 
+> This patch did not apply cleanly.
+> Please always base patches on the current net-next
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Strange.. I can apply them cleanly with the latest net-next
+(6e944cc68633 ("Merge branch 'rswitch-jumbo-frames'")).
 
--- 
- i.
-
---8323329-471716995-1702289340=:1867--
+Could you please try again? Thanks.
