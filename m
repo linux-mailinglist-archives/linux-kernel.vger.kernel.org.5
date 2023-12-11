@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467BE80DCB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E582080DCB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345111AbjLKVK7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 16:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
+        id S1344834AbjLKVLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345051AbjLKVKz (ORCPT
+        with ESMTP id S1345062AbjLKVK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:10:55 -0500
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF54FCE;
-        Mon, 11 Dec 2023 13:11:01 -0800 (PST)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d9d6f8485eso711709a34.0;
-        Mon, 11 Dec 2023 13:11:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702329061; x=1702933861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+28nOcEyCcEuwJJom4JSQW5x+/ek8mhjRptDpKqeApE=;
-        b=sqhTYToQpNIxKfyxA2a7yrdheIoCq2ywXrn0fnILnZrcj/pm3iLc1oVjeJrwOJIN7j
-         vWk/nNtwXVsVE/oD42h+/WEYd9PKr9u6t9Z1hPUqcJD93IxBYeViiBCP+ArMV2QzLPSj
-         lNjPovs0OAToFsWpbc2h+TFC8TkcrJq8QJld+v/FmQ+Zidc6P0rjcqJmkcGNj4dM1ip2
-         /ggbJBitjP21muKk0msXHgiY2k30THtNUQRydoQClHIKh/OptQkw6NIV9IFGiDU/Z5F3
-         BnNO4xxOdXLBUPO+6z8LVUy0h/18DDCasbHYR6fcwMapRDnIiXHvMgUm++6Q27R0dpjD
-         k5Eg==
-X-Gm-Message-State: AOJu0YxiBHe3rzoV+HRXqnenwheWtdDFfmJaeJ0Bx1A3cw/n2WKt91om
-        HZEByg0E9HkMAyDd8M/trt81zb67PBjLBSzIcKA=
-X-Google-Smtp-Source: AGHT+IGPrkYJLDfxqTwDOmJQQiLfS+sFr/VYQzZCMQ4uwzE3+4BdKwQRzCpU3Hz2N5pz5NSxwD7dJv1P28MAUJAKDTY=
-X-Received: by 2002:a05:6871:7589:b0:1fa:db26:78a6 with SMTP id
- nz9-20020a056871758900b001fadb2678a6mr10132449oac.1.1702329061054; Mon, 11
- Dec 2023 13:11:01 -0800 (PST)
+        Mon, 11 Dec 2023 16:10:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580EABE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:11:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA9D7C433C8;
+        Mon, 11 Dec 2023 21:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702329061;
+        bh=a+qGimpcS1XQx24G9vOBh4tKYNM6jWiH7OMmuzR5zQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dP5/9UhPVl6nKQWLoP7qog/NjAcRskX8/RsAWw+CIwmIyJMZ9tJCr9RdFNtnDQLOY
+         Y7YOYzsnlVI0dHl2jUPUrndGfTEQn+hDZ04rGdPtp25pZcI7fVrbaH8iOjm1NE8WFn
+         3RLq+qVENCKsKrekGqlO0FXZDmd5qnbQNWdePP0ZifyiS01IXcwjTB2v4UVhqHSnFJ
+         Hbrti4gmZrzDAwR9zPkGGLBwidIYlymY/85Q9I93F1Kknz8x18jt/bjitdEQxZhnAh
+         HsjVef6IknRW47P8UGWqOVFdxzrSGvC63F93BeX9TJf8o8P8lvjwbPw63+Phign5qv
+         pEj4JUMDSvYgw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4F04B403EF; Mon, 11 Dec 2023 18:10:58 -0300 (-03)
+Date:   Mon, 11 Dec 2023 18:10:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: 'perf top' broken on intel hybrid systems
+Message-ID: <ZXd64qLLDTEJjSmb@kernel.org>
+References: <ZXNnDrGKXbEELMXV@kernel.org>
+ <3a8c66ec-537d-4e29-bf08-226dd41b08aa@linux.intel.com>
 MIME-Version: 1.0
-References: <20231024020434.34145-1-zeming@nfschina.com>
-In-Reply-To: <20231024020434.34145-1-zeming@nfschina.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 11 Dec 2023 22:10:50 +0100
-Message-ID: <CAJZ5v0iRhjjqOsp+h5KzyJBV33vr2NuUbwaDMrTWdmQvBdX9dQ@mail.gmail.com>
-Subject: Re: [PATCH] power: snapshot: Optimize the error variable in the snapshot_write_next()
-To:     Li zeming <zeming@nfschina.com>
-Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a8c66ec-537d-4e29-bf08-226dd41b08aa@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,31 +58,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 4:05 AM Li zeming <zeming@nfschina.com> wrote:
->
-> Assign a value when removing the definition for error, which is assigned
-> before use.
->
-> Signed-off-by: Li zeming <zeming@nfschina.com>
-> ---
->  kernel/power/snapshot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> index 87e9f7e2bdc05..40c141144c9a1 100644
-> --- a/kernel/power/snapshot.c
-> +++ b/kernel/power/snapshot.c
-> @@ -2776,7 +2776,7 @@ static void *get_buffer(struct memory_bitmap *bm, struct chain_allocator *ca)
->  int snapshot_write_next(struct snapshot_handle *handle)
->  {
->         static struct chain_allocator ca;
-> -       int error = 0;
-> +       int error;
->
->  next:
->         /* Check if we have already loaded the entire image */
-> --
+Em Fri, Dec 08, 2023 at 02:39:37PM -0500, Liang, Kan escreveu:
+> On 2023-12-08 1:57 p.m., Arnaldo Carvalho de Melo wrote:
+> > 	So I finally got a recent Intel hybrid system:
+> > root@fedora:~# grep -m1 "model name" /proc/cpuinfo
+> > model name	: Intel(R) Core(TM) i7-14700K
+> > root@fedora:~#
+> > 	Most things work, but:
 
-Applied as 6.8 material with rewritten subject and changelog.
+> > root@fedora:~# perf top
 
-Thanks!
+> > Error:
+> > The cycles:P event is not supported.
+> > root@fedora:~#
+> > 
+> > root@fedora:~# perf top -e cycles:p
+> > Error:
+> > The cycles:p event is not supported.
+> > root@fedora:~# perf top -e cycles:pp
+> > Error:
+> > The cycles:pp event is not supported.
+> > ^[[Aroot@fedora:~# perf top -e cycles:ppp
+> > Error:
+> > The cycles:ppp event is not supported.
+> > root@fedora:~#
+> > root@fedora:~# perf top -e cycles
+> > Error:
+> > The cycles event is not supported.
+> > root@fedora:~#
+ 
+> The error is because the perf top always tries to open an event on the
+> user_requested_cpus, which are all CPUs by default.
+
+But what is wrong with that for the default event, CPU cycles?
+
+It should work for all CPUs, its the most basic event, right?
+
+We should have a rough idea where CPU (no matter which CPUs) cycles are
+being used.
+
+- Arnaldo
