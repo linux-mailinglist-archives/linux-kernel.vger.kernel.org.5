@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624FC80C6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EEE80C6E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbjLKKkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        id S234263AbjLKKkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbjLKKkI (ORCPT
+        with ESMTP id S234271AbjLKKk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:40:08 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804E6CF;
-        Mon, 11 Dec 2023 02:40:14 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAMu3T015214;
-        Mon, 11 Dec 2023 10:39:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=yVHr17YdvQe0ydCo0BKzg0tAiF/vmW+T/J/qFqM2G7w=;
- b=cKZ/RnKAy3o4w3XegTJc86TXCDMOE4PLt1DpaWH5gq8tHmTZgSsaHoh59iTzYlkc0vUw
- eSUgGLPwCvULtBJFQEwEbbfIkxknIyH5Xc6EOgCVtITB0EaF7twSEjllUgDWn95Y110i
- wGh7kbzHHmUlvi4D+CezKwxCQZ+GVEvglJpT8SC/tGMCn5Uc7XLbPQ85bcpOZMpBCiph
- kRG6nPmnEFc8eu97S4/liAEvztAv/tQwHI3ifSIL+nWOoXJQq07GazUEqnUbuK67P47P
- tFFRM4t8ZpW7WV/cI+elUwPsnN1IJYDH6RP0EpUcbbersGvUMyAWPl3r8eY2wo0Pm2Dd VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0m50d6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:39:54 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BBAMv4L015310;
-        Mon, 11 Dec 2023 10:39:53 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0m50d68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:39:53 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB9FbH0004701;
-        Mon, 11 Dec 2023 10:39:52 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sk0cg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 10:39:52 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBAdnC017236688
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 10:39:49 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 621BD20043;
-        Mon, 11 Dec 2023 10:39:49 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4276B20040;
-        Mon, 11 Dec 2023 10:39:48 +0000 (GMT)
-Received: from [9.171.76.38] (unknown [9.171.76.38])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Dec 2023 10:39:48 +0000 (GMT)
-Message-ID: <13e3e073f6ed6aa48b39ec16add85baa677d17b4.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 32/33] s390: Implement the architecture-specific
- kmsan functions
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Date:   Mon, 11 Dec 2023 11:39:47 +0100
-In-Reply-To: <CAG_fn=V5zMxGUQ=KmJh-ghTUHa-AZYn1CPTQNbf3x7Lu0w=HvA@mail.gmail.com>
-References: <20231121220155.1217090-1-iii@linux.ibm.com>
-         <20231121220155.1217090-33-iii@linux.ibm.com>
-         <CAG_fn=V5zMxGUQ=KmJh-ghTUHa-AZYn1CPTQNbf3x7Lu0w=HvA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 11 Dec 2023 05:40:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68829D0;
+        Mon, 11 Dec 2023 02:40:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702291233; x=1733827233;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vyMlyPXqIZPj+eVxK9tCvSg1sTCHGTpqVhNwzAXe5W0=;
+  b=hDJDrPU/+mwALc1t2ldK8WuQgB2ofylTFh/WsJ5djZbnJmtOQ642v5nu
+   +5M98Kw2znrjVQ0SiJflHGoPY+74x2y6Oo7GTTiWDQO74oXAtSltw63Ov
+   QcInb67I1ARqTdHCr1XVu19sUCDwa6LgjKWqA8hS+JL+bZRtZuqXffcsa
+   JTxD2Z0FPknud0B6HAvurq9n/xw7MV+G5w4/Y3oTEsstzzotlDs5g862p
+   2VSZM+H7u0Z3btCHm33Uzsl8l8/UoRBTOhIH4xbdlawxkFR8MOWOoQ0lF
+   v1jpQA4lWU9d/y2wHZihNUTT5mZ74W8YEAsFzUp0E3+lKVtVdOyybiPHw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="374133041"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="374133041"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:40:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="21033126"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.46.23])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 02:40:20 -0800
+Message-ID: <9e1a5dda-3da8-480b-a804-bc27070fb14d@intel.com>
+Date:   Mon, 11 Dec 2023 12:40:16 +0200
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1ivu9TPpbV33bJspuyHdGPksD1bDTXIu
-X-Proofpoint-GUID: NVWxg9UEFQWh9310drT6RwvUw1xWNTKv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_04,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=313 spamscore=0 impostorscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 mlxscore=0 phishscore=0 malwarescore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312110086
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf/x86/uncore: fix a potential double-free in
+ uncore_type_init
+Content-Language: en-US
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231205032709.9525-1-dinghao.liu@zju.edu.cn>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231205032709.9525-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,27 +77,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEyLTExIGF0IDExOjI2ICswMTAwLCBBbGV4YW5kZXIgUG90YXBlbmtvIHdy
-b3RlOgo+ID4gK3N0YXRpYyBpbmxpbmUgdm9pZCAqYXJjaF9rbXNhbl9nZXRfbWV0YV9vcl9udWxs
-KHZvaWQgKmFkZHIsIGJvb2wKPiA+IGlzX29yaWdpbikKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKg
-IGlmIChhZGRyID49ICh2b2lkICopJlMzOTBfbG93Y29yZSAmJgo+ID4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgIGFkZHIgPCAodm9pZCAqKSgmUzM5MF9sb3djb3JlICsgMSkpIHsKPiA+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgICogRGlmZmVyZW50IGxvd2NvcmVzIGFjY2Vzc2VkIHZpYSBTMzkwX2xvd2NvcmUgYXJlCj4g
-PiBkZXNjcmliZWQKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBieSB0aGUg
-c2FtZSBzdHJ1Y3QgcGFnZS4gUmVzb2x2ZSB0aGUgcHJlZml4Cj4gPiBtYW51YWxseSBpbgo+ID4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIG9yZGVyIHRvIGdldCBhIGRpc3RpbmN0
-IHN0cnVjdCBwYWdlLgo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+ID4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYWRkciArPSAodm9pZCAqKWxvd2NvcmVfcHRy
-W3Jhd19zbXBfcHJvY2Vzc29yX2lkKCldCj4gPiAtCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKHZvaWQgKikmUzM5MF9sb3djb3JlOwo+ID4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIGttc2FuX2dldF9tZXRhZGF0YShhZGRyLCBp
-c19vcmlnaW4pOwo+ID4gK8KgwqDCoMKgwqDCoCB9Cj4gPiArwqDCoMKgwqDCoMKgIHJldHVybiBO
-VUxMOwo+ID4gK30KPiAKPiBJcyB0aGVyZSBhIHBvc3NpYmlsaXR5IGZvciBpbmZpbml0ZSByZWN1
-cnNpb24gaGVyZT8gRS5nLiBjYW4KPiBgbG93Y29yZV9wdHJbcmF3X3NtcF9wcm9jZXNzb3JfaWQo
-KV1gIHBvaW50IHNvbWV3aGVyZSBpbiBiZXR3ZWVuCj4gYCh2b2lkICopJlMzOTBfbG93Y29yZWAg
-YW5kIGAodm9pZCAqKSgmUzM5MF9sb3djb3JlICsgMSkpYD8KCk5vLCBpdCdzIGFsbG9jYXRlZCB3
-aXRoIF9fZ2V0X2ZyZWVfcGFnZXMoKSBvciBtZW1ibG9ja19hbGxvY19sb3coKS4KQnV0IHNpbmNl
-IHRoaXMgcXVlc3Rpb24gY2FtZSB1cCwgSSBzaG91bGQgcHJvYmFibHkgYWRkIGEgY2hlY2sgYW5k
-CmEgV0FSTl9PTl9PTkNFKCkgaGVyZS4K
+On 5/12/23 05:27, Dinghao Liu wrote:
+> When kzalloc for pmus[i].boxes fails, we should clean up pmus
+> to prevent memleak. However, when kzalloc for attr_group fails,
+> pmus has been assigned to type->pmus, and freeing will be done
+> later on by the callers. The chain is: uncore_type_init ->
+> uncore_types_init -> uncore_pci_init -> uncore_types_exit ->
+> uncore_type_exit. Therefore, freeing pmus in uncore_type_init
+> may cause a double-free. Fix this by setting type->pmus to
+> NULL after kfree.
+> 
+> Fixes: 629eb703d3e4 ("perf/x86/intel/uncore: Fix memory leaks on allocation failures")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  arch/x86/events/intel/uncore.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+> index 01023aa5125b..d80445a24011 100644
+> --- a/arch/x86/events/intel/uncore.c
+> +++ b/arch/x86/events/intel/uncore.c
+> @@ -1041,6 +1041,7 @@ static int __init uncore_type_init(struct intel_uncore_type *type, bool setid)
+>  	for (i = 0; i < type->num_boxes; i++)
+>  		kfree(pmus[i].boxes);
+>  	kfree(pmus);
+> +	type->pmus = NULL;
+>  
+>  	return -ENOMEM;
+>  }
 
