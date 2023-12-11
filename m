@@ -2,174 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3816980C95B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5A880C993
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjLKMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:18:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
+        id S1343536AbjLKMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:22:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKMSQ (ORCPT
+        with ESMTP id S234965AbjLKMVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:18:16 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108078E;
-        Mon, 11 Dec 2023 04:18:22 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso46256905e9.0;
-        Mon, 11 Dec 2023 04:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702297100; x=1702901900; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=QiV4Bcxzf25dJHNqzSbQoSLWzyN0MNcOZek8LpkVKp8=;
-        b=CKE3WHOfp5JHMH3wQiwlKMtmgOyh3UmLdClzIG4DNSMGuuVDKLAHXJ/UJx3XkbQ7bo
-         WeTck7iVJ8luuXg6o9GmVCRaKgg7iVdi1E73wyk82jGTKHaff3PhNnYurPf9NEJCyiC6
-         PFHwYSnPH+j/hzL5Z5mwc3HjJyfdmVDEYREy2aaRw4/yTmsUakyAaDwqDA9Ghe8Wag6q
-         d3wLCwcpJ5N4u0BSj98u/oPOq8ePZr81SnmN/1F0P3DHt0dLYbI71t3Z6nWNyHq+PvbQ
-         a74BcdpuPm2MRRGd9eo7qjk4T4bwJkp8b5t+Nb7pMJFnj8x8gEztFyN5MFTy/5WHLW11
-         bMjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702297100; x=1702901900;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QiV4Bcxzf25dJHNqzSbQoSLWzyN0MNcOZek8LpkVKp8=;
-        b=bcePS31RzEcIoW0aLcsWH7oq4FmID9XsZtYyL2JOZYpqqC4rlbmBzC1OQecFXxKZ+o
-         YC6bQ+OaBiYN+AnJJHMc8T2jM5AHTBk6FlBwjGNmRZl911MKFHaC1UW/WaIf6RUK0rtp
-         tc/Oi3r1amQc5ZDIWCeGG0g5nJ3xi+vUzdqTsCA7nQtK3l2Ma/nAvn1rrQkBzjOpJM1B
-         sQqlQjo4t8zMZzbgY/efTDyGbYMhTQv0eW3YP41kXNEFPttQbGIzfUb6BfF8/iBWvv9A
-         JTr1UEa5ld3ieasgWKrFiDLNQH4CCv6GLluYB+PUBD2rS46VkZIj2d2tVFZ8JzsGXRk5
-         dZKw==
-X-Gm-Message-State: AOJu0Yy5hOEhg7n82f4+2BhY9nEMEH7PG91NG/Hcutrx73PfMtqJ1j4U
-        nTw7EcDBPjNiqa++8kt9acs=
-X-Google-Smtp-Source: AGHT+IE6K37AePv5EZZBztKb3nE9ejxdrzxZNJcnN083N38EoiRyMtue+Eo9A0d+n4EwUgjzIx50KQ==
-X-Received: by 2002:a05:600c:81b:b0:40b:5e59:c590 with SMTP id k27-20020a05600c081b00b0040b5e59c590mr2083036wmp.186.1702297100030;
-        Mon, 11 Dec 2023 04:18:20 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id b1-20020a05600c4e0100b00405959469afsm12923793wmq.3.2023.12.11.04.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 04:18:19 -0800 (PST)
-Message-ID: <6576fe0b.050a0220.e99f3.b2b5@mx.google.com>
-X-Google-Original-Message-ID: <ZXb-CAFPxqA5v4Ff@Ansuel-xps.>
-Date:   Mon, 11 Dec 2023 13:18:16 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 1/2] dt-bindings: Document QCA808x PHYs
-References: <20231209014828.28194-1-ansuelsmth@gmail.com>
- <b855eceb-05f4-4376-be62-2301d42575e7@linaro.org>
+        Mon, 11 Dec 2023 07:21:49 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC861B1;
+        Mon, 11 Dec 2023 04:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702297291; x=1733833291;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VSvjnPLu7Fih72ExaXTPlbEBBkfKQMvNugkoOWLF/vw=;
+  b=BVbrTqLttjxtOEcrneEFMSlyP5zHAOwk8ih/HKnAtFbu8irc9SmBJmWX
+   UpsuGOBVsl+ss2m5Yp41hOJ9PiqKCUPwYkEKACjOVl6MP6wCqIWCTtWG+
+   F6v0/7B+1HvF4o7WcoMi3FgC8i73G8G7wkEF1XswHUiaSTxH5IV+qF192
+   /ikAN9VP0FiihY9qeS3U4rGWoEukQ3evrYWR9VqOeI3LJ2DofIIsKRpSl
+   euGQuCv/qDST6GNn388WNGcK8LZ28Vmk6WFtctUTma23N/kX4Egn1ewqS
+   EAGYux5yZkPa6NZklxV9EBgqQmJ+H3c7t5Wnwj+urSPV0g8cht2j1NS2V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="393509728"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="393509728"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:21:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="863755924"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="863755924"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.50.188])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 04:21:27 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v3 19/29] selftests/resctrl: Open perf fd before start & add error handling
+Date:   Mon, 11 Dec 2023 14:18:16 +0200
+Message-Id: <20231211121826.14392-20-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b855eceb-05f4-4376-be62-2301d42575e7@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 11:19:50AM +0100, Krzysztof Kozlowski wrote:
-> On 09/12/2023 02:48, Christian Marangi wrote:
-> > Add Documentation for QCA808x PHYs for the additional property for the
-> > active high LED setting and also document the LED configuration for this
-> > PHY.
-> > 
-> 
-> Please use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
->
+Perf fd (pe_fd) is opened, reset, and enabled during every test the CAT
+selftest runs. Also, ioctl(pe_fd, ...) calls are not error checked even
+if ioctl() could return an error.
 
-Yes sorry.
+Open perf fd only once before the tests and only reset and enable the
+counter within the test loop. Add error checking to pe_fd ioctl()
+calls.
 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  .../devicetree/bindings/net/qca,qca808x.yaml  | 66 +++++++++++++++++++
-> >  1 file changed, 66 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/qca,qca808x.yaml b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> > new file mode 100644
-> > index 000000000000..73cfff357311
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> > @@ -0,0 +1,66 @@
-> > +# SPDX-License-Identifier: GPL-2.0+
-> 
-> Dual license as checkpath and writing-bindings ask.
-> 
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+---
+ tools/testing/selftests/resctrl/cache.c    | 19 +++++++++++++++----
+ tools/testing/selftests/resctrl/cat_test.c | 14 +++++++-------
+ tools/testing/selftests/resctrl/resctrl.h  |  1 +
+ 3 files changed, 23 insertions(+), 11 deletions(-)
 
-Oh didn't notice the warning.
-
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/qca,qca808x.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Atheros QCA808X PHY
-> > +
-> > +maintainers:
-> > +  - Christian Marangi <ansuelsmth@gmail.com>
-> > +
-> > +description:
-> > +  Bindings for Qualcomm Atheros QCA808X PHYs
-> 
-> Drop "Bindings for" and then entire sentence seems not useful.
-> 
-
-Was following the pattern used for other qcom PHY. Ok will drop!
-
-> > +
-> > +  QCA808X PHYs can have up to 3 LEDs attached.
-> > +  All 3 LEDs are disabled by default.
-> > +  2 LEDs have dedicated pins with the 3rd LED having the
-> > +  double function of Interrupt LEDs/GPIO or additional LED.
-> > +
-> > +  By default this special PIN is set to LED function.
-> > +
-> > +allOf:
-> > +  - $ref: ethernet-phy.yaml#
-> > +
-> > +select:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - ethernet-phy-id004d.d101
-> 
-> I have impression that this is continuation of some other patchset...
-> Anyway, id004d.d101 is specific to QCA808x?
-> 
-
-I used enum assuming eventually more qca808x PHY will come... Yes that
-ID is specific and it's the id of QCA8081. Better to use const?
-
-> > +  required:
-> > +    - compatible
-> > +
-> > +properties:
-> > +  qca,led-active-high:
-> > +    description: Set all the LEDs to active high to be turned on.
-> > +    type: boolean
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-
+diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
+index 319d0cdd7225..1b339d6bbff1 100644
+--- a/tools/testing/selftests/resctrl/cache.c
++++ b/tools/testing/selftests/resctrl/cache.c
+@@ -22,10 +22,19 @@ void perf_event_attr_initialize(struct perf_event_attr *pea, __u64 config)
+ }
+ 
+ /* Start counters to log values */
+-static void perf_event_reset_enable(int pe_fd)
++int perf_event_reset_enable(int pe_fd)
+ {
+-	ioctl(pe_fd, PERF_EVENT_IOC_RESET, 0);
+-	ioctl(pe_fd, PERF_EVENT_IOC_ENABLE, 0);
++	int ret;
++
++	ret = ioctl(pe_fd, PERF_EVENT_IOC_RESET, 0);
++	if (ret < 0)
++		return ret;
++
++	ret = ioctl(pe_fd, PERF_EVENT_IOC_ENABLE, 0);
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ 
+ void perf_event_initialize_read_format(struct perf_event_read *pe_read)
+@@ -129,7 +138,9 @@ int perf_event_measure(int pe_fd, struct perf_event_read *pe_read,
+ 	int ret;
+ 
+ 	/* Stop counters after one span to get miss rate */
+-	ioctl(pe_fd, PERF_EVENT_IOC_DISABLE, 0);
++	ret = ioctl(pe_fd, PERF_EVENT_IOC_DISABLE, 0);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = read(pe_fd, pe_read, sizeof(*pe_read));
+ 	if (ret == -1) {
+diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+index bfb607b13491..36e62baebf4f 100644
+--- a/tools/testing/selftests/resctrl/cat_test.c
++++ b/tools/testing/selftests/resctrl/cat_test.c
+@@ -145,6 +145,9 @@ static int cat_test(struct resctrl_val_param *param, size_t span)
+ 
+ 	perf_event_attr_initialize(&pea, PERF_COUNT_HW_CACHE_MISSES);
+ 	perf_event_initialize_read_format(&pe_read);
++	pe_fd = perf_open(&pea, bm_pid, param->cpu_no);
++	if (pe_fd < 0)
++		return pe_fd;
+ 
+ 	/* Test runs until the callback setup() tells the test to stop. */
+ 	while (1) {
+@@ -155,11 +158,10 @@ static int cat_test(struct resctrl_val_param *param, size_t span)
+ 		}
+ 		if (ret < 0)
+ 			break;
+-		pe_fd = perf_open(&pea, bm_pid, param->cpu_no);
+-		if (pe_fd < 0) {
+-			ret = -1;
+-			break;
+-		}
++
++		ret = perf_event_reset_enable(pe_fd);
++		if (ret)
++			goto pe_close;
+ 
+ 		if (run_fill_buf(span, memflush, operation, true)) {
+ 			fprintf(stderr, "Error-running fill buffer\n");
+@@ -171,8 +173,6 @@ static int cat_test(struct resctrl_val_param *param, size_t span)
+ 		ret = perf_event_measure(pe_fd, &pe_read, param->filename, bm_pid);
+ 		if (ret)
+ 			goto pe_close;
+-
+-		close(pe_fd);
+ 	}
+ 
+ 	return ret;
+diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+index 6635d5c1908a..419669502959 100644
+--- a/tools/testing/selftests/resctrl/resctrl.h
++++ b/tools/testing/selftests/resctrl/resctrl.h
+@@ -122,6 +122,7 @@ int get_core_sibling(int cpu_no);
+ void perf_event_attr_initialize(struct perf_event_attr *pea, __u64 config);
+ void perf_event_initialize_read_format(struct perf_event_read *pe_read);
+ int perf_open(struct perf_event_attr *pea, pid_t pid, int cpu_no);
++int perf_event_reset_enable(int pe_fd);
+ int perf_event_measure(int pe_fd, struct perf_event_read *pe_read,
+ 		       const char *filename, int bm_pid);
+ int measure_llc_resctrl(const char *filename, int bm_pid);
 -- 
-	Ansuel
+2.30.2
+
