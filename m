@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B90480CF3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED34C80CF41
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234977AbjLKPNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S1344097AbjLKPPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344182AbjLKPM6 (ORCPT
+        with ESMTP id S1343966AbjLKPPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:12:58 -0500
-X-Greylist: delayed 6064 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 07:13:00 PST
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF89E8;
-        Mon, 11 Dec 2023 07:12:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702307578;
-        bh=61MpOgh6apy3cL2Alemf5fYKv3kzcV8mTb03x/Z34AY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZJRufRZ7sHw1oCHB36MbThWcF5BgNlLirxb14CvjFKsVlqJqsQAy07GcVpG6ZtcOJ
-         rlhXmkqHH6c+Q6TUIvxKYaVL+OGUDwMwHA41TI4eWD6Vm5bVvZQCAAPytT8+a47jB+
-         1uDMffazEwPOK2KJeR7dVKyC04/q9Y0G5f+cEVgyiDup27tt+yldGd6RVfb6ytCD7I
-         +lGed60AOs/KVbBS+B3i1+cd4U76mamaYeDOqeejAfsJoaOJ3yNK4QBOab7jA+F1TG
-         zgE6uMLTveBOGsTag4NlhAf/OkpWzM3UDgVFpBIHN/8hmfZdVJcmwlnz4G9MGPNn9Z
-         v0LzALeJMdRiw==
-Received: from arch-x395 (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: evelikov)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id E4E9337813FD;
-        Mon, 11 Dec 2023 15:12:56 +0000 (UTC)
-Date:   Mon, 11 Dec 2023 15:12:54 +0000
-From:   Emil Velikov <emil.velikov@collabora.com>
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH 0/5] Improve AMD ACP Vangogh audio support for Steam Deck
- OLED
-Message-ID: <ZXcm9v0vgnc7gGfc@arch-x395>
-References: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231209203229.878730-1-cristian.ciocaltea@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 10:15:31 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5256D8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:15:37 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1d0544c07c3so20771345ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:15:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702307737; x=1702912537; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sHC3g9oqHOhY9P31mD7uqpVY9YS1P4PdDX2KFPVf1zA=;
+        b=zTx0JPwt4SRsknaKjoDO1urk8qulLjP0JDqakqXMFWyn9PACn41WEG8GmYpgxefQcV
+         wkNCudUuENTXjAiD1WGWWXfUS9octwV8ky6nVwtd39QDV4W9ohGklJeh2CeT0djrLbwH
+         Zl0PtDuFyt6EG76TB3z3W9hl1X7nngCuyIAgcxee7rm2ppXpwd3z08wdMSG+/guiUXQy
+         0+lrCmQuF9aJiSb5iE4KMNGuOzxteEKjB91gDhGRf7FrlBdt18oq5TadtS481wBwchhh
+         ARfCpVUupGv2+xDUbDsPNyQCsmkIg8+8/ysgjADfP5EFwR+RM1YgDAulxiLK/cWicp7O
+         F0Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702307737; x=1702912537;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sHC3g9oqHOhY9P31mD7uqpVY9YS1P4PdDX2KFPVf1zA=;
+        b=rlVLV+Tzy+hEJ64oDEtoiYpZ4cTMaf8gLsjtdi6e6Wk+46stBkp79pY4mcOBy+YN7m
+         Cklvmmk/LYhEd64zHamI1/KQD1gaVdpM2s7JH2siPmUVi7IFSk3Nwewc492VIQQK+/jW
+         SLNQD9LxiekD5TercEjrzslRUzStqR/9YvKGbTWJSFClhVcMidhqIxkejp4wNHXcpaGT
+         It48WtfpsZV4hURjGCBzHRX58B4pUG+5W+PqNW+lskvjM6N6/QhMjAm9n0LLl/0pTqtN
+         wTwweqxyo4T+yKTZJQHx5/0UnmPQ8XxylTHtTfdzdVejRRv+RVRPYpbiNbIYz/e5u7nw
+         G6GA==
+X-Gm-Message-State: AOJu0YxJdBRYbW7tRm5UbQYFu5c4QCkIjjwp2f5t1nERTLGQaNR+Gzd+
+        ogckwsuzPvo3vcinsRgeRCUes/V4vsw=
+X-Google-Smtp-Source: AGHT+IFaDU/4uc5wTg26iO18XssiMZIdzHGNiwzRHnUW+Lpwc7Q7YAIcBlHKULH+qKfK92wvWEAdD99Go6Q=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ea0d:b0:1d0:e2b:24 with SMTP id
+ s13-20020a170902ea0d00b001d00e2b0024mr36521plg.11.1702307736782; Mon, 11 Dec
+ 2023 07:15:36 -0800 (PST)
+Date:   Mon, 11 Dec 2023 07:15:35 -0800
+In-Reply-To: <20231211030518.2722714-1-guanjun@linux.alibaba.com>
+Mime-Version: 1.0
+References: <20231211030518.2722714-1-guanjun@linux.alibaba.com>
+Message-ID: <ZXcnlzDhcy8_CizZ@google.com>
+Subject: Re: [PATCH 1/1] KVM: Move kvm_gmem_migrate_folio inside CONFIG_MIGRATION
+From:   Sean Christopherson <seanjc@google.com>
+To:     "'Guanjun'" <guanjun@linux.alibaba.com>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        kirill.shutemov@linux.intel.com, yu.c.zhang@linux.intel.com,
+        tabba@google.com, xiaoyao.li@intel.com, pbonzini@redhat.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/09, Cristian Ciocaltea wrote:
-> This patch series provides several fixes and improvements to AMD ACP drivers
-> targeting the Vangogh platform, as found on the Valve's new Steam Deck OLED.
-> 
-> Although in theory the board should have been supported by both SOF and legacy
-> ACP drivers, as of next-20231208 the audio seems to be completely broken.
-> 
-> Please note this only restores the legacy support, while SOF will be handled in
-> a separate series.
-> 
-> Cristian Ciocaltea (5):
->   ASoC: amd: vangogh: Drop conflicting ACPI-based probing
->   ASoC: amd: vangogh: Allow probing ACP PCI when SOF is disabled
->   ASoC: amd: vangogh: Switch to {RUNTIME,SYSTEM_SLEEP}_PM_OPS
->   ASoC: amd: acp-config: Add missing MODULE_DESCRIPTION
->   ASoC: amd: acp: Add missing MODULE_DESCRIPTION in mach-common
-> 
+On Mon, Dec 11, 2023, 'Guanjun' wrote:
+> From: Guanjun <guanjun@linux.alibaba.com>
+>=20
+> 'kvm_gmem_migrate_folio' is only used when CONFIG_MIGRATION
+> is defined, And it will triggers the compiler warning about
+> 'kvm_gmem_migrate_folio' defined but not used when CONFIG_MIGRATION
+> isn't defined.
+>=20
+> The compiler complained like that:
+> arch/x86/kvm/../../../virt/kvm/guest_memfd.c:262:12: error: =E2=80=98kvm_=
+gmem_migrate_folio=E2=80=99 defined but not used [-Werror=3Dunused-function=
+]
+>   262 | static int kvm_gmem_migrate_folio(struct address_space *mapping,
+>       |            ^~~~~~~~~~~~~~~~~~~~~~
 
-If it were me, I'd drop the Fixes tag in the latter two patches since
-the warning is harmless and as-is it'll get into the -stable
-maintainers' list, who are already pretty swamped with patches.
+Already fixed, commit 80583d0cfd8f ("KVM: guest-memfd: fix unused-function =
+warning")
+in kvm/next.
 
-Regardless, for the series:
-Reviewed-by: Emil Velikov <emil.velikov@collabora.com>
-
-HTH
-Emil
+https://lore.kernel.org/all/20231208184908.2298225-1-pbonzini@redhat.com
