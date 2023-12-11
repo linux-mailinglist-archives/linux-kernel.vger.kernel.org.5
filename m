@@ -2,75 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF1280D09D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13DF80D09A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344317AbjLKQI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:08:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
+        id S1344058AbjLKQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344283AbjLKQIr (ORCPT
+        with ESMTP id S1344038AbjLKQIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:08:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E96AD47
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:08:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702310932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3N5lAcUtexjyMcZlcm6EHnULS8QX5mhHesaKgXo2cQ8=;
-        b=e+250S2gim1hWNVz5g/0n5GhIOZVLet4N+mad2eTKU3l5jNMMTeheJzFbxDh0S8Ljo3VHA
-        f8x51hlk2gUF6m88GUiLsL+39uMi6fNLnDKf3a3V6IsQI/txUz6zB8JVIThInsYZYnivNb
-        NqNum0EyTcTqAGdmgPb68EZALiztDEk=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-8HARSt6fPyuVTlUUwkwSwA-1; Mon, 11 Dec 2023 11:08:50 -0500
-X-MC-Unique: 8HARSt6fPyuVTlUUwkwSwA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28678d625d8so2801099a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:08:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702310929; x=1702915729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3N5lAcUtexjyMcZlcm6EHnULS8QX5mhHesaKgXo2cQ8=;
-        b=ATrpv3LbbJ47EwvSwt9n6aG/WvL6mQqimqxvcznAUYpWmVEmGELNiZyBiO3pSUXwOd
-         MVLyZKiI337b7ay64US9299GxHl58nyk5CxY0D17IIyu4XgLsxPW8k88JWx15AMmM0ic
-         0q5xl3L2RlY7JXeY4e2sJCN6256ZNckpPRHbdjDDQcLM/BIxnzCyor8tt0Y0NkZ527SC
-         M7JDv79PswX0cH9/OaUWmWRJm3TiksxCBM5VcEXhlDNkBO4UKuK5rzax9iJEx/MjVzca
-         tHlzrcHhpmetVM6vm588lcpsnxSVh8ackJGkO5GQ0S6kymYRo7z3nE3SBZUtG1A/9WyT
-         6jxQ==
-X-Gm-Message-State: AOJu0YzbVVMqJvU1CkJ8j3ziF35YrNRNLLm2NQzee7KzF9CHmnffosyM
-        tbHZFrnJWCSzZfAxUEuOg1VbOV0/jlS3H7vyCQ28lwzLWfZsW+/rWRYcvDVBzLee7Onxh1txc9k
-        vgVNwucmG1eZ7ssLaHVbZXJoGBAYY8o8GS4/airPJ
-X-Received: by 2002:a17:90a:985:b0:286:6cc1:5fdf with SMTP id 5-20020a17090a098500b002866cc15fdfmr1769261pjo.98.1702310928951;
-        Mon, 11 Dec 2023 08:08:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHiUz1pxdLFncKj4z/9C3dpC7nihMurmeWObLH6KY07S0ymlRGydDN9nLTR/0Q/a+Bu0oVkO47ole5oNQm76QA=
-X-Received: by 2002:a17:90a:985:b0:286:6cc1:5fdf with SMTP id
- 5-20020a17090a098500b002866cc15fdfmr1769249pjo.98.1702310928623; Mon, 11 Dec
- 2023 08:08:48 -0800 (PST)
+        Mon, 11 Dec 2023 11:08:25 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBF01712;
+        Mon, 11 Dec 2023 08:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7/9PVAoW+mQkYndhB1mGTPqj7a0+NR0wxr/3ILbUkfI=; b=TeWHg8VZSEjB97ULraUC03LR2V
+        9GC7hrJ0A2gqejqPepZpofgeBkUk0EVbz/vD0fh6fK/Pusr93obgkapD9TgcuvEfVgLqAQyhawo1/
+        QPRqUA+ePWr2UqnfeEquAZ6BVqZqgaTn3YvcN9HdTFXdhb/6CADXiwbbw1vcgtF2p9HTQXlKVlqSM
+        eyF/Q02AbITgCJ7jsrkAJcFCeERnZF8MxEjneMz/1yh8P8Ty73TErCHiYVQIIlTHviIQXJooTFonT
+        hJXhhHFfFXybb/NYo+IqCrGs2rePIPKcPL+CZA/221GjtLICb55HO+UalInlQyqUmSHQgFSksIjFb
+        gemr5Klw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rCipZ-005fBl-02;
+        Mon, 11 Dec 2023 16:08:29 +0000
+Date:   Mon, 11 Dec 2023 08:08:28 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-riscv@lists.infradead.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-arch@vger.kernel.org
+Subject: Re: [RFC PATCH 07/12] powerpc: Implement ARCH_HAS_KERNEL_FPU_SUPPORT
+Message-ID: <ZXcz/Bi6xP1CYK60@infradead.org>
+References: <20231208055501.2916202-1-samuel.holland@sifive.com>
+ <20231208055501.2916202-8-samuel.holland@sifive.com>
 MIME-Version: 1.0
-References: <20231211131051.1500834-1-neelx@redhat.com> <20231211132217.GF4870@unreal>
- <20231211132522.GY1489931@ziepe.ca> <CACjP9X8+CgoQRjs2Y9A+OwWCVxMhKyqzLhEjaguxMavHsy8VRg@mail.gmail.com>
- <20231211152547.GC1489931@ziepe.ca>
-In-Reply-To: <20231211152547.GC1489931@ziepe.ca>
-From:   Daniel Vacek <neelx@redhat.com>
-Date:   Mon, 11 Dec 2023 17:08:12 +0100
-Message-ID: <CACjP9X-Oj2DFKY0bopMGTEAr1bShM4E+6TtskA+8Ym-bnAfnQA@mail.gmail.com>
-Subject: Re: [PATCH] IB/ipoib: No need to hold the lock while printing the warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208055501.2916202-8-samuel.holland@sifive.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,42 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 4:27=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Mon, Dec 11, 2023 at 03:09:13PM +0100, Daniel Vacek wrote:
-> > On Mon, Dec 11, 2023 at 2:25=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> =
-wrote:
-> > >
-> > > On Mon, Dec 11, 2023 at 03:22:17PM +0200, Leon Romanovsky wrote:
-> > >
-> > > > Please fill some text in commit message.
-> > >
-> > > Yes, explain *why* you are doing this
-> >
-> > Oh, sorry. I did not mention it but there's no particular reason
-> > really. The @Subject says it all. There should be no logical or
-> > functional change other than reducing the span of that critical
-> > section. In other words, just nitpicking, not a big deal.
-> >
-> > While checking the code (and past changes) related to the other issue
-> > I also sent today I just noticed the way 08bc327629cbd added the
-> > spin_lock before returning from this function and it appeared to me
-> > it's clearer the way I'm proposing here.
-> >
-> > Honestly, I was not looking into why the lock is released for that
-> > completion. And I'm not changing that logic.
-> >
-> > If this complete() can be called with priv->lock held, the cleanup
-> > would look different, of course.
->
-> complete() can be called under spinlocks just fine, AFAIK..
+On Thu, Dec 07, 2023 at 09:54:37PM -0800, Samuel Holland wrote:
+> PowerPC provides an equivalent to the common kernel-mode FPU API, but in
+> a different header and using different function names. The PowerPC API
+> also requires a non-preemptible context. Add a wrapper header, and
+> export the CFLAGS adjustments.
 
-Yup, agreed. We ended up removing the lock completely in this function
-with the other patch. This patch can be discarded.
+Looks good:
 
---nX
-
-> Jason
->
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
