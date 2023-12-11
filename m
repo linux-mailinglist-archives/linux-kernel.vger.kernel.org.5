@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC8880DD79
+	by mail.lfdr.de (Postfix) with ESMTP id 1805C80DD78
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345437AbjLKVnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S1345447AbjLKVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKVnH (ORCPT
+        with ESMTP id S229900AbjLKVnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:43:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79E2D0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:43:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702330994; x=1733866994;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ufuEMiqijz/b3eLEaZJnFLOEV+hC35cYPPAzKe4F2PA=;
-  b=OcS8qtX8h9Z1/FkzXoc03CrhGxrcJPDVjT68XArUdHCxBMBMTnzeTmFH
-   bUHV9/X2cRA7zwycbK7pNZHUI1W2PZHzUG7Q3wrLd1XFTMxtrxUpc41Vf
-   4SSo2GD/wtgY+MHdn02wX5zqKs26HJsir0cfasjwlsnphQSMlQDn9Bnwp
-   JK+Y1LTyoO3S9O8t2QyccLi2A14KHs7OjFgCaEJiYxgOW9qQhKzck5SVw
-   X5yP/vkYEZgIQCLfv00Ki04RN8QjHGMbkzq0uteC0xG8lqFXzzXsvFWv7
-   YB5Y+gWUBS9N0COwlSK69uXLmVCMJR0IGNFZnR53k92OncX/4K4y5tpaa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1862489"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1862489"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 13:43:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="722964429"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="722964429"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 11 Dec 2023 13:43:04 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCo3K-000IV4-03;
-        Mon, 11 Dec 2023 21:43:02 +0000
-Date:   Tue, 12 Dec 2023 05:42:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dan Carpenter <error27@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>
-Subject: drivers/pinctrl/pinctrl-tb10x.c:786:21: sparse: sparse: incorrect
- type in assignment (different address spaces)
-Message-ID: <202312120534.7NDFPyWK-lkp@intel.com>
+        Mon, 11 Dec 2023 16:43:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB16D2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702331037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4YTcprLRyl3uAtV5Q182ep8qEB4LObBk1K9I6+4+zd4=;
+        b=QCtBPvD4OQWiwSTw3BiVP/NeuI8QYBuyiHofXeOmAFLUZBq/4usPGsvj2CBsWpBphPQUBw
+        g3oXWeukMaQIb2vKyuda/1wNv4M9bMjbvId3LzaqQryP1rnFpzxz2j57w8Un8g1SrpB3QC
+        npiXeuDrHkwRji33R7OL9NJPU2T7A9o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-teP_nNqYOkO10_fCOO2Hkg-1; Mon, 11 Dec 2023 16:43:54 -0500
+X-MC-Unique: teP_nNqYOkO10_fCOO2Hkg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E3BE2845DC2;
+        Mon, 11 Dec 2023 21:43:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B94F32026D66;
+        Mon, 11 Dec 2023 21:43:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     Bill MacAllister <bill@ca-zephyr.org>,
+        David Howells <dhowells@redhat.com>,
+        Jeffrey E Altman <jaltman@auristor.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix refcount underflow from error handling race
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2793878.1702331032.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 11 Dec 2023 21:43:52 +0000
+Message-ID: <2793879.1702331032@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,131 +69,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-commit: aa5222e92f8000ed3c1c38dddf11c83222aadfb3 sched/deadline: Don't use dubious signed bitfields
-date:   6 years ago
-config: arc-randconfig-r121-20231111 (https://download.01.org/0day-ci/archive/20231212/202312120534.7NDFPyWK-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231212/202312120534.7NDFPyWK-lkp@intel.com/reproduce)
+Hi Linus,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312120534.7NDFPyWK-lkp@intel.com/
+Could you apply this fix, please?
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/pinctrl/pinctrl-tb10x.c:786:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *base @@     got void [noderef] __iomem * @@
-   drivers/pinctrl/pinctrl-tb10x.c:786:21: sparse:     expected void *base
-   drivers/pinctrl/pinctrl-tb10x.c:786:21: sparse:     got void [noderef] __iomem *
->> drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *base @@
-   drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse:     got void *base
->> drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *base @@
-   drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse:     got void *base
->> drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *base @@
-   drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/pinctrl/pinctrl-tb10x.c:514:30: sparse:     got void *base
->> drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *base @@
-   drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/pinctrl/pinctrl-tb10x.c:516:30: sparse:     got void *base
-   drivers/pinctrl/pinctrl-tb10x.c:523:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *base @@
-   drivers/pinctrl/pinctrl-tb10x.c:523:31: sparse:     expected void const volatile [noderef] __iomem *addr
-   drivers/pinctrl/pinctrl-tb10x.c:523:31: sparse:     got void *base
-   In file included from include/linux/workqueue.h:9,
-                    from include/linux/mm_types.h:16,
-                    from include/linux/fs.h:22,
-                    from include/linux/seq_file.h:11,
-                    from include/linux/pinctrl/pinctrl.h:19,
-                    from drivers/pinctrl/pinctrl-tb10x.c:23:
-   include/linux/timer.h: In function 'timer_setup':
-   include/linux/timer.h:159:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
-     159 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
-         |                              ^
-   include/linux/timer.h:126:39: note: in definition of macro '__setup_timer'
-     126 |                 (_timer)->function = (_fn);                             31-      |                                       ^~~
-   include/linux/timer.h: In function 'timer_setup_on_stack':
-   include/linux/timer.h:167:39: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
-     167 |         __setup_timer_on_stack(timer, (TIMER_FUNC_TYPE)callback,
-         |                                       ^
-   include/linux/timer.h:133:39: note: in definition of macro '__setup_timer_on_stack'
-     133 |                 (_timer)->function = (_fn);                             38-      |                                       ^~~
+David
+---
+afs: Fix refcount underflow from error handling race
 
-vim +786 drivers/pinctrl/pinctrl-tb10x.c
+If an AFS cell that has an unreachable (eg. ENETUNREACH) server listed (VL
+server or fileserver), an asynchronous probe to one of its addresses may
+fail immediately because sendmsg() returns an error.  When this happens, a
+refcount underflow can happen if certain events hit a very small window.
 
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  758  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  759  static int tb10x_pinctrl_probe(struct platform_device *pdev)
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  760  {
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  761  	int ret = -EINVAL;
-aa2c35e5a66194 Varka Bhadram     2014-10-21  762  	struct resource *mem;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  763  	struct device *dev = &pdev->dev;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  764  	struct device_node *of_node = dev->of_node;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  765  	struct device_node *child;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  766  	struct tb10x_pinctrl *state;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  767  	int i;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  768  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  769  	if (!of_node) {
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  770  		dev_err(dev, "No device tree node found.\n");
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  771  		return -EINVAL;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  772  	}
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  773  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  774  	state = devm_kzalloc(dev, sizeof(struct tb10x_pinctrl) +
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  775  					of_get_child_count(of_node)
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  776  					* sizeof(struct tb10x_of_pinfunc),
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  777  				GFP_KERNEL);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  778  	if (!state)
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  779  		return -ENOMEM;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  780  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  781  	platform_set_drvdata(pdev, state);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  782  	state->pinfuncs = (struct tb10x_of_pinfunc *)(state + 1);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  783  	mutex_init(&state->mutex);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  784  
-aa2c35e5a66194 Varka Bhadram     2014-10-21  785  	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15 @786  	state->base = devm_ioremap_resource(dev, mem);
-86467ff2ddca94 Wei Yongjun       2013-10-21  787  	if (IS_ERR(state->base)) {
-86467ff2ddca94 Wei Yongjun       2013-10-21  788  		ret = PTR_ERR(state->base);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  789  		goto fail;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  790  	}
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  791  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  792  	state->pingroups = tb10x_pingroups;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  793  	state->pinfuncgrpcnt = ARRAY_SIZE(tb10x_pingroups);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  794  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  795  	for (i = 0; i < TB10X_PORTS; i++)
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  796  		state->ports[i].mode = tb10x_pinctrl_get_config(state, i);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  797  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  798  	for_each_child_of_node(of_node, child) {
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  799  		const char *name;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  800  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  801  		if (!of_property_read_string(child, "abilis,function",
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  802  						&name)) {
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  803  			state->pinfuncs[state->pinfuncnt].name = child->name;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  804  			state->pinfuncs[state->pinfuncnt].group = name;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  805  			state->pinfuncnt++;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  806  		}
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  807  	}
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  808  
-c3a6d9e0a37df7 Laxman Dewangan   2016-02-24  809  	state->pctl = devm_pinctrl_register(dev, &tb10x_pindesc, state);
-323de9efdf3e75 Masahiro Yamada   2015-06-09  810  	if (IS_ERR(state->pctl)) {
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  811  		dev_err(dev, "could not register TB10x pin driver\n");
-323de9efdf3e75 Masahiro Yamada   2015-06-09  812  		ret = PTR_ERR(state->pctl);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  813  		goto fail;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  814  	}
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  815  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  816  	return 0;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  817  
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  818  fail:
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  819  	mutex_destroy(&state->mutex);
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  820  	return ret;
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  821  }
-5aad0db1c1ebb0 Christian Ruppert 2013-10-15  822  
+The way this occurs is:
 
-:::::: The code at line 786 was first introduced by commit
-:::::: 5aad0db1c1ebb0f5be79f0adbecc16a2f0259b21 pinctrl: add TB10x pin control driver
+ (1) There are two levels of "call" object, the afs_call and the
+     rxrpc_call.  Each of them can be transitioned to a "completed" state
+     in the event of success or failure.
 
-:::::: TO: Christian Ruppert <christian.ruppert@abilis.com>
-:::::: CC: Linus Walleij <linus.walleij@linaro.org>
+ (2) Asynchronous afs_calls are self-referential whilst they are active to
+     prevent them from evaporating when they're not being processed.  This
+     reference is disposed of when the afs_call is completed.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+     Note that an afs_call may only be completed once; once completed
+     completing it again will do nothing.
+
+ (3) When a call transmission is made, the app-side rxrpc code queues a Tx
+     buffer for the rxrpc I/O thread to transmit.  The I/O thread invokes
+     sendmsg() to transmit it - and in the case of failure, it transitions
+     the rxrpc_call to the completed state.
+
+ (4) When an rxrpc_call is completed, the app layer is notified.  In this
+     case, the app is kafs and it schedules a work item to process events
+     pertaining to an afs_call.
+
+ (5) When the afs_call event processor is run, it goes down through the
+     RPC-specific handler to afs_extract_data() to retrieve data from rxrp=
+c
+     - and, in this case, it picks up the error from the rxrpc_call and
+     returns it.
+
+     The error is then propagated to the afs_call and that is completed
+     too.  At this point the self-reference is released.
+
+ (6) If the rxrpc I/O thread manages to complete the rxrpc_call within the
+     window between rxrpc_send_data() queuing the request packet and
+     checking for call completion on the way out, then
+     rxrpc_kernel_send_data() will return the error from sendmsg() to the
+     app.
+
+ (7) Then afs_make_call() will see an error and will jump to the error
+     handling path which will attempt to clean up the afs_call.
+
+ (8) The problem comes when the error handling path in afs_make_call()
+     tries to unconditionally drop an async afs_call's self-reference.
+     This self-reference, however, may already have been dropped by
+     afs_extract_data() completing the afs_call
+
+ (9) The refcount underflows when we return to afs_do_probe_vlserver() and
+     that tries to drop its reference on the afs_call.
+
+Fix this by making afs_make_call() attempt to complete the afs_call rather
+than unconditionally putting it.  That way, if afs_extract_data() manages
+to complete the call first, afs_make_call() won't do anything.
+
+The bug can be forced by making do_udp_sendmsg() return -ENETUNREACH and
+sticking an msleep() in rxrpc_send_data() after the 'success:' label to
+widen the race window.
+
+The error message looks something like:
+
+    refcount_t: underflow; use-after-free.
+    WARNING: CPU: 3 PID: 720 at lib/refcount.c:28 refcount_warn_saturate+0=
+xba/0x110
+    ...
+    RIP: 0010:refcount_warn_saturate+0xba/0x110
+    ...
+    afs_put_call+0x1dc/0x1f0 [kafs]
+    afs_fs_get_capabilities+0x8b/0xe0 [kafs]
+    afs_fs_probe_fileserver+0x188/0x1e0 [kafs]
+    afs_lookup_server+0x3bf/0x3f0 [kafs]
+    afs_alloc_server_list+0x130/0x2e0 [kafs]
+    afs_create_volume+0x162/0x400 [kafs]
+    afs_get_tree+0x266/0x410 [kafs]
+    vfs_get_tree+0x25/0xc0
+    fc_mount+0xe/0x40
+    afs_d_automount+0x1b3/0x390 [kafs]
+    __traverse_mounts+0x8f/0x210
+    step_into+0x340/0x760
+    path_openat+0x13a/0x1260
+    do_filp_open+0xaf/0x160
+    do_sys_openat2+0xaf/0x170
+
+or something like:
+
+    refcount_t: underflow; use-after-free.
+    ...
+    RIP: 0010:refcount_warn_saturate+0x99/0xda
+    ...
+    afs_put_call+0x4a/0x175
+    afs_send_vl_probes+0x108/0x172
+    afs_select_vlserver+0xd6/0x311
+    afs_do_cell_detect_alias+0x5e/0x1e9
+    afs_cell_detect_alias+0x44/0x92
+    afs_validate_fc+0x9d/0x134
+    afs_get_tree+0x20/0x2e6
+    vfs_get_tree+0x1d/0xc9
+    fc_mount+0xe/0x33
+    afs_d_automount+0x48/0x9d
+    __traverse_mounts+0xe0/0x166
+    step_into+0x140/0x274
+    open_last_lookups+0x1c1/0x1df
+    path_openat+0x138/0x1c3
+    do_filp_open+0x55/0xb4
+    do_sys_openat2+0x6c/0xb6
+
+Fixes: 34fa47612bfe ("afs: Fix race in async call refcounting")
+Reported-by: Bill MacAllister <bill@ca-zephyr.org>
+Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1052304
+Suggested-by: Jeffrey E Altman <jaltman@auristor.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/2633992.1702073229@warthog.procyon.org.uk/=
+ # v1
+---
+ fs/afs/rxrpc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index ed1644e7683f..d642d06a453b 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -424,7 +424,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct =
+afs_call *call, gfp_t gfp)
+ 	if (call->async) {
+ 		if (cancel_work_sync(&call->async_work))
+ 			afs_put_call(call);
+-		afs_put_call(call);
++		afs_set_call_complete(call, ret, 0);
+ 	}
+ =
+
+ 	ac->error =3D ret;
+
