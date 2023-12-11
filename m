@@ -2,121 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB05480DA44
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749F480DA49
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbjLKTCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S1344342AbjLKTCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:02:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344328AbjLKTCJ (ORCPT
+        with ESMTP id S229529AbjLKTCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:02:09 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0935B4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:02:15 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-425928c24easo60481cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:02:15 -0800 (PST)
+        Mon, 11 Dec 2023 14:02:53 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9846BB8;
+        Mon, 11 Dec 2023 11:02:59 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBGtdDd025529;
+        Mon, 11 Dec 2023 19:01:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
+ b=S4VLVjPMAoZMM9U1JU+d2Op0BHLQbqoGIpB9Ewb/w15IQo9vgv9bLL5R4ZOKJO3V/zFe
+ fIDOq3Du0j3019A/KfW3Cqz9gRINLfQswRyzT0qCpiYg6r4yMkZzaiLSpkg4LM8CQ99p
+ hQ5r5TwMO55C2iFdZJUF51mUH4Cd4+8rh1J0VDW0E6TnvxkEy9AOiOJRBrMxuWKv2IjN
+ 7Oa5A/l2N1F8MVRCwNaMkg0+ceEshoK+2CdGWqQ4lM4AOczSfgnj2M094g7xtBM1dmjQ
+ IoAYw0OJjzCVlhK0QKTANqg2b7LfVuRiKZRv5dwp1xGxNv+JeTEjb4LIFee27Ph+if7e aA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ux5df0fp5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Dec 2023 19:01:47 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBIu8W5009894;
+        Mon, 11 Dec 2023 19:01:45 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep5d9sb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Dec 2023 19:01:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BA/5UTAtHzfJbY+ZMyNlu+88lE7djCXEJYkMnNVvmnFlbLF4O9cc8yrfjqpH8XXzYpxy1fFupQGSz2xhMaJ09pg2ggfJQLRmUREZU+IUZdfCqWa85E7WY6nV66dZ+qQJWbYBY1nd+Z36ltzHJaHzv1Mxll8ZFNki563shKCXEa9LRv/iwcU+VjpOnRlM7LLFRaPk8m+sH1l0nOs5R4aKoCgBrD+Uc0PRwd+CCUVcO6/1rAaWFYej8UqO5reWpQ67s/dfNh3hA9hTinHhM9d9L5AJyOzDU1lr3XAOOm40klN+RZ3+xsIBqMTN2jTEB57cJqFri8HUP1wuWn1OcNDGSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
+ b=H8yA0xddzB+QMLVxJBLYtVcRZjV/W/QesjBZDPJ40FYsIwJStMFmiCSpLyyi4EkL0xL0Yv2AsEOhRhUCFG6dJoGVyYLnyGsF0Qbiuq2+926jMUgTcK+P5UR3XTb/lcMWrNdkp4+k25Eq6n6mWDv9CmTenSx7Vjglee6VAzVLzKImn5F2NevV/aW/ZekWIdjzwQ5XU8S6iiMLYixGKw86v0eU8GhSPThlQFMGlKyLrULvBVd+RU6dWoM5oHsO1Gh0Twy4hIvxdy+RM8Ns8s1ySTRxKrUkP7qWJPyUTuzeLR3lZlL8lkQE3hv4xf94mSnHmIpcfV8AWKOLNuOTkjVMkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702321335; x=1702926135; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3KbcZPb3ouJho6Kgt8unn6XTmhQsbLYfRLMQ3Ty9aJ8=;
-        b=ewBQ2+NWTIjvRSqDb9QeOuePngiKNOVIAbFJqxBHlWZ2tP0J3HUpv+DEyw8TYWw64h
-         MZ2rovbdLI8H+1ghfrIoUaJp2FOYXyjcCVesdTnJvgN7kngySUkHjacRXJEIhOKL+eld
-         di9fWCTEynvaHXgLKukODQq/Cxk0jRhrSxs32lOpTuRlvYLv0NtMGtTeWDjvQjnnlkz7
-         zSiMYY/gHR3EipL2u6Le+TfaNTaO+Q8o3Q9kXPJ9JB5TOgPJNFeLXSmA4V/GZelTGvqY
-         +AcDIFmp1elq0pz3YOEeiM2ez8jBkLMzcwTZPF47/9Rzy/0x2BvewMne4FsNCJY4DTlU
-         izZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702321335; x=1702926135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3KbcZPb3ouJho6Kgt8unn6XTmhQsbLYfRLMQ3Ty9aJ8=;
-        b=LNhqphWhlC2uTt+ZR6V+5OP4vz2GDBqiHYUBVMQkZhpfHPd0OozUgkfjjad+T1l+pm
-         YS81o5P33KLiSPlg7Avdee8s0aELh6JA/sa9utffaMGtjCQWJWxERy/NKcHeYyjtKiwO
-         qZ2+uFFSQDjU5kIVZRef8X51XImW+ZacwH+FOj6Hn8/wFIAmpgATKpIlNONQSb3Q15tg
-         AhyCRzKUPM+7qcIeEcFm9bMscE1l+h2rgk5qhghJEPah1J1GcGohqcQcTHTSQjo4KK0M
-         sIms5+CeCojzdW6vt0dUaykrlkRe0L622bUzymrE8QE+qnNmr+xfSR6JYVik7Mbr7Q6b
-         qX2Q==
-X-Gm-Message-State: AOJu0YxCz32RI2HsOnRG6hVgFkEKZQQJN5HKM9zVQu9kbEl0xXUDu0mc
-        QcI5jQG7mCoY4N3EVZjq1G6SCuPdwSd59pSu4ZGS/Buw7EnMYqz2NCQ=
-X-Google-Smtp-Source: AGHT+IFrfbj+eLMmkxLHWrqC5LctWxqWsndhpUQUdOAM30S9/QPHzDfQh81E3QDwDztHsUxuyk9EMgb9BvR0ULYp+nM=
-X-Received: by 2002:a05:622a:190c:b0:423:b6a1:2088 with SMTP id
- w12-20020a05622a190c00b00423b6a12088mr738239qtc.5.1702321334910; Mon, 11 Dec
- 2023 11:02:14 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
+ b=WSgXQEDGvOGw96LIsIAI18EJwPDL8mU0ymp+CcWq5n+4UiGeGyKqS6qFMKMjq9B3Lt9ALhIb4br6CI9JMKAlxT0x6bXhwa/FxqnJgjOT6ekhzjC2D+YEk79n2UzMzGBE0Q+E7/kfFW6uG3zTjOKjbyLjMYdBpFAI1HZJ0+K7/KU=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by CH0PR10MB4985.namprd10.prod.outlook.com (2603:10b6:610:de::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 19:01:43 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 19:01:43 +0000
+Date:   Mon, 11 Dec 2023 14:01:39 -0500
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
+ files.
+Message-ID: <ZXdck2thv7tz1ee3@tissot.1015granger.net>
+References: <20231208033006.5546-1-neilb@suse.de>
+ <20231208033006.5546-2-neilb@suse.de>
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+X-ClientProxiedBy: CH0PR13CA0024.namprd13.prod.outlook.com
+ (2603:10b6:610:b1::29) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-References: <20231204172646.2541916-1-jthoughton@google.com>
- <20231204172646.2541916-3-jthoughton@google.com> <20231211184236.GB26462@willie-the-truck>
-In-Reply-To: <20231211184236.GB26462@willie-the-truck>
-From:   James Houghton <jthoughton@google.com>
-Date:   Mon, 11 Dec 2023 11:01:38 -0800
-Message-ID: <CADrL8HXqKfG9S0xLot6gA7_Vhw7rod6WqqgcKAVWNZ4FJOquQw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] arm64: mm: Always make sw-dirty PTEs hw-dirty in pte_modify
-To:     Will Deacon <will@kernel.org>
-Cc:     Steve Capper <steve.capper@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|CH0PR10MB4985:EE_
+X-MS-Office365-Filtering-Correlation-Id: 835e61a3-45c4-4445-7cb0-08dbfa7b9d58
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gctjAaExz5B+uSO8jflRQjKNx72MOiKUQVLH/wTiMybwo149HNG2r5FGtKU9GxoQyHwB9ziiAx5JlVdLY+ofuV+5r/BjTTJWIofB2CituPOInEqL9oGRS3FRJWAJOaMInAYZKyyO4hHuSf2d2asWRBcUeEoMr646FQVSZ3PQ7230TpcMnRWP0w+9FkqzGHEUU8ad5kkrp93w+GvY9ePJEKj/Dxkz7o4NJJ3wOz1KMomTvyJ/XXsQGfaXltdwnnP/VfpTR7sgOGba8U2Fvc2xpXx7sMuBIyr7JOgDTEFZbSjg1zGALggotdTRjSJFTo9m0ZVMHoX8UQ2HV/XrXBcKqmU+tkzFfPMFjGeSHwNpiI33uihfIuyJJTRFfhJx3RBJ1Vpiwy2MGFq5n+X4TpmYy1YqR2LOdvBXs09uZrFkizkE29UZRQHOBAYYAK0y4tmGHJAhJIOaqMh28MMyGtp6ME8AHbJi9gS/fbU0eRqn2s7xfVpIkKCiVtSMj6UdD3AizH6T7iQF0u/xjJpVKlzO9Hbet4U+xsqbEtXoE1AyzfbjPmyuvtnpM7mAwFAOMh/j
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41300700001)(38100700002)(2906002)(5660300002)(44832011)(316002)(4326008)(8936002)(8676002)(6916009)(54906003)(66946007)(66476007)(66556008)(9686003)(86362001)(6512007)(6666004)(478600001)(26005)(83380400001)(6506007)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QMPMN7xaByzpzb4GSHnoPctFzVKGsmmwadj0wqj2RP7vO6tZAcrcaU3f/Nqt?=
+ =?us-ascii?Q?caP9dY/BgQpxLt5qmM+YFwlPw+G2Q8Dfr+OTwJtXcEOVCxJDI4pQrRSH4i+J?=
+ =?us-ascii?Q?Emw7uCPc+sZIL69er3Y/V+fXvbd56p7rhjgqIwMjA991AwPGWfvSgeYAo4Ff?=
+ =?us-ascii?Q?6IWjYS3TvDyaCEwGQWdm88DXSuvX2ci/XClLNIh5ryLIeI8kBFt+Ly1gC5hb?=
+ =?us-ascii?Q?RE/wwsUp3wJTHlUTM5iUnSz/lM6IIbIH2bARDYFe98VVWgrQF5v41X7S1GJO?=
+ =?us-ascii?Q?mWwSyebISCYx/QQMMzPhD0y0BZP4WBpsLeeaZVCakkSjrsXkyWrBicrPPNfG?=
+ =?us-ascii?Q?Yib4kXV+G9IsfaKIhfNKlvPzRjJHGm/58tZ9PGqccQlgAFxcU7qBnyvfLYwC?=
+ =?us-ascii?Q?LoQDUnRE50T0vZo5iTKGBNhqLGNFv3QKzKUWkPxQaZuQWWSHwlFR166Plwsi?=
+ =?us-ascii?Q?eZQe9vaI5szZuo3sdjLkWMCPU0uW8E0/Y/dzUEugmJs/cx+FESe4O2g6Prbu?=
+ =?us-ascii?Q?3aueOh5VU/mQPukZ//+Imkxj4Ust7Pl8jHt1fDp3M+sPgLkmfH4IfHXNMSrP?=
+ =?us-ascii?Q?KateAyPIR4pKOi9MeTs/hzOdAb05DfIu/VEO54xel1Vwg8VNcmqtEW+XOEwl?=
+ =?us-ascii?Q?hG2V7IYt0COPCEcPDf76lKf8COedok8hBTUCrUZup+Uk/+slFMilVoScsjNI?=
+ =?us-ascii?Q?hgSysQOqYeSLFJs1phY+N2zQyw5TSxO6S4nYmxC2EKgyrGk/kmYMw9uAVuhr?=
+ =?us-ascii?Q?k3eSl07NezVtkiT0J0B9idf+LJRN+6B1z7OmiR/jN5/kahO19dCCgbUv/1LD?=
+ =?us-ascii?Q?IjmsYRJmR+XnARXlKZKvAFPRLv2sl7tsndx6gP6oSlf+KkgOwcfPf2XpqK9U?=
+ =?us-ascii?Q?zI7BnTnYbN7hr6+wQsNO1lKmSxjqWdumWH1RHIc0EOHqb356fjodK0GIq3zm?=
+ =?us-ascii?Q?ozfuBBwnYLL9JpCIjlUtd9A0OXPWwcFskJzJhkdLkJjqPIM0kI3S0Aam2aY8?=
+ =?us-ascii?Q?3L9QlVwYkKFWasNTjKERcQL1FrzZiSMeRscfQX6ZqTdPWNIVMFFsqSVwmHqJ?=
+ =?us-ascii?Q?krDdtSoAi7Zq/bL1i0US35B7BeWM+OQQCBN0m+iAHqSxXWaaLld/PTSTsdaN?=
+ =?us-ascii?Q?zA1EJMysN1YJpR/0krFGXpd1ssf8XwPd+TM9aBkhQdOPXME2j1IW6Je5cZk/?=
+ =?us-ascii?Q?FUzIg/ZkEl9WFmeovqXq4JaL6wO3F9x7rGFBUjMEUKjyn4V7bjii6gfB34GW?=
+ =?us-ascii?Q?nlkRmaXIyjKutBfgCxvQ/Wyr9chm3rIIoAXbVRsHZt/A2plhMFjtguGKyfDZ?=
+ =?us-ascii?Q?tdjfvZruqkJDrEM+eeXka6E+y+eEt+vAcCVzTU05l6aZH6wQPXSrw5YfCoHk?=
+ =?us-ascii?Q?775aFPTXLUog62I+E+9gEzUGuWzxePolQBgZ8titws8/2IbqYl90JXfMvP4y?=
+ =?us-ascii?Q?YEnwfx9dCGfxU2S5Ln/9HMvSFvI1Le173eg7K9nvoeL5PyOSMPNbd6pvOIhH?=
+ =?us-ascii?Q?D4w2FfHqIG/VfDnknTSyvw42lWfyPlPxPHKxOiayrcsFE3GktfaH6Ac1Hn76?=
+ =?us-ascii?Q?jWKCD2qNOoro3a+ZJpjVeUs3bSLRFkr+7wDZlM42qcUKRwQTu8wFa6NQcL00?=
+ =?us-ascii?Q?RQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 2KlWMgot61FSu4i5FA1m65nopedxE68be95r4YVMXLbqic4Wq9/5epDFH8HamE2t3gRY92b3MXJGS/Npk8PEt8BFNXiLjiF5Eh54c4id9PjhSY92fcQMXzDJcShbJF8rWbtQV+J91nWxmyMaGQ3UcyM1f1KyvedR6C7nK6lCaZWDDgZp46dTnx0nwS4TBEwcaZw2f1wwa4ELKJbowuymfgZsc1jPkeOXm89qKRclIAY4kg5aNavjPESfj7nChlzFpy6bc77xTO+yhizYgOb1FmL+aUMxUodoOA+xyTwp/JDcaq1k1OdVDt7EvwAZjCSmR5/RiGSkhvm8QCTplvTEVBk1n5MFVL3EvpEpQnu5is+kRXreJnuV6aL0KhgHP2NN7D9/MNxQOdeLw16sSA/xw9hhRBBNSqDKPxRg3Wfyz58SIzTL8XAhSM47m280RcpLLtHLmbNGtkHr5sCarQLyEScUQXYponO3sOc5FgoEmJ0K/TX8+8hu7iYroM1lf0t0WZDSYd6GWWPYzz/UeQd9RgC5kbnD6URu8kLCDTXxe0mdxDcKkqNIUJ4sZFLHZTSONlrnBIoeR64+n60j4b/Yq2l1upmSEEi4uLVAHe0TnC1Ztocglmn9TafWa6DtBSk6t1bEutg/MlzcyIl0BaDXbZqVBBIrTzC0KS9OC43hHOOoqH+erBZx+d5Zl51y5EOZBRwoLT2E/OKenZsbkFZbePh/CXFL9aHBphy5Z8hrdMY02Yh18kkwj5LfOkddmYxF9eiOt5/4i3QXPDx+ROJXheQKTiSyUHneMn6RI4MOHXPT/qmi6frPu64eBO3vQNXgZ31fIMAxtTREW7R3yUX/XRXpi76Cze9cQqvoVcVwMOLKWEqkI677DSH8ymwSE5BHD4H+WsfaMGWpi3gEcjcxR7ywfYggfiWw2EDIfaxAPwQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 835e61a3-45c4-4445-7cb0-08dbfa7b9d58
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 19:01:43.1997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EYcYEYB/yt/U9dNFu5gsP12u0KjJbbSWuBbzI60ei0iZfPojytwyvsPd1APMBZ+iajredL0waHRGTvQVGxIQTg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4985
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-11_09,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=915 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312110157
+X-Proofpoint-GUID: gt9jlqvPrFa191a54LsY-tAxlmrGRyMY
+X-Proofpoint-ORIG-GUID: gt9jlqvPrFa191a54LsY-tAxlmrGRyMY
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 10:42=E2=80=AFAM Will Deacon <will@kernel.org> wrot=
-e:
->
-> On Mon, Dec 04, 2023 at 05:26:46PM +0000, James Houghton wrote:
-> > Make it impossible to create a sw-dirty, hw-clean PTE with pte_modify.
-> > Such a PTE should be impossible to create, and there may be places that
-> > assume that pte_dirty() implies pte_hw_dirty().
-> >
-> > Signed-off-by: James Houghton <jthoughton@google.com>
->
-> I'm not sure how, but you seem to be missing the '---' separator and the
-> diffstat here, so I suspect this might confuse tools such as b4 which try
-> to apply the patch directly.
+On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
+> On Sat, 09 Dec 2023, Chuck Lever wrote:
+> > On Fri, Dec 08, 2023 at 02:27:26PM +1100, NeilBrown wrote:
+> > > Calling fput() directly or though filp_close() from a kernel thread like
+> > > nfsd causes the final __fput() (if necessary) to be called from a
+> > > workqueue.  This means that nfsd is not forced to wait for any work to
+> > > complete.  If the ->release of ->destroy_inode function is slow for any
+> > > reason, this can result in nfsd closing files more quickly than the
+> > > workqueue can complete the close and the queue of pending closes can
+> > > grow without bounces (30 million has been seen at one customer site,
+> > > though this was in part due to a slowness in xfs which has since been
+> > > fixed).
+> > > 
+> > > nfsd does not need this.
+> > 
+> > That is technically true, but IIUC, there is only one case where a
+> > synchronous close matters for the backlog problem, and that's when
+> > nfsd_file_free() is called from nfsd_file_put(). AFAICT all other
+> > call sites (except rename) are error paths, so there aren't negative
+> > consequences for the lack of synchronous wait there...
+> 
+> What you say is technically true but it isn't the way I see it.
+> 
+> Firstly I should clarify that __fput_sync() is *not* a flushing close as
+> you describe it below.
+> All it does, apart for some trivial book-keeping, is to call ->release
+> and possibly ->destroy_inode immediately rather than shunting them off
+> to another thread.
+> Apparently ->release sometimes does something that can deadlock with
+> some kernel threads or if some awkward locks are held, so the whole
+> final __fput is delay by default.  But this does not apply to nfsd.
+> Standard fput() is really the wrong interface for nfsd to use.  
+> It should use __fput_sync() (which shouldn't have such a scary name).
+> 
+> The comment above flush_delayed_fput() seems to suggest that unmounting
+> is a core issue.  Maybe the fact that __fput() can call
+> dissolve_on_fput() is a reason why it is sometimes safer to leave the
+> work to later.  But I don't see that applying to nfsd.
+> 
+> Of course a ->release function *could* do synchronous writes just like
+> the XFS ->destroy_inode function used to do synchronous reads.
 
-Thanks for pointing that out. Looks like it came from using
-`--summary` in git format-patch. :/
+I had assumed ->release for NFS re-export would flush due to close-
+to-open semantics. There seem to be numerous corner cases that
+might result in pile-ups which would change the situation in your
+problem statement but might not result in an overall improvement.
 
->
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
-pgtable.h
-> > index b19a8aee684c..79ce70fbb751 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -834,6 +834,12 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t=
- newprot)
-> >               pte =3D set_pte_bit(pte, __pgprot(PTE_DIRTY));
-> >
-> >       pte_val(pte) =3D (pte_val(pte) & ~mask) | (pgprot_val(newprot) & =
-mask);
-> > +     /*
-> > +      * If we end up clearing hw dirtiness for a sw-dirty PTE, set har=
-dware
-> > +      * dirtiness again.
-> > +      */
-> > +     if (pte_sw_dirty(pte))
-> > +             pte =3D pte_mkdirty(pte);
-> >       return pte;
->
-> Looks like this is a fix for Catalin to pick up (patch #1 isn't necessary
-> afaict).
 
-If only this patch is taken, make sure to add cc:stable and the fixes
-tag from patch #1. Thank you!
+> I don't think we should ever try to hide that by putting it in
+> a workqueue.  It's probably a bug and it is best if bugs are visible.
+
+
+I'm not objecting, per se, to this change. I would simply like to
+see a little more due diligence before moving forward until it is
+clear how frequently ->release or ->destroy_inode will do I/O (or
+"is slow for any reason" as you say above).
+
+
+> Note that the XFS ->release function does call filemap_flush() in some
+> cases, but that is an async flush, so __fput_sync doesn't wait for the
+> flush to complete.
+
+When Jeff was working on the file cache a year ago, I did some
+performance analysis that shows even an async flush is costly when
+there is a lot of dirty data in the file being closed. The VFS walks
+through the whole file and starts I/O on every dirty page. This is
+quite CPU intensive, and can take on the order of a millisecond
+before the async flush request returns to its caller.
+
+IME async flushes are not free.
+
+
+> The way I see this patch is that fput() is the wrong interface for nfsd
+> to use, __fput_sync is the right interface.  So we should change.  1
+> patch.
+
+The practical matter is I see this as a change with a greater than
+zero risk, and we need to mitigate that risk. Or rather, as a
+maintainer of NFSD, /I/ need to see that the risk is as minimal as
+is practical.
+
+
+> The details about exhausting memory explain a particular symptom that
+> motivated the examination which revealed that nfsd was using the wrong
+> interface.
+> 
+> If we have nfsd sometimes using fput() and sometimes __fput_sync, then
+> we need to have clear rules for when to use which.  It is much easier to
+> have a simple rule: always use __fput_sync().
+
+I don't agree that we should just flop all these over and hope for
+the best. In particular:
+
+ - the changes in fs/nfsd/filecache.c appear to revert a bug
+   fix, so I need to see data that shows that change doesn't
+   cause a re-regression
+
+ - the changes in fs/lockd/ can result in long waits while a
+   global mutex is held (global as in all namespaces and all
+   locked files on the server), so I need to see data that
+   demonstrates there won't be a regression
+
+ - the other changes don't appear to have motivation in terms
+   of performance or behavior, and carry similar (if lesser)
+   risks as the other two changes. My preferred solution to
+   potential auditor confusion about the use of __fput_sync()
+   in some places and fput() in others is to document, and
+   leave call sites alone if there's no technical reason to
+   change them at this time.
+
+There is enough of a risk of regression that I need to see a clear
+rationale for each hunk /and/ I need to see data that there is
+no regression. I know that won't be perfect coverage, but it's
+better than not having any data at all.
+
+
+> I'm certainly happy to revise function documentation and provide
+> wrapper functions if needed.
+> 
+> It might be good to have
+> 
+>   void filp_close_sync(struct file *f)
+>   {
+>        get_file(f);
+>        filp_close(f);
+>        __fput_sync(f);
+>   }
+> 
+> but as that would only be called once, it was hard to motivate.
+> Having it in linux/fs.h would be nice.
+> 
+> Similarly we could wrap __fput_sync() in a more friendly name, but
+> that would be better if we actually renamed the function.
+> 
+>   void fput_now(struct file *f)
+>   {
+>       __fput_sync(f);
+>   }
+> 
+> ??
+
+Since this is an issue strictly for nfsd, the place for this
+utility function is in fs/nfsd/vfs.c, IMO, along with a documenting
+comment that provides a rationale for why nfsd does not want plain
+fput() in specific cases.
+
+When other subsystems need a similar capability, then let's
+consider a common helper.
+
+
+-- 
+Chuck Lever
