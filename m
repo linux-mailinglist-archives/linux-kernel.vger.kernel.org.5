@@ -2,52 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F1E80D110
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70F580D112
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbjLKQUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:20:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        id S1344200AbjLKQUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKQUE (ORCPT
+        with ESMTP id S1344057AbjLKQUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:20:04 -0500
+        Mon, 11 Dec 2023 11:20:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD923AD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:20:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A08C433C7;
-        Mon, 11 Dec 2023 16:20:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4547DB3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:20:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF12C433CD;
+        Mon, 11 Dec 2023 16:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702311610;
-        bh=tgoKaQNovHS9RWp3+K6M2LkRytAhgXwHG6PjpqOenpU=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=IhwDGvMDayZhO/ouKOmDaaOJzNx/xwMIjs9YhcTCcKs+t6IObyGFBnqQRsygnWr3/
-         g8LzhS5VFgM9/a6Dce6Uqb/y5hcsD/2R2ap+NbMQGlvJjQLhjbPNJhppNcVSCciB/p
-         YDlLzd8uaya95w/+DaKbPa55aUs7hW0YF1bx49uOY4HFCG7BbjKNGpN808LQ0EZOnP
-         4FgU7ocVEVgoDDxqI0DE5Uf5KKImlv0jsMu9OZpuxGPCCa8fAL9Hsk1uTR67sGVzpr
-         pRSmAieOqPpI3s4IwjjaxlyX31RaEMJa1bdhhOfpeERwX+9iNrSoCpHy+3JQU9Ish3
-         f9k5ov4vq0YYA==
+        s=k20201202; t=1702311612;
+        bh=3nTV0SkxLpCj5lGOPMqS4WVJVvWuXILN7ErZ+JOAhRo=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=n8kzE9f4/kvptFZBIE/JI71gnycQC2TponbEtW3zPxbUNhCBYROwQ4lDynuoC65sd
+         9yTNY5awadulGSw2vQPRutWRnFonXii/po+AMg6Ws3rIVGXmLWgtL4AmK66hJL9tTC
+         /uuJ9ouluS0HVxpq6cLP6GlqvHTzodiU17K9zRRnUuo5EKE37sIpqlIKXUvqJFjOva
+         9O3oB3a381lQVF09tpclQHyk/VTlHbkR2wKh1aRnWutFODNSyUMQEFeY9/TYu76+MN
+         gJMyHt+QBFlze31vnHpWXw1nHGozEDCMHqkj8MLnUvpm6P1o3RnszyRXBBN+xFpSf/
+         dfQoiusfxSUvA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami <bgoswami@quicinc.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>
-In-Reply-To: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
-References: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add SM8650
- LPASS RX
-Message-Id: <170231160677.85457.6870068020415164910.b4-ty@kernel.org>
-Date:   Mon, 11 Dec 2023 16:20:06 +0000
+In-Reply-To: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+References: <20231130180758.212172-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 1/3] ASoC: qcom: audioreach: Commonize setting
+ channel mappings
+Message-Id: <170231161062.85457.2289736198838739317.b4-ty@kernel.org>
+Date:   Mon, 11 Dec 2023 16:20:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -62,9 +55,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 12:30:11 +0100, Krzysztof Kozlowski wrote:
-> Add bindings for Qualcomm SM8650 Low Power Audio SubSystem (LPASS) RX
-> macro codec, which looks like compatible with earlier SM8550.
+On Thu, 30 Nov 2023 19:07:56 +0100, Krzysztof Kozlowski wrote:
+> Move code assigning channel mapping values to a common helper function.
+> This simplifies three out of four cases, with the last case using
+> incompatible type (uint16_t array instead of uint8_t array).
 > 
 > 
 
@@ -74,14 +68,12 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: dt-bindings: qcom,lpass-rx-macro: Add SM8650 LPASS RX
-      commit: 0bfa20b18acbcdd133d41e04e07a2d78bcc04bc5
-[2/4] ASoC: dt-bindings: qcom,lpass-tx-macro: Add SM8650 LPASS TX
-      commit: 5a5085c9ce381f92399c755be6deaf1d76ad57e8
-[3/4] ASoC: dt-bindings: qcom,lpass-va-macro: Add SM8650 LPASS VA
-      commit: f243ef746d0ace20fe092fc1ee9987ecf003f7a4
-[4/4] ASoC: dt-bindings: qcom,lpass-wsa-macro: Add SM8650 LPASS WSA
-      commit: ab8921e1da8fdca14192c44775151f50c1cdb763
+[1/3] ASoC: qcom: audioreach: Commonize setting channel mappings
+      commit: ef14f40a3613ddd43a8dd736b5df6f865dcbb817
+[2/3] ASoC: qcom: audioreach: drop duplicate channel defines
+      commit: bcd684eae5aefc0688fcf43fd555155dd57f27c9
+[3/3] ASoC: qcom: audioreach: Add 4 channel support
+      commit: 3c5fcb20e07e3681a645fc3a8d890478ca320825
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
