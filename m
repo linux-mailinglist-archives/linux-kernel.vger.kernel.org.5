@@ -2,104 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F3580D983
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F4F80DA5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344963AbjLKSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        id S1344434AbjLKTDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjLKSyQ (ORCPT
+        with ESMTP id S1344402AbjLKTDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:54:16 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02A8B4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:54:22 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3333b0e0e02so535936f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702320861; x=1702925661; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TJ/uO2ze7N5KlFGwgc99whbyaD3GgIFDlJtONkS1JrM=;
-        b=KgYYrwy0WSgrETCgMfRpiriIozQ8TxGdA2V1zpfdalzGrsIrj4f7OC59wxJK2eMnVm
-         JrF86Fovh5nN07TBRAWFmh6kBovLP6R5mHK24Up6p9WvDImC0JC9Nua8RrEwYD9jJjd7
-         +wgiH5LtVZPTs9vcN1KDejlXZieqLHEZNWI2lQoY2VEHPD0s0VyjYeXJI7XX9B9LYkj+
-         6faCFZkCdxc+F1itO5u/39/LnRwAdntu0I+J0AvaRp5D0N5NW18H99dr+pKQUu8HinXw
-         /K9dpCVXcEGRAoFKP4zaivBiKi3Aekqh8QEpYuxPczzy4MJ5jJVvJS91U0NakZPo96U8
-         btoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702320861; x=1702925661;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJ/uO2ze7N5KlFGwgc99whbyaD3GgIFDlJtONkS1JrM=;
-        b=G4GozDmPN3UdKN8M+BJ9bmoq0FmjWF8VIIw51feX+I0hB6nqwRsPG/1LCKGlJJgMxC
-         hACZkY4EnCTBvXPVrQYCbzWm4FTVUU/0dvjuZlW7c6Pny/aIKOurf8PfkoVU6JmUeQ++
-         inhKL6kQJYB8VdRt0v7Q5H2Si89jhHkspx2R67+iVq2iNOUWhfgCF/bL6Mku6lQGCwC+
-         HiSAAE741LN/q0GEf7pJIQzt0JnqMbkwzMN/pU8WkmhtPRq0wcM7aG5tskrNBn7uL9U4
-         I2pvjvSGAA/is4IyySCyNkTkovgcWPAzVhoqOFU63fKa9RgIe3jKAixMJJDioSXAHXmj
-         sA8Q==
-X-Gm-Message-State: AOJu0YzVcOPHfrCfD3KjNFCuNPrFirA4Gl0DwnWyNjKlBmG9CSwxZYrJ
-        sdbkNPhRUhexTXWIFF6ZTFY=
-X-Google-Smtp-Source: AGHT+IGpC+ooNOm4AcPs5iF1+NNGads2qfhDQV60CIdpKmXVYBHLVWemKinat1QVkjV7SsNPrXa6FA==
-X-Received: by 2002:a05:6000:154f:b0:333:538a:aedc with SMTP id 15-20020a056000154f00b00333538aaedcmr6697426wry.2.1702320860941;
-        Mon, 11 Dec 2023 10:54:20 -0800 (PST)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id g12-20020a5d46cc000000b003335c061a2asm9192828wrs.33.2023.12.11.10.54.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 10:54:20 -0800 (PST)
-Message-ID: <b7a9bc86-68aa-4054-88cf-95c3da693db0@gmail.com>
-Date:   Mon, 11 Dec 2023 19:54:19 +0100
+        Mon, 11 Dec 2023 14:03:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929C7C0;
+        Mon, 11 Dec 2023 11:03:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702321417; x=1733857417;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Q2BczxrNZm1mBCco6sqW/QGBn/6Xmav22CnVogTYodc=;
+  b=RduQeacqgb/9arZ5AqJQFik8Y/nIT4tCmYeQAn4NpAqUp6yFdRSNz9Oq
+   lfgyjfXn8Wgg4rVIg/TvBVC/AUkuh9zHYMyg/cs52y6XO0H7THj9sFfy3
+   7+vBQW082ekjdY8RrSZvIosmCaCQVOMO7o8o55jQjDID6fzu0w7kzbtJC
+   tD3+wf+KbCR68i3wtZ/yAant2SYfp59qHnOhiixi6MYJQkeq1Vo8hJpMB
+   s/OmJllyjOuH9VUPdKzhRT60S7XmvKHkFvUFKA63OF5k3J0zcWCZGib07
+   sKh2B7hN/j/Rl2+WPoJrAKhofmhxHl/1uxjxNMUykUh9l520OFnsNYWWF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480893475"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="480893475"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:03:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="766491653"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="766491653"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 11 Dec 2023 11:03:24 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 4AFB52AB; Mon, 11 Dec 2023 21:03:23 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: [PATCH v5 00/13] pinctrl: Convert struct group_desc to use struct pingroup
+Date:   Mon, 11 Dec 2023 20:57:53 +0200
+Message-ID: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] [Series 1] rename variable HTIOTActDetermineRaFunc
- and (4) other
-To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231211001335.26169-1-garyrookard@fastmail.org>
-Content-Language: en-US
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20231211001335.26169-1-garyrookard@fastmail.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 01:13, Gary Rookard wrote:
-> Hi,
-> 
-> This patch series renames (5) different variables with
-> the checkpatch coding style issue, Avoid CamelCase.
-> 
-> Patch 1/5) rename variable HTIOTActDetermineRaFunc
-> Patch 2/5) rename variable HTResetIOTSetting
-> Patch 3/5) rename variable HTConstructCapabilityElement
-> Patch 4/5) rename variable HTConstructRT2RTAggElement
-> Patch 5/5) rename variable HT_PickMCSRate
-> 
-> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
-> 
-> Gary Rookard (5):
->    staging: rtl8192e: rename variable HTIOTActDetermineRaFunc
->    staging: rtl8192e: rename variable HTResetIOTSetting
->    staging: rtl8192e: rename variable HTConstructCapabilityElement
->    staging: rtl8192e: rename variable HTConstructRT2RTAggElement
->    staging: rtl8192e: rename variable HT_PickMCSRate
-> 
->   drivers/staging/rtl8192e/rtl819x_HTProc.c | 14 +++++++-------
->   drivers/staging/rtl8192e/rtllib.h         |  6 +++---
->   drivers/staging/rtl8192e/rtllib_softmac.c |  6 +++---
->   3 files changed, 13 insertions(+), 13 deletions(-)
-> 
+The struct group_desc has a lot of duplication with struct pingroup.
+Deduplicate that by embeddind the latter in the former and convert
+users.
 
-Compiled and tested on hardware -> OK
+NB. The function_desc is in plan to follow the similar deduplication.
+
+This time test-compiled with old GCC 8 for arm64, besides GCC 13 and
+LLVM 16 for x86_64.
+
+In v5:
+- dropped applied patches
+- elaborated the need of the conversion (Fabio)
+- reworked to avoid build errors on old GCC (Marek, Krzysztof, Geert)
+
+v4: https://lore.kernel.org/r/20231129161459.1002323-1-andriy.shevchenko@linux.intel.com
+
+In v4:
+- made pins also unsigned in struct group_desc (Geert)
+- made local pins variable unsigned in renesas drivers (Geert)
+- collected more tags (Paul, Geert)
+
+v3: https://lore.kernel.org/r/20231128200155.438722-1-andriy.shevchenko@linux.intel.com
+
+In v3:
+- fixed reported bug in equilibrium code (LKP)                                                                   - collected tags (Emil, Florian, Paul)
+
+v2: https://lore.kernel.org/r/20231123193355.3400852-1-andriy.shevchenko@linux.intel.com
+
+In v2:
+- added a few patches to fix multiple compile-time errors (LKP)
+- added tag (Jonathan)
+
+v1: https://lore.kernel.org/r/20231122164040.2262742-1-andriy.shevchenko@linux.intel.com
+
+Andy Shevchenko (13):
+  pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+  pinctrl: mediatek: Use C99 initializers in PINCTRL_PIN_GROUP()
+  pinctrl: ingenic: Use C99 initializers in PINCTRL_PIN_GROUP()
+  pinctrl: core: Embed struct pingroup into struct group_desc
+  pinctrl: bcm: Convert to use grp member
+  pinctrl: equilibrium: Convert to use grp member
+  pinctrl: imx: Convert to use grp member
+  pinctrl: ingenic: Convert to use grp member
+  pinctrl: keembay: Convert to use grp member
+  pinctrl: mediatek: Convert to use grp member
+  pinctrl: renesas: Convert to use grp member
+  pinctrl: starfive: Convert to use grp member
+  pinctrl: core: Remove unused members from struct group_desc
+
+ drivers/pinctrl/bcm/pinctrl-ns.c              |  4 +--
+ drivers/pinctrl/core.c                        | 11 +++---
+ drivers/pinctrl/core.h                        | 17 +++++----
+ drivers/pinctrl/freescale/pinctrl-imx.c       | 31 ++++++++--------
+ drivers/pinctrl/mediatek/pinctrl-moore.c      | 13 ++++---
+ drivers/pinctrl/mediatek/pinctrl-moore.h      | 10 +++---
+ drivers/pinctrl/mediatek/pinctrl-paris.h      | 10 +++---
+ drivers/pinctrl/pinctrl-equilibrium.c         |  4 +--
+ drivers/pinctrl/pinctrl-ingenic.c             | 35 ++++++++++---------
+ drivers/pinctrl/pinctrl-keembay.c             |  2 +-
+ drivers/pinctrl/renesas/pinctrl-rza1.c        |  2 +-
+ drivers/pinctrl/renesas/pinctrl-rza2.c        | 10 +++---
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       |  4 +--
+ drivers/pinctrl/renesas/pinctrl-rzv2m.c       |  4 +--
+ .../starfive/pinctrl-starfive-jh7100.c        |  8 ++---
+ .../starfive/pinctrl-starfive-jh7110.c        |  8 ++---
+ 16 files changed, 84 insertions(+), 89 deletions(-)
+
+-- 
+2.43.0.rc1.1.gbec44491f096
 
