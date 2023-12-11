@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D5980C0A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B3180C0A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbjLKFUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S232984AbjLKFYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKFUI (ORCPT
+        with ESMTP id S229478AbjLKFYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:20:08 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA0B3C3;
-        Sun, 10 Dec 2023 21:20:13 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BB5JuvdE2459419, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BB5JuvdE2459419
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 13:19:56 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 11 Dec 2023 13:19:56 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 11 Dec 2023 13:19:55 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Mon, 11 Dec 2023 13:19:55 +0800
-From:   =?big5?B?SmFtZXMgVGFpIFvAuafTrnBd?= <james.tai@realtek.com>
-To:     Rob Herring <robh@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
+        Mon, 11 Dec 2023 00:24:15 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E387FC3;
+        Sun, 10 Dec 2023 21:24:21 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB3T42R013989;
+        Mon, 11 Dec 2023 05:24:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=BSoh5DNo4RPdGyiQXkB5TaMxmdd0nuO8yq4OLyw7zZc=; b=Gv
+        FI3s8/04Wgx5X2sQ/cRny7rUx9fJebDdVCWf/HXNZUOHRQ1U6fc6nmgDbr1CezRX
+        NL4/QrddtNjJfBEecbPYMHJLttgjV2gPTb16loRrwe2xGy30ftuBn1OrX0EHoAwp
+        xbS7/8n58eZqp9QPXOsiAW352wzKngMnpdMokLXFbvDpTCSbP9yF8VfJ4696XjpZ
+        zYvHeVAMq1tjpliY5rwoTM3Qxryjihv3Nzgl95QuUXRt35xMekzplYgbIXXFbrSA
+        WJi0PdJbMeCjBCDcV6PHDAldeg8KPgKA6iMW4ijkiUXlgagjJAs82GX3FpmT3OXz
+        evx06I+3ulw7JjGqXnbA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnk5tb5c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 05:24:06 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BB5O58C017881
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 05:24:05 GMT
+Received: from [10.216.5.30] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 10 Dec
+ 2023 21:23:54 -0800
+Message-ID: <ff71793b-eab1-4dc2-b58a-fc2d34b2d0d9@quicinc.com>
+Date:   Mon, 11 Dec 2023 10:53:49 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 1/3] dt-bindings: net: qcom,ethqos: add
+ binding doc for safety IRQ for sa8775p
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        "Dan Carpenter" <error27@gmail.com>
-Subject: RE: [PATCH v3 2/6] irqchip: Add interrupt controller support for Realtek DHC SoCs
-Thread-Topic: [PATCH v3 2/6] irqchip: Add interrupt controller support for
- Realtek DHC SoCs
-Thread-Index: AQHaIocg6atZJ97H502y6uXXYTUFxrCQbtQAgAB7DYCAEpRKQA==
-Date:   Mon, 11 Dec 2023 05:19:55 +0000
-Message-ID: <d9dad6be6ee14b77910e95dd2571c828@realtek.com>
-References: <20231129054339.3054202-1-james.tai@realtek.com>
- <20231129054339.3054202-3-james.tai@realtek.com>
- <d94c79bf-04c4-4e87-bd7e-a8755508ac89@suswa.mountain>
- <20231129154131.GA2492847-robh@kernel.org>
-In-Reply-To: <20231129154131.GA2492847-robh@kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [49.216.19.50]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+CC:     <kernel@quicinc.com>
+References: <cover.1701939695.git.quic_jsuraj@quicinc.com>
+ <87bdedf3c752d339bf7f45a631aa8d5bf5d07763.1701939695.git.quic_jsuraj@quicinc.com>
+ <0af91794-69d6-459a-8566-c8c408489f2b@linaro.org>
+From:   Suraj Jaiswal <quic_jsuraj@quicinc.com>
+In-Reply-To: <0af91794-69d6-459a-8566-c8c408489f2b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Os34XW_GzOcrfJPdr_qXjunD5rB5DdhM
+X-Proofpoint-GUID: Os34XW_GzOcrfJPdr_qXjunD5rB5DdhM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=731
+ priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 phishscore=0 impostorscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312110042
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQo+DQo+T24gV2VkLCBOb3YgMjksIDIwMjMgYXQgMTE6MjE6MDZBTSArMDMwMCwg
-RGFuIENhcnBlbnRlciB3cm90ZToNCj4+IE9uIFdlZCwgTm92IDI5LCAyMDIzIGF0IDAxOjQzOjM1
-UE0gKzA4MDAsIEphbWVzIFRhaSB3cm90ZToNCj4+ID4gK3N0YXRpYyBpbnQgcmVhbHRla19pbnRj
-X3N1YnNldChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUsIHN0cnVjdA0KPj4gPiArcmVhbHRla19p
-bnRjX2RhdGEgKmRhdGEsIGludCBpbmRleCkgew0KPj4gPiArICAgc3RydWN0IHJlYWx0ZWtfaW50
-Y19zdWJzZXRfZGF0YSAqc3Vic2V0X2RhdGEgPQ0KPiZkYXRhLT5zdWJzZXRfZGF0YVtpbmRleF07
-DQo+PiA+ICsgICBjb25zdCBzdHJ1Y3QgcmVhbHRla19pbnRjX3N1YnNldF9jZmcgKmNmZyA9ICZk
-YXRhLT5pbmZvLT5jZmdbaW5kZXhdOw0KPj4gPiArICAgaW50IGlycTsNCj4+ID4gKw0KPj4gPiAr
-ICAgaXJxID0gaXJxX29mX3BhcnNlX2FuZF9tYXAobm9kZSwgaW5kZXgpOw0KPj4gPiArICAgaWYg
-KGlycSA8PSAwKQ0KPj4gPiArICAgICAgICAgICByZXR1cm4gaXJxOw0KPj4NCj4+IEkgZG9uJ3Qg
-dGhpbmsgaXJxX29mX3BhcnNlX2FuZF9tYXAoKSBjYW4gcmV0dXJuIG5lZ2F0aXZlcy4gIE9ubHkg
-emVybw0KPj4gb24gZXJyb3IuICBSZXR1cm5pbmcgemVybyBvbiBlcnJvciBpcyBhIGhpc3Rvcmlj
-YWwgYXJ0aWZhY3Qgd2l0aCBJUlENCj4+IGZ1bmN0aW9ucyBhbmQgYSBjb25zdGFudCBzb3VyY2Ug
-b2YgYnVncy4gIEJ1dCBoZXJlIHJldHVybmluZyB6ZXJvIGlzDQo+PiBzdWNjZXNzLiAgU2VlIG15
-IGJsb2cgZm9yIG1vcmUgZGV0YWlsczoNCj4+IGh0dHBzOi8vc3RhdGljdGhpbmtpbmcud29yZHBy
-ZXNzLmNvbS8yMDIzLzA4LzA3L3dyaXRpbmctYS1jaGVjay1mb3ItemUNCj4+IHJvLWlycS1lcnJv
-ci1jb2Rlcy8NCj4NCj5JdCdzIHdvcnNlIHRoYW4gdGhhdC4gVGhlIGlycSBmdW5jdGlvbnMgaGlz
-dG9yaWNhbGx5IHJldHVybmVkIE5PX0lSUSBvbiBlcnJvciwgYnV0DQo+dGhhdCBjb3VsZCBiZSAw
-IG9yIC0xIGRlcGVuZGluZyBvbiB0aGUgYXJjaC4NCj4NCj5Vc2Ugb2ZfaXJxX2dldCgpIGluc3Rl
-YWQuIEl0J3MgYSBiaXQgYmV0dGVyIGluIHRoYXQgaXQgcmV0dXJucyBhbiBlcnJvciBjb2RlIGZv
-ciBtb3N0DQo+Y2FzZXMuIEJ1dCBzdGlsbCByZXR1cm5zIDAgb24gbWFwcGluZyBmYWlsdXJlLg0K
-Pg0KDQpJIHdpbGwgdXNlIG9mX2lycV9nZXQoKSBpbnN0ZWFkIGFuZCBhZGp1c3QgdGhlIHJldHVy
-biB2YWx1ZSBvZiByZWFsdGVrX2ludGNfc3Vic2V0KCkgaW4gdGhlIG5leHQgcGF0Y2hlcy4NCg0K
-VGhhbmtzIGZvciB5b3VyIGZlZWRiYWNrLg0KDQpSZWdhcmRzLA0KSmFtZXMNCg0KDQoNCg==
+Sure . will expand below .
+
+
+On 12/9/2023 11:17 PM, Konrad Dybcio wrote:
+> On 7.12.2023 10:21, Suraj Jaiswal wrote:
+>> Add binding doc for safety IRQ. The safety IRQ will be
+>> triggered for ECC, DPP, FSM error.
+> ECC is widely understood, but the DPP and FSM acronyms could be
+> expanded..
+> 
+> Konrad
