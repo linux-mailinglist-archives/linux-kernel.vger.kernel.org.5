@@ -2,104 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1362E80C8A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2BD80C8BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjLKL6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51114 "EHLO
+        id S234591AbjLKL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234454AbjLKL6Q (ORCPT
+        with ESMTP id S234510AbjLKL7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:58:16 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A775AD5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:58:22 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d0538d9bbcso40396585ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:58:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702295902; x=1702900702; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YpvWYxjWFurzRqzsLDAXQBY+VL4dQWNhgml/pHM61h4=;
-        b=f8ywkz6t0gPNR1DAoI4IAwm0V5AgZ/MDTiAGVeKkxsnivu/tsP5dkjMVU0a17l/DkF
-         E1uut5eoUx5PDp1wz8xda2zkpJz5Xzag3GZMyekx+0tweUcZQgI5alc2T1SKI+EZ95dK
-         gCxoMtkn/qEf7F5THm+FF6paR3EqXGeyN9NDDaKW1IjCloRaQKMYie7cnnk80S1tEOvP
-         JuItzMVqTN1uRGhBGR7uh/UJeo+wPFKdVWdjCglvug5xeIpC4BDmzovGcrbuHD6C/RMH
-         lz/YgPvK7YOj/gCdqnvZuf6k0JlICY9cSDg1SW48fefRlDjiWV6BfnYdVtMM8HxkTMa+
-         +62w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702295902; x=1702900702;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YpvWYxjWFurzRqzsLDAXQBY+VL4dQWNhgml/pHM61h4=;
-        b=gfikv3Kh7EIYDt0G7bkmEsW71zwFWz4yfXalV+jqlKmuwdVvhxOiktt0ifj1Jnz9Km
-         /I2MzFs2hdOJiykNPA8g9LeTdMHmwAokPLvwOsOU1OY2R1R1gGrKX3a33NboQoMqzgY6
-         cg6rEkvgqqiKq/DGfrgHx/jKYxk8DDmv0bdG2VDFI7Wnb3f5GgIgBO/Ju3lxzcRANa1i
-         uSgLv33t3WGDy7RKlHtS8WxIA0DljgVMMby3w1k+lSFTHzQgdGV3FNcj8LODDmZzqLZx
-         wElZl0KK7nuQ0HZ9dQ4KGihEeuUvI+Xb7gb4hVlMzNvMbJJFmCmfs5H5GAm67xSMVvKY
-         OjPQ==
-X-Gm-Message-State: AOJu0YzSY74IL/LAOfbw7FJ1h1dOmu0ejgfTCeQZ7o7XZrIwruohxgQe
-        9dZTVyNE8vVEL5BfR1oWdnnzMSTALMxIC0zYSwo=
-X-Google-Smtp-Source: AGHT+IHFPlHWB9wdlQAUWE/h5+IeqqZ6sNNZVSere++9j8M/zONuplMC+AVS+J65oKa/uYbH54j09g==
-X-Received: by 2002:a17:902:e789:b0:1d0:6ffd:e2d5 with SMTP id cp9-20020a170902e78900b001d06ffde2d5mr5193351plb.111.1702295902169;
-        Mon, 11 Dec 2023 03:58:22 -0800 (PST)
-Received: from rayden (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
-        by smtp.gmail.com with ESMTPSA id z5-20020a170903018500b001cf65844874sm6468291plg.45.2023.12.11.03.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 03:58:21 -0800 (PST)
-Date:   Mon, 11 Dec 2023 12:58:15 +0100
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org
-Subject: [GIT PULL] OP-TEE kernel private shared memory optimizations for 6.8
-Message-ID: <20231211115815.GA616539@rayden>
+        Mon, 11 Dec 2023 06:59:19 -0500
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92238CD;
+        Mon, 11 Dec 2023 03:59:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VvpYT
+        W40NZ46U/uC3kxp5psTC7U46RpXFvNEExH8M2A=; b=ST917H6sunqf2y6NnCz6K
+        XvAbAMXofT9a6GGmmtjaYxodl+EqyBmUfhErUFpzdkfo23HYE9334Rhm0t3TWuXP
+        OyXRd7d9cPrWh9mHI8+zMsDmR36GoCzHSMPo9QNO6nHNLd5L/B6/WvoT1tM3q7vS
+        I96Anf5QvBSHsvH+JhJfhQ=
+Received: from ProDesk.. (unknown [58.22.7.114])
+        by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wDnj5FY+XZlTHfzCQ--.17744S2;
+        Mon, 11 Dec 2023 19:58:19 +0800 (CST)
+From:   Andy Yan <andyshrk@163.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: [PATCH v5 07/16] drm/rockchip: vop2: set bg dly and prescan dly at vop2_post_config
+Date:   Mon, 11 Dec 2023 19:58:15 +0800
+Message-Id: <20231211115815.1785131-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231211115547.1784587-1-andyshrk@163.com>
+References: <20231211115547.1784587-1-andyshrk@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wDnj5FY+XZlTHfzCQ--.17744S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZw4kZw1UJrWUtF15Ww1Utrb_yoW5Xr4rp3
+        4fGry3CrWUJF4qvw1kZa4DZr4fKws7tr47JFW7Jas2yF90qr9xZwn8urn8GrWqqFy7AFy2
+        9rWvgrWYgF1akr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jTApnUUUUU=
+X-Originating-IP: [58.22.7.114]
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqB5DXmVOA44ldgAAse
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+From: Andy Yan <andy.yan@rock-chips.com>
 
-Please pull these two patches that optmize how the OP-TEE driver private
-shared memory allocated as dynamic shared memory.
+We need to setup background delay cycle and prescan
+delay cycle when a mode is enable to avoid trigger
+POST_BUF_EMPTY irq on rk3588.
 
-Thanks,
-Jens
+Note: RK356x has no such requirement.
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+---
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+(no changes since v1)
 
-are available in the Git repository at:
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 26 ++++++++------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
-  https://git.linaro.org/people/jens.wiklander/linux-tee.git tags/kern-priv-shm-for-v6.8
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+index 40b5c5ca4864..d52395b6aff7 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+@@ -1460,8 +1460,18 @@ static void vop2_post_config(struct drm_crtc *crtc)
+ 	u32 top_margin = 100, bottom_margin = 100;
+ 	u16 hsize = hdisplay * (left_margin + right_margin) / 200;
+ 	u16 vsize = vdisplay * (top_margin + bottom_margin) / 200;
++	u16 hsync_len = mode->crtc_hsync_end - mode->crtc_hsync_start;
+ 	u16 hact_end, vact_end;
+ 	u32 val;
++	u32 bg_dly;
++	u32 pre_scan_dly;
++
++	bg_dly = vp->data->pre_scan_max_dly[3];
++	vop2_writel(vp->vop2, RK3568_VP_BG_MIX_CTRL(vp->id),
++		    FIELD_PREP(RK3568_VP_BG_MIX_CTRL__BG_DLY, bg_dly));
++
++	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
++	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
+ 
+ 	vsize = rounddown(vsize, 2);
+ 	hsize = rounddown(hsize, 2);
+@@ -1956,11 +1966,6 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+ 	u32 layer_sel = 0;
+ 	u32 port_sel;
+ 	unsigned int nlayer, ofs;
+-	struct drm_display_mode *adjusted_mode;
+-	u16 hsync_len;
+-	u16 hdisplay;
+-	u32 bg_dly;
+-	u32 pre_scan_dly;
+ 	u32 ovl_ctrl;
+ 	int i;
+ 	struct vop2_video_port *vp0 = &vop2->vps[0];
+@@ -1968,17 +1973,6 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+ 	struct vop2_video_port *vp2 = &vop2->vps[2];
+ 	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
+ 
+-	adjusted_mode = &vp->crtc.state->adjusted_mode;
+-	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
+-	hdisplay = adjusted_mode->crtc_hdisplay;
+-
+-	bg_dly = vp->data->pre_scan_max_dly[3];
+-	vop2_writel(vop2, RK3568_VP_BG_MIX_CTRL(vp->id),
+-		    FIELD_PREP(RK3568_VP_BG_MIX_CTRL__BG_DLY, bg_dly));
+-
+-	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
+-	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
+-
+ 	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
+ 	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
+ 	if (vcstate->yuv_overlay)
+-- 
+2.34.1
 
-for you to fetch changes up to 225a36b96359aceaa9a6399f2dff99627397e637:
-
-  optee: allocate shared memory with alloc_pages_exact() (2023-12-04 14:48:42 +0100)
-
-----------------------------------------------------------------
-OP-TEE kernel private shared memory optimizations
-
-Optimize OP-TEE driver private shared memory allocated as dynamic shared
-memory. Both to handle larger than one page allocations and for more
-efficient memory usage.
-
-----------------------------------------------------------------
-Jens Wiklander (2):
-      optee: add page list to kernel private shared memory
-      optee: allocate shared memory with alloc_pages_exact()
-
- drivers/tee/optee/core.c    | 44 +++++++++++++++++++++++---------------------
- drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++++++------------------------
- 2 files changed, 44 insertions(+), 45 deletions(-)
