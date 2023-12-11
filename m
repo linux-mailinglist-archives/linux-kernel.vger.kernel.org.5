@@ -2,354 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97880CFD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2F280CFDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344134AbjLKPmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S1344007AbjLKPoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKPmj (ORCPT
+        with ESMTP id S234618AbjLKPoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:42:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 777EDA1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:42:44 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDE1EFEC;
-        Mon, 11 Dec 2023 07:43:30 -0800 (PST)
-Received: from [10.57.43.170] (unknown [10.57.43.170])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E745F3F738;
-        Mon, 11 Dec 2023 07:42:42 -0800 (PST)
-Message-ID: <80c5681e-6f54-421c-aa18-eedd4d464d64@arm.com>
-Date:   Mon, 11 Dec 2023 15:42:41 +0000
+        Mon, 11 Dec 2023 10:44:08 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F00BD;
+        Mon, 11 Dec 2023 07:44:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=mpoCLQXUg7bSdwQ8Is9a4sXx0Z59ozaHcPkcmMjnjxU=; b=mRoIDbTSG//lHN9jLp0j+Lny17
+        koOqFVmM75/5ks3+8OH//lzhThYciWIVXFOjPPGSZ0e3Q3vmNxl8mpQ8WirT6SdlUsF38cLXiNQpG
+        uCUvz7r3AzulfwKg+QqotYSMMiUcnHD3pZy7+nG2ZfpFPaaWULqxWR58+tWKh7tjRtSc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rCiRy-002dPp-5x; Mon, 11 Dec 2023 16:44:06 +0100
+Date:   Mon, 11 Dec 2023 16:44:06 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 1/2] dt-bindings: Document QCA808x PHYs
+Message-ID: <242759d9-327d-4fde-b2a0-24566cf5bf25@lunn.ch>
+References: <20231209014828.28194-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] coresight: tmc: Make etr buffer mode user configurable
- from sysfs
-To:     scclevenger@os.amperecomputing.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20230818082112.554638-1-anshuman.khandual@arm.com>
- <bedcf27e-b273-075f-3d7b-eb99b07e7c91@arm.com>
- <b2cf0173-c404-d7d6-9eb8-054e160ca4e5@os.amperecomputing.com>
- <ffa90e80-c249-42d5-26f1-dc022d91e5a9@os.amperecomputing.com>
- <391951c3-7da9-3965-acf8-f3b31f822879@os.amperecomputing.com>
- <1b2a035c-489e-ace9-f851-c1ec157ff9fa@arm.com>
- <cc1b1082-2bcb-9d76-afc7-0e12edd694f0@os.amperecomputing.com>
- <f9fddb60-6976-6d99-fcc2-8011d2fadeb7@arm.com>
- <134faf1d-d662-0e26-d9db-c98645ef6243@arm.com>
- <e7b4dce7-7197-0976-c302-a81444b712aa@os.amperecomputing.com>
- <25f46f87-2090-46ca-9ef7-1310b4360801@os.amperecomputing.com>
-Content-Language: en-GB
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <25f46f87-2090-46ca-9ef7-1310b4360801@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209014828.28194-1-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve
+> +properties:
+> +  qca,led-active-high:
+> +    description: Set all the LEDs to active high to be turned on.
+> +    type: boolean
 
-On 04/12/2023 21:41, Steve Clevenger wrote:
-> 
-> Hi Suzuki,
-> 
-> On 9/7/2023 2:31 PM, Steve Clevenger wrote:
->>
->> Hi Suzuki,
->>
->> On 9/1/2023 5:22 AM, Suzuki K Poulose wrote:
->>> Hi Steve
->>>
->>> On 30/08/2023 17:04, Suzuki K Poulose wrote:
->>>> Cc: Sudeep
->>>>
->>>> Hi Steve
->>>>
->>>> On 28/08/2023 17:35, Steve Clevenger wrote:
->>>>>
->>>>> Hi Suzuki,
->>>>>
->>>>> On 8/27/2023 2:35 PM, Suzuki K Poulose wrote:
->>>>>> Hi Steve
->>>>>>
->>>>>> On 26/08/2023 01:14, Steve Clevenger wrote:
->>>>>>>
->>>>>>> Unfortunately, I tested with the original patch not [PATCH V2]. I've
->>>>>>> remedied this. My results below:
->>>>>>>
->>>>>>> [root@sut01sys-b212 linux]# cat
->>>>>>> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_modes_available
->>>>>>> auto flat catu
->>>>>>> [root@sut01sys-b212 linux]# cat
->>>>>>> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
->>>>>>> auto
->>>>>>> [root@sut01sys-b212 linux]# echo "catu" >
->>>>>>> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
->>>>>>> [root@sut01sys-b212 linux]# cat
->>>>>>> /sys/devices/system/cpu/cpu123/ARMHC501\:23/tmc_etr35/buf_mode_preferred
->>>>>>> catu
->>>>>>>
->>>>>>> As with the V1 patch, auto defaults to catu.
->>>>>>>
->>>>>>> I expected to see tmc-sg (former default) as an available mode, but do
->>>>>>> not. As I recall, the buffer mode defaulted to ETR scatter-gather
->>>>>>> prior
->>>>>>> to this patch. Must this capability now be explicitly advertised? I've
->>>>>>> seen this done as "arm,scatter-gather" in device trees, but not
->>>>>>> used by
->>>>>>> Ampere. Perhaps someone can enlighten me.
->>>>>>
->>>>>> Yes, you must add that property to the TMC-ETR node (for both DT and
->>>>>> ACPI). In the past, almost all of the TMC-ETRs (except Juno board)
->>>>>> locked up the system while using the SG mode (due to the interconnect
->>>>>> issues, something to do with the transaction). Thus, we decided to
->>>>>> add a property explicitly enabling this for a given platform.
->>>>>>
->>>>>> When you mentioned, it was using TMC-ETR SG mode, how did you verify
->>>>>> this ? Please be aware that the table allocation code etc are shared
->>>>>> by both TMC-SG and CATU.
->>>>>>
->>>>>
->>>>> You might recall how this started. I had no way to test the CATU due to
->>>>> the order the ETR modes defaulted (Flat, ETR-SG, CATU). For test
->>>>> purposes, I programmatically swapped the ETR-SG/CATU order and could
->>>>> then verify CATU operation by the driver calling into CATU code. This
->>>>
->>>> So, were you using the DT based boot for the above runs ?
->>>>
->>>>> suggests Flat mode was bypassed, and the driver defaulted to ETR-SG
->>>>> prior to this hack. This didn't offer the user any control, hence my
->>>>> feature request. Note that most of the early Ampere self-hosted trace
->>>>> collection used ETR-SG. Now I can't select it.
->>>>
->>>>
->>>>>
->>>>> How is this property described in the ACPI? The "ACPI for CoreSight™ 1.1
->>>>> Platform Design Document" (DEN0067) doesn't describe this.
->>>>
->>>> This is not specified in the ACPI platform design document. I can get
->>>> it fixed. Ideally we need a property describing that the scatter-gather
->>>> mode is safe to use.
->>>
->>> Looks like this is not straight forward copying of DT property. We are
->>> investigating this on our side and will get back to you.
-> 
-> I noticed this work is queued for 6.7 (coresight-next-6.7). Do you have
-> an update to the ACPI platform design document Ampere can use to base an
-> update so the scatter-gather mode can be used?
+I would of expected active high is the default. An active low property
+would make more sense. It should also be a generic property, not a
+vendor property. As such, we either want the phylib core to parse it,
+or the LED core.
 
-I have chased this with the specification team, and we should have
-something published soon. Apologies for the delay.
-
-Suzuki
-
-> 
-> Thanks,
-> Steve
-> 
->>>
->>
->> The intent behind my request was to have a way to SysFS configure the
->> (available) ETR mode. Unless there's a change to the ACPI, the CATU is
->> the only SG option for Ampere in the near term.
->>
->> Thanks,
->> Steve
->>
->>
->>> Suzuki
->>>
->>>
->>>>
->>>> DT uses "arm,scatter-gather" property [0] and this is what we now expect
->>>> in the ACPI based systems too.
->>>>
->>>> https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml#:~:text=71-,72,-73
->>>>
->>>> Does it sound fine ?
->>>>
->>>> Suzuki
->>>>
->>>>>
->>>>> Thanks,
->>>>> Steve
->>>>>
->>>>>
->>>>>> Kind regards
->>>>>> Suzuki
->>>>>>
->>>>>>>
->>>>>>> Steve C.
->>>>>>>
->>>>>>> On 8/23/2023 4:10 PM, Steve Clevenger wrote:
->>>>>>>>
->>>>>>>> Here's some quick feedback. My system shows two modes available; auto
->>>>>>>> catu
->>>>>>>>
->>>>>>>> etr_buf_mode_current is writable. I expected to see tmc-sg (former
->>>>>>>> default) listed in etr_buf_modes_available but it doesn't show up.
->>>>>>>>
->>>>>>>> Note that both the auto and catu etr_buf_mode_current settings
->>>>>>>> default
->>>>>>>> to catu. My understanding is auto should revert to the default
->>>>>>>> behavior.
->>>>>>>> On my system the default was tmc-sg.
->>>>>>>>
->>>>>>>> More later.
->>>>>>>>
->>>>>>>> [root@sut01sys-b212 kernel]# cat
->>>>>>>> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_modes_available
->>>>>>>>
->>>>>>>> auto catu
->>>>>>>> [root@sut01sys-b212 kernel]# cat
->>>>>>>> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->>>>>>>> catu
->>>>>>>> [root@sut01sys-b212 kernel]# echo "catu" >
->>>>>>>> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->>>>>>>> [root@sut01sys-b212 kernel]# cat
->>>>>>>> /sys/devices/system/cpu/cpu20/ARMHC501\:60/tmc_etr96/etr_buf_mode_current
->>>>>>>> catu
->>>>>>>>
->>>>>>>> Steve C.
->>>>>>>>
->>>>>>>>
->>>>>>>> On 8/21/2023 12:40 PM, Steve Clevenger wrote:
->>>>>>>>>
->>>>>>>>> Hi Suzuki,
->>>>>>>>>
->>>>>>>>> I may be able to test it this week. You've already pointed me at the
->>>>>>>>> patch thread(s). The main holdup is I need to merge the 6.6 pending
->>>>>>>>> platform work in order to use the Ampere ACPI. I couldn't get these
->>>>>>>>> patches to apply directly to 6.4 last I tried.
->>>>>>>>>
->>>>>>>>> Steve C.
->>>>>>>>>
->>>>>>>>> On 8/18/2023 2:39 AM, Suzuki K Poulose wrote:
->>>>>>>>>> Cc: Steve
->>>>>>>>>>
->>>>>>>>>> Steve,
->>>>>>>>>>
->>>>>>>>>> Are you able to test this with CATU ?
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> On 18/08/2023 09:21, Anshuman Khandual wrote:
->>>>>>>>>>> Currently TMC-ETR automatically selects the buffer mode from all
->>>>>>>>>>> available
->>>>>>>>>>> methods in the following sequentially fallback manner - also in
->>>>>>>>>>> that
->>>>>>>>>>> order.
->>>>>>>>>>>
->>>>>>>>>>> 1. FLAT mode with or without IOMMU
->>>>>>>>>>> 2. TMC-ETR-SG (scatter gather) mode when available
->>>>>>>>>>> 3. CATU mode when available
->>>>>>>>>>>
->>>>>>>>>>> But this order might not be ideal for all situations. For
->>>>>>>>>>> example if
->>>>>>>>>>> there
->>>>>>>>>>> is a CATU connected to ETR, it may be better to use TMC-ETR
->>>>>>>>>>> scatter
->>>>>>>>>>> gather
->>>>>>>>>>> method, rather than CATU. But hard coding such order changes will
->>>>>>>>>>> prevent
->>>>>>>>>>> us from testing or using a particular mode. This change provides
->>>>>>>>>>> following
->>>>>>>>>>> new sysfs tunables for the user to control TMC-ETR buffer mode
->>>>>>>>>>> explicitly,
->>>>>>>>>>> if required. This adds following new sysfs files for buffer mode
->>>>>>>>>>> selection
->>>>>>>>>>> purpose explicitly in the user space.
->>>>>>>>>>>
->>>>>>>>>>> /sys/bus/coresight/devices/tmc_etr<N>/buf_modes_available
->>>>>>>>>>> /sys/bus/coresight/devices/tmc_etr<N>/buf_mode_preferred
->>>>>>>>>>>
->>>>>>>>>>> $ cat buf_modes_available
->>>>>>>>>>> auto flat tmc-sg catu    ------------------> Supported TMC-ETR
->>>>>>>>>>> buffer
->>>>>>>>>>> modes
->>>>>>>>>>>
->>>>>>>>>>> $ echo catu > buf_mode_preferred   -------> Explicit buffer mode
->>>>>>>>>>> request
->>>>>>>>>>>
->>>>>>>>>>> But explicit user request has to be within supported ETR buffer
->>>>>>>>>>> modes
->>>>>>>>>>> only.
->>>>>>>>>>> These sysfs interface files are exclussive to ETR, and hence these
->>>>>>>>>>> are
->>>>>>>>>>> not
->>>>>>>>>>> available for other TMC devices such as ETB or ETF etc.
->>>>>>>>>>>
->>>>>>>>>>> A new auto' mode (i.e ETR_MODE_AUTO) has been added to help
->>>>>>>>>>> fallback
->>>>>>>>>>> to the
->>>>>>>>>>> existing default behaviour, when user provided preferred buffer
->>>>>>>>>>> mode
->>>>>>>>>>> fails.
->>>>>>>>>>> ETR_MODE_FLAT and ETR_MODE_AUTO are always available as preferred
->>>>>>>>>>> modes.
->>>>>>>>>>>
->>>>>>>>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>>>>>>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>>>>>>>>> Cc: James Clark <james.clark@arm.com>
->>>>>>>>>>> Cc: Leo Yan <leo.yan@linaro.org>
->>>>>>>>>>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->>>>>>>>>>> Cc: coresight@lists.linaro.org
->>>>>>>>>>> Cc: linux-arm-kernel@lists.infradead.org
->>>>>>>>>>> Cc: linux-kernel@vger.kernel.org
->>>>>>>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>>>>>>>>> ---
->>>>>>>>>>> This applies on v6.5-rc6
->>>>>>>>>>>
->>>>>>>>>>> Changes in V2:
->>>>>>>>>>>
->>>>>>>>>>> - Renamed sysfs file etr_buf_modes_available as
->>>>>>>>>>> buf_modes_available
->>>>>>>>>>> - Renamed sysfs file buf_mode_current as buf_mode_preferred
->>>>>>>>>>> - Renamed etr_supports_flat_mode() as etr_can_use_flat_mode()
->>>>>>>>>>> - Renamed coresight_tmc_groups[] as coresight_etf_groups[]
->>>>>>>>>>> - Reused coresight_tmc_group[] for trigger_cntr and buffer_size
->>>>>>>>>>> - Fallback trying ETR_MODE_AUTO when user preferred mode fails
->>>>>>>>>>> - Moved ETR sysfs details into coresight-tmc-etr.c
->>>>>>>>>>> - Dropped etr_can_use_flat_mode() check while offering
->>>>>>>>>>> ETR_MODE_FLAT
->>>>>>>>>>> in sysfs
->>>>>>>>>>> - Moved struct etr_buf_hw inside coresight-tmc-etr.c
->>>>>>>>>>> - Moved get_etr_buf_hw() and etr_can_use_flat_mode() inside
->>>>>>>>>>> coresight-tmc-etr.c
->>>>>>>>>>> - Updated month in
->>>>>>>>>>> Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->>>>>>>>>>>
->>>>>>>>>>> Changes in V1:
->>>>>>>>>>>
->>>>>>>>>>> https://lore.kernel.org/all/20230728084837.276551-1-anshuman.khandual@arm.com/
->>>>>>>>>>>
->>>>>>>>>>>      .../testing/sysfs-bus-coresight-devices-tmc   |  16 +++
->>>>>>>>>>>      .../hwtracing/coresight/coresight-tmc-core.c  |  15 ++-
->>>>>>>>>>>      .../hwtracing/coresight/coresight-tmc-etr.c   | 111
->>>>>>>>>>> ++++++++++++++++--
->>>>>>>>>>>      drivers/hwtracing/coresight/coresight-tmc.h   |   3 +
->>>>>>>>>>>      4 files changed, 131 insertions(+), 14 deletions(-)
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Looks good to me.
->>>>>>>>>>
->>>>>>>>>> Suzuki
->>>>>>>>>>
->>>>>>>>>>
->>>>>>
->>>>
->>>
-
+       Andrew
