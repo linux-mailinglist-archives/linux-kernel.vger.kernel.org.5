@@ -2,177 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9D380BEF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC49980BEF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbjLKCDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:03:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S232302AbjLKCEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbjLKCDV (ORCPT
+        with ESMTP id S229564AbjLKCEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:03:21 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2086.outbound.protection.outlook.com [40.107.94.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC089D9;
-        Sun, 10 Dec 2023 18:03:27 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kBb5nYSw97idlgaN8NWshlo6Q6FRSS9R0PraEoPTLS17ie1fqvK+1x0F51QGhoQ9Ogg1GU+DYBrd87EfT2VgUK8XDTaxk2DA3DgDUJ4w+0F9qqkyptGJOkNb6glgdqVwfDGFkKnpJSMZrvZFRuCMql/pMu+9qpq7mvcx2RJ5a2XDEJipww9rF+AwqJHX5c6Y9TKWV7UIKXMdIXjtxSRqFljY8VkXRRnxwIVckge+PWg9JzfpKJMUjlIAQZEFzRmPNcDYL1YPoiJlKwlKwtEvRvFmTUh8CVBDpGk/zJREakq2O7wUBntESmscK9iqOTcM0PH7+wK2hZoiiZws6eozKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JqqAjnsnAXi+OH+K+OB1TdsfIzgTXt5PqRB3fAqshWI=;
- b=Pk45j0Mlj7cgg0zGmiTgiIhKiZd4g6cywMx4qSKjOST2F3ofGQ5v20+NDwAtvnUDJObOTrmYs9NBolvslP7TNA6QlQfAQcrgUyoKxrbUmaj38iM+gbYR8Pkhpm1g2mL5h+fxcQDT2mAbZ29t1KSxlyhESDj67Q5iVX8RRG+QkQYtn1FvKtoUy2lbEZtld64msJNPGj6zi347LZXJJO3PRRu4DU4zQ64FD8v+jvfpAUDm1eRFBwuulcxUUery9Mq9ovwlBIENTUaqqtaJDASIz+vtmiOUHjpoShM+OlgCI4Ip0/MCOZ2GlaLAQuhcbdXx1LQV6C1TKZExbJVO5/Zd8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JqqAjnsnAXi+OH+K+OB1TdsfIzgTXt5PqRB3fAqshWI=;
- b=3hgWkpjTxxvYXhnM4frTO2WflSEyfEAu2G2aVyXGPu8mPwLseT8wTNsa5kazoMEnW4Z62ikLuTM+VIyrGkYgm5Zo3gPo07ZeE5SKKgElQPZeKYtsK5QUXVoyDls9oQtrwe6i1yzvsY9OF0/bOqUf+4UUwA6M7Lkmin+jE9y99HQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by MW3PR12MB4569.namprd12.prod.outlook.com (2603:10b6:303:57::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 02:03:25 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 02:03:25 +0000
-Message-ID: <05b90060-9bee-42db-a49b-eb73dce0d59c@amd.com>
-Date:   Sun, 10 Dec 2023 20:03:22 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: Enable built-in microphone on Lenovo ThinkPad P14s
- Gen 4 (AMD)
-To:     "Michael T. Kloos" <michael@michaelkloos.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        August Wikerfors <git@augustwikerfors.se>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231211015325.6793-1-michael@michaelkloos.com>
-Content-Language: en-US
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20231211015325.6793-1-michael@michaelkloos.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0036.namprd04.prod.outlook.com
- (2603:10b6:806:120::11) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Sun, 10 Dec 2023 21:04:02 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CEBD9;
+        Sun, 10 Dec 2023 18:04:08 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SpQ5r3nGLz14M0c;
+        Mon, 11 Dec 2023 10:04:00 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+        by mail.maildlp.com (Postfix) with ESMTPS id 7268C1800B8;
+        Mon, 11 Dec 2023 10:04:05 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Dec
+ 2023 10:04:05 +0800
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com>
+ <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
+Date:   Mon, 11 Dec 2023 10:04:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|MW3PR12MB4569:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54f704ea-f246-4595-6edc-08dbf9ed5c12
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S8u4rlGck35ia3Etk+vt/Hii4GAfY0A/TH6ZoI2traCNCMLVkZL8cv36VkwTYNYw+0USt4TuH49DijOeMXCKFAapy6YP/9wP1hXgXzSn8Mgnksx5lpHnVvqSqjZ/z3zaK8QePZFQAlH64gT5qJzVpI5CB3XgrgEy6lmBl1Gts6omWs6K0GY2MLtdx1GmpoCDLWgegcfkah/gY2KAS3k0BYNwm+oquzD0Auti8MZNzFps1CvArQnRUYaY1zmG0vMtdjK/ON8i+XdcXgCftPNH0ZLJgl9c6PJY5P2McXW2Ez5/HLR4m9AlDHObgCbABsKiKLlKdNz2VarBPellIRJHBX6BtOPOf/jukCSoPrPiyJgtCY19PC+Z2JhSA4vVAl/5SXEYhbbXlVrqwTJpJck0wqe2O8Ib1UnO0oMMqxeBJS65k5olVjmtTGhPPb5zrqWVObyyJirX1rzJsYmQHroTdR3qbUlqOG/rrss3ECnMswuZlZLLAaiLE+4YLliGARRpnrhy3sghyGk8JnQjViQcnfkqaEmPnknCRFQQthiirYA8igT8W1bNvVBuPxEr2+VFvhhxxDxw+qoLNQdqui4KwcFzEB3WwlvAbI4VCDsqXTjuYZaE+8zE1EB30RM0eCJB6LzXpp8uRM/KF4YNpHyFCA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(83380400001)(2906002)(478600001)(41300700001)(31686004)(66556008)(66476007)(6636002)(66946007)(6486002)(110136005)(316002)(38100700002)(6666004)(86362001)(31696002)(4326008)(8936002)(8676002)(53546011)(6506007)(6512007)(44832011)(36756003)(5660300002)(26005)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TUxvMnhxUE4yZnRTVkQ0QmNCZjJKazR5Zi9DaXdpQjg5UmQrY2Q1a0taSmM3?=
- =?utf-8?B?M1FUTVl3V2xqaVlDT2RUajRPTmtZY0sxR0hxWnZhcmRYVzI3cS9KcWFGWkdK?=
- =?utf-8?B?L0Q1S0lYdFNFZllVazl4NzEwRVlReUdsc2FrYjFEb0xlVDBta2ZET0Q1UzQx?=
- =?utf-8?B?L0FiNUZjQUd2Ry8reVI5SFZLcml5cHdMSk9nV3E3dTljdGFKWENIbVgydmdz?=
- =?utf-8?B?bUJDNkJ5amI5MGJNaWdMYXE4WjQ2RmRLWmt1UEVnaWh6d1VBeWJ0Z0VNbnFi?=
- =?utf-8?B?aDZFWE5Fc3NMRmNHZXJ1RTV2dUFPcXdCZG9JYWtndmR0eEFUTHU0T3JBcVMr?=
- =?utf-8?B?K09LL2E4bitEN3pNT0wxQzBibFVESVVqUUNWV0xvMkE3QjV3aUptc1N0TDQ4?=
- =?utf-8?B?QkV3V3VTbWc4VGU4SU56TnliOU9VWU1HeURMU1NKKzBLNFVXT3AyTWZnNkxq?=
- =?utf-8?B?ODZDMG9RcWNIRDdVM0R3dVE3YThJSzBxTkdzS2lJck9HWkM2bHRaWXY5NG5K?=
- =?utf-8?B?U2tSVVJhbGY0S2JoNi9XQ01PQWN2MlZ4MkJsektVU2RMd0dYVzJJQmhMVDlF?=
- =?utf-8?B?cy9wOGJ0UitiODBpWng3bWpVQmhNZlUyVFk1RkVhWFRQaFJUWXRiclI4U3pR?=
- =?utf-8?B?bERVTVVzWEs4dVYwSUlHRnIvYkNFbUphQysyL3ZWendtd0srVHY0TUlDN1cy?=
- =?utf-8?B?ZDBQdGVOR1lsMEV1UHhlQ2VEd1ljdXN5eCtBOW5PQUdHcEUreDlwK2pOc2I1?=
- =?utf-8?B?bmV3MXZMay9DbTR6STV0NWJac1VubC9xSllaS2xPM0JvellqSWMrSitVLzQ1?=
- =?utf-8?B?SUlpckhuVEU2Mlh2c1Nhb1AxbG5GbiszQkw0alpjbGdVNkdnaC9SVllIWWhp?=
- =?utf-8?B?dGF0d2kyYUlTNWFKQ2ZHODZmRGtxakJBYVlncGpxVURJdEpRUllaSXgwMnp3?=
- =?utf-8?B?VzBkbmo4TzRGZXo0TVJMMEhoT1ZZT01UT0ZaK0M5YlNkK21kbXJmSkV6eWNZ?=
- =?utf-8?B?VENxTWFPbDI2Zk5JbDhrYlhaOGs3dUVIVktxd1hzWXJ3YXpZenlWQ3o2STZT?=
- =?utf-8?B?d1dMTVUzM3plMURiTUJ3UlNjVEpxN0lWR3FOdGhaNkVZU0VTN0dCNFdkckxL?=
- =?utf-8?B?RisvTTNGUXExL05ncXUxL2MxUlYrTmQwYnJZZFNRSi9hVUFZaENuQTIwcDc4?=
- =?utf-8?B?RzJFYWxTNFVyLytIaTdGdTloUlo1S2tlNHBLRzVISDQ2Zlp2dmlUZ25NaWRn?=
- =?utf-8?B?dXlWNjgySTlvME1HRzhXb1ROZWNpVTFRdmZmZUxtbERad1QzR0Y5RFk5UHdB?=
- =?utf-8?B?d1hNUFdCcTZia0RpVjdIQUZFWTI5amdHSW81VVNMM2k3ODB5c3FqemxPZ2ZQ?=
- =?utf-8?B?eW5LNG4rQ0xUeEsvV0Zrby8xN2Vta0RYbXVtcjhHNXlGeTd3QWtUQnBqSXN2?=
- =?utf-8?B?ckNOTlpuM1ZyM2FJSjQyT25EY2g4bUU1YW5FMGVHVUYwN0RFR2lqZGdGL08r?=
- =?utf-8?B?Q1VjS21aT2ZUZms3RlhjQ0YxV0Ixa1U4NGZBWnhGOWpOM3Bia1cxcG10RlN4?=
- =?utf-8?B?OVJ0cUJQdlZUZnl4MVFjdmdqUVhTVlNMMmlweW1NbWJzS0RHVExTZTVwRXpn?=
- =?utf-8?B?YkZnNkc1Nm9NdFR2Yi9yVGd3M1QxMGhXQU1pUmVWOXJhWjlqRFRhb2V6R3Zv?=
- =?utf-8?B?TFVZU1ZTMHp4eG8zdUtrbVRYbTR5Y0s2cUIwSGtSUWdnUWVQYTZDa3JrNHFC?=
- =?utf-8?B?TWdDQzRRQ3oyRmV5NnY1S0VjdjJQWklTS1dnNTZYVnpFZGUrRXAza25FYW5O?=
- =?utf-8?B?ZHZRQlVwNmhseE5ndHRYWVlRRnJaWjZhb3ViMllDa2xjbjdCUVA1SlhWYnZt?=
- =?utf-8?B?QlQ1NWZ0dGJaN0h6YzRlRU1rWVFMaHlHZm92Vjh5ZHdCZ05UT2dRTVhlK2Zw?=
- =?utf-8?B?TkI1ZjJCYWlaM0Y4L2doVnd4L1gxTzVkdml2N1FKanc3RFpNdzFmc1V5a0RK?=
- =?utf-8?B?eFd1dEhmdGt1eGN2TWZBVHdNazcvUzJFMUJXbHM2bDQxUGd1RlNGSzI1NlRW?=
- =?utf-8?B?bVV6NElFbFhSeHNHcE9nQVFuU3dlT2liSmxSVldPaTZlSlRjL0RCK21IRVBV?=
- =?utf-8?Q?chGgjWaKimtRGsrKJfg9+iOln?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54f704ea-f246-4595-6edc-08dbf9ed5c12
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 02:03:25.2643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PEw5EkMfAYy1OS1UhgsmjGBuLal6OEI/UBjivgDLt09/xNHgjTHF7r+IqP4VC9PhO0zkmeEDR64KmbsA9DSMVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4569
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2023 19:52, Michael T. Kloos wrote:
-> Added System Board to Quirks List using model number prefix.
-> Replaced/Removed a duplicate entry in the list.
-> Added Yellow Carp Coprocessor Revision number to PCI revision check.
+On 2023/12/9 0:05, Mina Almasry wrote:
+> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>>
+>> As mentioned before, it seems we need to have the above checking every
+>> time we need to do some per-page handling in page_pool core, is there
+>> a plan in your mind how to remove those kind of checking in the future?
+>>
 > 
-> Signed-off-by: Michael T. Kloos <michael@michaelkloos.com>
-
-NAK.
-
-This is supposed to be supported by ACP 6.3 (Pink Sardine).  Did you 
-enable that driver?
-
-Can you please share more about your problem?
-
-> ---
->   sound/soc/amd/yc/acp6x-mach.c | 2 +-
->   sound/soc/amd/yc/pci-acp6x.c  | 1 +
->   2 files changed, 2 insertions(+), 1 deletion(-)
+> I see 2 ways to remove the checking, both infeasible:
 > 
-> diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-> index d83cb6e4c62a..c08605d99bc9 100644
-> --- a/sound/soc/amd/yc/acp6x-mach.c
-> +++ b/sound/soc/amd/yc/acp6x-mach.c
-> @@ -56,7 +56,7 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
->   		.driver_data = &acp6x_card,
->   		.matches = {
->   			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-> -			DMI_MATCH(DMI_PRODUCT_NAME, "21D0"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "21K5"),
->   		}
->   	},
->   	{
-> diff --git a/sound/soc/amd/yc/pci-acp6x.c b/sound/soc/amd/yc/pci-acp6x.c
-> index 7af6a349b1d4..694b8e313902 100644
-> --- a/sound/soc/amd/yc/pci-acp6x.c
-> +++ b/sound/soc/amd/yc/pci-acp6x.c
-> @@ -162,6 +162,7 @@ static int snd_acp6x_probe(struct pci_dev *pci,
->   	/* Yellow Carp device check */
->   	switch (pci->revision) {
->   	case 0x60:
-> +	case 0x63:
->   	case 0x6f:
->   		break;
->   	default:
+> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
+> 
+> struct netmem {
+>         /* common fields */
+>         refcount_t refcount;
+>         bool is_pfmemalloc;
+>         int nid;
+>         ...
+>         union {
+>                 struct dmabuf_genpool_chunk_owner *owner;
+>                 struct page * page;
+>         };
+> };
+> 
+> The page pool can then not care if the underlying memory is iov or
+> page. However this introduces significant memory bloat as this struct
+> needs to be allocated for each page or ppiov, which I imagine is not
+> acceptable for the upside of removing a few static_branch'd if
+> statements with no performance cost.
+> 
+> 2. Create a unified struct for page and dmabuf memory, which the mm
+> folks have repeatedly nacked, and I imagine will repeatedly nack in
+> the future.
+> 
+> So I imagine the special handling of ppiov in some form is critical
+> and the checking may not be removable.
 
+If the above is true, perhaps devmem is not really supposed to be intergated
+into page_pool.
+
+Adding a checking for every per-page handling in page_pool core is just too
+hacky to be really considerred a longterm solution.
+
+It is somewhat ironical that devmem is using static_branch to alliviate the
+performance impact for normal memory at the possible cost of performance
+degradation for devmem, does it not defeat some purpose of intergating devmem
+to page_pool?
+
+> 
+>> Even though a static_branch check is added in page_is_page_pool_iov(), it
+>> does not make much sense that a core has tow different 'struct' for its
+>> most basic data.
+>>
+>> IMHO, the ppiov for dmabuf is forced fitting into page_pool without much
+>> design consideration at this point.
+>>
+> ...
+>>
+>> For now, the above may work for the the rx part as it seems that you are
+>> only enabling rx for dmabuf for now.
+>>
+>> What is the plan to enable tx for dmabuf? If it is also intergrated into
+>> page_pool? There was a attempt to enable page_pool for tx, Eric seemed to
+>> have some comment about this:
+>> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
+>>
+>> If tx is not intergrated into page_pool, do we need to create a new layer for
+>> the tx dmabuf?
+>>
+> 
+> I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
+> helpers, and page_pool_page_*() helpers, but will not need any core
+> page_pool changes. This is because the TX path will have to piggyback
+
+We may need another bit/flags checking to demux between page_pool owned
+devmem and non-page_pool owned devmem.
+
+Also calling page_pool_*() on non-page_pool owned devmem is confusing
+enough that we may need a thin layer handling non-page_pool owned devmem
+in the end.
+
+> on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation from
+> the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
+> implementation based on dmabuf pages without page_pool involvement, I
+> imagine I'll do something similar.
+It would be good to have a tx implementation for the next version, so
+that we can have a whole picture of devmem.
+
+> 
