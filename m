@@ -2,210 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 724DE80C073
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D4580C071
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjLKEdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 23:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
+        id S232848AbjLKEjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 23:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLKEdy (ORCPT
+        with ESMTP id S229448AbjLKEjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 23:33:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E53EB
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:34:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35BE8C433C9;
-        Mon, 11 Dec 2023 04:34:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702269240;
-        bh=WQmmFM7+2b72O3G9hhh8eE5TPDlkXNRawk8A5t2M6a0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N0l7Q09eJQfnZG3INq9PmZNflY3/gnjtU8zNyadwdLx0/TobCxRHx02CNi709mUg5
-         sgiuOIct99rGCRbU+UYfiUdz9oHm+XUteen52qrycNrl4OoPOBuM/cSdKET+dzwOwo
-         tB0d5QNGjt3CJ5P8MSHMFCpB39A50mkpnXuRBtwU1cZD1R+IfXVBJ2/EMPCJh3Hqya
-         IX14UW45+6rMt8Mo7Be/wdf7jS8W7BpNWxinbCdZtH2hBfxNkHD3LH8rNHLq/4u8KP
-         TJoqroqRvDb5+gC3Xoepp8ETQMbpWGunOLygdRxD1lAJsOTQmPFh7AMVz8wRWKKqTF
-         OMmfvPdS8eUSw==
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1f055438492so3137632fac.3;
-        Sun, 10 Dec 2023 20:34:00 -0800 (PST)
-X-Gm-Message-State: AOJu0YwptOjbjwhMHAOmSNIK51aXLCbuRwUb1jHJ8/UvbxfqT1OioH8O
-        gnSJS5s/eXPuv1bu3akkfdfkF1B80XDm6apmKQM=
-X-Google-Smtp-Source: AGHT+IFdfuvVnqdIw+nEBCBLTwqVHHKzBwvprtFPw8eRbTPB1nNuDJEduyiDoWC1q3sixGIIxvs/bRMo8vtmB4NEVS0=
-X-Received: by 2002:a05:6870:a454:b0:1fa:f170:bf27 with SMTP id
- n20-20020a056870a45400b001faf170bf27mr4673457oal.40.1702269239586; Sun, 10
- Dec 2023 20:33:59 -0800 (PST)
+        Sun, 10 Dec 2023 23:39:01 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AC6F1;
+        Sun, 10 Dec 2023 20:39:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1702269546;
+        bh=ARe2WiYTYarVV8zakJUOA4IyWPnjsMkkih8W6w6qPxo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XUermV09HIq7zbeM530Y+p8KUiSnOtcRdvKK7lOxGEEk7UpomONeLy+AtLa/bUpVV
+         OJmJuEq1EN47PspkZx1b+mkQfihbN+OFdyw29whZJc5UX/StBqGk/6tqCRpqnK+eVK
+         UXQJ7M2V+aP9ilXTlIXMlhiH9NszefBi1HnNxJSpdnA0s7blKEiqgt1EVpFF0l979I
+         WizfSUjXHNw68yMP26VyGdOukdQMRnzlaRnVdfe6OLHbSJpcfiLCll6u0DkGfXOm73
+         DMlpDLXuiS8ZWprVRkrVHUG4Y0wnteDNAJFx6rvBQ4xx/273BRlnh4UX7hRZURI4EF
+         jssxUYamAOdtQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpTXp0B06z4x2W;
+        Mon, 11 Dec 2023 15:39:05 +1100 (AEDT)
+Date:   Mon, 11 Dec 2023 15:39:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>
+Subject: Re: linux-next: manual merge of the efi tree with the efi-fixes
+ tree
+Message-ID: <20231211153905.6cbf7dcb@canb.auug.org.au>
+In-Reply-To: <20231211151303.1286eda5@canb.auug.org.au>
+References: <20231211151303.1286eda5@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAK7LNAT3N82cJD3GsF+yUBEfPNOBkhzYPk37q3k0HdU7ukz9vQ@mail.gmail.com>
- <baa3224bece94220dfe7173432143a91f7612c09.1701892062.git.msuchanek@suse.de>
- <CAK7LNARdnt0QXn6TRbuS_wzzMVXTY6NrCnu9WOM6PFztnyRmuQ@mail.gmail.com> <20231210210859.GN9696@kitsune.suse.cz>
-In-Reply-To: <20231210210859.GN9696@kitsune.suse.cz>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 11 Dec 2023 13:33:23 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQo1p3dmdoqQRM_JxBp78Rxj5YpVqXGzMr5Xs9K-V3BiA@mail.gmail.com>
-Message-ID: <CAK7LNAQo1p3dmdoqQRM_JxBp78Rxj5YpVqXGzMr5Xs9K-V3BiA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] kbuild: rpm-pkg: Fix build with non-default MODLIB
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/CfHjMo=cqgXajriNPpRcQwj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 6:09=E2=80=AFAM Michal Such=C3=A1nek <msuchanek@sus=
-e.de> wrote:
->
-> On Mon, Dec 11, 2023 at 03:44:35AM +0900, Masahiro Yamada wrote:
-> > On Thu, Dec 7, 2023 at 4:48=E2=80=AFAM Michal Suchanek <msuchanek@suse.=
-de> wrote:
-> > >
-> > > The default MODLIB value is composed of three variables
-> > >
-> > > MODLIB =3D $(INSTALL_MOD_PATH)$(KERNEL_MODULE_DIRECTORY)/$(KERNELRELE=
-ASE)
-> > >
-> > > However, the kernel.spec hadcodes the default value of
-> > > $(KERNEL_MODULE_DIRECTORY), and changed value is not reflected when
-> > > building the package.
-> > >
-> > > Pass KERNEL_MODULE_DIRECTORY to kernel.spec to fix this problem.
-> > >
-> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > ---
-> > > Build on top of the previous patch adding KERNEL_MODULE_DIRECTORY
-> >
-> >
-> > The SRPM package created by 'make srcrpm-pkg' may not work
-> > if rpmbuild is executed in a different machine.
->
-> That's why there is an option to override KERNEL_MODULE_DIRECTORY?
+--Sig_/CfHjMo=cqgXajriNPpRcQwj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Yes.
-But, as I pointed out in 1/2, depmod must follow the packager's decision.
+On Mon, 11 Dec 2023 15:13:03 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the efi tree got a conflict in:
+>=20
+>   fs/efivarfs/super.c
+>=20
+> between commits:
+>=20
+>   0b6d38bdd6f8 ("efivarfs: Free s_fs_info on unmount")
+>   ab5c4251a009 ("efivarfs: Move efivarfs list into superblock s_fs_info")
+>=20
+> from the efi-fixes tree and commit:
+>=20
+>   b501d5b36f58 ("efivarfs: automatically update super block flag")
+>=20
+> from the efi tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-'make srcrpm-pkg' creates a SRPM on machine A.
-'rpmbuild' builds it into binary RPMs on machine B.
+Actually the below is needed. ("info" is not a great name for, even a
+static, global variable.  And maybe what I have called "einfo" could be
+"sfi" like in efivarfs_kill_sb() ...)
+--=20
+Cheers,
+Stephen Rothwell
 
-If A and B disagree about kmod.pc, depmod will fail
-because there is no code to force the decision made
-on machine A.
+diff --cc fs/efivarfs/super.c
+index d7d9a3e189a0,42eff5ac7ab4..d209475a8a49
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@@ -18,6 -20,32 +20,30 @@@
+ =20
+  #include "internal.h"
+ =20
+ -LIST_HEAD(efivarfs_list);
+ -
++ struct efivarfs_info {
++ 	struct super_block *sb;
++ 	struct notifier_block nb;
++ };
++=20
++ static struct efivarfs_info info;
++=20
++ static int efivarfs_ops_notifier(struct notifier_block *nb, unsigned long=
+ event,
++ 				 void *data)
++ {
++ 	switch (event) {
++ 	case EFIVAR_OPS_RDONLY:
++ 		info.sb->s_flags |=3D SB_RDONLY;
++ 		break;
++ 	case EFIVAR_OPS_RDWR:
++ 		info.sb->s_flags &=3D ~SB_RDONLY;
++ 		break;
++ 	default:
++ 		return NOTIFY_DONE;
++ 	}
++=20
++ 	return NOTIFY_OK;
++ }
++=20
+  static void efivarfs_evict_inode(struct inode *inode)
+  {
+  	clear_inode(inode);
+@@@ -290,7 -317,6 +316,7 @@@ static int efivarfs_parse_param(struct=20
+ =20
+  static int efivarfs_fill_super(struct super_block *sb, struct fs_context =
+*fc)
+  {
+- 	struct efivarfs_fs_info *info =3D sb->s_fs_info;
+++	struct efivarfs_fs_info *einfo =3D sb->s_fs_info;
+  	struct inode *inode =3D NULL;
+  	struct dentry *root;
+  	int err;
+@@@ -316,10 -345,17 +342,16 @@@
+  	if (!root)
+  		return -ENOMEM;
+ =20
++ 	info.sb =3D sb;
++ 	info.nb.notifier_call =3D efivarfs_ops_notifier;
++ 	err =3D blocking_notifier_chain_register(&efivar_ops_nh, &info.nb);
++ 	if (err)
++ 		return err;
++=20
+ -	INIT_LIST_HEAD(&efivarfs_list);
+ -
+ -	err =3D efivar_init(efivarfs_callback, (void *)sb, true, &efivarfs_list);
+ +	err =3D efivar_init(efivarfs_callback, (void *)sb, true,
+- 			  &info->efivarfs_list);
+++			  &einfo->efivarfs_list);
+  	if (err)
+- 		efivar_entry_iter(efivarfs_destroy, &info->efivarfs_list, NULL);
+ -		efivar_entry_iter(efivarfs_destroy, &efivarfs_list, NULL);
+++		efivar_entry_iter(efivarfs_destroy, &einfo->efivarfs_list, NULL);
+ =20
+  	return err;
+  }
+@@@ -357,13 -399,15 +400,15 @@@ static int efivarfs_init_fs_context(str
+ =20
+  static void efivarfs_kill_sb(struct super_block *sb)
+  {
+ +	struct efivarfs_fs_info *sfi =3D sb->s_fs_info;
+ +
++ 	blocking_notifier_chain_unregister(&efivar_ops_nh, &info.nb);
++ 	info.sb =3D NULL;
+  	kill_litter_super(sb);
+ =20
+ -	if (!efivar_is_available())
+ -		return;
+ -
+  	/* Remove all entries and destroy */
+ -	efivar_entry_iter(efivarfs_destroy, &efivarfs_list, NULL);
+ +	efivar_entry_iter(efivarfs_destroy, &sfi->efivarfs_list, NULL);
+ +	kfree(sfi);
+  }
+ =20
+  static struct file_system_type efivarfs_type =3D {
 
+--Sig_/CfHjMo=cqgXajriNPpRcQwj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV2kmkACgkQAVBC80lX
+0Gx/oQf+Np0FMi0jhZMQ+WbOU7bibnjtdOYhKGnoVRWXIbCM93RLvcVecuYmnbcI
+myygrEeOFjwYVUbtyndnfP60GiJeEkuV0lQNty7CWCaQD7oH2mSyh2WUue76t7KR
+zgTWKqkkRfnb4bt6CBiqOucftBUkrqwEsaL4B3jnSVRNi55hp/BsHImpgY6RQ8/g
+3JB8fo7qVu+ySBpFkkQimJuGracJDaj2JCk9Wbf/p7M6Lv/6Xxfy3H/ZuBqO9o2s
+t0I9JOY6nmr5fylYXauRANynTFWrXZHfVEYyjEYWR+e7epa3mp5gi1IrJp8c6i6U
+9s249bvaFE7x2096qXsA1UNI5M8vlw==
+=5vYV
+-----END PGP SIGNATURE-----
 
-
-
-
-
-
-
-
-
-> Thanks
->
-> Michal
->
-> >
-> >
-> >
-> > %{make} %{makeflags} INSTALL_MOD_PATH=3D%{buildroot}
-> > KERNEL_MODULE_DIRECTORY=3D%{KERNEL_MODULE_DIRECTORY} modules_install
-> >
-> >
-> > will align with the specified install destination,
-> > but depmod will still fail.
-> > (same issue as 1/2)
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> >
-> > > ---
-> > >  scripts/package/kernel.spec | 8 ++++----
-> > >  scripts/package/mkspec      | 1 +
-> > >  2 files changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spe=
-c
-> > > index 3eee0143e0c5..12996ed365f8 100644
-> > > --- a/scripts/package/kernel.spec
-> > > +++ b/scripts/package/kernel.spec
-> > > @@ -67,7 +67,7 @@ cp $(%{make} %{makeflags} -s image_name) %{buildroo=
-t}/boot/vmlinuz-%{KERNELRELEA
-> > >  %{make} %{makeflags} INSTALL_HDR_PATH=3D%{buildroot}/usr headers_ins=
-tall
-> > >  cp System.map %{buildroot}/boot/System.map-%{KERNELRELEASE}
-> > >  cp .config %{buildroot}/boot/config-%{KERNELRELEASE}
-> > > -ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}/lib/modules/%=
-{KERNELRELEASE}/build
-> > > +ln -fns /usr/src/kernels/%{KERNELRELEASE} %{buildroot}%{KERNEL_MODUL=
-E_DIRECTORY}/%{KERNELRELEASE}/build
-> > >  %if %{with_devel}
-> > >  %{make} %{makeflags} run-command KBUILD_RUN_COMMAND=3D'${srctree}/sc=
-ripts/package/install-extmod-build %{buildroot}/usr/src/kernels/%{KERNELREL=
-EASE}'
-> > >  %endif
-> > > @@ -98,8 +98,8 @@ fi
-> > >
-> > >  %files
-> > >  %defattr (-, root, root)
-> > > -/lib/modules/%{KERNELRELEASE}
-> > > -%exclude /lib/modules/%{KERNELRELEASE}/build
-> > > +%{KERNEL_MODULE_DIRECTORY}/%{KERNELRELEASE}
-> > > +%exclude %{KERNEL_MODULE_DIRECTORY}/%{KERNELRELEASE}/build
-> > >  /boot/*
-> > >
-> > >  %files headers
-> > > @@ -110,5 +110,5 @@ fi
-> > >  %files devel
-> > >  %defattr (-, root, root)
-> > >  /usr/src/kernels/%{KERNELRELEASE}
-> > > -/lib/modules/%{KERNELRELEASE}/build
-> > > +%{KERNEL_MODULE_DIRECTORY}/%{KERNELRELEASE}/build
-> > >  %endif
-> > > diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-> > > index ce201bfa8377..e952fa4f2937 100755
-> > > --- a/scripts/package/mkspec
-> > > +++ b/scripts/package/mkspec
-> > > @@ -24,6 +24,7 @@ fi
-> > >  cat<<EOF
-> > >  %define ARCH ${ARCH}
-> > >  %define KERNELRELEASE ${KERNELRELEASE}
-> > > +%define KERNEL_MODULE_DIRECTORY ${KERNEL_MODULE_DIRECTORY}
-> > >  %define pkg_release $("${srctree}/init/build-version")
-> > >  EOF
-> > >
-> > > --
-> > > 2.42.0
-> > >
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-
-
-
---
-Best Regards
-Masahiro Yamada
+--Sig_/CfHjMo=cqgXajriNPpRcQwj--
