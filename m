@@ -2,202 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC1680CF55
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F0680CF58
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjLKPVZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 10:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
+        id S1344201AbjLKPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343886AbjLKPVX (ORCPT
+        with ESMTP id S1344024AbjLKPVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:21:23 -0500
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF419DC;
-        Mon, 11 Dec 2023 07:21:28 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54dccf89cfdso5950445a12.0;
-        Mon, 11 Dec 2023 07:21:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308087; x=1702912887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0V/QyVp20sRTGALaesW9AkK6phzk9B8NcFWzyoFDK4I=;
-        b=eNXqRo0w76I2I3wT0P/sfyaT9KvEtupUECavsd27ftdxS8ENZx061F0NcJ4VQmyQLr
-         BGoXnGq6vW7/SA360S7xKoGkGZnCj84Gmq+w0DHxOnDKYuQPbgL3wMJAQzfFnF/Sg52l
-         j88uhj/3NccIq/7CMxx8KWb9uc18gTqp7wqoZOerWRvQR5DuBfnR8WKR9zA0bQKpil7N
-         cKWvQXioaAFhIbU4fsd93wO/XVZWTHxndh8mR9jzC1kk43S5GNfHhyOp9MR8fOr/YOgu
-         gsF0WVtpAG3vjv+1AFIp+A2k9dM+DpFop1s76yfTUlaz57RtdXilYGAUFbZIyy8foWXK
-         cFeg==
-X-Gm-Message-State: AOJu0YzXG7U7jGRBf+9oSvm490TVP0l0dYrg4aDVa0cUFz2UoNSEyFpa
-        1ZRZHZ+iBfsl5V031RuXJMu1Gdas/Udx+w==
-X-Google-Smtp-Source: AGHT+IEFRB4R+dj4xGP4tpjDKTPi1cEF9jtHgRro3Gsd13xcoey7+8J0MLLMKLfKq9h642sRPyk7Rg==
-X-Received: by 2002:a17:906:a843:b0:a1b:763c:b382 with SMTP id dx3-20020a170906a84300b00a1b763cb382mr2029522ejb.115.1702308086825;
-        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id vc11-20020a170907d08b00b00a1b6d503e7esm4936745ejc.157.2023.12.11.07.21.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a1ef2f5ed02so490251966b.1;
-        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
-X-Received: by 2002:a17:906:74cf:b0:9ff:53b6:f951 with SMTP id
- z15-20020a17090674cf00b009ff53b6f951mr2295900ejl.23.1702308086468; Mon, 11
- Dec 2023 07:21:26 -0800 (PST)
+        Mon, 11 Dec 2023 10:21:45 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A437EB;
+        Mon, 11 Dec 2023 07:21:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=YcekLTjh5+mk+lg76W+7hew/vEd7NOWaaenP7iwljuk=; b=1gHoyuRtBp6OwbKss/KRVZRgTx
+        sitogZHN0shuA9eFrOI+8VEWHffM/iBomO4CuhwApypwyYqt/41wPkzxPuoP97UqdiylyQhzGN9X2
+        bOUbmeHrtcj2+cUQjbE8gzPxRetCjMcwU5kb1dIFwBM5ZxtbzatjKnHkMh4U3GGAMZS0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rCi6H-002dIn-QD; Mon, 11 Dec 2023 16:21:41 +0100
+Date:   Mon, 11 Dec 2023 16:21:41 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v1 2/2] net: phy: Add support for the DP83TG720S
+ Ethernet PHY
+Message-ID: <cfd4f8bd-a06a-4489-8304-e9576151dbce@lunn.ch>
+References: <20231208151159.2791794-1-o.rempel@pengutronix.de>
+ <20231208151159.2791794-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <2633992.1702073229@warthog.procyon.org.uk>
-In-Reply-To: <2633992.1702073229@warthog.procyon.org.uk>
-From:   Marc Dionne <marc.dionne@auristor.com>
-Date:   Mon, 11 Dec 2023 11:21:15 -0400
-X-Gmail-Original-Message-ID: <CAB9dFdtXuzrhog3qcPKseSH8j0B6JcL-LJL6e-=Xhtb6wPAseg@mail.gmail.com>
-Message-ID: <CAB9dFdtXuzrhog3qcPKseSH8j0B6JcL-LJL6e-=Xhtb6wPAseg@mail.gmail.com>
-Subject: Re: [PATCH] afs: Fix refcount underflow from error handling race
-To:     David Howells <dhowells@redhat.com>
-Cc:     Bill MacAllister <bill@ca-zephyr.org>,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208151159.2791794-2-o.rempel@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 6:07 PM David Howells <dhowells@redhat.com> wrote:
->
-> If an AFS cell that has an unreachable (eg. ENETUNREACH) Volume Location
-> server listed, an asynchronous probe to one of its addresses may fail
-> immediately because sendmsg() returns an error.  When this happens, a
-> refcount underflow can happen if certain events hit a very small window.
->
-> The way this occurs is:
->
->  (1) There are two levels of "call" object, the afs_call and the
->      rxrpc_call.  Each of them can be transitioned to a "completed" state
->      in the event of success or failure.
->
->  (2) Asynchronous afs_calls are self-referential whilst they are active to
->      prevent them from evaporating when they're not being processed.  This
->      reference is disposed of when the afs_call is completed.
->
->      Note that an afs_call may only be completed once; once completed
->      completing it again will do nothing.
->
->  (3) When a call transmission is made, the app-side rxrpc code queues a Tx
->      buffer for the rxrpc I/O thread to transmit.  The I/O thread invokes
->      sendmsg() to transmit it - and in the case of failure, it transitions
->      the rxrpc_call to the completed state.
->
->  (4) When an rxrpc_call is completed, the app layer is notified.  In this
->      case, the app is kafs and it schedules a work item to process events
->      pertaining to an afs_call.
->
->  (5) When the afs_call event processor is run, it goes down through the
->      RPC-specific handler to afs_extract_data() to retrieve data from rxrpc
->      - and, in this case, it picks up the error from the rxrpc_call and
->      returns it.
->
->      The error is then propagated to the afs_call and that is completed
->      too.  At this point the self-reference is released.
->
->  (6) If the rxrpc I/O thread manages to complete the rxrpc_call within the
->      window between rxrpc_send_data() queuing the request packet and
->      checking for call completion on the way out, then
->      rxrpc_kernel_send_data() will return the error from sendmsg() to the
->      app.
->
->  (7) Then afs_make_call() will see an error and will jump to the error
->      handling path which will attempt to clean up the afs_call.
->
->  (8) The problem comes when the error handling path in afs_make_call()
->      tries to unconditionally drop an async afs_call's self-reference.
->      This self-reference, however, may already have been dropped by
->      afs_extract_data() completing the afs_call
->
->  (9) The refcount underflows when we return to afs_do_probe_vlserver() and
->      that tries to drop its reference on the afs_call.
->
-> Fix this by making afs_make_call() attempt to complete the afs_call rather
-> than unconditionally putting it.  That way, if afs_extract_data() manages
-> to complete the call first, afs_make_call() won't do anything.
->
-> The bug can be forced by making do_udp_sendmsg() return -ENETUNREACH and
-> sticking an msleep() in rxrpc_send_data() after the 'success:' label.
->
-> The error message looks something like:
->
->     refcount_t: underflow; use-after-free.
->     WARNING: CPU: 3 PID: 720 at lib/refcount.c:28 refcount_warn_saturate+0xba/0x110
->     ...
->     RIP: 0010:refcount_warn_saturate+0xba/0x110
->     ...
->     afs_put_call+0x1dc/0x1f0 [kafs]
->     afs_fs_get_capabilities+0x8b/0xe0 [kafs]
->     afs_fs_probe_fileserver+0x188/0x1e0 [kafs]
->     afs_lookup_server+0x3bf/0x3f0 [kafs]
->     afs_alloc_server_list+0x130/0x2e0 [kafs]
->     afs_create_volume+0x162/0x400 [kafs]
->     afs_get_tree+0x266/0x410 [kafs]
->     vfs_get_tree+0x25/0xc0
->     fc_mount+0xe/0x40
->     afs_d_automount+0x1b3/0x390 [kafs]
->     __traverse_mounts+0x8f/0x210
->     step_into+0x340/0x760
->     path_openat+0x13a/0x1260
->     do_filp_open+0xaf/0x160
->     do_sys_openat2+0xaf/0x170
->
-> or something like:
->
->     refcount_t: underflow; use-after-free.
->     ...
->     RIP: 0010:refcount_warn_saturate+0x99/0xda
->     ...
->     afs_put_call+0x4a/0x175
->     afs_send_vl_probes+0x108/0x172
->     afs_select_vlserver+0xd6/0x311
->     afs_do_cell_detect_alias+0x5e/0x1e9
->     afs_cell_detect_alias+0x44/0x92
->     afs_validate_fc+0x9d/0x134
->     afs_get_tree+0x20/0x2e6
->     vfs_get_tree+0x1d/0xc9
->     fc_mount+0xe/0x33
->     afs_d_automount+0x48/0x9d
->     __traverse_mounts+0xe0/0x166
->     step_into+0x140/0x274
->     open_last_lookups+0x1c1/0x1df
->     path_openat+0x138/0x1c3
->     do_filp_open+0x55/0xb4
->     do_sys_openat2+0x6c/0xb6
->
-> Fixes: 34fa47612bfe ("afs: Fix race in async call refcounting")
-> Reported-by: Bill MacAllister <bill@ca-zephyr.org>
-> Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1052304
-> Suggested-by: Jeffrey E Altman <jaltman@auristor.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Marc Dionne <marc.dionne@auristor.com>
-> cc: linux-afs@lists.infradead.org
+On Fri, Dec 08, 2023 at 04:11:59PM +0100, Oleksij Rempel wrote:
+> The DP83TG720S-Q1 device is an IEEE 802.3bp and Open Alliance compliant
+> automotive Ethernet physical layer transceiver.
+> 
+> This driver was tested with i.MX8MP EQOS (stmmac) on the MAC side and
+> TI same PHY on other side.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->  fs/afs/rxrpc.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-> index ed1644e7683f..d642d06a453b 100644
-> --- a/fs/afs/rxrpc.c
-> +++ b/fs/afs/rxrpc.c
-> @@ -424,7 +424,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
->         if (call->async) {
->                 if (cancel_work_sync(&call->async_work))
->                         afs_put_call(call);
-> -               afs_put_call(call);
-> +               afs_set_call_complete(call, ret, 0);
->         }
->
->         ac->error = ret;
+>  drivers/net/phy/Kconfig     |  13 +++
+>  drivers/net/phy/Makefile    |   1 +
+>  drivers/net/phy/dp83tg720.c | 190 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 204 insertions(+)
+>  create mode 100644 drivers/net/phy/dp83tg720.c
+> 
+> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+> index 25cfc5ded1da..bab10c796f24 100644
+> --- a/drivers/net/phy/Kconfig
+> +++ b/drivers/net/phy/Kconfig
+> @@ -372,6 +372,19 @@ config DP83TC811_PHY
+>  	help
+>  	  Supports the DP83TC811 PHY.
+>  
+> +config DP83TG720_PHY
+> +	tristate "Texas Instruments DP83TG720 Ethernet 1000Base-T1 PHY"
+> +	help
+> +	  The DP83TG720S-Q1 is an automotive Ethernet physical layer
+> +	  transceiver compliant with IEEE 802.3bp and Open Alliance
+> +	  standards. It supports key functions necessary for
+> +	  transmitting and receiving data over both unshielded and
+> +	  shielded single twisted-pair cables. This device offers
+> +	  flexible xMII interface options, including support for both
+> +	  RGMII and SGMII MAC interfaces. It's suitable for applications
+> +	  requiring high-speed data transmission in automotive
+> +	  networking environments.
+> +
+>  config DP83848_PHY
+>  	tristate "Texas Instruments DP83848 PHY"
+>  	help
+> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+> index f65e85c91fc1..defaef190962 100644
+> --- a/drivers/net/phy/Makefile
+> +++ b/drivers/net/phy/Makefile
+> @@ -56,6 +56,7 @@ obj-$(CONFIG_DP83848_PHY)	+= dp83848.o
+>  obj-$(CONFIG_DP83867_PHY)	+= dp83867.o
+>  obj-$(CONFIG_DP83869_PHY)	+= dp83869.o
+>  obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811.o
+> +obj-$(CONFIG_DP83TG720_PHY)	+= dp83tg720.o
+>  obj-$(CONFIG_DP83TD510_PHY)	+= dp83td510.o
 
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-Tested-by: Marc Dionne <marc.dionne@auristor.com>
+Maybe it should come after CONFIG_DP83TD510_PHY in a strict sort ? I
+also wounder about the Kconfig, which should be sorted on the tristate
+string.
+
+>  obj-$(CONFIG_FIXED_PHY)		+= fixed_phy.o
+>  obj-$(CONFIG_ICPLUS_PHY)	+= icplus.o
+> +		/* After HW reset we need to restore master/slave configuration.
+> +		 */
+> +		if (phydev->drv->config_aneg) {
+
+This test is a bit strange. You know it exists, its this driver and
+the function is there. Why not call it directly?
+
+> +			ret = phydev->drv->config_aneg(phydev);
+> +			if (ret)
+> +				return ret;
+> +		}
+
+
+    Andrew
+
+---
+pw-bot: cr
