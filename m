@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E6180D3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136A280D3F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344715AbjLKRe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
+        id S1344729AbjLKRfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344738AbjLKRez (ORCPT
+        with ESMTP id S1344736AbjLKRfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:34:55 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC97F101
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:34:59 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-336121f93e3so1304517f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:34:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702316098; x=1702920898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gstntUJJhuUruQ6CLNsepakisEqtUTeEbOuI9lM82/A=;
-        b=q99BuM+YhGN4lKfpf3MGaomsJifhCbtczimCixr3f6qWNcTug2KRXhqiZgm4qKk1pm
-         D6lUOVIyjQYDL6chdWBNsYypi1PRs41p/26LtIeR5zqa3l2xEIDRyoU9HgPOVaptvyt6
-         +e73dW48t7eyConI/pXcdcm7VnxO3L+/liSPNb/o6pAVJqL/g21LEoo306UgBn+CsKB0
-         58wxMYb4PxUH1s690OLgIbo7UVquXJ+uj38Fk6gGJrxJlrR05MXMlSlNnv1uipwC2KF4
-         aY5/FbIfRoXOvbHfkZFzdWX11P3R7eNDVO5z4QcvciMilv5E+yuJ0Tv7fgllNi9gzL0i
-         mYOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702316098; x=1702920898;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gstntUJJhuUruQ6CLNsepakisEqtUTeEbOuI9lM82/A=;
-        b=uPvT7qY19pkfLyH1ciRXisOXLJonW9OiC5nCQUyvAMCbSHLCAjFtN4ZokY3flXvBmC
-         e24zNj+d/RSY81RTZIuoAxicE3ZVzhsFYne2GIZQ4e/0wvBkDFMYxfU5InQXlZpEhE+r
-         eE7qO0+j97Y7mr1LPYTVArMrsrJCTnk9yCQ7OiA5KmOthqTJhEJLZCUXjIlLFGAyONjB
-         RCMmOrXpZ4S3PRgYR0A0B6A+nalX1htF86OZt/Yi/KdP5m/9YIpxBCXpbr7ZKy1kAP4b
-         0JNEeIvU2u/AQ/2EOoZVxNXIB7Kz01mimwRpQwMRNZWX2sOQSe3Iyh5yJD2lOwQ8LJGi
-         J1qg==
-X-Gm-Message-State: AOJu0YxIW4p1Sz6TTara0fn/GzybEleqmJ/OdH+5weIdjBJcWDYJ4cS3
-        wy7vb27BLuCVNmd0778qjqW2tw==
-X-Google-Smtp-Source: AGHT+IE1Y4VjQWuMP84YdtKDSoXd37/lYS2QFZAq/+DEf2E0klWmPSB2zntnCZYi2oLFGBPADo4Fqg==
-X-Received: by 2002:a5d:4712:0:b0:332:f501:8b56 with SMTP id y18-20020a5d4712000000b00332f5018b56mr2572878wrq.23.1702316098228;
-        Mon, 11 Dec 2023 09:34:58 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id g3-20020adff403000000b003335ddce799sm9046899wro.103.2023.12.11.09.34.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 09:34:57 -0800 (PST)
-Message-ID: <535558f8-096b-4917-92d2-b0defed42b15@linaro.org>
-Date:   Mon, 11 Dec 2023 18:34:57 +0100
+        Mon, 11 Dec 2023 12:35:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E41FF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:35:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92FAEC43391;
+        Mon, 11 Dec 2023 17:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702316123;
+        bh=OA6WY7PsIMKHNNWqKQfhrU0poMqRlsR4oyu4mqLEexM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dOTw12+eR3BKCNSiPZQ9ha2kc68XifXzVT9xAhzQwy5JF280nD9J5sJYk1nLeGkOV
+         OChwBQYlIJO0zOhksiKDKX/GQsQin7KgmX0Naq6chv1PJqnoeJw8/d8DYIGhVkUz4z
+         b7SikoU8ug14YAo+zmxQW5kstU4uB+ZLulfejueQ5Is7/yEE9lF47EkYIwEqqLv3ym
+         REWCcX02EsIPpmU91VtnhwZyM2sWRi+Sd7DKnsT1vmJ4x94nXjf7yb2NAgyD87ugwZ
+         vKty4UZK+bMZQ905n2RaOGD9p1hnTm+6yXT8rlGK6iF6/N8sQsz8fekdnpluYL6kX0
+         4WFyWx5mDYbvA==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50bf4f97752so6052767e87.1;
+        Mon, 11 Dec 2023 09:35:23 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywlc47JGaKR7m2B/IsSIerfZmCjycgYPOWRFYaI3lRJrXo4HJcA
+        iHTS2M4YNEQh0simwrpdU4YJduwo00DgyiVBUw==
+X-Google-Smtp-Source: AGHT+IF8mAabQNOevm2mF4ft0Ec2oy4GE7m1ImyfsN8vFMUx+mMAI4J3ZK9luzO+/ENyGmdvmphfs+ANkWm1Aq41l8U=
+X-Received: by 2002:a05:6512:ea3:b0:50b:f1e9:c478 with SMTP id
+ bi35-20020a0565120ea300b0050bf1e9c478mr3017354lfb.75.1702316121789; Mon, 11
+ Dec 2023 09:35:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] thermal: core: Make
- thermal_zone_device_unregister() return after freeing the zone
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <1880915.tdWV9SEqCh@kreacher> <13414639.uLZWGnKmhe@kreacher>
- <0a0d5dd4-6b7a-428b-8ef1-bb6aff76fb51@linaro.org>
- <CAJZ5v0jebeWzUb-q-_xThRwZgUzaUfqS4YTGmsvbsOPrqFcYTQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0jebeWzUb-q-_xThRwZgUzaUfqS4YTGmsvbsOPrqFcYTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231211074120.27958-1-xinhu.wu@unisoc.com> <20231211074120.27958-2-xinhu.wu@unisoc.com>
+In-Reply-To: <20231211074120.27958-2-xinhu.wu@unisoc.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 11 Dec 2023 11:35:09 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLHpEwFucp+i2EDZ7Th3CDe85=nF14S58vO1uqUmo7JRQ@mail.gmail.com>
+Message-ID: <CAL_JsqLHpEwFucp+i2EDZ7Th3CDe85=nF14S58vO1uqUmo7JRQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] usb: typec: Support sprd_pmic_typec driver
+To:     Xinhu Wu <xinhu.wu@unisoc.com>
+Cc:     gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, orsonzhai@gmail.com,
+        baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
+        heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xinhuwu.unisoc@gmail.com, zhiyong.liu@unisoc.com,
+        peak.yang@unisoc.com, teng.zhang1@unisoc.com,
+        bruce.chen@unisoc.com, surong.pang@unisoc.com,
+        xingxing.luo@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2023 17:42, Rafael J. Wysocki wrote:
-> On Mon, Dec 11, 2023 at 5:28 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> On 08/12/2023 20:13, Rafael J. Wysocki wrote:
->>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>
->>> Make thermal_zone_device_unregister() wait until all of the references
->>> to the given thermal zone object have been dropped and free it before
->>> returning.
->>>
->>> This guarantees that when thermal_zone_device_unregister() returns,
->>> there is no leftover activity regarding the thermal zone in question
->>> which is required by some of its callers (for instance, modular driver
->>> code that wants to know when it is safe to let the module go away).
->>>
->>> Subsequently, this will allow some confusing device_is_registered()
->>> checks to be dropped from the thermal sysfs and core code.
->>>
->>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>> ---
->>
->> Definitively agree on the change
->>
->> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> 
-> Thanks!
-> 
->> Would it make sense to use kref_get/put ?
-> 
-> Why and where?
+On Mon, Dec 11, 2023 at 1:42=E2=80=AFAM Xinhu Wu <xinhu.wu@unisoc.com> wrot=
+e:
+>
+> Add Unisoc PMIC typec driver.The Unisoc PMIC typec driver handles the
+> role and orientation detection, and notifies client drivers using
+> extcon mechanism.
+>
+> Signed-off-by: Xinhu Wu <xinhu.wu@unisoc.com>
+> ---
+>  drivers/usb/typec/Kconfig           |  11 +
+>  drivers/usb/typec/Makefile          |   1 +
+>  drivers/usb/typec/sprd_pmic_typec.c | 587 ++++++++++++++++++++++++++++
+>  3 files changed, 599 insertions(+)
+>  create mode 100644 drivers/usb/typec/sprd_pmic_typec.c
+>
+> diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
+> index 2f80c2792dbd..47b4468315aa 100644
+> --- a/drivers/usb/typec/Kconfig
+> +++ b/drivers/usb/typec/Kconfig
+> @@ -110,6 +110,17 @@ config TYPEC_WUSB3801
+>           If you choose to build this driver as a dynamically linked modu=
+le, the
+>           module will be called wusb3801.ko.
+>
+> +config TYPEC_SPRD_PMIC
+> +       tristate "SPRD Serials PMICs Typec Controller"
+> +       help
+> +         Say Y or M here if your system has a SPRD PMIC Type-C port cont=
+roller.
+> +
+> +         If you choose to build this driver as a dynamically linked modu=
+le, the
+> +         module will be called sprd_pmic_typec.ko.
+> +         SPRD_PMIC_TYPEC notify usb, phy, charger, and analog audio to p=
+roceed
+> +         with work
+> +
+> +
+>  source "drivers/usb/typec/mux/Kconfig"
+>
+>  source "drivers/usb/typec/altmodes/Kconfig"
+> diff --git a/drivers/usb/typec/Makefile b/drivers/usb/typec/Makefile
+> index 7a368fea61bc..81818c2fa890 100644
+> --- a/drivers/usb/typec/Makefile
+> +++ b/drivers/usb/typec/Makefile
+> @@ -11,4 +11,5 @@ obj-$(CONFIG_TYPEC_HD3SS3220) +=3D hd3ss3220.o
+>  obj-$(CONFIG_TYPEC_STUSB160X)  +=3D stusb160x.o
+>  obj-$(CONFIG_TYPEC_RT1719)     +=3D rt1719.o
+>  obj-$(CONFIG_TYPEC_WUSB3801)   +=3D wusb3801.o
+> +obj-$(CONFIG_TYPEC_SPRD_PMIC)  +=3D sprd_pmic_typec.o
+>  obj-$(CONFIG_TYPEC)            +=3D mux/
+> diff --git a/drivers/usb/typec/sprd_pmic_typec.c b/drivers/usb/typec/sprd=
+_pmic_typec.c
+> new file mode 100644
+> index 000000000000..536f340d8b65
+> --- /dev/null
+> +++ b/drivers/usb/typec/sprd_pmic_typec.c
+> @@ -0,0 +1,587 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for Spreadtrum PMIC USB Type-C
+> + *
+> + * Copyright (C) 2023 Unisoc Inc.
+> + */
+> +#include <linux/extcon.h>
+> +#include <linux/extcon-provider.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/nvmem-consumer.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
 
-Well it is a general question. Usually this kind of removal is tied with 
-a refcount
+You probably don't need this header and the implicit includes it makes
+are dropped now in linux-next. Please check what you actually need and
+make them explicit.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Rob
