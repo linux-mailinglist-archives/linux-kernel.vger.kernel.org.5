@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08F580D3A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7EB80D3A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344547AbjLKRX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        id S1344555AbjLKRYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343918AbjLKRX5 (ORCPT
+        with ESMTP id S1343918AbjLKRYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:23:57 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDFABD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:24:03 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso13767a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:24:03 -0800 (PST)
+        Mon, 11 Dec 2023 12:24:17 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F1694
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:24:22 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cec976b197so2435869b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:24:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702315442; x=1702920242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fa+2d1g1YuhXldTtmH+vTSWA87IfsVeC6viX1KyDnNc=;
-        b=IH6VgV1t7720oExKmHhIOSizTbPv2rYrxJYZDqh3Uk/P20ewkb7oGKJzaq22FLLRFg
-         o0T0dWQtTpQdOCYWQZo0o101wcxmTLivoEm/DH9BSDM7i5bjaz4bqeODhmq3XJLRqkgN
-         dhtT3rOrpLNlySLwKPsZkq5mIOvP94cql5zAPHU0XIiuMFt802yc095rCDKVtrn5d0rO
-         Iu7J8sRpd5o0Fq46cK3N5DU76IVMhdm7YBq5RAoFoXxdUnhHcNR9iuFO89XI5W3s/Efv
-         Jw8PJG+vxvpz+Da+yymrfN1OBHBFXuc4VGX4Ys11BoUmVYlZBD/HZCc160+L5hHgiSYv
-         uNbw==
+        d=linaro.org; s=google; t=1702315462; x=1702920262; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OIO4WNjR5xVb+yTIblaWghN44VQDB2yiwlWnOskO7lQ=;
+        b=X/HElSpsabf/JSNO5yuoYy7tmRFjNqnSfKB8lq23BvtLoaEbQ/DnSu50VHbA6BR06L
+         zs4lopBJYqqozWHk4ZG7iIlZrboP4B/mbUauspaHlcXlE+edktmPncm1OwbnRIIeoAsB
+         diaiK3kW3ZaDM8K5hpS1RA3CGqLVhPN4IIkSUQIGc0OrEmvHqe5trqyaCcRu7L1f+/5l
+         IngXVePIRNX/D6PflAUXWB/KYxx0aHl4MH3j0D0LvyQQOF547Bdv24qJ+xepqhgQJTQy
+         t7uk1+1HopMXTp5RN36HOFsjz/cPsOVtUsh1YpjagZsaDtsvuqVbuClbln1kfwPDVgLC
+         FVKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702315442; x=1702920242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fa+2d1g1YuhXldTtmH+vTSWA87IfsVeC6viX1KyDnNc=;
-        b=okv8CtN8o/MH6F3ktH08g1R0gB8dblmb4MrfW82jS4bNpHVAQtVcq6rE2VSlZFRw4D
-         2hOY5XLufYJAM8m930Hkavx0mIexzhzMe+Ecx/EWM3Z6po1+lIjrFaTdVDtOv7Lh85aH
-         KLPvxfA8U0F0wMc2MjB5tWBcYXHSINaukZhB8NDPjEb/BXy3mlulGr+kUz44GJU/QQ26
-         +0mDvY+tm4FRRLczrDbFeuCI5seUISF1i0puvI8VLdi+0XAZcbmSoTqqDxB2Q3etd+LL
-         2mxkAAm/cQw5RFx+bseH7UZoMqARqYKa41pkyahHAPwkc4NrbppmYaFxc+vNBaquMfO2
-         fV7g==
-X-Gm-Message-State: AOJu0YxV21ZnKuaZej2DbBc4zZ/CQflGOqTwnVs91I1hWbYqtvTz+FLD
-        RB10dZjgIdlI0zA0D2enLLE2KijtyPdCQorKjGQVlZcD5+neYw6O4FdrtEc7
-X-Google-Smtp-Source: AGHT+IF9+iN+82W54Dm/WqWBY+mutVQMhk2qnAOdPLsLwb824cJcgEvNeaBrjPsYJvv8bdUZEAA5BOW9CrRqjFRm5GM=
-X-Received: by 2002:a50:c101:0:b0:54b:bf08:a95f with SMTP id
- l1-20020a50c101000000b0054bbf08a95fmr209926edf.6.1702315441731; Mon, 11 Dec
- 2023 09:24:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702315462; x=1702920262;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OIO4WNjR5xVb+yTIblaWghN44VQDB2yiwlWnOskO7lQ=;
+        b=k6ekdBQamluZQdqamTo71eDwHQZSanVXhAngMrtckrNygrr8slgZXql/59sltIPuky
+         HhymQTDsYNSxKvqDi6T5MGPPlj+11jkQEQ8X8EC0m0uNA2NHjJv98LYZcnoTxmoS9LXo
+         DxiwQqzAzZ4nJR+n9HnvkIPW0yxMlYxrI/KU2foQUqUH8vbuvsG37+HGUTaquRIWyCIo
+         RJ0rKkRdyz24lb1+DIsciDRkwKK5zshY7ALKUIH1JcPUwSZ0+btv80O6si2DV7YtboFd
+         6jWPiuvVhUoD8jOeTHgHmizJ+hw0/wKFKm05sdYCym4Faxq+t2mISl9w8LYH1nkYVRiH
+         AWww==
+X-Gm-Message-State: AOJu0YxG3yWcaqWSaLq0ZiJwUXBF9u+ig2rkLq+OspUGlj9DetW3KS3J
+        4QYNNvFaTjuRjjDlYz57KWiu
+X-Google-Smtp-Source: AGHT+IF/o7tMygudcvDEgvWVGduVd5AMvlcE/EGogBR8ckxyLh/FBo/ByXUkDPmqNZldCt3kozHQaA==
+X-Received: by 2002:a05:6a00:1b57:b0:6ce:f78d:b376 with SMTP id o23-20020a056a001b5700b006cef78db376mr1612136pfv.7.1702315462108;
+        Mon, 11 Dec 2023 09:24:22 -0800 (PST)
+Received: from localhost.localdomain ([2409:40f4:103d:670f:7d18:86fe:2cd9:84f3])
+        by smtp.gmail.com with ESMTPSA id r21-20020aa78b95000000b006cef5c09ca3sm4495255pfd.147.2023.12.11.09.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 09:24:21 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] ARM: dts: qcom-sdx55: Fix the base address of PCIe PHY
+Date:   Mon, 11 Dec 2023 22:54:11 +0530
+Message-Id: <20231211172411.141289-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <3a8c66ec-537d-4e29-bf08-226dd41b08aa@linux.intel.com>
- <877clnz4bh.fsf@vuxu.org> <CAP-5=fVKEU1SesA52_jdR1OFAKF6Q6mrXjS+3+cibO6c=Or=6g@mail.gmail.com>
-In-Reply-To: <CAP-5=fVKEU1SesA52_jdR1OFAKF6Q6mrXjS+3+cibO6c=Or=6g@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 11 Dec 2023 09:23:49 -0800
-Message-ID: <CAP-5=fWdJYu9pf7d5ytvV7FNJTOK5Hr2mYcbDDPWO9zJMbPtdQ@mail.gmail.com>
-Subject: Re: 'perf top' broken on intel hybrid systems
-To:     Leah Neukirchen <leah@vuxu.org>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 9, 2023 at 9:26=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> On Sat, Dec 9, 2023, 12:14=E2=80=AFPM Leah Neukirchen <leah@vuxu.org> wro=
-te:
->>
->>
->> > The error is because the perf top always tries to open an event on the
->> > user_requested_cpus, which are all CPUs by default.
->> >
->> > Something as below should fix it. For hybrid, open a PMU event on an
->> > unsupported CPU should be error out.
->> >
->> > diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
->>
->> This fixes "perf top" on my i7-1355U.  It would be great if you could
->> get this patch into upstream and stable branches.
->
->
->
-> I'll try to take a look ASAP. As we don't need this for record there is s=
-ome existing logic that perf top is clearly missing. We should also have a =
-test on perf top.
+While convering the binding to new format, serdes address specified in the
+old binding was used as the base address. This causes a boot hang as the
+driver tries to access memory region outside of the specified address. Fix
+it!
 
-So for stat and record there is a call to evlist__create_maps:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/builtin-stat.c?h=3Dperf-tools-next#n2730
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/builtin-record.c?h=3Dperf-tools-next#n4210
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: stable@vger.kernel.org # 6.6
+Fixes: bb56cff4ac03 ("ARM: dts: qcom-sdx55: switch PCIe QMP PHY to new style of bindings")
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-In evlist__create_maps we do perf_evlist__propagate_maps and that will:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/lib/perf/evlist.c?h=3Dperf-tools-next#n43
-```
-} else if (evlist->has_user_cpus && evsel->is_pmu_core) {
-/*
-* User requested CPUs on a core PMU, ensure the requested CPUs
-* are valid by intersecting with those of the PMU.
-*/
-perf_cpu_map__put(evsel->cpus);
-evsel->cpus =3D perf_cpu_map__intersect(evlist->user_requested_cpus,
-evsel->own_cpus);
-```
+diff --git a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+index 2aa5089a8513..a88f186fcf03 100644
+--- a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+@@ -436,9 +436,9 @@ pcie_ep: pcie-ep@1c00000 {
+ 			status = "disabled";
+ 		};
+ 
+-		pcie_phy: phy@1c07000 {
++		pcie_phy: phy@1c06000 {
+ 			compatible = "qcom,sdx55-qmp-pcie-phy";
+-			reg = <0x01c07000 0x2000>;
++			reg = <0x01c06000 0x2000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
+ 			ranges;
+-- 
+2.25.1
 
-I think the fix should be looking to do the same map set up in top as
-stat and record, presumably there was a refactor and top was
-overlooked. I'll try to address this and add a basic sanity test of
-doing a few iterations of perf top on stdio, which would have been
-sufficient to catch this.
-
-Thanks,
-Ian
