@@ -2,307 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 749F480DA49
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D09780DA45
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344342AbjLKTCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        id S229785AbjLKTCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:02:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjLKTCx (ORCPT
+        with ESMTP id S229638AbjLKTCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:02:53 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9846BB8;
-        Mon, 11 Dec 2023 11:02:59 -0800 (PST)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBGtdDd025529;
-        Mon, 11 Dec 2023 19:01:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
- b=S4VLVjPMAoZMM9U1JU+d2Op0BHLQbqoGIpB9Ewb/w15IQo9vgv9bLL5R4ZOKJO3V/zFe
- fIDOq3Du0j3019A/KfW3Cqz9gRINLfQswRyzT0qCpiYg6r4yMkZzaiLSpkg4LM8CQ99p
- hQ5r5TwMO55C2iFdZJUF51mUH4Cd4+8rh1J0VDW0E6TnvxkEy9AOiOJRBrMxuWKv2IjN
- 7Oa5A/l2N1F8MVRCwNaMkg0+ceEshoK+2CdGWqQ4lM4AOczSfgnj2M094g7xtBM1dmjQ
- IoAYw0OJjzCVlhK0QKTANqg2b7LfVuRiKZRv5dwp1xGxNv+JeTEjb4LIFee27Ph+if7e aA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ux5df0fp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 19:01:47 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBIu8W5009894;
-        Mon, 11 Dec 2023 19:01:45 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep5d9sb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Dec 2023 19:01:45 +0000
+        Mon, 11 Dec 2023 14:02:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81950B4;
+        Mon, 11 Dec 2023 11:02:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702321337; x=1733857337;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=Plnk0dMWJF6+FKICpjMKw+roaaRvlIKoJ/Ypn3wYICU=;
+  b=fbQ0K6xpuiub21JMwIcBHMnjaVIkshwQ9RFDPN7nKiBf0F7gx+gvrXDY
+   sZe3gToKKy3CLBV29qBypqAqFOS7gEj9pLevfoV+z314HTDoExPvYBrVk
+   Snhxh9QNJnxuFswYH7p4lh8Qt+llEPD1gQePQRV8sMSPrSknOmkwpMYx8
+   gpYIFVFaGRlotZvpHFnl02PNA0W03f4V88+fv9rBnAN6X65f03R/771uG
+   6WFwp89BUeAUewXANdID+bJRtjpLxotFMCOzXP2f3SnScqW/CA36KTVX1
+   YSIRLFMDHLoyFHrpAyjFEKU7h+gFtWryA9pPbMTUZoUCiGmkOtusLWCem
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="391864875"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="391864875"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:01:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104581021"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1104581021"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 11:01:59 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 11:01:59 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 11:01:59 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 11:01:57 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BA/5UTAtHzfJbY+ZMyNlu+88lE7djCXEJYkMnNVvmnFlbLF4O9cc8yrfjqpH8XXzYpxy1fFupQGSz2xhMaJ09pg2ggfJQLRmUREZU+IUZdfCqWa85E7WY6nV66dZ+qQJWbYBY1nd+Z36ltzHJaHzv1Mxll8ZFNki563shKCXEa9LRv/iwcU+VjpOnRlM7LLFRaPk8m+sH1l0nOs5R4aKoCgBrD+Uc0PRwd+CCUVcO6/1rAaWFYej8UqO5reWpQ67s/dfNh3hA9hTinHhM9d9L5AJyOzDU1lr3XAOOm40klN+RZ3+xsIBqMTN2jTEB57cJqFri8HUP1wuWn1OcNDGSg==
+ b=ZM2QK9/CiVKyVcRnc4ZtrhMjOK9GxipZTjt5ixXtLrkXJ8Y82WmdNiFL6eU0kcwolyOzWDRdRnZP2SQ1mRVx/FL2F9TGb1bXTXSU8QwcxSXq6nuAUh1I/36EQHs0UfABxbSv4JJbtyqaSFdgPQWy2ToghgTxvlhp4J10NsZC4SF6VGWt44YuB1+rcZ1L1JrXe9wErqtaBOUWoRTa2IRNERvq4guf8NVT4jwRE3ub+X3e6yBcwI+PTLDANE9LuHiC2rHsRq7zvKwz0vDnuhDNoX5Ilx9ZoEZBKb0qxcKlYTib6aCfiBwcPwbWik4NFuUv/7FUzA/myStollXfnTeRxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
- b=H8yA0xddzB+QMLVxJBLYtVcRZjV/W/QesjBZDPJ40FYsIwJStMFmiCSpLyyi4EkL0xL0Yv2AsEOhRhUCFG6dJoGVyYLnyGsF0Qbiuq2+926jMUgTcK+P5UR3XTb/lcMWrNdkp4+k25Eq6n6mWDv9CmTenSx7Vjglee6VAzVLzKImn5F2NevV/aW/ZekWIdjzwQ5XU8S6iiMLYixGKw86v0eU8GhSPThlQFMGlKyLrULvBVd+RU6dWoM5oHsO1Gh0Twy4hIvxdy+RM8Ns8s1ySTRxKrUkP7qWJPyUTuzeLR3lZlL8lkQE3hv4xf94mSnHmIpcfV8AWKOLNuOTkjVMkw==
+ bh=ans+f92PPigGuf5cGU1kJ/3UWX0TsmJXWY4/EZqUjU0=;
+ b=bBq/Fft0DCE1oyUpZJ5zhuhVFE4Pm/zc+G5BEG8oUCQslxivQ4EaYeqxijmNk2qLgRCbOCLbb+KvT0TMV6jcfo24/1M4r9ab15FZ8ayUZjJvCFNzcK0y0rLVmdON0scgHktdc0de8SHqKiNGg22QhjQn6n3UO/UxGjRWJiF69IK+w6OUxWOzIfvPqS8jU+INDM+WHp9qhboQrhG6AWIHxaV/EnEw/7Ce3zbfBm57bWh9jwpoyok8iocBTbjCNxlzMz0Y9A0XUP/HpiFJ9iyla6FyygH/ohMFycaS9hDqoWWvAWJWYlQrtW3NIpd89MxCIaD7vnkrV+pAzqzU/RCG0g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pOEp8qPCHDYXVBQzPCPvPXnDP5TGfnByWmqPOJprwtI=;
- b=WSgXQEDGvOGw96LIsIAI18EJwPDL8mU0ymp+CcWq5n+4UiGeGyKqS6qFMKMjq9B3Lt9ALhIb4br6CI9JMKAlxT0x6bXhwa/FxqnJgjOT6ekhzjC2D+YEk79n2UzMzGBE0Q+E7/kfFW6uG3zTjOKjbyLjMYdBpFAI1HZJ0+K7/KU=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by CH0PR10MB4985.namprd10.prod.outlook.com (2603:10b6:610:de::13) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by CH0PR11MB5457.namprd11.prod.outlook.com (2603:10b6:610:d0::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 19:01:43 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 19:01:43 +0000
-Date:   Mon, 11 Dec 2023 14:01:39 -0500
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
- files.
-Message-ID: <ZXdck2thv7tz1ee3@tissot.1015granger.net>
-References: <20231208033006.5546-1-neilb@suse.de>
- <20231208033006.5546-2-neilb@suse.de>
- <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
- <170224845504.12910.16483736613606611138@noble.neil.brown.name>
-Content-Type: text/plain; charset=us-ascii
+ 2023 19:01:50 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 19:01:50 +0000
+Date:   Mon, 11 Dec 2023 11:01:44 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 6/6] cxl/memdev: Register for and process CPER events
+Message-ID: <65775c98e0b39_1f2db42944f@iweiny-mobl.notmuch>
+References: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
+ <20230601-cxl-cper-v1-6-d19f1ac18ab6@intel.com>
+ <657279a68c270_b991294e@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <657371eec6ac5_1e7d272948d@iweiny-mobl.notmuch>
+ <65738e9fc239a_45e0129476@dwillia2-xfh.jf.intel.com.notmuch>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <170224845504.12910.16483736613606611138@noble.neil.brown.name>
-X-ClientProxiedBy: CH0PR13CA0024.namprd13.prod.outlook.com
- (2603:10b6:610:b1::29) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+In-Reply-To: <65738e9fc239a_45e0129476@dwillia2-xfh.jf.intel.com.notmuch>
+X-ClientProxiedBy: MW4PR03CA0248.namprd03.prod.outlook.com
+ (2603:10b6:303:b4::13) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|CH0PR10MB4985:EE_
-X-MS-Office365-Filtering-Correlation-Id: 835e61a3-45c4-4445-7cb0-08dbfa7b9d58
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CH0PR11MB5457:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6bdaa976-e216-4971-40a9-08dbfa7ba14a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gctjAaExz5B+uSO8jflRQjKNx72MOiKUQVLH/wTiMybwo149HNG2r5FGtKU9GxoQyHwB9ziiAx5JlVdLY+ofuV+5r/BjTTJWIofB2CituPOInEqL9oGRS3FRJWAJOaMInAYZKyyO4hHuSf2d2asWRBcUeEoMr646FQVSZ3PQ7230TpcMnRWP0w+9FkqzGHEUU8ad5kkrp93w+GvY9ePJEKj/Dxkz7o4NJJ3wOz1KMomTvyJ/XXsQGfaXltdwnnP/VfpTR7sgOGba8U2Fvc2xpXx7sMuBIyr7JOgDTEFZbSjg1zGALggotdTRjSJFTo9m0ZVMHoX8UQ2HV/XrXBcKqmU+tkzFfPMFjGeSHwNpiI33uihfIuyJJTRFfhJx3RBJ1Vpiwy2MGFq5n+X4TpmYy1YqR2LOdvBXs09uZrFkizkE29UZRQHOBAYYAK0y4tmGHJAhJIOaqMh28MMyGtp6ME8AHbJi9gS/fbU0eRqn2s7xfVpIkKCiVtSMj6UdD3AizH6T7iQF0u/xjJpVKlzO9Hbet4U+xsqbEtXoE1AyzfbjPmyuvtnpM7mAwFAOMh/j
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41300700001)(38100700002)(2906002)(5660300002)(44832011)(316002)(4326008)(8936002)(8676002)(6916009)(54906003)(66946007)(66476007)(66556008)(9686003)(86362001)(6512007)(6666004)(478600001)(26005)(83380400001)(6506007)(6486002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Rtlej2vQJsmKyC2BGZhRyOq60eykDOUrdgHDwLa1dBKXrFgDIzJdkC0UJ7ntyl2OczBLZpFb14kav4WU0qYBHN/wGY5GoRjfWE/0b9AGSHzuwDaIyHNVlLiYmZRLOOwHhiRrowySoPLBv4uHFYs4///jlpeYezqgMfE8TASvqPLwDOIgPtNXupMPIJEHm3WVeD/HS6QPKpyBtMEJLW0aAl5wugmNR1brh+at5BSLuVQw+bq32JDSDg6eegCgmtKxw9GLsYfR6vGii/GlFqn8IdAutIrVGfG9P1CT27FvozRco88l1CuRrXXNmj6dXtIdbqjvzmLCyl23ywOkRBqyYoPpmijI1mM6o0ZPXg0wpw4l7mPnhOmJQKq2Y0Ra7i3tkAUCoZNDhyeimGIKNI+swEFgn6/XbqDIONirOzOfQf8g+yjcRO5+vvJCLQCMTaMyId1L0ho4b9VOXk3lEw45VibTKnHzocboxC5Z5IuOoU2YjLhQD4mIaz+i5GKUwDEME2ZxwXeVxtzKZTXGvZkcEEt+c04D8pvTcdX1g66ueid90Bx7Loi+/1M93ez+GBMq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(396003)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(107886003)(6486002)(26005)(6666004)(6506007)(478600001)(9686003)(6512007)(38100700002)(86362001)(82960400001)(2906002)(54906003)(4744005)(44832011)(5660300002)(66946007)(66556008)(66476007)(41300700001)(316002)(4326008)(8936002)(8676002)(110136005);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QMPMN7xaByzpzb4GSHnoPctFzVKGsmmwadj0wqj2RP7vO6tZAcrcaU3f/Nqt?=
- =?us-ascii?Q?caP9dY/BgQpxLt5qmM+YFwlPw+G2Q8Dfr+OTwJtXcEOVCxJDI4pQrRSH4i+J?=
- =?us-ascii?Q?Emw7uCPc+sZIL69er3Y/V+fXvbd56p7rhjgqIwMjA991AwPGWfvSgeYAo4Ff?=
- =?us-ascii?Q?6IWjYS3TvDyaCEwGQWdm88DXSuvX2ci/XClLNIh5ryLIeI8kBFt+Ly1gC5hb?=
- =?us-ascii?Q?RE/wwsUp3wJTHlUTM5iUnSz/lM6IIbIH2bARDYFe98VVWgrQF5v41X7S1GJO?=
- =?us-ascii?Q?mWwSyebISCYx/QQMMzPhD0y0BZP4WBpsLeeaZVCakkSjrsXkyWrBicrPPNfG?=
- =?us-ascii?Q?Yib4kXV+G9IsfaKIhfNKlvPzRjJHGm/58tZ9PGqccQlgAFxcU7qBnyvfLYwC?=
- =?us-ascii?Q?LoQDUnRE50T0vZo5iTKGBNhqLGNFv3QKzKUWkPxQaZuQWWSHwlFR166Plwsi?=
- =?us-ascii?Q?eZQe9vaI5szZuo3sdjLkWMCPU0uW8E0/Y/dzUEugmJs/cx+FESe4O2g6Prbu?=
- =?us-ascii?Q?3aueOh5VU/mQPukZ//+Imkxj4Ust7Pl8jHt1fDp3M+sPgLkmfH4IfHXNMSrP?=
- =?us-ascii?Q?KateAyPIR4pKOi9MeTs/hzOdAb05DfIu/VEO54xel1Vwg8VNcmqtEW+XOEwl?=
- =?us-ascii?Q?hG2V7IYt0COPCEcPDf76lKf8COedok8hBTUCrUZup+Uk/+slFMilVoScsjNI?=
- =?us-ascii?Q?hgSysQOqYeSLFJs1phY+N2zQyw5TSxO6S4nYmxC2EKgyrGk/kmYMw9uAVuhr?=
- =?us-ascii?Q?k3eSl07NezVtkiT0J0B9idf+LJRN+6B1z7OmiR/jN5/kahO19dCCgbUv/1LD?=
- =?us-ascii?Q?IjmsYRJmR+XnARXlKZKvAFPRLv2sl7tsndx6gP6oSlf+KkgOwcfPf2XpqK9U?=
- =?us-ascii?Q?zI7BnTnYbN7hr6+wQsNO1lKmSxjqWdumWH1RHIc0EOHqb356fjodK0GIq3zm?=
- =?us-ascii?Q?ozfuBBwnYLL9JpCIjlUtd9A0OXPWwcFskJzJhkdLkJjqPIM0kI3S0Aam2aY8?=
- =?us-ascii?Q?3L9QlVwYkKFWasNTjKERcQL1FrzZiSMeRscfQX6ZqTdPWNIVMFFsqSVwmHqJ?=
- =?us-ascii?Q?krDdtSoAi7Zq/bL1i0US35B7BeWM+OQQCBN0m+iAHqSxXWaaLld/PTSTsdaN?=
- =?us-ascii?Q?zA1EJMysN1YJpR/0krFGXpd1ssf8XwPd+TM9aBkhQdOPXME2j1IW6Je5cZk/?=
- =?us-ascii?Q?FUzIg/ZkEl9WFmeovqXq4JaL6wO3F9x7rGFBUjMEUKjyn4V7bjii6gfB34GW?=
- =?us-ascii?Q?nlkRmaXIyjKutBfgCxvQ/Wyr9chm3rIIoAXbVRsHZt/A2plhMFjtguGKyfDZ?=
- =?us-ascii?Q?tdjfvZruqkJDrEM+eeXka6E+y+eEt+vAcCVzTU05l6aZH6wQPXSrw5YfCoHk?=
- =?us-ascii?Q?775aFPTXLUog62I+E+9gEzUGuWzxePolQBgZ8titws8/2IbqYl90JXfMvP4y?=
- =?us-ascii?Q?YEnwfx9dCGfxU2S5Ln/9HMvSFvI1Le173eg7K9nvoeL5PyOSMPNbd6pvOIhH?=
- =?us-ascii?Q?D4w2FfHqIG/VfDnknTSyvw42lWfyPlPxPHKxOiayrcsFE3GktfaH6Ac1Hn76?=
- =?us-ascii?Q?jWKCD2qNOoro3a+ZJpjVeUs3bSLRFkr+7wDZlM42qcUKRwQTu8wFa6NQcL00?=
- =?us-ascii?Q?RQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 2KlWMgot61FSu4i5FA1m65nopedxE68be95r4YVMXLbqic4Wq9/5epDFH8HamE2t3gRY92b3MXJGS/Npk8PEt8BFNXiLjiF5Eh54c4id9PjhSY92fcQMXzDJcShbJF8rWbtQV+J91nWxmyMaGQ3UcyM1f1KyvedR6C7nK6lCaZWDDgZp46dTnx0nwS4TBEwcaZw2f1wwa4ELKJbowuymfgZsc1jPkeOXm89qKRclIAY4kg5aNavjPESfj7nChlzFpy6bc77xTO+yhizYgOb1FmL+aUMxUodoOA+xyTwp/JDcaq1k1OdVDt7EvwAZjCSmR5/RiGSkhvm8QCTplvTEVBk1n5MFVL3EvpEpQnu5is+kRXreJnuV6aL0KhgHP2NN7D9/MNxQOdeLw16sSA/xw9hhRBBNSqDKPxRg3Wfyz58SIzTL8XAhSM47m280RcpLLtHLmbNGtkHr5sCarQLyEScUQXYponO3sOc5FgoEmJ0K/TX8+8hu7iYroM1lf0t0WZDSYd6GWWPYzz/UeQd9RgC5kbnD6URu8kLCDTXxe0mdxDcKkqNIUJ4sZFLHZTSONlrnBIoeR64+n60j4b/Yq2l1upmSEEi4uLVAHe0TnC1Ztocglmn9TafWa6DtBSk6t1bEutg/MlzcyIl0BaDXbZqVBBIrTzC0KS9OC43hHOOoqH+erBZx+d5Zl51y5EOZBRwoLT2E/OKenZsbkFZbePh/CXFL9aHBphy5Z8hrdMY02Yh18kkwj5LfOkddmYxF9eiOt5/4i3QXPDx+ROJXheQKTiSyUHneMn6RI4MOHXPT/qmi6frPu64eBO3vQNXgZ31fIMAxtTREW7R3yUX/XRXpi76Cze9cQqvoVcVwMOLKWEqkI677DSH8ymwSE5BHD4H+WsfaMGWpi3gEcjcxR7ywfYggfiWw2EDIfaxAPwQ=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 835e61a3-45c4-4445-7cb0-08dbfa7b9d58
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/gjHnuckH3v5ngG/g2WcmpXw03qy2ZK5ubO9LWq3UcIG4kgj6+cd9dWt+1Ya?=
+ =?us-ascii?Q?MHkHv5SLSbyf+5vfrRESXyH5DRDfz6OoTbKROolhARNcvHc+O3dtNfzGYmXm?=
+ =?us-ascii?Q?rcA3g3mpt2KzMIntTVzBKtRVR5FiOyYbLQLBdDBnIgz8ImNgYcGYZXqH65tE?=
+ =?us-ascii?Q?/50kwIwWelHJJ5dJF9JwgVuZJY6sdo0OkozjjfstJT52NfSl0spG+T/CBYKC?=
+ =?us-ascii?Q?EvFt9JcQRA/8QLMBbe/nWKTep6BTHzyapvazxftdIZrEexliSZQ/ezFMdLnS?=
+ =?us-ascii?Q?TXN9sVd+LoxGwmb5n4LZHXPXvZMal6G83KLpgErsEEVV/fzf7b/QDvDf+nL9?=
+ =?us-ascii?Q?R5EZmhO1ZN+281ptke45DCbqZJhZBa6wT0Um+7tCetgpIpfvBI1JdYAdRl8Z?=
+ =?us-ascii?Q?lfD10lVAQ6+rYWaQWC078W22AUKam8tfU6S50qv2a+LsY0hVporDDfG4kaYL?=
+ =?us-ascii?Q?7avzaCGmI+pDdYADS+iympx54ASC0es2G5n90M3z9+EqOZSFvZgDOCun7UTR?=
+ =?us-ascii?Q?Q4N96SdgWdbBeOh0JDf6XnmHkd/6x5MDc5AcUeXgfjnmAd+8UuLZO2DINuuE?=
+ =?us-ascii?Q?kaNSgMLZj0FgPB4YppfW1nrBR5ZBBZujzC148Ctj4A4He56+lEBTy3ahKNh+?=
+ =?us-ascii?Q?MzLfnvmxdlQTsLM1fT2r4edKD4hgK/JeTbxojKMytIXNWEajKWgtwFihV/31?=
+ =?us-ascii?Q?3AFh42RR1Ak3hVUD5aoEjWJCJOgq6sIEfpNDpvfbedU0BbC+F7Vt8+GHQ2I8?=
+ =?us-ascii?Q?l2QuYhZBVPDfKs94krTtcgkQUaYZkG331musLbZ/3Z6dr3K70h2ph9pb1x6t?=
+ =?us-ascii?Q?eUXIlEUiErPtUMj/QInAgDVu0ADyNzuhrfasDw+dariqU2LM0FZhfxQsjqe3?=
+ =?us-ascii?Q?9Q2TxYJMI/uf04mDAueIubQ2pjqKqSJzlG6m/d7ubykGWdg9W8HJHcbhkagd?=
+ =?us-ascii?Q?IasP+SCK2utdBmOuw+8SaRBpcntAnfQ6lALjlRPxzg1sYmLQX9Ua6Xemk4EH?=
+ =?us-ascii?Q?SeCDX1ZF9AyzB6JG9P4EVgoTGR65P3SxZfUQN84kekla3tB+pMa5fcPYk4qM?=
+ =?us-ascii?Q?QfQuNwhqfimxkzZTTDvBSAGTvJJGohb5c3nW1V0Z5EQJUXjEpiDk+5r8QbQb?=
+ =?us-ascii?Q?cc/rsHDMfVtHDJLvaNLKquJfDvAFV9IZZk0bWEpB/TKBvBLVn+LB56+/W6Vp?=
+ =?us-ascii?Q?SetkLQ9JtScvJ0cs2xeEFtGi3CINCRQF7/9cDWNpFZdL9JnCD95auS//lX87?=
+ =?us-ascii?Q?XX0p2AHonIF4f7tw+j74827VA9wlC8h3wf6T+Ov29SlmZcE3w8LH54uEvZ47?=
+ =?us-ascii?Q?1OAaAafemsOeTi6UJeszW1SzfSS/n47LMW42zyTei32UcKRbogeMwhGKvZgk?=
+ =?us-ascii?Q?zH+2e3FSmwWgv4vOJPKpx2cPsDNOJeN7y2IONpSHPrQf2G70vImwensWlHds?=
+ =?us-ascii?Q?g8vNDOeFB8FP4gTzeCuRdpLN1t7Jr2uHaJH29+MDJTL+ferqDzaJpJ7mNJNi?=
+ =?us-ascii?Q?jGf0f6Pb7u4dZKVf8hi1apK2eauVVJ+PNz0trHfQqPaaC488+BIUHpeSJ0UA?=
+ =?us-ascii?Q?z2LdA87tXHJeA64Nv/QD1P5yJEkV6Rrw1u0WZx1N?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bdaa976-e216-4971-40a9-08dbfa7ba14a
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 19:01:43.1997
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 19:01:49.9363
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EYcYEYB/yt/U9dNFu5gsP12u0KjJbbSWuBbzI60ei0iZfPojytwyvsPd1APMBZ+iajredL0waHRGTvQVGxIQTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4985
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_09,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=915 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312110157
-X-Proofpoint-GUID: gt9jlqvPrFa191a54LsY-tAxlmrGRyMY
-X-Proofpoint-ORIG-GUID: gt9jlqvPrFa191a54LsY-tAxlmrGRyMY
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: V64wC2BdQB+oAS0NrLQIDY4TQ8qj41rcT+/EiOgut65lkpOBdR38/RohMzys/ywNP6sE244d7TmQCZhqxxBAwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5457
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
-> On Sat, 09 Dec 2023, Chuck Lever wrote:
-> > On Fri, Dec 08, 2023 at 02:27:26PM +1100, NeilBrown wrote:
-> > > Calling fput() directly or though filp_close() from a kernel thread like
-> > > nfsd causes the final __fput() (if necessary) to be called from a
-> > > workqueue.  This means that nfsd is not forced to wait for any work to
-> > > complete.  If the ->release of ->destroy_inode function is slow for any
-> > > reason, this can result in nfsd closing files more quickly than the
-> > > workqueue can complete the close and the queue of pending closes can
-> > > grow without bounces (30 million has been seen at one customer site,
-> > > though this was in part due to a slowness in xfs which has since been
-> > > fixed).
-> > > 
-> > > nfsd does not need this.
+Dan Williams wrote:
+> Ira Weiny wrote:
+> > Dan Williams wrote:
+> > > Ira Weiny wrote:
 > > 
-> > That is technically true, but IIUC, there is only one case where a
-> > synchronous close matters for the backlog problem, and that's when
-> > nfsd_file_free() is called from nfsd_file_put(). AFAICT all other
-> > call sites (except rename) are error paths, so there aren't negative
-> > consequences for the lack of synchronous wait there...
 > 
-> What you say is technically true but it isn't the way I see it.
+
+[snip]
+
 > 
-> Firstly I should clarify that __fput_sync() is *not* a flushing close as
-> you describe it below.
-> All it does, apart for some trivial book-keeping, is to call ->release
-> and possibly ->destroy_inode immediately rather than shunting them off
-> to another thread.
-> Apparently ->release sometimes does something that can deadlock with
-> some kernel threads or if some awkward locks are held, so the whole
-> final __fput is delay by default.  But this does not apply to nfsd.
-> Standard fput() is really the wrong interface for nfsd to use.  
-> It should use __fput_sync() (which shouldn't have such a scary name).
+> > #define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
+> > static void cxl_cper_event_call(struct cxl_cper_notifier_data *nd)
 > 
-> The comment above flush_delayed_fput() seems to suggest that unmounting
-> is a core issue.  Maybe the fact that __fput() can call
-> dissolve_on_fput() is a reason why it is sometimes safer to leave the
-> work to later.  But I don't see that applying to nfsd.
-> 
-> Of course a ->release function *could* do synchronous writes just like
-> the XFS ->destroy_inode function used to do synchronous reads.
+> Is struct cxl_cper_notifier_data needed anymore, just pass the record
+> reference?
 
-I had assumed ->release for NFS re-export would flush due to close-
-to-open semantics. There seem to be numerous corner cases that
-might result in pile-ups which would change the situation in your
-problem statement but might not result in an overall improvement.
+I think so because the type of record is ID'ed by the GUID which is not
+part of the common record.  So the notifier data adds the cxl_event_type
+enum.
 
-
-> I don't think we should ever try to hide that by putting it in
-> a workqueue.  It's probably a bug and it is best if bugs are visible.
-
-
-I'm not objecting, per se, to this change. I would simply like to
-see a little more due diligence before moving forward until it is
-clear how frequently ->release or ->destroy_inode will do I/O (or
-"is slow for any reason" as you say above).
-
-
-> Note that the XFS ->release function does call filemap_flush() in some
-> cases, but that is an async flush, so __fput_sync doesn't wait for the
-> flush to complete.
-
-When Jeff was working on the file cache a year ago, I did some
-performance analysis that shows even an async flush is costly when
-there is a lot of dirty data in the file being closed. The VFS walks
-through the whole file and starts I/O on every dirty page. This is
-quite CPU intensive, and can take on the order of a millisecond
-before the async flush request returns to its caller.
-
-IME async flushes are not free.
-
-
-> The way I see this patch is that fput() is the wrong interface for nfsd
-> to use, __fput_sync is the right interface.  So we should change.  1
-> patch.
-
-The practical matter is I see this as a change with a greater than
-zero risk, and we need to mitigate that risk. Or rather, as a
-maintainer of NFSD, /I/ need to see that the risk is as minimal as
-is practical.
-
-
-> The details about exhausting memory explain a particular symptom that
-> motivated the examination which revealed that nfsd was using the wrong
-> interface.
-> 
-> If we have nfsd sometimes using fput() and sometimes __fput_sync, then
-> we need to have clear rules for when to use which.  It is much easier to
-> have a simple rule: always use __fput_sync().
-
-I don't agree that we should just flop all these over and hope for
-the best. In particular:
-
- - the changes in fs/nfsd/filecache.c appear to revert a bug
-   fix, so I need to see data that shows that change doesn't
-   cause a re-regression
-
- - the changes in fs/lockd/ can result in long waits while a
-   global mutex is held (global as in all namespaces and all
-   locked files on the server), so I need to see data that
-   demonstrates there won't be a regression
-
- - the other changes don't appear to have motivation in terms
-   of performance or behavior, and carry similar (if lesser)
-   risks as the other two changes. My preferred solution to
-   potential auditor confusion about the use of __fput_sync()
-   in some places and fput() in others is to document, and
-   leave call sites alone if there's no technical reason to
-   change them at this time.
-
-There is enough of a risk of regression that I need to see a clear
-rationale for each hunk /and/ I need to see data that there is
-no regression. I know that won't be perfect coverage, but it's
-better than not having any data at all.
-
-
-> I'm certainly happy to revise function documentation and provide
-> wrapper functions if needed.
-> 
-> It might be good to have
-> 
->   void filp_close_sync(struct file *f)
->   {
->        get_file(f);
->        filp_close(f);
->        __fput_sync(f);
->   }
-> 
-> but as that would only be called once, it was hard to motivate.
-> Having it in linux/fs.h would be nice.
-> 
-> Similarly we could wrap __fput_sync() in a more friendly name, but
-> that would be better if we actually renamed the function.
-> 
->   void fput_now(struct file *f)
->   {
->       __fput_sync(f);
->   }
-> 
-> ??
-
-Since this is an issue strictly for nfsd, the place for this
-utility function is in fs/nfsd/vfs.c, IMO, along with a documenting
-comment that provides a rationale for why nfsd does not want plain
-fput() in specific cases.
-
-When other subsystems need a similar capability, then let's
-consider a common helper.
-
-
--- 
-Chuck Lever
+Ira
