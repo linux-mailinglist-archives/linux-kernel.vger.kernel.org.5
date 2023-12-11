@@ -2,192 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE84A80C625
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052D380C620
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjLKKMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
+        id S234708AbjLKKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:12:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbjLKKMt (ORCPT
+        with ESMTP id S229654AbjLKKMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:12:49 -0500
-Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38CDAB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:12:54 -0800 (PST)
-Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
-        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB8HtRp019705;
-        Mon, 11 Dec 2023 10:12:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-id:content-transfer-encoding:mime-version;
-         s=dk201812; bh=Nkok8XC2iTGXvRalUaJWACArOTUZixFMS2OaDtpP3yY=; b=
-        I7hjxxt6V8JmCs5yplG712+ELOfjuL1a745frIhGXWxOU1TFxtegucJ+BhqVy/vd
-        PctA4KCTKOJrSqaK2hBxkkFhXmIeGfFFtRuHPjdc6CBeyE10eQ1DayYNRXWO9W7t
-        Xbq3syJVRPTYdyp7Bcm4yWX0GOnr/DWEnJn0eB+bwJyn9F5zCmmnJFfjuC07+qDK
-        4cvxNkYQUazN/LIkATLofbjBkDanEbS5QvyLTTL7p6jU3tva/xwJryqpo3ocEIdo
-        LKGm5inrd3xjuQh3In/hVxACvex9zFRm17BcyQqK6g37TLpYGBeh+A2EeYQCh7s9
-        MW/3c1ou5ZRu9NkUYMpYSg==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3uvfcs942v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Dec 2023 10:12:34 +0000 (GMT)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 10:12:33 +0000
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.105)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 10:12:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ajZ2cvhyMpB3CtLmpqAT688nxj2RAITWlhLh8hWaynSy1P/VXS3+vliKxbG8daj2sAOhkQAYIou3/Sp7zWggA55KUx6RWQkPGygbw1RNLWbWzGs/1+Lw1J148Bwnyb0tfQ//xGBYDdDthYnQVy1Tk0ytwGXOiaAwremcQPhmMr+dVLx+xx2C12OrYof/eJyvtpFXJgwH6KRSR50mWk2iQ055v3CId8zjY1CtQpaawSVHI2XeW/QfWrurpRZ356rX+s6xsf1y48JEvr31GlCDCjoRXfI5PLCT54AOanQleWOgnNvMkHuqweJPSQ01ekpF5quqUGF5gxKexkvaWSzYuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nkok8XC2iTGXvRalUaJWACArOTUZixFMS2OaDtpP3yY=;
- b=BDZPpxTk4e/z4AAtmu5ajEIpOxWkN0B5r/wuEBo2ftsU2/Fr06o6gGdbJM3ZTNw3ka33pUEf7/c1WW3Bfjrz93MiNfS8HE6Nc/2a0nSAUiuCxEGrXxAaLHn6fKsLzgkmv/t8GCW3XejxgNSzj1vsIh40cvOP55soRAuj7ysyLhlkOGNxGon0Zn9vQqEejYVcOKItAxR8Nlcj87flKvPnfTAYEcR5/ZZgrPzcHbzDVS0Ib8Sv+qrBzYpoaBjMfqXr4ZEnUNIHxe1Tk9RPxlu/f7IOa4d/1D1uloMuKFpA6l4A5RRvcM4nYCYKGn19vA+t5BOz2ur1+bshzcpfdpKTpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nkok8XC2iTGXvRalUaJWACArOTUZixFMS2OaDtpP3yY=;
- b=rd/MIwErwwpq/p39h9HiN8jZRooTfdKY1kZNRUKUtW2DiUF7j5CIc8eN7sSsn2WhyCwfo5Xf53g5G4s/EiuKEXwF4QWN137UiZIT6oex1yjhu6aP1V9l58tlJz27MquS2pqITvjBoQV9PuF/d71siA2OeDFMNukLRda5mtaBWVo=
-Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:23c::11)
- by CWXP265MB5154.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:195::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 10:12:30 +0000
-Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a3f5:aa1a:ff75:79a2]) by LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a3f5:aa1a:ff75:79a2%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 10:12:30 +0000
-From:   Donald Robson <Donald.Robson@imgtec.com>
-To:     Frank Binns <Frank.Binns@imgtec.com>,
-        "knaerzche@gmail.com" <knaerzche@gmail.com>,
-        Matt Coster <Matt.Coster@imgtec.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>
-CC:     "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Sarah Walker <Sarah.Walker@imgtec.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/imagination: vm: Fix heap lookup condition
-Thread-Topic: [PATCH] drm/imagination: vm: Fix heap lookup condition
-Thread-Index: AQHaLBqMKZG3Q71Cr0OoYFH7Tl3kmA==
-Date:   Mon, 11 Dec 2023 10:12:30 +0000
-Message-ID: <bd44e6e66db23505c0275b14805e711e3a75b4d1.camel@imgtec.com>
-References: <20231208170856.1748413-1-knaerzche@gmail.com>
-In-Reply-To: <20231208170856.1748413-1-knaerzche@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LO2P265MB4600:EE_|CWXP265MB5154:EE_
-x-ms-office365-filtering-correlation-id: 1564873e-8597-4abf-c83a-08dbfa31af23
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0fKfmbDLPWqSzbn+S+9jk/X7mzdzyCQr4bKnxix9d/IvPhQOxUZfIymBbhUNjV8JsILeEL8To9yp3Jh5NBYJjK0LZj0yy/QMVAq1kfyyqe1KqBllx1zPYSZ2HUPjoOyblgaHY5E+l7bL+/KE7FUGhvuquJACShPPY4OVnJflVo+Q33A3nC62pThupDiUK2X0fmnBdpOmDPYq+PLte6wEY/VfjR/vzdqIzp8Pen/WdHwRqVRW1lBxjAFjdX2tkRnozLOPBo3nMdMLgB0eispZq4GGfZlHKgPR3X5RkvSO08ckMfBWV1aYuKjXeodtMA7vvg1CvmZT1D1jXJaBRjWdIZP+FZ72wHv13VDSwYgY29Tq7SzeFO1Gg1qCnQxZP9Uha4Tk4GbOWel8ZQkBtdOk+rYsDOTr6tmuMSjR4ccmg1IhRzQ6fT0hwgq6LLfW+LyhlMQrcRyQYCMWOqpRuK7t/9CjMgU8661hUMo+ambe3lMgU6jjrm3bUg3p3ihNHbHrZI9F8LMvtNyGuvfmH1izIz62lKXnx1JfqIlU5w45UuLwv4Zv3ag4Ofv6UNFZDvf887IVADhuoYqJs7WxAV8NRnRrHADV/3jFeEJk+od/4hFMN2WVUr/3UT2xNZ19+bYBovPAajdwWP1xR0SZ90M0NFAgmr1TLDS0ckbgi91rjUQ6AesBY224ZS5ACRfDJj68/+6wL322KMkFI/vl3pYHTQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39840400004)(366004)(346002)(136003)(230922051799003)(230273577357003)(230173577357003)(451199024)(1800799012)(186009)(64100799003)(6512007)(2616005)(26005)(6486002)(71200400001)(478600001)(6506007)(122000001)(76116006)(83380400001)(5660300002)(2906002)(54906003)(64756008)(66446008)(66476007)(66556008)(66946007)(41300700001)(316002)(4326008)(8676002)(8936002)(110136005)(38100700002)(38070700009)(86362001)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aVRRWlhkWXBPR3FwYWpvUVhMNDJZLytUMmQ3V1FnaGFlSkdMSFZEV3VFcHJi?=
- =?utf-8?B?UWE4cnE0MDNQblA1MUZTQjN1S0pxS3pNWkVWWDNRRmM3eGlyMmUxcXRqNSsr?=
- =?utf-8?B?V1h4K3RGLy9rWUJ5VElZb0JmMGhWaFJoR2YvOE1hNTNKNlA1QTF2VWJWeGJE?=
- =?utf-8?B?WnRYclFoWjhHUVNGanJGb2lpTkxLQlNRY2JQZE44RWxVanNsR3dvaG9lU3RX?=
- =?utf-8?B?U1RuUytzYlFNRHF1NlErUjBkTkZ1emxIclhSblQzKys0aUoweE9OSDlNK0tX?=
- =?utf-8?B?dTd3VmdNUHBzdyt6MFR1MFVTVW9vMWtZa25hZXRRWDdIVE5uVlFOL1A2RWJ2?=
- =?utf-8?B?a1BCMlQwMXgwQm1LaFdKcjdHbjhEZi9SaCtLWm5ieFprVDNmbjN5TGdTUlFr?=
- =?utf-8?B?SXNDZmxUVGRBUFRZZnRzNFhwK0pjNGhNemhmYTNrZTVha2tITWpSNDJuc0Jm?=
- =?utf-8?B?d1BHZ1QvVHUrc0h0WGUrQXdrNDNRQTBNdG9TMDczaE4wdVR3N3JVK2liOWFw?=
- =?utf-8?B?UVRwUXhwMXgwZk9PNUszQk5KWmljSklCZzRmcFllcnVPald0MmRYMnZndWYr?=
- =?utf-8?B?Y3E4MHpyVWdsWHE1Q0VqUEF4M3c2OU80NWtGZzBRVkhnUWtXMUxsKzlNcjUz?=
- =?utf-8?B?cjdFQjhlejRjWmtCUjM5RXNaVkhGcmZFdGEwbHUvNCtPYnRQR3FYZmpyZzZZ?=
- =?utf-8?B?dUtKNjhKNGs3OXJRY0luejFXbEVuYitQcHJ3YUlyWThrQklaRy9RVzRtRHli?=
- =?utf-8?B?OXZpU1g2dHE4bWdrbUljbTlkbDRTcnFxbWVMcVkvc250QWFjdUZVOEV5NitJ?=
- =?utf-8?B?aHRnZk5oZ1RrM3dEVHFRblU4ajFCNTZvOUxPc3VhR3pYYnlwRmZsVHRnVkJm?=
- =?utf-8?B?dVJPcWVMZWkvb3I2R1JPb2laU2o0c09uK2lUYXUxRms4UG1jY1c2dEFjMlZz?=
- =?utf-8?B?TkxveTBuYzhxZUtXZ2d5RHo5TmZtYW5JcTRmeWk5dFlxbEFxQWovbVdzaHo1?=
- =?utf-8?B?TnZ6WXFZa0ZLakZCMGlHdXVjTTFZbHJDMEg0ODI4VWtmK010S0graGhJTndN?=
- =?utf-8?B?VXVla1ZURGVKSkp5bW9iK3hoUlhhSXBhdmtkVEF3NlFORXlvTWlFU1V5YXZU?=
- =?utf-8?B?SlJLbjE2RE5GeXR3N094ZzdBZ3BBSkVHWVF6YUpIdGFTTnB0dmZpVC9sTmhC?=
- =?utf-8?B?UnhmYmxLTHdyQ2w0b09iem85cDlnS3ltb05OWFI2eGFab0kzek91VDA0YTJB?=
- =?utf-8?B?T1RENzhYSnpmRmxsa1RhZ2dUNXJ3bUJEYUY4M2Z5VHkrOGh4NEJmeG9CL1hm?=
- =?utf-8?B?eFVVOVVVK0lOUU1jak9SbEduVWtONFFJRFoyd25ZTVM2TUZtU3c4amZjSzVj?=
- =?utf-8?B?T25ZZDZ0QTBaQk5vMFI4WEF4ZC9XdGlranpUMDR6dGJpNTJtcjVKMjNGcGtz?=
- =?utf-8?B?YW1sVVhpV3o4eFdZamdpSTJTem1qZ1E4M0lTSkEyVTJudlIwVDlMWlBYRTcr?=
- =?utf-8?B?TDN0S2xDbkY0YTJ1YWxTRXhSandjMGJBem9UVm9xNTZqRVAyODl2THh1QkFn?=
- =?utf-8?B?Nkw4eDNBdzVqNzdqL05CcXhuMUNsMmNVWmFtckJlU2hIVitqMk5laThmTjFu?=
- =?utf-8?B?eCt6NFdaQ1RnS04zZGRSRTlVLzdjalFXTDdqaGdadTlETmFkdFJBcHJHdVhn?=
- =?utf-8?B?NjVwWnlRK3ZxQzBmTVp3QjRBcmQ3dlp0T2JaY0NpYnZGdS9hNUQvYWlvV0J4?=
- =?utf-8?B?NFhoa21zeHlaNVRZZlRyai9jYlNWT2x2NHFoY2dRcmJrVUZYMXlJKzlKMTc2?=
- =?utf-8?B?YVNQTzZEL0lNWForTjJ1TTh2elc4cEF1ZTZ5RjRMTUFBTTdKRWpnR1RlWjEv?=
- =?utf-8?B?VEpucGxxb1o4dVVzeitvUmJKV3p6NXd5R00xaHRaMzlTWW9aOFRaTWZSSjlr?=
- =?utf-8?B?cVpBVS9MaE4xUDJaYnpRTHJqaG1STVBHNjUrbkdzblRZcGUvb21IU3J5OVpx?=
- =?utf-8?B?bEtzK3BrV3Fpc0VvYWdSY3BYQWdrZFM0S1BvbE1kSDF0dDBqaS9yR1VvZXZH?=
- =?utf-8?B?Q2JvK0FrR2NuWkVyZmJjM1B4U1UvSU9raTdqeVJlYnBYRHVMSDdEQmlLc3lp?=
- =?utf-8?B?VzdPZWlrT1dOS2dma3dOMWNrSmlBUjMxNHMva29sZFY5eHZ5K1QxWWRnTjlO?=
- =?utf-8?B?Z1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2357C6D8B51B184884A9E11328EBC607@GBRP265.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Mon, 11 Dec 2023 05:12:32 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 174F4AB;
+        Mon, 11 Dec 2023 02:12:37 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6A9D1007;
+        Mon, 11 Dec 2023 02:13:23 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C847F3F738;
+        Mon, 11 Dec 2023 02:12:35 -0800 (PST)
+Message-ID: <6c3d9c5c-8185-bcdf-2897-0db13c00a843@arm.com>
+Date:   Mon, 11 Dec 2023 10:12:35 +0000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1564873e-8597-4abf-c83a-08dbfa31af23
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2023 10:12:30.1240
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UthJPVeJzbk+rMY9z5yjHtX7Nmjc9hiYWYwve7V5kBtIG3qBEiQH7/GgPNOxzEWQZlflqZLaj42UBIEqDlwgV7LpOlGzVy1yRH1VbGI7DQQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB5154
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-GUID: 2HbDZ04FQCYfJELmp5aBVgmkabmcP7Cd
-X-Proofpoint-ORIG-GUID: 2HbDZ04FQCYfJELmp5aBVgmkabmcP7Cd
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V3 04/10] coresight: replicator: Move ACPI support from
+ AMBA driver to platform driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231208053939.42901-1-anshuman.khandual@arm.com>
+ <20231208053939.42901-5-anshuman.khandual@arm.com>
+ <862afccb-e9c5-4fcb-abdf-45a5eb9aa6d8@arm.com>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <862afccb-e9c5-4fcb-abdf-45a5eb9aa6d8@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIEFsZXghDQoNClJldmlld2VkLWJ5OiBEb25hbGQgUm9ic29uIDxkb25hbGQucm9ic29u
-QGltZ3RlYy5jb20+DQoNCk9uIEZyaSwgMjAyMy0xMi0wOCBhdCAxODowOCArMDEwMCwgQWxleCBC
-ZWUgd3JvdGU6DQo+ICoqKiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZXMgZnJvbSBhIHNv
-dXJjZSBub3Qga25vd24gdG8gSW1hZ2luYXRpb24gVGVjaG5vbG9naWVzLiBUaGluayBiZWZvcmUg
-eW91IGNsaWNrIGEgbGluayBvciBvcGVuIGFuIGF0dGFjaG1lbnQgKioqDQo+IA0KPiBXaGVuIGNv
-bmRpdGlvbmFsbHkgY2hlY2tpbmcgZm9yIGhlYXAgZXhpc3RlbmNlIG9mIGEgY2VydGlhbiBhZGRy
-ZXNzIGluDQo+IHB2cl92bV9iaW5kX29wX21hcF9pbml0IHRoZSBjb25kaXRpb24gd2hldGhlciB0
-aGUgbWFwIHJlcXVlc3QgY29tZXMgZnJvbSBhDQo+IHVzZXIgaXMgaW5jb3JyZWN0OiBUaGUgY29u
-dGV4dCBtdXN0IG5vdCBiZSB0aGUga2VybmVsLWNvbnRleHQgdG8gYmUgYQ0KPiB1c2VyKHNwYWNl
-KSBjb250ZXh0IGFuZCBzaG91bGQgYmUgbG9va2VkIHVwIGluIHB2cl9oZWFwcy4NCj4gDQo+IFRo
-YXQgbWFrZXMgYWRkcmVzc2VzIGNvbWluZyBmcm9tIHVzZXJzcGFjZSBub3QgYmVpbmcgdmVyZmll
-ZCBhZ2FpbnN0IHRoZQ0KPiBkZWZpbmVkIHJhbmdlcyBhbmQgcHJldmVudHMgZmlybXdhcmUgbG9h
-ZGluZyBmb3IgbWV0YSBjb3Jlcy4NCj4gDQo+IEZpeGVzOiBmZjVmNjQzZGUwYmYgKCJkcm0vaW1h
-Z2luYXRpb246IEFkZCBHRU0gYW5kIFZNIHJlbGF0ZWQgY29kZSIpDQo+IFNpZ25lZC1vZmYtYnk6
-IEFsZXggQmVlIDxrbmFlcnpjaGVAZ21haWwuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvZ3B1L2Ry
-bS9pbWFnaW5hdGlvbi9wdnJfdm0uYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9pbWFnaW5hdGlvbi9wdnJfdm0uYyBiL2RyaXZlcnMvZ3B1L2RybS9pbWFnaW5hdGlvbi9wdnJf
-dm0uYw0KPiBpbmRleCBmNDIzNDVmYmU0YmYuLjgyNjkwY2VlOTc4YyAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL2ltYWdpbmF0aW9uL3B2cl92bS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1
-L2RybS9pbWFnaW5hdGlvbi9wdnJfdm0uYw0KPiBAQCAtMjI1LDcgKzIyNSw3IEBAIHB2cl92bV9i
-aW5kX29wX21hcF9pbml0KHN0cnVjdCBwdnJfdm1fYmluZF9vcCAqYmluZF9vcCwNCj4gIAkJCXU2
-NCBkZXZpY2VfYWRkciwgdTY0IHNpemUpDQo+ICB7DQo+ICAJc3RydWN0IGRybV9nZW1fb2JqZWN0
-ICpvYmogPSBnZW1fZnJvbV9wdnJfZ2VtKHB2cl9vYmopOw0KPiAtCWNvbnN0IGJvb2wgaXNfdXNl
-ciA9IHZtX2N0eCA9PSB2bV9jdHgtPnB2cl9kZXYtPmtlcm5lbF92bV9jdHg7DQo+ICsJY29uc3Qg
-Ym9vbCBpc191c2VyID0gdm1fY3R4ICE9IHZtX2N0eC0+cHZyX2Rldi0+a2VybmVsX3ZtX2N0eDsN
-Cj4gIAljb25zdCB1NjQgcHZyX29ial9zaXplID0gcHZyX2dlbV9vYmplY3Rfc2l6ZShwdnJfb2Jq
-KTsNCj4gIAlzdHJ1Y3Qgc2dfdGFibGUgKnNndDsNCj4gIAl1NjQgb2Zmc2V0X3BsdXNfc2l6ZTsN
-Cg==
+
+
+On 11/12/2023 07:51, Anshuman Khandual wrote:
+> 
+> 
+> On 12/8/23 11:09, Anshuman Khandual wrote:
+>> Add support for the dynamic replicator device in the platform driver, which
+>> can then be used on ACPI based platforms. This change would now allow
+>> runtime power management for repliacator devices on ACPI based systems.
+>>
+>> The driver would try to enable the APB clock if available. Also, rename the
+>> code to reflect the fact that it now handles both static and dynamic
+>> replicators.
+>>
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>> Changes in V3:
+>>
+>> - Added commnets for 'drvdata->pclk'
+>> - Used coresight_init_driver()/coresight_remove_driver() helpers instead
+>> - Dropped pm_runtime_put() from replicator_probe()
+>> - Added pm_runtime_put() on success path in dynamic_replicator_probe()
+>> - Added pm_runtime_put() on success/error paths in
+>>   replicator_platform_probe()
+>>
+>>  drivers/acpi/arm64/amba.c                     |  1 -
+>>  .../coresight/coresight-replicator.c          | 81 ++++++++++---------
+>>  2 files changed, 42 insertions(+), 40 deletions(-)
+>>
+>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>> index 171b5c2c7edd..270f4e3819a2 100644
+>> --- a/drivers/acpi/arm64/amba.c
+>> +++ b/drivers/acpi/arm64/amba.c
+>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>  	{"ARMHC503", 0}, /* ARM CoreSight Debug */
+>>  	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>  	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>> -	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
+>>  	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>  	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
+>>  	{"", 0},
+>> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+>> index b6be73034996..125b256cb8db 100644
+>> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+>> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+>> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>>   * @base:	memory mapped base address for this component. Also indicates
+>>   *		whether this one is programmable or not.
+>>   * @atclk:	optional clock for the core parts of the replicator.
+>> + * @pclk:	APB clock if present, otherwise NULL
+>>   * @csdev:	component vitals needed by the framework
+>>   * @spinlock:	serialize enable/disable operations.
+>>   * @check_idfilter_val: check if the context is lost upon clock removal.
+>> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>>  struct replicator_drvdata {
+>>  	void __iomem		*base;
+>>  	struct clk		*atclk;
+>> +	struct clk		*pclk;
+>>  	struct coresight_device	*csdev;
+>>  	spinlock_t		spinlock;
+>>  	bool			check_idfilter_val;
+>> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>>  			return ret;
+>>  	}
+>>  
+>> +	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
+>> +	if (IS_ERR(drvdata->pclk))
+>> +		return -ENODEV;
+>> +
+>>  	/*
+>>  	 * Map the device base for dynamic-replicator, which has been
+>>  	 * validated by AMBA core
+>> @@ -285,7 +291,6 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>>  	}
+>>  
+>>  	replicator_reset(drvdata);
+>> -	pm_runtime_put(dev);
+>>  
+>>  out_disable_clk:
+>>  	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
+>> @@ -301,29 +306,31 @@ static int replicator_remove(struct device *dev)
+>>  	return 0;
+>>  }
+>>  
+>> -static int static_replicator_probe(struct platform_device *pdev)
+>> +static int replicator_platform_probe(struct platform_device *pdev)
+>>  {
+>> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>  	int ret;
+>>  
+>>  	pm_runtime_get_noresume(&pdev->dev);
+>>  	pm_runtime_set_active(&pdev->dev);
+>>  	pm_runtime_enable(&pdev->dev);
+>>  
+>> -	/* Static replicators do not have programming base */
+>> -	ret = replicator_probe(&pdev->dev, NULL);
+>> -
+>> -	if (ret) {
+>> -		pm_runtime_put_noidle(&pdev->dev);
+>> -		pm_runtime_disable(&pdev->dev);
+>> -	}
+>> +	ret = replicator_probe(&pdev->dev, res);
+>> +	pm_runtime_put(&pdev->dev);
+> 
+> I believe pm_runtime_disable() would still be needed on the error path. Otherwise
+> pm_runtime_enable() will remain unbalanced on this error path when the replicator
+> module could not be loaded.
+> 
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -317,6 +317,8 @@ static int replicator_platform_probe(struct platform_device *pdev)
+>  
+>         ret = replicator_probe(&pdev->dev, res);
+>         pm_runtime_put(&pdev->dev);
+> +       if (ret)
+> +               pm_runtime_disable(&pdev->dev);
+>  
+>         return ret;
+>  }
+> 
+> Similar constructs in this error path are also required in all other drivers (except
+> cpu debug) as well.
+
+Would that not need to be done as a fixes commit first with more detail
+about the issue if that's true? Maybe simulate the error and paste any
+error logs. For example etm4 already has this:
+
+  	pm_runtime_get_noresume(&pdev->dev);
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+
+	ret = etm4_probe(&pdev->dev);
+
+	pm_runtime_put(&pdev->dev);
+
+I'm wondering if the disable is already covered by the platform code if
+the probe fails so no change is required?
+
+	if (drv->probe) {
+		ret = drv->probe(dev);
+		if (ret)
+			dev_pm_domain_detach(_dev, true);
+	}
