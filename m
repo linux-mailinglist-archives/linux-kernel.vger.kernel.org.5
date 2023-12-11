@@ -2,194 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A326680DB03
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD18B80DB07
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344842AbjLKTmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
+        id S1344901AbjLKTmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKTl7 (ORCPT
+        with ESMTP id S1344844AbjLKTmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:41:59 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F353CE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:42:05 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso7019777a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:42:05 -0800 (PST)
+        Mon, 11 Dec 2023 14:42:05 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA214D0;
+        Mon, 11 Dec 2023 11:42:11 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d0a7b72203so42640855ad.2;
+        Mon, 11 Dec 2023 11:42:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702323723; x=1702928523; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A1xlkoknCKe+rRAZq4chj+QZuYrtbZ8hKNLIJXx7jh4=;
-        b=BzpwBPEqvUBjsQVHoOz/q1a76DmJJO7Kx/yAZ7og8hkf3sMxqcViv6MP4kyz84fcmT
-         tahr1lgEtEBSA+/a6eRZKTSCdBdJ21KUaVJS1TOyy+1nprZut7KmPzCLSA+/kkVyRy3C
-         Srnop5iVHzwVMSweBcfUw6DTmNNE3ePjAqFhIqc9m2n5OFMkf1NSsKU2vrkh93T8gRKp
-         0xpKgKgKwGP5umqVeZjsqWWb+7m4pbu6ErHcE2c58pSTIWswotBK5eec6oyunabbHmIw
-         lLUgLFH/Jcsrj9PVLf5KeXppPATDSLUsQvlxXg1dR8zq5gPXdT+nNiQb1KvXV4AQDMz4
-         Xv/A==
+        d=gmail.com; s=20230601; t=1702323731; x=1702928531; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=B8Nrxh5KFaB53RrFC7+uu6+AWVDGPPyGb9UygQv+cfo=;
+        b=YxVRi77ttGS0KjUbhQK6pTsfKfFtTZvbY5nPwZZiScu7ArhHaytZwY17lnZ8rtmDbx
+         VWS5AyRiVixWt/grsHWkNrInQBrMamEzfbF8PU1hfsM2E3FoMT1tjgXKdgG5LldndxsC
+         qoBYRQbdcu0BtH1BeooRfSYO9wqVhUPenvQ54NN4o62iW6sxgHLmysTkEcth6NvjUSSY
+         G+9dNa8Ox3/tkoV5SbS9+nspdJ7fri1dyNNm+JQCaeQvvplApsDDNEhiNXO5Ylcmpezg
+         HntbixLLAT1WTAe5+lhepp+lG9i9hfjNM7GYWSulxXGEzZ7Qn8nVKWBsk3a+6aCgsdUK
+         Gmcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702323723; x=1702928523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A1xlkoknCKe+rRAZq4chj+QZuYrtbZ8hKNLIJXx7jh4=;
-        b=V6ipoNPmd0rxDeFCi9bz77lW1+rx4GyBhfbI/NUW2rZas/SyQoTxzjJAybSSV9mBrE
-         0URTaCeRyFnOpmTdyGrNbNLJYqI97UnyxH7ivzTbYOs+NcMp+2nPXeBaWk3ezkHCDAt5
-         jY+rJ3gOMxLG0P6w+JXlEfG+lZ7KvwaPFbB4keDJ2ykMX5Bt1mdPb3eRo4n63hFibbC6
-         f8rDyQZIeRa7Mrsn6qFcjNYx2uY5vEeTM5eXENLKDF+11xJ01ii5nBJcYuGbvCJomtpr
-         QZasn0ia4/a6SxZS70KfSP6hOQV5V1JTD1bXBkdEmW015NSrltEQ3gLb8MprXqnNYcdB
-         DbOg==
-X-Gm-Message-State: AOJu0Ywla+aEejOP4x3ateW/GWVUfKaMxTV4Z+gaVE5qKswMIexgHsIg
-        x+B9xzyrJo4iX1urWlLwv4ff9LjcXF3eg3i/1MwTDw==
-X-Google-Smtp-Source: AGHT+IEXX5Y883yAOe8bRnhdlt7eyI7DRp7CVLcBnW/9gGFaOpCCnndrsELXsX2XqXcpOP8ADBf92budkZMDnYJtEUo=
-X-Received: by 2002:a17:906:33cc:b0:a19:a19b:78ae with SMTP id
- w12-20020a17090633cc00b00a19a19b78aemr2279264eja.113.1702323723348; Mon, 11
- Dec 2023 11:42:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702323731; x=1702928531;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B8Nrxh5KFaB53RrFC7+uu6+AWVDGPPyGb9UygQv+cfo=;
+        b=GgWhwxav0QABoZdMJLI37ih6tY+mZiMasqzMIm46FhAQqYxm63ngRVJQnNU2gDDs86
+         88f2zPQYj+h/4do9LYTj+1y91HTPuEin981O6bCLfkaiNL6EBQm9zGpMwWY8bfCfNbLC
+         Oum2Q5VHiin9Xatgja0SMR/P559iaEAMfvpO+8HJ4YJGcP4CKbJqhRB12CDv3om20QjT
+         zdsE7vcoxNmNV3ErlhSEpOi2ZZDAp/EPj0MDv3KgHKg03/hAh1ctM86eDfNPZ+MRYUuZ
+         RK8bXNWBrcqKhBJQHKCOjd6MvFXwzxxnxEGR31ODaR3VhxRxuOWyXORMPevhXG5u6a7x
+         tO3Q==
+X-Gm-Message-State: AOJu0Yy+14lwqdk+MUR/6n1s1eU0hAVM3aLbu4SWI6yvqo5ofoQEeG2u
+        6I7rBc7bKXTt8Wcss9yZ3+kEh0m/qUM=
+X-Google-Smtp-Source: AGHT+IE1J1kcAjkwLeIB1dR6s+RZsjtXDy6CxgSIzm6Q+ds5pY4Nnxsc6PzZpXIGvL0pIAqPnPAOPQ==
+X-Received: by 2002:a17:90a:578b:b0:286:c37f:d1b1 with SMTP id g11-20020a17090a578b00b00286c37fd1b1mr3739637pji.41.1702323731328;
+        Mon, 11 Dec 2023 11:42:11 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g5-20020a17090a128500b00262eb0d141esm7179428pja.28.2023.12.11.11.42.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 11:42:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <b327d7e4-35fb-4b1e-bde2-267bba918df6@roeck-us.net>
+Date:   Mon, 11 Dec 2023 11:42:09 -0800
 MIME-Version: 1.0
-References: <20231211140419.1298178-1-schatzberg.dan@gmail.com> <20231211140419.1298178-2-schatzberg.dan@gmail.com>
-In-Reply-To: <20231211140419.1298178-2-schatzberg.dan@gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 11 Dec 2023 11:41:24 -0800
-Message-ID: <CAJD7tkZQ2aakT8M2bTg0bp4sDtrGYv_4i4Z4z3KBerfxZ9qFWA@mail.gmail.com>
-Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chris Li <chrisl@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] dt-bindings: arm: hwmon: gpio-fan: Convert txt
+ bindings to yaml
+Content-Language: en-US
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231209171653.85468-1-david@ixit.cz>
+ <08ecf10d-03c4-4025-8809-475fb5ee76a9@roeck-us.net>
+ <9b67ad11-c55c-4695-9439-2a9c5d6c1e45@ixit.cz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <9b67ad11-c55c-4695-9439-2a9c5d6c1e45@ixit.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 6:04=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
->
-> Allow proactive reclaimers to submit an additional swappiness=3D<val>
-> argument to memory.reclaim. This overrides the global or per-memcg
-> swappiness setting for that reclaim attempt.
->
-> For example:
->
-> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
->
-> will perform reclaim on the rootcg with a swappiness setting of 0 (no
-> swap) regardless of the vm.swappiness sysctl setting.
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 15 ++++++-
->  include/linux/swap.h                    |  3 +-
->  mm/memcontrol.c                         | 55 ++++++++++++++++++++-----
->  mm/vmscan.c                             | 13 +++++-
->  4 files changed, 70 insertions(+), 16 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 3f85254f3cef..fc2b379dbd0f 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1282,8 +1282,8 @@ PAGE_SIZE multiple when read back.
->         This is a simple interface to trigger memory reclaim in the
->         target cgroup.
->
-> -       This file accepts a single key, the number of bytes to reclaim.
-> -       No nested keys are currently supported.
-> +       This file accepts a string which containers thhe number of bytes
+On 12/11/23 11:28, David Heidelberg wrote:
+> Nothing, as I was working on others ARM-related bindings, it just sneaked in. Good catch.
+> 
+> Should I resend with adjusted name or can this by done by quick adjust before the merge?
+> 
 
-contains* the*
+No need to resend. I'll fix that up, assuming you get a Reviewed-by: tag from a dt
+maintainer.
 
-I think this statement was only important because no keys were
-supported, so I think we can remove it completely and rely on
-documenting the supported keys below like other interfaces, see my
-next comment.
+Guenter
 
-> +       to reclaim.
->
->         Example::
->
-> @@ -1304,6 +1304,17 @@ PAGE_SIZE multiple when read back.
->         This means that the networking layer will not adapt based on
->         reclaim induced by memory.reclaim.
->
-> +       This file also allows the user to specify the swappiness value
-> +       to be used for the reclaim. For example:
-> +
-> +         echo "1G swappiness=3D60" > memory.reclaim
-> +
-> +       The above instructs the kernel to perform the reclaim with
-> +       a swappiness value of 60. Note that this has the same semantics
-> +       as the vm.swappiness sysctl - it sets the relative IO cost of
-> +       reclaiming anon vs file memory but does not allow for reclaiming
-> +       specific amounts of anon or file memory.
-> +
+> David
+> 
+> On 11/12/2023 15:34, Guenter Roeck wrote:
+>> On Sat, Dec 09, 2023 at 06:15:39PM +0100, David Heidelberg wrote:
+>>> Convert fan devices connected to GPIOs to the YAML syntax.
+>>>
+>>> Signed-off-by: David Heidelberg <david@ixit.cz>
+>> I keep wondering: What does this have to do with arm (in the subject) ?
+>>
+>> Guenter
+> 
 
-Can we instead follow the same format used by other nested-keyed files
-(e.g. io.max)? This usually involves a table of supported keys and
-such.
-
->    memory.peak
->         A read-only single value file which exists on non-root
->         cgroups.
-[..]
-> @@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_=
-file *of, char *buf,
->         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
->         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
->         unsigned int reclaim_options;
-> -       int err;
-> +       char *old_buf, *start;
-> +       substring_t args[MAX_OPT_ARGS];
-> +       int swappiness =3D -1;
->
->         buf =3D strstrip(buf);
-> -       err =3D page_counter_memparse(buf, "", &nr_to_reclaim);
-> -       if (err)
-> -               return err;
-> +
-> +       old_buf =3D buf;
-> +       nr_to_reclaim =3D memparse(buf, &buf) / PAGE_SIZE;
-> +       if (buf =3D=3D old_buf)
-> +               return -EINVAL;
-> +
-> +       buf =3D strstrip(buf);
-> +
-> +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
-> +               if (!strlen(start))
-> +                       continue;
-> +               switch (match_token(start, if_tokens, args)) {
-> +               case MEMORY_RECLAIM_SWAPPINESS:
-> +                       if (match_int(&args[0], &swappiness))
-> +                               return -EINVAL;
-> +                       if (swappiness < 0 || swappiness > 200)
-
-I am not a fan of extending the hardcoded 0 and 200 values, and now
-the new -1 value. Maybe it's time to create constants for the min and
-max swappiness values instead of hardcoding them everywhere? This can
-be a separate preparatory patch. Then, -1 (or any invalid value) can
-also be added as a constant with a useful name, instead of passing -1
-to all other callers.
-
-This should make the code a little bit more readable and easier to extend.
