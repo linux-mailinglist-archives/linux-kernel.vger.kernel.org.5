@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8496280D48E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330E280D491
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345177AbjLKRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37708 "EHLO
+        id S1345112AbjLKRv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345065AbjLKRu7 (ORCPT
+        with ESMTP id S1345066AbjLKRu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 12:50:59 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368A8C3;
-        Mon, 11 Dec 2023 09:50:59 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bf8843a6fso4723373e87.0;
-        Mon, 11 Dec 2023 09:50:59 -0800 (PST)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04CC5CD;
+        Mon, 11 Dec 2023 09:51:01 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c9f7fe6623so59319011fa.3;
+        Mon, 11 Dec 2023 09:51:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702317057; x=1702921857; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702317058; x=1702921858; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lRa38RGEmz27i+dqJIZM7KN8VTKbmG28KhKh8WuCaJ4=;
-        b=jstO4TdZZqBVGzJ5soti4kqLyfE9JLFOqDNGcG5tSa9CvL3Ke5Pr9VKIucgIkd552d
-         Gp7hIMTJt9DK/UhNuJkm0Iqjuf4TEqo7VdC5DkiU/uBX7o3JnZgRmdvf0EfKbSPOtnf5
-         nUfUu5OI8fSQKNm/Y+VIwPIvMYiloNzBZV8NGIMXtaxzM801ckaRGoXYIL+bsXUkwJER
-         5DIzdH8+0lI7v3EYyrqkInMRUc9RB1DxqMNf49751HMFqVJij2J/5eQurwVaTsJr8VNM
-         hWnOoSEBshmyHzTVcEf47gl+rQKH9/Ha87LFZDEzX9n2hz4E7bwHtMKk0Zannl09kWpm
-         LQ0g==
+        bh=O3YUfzGsaBsOQXR1nI75uclXXzs9bCDdUPhKf4IBE2Q=;
+        b=GvFMWsSqknLhstpCt60WroNMg+GRrecTOd7anjl1ExvUwRNmXGWRcmL41L+pNYNE0h
+         +FCDjqk4vSrnqH+XfCEgMwcKYvv7FXxFAlOOspRjNFkXyFNaz+E5FrXrww//TscEE+PX
+         yMmcWuMmU/zMY50y7DLfJ98D9xxcG0Vs0ci5nXhDCX5f9wb25FabbmoofCHCf50WnqLT
+         gtqmayDLc6eJuAArqwW3Gqd9p/ICalpLTCAqcuTOXy2SMQ0CWM2YQXn2+KoB0WPDkQZy
+         6bscfGTdXENY/BzJ9Dal/fQQXjZ6xl9Jmyx2OQLk7LSc7lymnnOiTb0y9c9515CO1Egn
+         YDmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702317057; x=1702921857;
+        d=1e100.net; s=20230601; t=1702317058; x=1702921858;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lRa38RGEmz27i+dqJIZM7KN8VTKbmG28KhKh8WuCaJ4=;
-        b=M5GC+oG610jNrBFI/05HRPYMAM5PNyOUaSYOyktZVSZnB487V4bS+NSEfE0YdcZpov
-         z/h2Dtmv9g1SVCBi3YRObvgdrsGaFXqSnmUtGnLn1SDlrKyIEm6OTc3F4AsC6SD1tLna
-         EakJJgVP7gb4EuajcmEYby9oh1gLX6EowwBWPr0Xd+wkXb17GGxMQR3ynmv9MqZ5tNA+
-         EQHcjH+hO86S+yi2/5m7LCCJeyvBs5hBRlifMaol1Y+tvHjhofYcGFSaBLXugW7l4vjL
-         T9mO9j2m+qXkh62k8xp4Lc31SbZ5oR3e+VhSvk/uZ7tpw8D34yGVLtfRTqu97/xLPA19
-         HbFw==
-X-Gm-Message-State: AOJu0YygqOcQB3cmQaI5unqd/40a5febeQwmUVUEV5zFOM117gXlrxMt
-        WEpFhMtxfjiHHeAC3nWH78zJ7AU6E7IADVSU
-X-Google-Smtp-Source: AGHT+IEvo0fhC92MBtgDiBCjKsHeXq9ZlNGlX/1YBBRYosWGMcHiwVUoMAmpTTiLySpueO62rD2Fgw==
-X-Received: by 2002:ac2:548d:0:b0:50b:f706:81cd with SMTP id t13-20020ac2548d000000b0050bf70681cdmr2409825lfk.19.1702317056754;
-        Mon, 11 Dec 2023 09:50:56 -0800 (PST)
+        bh=O3YUfzGsaBsOQXR1nI75uclXXzs9bCDdUPhKf4IBE2Q=;
+        b=wkbgjaYZTfhjagHTPJdphRAA1itv/UiaabuurMw63L5DCpqidUanw790IYFsuEjrwW
+         oKkxq15As0tA6Y4eOZT4E2Icvei1Z7yISgUBcBbf6M1oxZBH/LsYtNPx8QaJhxvuK42G
+         IMKEVxQIpnIJ8Dd7GS2Bc0KtKo/OBEHHk2hD/1Cww1+8gCLpwMmfcmOKTRFh4FcQtlrV
+         svcvTvlFC0Cf4QQCEVZIn29FQjFosZYMIgh7lIYVq8TBGOh+3o15ScF1PDxZvNv0XwcX
+         +0ND0r8wolmwQJI+isMvsFIGriQElJtec/27OkbHTkcPPrSiDXBkbkdSLpHWsdKLbDcO
+         Xlzw==
+X-Gm-Message-State: AOJu0Yz95qHl/OF4Fl1Vc3QFX1mr9kMKu8tpWZNilxaNhBAS/QqJg+yB
+        bGp1QCXB63i9JBo5V4QEmMal80EazvsjxvId
+X-Google-Smtp-Source: AGHT+IEUTze6+kiPfuLFxTrJcm7nGoTnjUhsTepJG64TDBBAJ32AXfTumvsiddUwnDi5pJ9/MZhmBA==
+X-Received: by 2002:a2e:5309:0:b0:2cc:275c:3dd1 with SMTP id h9-20020a2e5309000000b002cc275c3dd1mr314444ljb.57.1702317058477;
+        Mon, 11 Dec 2023 09:50:58 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id r14-20020ac25a4e000000b0050bfd883f56sm1141079lfn.129.2023.12.11.09.50.56
+        by smtp.gmail.com with ESMTPSA id r17-20020a2eb611000000b002c9f5039a86sm1280249ljn.87.2023.12.11.09.50.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:50:56 -0800 (PST)
+        Mon, 11 Dec 2023 09:50:58 -0800 (PST)
 From:   Mikhail Rudenko <mike.rudenko@gmail.com>
 To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
@@ -60,9 +60,9 @@ Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH 11/19] media: i2c: ov4689: Implement vflip/hflip controls
-Date:   Mon, 11 Dec 2023 20:50:14 +0300
-Message-ID: <20231211175023.1680247-12-mike.rudenko@gmail.com>
+Subject: [PATCH 12/19] media: i2c: ov4689: Implement digital gain control
+Date:   Mon, 11 Dec 2023 20:50:15 +0300
+Message-ID: <20231211175023.1680247-13-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231211175023.1680247-1-mike.rudenko@gmail.com>
 References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
@@ -78,76 +78,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OV4689 sensor supports horizontal and vertical flipping. Add
-appropriate controls to the driver. Toggling both array flip and
-digital flip bits allows to achieve flipping while maintaining output
-Bayer order. Note that the default value of hflip control corresponds
-to both bits set, as it was before this patch.
+The OV4689 sensor supports digital gain up to 16x. Implement
+corresponding control in the driver. Default digital gain value is not
+modified by this patch.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/media/i2c/ov4689.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ drivers/media/i2c/ov4689.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 67d4004bdcfb..62aeae43d749 100644
+index 62aeae43d749..ed0ce1b9e55b 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -46,6 +46,14 @@
- #define OV4689_HTS_DIVIDER		4
- #define OV4689_HTS_MAX			0x7fff
+@@ -35,6 +35,12 @@
+ #define OV4689_GAIN_STEP		1
+ #define OV4689_GAIN_DEFAULT		0x80
  
-+#define OV4689_REG_TIMING_FORMAT1	CCI_REG8(0x3820)
-+#define OV4689_REG_TIMING_FORMAT2	CCI_REG8(0x3821)
-+#define OV4689_TIMING_FLIP_MASK		GENMASK(2, 1)
-+#define OV4689_TIMING_FLIP_ARRAY	BIT(1)
-+#define OV4689_TIMING_FLIP_DIGITAL	BIT(2)
-+#define OV4689_TIMING_FLIP_BOTH		(OV4689_TIMING_FLIP_ARRAY |\
-+					 OV4689_TIMING_FLIP_DIGITAL)
++#define OV4689_REG_DIG_GAIN		CCI_REG16(0x352A)
++#define OV4689_DIG_GAIN_MIN		1
++#define OV4689_DIG_GAIN_MAX		0x7fff
++#define OV4689_DIG_GAIN_STEP		1
++#define OV4689_DIG_GAIN_DEFAULT		0x800
 +
- #define OV4689_LANES			4
- #define OV4689_XVCLK_FREQ		24000000
+ #define OV4689_REG_TEST_PATTERN		CCI_REG8(0x5040)
+ #define OV4689_TEST_PATTERN_ENABLE	0x80
+ #define OV4689_TEST_PATTERN_DISABLE	0x0
+@@ -131,7 +137,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
  
-@@ -183,7 +191,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
- 	{CCI_REG8(0x3811), 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
- 	{CCI_REG8(0x3813), 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
- 	{CCI_REG8(0x3819), 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
--	{CCI_REG8(0x3821), 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
+ 	/* AEC PK */
+ 	{CCI_REG8(0x3503), 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
+-	{CCI_REG8(0x352a), 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
  
- 	/* OTP control */
- 	{CCI_REG8(0x3d85), 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
-@@ -605,6 +612,16 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 			  (val + ov4689->cur_mode->width) /
- 			  OV4689_HTS_DIVIDER, &ret);
+ 	/* ADC and analog control*/
+ 	{CCI_REG8(0x3603), 0x40},
+@@ -622,6 +627,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+ 				OV4689_TIMING_FLIP_MASK,
+ 				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
  		break;
-+	case V4L2_CID_VFLIP:
-+		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
-+				OV4689_TIMING_FLIP_MASK,
-+				val ? OV4689_TIMING_FLIP_BOTH : 0, &ret);
-+		break;
-+	case V4L2_CID_HFLIP:
-+		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT2,
-+				OV4689_TIMING_FLIP_MASK,
-+				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
++	case V4L2_CID_DIGITAL_GAIN:
++		cci_write(regmap, OV4689_REG_DIG_GAIN, val, &ret);
 +		break;
  	default:
  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
  			 __func__, ctrl->id, val);
-@@ -633,7 +650,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+@@ -650,7 +658,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
  
  	handler = &ov4689->ctrl_handler;
  	mode = ov4689->cur_mode;
--	ret = v4l2_ctrl_handler_init(handler, 11);
-+	ret = v4l2_ctrl_handler_init(handler, 13);
+-	ret = v4l2_ctrl_handler_init(handler, 13);
++	ret = v4l2_ctrl_handler_init(handler, 14);
  	if (ret)
  		return ret;
  
-@@ -673,6 +690,9 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
- 				     ARRAY_SIZE(ov4689_test_pattern_menu) - 1,
- 				     0, 0, ov4689_test_pattern_menu);
+@@ -693,6 +701,10 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+ 	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
+ 	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
  
-+	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
-+	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
++	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
++			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
++			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
 +
  	if (handler->error) {
  		ret = handler->error;
