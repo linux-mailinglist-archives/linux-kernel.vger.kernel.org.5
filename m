@@ -2,139 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5566F80C164
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55EC80C16C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjLKGeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 01:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
+        id S233512AbjLKGhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbjLKGeI (ORCPT
+        with ESMTP id S229570AbjLKGhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 01:34:08 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B49FF4;
-        Sun, 10 Dec 2023 22:34:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67E501007;
-        Sun, 10 Dec 2023 22:35:00 -0800 (PST)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D977F3F762;
-        Sun, 10 Dec 2023 22:34:08 -0800 (PST)
-Message-ID: <3ba53c71-114a-4ac9-b590-7332e97b6fc4@arm.com>
-Date:   Mon, 11 Dec 2023 12:04:05 +0530
+        Mon, 11 Dec 2023 01:37:21 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0330495;
+        Sun, 10 Dec 2023 22:37:27 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 6431220B74C0; Sun, 10 Dec 2023 22:37:26 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6431220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702276646;
+        bh=plvwsq/k0bUEpqQI6kSEXAfkzMO9ufErkwbSyDLrpro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QCT+HK0WSXxvxXDdsu/zd+ld9FUITryrxN2I5Z9hNlGE35pZ4vvppuFLwgx3WEiQl
+         r55nPqP7tFwaoYlYWi5Abi3+0mAITnNoh5jeYFmriCA5tM1xp/dLDV3dwLs1m1uEST
+         OnGHIuAPqD98a/CJnitIldsExxy0rGQ0qhjwCtGA=
+Date:   Sun, 10 Dec 2023 22:37:26 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V15 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        Mark Brown <broonie@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
- <20231201053906.1261704-3-anshuman.khandual@arm.com>
- <86v89ebcn2.wl-maz@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <86v89ebcn2.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
+> On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > Existing MANA design assigns IRQ to every CPU, including sibling
+> > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > in the same core and may reduce the network performance with RSS.
+> 
+> Can you add an IRQ distribution diagram to compare before/after
+> behavior, similarly to what I did in the other email?
+> 
+Let's consider this topology:
 
+Node            0               1
+Core        0       1       2       3
+CPU       0   1   2   3   4   5   6   7
 
-On 12/4/23 13:52, Marc Zyngier wrote:
-> On Fri, 01 Dec 2023 05:39:00 +0000,
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->> Currently BRBE feature is not supported in a guest environment. This hides
->> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field. This also
->> blocks guest accesses into BRBE system registers and instructions as if the
->> underlying hardware never implemented FEAT_BRBE feature.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Oliver Upton <oliver.upton@linux.dev>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: kvmarm@lists.linux.dev
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/kvm/sys_regs.c | 130 ++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 130 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->> index 4735e1b37fb3..42701065b3cd 100644
->> --- a/arch/arm64/kvm/sys_regs.c
->> +++ b/arch/arm64/kvm/sys_regs.c
->> @@ -1583,6 +1583,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
->>  	/* Hide SPE from guests */
->>  	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
->>  
->> +	/* Hide BRBE from guests */
->> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
->> +
->>  	return val;
->>  }
->>  
->> @@ -2042,6 +2045,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>  	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
->>  	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
->>  	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
->> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
->> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
->>  
->>  	DBG_BCR_BVR_WCR_WVR_EL1(0),
->>  	DBG_BCR_BVR_WCR_WVR_EL1(1),
->> @@ -2072,6 +2077,131 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>  	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
->>  	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
->>  
->> +	/*
->> +	 * BRBE branch record sysreg address space is interleaved between
->> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
->> +	 */
->> +	{ SYS_DESC(SYS_BRBINF0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBSRC0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBTGT0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBINF16_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBSRC16_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBTGT16_EL1), undef_access },
-> Surely we can do better than this wall of text. Please look at what we
-> do for the debug registers, and adopt a similar pattern. This should
-> result in one line per group of 3 registers.
+ Before  
+ IRQ     Nodes   Cores   CPUs
+ 0       1       0       0
+ 1       1       1       2
+ 2       1       0       1
+ 3       1       1       3
+ 4       2       2       4
+ 5       2       3       6
+ 6       2       2       5
+ 7       2       3       7
+ 
+ Now
+ IRQ     Nodes   Cores   CPUs
+ 0       1       0       0-1
+ 1       1       1       2-3
+ 2       1       0       0-1
+ 3       1       1       2-3
+ 4       2       2       4-5
+ 5       2       3       6-7
+ 6       2       2       4-5
+ 7       2       3       6-7
+> > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > NUMA node. The performance improvement we are getting using ntttcp with
+> > following patch is around 15 percent with existing design and approximately
+> > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > if enough cores are present.
+> 
+> How did you measure it? In the other email you said you used perf, can
+> you show your procedure in details?
+I have used ntttcp for performance analysis, by perf I had meant performance
+analysis. I have used ntttcp with following parameters
+ntttcp -r -m 64 <receiver> 
 
-Sure, will these replace via the following macro.
+ntttcp -s <receiver side ip address>  -m 64 <sender>
+Both the VMs are in same Azure subnet and private IP address is used.
+MTU and tcp buffer is set accordingly and number of channels are set using ethtool
+accordingly for best performance. Also irqbalance was disabled.
+https://github.com/microsoft/ntttcp-for-linux
+https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
 
-+#define BRB_INF_SRC_TGT_EL1(n)                                 \
-+       { SYS_DESC(SYS_BRBINF##n##_EL1), undef_access },        \
-+       { SYS_DESC(SYS_BRBSRC##n##_EL1), undef_access },        \
-+       { SYS_DESC(SYS_BRBTGT##n##_EL1), undef_access }         \
-....
-+       BRB_INF_SRC_TGT_EL1(0),
-+       BRB_INF_SRC_TGT_EL1(16),
-+       BRB_INF_SRC_TGT_EL1(1),
-+       BRB_INF_SRC_TGT_EL1(17),
-+       BRB_INF_SRC_TGT_EL1(2),
-+       BRB_INF_SRC_TGT_EL1(18),
-+       BRB_INF_SRC_TGT_EL1(3),
-+       BRB_INF_SRC_TGT_EL1(19),
-....
+> 
+> > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > ---
+> 
+> [...]
+> 
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > index 6367de0c2c2e..18e8908c5d29 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> >  	r->size = 0;
+> >  }
+> >  
+> > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> > +{
+> > +	int w, cnt, cpu, err = 0, i = 0;
+> > +	int next_node = start_numa_node;
+> 
+> What for this?
+This is the local numa node, from where to start hopping.
+Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
+number of irqs allocated, and the local numa node to the device.
+> 
+> > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > +	cpumask_var_t curr, cpus;
+> > +
+> > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> > +		err = -ENOMEM;
+> > +		return err;
+> > +	}
+> > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
+> 
+>                 free(curr);
+Will fix it in next version. Thanks for pointing.
+> 
+> > +		err = -ENOMEM;
+> > +		return err;
+> > +	}
+> > +
+> > +	rcu_read_lock();
+> > +	for_each_numa_hop_mask(next, next_node) {
+> > +		cpumask_andnot(curr, next, prev);
+> > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
+> > +			cpumask_copy(cpus, curr);
+> > +			for_each_cpu(cpu, cpus) {
+> > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
+> > +				if (++i == nvec)
+> > +					goto done;
+> 
+> Think what if you're passed with irq_setup(NULL, 0, 0).
+> That's why I suggested to place this check at the beginning.
+> 
+irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
+care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
+
+nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+if (nvec < 0)
+	return nvec;
+> 
+> > +				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+> > +				++cnt;
+> > +			}
+> > +		}
+> > +		prev = next;
+> > +	}
+> > +done:
+> > +	rcu_read_unlock();
+> > +	free_cpumask_var(curr);
+> > +	free_cpumask_var(cpus);
+> > +	return err;
+> > +}
+> > +
+> >  static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  {
+> > -	unsigned int max_queues_per_port = num_online_cpus();
+> >  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > +	unsigned int max_queues_per_port;
+> >  	struct gdma_irq_context *gic;
+> >  	unsigned int max_irqs, cpu;
+> > -	int nvec, irq;
+> > +	int start_irq_index = 1;
+> > +	int nvec, *irqs, irq;
+> >  	int err, i = 0, j;
+> >  
+> > +	cpus_read_lock();
+> > +	max_queues_per_port = num_online_cpus();
+> >  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+> >  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
+> >  
+> > @@ -1261,6 +1302,14 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+> >  	if (nvec < 0)
+> >  		return nvec;
+> > +	if (nvec <= num_online_cpus())
+> > +		start_irq_index = 0;
+> > +
+> > +	irqs = kmalloc_array((nvec - start_irq_index), sizeof(int), GFP_KERNEL);
+> > +	if (!irqs) {
+> > +		err = -ENOMEM;
+> > +		goto free_irq_vector;
+> > +	}
+> >  
+> >  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+> >  				   GFP_KERNEL);
+> > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  			goto free_irq;
+> >  		}
+> >  
+> > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > -		if (err)
+> > -			goto free_irq;
+> > -
+> > -		cpu = cpumask_local_spread(i, gc->numa_node);
+> > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > +		if (!i) {
+> > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > +			if (err)
+> > +				goto free_irq;
+> > +
+> > +			/* If number of IRQ is one extra than number of online CPUs,
+> > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
+> > +			 * same CPU.
+> > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
+> > +			 * Also we are using cpumask_local_spread instead of
+> > +			 * cpumask_first for the node, because the node can be
+> > +			 * mem only.
+> > +			 */
+> > +			if (start_irq_index) {
+> > +				cpu = cpumask_local_spread(i, gc->numa_node);
+> 
+> I already mentioned that: if i == 0, you don't need to spread, just
+> pick 1st cpu from node.
+The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
+can be a memory only node, in that case we need to jump to next node to get the CPU.
+Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
+> 
+> > +				irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > +			} else {
+> > +				irqs[start_irq_index] = irq;
+> > +			}
+> > +		} else {
+> > +			irqs[i - start_irq_index] = irq;
+> > +			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
+> > +					  gic->name, gic);
+> > +			if (err)
+> > +				goto free_irq;
+> > +		}
+> >  	}
+> >  
+> > +	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
+> > +	if (err)
+> > +		goto free_irq;
+> >  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+> >  	if (err)
+> >  		goto free_irq;
+> >  
+> >  	gc->max_num_msix = nvec;
+> >  	gc->num_msix_usable = nvec;
+> > -
+> > +	cpus_read_unlock();
+> >  	return 0;
+> >  
+> >  free_irq:
+> > @@ -1314,8 +1386,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  	}
+> >  
+> >  	kfree(gc->irq_contexts);
+> > +	kfree(irqs);
+> >  	gc->irq_contexts = NULL;
+> >  free_irq_vector:
+> > +	cpus_read_unlock();
+> >  	pci_free_irq_vectors(pdev);
+> >  	return err;
+> >  }
+> > -- 
+> > 2.34.1
