@@ -2,131 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D592080C399
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8044780C321
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbjLKI1E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 03:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
+        id S232421AbjLKI2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbjLKIZf (ORCPT
+        with ESMTP id S231319AbjLKI2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:25:35 -0500
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3764510A;
-        Mon, 11 Dec 2023 00:25:38 -0800 (PST)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5d6b9143782so35674707b3.0;
-        Mon, 11 Dec 2023 00:25:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702283137; x=1702887937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j2eWe2oiRzSTkXAZdruL7FMLjSewImdzh7HyKdRxUqI=;
-        b=wt3Rq5OOiqu/yBHspSUY8gYpz2jKqNuD+wQmqfsrOE2IB2pr5KQw0CVNSKsYMfJg/R
-         mIV6FEIbf0QvNyR7BocY27xzU49XdRbh0ZtoLTJx5qw0VUBOM5RQX3dLgb2PiwBogaqa
-         uSL9I8AA2kLk44qIzJNMDSrcLPrUMW3fPEWbUUHSLcr/UNYEqLB+erVtXYQYghMkywhT
-         moS+KBbbIbTAuqGnbkBgf8fFDYuZwct5gwAMR2B1nvPmRnI8TOgVp06Rtl7OkFcBSIwG
-         3KXbzitAbhUipCQ6Fgkk9xZBhxBZCy4nC4/yqObD8nOUv1hfArEeA7yYCzrTZTojuEDc
-         5sJg==
-X-Gm-Message-State: AOJu0YwWOOb6kl9Utfo6YW9W23Ulsiu1YgsEL14CeoDx3eus8iOCD76F
-        r5dEla+HZ2ApE+ZiFBL9URxiktQlunAiQg==
-X-Google-Smtp-Source: AGHT+IGznTimJA4mSAu8adt3wu2sAMV0tN8lU0584QstnoDzM3+BXIPuN8HqHTzSSYsZE0s4uvfy5A==
-X-Received: by 2002:a0d:d48c:0:b0:5d3:e835:bd67 with SMTP id w134-20020a0dd48c000000b005d3e835bd67mr3107076ywd.41.1702283136935;
-        Mon, 11 Dec 2023 00:25:36 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id q68-20020a818047000000b005d580a1fd70sm2796876ywf.75.2023.12.11.00.25.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 00:25:36 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5d6b9143782so35674547b3.0;
-        Mon, 11 Dec 2023 00:25:35 -0800 (PST)
-X-Received: by 2002:a81:7285:0:b0:5d8:74e6:e4c5 with SMTP id
- n127-20020a817285000000b005d874e6e4c5mr2853116ywc.98.1702283135734; Mon, 11
- Dec 2023 00:25:35 -0800 (PST)
+        Mon, 11 Dec 2023 03:28:38 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339F4E5;
+        Mon, 11 Dec 2023 00:28:43 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1E6ED1C0050; Mon, 11 Dec 2023 09:28:41 +0100 (CET)
+Date:   Mon, 11 Dec 2023 09:28:40 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Jan Kara <jack@suse.cz>,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        chrubis@suse.cz, linux-ext4@vger.kernel.org,
+        Ted Tso <tytso@mit.edu>
+Subject: Re: ext4 data corruption in 6.1 stable tree (was Re: [PATCH 5.15
+ 000/297] 5.15.140-rc1 review)
+Message-ID: <ZXbIONRdDQx+mDwI@duo.ucw.cz>
+References: <20231124172000.087816911@linuxfoundation.org>
+ <81a11ebe-ea47-4e21-b5eb-536b1a723168@linaro.org>
+ <20231127155557.xv5ljrdxcfcigjfa@quack3>
+ <CAEUSe7_PUdRgJpY36jZxy84CbNX5TTnynqU8derf0ZBSDtUOqw@mail.gmail.com>
+ <20231205122122.dfhhoaswsfscuhc3@quack3>
+ <4118ca20-fb7d-4e49-b08c-68fee0522d3d@roeck-us.net>
+ <2023120643-evade-legal-ee74@gregkh>
 MIME-Version: 1.0
-References: <20231208073036.7884-1-bhe@redhat.com> <ZXLI748b85be459B@fedora>
-In-Reply-To: <ZXLI748b85be459B@fedora>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Dec 2023 09:25:24 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWAaM+eJtiVbXXBO0xOmpqhrOiCO5itNsNdTiOxRXVtVw@mail.gmail.com>
-Message-ID: <CAMuHMdWAaM+eJtiVbXXBO0xOmpqhrOiCO5itNsNdTiOxRXVtVw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        loongarch@lists.linux.dev, kexec@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-sh@vger.kernel.org, x86@kernel.org,
-        akpm@linux-foundation.org, eric_devolder@yahoo.com,
-        sfr@canb.auug.org.au, ignat@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="sxUy6yRUZNOMIQt4"
+Content-Disposition: inline
+In-Reply-To: <2023120643-evade-legal-ee74@gregkh>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
 
-On Fri, Dec 8, 2023 at 8:43 AM Baoquan He <bhe@redhat.com> wrote:
-> Forgot adding kexec to CC, add it now.
->
-> On 12/08/23 at 03:30pm, Baoquan He wrote:
-> > The select of KEXEC for CRASH_DUMP in kernel/Kconfig.kexec will be
-> > dropped, then compiling errors will be triggered if below config
-> > items are set:
-> >
-> > ===
-> > CONFIG_CRASH_CORE=y
-> > CONFIG_KEXEC_CORE=y
-> > CONFIG_CRASH_DUMP=y
-> > ===
-> >
-> > E.g on mips, below link error are seen:
-> > --------------------------------------------------------------------
-> > mipsel-linux-ld: kernel/kexec_core.o: in function `kimage_free':
-> > kernel/kexec_core.c:(.text+0x2200): undefined reference to `machine_kexec_cleanup'
-> > mipsel-linux-ld: kernel/kexec_core.o: in function `__crash_kexec':
-> > kernel/kexec_core.c:(.text+0x2480): undefined reference to `machine_crash_shutdown'
-> > mipsel-linux-ld: kernel/kexec_core.c:(.text+0x2488): undefined reference to `machine_kexec'
-> > mipsel-linux-ld: kernel/kexec_core.o: in function `kernel_kexec':
-> > kernel/kexec_core.c:(.text+0x29b8): undefined reference to `machine_shutdown'
-> > mipsel-linux-ld: kernel/kexec_core.c:(.text+0x29c0): undefined reference to `machine_kexec'
-> > --------------------------------------------------------------------
-> >
-> > Here, change the incorrect dependency of building kexec_core related object
-> > files, and the ifdeffery on architectures from CONFIG_KEXEC to
-> > CONFIG_KEXEC_CORE.
-> >
-> > Testing:
-> > ========
-> > Passed on mips and loognarch with the LKP reproducer.
-> >
-> > Baoquan He (5):
-> >   loongarch, kexec: change dependency of object files
-> >   m68k, kexec: fix the incorrect ifdeffery and build dependency of
-> >     CONFIG_KEXEC
-> >   mips, kexec: fix the incorrect ifdeffery and dependency of
-> >     CONFIG_KEXEC
-> >   sh, kexec: fix the incorrect ifdeffery and dependency of CONFIG_KEXEC
-> >   x86, kexec: fix the wrong ifdeffery CONFIG_KEXEC
+--sxUy6yRUZNOMIQt4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I understand this series is v3 of "[PATCH v2] kexec_core: change
-dependency of object files"? As this series does not contain a
-changelog, can you please summarize what was changed?
-Thanks!
+Hi!
 
-Gr{oetje,eeting}s,
+> > > So I've got back to this and the failure is a subtle interaction betw=
+een
+> > > iomap code and ext4 code. In particular that fact that commit 936e114=
+a245b6
+> > > ("iomap: update ki_pos a little later in iomap_dio_complete") is not =
+in
+> > > stable causes that file position is not updated after direct IO write=
+ and
+> > > thus we direct IO writes are ending in wrong locations effectively
+> > > corrupting data. The subtle detail is that before this commit if ->en=
+d_io
+> > > handler returns non-zero value (which the new ext4 ->end_io handler d=
+oes),
+> > > file pos doesn't get updated, after this commit it doesn't get update=
+d only
+> > > if the return value is < 0.
+> > >=20
+> > > The commit got merged in 6.5-rc1 so all stable kernels that have
+> > > 91562895f803 ("ext4: properly sync file size update after O_SYNC dire=
+ct
+> > > IO") before 6.5 are corrupting data - I've noticed at least 6.1 is st=
+ill
+> > > carrying the problematic commit. Greg, please take out the commit fro=
+m all
+> > > stable kernels before 6.5 as soon as possible, we'll figure out proper
+> > > backport once user data are not being corrupted anymore. Thanks!
+> > >=20
+> >=20
+> > Thanks a lot for the update.
+> >=20
+> > Turns out this is causing a regression in chromeos-6.1, and reverting t=
+he
+> > offending patch fixes the problem. I suspect anyone running v6.1.64+ may
+> > have a problem.
+>=20
+> Jan, thanks for the report, and Guenter, thanks for letting me know as
+> well.  I'll go queue up the fix now and push out new -rc releases.
 
-                        Geert
+Would someone have a brief summary here? I see 6.1.66 is out but I
+don't see any "Fixes: 91562895f803" tags.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Plus, what is the severity of this? It is "data being corrupted when
+using O_SYNC|O_DIRECT" or does metadata somehow get corrupted, too?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks and best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--sxUy6yRUZNOMIQt4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZXbIOAAKCRAw5/Bqldv6
+8vAxAKCOJ3K0As4al5/2B9XBlV2nphZEGACeNMdfkQaFtWLePBti91xTjEsPsio=
+=qZ/a
+-----END PGP SIGNATURE-----
+
+--sxUy6yRUZNOMIQt4--
