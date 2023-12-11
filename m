@@ -2,108 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C92780C9B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D4880C9C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343550AbjLKMYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:24:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
+        id S234955AbjLKM3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:29:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343588AbjLKMXw (ORCPT
+        with ESMTP id S234843AbjLKM3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:23:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0870A10C7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:23:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E20C433C9;
-        Mon, 11 Dec 2023 12:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702297403;
-        bh=INgnFW8etgV5ZIh4mW5/XEKlS7hMzbp3XuZeXyAoM9o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G8bjNRV0LvIU863tb8KVtoxG8lyDFUp8S2oo5ny5C8ybqubDzRAq4p2CbaD6ZjRKQ
-         fZ6kC51R7INERKA1npILXWAowZEQkZr8mtF/6vERIluNWAHPd4M6PAQPFdRKIIPFgB
-         t5Mg8tcyTEFknbZHdJig9JZWf7allB8Gqjztc3DWW+LQIekOL5CyvMpzz/kONQ5w4z
-         MLLptuAel/uEoMsLDP09Jrw6NSzUZWnoKdT7PzD3qSpl0L8vGr6m+LIyMEZjxl8erD
-         nv/LYQr6uCLkZFPDcRECriAYxA9kUI1MhD6tytZynbuU4FIPhoP5naRzyMLynGD0ZI
-         lnH+J1WlZAZPw==
-Date:   Mon, 11 Dec 2023 21:23:19 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Fix memory leak of free page
-Message-Id: <20231211212319.d1a714d0139e4fd893183b9e@kernel.org>
-In-Reply-To: <20231210221250.7b9cc83c@rorschach.local.home>
-References: <20231210221250.7b9cc83c@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 07:29:38 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233322119;
+        Mon, 11 Dec 2023 04:23:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1702297420;
+        bh=ODAUXRjain77XOmoPnKy1MNIInbnbbNcYLIa9FPn8ks=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=nIVA8V0yVj+ZMN8x89h2gJxxT4+cCTauZuj8Ht7cflzgnHnN4ITpBMOV1xWo7AIlq
+         Qb+tJKhKhRta6FIYqIPB6IjCP4IRbYllJ3J3dFQkrZ5gBhylzYOFVQ0olRQRq0XFRq
+         mToIUeHe7mjunplXY3/T3inRVriUXVwwqHAyMT8ZrNdDNjb78fGIZ7jZefsf1Xa8DY
+         kagFMIi8wqGn8H2LFlRDsc9/abaI9Ajeo1k+5RyvhTShHF9xXBTFIlBig9ReYi7rDb
+         14jHwg99Lq6Mb4L4gts5PmojrjCNJA0P9GJfiVGM/34KY923DExlNs08GewB4rxZRl
+         xDIjF0NgfU/GA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Spgrp6jZHz4xGM;
+        Mon, 11 Dec 2023 23:23:38 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Samuel Holland <samuel.holland@sifive.com>,
+        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-riscv@lists.infradead.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Timothy Pearson <tpearson@raptorengineering.com>
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-arch@vger.kernel.org,
+        Samuel Holland <samuel.holland@sifive.com>
+Subject: Re: [RFC PATCH 10/12] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
+In-Reply-To: <20231208055501.2916202-11-samuel.holland@sifive.com>
+References: <20231208055501.2916202-1-samuel.holland@sifive.com>
+ <20231208055501.2916202-11-samuel.holland@sifive.com>
+Date:   Mon, 11 Dec 2023 23:23:35 +1100
+Message-ID: <87h6kpdj20.fsf@mail.lhotse>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 22:12:50 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Samuel,
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Reading the ring buffer does a swap of a sub-buffer within the ring buffer
-> with a empty sub-buffer. This allows the reader to have full access to the
-> content of the sub-buffer that was swapped out without having to worry
-> about contention with the writer.
-> 
-> The readers call ring_buffer_alloc_read_page() to allocate a page that
-> will be used to swap with the ring buffer. When the code is finished with
-> the reader page, it calls ring_buffer_free_read_page(). Instead of freeing
-> the page, it stores it as a spare. Then next call to
-> ring_buffer_alloc_read_page() will return this spare instead of calling
-> into the memory management system to allocate a new page.
-> 
-> Unfortunately, on freeing of the ring buffer, this spare page is not
-> freed, and causes a memory leak.
-> 
+Thanks for trying to clean all this up.
 
-Oops, Looks good to me.
+One problem below.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Samuel Holland <samuel.holland@sifive.com> writes:
+> Now that all previously-supported architectures select
+> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
+> of the existing list of architectures. It can also take advantage of the
+> common kernel-mode FPU API and method of adjusting CFLAGS.
+>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+...
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+> index 4ae4720535a5..b64f917174ca 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+> @@ -87,20 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
+>  	WARN_ON_ONCE(!in_task());
+>  	preempt_disable();
+>  	depth = __this_cpu_inc_return(fpu_recursion_depth);
+> -
+>  	if (depth == 1) {
+> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+> +		BUG_ON(!kernel_fpu_available());
+>  		kernel_fpu_begin();
+> -#elif defined(CONFIG_PPC64)
+> -		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+> -			enable_kernel_vsx();
+> -		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+> -			enable_kernel_altivec();
+ 
+Note altivec.
 
-Thanks,
-
-> Cc: stable@vger.kernel.org
-> Fixes: 73a757e63114d ("ring-buffer: Return reader page back into existing ring buffer")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/ring_buffer.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index a38e5a3c6803..dd37d21d6e55 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -1790,6 +1790,8 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
->  		free_buffer_page(bpage);
+> -		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+> -			enable_kernel_fp();
+> -#elif defined(CONFIG_ARM64)
+> -		kernel_neon_begin();
+> -#endif
 >  	}
 >  
-> +	free_page((unsigned long)cpu_buffer->free_page);
-> +
->  	kfree(cpu_buffer);
->  }
+>  	TRACE_DCN_FPU(true, function_name, line, depth);
+> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> index ea7d60f9a9b4..5aad0f572ba3 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+> @@ -25,40 +25,8 @@
+>  # It provides the general basic services required by other DAL
+>  # subcomponents.
 >  
-> -- 
-> 2.42.0
-> 
+> -ifdef CONFIG_X86
+> -dml_ccflags-$(CONFIG_CC_IS_GCC) := -mhard-float
+> -dml_ccflags := $(dml_ccflags-y) -msse
+> -endif
+> -
+> -ifdef CONFIG_PPC64
+> -dml_ccflags := -mhard-float -maltivec
+> -endif
+
+And altivec is enabled in the flags there.
+
+That doesn't match your implementation for powerpc in patch 7, which
+only deals with float.
+
+I suspect the AMD driver actually doesn't need altivec enabled, but I
+don't know that for sure. It compiles without it, but I don't have a GPU
+to actually test. I've added Timothy on Cc who added the support for
+powerpc to the driver originally, hopefully he has a test system.
+
+Anyway if that's true that it doesn't need altivec we should probably do
+a lead-up patch that drops altivec from the AMD driver explicitly, eg.
+as below.
+
+cheers
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+index 4ae4720535a5..0de16796466b 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+@@ -92,11 +92,7 @@ void dc_fpu_begin(const char *function_name, const int line)
+ #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+ 		kernel_fpu_begin();
+ #elif defined(CONFIG_PPC64)
+-		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+-			enable_kernel_vsx();
+-		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+-			enable_kernel_altivec();
+-		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
++		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+ 			enable_kernel_fp();
+ #elif defined(CONFIG_ARM64)
+ 		kernel_neon_begin();
+@@ -125,11 +121,7 @@ void dc_fpu_end(const char *function_name, const int line)
+ #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+ 		kernel_fpu_end();
+ #elif defined(CONFIG_PPC64)
+-		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+-			disable_kernel_vsx();
+-		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+-			disable_kernel_altivec();
+-		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
++		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+ 			disable_kernel_fp();
+ #elif defined(CONFIG_ARM64)
+ 		kernel_neon_end();
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+index 6042a5a6a44f..554c39024a40 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+@@ -31,7 +31,7 @@ dml_ccflags := $(dml_ccflags-y) -msse
+ endif
+ 
+ ifdef CONFIG_PPC64
+-dml_ccflags := -mhard-float -maltivec
++dml_ccflags := -mhard-float
+ endif
+ 
+ ifdef CONFIG_ARM64
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+index acff3449b8d7..7b51364084b5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+@@ -30,7 +30,7 @@ dml2_ccflags := $(dml2_ccflags-y) -msse
+ endif
+ 
+ ifdef CONFIG_PPC64
+-dml2_ccflags := -mhard-float -maltivec
++dml2_ccflags := -mhard-float
+ endif
+ 
+ ifdef CONFIG_ARM64
