@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220F280C7AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9346680C7AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbjLKLI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S234497AbjLKLIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjLKLI0 (ORCPT
+        with ESMTP id S234657AbjLKLI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 06:08:26 -0500
-X-Greylist: delayed 445 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 03:08:31 PST
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8A9B0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4464DC7;
         Mon, 11 Dec 2023 03:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702292463;
-        bh=wib/6cysoLS1GsZLFc9O493Nd0EM/CV957JsOjYbBew=;
+        s=mail; t=1702292516;
+        bh=rtUQjIROmhcvKCPUzvaAzQ2+fePhDS70mvZIoWhWHcY=;
         h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=sRrefK8Yr5bj87ARlFcoM3qcvIMPxtbiqX9y9jFqY23cE3yDxMkxj+5ccVJgqwbKj
-         R528HS8yn4UkqP6hCznbTvGkmmlwjdio3U+IoBFnYcrFPWv0TgYAaPVryigG/I6LVv
-         JRh1hd2NDy5gYta04N7q+hpOohGWFbh00ufdy9QmvDqgZaV9GtyhNOfPV/3J9vOiaR
-         FrFGIjWDsHSrVhY5s/1USXPp4sUMM1jT6HjloCzsR79g+Oh7qzWWaPhWtNF8p6wiFA
-         I1qyA0qOcnsgQZcqSxongHbvAVzJR35M2MFdpWjUBhkQnQhPPVcbZdpBoR7ikI29/w
-         J1AEQjJ2jgbAA==
+        b=asK4bqJldmXIac4/3TTmMi7GWdaUqB7VuBu/KfBQ+t5fHPQI/KGd0sLOjYucopP3r
+         coupqyEqgBh346fXNiHsryTYs7oJpatHdpcERcWrkbebUjdObt9Qouf45HWKKmhNLT
+         qjL3HmJqJZowqHjrTYRvdcj6TQD7lP3kfTL6y1zeqppoQKt1qtUxzrDEWAi/8rtajU
+         mg4EJ4JH3kPULJeZwJyGwMKliA5cuf3llRAveZEoC0p/r9oCISA1fHaVTnWw8/762P
+         jsxHnq079Cmb+bX6G3yUfA37OZGUEao7LtjX8vqQ3SjT64QUUFH0HEqEGwWXTZiMy2
+         tyxjPX1HrCz3g==
 Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: usama.anjum)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5BC693781417;
-        Mon, 11 Dec 2023 11:00:57 +0000 (UTC)
-Message-ID: <0b35fcbd-ce8c-4c12-9725-01f18ade9fc0@collabora.com>
-Date:   Mon, 11 Dec 2023 16:00:53 +0500
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 46974378141D;
+        Mon, 11 Dec 2023 11:01:52 +0000 (UTC)
+Message-ID: <2180095f-1dcd-4542-aafe-aa2b4d039e62@collabora.com>
+Date:   Mon, 11 Dec 2023 16:01:52 +0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] Revert "selftests: error out if kernel header files are
- not yet built"
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20231209020144.244759-1-jhubbard@nvidia.com>
+        kernel@collabora.com, Aishwarya TCV <aishwarya.tcv@arm.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: core: include linux/close_range.h for
+ CLOSE_RANGE_* macros
 Content-Language: en-US
+To:     Shuah Khan <shuah@kernel.org>
+References: <20231024155137.219700-1-usama.anjum@collabora.com>
+ <9dbda2f9-2bb2-4e79-976a-12856ab6936a@collabora.com>
 From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231209020144.244759-1-jhubbard@nvidia.com>
+In-Reply-To: <9dbda2f9-2bb2-4e79-976a-12856ab6936a@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,154 +59,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/23 7:01 AM, John Hubbard wrote:
-> This reverts commit 9fc96c7c19df ("selftests: error out if kernel header
-> files are not yet built").
-I don't think whole of this commit needs to be reverted. Lets leave the
-warning message as it is and just remove the condition to abort the
-compilation.
+Soft reminder
 
+On 11/29/23 4:34 PM, Muhammad Usama Anjum wrote:
+> Soft reminder
 > 
-> It turns out that requiring the kernel headers to be built as a
-> prerequisite to building selftests, does not work in many cases. For
-> example, Peter Zijlstra writes:
+> On 10/24/23 8:51 PM, Muhammad Usama Anjum wrote:
+>> Correct header file is needed for getting CLOSE_RANGE_* macros.
+>> Previously it was tested with newer glibc which didn't show the need to
+>> include the header which was a mistake.
+>>
+>> Fixes: ec54424923cf ("selftests: core: remove duplicate defines")
+>> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
+>> Link: https://lore.kernel.org/all/7161219e-0223-d699-d6f3-81abd9abf13b@arm.com
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>>  tools/testing/selftests/core/close_range_test.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
+>> index 534576f06df1c..c59e4adb905df 100644
+>> --- a/tools/testing/selftests/core/close_range_test.c
+>> +++ b/tools/testing/selftests/core/close_range_test.c
+>> @@ -12,6 +12,7 @@
+>>  #include <syscall.h>
+>>  #include <unistd.h>
+>>  #include <sys/resource.h>
+>> +#include <linux/close_range.h>
+>>  
+>>  #include "../kselftest_harness.h"
+>>  #include "../clone3/clone3_selftests.h"
 > 
-> "My biggest beef with the whole thing is that I simply do not want to use
-> 'make headers', it doesn't work for me.
-> 
-> I have a ton of output directories and I don't care to build tools into
-> the output dirs, in fact some of them flat out refuse to work that way
-> (bpf comes to mind)." [1]
-> 
-> Therefore, stop erroring out on the selftests build. Additional patches
-> will be required in order to change over to not requiring the kernel
-> headers.
-> 
-> [1] https://lore.kernel.org/20231208221007.GO28727@noisy.programming.kicks-ass.net
-> 
-> Cc: Anders Roxell <anders.roxell@linaro.org>
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  tools/testing/selftests/Makefile | 21 +----------------
->  tools/testing/selftests/lib.mk   | 40 +++-----------------------------
->  2 files changed, 4 insertions(+), 57 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index 3b2061d1c1a5..8247a7c69c36 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -155,12 +155,10 @@ ifneq ($(KBUILD_OUTPUT),)
->    abs_objtree := $(realpath $(abs_objtree))
->    BUILD := $(abs_objtree)/kselftest
->    KHDR_INCLUDES := -isystem ${abs_objtree}/usr/include
-> -  KHDR_DIR := ${abs_objtree}/usr/include
->  else
->    BUILD := $(CURDIR)
->    abs_srctree := $(shell cd $(top_srcdir) && pwd)
->    KHDR_INCLUDES := -isystem ${abs_srctree}/usr/include
-> -  KHDR_DIR := ${abs_srctree}/usr/include
->    DEFAULT_INSTALL_HDR_PATH := 1
->  endif
->  
-> @@ -174,7 +172,7 @@ export KHDR_INCLUDES
->  # all isn't the first target in the file.
->  .DEFAULT_GOAL := all
->  
-> -all: kernel_header_files
-> +all:
->  	@ret=1;							\
->  	for TARGET in $(TARGETS); do				\
->  		BUILD_TARGET=$$BUILD/$$TARGET;			\
-> @@ -185,23 +183,6 @@ all: kernel_header_files
->  		ret=$$((ret * $$?));				\
->  	done; exit $$ret;
->  
-> -kernel_header_files:
-> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                          \
-> -	if [ $$? -ne 0 ]; then                                                     \
-> -            RED='\033[1;31m';                                                  \
-> -            NOCOLOR='\033[0m';                                                 \
-> -            echo;                                                              \
-> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
-> -            echo "Please run this and try again:";                             \
-> -            echo;                                                              \
-> -            echo "    cd $(top_srcdir)";                                       \
-> -            echo "    make headers";                                           \
-> -            echo;                                                              \
-> -	    exit 1;                                                                \
-> -	fi
-> -
-> -.PHONY: kernel_header_files
-> -
->  run_tests: all
->  	@for TARGET in $(TARGETS); do \
->  		BUILD_TARGET=$$BUILD/$$TARGET;	\
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index 118e0964bda9..aa646e0661f3 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -44,26 +44,10 @@ endif
->  selfdir = $(realpath $(dir $(filter %/lib.mk,$(MAKEFILE_LIST))))
->  top_srcdir = $(selfdir)/../../..
->  
-> -ifeq ("$(origin O)", "command line")
-> -  KBUILD_OUTPUT := $(O)
-> +ifeq ($(KHDR_INCLUDES),)
-> +KHDR_INCLUDES := -isystem $(top_srcdir)/usr/include
->  endif
->  
-> -ifneq ($(KBUILD_OUTPUT),)
-> -  # Make's built-in functions such as $(abspath ...), $(realpath ...) cannot
-> -  # expand a shell special character '~'. We use a somewhat tedious way here.
-> -  abs_objtree := $(shell cd $(top_srcdir) && mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTPUT) && pwd)
-> -  $(if $(abs_objtree),, \
-> -    $(error failed to create output directory "$(KBUILD_OUTPUT)"))
-> -  # $(realpath ...) resolves symlinks
-> -  abs_objtree := $(realpath $(abs_objtree))
-> -  KHDR_DIR := ${abs_objtree}/usr/include
-> -else
-> -  abs_srctree := $(shell cd $(top_srcdir) && pwd)
-> -  KHDR_DIR := ${abs_srctree}/usr/include
-> -endif
-> -
-> -KHDR_INCLUDES := -isystem $(KHDR_DIR)
-> -
->  # The following are built by lib.mk common compile rules.
->  # TEST_CUSTOM_PROGS should be used by tests that require
->  # custom build rule and prevent common build rule use.
-> @@ -74,25 +58,7 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
->  TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
->  TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
->  
-> -all: kernel_header_files $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) \
-> -     $(TEST_GEN_FILES)
-> -
-> -kernel_header_files:
-> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                      \
-> -	if [ $$? -ne 0 ]; then                                                 \
-> -            RED='\033[1;31m';                                                  \
-> -            NOCOLOR='\033[0m';                                                 \
-> -            echo;                                                              \
-> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
-> -            echo "Please run this and try again:";                             \
-> -            echo;                                                              \
-> -            echo "    cd $(top_srcdir)";                                       \
-> -            echo "    make headers";                                           \
-> -            echo;                                                              \
-> -	    exit 1; \
-> -	fi
-> -
-> -.PHONY: kernel_header_files
-> +all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
->  
->  define RUN_TESTS
->  	BASE_DIR="$(selfdir)";			\
 
 -- 
 BR,
