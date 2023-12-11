@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCF480CB09
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6213E80CAFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343666AbjLKN3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
+        id S1343620AbjLKN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343502AbjLKN3W (ORCPT
+        with ESMTP id S234350AbjLKN2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:29:22 -0500
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1312F9A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:29:29 -0800 (PST)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b9e4a5d9dfso6225899b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:29:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702301368; x=1702906168;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nzO+6rSNfmUeu8Xum5YY33AS4YCLmxrLP7sq6BIRwEU=;
-        b=fAfA9xt6gHJYhqFrP6eCc8gjsUy4AaFh3t2zkvdWJXtRa/5/JU3MNY1Pm/VJmLNGeN
-         PgJpIUpGsVllau09vks4HnBESaB5IVMIeamyaXbCm4M8J1TGoVt0E5VXtCcAYTuFAwzb
-         jPDT16jOrNfe0p86uhCeJ/vYYUhwK39AHOBfubm2ad+8aCRdycMZUnrHhvPkfBngea5c
-         Z0HFHX5jH+mDTdWpUEax5GdCFArmCWp8gRkdn8czIyVgZ/XeMHZi5MOJX3oaPtV6xq3B
-         ijqwSRCdxUaV68ccAY1lRL8Po9daNfsX1jB6K8xfq9VeY1dq2AEXvQBrahzk0jWQsQle
-         7rKQ==
-X-Gm-Message-State: AOJu0YzHKE/qDn/TzGeu2h3LvMPZX825HXDcF8Mvz1vCPgqJZMg2RVAZ
-        s4a51XTw3EvV9J9JsFuIgNQHTJLnqczTod0ODdLQv56iURtR
-X-Google-Smtp-Source: AGHT+IHi1GBQBYwt8ZLvOIFWMS7W9g99LBFOZ/pIty4VYUQrVTXn8sjtFDTDUmU37PZNCFa4HjDsHRBGY8fWgVZsOXCHDckTmEqO
+        Mon, 11 Dec 2023 08:28:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5B8B3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:28:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62D2CC433C7;
+        Mon, 11 Dec 2023 13:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702301327;
+        bh=0CpLD8dRzQ8OFlBx0wOWEw/1qMni4oZG0S8sbx9hVhM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dW0Kee/ZC/h61mXDknAqmvMfOFO0E1U9zx6VF2/UZ9beG6QCr1xu6V0qN73VNbPXx
+         Q+PiKV7Tnabq9/0lDvLtQb7M0kTOW4LKuJtUej29Bw5YRkfw2vnhjg7vEtq6NsLIjD
+         6ipgtF1qCFuxc1ZzywO7uPqpiOwpB5+tkmRVxnnyQulDrtSpW4uRiOUMg/b6+QiSS7
+         bERbLXwUi8b/CjBdwKdzIIgX0+ijf30d2OQ+aUpUhhL1v1lz6IO52hcVdQCFOE39GX
+         dz7BIjQjdDzQ4fXnL/j8SDiuvtMmZZh1AmCdyiTvPZrzTQrsvd5M6KDQnmaAJVdig0
+         S8Kyaih/VTytA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rCgLm-0007HX-1E;
+        Mon, 11 Dec 2023 14:29:34 +0100
+Date:   Mon, 11 Dec 2023 14:29:34 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+        broonie@kernel.org, alsa-devel@alsa-project.org, perex@perex.cz,
+        tiwai@suse.com, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org, johan+linaro@kernel.org,
+        srinivas.kandagatla@linaro.org
+Subject: Re: [PATCH 0/2] ASoC: qcom: Limit Digital gains on speaker
+Message-ID: <ZXcOvl1tUWmwGalB@hovoldconsulting.com>
+References: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
+ <ZXbDY1iA_DQLIzqq@hovoldconsulting.com>
+ <2023121146-hunger-crane-7dee@gregkh>
+ <2023121113-walrus-outmost-ec34@gregkh>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:159e:b0:3b9:e118:e421 with SMTP id
- t30-20020a056808159e00b003b9e118e421mr4366595oiw.0.1702301368514; Mon, 11 Dec
- 2023 05:29:28 -0800 (PST)
-Date:   Mon, 11 Dec 2023 05:29:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005efea8060c3becae@google.com>
-Subject: [syzbot] Monthly nfc report (Dec 2023)
-From:   syzbot <syzbot+liste6bf994d17fdc33cb25b@syzkaller.appspotmail.com>
-To:     krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023121113-walrus-outmost-ec34@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello nfc maintainers/developers,
+On Mon, Dec 11, 2023 at 01:54:39PM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Dec 11, 2023 at 01:40:52PM +0100, Greg Kroah-Hartman wrote:
+> > On Mon, Dec 11, 2023 at 09:08:03AM +0100, Johan Hovold wrote:
+> > > On Mon, Dec 04, 2023 at 12:47:34PM +0000, srinivas.kandagatla@linaro.org wrote:
 
-This is a 31-day syzbot report for the nfc subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/nfc
+> > > These were unfortunately not marked for stable, but could you pick them
+> > > up for 6.6?
+> > > 
+> > > The upstream commits are:
+> > > 
+> > > 	fb9ad2448508 ("ASoC: ops: add correct range check for limiting volume")
+> > > 	716d4e5373e9 ("ASoC: qcom: sc8280xp: Limit speaker digital volumes")
+> > 
+> > Now queued up, thanks.
+> 
+> Oops, no, this breaks the build on 6.6.y, can you send a series that is
+> at least built for this series successfully?  :)
 
-During the period, 0 new issues were detected and 1 were fixed.
-In total, 9 issues are still open and 19 have been fixed so far.
+Sorry about that. I was not aware of the asoc interface rename that went
+into 6.7.
 
-Some of the still happening issues:
+Just sent a backport of the series here:
 
-Ref Crashes Repro Title
-<1> 684     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
-                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
-<2> 98      Yes   INFO: task hung in nfc_rfkill_set_block
-                  https://syzkaller.appspot.com/bug?extid=3e3c2f8ca188e30b1427
-<3> 2       Yes   memory leak in virtual_ncidev_write (2)
-                  https://syzkaller.appspot.com/bug?extid=6b7c68d9c21e4ee4251b
+	https://lore.kernel.org/r/20231211132608.27861-1-johan+linaro@kernel.org
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Johan
