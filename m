@@ -2,233 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C8980CC9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BCA80CCA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343811AbjLKOCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S1343965AbjLKOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344075AbjLKOCS (ORCPT
+        with ESMTP id S1343950AbjLKOCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:02:18 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E33478A;
-        Mon, 11 Dec 2023 05:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702303189;
-        bh=dKIWPsl1+iB2/HkzpJsN57Kk1dREJYExJbg+W32xu7M=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=YGEmrRc1jEJzfPPF6dLbd4heZq9uLnyF4pej2TSkPXZLgrVyhmu7OqHPZ/0jcl64t
-         t+KUNzhJXuzEGlo/xfv9iZqv4eSRp/turrbYd63mibACbd3cUlMGxGwNloE6Hu6C0T
-         bEHMjdbzd03fJ5iUlhHrIoXhghvM0fKdWDYwx8ZP/a6rGL9ZfdMcTrRlIcWA/nhyXO
-         KuGhiV+v2xBkPfkLNsGyMnHP5sCnO7G83SFrUJVcRsAl6oF65vdFTBs1JJ0VRyNK+c
-         /xZ83+DtdN9XTwo39xLwW84zGhdZjBM9iu5shi+/fKdNSZE1Ifpwfp9XkRAc67AnJ6
-         dt9L3hQiw+9oQ==
-Received: from [IPV6:fd00::2a:39ce] (cola.collaboradmins.com [IPv6:2a01:4f8:1c1c:5717::1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 70134378110F;
-        Mon, 11 Dec 2023 13:59:47 +0000 (UTC)
-Message-ID: <4fce268c-4ef1-4361-b524-4c9bf9b60370@collabora.com>
-Date:   Mon, 11 Dec 2023 14:59:46 +0100
+        Mon, 11 Dec 2023 09:02:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A8E47AD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702303199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jNtOY4LpZQRmFFwaKjy6gBWig0U9E1fsIgKhcHzr1a8=;
+        b=JLUZYGk0tqtYaPJ5kVPbIjFzzfHonixcfZP0yrCmCO8K54K7BensbDTstb4FMgU/QszSQl
+        /8X1w74FjmOe5EtlzRd6cR/rfBZxCVy5YanV436wY2/bYOmH5eS0AabyG8IMwtErBLPA9W
+        28YNXI2TBVfL9DRSk535gQnFpk827iE=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-499-_PvnCrkVPaSjqHyG2M3OuQ-1; Mon, 11 Dec 2023 08:59:58 -0500
+X-MC-Unique: _PvnCrkVPaSjqHyG2M3OuQ-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6ce6fa748c5so5309531b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:59:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702303197; x=1702907997;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jNtOY4LpZQRmFFwaKjy6gBWig0U9E1fsIgKhcHzr1a8=;
+        b=k+pCe8xC+zQRzGgkIDlb/pWlZXxMEAKL5IsqEoxbvR2FREcbCNyZg/wC/1oscunJpe
+         cuvxLSOihnnhOHTaYuSBS19y8h+iFASTDPCWXwAkz9D0p0qirQprmw0i2y8hdO7uqwf8
+         5ZXXqXuCWeGXUkYBGGg7aH+/dosNwBmJUBVrnfWxf5vQJsMn94EQSM/X71S7w8o8kRnL
+         UI6bxwQ2DzutxiVTrqMuJXxZVOII/LSXOHa8p0uJuHcDb5R6uLRhODLi3tWRMvf4SxFp
+         Nl5dUTLjq1N1apMzWlMqM29uE6SlzR23EPaqkquzfm3le77mJSId/ZZPw5ZFbRVbiyHu
+         YYFA==
+X-Gm-Message-State: AOJu0Yye3ooGUw3iuRhgQ/4qyJIWkz+fyY8CMobJvxYTfCgGiBaeLG64
+        uWM5uqLHSWdXpZFJIEQlY1fwqlkWnPFSph32P3+ZZrXKIVGFhqRnpbgmADq/UIWExhXfejvyYjs
+        qTMF3R9eCxtxkDHax8tZOmmAsC2TPyfKA
+X-Received: by 2002:a05:6a00:4b05:b0:6cd:8a19:c324 with SMTP id kq5-20020a056a004b0500b006cd8a19c324mr5065046pfb.3.1702303196832;
+        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFH8pcpJUYWrPme/AvUNGcFfSPB3UcpRig9J/TmAImLAZ/9Rz5Hmp0l8B3NXjdGvBgSAZW9vA==
+X-Received: by 2002:a05:6a00:4b05:b0:6cd:8a19:c324 with SMTP id kq5-20020a056a004b0500b006cd8a19c324mr5065039pfb.3.1702303196506;
+        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id ei43-20020a056a0080eb00b006ce6e431292sm6280383pfb.38.2023.12.11.05.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shigeru Yoshida <syoshida@redhat.com>
+Subject: [PATCH] crypto: af_alg/hash: Fix uninit-value access in af_alg_free_sg()
+Date:   Mon, 11 Dec 2023 22:59:49 +0900
+Message-ID: <20231211135949.689204-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/4] clk: mediatek: Add pcw_chg_shift control
-To:     Daniel Golle <daniel@makrotopia.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Jianhui Zhao <zhaojh329@gmail.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-References: <097e82b0d66570763d64be1715517d8b032fcf95.1702158423.git.daniel@makrotopia.org>
- <28c8ccd234ba311591b6db0de131fde36d3ec409.1702158423.git.daniel@makrotopia.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <28c8ccd234ba311591b6db0de131fde36d3ec409.1702158423.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 09/12/23 22:56, Daniel Golle ha scritto:
-> From: Sam Shih <sam.shih@mediatek.com>
-> 
-> Introduce pcw_chg_shfit control to replace hardcoded PCW_CHG_MASK macro.
-> This will needed for clocks on the MT7988 SoC.
-> 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
-> v4: always set .pcw_chg_shift if .pcw_chg_reg is used instead of
->      having an if-expression in mtk_pll_set_rate_regs().
-> v3: use git --from ...
-> v2: no changes
-> 
->   drivers/clk/mediatek/clk-mt6779.c            | 1 +
->   drivers/clk/mediatek/clk-mt8183-apmixedsys.c | 1 +
->   drivers/clk/mediatek/clk-mt8188-apmixedsys.c | 1 +
->   drivers/clk/mediatek/clk-mt8192-apmixedsys.c | 1 +
->   drivers/clk/mediatek/clk-mt8195-apmixedsys.c | 1 +
->   drivers/clk/mediatek/clk-mt8365-apmixedsys.c | 1 +
->   drivers/clk/mediatek/clk-pll.c               | 3 +--
->   drivers/clk/mediatek/clk-pll.h               | 2 ++
->   8 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/mediatek/clk-mt6779.c b/drivers/clk/mediatek/clk-mt6779.c
-> index ffedb1fe3c672..e66461f341dd3 100644
-> --- a/drivers/clk/mediatek/clk-mt6779.c
-> +++ b/drivers/clk/mediatek/clk-mt6779.c
-> @@ -1166,6 +1166,7 @@ static const struct mtk_gate apmixed_clks[] = {
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.div_table = _div_table,				\
->   	}
->   
-> diff --git a/drivers/clk/mediatek/clk-mt8183-apmixedsys.c b/drivers/clk/mediatek/clk-mt8183-apmixedsys.c
-> index 2b261c0e2b61d..184e0cd1dde29 100644
-> --- a/drivers/clk/mediatek/clk-mt8183-apmixedsys.c
-> +++ b/drivers/clk/mediatek/clk-mt8183-apmixedsys.c
-> @@ -75,6 +75,7 @@ static const struct mtk_gate apmixed_clks[] = {
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.div_table = _div_table,				\
->   	}
->   
-> diff --git a/drivers/clk/mediatek/clk-mt8188-apmixedsys.c b/drivers/clk/mediatek/clk-mt8188-apmixedsys.c
-> index 41ab4d6896a49..87c5dfa3d1ac4 100644
-> --- a/drivers/clk/mediatek/clk-mt8188-apmixedsys.c
-> +++ b/drivers/clk/mediatek/clk-mt8188-apmixedsys.c
-> @@ -53,6 +53,7 @@ static const struct mtk_gate apmixed_clks[] = {
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.en_reg = _en_reg,					\
->   		.pll_en_bit = _pll_en_bit,				\
->   	}
-> diff --git a/drivers/clk/mediatek/clk-mt8192-apmixedsys.c b/drivers/clk/mediatek/clk-mt8192-apmixedsys.c
-> index 3590932acc63a..67bf5ef3f0033 100644
-> --- a/drivers/clk/mediatek/clk-mt8192-apmixedsys.c
-> +++ b/drivers/clk/mediatek/clk-mt8192-apmixedsys.c
-> @@ -56,6 +56,7 @@ static const struct mtk_gate apmixed_clks[] = {
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.en_reg = _en_reg,					\
->   		.pll_en_bit = _pll_en_bit,				\
->   	}
-> diff --git a/drivers/clk/mediatek/clk-mt8195-apmixedsys.c b/drivers/clk/mediatek/clk-mt8195-apmixedsys.c
-> index 44a4c85a67ef5..ccd6bac7cb1fc 100644
-> --- a/drivers/clk/mediatek/clk-mt8195-apmixedsys.c
-> +++ b/drivers/clk/mediatek/clk-mt8195-apmixedsys.c
-> @@ -54,6 +54,7 @@ static const struct mtk_gate apmixed_clks[] = {
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.en_reg = _en_reg,					\
->   		.pll_en_bit = _pll_en_bit,				\
->   	}
-> diff --git a/drivers/clk/mediatek/clk-mt8365-apmixedsys.c b/drivers/clk/mediatek/clk-mt8365-apmixedsys.c
-> index 9b0bc5daeac06..daddca6db44e7 100644
-> --- a/drivers/clk/mediatek/clk-mt8365-apmixedsys.c
-> +++ b/drivers/clk/mediatek/clk-mt8365-apmixedsys.c
-> @@ -39,6 +39,7 @@
->   		.pcw_reg = _pcw_reg,					\
->   		.pcw_shift = _pcw_shift,				\
->   		.pcw_chg_reg = _pcw_chg_reg,				\
-> +		.pcw_chg_shift = PCW_CHG_SHIFT,				\
->   		.div_table = _div_table,				\
->   	}
->   
-> diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
-> index 513ab6b1b3229..139b01ab8d140 100644
-> --- a/drivers/clk/mediatek/clk-pll.c
-> +++ b/drivers/clk/mediatek/clk-pll.c
-> @@ -23,7 +23,6 @@
->   #define CON0_BASE_EN		BIT(0)
->   #define CON0_PWR_ON		BIT(0)
->   #define CON0_ISO_EN		BIT(1)
-> -#define PCW_CHG_MASK		BIT(31)
->   
->   #define AUDPLL_TUNER_EN		BIT(31)
->   
-> @@ -114,7 +113,7 @@ static void mtk_pll_set_rate_regs(struct mtk_clk_pll *pll, u32 pcw,
->   			pll->data->pcw_shift);
->   	val |= pcw << pll->data->pcw_shift;
->   	writel(val, pll->pcw_addr);
-> -	chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
-> +	chg = readl(pll->pcw_chg_addr) | BIT(pll->data->pcw_chg_shift);
->   	writel(chg, pll->pcw_chg_addr);
->   	if (pll->tuner_addr)
->   		writel(val + 1, pll->tuner_addr);
-> diff --git a/drivers/clk/mediatek/clk-pll.h b/drivers/clk/mediatek/clk-pll.h
-> index f17278ff15d78..84bd8df13e2e5 100644
-> --- a/drivers/clk/mediatek/clk-pll.h
-> +++ b/drivers/clk/mediatek/clk-pll.h
-> @@ -22,6 +22,7 @@ struct mtk_pll_div_table {
->   #define HAVE_RST_BAR	BIT(0)
->   #define PLL_AO		BIT(1)
->   #define POSTDIV_MASK	GENMASK(2, 0)
-> +#define PCW_CHG_SHIFT	31
->   
->   struct mtk_pll_data {
->   	int id;
-> @@ -48,6 +49,7 @@ struct mtk_pll_data {
->   	const char *parent_name;
->   	u32 en_reg;
->   	u8 pll_en_bit; /* Assume 0, indicates BIT(0) by default */
-> +	u8 pcw_chg_shift;
+KMSAN reported the following uninit-value access issue:
 
-Ok this is better - please call this "pcw_chg_bit" (same for the definition).
+=====================================================
+BUG: KMSAN: uninit-value in af_alg_free_sg+0x1c1/0x270 crypto/af_alg.c:547
+ af_alg_free_sg+0x1c1/0x270 crypto/af_alg.c:547
+ hash_sendmsg+0x188f/0x1ce0 crypto/algif_hash.c:172
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x997/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x271/0x3b0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x2fa/0x4a0 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Also, since it is impossible for PCW_CHG to be 0, please add a sanity check at
-the beginning of function mtk_clk_register_pll_ops(), like so:
+Uninit was created at:
+ slab_post_alloc_hook+0x103/0x9e0 mm/slab.h:768
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x5d5/0x9b0 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1006 [inline]
+ __kmalloc+0x118/0x410 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ sock_kmalloc+0x104/0x1a0 net/core/sock.c:2681
+ hash_accept_parent_nokey crypto/algif_hash.c:418 [inline]
+ hash_accept_parent+0xbc/0x470 crypto/algif_hash.c:445
+ af_alg_accept+0x1d8/0x810 crypto/af_alg.c:439
+ hash_accept+0x368/0x800 crypto/algif_hash.c:254
+ do_accept+0x803/0xa70 net/socket.c:1927
+ __sys_accept4_file net/socket.c:1967 [inline]
+ __sys_accept4+0x170/0x340 net/socket.c:1997
+ __do_sys_accept4 net/socket.c:2008 [inline]
+ __se_sys_accept4 net/socket.c:2005 [inline]
+ __x64_sys_accept4+0xc0/0x150 net/socket.c:2005
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-if (!data->pcw_chg_bit) {
-	pr_warn("Invalid PCW_CHG bit for pll %s", data->name);
-	return ERR_PTR(-EINVAL);
-}
+CPU: 0 PID: 14168 Comm: syz-executor.2 Not tainted 6.7.0-rc4-00009-gbee0e7762ad2 #13
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+=====================================================
 
-...like that, we're fully covered for eventual mistakes during porting (etc).
+In hash_sendmsg(), hash_alloc_result() may fail and return -ENOMEM if
+sock_kmalloc() fails. In this case, hash_sendmsg() jumps to the unlock_free
+label and calls af_alg_free_sg() with ctx->sgl.sgt.sgl uninitialized. This
+causes the above uninit-value access issue for ctx->sgl.sgt.sgl.
 
-Cheers,
-Angelo
+This patch fixes this issue by initializing ctx->sgl.sgt.sgl when the
+structure is allocated in hash_accept_parent_nokey().
+
+Fixes: c662b043cdca ("crypto: af_alg/hash: Support MSG_SPLICE_PAGES")
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+ crypto/algif_hash.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/crypto/algif_hash.c b/crypto/algif_hash.c
+index 82c44d4899b9..a51b58d36d60 100644
+--- a/crypto/algif_hash.c
++++ b/crypto/algif_hash.c
+@@ -419,6 +419,7 @@ static int hash_accept_parent_nokey(void *private, struct sock *sk)
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
++	ctx->sgl.sgt.sgl = NULL;
+ 	ctx->result = NULL;
+ 	ctx->len = len;
+ 	ctx->more = false;
+-- 
+2.41.0
+
