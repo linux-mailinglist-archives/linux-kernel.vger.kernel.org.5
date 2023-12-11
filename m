@@ -2,118 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D33880C2EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4D080C2F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjLKIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S233884AbjLKIXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjLKIUN (ORCPT
+        with ESMTP id S229463AbjLKIXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:20:13 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 669A5E5;
-        Mon, 11 Dec 2023 00:20:19 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9f7af8918so1846548a34.0;
-        Mon, 11 Dec 2023 00:20:19 -0800 (PST)
+        Mon, 11 Dec 2023 03:23:39 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06FBD5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:23:45 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2851a2b30a2so2897018a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:23:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702283025; x=1702887825; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9SGMAohI1bI080siIkPTaq7KnlqYCY8ucsxsXTXtBIQ=;
+        b=r6xf+iJQQBao2+2QuLGFBT6ysxoN2/o4W96/K6c0U2FKKuET66to4MpA0wpCSK8fO1
+         sOCtPN9DE/xRk/y0FQchypmp229KDq7qF+YBs457x45NLBvQj8oPCp6EgDMhMxfpF21o
+         6hnHxbeSSmxRQg7u+kzk5ygd2jbp5DnmztZj1E1Ry63HzVz/IXF5XDjDvBOcT2fEeJks
+         nCcOR/qhKyfuE/wkMXSsJzLD3Ds7VT852VEMfbt+dgyVlUdsAlXZv28k5TF2HeauoXVB
+         eBOt5Ybt2IIgpIdwAGBWEDfYyJzfN8s6BF4SCzXzYi8JhHofrLmqwuOwzLEPrta8Wrex
+         FbDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702282818; x=1702887618;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=X70dnLMW4EGZmNUCbaymENDJWJzKWVaikH9lFWWn4e4=;
-        b=Ds36Cgr9i94aXhL7BXK821wmGrZKwu7oHliIQaS7n5ydCEcffuJCMy4+az+dhrToDN
-         sPEVM12L6p5gtfqPMZJNyV3AadizAXeU+GesRM86elr6MdmIFK99GurxHWIgNa5a1l7C
-         A76u7P+M64dBXFvjEKXK6mN+koV0YXT+hcUwRv6GvHELEGp5BZyIVOCtLA6EZqb/3OWU
-         +3uYsgDnwk5EdZ23I13bVT93hJF1/GzTevSPFAV5i8RNYmi+/AsLhxa0Wb5GxF6IhMgm
-         gEizcPIP+d6CiFz28Y5h5FC71bdLJtVQMgyamqc50gNLL5B78Y/SwfN80XkM/4H2+3eb
-         0plw==
-X-Gm-Message-State: AOJu0YwuiweHUIqo9UYCEf7daqQcrp/qUXKy02gGxvr17mW0BZxHGzh4
-        pj5TD/KRc7EeByjuYdODBw==
-X-Google-Smtp-Source: AGHT+IEpHlX5EqpS08UtKaozsgHbMxD/r857ExlfYfeaTrWUPThkSeZY78lbRo8zxUU4fvhZVeNUug==
-X-Received: by 2002:a9d:68c6:0:b0:6da:c0d:90fb with SMTP id i6-20020a9d68c6000000b006da0c0d90fbmr1630420oto.6.1702282818598;
-        Mon, 11 Dec 2023 00:20:18 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id en12-20020a056830488c00b006d9fcb44e00sm1119600otb.32.2023.12.11.00.20.17
+        d=1e100.net; s=20230601; t=1702283025; x=1702887825;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9SGMAohI1bI080siIkPTaq7KnlqYCY8ucsxsXTXtBIQ=;
+        b=ZOVpBZF3FncqBzxXIsA+8RupmUeJEltTQiIDXYxX0JPjA/35xcUCUGFRJcxJ6Abktv
+         q5aLlnndn+G2nNtqjXefmPzkgX5RhuBclnzq7OGtVMIffJpDmO2oeRrBIHVHu+uopZzh
+         b+tOU2aS4wXTrQiUl7TmEt3i7s32IJuTRFQ5T2bef8kTeZFHUN7W5lpPBncn5ijla8yP
+         az3wxCV1B6JhCTkTIBvTcPA3hX1jdNOu9dbM4uaCTikIoI4j7rZgrIqzHcj83Eiap3nx
+         uNB6gCBMVoP1kEGGU/K2HnPxzdUVWP6TyV3ITGKMm2sxhqPr3bwjk0HblTRVbKPyMQwg
+         m7Ig==
+X-Gm-Message-State: AOJu0YyFooFjH6UgMOWGgIpeN+9xC7Jr7fhPk9Yaktl1CvdFCKUyvDuy
+        nCgjaDc4w2Uvt/bgDj4lrFcLJw==
+X-Google-Smtp-Source: AGHT+IHUybRnAug3nsceifCVm05j+nlMJJ89oCKo2V9GgwS0YbdYklk/h05eKA9tfXjZHnUAxCL7Mw==
+X-Received: by 2002:a17:90a:df86:b0:28a:464d:5ecb with SMTP id p6-20020a17090adf8600b0028a464d5ecbmr1681094pjv.36.1702283025392;
+        Mon, 11 Dec 2023 00:23:45 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id c11-20020a17090a020b00b00286d75e10e4sm8527933pjc.37.2023.12.11.00.23.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 00:20:18 -0800 (PST)
-Received: (nullmailer pid 1310035 invoked by uid 1000);
-        Mon, 11 Dec 2023 08:20:16 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        Mon, 11 Dec 2023 00:23:44 -0800 (PST)
+Date:   Mon, 11 Dec 2023 13:53:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: rust: Clarify that 'rustup override' applies to
+ build directory
+Message-ID: <20231211082342.dkcnlamsyaqxaylg@vireshk-i7>
+References: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
+ <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
+ <20231211064742.63l4cmvxe4uso5us@vireshk-i7>
+ <87h6kpf9am.fsf@metaspace.dk>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Xinhu Wu <xinhu.wu@unisoc.com>
-Cc:     surong.pang@unisoc.com, zhang.lyra@gmail.com,
-        bruce.chen@unisoc.com, heikki.krogerus@linux.intel.com,
-        orsonzhai@gmail.com, xinhuwu.unisoc@gmail.com,
-        baolin.wang@linux.alibaba.com, zhiyong.liu@unisoc.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, teng.zhang1@unisoc.com,
-        devicetree@vger.kernel.org, peak.yang@unisoc.com,
-        gregkh@linuxfoundation.org, xingxing.luo@unisoc.com,
-        conor+dt@kernel.org, robh+dt@kernel.org
-In-Reply-To: <20231211074120.27958-3-xinhu.wu@unisoc.com>
-References: <20231211074120.27958-1-xinhu.wu@unisoc.com>
- <20231211074120.27958-3-xinhu.wu@unisoc.com>
-Message-Id: <170228281685.1310019.14783806901713791242.robh@kernel.org>
-Subject: Re: [PATCH V2 2/2] dt-bindings: usb: Add an Spreadtrum pmic typec
- yaml
-Date:   Mon, 11 Dec 2023 02:20:16 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h6kpf9am.fsf@metaspace.dk>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 11 Dec 2023 15:41:20 +0800, Xinhu Wu wrote:
-> Add device tree binding Documentation details for
-> Spreadtrum pmic typec driver
+On 11-12-23, 09:09, Andreas Hindborg (Samsung) wrote:
 > 
-> Signed-off-by: Xinhu Wu <xinhu.wu@unisoc.com>
-> ---
->  .../bindings/usb/sprd,pmic_typec.yaml         | 65 +++++++++++++++++++
->  1 file changed, 65 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/sprd,pmic_typec.yaml
+> Thanks for fixing this Viresh!
 > 
+> Viresh Kumar <viresh.kumar@linaro.org> writes:
+> 
+> > diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
+> > index f382914f4191..dee787f92d26 100644
+> > --- a/Documentation/rust/quick-start.rst
+> > +++ b/Documentation/rust/quick-start.rst
+> > @@ -33,14 +33,17 @@ A particular version of the Rust compiler is required. Newer versions may or
+> >  may not work because, for the moment, the kernel depends on some unstable
+> >  Rust features.
+> >
+> > -If ``rustup`` is being used, enter the checked out source code directory
+> > -and run::
+> > +If ``rustup`` is being used, enter the kernel build directory and run::
+> >
+> >         rustup override set $(scripts/min-tool-version.sh rustc)
+> 
+> How about just specifying the path here:
+> 
+>          rustup override set --path=<build-dir> $(scripts/min-tool-version.sh rustc)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Hmm, this sounds good too. In that case the above line can be changed to:
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/usb/sprd,pmic_typec.yaml:28:18: [error] syntax error: mapping values are not allowed here (syntax)
+"If ``rustup`` is being used, run::"
 
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/usb/sprd,pmic_typec.example.dts'
-Documentation/devicetree/bindings/usb/sprd,pmic_typec.yaml:28:18: mapping values are not allowed in this context
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/usb/sprd,pmic_typec.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/usb/sprd,pmic_typec.yaml:28:18: mapping values are not allowed in this context
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/sprd,pmic_typec.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+Looks okay ?
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231211074120.27958-3-xinhu.wu@unisoc.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+viresh
