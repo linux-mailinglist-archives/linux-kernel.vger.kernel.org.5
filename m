@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F4E80CDC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1D280CE17
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344365AbjLKOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59664 "EHLO
+        id S1344114AbjLKOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343978AbjLKONn (ORCPT
+        with ESMTP id S1344071AbjLKOQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:13:43 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134B6D68;
-        Mon, 11 Dec 2023 06:08:26 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d0897e99e0so25238275ad.3;
-        Mon, 11 Dec 2023 06:08:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702303705; x=1702908505; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SA/gWEJ70l496ZRPZ8Gq6NqqTI/TZ5zOjo1CG3aNWQk=;
-        b=Q9xsisik4dyxNQJT3GzVZx1Hbb3csEMO8mB1bykDgG0D8cJ3rkGbuRs5xNYLKNMvDD
-         OiAjWprq6qV7ipgFY8KdiKLQx7cfkZxNVtrlgikvXLAk0K4ReQIUMHGrBH3YqDpWkxAX
-         4ChwWHxX3Uv5rgldwNyuyY7B/7I21hCNT5g6pIhRUMGpTMV1HGwDIW/OrsHjffCFedLP
-         T1adQ+XYM2TOGh+Hkh6UzozpJTrjc9bvkPz4kuMkUnOBH6+5pkM49dp5q/kS95Kp8wr3
-         r1A4VnpAkPxslkh0+UM+JlfYdwVBp3JR3zUs89Dr8Qa9McCkR1Sx6Ve98h93QwyiHZK7
-         guGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702303705; x=1702908505;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SA/gWEJ70l496ZRPZ8Gq6NqqTI/TZ5zOjo1CG3aNWQk=;
-        b=No2ICBgwpkDHlm/t61APqxKrhbvZ0y9N60ysNRztolI3LyOXICXB35PmbAouWLMlhh
-         ChObXdulQJodKjUg6WLANNDqgNL3vR1PYO5YJGytUrYpXMJmLvDOl1JF2hZ1fTi99iS1
-         yTDUIdWCV43gymzhpIX0/+hxZ0QvZEzjHGmAKU5qFxPYyaRvWoddy+2h/CmySfZsWq2/
-         JKm8APQj4UnhLvbV8PaKX9CbKbXI7wg/TXpAooRP1J4HDlL5A9KIkk8yBZDpNsUKH+Ub
-         g3JUjvohj1zdiQPXHj9kzQCCSgpW9fHC1+L0b6NIeeiPP3VLOu6zLGSl/5+MvQLzA2e+
-         QHTg==
-X-Gm-Message-State: AOJu0YxRXSwaeV/skJoCgaXdm8bbsEokQyPG86M/hsTgRi3OdVJNkAqo
-        aKhw0m4IZBJLzconeH0VgHs=
-X-Google-Smtp-Source: AGHT+IGDcZb85iygTV3TyMJjWVksVAZna//2oldQ/wT2yJQBkQFQjIaE0S8zla33N9vUr227Mm9w0g==
-X-Received: by 2002:a17:903:25c2:b0:1d0:9c97:6fed with SMTP id jc2-20020a17090325c200b001d09c976fedmr1714985plb.44.1702303705301;
-        Mon, 11 Dec 2023 06:08:25 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h8-20020a170902680800b001c736b0037fsm6835239plk.231.2023.12.11.06.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:08:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Dec 2023 06:08:23 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jdelvare@suse.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] hwmon: corsair-cpro: use NULL instead of 0
-Message-ID: <5872278a-32e5-426a-8c3c-f8e7cfc42901@roeck-us.net>
-References: <20231210220357.77036-1-mail@mariuszachmann.de>
+        Mon, 11 Dec 2023 09:16:33 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44EA3269;
+        Mon, 11 Dec 2023 06:10:01 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpkCT6TGMz4f3kJr;
+        Mon, 11 Dec 2023 22:09:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 0E0251A0893;
+        Mon, 11 Dec 2023 22:09:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhA0GHdlbq5xDQ--.18493S4;
+        Mon, 11 Dec 2023 22:09:58 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH RFC v2 for-6.8/block 17/18] ext4: remove block_device_ejected()
+Date:   Mon, 11 Dec 2023 22:08:33 +0800
+Message-Id: <20231211140833.975935-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231210220357.77036-1-mail@mariuszachmann.de>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBXWhA0GHdlbq5xDQ--.18493S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4UGw1xJF1fWr48KFy3urg_yoW8uFyfp3
+        y3Cw1fArW8ur1I9ayxJr48W340qayvkay0gFyxur1Fqr1fJ34IgFWktF1Iya40vrZ3uw1F
+        qF1UCrWxCr18GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1U
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26F4UJVW0owCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_
+        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUb
+        YLvtUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 11:03:57PM +0100, Marius Zachmann wrote:
-> Replaces the integer 0 with NULL.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312100455.k6m2eO4N-lkp@intel.com/
-> Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
+From: Yu Kuai <yukuai3@huawei.com>
 
-Applied.
+block_device_ejected() is added by commit bdfe0cbd746a ("Revert
+"ext4: remove block_device_ejected"") in 2015. At that time 'bdi->wb'
+is destroyed synchronized from del_gendisk(), hence if ext4 is still
+mounted, and then mark_buffer_dirty() will reference destroyed 'wb'.
+However, such problem doesn't exist anymore:
 
-Thanks,
-Guenter
+- commit d03f6cdc1fc4 ("block: Dynamically allocate and refcount
+backing_dev_info") switch bdi to use refcounting;
+- commit 13eec2363ef0 ("fs: Get proper reference for s_bdi"), will grab
+additional reference of bdi while mounting, so that 'bdi->wb' will not
+be destroyed until generic_shutdown_super().
 
-> ---
->  drivers/hwmon/corsair-cpro.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> index 463ab4296ede..a284a02839fb 100644
-> --- a/drivers/hwmon/corsair-cpro.c
-> +++ b/drivers/hwmon/corsair-cpro.c
-> @@ -524,7 +524,7 @@ static int ccp_probe(struct hid_device *hdev, const struct hid_device_id *id)
->  	if (ret)
->  		goto out_hw_close;
->  	ccp->hwmon_dev = hwmon_device_register_with_info(&hdev->dev, "corsaircpro",
-> -							 ccp, &ccp_chip_info, 0);
-> +							 ccp, &ccp_chip_info, NULL);
->  	if (IS_ERR(ccp->hwmon_dev)) {
->  		ret = PTR_ERR(ccp->hwmon_dev);
->  		goto out_hw_close;
+Hence remove this dead function block_device_ejected().
+
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ fs/ext4/super.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ae41204f52d4..3b5e2b557488 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -467,22 +467,6 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
+ 		schedule_work(&EXT4_SB(sb)->s_sb_upd_work);
+ }
+ 
+-/*
+- * The del_gendisk() function uninitializes the disk-specific data
+- * structures, including the bdi structure, without telling anyone
+- * else.  Once this happens, any attempt to call mark_buffer_dirty()
+- * (for example, by ext4_commit_super), will cause a kernel OOPS.
+- * This is a kludge to prevent these oops until we can put in a proper
+- * hook in del_gendisk() to inform the VFS and file system layers.
+- */
+-static int block_device_ejected(struct super_block *sb)
+-{
+-	struct inode *bd_inode = sb->s_bdev->bd_inode;
+-	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
+-
+-	return bdi->dev == NULL;
+-}
+-
+ static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
+ {
+ 	struct super_block		*sb = journal->j_private;
+@@ -6162,8 +6146,6 @@ static int ext4_commit_super(struct super_block *sb)
+ 
+ 	if (!sbh)
+ 		return -EINVAL;
+-	if (block_device_ejected(sb))
+-		return -ENODEV;
+ 
+ 	ext4_update_super(sb);
+ 
+-- 
+2.39.2
+
