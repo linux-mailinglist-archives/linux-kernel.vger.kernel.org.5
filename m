@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C6F80DA7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5DA80DA81
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344564AbjLKTDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
+        id S1344836AbjLKTEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344446AbjLKTDl (ORCPT
+        with ESMTP id S1344458AbjLKTDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:03:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBE9CF;
-        Mon, 11 Dec 2023 11:03:40 -0800 (PST)
+        Mon, 11 Dec 2023 14:03:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48309FF;
+        Mon, 11 Dec 2023 11:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702321420; x=1733857420;
+  t=1702321422; x=1733857422;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jT5aMdLnWQi+FETkAhi9wCFmGc0jKKEFEHjIqYKnUWw=;
-  b=Nn0voCmGPJDA6IHhoxweSVvkDnFsTplswe3WMvdYStBVtaxT7KK8PcRn
-   hUsRNyK6icv2qm2rd4bVoxaYCX9KQa+edS4KbYQtoW9+17mONRe2yOxwV
-   jKP7EBi0YpVYFYl+vK1mbYBFLuUxCSyL0oNJ+NxAbcM+S86ZxVVsO9aTp
-   dkPBZrOC1oU8HgM0Gdg7TntCHYuSVDewBd5HBkh6t4d7Tssl0ba9l673I
-   EpFaW9A6lhbOdIKaN3gmsln0D7aEWRHqJ1Kvw0CFvvxcFxW57fD8Mfiu0
-   izVzqnt2UQOVkqkGU4/lJWFVNxLpD0klyLd7HpjUFtbFfW1S0ygoxJHmi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480893504"
+  bh=UE0Gnq7QTOX0XZMLVZj8fxiT9b1zuhOQUELXDpvqOXI=;
+  b=D8SyTugKuhsqWbuHVlL3uXBdzj3gkTH2MdurSxtUJkLE8eRI6AIdbpdY
+   upxoym7Cj/Vv9dN/8ik2EaTu8uuZqx8iA3Ftr9Q13YPXzOL+eWBjcGrp1
+   mpcbOZ5C2QlNeMJOdqf24GzjEvYCkTv4BENzplLrNvaNMfeTlNh/nnR2I
+   vUfQGZWedP+mME2sBxZGEUvMoO6PpMpumOK+eUpfTuFD1k3XBcI+pyRZ4
+   DGquZyxJ0Sce9Ggc68c0Gvbk8y1nNwO0iB+Rpo2zbmS5OK7rURK1GcQow
+   enEWbX622ZJ5wBVli8bzygoygmmfbL8o81a2tAJ5o/B06+/0bg52jpSlX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="379692563"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="480893504"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:03:39 -0800
+   d="scan'208";a="379692563"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:03:40 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="766491687"
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="946445107"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="766491687"
+   d="scan'208";a="946445107"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Dec 2023 11:03:32 -0800
+  by orsmga005.jf.intel.com with ESMTP; 11 Dec 2023 11:03:32 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id BB59872F; Mon, 11 Dec 2023 21:03:23 +0200 (EET)
+        id C8AAD865; Mon, 11 Dec 2023 21:03:23 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -67,9 +67,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v5 08/13] pinctrl: ingenic: Convert to use grp member
-Date:   Mon, 11 Dec 2023 20:58:01 +0200
-Message-ID: <20231211190321.307330-9-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v5 09/13] pinctrl: keembay: Convert to use grp member
+Date:   Mon, 11 Dec 2023 20:58:02 +0200
+Message-ID: <20231211190321.307330-10-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
 References: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
@@ -89,76 +89,24 @@ Convert drivers to use grp member embedded in struct group_desc,
 because other members will be removed to avoid duplication and
 desynchronisation of the generic pin group description.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-ingenic.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ drivers/pinctrl/pinctrl-keembay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
-index f5661dcdedf5..bc6358a686fc 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -84,17 +84,13 @@
- 
- #define INGENIC_PIN_GROUP_FUNCS(_name_, id, funcs)					\
- 	{										\
--		.name = _name_,								\
--		.pins = id##_pins,							\
--		.num_pins = ARRAY_SIZE(id##_pins),					\
-+		.grp = PINCTRL_PINGROUP(_name_, id##_pins, ARRAY_SIZE(id##_pins)),	\
- 		.data = funcs,								\
- 	}
- 
- #define INGENIC_PIN_GROUP(_name_, id, func)						\
- 	{										\
--		.name = _name_,								\
--		.pins = id##_pins,							\
--		.num_pins = ARRAY_SIZE(id##_pins),					\
-+		.grp = PINCTRL_PINGROUP(_name_, id##_pins, ARRAY_SIZE(id##_pins)),	\
- 		.data = (void *)func,							\
- 	}
- 
-@@ -3766,17 +3762,17 @@ static int ingenic_pinmux_set_mux(struct pinctrl_dev *pctldev,
+diff --git a/drivers/pinctrl/pinctrl-keembay.c b/drivers/pinctrl/pinctrl-keembay.c
+index 87d328853ae4..b1349ee22799 100644
+--- a/drivers/pinctrl/pinctrl-keembay.c
++++ b/drivers/pinctrl/pinctrl-keembay.c
+@@ -945,7 +945,7 @@ static int keembay_set_mux(struct pinctrl_dev *pctldev, unsigned int fun_sel,
  		return -EINVAL;
  
- 	dev_dbg(pctldev->dev, "enable function %s group %s\n",
--		func->name, grp->name);
-+		func->name, grp->grp.name);
+ 	/* Change modes for pins in the selected group */
+-	pin = *grp->pins;
++	pin = *grp->grp.pins;
+ 	pin_mode = *(u8 *)(func->data);
  
- 	mode = (uintptr_t)grp->data;
- 	if (mode <= 3) {
--		for (i = 0; i < grp->num_pins; i++)
--			ingenic_pinmux_set_pin_fn(jzpc, grp->pins[i], mode);
-+		for (i = 0; i < grp->grp.npins; i++)
-+			ingenic_pinmux_set_pin_fn(jzpc, grp->grp.pins[i], mode);
- 	} else {
- 		pin_modes = grp->data;
- 
--		for (i = 0; i < grp->num_pins; i++)
--			ingenic_pinmux_set_pin_fn(jzpc, grp->pins[i], pin_modes[i]);
-+		for (i = 0; i < grp->grp.npins; i++)
-+			ingenic_pinmux_set_pin_fn(jzpc, grp->grp.pins[i], pin_modes[i]);
- 	}
- 
- 	return 0;
-@@ -4303,12 +4299,12 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < chip_info->num_groups; i++) {
- 		const struct group_desc *group = &chip_info->groups[i];
-+		const struct pingroup *grp = &group->grp;
- 
--		err = pinctrl_generic_add_group(jzpc->pctl, group->name,
--				group->pins, group->num_pins, group->data);
-+		err = pinctrl_generic_add_group(jzpc->pctl, grp->name, grp->pins, grp->npins,
-+						group->data);
- 		if (err < 0) {
--			dev_err(dev, "Failed to register group %s\n",
--					group->name);
-+			dev_err(dev, "Failed to register group %s\n", grp->name);
- 			return err;
- 		}
- 	}
+ 	val = keembay_read_reg(kpc->base1 + KEEMBAY_GPIO_MODE, pin);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
