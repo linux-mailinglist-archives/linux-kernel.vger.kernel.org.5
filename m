@@ -2,291 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1B780C03B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B7880C03F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjLKEEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 23:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
+        id S232819AbjLKEG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 23:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLKEEs (ORCPT
+        with ESMTP id S232671AbjLKEGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 23:04:48 -0500
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2341ED
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:04:50 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4b2ceee07e5so2307238e0c.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:04:50 -0800 (PST)
+        Sun, 10 Dec 2023 23:06:24 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2095.outbound.protection.outlook.com [40.107.243.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64EBF1;
+        Sun, 10 Dec 2023 20:06:30 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWOl7gVuLodHOVarwoL0I5yJp0dukMg0qKQwnriMKKovoY0gFjTLam15z6CFXhB+zUgtD+3tbwxL9sTk1D7u4RdLSh8U7jRw+PV7Cu5zvENUClvdu3pw0pPpCkbqc+x1akUNyuIiiDR6fZhS4JmEeMybhY+5LrNcm61acvlNe38Uol+B2pttCsHlswsCYnYEMP86R9IEPx773o6xEAw2WgEYbC51dkFVuc0Aq1U3GskxhXGrmCp+E/y/mJH08klI5PUl43hsb8Ex4ibXdhDsjrfwKWhIcjfgtO1TVJj5WD8vX9pnoHMBrQg4Ah1O7ca1HJKN9Y00vZzBpgUq/7KqHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PWQrr6e3TPhnlT1RzjWKv8s/y/jkuMuuDDJqAD/WSc4=;
+ b=Y5RDH7Hg+qB5To+lFe5y569xrBDgsf41ZXzUexsX+IoviK4fQEqFpX7aDUj+SBaIx2+B4jZWJQCemBdURx2lxfe7hhPVoy3GRKopqMi/Ek0hMTXCNZpVbswg501O9UUEo2y8uxwgkfraNFY4zBL/YJPkqN39lo/x2IhQYd1qqM0I0x2z7Lzw7z6Aa/gkZ9WoTBlKJ1YNo3Lti8uP5yb/hi4/HZ7TkjCv99vzZDWHIcSSZL/EfncWNzM9ZH0JoG9zGiVI8v0gmiRiBcCAYpmKpMRkp/P1WCAcTURLRiZn8ySOT/hO0blyuYn+LsOd7Yo9dM4DrLsNWtn+2GtD4VX6UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702267490; x=1702872290; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VRqbtjk8rq4zydD2Xsjk5a3+pHw9ItIcSF2MB1yehQo=;
-        b=VaDRWRM1KRnktwFxZ92SGWHc1wbhGhcnjpbwvr7zS/PYf7hQmZDMYJBrBxhQ4eVjnA
-         Q+c2MzggIH/mQZjlACA44bUtyaF2Fd2UijObUiaGn0cfrabnnsoeH7776n8Xgitmi1yY
-         yjxFOAmF5tRy3PfE+F2GcW7IlBjeQdWuhMuwuIp3C33DpBBBGJiiYMoQ6zPce2JeeAaB
-         trzubaUeLVF7btf1C6JnWpEiFKOGS9XLFm+btbsaj6YpJ0LgWiubuabKMyNLHJXnPux4
-         vx0wSYQPT9j+ECQZ/fRwvyVnjJKc8Dhw82g/lYSA61ce8PUrx2nAlKy5Czg24W3W5u4b
-         GQpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702267490; x=1702872290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VRqbtjk8rq4zydD2Xsjk5a3+pHw9ItIcSF2MB1yehQo=;
-        b=rdmRQpr+/3Nbcr2BkIGiVFNt2yOVQYtxyQAaeeh/uL94Rc/3qH4vtoylYmpna9jTPn
-         iMxLgfmVlxRr2x+WG3e/IU44ZBd1JGwh6nagc5nxHTkHY8PVi6DPbFn5IsdpO09xA+S4
-         z7ucPgm1wwf8wBluflTvGB9aYyiF8NQpmgGCP01UOM6wAt8vC3dzJsqM+/u2oktd2vYi
-         GttOUMSX/EpJVgktFnDywKk0/K8E64iKPgFsYk2XsjiRAjkCHuYio26XI7P0hVog+Hqp
-         DDy6FRBjanqykELIyXHGHPHlUj7MeV/5xqV9JVNbYZed8508/Skza8F2wJwsZmpYHw2G
-         xxcw==
-X-Gm-Message-State: AOJu0YwAOGOnkGVMnobqpNktVmqdwr7yveN4lcdqdrMhWclwzRglfe+z
-        MQXg9Q9g0F7XU9kbCY8jSVVingz1Ssw6p3SlTeyCXA==
-X-Google-Smtp-Source: AGHT+IGAfd74P9yx0nc2KiABSnElGYTnepENJsYtWliZ+g0y9LWw0IHdbTNPBs473It21Lgw8vWq6UsEAVUukNqm/hI=
-X-Received: by 2002:a05:6122:18aa:b0:496:80b6:2fd1 with SMTP id
- bi42-20020a05612218aa00b0049680b62fd1mr2519624vkb.5.1702267489809; Sun, 10
- Dec 2023 20:04:49 -0800 (PST)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PWQrr6e3TPhnlT1RzjWKv8s/y/jkuMuuDDJqAD/WSc4=;
+ b=DwIzxN1/fz53KwAkjXy0qSQY80id1L6D9A1/0X78GyeOTqyAl+giDEXiJul5mIE7PPc9E3fOxZ6ycpE/idB333ahT+Q7S2gST9oXx8Jm9fEGUjeeQSmwLCqkHsd6aYj+tHmMqFckvl2jtIuptcEEohuKUli6taS2EdsnLUw9q94=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SN4PR01MB7455.prod.exchangelabs.com (2603:10b6:806:202::11) by
+ PH7PR01MB7821.prod.exchangelabs.com (2603:10b6:510:1d9::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.32; Mon, 11 Dec 2023 04:06:24 +0000
+Received: from SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68]) by SN4PR01MB7455.prod.exchangelabs.com
+ ([fe80::5682:1d84:171a:1d68%3]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 04:06:24 +0000
+Message-ID: <79d8377f-b443-47cd-831c-4f27a4f59572@os.amperecomputing.com>
+Date:   Mon, 11 Dec 2023 11:06:12 +0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] i2c: aspeed: Acknowledge Tx done with and without
+ ACK irq late
+Content-Language: en-CA
+To:     Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+References: <20231208033142.1673232-1-quan@os.amperecomputing.com>
+ <20231208033142.1673232-3-quan@os.amperecomputing.com>
+ <dc36d61aedd2b2389eb366b27436f19d934fc93b.camel@codeconstruct.com.au>
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+In-Reply-To: <dc36d61aedd2b2389eb366b27436f19d934fc93b.camel@codeconstruct.com.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0P221CA0022.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:11c::22) To SN4PR01MB7455.prod.exchangelabs.com
+ (2603:10b6:806:202::11)
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com> <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
- <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com> <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
-In-Reply-To: <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sun, 10 Dec 2023 20:04:36 -0800
-Message-ID: <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR01MB7455:EE_|PH7PR01MB7821:EE_
+X-MS-Office365-Filtering-Correlation-Id: 487bebe6-074a-4025-96b4-08dbf9fe8a91
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nNaW9xCwSByUjboGH2wzckwGFvJ6Vrddz0fcFKjjYnAxqm8DRoDUZKpMhakiNJ/I05mxnNUD17Fy30pL/A33ChiAA3cquXUg8fsJEJzemBp78wE6VIRbxZ/3gktQnerrFYsYXLwJMhTzUVvlfKJhlDPvMp1JpLUuKH11FvnVDsEr4xcVFU2NkyDQ09juP5OGJm/eCLUG3uYgeKJ49cILjDd8IiHlbhfOUB7lcPkEtvmUMJEXrp34CIoK388u9uEm52j4WLdbAUVoxUn0lOAHc8fQ/vNLCPBLh7PDq3NtI6nAH2GVIr/PHkPzyrnMLR87Gz9pCq2YQ6XwXMjN5GIdGnQLIHCIXJTyIjek9an3zAgxbSs2PEUsNaLnLl1J5+zMYzcJI1s7X2bpnEi6WyxoWLvvOsaKi+niqgln1S3hc88JsL7WWniSotdwu8cWf401zgd7SiwvSiqDRzIhvfcBpp/FXqCnrWvHyBMjUuGmZWjtRsh3MFAk/B4wfOpAMS2r+5MmVVi+hwxbhw1Qj2UJqtqyC8aZDZ7D/R+oiTOe6PXdoB6B5Lx6EAwsI/b1jJvaDNfTKj7MhBfo8xn9SBg5X+ghDMdH0Wv5ApA0Mn5f++6EhgmVSw/8EhTCa4e2Irxj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR01MB7455.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(376002)(39850400004)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(6512007)(6506007)(53546011)(5660300002)(26005)(2616005)(107886003)(7416002)(54906003)(66476007)(66556008)(66946007)(6486002)(966005)(2906002)(83380400001)(31686004)(921008)(41300700001)(478600001)(86362001)(8676002)(8936002)(4326008)(31696002)(110136005)(316002)(38100700002)(6666004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UmF1WkVQNEp0TDV6cmh1a0ZDck5TUVV0U2pDbVQvRjBmNkpNWkRja2U0TnV1?=
+ =?utf-8?B?SStDN1o4aUo0NXU4RUNoWElKY0JMVzdIUUJVZ0IxQXVsVzhFZy8rN1hJWFhB?=
+ =?utf-8?B?eDFZWUxjL3poM3R3aFU0WTJSVjFEMlJzQ2xzd3RDZWo4MytmV0xuWDZpR3M1?=
+ =?utf-8?B?YkVELzBxVWtCYkZRZjh0NWRHaHhPOGVFZFNmMCt1UmZFNExyVGZ6U25hQ3Jj?=
+ =?utf-8?B?bFhEZTI3R1h2WnVDV1lSQnpYLzMrRXh0Uy80ckl3cFl3c0x6bGZCQVJycjk5?=
+ =?utf-8?B?ZDdsU1RwRmhQa2FIbEJPY3RFZUhqL3RUQkRuR2IxbDl5QWtXYXo1UFJpaHNi?=
+ =?utf-8?B?Y1RzWDZuWnA2ZUl2RHltYWtRb3hwelhRZS9oTTRtOEFQbDVjYmpIVXdpZDk4?=
+ =?utf-8?B?Z1FrRmJKRndnS3RyQUJVUnhNY3dHNkpCR1VmZmV0QjZmNVEwaFZmaEhLRnl0?=
+ =?utf-8?B?cEdqaWhFS04yY3QvcEdWelZoTDZKNm1Bczh3TEJtSEs1eXlHd2IvbjZHR2FU?=
+ =?utf-8?B?OEliMzFWdE9ET1FMdVVJdVNJZzQzMmhQTVRyOXBUaWlLd3NOS2RmNEJoM3kv?=
+ =?utf-8?B?a3Z3UC9aYWpXUXlHcjZ6TDd2MFlCRTgvT0trd3orMWl4bjVXV1VObk5xTlJB?=
+ =?utf-8?B?MHA1MEFYT3hNMncxYmk2Vm1QbHNqbGprbnhYMDRqc2ZEVTVrSUpDSFZmTEFO?=
+ =?utf-8?B?VDZSVzM5cmZwdjFqd2F3YXVPYVlFYU4vck02K1hPbFN2YWE5MHJUMTFYVXNX?=
+ =?utf-8?B?NUhEMFBLM2xsQ3FBd0VJc1M4bk5yMmRhVUNrQUVkc05USXFkaEEyVXRQejdy?=
+ =?utf-8?B?bXl1U0FvWWhlKzBueHhTUkNKMU1NQVhldUdpcGFKUEJNL3JBcEY1VzYzRXNr?=
+ =?utf-8?B?VHVEbW5XaDJZTitzWE0yYStKU1VEMUFTNTVHNVN3UzhjWEdwUHdSQ280VlZr?=
+ =?utf-8?B?L2RubCtZaHFkVzZWZlpZd2lBUlByQXVEYXlOOGdzVXQ4SE1zUjFHNkZrNGIw?=
+ =?utf-8?B?SmV2ZDl3NG9WZDByeGc4UFp0K2pTYnlobUhZK21WcHliZElEVml1dTZVQkRM?=
+ =?utf-8?B?d2V2SGJ2akdmcWJGNjMwS04rS0VTS3cvVVZaS2pyeEFoVkxCTTVSVWhadkpy?=
+ =?utf-8?B?aFVDcVdxN1lIaW54UFJPWlZYUnFsRzVZUm9Qdm54Vm1sbld5YWp0MG5xS0hu?=
+ =?utf-8?B?ZURmMW1jWU9XQTJaZUFaOVZZWWpXN1RmYlFzd3NWdVFKbzhyM1dDYTM4TGgx?=
+ =?utf-8?B?aGdHUWVHU2ZhVjRTaXpMT0N3Tm15L2x6bkdhNXFGOGZua25IcVNYcmRkUGFi?=
+ =?utf-8?B?eElzV2tqNXh6N3RNYXZWZ1JUTG91SEVwc09ZY05ZeDRzUjVwYlNXL0ZycERQ?=
+ =?utf-8?B?TnlYcEpscXlDYVVVNXhOa2t1T0JDNUpvR3h2TEJqK0txNGIyYUlzM2VwQ3lN?=
+ =?utf-8?B?Z1lyaXFuS3R5bjQ1UTQzcnpBdHY2TUpzbVRWclEwZUR5UGdjMFhPNVVXSlhD?=
+ =?utf-8?B?MDhobDFKdWJScmE4MVFlYmRWeUZGOFVqU2FmbFUwcWlhc1d0bDZHcFVCbmYr?=
+ =?utf-8?B?cjFOV01XR1IzR09TNzM5OW5WS3YyeVYwbTJZc0Q2dkJ2cTltZndScm9VRVFn?=
+ =?utf-8?B?R21XVVZrRnp4RURZVEpQN3BuRzhNandrNjE0MzZPWVAzTXZ1WWhFUkJkU25R?=
+ =?utf-8?B?aTFEd0tXV09ScklqMzFUei9rR1lCVzkyaEhSNVhuWXl0VlZ6UXUvSTVlSXJK?=
+ =?utf-8?B?b0ZyLzZ6RnNRRGtaWkI3QndCUDl0bXB2ZHZIWCtGQmtKcjErK1I4a0NVRG1G?=
+ =?utf-8?B?ZmNRdk9MMzhCbG83MTdEQVZoa2NwanJZUFRaR1hUdE0xZTFIckNCWXBWMVNm?=
+ =?utf-8?B?ZHROdHJKZy9Uc3ZmVDBpOFBaODZkMWs5cGdCam1hTkZkL2lEK3lYNVNHM0Rp?=
+ =?utf-8?B?dkd4WjhhcFhsbFFicFFTb2FqdzJZcmVILy9rQkRkVm92dFZqSlc1alF6dXZi?=
+ =?utf-8?B?aU9vNW83aC9mNnFUVG5OU29HeVRhV2N6YkhUWjJDSzRYZ2hHUWJVMG9uUjd0?=
+ =?utf-8?B?WjFHbTVuWHQ0dnhaQStOK041allzOS9lblg0NVNTTEFtMHN3VjBjRzhzZ0Rp?=
+ =?utf-8?B?SGxoV2tFNjAwNDFoU2NEdVVHNVBlV3ZoTUtFaFgvd1Z1cE5BNXNaWmYrd0dC?=
+ =?utf-8?Q?rNSqdQh6ikfuxG7UbMLOUPU=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 487bebe6-074a-4025-96b4-08dbf9fe8a91
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR01MB7455.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 04:06:24.7145
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HDFiE9M2BVZdkr6PhzsZnjaRUXnXAaun9WJJnPKubPKKQT94EnPEqQlmBtiybO/M4nojlvoJ4bkWis9R1hIM6Gt+tyVCVn3M3sWxoZjFGVI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR01MB7821
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 6:26=E2=80=AFPM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Sun, Dec 10, 2023 at 6:04=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.=
-com> wrote:
-> >
-> > On 2023/12/9 0:05, Mina Almasry wrote:
-> > > On Fri, Dec 8, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@huaw=
-ei.com> wrote:
-> > >>
-> > >>
-> > >> As mentioned before, it seems we need to have the above checking eve=
-ry
-> > >> time we need to do some per-page handling in page_pool core, is ther=
-e
-> > >> a plan in your mind how to remove those kind of checking in the futu=
-re?
-> > >>
-> > >
-> > > I see 2 ways to remove the checking, both infeasible:
-> > >
-> > > 1. Allocate a wrapper struct that pulls out all the fields the page p=
-ool needs:
-> > >
-> > > struct netmem {
-> > >         /* common fields */
-> > >         refcount_t refcount;
-> > >         bool is_pfmemalloc;
-> > >         int nid;
-> > >         ...
-> > >         union {
-> > >                 struct dmabuf_genpool_chunk_owner *owner;
-> > >                 struct page * page;
-> > >         };
-> > > };
-> > >
-> > > The page pool can then not care if the underlying memory is iov or
-> > > page. However this introduces significant memory bloat as this struct
-> > > needs to be allocated for each page or ppiov, which I imagine is not
-> > > acceptable for the upside of removing a few static_branch'd if
-> > > statements with no performance cost.
-> > >
-> > > 2. Create a unified struct for page and dmabuf memory, which the mm
-> > > folks have repeatedly nacked, and I imagine will repeatedly nack in
-> > > the future.
-> > >
-> > > So I imagine the special handling of ppiov in some form is critical
-> > > and the checking may not be removable.
-> >
-> > If the above is true, perhaps devmem is not really supposed to be inter=
-gated
-> > into page_pool.
-> >
-> > Adding a checking for every per-page handling in page_pool core is just=
- too
-> > hacky to be really considerred a longterm solution.
-> >
->
-> The only other option is to implement another page_pool for ppiov and
-> have the driver create page_pool or ppiov_pool depending on the state
-> of the netdev_rx_queue (or some helper in the net stack to do that for
-> the driver). This introduces some code duplication. The ppiov_pool &
-> page_pool would look similar in implementation.
->
-> But this was all discussed in detail in RFC v2 and the last response I
-> heard from Jesper was in favor if this approach, if I understand
-> correctly:
->
-> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redha=
-t.com/
->
-> Would love to have the maintainer weigh in here.
->
-
-I should note we may be able to remove some of the checking, but maybe not =
-all.
-
-- Checks that disable page fragging for ppiov can be removed once
-ppiov has frag support (in this series or follow up).
-
-- If we use page->pp_frag_count (or page->pp_ref_count) for
-refcounting ppiov, we can remove the if checking in the refcounting.
-
-- We may be able to store the dma_addr of the ppiov in page->dma_addr,
-but I'm unsure if that actually works, because the dma_buf dmaddr is
-dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
-I think). But if it works for pages I may be able to make it work for
-ppiov as well.
-
-- Checks that obtain the page->pp can work with ppiov if we align the
-offset of page->pp and ppiov->pp.
-
-- Checks around page->pp_magic can be removed if we also have offset
-aligned ppiov->pp_magic.
-
-Sadly I don't see us removing the checking for these other cases:
-
-- page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
-that helper.
-
-- page_to_nid(): I'm not allowed to pass a non-struct page into that helper=
-.
-
-- page_pool_free_va(): ppiov have no va.
-
-- page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
-fundamentally can't get mapped again.
-
-Are the removal (or future removal) of these checks enough to resolve this?
-
-> > It is somewhat ironical that devmem is using static_branch to alliviate=
- the
-> > performance impact for normal memory at the possible cost of performanc=
-e
-> > degradation for devmem, does it not defeat some purpose of intergating =
-devmem
-> > to page_pool?
-> >
->
-> I don't see the issue. The static branch sets the non-ppiov path as
-> default if no memory providers are in use, and flips it when they are,
-> making the default branch prediction ideal in both cases.
->
-> > >
-> > >> Even though a static_branch check is added in page_is_page_pool_iov(=
-), it
-> > >> does not make much sense that a core has tow different 'struct' for =
-its
-> > >> most basic data.
-> > >>
-> > >> IMHO, the ppiov for dmabuf is forced fitting into page_pool without =
-much
-> > >> design consideration at this point.
-> > >>
-> > > ...
-> > >>
-> > >> For now, the above may work for the the rx part as it seems that you=
- are
-> > >> only enabling rx for dmabuf for now.
-> > >>
-> > >> What is the plan to enable tx for dmabuf? If it is also intergrated =
-into
-> > >> page_pool? There was a attempt to enable page_pool for tx, Eric seem=
-ed to
-> > >> have some comment about this:
-> > >> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@=
-huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
-> > >>
-> > >> If tx is not intergrated into page_pool, do we need to create a new =
-layer for
-> > >> the tx dmabuf?
-> > >>
-> > >
-> > > I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
-> > > helpers, and page_pool_page_*() helpers, but will not need any core
-> > > page_pool changes. This is because the TX path will have to piggyback
-> >
-> > We may need another bit/flags checking to demux between page_pool owned
-> > devmem and non-page_pool owned devmem.
-> >
->
-> The way I'm imagining the support, I don't see the need for such
-> flags. We'd be re-using generic helpers like
-> page_pool_iov_get_dma_address() and what not that don't need that
-> checking.
->
-> > Also calling page_pool_*() on non-page_pool owned devmem is confusing
-> > enough that we may need a thin layer handling non-page_pool owned devme=
-m
-> > in the end.
-> >
->
-> The page_pool_page* & page_pool_iov* functions can be renamed if
-> confusing. I would think that's no issue (note that the page_pool_*
-> functions need not be called for TX path).
->
-> > > on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation fro=
-m
-> > > the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
-> > > implementation based on dmabuf pages without page_pool involvement, I
-> > > imagine I'll do something similar.
-> > It would be good to have a tx implementation for the next version, so
-> > that we can have a whole picture of devmem.
-> >
-> > >
->
->
->
-> --
-> Thanks,
-> Mina
 
 
+On 08/12/2023 11:00, Andrew Jeffery wrote:
+> On Fri, 2023-12-08 at 10:31 +0700, Quan Nguyen wrote:
+>> Commit 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in
+>> interrupt handler") acknowledges most interrupts early before the slave
+>> irq handler is executed, except for the "Receive Done Interrupt status"
+>> which is acknowledged late in the interrupt.
+>> However, it has been observed that the early acknowledgment of "Transmit
+>> Done Interrupt Status" (with ACK or NACK) often causes the interrupt to
+>> be raised in READ REQUEST state, that shows the
+>> "Unexpected ACK on read request." complaint messages.
+>>
+>> Assuming that the "Transmit Done" interrupt should only be acknowledged
+>> once it is truly processed, this commit fixes that issue by acknowledging
+>> interrupts for both ACK and NACK cases late in the interrupt handler.
+>>
+>> Fixes: 2be6b47211e1 ("i2c: aspeed: Acknowledge most interrupts early in interrupt handler")
+>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+>> ---
+>> v3:
+>>    + Fix the unconditinal write when ack the irqs               [Andrew]
+>>    + Refactor the code to enhance code readability                [Quan]
+>>    + Fix grammar in commit message                                [Quan]
+>>
+>> v2:
+>>    + Split to separate series                                     [Joel]
+>>    + Added the Fixes line                                         [Joel]
+>>    + Fixed multiline comment                                      [Joel]
+>>    + Refactor irq clearing code                          [Joel, Guenter]
+>>    + Revised commit message                                       [Joel]
+>>    + Revised commit message                                       [Quan]
+>>    + About a note to remind why the readl() should immediately follow the
+>> writel() to fix the race condition when clearing irq status from commit
+>> c926c87b8e36 ("i2c: aspeed: Avoid i2c interrupt status clear race
+>> condition"), I think it looks straight forward in this patch and decided
+>> not to add that note.                                            [Joel]
+>>
+>> v1:
+>>    + First introduced in
+>> https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputing.com/
+>> ---
+>>   drivers/i2c/busses/i2c-aspeed.c | 21 +++++++++++++--------
+>>   1 file changed, 13 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+>> index 1c2a4f4c4e1b..967a26dd4ffa 100644
+>> --- a/drivers/i2c/busses/i2c-aspeed.c
+>> +++ b/drivers/i2c/busses/i2c-aspeed.c
+>> @@ -617,13 +617,19 @@ static u32 aspeed_i2c_master_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
+>>   static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+>>   {
+>>   	struct aspeed_i2c_bus *bus = dev_id;
+>> -	u32 irq_received, irq_remaining, irq_handled;
+>> +	u32 irq_received, irq_remaining, irq_handled, irq_ack_last;
+> 
+> `irq_ack_last` might be better as a macro, but you're probably saved by
+> the optimiser anyway. If there's another reason to do a v4 or others
+> are unhappy with it then consider fixing it, otherwise:
+> 
+> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> 
 
---
-Thanks,
-Mina
+I'll send out the v4 to use the defined macro instead as below:
+
+Thanks Andi, for the suggestion on the macro name.
+
+diff --git a/drivers/i2c/busses/i2c-aspeed.c 
+b/drivers/i2c/busses/i2c-aspeed.c
+index 5511fd46a65e..0f67218cf04a 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -93,6 +93,10 @@
+  		 ASPEED_I2CD_INTR_RX_DONE | \
+  		 ASPEED_I2CD_INTR_TX_NAK |  \
+  		 ASPEED_I2CD_INTR_TX_ACK)
++#define ASPEED_I2CD_INTR_ACK_RX_TX	    \
++		(ASPEED_I2CD_INTR_RX_DONE | \
++		 ASPEED_I2CD_INTR_TX_ACK |  \
++		 ASPEED_I2CD_INTR_TX_NAK)
+
+Thanks for the review,
+- Quan
