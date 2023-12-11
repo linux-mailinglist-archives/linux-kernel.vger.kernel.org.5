@@ -2,42 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B2E80CC39
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB4D80CC3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344025AbjLKN7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:59:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
+        id S1343777AbjLKN7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234975AbjLKN6n (ORCPT
+        with ESMTP id S1343820AbjLKN6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:58:43 -0500
+        Mon, 11 Dec 2023 08:58:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5B92132
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:56:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 643C4C433C7;
-        Mon, 11 Dec 2023 13:56:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A62226AD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:56:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E470C433C8;
+        Mon, 11 Dec 2023 13:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702302998;
-        bh=tUwhSQ0MnlY3X/Klwwizqwrr4QqE+T/3H1wVR3q2ljI=;
+        s=k20201202; t=1702303010;
+        bh=bYKkKLzZA8jGXcnt6bR9g4qRqoJgH/dKArVF5Co8L98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RnKkYg0U/ZMcmUye+MzUKx0SYAPacRtt4O4TMmqSUGvNOqg4x+e97kJGTUZnWJqZR
-         a3UJUDY3p459in65ZNFDktulTzVd031+AS2xU88d7lLGbzVyRQHYc0e3c4Zm1mOc7A
-         OZrCMPCdoOacSLeXH7ZYM+AWUT8DPTYHhT3kEj5firtpk3jV+gRquEsVhm4SRMYnoi
-         pQBQQ6qPZBdiTy7nTSS8QgnKsAh98fJaw25XGob+S6GcIIn5XnFOk2fxTqBVW4XGdJ
-         qW2u1Staz28AVj+TCgJ1BSta8bxhkcUVJW388cVAowWa4F6NGoXnL7XKI1D5XDDuQh
-         Y5GtXW1JQEnIQ==
+        b=LA3EcSqm3uQl/934YG3mOEgOClGDO+z1TEqfFBe8uBCSTYoRi4W9Or7oVif/hHU6/
+         bDQwf54YnORtQy7nqyu15upP64xFl/eFOld1PUzgDE5lWkq6JRC72uCxvJTkSloZGw
+         +046fblIrCj7ZJuYDXfpvEiTE5MLw/a+fucked6AZRnWnTzCS0YXDL91za0xO7YBWb
+         8zwryIS5faNGkbpeHBbJW7VPRoLbwP84VNzU8TUt8nIH3CjlOjhP/2GUmasnuw3Wat
+         vocJSUrhez3h2t4RzzKUowtKU36ljM9OfxC70tahEuzpPl4xmi5eKW5bMyNQlGmb+H
+         RNK2VIS8MpaSA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stefan Wiehler <stefan.wiehler@nokia.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        tglx@linutronix.de, jiaxun.yang@flygoat.com,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 22/29] mips/smp: Call rcutree_report_cpu_starting() earlier
-Date:   Mon, 11 Dec 2023 08:54:06 -0500
-Message-ID: <20231211135457.381397-22-sashal@kernel.org>
+Cc:     Alvin Lee <alvin.lee2@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Samson Tam <samson.tam@amd.com>,
+        Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
+        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, felipe.clark@amd.com, tony.tascioglu@amd.com,
+        ruanjinjie@huawei.com, drv@mailo.com, sunran001@208suo.com,
+        mario.limonciello@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 23/29] drm/amd/display: Use channel_width = 2 for vram table 3.0
+Date:   Mon, 11 Dec 2023 08:54:07 -0500
+Message-ID: <20231211135457.381397-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135457.381397-1-sashal@kernel.org>
 References: <20231211135457.381397-1-sashal@kernel.org>
@@ -56,75 +62,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Wiehler <stefan.wiehler@nokia.com>
+From: Alvin Lee <alvin.lee2@amd.com>
 
-[ Upstream commit 55702ec9603ebeffb15e6f7b113623fe1d8872f4 ]
+[ Upstream commit fec05adc40c25a028c9dfa9d540f800a2d433f80 ]
 
-rcutree_report_cpu_starting() must be called before
-clockevents_register_device() to avoid the following lockdep splat triggered by
-calling list_add() when CONFIG_PROVE_RCU_LIST=y:
+VBIOS has suggested to use channel_width=2 for any ASIC that uses vram
+info 3.0. This is because channel_width in the vram table no longer
+represents the memory width
 
-  WARNING: suspicious RCU usage
-  ...
-  -----------------------------
-  kernel/locking/lockdep.c:3680 RCU-list traversed in non-reader section!!
-
-  other info that might help us debug this:
-
-  RCU used illegally from offline CPU!
-  rcu_scheduler_active = 1, debug_locks = 1
-  no locks held by swapper/1/0.
-  ...
-  Call Trace:
-  [<ffffffff8012a434>] show_stack+0x64/0x158
-  [<ffffffff80a93d98>] dump_stack_lvl+0x90/0xc4
-  [<ffffffff801c9e9c>] __lock_acquire+0x1404/0x2940
-  [<ffffffff801cbf3c>] lock_acquire+0x14c/0x448
-  [<ffffffff80aa4260>] _raw_spin_lock_irqsave+0x50/0x88
-  [<ffffffff8021e0c8>] clockevents_register_device+0x60/0x1e8
-  [<ffffffff80130ff0>] r4k_clockevent_init+0x220/0x3a0
-  [<ffffffff801339d0>] start_secondary+0x50/0x3b8
-
-raw_smp_processor_id() is required in order to avoid calling into lockdep
-before RCU has declared the CPU to be watched for readers.
-
-See also commit 29368e093921 ("x86/smpboot:  Move rcu_cpu_starting() earlier"),
-commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and commit
-99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
-
-Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
-Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Reviewed-by: Samson Tam <samson.tam@amd.com>
+Acked-by: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/smp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 1d93b85271ba8..b951ce3a53ab0 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -333,10 +333,11 @@ early_initcall(mips_smp_ipi_init);
-  */
- asmlinkage void start_secondary(void)
- {
--	unsigned int cpu;
-+	unsigned int cpu = raw_smp_processor_id();
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+index e507d2e1410b7..72891d69afb68 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+@@ -2402,7 +2402,13 @@ static enum bp_result get_vram_info_v30(
+ 		return BP_RESULT_BADBIOSTABLE;
  
- 	cpu_probe();
- 	per_cpu_trap_init(false);
-+	rcutree_report_cpu_starting(cpu);
- 	mips_clockevent_init();
- 	mp_ops->init_secondary();
- 	cpu_report();
-@@ -348,7 +349,6 @@ asmlinkage void start_secondary(void)
- 	 */
+ 	info->num_chans = info_v30->channel_num;
+-	info->dram_channel_width_bytes = (1 << info_v30->channel_width) / 8;
++	/* As suggested by VBIOS we should always use
++	 * dram_channel_width_bytes = 2 when using VRAM
++	 * table version 3.0. This is because the channel_width
++	 * param in the VRAM info table is changed in 7000 series and
++	 * no longer represents the memory channel width.
++	 */
++	info->dram_channel_width_bytes = 2;
  
- 	calibrate_delay();
--	cpu = smp_processor_id();
- 	cpu_data[cpu].udelay_val = loops_per_jiffy;
- 
- 	set_cpu_sibling_map(cpu);
+ 	return result;
+ }
 -- 
 2.42.0
 
