@@ -2,101 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF7780DDF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCC780DDEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345533AbjLKWGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        id S1345524AbjLKWGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345457AbjLKWGt (ORCPT
+        with ESMTP id S1345291AbjLKWGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:06:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7E3AF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:06:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E1BCC433C7;
-        Mon, 11 Dec 2023 22:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702332415;
-        bh=GJIc4lcmbnE1QNCXgfA52Krp47pye0PnIUxJw5mQkV0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SjoP21CtsyjRX/8L/C9NP2DGApb80nFM3iwiEe07Hd5Klq1nOOWjh4xrzXMbUK7b+
-         vrwfsu6sZ3PjzOBMug0mPszLIth6elZoHiPnAueSpvBBDx84+RczDfkzUktL28RVX6
-         DQocX8a3Wm+NX9jHFzNoBivFvtOEOIFABAXJrlKGipBKxLXKmKbkjWIqcvDrqxNYdm
-         H3ljXrIuRxfFqgUc/H17di/S+0yfi7DGWStIXYZ8cibdk6Jd0CyTG7wP8IUY3PiVbQ
-         RbZ5V/hHLmTrAXXv2CI+N0bTRFTSnuquLRs52r4uv/ecnjIEK3kBuGhSd9JRObgO5u
-         BOpT77Gj8zMNg==
-From:   Conor Dooley <conor@kernel.org>
-To:     linux-riscv@lists.infradead.org
-Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] soc: renesas: make ARCH_R9A07G043 depend on !DMA_DIRECT_REMAP
-Date:   Mon, 11 Dec 2023 22:06:36 +0000
-Message-Id: <20231211-primate-arbitrate-fbcd307a0b00@spud>
-X-Mailer: git-send-email 2.39.2
+        Mon, 11 Dec 2023 17:06:48 -0500
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2046.outbound.protection.outlook.com [40.107.105.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A71A1;
+        Mon, 11 Dec 2023 14:06:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZwTuwXBOLzgEOhMVu5kMzpi8buAhexHuylTpgyUZDlfRo03xNFMvUhK/YJjDpOtBKn5P9YY1DxTJe8hjTJUSIzayNhJheXqUAP7vX4U3dwjIPHzbcoF7jVTO9zMmz4v0M+mT3F/FOJlKvumPiYM24POFtAumQNsXUThLEVaxz1PZPx01W43x500b949Cqh4usJTlqW7M93LBYzLtPlryrKHyavnYcrbNpBZXUjtbw8N5LfIc0daceLICpWIxGCW1/jSpG/ZhKjfSjuVx+ULIuDOXupOZF5HFRTTe5fh1VYEHdTnRYp9ERd2DwHW69k4rZSrQs6u0b6iQ+usptGZ3gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wjs40/uZk9IiiJF2cbAEQhEIX+HPt7jr4ZHqwjyGQe8=;
+ b=DaV9NN3UQXbh8G/MB+pMiN3LFaf3m0Eq2kLBpu/gL7P7JE/ysyM10MlLwWiA3kzOiijcPSt+uI9ifFeZOjpWDDZFAm6IyA5/hq1hJvMLTVblJFp9YDZlhW9//FyHk1K4bKzn67SrUpA73swhfhnBkyT6UddKG8Fs7Os0XVCrDZ0FJ7LkcG5kVtrlcDBovIwlezNUSMQhlCf1tmLlwIVLWT7ldRiLwG7sNLRLtK0fbjhPmy3TUO7e+CZlWoK5SQgVtWoYEsDc8lwSbXqykOJfdp0k2G5nMKynw/YWgAZYTxJfX9jDEaZG8HQK7/cP+zHT2E+1dVL1VnpDXwKXiSKI+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wjs40/uZk9IiiJF2cbAEQhEIX+HPt7jr4ZHqwjyGQe8=;
+ b=M4bZhIrEBO6HyiMMZG9gwjDerNOUtd7ZcTi2KTB5jAa05tzBEddgwebDhFJP2luDF04haAlMlkPSjjLdtQIjcvFmE5vgze4Rjc+rO1jcFn96CGq+/VOwN9q8AlFrU+0kYyU+GREGXeQMGRxbqf6yvhZW6SvPHWluslnNWVRf71c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
+ by PAWPR04MB9717.eurprd04.prod.outlook.com (2603:10a6:102:380::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.29; Mon, 11 Dec
+ 2023 22:06:51 +0000
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::dfaa:e869:45eb:76e5]) by VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::dfaa:e869:45eb:76e5%6]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 22:06:51 +0000
+Date:   Mon, 11 Dec 2023 17:06:42 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     bhelgaas@google.com, imx@lists.linux.dev, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lpieralisi@kernel.org, minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        robh@kernel.org, roy.zang@nxp.com
+Subject: Re: [PATCH v6 4/4] PCI: layerscape: Add suspend/resume for ls1043a
+Message-ID: <ZXeH8nF4KoC0gKg2@lizhi-Precision-Tower-5810>
+References: <20231204160829.2498703-1-Frank.Li@nxp.com>
+ <20231204160829.2498703-5-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204160829.2498703-5-Frank.Li@nxp.com>
+X-ClientProxiedBy: SN7PR04CA0188.namprd04.prod.outlook.com
+ (2603:10b6:806:126::13) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1934; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=QZakA2jngPjyPv1mx6ddYU3DUAgBXMmCEkYM0tqgkJ0=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKnl7a82avC45SVsOHSnMmD9kqi39+oOv/E4eGLKiSyF7 VN/TtBY21HKwiDGwSArpsiSeLuvRWr9H5cdzj1vYeawMoEMYeDiFICJPNRk+KfM9DVladJpqQ75 m0teZL07tsT4/tX4e0/S9Rbr6P7c0VjI8D/TrVIzd+K13GU5e46oLdrQJREb+yKi8eFNtiuPHyq XpTMDAA==
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|PAWPR04MB9717:EE_
+X-MS-Office365-Filtering-Correlation-Id: 56ff6995-e5a7-4c00-123e-08dbfa9579ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: apliFr3Bho9l7AJeF2eoMWR8enCCLhvdBwZDl2uHmHGXJ7Jw3V21CSrTIPWI8q2A6pQ7nar8RG3Gpn+Pkh0tKWT+wD5N3jr4byGkaq1lOLwK4zRiziNJ4GJTCgS4ZhYmEJyHqr4oZNSsOG8vBCXRXDSUXZIMgdcn5au52A8DaHUTj7y0MDrDjJf4zxV+wUHnvCAHiPKNhYmIuND89Ylyjhuh+A+OpRncYQEHWy1hCvgTlZcTDEH8SKep8WIP/Jc6oYTFx3OSGoFv6YswkYbcUAiExoytIybjx+4aBHT4DEep7nxZVGu8d1BYbmbCsxYJq1mh3i0nxnD0Jg19yEnszu4KozYul7gHi7W/67tJW5Yrnci4tOR5WxulPYAEINuZIg1Fau5V9xhugbjvIf+rGpa5PpXB48wkXBmnqzJgeghOrK/0C9jTJV6RafAaRbna0s/0e01PwVCmrT+wQFpFSANwXQFOlwn+QuMQy07a9BLDywXaPv0tAwiaoOhqQ+M8bvodaN+PTIPyrhudkghcl7KOgHVWLuJdZhsJv/GjQiu+uQoFF9Q6gfCaoG4Nv+pp0IybBTBpKaJfyXyyVYD+CXNizZOVig0/i8eXN7QxkHqg8GicmOHn9rqccaQsi1XP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39860400002)(136003)(396003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(478600001)(6512007)(9686003)(6506007)(52116002)(6666004)(26005)(38350700005)(38100700002)(86362001)(5660300002)(66556008)(66946007)(7416002)(41300700001)(33716001)(2906002)(15650500001)(6486002)(83380400001)(66476007)(8936002)(8676002)(316002)(4326008)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UDdRK7biXrSL+95jl/Vidi167MCo0Y3bsVlwvsaovoXcFekPLL7dSWGUKqyd?=
+ =?us-ascii?Q?3+ktaG3fezEL8DmLMABwzrj6H7I8CUHJHcvc2HSw0HGro+P9pn11uwcu8BGr?=
+ =?us-ascii?Q?eLNr0pvzuHWg6SNafJxJWyjarbLnfIyexFoETLM15Aafw71o0MB3UBhO4nrk?=
+ =?us-ascii?Q?VlVRDn1hvI0ezfaLc0P3e3EcqAXI+fKV4+0pCuvEhLmorokWG/Uakw+poIKV?=
+ =?us-ascii?Q?XvjxYxzG9uznvxrRI3ednDEcYiFYD99Dtr6k7MDy/AOxBUIgM57rmmv+CdEq?=
+ =?us-ascii?Q?+uCU1Gz8fIJjmGemYuXLuqL4hP5mFFlC9is7+wXmO7UJs1Ab36sP3dXHuf1X?=
+ =?us-ascii?Q?tctelaOxSRpm0ZnbQN2DUVvwmwef0IvWwlxhwED/QHx/TtGGlwslPe/qGDl8?=
+ =?us-ascii?Q?Pkg+oCfy3lLurfCRcLidkH4LXWmn22gr18leY5V6kt3M93cUsj7OfN+rIPtk?=
+ =?us-ascii?Q?wA0EMHjXDCfg0UYwk+amLTxuAXZjz83QlC/diRaITmSO5KH8kXvF3faJeXZj?=
+ =?us-ascii?Q?3GIGWUVjOOny1gPmxbI0TiOrlG8ln7VEBZxRa8a0XgQhB8R1Mrd65KjhOWtV?=
+ =?us-ascii?Q?xbyDSlyGILNpSWEZ2qNNGrWeepD3zL22ZJlvvog99MyXhXlmlLoOvam8gbuQ?=
+ =?us-ascii?Q?+5dJOvEToR+6mvMpVfFF/4RSxW3eFsV3ZDMiCSoiRZ2MleHvaNzm7YhNppmH?=
+ =?us-ascii?Q?BfBrdkt24f3teScj3/v423MXAJxnIWNXXm5k8gjjCcQ305iJS4l2DErlWTF6?=
+ =?us-ascii?Q?9UtMiCTDRHkHle70QG+wUs97h96LgMJkmk83DtRFxvDUlb0JtTDai/YaiXgV?=
+ =?us-ascii?Q?379D2kBhp4q89vTCTrs4aOERdDOVDI+q4DIWEKjP+hwK0esoWwimvhpS0AvH?=
+ =?us-ascii?Q?zH1l2XcxZLX67CSwlSgsrVC6AkAwlNHamypMMY4SR9lyV42N927CCxjsg2cy?=
+ =?us-ascii?Q?KclDGt3l9QF8h+7CXczI0nRUMR786pnVkBBnhaNL/+Z2n0E01d36WRuQ9hDq?=
+ =?us-ascii?Q?RRi/faZkPKbmD7PyUvB4YjE01OD+lM2vvG1Wv42UiLygf8GuIMXNlqOvIpQ9?=
+ =?us-ascii?Q?30OZ0PMaTRLTL1EeMdlgCKLZGsupigi7n5Rzt/cFSVozQkgbWgcf2Pd2d6y2?=
+ =?us-ascii?Q?PqZ7n3hASiPDAMRHeuKbvh+bA9q0gU9H3v/SCB3j0iiBOaCD9KR5hWBdofoj?=
+ =?us-ascii?Q?VV5CYW/2R9pWupZg3utFuJfnsW7R+3llc9kEMNo1Ga1pPu8pTkjdZOMQS7x3?=
+ =?us-ascii?Q?68JbrIBN5OUiYsvYrpxeQ+ikktJjwHi2LB1/E7flI1azkGSFwDAQUbbTukAE?=
+ =?us-ascii?Q?u8PZRr3JzJC7w1MJizM3kvAdMTtX+OufGyH3XUBdt3lh+iTRqE3ixEFZqVwY?=
+ =?us-ascii?Q?/z/NyaskWu9wp4pYpDor118twvQCxa0HI9k1vb7LDW5SZGIWgX/RzalzYXnc?=
+ =?us-ascii?Q?lzDho2/IPy0kydLvSMV19bIPNSdBDvUhDiV6EHpzXhj+5fSugKohXeGnydtJ?=
+ =?us-ascii?Q?RRmF2jFGwlnmvIgEF6+5ajq7ykO3JB9GtpOXniB8ItOCkNDf2vK9cP80mCV4?=
+ =?us-ascii?Q?+fdylVd4jBmD1GDTZM8=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56ff6995-e5a7-4c00-123e-08dbfa9579ac
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 22:06:51.1176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tppendVPIzLSVhUnZ4SXyJSK835MNuzMwiUKI2br810+rgufN1N+7X0ZotpfzUUAbF02RT4QnXCy3mnEKeP40A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9717
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+On Mon, Dec 04, 2023 at 11:08:29AM -0500, Frank Li wrote:
+> Add suspend/resume support for Layerscape LS1043a.
+> 
+> In the suspend path, PME_Turn_Off message is sent to the endpoint to
+> transition the link to L2/L3_Ready state. In this SoC, there is no way to
+> check if the controller has received the PME_To_Ack from the endpoint or
+> not. So to be on the safer side, the driver just waits for
+> PCIE_PME_TO_L2_TIMEOUT_US before asserting the SoC specific PMXMTTURNOFF
+> bit to complete the PME_Turn_Off handshake. Then the link would enter L2/L3
+> state depending on the VAUX supply.
+> 
+> In the resume path, the link is brought back from L2 to L0 by doing a
+> software reset.
+> 
+> Acked-by: Roy Zang <Roy.Zang@nxp.com>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Randy reported yet another build issue with randconfigs on rv32:
-WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
-  Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=n] && !DMA_DIRECT_REMAP [=y]
-  Selected by [y]:
-  - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_ALTERNATIVE [=y] && !RISCV_ISA_ZICBOM [=n] && RISCV_SBI [=y]
+@Lorenzo:
 
-This happens when DMA_DIRECT_REMAP is selected by the T-Head CMO erratum
-option and DMA_GLOBAL_POOL is selected by the Andes CMO erratum. Block
-selecting the RZ/Five config option, and by extension DMA_GLOBAL_POOL,
-if DMA_DIRECT_REMAP has already been enabled.
+   Could you please pick up these patches? Mani already reviewed and only
+impact layerscape platform.
 
-Fixes: 484861e09f3e ("soc: renesas: Kconfig: Select the required configs for RZ/Five SoC")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Closes: https://lore.kernel.org/all/24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org/
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
-I don't know what the exact fixes tag here is as I did not bisect with
-the randconfig, so I blamed the one that added DMA_GLOBAL_POOL.
+Frank
 
-CC: Geert Uytterhoeven <geert+renesas@glider.be>
-CC: Magnus Damm <magnus.damm@gmail.com>
-CC: Conor Dooley <conor.dooley@microchip.com>
-CC: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-CC: linux-renesas-soc@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
----
- drivers/soc/renesas/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
-index 0071864c2111..0986672f6375 100644
---- a/drivers/soc/renesas/Kconfig
-+++ b/drivers/soc/renesas/Kconfig
-@@ -340,6 +340,7 @@ if RISCV
- config ARCH_R9A07G043
- 	bool "RISC-V Platform support for RZ/Five"
- 	depends on NONPORTABLE
-+	depends on !DMA_DIRECT_REMAP
- 	depends on RISCV_ALTERNATIVE
- 	depends on !RISCV_ISA_ZICBOM
- 	depends on RISCV_SBI
--- 
-2.39.2
-
+> ---
+> 
+> Notes:
+>     Chagne from v5 to v6
+>     - none
+>     Change from v4 to v5
+>     - update commit message
+>     - use comments
+>     /* Reset the PEX wrapper to bring the link out of L2 */
+>     
+>     Change from v3 to v4
+>     - Call scfg_pcie_send_turnoff_msg() shared with ls1021a
+>     - update commit message
+>     
+>     Change from v2 to v3
+>     - Remove ls_pcie_lut_readl(writel) function
+>     
+>     Change from v1 to v2
+>     - Update subject 'a' to 'A'
+> 
+>  drivers/pci/controller/dwc/pci-layerscape.c | 63 ++++++++++++++++++++-
+>  1 file changed, 62 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index f3dfb70066fb7..7cdada200de7e 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -41,6 +41,15 @@
+>  #define SCFG_PEXSFTRSTCR	0x190
+>  #define PEXSR(idx)		BIT(idx)
+>  
+> +/* LS1043A PEX PME control register */
+> +#define SCFG_PEXPMECR		0x144
+> +#define PEXPME(idx)		BIT(31 - (idx) * 4)
+> +
+> +/* LS1043A PEX LUT debug register */
+> +#define LS_PCIE_LDBG	0x7fc
+> +#define LDBG_SR		BIT(30)
+> +#define LDBG_WE		BIT(31)
+> +
+>  #define PCIE_IATU_NUM		6
+>  
+>  struct ls_pcie_drvdata {
+> @@ -224,6 +233,45 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+>  	return scfg_pcie_exit_from_l2(pcie->scfg, SCFG_PEXSFTRSTCR, PEXSR(pcie->index));
+>  }
+>  
+> +static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +
+> +	scfg_pcie_send_turnoff_msg(pcie->scfg, SCFG_PEXPMECR, PEXPME(pcie->index));
+> +}
+> +
+> +static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +
+> +	/*
+> +	 * Reset the PEX wrapper to bring the link out of L2.
+> +	 * LDBG_WE: allows the user to have write access to the PEXDBG[SR] for both setting and
+> +	 *	    clearing the soft reset on the PEX module.
+> +	 * LDBG_SR: When SR is set to 1, the PEX module enters soft reset.
+> +	 */
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val |= LDBG_WE;
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val |= LDBG_SR;
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val &= ~LDBG_SR;
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
+> +	val &= ~LDBG_WE;
+> +	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+>  	.host_init = ls_pcie_host_init,
+>  	.pme_turn_off = ls_pcie_send_turnoff_msg,
+> @@ -241,6 +289,19 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
+>  	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
+>  };
+>  
+> +static const struct dw_pcie_host_ops ls1043a_pcie_host_ops = {
+> +	.host_init = ls_pcie_host_init,
+> +	.pme_turn_off = ls1043a_pcie_send_turnoff_msg,
+> +};
+> +
+> +static const struct ls_pcie_drvdata ls1043a_drvdata = {
+> +	.pf_lut_off = 0x10000,
+> +	.pm_support = true,
+> +	.scfg_support = true,
+> +	.ops = &ls1043a_pcie_host_ops,
+> +	.exit_from_l2 = ls1043a_pcie_exit_from_l2,
+> +};
+> +
+>  static const struct ls_pcie_drvdata layerscape_drvdata = {
+>  	.pf_lut_off = 0xc0000,
+>  	.pm_support = true,
+> @@ -252,7 +313,7 @@ static const struct of_device_id ls_pcie_of_match[] = {
+>  	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
+>  	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
+>  	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
+> -	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
+> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
+>  	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
+>  	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
+>  	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
+> -- 
+> 2.34.1
+> 
