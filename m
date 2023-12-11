@@ -2,184 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCAE80C263
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 08:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A33A80C266
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 08:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbjLKHvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 02:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        id S233871AbjLKHxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 02:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbjLKHvl (ORCPT
+        with ESMTP id S229478AbjLKHxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 02:51:41 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E50DAFC;
-        Sun, 10 Dec 2023 23:51:46 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 170881007;
-        Sun, 10 Dec 2023 23:52:33 -0800 (PST)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E31B3F7C5;
-        Sun, 10 Dec 2023 23:51:42 -0800 (PST)
-Message-ID: <862afccb-e9c5-4fcb-abdf-45a5eb9aa6d8@arm.com>
-Date:   Mon, 11 Dec 2023 13:21:40 +0530
+        Mon, 11 Dec 2023 02:53:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78E1BE
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 23:53:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09D9FC433C8;
+        Mon, 11 Dec 2023 07:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702281206;
+        bh=V8JRc6Ds9R+nfWjTNmn6P57m/pgKhuSAd3+p3IiUTT4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fubGD19Rqj07XtqVgVZ6xm8zGDYR07xLruxRhpoH5eLvvyRCAy1xkVpGg1149abmV
+         AjJ15TJVSbNY0hc56DN2vB1wbdkNy+74/e0KrBFBOARyWBtokCrEJfYDzD5j5sv60P
+         63w1MiZyTaHPxJ+93eNNz4AuiP6zbZX5Nct8nHTc=
+Date:   Mon, 11 Dec 2023 08:53:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xinhu Wu <xinhu.wu@unisoc.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, orsonzhai@gmail.com,
+        baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
+        heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xinhuwu.unisoc@gmail.com, zhiyong.liu@unisoc.com,
+        peak.yang@unisoc.com, teng.zhang1@unisoc.com,
+        bruce.chen@unisoc.com, surong.pang@unisoc.com,
+        xingxing.luo@unisoc.com
+Subject: Re: [PATCH V2 1/2] usb: typec: Support sprd_pmic_typec driver
+Message-ID: <2023121122-jelly-password-6eac@gregkh>
+References: <20231211074120.27958-1-xinhu.wu@unisoc.com>
+ <20231211074120.27958-2-xinhu.wu@unisoc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 04/10] coresight: replicator: Move ACPI support from
- AMBA driver to platform driver
-Content-Language: en-US
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231208053939.42901-1-anshuman.khandual@arm.com>
- <20231208053939.42901-5-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20231208053939.42901-5-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211074120.27958-2-xinhu.wu@unisoc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/8/23 11:09, Anshuman Khandual wrote:
-> Add support for the dynamic replicator device in the platform driver, which
-> can then be used on ACPI based platforms. This change would now allow
-> runtime power management for repliacator devices on ACPI based systems.
-> 
-> The driver would try to enable the APB clock if available. Also, rename the
-> code to reflect the fact that it now handles both static and dynamic
-> replicators.
-> 
-> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: linux-acpi@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> Changes in V3:
-> 
-> - Added commnets for 'drvdata->pclk'
-> - Used coresight_init_driver()/coresight_remove_driver() helpers instead
-> - Dropped pm_runtime_put() from replicator_probe()
-> - Added pm_runtime_put() on success path in dynamic_replicator_probe()
-> - Added pm_runtime_put() on success/error paths in
->   replicator_platform_probe()
-> 
->  drivers/acpi/arm64/amba.c                     |  1 -
->  .../coresight/coresight-replicator.c          | 81 ++++++++++---------
->  2 files changed, 42 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
-> index 171b5c2c7edd..270f4e3819a2 100644
-> --- a/drivers/acpi/arm64/amba.c
-> +++ b/drivers/acpi/arm64/amba.c
-> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
->  	{"ARMHC503", 0}, /* ARM CoreSight Debug */
->  	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
->  	{"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
-> -	{"ARMHC98D", 0}, /* ARM CoreSight Dynamic Replicator */
->  	{"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->  	{"ARMHC9FF", 0}, /* ARM CoreSight Dynamic Funnel */
->  	{"", 0},
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index b6be73034996..125b256cb8db 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->   * @base:	memory mapped base address for this component. Also indicates
->   *		whether this one is programmable or not.
->   * @atclk:	optional clock for the core parts of the replicator.
-> + * @pclk:	APB clock if present, otherwise NULL
->   * @csdev:	component vitals needed by the framework
->   * @spinlock:	serialize enable/disable operations.
->   * @check_idfilter_val: check if the context is lost upon clock removal.
-> @@ -38,6 +39,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->  struct replicator_drvdata {
->  	void __iomem		*base;
->  	struct clk		*atclk;
-> +	struct clk		*pclk;
->  	struct coresight_device	*csdev;
->  	spinlock_t		spinlock;
->  	bool			check_idfilter_val;
-> @@ -243,6 +245,10 @@ static int replicator_probe(struct device *dev, struct resource *res)
->  			return ret;
->  	}
->  
-> +	drvdata->pclk = coresight_get_enable_apb_pclk(dev);
-> +	if (IS_ERR(drvdata->pclk))
-> +		return -ENODEV;
+On Mon, Dec 11, 2023 at 03:41:19PM +0800, Xinhu Wu wrote:
+> +config TYPEC_SPRD_PMIC
+> +	tristate "SPRD Serials PMICs Typec Controller"
+> +	help
+> +	  Say Y or M here if your system has a SPRD PMIC Type-C port controller.
 > +
->  	/*
->  	 * Map the device base for dynamic-replicator, which has been
->  	 * validated by AMBA core
-> @@ -285,7 +291,6 @@ static int replicator_probe(struct device *dev, struct resource *res)
->  	}
->  
->  	replicator_reset(drvdata);
-> -	pm_runtime_put(dev);
->  
->  out_disable_clk:
->  	if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
-> @@ -301,29 +306,31 @@ static int replicator_remove(struct device *dev)
->  	return 0;
->  }
->  
-> -static int static_replicator_probe(struct platform_device *pdev)
-> +static int replicator_platform_probe(struct platform_device *pdev)
->  {
-> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	int ret;
->  
->  	pm_runtime_get_noresume(&pdev->dev);
->  	pm_runtime_set_active(&pdev->dev);
->  	pm_runtime_enable(&pdev->dev);
->  
-> -	/* Static replicators do not have programming base */
-> -	ret = replicator_probe(&pdev->dev, NULL);
-> -
-> -	if (ret) {
-> -		pm_runtime_put_noidle(&pdev->dev);
-> -		pm_runtime_disable(&pdev->dev);
-> -	}
-> +	ret = replicator_probe(&pdev->dev, res);
-> +	pm_runtime_put(&pdev->dev);
+> +	  If you choose to build this driver as a dynamically linked module, the
+> +	  module will be called sprd_pmic_typec.ko.
+> +	  SPRD_PMIC_TYPEC notify usb, phy, charger, and analog audio to proceed
+> +	  with work
 
-I believe pm_runtime_disable() would still be needed on the error path. Otherwise
-pm_runtime_enable() will remain unbalanced on this error path when the replicator
-module could not be loaded.
+I do not understand these last two lines, are you sure they are correct?
 
---- a/drivers/hwtracing/coresight/coresight-replicator.c
-+++ b/drivers/hwtracing/coresight/coresight-replicator.c
-@@ -317,6 +317,8 @@ static int replicator_platform_probe(struct platform_device *pdev)
- 
-        ret = replicator_probe(&pdev->dev, res);
-        pm_runtime_put(&pdev->dev);
-+       if (ret)
-+               pm_runtime_disable(&pdev->dev);
- 
-        return ret;
- }
+> +
+> +
 
-Similar constructs in this error path are also required in all other drivers (except
-cpu debug) as well.
+Nit, only one blank line is needed here.
+
+
+> +static irqreturn_t sprd_pmic_typec_interrupt(int irq, void *data)
+> +{
+> +	struct sprd_pmic_typec *sc = data;
+> +	u32 event;
+> +	int ret;
+> +
+> +	dev_info(sc->dev, "%s enter line %d\n", __func__, __LINE__);
+
+debugging information?  Please remove.
+
+> +	ret = regmap_read(sc->regmap, sc->base + SC27XX_INT_MASK, &event);
+> +	if (ret)
+> +		return ret;
+> +
+> +	event &= sc->var_data->event_mask;
+> +
+> +	ret = regmap_read(sc->regmap, sc->base + SC27XX_STATUS, &sc->state);
+> +	if (ret)
+> +		goto clear_ints;
+> +
+> +	sc->state &= sc->var_data->state_mask;
+> +
+> +	if (event & SC27XX_ATTACH_INT) {
+> +		ret = sprd_pmic_typec_connect(sc, sc->state);
+> +		if (ret)
+> +			dev_warn(sc->dev, "failed to register partner\n");
+> +	} else if (event & SC27XX_DETACH_INT) {
+> +		sprd_pmic_typec_disconnect(sc, sc->state);
+> +	}
+> +
+> +clear_ints:
+> +	regmap_write(sc->regmap, sc->base + sc->var_data->int_clr, event);
+> +
+> +	dev_info(sc->dev, "now works as DRP and is in %d state, event %d\n",
+> +		sc->state, event);
+
+When drivers work properly, they are quiet, please never spam the kernel
+log for normal operations.
+
+> +static ssize_t
+> +sprd_pmic_typec_cc_polarity_role_show(struct device *dev, struct device_attribute *attr,
+> +		char *buf)
+> +{
+> +	struct sprd_pmic_typec *sc = dev_get_drvdata(dev);
+> +
+> +	return snprintf(buf, 5, "%s\n", sprd_pmic_typec_cc_polarity_roles[sc->cc_polarity]);
+
+sysfs_emit() please.
+
+> +}
+> +static DEVICE_ATTR_RO(sprd_pmic_typec_cc_polarity_role);
+
+Where is this new sysfs file documented?
+
+> +	ret = sysfs_create_groups(&sc->dev->kobj, sprd_pmic_typec_groups);
+
+You just raced with userspace and lost, and better yet:
+
+> +	if (ret < 0)
+> +		dev_err(sc->dev, "failed to create cc_polarity %d\n", ret);
+
+You do not even clean up properly here.
+
+Please use the default groups for the driver and it should work just
+fine.
+
+> +	ret = sprd_pmic_typec_set_rtrim(sc);
+> +	if (ret < 0) {
+> +		dev_err(sc->dev, "failed to set typec rtrim %d\n", ret);
+> +		goto error;
+> +	}
+> +
+> +	ret = devm_request_threaded_irq(sc->dev, sc->irq, NULL,
+> +					sprd_pmic_typec_interrupt,
+> +					IRQF_EARLY_RESUME | IRQF_ONESHOT,
+> +					dev_name(sc->dev), sc);
+
+Are you sure you can use devm_() here?
+
+> +static int sprd_pmic_typec_remove(struct platform_device *pdev)
+> +{
+> +	struct sprd_pmic_typec *sc = platform_get_drvdata(pdev);
+> +
+> +	sysfs_remove_groups(&sc->dev->kobj, sprd_pmic_typec_groups);
+
+Again, should not be needed if you use the default groups of the
+platform driver.
+
+thanks,
+
+greg k-h
