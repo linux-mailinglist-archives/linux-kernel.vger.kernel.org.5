@@ -2,399 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1595880C107
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D666980C10C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbjLKFzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S233280AbjLKF6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbjLKFzo (ORCPT
+        with ESMTP id S229478AbjLKF6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:55:44 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA242B3;
-        Sun, 10 Dec 2023 21:55:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702274150; x=1733810150;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=e2bHdzm75z38LjF+9o3T3w5mUw+3GAOwy/r3Sc5Wnf4=;
-  b=fB5FjEVhWkktHL+8X0WiKHZhevS3gauEznt6P3FT60r8UuFHV81F3cQ4
-   L5m0HJ2WsAE2CADJY9+fadc+D+ct2QkyY+sjt1r0EwTKCPSVdoXwMB+Yk
-   8/iLvMdl2GJmTMHtVQJZVtfn9OlZdC+rLgshpPaPNEchPaSheS3MDwI0X
-   IRgLRBwS6AH/lLeil2Q8lKPFD+5ph9uOnErFZrqfDmolpud8BST0wLM0T
-   xdQZAavgAIeP2tUkcB7Im9unKl57ua6gflp2ETIGF0P3Y8WAXXk9r+IxH
-   IhrXxKUIdIVRRv/qzsZb+zzhnzhXDLuOskM+p9wH82Flr89fICd5MWZ9k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="1714376"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="1714376"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 21:55:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="776539295"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="776539295"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2023 21:55:39 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Gregory Price <gourry.memverge@gmail.com>
-Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
-        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        mhocko@kernel.org, tj@kernel.org, gregory.price@memverge.com,
-        corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
-        honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
-        jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com,
-        seungjun.ha@samsung.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Hasan Al Maruf <hasanalmaruf@fb.com>,
-        Hao Wang <haowang3@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>,
-        Frank van der Linden <fvdl@google.com>,
-        John Groves <john@jagalactic.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Subject: Re: [PATCH v2 00/11] mempolicy2, mbind2, and weighted interleave
-In-Reply-To: <20231209065931.3458-1-gregory.price@memverge.com> (Gregory
-        Price's message of "Sat, 9 Dec 2023 01:59:20 -0500")
-References: <20231209065931.3458-1-gregory.price@memverge.com>
-Date:   Mon, 11 Dec 2023 13:53:40 +0800
-Message-ID: <87r0jtxp23.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Mon, 11 Dec 2023 00:58:15 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2E2B3;
+        Sun, 10 Dec 2023 21:58:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TJruvqBxE4P4H2tUr0aqx1acCzDrIFZZWwfHp1FRu8dZitsDfnQd2AY/Ac+WGVYdMU6ypfwPTeoNCLa52wZ1+o7/vIReeVd5kJL0T0fIPak9VwTxr8BQwqbScmjvEX8a4Y8Du5Mn8HJHtAreZD9JhcS30Cqfwbm44vdDE3ZlmxXu7/MHu4OdVpcZoszu00jYe9ubCyoCmosaO3EacA0UG6QS2vBOKCZ/GrSYC8NFnVnEY2Gg5HcMgCcOm2HLZPmPIOfHkqs9ID26jaTw0r6liffVVIoVyymmyHgcW31OnRIE/xgR9DyzWpS4O8pfdi97PJTl+WFdwEeSZd2DQynXbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=amX//vw/T4kFrWIGThNrSJ2PX+mkMHpkdnUMxJRtQqI=;
+ b=P4mSfFMRwlS8H2ZPuaLpQgGIBlNHBTyOV/GeS9sNdGr6Q0faVBEamzzsa1L3nXw23/2ABQjcpxUHAMeHfTLtZ0faCxBpxvcokvT+dZrifn4aXeneuM/kkVgi1ccOLntiDGprYdQTEfSKjaaLy8zTtVdqFilYNJ/xr8b6px8WIp+NZdt4SJTq+6zQiOKhIJ+hlSGuw6B+SpRhhFJTxqBt5lIJj8zTyNXbeVHDBwzPeeb72fVBMoZ6w8maBH4YI+3m8+0j5Ba2/4oS/+C1I5lKPg38GrUpZ8WNNWuseYjkl63Cx0thEe3gZ0tuGDSFAKDRnC2kMLYLdQods83Wf+BA6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=amX//vw/T4kFrWIGThNrSJ2PX+mkMHpkdnUMxJRtQqI=;
+ b=i5szTLX/5ol1PLzhK6UZdVw/r71SoLEVaufV3KaVCw4EcsQz8czu01vXNm5TbaMc4vmIg4M7LfPyjFOOV5S2k9lSLib+54I/0qgsodMldcBY5yupTLHgSNcW9IIXhWPDGNoNnhpu+PcWlbs6I4mkGrIoM9ooCCG7ZF4fGUg9r2Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com (2603:10b6:510:1da::16)
+ by DS0PR12MB9421.namprd12.prod.outlook.com (2603:10b6:8:1a1::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 05:58:16 +0000
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::e007:72f7:4102:9258]) by PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::e007:72f7:4102:9258%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 05:58:16 +0000
+Message-ID: <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
+Date:   Mon, 11 Dec 2023 11:28:04 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
+ SOF_DAI_AMD_BT
+Content-Language: en-US
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
+ <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
+ <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
+ <318470ce-1631-4c46-b425-755c877dda65@amd.com>
+ <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
+ <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
+ <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
+From:   Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+In-Reply-To: <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BMXP287CA0021.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::25) To PH7PR12MB5951.namprd12.prod.outlook.com
+ (2603:10b6:510:1da::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5951:EE_|DS0PR12MB9421:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2095dd5-a7de-4c13-6a11-08dbfa0e2b08
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2vipTLlgMobcg2x9Ls6mS3JJFE8cHMdVqJs4oU+/cOwzqeKzGQ+ucSm9YY8+ICKnyh0aN0Zhii556DlJl7fCFh6mDxpDULTvvUVuQrBMtuh3TgWCf1heGZyHPHvPsh3waCGWOQ5GQAsht4XiE6BRvrTV09rS0ato3mMmA8LgskS1SU0GFzn8YIGcnCuGdw7r8bojuvGD1yuZfXhGilQ9hb0zBamMNj164FSMdmareMtr+SGSx279NgxnxX7EQr3/FX0Wjgd54XAaIADYzAPH1zQ1JTDUvfFvyOsZk/JQTysxBCZRiVp0302Q1sOohRz8vT85nasIRrH5SNKCQxrOAOltK/gMrSONbmLUUscDbIKSEdS2klqBnXD0lvDkroHWqbMTJuETZpPb0v0cfnz2tJBqo/VW2bf2PFY0/3hbUT1IIQGg6CKD+eZE1tedeFD40T2njZ6kwXiSCFXZFK7idDSUteAYk093qNmsrOpiSuMbWuBFxzqRzkaHldfJwWPCfrMM+3kmkD429PjLS1ikErvAHt92WOX7XBwz9Rp/gyYk3jjoCpBa01dA+qHOglBhcfq6MUF2e2mS+x+JdxLRM7Bt86ZILMH22hg+wssGqHtgeTRYyGSO7o8l0NJIBI9qpRcWsx2NIx4BPEXgJ31pKE+md0BZ64/bfcBnrbptuyQ1Xm2TKeqL1IfoRnOJfX+B
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5951.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(136003)(376002)(366004)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(7416002)(6506007)(6512007)(6666004)(2906002)(53546011)(54906003)(66476007)(66556008)(66946007)(38100700002)(31696002)(86362001)(36756003)(316002)(8936002)(4326008)(8676002)(5660300002)(31686004)(110136005)(966005)(6486002)(478600001)(41300700001)(26005)(2616005)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3FnV3d1K2I1UHh6UjRyc01LNEdPdTl1Y1lHcU9vV0VlYkVKRG5QRDlvcnND?=
+ =?utf-8?B?VCtQeEI0eFFTbXhpc0tRcU9BM0V2bEJ6d2NjQ1BUdmZrTGNRbWFxMHJlYVd2?=
+ =?utf-8?B?WHI4alBBVkJZcDdOaVU0dkc4T0NJUlpqWXVHMVJqL25ybHhpWHBSeDlaMkFT?=
+ =?utf-8?B?MEN3TTlvd1ZUMXRoYm9McHUrT3c5ZjN1aGdGdmtsSU5DQmVmYkRtY3lQVVJI?=
+ =?utf-8?B?enpuY2xvTU9ycHZ1clhTR2RIZnhMQmR6cDRXRjRvb1FlQlVkeStyV3BsU09L?=
+ =?utf-8?B?U0thUkpJRSs0RlV5a1NSVGF6TWpLUWtkTktBTTRVOFBXNlBPaWd3UENZNy9K?=
+ =?utf-8?B?b1RTcVpwR1o4OWJJWDNhVCtVeWVHVFAzVFczcWRXQkZsRGZIdE5WcUU1ZFZo?=
+ =?utf-8?B?ZktjaGJRWGlwNzZRTHZMWmtlZ3lvWUNGeTBtWkpHMG1Pc2xQd0pRdkxacnNO?=
+ =?utf-8?B?WlcvSklvT3NhWW5JK0xlcGo5dmxnOXVZeFVEdDJndHVVc0dKTVF1TXE5S3ZJ?=
+ =?utf-8?B?L3JpLy91QWVOYUozSFhnSW9KdHZjM2N1aHlIUkFrUHZOdWRxM2o3ck5mcXNO?=
+ =?utf-8?B?NSt5azUwQlJOUEdhZS93OXZ6bHlIUHNRc2pNTnFPRWE3enRxY01WWDlxdURJ?=
+ =?utf-8?B?WjJhUk95RS9BZGp1eUhpakJKWmlwZkl3YS8xR0hHM3Q5RXJVNXV2Q2hSd2cx?=
+ =?utf-8?B?aGNCbENDZ0JSMG5hMWJmcm1BQTB3NFpqeEplOXNIM0JSSGsvYysvN0RPZzg0?=
+ =?utf-8?B?QUdUSDRSMHgzbHVOL3ZvVXEvazNabHlqajhCcytGZEFsSnZodnVDSEl6YmFU?=
+ =?utf-8?B?bmQzaGtCYjAwSGNrL3E3VWJPcjY4bEhYSkhjSGFhM29vTkYrZWsyZnNBZWJB?=
+ =?utf-8?B?M2NUK29XN1BrcmpYRDVUN1ExZFc1aGMwODAwMmhEckVOSkUyZzNzWXQvS1lB?=
+ =?utf-8?B?TVljYXlmeGR5czRwM09PemdUaUNJK1hEK0JtdkJzTmJnc0lvbndtN2paa0VT?=
+ =?utf-8?B?aURqV0JuVGIyS3BybUY0RUdXVis0RmIzY0thRGJUdG9iZ2VTQWtnQWhGLzl2?=
+ =?utf-8?B?NW9XYkhQaHVqTWVBK2xHbEl6OXovYlVvRkRnOCt6dThzWVJMYll4TUgvWXpE?=
+ =?utf-8?B?OFVOb2k5eVBYbXFqL3U1Q0ZhVW5lYkhjb29DclZ3RFFmOSsrK3V5cWtyMjJF?=
+ =?utf-8?B?NndxeEM4MnJ3MDB5bnlJR3dUZEUvRE13YVpmYUZPTjdpdWUzMm1GNEVSQXA5?=
+ =?utf-8?B?OUZVNkMzYWdDSzc0OWZpaEovdXQ3QVZRVWlFQm55ZFBEZW1SMkRKY1hFODFT?=
+ =?utf-8?B?UmpsU3VLcXdST3FWaVYxaXUzczluWVkwYnB1UE1hMm9ZUllFMzFkdVQyelli?=
+ =?utf-8?B?L0ZhamZCb3ByV2g0Z0YxZFk4K3ZzSGRBUmtBdWVKNnFNeHVlbWlTQ3A3L1Ny?=
+ =?utf-8?B?UlJ1djNuK3A4NVVSS3hJaFkvVTFhZm50SHpVbU93ZVQvZm5kQWp0cm9vSXFs?=
+ =?utf-8?B?TWR6MWF2ejFncVBRVTVGdE5VWW9lVXFWSUIydFROcFhIWlBIN1BRTFp1Smxh?=
+ =?utf-8?B?QW5TcUJRWkFsZ2FQNWc3RGw5azFueUhBQWhtVFVseXpuUGhHTlhYb1FJYSta?=
+ =?utf-8?B?dHR0QUdOM05ZcXVoU3o5ajlsaVBEZy9CWVd0T2dXaFJ3NjhPem0wQ3ErR1RG?=
+ =?utf-8?B?dWZHZUZXUXBxNldvU1plU053eVZOcWJ3Vnh1QTJjQmZjZ2prMzRvM3hwUVNI?=
+ =?utf-8?B?cml0WWpBbCs5RDNvWVdsYTVLcE0ySGdxTVoxbmlrN0hXZVdTQ3BBQmJCQnlM?=
+ =?utf-8?B?Vk9jZFM1TWFwdWV3MjRCMTlsU2tzM0VOQmJ4Q1I4T0ViMFAyWURJeG5JTkZx?=
+ =?utf-8?B?a0h4RGlpOGJBM2dEL2lhRlZheHhLMmcvbHljQ0FnZjltLzJ2MnJOUzlXQzRS?=
+ =?utf-8?B?WkhPZC9OZjdPdlJhM0FPRmVtaTd6U1VIcDFwODdRN1hZYTEyV1JmNktJQzFB?=
+ =?utf-8?B?aWs5cUJFcHhPVEtuM2JNNCtNZXZDSDJkR3VRVUFGQm5HWC80YUFMb2FhaDAy?=
+ =?utf-8?B?Z0xiOWc2VWFDVEZYS2svTW00SU5BQUxDQnVxVThmRE9MdUEzQWphYUhDV04x?=
+ =?utf-8?Q?aa2BC17Fnzm8iYp1nKYGqacYV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2095dd5-a7de-4c13-6a11-08dbfa0e2b08
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5951.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 05:58:16.2803
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D2MuzOYM78lNSi+p2ao+Kz3I9gJi1OimnKymSHYGOEG+HEGulnVygCoxjr9Hx+qrvUIHOkUJ8cdsGf/3D850pw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9421
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Gregory,
 
-Thanks for updated version!
+On 12/10/23 21:20, Cristian Ciocaltea wrote:
+> On 12/10/23 16:01, Mark Brown wrote:
+>> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
+>>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
+>>>> This should send to SOF git repo for rewiew, once SOF reviewers approved
+>>>> this, again need to send to broonie git.
+>>>> All the changes in sound/soc/sof/ path should go to SOF git.
+>>> Unfortunately I'm not familiar with the SOF dev workflow. So it's not
+>>> enough to have this patch cc-ed to sound-open-firmware@alsa-project.org?
+>> The SOF people basically do their own thing in github at
+>>
+>>     https://github.com/thesofproject/linux
+>>
+>> with a github workflow and submit their patches upstream in batches a
+>> few times a release, however my understanding is that their workflow can
+>> cope with things going in directly upstream as well.
+> Thanks for clarifying, Mark!  That would greatly simplify and speedup
+> the whole process, at least for trivial patches like this one.
 
-Gregory Price <gourry.memverge@gmail.com> writes:
+Hi Cristian,
 
-> v2:
->   changes / adds:
-> - flattened weight matrix to an array at requested of Ying Huang
-> - Updated ABI docs per Davidlohr Bueso request
-> - change uapi structure to use aligned/fixed-length members as
->   Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> - Implemented weight fetch logic in get_mempolicy2
-> - mbind2 was changed to take (iovec,len) as function arguments
->   rather than add them to the uapi structure, since they describe
->   where to apply the mempolicy - as opposed to being part of it.
->
->   fixes:
-> - fixed bug on fork/pthread
->   Reported-by: Seungjun Ha <seungjun.ha@samsung.com>
->   Link: https://lore.kernel.org/linux-cxl/20231206080944epcms2p76ebb230b9=
-f4595f5cfcd2531d67ab3ce@epcms2p7/
-> - fixed bug in mbind2 where MPOL_F_GWEIGHTS was not set when il_weights
->   was omitted after local weights were added as an option
-> - fixed bug in interleave logic where an OOB access was made if
->   next_node_in returned MAX_NUMNODES
-> - fixed bug in bulk weighted interleave allocator where over-allocation
->   could occur.
->
->   tests:
-> - LTP: validated existing get_mempolicy, set_mempolicy, and mbind testss
-> - LTP: validated existing get_mempolicy, set_mempolicy, and mbind with
->        MPOL_WEIGHTED_INTERLEAVE added.
-> - basic set_mempolicy2 tests and numactl -w --interleave tests
->
->   numactl:
-> - Sample numactl extension for set_mempolicy available here:
->   Link: https://github.com/gmprice/numactl/tree/weighted_interleave_master
->
-> (summary of LTP tests and manual tests added to end of cover letter)
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> This patch set extends the mempolicy interface to enable new
-> mempolicies which may require extended data to operate. One
-> such policy is included with this set as an example.
->
-> There are 3 major "phases" in the patch set:
-> 1) Implement a "global weight" mechanism via sysfs, which allows
->    set_mempolicy to implement MPOL_WEIGHTED_INTERLEAVE utilizing
->    weights set by the administrator (or system daemon).
->
-> 2) A refactor of the mempolicy creation mechanism to accept an
->    extensible argument structure `struct mempolicy_args` to promote
->    code re-use between the original mempolicy/mbind interfaces and
->    the new extended mempolicy/mbind interfaces.
->
-> 3) Implementation of set_mempolicy2, get_mempolicy2, and mbind2,
->    along with the addition of task-local weights so that per-task
->    weights can be registered for MPOL_WEIGHTED_INTERLEAVE.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> (Patch 1) : sysfs addition - /sys/kernel/mm/mempolicy/
->
-> This feature  provides a way to set interleave weight information under
-> sysfs at /sys/kernel/mm/mempolicy/weighted_interleave/nodeN/nodeM/weight
->
->     The sysfs structure is designed as follows.
->
->       $ tree /sys/kernel/mm/mempolicy/
->       /sys/kernel/mm/mempolicy/
->       =E2=94=9C=E2=94=80=E2=94=80 possible_nodes
->       =E2=94=94=E2=94=80=E2=94=80 weighted_interleave
->           =E2=94=9C=E2=94=80=E2=94=80 nodeN
->           =E2=94=82=C2=A0  =E2=94=94=E2=94=80=E2=94=80 weight
->           =E2=94=94=E2=94=80=E2=94=80 nodeN+X
->           =C2=A0   =E2=94=94=E2=94=80=E2=94=80 weight
->
-> 'mempolicy' is added to '/sys/kernel/mm/' as a control group for
-> the mempolicy subsystem.
+We have created a Pull request in SOF git hub for I2S BT support.
+please hold v2 version SOF patches till below PR get's merged.
+PR:- https://github.com/thesofproject/linux/pull/4742
 
-Is it good to add 'mempolicy' in '/sys/kernel/mm/numa'?  The advantage
-is that 'mempolicy' here is in fact "NUMA mempolicy".  The disadvantage
-is one more directory nesting.  I have no strong opinion here.
-
-> 'possible_nodes' is added to 'mm/mempolicy' to help describe the
-> expected structures under mempolicy directorys. For example,
-> possible_nodes describes what nodeN directories wille exist under
-> the weighted_interleave directory.
-
-We have '/sys/devices/system/node/possible' already.  Is this just a
-duplication?  If so, why?  And, the possible nodes can be gotten via
-contents of 'weighted_interleave' too.
-
-And it appears not necessary to make 'weighted_interleave/nodeN'
-directory.  Why not just make it a file.
-
-And, can we add a way to reset weight to the default value?  For example
-`echo > nodeN/weight` or `echo > nodeN`.
-
-> Internally, weights are represented as an array of unsigned char
->
-> static unsigned char iw_table[MAX_NUMNODES];
->
-> char was chosen as most reasonable distributions can be represented
-> as factors <100, and to minimize memory usage (1KB)
->
-> We present possible nodes, instead of online nodes, to simplify the
-> management interface, considering that a) the table is of size
-> MAX_NUMNODES anyway to simplify fetching of weights (no need to track
-> sizes, and MAX_NUMNODES is typically at most 1kb), and b) it simplifies
-> management of hotplug events, allowing for weights to be set prior to
-> a node coming online, which may be beneficial for immediate use.
->
-> the 'weight' of a node (an unsigned char of value 1-255) is the number
-> of pages that are allocated during a "weighted interleave" round.
-> (See 'weighted interleave' for more details').
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> (Patch 2) set_mempolicy: MPOL_WEIGHTED_INTERLEAVE
->
-> Weighted interleave is a new memory policy that interleaves memory
-> across numa nodes in the provided nodemask based on the weights
-> described in patch 1 (sysfs global weights).
->
-> When a system has multiple NUMA nodes and it becomes bandwidth hungry,
-> the current MPOL_INTERLEAVE could be an wise option.
->
-> However, if those NUMA nodes consist of different types of memory such
-> as having local DRAM and CXL memory together, the current round-robin
-> based interleaving policy doesn't maximize the overall bandwidth
-> because of their different bandwidth characteristics.
->
-> Instead, the interleaving can be more efficient when the allocation
-> policy follows each NUMA nodes' bandwidth weight rather than having 1:1
-> round-robin allocation.
->
-> This patch introduces a new memory policy, MPOL_WEIGHTED_INTERLEAVE,
-> which enables weighted interleaving between NUMA nodes.  Weighted
-> interleave allows for a proportional distribution of memory across
-> multiple numa nodes, preferablly apportioned to match the bandwidth
-> capacity of each node from the perspective of the accessing node.
->
-> For example, if a system has 1 CPU node (0), and 2 memory nodes (0,1),
-> with a relative bandwidth of (100GB/s, 50GB/s) respectively, the
-> appropriate weight distribution is (2:1).
->
-> Weights will be acquired from the global weight array exposed by the
-> sysfs extension: /sys/kernel/mm/mempolicy/weighted_interleave/
->
-> The policy will then allocate the number of pages according to the
-> set weights.  For example, if the weights are (2,1), then 2 pages
-> will be allocated on node0 for every 1 page allocated on node1.
->
-> The new flag MPOL_WEIGHTED_INTERLEAVE can be used in set_mempolicy(2)
-> and mbind(2).
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> (Patches 3-6) Refactoring mempolicy for code-reuse
->
-> To avoid multiple paths of mempolicy creation, we should refactor the
-> existing code to enable the designed extensibility, and refactor
-> existing users to utilize the new interface (while retaining the
-> existing userland interface).
->
-> This set of patches introduces a new mempolicy_args structure, which
-> is used to more fully describe a requested mempolicy - to include
-> existing and future extensions.
->
-> /*
->  * Describes settings of a mempolicy during set/get syscalls and
->  * kernel internal calls to do_set_mempolicy()
->  */
-> struct mempolicy_args {
->     unsigned short mode;            /* policy mode */
->     unsigned short mode_flags;      /* policy mode flags */
->     nodemask_t *policy_nodes;       /* get/set/mbind */
->     int policy_node;                /* get: policy node information */
->     unsigned long addr;             /* get: vma address */
->     int addr_node;                  /* get: node the address belongs to */
->     int home_node;                  /* mbind: use MPOL_MF_HOME_NODE */
->     unsigned char *il_weights;      /* for mode MPOL_WEIGHTED_INTERLEAVE =
-*/
-> };
->
-> This arg structure will eventually be utilized by the following
-> interfaces:
->     mpol_new() - new mempolicy creation
->     do_get_mempolicy() - acquiring information about mempolicy
->     do_set_mempolicy() - setting the task mempolicy
->     do_mbind()         - setting a vma mempolicy
->
-> do_get_mempolicy() is completely refactored to break it out into
-> separate functionality based on the flags provided by get_mempolicy(2)
->     MPOL_F_MEMS_ALLOWED: acquires task->mems_allowed
->     MPOL_F_ADDR: acquires information on vma policies
->     MPOL_F_NODE: changes the output for the policy arg to node info
->
-> We refactor the get_mempolicy syscall flatten the logic based on these
-> flags, and aloow for set_mempolicy2() to re-use the underlying logic.
->
-> The result of this refactor, and the new mempolicy_args structure, is
-> that extensions like 'sys_set_mempolicy_home_node' can now be directly
-> integrated into the initial call to 'set_mempolicy2', and that more
-> complete information about a mempolicy can be returned with a single
-> call to 'get_mempolicy2', rather than multiple calls to 'get_mempolicy'
->
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> (Patches 7-10) set_mempolicy2, get_mempolicy2, mbind2
->
-> These interfaces are the 'extended' counterpart to their relatives.
-> They use the userland 'struct mpol_args' structure to communicate a
-> complete mempolicy configuration to the kernel.  This structure
-> looks very much like the kernel-internal 'struct mempolicy_args':
->
-> struct mpol_args {
->         /* Basic mempolicy settings */
->         __u16 mode;
->         __u16 mode_flags;
->         __s32 home_node;
->         __aligned_u64 pol_nodes;
->         __u64 pol_maxnodes;
->         __u64 addr;
->         __s32 policy_node;
->         __s32 addr_node;
->         __aligned_u64 *il_weights;      /* of size pol_maxnodes */
-> };
-
-This looks unnecessarily complex.  I don't think that it's a good idea
-to use exact same parameter for all 3 syscalls.
-
-For example, can we use something as below?
-
-  long set_mempolicy2(int mode, const unsigned long *nodemask, unsigned int=
- *il_weights,
-                          unsigned long maxnode, unsigned long home_node,
-                          unsigned long flags);
-
-  long mbind2(unsigned long start, unsigned long len,
-                          int mode, const unsigned long *nodemask, unsigned=
- int *il_weights,
-                          unsigned long maxnode, unsigned long home_node,
-                          unsigned long flags);
-
-A struct may be defined to hold mempolicy iteself.
-
-struct mpol {
-        int mode;
-        unsigned int home_node;
-        const unsigned long *nodemask;
-        unsigned int *il_weights;
-        unsigned int maxnode;
-};
-
-> The basic mempolicy settings which are shared across all interfaces
-> are captured at the top of the structure, while extensions such as
-> 'policy_node' and 'addr' are collected beneath.
->
-> The syscalls are uniform and defined as follows:
->
-> long sys_mbind2(struct iovec *vec, size_t vlen,
->                 struct mpol_args *args, size_t usize,
->                 unsigned long flags);
->
-> long sys_get_mempolicy2(struct mpol_args *args, size_t size,
->                         unsigned long flags);
->
-> long sys_set_mempolicy2(struct mpol_args *args, size_t size,
->                         unsigned long flags);
->
-> The 'flags' argument for mbind2 is the same as 'mbind', except with
-> the addition of MPOL_MF_HOME_NODE to denote whether the 'home_node'
-> field should be utilized.
->
-> The 'flags' argument for get_mempolicy2 is the same as get_mempolicy.
->
-> The 'flags' argument is not used by 'set_mempolicy' at this time, but
-> may end up allowing the use of MPOL_MF_HOME_NODE if such functionality
-> is desired.
->
-> The extensions can be summed up as follows:
->
-> get_mempolicy2 extensions:
->     'mode', 'policy_node', and 'addr_node' can now be fetched with
->     a single call, rather than multiple with a combination of flags.
->     - 'mode' will always return the policy mode
->     - 'policy_node' will replace the functionality of MPOL_F_NODE
->     - 'addr_node' will return the node for 'addr' w/ MPOL_F_ADDR
->
-> set_mempolicy2:
->     - task-local interleave weights can be set via 'il_weights'
->       (see next patch)
->
-> mbind2:
->     - 'vec' and 'vlen' are sed to operate on multiple memory
->        ranges, rather than a single memory range per syscall.
->     - 'home_node' field sets policy home node w/ MPOL_MF_HOME_NODE
->     - task-local interleave weights can be set via 'il_weights'
->       (see next patch)
->
-
---
-Best Regards,
-Huang, Ying
-
-[snip]
