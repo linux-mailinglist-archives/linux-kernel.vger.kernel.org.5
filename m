@@ -2,186 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D5080DAB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F000A80DAB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344633AbjLKTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        id S1344666AbjLKTQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:16:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344349AbjLKTQU (ORCPT
+        with ESMTP id S1344349AbjLKTQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:16:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE89C2;
-        Mon, 11 Dec 2023 11:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702322187; x=1733858187;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=vp3n54VIH/8lz5K1hOpqIdXWwGS8uIgnbwnujeOP4/0=;
-  b=MtQsnBrBPAMnvpFpMY3hr1doUZjT0RlskFVPu/3mZy7BwDwO+dG+zLXK
-   qn0iQHjiLoqpyms81Oo7ns7UshC96NjrOoEqzsAWrkEGXG5TKNmH9DuMH
-   g0MisKCncLvD/Vb2lE4OLq4fd1VRkmcqNxpMBcVLkTMxQQGEKORO5LVeo
-   TUoHKSzVENEIhnjhCAZoXOKljHM2IcbU+KQtZWuXl3PaXztbgf7kdLijo
-   AueT/aQJ2RsrjD6Yp4UQ6LVaK7XUPVxs4X78R1RViBMnVstoTAP2mtt3J
-   JzblQtsx05BBJSW5bBwuAOeVecZfeBLXVsdIFsJGrYqlRvdil0eXOfqJ/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1817725"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1817725"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:16:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="766495034"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="766495034"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 11:16:25 -0800
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 11:16:25 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 11:16:25 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Dec 2023 11:16:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H2l5QATGjwv9i3GbUw19Y7R64Q/wpvH2pqYZSZsuXKIQZOtXkvcqefIm+SdxO/1F2DJBcB6Cz7ZYxdsNpvcSGJalkwnighU9oseSlQcdeEQ7lX14hveXYb4Jjd3rmJ2wbXjOmYgl9jnXBd3NrTnO2jCpYZkBwJav0GrbFN0cnoEKPsXpIb8mId34Q/E2xkInidszNO0xWm4k+69lXQjbxxQWTufPfYXurBfVf5hXpivS5LdqUmRGE5xhI6EAUMWz2fvBQkf8pHoZJn34jr77ib+M6ZSfMEQAGvKAHt8QNOLTr4on6gmcUCDRDSouGCKIh0TqXYgbc/zXoRx8rG4dDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cwwggZw/0Hgkq3+HTOtuswsR7SZ5QA1+amu7gRwQ1lI=;
- b=YafB8+NUjylbArl9MXvzF+pIi+mPmYVXOKv26nsPoYNMrAzjZOZTXl0TqE2gv2RBnRW7a1ereUqenXYvdY4hmP1nGKOf9ge/eQgdz27kFsfYJQCul9W/hRlr1Rq8bjMP0YIdLSHLKy38JRMdgSGAQpUtPFvuGeiYZEuEK2jOeKCr4ajjV/TE9phRQTUjIPViLWrUI9DXz04XD+Fg1hw0pEufeNi9UaFoIcuccGr7Q5x/rMpImwfDvjiC0V1TzhweK16oxbbgt+tfYO2tjhOGktaLn1Xzg6DNRuddbcwDRjDT6x2AaKXLj48qhJOLwXMacdLMzQ0EITiVq9rMTceD2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CH3PR11MB7914.namprd11.prod.outlook.com (2603:10b6:610:12c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 19:16:19 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 19:16:19 +0000
-Date:   Mon, 11 Dec 2023 11:16:10 -0800
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 6/6] cxl/memdev: Register for and process CPER events
-Message-ID: <65775ffa7e529_a04c52941d@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20230601-cxl-cper-v1-0-d19f1ac18ab6@intel.com>
- <20230601-cxl-cper-v1-6-d19f1ac18ab6@intel.com>
- <657279a68c270_b991294e@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <657371eec6ac5_1e7d272948d@iweiny-mobl.notmuch>
- <65738e9fc239a_45e0129476@dwillia2-xfh.jf.intel.com.notmuch>
- <65775c98e0b39_1f2db42944f@iweiny-mobl.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <65775c98e0b39_1f2db42944f@iweiny-mobl.notmuch>
-X-ClientProxiedBy: MW4PR04CA0149.namprd04.prod.outlook.com
- (2603:10b6:303:84::34) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+        Mon, 11 Dec 2023 14:16:23 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407A0CF;
+        Mon, 11 Dec 2023 11:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Ex16LPTDyHoEZebn1SZl/KWeMXV5jFFCrSbz7xxNfbE=; b=auGTTiAFc7JI7Fu8KUfhh1DwFS
+        EUBfFVkhUpHkaQMCucP81o30rble7GPw4Ec+Hh8ys2ThmuWZYiprX3YSICpzNlXeZv+/H6IjxL2cV
+        PwpllUoEDOWN2n3aYPjsaxiIGDkAWA30skgQumB7sKe3yVxufRa77UW9Xu7dXhoC7WaM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rCllM-002ec5-QF; Mon, 11 Dec 2023 20:16:20 +0100
+Date:   Mon, 11 Dec 2023 20:16:20 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
+Subject: Re: [PATCH v8 3/3] arm64: dts: cn913x: add device trees for COM
+ Express boards
+Message-ID: <9f565a9c-18b1-4e83-905d-27b6585fa800@lunn.ch>
+References: <20231211171739.4090179-1-enachman@marvell.com>
+ <20231211171739.4090179-4-enachman@marvell.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CH3PR11MB7914:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7323144-0ee6-4fba-67d2-08dbfa7da785
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pOYEj+WypYczIPT+Ow7Kq2Q7DrE7GTUwmVOzcHftDULE8SmC3smBf5KhCLrHzTCI8XRlF3TSn+bsIol8idRFKIN+IJhWPqYH37R28R0O11XV2l950HiYgTzkdNvtY43Dzuv7JdPf5a8gXJ5SzUhdAMppKgQb05WKYpo1OXX/mrOrslM2v2HSOwUQo3Xci3JebpWi7LI7Bv8s0nmCtE/oJFhtpskdWEUj6hDF7nscJbHCuTSZ0eEe+HuPBi/RtcJ3UCQiVhncktSur4xLylQJowlW/oRfDwga8/zGpIlWJtlivoHYruFJX8rybMGq9xKmH0SAV7KC2A0beEpivhWAvYVJLVB1idiRuZiE4j8Efo8NLMjNuPvbzQ80z3fENWhY7k/dBXSZeqz9gRvpQS4zMh36TTucqNRjlWU8W2eKVQdSxZaoKW86JafsWQwIt6mnze46+Zc9ZHyHe3vE5Hif3m7gTqwm0J/GUWgcsXsT2VM2AdTAhf2L5ep4JF230YaomTF+Zc61uFJvQuypLeLUYtgzYlqAnYnLhygZuRSr3E/2Ee6YM3TtOavymhycriKR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(39860400002)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(107886003)(478600001)(26005)(6666004)(6506007)(6512007)(6486002)(9686003)(82960400001)(38100700002)(86362001)(41300700001)(66946007)(54906003)(5660300002)(66476007)(2906002)(4744005)(316002)(110136005)(4326008)(8936002)(66556008)(8676002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?brhrYrZ7jsIHzQD3OvQ2o3ZzV/D9eTBtmfinml70G9rt9+OxBOiFXyhDQ1bE?=
- =?us-ascii?Q?uzAiXF0Srv6+km9j9A92PzsNdUA/o8SN3mxmxLMQ5bh7hViT/NhSyAv3J0Ud?=
- =?us-ascii?Q?8rNTHWvauaV/PCqPxqf/Wf87oltyQm0eYTU3r3iV6QXO4WwUSFtftxg2UxoI?=
- =?us-ascii?Q?+dVmCFY/bnlVYgVAXAazOmQWf86yqVvE2POyz6NO8FeTl2o6j2fgZrs25IpG?=
- =?us-ascii?Q?DdwwzptLvGhFywzTPgmWo2mcn7iWS/zm9jKweCDmdjBNcNEqkOaRgDYC92ay?=
- =?us-ascii?Q?q9F0m1mQattjliTQkK6mNfU6VwOU6FzcT7nOCnMdfj3TC2FZr6UPokvW3PqH?=
- =?us-ascii?Q?EUBI1aW33orK9NUj/9U29zM5KT+Qlapdl6qwhybRYQd/lJce7NVLUFdoNs4y?=
- =?us-ascii?Q?2/PmESD32WQPH+QAbF9kMsswAdIDFBu4kFvV8birmOTS8N95Nf6Fu03NumbI?=
- =?us-ascii?Q?Mf0vzOMIeVZs9gkp2e4j0ncGT//VCAAuLDTcpCwsvYzr4SJT564YHnMtmR06?=
- =?us-ascii?Q?7WW5VwRHDaOFn3mRL3Oot7i0ZbpS8OOe/iqBa/IVWh9ozNpkkw93b6xkhrgO?=
- =?us-ascii?Q?GG8RggqmznQEF1KoAnuuawUuQ0XdzBO892D/G/6by1ZOuVfjZVB+6YB3tnWg?=
- =?us-ascii?Q?L5GBrsqwVm1Sqo0JF8LbfvVVsh1/u0fY1rf+cTCv3B/Xec2Jva5n71vXJWt1?=
- =?us-ascii?Q?VpIoQ3t0YAoQhM3PRMAPbzL28VOhwvnE5xS+4mhIIrypyy6sdBUWaPi8EUsR?=
- =?us-ascii?Q?OgH4jhwruA0m6bg/3DgbnFxATV5V3Av7R0cMdUhutCONv6Bf90ij5erexGGb?=
- =?us-ascii?Q?+iOhNCGbKtQePiQLmyfymugAqPEHOFIX8kAIBKP1j2f/E1gEZEOg5TbIIA1x?=
- =?us-ascii?Q?6ka9lstlDT9z4fmoitL1bntevlYHV2mziKDQkHeOyVe0rDqmVzSgpkZjZG3U?=
- =?us-ascii?Q?SOP1/gdwD9zQXvg+361+6l1vJcdinK4Z9POCY9zQn9oFJz3C2JxO0VyhL3kT?=
- =?us-ascii?Q?dUE4uDzQJPSVYBAPioQo+GgU3N7f5qjyEFJWWgvyv04PCwROocT5Pdm/IiZk?=
- =?us-ascii?Q?/B2a/Pgn4SfgkjeMjmV7584tq9Qk4L5fh0URhBFCwjRjYcVcqWXnmwgBd1ft?=
- =?us-ascii?Q?kXYZ5yIi4S6aAA0yOncEo++ftJ7nSFPqGPY1XffmDxjTrZBGl1JoqMTV7Atv?=
- =?us-ascii?Q?S9swmw/AkCJZXb9mbSZBeBQ6vBwBHUOrd5E8CiyKMM4Ra5TwKXMhy2FbgWzA?=
- =?us-ascii?Q?6g1Ad0BbD1oVGTDCeCRfGZVJSfOhrmSe8cxV9iMCnDgkgiTAoJYTPeupBJH3?=
- =?us-ascii?Q?p6aFDIxPMCNI4Xk1RVraKL8aPCnYnoVuZ76J0hhMX9HfpY/lI2efOXqTlQTh?=
- =?us-ascii?Q?cGUrvTGm44T9YiXLH6k6dJtz662/gtSiUO2pvOd4xWsP4lYja0ejcVuMq1Tp?=
- =?us-ascii?Q?pStRa00meMmSdyiADY3azFLooKXLwsElsIGCqXh57FPqI9WWNl3yHNJnO5NL?=
- =?us-ascii?Q?7b/XO89c0FPPcdzyd10zlSRP23MBJ4P6cM5bniJanalV9JSmKP1rHOAaqUXH?=
- =?us-ascii?Q?Fy1JnOIfXfFg7T6FP6VH+LGEz8D84mUswQOfMC1IpOZ6MWX8NoE2eDXQpWJ1?=
- =?us-ascii?Q?zg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7323144-0ee6-4fba-67d2-08dbfa7da785
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 19:16:19.3929
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JE2P7gShV+qXW4yObM+JDMKTVmpEpm3mxWOoVsNay2GO8w6jmrZVudgcJJRO+k3Ek9mFE6FCxyLUgxySo0XtnO1zF7XTFvF5sETn1xWIPng=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7914
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211171739.4090179-4-enachman@marvell.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira Weiny wrote:
-> Dan Williams wrote:
-> > Ira Weiny wrote:
-> > > Dan Williams wrote:
-> > > > Ira Weiny wrote:
-> > > 
-> > 
+On Mon, Dec 11, 2023 at 07:17:39PM +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
 > 
-> [snip]
+> Add support for CN9130 and CN9131 COM Express Type 7 CPU
+> module boards by Marvell.
+> Define these COM Express CPU modules as dtsi and
+> provide a dtsi file for a carrier board (Marvell AC5X RD
+> COM Express type 7 carrier board).
+> This Carrier board only utilizes the PCIe link, hence no
+> special device / driver support is provided by this dtsi file.
+> Finally, provide a dts file for the com express carrier and
+> CPU module combination.
 > 
-> > 
-> > > #define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-> > > static void cxl_cper_event_call(struct cxl_cper_notifier_data *nd)
-> > 
-> > Is struct cxl_cper_notifier_data needed anymore, just pass the record
-> > reference?
+> These COM Express boards differ from the existing CN913x DB
+> boards by the type of ethernet connection (RGMII),
+> the type of voltage regulators (not i2c expander based)
+> and the USB phy (not UTMI based).
+> Note - PHY + RGMII connector is OOB on CPU module.
+> CN9131 COM Express board is basically CN9130 COM Express board
+> with an additional CP115 I/O co-processor, which in this case
+> provides an additional USB host controller on the board.
 > 
-> I think so because the type of record is ID'ed by the GUID which is not
-> part of the common record.  So the notifier data adds the cxl_event_type
-> enum.
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 
-Ah, yup, but then I wonder if CPER can just do the GUID to type enum
-lookup and keep the CXL side GUID-free? I.e. just pass the type as a
-separate argument.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
