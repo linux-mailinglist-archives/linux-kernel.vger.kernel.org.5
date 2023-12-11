@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25DC80C37D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A528B80C37F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbjLKImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
+        id S233934AbjLKIog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjLKImd (ORCPT
+        with ESMTP id S229463AbjLKIoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:42:33 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D5AA0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1702284158; x=1733820158;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LcTEGYipYtNYuhq4JAQa9EjrkKVT8t/tenAGI2lHM9M=;
-  b=YH/icvc7z68XBPTToM58hJZJLs9fYzZJMGZFAPIRV8a53Q5rtu+nk1WO
-   5mvw9Pp+T1CIwUMjMG3hXQGMARlPVPXxFbSz4XdkjRJn51rrKHnbjLK0s
-   v2fuOXkr0skEuiPI3l0O2SawdVjN1Xi+RqH3OVaeYjAQHXT2GJxK8ckf5
-   j8nue4rCJgS7HtrR8kqs88IyRIJAe94/i2YHDRnBmpwD89j0nOQh4pu8e
-   tvDEmWeWkaLsL28fAWyzMGa7PrLZRFtJ6Pu4O4OVyPEeFIEGom0xt68/i
-   NN0ObGGYZBVgTELOdEJNJLmEpCVS+h3GVtiu3ACHSYvTTSaaVNIdPheud
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.04,267,1695679200"; 
-   d="scan'208";a="34426043"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 11 Dec 2023 09:42:36 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id B19F9280075;
-        Mon, 11 Dec 2023 09:42:35 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix DRM_BRIDGE_ATTACH_NO_CONNECTOR case
-Date:   Mon, 11 Dec 2023 09:42:37 +0100
-Message-ID: <4854369.GXAFRqVoOG@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <511f437b-89b5-4963-ae7d-dd66ab6db4fc@ideasonboard.com>
-References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com> <3537389.iIbC2pHGDl@steina-w> <511f437b-89b5-4963-ae7d-dd66ab6db4fc@ideasonboard.com>
-MIME-Version: 1.0
+        Mon, 11 Dec 2023 03:44:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAAEA0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702284279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5LWTtRj4KzcXU71hLoOO86zVSMhjA4YYS/eymtJ/IMY=;
+        b=DRvzhjNnn0g4bqrQsckei0AEBr2UA1Bai4MklJLlWfZsdeO/G6DCVdoFjer/lBFW5vBPYk
+        PzYxMGufmCjXBhzBjt+r6dOsUPusJG5aX+MJD11DsEevsws1fj4vCQGbLBL0Y30domWFo7
+        jFHWFGY/pZ+Y7l/WPFkJwDsEmY0Plwc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-219-2LdrRY9_PReTBEJQG3ZCFw-1; Mon, 11 Dec 2023 03:44:37 -0500
+X-MC-Unique: 2LdrRY9_PReTBEJQG3ZCFw-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1d3a7dbb81so75749766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:44:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702284276; x=1702889076;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5LWTtRj4KzcXU71hLoOO86zVSMhjA4YYS/eymtJ/IMY=;
+        b=AR8Mv0zatmnmM+nGTW0UeE1BtwHtfUk39gp2vttsLfoEMOzXoUFzB7xXXW1H7elo+J
+         Fb6jLhF3HAIFMZ0b6wRJQqV8EH+yhFfXwXBXqsNftrflSourN9lohgILZNTsjKMyRI5Q
+         +fTRxSaSgW35kCCVrR8ChjJO8oWWntZSe1xIwdCG3a+rRf+ZZyICWBRJGia0HCXN7fzt
+         bJ8MMRFTy3ifb/C8yVKV+Us+IFmq7QbnYhQpMaJDjEIZi0dnv4m37wnA7oX6IsjYyeOw
+         /QFnM7ZL78WZotLm0sqjSP6Y97AjQERlX80cNyHkPOx2+dYdVIA1Ip70IjTkm0Ynv5Wj
+         whnQ==
+X-Gm-Message-State: AOJu0YyE0ZTL0IJI+ClMwL8RkZdYy9582JxYv2U0xihSoKZm6oqwymJP
+        eWWVqh8Hy49F4+jflk5cnlBl4e601A7vLT0e9hxgO35s7HSobyAjevMN/zmj9HlKT6kqmJNN7nP
+        q9qw8Ml3MhKfaiHUq27yRroyEBVKTANRA
+X-Received: by 2002:a17:907:c207:b0:a1d:7daa:4efd with SMTP id ti7-20020a170907c20700b00a1d7daa4efdmr4169688ejc.4.1702284276122;
+        Mon, 11 Dec 2023 00:44:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHNBRffJXrCxYOfF2BE+lbKihjhGNMeES2n78bLLuyerFEqjYofvkFyNmZteUY/bpceg17JIw==
+X-Received: by 2002:a17:907:c207:b0:a1d:7daa:4efd with SMTP id ti7-20020a170907c20700b00a1d7daa4efdmr4169680ejc.4.1702284275807;
+        Mon, 11 Dec 2023 00:44:35 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-253-165.dyn.eolo.it. [146.241.253.165])
+        by smtp.gmail.com with ESMTPSA id cb6-20020a170906a44600b00a1e2aa3d093sm4387337ejb.202.2023.12.11.00.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 00:44:35 -0800 (PST)
+Message-ID: <83ef2da88811e616b029c50a66ffdfab52493e2d.camel@redhat.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
+ nfc_alloc_send_skb
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Siddh Raman Pant <code@siddh.me>,
+        syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Date:   Mon, 11 Dec 2023 09:44:34 +0100
+In-Reply-To: <aa9e49a1-7450-4df4-8848-8b2b5a868c28@siddh.me>
+References: <0000000000003e8971060c110bcc@google.com>
+         <aa9e49a1-7450-4df4-8848-8b2b5a868c28@siddh.me>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,94 +82,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
-
-Am Mittwoch, 6. Dezember 2023, 13:11:59 CET schrieb Tomi Valkeinen:
-> Hi,
+On Sat, 2023-12-09 at 16:09 +0530, Siddh Raman Pant wrote:
+> Final test
 >=20
-> On 08/11/2023 14:45, Alexander Stein wrote:
-> > Hi Tomi,
-> >=20
-> > Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
-> >> These two patches are needed to make tc358767 work in the
-> >> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP connecto=
-r.
-> >>=20
-> >> I have tested this with TI AM654 EVM with a tc358767 add-on card
-> >> connected to a DP monitor.
-> >=20
-> > Just a question regarding the usage of this DSI-DP bridge.
-> > What is the state of the DSI lanes after the DSI host has been
-> > initialized,
-> > but before calling atomic_pre_enable? AFAIK this bridge requires LP-11 =
-on
-> > DSI at any time for accessing the AUX channel.
->=20
-> We haven't received any test reports for the DSI-DP case... I was
-> looking at the datasheet, and I wonder, why do you say the bridge
-> requires DSI to be up for the AUX transactions?
+> #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
 
-Looking at Figure 4.20 (Power On Sequence) in the datasheet TC9595XBG (Rev =
-1.1=20
-2021-06-23) you can see that RESX can be released (only) after DSI lanes we=
-nt=20
-to LP-11 state. I got information, down from the support, that LP-11 must b=
-e=20
-up in order to use AUX channel. This also matches our observations, DSI hos=
-ts=20
-often enable LP-11 only in atomic_prepare. That's too late so we used some=
-=20
-hacks to enable LP-11 right from the beginning just to get access to AUX=20
-channel.
+Please, don't cc the netdev ML for tentative syzbot-related fixes: it
+confuses patchwork and increases the traffic here for no good reasons.
 
-Best regards
-Alexander
+Thanks!
 
->=20
->   Tomi
->=20
-> > Best regards,
-> > Alexander
-> >=20
-> >> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> >> ---
-> >> Changes in v2:
-> >> - Update the format negotiation patch as discussed in
-> >> https://lore.kernel.org/all/7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.co=
-m/
-> >> -
-> >> Link to v1:
-> >> https://lore.kernel.org/r/20231031-tc358767-v1-0-392081ad9f4b@ideasonb=
-oar
-> >> d.
-> >> com
-> >>=20
-> >> ---
-> >>=20
-> >> Aradhya Bhatia (1):
-> >>        drm/bridge: tc358767: Add format negotiation hooks for DPI/DSI =
-to
-> >>=20
-> >> (e)DP
-> >>=20
-> >> Tomi Valkeinen (1):
-> >>        drm/bridge: tc358767: Fix link properties discovery
-> >>  =20
-> >>   drivers/gpu/drm/bridge/tc358767.c | 32 +++++++++++++++++++++++++++++=
-+++
-> >>   1 file changed, 32 insertions(+)
-> >>=20
-> >> ---
-> >> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
-> >> change-id: 20231031-tc358767-58e3ebdf95f0
-> >>=20
-> >> Best regards,
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+Paolo
 
