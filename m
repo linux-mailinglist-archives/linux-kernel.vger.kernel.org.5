@@ -2,252 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46D380CF53
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC1680CF55
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbjLKPUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:20:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S1344196AbjLKPVZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 10:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbjLKPUb (ORCPT
+        with ESMTP id S1343886AbjLKPVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:20:31 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9858E3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:20:36 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c3fe6c08fso22080595e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:20:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1702308035; x=1702912835; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VXq0VuhHzYxA6UAxnYuyS+zdAc9dBPWzD9GOe+4oeHk=;
-        b=RY1eRm8+zt5il4Lrxc2Fd6Cj5eZlT/uylGa/sZ3aWLsKZVVpqWCreiLCt39RUnHb1v
-         P1fUyNhf7aVJ605BNvjyeFtd5zTauz6yX0NBBLZi2VS7PF99XmPc/XAwFRy+bGNCExz4
-         V5RTEWsknenqoUh4DEZtG0wehdxYtpLBcgXe6FF6QEc3+DWdyO6qJ5tNCIctNrR7QPVF
-         zDuEpca9OpXx5KmUMc+J5STTmwYUMZSqDFtsMvthJxtl4vqG2mECk7OIm4fM5FfNQEUG
-         GXrKxIAV8V8EKy4006Uy6ggu16iMQ4qOWefXMiBlFN/As15kyQUxx/AH8qmZr/9mDOCe
-         dddg==
+        Mon, 11 Dec 2023 10:21:23 -0500
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF419DC;
+        Mon, 11 Dec 2023 07:21:28 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54dccf89cfdso5950445a12.0;
+        Mon, 11 Dec 2023 07:21:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308035; x=1702912835;
+        d=1e100.net; s=20230601; t=1702308087; x=1702912887;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VXq0VuhHzYxA6UAxnYuyS+zdAc9dBPWzD9GOe+4oeHk=;
-        b=jlfXzwzsz8QVnzJFT1YKkIjz8xGUrz+53t30nlk2Kn/hGXG8ZVFjb2fiGpK/t3lMRA
-         5YIS6coRxY7xImkEHbGzY9mhcRfivS25f9BUf+PzAKthZKDPwOv3BjgJXNrCT6oG56/9
-         4ZGKN36ob2Nk0NMOP2Y71NNO85dvNy6y3Tcq3oZ/LQj06eNa8xMHkLZBiSXmS7giuzBX
-         KJ/N0UxJcVEfPDmM5yt8wl4YcKQX1wA2AGxFYX1wZFF202PbVZ6yKtNJYfULN83t5CEd
-         wG0Wg4eUhmHnMZlvcz8/FbaEGv9xyHipGSYNZwpdg3UKHno21md63LNJvle8snmVGIPF
-         SQnQ==
-X-Gm-Message-State: AOJu0YwD5XsAOdW3skuvAh7vFqYi5bNczRRi4N7+9ovqa8rLvoXGAPMk
-        UKW+lqv7u0Rob5zb2kAyjRtLK/L8m99ZniChrfvadg==
-X-Google-Smtp-Source: AGHT+IHKxhKUy/Hd/JeWLyWCd8g3I6OWQ1WkdT4sbr1/e4YI+eOJefXfCW2XHjN04eKK1NFBokhRrvRhgT/Z423EJAc=
-X-Received: by 2002:a1c:770c:0:b0:40c:38dd:1b1a with SMTP id
- t12-20020a1c770c000000b0040c38dd1b1amr1555163wmi.211.1702308034950; Mon, 11
- Dec 2023 07:20:34 -0800 (PST)
+        bh=0V/QyVp20sRTGALaesW9AkK6phzk9B8NcFWzyoFDK4I=;
+        b=eNXqRo0w76I2I3wT0P/sfyaT9KvEtupUECavsd27ftdxS8ENZx061F0NcJ4VQmyQLr
+         BGoXnGq6vW7/SA360S7xKoGkGZnCj84Gmq+w0DHxOnDKYuQPbgL3wMJAQzfFnF/Sg52l
+         j88uhj/3NccIq/7CMxx8KWb9uc18gTqp7wqoZOerWRvQR5DuBfnR8WKR9zA0bQKpil7N
+         cKWvQXioaAFhIbU4fsd93wO/XVZWTHxndh8mR9jzC1kk43S5GNfHhyOp9MR8fOr/YOgu
+         gsF0WVtpAG3vjv+1AFIp+A2k9dM+DpFop1s76yfTUlaz57RtdXilYGAUFbZIyy8foWXK
+         cFeg==
+X-Gm-Message-State: AOJu0YzXG7U7jGRBf+9oSvm490TVP0l0dYrg4aDVa0cUFz2UoNSEyFpa
+        1ZRZHZ+iBfsl5V031RuXJMu1Gdas/Udx+w==
+X-Google-Smtp-Source: AGHT+IEFRB4R+dj4xGP4tpjDKTPi1cEF9jtHgRro3Gsd13xcoey7+8J0MLLMKLfKq9h642sRPyk7Rg==
+X-Received: by 2002:a17:906:a843:b0:a1b:763c:b382 with SMTP id dx3-20020a170906a84300b00a1b763cb382mr2029522ejb.115.1702308086825;
+        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id vc11-20020a170907d08b00b00a1b6d503e7esm4936745ejc.157.2023.12.11.07.21.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a1ef2f5ed02so490251966b.1;
+        Mon, 11 Dec 2023 07:21:26 -0800 (PST)
+X-Received: by 2002:a17:906:74cf:b0:9ff:53b6:f951 with SMTP id
+ z15-20020a17090674cf00b009ff53b6f951mr2295900ejl.23.1702308086468; Mon, 11
+ Dec 2023 07:21:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-2-khuey@kylehuey.com>
- <CANpmjNPvZ=S5Afn9DR7nG2UFstqz5t1gBznTh4yezVv7k1+m9w@mail.gmail.com>
-In-Reply-To: <CANpmjNPvZ=S5Afn9DR7nG2UFstqz5t1gBznTh4yezVv7k1+m9w@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Mon, 11 Dec 2023 07:20:22 -0800
-Message-ID: <CAP045ApSQWLouDd65-M4+TFiKFjDF1aMPnPW-Ue+e63NhQnUwQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] perf/bpf: Call bpf handler directly, not through
- overflow machinery
-To:     Marco Elver <elver@google.com>
-Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <2633992.1702073229@warthog.procyon.org.uk>
+In-Reply-To: <2633992.1702073229@warthog.procyon.org.uk>
+From:   Marc Dionne <marc.dionne@auristor.com>
+Date:   Mon, 11 Dec 2023 11:21:15 -0400
+X-Gmail-Original-Message-ID: <CAB9dFdtXuzrhog3qcPKseSH8j0B6JcL-LJL6e-=Xhtb6wPAseg@mail.gmail.com>
+Message-ID: <CAB9dFdtXuzrhog3qcPKseSH8j0B6JcL-LJL6e-=Xhtb6wPAseg@mail.gmail.com>
+Subject: Re: [PATCH] afs: Fix refcount underflow from error handling race
+To:     David Howells <dhowells@redhat.com>
+Cc:     Bill MacAllister <bill@ca-zephyr.org>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 6:20=E2=80=AFAM Marco Elver <elver@google.com> wrot=
-e:
+On Fri, Dec 8, 2023 at 6:07 PM David Howells <dhowells@redhat.com> wrote:
 >
-> On Mon, 11 Dec 2023 at 05:55, Kyle Huey <me@kylehuey.com> wrote:
-> >
-> > To ultimately allow bpf programs attached to perf events to completely
-> > suppress all of the effects of a perf event overflow (rather than just =
-the
-> > sample output, as they do today), call bpf_overflow_handler() from
-> > __perf_event_overflow() directly rather than modifying struct perf_even=
-t's
-> > overflow_handler. Return the bpf program's return value from
-> > bpf_overflow_handler() so that __perf_event_overflow() knows how to
-> > proceed. Remove the now unnecessary orig_overflow_handler from struct
-> > perf_event.
-> >
-> > This patch is solely a refactoring and results in no behavior change.
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  include/linux/perf_event.h |  6 +-----
-> >  kernel/events/core.c       | 28 +++++++++++++++-------------
-> >  2 files changed, 16 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > index 5547ba68e6e4..312b9f31442c 100644
-> > --- a/include/linux/perf_event.h
-> > +++ b/include/linux/perf_event.h
-> > @@ -810,7 +810,6 @@ struct perf_event {
-> >         perf_overflow_handler_t         overflow_handler;
-> >         void                            *overflow_handler_context;
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -       perf_overflow_handler_t         orig_overflow_handler;
-> >         struct bpf_prog                 *prog;
-> >         u64                             bpf_cookie;
-> >  #endif
-> > @@ -1337,10 +1336,7 @@ __is_default_overflow_handler(perf_overflow_hand=
-ler_t overflow_handler)
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >  static inline bool uses_default_overflow_handler(struct perf_event *ev=
-ent)
-> >  {
-> > -       if (likely(is_default_overflow_handler(event)))
-> > -               return true;
-> > -
-> > -       return __is_default_overflow_handler(event->orig_overflow_handl=
-er);
-> > +       return is_default_overflow_handler(event);
-> >  }
-> >  #else
-> >  #define uses_default_overflow_handler(event) \
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index b704d83a28b2..54f6372d2634 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -9515,6 +9515,12 @@ static inline bool sample_is_allowed(struct perf=
-_event *event, struct pt_regs *r
-> >         return true;
-> >  }
-> >
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +static int bpf_overflow_handler(struct perf_event *event,
-> > +                               struct perf_sample_data *data,
-> > +                               struct pt_regs *regs);
-> > +#endif
+> If an AFS cell that has an unreachable (eg. ENETUNREACH) Volume Location
+> server listed, an asynchronous probe to one of its addresses may fail
+> immediately because sendmsg() returns an error.  When this happens, a
+> refcount underflow can happen if certain events hit a very small window.
 >
-> To avoid more #ifdefs we usually add a stub, something like:
+> The way this occurs is:
 >
-> #ifdef ...
-> static int bpf_overflow_handler(...);
-> #else
-> static inline int bpf_overflow_handler(...) { return 0; }
-> #endif
+>  (1) There are two levels of "call" object, the afs_call and the
+>      rxrpc_call.  Each of them can be transitioned to a "completed" state
+>      in the event of success or failure.
 >
-> Then you can avoid more #ifdefs below, esp. when it surrounds an
-> if-statement it easily leads to confusion or subtle bugs in future
-> changes. The compiler will optimize out the constants and the
-> generated code will be the same.
+>  (2) Asynchronous afs_calls are self-referential whilst they are active to
+>      prevent them from evaporating when they're not being processed.  This
+>      reference is disposed of when the afs_call is completed.
+>
+>      Note that an afs_call may only be completed once; once completed
+>      completing it again will do nothing.
+>
+>  (3) When a call transmission is made, the app-side rxrpc code queues a Tx
+>      buffer for the rxrpc I/O thread to transmit.  The I/O thread invokes
+>      sendmsg() to transmit it - and in the case of failure, it transitions
+>      the rxrpc_call to the completed state.
+>
+>  (4) When an rxrpc_call is completed, the app layer is notified.  In this
+>      case, the app is kafs and it schedules a work item to process events
+>      pertaining to an afs_call.
+>
+>  (5) When the afs_call event processor is run, it goes down through the
+>      RPC-specific handler to afs_extract_data() to retrieve data from rxrpc
+>      - and, in this case, it picks up the error from the rxrpc_call and
+>      returns it.
+>
+>      The error is then propagated to the afs_call and that is completed
+>      too.  At this point the self-reference is released.
+>
+>  (6) If the rxrpc I/O thread manages to complete the rxrpc_call within the
+>      window between rxrpc_send_data() queuing the request packet and
+>      checking for call completion on the way out, then
+>      rxrpc_kernel_send_data() will return the error from sendmsg() to the
+>      app.
+>
+>  (7) Then afs_make_call() will see an error and will jump to the error
+>      handling path which will attempt to clean up the afs_call.
+>
+>  (8) The problem comes when the error handling path in afs_make_call()
+>      tries to unconditionally drop an async afs_call's self-reference.
+>      This self-reference, however, may already have been dropped by
+>      afs_extract_data() completing the afs_call
+>
+>  (9) The refcount underflows when we return to afs_do_probe_vlserver() and
+>      that tries to drop its reference on the afs_call.
+>
+> Fix this by making afs_make_call() attempt to complete the afs_call rather
+> than unconditionally putting it.  That way, if afs_extract_data() manages
+> to complete the call first, afs_make_call() won't do anything.
+>
+> The bug can be forced by making do_udp_sendmsg() return -ENETUNREACH and
+> sticking an msleep() in rxrpc_send_data() after the 'success:' label.
+>
+> The error message looks something like:
+>
+>     refcount_t: underflow; use-after-free.
+>     WARNING: CPU: 3 PID: 720 at lib/refcount.c:28 refcount_warn_saturate+0xba/0x110
+>     ...
+>     RIP: 0010:refcount_warn_saturate+0xba/0x110
+>     ...
+>     afs_put_call+0x1dc/0x1f0 [kafs]
+>     afs_fs_get_capabilities+0x8b/0xe0 [kafs]
+>     afs_fs_probe_fileserver+0x188/0x1e0 [kafs]
+>     afs_lookup_server+0x3bf/0x3f0 [kafs]
+>     afs_alloc_server_list+0x130/0x2e0 [kafs]
+>     afs_create_volume+0x162/0x400 [kafs]
+>     afs_get_tree+0x266/0x410 [kafs]
+>     vfs_get_tree+0x25/0xc0
+>     fc_mount+0xe/0x40
+>     afs_d_automount+0x1b3/0x390 [kafs]
+>     __traverse_mounts+0x8f/0x210
+>     step_into+0x340/0x760
+>     path_openat+0x13a/0x1260
+>     do_filp_open+0xaf/0x160
+>     do_sys_openat2+0xaf/0x170
+>
+> or something like:
+>
+>     refcount_t: underflow; use-after-free.
+>     ...
+>     RIP: 0010:refcount_warn_saturate+0x99/0xda
+>     ...
+>     afs_put_call+0x4a/0x175
+>     afs_send_vl_probes+0x108/0x172
+>     afs_select_vlserver+0xd6/0x311
+>     afs_do_cell_detect_alias+0x5e/0x1e9
+>     afs_cell_detect_alias+0x44/0x92
+>     afs_validate_fc+0x9d/0x134
+>     afs_get_tree+0x20/0x2e6
+>     vfs_get_tree+0x1d/0xc9
+>     fc_mount+0xe/0x33
+>     afs_d_automount+0x48/0x9d
+>     __traverse_mounts+0xe0/0x166
+>     step_into+0x140/0x274
+>     open_last_lookups+0x1c1/0x1df
+>     path_openat+0x138/0x1c3
+>     do_filp_open+0x55/0xb4
+>     do_sys_openat2+0x6c/0xb6
+>
+> Fixes: 34fa47612bfe ("afs: Fix race in async call refcounting")
+> Reported-by: Bill MacAllister <bill@ca-zephyr.org>
+> Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1052304
+> Suggested-by: Jeffrey E Altman <jaltman@auristor.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: linux-afs@lists.infradead.org
+> ---
+>  fs/afs/rxrpc.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+> index ed1644e7683f..d642d06a453b 100644
+> --- a/fs/afs/rxrpc.c
+> +++ b/fs/afs/rxrpc.c
+> @@ -424,7 +424,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+>         if (call->async) {
+>                 if (cancel_work_sync(&call->async_work))
+>                         afs_put_call(call);
+> -               afs_put_call(call);
+> +               afs_set_call_complete(call, ret, 0);
+>         }
+>
+>         ac->error = ret;
 
-This would not allow removing any #ifdefs because event->prog is only
-present if CONFIG_BPF_SYSCALL is defined.
-
-- Kyle
-
-> >  /*
-> >   * Generic event overflow handling, sampling.
-> >   */
-> > @@ -9584,7 +9590,10 @@ static int __perf_event_overflow(struct perf_eve=
-nt *event,
-> >                 irq_work_queue(&event->pending_irq);
-> >         }
-> >
-> > -       READ_ONCE(event->overflow_handler)(event, data, regs);
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
-> > +#endif
-> > +               READ_ONCE(event->overflow_handler)(event, data, regs);
-> >
-> >         if (*perf_event_fasync(event) && event->pending_kill) {
-> >                 event->pending_wakeup =3D 1;
-> > @@ -10394,9 +10403,9 @@ static void perf_event_free_filter(struct perf_=
-event *event)
-> >  }
-> >
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -static void bpf_overflow_handler(struct perf_event *event,
-> > -                                struct perf_sample_data *data,
-> > -                                struct pt_regs *regs)
-> > +static int bpf_overflow_handler(struct perf_event *event,
-> > +                               struct perf_sample_data *data,
-> > +                               struct pt_regs *regs)
-> >  {
-> >         struct bpf_perf_event_data_kern ctx =3D {
-> >                 .data =3D data,
-> > @@ -10417,10 +10426,8 @@ static void bpf_overflow_handler(struct perf_e=
-vent *event,
-> >         rcu_read_unlock();
-> >  out:
-> >         __this_cpu_dec(bpf_prog_active);
-> > -       if (!ret)
-> > -               return;
-> >
-> > -       event->orig_overflow_handler(event, data, regs);
-> > +       return ret;
-> >  }
-> >
-> >  static int perf_event_set_bpf_handler(struct perf_event *event,
-> > @@ -10456,8 +10463,6 @@ static int perf_event_set_bpf_handler(struct pe=
-rf_event *event,
-> >
-> >         event->prog =3D prog;
-> >         event->bpf_cookie =3D bpf_cookie;
-> > -       event->orig_overflow_handler =3D READ_ONCE(event->overflow_hand=
-ler);
-> > -       WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
-> >         return 0;
-> >  }
-> >
-> > @@ -10468,7 +10473,6 @@ static void perf_event_free_bpf_handler(struct =
-perf_event *event)
-> >         if (!prog)
-> >                 return;
-> >
-> > -       WRITE_ONCE(event->overflow_handler, event->orig_overflow_handle=
-r);
-> >         event->prog =3D NULL;
-> >         bpf_prog_put(prog);
-> >  }
-> > @@ -11928,13 +11932,11 @@ perf_event_alloc(struct perf_event_attr *attr=
-, int cpu,
-> >                 overflow_handler =3D parent_event->overflow_handler;
-> >                 context =3D parent_event->overflow_handler_context;
-> >  #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_EVENT_TRACING)
-> > -               if (overflow_handler =3D=3D bpf_overflow_handler) {
-> > +               if (parent_event->prog) {
-> >                         struct bpf_prog *prog =3D parent_event->prog;
-> >
-> >                         bpf_prog_inc(prog);
-> >                         event->prog =3D prog;
-> > -                       event->orig_overflow_handler =3D
-> > -                               parent_event->orig_overflow_handler;
-> >                 }
-> >  #endif
-> >         }
-> > --
-> > 2.34.1
-> >
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+Tested-by: Marc Dionne <marc.dionne@auristor.com>
