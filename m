@@ -2,247 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1C380BF24
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1493580BF44
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbjLKCal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S232226AbjLKChj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:37:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232887AbjLKCai (ORCPT
+        with ESMTP id S229483AbjLKChi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:30:38 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193B510A
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:30:44 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5e121d3a7b5so603687b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:30:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702261843; x=1702866643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TAtSrNzMXsIYIDI7PZZlxLCtSwOpIMs+ASH6ed+/tjA=;
-        b=kfkHS50p/4DfNP73jFkplJQx4+JWvLxxa4LNvTSeGoobcrko2XLvH/NZ6quTsMZOab
-         NdmWYAdwVF5MHT60/4DLYtOy/Mnc6lgNY5mRQRi9VN+MeHEjJn6W2Nu7My0R/qMau35o
-         ZGeLxcxNzIt6VNoq6m66hbN4DOADYj6G1N1sQLZNH6L83ux1jH7ZPP/ng7Nzbx+oFzOs
-         B/FYaffWCTuNe3H+AgTPhV+T83nDHYMsEmdMmzfrStfzLvqsqDQPt7MTUaVyRjg1gyTr
-         4xAR8TXLHR0iX6iGwEDVYqFq2zs52meOjlTYsps2O2U7TXT5bJFrOft9um4vkdwyxILq
-         PQPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702261843; x=1702866643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TAtSrNzMXsIYIDI7PZZlxLCtSwOpIMs+ASH6ed+/tjA=;
-        b=BQW2fGv4d6YY2pQwD//CA06QDvyQa9g5doP1LGxaTxxkvnmNFR9nsoNWBwNCM4XzIm
-         QbmF9uZ5fFhL9FRocapludGkXlTMPm1aOUyt1rW+S54DfZa8cLKF0amedUMOaWd2DYRi
-         FQtXgVFh5PRD4F9Mmr0vSXLCCqxssBR7oG3Q5GKp4mrJnOEpBuCCARonxmLjXythUVB+
-         a9wj/K4Ehg7aW5Gq9YymrKqO0QJVqcGkgbeApNuV/X/cHErAzH5k3AolWKCVgvmIn8zg
-         58q5W2Z2Z4eyJozI+OZMD12UHN7l6ktIqSABmCldOJ+FD7a65AwAOXQg5vyoqhPYh0Hx
-         RamQ==
-X-Gm-Message-State: AOJu0YyprRUv31XEjDgxtXIn32jSoZQgWDrMj5nYifhMGjxoSkfYuQ/y
-        h2EMhppz93z0tk3OnWSmkl1m06TONehteS7jePgdGg==
-X-Google-Smtp-Source: AGHT+IGGqMlSPjDVYieXAFXfTdaTOxuiJ3lLEL51+OWjNcqSXuTv2PUuu9mIj5zJTvIoqC0km/gDSIto1RwhSwcpwjo=
-X-Received: by 2002:a0d:ef46:0:b0:5d7:1941:2c26 with SMTP id
- y67-20020a0def46000000b005d719412c26mr2628477ywe.83.1702261842924; Sun, 10
- Dec 2023 18:30:42 -0800 (PST)
+        Sun, 10 Dec 2023 21:37:38 -0500
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2045.outbound.protection.outlook.com [40.107.101.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A008E;
+        Sun, 10 Dec 2023 18:37:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZGTFSkX9+SIQS8UwPlHBW6a8U/O8wa093CpBsCZ+gQkp64R4vmmyI/b4TY5auLKGp0pk80Um4LXyIGDBQlyIelf8ZD7PdRfqYr4Rc0bLltG1syTN2KZZl4QZ4LUaq+cuyzOy9g1Njp2oxnNY25ETuue1pAo/4irIVNDFvh+iP6YI6o59hkEpqTnIZ91owiU/sQ5zyQGg/WRPb70J0Mlbid4v954XsBGK+RtI3zTzlg3SKgd0r4WshSpvtSlOyDLDL4F7b/T2cG23M3XOsE8LyNB0FBCuo9d6ML+6odpfmi/Oe5yvsWrD1EiAM9SEHkrwazbxKrKW47zx/MZaoudmow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BU1rWq3aznOMzWfueolaB4aEfr0Xqu6GOv+M/SiZpnE=;
+ b=A0kVY2XghbvnjAtCXekA/V+artf58LX0KiIe+1YqclhzHiER4yEQD5WVxQWlSNWSg+TK0YRW2LjMItL74DYmNCbb7bx+tKDqtFmsNvQOkipI5eHA6/SJVqc52OZWtnM0YIZTJI4sEr7U0h9bMq23UQU/To+U7CchXfmKS80rPM0dsw5lW+cD+pEAiZzFUEh/EY5/7xCmv/wSp1K8P8e0kvgmaq8BpUeXGLHdXvA9QEH3cj0xIiyrgaOC72dIhscHdikp5vYPIVolt/Lg8bJA6kqwTHjAuWkRHqKrCnYb9kvm7ujAQ/2anwF1V3cIjlHofQ4AA5kPbqsmJt7cq4K0RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BU1rWq3aznOMzWfueolaB4aEfr0Xqu6GOv+M/SiZpnE=;
+ b=jY4ITf5w/ZhyI+HJ0xWJyOMqR9+Ur1JxnGWw9fJkrVgBd3/oiI0VumefI5ABJmn+sbEeHyIIabTYEZjG9oHBfw1to8waYGFMO754g0CwUWym5xcRKnNsit/DQneEokN/hZUbtHfcYUJ761RfOJi6VyRY/PDuLBLRXn9+FBQ38Lk=
+Received: from SA0PR11CA0204.namprd11.prod.outlook.com (2603:10b6:806:1bc::29)
+ by DM4PR12MB8522.namprd12.prod.outlook.com (2603:10b6:8:18f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 02:37:38 +0000
+Received: from SN1PEPF000252A0.namprd05.prod.outlook.com
+ (2603:10b6:806:1bc:cafe::a1) by SA0PR11CA0204.outlook.office365.com
+ (2603:10b6:806:1bc::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32 via Frontend
+ Transport; Mon, 11 Dec 2023 02:37:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF000252A0.mail.protection.outlook.com (10.167.242.7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7091.18 via Frontend Transport; Mon, 11 Dec 2023 02:37:37 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 10 Dec 2023 20:37:36 -0600
+From:   Avadhut Naik <avadhut.naik@amd.com>
+To:     <corbet@lwn.net>
+CC:     <linux-doc@vger.kernel.org>, <carlos.bilbao@amd.com>,
+        <linux-kernel@vger.kernel.org>, <avadnaik@amd.com>
+Subject: [PATCH 0/4] Spanish translations and corrections
+Date:   Sun, 10 Dec 2023 20:37:26 -0600
+Message-ID: <20231211023730.2026204-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
- <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com> <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
-In-Reply-To: <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sun, 10 Dec 2023 18:30:31 -0800
-Message-ID: <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A0:EE_|DM4PR12MB8522:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3eb85a58-9b59-4b95-25f3-08dbf9f2236a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WrUsSQiJfMyAxf5xlBZK5TEVllhlO8uHQLju3EJnI2o5AAqKLNfikw14K+ZTXEO1kA9adWVmdcRPJSlNEtwXF0HBcu90WA1s7C+Bdh5Kwqn5eSwHu9GXJSKBGbiFyd85w3xOgMlbTKqmOqeWR5tT8k/LpB3HzJXPl+be4Pq9+rjNCd6+Gf71GORA60P6TgX0D2Wf11uh8C1Zm5+2Q3bOiKr71Sa8QES8nL/Cd69BpMIzfG6bfJqqA3d1BFXhWrZNTztBVH9TaA6fox9CS1wKynCNE+f6jvIXXHqG8JfzSnF4eHAtwPuWm4WBjaZw/HQIh4ALrzxIcoz93zxXgrWnoa4p0kExX7bAmqTvkrxKgE+PlstrpMkmmyV3RCK6Npi3v/qa+lrKOmtKdIBhtLzlMnZ5lZ3nq2qSfbHKwUFEEsLrabo2TFZ25ID2d8dl3k1QJduvuPpX9TdjbDxfcnKsM7Uc+t3ixknyT9lTuYmWCuBJBv5n3NyYdEFz2jHju5bknjngTlk42u2LzExI5donVMj3BhM1+jm0GN8dxuKPJ1GYB1LKIv4arvMWA/NMBa2AKfdcdicw4Bu0gOBZ55fGMLo5121Lz9tDfSLrLK8YGJ2CP7ennckBMx+28FaqA/tfvhBVgBGaXiatSAR6W2s+Mq4vBuAhaxNTr0Uf7CC50GlDfIm/ldk87MqDk/Gkv4DbRS+Fof8RfNpYe6Od9nELScw7vg2z46kEyOEYH4A89JxCRtwsy7cadatvZBN/FEF3hAHq9xtvzFrXHPxNWeTA5TvG/VUCjTIYhHexi3NZl/hBP//3HpirHi5nC1WebXwt
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(376002)(346002)(230473577357003)(230373577357003)(230922051799003)(451199024)(64100799003)(82310400011)(1800799012)(186009)(46966006)(40470700004)(36840700001)(40460700003)(36860700001)(5660300002)(1076003)(47076005)(336012)(26005)(2616005)(16526019)(44832011)(36756003)(426003)(70586007)(70206006)(6916009)(54906003)(966005)(40480700001)(2906002)(83380400001)(82740400003)(81166007)(41300700001)(356005)(478600001)(7696005)(86362001)(8676002)(8936002)(4326008)(316002)(6666004)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 02:37:37.3993
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3eb85a58-9b59-4b95-25f3-08dbf9f2236a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8522
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 9, 2023 at 7:05=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
->
-> On 12/8/23 23:25, Mina Almasry wrote:
-> > On Fri, Dec 8, 2023 at 2:56=E2=80=AFPM Pavel Begunkov <asml.silence@gma=
-il.com> wrote:
-> >>
-> >> On 12/8/23 00:52, Mina Almasry wrote:
-> > ...
-> >>> +     if (pool->p.queue)
-> >>> +             binding =3D READ_ONCE(pool->p.queue->binding);
-> >>> +
-> >>> +     if (binding) {
-> >>> +             pool->mp_ops =3D &dmabuf_devmem_ops;
-> >>> +             pool->mp_priv =3D binding;
-> >>> +     }
-> >>
-> >> Hmm, I don't understand why would we replace a nice transparent
-> >> api with page pool relying on a queue having devmem specific
-> >> pointer? It seemed more flexible and cleaner in the last RFC.
-> >>
-> >
-> > Jakub requested this change and may chime in, but I suspect it's to
-> > further abstract the devmem changes from driver. In this iteration,
-> > the driver grabs the netdev_rx_queue and passes it to the page_pool,
-> > and any future configurations between the net stack and page_pool can
-> > be passed this way with the driver unbothered.
->
-> Ok, that makes sense, but even if passed via an rx queue I'd
-> at least hope it keeping abstract provider parameters, e.g.
-> ops, but not hard coded with devmem specific code.
->
-> It might even be better done with a helper like
-> create_page_pool_from_queue(), unless there is some deeper
-> interaction b/w pp and rx queues is predicted.
->
+This patchset translates two documents into Spanish and also warns of or
+fixes existing inconsistencies.
 
-Off hand I don't see the need for a new create_page_pool_from_queue().
-page_pool_create() already takes in a param arg that lets us pass in
-the queue as well as any other params.
+The first patch translates process/management-style into Spanish.
 
-> >>> +
-> >>>        if (pool->mp_ops) {
-> >>>                err =3D pool->mp_ops->init(pool);
-> >>>                if (err) {
-> >>> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *po=
-ol, int new_nid)
-> >>>        }
-> >>>    }
-> >>>    EXPORT_SYMBOL(page_pool_update_nid);
-> >>> +
-> >>> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> >>> +{
-> >>> +     if (WARN_ON(ppiov->pp->mp_ops !=3D &dmabuf_devmem_ops))
-> >>> +             return;
-> >>> +
-> >>> +     netdev_free_dmabuf(ppiov);
-> >>> +}
-> >>> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
-> >>
-> >> I didn't look too deep but I don't think I immediately follow
-> >> the pp refcounting. It increments pages_state_hold_cnt on
-> >> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-> >> will be put down via page_pool_iov_put_many() bypassing
-> >> page_pool_return_page() and friends. That will call
-> >> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
-> >>
-> >> At least I couldn't make it work with io_uring, and for my purposes,
-> >> I forced all puts to go through page_pool_return_page(), which calls
-> >> the ->release_page callback. The callback will put the reference and
-> >> ask its page pool to account release_cnt. It also gets rid of
-> >> __page_pool_iov_free(), as we'd need to add a hook there for
-> >> customization otherwise.
-> >>
-> >> I didn't care about overhead because the hot path for me is getting
-> >> buffers from a ring, which is somewhat analogous to sock_devmem_dontne=
-ed(),
-> >> but done on pp allocations under napi, and it's done separately.
-> >>
-> >> Completely untested with TCP devmem:
-> >>
-> >> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c=
-79ac92ae2d8
-> >>
-> >
-> > This was a mistake in the last RFC, which should be fixed in v1. In
-> > the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
-> > unreffing path wasn't as expected.
-> >
-> > In this iteration, that should be completely fixed. I suspect since I
-> > just posted this you're actually referring to the issue tested on the
-> > last RFC? Correct me if wrong.
->
-> Right, it was with RFCv3
->
-> > In this iteration, the reffing story:
-> >
-> > - memory provider allocs ppiov and returns it to the page pool with
-> > ppiov->refcount =3D=3D 1.
-> > - The page_pool gives the page to the driver. The driver may
-> > obtain/release references with page_pool_page_[get|put]_many(), but
-> > the driver is likely not doing that unless it's doing its own page
-> > recycling.
-> > - The net stack obtains references via skb_frag_ref() ->
-> > page_pool_page_get_many()
-> > - The net stack drops references via skb_frag_unref() ->
-> > napi_pp_put_page() -> page_pool_return_page() and friends.
-> >
-> > Thus, the issue where the unref path was skipping
-> > page_pool_return_page() and friends should be resolved in this
-> > iteration, let me know if you think otherwise, but I think this was an
-> > issue limited to the last RFC.
->
-> Then page_pool_iov_put_many() should and supposedly would never be
-> called by non devmap code because all puts must circle back into
-> ->release_page. Why adding it to into page_pool_page_put_many()?
->
-> @@ -731,6 +731,29 @@ __page_pool_put_page(struct page_pool *pool, struct =
-page *page,
-> +       if (page_is_page_pool_iov(page)) {
-> ...
-> +               page_pool_page_put_many(page, 1);
-> +               return NULL;
-> +       }
->
-> Well, I'm looking at this new branch from Patch 10, it can put
-> the buffer, but what if we race at it's actually the final put?
-> Looks like nobody is going to to bump up pages_state_release_cnt
->
+The second patch translates process/submit-checklist into Spanish
 
-Good catch, I think indeed the release_cnt would be incorrect in this
-case. I think the race is benign in the sense that the ppiov will be
-freed correctly and available for allocation when the page_pool next
-needs it; the issue is with the stats AFAICT.
+The third patch warns of some links in Spanish translation pointing to
+English documentation.
 
-> If you remove the branch, let it fall into ->release and rely
-> on refcounting there, then the callback could also fix up
-> release_cnt or ask pp to do it, like in the patch I linked above
->
+The fourth patch moves howto.rst file into the process directory for
+Spanish translation per the original English documentation.
 
-Sadly I don't think this is possible due to the reasons I mention in
-the commit message of that patch. Prematurely releasing ppiov and not
-having them be candidates for recycling shows me a 4-5x degradation in
-performance.
+NOTE:
+The first patch in this set has previously been sent out as a standalone
+patch. Review Link:
 
-What I could do here is detect that the refcount was dropped to 0 and
-fix up the stats in that case.
+https://lore.kernel.org/all/20231122003343.931394-1-avadhut.naik@amd.com/
 
---=20
-Thanks,
-Mina
+However, since no response was received on the patch and since patches 2
+and 4 have a dependency on it, have incorporated it in this patchset.
+
+Kindly ignore the previous review raised for the patch.
+
+Avadhut Naik (4):
+  docs/sp_SP: Add translation of process/management-style
+  docs/sp_SP: Add translation of process/submit-checklist
+  docs/sp_SP: Warn of links pointing to documentation in English
+  docs/sp_SP: Move howto.rst into /sp_SP/process/
+
+ .../translations/sp_SP/disclaimer-sp.rst      |   3 +
+ Documentation/translations/sp_SP/index.rst    |   1 -
+ .../sp_SP/{ => process}/howto.rst             |   2 +-
+ .../translations/sp_SP/process/index.rst      |   3 +
+ .../sp_SP/process/management-style.rst        | 299 ++++++++++++++++++
+ .../sp_SP/process/submit-checklist.rst        | 133 ++++++++
+ 6 files changed, 439 insertions(+), 2 deletions(-)
+ rename Documentation/translations/sp_SP/{ => process}/howto.rst (99%)
+ create mode 100644 Documentation/translations/sp_SP/process/management-style.rst
+ create mode 100644 Documentation/translations/sp_SP/process/submit-checklist.rst
+
+
+base-commit: bc63de6e6ba0b16652c5fb4b9c9916b9e7ca1f23
+-- 
+2.34.1
+
