@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B236A80DE27
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31B080DE22
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344944AbjLKWPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:15:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        id S230073AbjLKWPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKWPP (ORCPT
+        with ESMTP id S229493AbjLKWPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:15:15 -0500
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEF492
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:15:20 -0800 (PST)
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-35d62401a3dso19998235ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:15:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702332919; x=1702937719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i+NbavSPkNYuuLKazhVu/hAbx07laMBmOoTQUM0p47w=;
-        b=uKc867LcrnT2zll+erhwu5iA1GjvlRhqqTni1d3xx+76HCr7wILPbG95X7z0Qf0Xns
-         GYkr1wzsqAfqn6YCzRpC4m3TmRjlruLOVSjgQ0QRgnx1jpDWb01tYy6W1SACOlJYJUly
-         6K2gg3z7aVtqOhjO3+sf6J85VTVWwyh5hYu5OJqm63ug9VCaOnSLqDXzm44nOqIf/K6b
-         zcF82mTAf1xUYZ1H8wUdkLyC4eKTax1kMPxvw8B/LH7soIE8KobmuWs1138iglA0JDvt
-         OVlCR5Qc79kDpX1YxGgLjRvkcaaV97EZPudv2EC176l64nqa6zmNpwE2FmHO4jWoOI0+
-         ghRg==
-X-Gm-Message-State: AOJu0YwLannIVgHWbiYzjI32ryiaKVq1PVjjxqziIHZgq1GtZkY6GGbz
-        kqBKKOaNB4RAnfApdblU/Bnf
-X-Google-Smtp-Source: AGHT+IHNeSpFqavSvNI7EouqNAWIqxS4EtGj5taHoZVkMX4FUv92lNAhynaV9F2HmvIyMA8Vl+7bmw==
-X-Received: by 2002:a05:6e02:148c:b0:35c:9b2c:b9d1 with SMTP id n12-20020a056e02148c00b0035c9b2cb9d1mr5497877ilk.32.1702332919461;
-        Mon, 11 Dec 2023 14:15:19 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id z10-20020a0cfeca000000b0067a788e258bsm3671868qvs.133.2023.12.11.14.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 14:15:19 -0800 (PST)
-Date:   Mon, 11 Dec 2023 17:15:18 -0500
-From:   Mike Snitzer <snitzer@kernel.org>
-To:     Hongyu Jin <hongyu.jin.cn@gmail.com>
-Cc:     agk@redhat.com, mpatocka@redhat.com, axboe@kernel.dk,
-        ebiggers@kernel.org, zhiguo.niu@unisoc.com, ke.wang@unisoc.com,
-        yibin.ding@unisoc.com, hongyu.jin@unisoc.com,
-        linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] dm-crypt: Fix lost ioprio when queuing write bios
-Message-ID: <ZXeJ9jAKEQ31OXLP@redhat.com>
-References: <df68c38e-3e38-eaf1-5c32-66e43d68cae3@ewheeler.net>
- <20231211090000.9578-1-hongyu.jin.cn@gmail.com>
- <20231211090000.9578-6-hongyu.jin.cn@gmail.com>
+        Mon, 11 Dec 2023 17:15:22 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74585B5;
+        Mon, 11 Dec 2023 14:15:28 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7559B922;
+        Mon, 11 Dec 2023 23:14:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702332882;
+        bh=GL+uqkZRlZtM9CqFWDpU/O4mleiVeJYVJuE+4HaNbzg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZnwJeb83+6Ilj6joGWv51eFMSpMn62AY9aSTlBqg7ZxxfjJ0mILeTUdaKPN9NQ9kK
+         wd+toMzn1IDUSbI+VH0gWvsf0twsOZpV50GxOm7SyvZjYc2ufw6lTvgUPDbdKdPv0r
+         pueVyHqiUSJZs/2uKwsk47KX0mSwsgWD7MdB4HgY=
+Date:   Tue, 12 Dec 2023 00:15:33 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 12/19] media: i2c: ov4689: Implement digital gain control
+Message-ID: <20231211221533.GK27535@pendragon.ideasonboard.com>
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-13-mike.rudenko@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231211090000.9578-6-hongyu.jin.cn@gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <20231211175023.1680247-13-mike.rudenko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,50 +53,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11 2023 at  4:00P -0500,
-Hongyu Jin <hongyu.jin.cn@gmail.com> wrote:
+Hi Mikhail,
 
-> From: Hongyu Jin <hongyu.jin@unisoc.com>
+Thank you for the patch.
+
+On Mon, Dec 11, 2023 at 08:50:15PM +0300, Mikhail Rudenko wrote:
+> The OV4689 sensor supports digital gain up to 16x. Implement
+> corresponding control in the driver. Default digital gain value is not
+> modified by this patch.
 > 
-> The original submitting bio->bi_ioprio setting can be retained by
-> struct dm_crypt_io::base_bio, we set the original bio's ioprio to
-> the cloned bio for write.
-> 
-> Signed-off-by: Hongyu Jin <hongyu.jin@unisoc.com>
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 > ---
->  drivers/md/dm-crypt.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/media/i2c/ov4689.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-> index 6de107aff331..b67fec865f00 100644
-> --- a/drivers/md/dm-crypt.c
-> +++ b/drivers/md/dm-crypt.c
-> @@ -1683,6 +1683,7 @@ static struct bio *crypt_alloc_buffer(struct dm_crypt_io *io, unsigned int size)
->  				 GFP_NOIO, &cc->bs);
->  	clone->bi_private = io;
->  	clone->bi_end_io = crypt_endio;
-> +	clone->bi_ioprio = bio_prio(io->base_bio);
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index 62aeae43d749..ed0ce1b9e55b 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -35,6 +35,12 @@
+>  #define OV4689_GAIN_STEP		1
+>  #define OV4689_GAIN_DEFAULT		0x80
+>  
+> +#define OV4689_REG_DIG_GAIN		CCI_REG16(0x352A)
 
-Weird use of bio_prio() wrapper given the assignment to
-clone->bi_ioprio.  I'd prefer:
-        clone->bi_ioprio = io->base_bio->bi_ioprio;
+Lowercase for hex constatns please.
 
-Some additional info to be mindful of:
+> +#define OV4689_DIG_GAIN_MIN		1
+> +#define OV4689_DIG_GAIN_MAX		0x7fff
+> +#define OV4689_DIG_GAIN_STEP		1
+> +#define OV4689_DIG_GAIN_DEFAULT		0x800
+> +
+>  #define OV4689_REG_TEST_PATTERN		CCI_REG8(0x5040)
+>  #define OV4689_TEST_PATTERN_ENABLE	0x80
+>  #define OV4689_TEST_PATTERN_DISABLE	0x0
+> @@ -131,7 +137,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+>  
+>  	/* AEC PK */
+>  	{CCI_REG8(0x3503), 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
+> -	{CCI_REG8(0x352a), 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
 
-This encryption bio has always been unique (ever since dm-crypt
-stopped using the block layer's methods for cloning with 2007's commit
-2f9941b6c55d7).
+Is the default value really x2 ? That's not very nice :-S
 
-Prior to commit 2f9941b6c55d7, dm-crypt used to call __bio_clone() to
-make sure not to miss cloning other capabilities -- and __bio_clone()
-does exist again as of commit a0e8de798dd67 but it is private to bio.c
-(in service to bio_alloc_clone, etc).
+It would be much nicer if the default value of the control mapped to x1,
+otherwise it's impossible for userspace to interpret the scale of the
+digital gain value in a generic way. I suppose that could break existing
+applications though, which isn't great.
 
-My point: because we aren't using traditional bio cloning (due to not
-wanting to share the bio_vec) we also aren't transferring over the
-cgroup (via bio_clone_blkg_association), etc.
+Out of curiosity, can you tell what SoC(s) you're using this sensor with
+?
 
-That can be a secondary concern that you don't need to worry about
-(but it is something Mikulas and I need to look at closer).
+>  
+>  	/* ADC and analog control*/
+>  	{CCI_REG8(0x3603), 0x40},
+> @@ -622,6 +627,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  				OV4689_TIMING_FLIP_MASK,
+>  				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
+>  		break;
+> +	case V4L2_CID_DIGITAL_GAIN:
+> +		cci_write(regmap, OV4689_REG_DIG_GAIN, val, &ret);
+> +		break;
+>  	default:
+>  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+>  			 __func__, ctrl->id, val);
+> @@ -650,7 +658,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>  
+>  	handler = &ov4689->ctrl_handler;
+>  	mode = ov4689->cur_mode;
+> -	ret = v4l2_ctrl_handler_init(handler, 13);
+> +	ret = v4l2_ctrl_handler_init(handler, 14);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -693,6 +701,10 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
+>  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
+>  
+> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
+> +			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
+> +			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
+> +
+>  	if (handler->error) {
+>  		ret = handler->error;
+>  		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
 
-Mike
+-- 
+Regards,
+
+Laurent Pinchart
