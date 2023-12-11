@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7783E80BF9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5346180BFA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 04:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjLKCqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        id S229697AbjLKCs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjLKCqU (ORCPT
+        with ESMTP id S229483AbjLKCs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:46:20 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CAFCD;
-        Sun, 10 Dec 2023 18:46:20 -0800 (PST)
-X-UUID: 604e44b7d04e4017b11d88a4d764afb4-20231211
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:66b8a00f-9032-47dd-b89f-1d95c3541f3d,IP:15,
-        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-5
-X-CID-INFO: VERSION:1.1.33,REQID:66b8a00f-9032-47dd-b89f-1d95c3541f3d,IP:15,UR
-        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-5
-X-CID-META: VersionHash:364b77b,CLOUDID:799ea173-1bd3-4f48-b671-ada88705968c,B
-        ulkID:231211104556XNYUBAOC,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 604e44b7d04e4017b11d88a4d764afb4-20231211
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 302373159; Mon, 11 Dec 2023 10:45:53 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kunwu Chan <chentao@kylinos.cn>,
-        Kunwu Chan <kunwu.chan@hotmail.com>
-Subject: [PATCH] net: dsa: vsc73xx: Add null pointer check to vsc73xx_gpio_probe
-Date:   Mon, 11 Dec 2023 10:45:49 +0800
-Message-Id: <20231211024549.231417-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.39.2
+        Sun, 10 Dec 2023 21:48:56 -0500
+Received: from m228-62.mailgun.net (m228-62.mailgun.net [159.135.228.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8152E3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:49:02 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=michaelkloos.com;
+ q=dns/txt; s=k1; t=1702262941; x=1702270141; h=Content-Transfer-Encoding:
+ Content-Type: In-Reply-To: From: From: References: Cc: To: To: Subject:
+ Subject: MIME-Version: Date: Message-ID: Sender: Sender;
+ bh=A/tmcvt2MvyOgT/CgTKH5Vk/7MTNcX8NCoOsDmu1SXk=;
+ b=Wn4+BVtmuPfO8TCTUPuwOrri5zsooCb3YR6m+Ze2hGIzbIRLZSkkMFsTWxfA37ruNDfbkqtK/0Lxrl0JUsA3mbQyu/zCxXIBp2+WQ5xkPkUB8m0emx3n0+6F8+QiI0ad7zCWgWtDzVaB9jL1wzajr9UFhiqE5Ssrap7gsR4WlP4=
+X-Mailgun-Sending-Ip: 159.135.228.62
+X-Mailgun-Sid: WyI5NjYzNiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI0OGNjMCJd
+Received: from drop1.michaelkloos.com (drop1.michaelkloos.com [67.205.190.89]) by
+ 73de24a98ee6 with SMTP id 6576789dd0b89648ec75a99c (version=TLS1.3,
+ cipher=TLS_AES_128_GCM_SHA256); Mon, 11 Dec 2023 02:49:01 GMT
+Sender: Michael@michaelkloos.com
+Received: from [192.168.0.103] (173-088-115-050.res.spectrum.com [173.88.115.50])
+        by drop1.michaelkloos.com (Postfix) with ESMTPSA id 9A3434002A;
+        Mon, 11 Dec 2023 02:49:00 +0000 (UTC)
+Message-ID: <cbf8ac6f-5e8d-4430-aba7-853cded5a9c6@MichaelKloos.com>
+Date:   Sun, 10 Dec 2023 21:48:58 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: Enable built-in microphone on Lenovo ThinkPad P14s
+ Gen 4 (AMD)
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        August Wikerfors <git@augustwikerfors.se>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231211015325.6793-1-michael@michaelkloos.com>
+ <05b90060-9bee-42db-a49b-eb73dce0d59c@amd.com>
+Content-Language: en-US
+From:   "Michael T. Kloos" <Michael@MichaelKloos.com>
+In-Reply-To: <05b90060-9bee-42db-a49b-eb73dce0d59c@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure.
+> This is supposed to be supported by ACP 6.3 (Pink Sardine).  Did you
+> enable that driver?
+> Can you please share more about your problem?
 
-Cc: Kunwu Chan <kunwu.chan@hotmail.com>
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/net/dsa/vitesse-vsc73xx-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-index e6f29e4e508c..f136eb5aea69 100644
---- a/drivers/net/dsa/vitesse-vsc73xx-core.c
-+++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-@@ -1135,6 +1135,10 @@ static int vsc73xx_gpio_probe(struct vsc73xx *vsc)
- 
- 	vsc->gc.label = devm_kasprintf(vsc->dev, GFP_KERNEL, "VSC%04x",
- 				       vsc->chipid);
-+	if (!vsc->gc.label) {
-+		dev_err(vsc->dev, "Fail to allocate memory\n");
-+		return -ENOMEM;
-+	}
- 	vsc->gc.ngpio = 4;
- 	vsc->gc.owner = THIS_MODULE;
- 	vsc->gc.parent = vsc->dev;
--- 
-2.39.2
+Enabled it and it is now working.  I wish I knew that 24 hours ago.
+Would have saved a lot of time and effort.  Haha.  Disregard the patch.
+Thank you, Mario.
 
