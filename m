@@ -2,103 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56F80C9B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB9B80C9B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbjLKM1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        id S234632AbjLKM1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKM1h (ORCPT
+        with ESMTP id S229512AbjLKM1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:27:37 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C86CE;
-        Mon, 11 Dec 2023 04:27:41 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1rCfNp-00087M-1j; Mon, 11 Dec 2023 13:27:37 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andy Yan <andyshrk@163.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, Andy Yan <andyshrk@163.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v3 4/5] dt-bindings: arm: rockchip: Add Cool Pi CM5 EVB
-Date:   Mon, 11 Dec 2023 13:27:36 +0100
-Message-ID: <3203387.BEx9A2HvPv@diego>
-In-Reply-To: <20231211105023.1779786-1-andyshrk@163.com>
-References: <20231211104915.1779476-1-andyshrk@163.com>
- <20231211105023.1779786-1-andyshrk@163.com>
+        Mon, 11 Dec 2023 07:27:39 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2B1FD;
+        Mon, 11 Dec 2023 04:27:45 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 981E01FB89;
+        Mon, 11 Dec 2023 12:27:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702297663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IRp5JZOLaDGIt1euLIzxVzZlF40hG272GOIIjwjFT+w=;
+        b=GC+Uu/e/ocPNXrJ5Y2r2iM32Qj731uQfxibv5fq4OCZTA5j1SBMbbPYCH4LSHrZp+aJYEm
+        URMznUUTapY+IqmN2me8hJjcXfb2NR/kWVsMeeEJVlMHNnnc2LaAnl8zhtuEs0E0qRt7b2
+        UfMQpwORK3uvSn6hv/9Togbiphh7ALo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702297663;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IRp5JZOLaDGIt1euLIzxVzZlF40hG272GOIIjwjFT+w=;
+        b=Xb1u/opLXlXIvKx3qOo/Zc0tuR3IDvCm9PUSMa1Bkg3ULtpm8xgT4I0m7+gVM8yxBuEhKe
+        3neZWdlpXvEUhtAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702297663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IRp5JZOLaDGIt1euLIzxVzZlF40hG272GOIIjwjFT+w=;
+        b=GC+Uu/e/ocPNXrJ5Y2r2iM32Qj731uQfxibv5fq4OCZTA5j1SBMbbPYCH4LSHrZp+aJYEm
+        URMznUUTapY+IqmN2me8hJjcXfb2NR/kWVsMeeEJVlMHNnnc2LaAnl8zhtuEs0E0qRt7b2
+        UfMQpwORK3uvSn6hv/9Togbiphh7ALo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702297663;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IRp5JZOLaDGIt1euLIzxVzZlF40hG272GOIIjwjFT+w=;
+        b=Xb1u/opLXlXIvKx3qOo/Zc0tuR3IDvCm9PUSMa1Bkg3ULtpm8xgT4I0m7+gVM8yxBuEhKe
+        3neZWdlpXvEUhtAg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 886E9138FF;
+        Mon, 11 Dec 2023 12:27:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id DRtNIT8Ad2UbRQAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 12:27:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 06FB7A07E3; Mon, 11 Dec 2023 13:27:43 +0100 (CET)
+Date:   Mon, 11 Dec 2023 13:27:42 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Chao Yu <chao@kernel.org>
+Cc:     jack@suse.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] quota: convert dquot_claim_space_nodirty() to return void
+Message-ID: <20231211122742.xnubwtret5za2mc2@quack3>
+References: <20231210025028.3262900-1-chao@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231210025028.3262900-1-chao@kernel.org>
+X-Spam-Level: 
+X-Spam-Score: -3.80
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-Am Montag, 11. Dezember 2023, 11:50:23 CET schrieb Andy Yan:
-> Add Cool Pi CM5 EVB, a board powered by RK3588
+On Sun 10-12-23 10:50:28, Chao Yu wrote:
+> dquot_claim_space_nodirty() always return zero, let's convert it
+> to return void, then, its caller can get rid of handling failure
+> case.
 > 
-> Signed-off-by: Andy Yan <andyshrk@163.com>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Chao Yu <chao@kernel.org>
 
-I just realized your mention of this being a som + baseboard combination
-in the previous version.
+Nice. I've added the patch to my tree. Thanks!
 
-In that case the compatible really should reflect that.
-
-      - description: Cool Pi Compute Module 5(CM5) EVB
-        items:
-          - const: coolpi,pi-cm5-evb
-          - const: coolpi,pi-cm5
-          - const: rockchip,rk3588
-
-Similar to how all the other som + baseboard combinations do it
-(Edgeble neural modules, engicam px30, Thebroma-SoMs).
-
-
-Thanks
-Heiko
+								Honza
 
 > ---
+>  fs/quota/dquot.c         |  6 +++---
+>  include/linux/quotaops.h | 15 +++++----------
+>  2 files changed, 8 insertions(+), 13 deletions(-)
 > 
-> (no changes since v2)
-> 
-> Changes in v2:
-> - change board compatible from "CoolPi CM5 EVB" to "coolpi,pi-cm5-evb"
-> 
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> index 11d03035f3db..4da83bbd642a 100644
-> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-> @@ -95,6 +95,11 @@ properties:
->            - const: chipspark,rayeager-px2
->            - const: rockchip,rk3066a
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index 58b5de081b57..44ff2813ae51 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -1787,7 +1787,7 @@ EXPORT_SYMBOL(dquot_alloc_inode);
+>  /*
+>   * Convert in-memory reserved quotas to real consumed quotas
+>   */
+> -int dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+> +void dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+>  {
+>  	struct dquot **dquots;
+>  	int cnt, index;
+> @@ -1797,7 +1797,7 @@ int dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+>  		*inode_reserved_space(inode) -= number;
+>  		__inode_add_bytes(inode, number);
+>  		spin_unlock(&inode->i_lock);
+> -		return 0;
+> +		return;
+>  	}
 >  
-> +      - description: Cool Pi Compute Module 5(CM5) EVB
-> +        items:
-> +          - const: coolpi,pi-cm5-evb
-> +          - const: rockchip,rk3588
-> +
->        - description: Cool Pi 4 Model B
->          items:
->            - const: coolpi,pi-4b
+>  	dquots = i_dquot(inode);
+> @@ -1822,7 +1822,7 @@ int dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+>  	spin_unlock(&inode->i_lock);
+>  	mark_all_dquot_dirty(dquots);
+>  	srcu_read_unlock(&dquot_srcu, index);
+> -	return 0;
+> +	return;
+>  }
+>  EXPORT_SYMBOL(dquot_claim_space_nodirty);
+>  
+> diff --git a/include/linux/quotaops.h b/include/linux/quotaops.h
+> index 4fa4ef0a173a..06cc8888199e 100644
+> --- a/include/linux/quotaops.h
+> +++ b/include/linux/quotaops.h
+> @@ -74,7 +74,7 @@ void __dquot_free_space(struct inode *inode, qsize_t number, int flags);
+>  
+>  int dquot_alloc_inode(struct inode *inode);
+>  
+> -int dquot_claim_space_nodirty(struct inode *inode, qsize_t number);
+> +void dquot_claim_space_nodirty(struct inode *inode, qsize_t number);
+>  void dquot_free_inode(struct inode *inode);
+>  void dquot_reclaim_space_nodirty(struct inode *inode, qsize_t number);
+>  
+> @@ -257,10 +257,9 @@ static inline void __dquot_free_space(struct inode *inode, qsize_t number,
+>  		inode_sub_bytes(inode, number);
+>  }
+>  
+> -static inline int dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+> +static inline void dquot_claim_space_nodirty(struct inode *inode, qsize_t number)
+>  {
+>  	inode_add_bytes(inode, number);
+> -	return 0;
+>  }
+>  
+>  static inline int dquot_reclaim_space_nodirty(struct inode *inode,
+> @@ -358,14 +357,10 @@ static inline int dquot_reserve_block(struct inode *inode, qsize_t nr)
+>  				DQUOT_SPACE_WARN|DQUOT_SPACE_RESERVE);
+>  }
+>  
+> -static inline int dquot_claim_block(struct inode *inode, qsize_t nr)
+> +static inline void dquot_claim_block(struct inode *inode, qsize_t nr)
+>  {
+> -	int ret;
+> -
+> -	ret = dquot_claim_space_nodirty(inode, nr << inode->i_blkbits);
+> -	if (!ret)
+> -		mark_inode_dirty_sync(inode);
+> -	return ret;
+> +	dquot_claim_space_nodirty(inode, nr << inode->i_blkbits);
+> +	mark_inode_dirty_sync(inode);
+>  }
+>  
+>  static inline void dquot_reclaim_block(struct inode *inode, qsize_t nr)
+> -- 
+> 2.40.1
 > 
-
-
-
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
