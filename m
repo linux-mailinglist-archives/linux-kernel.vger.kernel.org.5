@@ -2,59 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993B480DB37
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1422380DB39
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344904AbjLKUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
+        id S1344914AbjLKUED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:04:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLKUDv (ORCPT
+        with ESMTP id S229790AbjLKUEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:03:51 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F6AC4;
-        Mon, 11 Dec 2023 12:03:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=TJwORx52Qnkp9MLDYdwDcOh/PbHd7EDCPvYh06fhd1k=; b=ByKWuzSigakilwX1PE20hWgvhQ
-        CO2mP7ThIgarcek97GA2MQQ7wf0L6mERzQzB0aWPL45UeoH9PxRXOf6Q9vIWq5EjlRteTedAwqVaM
-        gr0ihn4WWtoLU3MoIEy/FH8A3q19rfS8RpE1oSaLERE/3G+gvvDbYhTay/8RR3u6O+A0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rCmV6-002eoH-Vb; Mon, 11 Dec 2023 21:03:36 +0100
-Date:   Mon, 11 Dec 2023 21:03:36 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "moderated list:ARM/STM32 ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        James Li <James.Li1@synopsys.com>,
-        Martin McKenny <Martin.McKenny@synopsys.com>
-Subject: Re: [PATCH net-next] net: stmmac: xgmac3+: add FPE handshaking
- support
-Message-ID: <d202770a-3a3a-4ee2-b0de-b86e2f3e83ce@lunn.ch>
-References: <CY5PR12MB63726FED738099761A9B81E7BF8FA@CY5PR12MB6372.namprd12.prod.outlook.com>
+        Mon, 11 Dec 2023 15:04:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496B2D8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:04:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71CFDC433C7;
+        Mon, 11 Dec 2023 20:04:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702325047;
+        bh=CB/ZILfzWkqt0zgGJLAEBpldUB3+zyNpoonT0GRnSAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g3LoFel/RjaKrbKg7l7rU7wbifetCkYO+bcMXGxYp2tCcOP6+Un2Uv2NG9kNNqjOC
+         2KLartpPxHgz9YX2hct8ORM0z64paFHwEN4JF+8Yhnynt0/PQtWQpEhqaHq3nqEu5A
+         R7oTFH3hZeBkVbDcgQ0g2tlqyqm3inbjP8MGE5FB0IQ4zMiQ3Btip/Bp9lqxwSnSKz
+         MbSsczCe5HJDHzugjfTTArg/5+szlNFSjFUo9k37Y3XXDxVwxiivYW3+ZUhpQRw8JO
+         jJmsil+9/v8W+qjEKNE+LDLQzxvVlQF/VWhWMW4SbBWX8ctYw90jNFyY1oh3rqt7DV
+         /jUd5MPrw00Iw==
+Date:   Mon, 11 Dec 2023 21:04:04 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/8] rcu: Fix expedited GP deadlock (and cleanup some
+ nocb stuff)
+Message-ID: <ZXdrNJFCaXAFMITp@localhost.localdomain>
+References: <20231208220545.7452-1-frederic@kernel.org>
+ <0be847d6-804e-4f9d-9eb4-beee9efb6c78@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CY5PR12MB63726FED738099761A9B81E7BF8FA@CY5PR12MB6372.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0be847d6-804e-4f9d-9eb4-beee9efb6c78@paulmck-laptop>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,74 +56,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 06:13:21AM +0000, Jianheng Zhang wrote:
-> Adds the HW specific support for Frame Preemption handshaking on XGMAC3+
-> cores.
+Le Mon, Dec 11, 2023 at 08:38:59AM -0800, Paul E. McKenney a écrit :
+> On Fri, Dec 08, 2023 at 11:05:37PM +0100, Frederic Weisbecker wrote:
+> > TREE04 can trigger a writer stall if run with memory pressure. This
+> > is due to a circular dependency between waiting for expedited grace
+> > period and polling on expedited grace period when workqueues go back
+> > to mayday serialization.
+> > 
+> > Here is a proposal fix.
 > 
-> Signed-off-by: Jianheng Zhang <Jianheng.Zhang@synopsys.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h     |  6 ++
->  .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    | 65 ++++++++++++++++++----
->  2 files changed, 60 insertions(+), 11 deletions(-)
+> The torture.sh "acceptance test" with KCSAN and --duration 30 ran
+> fine except for this in TREE09:
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> index 207ff17..306d15b 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2.h
-> @@ -194,6 +194,12 @@
->  #define XGMAC_MDIO_DATA			0x00000204
->  #define XGMAC_MDIO_C22P			0x00000220
->  #define XGMAC_FPE_CTRL_STS		0x00000280
-> +#define XGMAC_TRSP			BIT(19)
-> +#define XGMAC_TVER			BIT(18)
-> +#define XGMAC_RRSP			BIT(17)
-> +#define XGMAC_RVER			BIT(16)
-> +#define XGMAC_SRSP			BIT(2)
-> +#define XGMAC_SVER			BIT(1)
->  #define XGMAC_EFPE			BIT(0)
->  #define XGMAC_ADDRx_HIGH(x)		(0x00000300 + (x) * 0x8)
->  #define XGMAC_ADDR_MAX			32
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> index eb48211..091d932 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-> @@ -1439,22 +1439,63 @@ static void dwxgmac3_fpe_configure(void __iomem *ioaddr, struct stmmac_fpe_cfg *
->  {
->  	u32 value;
->  
-> -	if (!enable) {
-> -		value = readl(ioaddr + XGMAC_FPE_CTRL_STS);
-> +	if (enable) {
-> +		cfg->fpe_csr = XGMAC_EFPE;
-> +		value = readl(ioaddr + XGMAC_RXQ_CTRL1);
-> +		value &= ~XGMAC_RQ;
-> +		value |= (num_rxq - 1) << XGMAC_RQ_SHIFT;
-> +		writel(value, ioaddr + XGMAC_RXQ_CTRL1);
-> +	} else {
-> +		cfg->fpe_csr = 0;
-> +	}
-> +	writel(cfg->fpe_csr, ioaddr + XGMAC_FPE_CTRL_STS);
-> +}
->  
-> -		value &= ~XGMAC_EFPE;
-> +static int dwxgmac3_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
-> +{
-> +	u32 value;
-> +	int status;
->  
-> -		writel(value, ioaddr + XGMAC_FPE_CTRL_STS);
-> -		return;
-> +	status = FPE_EVENT_UNKNOWN;
-> +
-> +	/* Reads from the XGMAC_FPE_CTRL_STS register should only be performed
-> +	 * here, since the status flags of MAC_FPE_CTRL_STS are "clear on read"
-> +	 */
-> +	value = readl(ioaddr + XGMAC_FPE_CTRL_STS);
-> +
-> +	if (value & XGMAC_TRSP) {
-> +		status |= FPE_EVENT_TRSP;
-> +		netdev_info(dev, "FPE: Respond mPacket is transmitted\n");
+> kernel/rcu/tree_nocb.h:1785:13: error: unused function '__call_rcu_nocb_wake' [-Werror,-Wunused-function]
+> 
+> My guess is that the declaration of __call_rcu_nocb_wake() in
+> kernel/rcu/tree.h needs an "#ifdef CONFIG_SMP", but you might have a
+> better fix.
 
-netdev_info()?  Is this going to spam the logs? Should it be netdev_dbg()
+Could be because if CONFIG_RCU_NO_CB_CPU=n, the function is only called
+(though as dead code) from rcutree_migrate_callbacks() which in turn only
+exists if CONFIG_HOTPLUG_CPU=y.
 
-	Andrew
+Something like that then:
+
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 35f7af331e6c..e1ff53d5084c 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -445,6 +445,8 @@ static void rcu_qs(void);
+ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp);
+ #ifdef CONFIG_HOTPLUG_CPU
+ static bool rcu_preempt_has_tasks(struct rcu_node *rnp);
++static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
++				 unsigned long flags);
+ #endif /* #ifdef CONFIG_HOTPLUG_CPU */
+ static int rcu_print_task_exp_stall(struct rcu_node *rnp);
+ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp);
+@@ -466,8 +468,6 @@ static bool rcu_nocb_flush_bypass(struct rcu_data *rdp, struct rcu_head *rhp,
+ 				  unsigned long j, bool lazy);
+ static void call_rcu_nocb(struct rcu_data *rdp, struct rcu_head *head,
+ 			  rcu_callback_t func, unsigned long flags, bool lazy);
+-static void __call_rcu_nocb_wake(struct rcu_data *rdp, bool was_empty,
+-				 unsigned long flags);
+ static int rcu_nocb_need_deferred_wakeup(struct rcu_data *rdp, int level);
+ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp);
+ static void rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp);
