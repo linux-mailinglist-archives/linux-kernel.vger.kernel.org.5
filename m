@@ -2,106 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8A880DA8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE39C80DA97
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344567AbjLKTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:05:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S1344329AbjLKTKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235049AbjLKTFP (ORCPT
+        with ESMTP id S229516AbjLKTJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:05:15 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62417106;
-        Mon, 11 Dec 2023 11:04:39 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-67adea83ea6so35287216d6.0;
-        Mon, 11 Dec 2023 11:04:39 -0800 (PST)
+        Mon, 11 Dec 2023 14:09:58 -0500
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10796CF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:10:04 -0800 (PST)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1fae4875e0eso7348207fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 11:10:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702321478; x=1702926278; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9fUIDGd0KQpiVx0QnEq4QPqvvyyGBKsYPzxwNFGD4zg=;
-        b=hNRm24YUBuktHxfFqrWU4TgrUZ3+1Ip17N1erSnCKefN5rXy/9OQ3p5EeU0yV3A4A8
-         pSle6OOYcDKRpVSbcQBXlxNtMf6VQRotAAhjDrTHnQ6Y8969fYrDeaH6CXxlSFCsUtP9
-         x1rO9Xgd2EDhHtNYzPiaWD7W+0Pv057gWSFQOSVZvIvWLz9hdIytrDMOTaEYn8sB9J3n
-         6Yo+vpB84f3F1HhuAza8kW0gKvZVB/LFdwNb6h6EcF87+upTmxy2j/VU3MnHuBp6KhvS
-         hJKapMhNwtwiBPG6KEKJrLlIL9lZt9M1/TNBV5TWxsMPV52/dVT3Qmdc4I7ZZfpwW0Zn
-         IEqw==
+        d=google.com; s=20230601; t=1702321803; x=1702926603; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=pLJuiH0afxkaD2YOLBf8rgHfrGxhKASBgMKSWQ9l3mE=;
+        b=DXZXHnvWDv1GI9kRvrmRjIx3m4w0oTSRYgeKHGm4CwXW/tMsCg/+wi861aOf8Sgf7R
+         EfwTiB/u9o3jZYKgDVsLxHNgoQlclQM8Q9oB2zjj5uP4WXafk+AAS5w+1+rZiHLy/VMd
+         yGJ8WGJCdPYaYy8b+Q1fIKmxwoAXQO9go0xtIkcpYXffAdyTq+ClrG7If+nEbURcov3C
+         YN2iqYt/ymSkBL3b4QVuHaqOGyIEq/g1vuaoytBAYcizwy1flPTYkStBjKadZ72tn58F
+         igw70YImFR9E7k68vHr0d4oO9CRbDgPHldWj4Zqr9wj4cD4E9BAQGxFmfswK9wtX1Ng5
+         EZ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702321478; x=1702926278;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9fUIDGd0KQpiVx0QnEq4QPqvvyyGBKsYPzxwNFGD4zg=;
-        b=iJs8jcnxiPIhDFfwyIQ8Y6iFY3fKZCPQvDN0FcPVxdigeVucSg8qXufQAccUh7su7V
-         udm8yebRPru4n8uW81rYuI4Tmb/nALvpIUyCVOk8STuL41UTIrNT4cvUCIGTZifCeiT8
-         oc/k+gHeqkdCpoSuvUZ7hgFVio2eM9N236gr2Pi8z8vlk/OxPSiKvaEWUbU+V6S0ElTX
-         TyQ/oifSWX1nZwKJeykRmjzhjS7OauDe2yBxqRcba2K36BPMOJpLrdXSjR/95I6rPmj8
-         lQB0enhQZYZ8RFsvkD1DiYbKKsGbFRvR9BrFLHScuPhRKq1F6+q+138U9UTojNOfRQuo
-         ZHeQ==
-X-Gm-Message-State: AOJu0Yy+vl4xkOoT6Pp9Qu33XpERTsHUo78lVngcsLA9+snHkniWtZ9S
-        DlfTgz7h+ePoUYyDtAHnV/E=
-X-Google-Smtp-Source: AGHT+IFFPiRBGN3dmi5Ucvy2fzkixUTrsr3Dz8XWxnKWbsTXNEIqMUNXDyfefM4yxXdbkF5PghY9yQ==
-X-Received: by 2002:a05:6214:b27:b0:67a:a947:72b1 with SMTP id w7-20020a0562140b2700b0067aa94772b1mr5326532qvj.13.1702321478398;
-        Mon, 11 Dec 2023 11:04:38 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id x15-20020a0ce0cf000000b0067aa31371ddsm3493378qvk.80.2023.12.11.11.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 11:04:37 -0800 (PST)
-Message-ID: <031b2a9e-9b2a-44c7-aef2-191735da83a7@gmail.com>
-Date:   Mon, 11 Dec 2023 11:04:30 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/67] 5.4.264-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231211182015.049134368@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231211182015.049134368@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702321803; x=1702926603;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pLJuiH0afxkaD2YOLBf8rgHfrGxhKASBgMKSWQ9l3mE=;
+        b=qgedqU96BLoTT3xtuDV+UfVoz3F/nP4a38LBJb6ju2hUDxWMdFVWe3fOsLU/Hcavsp
+         KYF4ok+ziGikbHZdPCtf0HUaiUp+tX1Mlhb97Km5fy4utvE5i2YyunkmIJ8PCK+54vEo
+         zrTSrEk4txGzmKyh12MhuXGXhRL7t186nl1vpgzIC2H3Ly0cyDQMAEQD0uLUXhLqPI6h
+         Fg0ZwTbbT0SMbrCFwT8SDWMG9xOb/1XWCwq40bcQfMhc1+PVKC3djKJgYQu0rjWikofH
+         /4iEIcDE7dw9BU7xAzRuHYgj4nP5Wk6WLaTu//ngOX+5vmtH+rrxWbArmJmVYHe1Oj3O
+         zdcQ==
+X-Gm-Message-State: AOJu0YynS/vEuRCuOYjqN7qZ9nzwj99rZEq17NSW1Qd3lkxJyhxNUA8f
+        zScJbtr4CWupWclegxy6zGHFpX7mAjj3xfpBrA==
+X-Google-Smtp-Source: AGHT+IHvKqZP7f3jQfiI7xCBWbc5qtLEWaeWmYvrD28lL4j/tV/o+OHKvd7szRecAtwyGcYAOPdL5mAJDugJ7cETuQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:e415:b0:1fb:1176:50ff with
+ SMTP id n21-20020a056870e41500b001fb117650ffmr5427291oag.6.1702321803322;
+ Mon, 11 Dec 2023 11:10:03 -0800 (PST)
+Date:   Mon, 11 Dec 2023 19:10:00 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAIded2UC/5WNvQrCMBRGX0UyG8kPVuvke4hDc+9tGrBJSUqwl
+ L67aR3ETZcPzjecM7NE0VFil93MImWXXPAF9H7HoGu8Je6wMFNCaSmk4mmMHoaJY3SZYuKeRt6
+ jC++xQxngBhFrQgGVFqyohkite26Z271w59IY4rRVs1zfPwNZcskbUxtRQQvYmKsNwT7oAKFna yGrj1WJ049WVaygznhUiBpb+rIuy/ICm7kPhi8BAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702321802; l=2882;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=eLgUSsGRn6KvttCFjRNfTegIE4/MfMaKpVwBfZ9Mjyw=; b=4k3Sy8wCNWvA4Zo9ZylXCECbUz9MlMkk4n1/lpfkHH9mPOzfccsgiWsA7pNu7eVmRvk5OA8R3
+ ZGAN8m2trIxBVgmT/c0T+5IdaK9w5hrN5MwA5ExGe5c9OEfdps0SHAN
+X-Mailer: b4 0.12.3
+Message-ID: <20231211-strncpy-drivers-net-mdio-mdio-gpio-c-v3-1-76dea53a1a52@google.com>
+Subject: [PATCH v3] net: mdio-gpio: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 10:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.264 release.
-> There are 67 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.264-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+We expect new_bus->id to be NUL-terminated but not NUL-padded based on
+its prior assignment through snprintf:
+|       snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Due to this, a suitable replacement is `strscpy` [2] due to the fact
+that it guarantees NUL-termination on the destination buffer without
+unnecessarily NUL-padding.
+
+We can also use sizeof() instead of a length macro as this more closely
+ties the maximum buffer size to the destination buffer. Do this for two
+instances.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v3:
+- swap another instance of MII_BUS_ID_SIZE to sizeof() (thanks Russell)
+- rebase onto mainline bee0e7762ad2c602
+- Link to v2: https://lore.kernel.org/r/20231207-strncpy-drivers-net-mdio-mdio-gpio-c-v2-1-c28d52dd3dfe@google.com
+
+Changes in v2:
+- change subject line as it was causing problems in patchwork with
+  "superseded" label being improperly applied.
+- update commit msg with rationale around sizeof() (thanks Kees)
+- Link to v1 (lore): https://lore.kernel.org/r/20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com
+- Link to v1 (patchwork): https://patchwork.kernel.org/project/netdevbpf/patch/20231012-strncpy-drivers-net-mdio-mdio-gpio-c-v1-1-ab9b06cfcdab@google.com/
+- Link to other patch with same subject message: https://patchwork.kernel.org/project/netdevbpf/patch/20231012-strncpy-drivers-net-phy-mdio_bus-c-v1-1-15242e6f9ec4@google.com/
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/net/mdio/mdio-gpio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/mdio/mdio-gpio.c b/drivers/net/mdio/mdio-gpio.c
+index 897b88c50bbb..778db310a28d 100644
+--- a/drivers/net/mdio/mdio-gpio.c
++++ b/drivers/net/mdio/mdio-gpio.c
+@@ -123,9 +123,9 @@ static struct mii_bus *mdio_gpio_bus_init(struct device *dev,
+ 	new_bus->parent = dev;
+ 
+ 	if (bus_id != -1)
+-		snprintf(new_bus->id, MII_BUS_ID_SIZE, "gpio-%x", bus_id);
++		snprintf(new_bus->id, sizeof(new_bus->id), "gpio-%x", bus_id);
+ 	else
+-		strncpy(new_bus->id, "gpio", MII_BUS_ID_SIZE);
++		strscpy(new_bus->id, "gpio", sizeof(new_bus->id));
+ 
+ 	if (pdata) {
+ 		new_bus->phy_mask = pdata->phy_mask;
+
+---
+base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+change-id: 20231012-strncpy-drivers-net-mdio-mdio-gpio-c-bddd9ed0c630
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
