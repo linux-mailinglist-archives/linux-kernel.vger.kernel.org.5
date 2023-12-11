@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E02880DF52
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7681A80DF4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345319AbjLKXNO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 18:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        id S1345259AbjLKXNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 18:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345300AbjLKXNN (ORCPT
+        with ESMTP id S1345301AbjLKXNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 18:13:13 -0500
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C718CCB;
-        Mon, 11 Dec 2023 15:13:19 -0800 (PST)
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso2602026a12.2;
-        Mon, 11 Dec 2023 15:13:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702336399; x=1702941199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cqid22gVYH094dKsNq0+eWukD9v01nP4LAhWHajwYxo=;
-        b=o2bRTkKwfrzWT6OkJeKYtq9OprxDeD5/YUxCkdMB3WPo5/vo9th6xElrdwdYaGgK+5
-         WN0zf/BkQL70h9sig2ySnyutSCtltRSxcff6pf2hAU7xgfp8x5MMwcmkJMx7Z1VYle+X
-         S1V6Ij5ynIbt5qdfF+9tJaB83gzFq8Wi/FeKqI+6LDwl8hhsFqbh20NbPMR55FxiCZBe
-         q1WCbEtWwK8i8MqQmP22OHfMrO7QcKILFPDscRd7MzW9GhU1fGVZ22CrWFMHR/LxoMSd
-         VA7rSN2gkeIuBImGxpkK2avGJOea1lyELHZRiWCQTB3GqebZlL20RhrFaAUfWGWcdIHA
-         eOZA==
-X-Gm-Message-State: AOJu0YwtmfmmKDzAK5/1JBeoIy1f7onm2P0egAqviLNjR1UTkNZcL9xp
-        2rcUqxS+c5A5a923DoiUJMPoWdmVdtxsIlNdXjJCUkUwZps=
-X-Google-Smtp-Source: AGHT+IFs5STX4S2N0jTA70Ngwh3RK7N00wUSIIOBD/HENzpB5AKMNG20w7x0dKREB9ZbHLlL0xHkT6kxXiptoR/Kei0=
-X-Received: by 2002:a17:90a:24b:b0:28a:7a82:53b6 with SMTP id
- t11-20020a17090a024b00b0028a7a8253b6mr1507629pje.28.1702336398933; Mon, 11
- Dec 2023 15:13:18 -0800 (PST)
+        Mon, 11 Dec 2023 18:13:37 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA32E5;
+        Mon, 11 Dec 2023 15:13:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4zzGhdcyxnMFmx+b16T6hcC16jA6EgRk42HHeuGbE7U=; b=Wg0i0Y2tv3w3mqeC5IfSmSkK+H
+        5IlJ/oG++TmEYu/YYUWQRrJggoMAYapUa6I4m1BVxueC3ya0/vfIPZQif64putXQXoTaX11+v4+FX
+        sHjm6uByj6tNOme0d8gyXeTvgRt/cudvRU3RnA/7Q+dsKlcOVF9CqFMjDjHF7PQ4VDDyL237mHmkQ
+        NQ70H6CHKGyJQOtHOoquJHo6ac4O4Om0nPEBLtsOLl0KzeOR2YgKJe+kkXPHMMOjbjlgDmoo5yk4O
+        lcXtHOzGh+leFF/vgt9ADktX84Tei8a9J6/68AFfXowNFuKg9qzQHLnWLtgl9YwEc9lOLuTqAbmUp
+        quO0g56Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rCpSs-00B2uk-2i;
+        Mon, 11 Dec 2023 23:13:31 +0000
+Date:   Mon, 11 Dec 2023 23:13:30 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of
+ files.
+Message-ID: <20231211231330.GE1674809@ZenIV>
+References: <20231208033006.5546-1-neilb@suse.de>
+ <20231208033006.5546-2-neilb@suse.de>
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>
+ <20231211191117.GD1674809@ZenIV>
+ <170233343177.12910.2316815312951521227@noble.neil.brown.name>
 MIME-Version: 1.0
-References: <20231207125716.1947860-1-tmricht@linux.ibm.com>
- <CAM9d7cgJUgVGpQJ=KgH+3RzAJ8Ce50Acr=gSZh_ZLuiTa3-sEg@mail.gmail.com>
- <de0dd86a-4c49-49ed-a90b-4890c82a7b2d@linux.ibm.com> <7451a263-82e8-4daa-a7f6-009d5560445e@linux.ibm.com>
-In-Reply-To: <7451a263-82e8-4daa-a7f6-009d5560445e@linux.ibm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 11 Dec 2023 15:13:07 -0800
-Message-ID: <CAM9d7cheZG+4PYf2xT0kykHW2LRt_d2GHG-mLWqvLBD3fJWFOQ@mail.gmail.com>
-Subject: Re: [PATCH] perf test: Fix fails of perf stat --bpf-counters
- --for-each-cgroup on s390
-To:     Thomas Richter <tmricht@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, svens@linux.ibm.com, gor@linux.ibm.com,
-        sumanthk@linux.ibm.com, hca@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170233343177.12910.2316815312951521227@noble.neil.brown.name>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 3:30 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
->
-> On 12/8/23 12:07, Thomas Richter wrote:
-> > On 12/8/23 00:26, Namhyung Kim wrote:
-> >
-> >> Thanks for the patch.  But I think it should support
-> >> machines without systemd (or maybe with old versions).
-> >>
-> >> Also probably you want to reset the behavior after
-> >> the test.  I think we can just run some built-in test
-> >> workload like `perf test -w thloop`.
-> >>
-> >> Thanks,
-> >> Namhyung
-> >
-> > Thanks for our feedback.
-> > Well regarding the use of systemd daemon-reexec the manual says
-> > this command restarts the systemd triggered processes.
-> > There is nothing to reset. All ports stay active while the command
-> > is processed.
-> >
-> > I tried your 'perf test -w thloop`, but that did not trigger
-> > anything on system.slice.
-> >
-> > I do not understand enough about cgroups and system.slice, but I am
-> > under the impression, that the system.slice just increment counters
-> > when executed by processes under systemd control. Maybe I am wrong.
+On Tue, Dec 12, 2023 at 09:23:51AM +1100, NeilBrown wrote:
 
-Ah, you're right.  It needs to run the task somewhere in the system.slice.
-Then it'd be hard to get a proper cgroup name generally. Hmm..
+> Previously you've suggested problems with ->release blocking.
+> Now you refer to lazy-umount, which is what the comment above
+> __fput_sync() mentions.
 
-My concern was it'd bind system daemons on the CPU 0 and 1 after the
-test.  Probably you could run it at the end of the test again without taskset.
+Yes?  What I'm saying is that the set of locks involved is
+too large for any sane analysis.  And lest you discard ->release(),
+that brings ->i_rwsem, and thus anything that might be grabbed
+under that.  Someone's ->mmap_lock, for example.
 
-> >
-> > The only other workload which always incremented system.slice counters
-> > was 'ssh localhost ls -l', which involves local login and a running sshd.
+> "pretty much an locks" seems like hyperbole.  I don't see it taking
+> nfsd_mutex or nlmsvc_mutex.
 
-But it won't work if the system doesn't have sshd.
+I don't know - and I can't tell without serious search.  What I can
+tell is that before making fput() delayed we used to find deadlocks
+on regular basis; that was a massive source of headache.
 
-Thanks,
-Namhyung
+> Maybe you mean any filesystem lock?
+
+Don't forget VM.  And drivers.  And there was quite a bit of fun
+happening in net/unix, etc.  Sure, in case of nfsd the last two
+_probably_ won't occur - not directly, anyway.
+
+But making it a general nuisan^Wfacility is asking for trouble.
+
+> My understanding is that the advent of vmalloc allocated stacks means
+> that kernel stack space is not an important consideration.
+> 
+> It would really help if we could have clear documented explanation of
+> what problems can occur.  Maybe an example of contexts where it isn't
+> safe to call __fput_sync().
+> 
+> I can easily see that lazy-unmount is an interesting case which could
+> easily catch people unawares.  Punting the tail end of mntput_no_expire
+> (i.e.  if count reaches zero) to a workqueue/task_work makes sense and
+> would be much less impact than punting every __fput to a workqueue.
+> 
+> Would that make an fput_now() call safe to use in most contexts, or is
+> there something about ->release or dentry_kill() that can still cause
+> problems?
+
+dentry_kill() means ->d_release(), ->d_iput() and anything final iput()
+could do.  Including e.g. anything that might be done by afs_silly_iput(),
+with its "send REMOVE to server, wait for completion".  No, that's not
+a deadlock per se, but it can stall you a bit more than you would
+probably consider tolerable...  Sure, you could argue that AFS ought to
+make that thing asynchronous, but...
+
+Anyway, it won't be "safe to use in most contexts".  ->mmap_lock alone
+is enough for that, and that's just the one I remember to have given
+us a lot of headache.  And that's without bringing the "nfsd won't
+touch those files" cases - make it generally accessible and you get
+to audit all locks that might be taken when we close a socket, etc.
