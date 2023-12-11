@@ -2,193 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D4880C9C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450EC80C9B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbjLKM3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        id S1343501AbjLKMYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbjLKM3i (ORCPT
+        with ESMTP id S234882AbjLKMYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:29:38 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233322119;
-        Mon, 11 Dec 2023 04:23:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1702297420;
-        bh=ODAUXRjain77XOmoPnKy1MNIInbnbbNcYLIa9FPn8ks=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nIVA8V0yVj+ZMN8x89h2gJxxT4+cCTauZuj8Ht7cflzgnHnN4ITpBMOV1xWo7AIlq
-         Qb+tJKhKhRta6FIYqIPB6IjCP4IRbYllJ3J3dFQkrZ5gBhylzYOFVQ0olRQRq0XFRq
-         mToIUeHe7mjunplXY3/T3inRVriUXVwwqHAyMT8ZrNdDNjb78fGIZ7jZefsf1Xa8DY
-         kagFMIi8wqGn8H2LFlRDsc9/abaI9Ajeo1k+5RyvhTShHF9xXBTFIlBig9ReYi7rDb
-         14jHwg99Lq6Mb4L4gts5PmojrjCNJA0P9GJfiVGM/34KY923DExlNs08GewB4rxZRl
-         xDIjF0NgfU/GA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Spgrp6jZHz4xGM;
-        Mon, 11 Dec 2023 23:23:38 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Samuel Holland <samuel.holland@sifive.com>,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Timothy Pearson <tpearson@raptorengineering.com>
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-arch@vger.kernel.org,
-        Samuel Holland <samuel.holland@sifive.com>
-Subject: Re: [RFC PATCH 10/12] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
-In-Reply-To: <20231208055501.2916202-11-samuel.holland@sifive.com>
-References: <20231208055501.2916202-1-samuel.holland@sifive.com>
- <20231208055501.2916202-11-samuel.holland@sifive.com>
-Date:   Mon, 11 Dec 2023 23:23:35 +1100
-Message-ID: <87h6kpdj20.fsf@mail.lhotse>
+        Mon, 11 Dec 2023 07:24:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2516AFD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:24:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80982C433C8;
+        Mon, 11 Dec 2023 12:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702297494;
+        bh=84WZ4ewsgmNR6/ZEW1MIf+TUOxBr41z/0ezXIVDNlCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilAFsEluKCHN7JQF683UHoaAPdr3aQNU9wUM/86e2jGy5Lw+g1sufCi36ER71lb28
+         IV3JUmJPzp0iLxUNt5NKysTnwDcg9lG5IZe0Shq4T5c81NCk3xy5AKv6Bojhof3wI4
+         4xGSRRz2MLvaaHkhmd/YCurLS2ZKAyEZErJPT/FaBklhFmMI+Z+US4fVghYw5acFTe
+         sSEmYrgg3VsPUDUk7SxhNlgpt2upZ1diZusBAjUJ4V9ihREC/RY1Dm5jw2Mb/HhhiN
+         duZ2vyRwAY0SgqkMNwqsISFiGcgEx2VxFG69IxIHYRzoh4kwKP3PHwLGwTuMYuyygR
+         reKVHlBPLxb5A==
+Date:   Mon, 11 Dec 2023 12:24:46 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Message-ID: <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+References: <20231206103702.3873743-1-surenb@google.com>
+ <20231206103702.3873743-6-surenb@google.com>
+ <ZXXJ9NdH61YZfC4c@finisterre.sirena.org.uk>
+ <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
+ <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
+ <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
+ <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7/hbqtGcYo57an8M"
+Content-Disposition: inline
+In-Reply-To: <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
+X-Cookie: Better dead than mellow.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
 
-Thanks for trying to clean all this up.
+--7/hbqtGcYo57an8M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-One problem below.
+On Mon, Dec 11, 2023 at 01:03:27PM +0100, David Hildenbrand wrote:
+> On 11.12.23 12:15, Mark Brown wrote:
 
-Samuel Holland <samuel.holland@sifive.com> writes:
-> Now that all previously-supported architectures select
-> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
-> of the existing list of architectures. It can also take advantage of the
-> common kernel-mode FPU API and method of adjusting CFLAGS.
->
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-...
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-> index 4ae4720535a5..b64f917174ca 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-> @@ -87,20 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
->  	WARN_ON_ONCE(!in_task());
->  	preempt_disable();
->  	depth = __this_cpu_inc_return(fpu_recursion_depth);
-> -
->  	if (depth == 1) {
-> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
-> +		BUG_ON(!kernel_fpu_available());
->  		kernel_fpu_begin();
-> -#elif defined(CONFIG_PPC64)
-> -		if (cpu_has_feature(CPU_FTR_VSX_COMP))
-> -			enable_kernel_vsx();
-> -		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
-> -			enable_kernel_altivec();
- 
-Note altivec.
+> > This is linux-next.  I pasted the commands used to build and sent links
+> > to a full build log in the original report.
 
-> -		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
-> -			enable_kernel_fp();
-> -#elif defined(CONFIG_ARM64)
-> -		kernel_neon_begin();
-> -#endif
->  	}
->  
->  	TRACE_DCN_FPU(true, function_name, line, depth);
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> index ea7d60f9a9b4..5aad0f572ba3 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-> @@ -25,40 +25,8 @@
->  # It provides the general basic services required by other DAL
->  # subcomponents.
->  
-> -ifdef CONFIG_X86
-> -dml_ccflags-$(CONFIG_CC_IS_GCC) := -mhard-float
-> -dml_ccflags := $(dml_ccflags-y) -msse
-> -endif
-> -
-> -ifdef CONFIG_PPC64
-> -dml_ccflags := -mhard-float -maltivec
-> -endif
+> Probably also related to "make headers-install":
 
-And altivec is enabled in the flags there.
+> https://lkml.kernel.org/r/20231209020144.244759-1-jhubbard@nvidia.com
 
-That doesn't match your implementation for powerpc in patch 7, which
-only deals with float.
+> The general problem is that some mm selftests are currently not written in
+> way that allows them to compile with old linux headers. That's why the build
+> fails if "make headers-install" was not executed, but it does not fail if
+> "make headers-install" was once upon a time executed, but the headers are
+> outdated.
 
-I suspect the AMD driver actually doesn't need altivec enabled, but I
-don't know that for sure. It compiles without it, but I don't have a GPU
-to actually test. I've added Timothy on Cc who added the support for
-powerpc to the driver originally, hopefully he has a test system.
+Oh, it's obviously the new headers not being installed.  The builds
+where I'm seeing the problem (my own and KernelCI's) are all fresh
+containers so there shouldn't be any stale headers lying around.
 
-Anyway if that's true that it doesn't need altivec we should probably do
-a lead-up patch that drops altivec from the AMD driver explicitly, eg.
-as below.
+--7/hbqtGcYo57an8M
+Content-Type: application/pgp-signature; name="signature.asc"
 
-cheers
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV2/40ACgkQJNaLcl1U
+h9AYhgf+IwDyqx/YzY9a574RrlQwU81b5BOxu2o1hAwwT6vCfeujk8u7w16UtJiZ
+z3PAPhFvqNlDM0hyEQ44r4HFLlplsauO1zJH0lygThC0wnc0MEd3PGe+8Qu2hJsj
++LCnpWR3+f5rJtTP9OImUOnWUCiVLjcphPpgICFoomrKmL/IAMKvao8Nq4mlMOey
+DmnS71xdBnZLHEizsj9BRJmHQpsddXUsKKiTXgYDln7sCo423sPSNnDzS/HOg4aj
+8NJekG0uFkF6e8NcJGq9PA+D8RWBNMFHiv9TActmsSFMGR7HAcYz8fOaT6yFZmZY
+/zZ6acLUvhqjyGPCdx8npVgRedNb9Q==
+=WaDf
+-----END PGP SIGNATURE-----
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-index 4ae4720535a5..0de16796466b 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-@@ -92,11 +92,7 @@ void dc_fpu_begin(const char *function_name, const int line)
- #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
- 		kernel_fpu_begin();
- #elif defined(CONFIG_PPC64)
--		if (cpu_has_feature(CPU_FTR_VSX_COMP))
--			enable_kernel_vsx();
--		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
--			enable_kernel_altivec();
--		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
-+		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
- 			enable_kernel_fp();
- #elif defined(CONFIG_ARM64)
- 		kernel_neon_begin();
-@@ -125,11 +121,7 @@ void dc_fpu_end(const char *function_name, const int line)
- #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
- 		kernel_fpu_end();
- #elif defined(CONFIG_PPC64)
--		if (cpu_has_feature(CPU_FTR_VSX_COMP))
--			disable_kernel_vsx();
--		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
--			disable_kernel_altivec();
--		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
-+		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
- 			disable_kernel_fp();
- #elif defined(CONFIG_ARM64)
- 		kernel_neon_end();
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index 6042a5a6a44f..554c39024a40 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -31,7 +31,7 @@ dml_ccflags := $(dml_ccflags-y) -msse
- endif
- 
- ifdef CONFIG_PPC64
--dml_ccflags := -mhard-float -maltivec
-+dml_ccflags := -mhard-float
- endif
- 
- ifdef CONFIG_ARM64
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-index acff3449b8d7..7b51364084b5 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-@@ -30,7 +30,7 @@ dml2_ccflags := $(dml2_ccflags-y) -msse
- endif
- 
- ifdef CONFIG_PPC64
--dml2_ccflags := -mhard-float -maltivec
-+dml2_ccflags := -mhard-float
- endif
- 
- ifdef CONFIG_ARM64
+--7/hbqtGcYo57an8M--
