@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C671380BE6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 01:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DA380BEB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 02:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbjLKADZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 19:03:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S232242AbjLKBPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 20:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLKADY (ORCPT
+        with ESMTP id S229483AbjLKBPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 19:03:24 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482ADEB;
-        Sun, 10 Dec 2023 16:03:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702253009;
-        bh=Xu2o7UhOz+q82dze+E6Eq5AxrzPlgZYyi0f1QrDEumU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DeHMjPoBU+KiXQyXjXi6MwL1kybHIfqmMe1QV3kWygyEdfReZQjJwgFbzu5uT6EoO
-         GISfQEKG8iyVMitdfu/i62Q5v23q92KwuepzdhMzHcgVdiqRyMKhq8DMqILho/J/zn
-         0v0ZVFvv97V2KRPX3L1N1Arm9WF9cn8pFuaAwW/jftemQWibOf8x54O4FEStOuK1sW
-         61A/Siq2r04ukHDDAqNq8kri/3F0MR6WAU39w+/jW5s2mD+IvcSiLqF11yTJGqz6xo
-         sQsbo7Gqxz1n2UV71RJKTA4dGHOFNpHI9LasNvQ5pxbZa/5+cVOaa8YVyWo0san/SD
-         3wSQjBKL+P8hw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpMQm5dQrz4wdC;
-        Mon, 11 Dec 2023 11:03:28 +1100 (AEDT)
-Date:   Mon, 11 Dec 2023 11:03:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20231211110328.76c925af@canb.auug.org.au>
+        Sun, 10 Dec 2023 20:15:06 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ABEE3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:15:12 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c29f7b068so37684695e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 17:15:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702257311; x=1702862111; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TVYCyVS3+ff43Qu6NzjIwTDiljR88wG6SCIsO7lLWds=;
+        b=hUDwjp8kWW21rshJ2xD5xVe1/v2MPrdMkSORUL5685RPBIDOdhsxQEBTgDphBI2WYe
+         SrafVbt/3Jh1c/wZZTlozayYEBnCg7F0nKklHjAEO97ZTDXa6fO+vf4ORVqnO1USBhxl
+         1Lx82BN+lJ0cYktMWp+EKyWHhVVjDFz9LYlqcvKodiv1AdSrfUVUVdg7DeXtMZ36I3Tv
+         1QKztmHsmTsu7GKiA5/B53C85W1kJly3uaZc/tvdYSpMzJn/U2qVuZBSdtXyWGLR//QF
+         8uEVFfsHnEalP1E9KxbNNCbTIYeLhGA0JYCkLcmZgZkQyvUPmwyS8HKS5UzKny+oE51F
+         lwuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702257311; x=1702862111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVYCyVS3+ff43Qu6NzjIwTDiljR88wG6SCIsO7lLWds=;
+        b=oKnJWo4gojSmSzC8fgDJ+HFeIX4XToZg2C1hqHKo2+UpDvfbpGDOL5QVqEfPIp0tHk
+         B3AyKMGxD+cePBHQM9MnieFrQWNNvXZ2l0/bTS80Qg16Q703jmcjBAlHbaUrcir5GN5g
+         8fav9S57y0yLvETuSOZ6ZMBqR7RaTeYVwOapFFrzJ4CEoTjtn8T6xivFYQHa6VgDFhiT
+         /2HCA7+y14Z1s3azXcx89eQ32ScnsJR3Gi2zssBLCZrLzhReVITu18KN3Ovs4hLZet4z
+         Np97MXqNfcdLshcUiaEHdSnwTQ5sXm1weayFbQOSRKX/O/pybTXQRWFJT0RkMCNfvpf/
+         ilFQ==
+X-Gm-Message-State: AOJu0YwZg0/TcYXt6U89BvlBpbh1SdaKARaBunouP8XDbqgklo2xqbgc
+        +2B0BNdY6B51d6u7f3zkYZo3fPEktCZmcctOmMM=
+X-Google-Smtp-Source: AGHT+IHs/2WGc7kkqOKYqUw7U3gIBEFHtRUjCsAT6m4TrVG9iYyfq51zDosI6ulGoJtA7worvysu+A==
+X-Received: by 2002:a05:600c:2294:b0:40c:2328:fcd with SMTP id 20-20020a05600c229400b0040c23280fcdmr1585213wmf.135.1702257310691;
+        Sun, 10 Dec 2023 17:15:10 -0800 (PST)
+Received: from airbuntu (host109-153-232-45.range109-153.btcentralplus.com. [109.153.232.45])
+        by smtp.gmail.com with ESMTPSA id fc17-20020a05600c525100b0040c42681fcesm4316862wmb.15.2023.12.10.17.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Dec 2023 17:15:10 -0800 (PST)
+Date:   Mon, 11 Dec 2023 00:08:09 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+        Rick Yiu <rickyiu@google.com>,
+        Chung-Kai Mei <chungkai@google.com>,
+        Hongyan Xia <hongyan.xia2@arm.com>
+Subject: Re: [PATCH 2/4] sched/uclamp: Remove rq max aggregation
+Message-ID: <20231211000809.qostlrd5bka6cvak@airbuntu>
+References: <20231208015242.385103-1-qyousef@layalina.io>
+ <20231208015242.385103-3-qyousef@layalina.io>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hjS7o5CUo4wh7zjheP.rlT6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231208015242.385103-3-qyousef@layalina.io>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,113 +79,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hjS7o5CUo4wh7zjheP.rlT6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/08/23 01:52, Qais Yousef wrote:
 
-Hi all,
+> +/* Request freq update on context switch if necessary */
+> +static inline void uclamp_context_switch(struct rq *rq)
+>  {
+> -	return static_branch_likely(&sched_uclamp_used);
+> +	unsigned long uclamp_min;
+> +	unsigned long uclamp_max;
+> +	unsigned long util;
+> +
+> +	/* Only RT and FAIR tasks are aware of uclamp */
+> +	if (!rt_policy(current->policy) && !fair_policy(current->policy))
+> +		return;
 
-Today's linux-next merge of the net-next tree got a conflict in:
+We have a dependency on min_granularity_ns (or base_slice_ns) here that
+I forgot to add before posting.
 
-  drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+If our base_slice_ns is smaller than dvfs_update_delay, then tasks won't run
+long enough for the hardware to apply their performance hints before they get
+context switched out.
 
-between commit:
+Beside the new proposed sched_runtime being able to request a smaller slice; in
+practice default base_slice_ns is okay-ish.
 
-  3d7a3f2612d7 ("net/mlx5: Nack sync reset request when HotPlug is enabled")
-
-from the net tree and commit:
-
-  cecf44ea1a1f ("net/mlx5: Allow sync reset flow when BF MGT interface devi=
-ce is present")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index c4e19d627da2,4b8cb120362b..000000000000
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@@ -325,29 -325,25 +325,48 @@@ static void mlx5_fw_live_patch_event(st
-  		mlx5_core_err(dev, "Failed to reload FW tracer\n");
-  }
- =20
- +#if IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE)
- +static int mlx5_check_hotplug_interrupt(struct mlx5_core_dev *dev)
- +{
- +	struct pci_dev *bridge =3D dev->pdev->bus->self;
- +	u16 reg16;
- +	int err;
- +
- +	if (!bridge)
- +		return -EOPNOTSUPP;
- +
- +	err =3D pcie_capability_read_word(bridge, PCI_EXP_SLTCTL, &reg16);
- +	if (err)
- +		return err;
- +
- +	if ((reg16 & PCI_EXP_SLTCTL_HPIE) && (reg16 & PCI_EXP_SLTCTL_DLLSCE)) {
- +		mlx5_core_warn(dev, "FW reset is not supported as HotPlug is enabled\n"=
-);
- +		return -EOPNOTSUPP;
- +	}
- +
- +	return 0;
- +}
- +#endif
- +
-+ static const struct pci_device_id mgt_ifc_device_ids[] =3D {
-+ 	{ PCI_VDEVICE(MELLANOX, 0xc2d2) }, /* BlueField1 MGT interface device ID=
- */
-+ 	{ PCI_VDEVICE(MELLANOX, 0xc2d3) }, /* BlueField2 MGT interface device ID=
- */
-+ 	{ PCI_VDEVICE(MELLANOX, 0xc2d4) }, /* BlueField3-Lx MGT interface device=
- ID */
-+ 	{ PCI_VDEVICE(MELLANOX, 0xc2d5) }, /* BlueField3 MGT interface device ID=
- */
-+ 	{ PCI_VDEVICE(MELLANOX, 0xc2d6) }, /* BlueField4 MGT interface device ID=
- */
-+ };
-+=20
-+ static bool mlx5_is_mgt_ifc_pci_device(struct mlx5_core_dev *dev, u16 dev=
-_id)
-+ {
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < ARRAY_SIZE(mgt_ifc_device_ids); ++i)
-+ 		if (mgt_ifc_device_ids[i].device =3D=3D dev_id)
-+ 			return true;
-+=20
-+ 	return false;
-+ }
-+=20
-  static int mlx5_check_dev_ids(struct mlx5_core_dev *dev, u16 dev_id)
-  {
-  	struct pci_bus *bridge_bus =3D dev->pdev->bus;
-
---Sig_/hjS7o5CUo4wh7zjheP.rlT6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV2UdAACgkQAVBC80lX
-0GyKWQf+Ia4wx1trE5N3tEhDkjKdcg3E9xvWxQZDZQ1JkPMwP3D2DHbF4t8nRZdL
-QgzSS9qyFaUBsYiKrQtwlxhtBV7l5cM9bWTs/jgXHxg1+Zo+fzpdhRaAULgcC/gZ
-Vdv7bYipCpTTnSNA5dvao/M8TJqz8xA+bFrimRYfEi5SbgrtX4JnYlXECoSKyZF2
-L+7M4hgDjdb2VJAreBf0XnBU+uwYhTxWn3M6hi9WoNk6RoEHqgsf/8y5ZBQNwoPz
-+dyzv7D/mUlpjVwAZ8bldV5gdqRB02Aom68dDnfv5NQ9n4YIX/p7yBKCBvqJEjTj
-rEvnNah5ut5mQMLPRYqPNTUmBSvlSw==
-=vcRh
------END PGP SIGNATURE-----
-
---Sig_/hjS7o5CUo4wh7zjheP.rlT6--
+> +
+> +	uclamp_min = uclamp_eff_value(current, UCLAMP_MIN);
+> +	uclamp_max = uclamp_eff_value(current, UCLAMP_MAX);
+> +	util = rq->cfs.avg.util_avg;
+> +
+> +	if (uclamp_min > util || uclamp_max < util)
+> +		cpufreq_update_util(rq, SCHED_CPUFREQ_PERF_HINTS);
+>  }
