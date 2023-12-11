@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522A480D4E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CD780D4E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345142AbjLKSBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:01:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S1345146AbjLKSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345034AbjLKSBM (ORCPT
+        with ESMTP id S1345128AbjLKSBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:01:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB0C9D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:01:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CCCEC433C7;
-        Mon, 11 Dec 2023 18:01:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702317678;
-        bh=YJWISt590/g0otblmkssjtUeSQnjpGCXYjZSjuDzcf8=;
+        Mon, 11 Dec 2023 13:01:33 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C90D0;
+        Mon, 11 Dec 2023 10:01:38 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0DCAF842;
+        Mon, 11 Dec 2023 19:00:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702317652;
+        bh=KfBFTuoez1m2Nh+nHRrGKhXBBSbuBYj7whGffhCDbqs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ewKcaYCzaPwT9dVHWHwwInwt5Sej4niDOrEwZv6S36t142PbL4/VOJpVE+ojMsGC0
-         qork2wL3Mv6DeeO9RmzPXQdcBxjOf1150pRqFqB2zCQbWB6h2hXTIxG9zC9gTLZbqj
-         H8hyw7zdZ8QcPEeG2aoZaPYWwzkbwwINoPB+SJuJHBbNXs7QohPpcp3X/9HB4R1NxS
-         epRO96d6Y1ja1aq6HuWdeHBrFU1fTXl21VbDG3jywLiRbc9EYtQiITIPVIBZOOA8bZ
-         Pb/E52Z6bBCbaP2L/GYXiAve1A82LlgYQj1fbiW7qmE3cT1AWXydoqS37ORc6E25jj
-         UKvO45i8ZaXcg==
-Date:   Mon, 11 Dec 2023 19:01:12 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
-        jlayton@kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-Message-ID: <20231211-fortziehen-basen-b8c0639044b8@brauner>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
- <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
- <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
- <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
+        b=gztcOBGiahkrIFqiqGi1mNTmo+IQKDR/6bd4WEURyXUW33Ik13FwE1sNl6hsNGU/S
+         umk+TG54fpvXvZNCc1syCE3TWBqX/8uEuKHaAlOwt/dKN0WECVMSgQpgPpxAF84Fth
+         J6dcC7H9ksBLqfliGgSpaZM/4Rk5SoO2HRS+dwsk=
+Date:   Mon, 11 Dec 2023 20:01:42 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 02/19] media: i2c: ov4689: Fix typo in a comment
+Message-ID: <20231211180142.GA27535@pendragon.ideasonboard.com>
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-3-mike.rudenko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231211175023.1680247-3-mike.rudenko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The second problem is that one security.evm is not enough. We need two,
-> to store the two different HMACs. And we need both at the same time,
-> since when overlayfs is mounted the lower/upper directories can be
-> still accessible.
-
-"Changes to the underlying filesystems while part of a mounted overlay
-filesystem are not allowed. If the underlying filesystem is changed, the
-behavior of the overlay is undefined, though it will not result in a
-crash or deadlock."
-
-https://docs.kernel.org/filesystems/overlayfs.html#changes-to-underlying-filesystems
-
-So I don't know why this would be a problem.
-
-> In the example I described, IMA tries to update security.ima, but this
-> causes EVM to attempt updating security.evm twice (once after the upper
-> filesystem performed the setxattr requested by overlayfs, another after
-> overlayfs performed the setxattr requested by IMA; the latter fails
-
-So I think phrasing it this way is confusiong. All that overlayfs does
-is to forward that setxattr request to the upper layer. So really the
-overlayfs layer here is irrelevant?
-
-> since EVM does not allow the VFS to directly update the HMAC).
-
-Callchains and details, please. I don't understand what you mean.
-
+On Mon, Dec 11, 2023 at 08:50:05PM +0300, Mikhail Rudenko wrote:
+> Fix a spelling error in a comment.
 > 
-> Remapping security.evm to security.evm_overlayfs (now
-> trusted.overlay.evm) allows us to store both HMACs separately and to
-> know which one to use.
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+
+Starting with the easy one,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  drivers/media/i2c/ov4689.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I just realized that the new xattr name should be public, because EVM
-> rejects HMAC updates, so we should reject HMAC updates based on the new
-> xattr name too.
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index ff5213862974..53dcfc8685d4 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -692,7 +692,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_EXPOSURE:
+> -		/* 4 least significant bits of expsoure are fractional part */
+> +		/* 4 least significant bits of exposure are fractional part */
+>  		ret = ov4689_write_reg(ov4689->client, OV4689_REG_EXPOSURE,
+>  				       OV4689_REG_VALUE_24BIT, ctrl->val << 4);
+>  		break;
 
-I won't support any of this going in unless there's a comprehensive
-description of where this is all supposed to go and there's a
-comprehensive and coherent story of what EVM and IMA want to achieve for
-overlayfs or stacking filesystems in general. The past months we've seen
-a bunch of ductape to taper over this pretty basic question and there's
-no end in sight apparently.
+-- 
+Regards,
 
-Really, we need a comprehensive solution for both IMA and EVM it seems.
-And before that is solved we'll not be merging anything of this sort and
-won't make any impactful uapi changes such as exposing a new security.*
-xattr.
+Laurent Pinchart
