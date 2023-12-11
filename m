@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F45280CFCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8062480CFD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:42:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344109AbjLKPmD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 10:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S1344177AbjLKPmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343898AbjLKPmC (ORCPT
+        with ESMTP id S1344064AbjLKPml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:42:02 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E772CDC;
-        Mon, 11 Dec 2023 07:42:07 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Splxf4jp1zB03Fq;
-        Mon, 11 Dec 2023 23:28:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-        by mail.maildlp.com (Postfix) with ESMTP id B5020140489;
-        Mon, 11 Dec 2023 23:41:59 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDnInO+LXdlFG9ZAg--.22283S2;
-        Mon, 11 Dec 2023 16:41:59 +0100 (CET)
-Message-ID: <6e05677355d6d134dddd11da56709b424b631079.camel@huaweicloud.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Seth Forshee <sforshee@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
-        jlayton@kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 11 Dec 2023 16:41:46 +0100
-In-Reply-To: <ZXcsdf6BzszwZc9h@do-x1extreme>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
-         <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
-         <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
-         <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
-         <ZXcsdf6BzszwZc9h@do-x1extreme>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 11 Dec 2023 10:42:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7372BD;
+        Mon, 11 Dec 2023 07:42:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702309367; x=1733845367;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4AuaSAqga/dVILmnPhrkc9jm8ft7ImJB/u3/MqEmVeU=;
+  b=O8x6DXn9HCfeAhlNOPQF8SFDoockVpU1TTJ1T+up+02HVXi8kOT9a8OR
+   i2vwqf4FCDRdfJn/mu87jNE8yi+35U9006CVRYHjrrvePZzzi/2eHn8uO
+   boqg++xbsaYIh+6ZrN+m7w0Y5wYhQRy2w/TAIkr5063/K9TdiC92NDe0m
+   E1UfbSCUGbxOaLFGOkkzf1GYvddmt8SPBAL3h7b0vLc7rZ4wTZgVtk2X0
+   ZdlS6C49haGClTKKd+D28xT0U/jPynvvwCjlqySwU0EVICg4RG3arCiA6
+   e0CEy/ZrCmBkWnYsaR8oVJdp7xVl+RdSRdAmjoyMk7EMe3gBubT+1zZDL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1535070"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1535070"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 07:42:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104506746"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1104506746"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Dec 2023 07:42:45 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2C1D039B; Mon, 11 Dec 2023 17:42:44 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] pinctrl: nuvoton: Constify wpcm450_groups
+Date:   Mon, 11 Dec 2023 17:42:39 +0200
+Message-ID: <20231211154239.4190429-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwDnInO+LXdlFG9ZAg--.22283S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWfXryxCw1xWw4ktw1fWFg_yoW8Cr4rpr
-        WSva4IqFs8JryxZw4SyrsrX3yF93WxWa15Jr45Krn7A3WDGr1jgFWDJ3W3ZFyIqFyDWa1j
-        qayUKas7ur98Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5d2AAAAsd
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-12-11 at 09:36 -0600, Seth Forshee wrote:
-> On Mon, Dec 11, 2023 at 03:56:06PM +0100, Roberto Sassu wrote:
-> > Ok, I will try.
-> > 
-> > I explain first how EVM works in general, and then why EVM does not
-> > work with overlayfs.
-> > 
-> > EVM gets called before there is a set/removexattr operation, and after,
-> > if that operation is successful. Before the set/removexattr operation
-> > EVM calculates the HMAC on current inode metadata (i_ino, i_generation,
-> > i_uid, i_gid, i_mode, POSIX ACLs, protected xattrs). Finally, it
-> > compares the calculated HMAC with the one in security.evm.
-> > 
-> > If the verification and the set/removexattr operation are successful,
-> > EVM calculates again the HMAC (in the post hooks) based on the updated
-> > inode metadata, and sets security.evm with the new HMAC.
-> > 
-> > The problem is the combination of: overlayfs inodes have different
-> > metadata than the lower/upper inodes; overlayfs calls the VFS to
-> > set/remove xattrs.
-> 
-> I don't know all of the inner workings of overlayfs in detail, but is it
-> not true that whatever metadata an overlayfs mount presents for a given
-> inode is stored in the lower and/or upper filesystem inodes? If the
-> metadata for those inodes is verified with EVM, why is it also necessary
-> to verify the metadata at the overlayfs level? If some overlayfs
-> metadata is currently omitted from the checks on the lower/upper inodes,
-> is there any reason EVM couldn't start including that its checksums?
+There is no modifications are assumed for wpcm450_groups. Constify it.
 
-Currently, the metadata where there is a misalignment are:
-i_generation, s_uuid, (i_ino?). Maybe there is more?
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If metadata are aligned, there is no need to store two separate HMACs.
-
-Thanks
-
-Roberto
-
-> Granted that there could be some backwards compatibility issues, but
-> maybe inclusion of the overlayfs metadata could be opt-in.
-> 
-> Thanks,
-> Seth
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+index 4589900244c7..cdad4ef11a2f 100644
+--- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+@@ -474,7 +474,7 @@ enum {
+ #undef WPCM450_GRP
+ };
+ 
+-static struct pingroup wpcm450_groups[] = {
++static const struct pingroup wpcm450_groups[] = {
+ #define WPCM450_GRP(x) PINCTRL_PINGROUP(#x, x ## _pins, ARRAY_SIZE(x ## _pins))
+ 	WPCM450_GRPS
+ #undef WPCM450_GRP
+-- 
+2.43.0.rc1.1.gbec44491f096
 
