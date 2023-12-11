@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E2C80C55A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C43A80C534
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbjLKJ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S234649AbjLKJtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbjLKJ6Y (ORCPT
+        with ESMTP id S234537AbjLKJtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:58:24 -0500
-X-Greylist: delayed 574 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 01:58:31 PST
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17772BD;
-        Mon, 11 Dec 2023 01:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702288136;
-        bh=6mxzECBrYAAv88Or/VmuYFmoaCjMKUWyx5lJyKf47Rg=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=ZOyfTjeWI75SumpYHrJJp3tpnNbregMBpz6DYPBko3jqkrqUVZIIKilCA2wvPCDmF
-         ko75vYXWrMKcmLVqcRtnuP7fwh6mFje5roaPrHqyRZy/yEvdee3SRlJ895KZOPuvTz
-         ch3rLBmYcqzM22MP/xXNoCohbQCB+dkubsUls2EjCj8sF7/TbUh4nEUiaTMgnx0Ina
-         VA+s4nyZeZu9o17UPBsUnNjBZrBE1jOeb8RaVZdNcMEFOY1YFJsDMcPlW/gN9DxU2D
-         cdtpMKJ1GKl0vjxrH70xRVPZ83Uqp0vmZXCTcZs50uUu9S67Pu8DX2he1OekWYv3jC
-         lwcL/q7eCSHng==
-Received: from [IPV6:fd00::2a:39ce] (cola.collaboradmins.com [IPv6:2a01:4f8:1c1c:5717::1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4827F378140E;
-        Mon, 11 Dec 2023 09:48:55 +0000 (UTC)
-Message-ID: <1db19550-99c2-4094-95d9-9db1c384519f@collabora.com>
-Date:   Mon, 11 Dec 2023 10:48:54 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: mediatek: mt7986: silence error in case of
- -EPROBE_DEFER
-Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
+        Mon, 11 Dec 2023 04:49:53 -0500
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D7B7;
+        Mon, 11 Dec 2023 01:49:52 -0800 (PST)
+X-UUID: 9e13a96c980a11eeba30773df0976c77-20231211
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ciXZzyC9ZU0ljtsNsTEjkWMSYDk1eZJ4CxmA2ikjg9c=;
+        b=HFADTEwmhWcvhCZOtKH/6rFkvcAwURQcWAR/uND12QK6E4qYtdCgcrYn3i3w77g/n9edvAj0MQFSaYXGtrRuaSCO8TYFAbGftJb6L1depnJk3JR6ujyMeW7XtBfWHuf0y9mFfVOddY6YWk6Bw5xNJyfIufH2M10UviOqx7LJVYI=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.35,REQID:a46590e4-426f-4861-9795-5f5cf8d49f22,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:5d391d7,CLOUDID:18170f61-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 9e13a96c980a11eeba30773df0976c77-20231211
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2090974650; Mon, 11 Dec 2023 17:49:46 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Dec 2023 17:49:45 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 11 Dec 2023 17:49:44 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Maso Huang <maso.huang@mediatek.com>,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <98491ec78ab671f5a14fce42d10f9745ebddb112.1702258360.git.daniel@makrotopia.org>
-From:   AngeloGioacchino Del Regno 
+        AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <98491ec78ab671f5a14fce42d10f9745ebddb112.1702258360.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+CC:     Ryder Lee <ryder.lee@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <qizhong.cheng@mediatek.com>, <stable@vger.kernel.org>
+Subject: [PATCH v4] PCI: mediatek: Clear interrupt status before dispatching handler
+Date:   Mon, 11 Dec 2023 17:49:23 +0800
+Message-ID: <20231211094923.31967-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,
+        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/12/23 02:33, Daniel Golle ha scritto:
-> If probe is defered no error should be printed. Mute it.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->   sound/soc/mediatek/mt7986/mt7986-wm8960.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
-> index c1390b3734101..24a4b943030d7 100644
-> --- a/sound/soc/mediatek/mt7986/mt7986-wm8960.c
-> +++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
-> @@ -144,7 +144,9 @@ static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
->   
->   	ret = devm_snd_soc_register_card(&pdev->dev, card);
->   	if (ret) {
-> -		dev_err(&pdev->dev, "%s snd_soc_register_card fail: %d\n", __func__, ret);
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "%s snd_soc_register_card fail: %d\n", __func__, ret);
+From: qizhong cheng <qizhong.cheng@mediatek.com>
 
-This is *exactly* what dev_err_probe() does! :-)
+We found a failure when used iperf tool for wifi performance testing,
+there are some MSIs received while clearing the interrupt status,
+these MSIs cannot be serviced.
 
-dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail: %d\n", __func__);
+The interrupt status can be cleared even the MSI status still remaining,
+as an edge-triggered interrupts, its interrupt status should be cleared
+before dispatching to the handler of device.
 
-Regards,
-Angelo
+Fixes: 43e6409db64d ("PCI: mediatek: Add MSI support for MT2712 and MT7622")
+Signed-off-by: qizhong cheng <qizhong.cheng@mediatek.com>
+Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: stable@vger.kernel.org
+---
+v4:
+ - Found that this patch has not been merged, resending it as v4.
 
+v3:
+ - Add Fix tag.
+
+v2:
+ - Update the subject line.
+ - Improve the commit log and code comments.
+---
+ drivers/pci/controller/pcie-mediatek.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+index 66a8f73296fc..3fb7f08de061 100644
+--- a/drivers/pci/controller/pcie-mediatek.c
++++ b/drivers/pci/controller/pcie-mediatek.c
+@@ -617,12 +617,17 @@ static void mtk_pcie_intr_handler(struct irq_desc *desc)
+ 		if (status & MSI_STATUS){
+ 			unsigned long imsi_status;
+ 
++			/*
++			 * The interrupt status can be cleared even the MSI
++			 * status still remaining, hence as an edge-triggered
++			 * interrupts, its interrupt status should be cleared
++			 * before dispatching handler.
++			 */
++			writel(MSI_STATUS, port->base + PCIE_INT_STATUS);
+ 			while ((imsi_status = readl(port->base + PCIE_IMSI_STATUS))) {
+ 				for_each_set_bit(bit, &imsi_status, MTK_MSI_IRQS_NUM)
+ 					generic_handle_domain_irq(port->inner_domain, bit);
+ 			}
+-			/* Clear MSI interrupt status */
+-			writel(MSI_STATUS, port->base + PCIE_INT_STATUS);
+ 		}
+ 	}
+ 
+-- 
+2.18.0
 
