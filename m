@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2BD80C8BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC6080C8BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbjLKL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:59:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
+        id S234500AbjLKL71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234510AbjLKL7T (ORCPT
+        with ESMTP id S234820AbjLKL7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:59:19 -0500
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92238CD;
-        Mon, 11 Dec 2023 03:59:25 -0800 (PST)
+        Mon, 11 Dec 2023 06:59:13 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F07710E;
+        Mon, 11 Dec 2023 03:59:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VvpYT
-        W40NZ46U/uC3kxp5psTC7U46RpXFvNEExH8M2A=; b=ST917H6sunqf2y6NnCz6K
-        XvAbAMXofT9a6GGmmtjaYxodl+EqyBmUfhErUFpzdkfo23HYE9334Rhm0t3TWuXP
-        OyXRd7d9cPrWh9mHI8+zMsDmR36GoCzHSMPo9QNO6nHNLd5L/B6/WvoT1tM3q7vS
-        I96Anf5QvBSHsvH+JhJfhQ=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ivYwG
+        0i8GvTy5B3DD4RgxIA/V22tX/s2NpyT/lti0eQ=; b=hGpFQL3B1tq2R+3ICxkZ0
+        KMxJL1CWx1/tPMaXixkPlMb5fIGiE70fD1kpfXhNanfYfiuKi0Vi6gWfnjxEnzva
+        Z4n6d+8JjGsZXbutlJXD6zcrg23w+Wnw6apCldxuvzSfNJEyrqDnvtg7wtNWKlcU
+        GBfVVhB3kL8U2wdiNuRuHM=
 Received: from ProDesk.. (unknown [58.22.7.114])
-        by zwqz-smtp-mta-g5-1 (Coremail) with SMTP id _____wDnj5FY+XZlTHfzCQ--.17744S2;
-        Mon, 11 Dec 2023 19:58:19 +0800 (CST)
+        by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wA3Lz5j+XZl9ZkABA--.22432S2;
+        Mon, 11 Dec 2023 19:58:30 +0800 (CST)
 From:   Andy Yan <andyshrk@163.com>
 To:     heiko@sntech.de
 Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
@@ -31,25 +31,26 @@ Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
         krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
         devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
         kever.yang@rock-chips.com, chris.obbard@collabora.com,
-        Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v5 07/16] drm/rockchip: vop2: set bg dly and prescan dly at vop2_post_config
-Date:   Mon, 11 Dec 2023 19:58:15 +0800
-Message-Id: <20231211115815.1785131-1-andyshrk@163.com>
+        Andy Yan <andy.yan@rock-chips.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH v5 08/16] drm/rockchip: vop2: rename grf to sys_grf
+Date:   Mon, 11 Dec 2023 19:58:26 +0800
+Message-Id: <20231211115826.1785190-1-andyshrk@163.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231211115547.1784587-1-andyshrk@163.com>
 References: <20231211115547.1784587-1-andyshrk@163.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDnj5FY+XZlTHfzCQ--.17744S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZw4kZw1UJrWUtF15Ww1Utrb_yoW5Xr4rp3
-        4fGry3CrWUJF4qvw1kZa4DZr4fKws7tr47JFW7Jas2yF90qr9xZwn8urn8GrWqqFy7AFy2
-        9rWvgrWYgF1akr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jTApnUUUUU=
+X-CM-TRANSID: _____wA3Lz5j+XZl9ZkABA--.22432S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AFW7tFy3Ww1DKw4DurW5trb_yoW8Zr1fpa
+        sxAay2gr4xGrZFqF1vkFs8CFWakws7CayIk3WIk3Wa9ry7tr98KFs8Wa45JrW3trnruF4a
+        q3yqyry3CFy7Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jDSdgUUUUU=
 X-Originating-IP: [58.22.7.114]
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqB5DXmVOA44ldgAAse
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEgpDXmVOA43CoAAAsC
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,73 +61,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andy Yan <andy.yan@rock-chips.com>
 
-We need to setup background delay cycle and prescan
-delay cycle when a mode is enable to avoid trigger
-POST_BUF_EMPTY irq on rk3588.
+The vop2 need to reference more grf(system grf, vop grf, vo0/1 grf,etc)
+in the upcoming rk3588.
 
-Note: RK356x has no such requirement.
+So we rename the current system grf to sys_grf.
 
 Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
 
 (no changes since v1)
 
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 26 ++++++++------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index 40b5c5ca4864..d52395b6aff7 100644
+index d52395b6aff7..64155b115744 100644
 --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
 +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -1460,8 +1460,18 @@ static void vop2_post_config(struct drm_crtc *crtc)
- 	u32 top_margin = 100, bottom_margin = 100;
- 	u16 hsize = hdisplay * (left_margin + right_margin) / 200;
- 	u16 vsize = vdisplay * (top_margin + bottom_margin) / 200;
-+	u16 hsync_len = mode->crtc_hsync_end - mode->crtc_hsync_start;
- 	u16 hact_end, vact_end;
- 	u32 val;
-+	u32 bg_dly;
-+	u32 pre_scan_dly;
-+
-+	bg_dly = vp->data->pre_scan_max_dly[3];
-+	vop2_writel(vp->vop2, RK3568_VP_BG_MIX_CTRL(vp->id),
-+		    FIELD_PREP(RK3568_VP_BG_MIX_CTRL__BG_DLY, bg_dly));
-+
-+	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
-+	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
+@@ -190,7 +190,7 @@ struct vop2 {
+ 	void __iomem *regs;
+ 	struct regmap *map;
  
- 	vsize = rounddown(vsize, 2);
- 	hsize = rounddown(hsize, 2);
-@@ -1956,11 +1966,6 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
- 	u32 layer_sel = 0;
- 	u32 port_sel;
- 	unsigned int nlayer, ofs;
--	struct drm_display_mode *adjusted_mode;
--	u16 hsync_len;
--	u16 hdisplay;
--	u32 bg_dly;
--	u32 pre_scan_dly;
- 	u32 ovl_ctrl;
- 	int i;
- 	struct vop2_video_port *vp0 = &vop2->vps[0];
-@@ -1968,17 +1973,6 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
- 	struct vop2_video_port *vp2 = &vop2->vps[2];
- 	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
+-	struct regmap *grf;
++	struct regmap *sys_grf;
  
--	adjusted_mode = &vp->crtc.state->adjusted_mode;
--	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
--	hdisplay = adjusted_mode->crtc_hdisplay;
--
--	bg_dly = vp->data->pre_scan_max_dly[3];
--	vop2_writel(vop2, RK3568_VP_BG_MIX_CTRL(vp->id),
--		    FIELD_PREP(RK3568_VP_BG_MIX_CTRL__BG_DLY, bg_dly));
--
--	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
--	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
--
- 	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
- 	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
- 	if (vcstate->yuv_overlay)
+ 	/* physical map length of vop2 register */
+ 	u32 len;
+@@ -1524,9 +1524,9 @@ static void rk3568_set_intf_mux(struct vop2_video_port *vp, int id,
+ 		dip &= ~RK3568_DSP_IF_POL__RGB_LVDS_PIN_POL;
+ 		dip |= FIELD_PREP(RK3568_DSP_IF_POL__RGB_LVDS_PIN_POL, polflags);
+ 		if (polflags & POLFLAG_DCLK_INV)
+-			regmap_write(vop2->grf, RK3568_GRF_VO_CON1, BIT(3 + 16) | BIT(3));
++			regmap_write(vop2->sys_grf, RK3568_GRF_VO_CON1, BIT(3 + 16) | BIT(3));
+ 		else
+-			regmap_write(vop2->grf, RK3568_GRF_VO_CON1, BIT(3 + 16));
++			regmap_write(vop2->sys_grf, RK3568_GRF_VO_CON1, BIT(3 + 16));
+ 		break;
+ 	case ROCKCHIP_VOP2_EP_HDMI0:
+ 		die &= ~RK3568_SYS_DSP_INFACE_EN_HDMI_MUX;
+@@ -2768,7 +2768,7 @@ static int vop2_bind(struct device *dev, struct device *master, void *data)
+ 			return PTR_ERR(vop2->lut_regs);
+ 	}
+ 
+-	vop2->grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
++	vop2->sys_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
+ 
+ 	vop2->hclk = devm_clk_get(vop2->dev, "hclk");
+ 	if (IS_ERR(vop2->hclk)) {
 -- 
 2.34.1
 
