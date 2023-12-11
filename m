@@ -2,427 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BD80D384
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F33D80D389
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344526AbjLKRSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        id S1344525AbjLKRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235004AbjLKRSF (ORCPT
+        with ESMTP id S1343918AbjLKRTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:18:05 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BDBBE;
-        Mon, 11 Dec 2023 09:18:08 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBDsDfC019781;
-        Mon, 11 Dec 2023 09:17:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        pfpt0220; bh=a7nYuK/yV0tdN8rBsNllqrwwqV8uA9tLmy4ZoMvonqM=; b=ghI
-        b/lgY3ufgOSi5I7+4bIkN225I+s+5EcYQ9GRbXE/x6R2GIZxIlLs+InOM6cMm7pX
-        +Y13woNFj+QTMVj/C5eiPw6CSmbWBeS5IpYxlImVRirLPndw2W+fOdaHgzwj9Kqi
-        fwVTfQRVKMI9MmafPF6cpllq65cf4kpT3Gj5OqxfTzo8X39njtzpHUh85sy/33sX
-        TVD+3r2TxJiL08VhP6wPGdNPp0U82q/GuYvuQszyXkCPUBnLtRVWFwde3GILJO+P
-        35hB9SPgsebtvXikLKrqPtCjdE1sQ1/y2VKAWeHhsX/H5X11jfFntGZG6hWIYlLW
-        +HPjN2tId6t0cffa1Tg==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uvrmjnfp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 09:17:59 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Dec
- 2023 09:17:56 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 11 Dec 2023 09:17:56 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id 46E8A3F7068;
-        Mon, 11 Dec 2023 09:17:53 -0800 (PST)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>,
-        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
-        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
-        <chris.packham@alliedtelesis.co.nz>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <enachman@marvell.com>, <cyuval@marvell.com>
-Subject: [PATCH v8 3/3] arm64: dts: cn913x: add device trees for COM Express boards
-Date:   Mon, 11 Dec 2023 19:17:39 +0200
-Message-ID: <20231211171739.4090179-4-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231211171739.4090179-1-enachman@marvell.com>
-References: <20231211171739.4090179-1-enachman@marvell.com>
+        Mon, 11 Dec 2023 12:19:10 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C049C3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:19:16 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5d279bcce64so45287467b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:19:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702315155; x=1702919955; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bJOibuG6vu5h39vC6LrzSpC8cKv0ovNojHLf3UcUYOs=;
+        b=PP2VlYOpY4zu95UBeyOyWADoTCcy0+hpqqdAjOq4QrR8SPevBm8QEMjUqLpPTEAV4C
+         Jqa3T3IvFrcmJjgb6LoP+yTD/A3uAjIRIQEcQyN97pDG+3xvGezxZbxS+w74IRsCCynB
+         aLbfE239Twi9uLADkycEu0XmG+T4UF1EQ837dCknAdh25aXeGm/TjphE7gE4KPzB5V4t
+         5IYeSL8vzIlnmXOgDD0w6Mr08KwAmKdQMJ8Swfklsczdd5pKE68gegIevHSBBzNAYvyO
+         doy1EbofNXHx2dvvLNpqKAOSNDWSYzk8Nkhr093L+f2xKjWd9A0DVT6UavhX2Fdk6mID
+         pVCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702315155; x=1702919955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bJOibuG6vu5h39vC6LrzSpC8cKv0ovNojHLf3UcUYOs=;
+        b=qbQPYWGdai7nqVc0JePtMZzt36T651JsoLsXtmA2wDeS+l3PVk4XC2fP8nHnepOKwQ
+         nxnTto3l7thrwX0dDmk64gFcsnTw4IllfCoB9nW+mtXA5Svp7NvBY69UhsnK2oh53Rkx
+         xP8w5yppPyWEnFuVHc8AH3tDBDuA3j9sTWpvukoFpwTAcq0ZXaq8/1r9e9dZHqvd0vXD
+         rDz7cI8X66xv4d5lIRRNsDEsCXlovHuTR9nqup2Lx28Am3lsznkBwBSKt8EoADyOG3Mp
+         wNFzLTKjBoAFyDprdoAxu5xn2ysJxV0q2B0F8mSQgblxEiQp+WnwxsmoV+58WhEPfJP/
+         yS0g==
+X-Gm-Message-State: AOJu0Yx9ysXrIyz60lTP9V1ozIT3uIUzl8v6jfmikvcOfdsW3wigfdoO
+        Ua3YG0DhW0u5lb3rqMbvjGaNPg==
+X-Google-Smtp-Source: AGHT+IEN+r/n8bFmT9gt2y1wkBpK7QWHUW6PhQg7FVQRhsKR/QNz5faUQmkXhyYOv6/U5cLojeBmqg==
+X-Received: by 2002:a0d:f846:0:b0:5d7:1941:2c1b with SMTP id i67-20020a0df846000000b005d719412c1bmr3832075ywf.72.1702315155100;
+        Mon, 11 Dec 2023 09:19:15 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id gi3-20020a05690c424300b005df4992992esm2225483ywb.24.2023.12.11.09.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 09:19:14 -0800 (PST)
+Date:   Mon, 11 Dec 2023 17:19:12 +0000
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] MAINTAINERS: add myself as counter watch events
+ tool maintainer
+Message-ID: <ZXdEkO5u/IDKEgaV@ubuntu-server-vm-macos>
+References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+ <20231206164726.418990-3-fabrice.gasnier@foss.st.com>
+ <ZXcx+94QW2pWDBxM@ubuntu-server-vm-macos>
+ <81bbf2f7-6db2-47de-9761-0b196b5348d2@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: Dm7GSxc8gM-VLeO0Gb21oWqcNWBkaFAb
-X-Proofpoint-ORIG-GUID: Dm7GSxc8gM-VLeO0Gb21oWqcNWBkaFAb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DqZxG5w8JvyzHbBp"
+Content-Disposition: inline
+In-Reply-To: <81bbf2f7-6db2-47de-9761-0b196b5348d2@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Nachman <enachman@marvell.com>
 
-Add support for CN9130 and CN9131 COM Express Type 7 CPU
-module boards by Marvell.
-Define these COM Express CPU modules as dtsi and
-provide a dtsi file for a carrier board (Marvell AC5X RD
-COM Express type 7 carrier board).
-This Carrier board only utilizes the PCIe link, hence no
-special device / driver support is provided by this dtsi file.
-Finally, provide a dts file for the com express carrier and
-CPU module combination.
+--DqZxG5w8JvyzHbBp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-These COM Express boards differ from the existing CN913x DB
-boards by the type of ethernet connection (RGMII),
-the type of voltage regulators (not i2c expander based)
-and the USB phy (not UTMI based).
-Note - PHY + RGMII connector is OOB on CPU module.
-CN9131 COM Express board is basically CN9130 COM Express board
-with an additional CP115 I/O co-processor, which in this case
-provides an additional USB host controller on the board.
+On Mon, Dec 11, 2023 at 06:09:44PM +0100, Fabrice Gasnier wrote:
+> On 12/11/23 16:59, William Breathitt Gray wrote:
+> > On Wed, Dec 06, 2023 at 05:47:26PM +0100, Fabrice Gasnier wrote:
+> >> Add MAINTAINERS entry for the counter watch events tool. William has
+> >> been asking to add at least me as the point of contact for this utilit=
+y.
+> >>
+> >> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> >> ---
+> >> Changes in v3: Add MAINTAINERS entry. This is a split of another patch
+> >> series[1].
+> >> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasn=
+ier@foss.st.com/
+> >> ---
+> >>  MAINTAINERS | 5 +++++
+> >>  1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/MAINTAINERS b/MAINTAINERS
+> >> index dd5de540ec0b..b8541ab7866a 100644
+> >> --- a/MAINTAINERS
+> >> +++ b/MAINTAINERS
+> >> @@ -5322,6 +5322,11 @@ F:	include/linux/counter.h
+> >>  F:	include/uapi/linux/counter.h
+> >>  F:	tools/counter/
+> >> =20
+> >> +COUNTER WATCH EVENTS TOOL
+> >> +M:	Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> >> +S:	Maintained
+> >> +F:	tools/counter/counter_watch_events.c
+> >=20
+> > Add an L line as well for the linux-iio@vger.kernel.org address so
+> > discussions get sent to our public mailing list.
+>=20
+> Hi William,
+>=20
+> I can add it, yes. But just to be sure, with current patch,
+> get_maintainer.pl gives me:
+>=20
+> ./scripts/get_maintainer.pl tools/counter/counter_watch_events.c
+> Fabrice Gasnier <fabrice.gasnier@foss.st.com> (maintainer:COUNTER WATCH
+> EVENTS TOOL)
+> William Breathitt Gray <william.gray@linaro.org> (maintainer:COUNTER
+> SUBSYSTEM)
+> linux-iio@vger.kernel.org (open list:COUNTER SUBSYSTEM)
+> linux-kernel@vger.kernel.org (open list)
+>=20
+> So is it really needed to add an L line ?
+>=20
+> Best Regards,
+> Fabrice
 
-Signed-off-by: Elad Nachman <enachman@marvell.com>
----
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../dts/marvell/ac5x-rd-carrier-cn9131.dts    |  44 +++++++
- .../boot/dts/marvell/ac5x-rd-carrier.dtsi     |  34 ++++++
- .../dts/marvell/cn9130-db-comexpress.dtsi     |  96 ++++++++++++++++
- .../dts/marvell/cn9131-db-comexpress.dtsi     | 108 ++++++++++++++++++
- 5 files changed, 283 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts
- create mode 100644 arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
- create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
- create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
+I think the get_maintainer.pl script tries its best to find a list when
+one isn't specified, so when it doesn't find a list under the COUNTER
+WATCH EVENTS TOOL entry, it finds the "tools/counter" directory
+specified under the COUNTER SUBSYSTEM entry and pulls in that list.
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 79ac09b58a89..99b8cb3c49e1 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -26,4 +26,5 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += ac5x-rd-carrier-cn9131.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
-diff --git a/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts
-new file mode 100644
-index 000000000000..2a0b07000089
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier-cn9131.dts
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the AC5X RD Type 7 Com Express carrier board,
-+ * Utilizing the CN913x COM Express CPU module board.
-+ * This specific carrier board in this mode of operation (external)
-+ * only maintains a PCIe link with the CPU module,
-+ * which does not require any special DTS definitions.
-+ *
-+ * AC5X RD works here in external mode (switch selectable at the back of the
-+ * board), and connect via an external cable a kit
-+ * which would allow it to use an external CN9131 CPU COM Express module,
-+ * mounted on top of an interposer kit.
-+ *
-+ * So in this case, once the switch is set to external mode as explained above,
-+ * the AC5X RD becomes part of the carrier solution.
-+ *
-+ * When the board boots in the external CPU mode, the internal CPU is disabled,
-+ * and only the switch portion of the SOC acts as a PCIe end-point, Hence there
-+ * is no need to describe this internal (disabled CPU) in the device tree.
-+ *
-+ * There is no CPU booting in this mode on the carrier, only on the
-+ * CN9131 COM Express CPU module.
-+ * What runs the Linux is the CN9131 on the COM Express CPU module,
-+ * And it accesses the switch end-point on the AC5X RD portion of the carrier
-+ * via PCIe.
-+ */
-+
-+#include "cn9131-db-comexpress.dtsi"
-+#include "ac5x-rd-carrier.dtsi"
-+
-+/ {
-+	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board with CN9131 CPU module";
-+	compatible = "marvell,cn9131-ac5x-carrier", "marvell,rd-ac5x-carrier",
-+			"marvell,cn9131-cpu-module", "marvell,cn9131",
-+			"marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-diff --git a/arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
-new file mode 100644
-index 000000000000..f98629abb58b
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/ac5x-rd-carrier.dtsi
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the AC5X RD Type 7 Com Express carrier board,
-+ * This specific board in external mode (see below) only maintains
-+ * a PCIe link with the COM Express CPU module, which does not
-+ * require any special DTS definitions.
-+ *
-+ * AC5X RD can either work as you would expect, as a complete standalone
-+ * box using the internal CPU, or you can move the switch on the back of
-+ * the box to "external" mode, and connect via an external cable a kit
-+ * which would allow it to use an external CPU COM Express module,
-+ * mounted on top of an interposer kit.
-+ *
-+ * So in this case, once the switch is set to external mode as explained above,
-+ * the AC5X RD becomes part of the carrier solution.
-+ * This is a development/reference solution, not a full commercial solution,
-+ * hence it was designed with the flexibility to be configured in different
-+ * modes of operation.
-+ *
-+ * When the board boots in the external CPU mode, the internal CPU is disabled,
-+ * and only the switch portion of the SOC acts as a PCIe end-point, Hence there
-+ * is no need to describe this internal (disabled CPU) in the device tree.
-+ *
-+ * There is no CPU booting in this mode on the carrier,
-+ * only on the COM Express CPU module.
-+ */
-+
-+/ {
-+	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board";
-+	compatible = "marvell,rd-ac5x-carrier";
-+
-+};
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
-new file mode 100644
-index 000000000000..028496ebc473
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9130-DB Com Express CPU module board.
-+ */
-+
-+#include "cn9130-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9130-DB COM EXPRESS type 7 CPU module board";
-+	compatible = "marvell,cn9130-cpu-module", "marvell,cn9130",
-+		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		status = "okay";
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-diff --git a/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
-new file mode 100644
-index 000000000000..6f3914bcfd01
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
-@@ -0,0 +1,108 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9131-DB Com Express CPU module board.
-+ */
-+
-+#include "cn9131-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9131-DB COM EXPRESS type 7 CPU module board";
-+	compatible = "marvell,cn9131-cpu-module", "marvell,cn9131", "marvell,cn9130",
-+		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp1_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		status = "okay";
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp1_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp1_usb3_0_phy0>;
-+	/* Generic PHY, providing serdes lanes */
-+	phys = <&cp1_comphy3 1>;
-+	phy-names = "usb";
-+};
--- 
-2.25.1
+Although we end up with the same list, that level of indirection makes
+it somewhat ambiguous to a user whether that's the correct list to mail.
+So just to be proper and clear, we should provide an explicit L line so
+there is no confusion.
 
+William Breathitt Gray
+
+--DqZxG5w8JvyzHbBp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZXdEkAAKCRC1SFbKvhIj
+K7IpAQCwOWCY90BHIn4sKetysj1BC1aPzwZTDdzLCYI+4tKFbAEArcPeysYkeWXY
+eqnjLqD+msPvPKVxDRMOLJZBn70lcQs=
+=GTfg
+-----END PGP SIGNATURE-----
+
+--DqZxG5w8JvyzHbBp--
