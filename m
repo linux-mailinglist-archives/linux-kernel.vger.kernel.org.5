@@ -2,242 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B45680DDE4
+	by mail.lfdr.de (Postfix) with ESMTP id A14B380DDE5
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345546AbjLKWAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
+        id S1345573AbjLKWAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345538AbjLKWAr (ORCPT
+        with ESMTP id S1345552AbjLKWAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:00:47 -0500
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2064.outbound.protection.outlook.com [40.107.241.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E187FAF;
-        Mon, 11 Dec 2023 14:00:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XL7iaDeH1wh6bHmdHVnXBkUjzywulcFHPt/eob+glaVirvagRzV6Kz95kYu/ama0ykfL41fNadoY1Qgqx1KBrRHtUwyuZtACCfsFwDsyJeXPLzilP9ROj365j+WROi3XdBsNFM6rZ/zH2E59Mktzjia7jgaSrP2+7Z3UKwogstaqk2GVk6Ski9To/hqD6MbchiuUmQb0hnoDtaaBLRVicyXv8X75EfHNgeSEXY+hH4WW6+Di57T2fdnIiqmBgV/MDR08FDOQX7fnErCNojsNko+TF/peFnueDa9lGGPGYOEBNmx5juNoIHNnCmviaql5ZvrWm1tPQg6R9zVVg1LB0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VDsMDJjPLgKGyfutpDbYr5Dtxeplfku8pilICDnyv5c=;
- b=ivLjLa48IDgfNXXkzBnAtIB474bgHjauEAQEHjj3xe9Ugzy4MGkAZNK8wQj8YGBj9YKLr5YZ5oVdFfepL8wF35ychvoOwuFROvmke9OV2H7QIKfhcPE+oLIW/NoAUjpM5PbTF+nKMku39P6UDCKh6SVzLC9NIH3bSFfUwj1obapYO5q6vLlslG9+aNPoXaU+51zYJbVFcWkmuM1q6bg3f2s+NUxV+CeA58TinmMfh/Yu4545GOIb2GHsRR6jjwRS1sut4r2pmGY5lwaLKa8RC6l6s87cQ5mAowkPK5Gu70OTTYd+JyqK4HTDJQy5EZBH3O2v3NF2IORbehslDqkx0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VDsMDJjPLgKGyfutpDbYr5Dtxeplfku8pilICDnyv5c=;
- b=Uyx+PydmLk3omO6PZ3PQ5Y1jgxxvV8TM18u2dcUNhA1/sFngNJFtIeK+VZFleoFHnIRnFyqxkWBeEP9sItLHQ9zCsULtQdtl/9AgbIUDDQKgRkKxQKO3EHPKkBd9ufS+wMjeZjiaC6kf9FZ+gBNY1LjzZyEwGl0sAom7ub1BBRI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
- by PAWPR04MB9717.eurprd04.prod.outlook.com (2603:10a6:102:380::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.29; Mon, 11 Dec
- 2023 22:00:30 +0000
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::dfaa:e869:45eb:76e5]) by VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::dfaa:e869:45eb:76e5%6]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 22:00:30 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     frank.li@nxp.com
-Cc:     bhelgaas@google.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
-        hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
-        krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-        manivannan.sadhasivam@linaro.org, robh@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: [PATCH v3 13/13] PCI: imx6: Add iMX95 Endpoint (EP) function support
-Date:   Mon, 11 Dec 2023 16:58:42 -0500
-Message-Id: <20231211215842.134823-14-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231211215842.134823-1-Frank.Li@nxp.com>
-References: <20231211215842.134823-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::14) To VI1PR04MB4845.eurprd04.prod.outlook.com
- (2603:10a6:803:51::30)
+        Mon, 11 Dec 2023 17:00:45 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C4FD5B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:00:31 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1c8512349dso663363066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:00:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702332028; x=1702936828; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1DO+nyfi2K4OSqpRKBzov3KLKX0ti76DlsnoVE34DwM=;
+        b=DniiHNelBerGiO5/q8XP59I7SM1UZVqVVHGfJvQDtg3HJQ9oOW4tCSAWRRRR/T2tMV
+         91qdNyFYznaKgJQnE9AuXnIvU3tO5yzUvL7RZN3DgAPFUaHcd5RVacOEKnkJNNfilqx3
+         eYpydkBeBSnZA6gEmloCRQcPHlEdMBsSAYxt8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702332028; x=1702936828;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1DO+nyfi2K4OSqpRKBzov3KLKX0ti76DlsnoVE34DwM=;
+        b=S1iTAmn/jbtByQpsjBf9e4cYgAVF7PMzImhfE9r4hP6rnV6eAZrBa2aVcMMRPB0fLK
+         NP60/BVsKZW4xcUFaIp4Ka5/Lef43RUOf80d827ASRdFMJxCwDuKb+DRR8miRwg0w6cN
+         82VHumyIOiBppHi7dcagVjFf4Hf4v+kqcvP3ZihPaq2f1lZy5PIGabXJReROvDaJMenP
+         mOEKM8t6LS3hb6hfUFVbLvTG4RsSYvBrfSOvt4QzeH6IEoJuAwEk6xOvrEojvZboR148
+         mlAq+sn9laes1Ev/a7oIV+3a4MTQ6vJzh4AVnuYxTzATrulGuWYPMhouH4wiq4sOb4SO
+         KKPQ==
+X-Gm-Message-State: AOJu0YymStk9ea4KHX7cs2vNDTAEzMPB6Bnxz7sTyrRmadq5OrhKSps1
+        JcK/NRm3+yk7ywsnW0j42HRKSMvGxHKuXgeW0Fed3+jG
+X-Google-Smtp-Source: AGHT+IFIUt9Rzx0Yec8K0OH/NYqul4xgD5eryyQ/TQsL5FJWy2wNGbBq/XTk6Sw/XJvd3xOXmoESHg==
+X-Received: by 2002:a17:906:1197:b0:a19:a19b:c71e with SMTP id n23-20020a170906119700b00a19a19bc71emr2853491eja.110.1702332027734;
+        Mon, 11 Dec 2023 14:00:27 -0800 (PST)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id vu8-20020a170907a64800b00a1d5c52d628sm5335571ejc.3.2023.12.11.14.00.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 14:00:25 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c2db0ca48so5485e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:00:25 -0800 (PST)
+X-Received: by 2002:a05:600c:1e27:b0:40c:256f:756b with SMTP id
+ ay39-20020a05600c1e2700b0040c256f756bmr256453wmb.2.1702332024792; Mon, 11 Dec
+ 2023 14:00:24 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|PAWPR04MB9717:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f3dea97-6807-4ed4-5e18-08dbfa94972c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dp+P0XzFMITKLIJ7Wf/KsBJH9cC0JHUMZkBf/RkIdQ56zyYlyPpTnyvg3UEYq2JyuPwGqio307DArGQOOz8lxMI58cxtdlgyHSGiziTAXjtPaW1Qqys4xNb8Gy1IXUICvBo7fB6YuORHpXnb7YeWDASwd+gC6k1DnM+dVBubCCp7LL/pcDQsZGhbCkDINJopXbKu8iQ6BdSmV0HMe6zvmR+OlGG3vzKUY2zSJMnNO04gr/Lg9rHMhvBDIG64zNOqA/Ea8vMsBhAK4QaVxsdFr8+qWW98eX+s30rX4nD9Kxv5U+YCt6OPpKkADUKJmroa0rPvIdU66jpYimFrD/ZyH4q7sM0/kqD/DS6k6i/eEzoMRFSJzvr1ljUQmPU4YUkaYQSqLxhLCB2S5QP9k0CrIFglBMykiDkk/FHjLQ5dLTuU7nu46xFCrbahiP0qHm67sk3bZWiPukmHbK51l7w42G72U/J3l68V8sdf098UAo/EJWB56xhSD/5KjDVmRsmS7ACaMKz9QnDwsiXkzYl68Z0+NRRmXJejsdDR1bQqDlLdG0796qlE4QjISTgAPF99QGWNtqh8fwyM0R2eAWYvuh6BgzDQGSI+On4V+06ifcb32GauViccMffxAEgWx58D
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(136003)(396003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(478600001)(6512007)(1076003)(2616005)(6506007)(52116002)(6666004)(26005)(38350700005)(38100700002)(86362001)(36756003)(5660300002)(66556008)(66946007)(7416002)(41300700001)(2906002)(6486002)(66476007)(8936002)(8676002)(316002)(4326008)(34206002)(37006003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?syv46mRJQ3XpRPPB5UZ1EOtzmxa2pWkcz6EWveqDWQ/Zubne2ODMxjPIqtmr?=
- =?us-ascii?Q?uKeAvaALR4n04GFWKcKIrm0/NJcoe42p8mdsHPQ7RnMX2Sm1rdpuxMNr2Pto?=
- =?us-ascii?Q?R26Hto4FLxLjLou3sj6WzLUkcR/biDJeNZ5a4lP5N5hWKukn9RhhFhDKag2g?=
- =?us-ascii?Q?liOotzJxwVjBHonpVCGSYyYDtXwQDXf8dOdjx8O3EmnUQSpzPT98oI4ft2Is?=
- =?us-ascii?Q?ZQ7ouCL+nhDkLUkDijR3oMX6Q74Ag54IwQ0T6qQ9f9mSJzeEGA8q/ZcxKMnc?=
- =?us-ascii?Q?m8cia8jaiTKK9lqnHlxWyIrhmRzJ5pxo1nlsUVWaOlBwoTshzWZ1S39Fyw3m?=
- =?us-ascii?Q?k2MPlATe9OulycfPI4XwTcHhUNDaqRziqp3iqUAJPRD/1iQtCr1ayjYevaVL?=
- =?us-ascii?Q?7ips1Uqr5WHkaK8fQDoILe0A0aqildnknOew19C6HTEH4tyBU6h505t3D1dQ?=
- =?us-ascii?Q?Z7+Di2O3/96PJevJBSuzpHLRk/yGuE+oU2YpYaUkrFgsCO8bnd78pr+aX7SV?=
- =?us-ascii?Q?6Ubt0xQBLbPDfReqYeYTpPt9No3bcbpYSOMrxcn6k8TRYGXCaVpR6qITkfid?=
- =?us-ascii?Q?N2RtSfTL/ozYYP3SL1n25h6orzcmK+Z6jPjSkI+9dcob7VdmztWgdTLXnDvM?=
- =?us-ascii?Q?njh7Cotmoocn9llj0TDU247Tccnf5YGpAmSfO1TpuowRtEHXT3ivkQyjTTee?=
- =?us-ascii?Q?yv1NQdxZ6OhrbWzyJiXrOO3tuwb1yyfD6L8wq7jgIyj2qR6hW7qvBBlJn7Oo?=
- =?us-ascii?Q?09FqVkmTRLQqWOf6IDMadK5yE4pvm+zlwL+li0TZirQ7FUG8oxUjKGPDTZX1?=
- =?us-ascii?Q?wry6BDM4GGu5KrzstbKoeVPHOKWhoUwplfFTLFudJ4VQI0gCq5QrPapPtWPm?=
- =?us-ascii?Q?5l7dnMcIXecADdn9kKs8JliPDh9ylUCsS5AForv4wa+xwbdae1Iv1ElpLFKd?=
- =?us-ascii?Q?vsVUq0gq2Q0887vKe3f0OHwwL0nGgSPHTUNwbkQqCH4QyVYJRTPlc7y2IyH0?=
- =?us-ascii?Q?lvartHSFIKtXAjQgLVTxFbBU6lVNPsebIKDyKrXwBYJJ+HlhZCC8W9+0B8hx?=
- =?us-ascii?Q?pO2N00YtF61mjm8ciyLVRzlVN4x+cZW21e27xkbMkCVoNLP8Po7I0E5XjhY+?=
- =?us-ascii?Q?Y+EdWWUswrYTQqWxhv2WNzgoOJYbO5/aclf1hIGv5wwTiCjrsgqbx3R64iol?=
- =?us-ascii?Q?HGIrzYaEURUkXb+Cmp0P4uMHh9oEm9s+P+QCqP6BoZjgbSGg82I33ePgnOkx?=
- =?us-ascii?Q?HSd0iMA3uUqJHPOOqQLpz1uLjyzXyY1GWKYGv9LUsk3/WrsmKfKbT8yj2aDZ?=
- =?us-ascii?Q?+CNnpVYeWAbjM3ydRDlFZm2P/l0fMoHUldU/ue8rNQktT8XKlVnlf2IaWO6L?=
- =?us-ascii?Q?JzJ2Wz4QzHtHgFSK12Pu2MDUKsF/a7FH+7A+s7O0q0FNNFKVhYCKbhMVkAdq?=
- =?us-ascii?Q?HdXgiHG66bZMyX3wAyutNBLaH5gwKuyw0VZWirJ5fT9ZCyM4IlVxsq0DdSKy?=
- =?us-ascii?Q?E7dwfPO6cN5q6HsXEEpwOzVw5lBHTadZJknVWDdYcnvV+Hxxn5AntxoyIMjy?=
- =?us-ascii?Q?KhiNN9dR9dBrRkSY28xekuwk+asIbjbDntgbglqL?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f3dea97-6807-4ed4-5e18-08dbfa94972c
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4845.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 22:00:30.3430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GrTVNfV54qIgVmQxTDg1xJayqvSp3dKE8ij1TA1sdFXF/BM+fZqh+em7Hp4mqxchKGdrkX6otuoYpc15VnvD8w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9717
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208212845.1679621-1-michael@amarulasolutions.com>
+ <CAD=FV=WthrukuM5e6VH4wKH0CQ5k08A_g_Ehpo-NsouxxCiibw@mail.gmail.com> <CAOf5uwmT3uFQhyTOkNDMana5na5jcKm81tdyeann2UnFwaQp5w@mail.gmail.com>
+In-Reply-To: <CAOf5uwmT3uFQhyTOkNDMana5na5jcKm81tdyeann2UnFwaQp5w@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 11 Dec 2023 14:00:12 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WrBg9PuDW__pZbo5YNuWct17gcK4FF-xKeyxEOsw6Qag@mail.gmail.com>
+Message-ID: <CAD=FV=WrBg9PuDW__pZbo5YNuWct17gcK4FF-xKeyxEOsw6Qag@mail.gmail.com>
+Subject: Re: [RFC PATCH] tty: serial: kgdboc: Fix 8250_* kgd over serial
+To:     Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add iMX95 EP function support and add 64bit address support. Internal bus
-bridge for PCI support 64bit dma address in iMX95. So set call
-dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64)).
+Hi,
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+On Mon, Dec 11, 2023 at 1:42=E2=80=AFPM Michael Nazzareno Trimarchi
+<michael@amarulasolutions.com> wrote:
+>
+> > 1. init_kgdboc() runs and registers the singleton kgdb "platform driver=
+".
+> >
+> > 2. The platform driver's probe function, kgdboc_probe(), runs and
+> > checks to see if the console is ready by looking at the return value
+> > of configure_kgdboc(). If it's ready then we're good to go. If it's
+> > not ready then we defer.
+> >
+> > So I think the bug here is that somehow the console looks "ready"
+> > (because tty_find_polling_driver() can find it) but it isn't actually
+> > ready yet (because it crashes). That's what you need to fix.
+> >
+>
+> The polling driver look for uart and uart8250_core is registered and 4 fa=
+ke uart
+> are there but there are not still replaced by platform driver that can
+> come later.
+> The try_polling find it but it's the isa-8250 driver. It means that
+> add_uart 8250 is
+> not still happen
 
-Notes:
-    Change from v1 to v3
-    - new patches at v3
+The 8250 driver is always a maze, so you might need to do a bunch of
+digging. ...but it sure sounds like the console shouldn't be
+registered until the correct ops are in place. That either means
+getting the ops put in place earlier or deferring when the console is
+registered...
 
- drivers/pci/controller/dwc/pci-imx6.c | 44 +++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 8fe66d3e947a6..31df682432e24 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -76,6 +76,7 @@ enum imx6_pcie_variants {
- 	IMX8MQ_EP,
- 	IMX8MM_EP,
- 	IMX8MP_EP,
-+	IMX95_EP,
- };
- 
- #define IMX6_PCIE_FLAG_IMX6_PHY			BIT(0)
-@@ -87,6 +88,7 @@ enum imx6_pcie_variants {
- #define IMX6_PCIE_FLAG_HAS_APP_RESET		BIT(6)
- #define IMX6_PCIE_FLAG_HAS_PHY_RESET		BIT(7)
- #define IMX6_PCIE_FLAG_HAS_SERDES		BIT(8)
-+#define IMX6_PCIE_FLAG_SUPPORT_64BIT		BIT(9)
- 
- #define imx6_check_flag(pci, val)	(pci->drvdata->flags & val)
- 
-@@ -630,6 +632,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
- 		break;
- 	case IMX7D:
- 	case IMX95:
-+	case IMX95_EP:
- 		break;
- 	case IMX8MM:
- 	case IMX8MM_EP:
-@@ -1099,6 +1102,23 @@ static const struct pci_epc_features imx8m_pcie_epc_features = {
- 	.align = SZ_64K,
- };
- 
-+/*
-+ * BAR#	| Default BAR enable	| Default BAR Type	| Default BAR Size	| BAR Sizing Scheme
-+ * ================================================================================================
-+ * BAR0	| Enable		| 64-bit		| 1 MB			| Programmable Size
-+ * BAR1	| Disable		| 32-bit		| 64 KB			| Fixed Size
-+ *	| (BAR0 is 64-bit)	| if BAR0 is 32-bit	|			| As Bar0 is 64bit
-+ * BAR2	| Enable		| 32-bit		| 1 MB			| Programmable Size
-+ * BAR3	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ * BAR4	| Enable		| 32-bit		| 1M			| Programmable Size
-+ * BAR5	| Enable		| 32-bit		| 64 KB			| Programmable Size
-+ */
-+static const struct pci_epc_features imx95_pcie_epc_features = {
-+	.msi_capable = false,
-+	.bar_fixed_size[1] = SZ_64K,
-+	.align = SZ_64K,
-+};
-+
- static const struct pci_epc_features*
- imx6_pcie_ep_get_features(struct dw_pcie_ep *ep)
- {
-@@ -1141,6 +1161,14 @@ static int imx6_add_pcie_ep(struct imx6_pcie *imx6_pcie,
- 
- 	pci->dbi_base2 = pci->dbi_base + pcie_dbi2_offset;
- 
-+	/*
-+	 * db2 information should fetch from dtb file. dw_pcie_ep_init() can get dbi_base2 from
-+	 * "dbi2" if pci->dbi_base2 is NULL. All code related pcie_dbi2_offset should be removed
-+	 * after all dts added "dbi2" reg.
-+	 */
-+	if (imx6_pcie->drvdata->variant == IMX95_EP)
-+		pci->dbi_base2 = NULL;
-+
- 	ret = dw_pcie_ep_init(ep);
- 	if (ret) {
- 		dev_err(dev, "failed to initialize endpoint\n");
-@@ -1417,6 +1445,9 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 					     "unable to find iomuxc registers\n");
- 	}
- 
-+	if (imx6_check_flag(imx6_pcie, IMX6_PCIE_FLAG_SUPPORT_64BIT))
-+		dma_set_mask_and_coherent(dev, DMA_BIT_MASK(64));
-+
- 	/* Grab PCIe PHY Tx Settings */
- 	if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
- 				 &imx6_pcie->tx_deemph_gen1))
-@@ -1614,6 +1645,18 @@ static const struct imx6_pcie_drvdata drvdata[] = {
- 		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
- 		.epc_features = &imx8m_pcie_epc_features,
- 	},
-+	[IMX95_EP] = {
-+		.variant = IMX95_EP,
-+		.flags = IMX6_PCIE_FLAG_HAS_CLK_AUX | IMX6_PCIE_FLAG_HAS_SERDES |
-+			 IMX6_PCIE_FLAG_SUPPORT_64BIT,
-+		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-+		.ltssm_mask = IMX95_PCIE_LTSSM_EN,
-+		.mode_off[0]  = IMX95_PE0_GEN_CTRL_1,
-+		.mode_mask[0] = IMX95_PCIE_DEVICE_TYPE,
-+		.init_phy = imx95_pcie_init_phy,
-+		.epc_features = &imx95_pcie_epc_features,
-+		.mode = DW_PCIE_EP_TYPE,
-+	},
- };
- 
- static const struct of_device_id imx6_pcie_of_match[] = {
-@@ -1628,6 +1671,7 @@ static const struct of_device_id imx6_pcie_of_match[] = {
- 	{ .compatible = "fsl,imx8mq-pcie-ep", .data = &drvdata[IMX8MQ_EP], },
- 	{ .compatible = "fsl,imx8mm-pcie-ep", .data = &drvdata[IMX8MM_EP], },
- 	{ .compatible = "fsl,imx8mp-pcie-ep", .data = &drvdata[IMX8MP_EP], },
-+	{ .compatible = "fsl,imx95-pcie-ep", .data = &drvdata[IMX95_EP], },
- 	{},
- };
- 
--- 
-2.34.1
-
+-Doug
