@@ -2,129 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A084580C986
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC9B80C9A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343583AbjLKMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S234333AbjLKMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234998AbjLKMUl (ORCPT
+        with ESMTP id S234931AbjLKMXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:20:41 -0500
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687F51BB;
-        Mon, 11 Dec 2023 04:20:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1702297239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=5PUQntp9MfQXMF/o3JsAZeuDX9zDVymP5JQbOOqzVG4=;
-        b=bd8pBHIjpQVk2PjI7aE3jVxZcuLys8R+uLcu3rQchIbm/IdNmt5nlLLRgl8xF0E9dDFzGw
-        kwg4ZlRmQQawLkzU600RwEOTMeU++hpAbTnGd1vGdMKvsE8gHhQFoYBPKdKnsJi5lyZZht
-        dPlqzjsWQI5uZ6nhpA/mA+raoK/Xcwg=
-Message-ID: <381267f0a20d162f87b83c0af6949a9f997ea83e.camel@crapouillou.net>
-Subject: Re: [PATCH 4/4] dmaengine: axi-dmac: Use only EOT interrupts when
- doing scatter-gather
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 11 Dec 2023 13:20:38 +0100
-In-Reply-To: <ZXb6FE5Z1zcmRFKO@matsya>
-References: <20231204140352.30420-1-paul@crapouillou.net>
-         <20231204140352.30420-5-paul@crapouillou.net> <ZXb6FE5Z1zcmRFKO@matsya>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
-        YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Dec 2023 07:23:02 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17819194;
+        Mon, 11 Dec 2023 04:22:37 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1d0897e99e0so24342115ad.3;
+        Mon, 11 Dec 2023 04:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702297356; x=1702902156; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IQcvSnsM7JavnmPF12NfssHoIsVHQjXItCQk6VIN4nQ=;
+        b=dPiAiuLx4laXNeDcu9kXZYQE5UFQ5fA+6/rVysXt+iGPdmPPi4u9WrI49lij4r7ztF
+         VV0XenvdSQrkT3e8AvuZXXOsxMdE3E70i7H5SqYap6WyxksMm6ZEDqmiUxguqVFybRQE
+         BbRlhPbDhh+JjhPjhq7sQY1KihTRcnlgBx+U/n/xXq06KFMpUsDSM88H05Vm8uJj+8oX
+         yqfLYOmk+1jDtu8C9Tke3TsZbV15lFrHPYIzZ2K9YmJnyKOPpCV2ZIfxa81/fnqlj7Gn
+         coN3eGKla3H98UyBFgcXHY1TEG+UG7ZVggghqfpA0yw8V8iFE5EPRPrtqSPhP+ft2pJX
+         Vdiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702297356; x=1702902156;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IQcvSnsM7JavnmPF12NfssHoIsVHQjXItCQk6VIN4nQ=;
+        b=BZ8nVXZuoBZTh5DRuDI+KVqs2ykvoIljGhrQ6N83sUumPcIKbHfpfqbAPI5dJp0vYE
+         w4IGFm0KUb6EReS8n9xkv7klyGotssi4DoEw7AoOxvZADBxZK9koqF0kU7YVpyNB5RaM
+         ejMxSm9IEMeDNnvCEcm94r/KKvk0LY3/Z30YCkeHiFHq0pmX0ooMQn1vWEdw8gI619lQ
+         G73mKvRGsBx6On/pXQ2DGUXLcDAZCPTUJZlIySMSkY+s1j8WCkI5qVy0rz84GSxoYmQc
+         ZDGw2qA3gdXR38yqCaiuwVmBjNFf2+DYdDI8xwjIefPT4O1j7EjCmpfwME9CjZSYiqWm
+         PBNA==
+X-Gm-Message-State: AOJu0YzLfkU8XUEJfWXEj+PJUpe8kNmqxMrjHAme9jcclSlRvZHkxrR8
+        +fLG0E9mpzAH+6bIu6dmcxdpq84q7XAzWB+Y
+X-Google-Smtp-Source: AGHT+IGeVtrJ6el2C/T3eyYfdtyjBM1zxk7RCTju5WCHZQlolTyy8ERUrHvD/rnl2zQwLLa6EuK9Xg==
+X-Received: by 2002:a17:902:6b0a:b0:1ce:5f67:cfd3 with SMTP id o10-20020a1709026b0a00b001ce5f67cfd3mr2005190plk.18.1702297355707;
+        Mon, 11 Dec 2023 04:22:35 -0800 (PST)
+Received: from dawn-virtual-machine.localdomain ([183.198.110.72])
+        by smtp.gmail.com with ESMTPSA id w13-20020a170902a70d00b001cf6453b237sm6494068plq.236.2023.12.11.04.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 04:22:35 -0800 (PST)
+From:   Li peiyu <579lpy@gmail.com>
+To:     jic23@kernel.org
+Cc:     javier.carrasco.cruz@gmail.com, lars@metafoo.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li peiyu <579lpy@gmail.com>
+Subject: [PATCH v6 0/4] iio: humidity: Add driver for ti HDC302x humidity sensors
+Date:   Mon, 11 Dec 2023 20:22:01 +0800
+Message-Id: <20231211122201.9598-1-579lpy@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Add support for HDC302x integrated capacitive based relative
+humidity (RH) and temperature sensor.
+This driver supports reading values, reading the maximum and
+minimum of values and controlling the integrated heater of
+the sensor.
 
-Le lundi 11 d=C3=A9cembre 2023 =C3=A0 17:31 +0530, Vinod Koul a =C3=A9crit=
-=C2=A0:
-> On 04-12-23, 15:03, Paul Cercueil wrote:
-> > Instead of notifying userspace in the end-of-transfer (EOT)
-> > interrupt
-> > and program the hardware in the start-of-transfer (SOT) interrupt,
-> > we
-> > can do both things in the EOT, allowing us to mask the SOT, and
-> > halve
-> > the number of interrupts sent by the HDL core.
-> >=20
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > ---
-> > =C2=A0drivers/dma/dma-axi-dmac.c | 7 ++++++-
-> > =C2=A01 file changed, 6 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-
-> > dmac.c
-> > index 5109530b66de..beed91a8238c 100644
-> > --- a/drivers/dma/dma-axi-dmac.c
-> > +++ b/drivers/dma/dma-axi-dmac.c
-> > @@ -415,6 +415,7 @@ static bool axi_dmac_transfer_done(struct
-> > axi_dmac_chan *chan,
-> > =C2=A0			list_del(&active->vdesc.node);
-> > =C2=A0			vchan_cookie_complete(&active->vdesc);
-> > =C2=A0			active =3D axi_dmac_active_desc(chan);
-> > +			start_next =3D !!active;
->=20
-> Should this be in current patch, sounds like this should be a
-> different
-> patch?
+Signed-off-by: Li peiyu <579lpy@gmail.com>
+---
+changes in v6:
+	sensor driver:
+	  - Drop offset for humidity channel.
+	  - Use put_unaligned_be16 to assign the 14-bit heater value.
+	  - Remove error message if devm_action_or_reset() fails.
+	  - Add eror message if devm_iio_device_register() fails.
+	dt-bindings:
+	  - remove items before "- const: ti,hdc3020".
+	  - add vdd-supply to required.
+changes in v5:
+	iio ABI:
+	  - Document _TROUGH as an info element.
+	sensor driver:
+	  - Correct heater enable/disable commands
+	  - Rearrang header files in alphabetical order.
+	  - Change .info_mask_separate to BIT(IIO_CHAN_INFO_RAW). 
+	  - Add details to mutex comment.
+	  - Add error handling for chan->type in read_raw call.
+	  - Remove error message for devm_iio_device_register.
+changes in v4:
+	iio core:
+	  - Add an IIO_CHAN_INFO_TROUGH modifier for minimum values.
+	iio ABI:
+	  - Document the new _TROUGH modifier.
+	sensor driver:
+	  - Add MAINTAINERS.
+	  - Use new IIO_CHAN_INFO_TROUGH modifier.
+	  - Support the complete heater range.
+	  - Remove measurement values from the data structure.
+	  - Use guard(mutex)(...), make the code simpler
+	  - Removed buffer mode and direct mode conversion code
+	  - Minor coding-style fixes.
+	dt-bindings:
+	  - removed unnecessary example
+	  - add vdd-supply to the example
+changes in v3:
+	sensor driver:
+	  - Removed the custom ABI
+	  - Give up calculating values in the driver
+	  - Use read_avail callback to get available parameters
+	  - Changed the scope of the lock to make the code more concise
+	  - Fixed the code format issue
+	dt-bindings:
+	  - Use a fallback compatible
+changes in v2:
+	sensor driver:
+	  - Added static modification to global variables
+	  - change the methord to read peak value
+	dt-bindings:
+	  - change the maintainers to me.
+	  - hdc3020,hdc3021,hdc3022 are compatible,I've changed the dirver.
+	  - change the node name to humidity-sensor.
 
-It belongs here. This line is what allows a new transfer to be
-programmed from the EOT. Since we disable the SOT interrupt, if we
-remove that line, the driver won't work.
+---
+Javier Carrasco (2):
+      iio: core: introduce trough modifier for minimum values
+      iio: ABI: document temperature and humidity peak/trough raw attributes
 
-Cheers,
--Paul
+Li peiyu (2):
+      dt-bindings: iio: humidity: Add TI HDC302x support
+      iio: humidity: Add driver for TI HDC302x humidity sensors
 
->=20
-> > =C2=A0		}
-> > =C2=A0	} else {
-> > =C2=A0		do {
-> > @@ -1000,6 +1001,7 @@ static int axi_dmac_probe(struct
-> > platform_device *pdev)
-> > =C2=A0	struct axi_dmac *dmac;
-> > =C2=A0	struct regmap *regmap;
-> > =C2=A0	unsigned int version;
-> > +	u32 irq_mask =3D 0;
-> > =C2=A0	int ret;
-> > =C2=A0
-> > =C2=A0	dmac =3D devm_kzalloc(&pdev->dev, sizeof(*dmac),
-> > GFP_KERNEL);
-> > @@ -1067,7 +1069,10 @@ static int axi_dmac_probe(struct
-> > platform_device *pdev)
-> > =C2=A0
-> > =C2=A0	dma_dev->copy_align =3D (dmac->chan.address_align_mask + 1);
-> > =C2=A0
-> > -	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, 0x00);
-> > +	if (dmac->chan.hw_sg)
-> > +		irq_mask |=3D AXI_DMAC_IRQ_SOT;
-> > +
-> > +	axi_dmac_write(dmac, AXI_DMAC_REG_IRQ_MASK, irq_mask);
-> > =C2=A0
-> > =C2=A0	if (of_dma_is_coherent(pdev->dev.of_node)) {
-> > =C2=A0		ret =3D axi_dmac_read(dmac,
-> > AXI_DMAC_REG_COHERENCY_DESC);
-> > --=20
-> > 2.42.0
-> >=20
->=20
+ Documentation/ABI/testing/sysfs-bus-iio            |  13 +-
+ .../bindings/iio/humidity/ti,hdc3020.yaml          |  55 +++
+ MAINTAINERS                                        |   8 +
+ drivers/iio/humidity/Kconfig                       |  12 +
+ drivers/iio/humidity/Makefile                      |   1 +
+ drivers/iio/humidity/hdc3020.c                     | 473 +++++++++++++++++++++
+ drivers/iio/industrialio-core.c                    |   1 +
+ include/linux/iio/types.h                          |   1 +
+ 8 files changed, 563 insertions(+), 1 deletion(-)
+ ---
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
 
+Best regards,
