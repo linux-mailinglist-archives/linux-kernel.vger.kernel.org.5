@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E8180C798
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA97880C79B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbjLKLET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S231872AbjLKLFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKLES (ORCPT
+        with ESMTP id S231734AbjLKLF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:04:18 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324BDA1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:04:23 -0800 (PST)
-X-QQ-mid: bizesmtp73t1702292622tj8j5yuu
-Received: from localhost.localdomain ( [58.240.82.166])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 11 Dec 2023 19:03:40 +0800 (CST)
-X-QQ-SSF: 01200000000000B0B000000A0000000
-X-QQ-FEAT: 5q30pvLz2ifwectDw5X1ejEzovDe+SdttSK6eqA0chYVCh0XUtbv4XETa4kck
-        A+EYAm88lWow0SrwX5RjG0MO7M/W+Bof2DsgZM/I833wDkp+7uhSiviaquZADvf09fp4u+j
-        ZRRkoE0fhwUHZVssdj2ifiAk/CdC6zKgfyhjS70urfxWRyzk0tvZvnETKoZ4w+9iu9FYtvc
-        V8E/j5fHNwNKMPLDihwgCw0zxsZPtGLM5uS7rdAVMrWs5tzsHPUyIIpiKU2jcQwXNhQRojT
-        i7yaNzDXWtNRxMVEHkyAlw7e2LgeHLMYRkkSnG/RL06fXCqejNUYgDtMA5Ss03oZXZ+9bRE
-        gU1Yh2jIZXo3AmCcjKczIBtSrKX6lxKvf0PE8xtw8SkCn4matw=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 12009462421657250734
-From:   Song Shuai <songshuaishuai@tinylab.org>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, guoren@kernel.org, samitolvanen@google.com,
-        conor.dooley@microchip.com, bjorn@rivosinc.com, debug@rivosinc.com,
-        songshuaishuai@tinylab.org, greentime.hu@sifive.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH --fixes] riscv: Remove SHADOW_OVERFLOW_STACK_SIZE macro
-Date:   Mon, 11 Dec 2023 19:03:31 +0800
-Message-Id: <20231211110331.359534-1-songshuaishuai@tinylab.org>
-X-Mailer: git-send-email 2.20.1
+        Mon, 11 Dec 2023 06:05:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EC7BB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:05:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A52C433C8;
+        Mon, 11 Dec 2023 11:05:28 +0000 (UTC)
+Message-ID: <ce2110bf-a16a-45ae-979b-7e41be2896cd@xs4all.nl>
+Date:   Mon, 11 Dec 2023 12:05:27 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3,04/21] v4l: add documentation for secure memory flag
+Content-Language: en-US, nl
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>,
+        "T . J . Mercier" <tjmercier@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
+ <20231206081538.17056-5-yunfei.dong@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231206081538.17056-5-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit be97d0db5f44 ("riscv: VMAP_STACK overflow
-detection thread-safe") got rid of `shadow_stack`,
-so SHADOW_OVERFLOW_STACK_SIZE should be removed too.
+On 06/12/2023 09:15, Yunfei Dong wrote:
+> From: Jeffrey Kardatzke <jkardatzke@google.com>
+> 
+> Adds documentation for V4L2_MEMORY_FLAG_SECURE.
+> 
+> Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>  Documentation/userspace-api/media/v4l/buffer.rst | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/buffer.rst b/Documentation/userspace-api/media/v4l/buffer.rst
+> index 52bbee81c080..a5a7d1c72d53 100644
+> --- a/Documentation/userspace-api/media/v4l/buffer.rst
+> +++ b/Documentation/userspace-api/media/v4l/buffer.rst
+> @@ -696,7 +696,7 @@ enum v4l2_memory
+>  
+>  .. _memory-flags:
+>  
+> -Memory Consistency Flags
+> +Memory Flags
+>  ------------------------
+>  
+>  .. raw:: latex
+> @@ -728,6 +728,12 @@ Memory Consistency Flags
+>  	only if the buffer is used for :ref:`memory mapping <mmap>` I/O and the
+>  	queue reports the :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS
+>  	<V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS>` capability.
+> +    * .. _`V4L2-MEMORY-FLAG-SECURE`:
+> +
+> +      - ``V4L2_MEMORY_FLAG_SECURE``
+> +      - 0x00000002
+> +      - DMA bufs passed into the queue will be validated to ensure they were
+> +	allocated from a secure dma-heap.
 
-Fixes: be97d0db5f44 ("riscv: VMAP_STACK overflow detection thread-safe")
-Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
----
- arch/riscv/include/asm/thread_info.h | 1 -
- 1 file changed, 1 deletion(-)
+Hmm, that needs a bit more work. How about:
 
-diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
-index 574779900bfb..4856697c5f25 100644
---- a/arch/riscv/include/asm/thread_info.h
-+++ b/arch/riscv/include/asm/thread_info.h
-@@ -28,7 +28,6 @@
- 
- #define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
- #define OVERFLOW_STACK_SIZE     SZ_4K
--#define SHADOW_OVERFLOW_STACK_SIZE (1024)
- 
- #define IRQ_STACK_SIZE		THREAD_SIZE
- 
--- 
-2.20.1
+- The queued buffers are expected to be in secure memory. If not, an error will be
+  returned. This flag can only be used with ``V4L2_MEMORY_DMABUF``. Typically
+  secure buffers are allocated using a secure dma-heap. This flag can only be
+  specified if the ``V4L2_BUF_CAP_SUPPORTS_SECURE_MEM`` is set.
+
+In addition, the title of this table is currently "Memory Consistency Flags": that
+should be renamed to "Memory Flags".
+
+Regards,
+
+	Hans
+
+>  
+>  .. raw:: latex
+>  
 
