@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A243880C346
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EAE80C361
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjLKIbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S231723AbjLKIhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjLKIbc (ORCPT
+        with ESMTP id S229511AbjLKIhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:31:32 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00671ED
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:31:37 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-33338c47134so3976575f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:31:37 -0800 (PST)
+        Mon, 11 Dec 2023 03:37:10 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5619F8E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:37:16 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so5878967a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:37:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702283496; x=1702888296; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J9TssOoYj5sq85cjGlO/OWfUu7/5yk2nPtfgDzXrsu4=;
-        b=b/exAFwl1xEjLGjHrsK8kWRYbVdGJl+RKzc/k56POwnbn40kdYE38lU2eVnAQSzZNv
-         1Pg0QzFqzdtwVLdK/6IulXVmaiqkjcKMQgaMTpNe7aDunluqVu//50joowZh1OZR8bur
-         XQsh4J30Q5atWBeORwJJn/EoQ51RCU+y1ocUQp60uoeKKV3vK7ZnV0AY8/0s6Mp7bxLr
-         8qKN5GiD+C73xyRGv5fOtjUgENuYY9zMEoYKsbtBtDhxwcdAipNaFm2HBxRHY6naHyu3
-         1vifF9nfjr0/fXS3sKHnp7CpyLwmog6xebg1bjmFkqx6mnDL/jpPKhDyv57ANU9nvi0d
-         2Dhg==
+        d=linaro.org; s=google; t=1702283834; x=1702888634; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kk+v7bJA+s+/z+dyrix6s2ZzCkywqqH7xeqGtoowJ4M=;
+        b=V1lbUJGVG/Y4K88ZC/JFiqrPjSsacoP3+6XYAxf37R53fxDWQKqBN9Q3L+VCbpOs4Q
+         5zgWMFhO16X6s4o53NS/dDv5Bvzg2dLpllg99l6FBwu77rEGufSHCxeMJ7qtlBjQW4af
+         jykLZCUqVW8BeNIt0R03kNwF+4xwSjl4bddhPR2l+ysjOdWJo1GPOAZU2Yhl+wY+Tqac
+         3Hg5JJX5H0DxUBYmnyPYSI415otithPZ1ktvLeWSxai2j9Unh6vLENCVOD7XU6WSY12N
+         4UPG27qpSA2N8REYLmsC9viECOFGVoknzhKO1Pt6hl6Wk1aTtuWClH7TX0hYvuXjRJP4
+         Y/vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702283496; x=1702888296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J9TssOoYj5sq85cjGlO/OWfUu7/5yk2nPtfgDzXrsu4=;
-        b=q58u7NnuU5nw3IqJEQNrp4z17UCqx4Onxi3e14TuA+QzqsJb1e0ZzJ+I6998txJ/qy
-         Bbhpi8cctvvVhcrj/NAQqc/VfKqskAtcql7fWI9IXdJaJ5HRXf2oTlYzQK5p9Kybk8Ql
-         71uqRf6+R+SPwsHP7NF9q8hkHbShZvSB+1RIAmj+z7xToVgnhYgFz7tdli80haa+45N7
-         eAzc9RlsP4pbBCQEOFd+aYlxGr3Ww2cRdL7sJ4sBgTZlKoSbh3qe/tl36lQ/ndqtdw3i
-         gP1lunqepQ622pSt74uUBUQbshhIOOlooOZWDK/reNcN35Ny+3YC3d57tOqdkgEldKQ0
-         9gfw==
-X-Gm-Message-State: AOJu0Yy6oAXOE1vDSxjiQ/iWlYYlrzKMRLKFgoST3tHj06XVNtfxb2JZ
-        opjv6eqllnDwyLO8+sOq3d616EKoOVwz8M8629p84Q==
-X-Google-Smtp-Source: AGHT+IHw6KbgF5ZdUqFJP2PUqyg2V4aLIlCnsgX6uYnrOdbdZVebUYLmRkdZ3Ba2r7B6LHXVcwP2IURHq+gQ2dAl7eo=
-X-Received: by 2002:adf:e781:0:b0:333:2fd2:6f7a with SMTP id
- n1-20020adfe781000000b003332fd26f7amr2089438wrm.132.1702283496334; Mon, 11
- Dec 2023 00:31:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702283834; x=1702888634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kk+v7bJA+s+/z+dyrix6s2ZzCkywqqH7xeqGtoowJ4M=;
+        b=T+Jd5uRn4KMLINowLl8OV1rAvW59orxGEloHwtNtraAFwVs9oVskVM4kXeTBgRGZ1j
+         aK+Znm0B9qIiY1z0jlZtN7qzBwXyhynv7CqR9OuOAtIBjANnXi3HoljHBGtynypcOlXG
+         D0SWcRm9ze/OGg+IKRz9vnYKUC4Tyox3L/0oEjCjVoP8hVwGNRjvtScwQzG+sPhi76L0
+         kRsiwu58u+ab6UNFn2u9YFfK/dNkdYZJ0CpUMo3gWcqg1xDAHVwrJROYDT4g+qaTy1fG
+         RBcHTaagf3jfU9QmAzjeiuuc/QgeZz+usprTuDu6/hiiTNhycgqNTNIuzB4WqL4yQTFA
+         gBUQ==
+X-Gm-Message-State: AOJu0YyIEL5JxYSWEoMOnbzTTTk+ukAVIskk5rFkt28KEin6+JTCquen
+        N21yOogJUxkINs9vmR5Q+STN+Q==
+X-Google-Smtp-Source: AGHT+IEG5JSQm2KSmEMgLYIgzL0giz5RVNFyFtSLxep3//eMRo4F2TpSWWxGmz03vJPdf0dsfXEe5Q==
+X-Received: by 2002:a17:907:94d4:b0:a1a:8399:e12d with SMTP id dn20-20020a17090794d400b00a1a8399e12dmr1373966ejc.64.1702283834471;
+        Mon, 11 Dec 2023 00:37:14 -0800 (PST)
+Received: from localhost (hf89.n1.ips.mtn.co.ug. [41.210.143.137])
+        by smtp.gmail.com with ESMTPSA id tx17-20020a1709078e9100b00a1b75e0e061sm4496930ejc.130.2023.12.11.00.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 00:37:13 -0800 (PST)
+Date:   Mon, 11 Dec 2023 11:37:07 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Tree Davies <tdavies@darkphysics.net>
+Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] Staging: rtl8192e: Remove variable bFirstSeg
+Message-ID: <2cdb678d-b784-411e-8913-eb7666e08ccc@suswa.mountain>
+References: <20231210193705.2131807-1-tdavies@darkphysics.net>
+ <20231210193705.2131807-2-tdavies@darkphysics.net>
 MIME-Version: 1.0
-References: <20231211171406.71fdc29b@canb.auug.org.au>
-In-Reply-To: <20231211171406.71fdc29b@canb.auug.org.au>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Mon, 11 Dec 2023 09:31:25 +0100
-Message-ID: <CAHVXubio372X_xXiWBMYk5=C7K49Wv6uki-uqWk1eyH-YuGGnA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the percpu tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231210193705.2131807-2-tdavies@darkphysics.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Mon, Dec 11, 2023 at 7:14=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> After merging the percpu tree, today's linux-next build (sparc64
-> defconfig) failed like this:
->
-> mm/percpu.c: In function 'pcpu_page_first_chunk':
-> mm/percpu.c:3336:17: error: implicit declaration of function 'flush_cache=
-_vmap_early'; did you mean 'flush_cache_vmap'? [-Werror=3Dimplicit-function=
--declaration]
->  3336 |                 flush_cache_vmap_early(unit_addr, unit_addr + ai-=
->unit_size);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~
->       |                 flush_cache_vmap
-> cc1: some warnings being treated as errors
->
-> Caused by commit
->
->   a95c15a43f4a ("mm: Introduce flush_cache_vmap_early() and its riscv imp=
-lementation")
->
-> I have applied the following fix patch for today.  Are there other
-> archs that don't use asm-generic/cacheflush.h?
-
-It seems like most archs do not include this file, I should have
-checked. As I'm a bit scared of the possible side-effects of including
-asm-generic/cacheflush.h, I'll define flush_cache_vmap_early() on all
-archs that do define flush_cache_vmap().
-
-Stephen, do you want a patch fix? Or do you want me to send a new
-version of the current patches so that you can drop them for now?
-
-Sorry for the oversight,
-
-Thanks,
-
-Alex
-
->
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 11 Dec 2023 16:57:00 +1100
-> Subject: [PATCH] fix up for "mm: Introduce flush_cache_vmap_early() and i=
-ts riscv implementation"
->
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+On Sun, Dec 10, 2023 at 11:37:02AM -0800, Tree Davies wrote:
+> Remove variable bFirstSeg as it is defined but never used.
+> 
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 > ---
->  arch/sparc/include/asm/cacheflush.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/sparc/include/asm/cacheflush.h b/arch/sparc/include/asm=
-/cacheflush.h
-> index 881ac76eab93..9d87b2bcb217 100644
-> --- a/arch/sparc/include/asm/cacheflush.h
-> +++ b/arch/sparc/include/asm/cacheflush.h
-> @@ -10,4 +10,11 @@
->  #else
->  #include <asm/cacheflush_32.h>
->  #endif
-> +
-> +#ifndef __ASSEMBLY__
-> +static inline void flush_cache_vmap_early(unsigned long start, unsigned =
-long end)
-> +{
-> +}
-> +#endif
-> +
->  #endif
-> --
-> 2.40.1
->
-> --
-> Cheers,
-> Stephen Rothwell
+>  drivers/staging/rtl8192e/rtllib.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> index 0a8c44e497f5..c0a24826cd3b 100644
+> --- a/drivers/staging/rtl8192e/rtllib.h
+> +++ b/drivers/staging/rtl8192e/rtllib.h
+> @@ -103,7 +103,6 @@ struct cb_desc {
+>  	/* Tx Desc Related flags (8-9) */
+>  	u8 bLastIniPkt:1;
+>  	u8 bCmdOrInit:1;
+> -	u8 bFirstSeg:1;
+>  	u8 bLastSeg:1;
+>  	u8 bEncrypt:1;
+>  	u8 tx_dis_rate_fallback:1;
+
+I don't think you can remove these.  They're part of the protocol for
+talking to the firmware.
+
+regards,
+dan carpenter
+
