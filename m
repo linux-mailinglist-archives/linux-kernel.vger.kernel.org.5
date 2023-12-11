@@ -2,177 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E950680DDE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC5780DDEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345542AbjLKWHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
+        id S1345545AbjLKWIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345457AbjLKWHV (ORCPT
+        with ESMTP id S1345514AbjLKWID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:07:21 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13A8A1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:07:26 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-425928c24easo132281cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702332446; x=1702937246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rEQXjkg8ZdEhUtl2x53QcNzk2aEcDFh+4Uvu9gMAPOM=;
-        b=Cp8OsCI6uofufSDJylAsPNGwzHWZT98+8bs+7un9QyYaelcZryUNaieWRVJ9GnH4RZ
-         Wxd3w0CpyEX8XrsrplAtzWEmybh2/BwuxYwhe0i5eXkllOgWi0N8xZHQHtqIdug61kjN
-         A2cB6dO5bSd1tVWWtfnALn2Ia8SfGazPf5vn7ZG+vhmrOsv3C6d2wE2zelcp58AMMBtq
-         rbVVZm/h7NY9Q5X/dNNMXO1seRfL+kxkwySFYLGcbASZCPwgwnNdJWuuLqumASwWGDyX
-         T+AeMSc2bZYcy4+nr0UwvxFb+JSfGGDP6V8Ovpsbzt7JGPC4AkERnpH3gwLfujjnLHin
-         fhSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702332446; x=1702937246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rEQXjkg8ZdEhUtl2x53QcNzk2aEcDFh+4Uvu9gMAPOM=;
-        b=ou3cms1R4RY6Fd5kpdeNDlzc1NerdWzXhbzYzWbr0dr5XNJ9w+4O8olkFjqAExcrBK
-         kezMrKKDKSbQfSuOEsaRYuDnSuYFejBGVbKF4lZqS8P3qixljSKK+eeXIDw4olCpikR4
-         79+PolElKoFgxTUh1RxcmYqrlyL3Uvs/d8hPl0lxqh1l+ybuRiRbolj6MseSwdsM4hdO
-         UAKHM34cdzbNPBK8lva0Yrxg+RRn1FjekFqFWFlURHRSp1Et3qfqc+vwKoHA/9un4V1X
-         ufvNf6zWOy712yCN1XtnN40b6qt5uGybj20M+xsNhDC3BR1lJuPRR4HeyNfc3o1NklMb
-         lsGQ==
-X-Gm-Message-State: AOJu0Yz6JteU7ffC4m48I7d7fPvFg+/A+nTpCH4GYAKkTiaaqwj7mFUr
-        cBIdnzhoYKWuHa92VUgOSvRgcCEH3Kloj8hp2cZN9pPr7b7Z/wue5p4=
-X-Google-Smtp-Source: AGHT+IH+/dyc/hZNX51k+t0PKYhPnetIx3LhhZb7gJ9YizNg8qLu/nCEqnbEKRgxA7byr+po3RGzCwYOrfHmvYMDq5M=
-X-Received: by 2002:ac8:5992:0:b0:421:c331:7df4 with SMTP id
- e18-20020ac85992000000b00421c3317df4mr827815qte.18.1702332445538; Mon, 11 Dec
- 2023 14:07:25 -0800 (PST)
+        Mon, 11 Dec 2023 17:08:03 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5025CA6;
+        Mon, 11 Dec 2023 14:08:09 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F09DC922;
+        Mon, 11 Dec 2023 23:07:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702332443;
+        bh=OGGjmvt7t8Zrpu5flQgJGLONHAQUCWanMmv4maIIF5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ixj4kEoN5o83f3UJxVYoNiHdbykFsYDkJQDS/pUcDGEXNoIZFvyDxmPl+69ah0TIh
+         fncxNU3ji9A6OWbajw8AVous8AXF53V/QoKkhREulg7GS0pUidsHnyqSyYvka1l31f
+         NiscOKlLK01jb8roY/G2lhF8+zC68Pa3zhMLByUg=
+Date:   Tue, 12 Dec 2023 00:08:13 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 10/19] media: i2c: ov4689: Make horizontal blanking
+ configurable
+Message-ID: <20231211220813.GI27535@pendragon.ideasonboard.com>
+References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
+ <20231211175023.1680247-11-mike.rudenko@gmail.com>
 MIME-Version: 1.0
-References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
-In-Reply-To: <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 11 Dec 2023 15:06:48 -0700
-Message-ID: <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
-To:     Kairui Song <ryncsn@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Charan Teja Kalla <quic_charante@quicinc.com>,
-        Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231211175023.1680247-11-mike.rudenko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 1:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrote=
-:
->
-> Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=888=E6=97=A5=
-=E5=91=A8=E4=BA=94 14:14=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > Unmapped folios accessed through file descriptors can be
-> > underprotected. Those folios are added to the oldest generation based
-> > on:
-> > 1. The fact that they are less costly to reclaim (no need to walk the
-> >    rmap and flush the TLB) and have less impact on performance (don't
-> >    cause major PFs and can be non-blocking if needed again).
-> > 2. The observation that they are likely to be single-use. E.g., for
-> >    client use cases like Android, its apps parse configuration files
-> >    and store the data in heap (anon); for server use cases like MySQL,
-> >    it reads from InnoDB files and holds the cached data for tables in
-> >    buffer pools (anon).
-> >
-> > However, the oldest generation can be very short lived, and if so, it
-> > doesn't provide the PID controller with enough time to respond to a
-> > surge of refaults. (Note that the PID controller uses weighted
-> > refaults and those from evicted generations only take a half of the
-> > whole weight.) In other words, for a short lived generation, the
-> > moving average smooths out the spike quickly.
-> >
-> > To fix the problem:
-> > 1. For folios that are already on LRU, if they can be beyond the
-> >    tracking range of tiers, i.e., five accesses through file
-> >    descriptors, move them to the second oldest generation to give them
-> >    more time to age. (Note that tiers are used by the PID controller
-> >    to statistically determine whether folios accessed multiple times
-> >    through file descriptors are worth protecting.)
-> > 2. When adding unmapped folios to LRU, adjust the placement of them so
-> >    that they are not too close to the tail. The effect of this is
-> >    similar to the above.
-> >
-> > On Android, launching 55 apps sequentially:
-> >                            Before     After      Change
-> >   workingset_refault_anon  25641024   25598972   0%
-> >   workingset_refault_file  115016834  106178438  -8%
->
-> Hi Yu,
->
-> Thanks you for your amazing works on MGLRU.
->
-> I believe this is the similar issue I was trying to resolve previously:
-> https://lwn.net/Articles/945266/
-> The idea is to use refault distance to decide if the page should be
-> place in oldest generation or some other gen, which per my test,
-> worked very well, and we have been using refault distance for MGLRU in
-> multiple workloads.
->
-> There are a few issues left in my previous RFC series, like anon pages
-> in MGLRU shouldn't be considered, I wanted to collect feedback or test
-> cases, but unfortunately it seems didn't get too much attention
-> upstream.
->
-> I think both this patch and my previous series are for solving the
-> file pages underpertected issue, and I did a quick test using this
-> series, for mongodb test, refault distance seems still a better
-> solution (I'm not saying these two optimization are mutually exclusive
-> though, just they do have some conflicts in implementation and solving
-> similar problem):
->
-> Previous result:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Execution Results after 905 seconds
-> ------------------------------------------------------------------
->                   Executed        Time (=C2=B5s)       Rate
->   STOCK_LEVEL     2542            27121571486.2   0.09 txn/s
-> ------------------------------------------------------------------
->   TOTAL           2542            27121571486.2   0.09 txn/s
->
-> This patch:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Execution Results after 900 seconds
-> ------------------------------------------------------------------
->                   Executed        Time (=C2=B5s)       Rate
->   STOCK_LEVEL     1594            27061522574.4   0.06 txn/s
-> ------------------------------------------------------------------
->   TOTAL           1594            27061522574.4   0.06 txn/s
->
-> Unpatched version is always around ~500.
+Hi Mikhail,
 
-Thanks for the test results!
+Thank you for the patch.
 
-> I think there are a few points here:
-> - Refault distance make use of page shadow so it can better
-> distinguish evicted pages of different access pattern (re-access
-> distance).
-> - Throttled refault distance can help hold part of workingset when
-> memory is too small to hold the whole workingset.
->
-> So maybe part of this patch and the bits of previous series can be
-> combined to work better on this issue, how do you think?
+On Mon, Dec 11, 2023 at 08:50:13PM +0300, Mikhail Rudenko wrote:
+> Make horizontal blanking configurable. To do so, set HTS register
+> according to the requested horizontal blanking in ov4689_set_ctrl
+> instead of the register table. Default HTS value is not changed by
+> this patch. Minimal HTS value is found experimentally and corresponds
+> to 90 fps framerate at minimum vertical blanking. Real HTS value is
+> the register value multiplied by 4.
+> 
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> ---
+>  drivers/media/i2c/ov4689.c | 33 +++++++++++++++++++++------------
+>  1 file changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index 9fa06941a0e5..67d4004bdcfb 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -30,7 +30,6 @@
+>  #define OV4689_REG_EXPOSURE		CCI_REG24(0x3500)
+>  #define OV4689_EXPOSURE_MIN		4
+>  #define OV4689_EXPOSURE_STEP		1
+> -#define OV4689_VTS_MAX			0x7fff
+>  
+>  #define OV4689_REG_GAIN			CCI_REG16(0x3508)
+>  #define OV4689_GAIN_STEP		1
+> @@ -41,6 +40,11 @@
+>  #define OV4689_TEST_PATTERN_DISABLE	0x0
+>  
+>  #define OV4689_REG_VTS			CCI_REG16(0x380e)
+> +#define OV4689_VTS_MAX			0x7fff
+> +
+> +#define OV4689_REG_HTS			CCI_REG16(0x380c)
+> +#define OV4689_HTS_DIVIDER		4
+> +#define OV4689_HTS_MAX			0x7fff
 
-I'll try to find some time this week to look at your RFC. It'd be a
-lot easier for me if you could share
-1. your latest tree, preferably based on the mainline, and
-2. your VM image containing the above test.
+Could you move this just before REG_VTS to keep registers sorted by
+address ?
+
+>  
+>  #define OV4689_LANES			4
+>  #define OV4689_XVCLK_FREQ		24000000
+> @@ -61,6 +65,7 @@ struct ov4689_mode {
+>  	u32 width;
+>  	u32 height;
+>  	u32 hts_def;
+> +	u32 hts_min;
+>  	u32 vts_def;
+>  	u32 exp_def;
+>  	u32 pixel_rate;
+> @@ -104,7 +109,7 @@ struct ov4689_gain_range {
+>  
+>  /*
+>   * Xclk 24Mhz
+> - * max_framerate 30fps
+> + * max_framerate 90fps
+>   * mipi_datarate per lane 1008Mbps
+>   */
+>  static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+> @@ -175,8 +180,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+>  	/* Timing control */
+>  	{CCI_REG8(0x3801), 0x08}, /* H_CROP_START_L h_crop_start[7:0] = 0x08 */
+>  	{CCI_REG8(0x3805), 0x97}, /* H_CROP_END_L h_crop_end[7:0] = 0x97 */
+> -	{CCI_REG8(0x380c), 0x0a}, /* TIMING_HTS_H hts[14:8] = 0x0a */
+> -	{CCI_REG8(0x380d), 0x0e}, /* TIMING_HTS_L hts[7:0] = 0x0e */
+>  	{CCI_REG8(0x3811), 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
+>  	{CCI_REG8(0x3813), 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
+>  	{CCI_REG8(0x3819), 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
+> @@ -237,7 +240,8 @@ static const struct ov4689_mode supported_modes[] = {
+>  		.crop_top = 8,
+>  		.crop_left = 16,
+>  		.exp_def = 1536,
+> -		.hts_def = 4 * 2574,
+> +		.hts_def = 10296,
+> +		.hts_min = 3432,
+>  		.vts_def = 1554,
+>  		.pixel_rate = 480000000,
+>  		.reg_list = ov4689_2688x1520_regs,
+> @@ -596,6 +600,11 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>  	case V4L2_CID_TEST_PATTERN:
+>  		ret = ov4689_enable_test_pattern(ov4689, val);
+>  		break;
+> +	case V4L2_CID_HBLANK:
+> +		cci_write(regmap, OV4689_REG_HTS,
+> +			  (val + ov4689->cur_mode->width) /
+> +			  OV4689_HTS_DIVIDER, &ret);
+> +		break;
+>  	default:
+>  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+>  			 __func__, ctrl->id, val);
+> @@ -618,13 +627,13 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>  	struct v4l2_ctrl_handler *handler;
+>  	const struct ov4689_mode *mode;
+>  	s64 exposure_max, vblank_def;
+> +	s64 hblank_def, hblank_min;
+>  	struct v4l2_ctrl *ctrl;
+> -	s64 h_blank_def;
+>  	int ret;
+>  
+>  	handler = &ov4689->ctrl_handler;
+>  	mode = ov4689->cur_mode;
+> -	ret = v4l2_ctrl_handler_init(handler, 10);
+> +	ret = v4l2_ctrl_handler_init(handler, 11);
+
+The HBLANK control already exists, you're only changing how it is
+initialized. I see 8 controls being created by the driver directly,
+plus 2 created by v4l2_ctrl_new_fwnode_properties(), so I think 10 is a
+correct value here.
+
+With these small issues addressed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -636,11 +645,11 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>  	v4l2_ctrl_new_std(handler, NULL, V4L2_CID_PIXEL_RATE, 0,
+>  			  mode->pixel_rate, 1, mode->pixel_rate);
+>  
+> -	h_blank_def = mode->hts_def - mode->width;
+> -	ctrl = v4l2_ctrl_new_std(handler, NULL, V4L2_CID_HBLANK, h_blank_def,
+> -				 h_blank_def, 1, h_blank_def);
+> -	if (ctrl)
+> -		ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> +	hblank_def = mode->hts_def - mode->width;
+> +	hblank_min = mode->hts_min - mode->width;
+> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HBLANK,
+> +			  hblank_min, OV4689_HTS_MAX - mode->width,
+> +			  OV4689_HTS_DIVIDER, hblank_def);
+>  
+>  	vblank_def = mode->vts_def - mode->height;
+>  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VBLANK,
+
+-- 
+Regards,
+
+Laurent Pinchart
