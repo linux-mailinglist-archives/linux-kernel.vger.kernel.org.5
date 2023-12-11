@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDE080C7DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DAF80C7E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbjLKLXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S234334AbjLKLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:25:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234311AbjLKLXE (ORCPT
+        with ESMTP id S234311AbjLKLZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:23:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC1AC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:23:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F2E8C433C8;
-        Mon, 11 Dec 2023 11:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702293790;
-        bh=RvXeZsCsTRB/ykFjhY8FOPGVRNC7qDb5nFcV0xvctXA=;
+        Mon, 11 Dec 2023 06:25:09 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F030ABD;
+        Mon, 11 Dec 2023 03:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1702293910;
+        bh=ZvgW0aYfCLWt5NV86Ke4c9thN3uF82opqg4tLuJpvEE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fS0qaeX8EfWKEh9IFSNTv9viV0+RH5CMAUNGSPtr0gzzUh3wQ1OQWEYPuGog/n7qa
-         JG9vgFJieBvXCujm3q+AGF5r8aHBCkm8Ev14Zf9GpaVsm5ATjGJA7p0a6t3+RZgjjj
-         zHbJiq93+6efh3/fgpfwAV8HtmmyJwsDuHmkQMkP89sohR/RpB2vS0WAyxSdCLgRkw
-         BZ5Vf9/B4yqGg/VWi1U27vhwXs/xk2fU77XUQucztqh37e9OWdKr2hZIuQoKz+1Dpb
-         hy9m9kaBsWbkDmwO+cca9g0ykwF5DHT+pqop0MjRzCuWWFB1q8g9VMhPhAM2HGky7y
-         zoodfxRSjtLOQ==
-Date:   Mon, 11 Dec 2023 13:23:05 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Haseeb Gani <hgani@marvell.com>,
-        Vimlesh Kumar <vimleshk@marvell.com>,
-        "egallen@redhat.com" <egallen@redhat.com>,
-        "mschmidt@redhat.com" <mschmidt@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wizhao@redhat.com" <wizhao@redhat.com>,
-        "kheib@redhat.com" <kheib@redhat.com>,
-        "konguyen@redhat.com" <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh B Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [EXT] Re: [PATCH net-next v3 2/4] octeon_ep: PF-VF mailbox
- version support
-Message-ID: <20231211112305.GD4870@unreal>
-References: <20231211063355.2630028-1-srasheed@marvell.com>
- <20231211063355.2630028-3-srasheed@marvell.com>
- <20231211084652.GC4870@unreal>
- <PH0PR18MB4734652F50856F52507577ADC78FA@PH0PR18MB4734.namprd18.prod.outlook.com>
+        b=l4jO1Vpanp/cdwKq2g8dOspBwuK27Q/lgFXI6toegd2+2VnyAiEg1vmUmr50Gr+o5
+         grrFW4AhaKda6/tUEKNuM2+PcIMob95h1Gbkxcnc2/pzDbdni9rFVaYgRexltawlwP
+         L3XAVnY1iIbqZmc1HRsY4oijnWokkSyib0B5t904=
+Date:   Mon, 11 Dec 2023 12:25:10 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
+ <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231207104357.kndqvzkhxqkwkkjo@localhost>
+ <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+ <20231208095926.aavsjrtqbb5rygmb@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="igpenhi52ez4jwxm"
 Content-Disposition: inline
-In-Reply-To: <PH0PR18MB4734652F50856F52507577ADC78FA@PH0PR18MB4734.namprd18.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231208095926.aavsjrtqbb5rygmb@localhost>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,62 +54,244 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 10:31:32AM +0000, Shinas Rasheed wrote:
-> Hi Leon,
-> 
-> > > @@ -28,10 +28,18 @@ static void octep_pfvf_validate_version(struct
-> > octep_device *oct,  u32 vf_id,
-> > >  {
-> > >  	u32 vf_version = (u32)cmd.s_version.version;
-> > >
-> > > -	if (vf_version <= OCTEP_PFVF_MBOX_VERSION_V1)
-> > > -		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> > > +	dev_dbg(&oct->pdev->dev, "VF id:%d VF version:%d PF
-> > version:%d\n",
-> > > +		vf_id, vf_version, OCTEP_PFVF_MBOX_VERSION_CURRENT);
-> > > +	if (vf_version < OCTEP_PFVF_MBOX_VERSION_CURRENT)
-> > > +		rsp->s_version.version = vf_version;
-> > >  	else
-> > > -		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
-> > > +		rsp->s_version.version =
-> > OCTEP_PFVF_MBOX_VERSION_CURRENT;
-> > > +
-> > > +	oct->vf_info[vf_id].mbox_version = rsp->s_version.version;
-> > > +	dev_dbg(&oct->pdev->dev, "VF id:%d negotiated VF version:%d\n",
-> > > +		vf_id, oct->vf_info[vf_id].mbox_version);
-> > > +
-> > > +	rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> > >  }
+
+--igpenhi52ez4jwxm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+
+On 2023-12-08 10:59:26+0100, Joel Granados wrote:
+> On Thu, Dec 07, 2023 at 08:19:43PM +0100, Thomas Weißschuh wrote:
+> > On 2023-12-07 11:43:57+0100, Joel Granados wrote:
+
+> [..]
+
+> > > I suggest you chunk it up with directories in mind. Something similar to
+> > > what I did for [4] where I divided stuff that when for fs/*, kernel/*,
+> > > net/*, arch/* and drivers/*. That will complicate your patch a tad
+> > > because you have to ensure that the tree can be compiled/run for every
+> > > commit. But it will pay off once you push it to the broader public.
 > > 
-> > <...>
-> > 
-> > > +#define OCTEP_PFVF_MBOX_VERSION_CURRENT
-> > 	OCTEP_PFVF_MBOX_VERSION_V1
-> > 
-> > This architecture design is unlikely to work in the real world unless
-> > you control both PF and VF environment. Mostly PF is running some old
-> > legacy distribution while VFs run more modern OS and this check will
-> > prevent to run new driver in VF.
-> > 
-> > Thanks
-> 
-> Thanks for the review. This version validation only concerns regarding the control net API layer (which is used to communicate with
-> the firmware). In the case you have described, this instead enables new VF drivers to atleast work atop legacy PF drivers (note legacy here still
-> refers to PF drivers which support this backward compatibility), although they might not be able to use the latest control net functionalities that they
-> have been enabled for.
+> > This will break bisections. All function signatures need to be switched
 
-The question what will be in X years from now, when you will have v100?
-Will you fallback to v0 for backward compatibility? 
+> I was suggesting a solution without breaking bisections of course. I can
+> think of a couple of ways to do this in chunks but it might be
+> premature. You can send it and if you get push back because of this then
+> we can deal with chunking it down.
 
-> 
-> In the absence of such a backward compatibility, VF drivers would issue control net requests which PF drivers wouldn't know, only leading to logs of
-> incompatibility errors and erroneous usage. 
-> 
-> Also again please note that this version compatibility only concerns the control net infrastructure and API (the control plane).
+I'm curious about those ways. I don't see how to split the big commit.
 
-It doesn't matter, even in best scenario, you can't guarantee that code in VM actually
-implements version Y fully and will need to check correctness per-command anyway.
+> I'm still concerned about the header size for those mails. How does the
+> mail look like when you run the get maintainers script on it?
 
-Thanks
+The full series has 142 recipients in total,
+the biggest patch itself has 124.
 
-> 
+Before sending it I'd like to get feedback on the internal rework of the
+is_empty detection from you and/or Luis.
+
+https://git.sr.ht/~t-8ch/linux/commit/ea27507070f3c47be6febebe451bbb88f6ea707e
+or the attached patch.
+
+> [..]
+
+--igpenhi52ez4jwxm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment;
+	filename="ea27507070f3c47be6febebe451bbb88f6ea707e.patch"
+Content-Transfer-Encoding: 8bit
+
+From ea27507070f3c47be6febebe451bbb88f6ea707e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Sun, 3 Dec 2023 21:56:46 +0100
+Subject: [PATCH] sysctl: move permanently empty flag to ctl_dir
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Simplify the logic by always keeping the permanently_empty flag on the
+ctl_dir.
+The previous logic kept the flag in the leaf ctl_table and from there
+transferred it to the ctl_table from the directory.
+
+This also removes the need to have a mutable ctl_table and will allow
+the constification of those structs.
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ fs/proc/proc_sysctl.c  | 74 +++++++++++++++++++-----------------------
+ include/linux/sysctl.h | 13 ++------
+ 2 files changed, 36 insertions(+), 51 deletions(-)
+
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 35c97ad54f34..33f41af58e9b 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -17,6 +17,7 @@
+ #include <linux/bpf-cgroup.h>
+ #include <linux/mount.h>
+ #include <linux/kmemleak.h>
++#include <linux/cleanup.h>
+ #include "internal.h"
+ 
+ #define list_for_each_table_entry(entry, header)	\
+@@ -29,32 +30,6 @@ static const struct inode_operations proc_sys_inode_operations;
+ static const struct file_operations proc_sys_dir_file_operations;
+ static const struct inode_operations proc_sys_dir_operations;
+ 
+-/* Support for permanently empty directories */
+-static struct ctl_table sysctl_mount_point[] = {
+-	{.type = SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY }
+-};
+-
+-/**
+- * register_sysctl_mount_point() - registers a sysctl mount point
+- * @path: path for the mount point
+- *
+- * Used to create a permanently empty directory to serve as mount point.
+- * There are some subtle but important permission checks this allows in the
+- * case of unprivileged mounts.
+- */
+-struct ctl_table_header *register_sysctl_mount_point(const char *path)
+-{
+-	return register_sysctl(path, sysctl_mount_point);
+-}
+-EXPORT_SYMBOL(register_sysctl_mount_point);
+-
+-#define sysctl_is_perm_empty_ctl_header(hptr)		\
+-	(hptr->ctl_table[0].type == SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+-#define sysctl_set_perm_empty_ctl_header(hptr)		\
+-	(hptr->ctl_table[0].type = SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY)
+-#define sysctl_clear_perm_empty_ctl_header(hptr)	\
+-	(hptr->ctl_table[0].type = SYSCTL_TABLE_TYPE_DEFAULT)
+-
+ void proc_sys_poll_notify(struct ctl_table_poll *poll)
+ {
+ 	if (!poll)
+@@ -226,17 +201,9 @@ static int insert_header(struct ctl_dir *dir, struct ctl_table_header *header)
+ 
+ 
+ 	/* Is this a permanently empty directory? */
+-	if (sysctl_is_perm_empty_ctl_header(dir_h))
++	if (dir->permanently_empty)
+ 		return -EROFS;
+ 
+-	/* Am I creating a permanently empty directory? */
+-	if (header->ctl_table_size > 0 &&
+-	    sysctl_is_perm_empty_ctl_header(header)) {
+-		if (!RB_EMPTY_ROOT(&dir->root))
+-			return -EINVAL;
+-		sysctl_set_perm_empty_ctl_header(dir_h);
+-	}
+-
+ 	dir_h->nreg++;
+ 	header->parent = dir;
+ 	err = insert_links(header);
+@@ -252,8 +219,6 @@ fail:
+ 	erase_header(header);
+ 	put_links(header);
+ fail_links:
+-	if (header->ctl_table == sysctl_mount_point)
+-		sysctl_clear_perm_empty_ctl_header(dir_h);
+ 	header->parent = NULL;
+ 	drop_sysctl_table(dir_h);
+ 	return err;
+@@ -440,6 +405,7 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 		struct ctl_table_header *head, struct ctl_table *table)
+ {
+ 	struct ctl_table_root *root = head->root;
++	struct ctl_dir *ctl_dir;
+ 	struct inode *inode;
+ 	struct proc_inode *ei;
+ 
+@@ -473,7 +439,9 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
+ 		inode->i_mode |= S_IFDIR;
+ 		inode->i_op = &proc_sys_dir_operations;
+ 		inode->i_fop = &proc_sys_dir_file_operations;
+-		if (sysctl_is_perm_empty_ctl_header(head))
++
++		ctl_dir = container_of(head, struct ctl_dir, header);
++		if (ctl_dir->permanently_empty)
+ 			make_empty_dir_inode(inode);
+ 	}
+ 
+@@ -1211,8 +1179,7 @@ static bool get_links(struct ctl_dir *dir,
+ 	struct ctl_table_header *tmp_head;
+ 	struct ctl_table *entry, *link;
+ 
+-	if (header->ctl_table_size == 0 ||
+-	    sysctl_is_perm_empty_ctl_header(header))
++	if (header->ctl_table_size == 0 || dir->permanently_empty)
+ 		return true;
+ 
+ 	/* Are there links available for every entry in table? */
+@@ -1533,6 +1500,33 @@ void unregister_sysctl_table(struct ctl_table_header * header)
+ }
+ EXPORT_SYMBOL(unregister_sysctl_table);
+ 
++/**
++ * register_sysctl_mount_point() - registers a sysctl mount point
++ * @path: path for the mount point
++ *
++ * Used to create a permanently empty directory to serve as mount point.
++ * There are some subtle but important permission checks this allows in the
++ * case of unprivileged mounts.
++ */
++struct ctl_table_header *register_sysctl_mount_point(const char *path)
++{
++	struct ctl_dir *dir = sysctl_mkdir_p(&sysctl_table_root.default_set.dir, path);
++
++	if (IS_ERR(dir))
++		return NULL;
++
++	guard(spinlock)(&sysctl_lock);
++
++	if (!RB_EMPTY_ROOT(&dir->root)) {
++		drop_sysctl_table(&dir->header);
++		return NULL;
++	}
++
++	dir->permanently_empty = true;
++	return &dir->header;
++}
++EXPORT_SYMBOL(register_sysctl_mount_point);
++
+ void setup_sysctl_set(struct ctl_table_set *set,
+ 	struct ctl_table_root *root,
+ 	int (*is_seen)(struct ctl_table_set *))
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index ada36ef8cecb..57cb0060d7d7 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -137,17 +137,6 @@ struct ctl_table {
+ 	void *data;
+ 	int maxlen;
+ 	umode_t mode;
+-	/**
+-	 * enum type - Enumeration to differentiate between ctl target types
+-	 * @SYSCTL_TABLE_TYPE_DEFAULT: ctl target with no special considerations
+-	 * @SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY: Used to identify a permanently
+-	 *                                       empty directory target to serve
+-	 *                                       as mount point.
+-	 */
+-	enum {
+-		SYSCTL_TABLE_TYPE_DEFAULT,
+-		SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+-	} type;
+ 	proc_handler *proc_handler;	/* Callback for text formatting */
+ 	struct ctl_table_poll *poll;
+ 	void *extra1;
+@@ -194,6 +183,8 @@ struct ctl_dir {
+ 	/* Header must be at the start of ctl_dir */
+ 	struct ctl_table_header header;
+ 	struct rb_root root;
++	/* Permanently empty directory target to serve as mount point. */
++	bool permanently_empty;
+ };
+ 
+ struct ctl_table_set {
+-- 
+2.38.5
+
+
+--igpenhi52ez4jwxm--
