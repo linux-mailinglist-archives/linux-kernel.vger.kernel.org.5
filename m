@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ABC80C2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6109C80C2E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjLKIPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:15:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S229853AbjLKISh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjLKIPg (ORCPT
+        with ESMTP id S229463AbjLKISf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:15:36 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C01BED
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:15:42 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-dbc55ebb312so2150199276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 00:15:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702282541; x=1702887341; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TXq9YTAU0K/Wyg67l3QF0mK1qAP+uioFbjUi30daDLE=;
-        b=Gl7pQfnqeul1cqU4KjVecz+bNXrsTQXRIeny73E7zkFiC5jlDfMIjww7TeGgCkTMlY
-         ZyLsSesDpAd5F9nveBiu0fSL07Q8ZEFwKzrlGDtWI7jZUBhKJXAXBWgWEf9IFdCoVyZT
-         8xskZmgoLVUZ5iyMCcBulBxn+57jj4XowtU+wQd4lbhicECJ6dAVOZskPOCjPUasyO1m
-         ZxonGzVX5mC/POYCPXaBaY0bbzHylJwldCdh2rqfHuMynYb0IjMqy6qdKo+ezUSGJnsR
-         Xa7JlqdKlNNfRxXdo4Aza9JDgYi70Nri8oKh2kuICobsWtD6EkCY8gi0zJHNs3hpTaUs
-         JVgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702282541; x=1702887341;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TXq9YTAU0K/Wyg67l3QF0mK1qAP+uioFbjUi30daDLE=;
-        b=hls4wXXdqm1CNHEDpakJxtf7MqDJ4U7O2eyyK/xaheOEf9mlGomsQUpgL7ge2QtZ0t
-         MpfPt2QuFHgC/w4U55QXhhcr4IMd8hikL5QwO/FksOOBE4Llh5wuTfS/ODZzTArqcim+
-         nmB4YQW3dX+CDIZfUyYeH6OIRi1doIDKnFK953qDN3lv7uaYtnPQCWK6s32o4AABY2un
-         x21P56IpvoU+bR0TkOuGrqrejBrGhz0iAlPEb/OAlQ1Y8ZlwJ3t6h/aXcaby3Quduc/d
-         fJowI2wqaCtREE1CM+s4zdZmFizPxKwP3WHcQlI3nLK7/9y7D6BJaHfBtBIg+7b6NQFJ
-         rg0Q==
-X-Gm-Message-State: AOJu0YzUSJ/T2uF+rTuiONZiH1xFDGxu6Vs3AXLE1HDSV8/nIUGH4k7B
-        mHLtLExuQ8PxJ/ehrrOTwGvZHtpiF71gs5j3A3TqND8DzNJdJaAtimDf6g==
-X-Google-Smtp-Source: AGHT+IEqQ1QWl9N8VrJdERt7hZAN05TSsYkaTWMXlqSVGHm1KL+k3i3fwo/Z1+5pnTt/WgCjEwjtbr25GU8ej2hs3FE=
-X-Received: by 2002:a25:8f8f:0:b0:db5:4b23:534 with SMTP id
- u15-20020a258f8f000000b00db54b230534mr2204353ybl.17.1702282541327; Mon, 11
- Dec 2023 00:15:41 -0800 (PST)
+        Mon, 11 Dec 2023 03:18:35 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BAEED;
+        Mon, 11 Dec 2023 00:18:41 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SpZQ40fQzz4f3kjD;
+        Mon, 11 Dec 2023 16:18:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 7F7321A0837;
+        Mon, 11 Dec 2023 16:18:38 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDHyhDcxXZlKwVbDQ--.7085S4;
+        Mon, 11 Dec 2023 16:18:38 +0800 (CST)
+From:   linan666@huaweicloud.com
+To:     song@kernel.org, zlliu@suse.com, neilb@suse.com, shli@fb.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan666@huaweicloud.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com
+Subject: [PATCH] md: Don't clear MD_CLOSING when the raid is about to stop
+Date:   Mon, 11 Dec 2023 16:17:14 +0800
+Message-Id: <20231211081714.1923567-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231211145056.23fbfd7d@canb.auug.org.au>
-In-Reply-To: <20231211145056.23fbfd7d@canb.auug.org.au>
-From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date:   Mon, 11 Dec 2023 09:15:30 +0100
-Message-ID: <CACMJSetGz1fCnqS_HPTLyV8dOWOUtO07-bZKKXu3=3Lk2PGdyw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the pinctrl-intel tree with the
- gpio-brgl tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDHyhDcxXZlKwVbDQ--.7085S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw13Zr18XryUAw4DCFy5CFg_yoW8Zr45pF
+        4xWF98KrWUGr9I9w4Utw4kXFyYq34aqrWvyry29a4rWa4Yyr9rJryFg398tryxGrZ5JFs8
+        Xa1UCa1Uu3WxW3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+        648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSApUUUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 at 04:51, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the pinctrl-intel tree got a conflict in:
->
->   drivers/pinctrl/intel/pinctrl-baytrail.c
->
-> between commit:
->
->   c73505c8a001 ("pinctrl: baytrail: use gpiochip_dup_line_label()")
->
-> from the gpio-brgl tree and commit:
->
->   6191e49de389 ("pinctrl: baytrail: Simplify code with cleanup helpers")
->
-> from the pinctrl-intel tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc drivers/pinctrl/intel/pinctrl-baytrail.c
-> index 3c8c02043481,9b76819e606a..000000000000
-> --- a/drivers/pinctrl/intel/pinctrl-baytrail.c
-> +++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
-> @@@ -1173,7 -1136,7 +1136,6 @@@ static void byt_gpio_dbg_show(struct se
->                 void __iomem *conf_reg, *val_reg;
->                 const char *pull_str = NULL;
->                 const char *pull = NULL;
-> -               unsigned long flags;
->  -              const char *label;
->                 unsigned int pin;
->
->                 pin = vg->soc->pins[i].number;
+From: Li Nan <linan122@huawei.com>
 
-Andy, please pull the following into your baytrail tree:
+The raid should not be opened anymore when it is about to be stopped.
+However, other processes can open it again if the flag MD_CLOSING is
+cleared before exiting. From now on, this flag will not be cleared when
+the raid will be stopped.
 
-https://lore.kernel.org/lkml/20231208083650.25015-1-brgl@bgdev.pl/
+Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
+Signed-off-by: Li Nan <linan122@huawei.com>
+---
+ drivers/md/md.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Bart
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 4e9fe5cbeedc..ebdfc9068a60 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -6238,7 +6238,6 @@ static void md_clean(struct mddev *mddev)
+ 	mddev->persistent = 0;
+ 	mddev->level = LEVEL_NONE;
+ 	mddev->clevel[0] = 0;
+-	mddev->flags = 0;
+ 	mddev->sb_flags = 0;
+ 	mddev->ro = MD_RDWR;
+ 	mddev->metadata_type[0] = 0;
+@@ -7614,7 +7613,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 	int err = 0;
+ 	void __user *argp = (void __user *)arg;
+ 	struct mddev *mddev = NULL;
+-	bool did_set_md_closing = false;
+ 
+ 	if (!md_ioctl_valid(cmd))
+ 		return -ENOTTY;
+@@ -7698,7 +7696,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 			err = -EBUSY;
+ 			goto out;
+ 		}
+-		did_set_md_closing = true;
+ 		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
+ 	}
+@@ -7742,10 +7739,13 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 
+ 	case STOP_ARRAY:
+ 		err = do_md_stop(mddev, 0, bdev);
++		if (err)
++			clear_bit(MD_CLOSING, &mddev->flags);
+ 		goto unlock;
+ 
+ 	case STOP_ARRAY_RO:
+ 		err = md_set_readonly(mddev, bdev);
++		clear_bit(MD_CLOSING, &mddev->flags);
+ 		goto unlock;
+ 
+ 	case HOT_REMOVE_DISK:
+@@ -7840,8 +7840,6 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 				     mddev_unlock(mddev);
+ 
+ out:
+-	if(did_set_md_closing)
+-		clear_bit(MD_CLOSING, &mddev->flags);
+ 	return err;
+ }
+ #ifdef CONFIG_COMPAT
+-- 
+2.39.2
+
