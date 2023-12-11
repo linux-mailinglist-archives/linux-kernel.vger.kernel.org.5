@@ -2,284 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F9C80D4D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D295680D4DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345130AbjLKSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
+        id S1345147AbjLKSAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345098AbjLKSA2 (ORCPT
+        with ESMTP id S1345143AbjLKSAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:00:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E3195;
-        Mon, 11 Dec 2023 10:00:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702317635; x=1733853635;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=tMC8yRoYUTc9X1VBTaW/uBj01hskaQ3rsvTliVh20+g=;
-  b=m/pa+GbCQP95W6kFjHy1RiZaP4oB1d+/UuNE7c4I589lyimQQMf/065U
-   7KIolVfHhMaPPe4eNWMVWvXVQqLqeGomVQrOERZAOWrhALRcxqmjSylI+
-   OGz4ewELd3mbEIwu8WAN+qt+JwV+xaj06UfG8tL7B1gNqDJk9CXnphjoe
-   TNL3jCROBPl7IMqcXqEhN2hh1OmXHbBADt757voOkUkCofV0EGHcRE9MR
-   CUrJjvw2CLovTk+aCs5DEIbrO/jfTbWFj8U29/Qa4zzOd+QSx3UoIAZPb
-   bP9c08Hhlz0OC0G8nrIZhxbjx7v7bNQa9MiOcls9Fe8nOythWqXJA8DlK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1830846"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1830846"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:00:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="14578578"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 11 Dec 2023 10:00:30 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCkZu-000IJl-31;
-        Mon, 11 Dec 2023 18:00:27 +0000
-Date:   Tue, 12 Dec 2023 02:00:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     linan666@huaweicloud.com, song@kernel.org, axboe@kernel.dk
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linan666@huaweicloud.com,
-        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH 2/2] md: don't account sync_io if iostats of the disk is
- disabled
-Message-ID: <202312120159.I03ON8Ov-lkp@intel.com>
-References: <20231211075614.1850003-3-linan666@huaweicloud.com>
+        Mon, 11 Dec 2023 13:00:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEB998
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:00:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702317639;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=oDRY5qEDx0n/xK6FAJLUT+B7f/Y8O8/zbi6mAsFhOwE=;
+        b=ARpqHb0V3ElcizKJ1kGPlWXuKPLfCkr5Pd1Yqy7Uk+toUwQHmTvmsYbG6XjAJAaya7nz4m
+        0Mu1MF5PN9P4cSlb9ZTcGDmlxU9TCUQXq290s+KJqYnlH0OEMBeIntJRod34yH7wp6Ys9B
+        /6CpoWN0K6Ab4M75cn/6/pfowf11uXQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-6qqLJ3-DOYSgAD09MCxLew-1; Mon, 11 Dec 2023 13:00:38 -0500
+X-MC-Unique: 6qqLJ3-DOYSgAD09MCxLew-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c3cea4c19so17717845e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:00:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702317637; x=1702922437;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oDRY5qEDx0n/xK6FAJLUT+B7f/Y8O8/zbi6mAsFhOwE=;
+        b=cMALNER20uF4TOlllIRAp+7lvELme1ztmCdlwr5yKF5+wG6oXfAXajKUs+ElwfMuAt
+         glUA9gs/RfgF7+H45RR0Mx3eMnPqnj9hb49y9VtJsAcc0RSLi+PqalNPb7Tdf82ym68C
+         EGe182antiPdCm5+RHzgnsfrUcsme5+iImERkf/yY/8wq3LP/9/0BAAG+psQTRt2JBVT
+         81/hVtiNya4GaF07a4k/LmWMHbTungQkAHQeot7gF8DuA82pwvRvlqdlvbrRR5DRKCv0
+         E2SyidHbQk6rHtMn9Ml5eSNnroaJDgZw0B6uw0jLo8X/uU6cfASixDllqrJ/zddcJHnc
+         4LGw==
+X-Gm-Message-State: AOJu0YxpJitOSn+lPxWOOpkLn9mKSXoD0OFwRuUgBxQSzisiU4JtXpRx
+        NtfYiwGBx4t2qf031y1tKXXGSJ9vSsW2tu+336cr/YRGpCWNs0luKwgxluvdev5b2sBasln2BMe
+        DfyY1fy0EMOsz2PuvBMfuyWMw
+X-Received: by 2002:a05:600c:3b26:b0:40b:5e1f:6fe3 with SMTP id m38-20020a05600c3b2600b0040b5e1f6fe3mr2380083wms.56.1702317636841;
+        Mon, 11 Dec 2023 10:00:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHBaSXXTONN1RXsVKJ8EMH+dgykR3ZIBAG6bI6jzkZ0veu5k29jZpxSRRJkgk2adn6wv+ttDw==
+X-Received: by 2002:a05:600c:3b26:b0:40b:5e1f:6fe3 with SMTP id m38-20020a05600c3b2600b0040b5e1f6fe3mr2380057wms.56.1702317636392;
+        Mon, 11 Dec 2023 10:00:36 -0800 (PST)
+Received: from ?IPV6:2003:cb:c742:ae00:6e5f:7195:98f6:3ed1? (p200300cbc742ae006e5f719598f63ed1.dip0.t-ipconnect.de. [2003:cb:c742:ae00:6e5f:7195:98f6:3ed1])
+        by smtp.gmail.com with ESMTPSA id r20-20020a05600c35d400b0040b538047b4sm16029296wmq.3.2023.12.11.10.00.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 10:00:35 -0800 (PST)
+Message-ID: <8a2ce635-58f4-44e1-a646-6527936c5836@redhat.com>
+Date:   Mon, 11 Dec 2023 19:00:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231211075614.1850003-3-linan666@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <ZXXJ9NdH61YZfC4c@finisterre.sirena.org.uk>
+ <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
+ <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
+ <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
+ <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
+ <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+ <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
+ <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
+ <1368c558-c58c-4574-907e-36b07dee31bb@sirena.org.uk>
+ <6ee5d68a-fa54-4ed6-bc41-2bff0d9eb12f@redhat.com>
+ <052dc756-cc05-4aa8-9724-14d42853089c@sirena.org.uk>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <052dc756-cc05-4aa8-9724-14d42853089c@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11.12.23 18:32, Mark Brown wrote:
+> On Mon, Dec 11, 2023 at 05:53:59PM +0100, David Hildenbrand wrote:
+> 
+>>>> (3) avoids dirtying the tree as a "make headers_install" would, but it also
+>>>> means that each test that makes use of new uapi has to update the relevant
+>>>> headers (what people working on QEMU are used to).
+> 
+>>> Note that you can do an out of tree build to avoid dirtying things.
+> 
+>> Yes, but apparently the simple "make headers_install" will dirty the kernel.
+> 
+>> See (and ideally comment on)
+> 
+>> https://lkml.kernel.org/r/20231209020144.244759-1-jhubbard@nvidia.com
+> 
+> I mean, I guess people who don't want to install the headers are just
+> not going to be able to build a bunch of tests?  There definitely are a
+> bunch of tests where it's not needed so I can see why people would not
+> like being forced to do the headers step if they're only interested in
+> those tests.
 
-kernel test robot noticed the following build errors:
+Yes. And before that, people mostly had no clue that headers had to be 
+installed in order to compile successfully.
 
-[auto build test ERROR on song-md/md-next]
-[also build test ERROR on axboe-block/for-next linus/master v6.7-rc5 next-20231211]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/linan666-huaweicloud-com/md-Fix-overflow-in-is_mddev_idle/20231211-155833
-base:   git://git.kernel.org/pub/scm/linux/kernel/git/song/md.git md-next
-patch link:    https://lore.kernel.org/r/20231211075614.1850003-3-linan666%40huaweicloud.com
-patch subject: [PATCH 2/2] md: don't account sync_io if iostats of the disk is disabled
-config: i386-buildonly-randconfig-003-20231211 (https://download.01.org/0day-ci/archive/20231212/202312120159.I03ON8Ov-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231212/202312120159.I03ON8Ov-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312120159.I03ON8Ov-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from drivers/md/md-faulty.c:60:
->> drivers/md/md.h:587:28: error: character <U+2014> not allowed in an identifier
-           if (blk_queue_io_stat(disk—>queue))
-                                     ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
-   11 errors generated.
---
-   In file included from drivers/md/md-bitmap.c:32:
->> drivers/md/md.h:587:28: error: character <U+2014> not allowed in an identifier
-           if (blk_queue_io_stat(disk—>queue))
-                                     ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md-bitmap.c:2601:34: warning: result of comparison of constant 4294967296 with expression of type 'unsigned long' is always false [-Wtautological-constant-out-of-range-compare]
-           if (BITS_PER_LONG > 32 && csize >= (1ULL << (BITS_PER_BYTE *
-                                     ~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning and 11 errors generated.
---
-   In file included from drivers/md/md.c:69:
->> drivers/md/md.h:587:28: error: character <U+2014> not allowed in an identifier
-           if (blk_queue_io_stat(disk—>queue))
-                                     ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.c:8517:29: error: character <U+2014> not allowed in an identifier
-                   if (blk_queue_io_stat(disk—>queue))
-                                             ^
->> drivers/md/md.c:8517:25: error: use of undeclared identifier 'disk—'
-                   if (blk_queue_io_stat(disk—>queue))
-                                         ^
->> drivers/md/md.c:8517:33: error: use of undeclared identifier 'queue'
-                   if (blk_queue_io_stat(disk—>queue))
-                                               ^
->> drivers/md/md.c:8517:25: error: use of undeclared identifier 'disk—'
-                   if (blk_queue_io_stat(disk—>queue))
-                                         ^
->> drivers/md/md.c:8517:33: error: use of undeclared identifier 'queue'
-                   if (blk_queue_io_stat(disk—>queue))
-                                               ^
->> drivers/md/md.c:8517:25: error: use of undeclared identifier 'disk—'
-                   if (blk_queue_io_stat(disk—>queue))
-                                         ^
->> drivers/md/md.c:8517:33: error: use of undeclared identifier 'queue'
-                   if (blk_queue_io_stat(disk—>queue))
-                                               ^
->> drivers/md/md.c:8517:25: error: use of undeclared identifier 'disk—'
-                   if (blk_queue_io_stat(disk—>queue))
-                                         ^
-   fatal error: too many errors emitted, stopping now [-ferror-limit=]
-   20 errors generated.
---
-   In file included from drivers/md/raid5.c:53:
->> drivers/md/md.h:587:28: error: character <U+2014> not allowed in an identifier
-           if (blk_queue_io_stat(disk—>queue))
-                                     ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
->> drivers/md/md.h:587:24: error: use of undeclared identifier 'disk—'
-           if (blk_queue_io_stat(disk—>queue))
-                                 ^
->> drivers/md/md.h:587:32: error: use of undeclared identifier 'queue'
-           if (blk_queue_io_stat(disk—>queue))
-                                       ^
-   drivers/md/raid5.c:4265:7: warning: variable 'qread' set but not used [-Wunused-but-set-variable]
-                   int qread =0;
-                       ^
-   1 warning and 11 errors generated.
-
-
-vim +587 drivers/md/md.h
-
-   584	
-   585	static inline void md_sync_acct_bio(struct bio *bio, unsigned long nr_sectors)
-   586	{
- > 587		if (blk_queue_io_stat(disk—>queue))
-   588			md_sync_acct(bio->bi_bdev, nr_sectors);
-   589	}
-   590	
+So maybe a warning to give at least some hint might be reasonable.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
+
