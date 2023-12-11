@@ -2,196 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FF080D92E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F3580D983
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345066AbjLKSva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
+        id S1344963AbjLKSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjLKSv3 (ORCPT
+        with ESMTP id S229516AbjLKSyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:51:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E967AC;
-        Mon, 11 Dec 2023 10:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702320696; x=1733856696;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=p9APTF5tzyihpipwQ2ls9ki52nr/EaMfY0uN9x4+UeA=;
-  b=i+iQ6+iA4t4q6Ydyu9vfSpOn+ElUvM8LapVwTtCDg8+vc9JCXctEGip0
-   E0DhdKcUiwmS9lpylxFFwrrNqGo1fR3OO61kobWdlEqvUC5KvM62JEv0w
-   bYQeVnLlHxROmwRsRvr8QusWSUdYplv99vpUshS62OaCW8KcEm6FioQuh
-   o9TAbA0ln+Wtbrg62Agro9LHm0D+fQGukZ58e/imQ4RzGMIYGwLt1cqO7
-   fWvuHDR4Ca3CBmX/DVmEqkLYgg36NA2BuaxVWAPVwbFg0Nkh+FtXSzGxN
-   l0HFeMlcTZvA8/LnFabg6vC2KzJzezjp6kuIfnzuu6u0exJ7d6PzHFC58
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1533553"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1533553"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:51:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104578088"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1104578088"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Dec 2023 10:51:30 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rClNI-000INi-0D;
-        Mon, 11 Dec 2023 18:51:28 +0000
-Date:   Tue, 12 Dec 2023 02:51:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Xinhu Wu <xinhu.wu@unisoc.com>, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, orsonzhai@gmail.com,
-        baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com,
-        heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, xinhuwu.unisoc@gmail.com,
-        zhiyong.liu@unisoc.com, peak.yang@unisoc.com,
-        teng.zhang1@unisoc.com, bruce.chen@unisoc.com,
-        surong.pang@unisoc.com, xingxing.luo@unisoc.com,
-        xinhu.wu@unisoc.com
-Subject: Re: [PATCH V2 1/2] usb: typec: Support sprd_pmic_typec driver
-Message-ID: <202312120229.fONhCYBI-lkp@intel.com>
-References: <20231211074120.27958-2-xinhu.wu@unisoc.com>
+        Mon, 11 Dec 2023 13:54:16 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02A8B4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:54:22 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3333b0e0e02so535936f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:54:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702320861; x=1702925661; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TJ/uO2ze7N5KlFGwgc99whbyaD3GgIFDlJtONkS1JrM=;
+        b=KgYYrwy0WSgrETCgMfRpiriIozQ8TxGdA2V1zpfdalzGrsIrj4f7OC59wxJK2eMnVm
+         JrF86Fovh5nN07TBRAWFmh6kBovLP6R5mHK24Up6p9WvDImC0JC9Nua8RrEwYD9jJjd7
+         +wgiH5LtVZPTs9vcN1KDejlXZieqLHEZNWI2lQoY2VEHPD0s0VyjYeXJI7XX9B9LYkj+
+         6faCFZkCdxc+F1itO5u/39/LnRwAdntu0I+J0AvaRp5D0N5NW18H99dr+pKQUu8HinXw
+         /K9dpCVXcEGRAoFKP4zaivBiKi3Aekqh8QEpYuxPczzy4MJ5jJVvJS91U0NakZPo96U8
+         btoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702320861; x=1702925661;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TJ/uO2ze7N5KlFGwgc99whbyaD3GgIFDlJtONkS1JrM=;
+        b=G4GozDmPN3UdKN8M+BJ9bmoq0FmjWF8VIIw51feX+I0hB6nqwRsPG/1LCKGlJJgMxC
+         hACZkY4EnCTBvXPVrQYCbzWm4FTVUU/0dvjuZlW7c6Pny/aIKOurf8PfkoVU6JmUeQ++
+         inhKL6kQJYB8VdRt0v7Q5H2Si89jhHkspx2R67+iVq2iNOUWhfgCF/bL6Mku6lQGCwC+
+         HiSAAE741LN/q0GEf7pJIQzt0JnqMbkwzMN/pU8WkmhtPRq0wcM7aG5tskrNBn7uL9U4
+         I2pvjvSGAA/is4IyySCyNkTkovgcWPAzVhoqOFU63fKa9RgIe3jKAixMJJDioSXAHXmj
+         sA8Q==
+X-Gm-Message-State: AOJu0YzVcOPHfrCfD3KjNFCuNPrFirA4Gl0DwnWyNjKlBmG9CSwxZYrJ
+        sdbkNPhRUhexTXWIFF6ZTFY=
+X-Google-Smtp-Source: AGHT+IGpC+ooNOm4AcPs5iF1+NNGads2qfhDQV60CIdpKmXVYBHLVWemKinat1QVkjV7SsNPrXa6FA==
+X-Received: by 2002:a05:6000:154f:b0:333:538a:aedc with SMTP id 15-20020a056000154f00b00333538aaedcmr6697426wry.2.1702320860941;
+        Mon, 11 Dec 2023 10:54:20 -0800 (PST)
+Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id g12-20020a5d46cc000000b003335c061a2asm9192828wrs.33.2023.12.11.10.54.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 10:54:20 -0800 (PST)
+Message-ID: <b7a9bc86-68aa-4054-88cf-95c3da693db0@gmail.com>
+Date:   Mon, 11 Dec 2023 19:54:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211074120.27958-2-xinhu.wu@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] [Series 1] rename variable HTIOTActDetermineRaFunc
+ and (4) other
+To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231211001335.26169-1-garyrookard@fastmail.org>
+Content-Language: en-US
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20231211001335.26169-1-garyrookard@fastmail.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xinhu,
+On 12/11/23 01:13, Gary Rookard wrote:
+> Hi,
+> 
+> This patch series renames (5) different variables with
+> the checkpatch coding style issue, Avoid CamelCase.
+> 
+> Patch 1/5) rename variable HTIOTActDetermineRaFunc
+> Patch 2/5) rename variable HTResetIOTSetting
+> Patch 3/5) rename variable HTConstructCapabilityElement
+> Patch 4/5) rename variable HTConstructRT2RTAggElement
+> Patch 5/5) rename variable HT_PickMCSRate
+> 
+> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> 
+> Gary Rookard (5):
+>    staging: rtl8192e: rename variable HTIOTActDetermineRaFunc
+>    staging: rtl8192e: rename variable HTResetIOTSetting
+>    staging: rtl8192e: rename variable HTConstructCapabilityElement
+>    staging: rtl8192e: rename variable HTConstructRT2RTAggElement
+>    staging: rtl8192e: rename variable HT_PickMCSRate
+> 
+>   drivers/staging/rtl8192e/rtl819x_HTProc.c | 14 +++++++-------
+>   drivers/staging/rtl8192e/rtllib.h         |  6 +++---
+>   drivers/staging/rtl8192e/rtllib_softmac.c |  6 +++---
+>   3 files changed, 13 insertions(+), 13 deletions(-)
+> 
 
-kernel test robot noticed the following build warnings:
+Compiled and tested on hardware -> OK
 
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on usb/usb-next usb/usb-linus robh/for-next westeri-thunderbolt/next linus/master v6.7-rc5 next-20231211]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Xinhu-Wu/usb-typec-Support-sprd_pmic_typec-driver/20231211-154328
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20231211074120.27958-2-xinhu.wu%40unisoc.com
-patch subject: [PATCH V2 1/2] usb: typec: Support sprd_pmic_typec driver
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231212/202312120229.fONhCYBI-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231212/202312120229.fONhCYBI-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312120229.fONhCYBI-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/usb/typec/sprd_pmic_typec.c: In function 'sprd_pmic_typec_connect':
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_DETACHED_SNK' not handled in switch [-Wswitch]
-     184 |         switch (sc->state) {
-         |         ^~~~~~
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_ATTACHWAIT_SNK' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_DETACHED_SRC' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_ATTACHWAIT_SRC' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_POWERED_CABLE' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_AUDIO_CABLE' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_DEBUG_CABLE' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_TOGGLE_SLEEP' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_ERR_RECOV' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_DISABLED' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_TRY_SNK' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_TRY_WAIT_SRC' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_TRY_SRC' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_TRY_WAIT_SNK' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_UNSUPOORT_ACC' not handled in switch [-Wswitch]
->> drivers/usb/typec/sprd_pmic_typec.c:184:9: warning: enumeration value 'TYPEC_ORIENTED_DEBUG' not handled in switch [-Wswitch]
-
-
-vim +/TYPEC_DETACHED_SNK +184 drivers/usb/typec/sprd_pmic_typec.c
-
-   173	
-   174	static int sprd_pmic_typec_connect(struct sprd_pmic_typec *sc, u32 status)
-   175	{
-   176		enum typec_data_role data_role = TYPEC_DEVICE;
-   177		enum typec_role power_role = TYPEC_SINK;
-   178		enum typec_role vconn_role = TYPEC_SINK;
-   179		struct typec_partner_desc desc;
-   180	
-   181		if (sc->partner)
-   182			return 0;
-   183	
- > 184		switch (sc->state) {
-   185		case TYPEC_ATTACHED_SNK:
-   186			power_role = TYPEC_SINK;
-   187			data_role = TYPEC_DEVICE;
-   188			vconn_role = TYPEC_SINK;
-   189			break;
-   190		case TYPEC_ATTACHED_SRC:
-   191			power_role = TYPEC_SOURCE;
-   192			data_role = TYPEC_HOST;
-   193			vconn_role = TYPEC_SOURCE;
-   194			break;
-   195		}
-   196	
-   197		desc.usb_pd = 0;
-   198		desc.identity = NULL;
-   199		if (sc->state == TYPEC_AUDIO_CABLE)
-   200			desc.accessory = TYPEC_ACCESSORY_AUDIO;
-   201		else if (sc->state == TYPEC_DEBUG_CABLE)
-   202			desc.accessory = TYPEC_ACCESSORY_DEBUG;
-   203		else
-   204			desc.accessory = TYPEC_ACCESSORY_NONE;
-   205	
-   206		sc->partner = typec_register_partner(sc->port, &desc);
-   207		if (!sc->partner)
-   208			return -ENODEV;
-   209	
-   210		typec_set_pwr_opmode(sc->port, TYPEC_PWR_MODE_USB);
-   211		typec_set_pwr_role(sc->port, power_role);
-   212		typec_set_data_role(sc->port, data_role);
-   213		typec_set_vconn_role(sc->port, vconn_role);
-   214	
-   215		switch (sc->state) {
-   216		case TYPEC_ATTACHED_SNK:
-   217			sc->pre_state = TYPEC_ATTACHED_SNK;
-   218			/*notify USB, USB PHY, charger, and bc1p2 driver*/
-   219			extcon_set_state_sync(sc->edev, EXTCON_USB, true);
-   220			break;
-   221		case TYPEC_ATTACHED_SRC:
-   222			sc->pre_state = TYPEC_ATTACHED_SRC;
-   223			/*notify USB, USB PHY driver*/
-   224			extcon_set_state_sync(sc->edev, EXTCON_USB_HOST, true);
-   225			break;
-   226		case TYPEC_AUDIO_CABLE:
-   227			/*notify analog audio driver*/
-   228			sc->pre_state = TYPEC_AUDIO_CABLE;
-   229			extcon_set_state_sync(sc->edev, EXTCON_JACK_HEADPHONE, true);
-   230			break;
-   231		default:
-   232			break;
-   233		}
-   234	
-   235		spin_lock(&sc->lock);
-   236		sc->partner_connected = true;
-   237		spin_unlock(&sc->lock);
-   238		sprd_pmic_typec_set_cc_polarity_role(sc);
-   239	
-   240		return 0;
-   241	}
-   242	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
