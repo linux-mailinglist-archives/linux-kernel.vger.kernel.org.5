@@ -2,68 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4521980DE2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3DB80DE33
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjLKWWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:22:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
+        id S1345031AbjLKWXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:23:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKWWD (ORCPT
+        with ESMTP id S229493AbjLKWXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:22:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6660AB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:22:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702333329; x=1733869329;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=NjBAJdZtEPzflWo/C+hNJjt8+fIgGubvNDTl9Bjsb0Q=;
-  b=mJEkrtfKYdBNRoapSXZoRdKnnzArl0FsaMAKiAqmxFLZkls+kK0AyfXF
-   kSOCZe3ywcvmWr0sRNRY6LZy4qq4Gv5RpjZunbJrBi8m0ZY3ZJsP7/l9k
-   ouiWhanRcM/2iN9YU7owb8Lm+qfV8vjHg0h2Gwaldz/75fyBGPU4WVrhu
-   LrS9sGX9YhtfZUkyPUhsn6//Y5Jp/c8zv66WG4yxWPyZ9wOEaE2igjrVA
-   n7vig1QMatbzvIaf7TdUkpSQafQ62dgRsHarMs5u3WtLQ+DVCkpOFhgjw
-   du0o54tQBU1sRQB3qm6+C8iFz3Xt+GhnUnLfIcdUyJCFh3BdQFO6DFIWz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="8080299"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="8080299"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 14:22:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104646933"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="1104646933"
-Received: from jjschmit-mobl1.amr.corp.intel.com (HELO [10.209.8.245]) ([10.209.8.245])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 14:22:08 -0800
-Message-ID: <471d24f71cc531448572e2fc5964f1231e7ef7b3.camel@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: merge same code in enqueue_task_fair
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     WangJinchao <wangjinchao@xfusion.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     stone.xulei@xfusion.com
-Date:   Mon, 11 Dec 2023 14:22:07 -0800
-In-Reply-To: <202312101719+0800-wangjinchao@xfusion.com>
-References: <202312101719+0800-wangjinchao@xfusion.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Mon, 11 Dec 2023 17:23:53 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265BF8F;
+        Mon, 11 Dec 2023 14:24:00 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 477672243D;
+        Mon, 11 Dec 2023 22:23:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702333438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
+        b=gHOxDtY0sMxr4xrroTkDnAtQqbTNflYkcDbk8SLU23cVa8e+xsy79mJZNyGpWr+K5LYV19
+        QQ4MHd2PKJQE4oQWTYUtUu1PK2tvFiYo4j4A3+hBMpo/nxu2LGIAnwpdnfd1h7hFr6inBP
+        xSx6KIAHUUphaDkd3fK6PIi3ID/99E8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702333438;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
+        b=I30+EAmN4n4SBnszs/6KX2t0cujDYmKEMoiXI6wdj8Njx7HXrmJOtV4Iq9bcbL8Ly07fut
+        G1tBfbX79aNOmODg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702333438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
+        b=gHOxDtY0sMxr4xrroTkDnAtQqbTNflYkcDbk8SLU23cVa8e+xsy79mJZNyGpWr+K5LYV19
+        QQ4MHd2PKJQE4oQWTYUtUu1PK2tvFiYo4j4A3+hBMpo/nxu2LGIAnwpdnfd1h7hFr6inBP
+        xSx6KIAHUUphaDkd3fK6PIi3ID/99E8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702333438;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQ9QS0iOEdiHygKhY0Q4xaDhkAE7QfbRkg0Gf+N/PhE=;
+        b=I30+EAmN4n4SBnszs/6KX2t0cujDYmKEMoiXI6wdj8Njx7HXrmJOtV4Iq9bcbL8Ly07fut
+        G1tBfbX79aNOmODg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0317D132DA;
+        Mon, 11 Dec 2023 22:23:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id zZjaKPqLd2VKOwAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 11 Dec 2023 22:23:54 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Al Viro" <viro@zeniv.linux.org.uk>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of files.
+In-reply-to: <20231211191117.GD1674809@ZenIV>
+References: <20231208033006.5546-1-neilb@suse.de>,
+ <20231208033006.5546-2-neilb@suse.de>,
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
+ <20231211191117.GD1674809@ZenIV>
+Date:   Tue, 12 Dec 2023 09:23:51 +1100
+Message-id: <170233343177.12910.2316815312951521227@noble.neil.brown.name>
+X-Spam-Level: **********
+X-Spam-Score: 10.12
+X-Spamd-Result: default: False [-9.01 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         BAYES_HAM(-0.00)[23.87%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         DKIM_TRACE(0.00)[suse.de:+];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCVD_TLS_ALL(0.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim]
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 477672243D
+X-Spam-Score: -9.01
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=gHOxDtY0;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=I30+EAmN;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de;
+        dmarc=pass (policy=none) header.from=suse.de
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,87 +133,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-12-10 at 17:21 +0800, WangJinchao wrote:
-> 1. The code below is duplicated in two for loops and need to be
->    consolidated
-> 2. Fix the bug where a se's on_rq is true but its parent is not
+On Tue, 12 Dec 2023, Al Viro wrote:
+> On Mon, Dec 11, 2023 at 09:47:35AM +1100, NeilBrown wrote:
+> 
+> > Similarly would could wrap __fput_sync() is a more friendly name, but
+> > that would be better if we actually renamed the function.
+> > 
+> >   void fput_now(struct file *f)
+> >   {
+> >       __fput_sync(f);
+> >   }
+> 
+> It is unfriendly *precisely* because it should not be used without
+> a very good reason.
+> 
+> It may be the last opened file keeping a lazy-umounted mount alive.
+> It may be taking pretty much any locks, or eating a lot of stack
+> space.
 
-In the current code, If a se is already on a rq, all the parents would have=
- already been
-on rq too.  I don't think there's a case where se's on_rq and parent
-is not for the current code before your patch.  Otherwise the child
-would never get scheduled. I don't think we have seen such bug being
-reported.
+Previously you've suggested problems with ->release blocking.
+Now you refer to lazy-umount, which is what the comment above
+__fput_sync() mentions.
 
->=20
-> ```c
-> 		cfs_rq->h_nr_running++;
-> 		cfs_rq->idle_h_nr_running +=3D idle_h_nr_running;
->=20
-> 		if (cfs_rq_is_idle(cfs_rq))
-> 			idle_h_nr_running =3D 1;
->=20
-> 		/* end evaluation on encountering a throttled cfs_rq */
-> 		if (cfs_rq_throttled(cfs_rq))
-> 			goto enqueue_throttle;
-> ```
->=20
-> Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
-> ---
->  kernel/sched/fair.c | 31 ++++++++-----------------------
->  1 file changed, 8 insertions(+), 23 deletions(-)
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d7a3c63a2171..e1373bfd4f2e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6681,30 +6681,15 @@ enqueue_task_fair(struct rq *rq, struct task_stru=
-ct *p, int flags)
->  		cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT);
-> =20
->  	for_each_sched_entity(se) {
-> -		if (se->on_rq)
-> -			break;
->  		cfs_rq =3D cfs_rq_of(se);
-> -		enqueue_entity(cfs_rq, se, flags);
-> -
-> -		cfs_rq->h_nr_running++;
-> -		cfs_rq->idle_h_nr_running +=3D idle_h_nr_running;
-> -
-> -		if (cfs_rq_is_idle(cfs_rq))
-> -			idle_h_nr_running =3D 1;
-> -
-> -		/* end evaluation on encountering a throttled cfs_rq */
-> -		if (cfs_rq_throttled(cfs_rq))
-> -			goto enqueue_throttle;
-> -
-> -		flags =3D ENQUEUE_WAKEUP;
-> -	}
-> -
-> -	for_each_sched_entity(se) {
-> -		cfs_rq =3D cfs_rq_of(se);
-> -
-> -		update_load_avg(cfs_rq, se, UPDATE_TG);
-> -		se_update_runnable(se);
-> -		update_cfs_group(se);
-> +		if (se->on_rq) {
-> +			update_load_avg(cfs_rq, se, UPDATE_TG);
-> +			se_update_runnable(se);
-> +			update_cfs_group(se);
-> +		} else {
-> +			enqueue_entity(cfs_rq, se, flags);
-> +			flags =3D ENQUEUE_WAKEUP;
-> +		}
+"pretty much an locks" seems like hyperbole.  I don't see it taking
+nfsd_mutex or nlmsvc_mutex.  Maybe you mean any filesystem lock?
 
-The code change looks like a reasonable simplification.  Logic
-is the same as the old code, assuming that once a se's on_rq flag
-is true, all its parents are too.
+My understanding is that the advent of vmalloc allocated stacks means
+that kernel stack space is not an important consideration.
 
-Thanks.
+It would really help if we could have clear documented explanation of
+what problems can occur.  Maybe an example of contexts where it isn't
+safe to call __fput_sync().
 
-Tim
+I can easily see that lazy-unmount is an interesting case which could
+easily catch people unawares.  Punting the tail end of mntput_no_expire
+(i.e.  if count reaches zero) to a workqueue/task_work makes sense and
+would be much less impact than punting every __fput to a workqueue.
 
-> =20
->  		cfs_rq->h_nr_running++;
->  		cfs_rq->idle_h_nr_running +=3D idle_h_nr_running;
+Would that make an fput_now() call safe to use in most contexts, or is
+there something about ->release or dentry_kill() that can still cause
+problems?
+
+Thanks,
+NeilBrown
+
+
+> 
+> It really isn't a general-purpose API; any "more friendly name"
+> is going to be NAKed for that reason alone.
+> 
+> Al, very much tempted to send a patch renaming that sucker to
+> __fput_dont_use_that_unless_you_really_know_what_you_are_doing().
+> 
 
