@@ -2,300 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9516380DE67
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48780DE94
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345037AbjLKWlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S229740AbjLKWqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjLKWlW (ORCPT
+        with ESMTP id S229539AbjLKWqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:41:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A5EAF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:41:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702334485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bqvRq3+yhR0UwaVM5y94VmKd0+4wOCUKMDYoEFmp/zU=;
-        b=VF1OAHQyPlZWwNEYrEsesOd1U2dm8gKu8w4YsTZZ9og6+K5Li0J4qTXbfDHnrg4ZlUz8eI
-        28Vo29ZvOJ0Me8pZ8mPF4d65/lFSJ5PMcGii6g9MAgi7kcIZZwm1zWLO8dAK4XJfQo0lXH
-        CVRZEzRBUDuwDTHQrOjs02z5/17QmYo=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-389-e9UJIXtsMMy1EZtVhWd5CA-1; Mon, 11 Dec 2023 17:41:24 -0500
-X-MC-Unique: e9UJIXtsMMy1EZtVhWd5CA-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6d08b13786aso1016944b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:41:24 -0800 (PST)
+        Mon, 11 Dec 2023 17:46:08 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A85BE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:13 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9f099cf3aso75522921fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702334772; x=1702939572; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t85LLIZQoq/0uYuT3AgeozVMbJL+kvjO/m7san6lR4c=;
+        b=ZAuUeFlt480rmZ1DBuLCSdXlr7feEFhHvA7fEjzsA+FzCvcERv4N1FvBp6N5wDJzSt
+         vtW0ASv8tHw7T72S+tD1A0ZR6x1fR0ZXoj5oky+/hsz6u/GotZt2c6aglzQUc/keamwL
+         Iom+zDWX+0I7SKIVKKHnXoLHnrp2uZ1oUiw7bd00SI0LwsR+0YqaTat9aY8YCC8ru1tj
+         d1OQSCJHFmACluBskwxBZCFizVvDXGFzgnnpLDaB5sh3TayW2U9rUgQ7f4zi6i9hlD2B
+         y4PxSIbQdl81nf5aLuPZe+ddQD38KfxoUSKsexyez0eFIXr807pcSyU3ooerxwH/qMKN
+         ivhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702334483; x=1702939283;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bqvRq3+yhR0UwaVM5y94VmKd0+4wOCUKMDYoEFmp/zU=;
-        b=nHFwoROpAYMrATW3xDPWr3aDePnHUXlBe5o2q9a6xjOI8wrOR5e8Wy68Sqp1wvoF1H
-         LuNcFHm8cCGiS+bYXI40NcCLqkjfP3F72/jb6m0B2Q3bDJn62i47c2gQtJRVAxKuHamH
-         ZuXjlHIA+882fH7ATnko0HYt4YI8njlK1PPSFTHA2SSK1hBQQzfR7CPOwDTGwQmn0WB7
-         zaWnePfNMESkazkbY65c2K6Oi4BQ4ElCjwRkoK5h91AhNuWKxtgQsJAai48uqznraXTO
-         n6rJF3F9/R9RnUjHyZjjU4qunZrK7oGZHN4jSHeR0pPEvjUQ16SM8MsbMno+EMRr007G
-         7/kQ==
-X-Gm-Message-State: AOJu0Yx0suOz9UPZFESXajtMZj0NNx+0M+a/dEU4xMYRNT2JitJJso7p
-        WFkTZ1zC0PCdrE15kAq912Y3BKqpqn8FgKfs0Ie9TwaYFPFhwpipV2wrC70Ovo5m1gmluHahlyR
-        8w2CkdYH7thbJHnZHJWgXZ+ca
-X-Received: by 2002:a05:6a00:178e:b0:6cb:4361:773c with SMTP id s14-20020a056a00178e00b006cb4361773cmr6184779pfg.5.1702334483444;
-        Mon, 11 Dec 2023 14:41:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFELOOcyUFVuYan35EViXeqqM1dOwDDk0m7BMPvelsEKBAbJ2sRKwiO0n2OJcl4EqgVWjb9dQ==
-X-Received: by 2002:a05:6a00:178e:b0:6cb:4361:773c with SMTP id s14-20020a056a00178e00b006cb4361773cmr6184769pfg.5.1702334483072;
-        Mon, 11 Dec 2023 14:41:23 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:3102:945e:6f76:fb73:6512])
-        by smtp.gmail.com with ESMTPSA id m12-20020a056a00080c00b006ce35220db0sm6713783pfk.202.2023.12.11.14.41.20
+        d=1e100.net; s=20230601; t=1702334772; x=1702939572;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t85LLIZQoq/0uYuT3AgeozVMbJL+kvjO/m7san6lR4c=;
+        b=DsbMCu4RVlDGVzYJ1zJFp8TACqoPWhDsKQJfHhopXiN5QMtn2vsTdEpYykLQxodYMo
+         YQx50X/cz30kpSwg/L6swPKLTEX1uZnIR6lKxJMlRopT1+vYbTH1Ud/TDhUnysOo0kJm
+         0Xw4k4sGIoCpAtFDqmLJO8LFi38LVU0HzV5Q5y7iRGRRYppQu7+VduRXssvYjodA1yfN
+         t6KzWKHG/d+ykHN3AsN/bxillg2D5zW4f9TpJHoTAW2JPhPVpzADs/BUIvV6Cv4IfdZd
+         ubpFi6N8QGfiflZuvXF4cQEmklKXEgEYcx7e2lP8GrD1vU+zh9RkPeIM282Z1hyC1rSa
+         Ul1g==
+X-Gm-Message-State: AOJu0YwDf+bd3D/+tHEIltCRdnF7VojUbxrNdi0rwyt1FofbeO/f2mAJ
+        S5KV94KUp4wa5skz6QKDdLnpQA==
+X-Google-Smtp-Source: AGHT+IG98sV0CrJ9EM1uWc/0gBq7KGO+1S15MorZEU2yTn9piSQO9Ixm7HFp7oIVtJngBFMaHwWKQQ==
+X-Received: by 2002:a2e:9607:0:b0:2c9:fde5:a35a with SMTP id v7-20020a2e9607000000b002c9fde5a35amr2265453ljh.80.1702334771570;
+        Mon, 11 Dec 2023 14:46:11 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id if3-20020a0564025d8300b0054afcab0af2sm4091789edb.59.2023.12.11.14.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 14:41:22 -0800 (PST)
-From:   leobras@redhat.com
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Leonardo Bras <leobras@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
-Date:   Mon, 11 Dec 2023 19:41:04 -0300
-Message-ID: <ZXeQAHXRG59rTWs6@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZXeHRmTIMmIqeNxn@LeoBras>
-References: <20231208181802.88528-3-leobras@redhat.com> <CAK7LNAQk3Nm53qf95p7yQbSQ_M3phD_n5OMGxFWorGg_4fpQZg@mail.gmail.com> <ZXcLEKSBg9Bd1qEu@LeoBras> <CAK7LNARUYBS3Nd83M7uEtPt_GjUGK2jDGEJk9SBBedUKgb911g@mail.gmail.com> <ZXeHRmTIMmIqeNxn@LeoBras>
+        Mon, 11 Dec 2023 14:46:11 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 00/10] clk: qcom: Add TCSR, GPU, CAM and DISP clock
+ controllers for X1E80100
+Date:   Tue, 12 Dec 2023 00:45:40 +0200
+Message-Id: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABSRd2UC/z2OQQrCMBBFr1Jm7eAktli8irhI4tQGQ0YyQQqld
+ zdVcPn4vMdfQblEVrh0KxR+R42SG5hDB2F2+cEY743Bkj0ZSwYXwyMZIgxJwhOD5FokJS6K3vX
+ W03AeptFBC3injL64HOY94fvjX/5NIhWroM6c0i68Ck9x+b653rbtA3IMlFWdAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2786; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=MUgBtyNX28dceKLimFFthIHdxEZFj6+ep2sI3cJjt3E=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBld5EeI+9IfHIYfWIgMULb8y5P7dqKmGCLYMlcu
+ V+RIezPIe2JAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXeRHgAKCRAbX0TJAJUV
+ VtEcD/9ueuMEDr9aCafxUoSTEZP42N/QKolas5rBsf9hFYGpTYXLdQyyoOAt3P1nq71J0QGh3O+
+ lmQsyMOUMkTjsniGI7AZtQr5+oYcY8ONOEvFJ40DppUK92MHpClYGcHILXrSqURgJwchWL636gd
+ Qg+3TYlpER3TS2GND0SuQxIhs7zH26e1AbCcS2TOnA4ceDv9UX8u1UVmJSyhJ03dMDd83ICZlIy
+ SnkHZprQ2bJpANtZWDVGLVaJTWQsi+HVSsHwG7tIxDAh0yVEL80y4LWKo99x3CF1R2p2qh8mUJI
+ R+5n/yN5OrFMfw4QrBqF/kA9UWuvT5yOTCZ51tUwJhTHnPtLc3/oBgYDSH5sajCfN7YuDk1C6N7
+ VeveoQf4UjyH7x8CPfxcWrv6utnSzvy1y44XnYAcdVNO0a20OUTBmZhdrD8f9X0WH9zsuMotQ2p
+ 3NDaM+zDemo/eq6gaxJqVVLsL/YWpC1kxLCcUeuZj5+HwJaBPBKZzxGREzu9g0py891Rgi798Yn
+ q2eKwq0b/osu97r9TK6ocZn3Jl/zgef3tWtxdOcVU6RCwF7OqzeMbrx5rnRXJ8aRamTZ4qJUTD6
+ CqjhI60FMY+L3/qvnwxt3jYyFtBfUHAbgbmvXH1oRQp15J5uXNkiO0+vln9fCAx9PvibIElADIP
+ d8SkQoembB8rhQA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonardo Bras <leobras@redhat.com>
+This patchset adds all the missing clock controllers for Qualcomm X1E80100
+platform. Another important change is the dropping of the dedicated
+schema of the SM8650 DISP CC as a preparatory work for documenting the
+DISP CC compatible for X1E801800.
 
-On Mon, Dec 11, 2023 at 07:03:50PM -0300, lsoaresp@redhat.com wrote:
-> From: Leonardo Bras <leobras@redhat.com>
-> 
-> On Tue, Dec 12, 2023 at 03:05:38AM +0900, Masahiro Yamada wrote:
-> > On Mon, Dec 11, 2023 at 10:14 PM <lsoaresp@redhat.com> wrote:
-> > >
-> > > From: Leonardo Bras <masahiroy@kernel.org>
-> > >
-> > > On Sun, Dec 10, 2023 at 04:13:54AM +0900, Masahiro Yamada wrote:
-> > > > On Sat, Dec 9, 2023 at 3:19 AM Leonardo Bras <leobras@redhat.com> wrote:
-> > > > >
-> > > > > When reviewing patches, it looks much nicer to have some changes shown
-> > > > > before others, which allow better understanding of the patch before the
-> > > > > the .c files reviewing.
-> > > > >
-> > > > > Introduce a default git.orderFile, in order to help developers getting the
-> > > > > best ordering easier.
-> > > > >
-> > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > > > > Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> > > > >
-> > > > > ---
-> > > > > Changes since RFCv4:
-> > > > > - Added scripts/* into "build system" section
-> > > > > - Added "git-specific" section with this script and .gitignore
-> > > > > - Thanks for this feedback Nicolas!
-> > > > >
-> > > > > Changes since RFCv3:
-> > > > > - Added "*types.h" matching so type headers appear before regular headers
-> > > > > - Removed line ends ($) in patterns: they previously provided a
-> > > > >   false-positive
-> > > > > - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
-> > > > >   in any subdirectory
-> > > > >
-> > > > > Changes since RFCv2:
-> > > > > - Fixed licence comment to from /**/ to #
-> > > > > - Fixed filename in how-to comment
-> > > > > - Fix build order: Kconfig -> Kbuild -> Makefile
-> > > > > - Add *.mk extension
-> > > > > - Add line-ends ($) to make sure and get the correct extensions
-> > > > > - Thanks Masahiro Yamada for above suggestions!
-> > > > > - 1 Ack, thanks Randy!
-> > > > >
-> > > > > Changes since RFCv1:
-> > > > > - Added Kconfig* (thanks Randy Dunlap!)
-> > > > > - Changed Kbuild to Kbuild* (improve matching)
-> > > > >
-> > > > >
-> > > > >  scripts/git.orderFile | 39 +++++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 39 insertions(+)
-> > > > >  create mode 100644 scripts/git.orderFile
-> > > > >
-> > > > > diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> > > > > new file mode 100644
-> > > > > index 0000000000000..31649ff53d22c
-> > > > > --- /dev/null
-> > > > > +++ b/scripts/git.orderFile
-> > > > > @@ -0,0 +1,39 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +
-> > > > > +# order file for git, to produce patches which are easier to review
-> > > > > +# by diffing the important stuff like header changes first.
-> > > > > +#
-> > > > > +# one-off usage:
-> > > > > +#   git diff -O scripts/git.orderFile ...
-> > > > > +#
-> > > > > +# add to git config:
-> > > > > +#   git config diff.orderFile scripts/git.orderFile
-> > > > > +#
-> > > > > +
-> > > > > +MAINTAINERS
-> > > > > +
-> > > > > +# Documentation
-> > > > > +Documentation/*
-> > > > > +*.rst
-> > > > > +
-> > > > > +# git-specific
-> > > > > +.gitignore
-> > > > > +scripts/git.orderFile
-> > > >
-> > >
-> > > Hello Masahiro, thanks for the feedback!
-> > >
-> > > >
-> > > >
-> > > > I think scripts/git.orderFile should be part of
-> > > > "scripts/*" below.
-> > > >
-> > > >
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > > +
-> > > > > +# build system
-> > > > > +*Kconfig*
-> > > > > +*Kbuild*
-> > > > > +*Makefile*
-> > > >
-> > > > I do not like this because "foo-Makefile-bar"
-> > > > is not a Makefile, but would match "*Makefile*".
-> > >
-> > > That makes sense.
-> > >
-> > > >
-> > > >
-> > > > If you do not use wildcard at all, 'Makefile'
-> > > > will match to the root-dir and sub-directories.
-> > >
-> > > I tried a quick test here changing an mm/*.c file and mm/Makefile, and the
-> > > above will print the .c file changes first in any situation here, so it
-> > > won't have the desired behavior.
-> > 
-> > 
-> > 
-> > Hmm, you are right.
-> > 
-> > 
-> > OK, your suggestion below looks good.
-> > 
-> > 
-> > Thanks.
-> 
-> Thank you for this feedback!
-> 
-> I will send a v6 shortly.
-> 
-> Thank you!
-> Leo
-> 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > 
-> > >
-> > > But if we want to achieve the above we can do so with a slight change in
-> > > the suggestion:
-> > >
-> > > >
-> > >>
-> > > > Kconfig
-> > > > */Kconfig*
-> > > > Kbuild
-> > > > Makefile
-> > > */Makefile
-> > > > *.mak
-> > > > *.mk
-> > > > scripts/*
-> > > >
-> > > >
-> > > > may satisfy your needs mostly.
-> > > >
-> > >
-> > > I have tried the following in the Kernel root:
-> > >
-> > > $ find . |grep Makefile |grep -v Makefile$
-> > > ./arch/arm/mach-s3c/Makefile.s3c64xx
-> > > ./arch/mips/Makefile.postlink
-> > > ./arch/powerpc/Makefile.postlink
-> > > ./arch/um/Makefile-os-Linux
-> > > ./arch/um/Makefile-skas
-> > > ./arch/um/scripts/Makefile.rules
-> > > ./arch/x86/Makefile_32.cpu
-> > > ./arch/x86/Makefile.um
-> > > ./arch/x86/Makefile.postlink
-> > > ./arch/riscv/Makefile.postlink
-> > > ./drivers/firmware/efi/libstub/Makefile.zboot
-> > > ./drivers/usb/serial/Makefile-keyspan_pda_fw
-> > > [...]
-> > >
-> > > $ find . |grep Kbuild |grep -v Kbuild$
-> > > ./arch/mips/Kbuild.platforms
-> > > ./scripts/Kbuild.include
-> > >
-> > > Which leads to an honest question:
-> > > Don't we want to show changes on those files before C files, for example?
-> > >
-> > > If so, we need something like:
-> > >
-> > > # build system
-> > > Kconfig*
-> > > */Kconfig*
-> > > Kbuild*
-> > > */Kbuild*
-> > > Makefile*
-> > > */Makefile*
-> > > *.mak
-> > > *.mk
-> > > scripts/*
-> > >
-> > > It would get rid of "foo-Makefile-bar" case but still match
-> > > "Makefile-bar" case, which seems to be used around.
-> > >
-> > > Is that ok?
-> > >
-> > > Thanks!
-> > > Leo
-> > >
-> > >
-> > 
-> > 
-> > -- 
-> > Best Regards
-> > Masahiro Yamada
-> > 
+Initially, the TCSR clock controller was sent separately, but in order
+to avoid merge conflicts, all other clock controllers have been added.
+https://lore.kernel.org/all/20231122-x1e80100-clk-tcsrcc-v1-0-43078c6d6452@linaro.org/
 
+Changes to TCSR clock controller since up-mentioned version:
+- called qcom_cc_probe instead of qcom_cc_really_probed, like Konrad
+  suggested
 
-RFCv6 patch at:
-https://lore.kernel.org/all/20231211221338.127407-1-leobras@redhat.com/
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Abel Vesa (3):
+      dt-bindings: clock: Drop the SM8650 DISPCC dedicated schema
+      dt-bindings: clock: qcom: Document the X1E80100 TCSR Clock Controller
+      clk: qcom: Add TCSR clock driver for x1e80100
+
+Rajendra Nayak (7):
+      dt-bindings: clock: qcom: Document the X1E80100 Display Clock Controller
+      dt-bindings: clock: qcom: Document the X1E80100 GPU Clock Controller
+      dt-bindings: clock: qcom: Document the X1E80100 Camera Clock Controller
+      clk: qcom: clk-alpha-pll: Add support for zonda ole pll configure
+      clk: qcom: Add dispcc clock driver for x1e80100
+      clk: qcom: Add GPU clock driver for x1e80100
+      clk: qcom: Add camcc clock driver for x1e80100
+
+ .../bindings/clock/qcom,sm8450-camcc.yaml          |    2 +
+ .../bindings/clock/qcom,sm8450-gpucc.yaml          |    2 +
+ .../bindings/clock/qcom,sm8550-dispcc.yaml         |    7 +-
+ .../bindings/clock/qcom,sm8550-tcsr.yaml           |    1 +
+ .../bindings/clock/qcom,sm8650-dispcc.yaml         |  106 -
+ drivers/clk/qcom/Kconfig                           |   35 +
+ drivers/clk/qcom/Makefile                          |    4 +
+ drivers/clk/qcom/camcc-x1e80100.c                  | 2489 ++++++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.c                   |   26 +
+ drivers/clk/qcom/clk-alpha-pll.h                   |    4 +
+ drivers/clk/qcom/dispcc-x1e80100.c                 | 1699 +++++++++++++
+ drivers/clk/qcom/gpucc-x1e80100.c                  |  659 ++++++
+ drivers/clk/qcom/tcsrcc-x1e80100.c                 |  285 +++
+ include/dt-bindings/clock/qcom,x1e80100-camcc.h    |  135 ++
+ include/dt-bindings/clock/qcom,x1e80100-dispcc.h   |   98 +
+ include/dt-bindings/clock/qcom,x1e80100-gpucc.h    |   41 +
+ include/dt-bindings/clock/qcom,x1e80100-tcsr.h     |   23 +
+ include/dt-bindings/reset/qcom,x1e80100-gpucc.h    |   19 +
+ 18 files changed, 5528 insertions(+), 107 deletions(-)
+---
+base-commit: 10b6aabadfd16f52a85603443a4778083f70882c
+change-id: 20231201-x1e80100-clock-controllers-ba42b0575f8a
+
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
