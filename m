@@ -2,150 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BCA80CCA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:02:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DFA80CE13
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343965AbjLKOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        id S1344562AbjLKOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:16:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343950AbjLKOCY (ORCPT
+        with ESMTP id S1344621AbjLKOPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:02:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A8E47AD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702303199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jNtOY4LpZQRmFFwaKjy6gBWig0U9E1fsIgKhcHzr1a8=;
-        b=JLUZYGk0tqtYaPJ5kVPbIjFzzfHonixcfZP0yrCmCO8K54K7BensbDTstb4FMgU/QszSQl
-        /8X1w74FjmOe5EtlzRd6cR/rfBZxCVy5YanV436wY2/bYOmH5eS0AabyG8IMwtErBLPA9W
-        28YNXI2TBVfL9DRSk535gQnFpk827iE=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-_PvnCrkVPaSjqHyG2M3OuQ-1; Mon, 11 Dec 2023 08:59:58 -0500
-X-MC-Unique: _PvnCrkVPaSjqHyG2M3OuQ-1
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6ce6fa748c5so5309531b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:59:57 -0800 (PST)
+        Mon, 11 Dec 2023 09:15:51 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4934C1F;
+        Mon, 11 Dec 2023 06:00:25 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e180547bdeso1458317b3.1;
+        Mon, 11 Dec 2023 06:00:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702303225; x=1702908025; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
+        b=IZ+Q1ocQvf0EqoQJMZXvl9CRIrLkCY6CYBMV5lgvT66wedCAAJppYZb3DjQlMCmbu8
+         J8jjzu0nmdf6uK8Q8RO7RP+4qjVTNZKM9QCgDjDeUjCBkPnXxcY4VZjackjUhy0kWNZW
+         yERJ+A9HEmCayllSlY142FulW0EGKwmUB9bPw95ZnDTF3XWsdH33enaRUa2kUktPFwTo
+         HxIS3aawvm2IIHF1d5Mf38J/Yl1fgIqYDsIoZuIiU3HOwKUjyTo37ypqvmDPKIwzMLzN
+         tXaY+QnrYDbrh/phk6+Y3ekSI+ao6CtT8w6pKMv8fZOPKH7vwoWNhv5i0Fngg1DpYJJF
+         EkOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702303197; x=1702907997;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jNtOY4LpZQRmFFwaKjy6gBWig0U9E1fsIgKhcHzr1a8=;
-        b=k+pCe8xC+zQRzGgkIDlb/pWlZXxMEAKL5IsqEoxbvR2FREcbCNyZg/wC/1oscunJpe
-         cuvxLSOihnnhOHTaYuSBS19y8h+iFASTDPCWXwAkz9D0p0qirQprmw0i2y8hdO7uqwf8
-         5ZXXqXuCWeGXUkYBGGg7aH+/dosNwBmJUBVrnfWxf5vQJsMn94EQSM/X71S7w8o8kRnL
-         UI6bxwQ2DzutxiVTrqMuJXxZVOII/LSXOHa8p0uJuHcDb5R6uLRhODLi3tWRMvf4SxFp
-         Nl5dUTLjq1N1apMzWlMqM29uE6SlzR23EPaqkquzfm3le77mJSId/ZZPw5ZFbRVbiyHu
-         YYFA==
-X-Gm-Message-State: AOJu0Yye3ooGUw3iuRhgQ/4qyJIWkz+fyY8CMobJvxYTfCgGiBaeLG64
-        uWM5uqLHSWdXpZFJIEQlY1fwqlkWnPFSph32P3+ZZrXKIVGFhqRnpbgmADq/UIWExhXfejvyYjs
-        qTMF3R9eCxtxkDHax8tZOmmAsC2TPyfKA
-X-Received: by 2002:a05:6a00:4b05:b0:6cd:8a19:c324 with SMTP id kq5-20020a056a004b0500b006cd8a19c324mr5065046pfb.3.1702303196832;
-        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFH8pcpJUYWrPme/AvUNGcFfSPB3UcpRig9J/TmAImLAZ/9Rz5Hmp0l8B3NXjdGvBgSAZW9vA==
-X-Received: by 2002:a05:6a00:4b05:b0:6cd:8a19:c324 with SMTP id kq5-20020a056a004b0500b006cd8a19c324mr5065039pfb.3.1702303196506;
-        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id ei43-20020a056a0080eb00b006ce6e431292sm6280383pfb.38.2023.12.11.05.59.54
+        d=1e100.net; s=20230601; t=1702303225; x=1702908025;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LNTv7V3EOxu8et+zxKRKRD7xOGYn8t55trHPfKfBcwo=;
+        b=N+qzxX8CAPXo2FDt41QceFBuxHpL2V++3+o1fK/RPGPS4ty30uUaEwNtGI7wLpCYMp
+         DryWHj8R3soNjkz3S6EdIqz2OKK0zeA6pg+B5QiDYED2+bmyx2ttnSGINtf0MzTv3pLq
+         /8BSfgZY5pHcgV6GvOFFmyj5MOKkj97qdLMzVdEUCnAC4LMRlLENTIrmqRx38IdoE0/Q
+         MAcD3D44BkkCblJUIpcC4yO5mwbkmCfQHdFg8k4cIyZLdiMSwJpsbvSPhTv9nLUJa5N3
+         br5Hm/nxlnf22UnACSUaAUeBAteYb3G+rEcNTGeeh+nsDAlXjCZLRxlaJvu0GvxExtvT
+         vzgg==
+X-Gm-Message-State: AOJu0YytMVsS83ZiByk2VA+DCcjGFaljHlCM3/gssarfegmNHS7g45wE
+        2uc2dLBKXNAE+Jj2xgtaQBg=
+X-Google-Smtp-Source: AGHT+IGLhyIF/d5QvpkeI4/4kwHQ1QkLNBHHxOYgnuqRp9V6jzQy+pH/7dtnS4EyBFrob/ltOoRX4g==
+X-Received: by 2002:a5b:784:0:b0:d9a:d8bd:7b9c with SMTP id b4-20020a5b0784000000b00d9ad8bd7b9cmr2783952ybq.11.1702303224510;
+        Mon, 11 Dec 2023 06:00:24 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:f798:e824:429f:84b0])
+        by smtp.gmail.com with ESMTPSA id k18-20020a258c12000000b00d9cbf2aabc6sm2514846ybl.14.2023.12.11.06.00.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 05:59:56 -0800 (PST)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shigeru Yoshida <syoshida@redhat.com>
-Subject: [PATCH] crypto: af_alg/hash: Fix uninit-value access in af_alg_free_sg()
-Date:   Mon, 11 Dec 2023 22:59:49 +0900
-Message-ID: <20231211135949.689204-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 11 Dec 2023 06:00:23 -0800 (PST)
+Date:   Mon, 11 Dec 2023 06:00:22 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <ZXcV9pXmg+GE2BCF@yury-ThinkPad>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
+ <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN reported the following uninit-value access issue:
+On Sun, Dec 10, 2023 at 10:53:23PM -0800, Souradeep Chakrabarti wrote:
+> On Fri, Dec 08, 2023 at 01:53:51PM -0800, Yury Norov wrote:
+> > Few more nits
+> > 
+> > On Fri, Dec 08, 2023 at 06:03:40AM -0800, Yury Norov wrote:
+> > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > > > Existing MANA design assigns IRQ to every CPU, including sibling
+> > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > > > in the same core and may reduce the network performance with RSS.
+> > > 
+> > > Can you add an IRQ distribution diagram to compare before/after
+> > > behavior, similarly to what I did in the other email?
+> > > 
+> > > > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > > > NUMA node. The performance improvement we are getting using ntttcp with
+> > > > following patch is around 15 percent with existing design and approximately
+> > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > > > if enough cores are present.
+> > > 
+> > > How did you measure it? In the other email you said you used perf, can
+> > > you show your procedure in details?
+> > > 
+> > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > > > ---
+> > > 
+> > > [...]
+> > > 
+> > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> > > >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > index 6367de0c2c2e..18e8908c5d29 100644
+> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> > > >  	r->size = 0;
+> > > >  }
+> > > >  
+> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> > > > +{
+> > > > +	int w, cnt, cpu, err = 0, i = 0;
+> > > > +	int next_node = start_numa_node;
+> > > 
+> > > What for this?
+> > > 
+> > > > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > > > +	cpumask_var_t curr, cpus;
+> > > > +
+> > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> > 
+> > alloc_cpumask_var() here and below, because you initialize them by
+> > copying
+> I have used zalloc here as prev gets initialized after the first hop, before that
+> it may contain unwanted values, which may impact cpumask_andnot(curr, next, prev).
+> Regarding curr I will change it to alloc_cpumask_var().
+> Please let me know if that sounds right.
 
-=====================================================
-BUG: KMSAN: uninit-value in af_alg_free_sg+0x1c1/0x270 crypto/af_alg.c:547
- af_alg_free_sg+0x1c1/0x270 crypto/af_alg.c:547
- hash_sendmsg+0x188f/0x1ce0 crypto/algif_hash.c:172
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x997/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x271/0x3b0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x2fa/0x4a0 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x103/0x9e0 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x5d5/0x9b0 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc+0x118/0x410 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- sock_kmalloc+0x104/0x1a0 net/core/sock.c:2681
- hash_accept_parent_nokey crypto/algif_hash.c:418 [inline]
- hash_accept_parent+0xbc/0x470 crypto/algif_hash.c:445
- af_alg_accept+0x1d8/0x810 crypto/af_alg.c:439
- hash_accept+0x368/0x800 crypto/algif_hash.c:254
- do_accept+0x803/0xa70 net/socket.c:1927
- __sys_accept4_file net/socket.c:1967 [inline]
- __sys_accept4+0x170/0x340 net/socket.c:1997
- __do_sys_accept4 net/socket.c:2008 [inline]
- __se_sys_accept4 net/socket.c:2005 [inline]
- __x64_sys_accept4+0xc0/0x150 net/socket.c:2005
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 14168 Comm: syz-executor.2 Not tainted 6.7.0-rc4-00009-gbee0e7762ad2 #13
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
-=====================================================
-
-In hash_sendmsg(), hash_alloc_result() may fail and return -ENOMEM if
-sock_kmalloc() fails. In this case, hash_sendmsg() jumps to the unlock_free
-label and calls af_alg_free_sg() with ctx->sgl.sgt.sgl uninitialized. This
-causes the above uninit-value access issue for ctx->sgl.sgt.sgl.
-
-This patch fixes this issue by initializing ctx->sgl.sgt.sgl when the
-structure is allocated in hash_accept_parent_nokey().
-
-Fixes: c662b043cdca ("crypto: af_alg/hash: Support MSG_SPLICE_PAGES")
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- crypto/algif_hash.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/crypto/algif_hash.c b/crypto/algif_hash.c
-index 82c44d4899b9..a51b58d36d60 100644
---- a/crypto/algif_hash.c
-+++ b/crypto/algif_hash.c
-@@ -419,6 +419,7 @@ static int hash_accept_parent_nokey(void *private, struct sock *sk)
- 	if (!ctx)
- 		return -ENOMEM;
- 
-+	ctx->sgl.sgt.sgl = NULL;
- 	ctx->result = NULL;
- 	ctx->len = len;
- 	ctx->more = false;
--- 
-2.41.0
+What? prev is initialized at declaration:
+        
+        const struct cpumask *next, *prev = cpu_none_mask;
 
