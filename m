@@ -2,266 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD55B80CE56
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0306F80CE55
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344028AbjLKO1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:27:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S1343736AbjLKO1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:27:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343741AbjLKO0l (ORCPT
+        with ESMTP id S1345041AbjLKO0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:26:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64857F3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:26:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702304805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WnVWnfgDWlNIvaTnQGAKn3Bh79PthC+vFqsZ7u+oMf4=;
-        b=FaN3SbKSnMvUy6sVUEaGDXNQXWSXcbNqi/0qMkX97drLCJf3nyY8de4vWVkyZNgzbChrGi
-        BmpdivTizQGxzv1dCejFNq3C19XakTwIYzOxSnTHBA9jBlmsGd8lfiA3wUIZUOWETJYw4N
-        LsvU3JL5Snr5EgGU36rKgyFp8vzl//U=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-384-42wQg02XNSK2aNtQgp6w7g-1; Mon, 11 Dec 2023 09:26:17 -0500
-X-MC-Unique: 42wQg02XNSK2aNtQgp6w7g-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-286a4fc4e9eso5434040a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:26:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702304776; x=1702909576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WnVWnfgDWlNIvaTnQGAKn3Bh79PthC+vFqsZ7u+oMf4=;
-        b=tKMa0iZBLw3rDbzs54g/+U0JLn+cCtQVrrQUyhFFjmOett2eyw+6A2MPjYj2uRtag5
-         hA4772SOk8nHY/QmQiS/FWsRgu2E7nRFNTHnjVzTtkw0d/uirnSmtUKfHRNjSXpfv6sY
-         kbh2CCzQ5APX3rkC8e3/UnA52zCTuTQHTkltSu3KzCyet2EwNYo95iapnNNf1skSRz9b
-         LEy/OqxCzLwCvJ2/g/XDDYgkHO3AQI8j2L8sAWRV6eNZCf2Hq+uFayAwzy7ihOS1wtMC
-         DwKMUDGBe6kHOwMh+4fYHyX401UG7lwKSgFnESSGIsgD5nc3JT1Fut2RMtRBe0cy6vaU
-         0tyA==
-X-Gm-Message-State: AOJu0YxYT9rMdSc8yxP2AfV5hWUS0M5o4u3I78w7tt1XrCsqSQ8p7arj
-        MLNxBIVcoRUuNu/QMCad4p8CqsNX+5HVrmXsEphEDCD1x+LzPPcG3xfdvZxP8yAj9ZBEeMAMs+P
-        DeR5UDsHm77TD0qWpEEamvATICjBuq4wf2PEphl65
-X-Received: by 2002:a17:90b:46c8:b0:286:b46e:b749 with SMTP id jx8-20020a17090b46c800b00286b46eb749mr3279130pjb.48.1702304776158;
-        Mon, 11 Dec 2023 06:26:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFRnx1L3UxwGpcJj3W5vld8cCQ9/lD+wWIpH0jT69gQNc9vz0wASTpXBtmviP6JvVqIF+XD9GpjfogGudKKZwQ=
-X-Received: by 2002:a17:90b:46c8:b0:286:b46e:b749 with SMTP id
- jx8-20020a17090b46c800b00286b46eb749mr3279117pjb.48.1702304775795; Mon, 11
- Dec 2023 06:26:15 -0800 (PST)
+        Mon, 11 Dec 2023 09:26:35 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7865710C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:26:04 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rChEH-000818-Md; Mon, 11 Dec 2023 15:25:53 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rChEG-00F7by-2i; Mon, 11 Dec 2023 15:25:52 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rChEF-000yvL-Pk; Mon, 11 Dec 2023 15:25:51 +0100
+Date:   Mon, 11 Dec 2023 15:25:49 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] pwm: Make it possible to apply PWM changes in
+ atomic context
+Message-ID: <20231211142549.llrwt2oy3mabiutd@pengutronix.de>
+References: <cover.1702282806.git.sean@mess.org>
+ <aacf0081cbc36d6b21cbc207e40b6df54953214d.1702282807.git.sean@mess.org>
 MIME-Version: 1.0
-References: <20231211130426.1500427-1-neelx@redhat.com> <20231211130426.1500427-2-neelx@redhat.com>
- <20231211134542.GG4870@unreal>
-In-Reply-To: <20231211134542.GG4870@unreal>
-From:   Daniel Vacek <neelx@redhat.com>
-Date:   Mon, 11 Dec 2023 15:25:39 +0100
-Message-ID: <CACjP9X8zarONgO-QLvyzh-w7ax-7Fx0jdBWCF3VFQ09KDcaYnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] IB/ipoib: Fix mcast list locking
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f6fsr2tk6mbr2hus"
+Content-Disposition: inline
+In-Reply-To: <aacf0081cbc36d6b21cbc207e40b6df54953214d.1702282807.git.sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 2:45=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
->
-> On Mon, Dec 11, 2023 at 02:04:24PM +0100, Daniel Vacek wrote:
-> > We need an additional protection against list removal between ipoib_mca=
-st_join_task()
-> > and ipoib_mcast_dev_flush() in case the &priv->lock needs to be dropped=
- while
-> > iterating the &priv->multicast_list in ipoib_mcast_join_task(). If the =
-mcast
-> > is removed while the lock was dropped, the for loop spins forever resul=
-ting
-> > in a hard lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel)=
-:
-> >
-> >     Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
-> >     -----------------------------------+-------------------------------=
-----
-> >     ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
-> >       spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...=
-)
-> >       list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev =3D =
-priv->dev)
-> >           &priv->multicast_list, list) |   mutex_lock(&priv->mcast_mute=
-x)
-> >         ipoib_mcast_join(dev, mcast)   |
-> >           spin_unlock_irq(&priv->lock) |
-> >                                        |   spin_lock_irqsave(&priv->loc=
-k, flags)
-> >                                        |   list_for_each_entry_safe(mca=
-st, tmcast,
-> >                                        |                  &priv->multic=
-ast_list, list)
-> >                                        |     list_del(&mcast->list);
-> >                                        |     list_add_tail(&mcast->list=
-, &remove_list)
-> >                                        |   spin_unlock_irqrestore(&priv=
-->lock, flags)
-> >           spin_lock_irq(&priv->lock)   |
-> >                                        |   ipoib_mcast_remove_list(&rem=
-ove_list)
-> >    (Here, mcast is no longer on the    |     list_for_each_entry_safe(m=
-cast, tmcast,
-> >     &priv->multicast_list and we keep  |                            rem=
-ove_list, list)
-> >     spinning on the &remove_list of the \ >>>  wait_for_completion(&mca=
-st->done)
-> >     other thread which is blocked and the|
-> >     list is still valid on it's stack.)  | mutex_unlock(&priv->mcast_mu=
-tex)
-> >
-> > Fix this by adding mutex_lock(&priv->mcast_mutex) to ipoib_mcast_join_t=
-ask().
->
-> I don't entirely understand the issue and the proposed solution.
-> There is only one spin_unlock_irq() in the middle of list_for_each_entry(=
-mcast, &priv->multicast_list, list)
-> and it is right before return statement which will break the loop. So
-> how will loop spin forever?
 
-There's another unlock/lock pair around ib_sa_join_multicast() call in
-ipoib_mcast_join() no matter the outcome of the condition. The
-ib_sa_join_multicast() cannot be called with the lock being held due
-to GFP_KERNEL allocation can possibly sleep. That's what's causing the
-issue.
+--f6fsr2tk6mbr2hus
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Actually if you check the code, only if the mentioned condition is
-false (and the loop is not broken and returned from
-ipoib_mcast_join_task()) the lock is released and re-acquired,
-creating the window for
-ipoib_ib_dev_flush_light()/ipoib_mcast_dev_flush() to break the list.
-The vmcore data shows/confirms that clearly.
+On Mon, Dec 11, 2023 at 08:24:53AM +0000, Sean Young wrote:
+> Some PWM devices require sleeping, for example if the pwm device is
+> connected over I2C. However, many PWM devices could be used from atomic
+> context, e.g. memory mapped PWM. This is useful for, for example, the
+> pwm-ir-tx driver which requires precise timing. Sleeping causes havoc
+> with the generated IR signal.
+>=20
+> Since not all PWM devices can support atomic context, we also add a
+> pwm_might_sleep() function to check if is not supported.
+>=20
+> Signed-off-by: Sean Young <sean@mess.org>
+> ---
+>  Documentation/driver-api/pwm.rst |  9 +++++
+>  MAINTAINERS                      |  2 +-
+>  drivers/pwm/core.c               | 64 ++++++++++++++++++++++++++------
+>  drivers/pwm/pwm-renesas-tpu.c    |  1 -
+>  include/linux/pwm.h              | 29 ++++++++++++++-
+>  5 files changed, 89 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/Documentation/driver-api/pwm.rst b/Documentation/driver-api/=
+pwm.rst
+> index f1d8197c8c430..3c28ccc4b6113 100644
+> --- a/Documentation/driver-api/pwm.rst
+> +++ b/Documentation/driver-api/pwm.rst
+> @@ -46,6 +46,15 @@ After being requested, a PWM has to be configured usin=
+g::
+>  This API controls both the PWM period/duty_cycle config and the
+>  enable/disable state.
+> =20
+> +PWM devices can be used from atomic context, if the PWM does not sleep. =
+You
+> +can check if this the case with::
+> +
+> +        bool pwm_might_sleep(struct pwm_device *pwm);
+> +
+> +If false, the PWM can also be configured from atomic context with::
+> +
+> +	int pwm_apply_atomic(struct pwm_device *pwm, struct pwm_state *state);
+> +
+>  As a consumer, don't rely on the output's state for a disabled PWM. If i=
+t's
+>  easily possible, drivers are supposed to emit the inactive state, but so=
+me
+>  drivers cannot. If you rely on getting the inactive state, use .duty_cyc=
+le=3D0,
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c2a9e0b5594e7..b55ac220b923d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17585,7 +17585,7 @@ F:	drivers/video/backlight/pwm_bl.c
+>  F:	include/dt-bindings/pwm/
+>  F:	include/linux/pwm.h
+>  F:	include/linux/pwm_backlight.h
+> -K:	pwm_(config|apply_might_sleep|ops)
+> +K:	pwm_(config|apply_might_sleep|apply_atomic|ops)
+> =20
+>  PXA GPIO DRIVER
+>  M:	Robert Jarzmik <robert.jarzmik@free.fr>
+> diff --git a/drivers/pwm/core.c b/drivers/pwm/core.c
+> index c2d78136625d5..5fd35cda5786b 100644
+> --- a/drivers/pwm/core.c
+> +++ b/drivers/pwm/core.c
+> @@ -433,24 +433,15 @@ static void pwm_apply_debug(struct pwm_device *pwm,
+>  }
+> =20
+>  /**
+> - * pwm_apply_might_sleep() - atomically apply a new state to a PWM device
+> + * pwm_apply_unchecked() - atomically apply a new state to a PWM device
+>   * @pwm: PWM device
+>   * @state: new state to apply
+>   */
+> -int pwm_apply_might_sleep(struct pwm_device *pwm, const struct pwm_state=
+ *state)
+> +static int pwm_apply_unchecked(struct pwm_device *pwm, const struct pwm_=
+state *state)
+>  {
+>  	struct pwm_chip *chip;
+>  	int err;
+> =20
+> -	/*
+> -	 * Some lowlevel driver's implementations of .apply() make use of
+> -	 * mutexes, also with some drivers only returning when the new
+> -	 * configuration is active calling pwm_apply_might_sleep() from atomic =
+context
+> -	 * is a bad idea. So make it explicit that calling this function might
+> -	 * sleep.
+> -	 */
+> -	might_sleep();
+> -
+>  	if (!pwm || !state || !state->period ||
+>  	    state->duty_cycle > state->period)
+>  		return -EINVAL;
+> @@ -471,16 +462,65 @@ int pwm_apply_might_sleep(struct pwm_device *pwm, c=
+onst struct pwm_state *state)
+> =20
+>  	pwm->state =3D *state;
+> =20
+> +	return 0;
+> +}
+> +
+> +/**
+> + * pwm_apply_might_sleep() - atomically apply a new state to a PWM device
+> + * Cannot be used in atomic context.
+> + * @pwm: PWM device
+> + * @state: new state to apply
+> + */
+> +int pwm_apply_might_sleep(struct pwm_device *pwm, const struct pwm_state=
+ *state)
+> +{
+> +	int err;
+> +
+> +	/*
+> +	 * Some lowlevel driver's implementations of .apply() make use of
+> +	 * mutexes, also with some drivers only returning when the new
+> +	 * configuration is active calling pwm_apply_might_sleep() from atomic =
+context
+> +	 * is a bad idea. So make it explicit that calling this function might
+> +	 * sleep.
+> +	 */
+> +	might_sleep();
+> +
+> +	if (IS_ENABLED(CONFIG_PWM_DEBUG) && pwm->chip->atomic) {
+> +		/*
+> +		 * Catch any drivers that have been marked as atomic but
+> +		 * that will sleep anyway.
+> +		 */
+> +		non_block_start();
+> +		err =3D pwm_apply_unchecked(pwm, state);
+> +		non_block_end();
+> +	} else {
+> +		err =3D pwm_apply_unchecked(pwm, state);
+> +	}
+> +
+>  	/*
+>  	 * only do this after pwm->state was applied as some
+>  	 * implementations of .get_state depend on this
+>  	 */
+>  	pwm_apply_debug(pwm, state);
 
---nX
+I think this is broken. Currently pwm_apply_state_debug() is only called
+if chip->ops->apply() succeeds.
 
+> -	return 0;
+> +	return err;
+>  }
+>  EXPORT_SYMBOL_GPL(pwm_apply_might_sleep);
+> =20
+> +/**
+> + * pwm_apply_atomic() - apply a new state to a PWM device from atomic co=
+ntext
+> + * Not all PWM devices support this function, check with pwm_might_sleep=
+().
+> + * @pwm: PWM device
+> + * @state: new state to apply
+> + */
+> +int pwm_apply_atomic(struct pwm_device *pwm, const struct pwm_state *sta=
+te)
+> +{
+> +	WARN_ONCE(!pwm->chip->atomic,
+> +		  "sleeping PWM driver used in atomic context");
+> +
+> +	return pwm_apply_unchecked(pwm, state);
+> +}
+> +EXPORT_SYMBOL_GPL(pwm_apply_atomic);
+> +
+>  /**
+>   * pwm_capture() - capture and report a PWM signal
+>   * @pwm: PWM device
+> diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
+> index ce92db1f85113..28265fdfc92a9 100644
+> --- a/drivers/pwm/pwm-renesas-tpu.c
+> +++ b/drivers/pwm/pwm-renesas-tpu.c
+> @@ -11,7 +11,6 @@
+>  #include <linux/init.h>
+>  #include <linux/ioport.h>
+>  #include <linux/module.h>
+> -#include <linux/mutex.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
 
-> Thanks
->
-> > Unfortunately we could not reproduce the lockup and confirm this fix bu=
-t
-> > based on the code review I think this fix should address such lockups.
-> >
-> > crash> bc 31
-> > PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2=
-"
-> > --
-> >     [exception RIP: ipoib_mcast_join_task+0x1b1]
-> >     RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
-> >     RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
-> >                                   work (&priv->mcast_task{,.work})
-> >     RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
-> >            &mcast->list
-> >     RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
-> >     R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
-> >                                                          mcast
-> >     R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
-> >            dev                    priv (&priv->lock)     &priv->multica=
-st_list (aka head)
-> >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> > --- <NMI exception stack> ---
-> >  #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 =
-[ib_ipoib]
-> >  #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
-> >
-> > crash> rx ff646f199a8c7e68
-> > ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work =3D &priv->mcast_task.work
-> >
-> > crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
-> > (empty)
-> >
-> > crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff=
-1c6a1a04dc8000
-> >   mcast_task.work.func =3D 0xffffffffc0944910 <ipoib_mcast_join_task>,
-> >   mcast_mutex.owner.counter =3D 0xff1c69998efec000
-> >
-> > crash> b 8
-> > PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0=
-"
-> > --
-> >  #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
-> >  #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6=
- [ib_ipoib]
-> >  #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 =
-[ib_ipoib]
-> >  #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [=
-ib_ipoib]
-> >  #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
-> >
-> > crash> rx ff646f1980153e68
-> > ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work =3D &priv->flush_light
-> >
-> > crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
-> >   flush_light.func =3D 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
-> >   broadcast =3D 0x0,
-> >
-> > The mcast(s) on the &remove_list (the remaining part of the ex &priv->m=
-ulticast_list):
-> >
-> > crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e=
-10 | paste - -
-> > ff1c6a192bd0c200        done.done =3D 0x0,
-> > ff1c6a192d60ac00        done.done =3D 0x0,
-> >
-> > Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.=
-com>
-> > Signed-off-by: Daniel Vacek <neelx@redhat.com>
-> > ---
-> >  drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/i=
-nfiniband/ulp/ipoib/ipoib_multicast.c
-> > index 5b3154503bf4..8e4f2c8839be 100644
-> > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > @@ -580,6 +580,7 @@ void ipoib_mcast_join_task(struct work_struct *work=
-)
-> >       }
-> >       netif_addr_unlock_bh(dev);
-> >
-> > +     mutex_lock(&priv->mcast_mutex);
-> >       spin_lock_irq(&priv->lock);
-> >       if (!test_bit(IPOIB_FLAG_OPER_UP, &priv->flags))
-> >               goto out;
-> > @@ -634,6 +635,7 @@ void ipoib_mcast_join_task(struct work_struct *work=
-)
-> >                               /* Found the next unjoined group */
-> >                               if (ipoib_mcast_join(dev, mcast)) {
-> >                                       spin_unlock_irq(&priv->lock);
-> > +                                     mutex_unlock(&priv->mcast_mutex);
-> >                                       return;
-> >                               }
-> >                       } else if (!delay_until ||
-> > @@ -655,6 +657,7 @@ void ipoib_mcast_join_task(struct work_struct *work=
-)
-> >               ipoib_mcast_join(dev, mcast);
-> >
-> >       spin_unlock_irq(&priv->lock);
-> > +     mutex_unlock(&priv->mcast_mutex);
-> >  }
-> >
-> >  void ipoib_mcast_start_thread(struct net_device *dev)
-> > --
-> > 2.43.0
-> >
->
+Unrelated change
 
+> diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> index b64b8a82415c4..495af3627939c 100644
+> --- a/include/linux/pwm.h
+> +++ b/include/linux/pwm.h
+> @@ -285,6 +285,7 @@ struct pwm_ops {
+>   * @npwm: number of PWMs controlled by this chip
+>   * @of_xlate: request a PWM device given a device tree PWM specifier
+>   * @of_pwm_n_cells: number of cells expected in the device tree PWM spec=
+ifier
+> + * @atomic: can the driver's ->apply() be called in atomic context
+>   * @pwms: array of PWM devices allocated by the framework
+>   */
+>  struct pwm_chip {
+> @@ -297,6 +298,7 @@ struct pwm_chip {
+>  	struct pwm_device * (*of_xlate)(struct pwm_chip *chip,
+>  					const struct of_phandle_args *args);
+>  	unsigned int of_pwm_n_cells;
+> +	bool atomic;
+> =20
+>  	/* only used internally by the PWM framework */
+>  	struct pwm_device *pwms;
+> @@ -305,6 +307,7 @@ struct pwm_chip {
+>  #if IS_ENABLED(CONFIG_PWM)
+>  /* PWM user APIs */
+>  int pwm_apply_might_sleep(struct pwm_device *pwm, const struct pwm_state=
+ *state);
+> +int pwm_apply_atomic(struct pwm_device *pwm, const struct pwm_state *sta=
+te);
+>  int pwm_adjust_config(struct pwm_device *pwm);
+> =20
+>  /**
+> @@ -375,6 +378,17 @@ static inline void pwm_disable(struct pwm_device *pw=
+m)
+>  	pwm_apply_might_sleep(pwm, &state);
+>  }
+> =20
+> +/**
+> + * pwm_might_sleep() - is pwm_apply_atomic() supported?
+> + * @pwm: PWM device
+> + *
+> + * Returns: false if pwm_apply_atomic() can be called from atomic contex=
+t.
+> + */
+> +static inline bool pwm_might_sleep(struct pwm_device *pwm)
+> +{
+> +	return !pwm->chip->atomic;
+> +}
+> +
+>  /* PWM provider APIs */
+>  int pwm_capture(struct pwm_device *pwm, struct pwm_capture *result,
+>  		unsigned long timeout);
+> @@ -403,16 +417,27 @@ struct pwm_device *devm_fwnode_pwm_get(struct devic=
+e *dev,
+>  				       struct fwnode_handle *fwnode,
+>  				       const char *con_id);
+>  #else
+> +static inline bool pwm_might_sleep(struct pwm_device *pwm)
+> +{
+> +	return true;
+> +}
+> +
+>  static inline int pwm_apply_might_sleep(struct pwm_device *pwm,
+>  					const struct pwm_state *state)
+>  {
+>  	might_sleep();
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static inline int pwm_apply_atomic(struct pwm_device *pwm,
+> +				   const struct pwm_state *state)
+> +{
+> +	return -EOPNOTSUPP;
+>  }
+> =20
+>  static inline int pwm_adjust_config(struct pwm_device *pwm)
+>  {
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+
+I'd do s/-ENOTSUPP/-EOPNOTSUPP/ in a separate change.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--f6fsr2tk6mbr2hus
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV3G+wACgkQj4D7WH0S
+/k5Obwf9G3iG1hGqAAVyrqJcdbgJCxYcJU0oWp9jxrLtW4AvPSNwvWzDWszfNGcQ
+EBB1dRwc2Qx3G/ueVN2LwN6Q0pZeTltJsqvGR+hH0BQNlkn8AhmnPjUdePGOCI2H
+IkTOYmU0YhTw/6C0eS2i+8tJXsHoYp0keaJnUSmI81ir7XSEpkhvi6qXCVEslJad
+TBmKf3YjVGgBrgcAk9rivC2Zd2KdNhVF1SHKj9CqB/WdGVoK3/UpNf5EQUtWmI8A
+gN5UiybPUkTNChBxIogDbB6lv1KHq2YR9t5bsfnw+nQuUpMm+sJzs+qejMP0yhSZ
+bn6F4jLIp86mRMCf/7F1Jox95uiTrA==
+=T49B
+-----END PGP SIGNATURE-----
+
+--f6fsr2tk6mbr2hus--
