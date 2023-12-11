@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FD780C92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D09080C92E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbjLKMOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        id S234406AbjLKMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjLKMOW (ORCPT
+        with ESMTP id S229768AbjLKMOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:14:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193509B
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 04:14:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A81C433C8;
-        Mon, 11 Dec 2023 12:14:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702296868;
-        bh=ZmV8Ia6tQOoQryqALYfwSQzG28bMYMh8bIDdDdQzgtw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eS+9lWp6lze+Q/NrEuIUBv6mTuFpDlg2/HlEsR7/VQH8qMKf2tk62BTK8CMp39bNj
-         EdkCvUbx9XSH/dHM57bDnUsd2dQoPWzGwM/Tv0y4SRGfGmt+l0kMr849Xup3wGyqkz
-         +eeELeRDTTP7wP8gaK2BRoBdBxftVieU7SHmCrdkgV+PGS0lXiYLvqvSO8/QjIg6JT
-         2ESpNondZeRvJy/CRblaNyTC/lfe3rgfbEZ00XoqsZNSh3bKwMsZelleR4PrADsuLX
-         YXXJ4NdWmi3Jmqy/bk5kH5KHaR9RmZBUGqvu8pMCJE9UpVc/ai4+iYEA9ZJTxpvKmT
-         i5RvFjI0drlBg==
-Date:   Mon, 11 Dec 2023 21:14:24 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing: Increase size of trace_marker_raw to max ring
- buffer entry
-Message-Id: <20231211211424.e58f9b9abb9594f671d1d0ed@kernel.org>
-In-Reply-To: <20231209175716.09ac455b@gandalf.local.home>
-References: <20231209175716.09ac455b@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 07:14:35 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C34CF;
+        Mon, 11 Dec 2023 04:14:40 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D62221C0004;
+        Mon, 11 Dec 2023 12:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702296879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=li3fkgdd1h7/PzgJbhx3icmAeCcuFW9T2WdfuNDW6JQ=;
+        b=SG4QWu6FXf80+rGPX80bz9b7PZQ9sx8IfQdWv1GfVP67U5CttsGLVDrc4zg9sQdfh0L/NQ
+        p4b/6qXSiKg3WDzYOh6RO8ctKDzpIfVkyTGMSOR94ZVGORCxB8570y2PVrj911u3NuFLkp
+        L5bu/xMxtLx48F9JIYXQ18XbhN/drNU6qKtPALyMf54AQ7yTaGe6ahY6C5eSROZBNj6Fdt
+        BLvjTRnrg2DAlNLPUHnj3vjqP5n8iKEBopTU7dvsxKuv4nWiy8O0Ydrj6GoLkW0j/BTLlK
+        zbE76kdp/+rwdSIrUtsGS/yJ9d9KihJo93ALyaok6ZG5JF1oyOAk02/IQD3x9A==
+From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        Jeff LaBundy <jeff@labundy.com>
+Cc:     catalin.popescu@leica-geosystems.com,
+        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
+        hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: [PATCH v5 0/3] Input: Add TouchNetix axiom touchscreen driver
+Date:   Mon, 11 Dec 2023 13:14:26 +0100
+Message-ID: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: kamel.bouhara@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Dec 2023 17:57:16 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Add a new driver for the TouchNetix's axiom family of
+touchscreen controller. This driver only support i2c
+and can be later adapted for SPI and USB support.
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> There's no reason to give an arbitrary limit to the size of a raw trace
-> marker. Just let it be as big as the size that is allowed by the ring
-> buffer itself.
-> 
-> And there's also no reason to artificially break up the write to
-> TRACE_BUF_SIZE, as that's not even used.
+---
+Changes in v2:
+ - Add device tree binding documentation
+ - Move core functions in axiom_i2c as we only care about i2c support now
+ - Use static function when required
+ - Use syntax dev_err_probe()
+ - Add an hardware based reset
 
-Looks good to me.
+Changes in v3:
+ - Remove irq-gpios property in dt-binding
+ - Use a generic node name
+ - Fix issues reported in https://lore.kernel.org/oe-kbuild-all/202310100300.oAC2M62R-lkp@intel.com/
 
-Reivewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Changes in v4:
+ - Cleanup unused headers and macros
+ - Use standard kernel type
+ - Namespace structures and functions
+ - Use packed struct when possible to avoid bitfield operators
+ - Fix missing break when address is found in axiom_populate_target_address()
+ - Split reads in two steps for the reports, first length then report
+   itself so we only read required bytes
+ - Get poll-interval from devicetree
+ - Add VDDI/VDDA regulators
+ - Add a startup delay of 110 ms required after VDDA/VDDI is applied
+ - Remove axiom_i2c_write() as it is no more used
 
-Thanks!
+Changes in v5:
+ - Fix wrong message constructed in axiom_i2c_read
+ - Delay required between i2c reads is >= 250us
+ - Do not split report reading in two phases as we'll
+   have to wait 500us
+ - Use lower-case in properties names
+ - Make regulators properties are required in dt-binding
+ - Fix bug report: https://lore.kernel.org/lkml/202312051457.y3N1q3sZ-lkp@intel.com/
+ - Fix bug report: https://lore.kernel.org/lkml/6f8e3b64-5b21-4a50-8680-063ef7a93bdb@suswa.mountain/
 
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> [
->   Depends on: https://lore.kernel.org/linux-trace-kernel/20231209175003.63db40ab@gandalf.local.home/
-> ]
->  kernel/trace/trace.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index da837119a446..077b20e83e7c 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -7351,9 +7351,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  	return written;
->  }
->  
-> -/* Limit it for now to 3K (including tag) */
-> -#define RAW_DATA_MAX_SIZE (1024*3)
-> -
->  static ssize_t
->  tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
->  					size_t cnt, loff_t *fpos)
-> @@ -7375,18 +7372,16 @@ tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
->  		return -EINVAL;
->  
->  	/* The marker must at least have a tag id */
-> -	if (cnt < sizeof(unsigned int) || cnt > RAW_DATA_MAX_SIZE)
-> +	if (cnt < sizeof(unsigned int))
->  		return -EINVAL;
->  
-> -	if (cnt > TRACE_BUF_SIZE)
-> -		cnt = TRACE_BUF_SIZE;
-> -
-> -	BUILD_BUG_ON(TRACE_BUF_SIZE >= PAGE_SIZE);
-> -
->  	size = sizeof(*entry) + cnt;
->  	if (cnt < FAULT_SIZE_ID)
->  		size += FAULT_SIZE_ID - cnt;
->  
-> +	if (size > ring_buffer_max_event_size(buffer))
-> +		return -EINVAL;
-> +
->  	buffer = tr->array_buffer.buffer;
->  	event = __trace_buffer_lock_reserve(buffer, TRACE_RAW_DATA, size,
->  					    tracing_gen_ctx());
-> -- 
-> 2.42.0
-> 
+Kamel Bouhara (3):
+  dt-bindings: vendor-prefixes: Add TouchNetix AS
+  dt-bindings: input: Add TouchNetix axiom touchscreen
+  Input: Add TouchNetix axiom i2c touchscreen driver
 
+ .../input/touchscreen/touchnetix,ax54a.yaml   |  64 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   7 +
+ drivers/input/touchscreen/Kconfig             |  12 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/touchnetix_axiom.c  | 667 ++++++++++++++++++
+ 6 files changed, 753 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+ create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--
+2.25.1
+
