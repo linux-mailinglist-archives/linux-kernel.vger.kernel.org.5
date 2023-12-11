@@ -2,801 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A0580C939
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF0780C93F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbjLKMOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 07:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
+        id S234823AbjLKMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbjLKMOo (ORCPT
+        with ESMTP id S235014AbjLKMPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 07:14:44 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C7FD6;
-        Mon, 11 Dec 2023 04:14:44 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B4CE240007;
-        Mon, 11 Dec 2023 12:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702296883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3NHd7/TIBMO6ajuA6MciK2iY40x565JzIM9NwkMsObI=;
-        b=QDzI6xnjbheJAlkgXnowBHXmIw1SpTKMVau6uJ9VoP+8FCNpWX0jmXoOJxXBWynXGqFBJ8
-        V2s5Zt++vnEMvyfi6vzHUudCr1QxCqEDtQdlDOvFhAuI0TInM+yHP1JfmKq0eGqBQkK3Zz
-        +NWBYftIB7LwGectEeTCK6pVwWUMR1fKjcgBb6T9C5SWtTVMAh2gyMbozSTS3q9ISC59Ls
-        5adKL+OkJjBy1BWqqTbN1qkxqQIkfIiB6b4LKhSayv9Vqrgop6+qs9uU7qEQsg1S17TFNo
-        ao460YggYOTx+D+4Cu+/PNYmcoUG/U6GY4/sSTWmjepmwPKgQJsNZbwT0eKb8g==
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>
-Cc:     catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: [PATCH v5 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Date:   Mon, 11 Dec 2023 13:14:29 +0100
-Message-ID: <20231211121430.1689139-4-kamel.bouhara@bootlin.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
-References: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
+        Mon, 11 Dec 2023 07:15:36 -0500
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BF711F;
+        Mon, 11 Dec 2023 04:15:30 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyIPaKz_1702296927;
+Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyIPaKz_1702296927)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Dec 2023 20:15:28 +0800
+Message-ID: <9a6d57c0-f5b4-9b2c-dc5f-dc47d0518141@linux.alibaba.com>
+Date:   Mon, 11 Dec 2023 20:15:26 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kamel.bouhara@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
+ smc_clc_send_confirm_accept()
+To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
+ <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
+ <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new driver for the TouchNetix's axiom family of
-touchscreen controllers. This driver only supports i2c
-and can be later adapted for SPI and USB support.
 
-Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
----
- MAINTAINERS                                  |   1 +
- drivers/input/touchscreen/Kconfig            |  12 +
- drivers/input/touchscreen/Makefile           |   1 +
- drivers/input/touchscreen/touchnetix_axiom.c | 667 +++++++++++++++++++
- 4 files changed, 681 insertions(+)
- create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4752d8436dbb..337ddac6c74b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21436,6 +21436,7 @@ M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
- L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
-+F:	drivers/input/touchscreen/touchnetix_axiom.c
- 
- THUNDERBOLT DMA TRAFFIC TEST DRIVER
- M:	Isaac Hazan <isaac.hazan@intel.com>
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index e3e2324547b9..f36bee8d8696 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -803,6 +803,18 @@ config TOUCHSCREEN_MIGOR
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called migor_ts.
- 
-+config TOUCHSCREEN_TOUCHNETIX_AXIOM
-+	tristate "TouchNetix AXIOM based touchscreen controllers"
-+	depends on I2C
-+	help
-+	  Say Y here if you have a axiom touchscreen connected to
-+	  your system.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called axiom.
-+
- config TOUCHSCREEN_TOUCHRIGHT
- 	tristate "Touchright serial touchscreen"
- 	select SERIO
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 62bd24f3ac8e..8e32a2df5e18 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -88,6 +88,7 @@ obj-$(CONFIG_TOUCHSCREEN_SUR40)		+= sur40.o
- obj-$(CONFIG_TOUCHSCREEN_SURFACE3_SPI)	+= surface3_spi.o
- obj-$(CONFIG_TOUCHSCREEN_TI_AM335X_TSC)	+= ti_am335x_tsc.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHIT213)	+= touchit213.o
-+obj-$(CONFIG_TOUCHSCREEN_TOUCHNETIX_AXIOM)	+= touchnetix_axiom.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
- obj-$(CONFIG_TOUCHSCREEN_TS4800)	+= ts4800-ts.o
-diff --git a/drivers/input/touchscreen/touchnetix_axiom.c b/drivers/input/touchscreen/touchnetix_axiom.c
-new file mode 100644
-index 000000000000..4ade2d1adba0
---- /dev/null
-+++ b/drivers/input/touchscreen/touchnetix_axiom.c
-@@ -0,0 +1,667 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * TouchNetix axiom Touchscreen Driver
-+ *
-+ * Copyright (C) 2020-2023 TouchNetix Ltd.
-+ *
-+ * Author(s): Bart Prescott <bartp@baasheep.co.uk>
-+ *            Pedro Torruella <pedro.torruella@touchnetix.com>
-+ *            Mark Satterthwaite <mark.satterthwaite@touchnetix.com>
-+ *            Hannah Rossiter <hannah.rossiter@touchnetix.com>
-+ *            Kamel Bouhara <kamel.bouhara@bootlin.com>
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/crc16.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+
-+#define AXIOM_PROX_LEVEL		-128
-+/*
-+ * Register group u31 has 2 pages for usage table entries.
-+ */
-+#define AXIOM_U31_MAX_USAGES		((2 * AXIOM_COMMS_PAGE_SIZE) / AXIOM_U31_BYTES_PER_USAGE)
-+#define AXIOM_U31_BYTES_PER_USAGE	6
-+#define AXIOM_U31_PAGE0_LENGTH		0x0C
-+#define AXIOM_U31_BOOTMODE_MASK		BIT(7)
-+#define AXIOM_U31_DEVID_MASK		GENMASK(14, 0)
-+
-+#define AXIOM_CMD_HEADER_READ_MASK	BIT(15)
-+#define AXIOM_U41_MAX_TARGETS		10
-+
-+#define AXIOM_U46_AUX_CHANNELS		4
-+#define AXIOM_U46_AUX_MASK		GENMASK(11, 0)
-+
-+#define AXIOM_COMMS_MAX_USAGE_PAGES	3
-+#define AXIOM_COMMS_PAGE_SIZE		256
-+#define AXIOM_COMMS_REPORT_LEN_MASK	GENMASK(6, 0)
-+
-+#define AXIOM_REPORT_USAGE_ID		0x34
-+#define AXIOM_DEVINFO_USAGE_ID		0x31
-+#define AXIOM_USAGE_2HB_REPORT_ID	0x01
-+#define AXIOM_USAGE_2AUX_REPORT_ID	0x46
-+#define AXIOM_USAGE_2DCTS_REPORT_ID	0x41
-+
-+#define AXIOM_PAGE_OFFSET_MASK		GENMASK(6, 0)
-+
-+struct axiom_devinfo {
-+	u16 device_id;
-+	u8 fw_minor;
-+	u8 fw_major;
-+	u8 fw_info_extra;
-+	u8 tcp_revision;
-+	u8 bootloader_fw_minor;
-+	u8 bootloader_fw_major;
-+	u16 jedec_id;
-+	u8 num_usages;
-+} __packed;
-+
-+/*
-+ * Describes parameters of a specific usage, essentially a single element of
-+ * the "Usage Table"
-+ */
-+struct axiom_usage_entry {
-+	u8 id;
-+	u8 is_report;
-+	u8 start_page;
-+	u8 num_pages;
-+};
-+
-+/*
-+ * Represents state of a touch or target when detected prior a touch (eg.
-+ * hover or proximity events).
-+ */
-+enum axiom_target_state {
-+	AXIOM_TARGET_STATE_NOT_PRESENT = 0,
-+	AXIOM_TARGET_STATE_PROX = 1,
-+	AXIOM_TARGET_STATE_HOVER = 2,
-+	AXIOM_TARGET_STATE_TOUCHING = 3,
-+};
-+
-+struct axiom_u41_target {
-+	enum axiom_target_state state;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+	bool insert;
-+	bool touch;
-+};
-+
-+struct axiom_target_report {
-+	u8 index;
-+	u8 present;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+};
-+
-+struct axiom_cmd_header {
-+	__le16 target_address;
-+	__le16 length;
-+} __packed;
-+
-+struct axiom_data {
-+	struct axiom_devinfo devinfo;
-+	struct device *dev;
-+	struct gpio_desc *reset_gpio;
-+	struct i2c_client *client;
-+	struct input_dev *input_dev;
-+	u32 max_report_len;
-+	char rx_buf[AXIOM_COMMS_MAX_USAGE_PAGES * AXIOM_COMMS_PAGE_SIZE];
-+	struct axiom_u41_target targets[AXIOM_U41_MAX_TARGETS];
-+	struct axiom_usage_entry usage_table[AXIOM_U31_MAX_USAGES];
-+	bool usage_table_populated;
-+	struct regulator *vdda;
-+	struct regulator *vddi;
-+};
-+
-+/*
-+ * axiom devices are typically configured to report
-+ * touches at a rate of 100Hz (10ms). For systems
-+ * that require polling for reports.
-+ * When reports are polled, it will be expected to
-+ * occasionally observe the overflow bit being set
-+ * in the reports. This indicates that reports are not
-+ * being read fast enough.
-+ */
-+#define POLL_INTERVAL_DEFAULT_MS 10
-+
-+/* Translate usage/page/offset triplet into physical address. */
-+static u16 axiom_usage_to_target_address(struct axiom_data *ts, char usage, char page,
-+					 char offset)
-+{
-+	u32 i;
-+
-+	/* At the moment the convention is that u31 is always at physical address 0x0 */
-+	if (!ts->usage_table_populated) {
-+		if (usage == AXIOM_DEVINFO_USAGE_ID)
-+			return ((page << 8) + offset);
-+		else
-+			return 0xffff;
-+	}
-+
-+	for (i = 0; i < ts->devinfo.num_usages; i++) {
-+		if (ts->usage_table[i].id != usage)
-+			continue;
-+
-+		if (page >= ts->usage_table[i].num_pages) {
-+			dev_err(ts->dev, "Invalid usage table! usage: %u, page: %u, offset: %u\n",
-+				usage, page, offset);
-+			return 0xffff;
-+		}
-+		break;
-+	}
-+
-+	return ((ts->usage_table[i].start_page + page) << 8) + offset;
-+}
-+
-+static int axiom_i2c_read(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
-+{
-+	struct axiom_data *ts = i2c_get_clientdata(client);
-+	struct axiom_cmd_header cmd_header;
-+	struct i2c_msg msg[2];
-+	int error;
-+
-+	cmd_header.target_address = cpu_to_le16(axiom_usage_to_target_address(ts, usage, page, 0));
-+	cmd_header.length = cpu_to_le16(len | AXIOM_CMD_HEADER_READ_MASK);
-+
-+	msg[0].addr = client->addr;
-+	msg[0].flags = 0;
-+	msg[0].len = sizeof(cmd_header);
-+	msg[0].buf = (u8 *)&cmd_header;
-+
-+	msg[1].addr = client->addr;
-+	msg[1].flags = I2C_M_RD;
-+	msg[1].len = len;
-+	msg[1].buf = (char *)buf;
-+
-+	error = i2c_transfer(client->adapter, msg, ARRAY_SIZE(msg));
-+	if (error != ARRAY_SIZE(msg)) {
-+		dev_err(&client->dev,
-+			"Failed reading usage %#x page %#x, error=%d\n",
-+			usage, page, error);
-+		return -EIO;
-+	}
-+
-+	usleep_range(250, 300);
-+
-+	return 0;
-+}
-+
-+/*
-+ * One of the main purposes for reading the usage table is to identify
-+ * which usages reside at which target address.
-+ * When performing subsequent reads or writes to AXIOM, the target address
-+ * is used to specify which usage is being accessed.
-+ * Consider the following discovery code which will build up the usage table.
-+ */
-+static u32 axiom_populate_usage_table(struct axiom_data *ts)
-+{
-+	struct axiom_usage_entry *usage_table;
-+	u32 max_report_len = 0;
-+	char *rx_data = ts->rx_buf;
-+	u32 usage_id;
-+	int error;
-+
-+	usage_table = ts->usage_table;
-+
-+	/* Read the second page of usage u31 to get the usage table */
-+	error = axiom_i2c_read(ts->client, AXIOM_DEVINFO_USAGE_ID, 1, rx_data,
-+			       (AXIOM_U31_BYTES_PER_USAGE * ts->devinfo.num_usages));
-+	if (error)
-+		return error;
-+
-+	for (usage_id = 0; usage_id < ts->devinfo.num_usages; usage_id++) {
-+		u16 offset = (usage_id * AXIOM_U31_BYTES_PER_USAGE);
-+		u8 id = rx_data[offset + 0];
-+		u8 start_page = rx_data[offset + 1];
-+		u8 num_pages = rx_data[offset + 2];
-+		u32 max_offset = ((rx_data[offset + 3] & AXIOM_PAGE_OFFSET_MASK) + 1) * 2;
-+
-+		if (!num_pages)
-+			usage_table[usage_id].is_report = true;
-+
-+		/* Store the entry into the usage table */
-+		usage_table[usage_id].id = id;
-+		usage_table[usage_id].start_page = start_page;
-+		usage_table[usage_id].num_pages = num_pages;
-+
-+		dev_dbg(ts->dev, "Usage u%02x Info: %*ph\n", id,
-+			AXIOM_U31_BYTES_PER_USAGE, &rx_data[offset]);
-+
-+		/* Identify the max report length the module will receive */
-+		if (usage_table[usage_id].is_report && max_offset > max_report_len)
-+			max_report_len = max_offset;
-+	}
-+
-+	ts->usage_table_populated = true;
-+
-+	return max_report_len;
-+}
-+
-+static int axiom_discover(struct axiom_data *ts)
-+{
-+	int error;
-+
-+	/*
-+	 * Fetch the first page of usage u31 to get the
-+	 * device information and the number of usages
-+	 */
-+	error = axiom_i2c_read(ts->client, AXIOM_DEVINFO_USAGE_ID, 0, (char *)&ts->devinfo,
-+			       AXIOM_U31_PAGE0_LENGTH);
-+	if (error)
-+		return error;
-+
-+	dev_dbg(ts->dev, "  Boot Mode      : %s\n",
-+		FIELD_GET(AXIOM_U31_BOOTMODE_MASK, ts->devinfo.device_id) ? "BLP" : "TCP");
-+	dev_dbg(ts->dev, "  Device ID      : %04lx\n",
-+		FIELD_GET(AXIOM_U31_DEVID_MASK,	ts->devinfo.device_id));
-+	dev_dbg(ts->dev, "  Firmware Rev   : %02x.%02x\n", ts->devinfo.fw_major,
-+		ts->devinfo.fw_minor);
-+	dev_dbg(ts->dev, "  Bootloader Rev : %02x.%02x\n", ts->devinfo.bootloader_fw_major,
-+		ts->devinfo.bootloader_fw_minor);
-+	dev_dbg(ts->dev, "  FW Extra Info  : %04x\n", ts->devinfo.fw_info_extra);
-+	dev_dbg(ts->dev, "  Silicon        : %04x\n", ts->devinfo.jedec_id);
-+	dev_dbg(ts->dev, "  Number usages        : %04x\n", ts->devinfo.num_usages);
-+
-+	ts->max_report_len = axiom_populate_usage_table(ts);
-+	if (!ts->max_report_len || !ts->devinfo.num_usages)
-+		return -EINVAL;
-+
-+	dev_dbg(ts->dev, "Max Report Length: %u\n", ts->max_report_len);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Support function to axiom_process_u41_report.
-+ * Generates input-subsystem events for every target.
-+ * After calling this function the caller shall issue
-+ * a Sync to the input sub-system.
-+ */
-+static bool axiom_process_u41_report_target(struct axiom_data *ts,
-+					    struct axiom_target_report *target)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	struct axiom_u41_target *target_prev_state;
-+	enum axiom_target_state current_state;
-+	bool update = false;
-+	int slot;
-+
-+	/* Verify the target index */
-+	if (target->index >= AXIOM_U41_MAX_TARGETS) {
-+		dev_dbg(ts->dev, "Invalid target index! %u\n", target->index);
-+		return false;
-+	}
-+
-+	target_prev_state = &ts->targets[target->index];
-+
-+	current_state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	if (target->present) {
-+		if (target->z >= 0)
-+			current_state = AXIOM_TARGET_STATE_TOUCHING;
-+		else if (target->z > AXIOM_PROX_LEVEL && target->z < 0)
-+			current_state = AXIOM_TARGET_STATE_HOVER;
-+		else if (target->z == AXIOM_PROX_LEVEL)
-+			current_state = AXIOM_TARGET_STATE_PROX;
-+	}
-+
-+	if (target_prev_state->state == current_state &&
-+	    target_prev_state->x == target->x &&
-+	    target_prev_state->y == target->y &&
-+	    target_prev_state->z == target->z) {
-+		return false;
-+	}
-+
-+	slot = target->index;
-+
-+	dev_dbg(ts->dev, "U41 Target T%u, slot:%u present:%u, x:%u, y:%u, z:%d\n",
-+		target->index, slot, target->present,
-+		target->x, target->y, target->z);
-+
-+	switch (current_state) {
-+	case AXIOM_TARGET_STATE_NOT_PRESENT:
-+	case AXIOM_TARGET_STATE_PROX:
-+		if (!target_prev_state->insert)
-+			break;
-+		update = true;
-+		target_prev_state->insert = false;
-+		input_mt_slot(input_dev, slot);
-+
-+		if (!slot)
-+			input_report_key(input_dev, BTN_TOUCH, 0);
-+
-+		input_mt_report_slot_inactive(input_dev);
-+		/*
-+		 * make sure the previous coordinates are
-+		 * all off screen when the finger comes back
-+		 */
-+		target->x = 65535;
-+		target->y = 65535;
-+		target->z = AXIOM_PROX_LEVEL;
-+		break;
-+	case AXIOM_TARGET_STATE_HOVER:
-+	case AXIOM_TARGET_STATE_TOUCHING:
-+		target_prev_state->insert = true;
-+		update = true;
-+		input_mt_slot(input_dev, slot);
-+		input_report_abs(input_dev, ABS_MT_TRACKING_ID, slot);
-+		input_report_abs(input_dev, ABS_MT_POSITION_X, target->x);
-+		input_report_abs(input_dev, ABS_X, target->x);
-+		input_report_abs(input_dev, ABS_MT_POSITION_Y, target->y);
-+		input_report_abs(input_dev, ABS_Y, target->y);
-+
-+		if (current_state == AXIOM_TARGET_STATE_TOUCHING) {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, target->z);
-+			input_report_abs(input_dev, ABS_PRESSURE, target->z);
-+		} else {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, 0);
-+			input_report_abs(input_dev, ABS_PRESSURE, 0);
-+		}
-+
-+		if (!slot)
-+			input_report_key(input_dev, BTN_TOUCH, (current_state ==
-+					 AXIOM_TARGET_STATE_TOUCHING));
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	target_prev_state->state = current_state;
-+	target_prev_state->x = target->x;
-+	target_prev_state->y = target->y;
-+	target_prev_state->z = target->z;
-+
-+	return update;
-+}
-+
-+/*
-+ * U41 is the output report of the 2D CTS and contains the status of targets
-+ * (including contacts and pre-contacts) along with their X,Y,Z values.
-+ * When a target has been removed (no longer detected),
-+ * the corresponding X,Y,Z values will be zeroed.
-+ */
-+static bool axiom_process_u41_report(struct axiom_data *ts, char *rx_buf)
-+{
-+	struct axiom_target_report target;
-+	bool update_done = false;
-+	u16 target_status;
-+	u32 i;
-+
-+	target_status = ((rx_buf[1]) | (rx_buf[2] << 8));
-+
-+	for (i = 0; i < AXIOM_U41_MAX_TARGETS; i++) {
-+		char target_step = i * 4;
-+
-+		target.index = i;
-+		target.present = ((target_status & (1 << i)) != 0) ? 1 : 0;
-+		target.x = (rx_buf[(target_step + 3)] | (rx_buf[target_step + 4] << 8));
-+		target.y = (rx_buf[(target_step + 5)] | (rx_buf[target_step + 6] << 8));
-+		target.z = (s8)(rx_buf[i + 43]);
-+		update_done |= axiom_process_u41_report_target(ts, &target);
-+	}
-+
-+	return update_done;
-+}
-+
-+/*
-+ * U46 report contains a low level measurement data generated by the CDS
-+ * algorithms from the AUX channels. This information is useful when tuning
-+ * multi-press to assess mechanical consistency in the unit's construction.
-+ */
-+static void axiom_process_u46_report(struct axiom_data *ts, char *rx_buf)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	u32 event_value;
-+	u16 aux_value;
-+	u32 i = 0;
-+
-+	for (i = 0; i < AXIOM_U46_AUX_CHANNELS; i++) {
-+		char target_step = i * 2;
-+
-+		aux_value = ((rx_buf[target_step + 2] << 8) | (rx_buf[target_step + 1]))
-+			     & AXIOM_U46_AUX_MASK;
-+		event_value = (i << 16) | (aux_value);
-+		input_event(input_dev, EV_MSC, MSC_RAW, event_value);
-+	}
-+}
-+
-+/*
-+ * Validates the crc and demultiplexes the axiom reports to the appropriate
-+ * report handler
-+ */
-+static int axiom_handle_events(struct axiom_data *ts)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	char *report_data = ts->rx_buf;
-+	struct device *dev = ts->dev;
-+	u16 crc_report;
-+	u16 crc_calc;
-+	int error;
-+	char len;
-+
-+	error = axiom_i2c_read(ts->client, AXIOM_REPORT_USAGE_ID, 0, report_data,
-+			       ts->max_report_len);
-+	if (error)
-+		return error;
-+
-+	len = (report_data[0] & AXIOM_COMMS_REPORT_LEN_MASK) << 1;
-+	if (!len) {
-+		dev_err(dev, "Zero length report discarded.\n");
-+		return -ENODATA;
-+	}
-+
-+	/* Validate the report CRC */
-+	crc_report = (report_data[len - 1] << 8) | (report_data[len - 2]);
-+	/* Length is in 16 bit words and remove the size of the CRC16 itself */
-+	crc_calc = crc16(0, report_data, (len - 2));
-+
-+	if (crc_calc != crc_report) {
-+		dev_err(dev,
-+			"CRC mismatch! Expected: %#x, Calculated CRC: %#x.\n",
-+			crc_report, crc_calc);
-+		return -EINVAL;
-+	}
-+
-+	switch (report_data[1]) {
-+	case AXIOM_USAGE_2DCTS_REPORT_ID:
-+		if (axiom_process_u41_report(ts, &report_data[1])) {
-+			input_mt_sync_frame(input_dev);
-+			input_sync(input_dev);
-+		}
-+		break;
-+
-+	case AXIOM_USAGE_2AUX_REPORT_ID:
-+		/* This is an aux report (force) */
-+		axiom_process_u46_report(ts, &report_data[1]);
-+		input_mt_sync(input_dev);
-+		input_sync(input_dev);
-+		break;
-+
-+	case AXIOM_USAGE_2HB_REPORT_ID:
-+		/* This is a heartbeat report */
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void axiom_i2c_poll(struct input_dev *input_dev)
-+{
-+	struct axiom_data *ts = input_get_drvdata(input_dev);
-+
-+	axiom_handle_events(ts);
-+}
-+
-+static irqreturn_t axiom_irq(int irq, void *dev_id)
-+{
-+	struct axiom_data *ts = dev_id;
-+
-+	axiom_handle_events(ts);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void axiom_reset(struct gpio_desc *reset_gpio)
-+{
-+	gpiod_set_value_cansleep(reset_gpio, 1);
-+	usleep_range(1000, 2000);
-+	gpiod_set_value_cansleep(reset_gpio, 0);
-+	msleep(110);
-+}
-+
-+static int axiom_i2c_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct input_dev *input_dev;
-+	struct axiom_data *ts;
-+	u32 startup_delay_ms;
-+	u32 poll_interval;
-+	int target;
-+	int error;
-+
-+	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-+	if (!ts)
-+		return -ENOMEM;
-+
-+	ts->client = client;
-+	i2c_set_clientdata(client, ts);
-+	ts->dev = dev;
-+
-+	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ts->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
-+
-+	if (ts->reset_gpio)
-+		axiom_reset(ts->reset_gpio);
-+
-+	ts->vddi = devm_regulator_get_optional(dev, "VDDI");
-+	if (!IS_ERR(ts->vddi)) {
-+		error = regulator_enable(ts->vddi);
-+		if (error)
-+			return dev_err_probe(&client->dev, error,
-+					     "Failed to enable VDDI regulator\n");
-+	}
-+
-+	ts->vdda = devm_regulator_get_optional(dev, "VDDA");
-+	if (!IS_ERR(ts->vdda)) {
-+		error = regulator_enable(ts->vdda);
-+		if (error) {
-+			dev_err(dev, "Failed to get VDDA regulator\n");
-+			regulator_disable(ts->vddi);
-+			return error;
-+		}
-+		if (!device_property_read_u32(dev, "startup-time-ms", &startup_delay_ms))
-+			msleep(startup_delay_ms);
-+	}
-+
-+	error = axiom_discover(ts);
-+	if (error)
-+		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
-+
-+	input_dev = devm_input_allocate_device(ts->dev);
-+	if (!input_dev)
-+		return -ENOMEM;
-+
-+	input_dev->name = "TouchNetix axiom Touchscreen";
-+	input_dev->phys = "input/axiom_ts";
-+
-+	/* Single Touch */
-+	input_set_abs_params(input_dev, ABS_X, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_Y, 0, 65535, 0, 0);
-+
-+	/* Multi Touch */
-+	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-+	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-+
-+	input_set_capability(input_dev, EV_KEY, BTN_TOUCH);
-+
-+	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
-+	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-+	if (error)
-+		return error;
-+
-+	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-+	set_bit(EV_REL, input_dev->evbit);
-+	set_bit(EV_MSC, input_dev->evbit);
-+	/* Declare that we support "RAW" Miscellaneous events */
-+	set_bit(MSC_RAW, input_dev->mscbit);
-+
-+	ts->input_dev = input_dev;
-+	input_set_drvdata(ts->input_dev, ts);
-+
-+	/* Ensure that all reports are initialised to not be present. */
-+	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-+		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	error = input_register_device(input_dev);
-+	if (error)
-+		return dev_err_probe(ts->dev, error,
-+				     "Could not register with Input Sub-system.\n");
-+
-+	error = devm_request_threaded_irq(dev, client->irq, NULL,
-+					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
-+	if (error < 0) {
-+		dev_warn(dev, "Request irq failed, falling back to polling mode");
-+
-+		error = input_setup_polling(input_dev, axiom_i2c_poll);
-+		if (error)
-+			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
-+
-+		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
-+			input_set_poll_interval(input_dev, poll_interval);
-+		else
-+			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct i2c_device_id axiom_i2c_id_table[] = {
-+	{ "ax54a" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
-+
-+static const struct of_device_id axiom_i2c_of_match[] = {
-+	{ .compatible = "touchnetix,ax54a", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
-+
-+static struct i2c_driver axiom_i2c_driver = {
-+	.driver = {
-+		   .name = "axiom",
-+		   .of_match_table = axiom_i2c_of_match,
-+	},
-+	.id_table = axiom_i2c_id_table,
-+	.probe = axiom_i2c_probe,
-+};
-+module_i2c_driver(axiom_i2c_driver);
-+MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
-+MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
-+MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
-+MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
-+MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
-+MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+On 2023/12/11 18:43, Alexandra Winter wrote:
+> 
+> 
+> On 08.12.23 08:40, Wen Gu wrote:
+>> There is a large if-else block in smc_clc_send_confirm_accept() and it
+>> is better to split it into two sub-functions.
+>>
+>> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+> 
+> Thank you very much Wen Gu for improving the codebase.
+> 
+I'm glad I could help.
 
+> 
+>>   net/smc/smc_clc.c | 196 +++++++++++++++++++++++++++++++-----------------------
+>>   1 file changed, 114 insertions(+), 82 deletions(-)
+>>
+>> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+>> index 0fcb035..52b4ea9 100644
+>> --- a/net/smc/smc_clc.c
+>> +++ b/net/smc/smc_clc.c
+>> @@ -998,6 +998,111 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
+>>   	return reason_code;
+>>   }
+>>   
+>> +static void smcd_clc_prep_confirm_accept(struct smc_connection *conn,
+>> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
+>> +				int first_contact, u8 version,
+>> +				u8 *eid, struct smc_init_info *ini,
+>> +				int *fce_len,
+>> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
+>> +				struct smc_clc_msg_trail *trl)
+>> +{
+>> +	struct smcd_dev *smcd = conn->lgr->smcd;
+>> +	struct smc_clc_msg_accept_confirm *clc;
+>> +	int len;
+>> +
+>> +	/* SMC-D specific settings */
+>> +	clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
+> 
+> Why is this cast neccessary? (Here as well as in smcr_clc_prep_confirm_accept
+> and in smc_clc_send_confirm_accept)
+> smc_clc_msg_accept_confirm_v2 has hdr and d0 as well.
+
+I think the cast is to imply that v2 is an expansion of v1, or v1 is the base of v2.
+So here using clc(v1) reperesents their common set.
+
+If we use smc_clc_msg_accept_confirm_v2 for all, I think readers may be tempted to
+check whether the hdr and d0 in 'smc_clc_msg_accept_confirm_v2' are also applicable to v1.
+
+And there are settings below that are specific for v1. It may be confusing if we
+change it like this:
+
+if (version == SMC_V1) {
+	clc_v2->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
+} else {
+
+
+> 
+> IMO, it would be a nice seperate patch to get rid of the 2 type defs for
+> smc_clc_msg_accept_confirm and smc_clc_msg_accept_confirm_v2
+> and all the related casting anyhow.
+> 
+
+Do you mean to define only smc_clc_msg_accept_confirm_v2 or define with the name
+of smc_clc_msg_accept_confirm but the contents of smc_clc_msg_accept_confirm_v2?
+
+I have a different opinion on this, since I think the smc_clc_msg_accept_confirm
+and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
+v2 messages and remind people what is currently working on. So I perfer to keep them.
+Am I missing something?
+
+> 
+> 
+>> +	memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
+>> +	       sizeof(SMCD_EYECATCHER));
+>> +	clc->hdr.typev1 = SMC_TYPE_D;
+>> +	clc->d0.gid = htonll(smcd->ops->get_local_gid(smcd));
+>> +	clc->d0.token = htonll(conn->rmb_desc->token);
+>> +	clc->d0.dmbe_size = conn->rmbe_size_comp;
+>> +	clc->d0.dmbe_idx = 0;
+>> +	memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
+>> +	if (version == SMC_V1) {
+>> +		clc->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
+>> +	} else {
+>> +		clc_v2->d1.chid = htons(smc_ism_get_chid(smcd));
+>> +		if (eid && eid[0])
+>> +			memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
+>> +		len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
+>> +		if (first_contact) {
+>> +			*fce_len = smc_clc_fill_fce_v2x(fce_v2x, ini);
+>> +			len += *fce_len;
+>> +		}
+>> +		clc_v2->hdr.length = htons(len);
+>> +	}
+>> +	memcpy(trl->eyecatcher, SMCD_EYECATCHER,
+>> +	       sizeof(SMCD_EYECATCHER));
+>> +}
+>> +
+>> +static void smcr_clc_prep_confirm_accept(struct smc_connection *conn,
+>> +				struct smc_clc_msg_accept_confirm_v2 *clc_v2,
+>> +				int first_contact, u8 version,
+>> +				u8 *eid, struct smc_init_info *ini,
+>> +				int *fce_len,
+>> +				struct smc_clc_first_contact_ext_v2x *fce_v2x,
+>> +				struct smc_clc_fce_gid_ext *gle,
+>> +				struct smc_clc_msg_trail *trl)
+>> +{
+>> +	struct smc_clc_msg_accept_confirm *clc;
+>> +	struct smc_link *link = conn->lnk;
+>> +	int len;
+>> +
+>> +	/* SMC-R specific settings */
+>> +	clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
+> 
+> Why is this cast neccessary?
+> smc_clc_msg_accept_confirm_v2 has hdr and r0 as well.
+> 
+Similar thought as SMCD.
+
+>> +	memcpy(clc->hdr.eyecatcher, SMC_EYECATCHER,
+>> +	       sizeof(SMC_EYECATCHER));
+>> +	clc->hdr.typev1 = SMC_TYPE_R;
+>> +	clc->hdr.length = htons(SMCR_CLC_ACCEPT_CONFIRM_LEN);
+> 
+> ^^ this is overwritten below, so no need to set it here.
+> 
+
+Good catch! It will be removed. Thank you.
+
+<...>
