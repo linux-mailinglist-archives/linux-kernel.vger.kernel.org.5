@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FF680D34F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D64580D366
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344254AbjLKRKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
+        id S1344477AbjLKROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjLKRKa (ORCPT
+        with ESMTP id S230022AbjLKRN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:10:30 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1E5C7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:10:35 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4258b8632f4so37249261cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:10:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1702314635; x=1702919435; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nVwpXrg5GrAiosSC6uTLQ5GLZb1kq4d2s7vH0wRu8vc=;
-        b=cGwKieTBVsUK/jzxGSaslGatL6BGqmABUjh0qM7SwVk42ENuBemOa9Yjxv9hLegkzH
-         7ZXalBPdQZ/9bPPa+ucVmWrAmkW1muk1ZDVNq1cQOLSQFQCCPNSI2042G03BhvHNp65S
-         Xw66AudqaJDr0JWHahLgp4iffoFmolXM9vOYjRCpyu8wXOjjyJfaRNjQZh5B3wsG8cWy
-         oCRnENPoAT1OuW8Ag7TAlwfpBRIIaycMXtX+IEu19JyMl9RV/NZuwgUUQexBjEsCrDBb
-         8vAUKQOxZTYrjItv5UQfA9/OwxBzgJQCOlEeT395gMfZ1CdbqlnRKAQpCg/dLVJRCuJ5
-         Aypg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702314635; x=1702919435;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nVwpXrg5GrAiosSC6uTLQ5GLZb1kq4d2s7vH0wRu8vc=;
-        b=E6nsaegJAJPt28dx0A7DCYBnGhsK3QuQx7uePZhuYVlvZS8zq2g6LxZrM0SJHxJU4V
-         VrbDKTLkQqXKMGyu7/nl/Os7OQJeexj6kC/UYzvnMQ3qrpOyJgY2f7sl2R4hwM2Fqe7F
-         wF4+LdSkA2OVU+Uci+pJzWpmKK13+mDcTAAfglPLdRe1sL7d2dvcstNsrJmj8XgEq+1a
-         SepIqIBIYC4pv9EiClUE6YFAC1IkPpODoNp1/SohGTsqxU35vPPcnqY4b3b0dWkN0jAn
-         HBLHNb0lEyfhRzrbYgHJeONQVlZsAD7ng7GOgPqdb1t5oNGFVEuz5LIHu2S+1XxBqXAd
-         KHjw==
-X-Gm-Message-State: AOJu0Yz5j7ixUQjekH07MLJKeelK+aixl5oJGP0oabnGPwW/Ldik/kNw
-        UVY8RHTc3cnURL0XCrcyQfeUKIXLKDl+I3mPx9YdW/ws0sgjWm2HDCA=
-X-Google-Smtp-Source: AGHT+IEWA5j2rxU2s7GXnHN22sWHK1yBm26s38obXicdqOGWHUUAbuOhImNg2g09egt6OVEVMwL5e799O3ygWCXSyMg=
-X-Received: by 2002:ac8:4e92:0:b0:425:4043:5f2e with SMTP id
- 18-20020ac84e92000000b0042540435f2emr7945001qtp.108.1702314634830; Mon, 11
- Dec 2023 09:10:34 -0800 (PST)
+        Mon, 11 Dec 2023 12:13:59 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2834BD;
+        Mon, 11 Dec 2023 09:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:subject:date:message-id:reply-to;
+        bh=aaEer9pudS/c8D2BByKXGhQ3YN3/xyWWrP78YkybY7w=; b=Qgm79yfyq7y322Vd2gcF4MfK4v
+        mLJF4PM/q+uGiyL8NpxAYe515C3j8JKzIHgSc3E1gbfNUfv8Ej9jpOi9w/gw2FnS7zzH7HHOSm99c
+        L7mc69O1xHKEWiCZME7gP8JbSRLJR+5tzSEaihh5X/tYBsmNqQXPxXMk5j7NKf55gHak=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:56730 helo=pettiford.lan)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rCjqw-0003yC-1y; Mon, 11 Dec 2023 12:13:59 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        hvilleneuve@dimonoff.com, jringle@gridpoint.com,
+        tomasz.mon@camlingroup.com
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        hugo@hugovil.com
+Date:   Mon, 11 Dec 2023 12:13:47 -0500
+Message-Id: <20231211171353.2901416-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <ZXdAOroKNce1r+TZ@casper.infradead.org>
-In-Reply-To: <ZXdAOroKNce1r+TZ@casper.infradead.org>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Mon, 11 Dec 2023 12:09:57 -0500
-Message-ID: <CA+CK2bBnPc=Z4SOPbnMqnDA1X9oLsq_rzsEnAcxNsA5ZWCUWwQ@mail.gmail.com>
-Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, surenb@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        souravpanda@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS autolearn=ham
+        autolearn_force=no version=3.4.6
+Subject: [PATCH v2 0/6] serial: sc16is7xx: regmap fixes and improvements
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 12:00=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Mon, Dec 11, 2023 at 03:46:44PM +0000, Pasha Tatashin wrote:
-> > +++ b/drivers/base/node.c
-> > @@ -520,26 +520,34 @@ static ssize_t node_read_vmstat(struct device *de=
-v,
-> >       int i;
-> >       int len =3D 0;
-> >
-> > -     for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
-> > -             len +=3D sysfs_emit_at(buf, len, "%s %lu\n",
-> > -                                  zone_stat_name(i),
-> > -                                  sum_zone_node_page_state(nid, i));
-> > +     for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
-> > +             if (vmstat_text[ZONE_STAT_NAME_IDX(i)].flags & VMSTAT_SHO=
-W_SYSFS) {
-> > +                     len +=3D sysfs_emit_at(buf, len, "%s %lu\n",
-> > +                                          zone_stat_name(i),
-> > +                                          sum_zone_node_page_state(nid=
-, i));
-> > +             }
-> > +     }
->
-> This seems overly complicated.  Why not do:
->
->         for (i =3D 0; i < NR_VM_ZONE_STAT_SYSFS_ITEMS; i++)
->
-> and have assertions that this number doesn't change (and require people
-> to add to the list after that point)?
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-This is what I wanted to do at the beginning. But, the problem is that
-vmstat_text[] contains names from a number of different structs of
-stats:  zone_stat, numa_stat, node_stat, lru_list, writeback_stat,
-vm_even. Therefore, we can't simply count the number of
-NR_VM_ZONE_STAT_SYSFS_ITEMS, as the new items can be added in the
-middle of vmstat_text[]  when for example numa_stat is expanded.
+Hello,
+this patch series brings fixes and improvements related to regmap access
+for the sc16is7xx driver.
 
-Pasha
+Most of the patches are related to commit 3837a0379533 ("serial: sc16is7xx: improve regmap debugfs by using one regmap per port").
+
+I did not originally add a "Cc: stable" tag for the above mentioned commit,
+as it was intended only to improve debugging using debugfs. But since then,
+I have been able to confirm that it also fixes a long standing bug in our
+system where the Tx interrupt are no longer enabled at some point when
+transmitting large RS-485 paquets that completely fill the FIFO and thus
+require multiple and subsequent writes to the FIFO once space in it becomes
+available. I have been investigating why, but so far I haven't found the
+exact cause, altough I suspect it has something to do with regmap caching.
+Therefore, I have added this commit as a prerequisite for some of the
+patches in this series so that it is automatically added to the stable
+kernels.
+
+I have tested the changes on a custom board with two SC16IS752 DUART over
+a SPI interface using a Variscite IMX8MN NANO SOM. The four UARTs are
+configured in RS-485 mode.
+
+I did not test the change on a SC16is7xx using I2C interface, as my custom
+board is only using SPI.
+
+Thank you.
+
+Link: [v1] https://lore.kernel.org/all/20231130191050.3165862-1-hugo@hugovil.com
+
+Changes for V2:
+ - Refactor patch 1 to avoid a truncation warning when using "%u" in
+   snprintf.
+ - Keep only fixing patches in this series. Non-fixes patches will be
+   resubmitted in a new separate series.
+ - Add 3 new fixing patches (4 to 6).
+
+Hugo Villeneuve (6):
+  serial: sc16is7xx: remove wasteful static buffer in
+    sc16is7xx_regmap_name()
+  serial: sc16is7xx: remove global regmap from struct sc16is7xx_port
+  serial: sc16is7xx: remove unused line structure member
+  serial: sc16is7xx: change EFR lock to operate on each channels
+  serial: sc16is7xx: convert from _raw_ to _noinc_ regmap functions for
+    FIFO
+  serial: sc16is7xx: fix unconditional activation of THRI interrupt
+
+ drivers/tty/serial/sc16is7xx.c | 104 ++++++++++++++++++---------------
+ 1 file changed, 56 insertions(+), 48 deletions(-)
+
+
+base-commit: e045e18dbf3eaac32cdeb2799a5ec84fa694636c
+-- 
+2.39.2
+
