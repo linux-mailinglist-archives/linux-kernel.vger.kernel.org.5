@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7C480BEF4
+	by mail.lfdr.de (Postfix) with ESMTP id AFE4B80BEF5
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbjLKCMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:12:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S232748AbjLKCMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbjLKCMe (ORCPT
+        with ESMTP id S232355AbjLKCMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:12:34 -0500
+        Sun, 10 Dec 2023 21:12:35 -0500
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8A8F3;
-        Sun, 10 Dec 2023 18:12:39 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SpQGx5vsfzvRNB;
-        Mon, 11 Dec 2023 10:11:53 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C922BD;
+        Sun, 10 Dec 2023 18:12:40 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SpQHk0FGKzsS0C;
+        Mon, 11 Dec 2023 10:12:34 +0800 (CST)
 Received: from kwepemm000007.china.huawei.com (unknown [7.193.23.189])
-        by mail.maildlp.com (Postfix) with ESMTPS id 23F04140136;
+        by mail.maildlp.com (Postfix) with ESMTPS id C81751404D8;
         Mon, 11 Dec 2023 10:12:38 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
@@ -32,9 +32,9 @@ To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 2/6] net: hns3: add command queue trace for hns3
-Date:   Mon, 11 Dec 2023 10:08:12 +0800
-Message-ID: <20231211020816.69434-3-shaojijie@huawei.com>
+Subject: [PATCH net-next 3/6] net: hns3: dump more reg info based on ras mod
+Date:   Mon, 11 Dec 2023 10:08:13 +0800
+Message-ID: <20231211020816.69434-4-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231211020816.69434-1-shaojijie@huawei.com>
 References: <20231211020816.69434-1-shaojijie@huawei.com>
@@ -53,423 +53,661 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Lan <lanhao@huawei.com>
+From: Peiyang Wang <wangpeiyang1@huawei.com>
 
-Currently, the hns3 driver does not have the trace
-of the command queue. As a result, it is difficult to
-locate the communication between the driver and firmware.
-Therefore, the trace function of the command queue is
-added in this test case to facilitate the locating of
-communication problems between the driver and firmware.
+Dump more reg info base on ras mod before reset, which is useful to
+analyze the ras error.
 
-Signed-off-by: Hao Lan <lanhao@huawei.com>
+Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
 ---
- .../hns3/hns3_common/hclge_comm_cmd.c         | 18 ++++
- .../hns3/hns3_common/hclge_comm_cmd.h         | 14 ++-
- .../hisilicon/hns3/hns3pf/hclge_main.c        | 45 +++++++++
- .../hisilicon/hns3/hns3pf/hclge_trace.h       | 94 +++++++++++++++++++
- .../hisilicon/hns3/hns3vf/hclgevf_main.c      | 40 ++++++++
- .../hisilicon/hns3/hns3vf/hclgevf_trace.h     | 50 ++++++++++
- 6 files changed, 260 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |   4 +
+ .../hns3/hns3_common/hclge_comm_cmd.c         |   1 +
+ .../hns3/hns3_common/hclge_comm_cmd.h         |   2 +
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     |   6 +-
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.h     |   3 +
+ .../hisilicon/hns3/hns3pf/hclge_err.c         | 434 +++++++++++++++++-
+ .../hisilicon/hns3/hns3pf/hclge_err.h         |  36 ++
+ 7 files changed, 478 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index d7e175a9cb49..ff475b0eac22 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -104,6 +104,7 @@ enum HNAE3_DEV_CAP_BITS {
+ 	HNAE3_DEV_SUPPORT_WOL_B,
+ 	HNAE3_DEV_SUPPORT_TM_FLUSH_B,
+ 	HNAE3_DEV_SUPPORT_VF_FAULT_B,
++	HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B,
+ };
+ 
+ #define hnae3_ae_dev_fd_supported(ae_dev) \
+@@ -181,6 +182,9 @@ enum HNAE3_DEV_CAP_BITS {
+ #define hnae3_ae_dev_vf_fault_supported(ae_dev) \
+ 	test_bit(HNAE3_DEV_SUPPORT_VF_FAULT_B, (ae_dev)->caps)
+ 
++#define hnae3_ae_dev_gen_reg_dfx_supported(hdev) \
++	test_bit(HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B, (hdev)->ae_dev->caps)
++
+ enum HNAE3_PF_CAP_BITS {
+ 	HNAE3_PF_SUPPORT_VLAN_FLTR_MDF_B = 0,
+ };
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
-index d92ad6082d8e..424555e00e05 100644
+index 424555e00e05..8441479bc851 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
-@@ -470,10 +470,14 @@ static int hclge_comm_cmd_check_result(struct hclge_comm_hw *hw,
- int hclge_comm_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
- 			int num)
- {
-+	bool is_special = hclge_comm_is_special_opcode(desc->opcode);
- 	struct hclge_comm_cmq_ring *csq = &hw->cmq.csq;
- 	int ret;
- 	int ntc;
+@@ -158,6 +158,7 @@ static const struct hclge_comm_caps_bit_map hclge_pf_cmd_caps[] = {
+ 	{HCLGE_COMM_CAP_WOL_B, HNAE3_DEV_SUPPORT_WOL_B},
+ 	{HCLGE_COMM_CAP_TM_FLUSH_B, HNAE3_DEV_SUPPORT_TM_FLUSH_B},
+ 	{HCLGE_COMM_CAP_VF_FAULT_B, HNAE3_DEV_SUPPORT_VF_FAULT_B},
++	{HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B, HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B},
+ };
  
-+	if (hw->cmq.ops.trace_cmd_send)
-+		hw->cmq.ops.trace_cmd_send(hw, desc, num, is_special);
-+
- 	spin_lock_bh(&hw->cmq.csq.lock);
- 
- 	if (test_bit(HCLGE_COMM_STATE_CMD_DISABLE, &hw->comm_state)) {
-@@ -507,6 +511,9 @@ int hclge_comm_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
- 
- 	spin_unlock_bh(&hw->cmq.csq.lock);
- 
-+	if (hw->cmq.ops.trace_cmd_get)
-+		hw->cmq.ops.trace_cmd_get(hw, desc, num, is_special);
-+
- 	return ret;
- }
- 
-@@ -584,6 +591,17 @@ int hclge_comm_cmd_queue_init(struct pci_dev *pdev, struct hclge_comm_hw *hw)
- 	return ret;
- }
- 
-+void hclge_comm_cmd_init_ops(struct hclge_comm_hw *hw,
-+			     const struct hclge_comm_cmq_ops *ops)
-+{
-+	struct hclge_comm_cmq *cmdq = &hw->cmq;
-+
-+	if (ops) {
-+		cmdq->ops.trace_cmd_send = ops->trace_cmd_send;
-+		cmdq->ops.trace_cmd_get = ops->trace_cmd_get;
-+	}
-+}
-+
- int hclge_comm_cmd_init(struct hnae3_ae_dev *ae_dev, struct hclge_comm_hw *hw,
- 			u32 *fw_version, bool is_pf,
- 			unsigned long reset_pending)
+ static const struct hclge_comm_caps_bit_map hclge_vf_cmd_caps[] = {
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
-index 533c19d25e4f..387807b47d9a 100644
+index 387807b47d9a..02a0a7df49cc 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
-@@ -423,11 +423,22 @@ enum hclge_comm_cmd_status {
- 	HCLGE_COMM_ERR_CSQ_ERROR	= -3,
+@@ -91,6 +91,7 @@ enum hclge_opcode_type {
+ 	HCLGE_OPC_DFX_RCB_REG		= 0x004D,
+ 	HCLGE_OPC_DFX_TQP_REG		= 0x004E,
+ 	HCLGE_OPC_DFX_SSU_REG_2		= 0x004F,
++	HCLGE_OPC_DFX_GEN_REG		= 0x7038,
+ 
+ 	HCLGE_OPC_QUERY_DEV_SPECS	= 0x0050,
+ 	HCLGE_OPC_GET_QUEUE_ERR_VF      = 0x0067,
+@@ -353,6 +354,7 @@ enum HCLGE_COMM_CAP_BITS {
+ 	HCLGE_COMM_CAP_LANE_NUM_B = 27,
+ 	HCLGE_COMM_CAP_WOL_B = 28,
+ 	HCLGE_COMM_CAP_TM_FLUSH_B = 31,
++	HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B = 32,
  };
  
-+struct hclge_comm_hw;
-+struct hclge_comm_cmq_ops {
-+	void (*trace_cmd_send)(struct hclge_comm_hw *hw,
-+			       struct hclge_desc *desc,
-+			       int num, bool is_special);
-+	void (*trace_cmd_get)(struct hclge_comm_hw *hw,
-+			      struct hclge_desc *desc,
-+			      int num, bool is_special);
-+};
+ enum HCLGE_COMM_API_CAP_BITS {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index 9ec471ced3d6..99bb8894f542 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -161,10 +161,8 @@ static int hclge_dbg_get_dfx_bd_num(struct hclge_dev *hdev, int offset,
+ 	return 0;
+ }
+ 
+-static int hclge_dbg_cmd_send(struct hclge_dev *hdev,
+-			      struct hclge_desc *desc_src,
+-			      int index, int bd_num,
+-			      enum hclge_opcode_type cmd)
++int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
++		       int index, int bd_num, enum hclge_opcode_type cmd)
+ {
+ 	struct hclge_desc *desc = desc_src;
+ 	int ret, i;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
+index 724052928b88..58dab6e0788d 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
+@@ -771,4 +771,7 @@ struct hclge_dbg_vlan_cfg {
+ 	u8 pri_only2;
+ };
+ 
++int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
++		       int index, int bd_num, enum hclge_opcode_type cmd);
 +
- struct hclge_comm_cmq {
- 	struct hclge_comm_cmq_ring csq;
- 	struct hclge_comm_cmq_ring crq;
- 	u16 tx_timeout;
- 	enum hclge_comm_cmd_status last_status;
-+	struct hclge_comm_cmq_ops ops;
- };
- 
- struct hclge_comm_hw {
-@@ -474,5 +485,6 @@ int hclge_comm_cmd_queue_init(struct pci_dev *pdev, struct hclge_comm_hw *hw);
- int hclge_comm_cmd_init(struct hnae3_ae_dev *ae_dev, struct hclge_comm_hw *hw,
- 			u32 *fw_version, bool is_pf,
- 			unsigned long reset_pending);
--
-+void hclge_comm_cmd_init_ops(struct hclge_comm_hw *hw,
-+			     const struct hclge_comm_cmq_ops *ops);
  #endif
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 5ea9e59569ef..8c2562ae3c69 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -27,6 +27,8 @@
- #include "hclge_devlink.h"
- #include "hclge_comm_cmd.h"
- 
-+#include "hclge_trace.h"
-+
- #define HCLGE_NAME			"hclge"
- 
- #define HCLGE_BUF_SIZE_UNIT	256U
-@@ -391,6 +393,48 @@ int hclge_cmd_send(struct hclge_hw *hw, struct hclge_desc *desc, int num)
- 	return hclge_comm_cmd_send(&hw->hw, desc, num);
- }
- 
-+static void hclge_trace_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
-+				 int num, bool is_special)
-+{
-+	int i;
-+
-+	trace_hclge_pf_cmd_send(hw, desc, 0, num);
-+
-+	if (!is_special) {
-+		for (i = 1; i < num; i++)
-+			trace_hclge_pf_cmd_send(hw, &desc[i], i, num);
-+	} else {
-+		for (i = 1; i < num; i++)
-+			trace_hclge_pf_special_cmd_send(hw, (u32 *)&desc[i],
-+							i, num);
-+	}
-+}
-+
-+static void hclge_trace_cmd_get(struct hclge_comm_hw *hw, struct hclge_desc *desc,
-+				int num, bool is_special)
-+{
-+	int i;
-+
-+	if (!HCLGE_COMM_SEND_SYNC(le16_to_cpu(desc->flag)))
-+		return;
-+
-+	trace_hclge_pf_cmd_get(hw, desc, 0, num);
-+
-+	if (!is_special) {
-+		for (i = 1; i < num; i++)
-+			trace_hclge_pf_cmd_get(hw, &desc[i], i, num);
-+	} else {
-+		for (i = 1; i < num; i++)
-+			trace_hclge_pf_special_cmd_get(hw, (u32 *)&desc[i],
-+						       i, num);
-+	}
-+}
-+
-+static const struct hclge_comm_cmq_ops hclge_cmq_ops = {
-+	.trace_cmd_send = hclge_trace_cmd_send,
-+	.trace_cmd_get = hclge_trace_cmd_get,
-+};
-+
- static int hclge_mac_update_stats_defective(struct hclge_dev *hdev)
- {
- #define HCLGE_MAC_CMD_NUM 21
-@@ -11616,6 +11660,7 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
- 		goto err_devlink_uninit;
- 
- 	/* Firmware command initialize */
-+	hclge_comm_cmd_init_ops(&hdev->hw.hw, &hclge_cmq_ops);
- 	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw, &hdev->fw_version,
- 				  true, hdev->reset_pending);
- 	if (ret)
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
-index 8510b88d4982..116ac3a5ffc5 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
-@@ -10,6 +10,7 @@
- 
- #include <linux/tracepoint.h>
- 
-+#define PF_DESC_LEN	(sizeof(struct hclge_desc) / sizeof(u32))
- #define PF_GET_MBX_LEN	(sizeof(struct hclge_mbx_vf_to_pf_cmd) / sizeof(u32))
- #define PF_SEND_MBX_LEN	(sizeof(struct hclge_mbx_pf_to_vf_cmd) / sizeof(u32))
- 
-@@ -77,6 +78,99 @@ TRACE_EVENT(hclge_pf_mbx_send,
- 	)
- );
- 
-+DECLARE_EVENT_CLASS(hclge_pf_cmd_template,
-+		    TP_PROTO(struct hclge_comm_hw *hw,
-+			     struct hclge_desc *desc,
-+			     int index,
-+			     int num),
-+		    TP_ARGS(hw, desc, index, num),
-+
-+		    TP_STRUCT__entry(__field(u16, opcode)
-+			__field(u16, flag)
-+			__field(u16, retval)
-+			__field(u16, rsv)
-+			__field(int, index)
-+			__field(int, num)
-+			__string(pciname, pci_name(hw->cmq.csq.pdev))
-+			__array(u32, data, HCLGE_DESC_DATA_LEN)),
-+
-+		    TP_fast_assign(int i;
-+			__entry->opcode = le16_to_cpu(desc->opcode);
-+			__entry->flag = le16_to_cpu(desc->flag);
-+			__entry->retval = le16_to_cpu(desc->retval);
-+			__entry->rsv = le16_to_cpu(desc->rsv);
-+			__entry->index = index;
-+			__entry->num = num;
-+			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
-+			for (i = 0; i < HCLGE_DESC_DATA_LEN; i++)
-+				__entry->data[i] = le32_to_cpu(desc->data[i]);),
-+
-+		    TP_printk("%s opcode:0x%04x %d-%d flag:0x%04x retval:0x%04x rsv:0x%04x data:%s",
-+			      __get_str(pciname), __entry->opcode,
-+			      __entry->index, __entry->num,
-+			      __entry->flag, __entry->retval, __entry->rsv,
-+			      __print_array(__entry->data,
-+					    HCLGE_DESC_DATA_LEN, sizeof(u32)))
-+);
-+
-+DEFINE_EVENT(hclge_pf_cmd_template, hclge_pf_cmd_send,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      struct hclge_desc *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num)
-+);
-+
-+DEFINE_EVENT(hclge_pf_cmd_template, hclge_pf_cmd_get,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      struct hclge_desc *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num)
-+);
-+
-+DECLARE_EVENT_CLASS(hclge_pf_special_cmd_template,
-+		    TP_PROTO(struct hclge_comm_hw *hw,
-+			     u32 *data,
-+			     int index,
-+			     int num),
-+		    TP_ARGS(hw, data, index, num),
-+
-+		    TP_STRUCT__entry(__field(int, index)
-+			__field(int, num)
-+			__string(pciname, pci_name(hw->cmq.csq.pdev))
-+			__array(u32, data, PF_DESC_LEN)),
-+
-+		    TP_fast_assign(int i;
-+			__entry->index = index;
-+			__entry->num = num;
-+			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
-+			for (i = 0; i < PF_DESC_LEN; i++)
-+				__entry->data[i] = le32_to_cpu(data[i]);
-+		),
-+
-+		    TP_printk("%s %d-%d data:%s",
-+			      __get_str(pciname),
-+			      __entry->index, __entry->num,
-+			      __print_array(__entry->data,
-+					    PF_DESC_LEN, sizeof(u32)))
-+);
-+
-+DEFINE_EVENT(hclge_pf_special_cmd_template, hclge_pf_special_cmd_send,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      u32 *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num));
-+
-+DEFINE_EVENT(hclge_pf_special_cmd_template, hclge_pf_special_cmd_get,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      u32 *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num)
-+);
-+
- #endif /* _HCLGE_TRACE_H_ */
- 
- /* This must be outside ifdef _HCLGE_TRACE_H */
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 0aa9beefd1c7..ecc092555362 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -11,6 +11,7 @@
- #include "hnae3.h"
- #include "hclgevf_devlink.h"
- #include "hclge_comm_rss.h"
-+#include "hclgevf_trace.h"
- 
- #define HCLGEVF_NAME	"hclgevf"
- 
-@@ -47,6 +48,42 @@ int hclgevf_cmd_send(struct hclgevf_hw *hw, struct hclge_desc *desc, int num)
- 	return hclge_comm_cmd_send(&hw->hw, desc, num);
- }
- 
-+static void hclgevf_trace_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
-+				   int num, bool is_special)
-+{
-+	int i;
-+
-+	trace_hclge_vf_cmd_send(hw, desc, 0, num);
-+
-+	if (is_special)
-+		return;
-+
-+	for (i = 1; i < num; i++)
-+		trace_hclge_vf_cmd_send(hw, &desc[i], i, num);
-+}
-+
-+static void hclgevf_trace_cmd_get(struct hclge_comm_hw *hw, struct hclge_desc *desc,
-+				  int num, bool is_special)
-+{
-+	int i;
-+
-+	if (!HCLGE_COMM_SEND_SYNC(le16_to_cpu(desc->flag)))
-+		return;
-+
-+	trace_hclge_vf_cmd_get(hw, desc, 0, num);
-+
-+	if (is_special)
-+		return;
-+
-+	for (i = 1; i < num; i++)
-+		trace_hclge_vf_cmd_get(hw, &desc[i], i, num);
-+}
-+
-+static const struct hclge_comm_cmq_ops hclgevf_cmq_ops = {
-+	.trace_cmd_send = hclgevf_trace_cmd_send,
-+	.trace_cmd_get = hclgevf_trace_cmd_get,
-+};
-+
- void hclgevf_arq_init(struct hclgevf_dev *hdev)
- {
- 	struct hclge_comm_cmq *cmdq = &hdev->hw.hw.cmq;
-@@ -2796,6 +2833,7 @@ static int hclgevf_reset_hdev(struct hclgevf_dev *hdev)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+index d63e114f93d0..468372b7253d 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
+@@ -1198,6 +1198,426 @@ static const struct hclge_hw_error hclge_rocee_qmm_ovf_err_int[] = {
  	}
+ };
  
- 	hclgevf_arq_init(hdev);
++static const struct hclge_mod_reg_info hclge_ssu_reg_0_info[] = {
++	{
++		.reg_name = "SSU_BP_STATUS_0~5",
++		.reg_offset_group = { 5, 6, 7, 8, 9, 10},
++		.group_size = 6
++	}, {
++		.reg_name = "LO_PRI_UNICAST_CUR_CNT",
++		.reg_offset_group = {54},
++		.group_size = 1
++	}, {
++		.reg_name = "HI/LO_PRI_MULTICAST_CUR_CNT",
++		.reg_offset_group = {55, 56},
++		.group_size = 2
++	}, {
++		.reg_name = "SSU_MB_RD_RLT_DROP_CNT",
++		.reg_offset_group = {29},
++		.group_size = 1
++	}, {
++		.reg_name = "SSU_PPP_MAC_KEY_NUM",
++		.reg_offset_group = {31, 30},
++		.group_size = 2
++	}, {
++		.reg_name = "SSU_PPP_HOST_KEY_NUM",
++		.reg_offset_group = {33, 32},
++		.group_size = 2
++	}, {
++		.reg_name = "PPP_SSU_MAC/HOST_RLT_NUM",
++		.reg_offset_group = {35, 34, 37, 36},
++		.group_size = 4
++	}, {
++		.reg_name = "FULL/PART_DROP_NUM",
++		.reg_offset_group = {18, 19},
++		.group_size = 2
++	}, {
++		.reg_name = "PPP_KEY/RLT_DROP_NUM",
++		.reg_offset_group = {20, 21},
++		.group_size = 2
++	}, {
++		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT",
++		.reg_offset_group = {48, 49},
++		.group_size = 2
++	}, {
++		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT_RX",
++		.reg_offset_group = {50, 51},
++		.group_size = 2
++	},
++};
 +
- 	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw,
- 				  &hdev->fw_version, false,
- 				  hdev->reset_pending);
-@@ -2854,6 +2892,8 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 		goto err_cmd_queue_init;
++static const struct hclge_mod_reg_info hclge_ssu_reg_1_info[] = {
++	{
++		.reg_name = "RX_PACKET_IN/OUT_CNT",
++		.reg_offset_group = {13, 12, 15, 14},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_IN/OUT_CNT",
++		.reg_offset_group = {17, 16, 19, 18},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC0_IN/OUT_CNT",
++		.reg_offset_group = {25, 24, 41, 40},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC1_IN/OUT_CNT",
++		.reg_offset_group = {27, 26, 43, 42},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC2_IN/OUT_CNT",
++		.reg_offset_group = {29, 28, 45, 44},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC3_IN/OUT_CNT",
++		.reg_offset_group = {31, 30, 47, 46},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC4_IN/OUT_CNT",
++		.reg_offset_group = {33, 32, 49, 48},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC5_IN/OUT_CNT",
++		.reg_offset_group = {35, 34, 51, 50},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC6_IN/OUT_CNT",
++		.reg_offset_group = {37, 36, 53, 52},
++		.group_size = 4
++	}, {
++		.reg_name = "RX_PACKET_TC7_IN/OUT_CNT",
++		.reg_offset_group = {39, 38, 55, 54},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC0_IN/OUT_CNT",
++		.reg_offset_group = {57, 56, 73, 72},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC1_IN/OUT_CNT",
++		.reg_offset_group = {59, 58, 75, 74},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC2_IN/OUT_CNT",
++		.reg_offset_group = {61, 60, 77, 76},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC3_IN/OUT_CNT",
++		.reg_offset_group = {63, 62, 79, 78},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC4_IN/OUT_CNT",
++		.reg_offset_group = {65, 64, 81, 80},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC5_IN/OUT_CNT",
++		.reg_offset_group = {67, 66, 83, 82},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC6_IN/OUT_CNT",
++		.reg_offset_group = {69, 68, 85, 84},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PACKET_TC7_IN/OUT_CNT",
++		.reg_offset_group = {71, 70, 87, 86},
++		.group_size = 4
++	}, {
++		.reg_name = "PACKET_TC0~3_CURR_BUFFER_CNT",
++		.reg_offset_group = {1, 2, 3, 4},
++		.group_size = 4
++	}, {
++		.reg_name = "PACKET_TC4~7_CURR_BUFFER_CNT",
++		.reg_offset_group = {5, 6, 7, 8},
++		.group_size = 4
++	}, {
++		.reg_name = "ROC_RX_PACKET_IN_CNT",
++		.reg_offset_group = {21, 20},
++		.group_size = 2
++	}, {
++		.reg_name = "ROC_TX_PACKET_OUT_CNT",
++		.reg_offset_group = {23, 22},
++		.group_size = 2
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_rpu_reg_0_info[] = {
++	{
++		.reg_name = "RPU_FSM_DFX_ST0/ST1_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {1, 2},
++		.group_size = 2
++	}, {
++		.reg_name = "RPU_RX_PKT_DROP_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {3},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_rpu_reg_1_info[] = {
++	{
++		.reg_name = "FIFO_DFX_ST0_1_2_4",
++		.reg_offset_group = {1, 2, 3, 5},
++		.group_size = 4
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_igu_egu_reg_info[] = {
++	{
++		.reg_name = "IGU_RX_ERR_PKT",
++		.reg_offset_group = {1},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_RX_OUT_ALL_PKT",
++		.reg_offset_group = {29, 28},
++		.group_size = 2
++	}, {
++		.reg_name = "EGU_TX_OUT_ALL_PKT",
++		.reg_offset_group = {39, 38},
++		.group_size = 2
++	}, {
++		.reg_name = "EGU_TX_ERR_PKT",
++		.reg_offset_group = {5},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_gen_reg_info_tnl[] = {
++	{
++		.reg_name = "SSU2RPU_TNL_WR_PKT_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {1},
++		.group_size = 1
++	}, {
++		.reg_name = "RPU2HST_TNL_WR_PKT_CNT_TNL",
++		.has_suffix = true,
++		.reg_offset_group = {12},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_info hclge_gen_reg_info[] = {
++	{
++		.reg_name = "SSU_OVERSIZE_DROP_CNT",
++		.reg_offset_group = {12},
++		.group_size = 1
++	}, {
++		.reg_name = "ROCE_RX_BYPASS_5NS_DROP_NUM",
++		.reg_offset_group = {13},
++		.group_size = 1
++	}, {
++		.reg_name = "RX_PKT_IN/OUT_ERR_CNT",
++		.reg_offset_group = {15, 14, 19, 18},
++		.group_size = 4
++	}, {
++		.reg_name = "TX_PKT_IN/OUT_ERR_CNT",
++		.reg_offset_group = {17, 16, 21, 20},
++		.group_size = 4
++	}, {
++		.reg_name = "ETS_TC_READY",
++		.reg_offset_group = {22},
++		.group_size = 1
++	}, {
++		.reg_name = "MIB_TX/RX_BAD_PKTS",
++		.reg_offset_group = {19, 18, 29, 28},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_GOOD_PKTS",
++		.reg_offset_group = {21, 20, 31, 30},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_TOTAL_PKTS",
++		.reg_offset_group = {23, 22, 33, 32},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX/RX_PAUSE_PKTS",
++		.reg_offset_group = {25, 24, 35, 34},
++		.group_size = 4
++	}, {
++		.reg_name = "MIB_TX_ERR_ALL_PKTS",
++		.reg_offset_group = {27, 26},
++		.group_size = 2
++	}, {
++		.reg_name = "MIB_RX_FCS_ERR_PKTS",
++		.reg_offset_group = {37, 36},
++		.group_size = 2
++	}, {
++		.reg_name = "IGU_EGU_AUTO_GATE_EN",
++		.reg_offset_group = {42},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_EGU_INT_SRC",
++		.reg_offset_group = {43},
++		.group_size = 1
++	}, {
++		.reg_name = "EGU_READY_NUM_CFG",
++		.reg_offset_group = {44},
++		.group_size = 1
++	}, {
++		.reg_name = "IGU_EGU_TNL_DFX",
++		.reg_offset_group = {45},
++		.group_size = 1
++	}, {
++		.reg_name = "TX_TNL_NOTE_PKT",
++		.reg_offset_group = {46},
++		.group_size = 1
++	}
++};
++
++static const struct hclge_mod_reg_common_msg hclge_ssu_reg_common_msg[] = {
++	{
++		.cmd = HCLGE_OPC_DFX_SSU_REG_0,
++		.result_regs = hclge_ssu_reg_0_info,
++		.bd_num = HCLGE_BD_NUM_SSU_REG_0,
++		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_0_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_SSU_REG_1,
++		.result_regs = hclge_ssu_reg_1_info,
++		.bd_num = HCLGE_BD_NUM_SSU_REG_1,
++		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_1_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_RPU_REG_0,
++		.result_regs = hclge_rpu_reg_0_info,
++		.bd_num = HCLGE_BD_NUM_RPU_REG_0,
++		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_0_info),
++		.need_para = true
++	}, {
++		.cmd = HCLGE_OPC_DFX_RPU_REG_1,
++		.result_regs = hclge_rpu_reg_1_info,
++		.bd_num = HCLGE_BD_NUM_RPU_REG_1,
++		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_1_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_IGU_EGU_REG,
++		.result_regs = hclge_igu_egu_reg_info,
++		.bd_num = HCLGE_BD_NUM_IGU_EGU_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_igu_egu_reg_info)
++	}, {
++		.cmd = HCLGE_OPC_DFX_GEN_REG,
++		.result_regs = hclge_gen_reg_info_tnl,
++		.bd_num = HCLGE_BD_NUM_GEN_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info_tnl),
++		.need_para = true
++	}, {
++		.cmd = HCLGE_OPC_DFX_GEN_REG,
++		.result_regs = hclge_gen_reg_info,
++		.bd_num = HCLGE_BD_NUM_GEN_REG,
++		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info)
++	}
++};
++
++static int
++hclge_print_mod_reg_info(struct device *dev, struct hclge_desc *desc,
++			 const struct hclge_mod_reg_info *reg_info, int size)
++{
++	int i, j, pos, actual_len;
++	u8 offset, bd_idx, index;
++	char *buf;
++
++	buf = kzalloc(HCLGE_MOD_REG_INFO_LEN_MAX, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	for (i = 0; i < size; i++) {
++		actual_len = strlen(reg_info[i].reg_name) +
++			     HCLGE_MOD_REG_EXTRA_LEN +
++			     HCLGE_MOD_REG_VALUE_LEN * reg_info[i].group_size;
++		if (actual_len > HCLGE_MOD_REG_INFO_LEN_MAX) {
++			dev_info(dev, "length of reg(%s) is invalid, len=%d\n",
++				 reg_info[i].reg_name, actual_len);
++			continue;
++		}
++
++		pos = scnprintf(buf, HCLGE_MOD_REG_INFO_LEN_MAX, "%s",
++				reg_info[i].reg_name);
++		if (reg_info[i].has_suffix)
++			pos += scnprintf(buf + pos,
++					 HCLGE_MOD_REG_INFO_LEN_MAX - pos, "%u",
++					 le32_to_cpu(desc->data[0]));
++		pos += scnprintf(buf + pos,
++				 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
++				 ":");
++		for (j = 0; j < reg_info[i].group_size; j++) {
++			offset = reg_info[i].reg_offset_group[j];
++			index = offset % HCLGE_DESC_DATA_LEN;
++			bd_idx = offset / HCLGE_DESC_DATA_LEN;
++			pos += scnprintf(buf + pos,
++					 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
++					 " %08x",
++					 le32_to_cpu(desc[bd_idx].data[index]));
++		}
++		buf[pos] = '\0';
++		dev_info(dev, "%s\n", buf);
++	}
++
++	kfree(buf);
++	return 0;
++}
++
++static bool hclge_err_mod_check_support_cmd(enum hclge_opcode_type opcode,
++					    struct hclge_dev *hdev)
++{
++	if (opcode == HCLGE_OPC_DFX_GEN_REG &&
++	    !hnae3_ae_dev_gen_reg_dfx_supported(hdev))
++		return false;
++	return true;
++}
++
++/* For each common msg, send cmdq to IMP and print result reg info.
++ * If there is a parameter, loop it and request.
++ */
++static void
++hclge_query_reg_info(struct hclge_dev *hdev,
++		     struct hclge_mod_reg_common_msg *msg, u32 loop_time,
++		     u32 *loop_para)
++{
++	int desc_len, i, ret;
++
++	desc_len = msg->bd_num * sizeof(struct hclge_desc);
++	msg->desc = kzalloc(desc_len, GFP_KERNEL);
++	if (!msg->desc) {
++		dev_err(&hdev->pdev->dev, "failed to query reg info, ret=%d",
++			-ENOMEM);
++		return;
++	}
++
++	for (i = 0; i < loop_time; i++) {
++		ret = hclge_dbg_cmd_send(hdev, msg->desc, *loop_para,
++					 msg->bd_num, msg->cmd);
++		loop_para++;
++		if (ret)
++			continue;
++		ret = hclge_print_mod_reg_info(&hdev->pdev->dev, msg->desc,
++					       msg->result_regs,
++					       msg->result_regs_size);
++		if (ret)
++			dev_err(&hdev->pdev->dev, "failed to print mod reg info, ret=%d\n",
++				ret);
++	}
++
++	kfree(msg->desc);
++}
++
++static void hclge_query_reg_info_of_ssu(struct hclge_dev *hdev)
++{
++	u32 loop_para[HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE] = {0};
++	struct hclge_mod_reg_common_msg msg;
++	u8 i, j, num;
++	u32 loop_time;
++
++	num = ARRAY_SIZE(hclge_ssu_reg_common_msg);
++	for (i = 0; i < num; i++) {
++		msg = hclge_ssu_reg_common_msg[i];
++		if (!hclge_err_mod_check_support_cmd(msg.cmd, hdev))
++			continue;
++		loop_time = 1;
++		loop_para[0] = 0;
++		if (msg.need_para) {
++			loop_time = hdev->ae_dev->dev_specs.tnl_num;
++			for (j = 0; j < loop_time; j++)
++				loop_para[j] = j + 1;
++		}
++		hclge_query_reg_info(hdev, &msg, loop_time, loop_para);
++	}
++}
++
+ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 	{
+ 		.module_id = MODULE_NONE,
+@@ -1210,7 +1630,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 		.msg = "MODULE_GE"
+ 	}, {
+ 		.module_id = MODULE_IGU_EGU,
+-		.msg = "MODULE_IGU_EGU"
++		.msg = "MODULE_IGU_EGU",
++		.query_reg_info = hclge_query_reg_info_of_ssu
+ 	}, {
+ 		.module_id = MODULE_LGE,
+ 		.msg = "MODULE_LGE"
+@@ -1231,7 +1652,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
+ 		.msg = "MODULE_RTC"
+ 	}, {
+ 		.module_id = MODULE_SSU,
+-		.msg = "MODULE_SSU"
++		.msg = "MODULE_SSU",
++		.query_reg_info = hclge_query_reg_info_of_ssu
+ 	}, {
+ 		.module_id = MODULE_TM,
+ 		.msg = "MODULE_TM"
+@@ -2762,7 +3184,7 @@ void hclge_handle_occurred_error(struct hclge_dev *hdev)
+ }
  
- 	hclgevf_arq_init(hdev);
-+
-+	hclge_comm_cmd_init_ops(&hdev->hw.hw, &hclgevf_cmq_ops);
- 	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw,
- 				  &hdev->fw_version, false,
- 				  hdev->reset_pending);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
-index 5d4895bb57a1..82263cb5e47b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
-@@ -77,6 +77,56 @@ TRACE_EVENT(hclge_vf_mbx_send,
- 	)
- );
+ static bool
+-hclge_handle_error_type_reg_log(struct device *dev,
++hclge_handle_error_type_reg_log(struct hclge_dev *hdev,
+ 				struct hclge_mod_err_info *mod_info,
+ 				struct hclge_type_reg_err_info *type_reg_info)
+ {
+@@ -2770,6 +3192,7 @@ hclge_handle_error_type_reg_log(struct device *dev,
+ #define HCLGE_ERR_TYPE_IS_RAS_OFFSET 7
  
-+DECLARE_EVENT_CLASS(hclge_vf_cmd_template,
-+		    TP_PROTO(struct hclge_comm_hw *hw,
-+			     struct hclge_desc *desc,
-+			     int index,
-+			     int num),
-+
-+		    TP_ARGS(hw, desc, index, num),
-+
-+		    TP_STRUCT__entry(__field(u16, opcode)
-+			__field(u16, flag)
-+			__field(u16, retval)
-+			__field(u16, rsv)
-+			__field(int, index)
-+			__field(int, num)
-+			__string(pciname, pci_name(hw->cmq.csq.pdev))
-+			__array(u32, data, HCLGE_DESC_DATA_LEN)),
-+
-+		    TP_fast_assign(int i;
-+			__entry->opcode = le16_to_cpu(desc->opcode);
-+			__entry->flag = le16_to_cpu(desc->flag);
-+			__entry->retval = le16_to_cpu(desc->retval);
-+			__entry->rsv = le16_to_cpu(desc->rsv);
-+			__entry->index = index;
-+			__entry->num = num;
-+			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
-+			for (i = 0; i < HCLGE_DESC_DATA_LEN; i++)
-+				__entry->data[i] = le32_to_cpu(desc->data[i]);),
-+
-+		    TP_printk("%s opcode:0x%04x %d-%d flag:0x%04x retval:0x%04x rsv:0x%04x data:%s",
-+			      __get_str(pciname), __entry->opcode,
-+			      __entry->index, __entry->num,
-+			      __entry->flag, __entry->retval, __entry->rsv,
-+			      __print_array(__entry->data,
-+					    HCLGE_DESC_DATA_LEN, sizeof(u32)))
-+);
-+
-+DEFINE_EVENT(hclge_vf_cmd_template, hclge_vf_cmd_send,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      struct hclge_desc *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num));
-+
-+DEFINE_EVENT(hclge_vf_cmd_template, hclge_vf_cmd_get,
-+	     TP_PROTO(struct hclge_comm_hw *hw,
-+		      struct hclge_desc *desc,
-+		      int index,
-+		      int num),
-+	     TP_ARGS(hw, desc, index, num));
-+
- #endif /* _HCLGEVF_TRACE_H_ */
+ 	u8 mod_id, total_module, type_id, total_type, i, is_ras;
++	struct device *dev = &hdev->pdev->dev;
+ 	u8 index_module = MODULE_NONE;
+ 	u8 index_type = NONE_ERROR;
+ 	bool cause_by_vf = false;
+@@ -2810,6 +3233,9 @@ hclge_handle_error_type_reg_log(struct device *dev,
+ 	for (i = 0; i < type_reg_info->reg_num; i++)
+ 		dev_err(dev, "0x%08x\n", type_reg_info->hclge_reg[i]);
  
- /* This must be outside ifdef _HCLGEVF_TRACE_H */
++	if (hclge_hw_module_id_st[index_module].query_reg_info)
++		hclge_hw_module_id_st[index_module].query_reg_info(hdev);
++
+ 	return cause_by_vf;
+ }
+ 
+@@ -2850,7 +3276,7 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
+ 
+ 			type_reg_info = (struct hclge_type_reg_err_info *)
+ 					    &buf[offset++];
+-			if (hclge_handle_error_type_reg_log(dev, mod_info,
++			if (hclge_handle_error_type_reg_log(hdev, mod_info,
+ 							    type_reg_info))
+ 				cause_by_vf = true;
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+index 68b738affa66..45a783a50643 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
+@@ -5,6 +5,7 @@
+ #define __HCLGE_ERR_H
+ 
+ #include "hclge_main.h"
++#include "hclge_debugfs.h"
+ #include "hnae3.h"
+ 
+ #define HCLGE_MPF_RAS_INT_MIN_BD_NUM	10
+@@ -115,6 +116,18 @@
+ #define HCLGE_REG_NUM_MAX			256
+ #define HCLGE_DESC_NO_DATA_LEN			8
+ 
++#define HCLGE_BD_NUM_SSU_REG_0		10
++#define HCLGE_BD_NUM_SSU_REG_1		15
++#define HCLGE_BD_NUM_RPU_REG_0		1
++#define HCLGE_BD_NUM_RPU_REG_1		2
++#define HCLGE_BD_NUM_IGU_EGU_REG	9
++#define HCLGE_BD_NUM_GEN_REG		8
++#define HCLGE_MOD_REG_INFO_LEN_MAX	256
++#define HCLGE_MOD_REG_EXTRA_LEN		11
++#define HCLGE_MOD_REG_VALUE_LEN		9
++#define HCLGE_MOD_REG_GROUP_MAX_SIZE	6
++#define HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE	8
++
+ enum hclge_err_int_type {
+ 	HCLGE_ERR_INT_MSIX = 0,
+ 	HCLGE_ERR_INT_RAS_CE = 1,
+@@ -191,6 +204,7 @@ struct hclge_hw_error {
+ struct hclge_hw_module_id {
+ 	enum hclge_mod_name_list module_id;
+ 	const char *msg;
++	void (*query_reg_info)(struct hclge_dev *hdev);
+ };
+ 
+ struct hclge_hw_type_id {
+@@ -218,6 +232,28 @@ struct hclge_type_reg_err_info {
+ 	u32 hclge_reg[HCLGE_REG_NUM_MAX];
+ };
+ 
++struct hclge_mod_reg_info {
++	const char *reg_name;
++	bool has_suffix; /* add suffix for register name */
++	/* the positions of reg values in hclge_desc.data */
++	u8 reg_offset_group[HCLGE_MOD_REG_GROUP_MAX_SIZE];
++	u8 group_size;
++};
++
++/* This structure defines cmdq used to query the hardware module debug
++ * regisgers.
++ */
++struct hclge_mod_reg_common_msg {
++	enum hclge_opcode_type cmd;
++	struct hclge_desc *desc;
++	u8 bd_num; /* the bd number of hclge_desc used */
++	bool need_para; /* whether this cmdq needs to add para */
++
++	/* the regs need to print */
++	const struct hclge_mod_reg_info *result_regs;
++	u16 result_regs_size;
++};
++
+ int hclge_config_mac_tnl_int(struct hclge_dev *hdev, bool en);
+ int hclge_config_nic_hw_error(struct hclge_dev *hdev, bool state);
+ int hclge_config_rocee_ras_interrupt(struct hclge_dev *hdev, bool en);
 -- 
 2.30.0
 
