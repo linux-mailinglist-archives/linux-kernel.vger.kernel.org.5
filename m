@@ -2,285 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B3D80DBC5
+	by mail.lfdr.de (Postfix) with ESMTP id 4E60C80DBC4
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344679AbjLKUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
+        id S1344698AbjLKUh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjLKUhN (ORCPT
+        with ESMTP id S229790AbjLKUhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:37:13 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DBDD6;
-        Mon, 11 Dec 2023 12:37:18 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3332e351670so4516544f8f.0;
-        Mon, 11 Dec 2023 12:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702327037; x=1702931837; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5mREG4zmhlrjDE364pycILMuHT3yybZyzypq/2nes4o=;
-        b=V6q1zdkV+wxIKXpM7DWq66B2NPzZBUPK4hr3WRtG+MTVSfExKywo7PK4Bt3nluEqDT
-         MkYrCuuDgvHFyqtkeTL5EVEmHFlAqoCG4wzA1E0AOVgzV7GgxwkQ9vs2R6aGYX15ri2/
-         sp1/AuQvVGRbOCriyt32YoOicKW7+0NZ50d5dTXoKn41lk//umXIHVlwVFUrW8yo+vYp
-         lrn9Cd0RaMPdIaG8HHIVCsPOhnrT3YGAomYLF9MeJLVuBcHmmXArVou5P2kL/Ae82RHR
-         ZnSLIq6BPwppSyaCaayBA0PoehLyk2aJOEhKI7Uz3FPmnyjCKCcFU5bviWtGyL9hN/ou
-         07XA==
+        Mon, 11 Dec 2023 15:37:25 -0500
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3174DE5;
+        Mon, 11 Dec 2023 12:37:31 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6cea5548eb2so4220663b3a.0;
+        Mon, 11 Dec 2023 12:37:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702327037; x=1702931837;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702327050; x=1702931850;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5mREG4zmhlrjDE364pycILMuHT3yybZyzypq/2nes4o=;
-        b=XUGOs0D1C5EKC/b3Z0mxu1ogVHxrWSHJxBA65PBIYaZiH9yi8GafUYjsyV8T4DwD50
-         iI/eYdSCMb2iXzA3PXMw5XKi5yiYfZAet5sASmkxXIgBAHe7dc7e+81MnVu4zONtwbgJ
-         e9xqoQTLS1VsUyMbW8DnbrP/FQ/3S73ZrSodhoH31n3CPmfICPsRdUav5uIZ0y+l2p2f
-         BseSMW0UlBock5k7uzKK3pN9UsOmxf/FSvZP268P+JIQRei1jaSBheA1/uU9tAhth7Dp
-         fvX9tXjqjGZbrnAh1rP5Lge2WvBvNqA5x/tTQ4UEppdSvJroTP+V//2x/hUYGgTp/CUf
-         WKGg==
-X-Gm-Message-State: AOJu0YxI/1+RqepqcdtaXs8ZPwTXd9Ha46KBp8URvAL6Hv6fQJGeJM1S
-        HOj5ktQZ5YXRgkSxBIL4Nfo=
-X-Google-Smtp-Source: AGHT+IEzTCISh0ruDu6vYmjO9E9rylweqKZzQOVwuAulm2hyYEqdn+X3sTHJGxJeaYXMVcOHEARlYA==
-X-Received: by 2002:adf:a198:0:b0:333:38eb:8947 with SMTP id u24-20020adfa198000000b0033338eb8947mr1043696wru.275.1702327036762;
-        Mon, 11 Dec 2023 12:37:16 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.234.108])
-        by smtp.gmail.com with ESMTPSA id o4-20020a5d58c4000000b0033333bee379sm9328312wrf.107.2023.12.11.12.37.14
+        bh=U+9l+SpFLDPAFs+h4yF9rq05J7khf5DbMgJkI+fNBbk=;
+        b=eAAPCS7ipSRjCO9dM6RcOb7ubwmWCQc7PbG4pqgyShXRMBa2v55zyBgVZZsQzfO1fs
+         izROhDvvXxWtEfvShkADTGtnG2jLbMdZPDpnXMqt90scqqChpdl++cg9W6q57D314wsz
+         7KxesxEubBM3kqcYyLEvvkMbMjzrHm87n8DW/4303EChY6kmplZgE8ZR+r15r0GIqPYv
+         JbCGmQAw1E6MPDASwVV7DeRUv+rHU2FlvO82109/MAt84x0n+3xOSnrRxlvklwiYwJTB
+         kRD68gTcwQUM5gCV6AIm1PnXWunWLVCYg1w/HrTNT5MjEUeJl29wodJEUOhwdZeuB7xL
+         y8qQ==
+X-Gm-Message-State: AOJu0Yz8LUWjwEebBy+dGZ6Bub0s5sXoMayXlbcqXggublfQtEHPC3bC
+        EimH1uva1k30bx/CL932OW4=
+X-Google-Smtp-Source: AGHT+IGqn+AlZGFr8LP8XVA4q8H6VhQDRCLkIp9M96YCQjtt81s4MMcYD0nE7RIFoHXfWtmV1uRc9w==
+X-Received: by 2002:a05:6a00:218f:b0:6cb:d2cb:5234 with SMTP id h15-20020a056a00218f00b006cbd2cb5234mr6173755pfi.32.1702327050472;
+        Mon, 11 Dec 2023 12:37:30 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:3431:681a:6403:d100? ([2620:0:1000:8411:3431:681a:6403:d100])
+        by smtp.gmail.com with ESMTPSA id c12-20020aa7880c000000b006ce7ff254b9sm6718639pfo.68.2023.12.11.12.37.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 12:37:16 -0800 (PST)
-Message-ID: <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
-Date:   Mon, 11 Dec 2023 20:35:54 +0000
+        Mon, 11 Dec 2023 12:37:30 -0800 (PST)
+Message-ID: <3ce6068e-c08b-419c-b78c-3897332f8669@acm.org>
+Date:   Mon, 11 Dec 2023 12:37:28 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
- provider
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com>
- <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
- <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
- <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
- <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+Subject: Re: [PATCH] scsi: fcoe: replace deprecated strncpy with strscpy
 Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20231024-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v1-1-1e0026ee032d@google.com>
+ <9f38f4aa-c6b5-4786-a641-d02d8bd92f7f@acm.org>
+ <CAFhGd8oQ-Z8e65-TOZPmNHR-rsPVRXNY8UZMDFcUScKZ6bbtJQ@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CAFhGd8oQ-Z8e65-TOZPmNHR-rsPVRXNY8UZMDFcUScKZ6bbtJQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 02:30, Mina Almasry wrote:
-> On Sat, Dec 9, 2023 at 7:05 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+On 12/11/23 12:08, Justin Stitt wrote:
+> Hi,
+> 
+> On Tue, Oct 24, 2023 at 1:01 PM Bart Van Assche <bvanassche@acm.org> wrote:
 >>
->> On 12/8/23 23:25, Mina Almasry wrote:
->>> On Fri, Dec 8, 2023 at 2:56 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>>
->>>> On 12/8/23 00:52, Mina Almasry wrote:
->>> ...
->>>>> +     if (pool->p.queue)
->>>>> +             binding = READ_ONCE(pool->p.queue->binding);
->>>>> +
->>>>> +     if (binding) {
->>>>> +             pool->mp_ops = &dmabuf_devmem_ops;
->>>>> +             pool->mp_priv = binding;
->>>>> +     }
->>>>
->>>> Hmm, I don't understand why would we replace a nice transparent
->>>> api with page pool relying on a queue having devmem specific
->>>> pointer? It seemed more flexible and cleaner in the last RFC.
->>>>
+>> On 10/24/23 12:52, Justin Stitt wrote:
+>>> diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
+>>> index e17957f8085c..7a3ca6cd3030 100644
+>>> --- a/drivers/scsi/fcoe/fcoe_sysfs.c
+>>> +++ b/drivers/scsi/fcoe/fcoe_sysfs.c
+>>> @@ -279,12 +279,10 @@ static ssize_t store_ctlr_mode(struct device *dev,
+>>>        if (count > FCOE_MAX_MODENAME_LEN)
+>>>                return -EINVAL;
 >>>
->>> Jakub requested this change and may chime in, but I suspect it's to
->>> further abstract the devmem changes from driver. In this iteration,
->>> the driver grabs the netdev_rx_queue and passes it to the page_pool,
->>> and any future configurations between the net stack and page_pool can
->>> be passed this way with the driver unbothered.
+>>> -     strncpy(mode, buf, count);
+>>> +     strscpy(mode, buf, count);
+>>>
+>>>        if (mode[count - 1] == '\n')
+>>>                mode[count - 1] = '\0';
+>>> -     else
+>>> -             mode[count] = '\0';
+>>>
+>>>        switch (ctlr->enabled) {
+>>>        case FCOE_CTLR_ENABLED:
 >>
->> Ok, that makes sense, but even if passed via an rx queue I'd
->> at least hope it keeping abstract provider parameters, e.g.
->> ops, but not hard coded with devmem specific code.
->>
->> It might even be better done with a helper like
->> create_page_pool_from_queue(), unless there is some deeper
->> interaction b/w pp and rx queues is predicted.
+>> Please consider to remove the code for copying the sysfs string and to
+>> use sysfs_match_string() instead.
 >>
 > 
-> Off hand I don't see the need for a new create_page_pool_from_queue().
-> page_pool_create() already takes in a param arg that lets us pass in
-> the queue as well as any other params.
+> Sorry, I'm not too familiar with sysfs strings here.
 > 
->>>>> +
->>>>>         if (pool->mp_ops) {
->>>>>                 err = pool->mp_ops->init(pool);
->>>>>                 if (err) {
->>>>> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->>>>>         }
->>>>>     }
->>>>>     EXPORT_SYMBOL(page_pool_update_nid);
->>>>> +
->>>>> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
->>>>> +{
->>>>> +     if (WARN_ON(ppiov->pp->mp_ops != &dmabuf_devmem_ops))
->>>>> +             return;
->>>>> +
->>>>> +     netdev_free_dmabuf(ppiov);
->>>>> +}
->>>>> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
->>>>
->>>> I didn't look too deep but I don't think I immediately follow
->>>> the pp refcounting. It increments pages_state_hold_cnt on
->>>> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
->>>> will be put down via page_pool_iov_put_many() bypassing
->>>> page_pool_return_page() and friends. That will call
->>>> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
->>>>
->>>> At least I couldn't make it work with io_uring, and for my purposes,
->>>> I forced all puts to go through page_pool_return_page(), which calls
->>>> the ->release_page callback. The callback will put the reference and
->>>> ask its page pool to account release_cnt. It also gets rid of
->>>> __page_pool_iov_free(), as we'd need to add a hook there for
->>>> customization otherwise.
->>>>
->>>> I didn't care about overhead because the hot path for me is getting
->>>> buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(),
->>>> but done on pp allocations under napi, and it's done separately.
->>>>
->>>> Completely untested with TCP devmem:
->>>>
->>>> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79ac92ae2d8
->>>>
->>>
->>> This was a mistake in the last RFC, which should be fixed in v1. In
->>> the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
->>> unreffing path wasn't as expected.
->>>
->>> In this iteration, that should be completely fixed. I suspect since I
->>> just posted this you're actually referring to the issue tested on the
->>> last RFC? Correct me if wrong.
->>
->> Right, it was with RFCv3
->>
->>> In this iteration, the reffing story:
->>>
->>> - memory provider allocs ppiov and returns it to the page pool with
->>> ppiov->refcount == 1.
->>> - The page_pool gives the page to the driver. The driver may
->>> obtain/release references with page_pool_page_[get|put]_many(), but
->>> the driver is likely not doing that unless it's doing its own page
->>> recycling.
->>> - The net stack obtains references via skb_frag_ref() ->
->>> page_pool_page_get_many()
->>> - The net stack drops references via skb_frag_unref() ->
->>> napi_pp_put_page() -> page_pool_return_page() and friends.
->>>
->>> Thus, the issue where the unref path was skipping
->>> page_pool_return_page() and friends should be resolved in this
->>> iteration, let me know if you think otherwise, but I think this was an
->>> issue limited to the last RFC.
->>
->> Then page_pool_iov_put_many() should and supposedly would never be
->> called by non devmap code because all puts must circle back into
->> ->release_page. Why adding it to into page_pool_page_put_many()?
->>
->> @@ -731,6 +731,29 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->> +       if (page_is_page_pool_iov(page)) {
->> ...
->> +               page_pool_page_put_many(page, 1);
->> +               return NULL;
->> +       }
->>
->> Well, I'm looking at this new branch from Patch 10, it can put
->> the buffer, but what if we race at it's actually the final put?
->> Looks like nobody is going to to bump up pages_state_release_cnt
->>
-> 
-> Good catch, I think indeed the release_cnt would be incorrect in this
-> case. I think the race is benign in the sense that the ppiov will be
-> freed correctly and available for allocation when the page_pool next
-> needs it; the issue is with the stats AFAICT.
+> Let me know what you think of this patch [1].
 
-hold_cnt + release_cnt serves is used for refcounting. In this case
-it'll leak the pool when you try to destroy it.
+I don't use FCoE so I will leave it to an FCoE user to review that patch.
 
+Thanks,
 
->> If you remove the branch, let it fall into ->release and rely
->> on refcounting there, then the callback could also fix up
->> release_cnt or ask pp to do it, like in the patch I linked above
->>
-> 
-> Sadly I don't think this is possible due to the reasons I mention in
-> the commit message of that patch. Prematurely releasing ppiov and not
-> having them be candidates for recycling shows me a 4-5x degradation in
-> performance.
+Bart.
 
-I don't think I follow. The concept is to only recycle a buffer (i.e.
-make it available for allocation) when its refs drop to zero, which is
-IMHO the only way it can work, and IIUC what this patchset is doing.
-
-That's also I suggest to do, but through a slightly different path.
-Let's say at some moment there are 2 refs (e.g. 1 for an skb and
-1 for userspace/xarray).
-
-Say it first puts the skb:
-
-napi_pp_put_page()
-   -> page_pool_return_page()
-     -> mp_ops->release_page()
-        -> need_to_free = put_buf()
-           // not last ref, need_to_free==false,
-           // don't recycle, don't increase release_cnt
-
-Then you put the last ref:
-
-page_pool_iov_put_many()
-   -> page_pool_return_page()
-     -> mp_ops->release_page()
-        -> need_to_free = put_buf()
-           // last ref, need_to_free==true,
-           // recycle and release_cnt++
-
-And that last put can even be recycled right into the
-pp / ptr_ring, in which case it doesn't need to touch
-release_cnt. Does it make sense? I don't see where
-4-5x degradation would come from
-
-
-> What I could do here is detect that the refcount was dropped to 0 and
-> fix up the stats in that case.
-
--- 
-Pavel Begunkov
