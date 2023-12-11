@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F4F80DA5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB8080DA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 20:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344434AbjLKTDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 14:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        id S1344328AbjLKTD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 14:03:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344402AbjLKTDb (ORCPT
+        with ESMTP id S229539AbjLKTD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 14:03:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929C7C0;
-        Mon, 11 Dec 2023 11:03:37 -0800 (PST)
+        Mon, 11 Dec 2023 14:03:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BB19B;
+        Mon, 11 Dec 2023 11:03:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702321417; x=1733857417;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Q2BczxrNZm1mBCco6sqW/QGBn/6Xmav22CnVogTYodc=;
-  b=RduQeacqgb/9arZ5AqJQFik8Y/nIT4tCmYeQAn4NpAqUp6yFdRSNz9Oq
-   lfgyjfXn8Wgg4rVIg/TvBVC/AUkuh9zHYMyg/cs52y6XO0H7THj9sFfy3
-   7+vBQW082ekjdY8RrSZvIosmCaCQVOMO7o8o55jQjDID6fzu0w7kzbtJC
-   tD3+wf+KbCR68i3wtZ/yAant2SYfp59qHnOhiixi6MYJQkeq1Vo8hJpMB
-   s/OmJllyjOuH9VUPdKzhRT60S7XmvKHkFvUFKA63OF5k3J0zcWCZGib07
-   sKh2B7hN/j/Rl2+WPoJrAKhofmhxHl/1uxjxNMUykUh9l520OFnsNYWWF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480893475"
+  t=1702321412; x=1733857412;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LiqBDpyusmg3WhaebVfG+XnzpgrEpQqtzwlk9RFgoFg=;
+  b=KS1SCDrXLSDNGecFAC1F9x87cMCOBC7egCBxlNLJBRfxmg3zKPTCWeHS
+   H3QGAUbjohQxBqi0kGCYPcQW/5Tji9nWgNle1yS06X/YStmW7Pj85PXvx
+   86gzwKiV6sFYUegrmwTdQL0ulknctQfNW9fNmVCyaqkxjgqTj4OqWzbJG
+   XC/7omnXONUm7KXIfDc8k5CA4jkslghdb5sAqPZsjybrEtP/medEXV8YZ
+   xDBXGIinSuULnyzXR2Wx/v1W8ZpIo3CGvJ/yH31XlKKdLPlJ3DhI5F95D
+   0VX0ASoxVc1Kdbna80KDmNMZ4hyA5B/VvXJzcOY28A/Qw9ysqRhvnnnN0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="379692467"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="480893475"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:03:36 -0800
+   d="scan'208";a="379692467"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 11:03:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="766491653"
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="946445046"
 X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="766491653"
+   d="scan'208";a="946445046"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 11 Dec 2023 11:03:24 -0800
+  by orsmga005.jf.intel.com with ESMTP; 11 Dec 2023 11:03:24 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4AFB52AB; Mon, 11 Dec 2023 21:03:23 +0200 (EET)
+        id 58B9CE7; Mon, 11 Dec 2023 21:03:23 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -67,10 +67,12 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v5 00/13] pinctrl: Convert struct group_desc to use struct pingroup
-Date:   Mon, 11 Dec 2023 20:57:53 +0200
-Message-ID: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v5 01/13] pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+Date:   Mon, 11 Dec 2023 20:57:54 +0200
+Message-ID: <20231211190321.307330-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
+References: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -83,73 +85,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct group_desc has a lot of duplication with struct pingroup.
-Deduplicate that by embeddind the latter in the former and convert
-users.
+Add PINCTRL_GROUP_DESC() macro for inline use.
 
-NB. The function_desc is in plan to follow the similar deduplication.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/core.c | 5 +----
+ drivers/pinctrl/core.h | 9 +++++++++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-This time test-compiled with old GCC 8 for arm64, besides GCC 13 and
-LLVM 16 for x86_64.
-
-In v5:
-- dropped applied patches
-- elaborated the need of the conversion (Fabio)
-- reworked to avoid build errors on old GCC (Marek, Krzysztof, Geert)
-
-v4: https://lore.kernel.org/r/20231129161459.1002323-1-andriy.shevchenko@linux.intel.com
-
-In v4:
-- made pins also unsigned in struct group_desc (Geert)
-- made local pins variable unsigned in renesas drivers (Geert)
-- collected more tags (Paul, Geert)
-
-v3: https://lore.kernel.org/r/20231128200155.438722-1-andriy.shevchenko@linux.intel.com
-
-In v3:
-- fixed reported bug in equilibrium code (LKP)                                                                   - collected tags (Emil, Florian, Paul)
-
-v2: https://lore.kernel.org/r/20231123193355.3400852-1-andriy.shevchenko@linux.intel.com
-
-In v2:
-- added a few patches to fix multiple compile-time errors (LKP)
-- added tag (Jonathan)
-
-v1: https://lore.kernel.org/r/20231122164040.2262742-1-andriy.shevchenko@linux.intel.com
-
-Andy Shevchenko (13):
-  pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
-  pinctrl: mediatek: Use C99 initializers in PINCTRL_PIN_GROUP()
-  pinctrl: ingenic: Use C99 initializers in PINCTRL_PIN_GROUP()
-  pinctrl: core: Embed struct pingroup into struct group_desc
-  pinctrl: bcm: Convert to use grp member
-  pinctrl: equilibrium: Convert to use grp member
-  pinctrl: imx: Convert to use grp member
-  pinctrl: ingenic: Convert to use grp member
-  pinctrl: keembay: Convert to use grp member
-  pinctrl: mediatek: Convert to use grp member
-  pinctrl: renesas: Convert to use grp member
-  pinctrl: starfive: Convert to use grp member
-  pinctrl: core: Remove unused members from struct group_desc
-
- drivers/pinctrl/bcm/pinctrl-ns.c              |  4 +--
- drivers/pinctrl/core.c                        | 11 +++---
- drivers/pinctrl/core.h                        | 17 +++++----
- drivers/pinctrl/freescale/pinctrl-imx.c       | 31 ++++++++--------
- drivers/pinctrl/mediatek/pinctrl-moore.c      | 13 ++++---
- drivers/pinctrl/mediatek/pinctrl-moore.h      | 10 +++---
- drivers/pinctrl/mediatek/pinctrl-paris.h      | 10 +++---
- drivers/pinctrl/pinctrl-equilibrium.c         |  4 +--
- drivers/pinctrl/pinctrl-ingenic.c             | 35 ++++++++++---------
- drivers/pinctrl/pinctrl-keembay.c             |  2 +-
- drivers/pinctrl/renesas/pinctrl-rza1.c        |  2 +-
- drivers/pinctrl/renesas/pinctrl-rza2.c        | 10 +++---
- drivers/pinctrl/renesas/pinctrl-rzg2l.c       |  4 +--
- drivers/pinctrl/renesas/pinctrl-rzv2m.c       |  4 +--
- .../starfive/pinctrl-starfive-jh7100.c        |  8 ++---
- .../starfive/pinctrl-starfive-jh7110.c        |  8 ++---
- 16 files changed, 84 insertions(+), 89 deletions(-)
-
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 6380e1fa6509..75f2689c3bad 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -658,10 +658,7 @@ int pinctrl_generic_add_group(struct pinctrl_dev *pctldev, const char *name,
+ 	if (!group)
+ 		return -ENOMEM;
+ 
+-	group->name = name;
+-	group->pins = pins;
+-	group->num_pins = num_pins;
+-	group->data = data;
++	*group = PINCTRL_GROUP_DESC(name, pins, num_pins, data);
+ 
+ 	error = radix_tree_insert(&pctldev->pin_group_tree, selector, group);
+ 	if (error)
+diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
+index 8ef4b536bca5..bf971e6a7846 100644
+--- a/drivers/pinctrl/core.h
++++ b/drivers/pinctrl/core.h
+@@ -208,6 +208,15 @@ struct group_desc {
+ 	void *data;
+ };
+ 
++/* Convenience macro to define a generic pin group descriptor */
++#define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
++(struct group_desc) {						\
++	.name = _name,						\
++	.pins = _pins,						\
++	.num_pins = _num_pins,					\
++	.data = _data,						\
++}
++
+ int pinctrl_generic_get_group_count(struct pinctrl_dev *pctldev);
+ 
+ const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
 -- 
 2.43.0.rc1.1.gbec44491f096
 
