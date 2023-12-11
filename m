@@ -2,213 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7029180C457
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E1E80C45A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbjLKJVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35360 "EHLO
+        id S234569AbjLKJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbjLKJVF (ORCPT
+        with ESMTP id S234562AbjLKJVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 04:21:05 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2073.outbound.protection.outlook.com [40.107.9.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F78CF1;
-        Mon, 11 Dec 2023 01:21:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N7mcOeS7tynqSmldQL+6D+FQ3YtZBGvCvV94pYP1DN4fKHA/DsEjBWJfw+5KwjseYPr51NTXodQ5M/zebtFcqgzje97uK2wQWXXf6m+7VWFnuLyGMQwghbDnwmHh+VfvIpJWsC7w37G0/844tdHa0MwuYzXpOlrTKs069bDZRn0qo/zWD99GaCBjux546sorVqgH+8Mnv8HmUjltEqEpZiCP1xR6ziA6v54VTHQN+tx3Rvz6zGwDQ45lAeK+Ovh3osKDAZMtxbutiaZFvElmJITFNyIK8VdVQYRf9Cp7B2Vn2Gv5n7JavS+xfKh3Sp0U0A9L+YsrLZ/85KWOj2yVWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=awwjAMgbXXYN54U1bi/n81pbAi8/wZat4WA8YvoDdj4=;
- b=Am75HVnF2dSaptwcnJnf4aTLaPKxn3Dbc4So2We0V66Em1V06DQcaKmOp0AqE0HIqo05ngbm9suLlF9ga7PR8kMXNaSukhvhCY7RZigAyLxM3LwpnMaFPk4XDXmtfijoOHPkX1t0ierwuKKkwpKzxs8ZTmU+TN85TH0QhV6X+Zp9h8boSsVos7eW/nNLyea8gnuuAulYDMmhWdPEavL4h6ZVn56EpB+JVhIq8zPTW72w4lfXZ8gUY6v3GZarLCuJfhqPr6Ld78Mi9dn4rGs1gzqLyJQxxKvwSaYIeAwXXN0lqXfRIj6y5Dc8Choxyenpy2yh3eNUrZXdAAsrTs5EHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=l-acoustics.com; dmarc=pass action=none
- header.from=l-acoustics.com; dkim=pass header.d=l-acoustics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=l-acoustics.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=awwjAMgbXXYN54U1bi/n81pbAi8/wZat4WA8YvoDdj4=;
- b=QoaMBSeDmaBICyEw4SAagOKJQyV2r6m1VxZA/hNTqRhnm0oQqYQ2p/PjXHpAqbn8Cd5L5/4c4H7y5DDm8GXtpEvkzkdK8/WW7zvkWgMpvAkAVFxjYSwvhHjCWD3WP43l5g2wCOLu1PMEnT+WZCfaSa16bP09JQ8kqw4yx3KtdU4=
-Received: from PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:166::9)
- by PR0P264MB1675.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16e::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 09:21:06 +0000
-Received: from PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM
- ([fe80::4d53:e595:fb67:236c]) by PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM
- ([fe80::4d53:e595:fb67:236c%7]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
- 09:21:06 +0000
-From:   Rodrigo CADORE CATALDO <rodrigo.cadore@l-acoustics.com>
-To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Rodrigo Cataldo via B4 Relay 
-        <devnull+rodrigo.cadore.l-acoustics.com@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Aravindhan Gunasekaran <aravindhan.gunasekaran@intel.com>,
-        Mallikarjuna Chilakala <mallikarjuna.chilakala@intel.com>
-CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Subject: RE: [PATCH iwl-net] igc: Fix hicredit calculation
-Thread-Topic: [PATCH iwl-net] igc: Fix hicredit calculation
-Thread-Index: AQHaKecFHk6smFyQW0il44pqHqUJh7CgIKqAgAOvtWA=
-Date:   Mon, 11 Dec 2023 09:21:06 +0000
-Message-ID: <PR0P264MB1930850228C3F58EE8B7F9FAC88FA@PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM>
-References: <20231208-igc-fix-hicredit-calc-v1-1-7e505fbe249d@l-acoustics.com>
- <871qbwry9y.fsf@intel.com>
-In-Reply-To: <871qbwry9y.fsf@intel.com>
-Accept-Language: en-US, fr-FR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=l-acoustics.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PR0P264MB1930:EE_|PR0P264MB1675:EE_
-x-ms-office365-filtering-correlation-id: c8d76467-707b-4ad4-63a9-08dbfa2a8148
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q4XhDGZ1LlNU2QS56YsNCrHn3Zhh0rjExNS2Vg5VgHS5PPN5v6bVC3CA9/WkEycf9ToQtAvqKNOX3NfD/Q2QRSUZRJcwtI0aFjTAc2ORHSWG+oHPs2ajyL7LQkOk9Hwyedjo+pAMI+x6hTCs3cxf/5j5GllDVOsiFOf/+boCaKgeVG/11hGhmsOieXBgXm46PpmcWdqpHndGioQFSCAft6vCNRL5GejZz1toLD0WEasDKbJs1bqdIZBV0GYagLNLeJHbi43UyhIEbHbNEZqhh8U0euP5HckivVD6OO2G25T71cqSHMVz4lrnyE0AKKttfbfCTqhrHvFl/LSI27M1vXxYPOtnZcxLvPUcHGCej9ZW3z1yRGzhEdMIDgBlH9fYhJbBqhAl7RwAdT/qmJrwDKlxQyLN3fgLq8Wzm0ETQOC9HKCayZjOCYSJlq1KEISpYIpQoWWjcMKCjqgRnN6O8teVVVjeq9VmMOhurhKsOLYFATGFNjIfUITopMTfNbCQJH/2uEys+lSRpuRq5RB8ojoVFgh+EwKJO7MuXfqaLEVBYm0VViqGUjwWgPkbbw0kA9ryZHTjYr3nag1cnSb2+AXDxrJd08Rn3OfO8bEOrj/P4G8BwvKqEkin/mpxpAnrAdLBQ7XtFwvyUHOfHZk2yiCGuY9uLiged/CTj4vl8YQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39850400004)(376002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(9686003)(55236004)(26005)(478600001)(7696005)(71200400001)(6506007)(83380400001)(7416002)(5660300002)(41300700001)(2906002)(76116006)(54906003)(66446008)(64756008)(66476007)(66946007)(110136005)(52536014)(316002)(66556008)(8936002)(8676002)(4326008)(38070700009)(38100700002)(921008)(86362001)(122000001)(33656002)(55016003)(341764005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VBSXMZnUKBtkcZvu7m2bNqOnTpTyzD3Tf37eyvO8G88Xjvr9AVPcUXjq/YcV?=
- =?us-ascii?Q?2O5WAqY1pMzbsNfpwk4aeYVXKkDC3Xk4uv4/2+SYdJcIjv2HbaOKol3pY6An?=
- =?us-ascii?Q?z10AWp4UoElysByiePBzvv9+YBhVH4yTolNSMyze2XOSUA1q7p/OS7VvJk58?=
- =?us-ascii?Q?D4A/1XRXznqjzs9v7VO4Ld9hN8tGmGvghUw5jr2kI2g0hoKvK9LmMa0Ixqqj?=
- =?us-ascii?Q?pr3px1Ffp9S+pW86mIxVjFMuvOhnwBnW/Tv29+uVJuaUZH1zpU0ceCj+4EMC?=
- =?us-ascii?Q?tEm5IQDYXZhMy1ESB8fkzacoFE7Elbqsa9dHCdYYTcqgyVLoAqygC0CAMmmB?=
- =?us-ascii?Q?h3TiYVSZbhoCqK4l4kXIyq/09sdZ/WgqRI+9OVMVHAf+uhwkXyBhB/NQnRh0?=
- =?us-ascii?Q?uoTHAwTKjaO6eZrmi2ubEBhiZWo0KQHmOjPYTAyHv9XRWB9o7GU0/wIAjrZs?=
- =?us-ascii?Q?3Qj5lkia22xXXPMNCNKcVQiZFmLlSpVEJYnaP+b14VvKTbqPzIxbWnPM5D4X?=
- =?us-ascii?Q?K0JFsDEOom9CMv6xxZHz5Sis7JV+8FHYdSmwTYTsWN+1YdNTe81agfVRDdlu?=
- =?us-ascii?Q?5ni2atVZnOi5CHAwkP6/HAFhc2D6w+0/BsB8BPfyzxbeWWrdO0Ci5WLfRAvE?=
- =?us-ascii?Q?xj/zEKFpSuNHkPlZ3asOUqCPSw/x8Gz9vi8445NJELpST7DRuCg/gJyF0ykw?=
- =?us-ascii?Q?INvBdtnD68FmrYknyY3Uj2zcmDfp5DRgXBC99DUhTF3F8+2bv2ChtG9Sdozt?=
- =?us-ascii?Q?l+Ruc3LwgzcwacVMN3JjZQlKkzlSSVWLAnUX10MJysQ3ocXuXXb3vnXvoEAW?=
- =?us-ascii?Q?wmnfweTubxf08FRoV+aMRWT21aqR22pOVNqBNROKxTR50R+y4KH9yIM10wiW?=
- =?us-ascii?Q?EKcJUAJ/S3RlTV/dwszLlHvPEroLIa7cK5FQEuTfKEdWqjEAXmRyZu1N8ngz?=
- =?us-ascii?Q?sx8UQIGg9WQsDbNxk0O3ba7pv+8WjSYgrtqg2TR6eOO6h8LlLmkYNcC9kc3h?=
- =?us-ascii?Q?GCt8torB/dCQlzlclolAHgZu0vs4sNtfRI4Hn/BmpVLb3OjjzIpGbmLFTLc2?=
- =?us-ascii?Q?oh84ZYOUoXOp+yklwhkmGtsaQWgzw7HYLJCG1+morz7NYkd/ST5gopZWWgJo?=
- =?us-ascii?Q?aivkuqri8Ek1rLuBYnQcwlJJoylXbs4AfqeJyvIgltUjDsFiR7ESDOSM6XcT?=
- =?us-ascii?Q?fNy6re+6FMPvy+NAr0WvLcqFDZ6vRbRoazG7sEN+eDI2h9rP+XLkdlAbLuhy?=
- =?us-ascii?Q?Z/ZTTJu0kqOl9P/iOJ31ZN4VLdMI0zAVAwt2P9hZVfGUasjDCjOf9es5AgSw?=
- =?us-ascii?Q?jHg+Nb+AoQwDCpg1X/1b5BS2CRa6Mreys8X2xpvl14zrR93B3dX97u8MctkD?=
- =?us-ascii?Q?6ho2aCPbO1WrnyV22nPSERJZnK7p0gWjX2hhpF8560/cghr34tz5foRfrs3m?=
- =?us-ascii?Q?aXx8BBrz9YeXIyKsyDOQpz7hd84lbfzaDiwBFWam8BXCGAGXeUHtIcoknzSk?=
- =?us-ascii?Q?pq2sUwH1dgPOWSsG39XchyZnCUb8PFzrOuwdjMcLy6wvDY9iaBSw69ClRaqd?=
- =?us-ascii?Q?oQMqeirl2ihWMEmeKu5JXOWtfx85uGChh+gd4wPjj+kp+knzDTA/6quuDZkh?=
- =?us-ascii?Q?2A=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100C6FC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:21:12 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1f47f91fc0so477399266b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:21:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702286470; x=1702891270; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1SbmfLEzjKbthq64XC/LhuFWlDXYqPegUiye/3fAgdE=;
+        b=wgxtVzuUjwLhYgIwpv/pBsWe9kNI2YbzoZoOUwe/DOaUEq02mgKGc1Cck/eU9dNw0r
+         UliGtY8Ia4yakmRf/ivDSnKL8nNsJi4gusIey54Zx3N3hH+M5QmrkIXj4w56fMr3xGtX
+         aeDUwGYdDnMroRtjTuHMhEw5UqrYDStAAncVFzkhkWitqqAtjeveerjdcT007QJ2g/MF
+         7b16qeZTmteGpHQ3ITC+fW/qaFwI1kV4PAzCAqW4xYl42cLzOpSi6BkvZ+ZngJSl8tfc
+         nmwDra5Cuu7rA+vuUF841Z+daJbjmzqepIh3PGAK+Wdtli5/tnUjjxh2B0w3cNKmvNqs
+         Dhuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702286470; x=1702891270;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1SbmfLEzjKbthq64XC/LhuFWlDXYqPegUiye/3fAgdE=;
+        b=wXK4aEg8RCBaMUS4vEhmVazIllaNbadeanmgny7JjhBKu/JINJ9iKXZdEYFiW0sXy5
+         6DDEe5hc8VSdDO7P8Yg8RlxwWjk56bIiSQmXnQrPqnvbXwJjiDeKnJ9e2R1UW6KePTL0
+         O7103/n6xcK2A2/UvKvVmggK4JxT4A2EbZpE3kz5Y/LyNPB1urp1bCoWYgYXK2X5MIML
+         TVZ9o66RpUEsYrfqsAHEo7NfrYBgo+fuk6/930GV4EnAIqfG4nptmeezeGzmFz1hy/8N
+         Fy+yyzbskZoN6mIZ00saZLgg3C69cKZLKgw7oxJawj5BvXPGoC6epP/+kO1KEL9yOF6h
+         K85w==
+X-Gm-Message-State: AOJu0Yz1QwMWc/ajrtyaWvcEeacTfEqWPNJRrSXVkB5wIsOlcOJ1sPB3
+        qTo10/BWWDrtUEGupm0MUM8WzQ==
+X-Google-Smtp-Source: AGHT+IGQZgtPaeVbwXi6qE9eUb02HBIaYq8qYKp/tJ2C6c9uesVMeOp2gIyEqj/gGvKxeK1G0da+ow==
+X-Received: by 2002:a17:906:b389:b0:a01:c1f9:2f54 with SMTP id uh9-20020a170906b38900b00a01c1f92f54mr1968779ejc.21.1702286470540;
+        Mon, 11 Dec 2023 01:21:10 -0800 (PST)
+Received: from [192.168.36.128] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
+        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1e443bc037sm4562265ejc.147.2023.12.11.01.21.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 01:21:10 -0800 (PST)
+Message-ID: <55205fd4-50e7-4b6e-bb8b-e4be1a7b00bf@linaro.org>
+Date:   Mon, 11 Dec 2023 10:21:08 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: l-acoustics.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PR0P264MB1930.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8d76467-707b-4ad4-63a9-08dbfa2a8148
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2023 09:21:06.7155
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 68e431e8-d632-483e-ae79-f28a7b4c69e6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BIubNvrBLx31+S2mEAu2McHrsEn8e3zHteKhDAXR0Cl5ZhXoxN2OYi3VBUV+55nxEm8aPBq/o8lVKIja4Xv8Kc7/oztH3Mvg0nlXi6h3Oqg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1675
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: ipq8074: add dedicated SDHCI
+ compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     Chukun Pan <amadeus@jmu.edu.cn>
+References: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
+ <20231211085830.25380-3-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231211085830.25380-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->=20
-> Rodrigo Cataldo via B4 Relay
-> <devnull+rodrigo.cadore.l-acoustics.com@kernel.org> writes:
->=20
-> > From: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> >
-> > According to the Intel Software Manual for I225, Section 7.5.2.7,
-> > hicredit should be multiplied by the constant link-rate value, 0x7736.
-> >
-> > Currently, the old constant link-rate value, 0x7735, from the boards
-> > supported on igb are being used, most likely due to a copy'n'paste, as
-> > the rest of the logic is the same for both drivers.
-> >
-> > Update hicredit accordingly.
-> >
-> > Fixes: 1ab011b0bf07 ("igc: Add support for CBS offloading")
-> > Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
-> > Signed-off-by: Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> > ---
->=20
-> Very good catch.
->=20
-> Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->=20
-> Just for curiosity, my test machines are busy right now, what kind of
-> difference are you seeing?
->=20
+On 11.12.2023 09:58, Krzysztof Kozlowski wrote:
+> Add dedicated compatible for the SDHCI MMC controller, because usage of
+> generic qcom,sdhci-msm-v4 compatible alone is deprecated.
+> 
+> Cc: Chukun Pan <amadeus@jmu.edu.cn>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Hello Vinicius, thank you for the ACK.
-
-For our internal setup, this does not make a difference. My understanding i=
-s=20
-that hicredit is used for non-SR traffic mixed with SR traffic (i.e., hicre=
-dit is
-directly related to the max non-SR frame size). But our setup does not mix
-them (q0 is used only for milan audio/clock SR class A).
-
-Let me know if you think we need a testcase for this.
-
-> > This is a simple fix for the credit calculation on igc devices
-> > (i225/i226) to match the Intel software manual.
-> >
-> > This is my first contribution to the Linux Kernel. Apologies for any
-> > mistakes and let me know if I improve anything.
-> > ---
-> >  drivers/net/ethernet/intel/igc/igc_tsn.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/intel/igc/igc_tsn.c
-> b/drivers/net/ethernet/intel/igc/igc_tsn.c
-> > index a9c08321aca9..22cefb1eeedf 100644
-> > --- a/drivers/net/ethernet/intel/igc/igc_tsn.c
-> > +++ b/drivers/net/ethernet/intel/igc/igc_tsn.c
-> > @@ -227,7 +227,7 @@ static int igc_tsn_enable_offload(struct igc_adapte=
-r
-> *adapter)
-> >                       wr32(IGC_TQAVCC(i), tqavcc);
-> >
-> >                       wr32(IGC_TQAVHC(i),
-> > -                          0x80000000 + ring->hicredit * 0x7735);
-> > +                          0x80000000 + ring->hicredit * 0x7736);
-> >               } else {
-> >                       /* Disable any CBS for the queue */
-> >                       txqctl &=3D ~(IGC_TXQCTL_QAV_SEL_MASK);
-> >
-> > ---
-> > base-commit: 2078a341f5f609d55667c2dc6337f90d8f322b8f
-> > change-id: 20231206-igc-fix-hicredit-calc-028bf73c50a8
-> >
-> > Best regards,
-> > --
-> > Rodrigo Cataldo <rodrigo.cadore@l-acoustics.com>
-> >
->=20
-> Cheers,
-> --
-> Vinicius
-
-Best Regards,
-Rodrigo Cataldo
+Konrad
