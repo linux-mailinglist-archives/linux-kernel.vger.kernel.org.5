@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB1480D006
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E900880D00A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344390AbjLKPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:48:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
+        id S1344392AbjLKPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344381AbjLKPsD (ORCPT
+        with ESMTP id S1344112AbjLKPs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:48:03 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7966EEA;
-        Mon, 11 Dec 2023 07:48:08 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c32df9174so38086985e9.3;
-        Mon, 11 Dec 2023 07:48:08 -0800 (PST)
+        Mon, 11 Dec 2023 10:48:59 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C16A1;
+        Mon, 11 Dec 2023 07:49:05 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so42747655e9.3;
+        Mon, 11 Dec 2023 07:49:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702309687; x=1702914487; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702309744; x=1702914544; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wq1z89F5gUStStS9kY9mGX61kbmqB7xupwhoSFkx1p4=;
-        b=XZ1zwVLzNkiimZwhd6I1SE2YfbWTYQOvymNpzOYdRXInEOPv/eBNpUvdkn0iD4QFWr
-         qaoqEVgdlMB63DPa4r7Kej7Kno/3nPZRarSZo3lS6TDfLNPD+trtxtkz/NFwutbRu30h
-         Q5OLdSxL/zlpKEPzu0t9HIuq3Jp0/Hesit3+Yc9VjuumWG3bbk8V4YIQtj8TU7VfAJXU
-         MCvjoAiEjPwyY4We5PbsZCBHJr1aMchXmgGFU5tlbADYWeCHACbN+TwnMhC1Sd9S/Txc
-         nAsZxV8Q5JtwPyLDGhSCxFfKdfQZERNDMU7lOTg/JSR02tPEVhKnZ/mlJ0AwJ2stKXh3
-         wXFg==
+        bh=aks+T2RWp+y47yPnFcNxGDqSMNoe71C5oOgiPokDMdQ=;
+        b=YjrW7ehpDJFdNpPGizOZ4OGLkNl2Fc/dPQs0k1wop/TC9ntuHag3EPX6s0UWeB79Vh
+         SFDtnoBycjR9hpEASBqW+Y9Q37RX6l/XkPMGQXSxUbmSV/68eb1J8gfBpTy2giqv/ami
+         vmgrCWA4hLohTamwsIKUZlh6ZxFaKlKuyyfH3nGNHL2ctdwRuaUtX0GRjafGtqNwlm+W
+         IeQpuVFHjSyLpplwPVsymdInM1Y7kSiyrghX+gON67FUF06cR65ZffNPtHwnIC9ZY/yf
+         TS9hqcXKdgXiTagbxI4zwLO+VAXaNxKv0tQWGjIMpZXFR2Uq5MxblPCuHf1j3O5ro/Xa
+         Tvtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702309687; x=1702914487;
+        d=1e100.net; s=20230601; t=1702309744; x=1702914544;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wq1z89F5gUStStS9kY9mGX61kbmqB7xupwhoSFkx1p4=;
-        b=faQBJHh1GyLZEpq5mF93ISDH5OKvzP/Hod4R5udMrbSYTFfe9ZuyU2xCRxClMqr9QA
-         Y2yI3HmS8bJPoNO5o5arWps2lIKvvHQayhtdeEyM6VZyx1rWCPwdv72Y9jlAitkg5V16
-         0NMqxjmJ2d4bX6+nOu6FaFBYp/3L+WBS742rx7dWx8gow5tn53JvcAXUFJ6/xpmCjSvS
-         pcUYAbPQCekB/Y+KKVPlMqJjAyVEpyINQyttzfJLyfxmgVb5Ly7Y2ZVa6ia59OZwOtSB
-         RlIFFDs6jEANYs+O7cId+B9g5D1qOYMc9uXVKnVDt2ucUAq8dGwJQvD9KrfXDkh9PjX7
-         003A==
-X-Gm-Message-State: AOJu0Yygx9XhTmtrBeUCpBHjeORVLKjVCwtTL+FtHCDMzmB6i2xjzqXi
-        cYy36ZbArr965MoTHx0NZ08=
-X-Google-Smtp-Source: AGHT+IHJiNmLLwj1NImOACKxGQaWC3n6aUQwSFRmZNd9rYrwlW8jp/SEDWCsEBA9znsukqIdRpxNAw==
-X-Received: by 2002:a7b:cbd5:0:b0:40b:5e1e:fb9a with SMTP id n21-20020a7bcbd5000000b0040b5e1efb9amr1724029wmi.79.1702309686560;
-        Mon, 11 Dec 2023 07:48:06 -0800 (PST)
+        bh=aks+T2RWp+y47yPnFcNxGDqSMNoe71C5oOgiPokDMdQ=;
+        b=hqk5WB3aEzGEzql8+pHim77WZtxWzohY/ybyxhdCHuw23yGOCzaaDBuzyGWO3WK3VH
+         sPtyyvBChJZJ7YzYBnjAcsXVMQAxV/VK+xrQbSArf438U3yGNDOJIAKcYswMlhi5rTkt
+         yRw65xV3f/MUL2o1SYttU4GstxpNYe2eHt2tTRTWiTOF++xmPp31A06nXoYoT3IbCFli
+         qSvSogi2lPSypPLQEcgc+evKkQQ+hTO1hNpDAQlLg3jkGMFMeLGapIAXGPkXTIFrzYJQ
+         4+Ef/wl8Qhpp+igJoZo6zanK9RLhW473UbYMczEpxaWNmlmOIvwwGVLNUZJVLERqvNG5
+         hfdw==
+X-Gm-Message-State: AOJu0YwgVKx12zVKREu0kDZSQp6tg/AMNbwuCfBK9H/1ZBw0l2rfvYHH
+        JrNHRRZQdJhB8lns+8IoPq8=
+X-Google-Smtp-Source: AGHT+IFDUkEZ2kjIUnbrZbnNL2NpdVGrdjYTtXF9+NMVopavJIKSOLRrF6f0TEY+PC9zv7nRJyumgA==
+X-Received: by 2002:a05:600c:4448:b0:40c:3ec0:d705 with SMTP id v8-20020a05600c444800b0040c3ec0d705mr939053wmn.272.1702309743881;
+        Mon, 11 Dec 2023 07:49:03 -0800 (PST)
 Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id o9-20020a05600c4fc900b004094d4292aesm13197492wmq.18.2023.12.11.07.48.05
+        by smtp.gmail.com with ESMTPSA id q14-20020a05600c46ce00b0040c4c9c52a3sm1699344wmo.12.2023.12.11.07.49.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 07:48:06 -0800 (PST)
-Message-ID: <65772f36.050a0220.678b6.ef84@mx.google.com>
-X-Google-Original-Message-ID: <ZXcvM2Sl-7IZ0EA2@Ansuel-xps.>
-Date:   Mon, 11 Dec 2023 16:48:03 +0100
+        Mon, 11 Dec 2023 07:49:03 -0800 (PST)
+Message-ID: <65772f6f.050a0220.8a2bb.80c7@mx.google.com>
+X-Google-Original-Message-ID: <ZXcvbHLS8fEFKbal@Ansuel-xps.>
+Date:   Mon, 11 Dec 2023 16:49:00 +0100
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -73,7 +73,7 @@ Content-Disposition: inline
 In-Reply-To: <242759d9-327d-4fde-b2a0-24566cf5bf25@lunn.ch>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,10 +93,8 @@ On Mon, Dec 11, 2023 at 04:44:06PM +0100, Andrew Lunn wrote:
 > or the LED core.
 >
 
-Mhhh with a generic property and LED core or phylib handling it... How
-it would work applying that setting on PHY side?
-
-Adding the check to the set_brightness set_blink hw_control API?
+Also sorry for the double email... Any help for the problem of the
+missing link_2500 define in net-next? (merged in Lee tree?)
 
 -- 
 	Ansuel
