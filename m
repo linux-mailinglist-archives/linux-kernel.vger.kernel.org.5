@@ -2,142 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBC280CEDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5B80CEF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234940AbjLKPB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        id S1343758AbjLKPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:03:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjLKPB2 (ORCPT
+        with ESMTP id S234925AbjLKPD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:01:28 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF65FAB;
-        Mon, 11 Dec 2023 07:01:33 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14658FEC;
-        Mon, 11 Dec 2023 07:02:20 -0800 (PST)
-Received: from [10.57.85.194] (unknown [10.57.85.194])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87DA73F738;
-        Mon, 11 Dec 2023 07:01:28 -0800 (PST)
-Message-ID: <91b22090-485f-49c9-a536-849fd7f92f8e@arm.com>
-Date:   Mon, 11 Dec 2023 15:01:27 +0000
+        Mon, 11 Dec 2023 10:03:56 -0500
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427A8A9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:04:00 -0800 (PST)
+Message-ID: <96228ae1-a199-4f9a-8d40-d161a718c3c9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702307038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DFnlxZFggZVgkEskBvFOCKE4mVCcaVgt6sW9dWz+ac=;
+        b=KU1IlMa4KH/tAurEvOFH6yS0AfIw/e3AgOMZpmePwEknxIrBM6YdeaapLouRJyVjGsqRNa
+        XzSemoDfk33OntFxwfM+pbRrVA0bWMeGhCAymW4usgRyDcCH6FqLnYWScjXfHiCERnMVbp
+        YQKVN/O4gATDuCanBtLLjL3blIUS1q8=
+Date:   Mon, 11 Dec 2023 07:03:49 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] ACPI/IORT: Handle memory address size limits as
- limits
+Subject: Re: [PATCH bpf-next] bpf: make the verifier trace the "not qeual" for
+ regs
 Content-Language: en-GB
-To:     Will Deacon <will@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
-        iommu@lists.linux.dev, devicetree@vger.kernel.org
-References: <cover.1701268753.git.robin.murphy@arm.com>
- <2ae6199a9cf035c1defd42e48675b827f41cdc95.1701268753.git.robin.murphy@arm.com>
- <20231211132757.GE25681@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231211132757.GE25681@willie-the-truck>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231210130001.2050847-1-menglong8.dong@gmail.com>
+ <4457e84f-4417-4a60-a814-9288b0756d91@linux.dev>
+ <CADxym3bNJXWZRfcGWpD7YW1rFe93vSOastmGrLvAcG3U2SaUdg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CADxym3bNJXWZRfcGWpD7YW1rFe93vSOastmGrLvAcG3U2SaUdg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-11 1:27 pm, Will Deacon wrote:
-> On Wed, Nov 29, 2023 at 05:43:00PM +0000, Robin Murphy wrote:
->> Return the Root Complex/Named Component memory address size limit as an
->> inclusive limit value, rather than an exclusive size.  This saves us
->> having to special-case 64-bit overflow, and simplifies our caller too.
+
+On 12/11/23 1:39 AM, Menglong Dong wrote:
+> Hello,
+>
+> On Mon, Dec 11, 2023 at 1:09 PM Yonghong Song <yonghong.song@linux.dev> wrote:
 >>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->> ---
->>   drivers/acpi/arm64/dma.c  |  9 +++------
->>   drivers/acpi/arm64/iort.c | 18 ++++++++----------
->>   include/linux/acpi_iort.h |  4 ++--
->>   3 files changed, 13 insertions(+), 18 deletions(-)
-> 
-> [...]
-> 
->> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
->> index 6496ff5a6ba2..eb64d8e17dd1 100644
->> --- a/drivers/acpi/arm64/iort.c
->> +++ b/drivers/acpi/arm64/iort.c
->> @@ -1367,7 +1367,7 @@ int iort_iommu_configure_id(struct device *dev, const u32 *input_id)
->>   { return -ENODEV; }
->>   #endif
->>   
->> -static int nc_dma_get_range(struct device *dev, u64 *size)
->> +static int nc_dma_get_range(struct device *dev, u64 *limit)
->>   {
->>   	struct acpi_iort_node *node;
->>   	struct acpi_iort_named_component *ncomp;
->> @@ -1384,13 +1384,12 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
->>   		return -EINVAL;
->>   	}
->>   
->> -	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
->> -			1ULL<<ncomp->memory_address_limit;
->> +	*limit = (1ULL << ncomp->memory_address_limit) - 1;
-> 
-> The old code handled 'ncomp->memory_address_limit >= 64' -- why is it safe
-> to drop that? You mention it in the cover letter, so clearly I'm missing
-> something!
+>> On 12/10/23 5:00 AM, Menglong Dong wrote:
+>>> We can derive some new information for BPF_JNE in regs_refine_cond_op().
+>>> Take following code for example:
+>>>
+>>>     /* The type of "a" is u16 */
+>>>     if (a > 0 && a < 100) {
+>>>       /* the range of the register for a is [0, 99], not [1, 99],
+>>>        * and will cause the following error:
+>>>        *
+>>>        *   invalid zero-sized read
+>>>        *
+>>>        * as a can be 0.
+>>>        */
+>>>       bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>>>     }
+>> Could you have a C test to demonstrate this example?
+>> Also, you should have a set of inline asm code (progs/verifier*.c)
+>> to test various cases as in mark_reg32_not_equal() and
+>> mark_reg_not_equal().
+>>
+> Yeah! I found that this part is tested in the test_progs/reg_bounds_crafted
+> too, and this commit failed that test case, which I should fix in the next
+> version.
+>
+>>> In the code above, "a > 0" will be compiled to "jmp xxx if a == 0". In the
+>>> TRUE branch, the dst_reg will be marked as known to 0. However, in the
+>>> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+>>> the [min, max] for a is [0, 99], not [1, 99].
+>>>
+>>> For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
+>>> const and is exactly the edge of the dst reg.
+>>>
+>>> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+>>> ---
+>>>    kernel/bpf/verifier.c | 45 ++++++++++++++++++++++++++++++++++++++++++-
+>>>    1 file changed, 44 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 727a59e4a647..7b074ac93190 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -1764,6 +1764,40 @@ static void __mark_reg_const_zero(struct bpf_reg_state *reg)
+>>>        reg->type = SCALAR_VALUE;
+>>>    }
+>>>
+>>> +#define CHECK_REG_MIN(value)                 \
+>>> +do {                                         \
+>>> +     if ((value) == (typeof(value))imm)      \
+>>> +             value++;                        \
+>>> +} while (0)
+>>> +
+>>> +#define CHECK_REG_MAX(value)                 \
+>>> +do {                                         \
+>>> +     if ((value) == (typeof(value))imm)      \
+>>> +             value--;                        \
+>>> +} while (0)
+>>> +
+>>> +static void mark_reg32_not_equal(struct bpf_reg_state *reg, u64 imm)
+>>> +{
+>> What if reg->s32_min_value == imm and reg->s32_max_value == imm?
+>> Has this been handled in previous verifier logic?
+> Will such a case happen? In current code path, the src reg is a const,
+> and the is_branch_taken() will return 0 or 1 if the
+> dst_reg->s32_min_value == dst_reg->s32_max_value.
+>
+> Enn......maybe we can do more checking here in case that someone
+> calls this function in another place.
 
-Because an unsigned shift by 64 or more generates 0 (modulo 2^64), thus 
-subtracting 1 results in the correct all-bits-set value for an inclusive 
-64-bit limit.
+I double checked the source code as well. Indeed, 'reg' should
+not be a constant as it has been handled in is_branch_taken()
+properly. Ignore my comments above then. Thanks!
 
-Thanks,
-Robin.
-
->>   
->>   	return 0;
->>   }
->>   
->> -static int rc_dma_get_range(struct device *dev, u64 *size)
->> +static int rc_dma_get_range(struct device *dev, u64 *limit)
->>   {
->>   	struct acpi_iort_node *node;
->>   	struct acpi_iort_root_complex *rc;
->> @@ -1408,8 +1407,7 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
->>   		return -EINVAL;
->>   	}
->>   
->> -	*size = rc->memory_address_limit >= 64 ? U64_MAX :
->> -			1ULL<<rc->memory_address_limit;
->> +	*limit = (1ULL << rc->memory_address_limit) - 1;
-> 
-> Same thing here.
-> 
-> Will
+>
+> Thanks!
+> Menglong Dong
+>
+>>> +             CHECK_REG_MIN(reg->s32_min_value);
+>>> +             CHECK_REG_MAX(reg->s32_max_value);
+>>> +             CHECK_REG_MIN(reg->u32_min_value);
+>>> +             CHECK_REG_MAX(reg->u32_max_value);
+>>> +}
+>>> +
+>>> +static void mark_reg_not_equal(struct bpf_reg_state *reg, u64 imm)
+>>> +{
+>>> +             CHECK_REG_MIN(reg->smin_value);
+>>> +             CHECK_REG_MAX(reg->smax_value);
+>>> +
+>>> +             CHECK_REG_MIN(reg->umin_value);
+>>> +             CHECK_REG_MAX(reg->umax_value);
+>>> +
+>>> +             CHECK_REG_MIN(reg->s32_min_value);
+>>> +             CHECK_REG_MAX(reg->s32_max_value);
+>>> +             CHECK_REG_MIN(reg->u32_min_value);
+>>> +             CHECK_REG_MAX(reg->u32_max_value);
+>>> +}
+>>> +
+>>>    static void mark_reg_known_zero(struct bpf_verifier_env *env,
+>>>                                struct bpf_reg_state *regs, u32 regno)
+>>>    {
+>>> @@ -14332,7 +14366,16 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
+>>>                }
+>>>                break;
+>>>        case BPF_JNE:
+>>> -             /* we don't derive any new information for inequality yet */
+>>> +             /* try to recompute the bound of reg1 if reg2 is a const and
+>>> +              * is exactly the edge of reg1.
+>>> +              */
+>>> +             if (is_reg_const(reg2, is_jmp32)) {
+>>> +                     val = reg_const_value(reg2, is_jmp32);
+>>> +                     if (is_jmp32)
+>>> +                             mark_reg32_not_equal(reg1, val);
+>>> +                     else
+>>> +                             mark_reg_not_equal(reg1, val);
+>>> +             }
+>>>                break;
+>>>        case BPF_JSET:
+>>>                if (!is_reg_const(reg2, is_jmp32))
