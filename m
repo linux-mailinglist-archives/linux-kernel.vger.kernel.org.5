@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4FA80C653
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1943980C65B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbjLKKYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S234827AbjLKKYn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 05:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjLKKYT (ORCPT
+        with ESMTP id S234939AbjLKKYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:24:19 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C359791;
-        Mon, 11 Dec 2023 02:24:25 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5d7692542beso41161077b3.3;
-        Mon, 11 Dec 2023 02:24:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702290265; x=1702895065; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HxjdC9gG0FASpcYRfeHrDm90rNJUB49UE6RBV0eXfa8=;
-        b=mBdve7xWbRlPWlYMo43wviUIdttIA6OBkqiuM5sHVu6+jn53FTmB3UmP+AWHopRHZC
-         a7z5Vq/IHDotZA1U9YLjWPm4d2eJRDO3gGoW8aSX2TYkMdTA+MCZ0kmc96F0UBR4Y+dQ
-         gEF6HMMHXiiRywJTO4pJrrPHtPkYuYUvIuXL10o/jicHp6uZPnoxksdBAHyXAORnfu5y
-         2WtAwCAa+D2oYp+UUEH7V1X6W0vBkmu/tZ35uEtMPtIhCjoGyfLFLt/KYsE251q2GVdC
-         UTUQ8JBz3hDzYm52oBptbs7jTy2PTVjxrV62uIR927ca6oghr2EYRweIIKE9cfZWxNG1
-         bb2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702290265; x=1702895065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HxjdC9gG0FASpcYRfeHrDm90rNJUB49UE6RBV0eXfa8=;
-        b=slJJIFKzxWik3fbJ6P6yN/b/aBfnkJ5fpMiuyDIoB0rGN+jBAREzW767PFIVgRzngE
-         bjJonFCKPvSMtqHjzriW4bvWuV2Q2Z81gQt47JY14feTq2AtMbZfm637AQc8cVzJy6NH
-         uJhF/fKYGWsakZBbYx7RYBnDIjZmVy0LUdeaiDCTBK3w5W7EwS6pALhWv9tE2dekTjMi
-         NOzpoOI6kLgfONLrkSngDvELbWgpp3dfg4xNaaCAjotwxkURbECC6gn0GpQgM3IcXpwP
-         yfs/I0ysbx5cFft9N8Fnl/Dblbu1LvJqzgnJaQFOe7fD7GcpT48oYYzse9RrRPLMj68P
-         Scng==
-X-Gm-Message-State: AOJu0YygGw1MZhnoiCWO43CcY6mds8kVaXyby10ZGPECSIDf95QVn8xn
-        53HGe9TySGPPsH0svBl6G0Ox/tJLesM3Ni0rhEQ=
-X-Google-Smtp-Source: AGHT+IGmF7rCGzSyqKfqD2TRI9vyoiPLZLomxHRnO/Mazk7erhr/oeot7BOADdKT5S1gzsmsdTlRbMDAuhmPh48JXnE=
-X-Received: by 2002:a0d:d007:0:b0:5d7:1940:53d9 with SMTP id
- s7-20020a0dd007000000b005d7194053d9mr3123865ywd.81.1702290264941; Mon, 11 Dec
- 2023 02:24:24 -0800 (PST)
+        Mon, 11 Dec 2023 05:24:41 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16D0D7;
+        Mon, 11 Dec 2023 02:24:43 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id AD49D24E2D5;
+        Mon, 11 Dec 2023 18:24:36 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 11 Dec
+ 2023 18:24:36 +0800
+Received: from [192.168.1.115] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 11 Dec
+ 2023 18:24:36 +0800
+Message-ID: <2dc5ea49-9a5f-484a-98dc-1b35b79d0945@starfivetech.com>
+Date:   Mon, 11 Dec 2023 18:24:35 +0800
 MIME-Version: 1.0
-References: <CAFSh4UwYYAOb0YpC=WAL6SD+8jTLuSkhgrgjh8JmogUb10V=zw@mail.gmail.com>
- <ZXMGqjm1466fQ3g2@archie.me>
-In-Reply-To: <ZXMGqjm1466fQ3g2@archie.me>
-From:   Tom Cook <tom.k.cook@gmail.com>
-Date:   Mon, 11 Dec 2023 10:24:14 +0000
-Message-ID: <CAFSh4Uz4jMhR8jV2xjcDg4i05neJMsBewtgcxmG_csETzYdq3A@mail.gmail.com>
-Subject: Re: Building signed debs
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
-        Linux Crypto API <linux-crypto@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nick Terrell <terrelln@fb.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>, Andy Yan <andyshrk@163.com>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+References: <20231204123315.28456-6-keith.zhao@starfivetech.com>
+ <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
+ <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
+ <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+ <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
+ <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
+ <e0b84511-dbb4-46fa-9465-713369232f6f@starfivetech.com>
+ <43e42269.314.18c46dbb4c5.Coremail.andyshrk@163.com>
+ <e1c362dc-8aac-4d13-9356-8b7ccae4727f@starfivetech.com>
+ <5a79a4b9.1bd7.18c4773c1ea.Coremail.andyshrk@163.com>
+ <xevxqusbizjfs4qt5rufhntd3vd656o2smocvivvulzceh3aeu@uuihphhat5wi>
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+In-Reply-To: <xevxqusbizjfs4qt5rufhntd3vd656o2smocvivvulzceh3aeu@uuihphhat5wi>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,56 +81,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 12:06=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
-> wrote:
-> On Fri, Dec 08, 2023 at 11:14:35AM +0000, Tom Cook wrote:
-> > Unsetting CONFIG_MODULE_COMPRESS_ZSTD is a workaround (ie disable
-> > module compression).
-> >
->
-> Seriously? Unrelated option becomes a workaround?
+hi Maxime:
+hi Andy:
 
-"Workaround" as in "With this options set, `make deb-pkg` crashes out with =
-the
-reported error, while with this option unset it produces a deb package
-of a signed
-kernel and modules."  This looks like a defect in the build system to me an=
-d the
-workaround allows me to build a package in the meantime.
+On 2023/12/8 17:14, Maxime Ripard wrote:
+> Hi,
+> 
+> On Fri, Dec 08, 2023 at 11:23:37AM +0800, Andy Yan wrote:
+>> 在 2023-12-08 11:00:31，"Keith Zhao" <keith.zhao@starfivetech.com> 写道：
+>> >
+>> >
+>> >On 2023/12/8 8:37, Andy Yan wrote:
+>> >> Hi Keth：
+>> >> 
+>> >> 
+>> >> 
+>> >> 
+>> >> 
+>> >> 
+>> >> 在 2023-12-07 18:48:13，"Keith Zhao" <keith.zhao@starfivetech.com> 写道：
+>> >>>
+>> >>>
+>> >>>On 2023/12/7 17:02, Andy Yan wrote:
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> Hi Keith：
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> 
+>> >>>> At 2023-12-06 22:11:33, "Keith Zhao" <keith.zhao@starfivetech.com> wrote:
+>> >>>>>
+>> >>>>>
+>> >>>>>On 2023/12/6 20:56, Maxime Ripard wrote:
+>> >>>>>> On Wed, Dec 06, 2023 at 08:02:55PM +0800, Keith Zhao wrote:
+>> >>>>>>> >> +static const struct of_device_id starfive_hdmi_dt_ids[] = {
+>> >>>>>>> >> +	{ .compatible = "starfive,jh7110-inno-hdmi",},
+>> >>>>>>> > 
+>> >>>>>>> > So it's inno hdmi, just like Rockchip then?
+>> >>>>>>> > 
+>> >>>>>>> > This should be a common driver.
+>> >>>>>>>
+>> >>>>>>> Rockchip has a inno hdmi IP. and Starfive has a inno hdmi IP.
+>> >>>>>>> but the harewawre difference of them is big , it is not easy to use the common driver
+>> >>>>>>> maybe i need the inno hdmi version here to make a distinction
+>> >>>>>> 
+>> >>>>>> I just had a look at the rockchip header file: all the registers but the
+>> >>>>>> STARFIVE_* ones are identical.
+>> >>>>>> 
+>> >>>>>> There's no need to have two identical drivers then, please use the
+>> >>>>>> rockchip driver instead.
+>> >>>>>> 
+>> >>>>>> Maxime
+>> >>>>>
+>> >>>>>ok, have a simple test , edid can get . i will continue 
+>> >>>> 
+>> >>>> Maybe you can take drivers/gpu/drm/bridge/synopsys/dw-hdmi as a reference， this
+>> >>>> is also a hdmi ip used by rockchip/meson/sunxi/jz/imx。
+>> >>>> We finally make it share one driver。
+>> >>>>>
+>> >>>hi Andy:
+>> >>>
+>> >>>dw_hdmi seems a good choice , it can handle inno hdmi hardware by define its dw_hdmi_plat_data.
+>> >>>does it means i can write own driver files such as(dw_hdmi-starfive.c) based on dw_hdmi instead of add plat_data in inno_hdmi.c
+>> >>>
+>> >> 
+>> >> I think the process maybe like this：
+>> >> 
+>> >> 1. split the inno_hdmi.c under rockchip to  inno_hdmi.c(the common part), inno_hdmi-rockchip.c(the soc specific part)
+>> >> 2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+>> >> 3. add startfive specific part, inno_hdmi-startfive.c
+>> >> 
+>> >> bellow git log from kernel three show how we convert  dw_hdmi to a common driver: 
+>> >> 
+>> >> 
+>> >> 
+>> >> 12b9f204e804 drm: bridge/dw_hdmi: add rockchip rk3288 support
+>> >> 74af9e4d03b8 dt-bindings: Add documentation for rockchip dw hdmi
+>> >> d346c14eeea9 drm: bridge/dw_hdmi: add function dw_hdmi_phy_enable_spare
+>> >> a4d3b8b050d5 drm: bridge/dw_hdmi: clear i2cmphy_stat0 reg in hdmi_phy_wait_i2c_done
+>> >> 632d035bace2 drm: bridge/dw_hdmi: add mode_valid support
+>> >> 0cd9d1428322 drm: bridge/dw_hdmi: add support for multi-byte register width access
+>> >> cd152393967e dt-bindings: add document for dw_hdmi
+>> >> b21f4b658df8 drm: imx: imx-hdmi: move imx-hdmi to bridge/dw_hdmi
+>> >> aaa757a092c2 drm: imx: imx-hdmi: split phy configuration to platform driver
+>> >> 3d1b35a3d9f3 drm: imx: imx-hdmi: convert imx-hdmi to drm_bridge mode
+>> >> c2c3848851a7 drm: imx: imx-hdmi: return defer if can't get ddc i2c adapter
+>> >> b587833933de drm: imx: imx-hdmi: make checkpatch happy
+>> >> 
+>> >hi Andy:
+>> >I got you means, 
+>> >as I don't have a rockchip board on hand , to split the inno_hdmi.c can not be tested.
+>> >
+>> >how adout this idea:
+>> >1、split the starfive_hdmi.c under verisilicion to  inno_hdmi.c(the common part), inno_hdmi-starfive.c(the soc specific part)
+>> >2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+>> >3. In the future, inno hdmi.c under rockchip will reuse the public driver.
+>> 
+>> I am not sure if drm maintainers are happy with this。
+> 
+> Not really, no.
+> 
+> Because we would still have two drivers for the same controller, and a
+> common one that haven't really been tested on anything but a single
+> platform. So arguably a worse situation than what you were suggesting in
+> the first place.
+> 
+> The best solution would be to find someone with a Rockchip board to test
+> your changes, or to get one if it's doable so you can test yourself.
 
-> > Is there a way to build a .deb of a signed kernel with compressed modul=
-es?
-> >
-> > Thanks for any help,
-> > Tom
-> >
-> >   INSTALL debian/linux-libc-dev/usr/include
-> >   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/ev=
-ents/amd/amd-uncore.ko
-> >   SIGN    debian/linux-image/lib/modules/6.6.0-local/kernel/arch/x86/ev=
-ents/intel/intel-cstate.ko
-> > At main.c:298:
-> > - SSL error:FFFFFFFF80000002:system library::No such file or
-> > directory: ../crypto/bio/bss_file.c:67
->
-> Above means that you don't have a valid certificate/keypair set in
-> CONFIG_MODULE_SIG_KEY. If you keep the option value on `certs/signing_key=
-.pem`
-> (which is the default), the key should be automatically generated
-> (with your observation, only if `certs/x509.genkey` doesn't already exist=
-).
-> After building the kernel with `make all`, you should check if the certif=
-icate
-> pointed in CONFIG_MODULE_SIG_KEY is present or not. If it isn't the case,
-> you have to generate the certificate yourself. For more information, see
-> Documentation/admin-guide/module.signing.rst in the kernel sources.
+ok I will also try to buy a Rockchip 3036 board for self-test.
+According to the commit log idea provided by Andy before, make the inno_hdmi driver common module.
 
-Sorry for being unclear - I'm not building with `make all`, I'm
-building with `make deb-pkg`.
-If I had to guess, I'd say the .deb depends on the uncompressed modules
-rather than the dependency depending on whether module compression is turne=
-d
-on or not, but it's only a guess.
+would the steps be ok? (if I tested rockchip and starifve pass)
+1. split the inno_hdmi.c under rockchip to  inno_hdmi.c(the common part), inno_hdmi-rockchip.c(the soc specific part)
+2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+3. add startfive specific part, inno_hdmi-startfive.c
 
-Regards,
-Tom
+Thanks
+> 
+> Maxime
