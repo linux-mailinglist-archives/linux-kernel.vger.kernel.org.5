@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF4F80C77C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A371980C78C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbjLKK6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        id S234589AbjLKLAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:00:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKK6i (ORCPT
+        with ESMTP id S229512AbjLKLAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:58:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D9E9A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:58:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E9F0C433C7;
-        Mon, 11 Dec 2023 10:58:38 +0000 (UTC)
-Message-ID: <705ce6b0-e945-404c-8014-38881a01fbca@xs4all.nl>
-Date:   Mon, 11 Dec 2023 11:58:36 +0100
+        Mon, 11 Dec 2023 06:00:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E239A;
+        Mon, 11 Dec 2023 03:00:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702292429; x=1733828429;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=K2ZRRE7Thip/Geu7ekUKU80Z+uYC8shCVOa2AGk3EYA=;
+  b=U5nxltGuCBMu4JjoCi0OeYxRB3rNm205kJngMw8osuKz9huei59Ngog5
+   t9l6z2FMUWH+dbEINSt1afYQm4xOk5P1wmHnwQk4vooNSFRgDxe1598M6
+   CuFyiojQLsxl3PtPCpfSL62ztJJqxSZBBbYUv3YSzKk5xsnhUliW+unxJ
+   v9C6sIyAB6TVN5FGLnl7UoNR3juoekiCOU/TTa2vwEmI3TdVaoEkkRkmf
+   gajgrO7zSUbYyPkIaJpkCZGix27B775YVbUmP6mBFkB+h1ZvXowNIg5BF
+   dVprYNs1xqZo2Giy+yLv0tQ+3QaaAEq1rXhifAnU77qzp7tSMp0bfZK2M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="458940569"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="458940569"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 03:00:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="14387023"
+Received: from lmckeon-mobl.ger.corp.intel.com (HELO iboscu-mobl2.ger.corp.intel.com) ([10.252.48.111])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 03:00:24 -0800
+Date:   Mon, 11 Dec 2023 13:00:22 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
+        hugo@hugovil.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LinoSanfilippo@gmx.de, Lukas Wunner <lukas@wunner.de>,
+        p.rosenberger@kunbus.com, stable@vger.kernel.org
+Subject: Re: [PATCH v5 5/7] serial: core, imx: do not set RS485 enabled if
+ it is not supported
+In-Reply-To: <20231209125836.16294-6-l.sanfilippo@kunbus.com>
+Message-ID: <ffdaf03b-65af-731f-992-3e90ca6fca@linux.intel.com>
+References: <20231209125836.16294-1-l.sanfilippo@kunbus.com> <20231209125836.16294-6-l.sanfilippo@kunbus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3,03/21] v4l2: verify secure dmabufs are used in secure
- queue
-Content-Language: en-US, nl
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>,
-        "T . J . Mercier" <tjmercier@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
- <20231206081538.17056-4-yunfei.dong@mediatek.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231206081538.17056-4-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1041274839-1702292428=:1867"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 09:15, Yunfei Dong wrote:
-> From: Jeffrey Kardatzke <jkardatzke@google.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1041274839-1702292428=:1867
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Sat, 9 Dec 2023, Lino Sanfilippo wrote:
+
+> If the imx driver cannot support RS485 it sets the ports rs485_supported
+> structure to NULL.
+
+No, an embedded struct inside struct uart_port cannot be set to NULL, 
+it's always there.
+
+Looking into the code, that setting of rs485_supported from imx_no_rs485 
+is actually superfluous as it should be already cleared to zeros on alloc.
+
+> But it still calls uart_get_rs485_mode() which may set
+> the RS485_ENABLED flag nevertheless.
 > 
-> Verfies in the dmabuf implementations that if the secure memory flag is
-
-Verfies -> Verifies
-
-> set for a queue that the dmabuf submitted to the queue is unmappable.
+> This may lead to an attempt to configure RS485 even if it is not supported
+> when the flag is evaluated in uart_configure_port() at port startup.
 > 
-> Signed-off-by: Jeffrey Kardatzke <jkardatzke@google.com>
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  drivers/media/common/videobuf2/videobuf2-dma-contig.c | 6 ++++++
->  drivers/media/common/videobuf2/videobuf2-dma-sg.c     | 6 ++++++
->  2 files changed, 12 insertions(+)
+> Avoid this by bailing out of uart_get_rs485_mode() if the RS485_ENABLED
+> flag is not supported by the caller.
 > 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> index 3d4fd4ef5310..ad58ef8dc231 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-> @@ -710,6 +710,12 @@ static int vb2_dc_map_dmabuf(void *mem_priv)
->  		return -EINVAL;
->  	}
->  
-> +	/* verify the dmabuf is secure if we are in secure mode */
-> +	if (buf->vb->vb2_queue->secure_mem && sg_page(sgt->sgl)) {
+> With this fix a check for RTS availability is now obsolete in the imx
+> driver, since it can not evaluate to true any more. Remove this check, too.
+> 
+> Fixes: 00d7a00e2a6f ("serial: imx: Fill in rs485_supported")
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: stable@vger.kernel.org
+> Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 
-This needs a bit more explanation. I guess that for secure memory
-sg_page returns NULL?
+-- 
+ i.
 
-> +		pr_err("secure queue requires secure dma_buf");
-> +		return -EINVAL;
-> +	}
-> +
->  	/* checking if dmabuf is big enough to store contiguous chunk */
->  	contig_size = vb2_dc_get_contiguous_size(sgt);
->  	if (contig_size < buf->size) {
-> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> index 28f3fdfe23a2..55428c73c380 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
-> @@ -564,6 +564,12 @@ static int vb2_dma_sg_map_dmabuf(void *mem_priv)
->  		return -EINVAL;
->  	}
->  
-> +	/* verify the dmabuf is secure if we are in secure mode */
-> +	if (buf->vb->vb2_queue->secure_mem && !sg_dma_secure(sgt->sgl)) {
-
-I can't find the sg_dma_secure function. I suspect this patch series
-depends on another series?
-
-> +		pr_err("secure queue requires secure dma_buf");
-> +		return -EINVAL;
-> +	}
-> +
->  	buf->dma_sgt = sgt;
->  	buf->vaddr = NULL;
->  
-
-Regards,
-
-	Hans
+--8323329-1041274839-1702292428=:1867--
