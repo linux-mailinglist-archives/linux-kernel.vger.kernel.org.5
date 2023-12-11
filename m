@@ -2,104 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBF280D02B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B7880D036
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344484AbjLKP5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:57:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        id S1344579AbjLKP5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344472AbjLKP5O (ORCPT
+        with ESMTP id S1344402AbjLKP50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:57:14 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0FFDC;
-        Mon, 11 Dec 2023 07:57:20 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c29f7b068so43836715e9.0;
-        Mon, 11 Dec 2023 07:57:20 -0800 (PST)
+        Mon, 11 Dec 2023 10:57:26 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C097A106
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:57:32 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d3c7ef7b31so43722547b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:57:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702310239; x=1702915039; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=I3eqhGtTOHL63O+C3jkv4nmquOhc8pni4ZLLJlVFIo8=;
-        b=c2HZArikJBv4JzO7htW+VDjjur0h0SmCzHM7ok6zSjxUXxhWC31eVa+uviuu3FRahC
-         EDWgy9P+3LwumlYrgjIOeTDBsBEJdP8BwkeBzRGpjMtZ04/mr120wk34TGKNVtU2fQT3
-         4Jt7EInxN5MupZIMWcpsM0+6fafbSHHuITQGLcOLolxoA0Lkqtm6ffMri/S30WcpkWIl
-         pvAadt7HLifodojsettn6QjhMaQXkACOpW+jIGiMQiAYu7MZfyLevoEHhk6y9jDpqBfN
-         0oJLmiZ/QXqrD/t/jdDPCyVBm4/AvTHZZ0Nye7bMumoCZWHoygxgweNxh8SNgk0TohV8
-         Z12A==
+        d=linaro.org; s=google; t=1702310252; x=1702915052; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vgnFsD1rGgCy3ClJpDI9oqAdCvPdJ7fZQsiqLqMiah4=;
+        b=HE440x8bW4ivJ/FnJToCuXSWaSfYNrshA24kBJWkka43pvnWHamxqzAmOuBySjoHPK
+         iMqTSBemht7BXYe63CuQyy9D8PlaUJab6eN6v63svBqK/p7M9/HRGp06p032eDJdxV2j
+         tvD7zvmXeIApnJnDlvRNMS2gggQWQZKa3wsHr1oabl0UekJj2a700KvY+w7+ZomJvzLn
+         Q6YzhLVJnkDgTuiFcZ1Pb98t8mttTYoHxuzTDH6pHj0ac4V4dhHMFUe0Fsgqf5swVA5N
+         bmtPAAv8B+m5CJ9rFowIAeoBfVdO1LiDlYu/BJWZzURfRsTR54csFz/JpdcrUXCnLfYP
+         H4kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702310239; x=1702915039;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1702310252; x=1702915052;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I3eqhGtTOHL63O+C3jkv4nmquOhc8pni4ZLLJlVFIo8=;
-        b=GUOTh10R7OK1fP7utN+KcrTRvYhCk0LIShUlX4I9V0U/FjVhPPytltRiE+/VEl06Zd
-         83o0syFQzQoUvjrJSTpR03vlR7uuBPI9ZVX7ZijH3mcp37Hy7pvg8arz99Z5KBrpxqem
-         GKiV38cVzD5ecPCYg70Q+Zu73GN9hSY6cg0n+b0GdNhy/IX0xGo1B5IQNEw7aBnUnCG1
-         axT6c34mEWd632Ur4EQwbQFw+eRgA7kLsn2bgxUAg+xj0joozHP2XN0ESVwR70ZSWTcY
-         dsFqrk4Fl+YIHl82DQrTwWQf3KLuOrBpCMXXjCWj/VUNAX7AVNorxZS2lmQCeA7UWCjc
-         3izA==
-X-Gm-Message-State: AOJu0Yz1lO+9ytobV1EpNjjxfQ3X+0LyqJQ02X3rhXRLHbwOGPOmz1lo
-        1waujhosl0AWr9Qc8lJuYZc=
-X-Google-Smtp-Source: AGHT+IF2KuUpho9nXjniuWZ9w3PAw54PSGrOL3zgIMkmIZ6uxAoqLISUUsrpGxrGzT8ff+M6aoZqTA==
-X-Received: by 2002:a05:600c:4285:b0:40c:1df2:c9a2 with SMTP id v5-20020a05600c428500b0040c1df2c9a2mr2379876wmc.126.1702310238557;
-        Mon, 11 Dec 2023 07:57:18 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id z14-20020a05600c0a0e00b0040b3867a297sm13563402wmp.36.2023.12.11.07.57.17
+        bh=vgnFsD1rGgCy3ClJpDI9oqAdCvPdJ7fZQsiqLqMiah4=;
+        b=GUqMAnx9HvZjS8xrdLklyaxYUxF4ARqiAfCva3pg62BtdTYRJiLWJIYxcpgN0hPeDR
+         whCGbQzeSO5EqVg0EUvi0fwHRh3v/ucOTiudnT/7Acz2kpmExDxHFCbJa/3u/ioTRlZo
+         3Y88BpQ3Oi+w1f7c8RVZ8iPSLRVlYkJgF5ZFCUStDfVxLybvvxp2A6k7gE231g8Wba3Y
+         FDDt+oa8hS3RUF6vDNS1cWURD8qFy+AoPdwWY/z126plt7Lfj9OCS79QI7YSMA/BbihM
+         AQ7B13yd0lLrqP9Jau83ieMZqrhVqD2/au9yZWVJCGBM+ln/sOy41WS53GaHTeAtBgBB
+         68fg==
+X-Gm-Message-State: AOJu0YyarelwtfLojHZGbGS1Ms4q+up1/V+CPNDqe6ape5IrJJQq86O3
+        BxLxQnQRxi+DXaay+ZNMdPvKLybs55P2qshZnhk=
+X-Google-Smtp-Source: AGHT+IHTxt/NnusInkDn2gTlMNXzFT8tYbqqoQzEFJIeydEKudIkHqXrZd4hI95UwOkxyQCP0MFlEA==
+X-Received: by 2002:a05:690c:2c90:b0:5e1:8d19:4e77 with SMTP id ep16-20020a05690c2c9000b005e18d194e77mr287921ywb.8.1702310251910;
+        Mon, 11 Dec 2023 07:57:31 -0800 (PST)
+Received: from ubuntu-server-vm-macos (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id d201-20020a814fd2000000b005cc5f5aa533sm3066544ywb.43.2023.12.11.07.57.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 07:57:18 -0800 (PST)
-Message-ID: <6577315e.050a0220.50f30.0122@mx.google.com>
-X-Google-Original-Message-ID: <ZXcxW3OVWklKtJ5A@Ansuel-xps.>
-Date:   Mon, 11 Dec 2023 16:57:15 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Andrew Lunn <andrew@lunn.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
-References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
- <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
+        Mon, 11 Dec 2023 07:57:31 -0800 (PST)
+Date:   Mon, 11 Dec 2023 15:57:28 +0000
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] tools/counter: add a flexible watch events tool
+Message-ID: <ZXcxaFRuGJg6kYuT@ubuntu-server-vm-macos>
+References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+ <20231206164726.418990-2-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DgK1nOAauTq8w6Yp"
 Content-Disposition: inline
-In-Reply-To: <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231206164726.418990-2-fabrice.gasnier@foss.st.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,RCVD_IN_XBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 10:57:41AM +0000, Lee Jones wrote:
-> On Tue, 28 Nov 2023 04:00:10 +0000, Daniel Golle wrote:
-> > Add 2.5G, 5G and 10G as available speeds to the netdev LED trigger.
-> > 
-> > 
-> 
-> Applied, thanks!
-> 
-> [1/2] leds: trigger: netdev: extend speeds up to 10G
->       commit: bc8e1da69a68d9871773b657d18400a7941cbdef
-> [2/2] docs: ABI: sysfs-class-led-trigger-netdev: add new modes and entry
->       commit: f07894d3b384344c43be1bcf61ef8e2fded0efe5
->
 
-Hi, Lee
+--DgK1nOAauTq8w6Yp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm working on adding LEDs support for qca8081 PHY. This PHY supports
-2500 link speed.
+On Wed, Dec 06, 2023 at 05:47:25PM +0100, Fabrice Gasnier wrote:
+> This adds a new counter tool to be able to test various watch events.
+> A flexible watch array can be populated from command line, each field
+> may be tuned with a dedicated command line sub-option in "--watch" string.
+> Several watch events can be defined, each can have specific watch options,
+> by using "--watch <watch 1 options> --watch <watch 2 options>".
+> Watch options is a comma separated list.
+>=20
+> It also comes with a simple default watch (to monitor overflow/underflow
+> events), used when no watch parameters are provided. It's equivalent to:
+> counter_watch_events -w comp_count,scope_count,evt_ovf_udf
+>=20
+> The print_usage() routine proposes another example, from the command line,
+> which generates a 2 elements watch array, to monitor:
+> - overflow underflow events
+> - capture events, on channel 3, that reads read captured data by
+>   specifying the component id (capture3_component_id being 7 here).
+>=20
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> ---
+> Changes in v3:
+> - Free the allocated memory, also close the char device
+> - Split of another patch series[1].
+> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier=
+@foss.st.com/
 
-Is it possible to have an immutable branch for this series so we can
-have this in net-next? 
+Hi Fabrice,
 
-Jakub can you also help with this?
+Thank you for splitting this from the other patches. I think you may
+still be leaking memory in a few places below.
 
--- 
-	Ansuel
+> +	if (nwatch) {
+> +		watches =3D calloc(nwatch, sizeof(*watches));
+> +		if (!watches) {
+> +			perror("Error allocating watches");
+> +			return 1;
+> +		}
+> +	} else {
+> +		/* default to simple watch example */
+> +		watches =3D simple_watch;
+> +		nwatch =3D ARRAY_SIZE(simple_watch);
+> +	}
+
+If we go down the calloc() path, then we should free the memory
+before any return.
+
+> +				case WATCH_CHANNEL:
+> +					if (!value) {
+> +						fprintf(stderr, "Missing chan=3D<number>\n");
+> +						return -EINVAL;
+
+Such as here.
+
+> +					}
+> +					watches[i].channel =3D strtoul(value, NULL, 10);
+> +					if (errno)
+> +						return -errno;
+
+Here.
+
+> +					break;
+> +				case WATCH_ID:
+> +					if (!value) {
+> +						fprintf(stderr, "Missing id=3D<number>\n");
+> +						return -EINVAL;
+
+Here.
+
+> +					}
+> +					watches[i].component.id =3D strtoul(value, NULL, 10);
+> +					if (errno)
+> +						return -errno;
+
+Here.
+
+> +					break;
+> +				case WATCH_PARENT:
+> +					if (!value) {
+> +						fprintf(stderr, "Missing parent=3D<number>\n");
+> +						return -EINVAL;
+
+Here.
+
+> +					}
+> +					watches[i].component.parent =3D strtoul(value, NULL, 10);
+> +					if (errno)
+> +						return -errno;
+
+Here.
+
+> +					break;
+> +				default:
+> +					fprintf(stderr, "Unknown suboption '%s'\n", value);
+> +					return -EINVAL;
+
+Here.
+
+> +	ret =3D asprintf(&device_name, "/dev/counter%d", dev_num);
+> +	if (ret < 0)
+> +		return -ENOMEM;
+
+Here.
+
+> +	fd =3D open(device_name, O_RDWR);
+> +	if (fd =3D=3D -1) {
+> +		perror("Unable to open counter device");
+> +		return 1;
+
+Here.
+
+> +	}
+> +
+> +	for (i =3D 0; i < nwatch; i++) {
+> +		ret =3D ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + i);
+> +		if (ret =3D=3D -1) {
+> +			fprintf(stderr, "Error adding watches[%d]: %s\n", i,
+> +				strerror(errno));
+> +			return 1;
+
+Here.
+
+> +		}
+> +	}
+> +
+> +	ret =3D ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
+> +	if (ret =3D=3D -1) {
+> +		perror("Error enabling events");
+> +		return 1;
+
+Here.
+
+> +	}
+> +
+> +	for (i =3D 0; loop <=3D 0 || i < loop; i++) {
+> +		ret =3D read(fd, &event_data, sizeof(event_data));
+> +		if (ret =3D=3D -1) {
+> +			perror("Failed to read event data");
+> +			return 1;
+
+Here.
+
+> +		}
+> +
+> +		if (ret !=3D sizeof(event_data)) {
+> +			fprintf(stderr, "Failed to read event data\n");
+> +			return -EIO;
+
+And here.
+
+> +	if (watches !=3D simple_watch)
+> +		free(watches);
+> +	close(fd);
+> +
+> +	return 0;
+
+We finally free watches here, close the file descriptor, and return. So
+instead of returning an error code directly when you encounter a
+problem, I would do an unwinding goto section like the following
+instead.
+
+First, the open() call occurs after the calloc(), so move the close()
+call above the watches check so that we unwind in a first-in-last-out
+order. Next, add a label to mark the file descriptor close section, and
+another label to mark the watches free section. Then, rather than
+returning 0 directly, return a retval that we can set. That way, when
+you need to return on an error, set retval to the error code and goto
+the file descriptor close label if we're past the open() call, or the
+watches free label if we're just past the calloc() call.
+
+William Breathitt Gray
+
+--DgK1nOAauTq8w6Yp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZXcxaAAKCRC1SFbKvhIj
+KyH7AQDS6pGsvZkqLTWO56L/iANt86BNInqaN0ixwVhpsDcpBgD/dVb/3cacHHOH
+q1S50LhsUQ4jogqKhU20axDclAOqvQQ=
+=3Fgn
+-----END PGP SIGNATURE-----
+
+--DgK1nOAauTq8w6Yp--
