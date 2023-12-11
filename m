@@ -2,285 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF90A80DFAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCB980DFB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 00:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345393AbjLKXtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 18:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        id S1345396AbjLKXt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 18:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345300AbjLKXtM (ORCPT
+        with ESMTP id S1345397AbjLKXtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 18:49:12 -0500
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEBACF;
-        Mon, 11 Dec 2023 15:49:17 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B5459580994;
-        Mon, 11 Dec 2023 18:49:13 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 11 Dec 2023 18:49:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=fm3; t=1702338553;
-         x=1702345753; bh=HWPAz2nCkWGZyq/beiz/8uDXQkbh79+aEadSAl4i9y8=; b=
-        OptCZHrxeLXQfAdEfJeHVi+oOkdF/a4ixxaaN3yevGaoUsvdDcELzKOXK0uSqkBZ
-        cfimgB4CRGpWX6OMOBzt+uRV1r7DCMQptH6HlLOmvQaSgANmq5n43k4t+8sJeTJt
-        y6iH04Ib92mpF1HeDdw8Mg4TqhRSWh58uAqBYMyhZaTX5cGJxpEHUq1joRWR4AVg
-        qcS2Y6nx+H5K5qEGR2onLOHWOcRa34nYUq7ma8iR9E9mjQwNvFuxQCC/iys6kxxj
-        Bw7TkWPVzVgn2PnUj00FrhnpgLfTZ7vjU7ixLS2uzGQaTHoB0iAocrwJJPbw5gwY
-        bL4MEDVQvGGZMrdb/0I3Ew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702338553; x=
-        1702345753; bh=HWPAz2nCkWGZyq/beiz/8uDXQkbh79+aEadSAl4i9y8=; b=N
-        QXpTp09t6VN8GS0chO4/lsb3JtvAfXT1GC3j+/XX0NJL084/2vuzQ40qnkyb6Mi8
-        exiBivDvxwdW6259Otz0lVGvLVao3Bh28OXUkVcP/vRogGZ2d/b/WCupST7R6qBL
-        Tx0Kl1tO3QYTH1AuqkERjESvt7fEJEHiZlkOGX14FrlPeSGoqaYhIZnTqABzgQa5
-        ++xHuFYkTjOMB1L5blAmo+V0T8fWK1Z/QXEXp+b5idFxCPIRCq+9WQrfbYXuzO30
-        mBBt6VrbTOlB1mh57m5MsUsbLnYafX4nyBPNXVI74QpBDL75qS8VaVBrvTr23cNQ
-        ZYZj+FZtvngxqUuWR0w4A==
-X-ME-Sender: <xms:-Z93ZW8lYC7ahV45NVa1G6PuttHFKdp1PUmE-Z7tvq0wjibix1t8FQ>
-    <xme:-Z93ZWvG2ywaA_6Hfoa_f67uddgHTlo5jyt464MAXx9rwjLwDLMOJRwpR85B0IAza
-    _AGRJWUdzrZmj51EA>
-X-ME-Received: <xmr:-Z93ZcD12zlBvnqpudeO4pAaDEP_VIX4N9C0hNOXv0iCdpNr87GWmQAjDQe8C6GL5YkOpvCzbPnCMuFlngGQ-kDPeChCVWt2--Xa>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelfedgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:-Z93ZeeOVZP6_icXTPcbjO74MO8wtoF9mRklUzIPRuWYy16bZo0GgA>
-    <xmx:-Z93ZbMmCeXCIYIwYT4p11sgrnuV_SR5diBRxQtoYD1L3HAE49a_tQ>
-    <xmx:-Z93ZYnolCW3YO8ID_c7unclVVnjmgndkNUP15LgnXUC8B4CAh-isw>
-    <xmx:-Z93Zee3sKGp8y11YQH1e7ZVKElCnYj7cou50Ae4ztuS1g-y_pwvJw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 18:49:10 -0500 (EST)
-Date:   Mon, 11 Dec 2023 16:49:09 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org,
-        ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
-        andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
- <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
- <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+        Mon, 11 Dec 2023 18:49:24 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0BD9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 15:49:30 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7b37a2e6314so45226339f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 15:49:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702338569; x=1702943369; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g5t6eoQm4Z4Er6PwnibCjr1u9wVQuH1O71YB60iqa3I=;
+        b=DeBSqQKz0yrvNHY0gG8MorHJqfz674i0hU6DYYh6DBF2zDGTYsc5tCK2sfm5L5RRxI
+         RSdnbJKvllOJcdlNT8jM1nxT3wKyOjQWM/2EsyJ2Pmx7c37d0StwTfLV+268nw+U6GMH
+         zLZtgMmS95l8QHeHHEp7HLvwDlm3xeGkPAcFA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702338569; x=1702943369;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g5t6eoQm4Z4Er6PwnibCjr1u9wVQuH1O71YB60iqa3I=;
+        b=t2dlJQSmIR2jPKmCkzEi1dJadgdEpayy+JMvJfuCp6lvk0Y1zTvcuE7XazXk8mjvL3
+         9mOJPdAvYteOYWXZ3aROSByZyzzw9OF75XHvxCt5MbBxI2nqOq/Aa1tFEx5kT5cy8r6L
+         18B1SHWYw3JIrO4RRlClyL3rlmco3UqpOn3zdlNXwHN9h/JyJ4JjXJohnnX4YaslFKVw
+         wk9sPKh2+7iX8lYeHjWnjgkR/cGP2QLSC0RX6GNrmGdOlYSD2RvAQ5yl7rb3Olis30K+
+         H/0EvMLOQ0TK1KsFAJKHE+nz+kizD5SBItdsqxCRiM2yLYivS/JVA1mq0iVYiM2a+749
+         CV4w==
+X-Gm-Message-State: AOJu0YyYmoVp5ySajhzdHRRFgGRqsu0Owx04VtDzwo/Lxi2fLT5cQAWs
+        pDqZDngoIlksXd+ej+7zM1Vg7A==
+X-Google-Smtp-Source: AGHT+IET8RjedN/i/RllToFd1KnVFkwCbr2HjFQomHV8tjSUOqJzpytEkyxj1r3j8oUPosbYIRS32g==
+X-Received: by 2002:a05:6e02:2189:b0:35d:81ce:fd91 with SMTP id j9-20020a056e02218900b0035d81cefd91mr9319707ila.0.1702338569614;
+        Mon, 11 Dec 2023 15:49:29 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id k3-20020a02c643000000b004666cb039bfsm2102313jan.160.2023.12.11.15.49.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 15:49:29 -0800 (PST)
+Message-ID: <ef2d9d5f-e485-465c-98b7-d993610ae10e@linuxfoundation.org>
+Date:   Mon, 11 Dec 2023 16:49:28 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: nolibc changes for 6.8
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, WillyTarreauw@lwt.eu,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <4208adae-d185-44a6-a564-ec9bc4c6eb2a@t-8ch.de>
+ <4074b0bc-e89b-4b2e-ad11-cb3a9517b725@linuxfoundation.org>
+ <d486df54-4484-4f6a-b40f-aebeb5f0131a@t-8ch.de>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <d486df54-4484-4f6a-b40f-aebeb5f0131a@t-8ch.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
-> On Mon, Dec 11, 2023 at 2:31 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > > Hi Daniel,
-> > >
-> > > Tiny nits below in case you respin this for other reasons:
-> > >
-> > > On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > >
-> > > > This commit extends test_tunnel selftest to test the new XDP xfrm state
-> > > > lookup kfunc.
-> > > >
-> > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
-> > > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > > >         SYS(fail,
-> > > >             "ip netns exec at_ns0 "
-> > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > -                       "spi %d reqid 1 mode tunnel "
-> > > > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > > >         SYS(fail,
-> > > >             "ip netns exec at_ns0 "
-> > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > -                       "spi %d reqid 2 mode tunnel "
-> > > > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
-> > >
-> > > nit: why do you need to set the replay-window in both directions?
-> >
-> > No reason - probably just careless here.
-> >
-> > >
-> > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > > >          */
-> > > >         SYS(fail,
-> > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > -                   "spi %d reqid 1 mode tunnel "
-> > > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > > >         /* root -> at_ns0 */
-> > > >         SYS(fail,
-> > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > -                   "spi %d reqid 2 mode tunnel "
-> > > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > > >  {
-> > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > > >                             .attach_point = BPF_TC_INGRESS);
-> > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > > >         struct test_tunnel_kern *skel = NULL;
-> > > >         struct nstoken *nstoken;
-> > > > +       int xdp_prog_fd;
-> > > >         int tc_prog_fd;
-> > > >         int ifindex;
-> > > >         int err;
-> > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > > >                 goto done;
-> > > >
-> > > > +       /* attach xdp prog to tunnel dev */
-> > > > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > > +               goto done;
-> > > > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-> > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > > +               goto done;
-> > > > +
-> > > >         /* ping from at_ns0 namespace test */
-> > > >         nstoken = open_netns("at_ns0");
-> > > >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > > >                 goto done;
-> > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
-> > > >                 goto done;
-> > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-> > > > +               goto done;
-> > > >
-> > > >  done:
-> > > >         delete_xfrm_tunnel();
-> > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > index 3a59eb9c34de..c0dd38616562 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-> > > >                           struct bpf_fou_encap *encap, int type) __ksym;
-> > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > > >                           struct bpf_fou_encap *encap) __ksym;
-> > > > +struct xfrm_state *
-> > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-> > > > +                      u32 opts__sz) __ksym;
-> > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > > >
-> > > >  struct {
-> > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > > >         return TC_ACT_OK;
-> > > >  }
-> > > >
-> > > > +volatile int xfrm_replay_window = 0;
-> > > > +
-> > > > +SEC("xdp")
-> > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > +{
-> > > > +       struct bpf_xfrm_state_opts opts = {};
-> > > > +       struct xfrm_state *x = NULL;
-> > > > +       struct ip_esp_hdr *esph;
-> > > > +       struct bpf_dynptr ptr;
-> > > > +       u8 esph_buf[8] = {};
-> > > > +       u8 iph_buf[20] = {};
-> > > > +       struct iphdr *iph;
-> > > > +       u32 off;
-> > > > +
-> > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > > +               goto out;
-> > > > +
-> > > > +       off = sizeof(struct ethhdr);
-> > > > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> > > > +       if (!iph || iph->protocol != IPPROTO_ESP)
-> > > > +               goto out;
-> > > > +
-> > > > +       off += sizeof(struct iphdr);
-> > > > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> > > > +       if (!esph)
-> > > > +               goto out;
-> > > > +
-> > > > +       opts.netns_id = BPF_F_CURRENT_NETNS;
-> > > > +       opts.daddr.a4 = iph->daddr;
-> > > > +       opts.spi = esph->spi;
-> > > > +       opts.proto = IPPROTO_ESP;
-> > > > +       opts.family = AF_INET;
-> > > > +
-> > > > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > +       if (!x || opts.error)
-> > >
-> > > nit: how can opts.error be non zero if x == NULL?
-> >
-> > Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> > behavior here.
+Hi Thomas,
+
+On 12/11/23 14:40, Thomas Weißschuh wrote:
+> Hi Shuah,
 > 
-> I'm sorry, I don't understand.
+
 > 
-> AFAICT, regardless of the -ENOENT change, I don't see
-> how (!x) is false and (opt.error) is true, and so
-> "if (!x || opts.error)" is always equivalent to "if (!x)".
+> Thanks for spotting this!
 > 
-> What am I missing?
-> Eyal.
+> The fixed commits are published on the same "next" branch as before with
+> final commit d543d9ddf593b1f4cb1d57d9ac0ad279fe18adaf.
+> 
 
-The selftests are tests so my intention was to check edge cases here.
-In normal operation it shouldn't be possible that
-bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
-another way of writing this would be:
+Thank you.
 
-        if (!x)
-                goto out;
-        assert(opts.error == 0);
+Pulled and pushed to linux-kselftest nolibc branch.
 
-If I'm trying to be too clever (or maybe just wrong) or it's pointless,
-I can remove the `opts.error` condition.
+thanks,
+-- Shuah
 
-Thanks,
-Daniel
