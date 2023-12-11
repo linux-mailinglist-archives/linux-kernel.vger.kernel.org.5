@@ -2,49 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EEE80CCEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFACC80CCF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344233AbjLKOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        id S1344072AbjLKOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344062AbjLKOE2 (ORCPT
+        with ESMTP id S234925AbjLKOEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:04:28 -0500
+        Mon, 11 Dec 2023 09:04:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B823845
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:02:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 016FEC433CA;
-        Mon, 11 Dec 2023 14:02:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F633877
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:02:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9250EC433CA;
+        Mon, 11 Dec 2023 14:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303369;
-        bh=CAabmz3YfzsbQjyDogsRvJLdEPcFoGXEQ9nrIXkGRf4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fP3SeVbb1PllAHuIjO33vbO32A9jP7dKdBV761wYZqKoB8jl7FQ/m5uZ4dEpPQhcp
-         GIVdlXy0h6sDCBfPfr7QDxyLQdJWbwZuT0q3a5P/FDXM7L3vbA8urAgqKOjdn7l/ZA
-         Rhf+KRdHE+w9VcPQ3qUf7Lwj8EwriDiCl3Ky/bgG4BuA+txCFnrCl0+Fdbtzd8ZRGa
-         J8KQCGteUotrgOS6ESzeHne8jgK6qMWXmj15uDc2pu34UJlV4b+XajKhhugbLWmB48
-         yPawLesEpnaIcmLsDHgLI+sEheGI+OXKaSxMPzbZwzgW3aDmFAnFC1T0fTgcEWCQD4
-         m/Z1da6uNP9jA==
+        s=k20201202; t=1702303378;
+        bh=BuHKqMd7L6hJUMKqGXVpnwJckHYtw9yzl+qIn3moBgE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GqUXPSwqO9gcjR0hRnkNZlaBCUbYXvYOQkeOzhD4HXi3pFPRExyAxHXdw0Wcs8RkE
+         JfQaQleefeude45KBaUjv6Ek2PFGmzP6wNx7/YbBWq2GPijXGjueYXKfymDAnr2nZP
+         w5NBCGOMFKb09tF9EugOmQORTjKPkvl/R5dlUK64Jkr9rOrvCyHF1vSUrod3OXWCTV
+         aPSlA7mZ5oOmp5mj8c2PZqRV3Naox07QcG2ieEU3z4O/NgOLSFw7SHD+IvTSzQxl2q
+         6UO3Bp6t7o5FYP3WTkHVW5VGogzIMfw1P4t37Fzs1bpSk2rgiQPuHyhpzZn+D95AMR
+         mT4JIjvobI5XQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Inki Dae <inki.dae@samsung.com>, Sasha Levin <sashal@kernel.org>,
-        sw0312.kim@samsung.com, kyungmin.park@samsung.com,
-        airlied@gmail.com, daniel@ffwll.ch, krzysztof.kozlowski@linaro.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/12] drm/exynos: fix a wrong error checking
-Date:   Mon, 11 Dec 2023 09:02:05 -0500
-Message-ID: <20231211140219.392379-12-sashal@kernel.org>
+Cc:     Kamil Duljas <kamil.duljas@gmail.com>,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+        pierre-louis.bossart@linux.intel.com,
+        liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
+        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
+        suhui@nfschina.com, kuninori.morimoto.gx@renesas.com,
+        zhangyiqun@phytium.com.cn, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/7] ASoC: Intel: Skylake: mem leak in skl register function
+Date:   Mon, 11 Dec 2023 09:02:44 -0500
+Message-ID: <20231211140254.392656-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231211140219.392379-1-sashal@kernel.org>
-References: <20231211140219.392379-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.263
+X-stable-base: Linux 4.19.301
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -56,60 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Inki Dae <inki.dae@samsung.com>
+From: Kamil Duljas <kamil.duljas@gmail.com>
 
-[ Upstream commit 8d1b7809684c688005706125b804e1f9792d2b1b ]
+[ Upstream commit f8ba14b780273fd290ddf7ee0d7d7decb44cc365 ]
 
-Fix a wrong error checking in exynos_drm_dma.c module.
+skl_platform_register() uses krealloc. When krealloc is fail,
+then previous memory is not freed. The leak is also when soc
+component registration failed.
 
-In the exynos_drm_register_dma function, both arm_iommu_create_mapping()
-and iommu_get_domain_for_dev() functions are expected to return NULL as
-an error.
-
-However, the error checking is performed using the statement
-if(IS_ERR(mapping)), which doesn't provide a suitable error value.
-So check if 'mapping' is NULL, and if it is, return -ENODEV.
-
-This issue[1] was reported by Dan.
-
-Changelog v1:
-- fix build warning.
-
-[1] https://lore.kernel.org/all/33e52277-1349-472b-a55b-ab5c3462bfcf@moroto.mountain/
-
-Reported-by : Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Inki Dae <inki.dae@samsung.com>
+Signed-off-by: Kamil Duljas <kamil.duljas@gmail.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Link: https://lore.kernel.org/r/20231116224112.2209-2-kamil.duljas@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_dma.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_dma.c b/drivers/gpu/drm/exynos/exynos_drm_dma.c
-index a3c9d8b9e1a18..e07d31b9a921a 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_dma.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_dma.c
-@@ -133,18 +133,16 @@ int exynos_drm_register_dma(struct drm_device *drm, struct device *dev,
- 		return 0;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 6b2c8c6e7a00f..5195e012dc6d4 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1450,6 +1450,7 @@ int skl_platform_register(struct device *dev)
+ 		dais = krealloc(skl->dais, sizeof(skl_fe_dai) +
+ 				sizeof(skl_platform_dai), GFP_KERNEL);
+ 		if (!dais) {
++			kfree(skl->dais);
+ 			ret = -ENOMEM;
+ 			goto err;
+ 		}
+@@ -1462,8 +1463,10 @@ int skl_platform_register(struct device *dev)
  
- 	if (!priv->mapping) {
--		void *mapping;
-+		void *mapping = NULL;
- 
- 		if (IS_ENABLED(CONFIG_ARM_DMA_USE_IOMMU))
- 			mapping = arm_iommu_create_mapping(&platform_bus_type,
- 				EXYNOS_DEV_ADDR_START, EXYNOS_DEV_ADDR_SIZE);
- 		else if (IS_ENABLED(CONFIG_IOMMU_DMA))
- 			mapping = iommu_get_domain_for_dev(priv->dma_dev);
--		else
--			mapping = ERR_PTR(-ENODEV);
- 
--		if (IS_ERR(mapping))
--			return PTR_ERR(mapping);
-+		if (!mapping)
-+			return -ENODEV;
- 		priv->mapping = mapping;
- 	}
- 
+ 	ret = devm_snd_soc_register_component(dev, &skl_component,
+ 					 skl->dais, num_dais);
+-	if (ret)
++	if (ret) {
++		kfree(skl->dais);
+ 		dev_err(dev, "soc component registration failed %d\n", ret);
++	}
+ err:
+ 	return ret;
+ }
 -- 
 2.42.0
 
