@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 148B480C709
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6186980C705
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbjLKKrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        id S234459AbjLKKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:46:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234516AbjLKKqx (ORCPT
+        with ESMTP id S234445AbjLKKqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:46:53 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99558130
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:46:59 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-67aa0f5855cso17465776d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:46:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702291619; x=1702896419; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dbONbDTwPKE3MiL/eslKI++k2YglZ6miec7hwk3eDBk=;
-        b=dEzGdL7xlsXH7EW80M8rGghMQumaP3K/HrcnondofZ92PBvX8AaCloCQeoqF5Oaj/e
-         ULWt6O+3bKyauH/UFXMlKz6jp+L2yV81Jdm2qhNtmaQO7YZYfeGqYYK27qiViP08fc4t
-         +aoHzfs9g5cT4R8xx+bsUJL57zR/hXlqJP2/h5JwpcogXcsb+4fOaRpvfzMCRPMZq/t9
-         J7FLUhsE7q1ITm2IXEZR1fFZsPJcJD/hQWO6PRb7QtwkAB4U/tXvaSfbKx+fERn6Rwv6
-         1kfoHUFmRDMrIip/3t1PW4Qs/0QxTx3QorOCqvh5wzdMahgmJ6qpzshkEywnpQYanMsv
-         jH5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702291619; x=1702896419;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dbONbDTwPKE3MiL/eslKI++k2YglZ6miec7hwk3eDBk=;
-        b=qd2VreDRZUTCqrOEVhgm6bCQE/TGycAICKjt3s342Usec/KTjJCyaTdhXVE0bZyaPH
-         KvmrWsegVe2fUb8bqs8WUYh+91SrY0PYHU3P3Fp6qr9P79xNynfL1OmBEgH8K7GyxQvf
-         lvgDOTbrWDQKhbQ/3GbjU9d/68QmxIPpQgTCH/XNVXLiynXIXPG0+niDowgpk3a5jiGi
-         wXkAcHYWrAvvoZOhGsphJREBkJaDAWQfk9F69LCI21liRAAsdrVPgSYL65IJAFU+9tH1
-         nfL9cS/H6p7gvQWkZiFcXNdQpyiPLshK4oo4LMEZfdBl4jZtd75PsWlmWXi6mQSPijc+
-         PYHw==
-X-Gm-Message-State: AOJu0YzojfBIg0R3ugTB1CfQoDJfHUBPg8Icb+2tyVJC6WNHk7JsyKl8
-        VSWE14dgoHfxeBnE4ytHyCi0zjrnmMrhLMxTeaVIkA==
-X-Google-Smtp-Source: AGHT+IE5iESTgLHPyjCFsdOQibZaw2Ip1V5W7Ud/9oJ2fo3N5TyPUEV+pEprZ6kielHId9pGivF+X38bX3Nk/2TuZAE=
-X-Received: by 2002:a05:6214:20ee:b0:67a:d8ce:8e88 with SMTP id
- 14-20020a05621420ee00b0067ad8ce8e88mr3089154qvk.110.1702291618597; Mon, 11
- Dec 2023 02:46:58 -0800 (PST)
+        Mon, 11 Dec 2023 05:46:42 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD95DB;
+        Mon, 11 Dec 2023 02:46:46 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BB7fvGB010334;
+        Mon, 11 Dec 2023 10:46:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:from:to:cc:references
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=gfsSO4gaUDWuNNtV5zD/nWi9pPLJa4RDXsEvWGPH95Q=; b=Lj
+        ksot2AZXgDE8AcjG27iwae/k75nf2d+jb7Yu9Uacfv+BRxIfawJtAK2V8YwK0+0f
+        a1YiuCIQD9SnW9SZmdjPX7OUiwdGgKqYOQXlwPAjWX2lZqjX/zbpz0aWdNzR+kLm
+        8rg2xPZhWABOK4XprxsygeWt5KIEgPDMqLq/UasSGSbmutIazCwarQTO7k4IrIe2
+        NrNOPOty8a6UXNf37jtYv7bJ/RxA2WtfknykYnsYT+6dpq8HoN5czd3mf99a74qu
+        2dED8odd035wlzzIXY6Cvg8kI7BZr3U6mJ4mgmdP2HSO9U2dedKRoDjm501fKFsO
+        5mmTiQvo1bE4gdzDJheA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnhdu0bm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 10:46:43 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBAkgjM005987
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 10:46:42 GMT
+Received: from [10.216.63.6] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
+ 2023 02:46:38 -0800
+Message-ID: <02b16773-9592-8ecc-5243-fbaa5bc762b1@quicinc.com>
+Date:   Mon, 11 Dec 2023 16:16:34 +0530
 MIME-Version: 1.0
-References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-31-iii@linux.ibm.com>
-In-Reply-To: <20231121220155.1217090-31-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 11 Dec 2023 11:46:22 +0100
-Message-ID: <CAG_fn=XyTZHU45EhinUSm-+Thux4VPCpT-jyf=cP7hNPcTbK8g@mail.gmail.com>
-Subject: Re: [PATCH v2 30/33] s390/uaccess: Add KMSAN support to put_user()
- and get_user()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: (subset) [PATCH v2 1/4] dt-bindings: mfd: qcom,tcsr: Add
+ compatible for sm8250/sm8350
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     Bjorn Andersson <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1698253601-11957-1-git-send-email-quic_mojha@quicinc.com>
+ <170200426910.2871025.1931459275540622967.b4-ty@kernel.org>
+ <f521df97-dfd7-b56d-3799-0a72c22edf83@quicinc.com>
+In-Reply-To: <f521df97-dfd7-b56d-3799-0a72c22edf83@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nHuOMQzWWl3KUhJJX2KqpwhvHB5K_E7M
+X-Proofpoint-ORIG-GUID: nHuOMQzWWl3KUhJJX2KqpwhvHB5K_E7M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=610
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312110086
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,36 +85,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:03=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.co=
-m> wrote:
->
-> put_user() uses inline assembly with precise constraints, so Clang is
-> in principle capable of instrumenting it automatically. Unfortunately,
-> one of the constraints contains a dereferenced user pointer, and Clang
-> does not currently distinguish user and kernel pointers. Therefore
-> KMSAN attempts to access shadow for user pointers, which is not a right
-> thing to do.
->
-> An obvious fix to add __no_sanitize_memory to __put_user_fn() does not
-> work, since it's __always_inline. And __always_inline cannot be removed
-> due to the __put_user_bad() trick.
->
-> A different obvious fix of using the "a" instead of the "+Q" constraint
-> degrades the code quality, which is very important here, since it's a
-> hot path.
->
-> Instead, repurpose the __put_user_asm() macro to define
-> __put_user_{char,short,int,long}_noinstr() functions and mark them with
-> __no_sanitize_memory. For the non-KMSAN builds make them
-> __always_inline in order to keep the generated code quality. Also
-> define __put_user_{char,short,int,long}() functions, which call the
-> aforementioned ones and which *are* instrumented, because they call
-> KMSAN hooks, which may be implemented as macros.
->
-> The same applies to get_user() as well.
->
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-I think this patch makes sense, but I don't feel myself qualified
-enough to stamp it. Hope Heiko's ack is enough.
+
+On 12/11/2023 1:36 PM, Mukesh Ojha wrote:
+> Hi Bjorn,
+> 
+> I have said in one of the thread here,
+> 
+> https://lore.kernel.org/lkml/57eed7c3-e884-a28b-a1ff-e5aecbb11137@quicinc.com/
+> 
+> There is a wrong register offset given for sm8550 in 4/4.
+> Since, you applied the changes in your tree, shall i send
+> the separate patch for it, or would you mind fixing it ?
+
+Please ignore my mail, I saw you made the correction.
+Thanks.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=44b1f64cad5703c87918cc9ffbf9b79bb959418d
+
+-Mukesh
+
+> 
+> -Mukesh
+> 
+> On 12/8/2023 8:27 AM, Bjorn Andersson wrote:
+>>
+>> On Wed, 25 Oct 2023 22:36:38 +0530, Mukesh Ojha wrote:
+>>> Document the compatible for both sm8250 and sm8350 SoCs.
+>>>
+>>>
+>>
+>> Applied, thanks!
+>>
+>> [2/4] arm64: dts: qcom: sm8250: Add TCSR halt register space
+>>        commit: d59653233e8779e3fe082eb5635b9785f2095af6
+>> [3/4] arm64: dts: qcom: sm8350: Add TCSR halt register space
+>>        commit: 1accc6031d925c6045c4776d5f3646996b0b242a
+>> [4/4] arm64: dts: qcom: sm8550: Enable download mode register write
+>>        commit: 44b1f64cad5703c87918cc9ffbf9b79bb959418d
+>>
+>> Best regards,
