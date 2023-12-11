@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DA080D788
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C620580D79F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345368AbjLKSjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:39:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        id S1345371AbjLKSkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345340AbjLKSjq (ORCPT
+        with ESMTP id S1345340AbjLKSkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:39:46 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FC9CF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:39:51 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28865456abbso3426061a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702319991; x=1702924791; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CnXPcTsmT/cm9SReN3VMxlP9k/6LTC9VBWFDGvdk3vc=;
-        b=X7FbieZ5RMCBdjOI3aEtGzkFJz3YhHVfVDmGHgPZJB+vTB2FwiewZFVAA7VFiNHZHJ
-         3RWOcNMzyu3uIeX8qJyZKpNMbvtHO7JHUCYkFZrz7mK7cBzzziKJDJ4jBHFvGl7Fuf0k
-         vyve0fyXxQoTHy7RdLhDPUansPhB0PYToRfbTn5BGi1GqSo4Wfimt5QCySY3weW0rKek
-         ce/HNPoRewcVxKfIy8waChv8UCMps2L1Vj45FlUnR2fh1V+PGnOfyOYIsEIe8JSzDtuO
-         M0cpOMU0pNhPY/gGYXNLdj5Ih85SEiUhuk26/3mFpT8E5Zecp4lBMM4Q5e71G76FwuOB
-         scSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702319991; x=1702924791;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CnXPcTsmT/cm9SReN3VMxlP9k/6LTC9VBWFDGvdk3vc=;
-        b=b2vYJd0qjjlnEZRooxmFs54NSLUamQXrHm+BNxOGA42jBceZTD5WYM8VE9stSLW+hm
-         qz3AKyiPbXrF2qa8eJIkYh9CvbQU3zD7KV0CxwbAU1OolG1wmCAwD3MImN3hJOV2HE8o
-         +FubzMR7/8X+pUdhqqm4XxEczV1Yb55XT6BMquMMBzTZg9EmZX4n1/CLpZM7IMVu6Ezh
-         m7eK3qYof1f7zHkQhctd31idTdoaHqo5rCsEhLStrcLkVghK3cBKb1kolWS4WAG7AteT
-         dlaD/iUOigqPDkFUpJ87CxaqzZVTENd8AVqhxcDiZP/K9XnS1B7msnCEq6XQ0vLKsVOe
-         QvMQ==
-X-Gm-Message-State: AOJu0YxeYDjYs+zeB2u7eui6e8TYz7yatHlqKpO23IWNLg1OqBdjzlcW
-        7qnIBW7B4FUxiW1tjS8N+3R77mYpqxk=
-X-Google-Smtp-Source: AGHT+IEZ+D597fI3YkgertvHsMQ13vUm9XzxTBlLO7vz09KQJl1FzIz8kaDVHDpGppgPOfYAV7W4Qg==
-X-Received: by 2002:a17:90a:d318:b0:286:bc9c:327c with SMTP id p24-20020a17090ad31800b00286bc9c327cmr2192183pju.22.1702319990941;
-        Mon, 11 Dec 2023 10:39:50 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id mt20-20020a17090b231400b002853349e490sm8987614pjb.34.2023.12.11.10.39.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 10:39:50 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 11 Dec 2023 08:39:48 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
-        jiangshanlai@gmail.com, peterz@infradead.org
-Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Message-ID: <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
-References: <20230729135334.566138-1-atomlin@atomlin.com>
- <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
+        Mon, 11 Dec 2023 13:40:15 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D72AC;
+        Mon, 11 Dec 2023 10:40:20 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBDsDtl001856;
+        Mon, 11 Dec 2023 18:40:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=qcppdkim1; bh=MRRNuQONWClYR4eBG1E1+
+        q5vj4Ilwq/AJXvmsCIPt34=; b=TpTbgBZV02G9wloAMA/MpC3qVzdVI6IdPGdNK
+        UZD6tP4og3gwEuqbZ6knulcUx7EI5JDXi88lbVUVD36k9foS/MLAOG0U4MFCOtkZ
+        SfQjZJRmHO0wHM7YxuASCmNWclnLGNc6cnXa3aXl7AkeDvfv18qWejU6VvI52xKW
+        SO3wYAp83geuA1uniGSPiJ+cOcv+cdyE2Y+cBe+ST9WgqkPI/BOVDfclOAFNZw4D
+        6zZAqBcNeBsu39hy6+1V1QrLhpABpLC83ZZo9oPo0IMAkzahhHA7KgO0qK0mwCoK
+        JwPZvLVll7j3B4DgpoLNIsTV6ctVXSK8oafDcWXNnVFL77Vng==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux28s8wau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 18:40:12 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BBIeBgM014042
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 18:40:11 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Dec 2023 10:40:11 -0800
+Date:   Mon, 11 Dec 2023 10:40:10 -0800
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rpmsg: glink: Fix buffer overflow
+Message-ID: <20231211184010.GM1766637@hu-bjorande-lv.qualcomm.com>
+References: <20231211160221.2843339-1-hardevsinh.palaniya@siliconsignals.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+In-Reply-To: <20231211160221.2843339-1-hardevsinh.palaniya@siliconsignals.io>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: e8VfhhdK2sZICJzW7tRnNXJOMb_xuMQ5
+X-Proofpoint-GUID: e8VfhhdK2sZICJzW7tRnNXJOMb_xuMQ5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1011 lowpriorityscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ spamscore=0 mlxlogscore=397 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312110154
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,27 +79,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Dec 11, 2023 at 09:32:20PM +0530, Hardevsinh Palaniya wrote:
+> In qcom_glink_send_open_req() remove error: strcpy() 'channel->name'
+> too large for 'req.name' (1010102 vs 32)
+> 
 
-On Mon, Dec 11, 2023 at 03:51:57PM +0100, Juri Lelli wrote:
-> Guess this is a requirement because, if workqueue processing is stuck
-> for some reason, getting rescuers to run on the same set of cpus
-> workqueues have been restricted to already doesn't really have good
-> chances of making any progress?
+As far as I can tell, channel->name comes from the struct
+rpmsg_channel_info->name, which is a 32-byte array, and all code paths I
+can find either uses strscpy() or explicitly NUL-terminates this string.
 
-The only problem rescuers try to solve is deadlocks caused by lack of
-memory, so on the cpu side, it just follows whatever worker pool it's trying
-to help.
+I'm curious to know which path took us here.
 
-> Wonder if we still might need some sort of fail hard/warn mode in case
-> strict isolation is in place? Or maybe we have that already?
+> Signed-off-by: Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>
+> 
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 82d460ff4777..2d6a592e1c72 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
+> @@ -479,7 +479,7 @@ static int qcom_glink_send_open_req(struct qcom_glink *glink,
+>  	req.msg.cmd = cpu_to_le16(GLINK_CMD_OPEN);
+>  	req.msg.param1 = cpu_to_le16(channel->lcid);
+>  	req.msg.param2 = cpu_to_le32(name_len);
+> -	strcpy(req.name, channel->name);
+> +	strscpy_pad(req.name, channel->name, sizeof(req.name));
 
-For both percpu and unbound workqueues, the rescuers just follow whatever
-pool it's trying to help at the moment, so it shouldn't cause any surprises
-in terms of isolation. It just temporarily joins the already active but
-stuck pool.
+I think this patch is incomplete. While it makes sure we don't overwrite
+the stack. name_len is strlen(channel->name) + 1 and the amount of data
+sent out is based on name_len.
 
-Thanks.
+As such, if you can get here with a @name of arbitrary length, then you
+can control how much of the stack we're going to now leak to the
+recipient.
 
--- 
-tejun
+Regards,
+Bjorn
+
+>  
+>  	ret = qcom_glink_tx(glink, &req, req_len, NULL, 0, true);
+>  	if (ret)
+> -- 
+> 2.25.1
+> 
+> 
