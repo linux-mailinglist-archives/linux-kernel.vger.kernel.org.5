@@ -2,267 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A069580D33F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A667980D341
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344299AbjLKRFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
+        id S1344277AbjLKRGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:06:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjLKRFE (ORCPT
+        with ESMTP id S1343918AbjLKRGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:05:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E357B4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:05:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702314309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vf61yoq47ivJlsZLQPeNQqLuBRNn9/vpoIvzy095ZJA=;
-        b=chIFSCY75sbRrZEGJVrcpOYr/jQNUD6nidzfvlJOYIwwyLTMCZRmYJiQfqtS/RZHi7Z4qJ
-        ZwcN2ZCkZzk+dXnKWxVbUrbBstqCCE5++ofJjr2KkBtdFQv8pq+fyRCB2TKf2LX0rgcEA/
-        PXvOMu1qgxx7T0A4d0V8i/Ak6gs34uw=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-_kuOjmiRP3SM0rorJJWCEw-1; Mon, 11 Dec 2023 12:05:07 -0500
-X-MC-Unique: _kuOjmiRP3SM0rorJJWCEw-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fb1f23d1bcso8215093fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:05:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702314306; x=1702919106;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vf61yoq47ivJlsZLQPeNQqLuBRNn9/vpoIvzy095ZJA=;
-        b=eKIHYe6cg+p+xeWpj25/L3RKePJndwUU763TJeN/ypNoHUbpNc1vzPSRcjRTdn08H1
-         wiBQ0O1HQufc/7r2t0a/1sCKuV12M/KUJZ1JjJuGTu/aT+B8vk4tExuomgKmchSlToQx
-         u8c8Z+PYCGQ7yZdk8sVsNSj6PpvjISsutHXPIksWPo95ep6D2K+KW733XFVI2wDl9COH
-         /ETBLwZ5Yu0fc6NSlAk7C1Qx0OzTHSqdfWUPfENNxsloRPA4Ckzzb/Ah2nmIyL3Orl6p
-         pC8jPY1EV2R4Noap3j+HuwnevaEf9pg/Zq8Wx29Emdy6hyZ8ufHBeia6+5SRfQqUW+6w
-         VRxw==
-X-Gm-Message-State: AOJu0Yy1Mx7Tib/ofoPXpW9PDDPY7eSrepmA3IVXnnjtbHYu+T+BL0rx
-        Y9D/E9oJLWsK5CK6N920khYhwTf2C17abB9U15m0HIw+Z4NXcxrrauHBrdpl2sYWzy17/dKtAZY
-        xMIafc+Nrih3RNUDgdgRW5uZb
-X-Received: by 2002:a05:6870:f80a:b0:1fb:75a:c427 with SMTP id fr10-20020a056870f80a00b001fb075ac427mr4985675oab.80.1702314306450;
-        Mon, 11 Dec 2023 09:05:06 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFhrETJonEXrQjlh2mPHiZP3//QFKXmo58R+PKFDFVyI6IF3dcDP9kAOwdekNmdu56hvOvRw==
-X-Received: by 2002:a05:6870:f80a:b0:1fb:75a:c427 with SMTP id fr10-20020a056870f80a00b001fb075ac427mr4985640oab.80.1702314306116;
-        Mon, 11 Dec 2023 09:05:06 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id hf15-20020a0568707a0f00b001fae2d2630dsm2514301oab.18.2023.12.11.09.05.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:05:05 -0800 (PST)
-Date:   Mon, 11 Dec 2023 10:05:01 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH 2/3] vfio: Add VFIO_DEVICE_PASID_[AT|DE]TACH_IOMMUFD_PT
-Message-ID: <20231211100501.1c4032ce.alex.williamson@redhat.com>
-In-Reply-To: <20231127063909.129153-3-yi.l.liu@intel.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
-        <20231127063909.129153-3-yi.l.liu@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Dec 2023 12:06:33 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFE08E;
+        Mon, 11 Dec 2023 09:06:39 -0800 (PST)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BBB4kVc008107;
+        Mon, 11 Dec 2023 18:06:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=V+n7Sp5bVFSiw+ZArYvjC3tZ4rpfA0oH6dYaEQW1ZSk=; b=0O
+        Vo0g4/xaHHqwhMs9/fv30WC7oESqPBU/8vVgq9AUMcY+votQ0nDWL7uIO1AJy+eZ
+        LhnK5vLPJPuMbO4rG45gV4gCUsYXkI1VjRrlmR5d7gGZhXIjXim4tBjDEwBKF36S
+        8J4K5lm9VJ4OO9VqyZaOmb6UDSNyw6E3A1+JBJhYAzHNhx+Up48vntOeWRZJuMWu
+        Nwzu5/H6bSa1+XQy4qpNNvEjgrELXzhDiNRogfkf4eUpkA5+XUjp4rwr3wjEKjF7
+        KTtsyYby42gEBKzexDGvGKB3ZNpZTFWFndQMRFL/wHdIfz481SgKhEyWrABuybVZ
+        Ot2O0yQt4BlB6Fl3aDIg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvg0gqnku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 18:06:35 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D7B0710005C;
+        Mon, 11 Dec 2023 18:06:33 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5B0DF280A02;
+        Mon, 11 Dec 2023 18:06:33 +0100 (CET)
+Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
+ 2023 18:06:32 +0100
+Message-ID: <485290b9-8150-47c1-9a59-771a8e3848e3@foss.st.com>
+Date:   Mon, 11 Dec 2023 18:06:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] tools/counter: add a flexible watch events tool
+To:     William Breathitt Gray <william.gray@linaro.org>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
+ <20231206164726.418990-2-fabrice.gasnier@foss.st.com>
+ <ZXcxaFRuGJg6kYuT@ubuntu-server-vm-macos>
+Content-Language: en-US
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+In-Reply-To: <ZXcxaFRuGJg6kYuT@ubuntu-server-vm-macos>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.20.59]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-11_07,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Nov 2023 22:39:08 -0800
-Yi Liu <yi.l.liu@intel.com> wrote:
-
-> This adds ioctls for the userspace to attach a given pasid of a vfio
-> device to/from an IOAS/HWPT.
+On 12/11/23 16:57, William Breathitt Gray wrote:
+> On Wed, Dec 06, 2023 at 05:47:25PM +0100, Fabrice Gasnier wrote:
+>> This adds a new counter tool to be able to test various watch events.
+>> A flexible watch array can be populated from command line, each field
+>> may be tuned with a dedicated command line sub-option in "--watch" string.
+>> Several watch events can be defined, each can have specific watch options,
+>> by using "--watch <watch 1 options> --watch <watch 2 options>".
+>> Watch options is a comma separated list.
+>>
+>> It also comes with a simple default watch (to monitor overflow/underflow
+>> events), used when no watch parameters are provided. It's equivalent to:
+>> counter_watch_events -w comp_count,scope_count,evt_ovf_udf
+>>
+>> The print_usage() routine proposes another example, from the command line,
+>> which generates a 2 elements watch array, to monitor:
+>> - overflow underflow events
+>> - capture events, on channel 3, that reads read captured data by
+>>   specifying the component id (capture3_component_id being 7 here).
+>>
+>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+>> ---
+>> Changes in v3:
+>> - Free the allocated memory, also close the char device
+>> - Split of another patch series[1].
+>> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier@foss.st.com/
 > 
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
->  drivers/vfio/device_cdev.c | 45 +++++++++++++++++++++++++++++++
->  drivers/vfio/vfio.h        |  4 +++
->  drivers/vfio/vfio_main.c   |  8 ++++++
->  include/uapi/linux/vfio.h  | 55 ++++++++++++++++++++++++++++++++++++++
->  4 files changed, 112 insertions(+)
+> Hi Fabrice,
 > 
-> diff --git a/drivers/vfio/device_cdev.c b/drivers/vfio/device_cdev.c
-> index e75da0a70d1f..c2ac7ed44537 100644
-> --- a/drivers/vfio/device_cdev.c
-> +++ b/drivers/vfio/device_cdev.c
-> @@ -210,6 +210,51 @@ int vfio_df_ioctl_detach_pt(struct vfio_device_file *df,
->  	return 0;
->  }
->  
-> +int vfio_df_ioctl_pasid_attach_pt(struct vfio_device_file *df,
-> +				  struct vfio_device_pasid_attach_iommufd_pt __user *arg)
-> +{
-> +	struct vfio_device *device = df->device;
-> +	struct vfio_device_pasid_attach_iommufd_pt attach;
-> +	unsigned long minsz;
-> +	int ret;
-> +
-> +	minsz = offsetofend(struct vfio_device_pasid_attach_iommufd_pt, pt_id);
-> +
-> +	if (copy_from_user(&attach, arg, minsz))
-> +		return -EFAULT;
-> +
-> +	if (attach.argsz < minsz || attach.flags)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&device->dev_set->lock);
-> +	ret = device->ops->pasid_attach_ioas(device, attach.pasid, &attach.pt_id);
+> Thank you for splitting this from the other patches. I think you may
+> still be leaking memory in a few places below.
+> 
+>> +	if (nwatch) {
+>> +		watches = calloc(nwatch, sizeof(*watches));
+>> +		if (!watches) {
+>> +			perror("Error allocating watches");
+>> +			return 1;
+>> +		}
+>> +	} else {
+>> +		/* default to simple watch example */
+>> +		watches = simple_watch;
+>> +		nwatch = ARRAY_SIZE(simple_watch);
+>> +	}
+> 
+> If we go down the calloc() path, then we should free the memory
+> before any return.
 
-These callbacks were only implemented for vfio-pci in the previous
-patch but they're called unconditionally.  Thanks,
+Hi William,
 
-Alex
+Ah yes, I missed that. I'll fix it in later revision, Thanks!
 
-> +	mutex_unlock(&device->dev_set->lock);
-> +
-> +	return ret;
-> +}
-> +
-> +int vfio_df_ioctl_pasid_detach_pt(struct vfio_device_file *df,
-> +				  struct vfio_device_pasid_detach_iommufd_pt __user *arg)
-> +{
-> +	struct vfio_device *device = df->device;
-> +	struct vfio_device_pasid_detach_iommufd_pt detach;
-> +	unsigned long minsz;
-> +
-> +	minsz = offsetofend(struct vfio_device_pasid_detach_iommufd_pt, flags);
-> +
-> +	if (copy_from_user(&detach, arg, minsz))
-> +		return -EFAULT;
-> +
-> +	if (detach.argsz < minsz || detach.flags)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&device->dev_set->lock);
-> +	device->ops->pasid_detach_ioas(device, detach.pasid);
-> +	mutex_unlock(&device->dev_set->lock);
-> +
-> +	return 0;
-> +}
-> +
->  static char *vfio_device_devnode(const struct device *dev, umode_t *mode)
->  {
->  	return kasprintf(GFP_KERNEL, "vfio/devices/%s", dev_name(dev));
-> diff --git a/drivers/vfio/vfio.h b/drivers/vfio/vfio.h
-> index 307e3f29b527..d228cdb6b345 100644
-> --- a/drivers/vfio/vfio.h
-> +++ b/drivers/vfio/vfio.h
-> @@ -353,6 +353,10 @@ int vfio_df_ioctl_attach_pt(struct vfio_device_file *df,
->  			    struct vfio_device_attach_iommufd_pt __user *arg);
->  int vfio_df_ioctl_detach_pt(struct vfio_device_file *df,
->  			    struct vfio_device_detach_iommufd_pt __user *arg);
-> +int vfio_df_ioctl_pasid_attach_pt(struct vfio_device_file *df,
-> +				  struct vfio_device_pasid_attach_iommufd_pt __user *arg);
-> +int vfio_df_ioctl_pasid_detach_pt(struct vfio_device_file *df,
-> +				  struct vfio_device_pasid_detach_iommufd_pt __user *arg);
->  
->  #if IS_ENABLED(CONFIG_VFIO_DEVICE_CDEV)
->  void vfio_init_device_cdev(struct vfio_device *device);
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index 8d4995ada74a..ff50c239873d 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -1240,6 +1240,14 @@ static long vfio_device_fops_unl_ioctl(struct file *filep,
->  		case VFIO_DEVICE_DETACH_IOMMUFD_PT:
->  			ret = vfio_df_ioctl_detach_pt(df, uptr);
->  			goto out;
-> +
-> +		case VFIO_DEVICE_PASID_ATTACH_IOMMUFD_PT:
-> +			ret = vfio_df_ioctl_pasid_attach_pt(df, uptr);
-> +			goto out;
-> +
-> +		case VFIO_DEVICE_PASID_DETACH_IOMMUFD_PT:
-> +			ret = vfio_df_ioctl_pasid_detach_pt(df, uptr);
-> +			goto out;
->  		}
->  	}
->  
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 94b3badefde3..495193629029 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -977,6 +977,61 @@ struct vfio_device_detach_iommufd_pt {
->  
->  #define VFIO_DEVICE_DETACH_IOMMUFD_PT		_IO(VFIO_TYPE, VFIO_BASE + 20)
->  
-> +/*
-> + * VFIO_DEVICE_PASID_ATTACH_IOMMUFD_PT - _IOW(VFIO_TYPE, VFIO_BASE + 21,
-> + *					      struct vfio_device_pasid_attach_iommufd_pt)
-> + * @argsz:	User filled size of this data.
-> + * @flags:	Must be 0.
-> + * @pasid:	The pasid to be attached.
-> + * @pt_id:	Input the target id which can represent an ioas or a hwpt
-> + *		allocated via iommufd subsystem.
-> + *		Output the input ioas id or the attached hwpt id which could
-> + *		be the specified hwpt itself or a hwpt automatically created
-> + *		for the specified ioas by kernel during the attachment.
-> + *
-> + * Associate a pasid (of a cdev device) with an address space within the
-> + * bound iommufd. Undo by VFIO_DEVICE_PASID_DETACH_IOMMUFD_PT or device fd
-> + * close. This is only allowed on cdev fds.
-> + *
-> + * If a pasid is currently attached to a valid hw_pagetable (hwpt), without
-> + * doing a VFIO_DEVICE_PASID_DETACH_IOMMUFD_PT, a second
-> + * VFIO_DEVICE_PASID_ATTACH_IOMMUFD_PT ioctl passing in another hwpt id is
-> + * allowed. This action, also known as a hwpt replacement, will replace the
-> + * pasid's currently attached hwpt with a new hwpt corresponding to the given
-> + * @pt_id.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +struct vfio_device_pasid_attach_iommufd_pt {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +	__u32	pasid;
-> +	__u32	pt_id;
-> +};
-> +
-> +#define VFIO_DEVICE_PASID_ATTACH_IOMMUFD_PT	_IO(VFIO_TYPE, VFIO_BASE + 21)
-> +
-> +/*
-> + * VFIO_DEVICE_PASID_DETACH_IOMMUFD_PT - _IOW(VFIO_TYPE, VFIO_BASE + 22,
-> + *					      struct vfio_device_pasid_detach_iommufd_pt)
-> + * @argsz:	User filled size of this data.
-> + * @flags:	Must be 0.
-> + * @pasid:	The pasid to be detached.
-> + *
-> + * Remove the association of a pasid (of a cdev device) and its current
-> + * associated address space.  After it, the pasid of the device should be in
-> + * a blocking DMA state.  This is only allowed on cdev fds.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +struct vfio_device_pasid_detach_iommufd_pt {
-> +	__u32	argsz;
-> +	__u32	flags;
-> +	__u32	pasid;
-> +};
-> +
-> +#define VFIO_DEVICE_PASID_DETACH_IOMMUFD_PT	_IO(VFIO_TYPE, VFIO_BASE + 22)
-> +
->  /*
->   * Provide support for setting a PCI VF Token, which is used as a shared
->   * secret between PF and VF drivers.  This feature may only be set on a
+Best Regards,
+Fabrice
 
+> 
+>> +				case WATCH_CHANNEL:
+>> +					if (!value) {
+>> +						fprintf(stderr, "Missing chan=<number>\n");
+>> +						return -EINVAL;
+> 
+> Such as here.
+> 
+>> +					}
+>> +					watches[i].channel = strtoul(value, NULL, 10);
+>> +					if (errno)
+>> +						return -errno;
+> 
+> Here.
+> 
+>> +					break;
+>> +				case WATCH_ID:
+>> +					if (!value) {
+>> +						fprintf(stderr, "Missing id=<number>\n");
+>> +						return -EINVAL;
+> 
+> Here.
+> 
+>> +					}
+>> +					watches[i].component.id = strtoul(value, NULL, 10);
+>> +					if (errno)
+>> +						return -errno;
+> 
+> Here.
+> 
+>> +					break;
+>> +				case WATCH_PARENT:
+>> +					if (!value) {
+>> +						fprintf(stderr, "Missing parent=<number>\n");
+>> +						return -EINVAL;
+> 
+> Here.
+> 
+>> +					}
+>> +					watches[i].component.parent = strtoul(value, NULL, 10);
+>> +					if (errno)
+>> +						return -errno;
+> 
+> Here.
+> 
+>> +					break;
+>> +				default:
+>> +					fprintf(stderr, "Unknown suboption '%s'\n", value);
+>> +					return -EINVAL;
+> 
+> Here.
+> 
+>> +	ret = asprintf(&device_name, "/dev/counter%d", dev_num);
+>> +	if (ret < 0)
+>> +		return -ENOMEM;
+> 
+> Here.
+> 
+>> +	fd = open(device_name, O_RDWR);
+>> +	if (fd == -1) {
+>> +		perror("Unable to open counter device");
+>> +		return 1;
+> 
+> Here.
+> 
+>> +	}
+>> +
+>> +	for (i = 0; i < nwatch; i++) {
+>> +		ret = ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + i);
+>> +		if (ret == -1) {
+>> +			fprintf(stderr, "Error adding watches[%d]: %s\n", i,
+>> +				strerror(errno));
+>> +			return 1;
+> 
+> Here.
+> 
+>> +		}
+>> +	}
+>> +
+>> +	ret = ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
+>> +	if (ret == -1) {
+>> +		perror("Error enabling events");
+>> +		return 1;
+> 
+> Here.
+> 
+>> +	}
+>> +
+>> +	for (i = 0; loop <= 0 || i < loop; i++) {
+>> +		ret = read(fd, &event_data, sizeof(event_data));
+>> +		if (ret == -1) {
+>> +			perror("Failed to read event data");
+>> +			return 1;
+> 
+> Here.
+> 
+>> +		}
+>> +
+>> +		if (ret != sizeof(event_data)) {
+>> +			fprintf(stderr, "Failed to read event data\n");
+>> +			return -EIO;
+> 
+> And here.
+> 
+>> +	if (watches != simple_watch)
+>> +		free(watches);
+>> +	close(fd);
+>> +
+>> +	return 0;
+> 
+> We finally free watches here, close the file descriptor, and return. So
+> instead of returning an error code directly when you encounter a
+> problem, I would do an unwinding goto section like the following
+> instead.
+> 
+> First, the open() call occurs after the calloc(), so move the close()
+> call above the watches check so that we unwind in a first-in-last-out
+> order. Next, add a label to mark the file descriptor close section, and
+> another label to mark the watches free section. Then, rather than
+> returning 0 directly, return a retval that we can set. That way, when
+> you need to return on an error, set retval to the error code and goto
+> the file descriptor close label if we're past the open() call, or the
+> watches free label if we're just past the calloc() call.
+> 
+> William Breathitt Gray
