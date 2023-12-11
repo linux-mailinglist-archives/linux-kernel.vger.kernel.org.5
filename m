@@ -2,255 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C1380D471
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848D580D4D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344717AbjLKRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        id S1345094AbjLKR7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjLKRts (ORCPT
+        with ESMTP id S1345074AbjLKR7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:49:48 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA81E95;
-        Mon, 11 Dec 2023 09:49:54 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3BBA11FBA7;
-        Mon, 11 Dec 2023 17:49:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702316993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
-        b=Mf5cRpVZ5GM9ghuslV9oPpAafIYRuwI93WQVJf4B+qgNuAAF9Gzv6/kfc0QuDlTcTEuCRa
-        c2mUzap33UGntnsg1iTuoM9srE/jJQ4sTOhS/OoOMBdlRulDMx3YTg7u/+klnrYExuMFzz
-        1+qxUPTP/6GEAc1yB721gmcPZyGGao4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702316993;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
-        b=vlQqGyRmzMB4lY+KXhdWBUUhIgZZkJ41LWZtGOL3JvD4qcgQHLfeKzxUlfA2fPt9TIfs/D
-        ML2z9OGUgqEMsaBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702316993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
-        b=Mf5cRpVZ5GM9ghuslV9oPpAafIYRuwI93WQVJf4B+qgNuAAF9Gzv6/kfc0QuDlTcTEuCRa
-        c2mUzap33UGntnsg1iTuoM9srE/jJQ4sTOhS/OoOMBdlRulDMx3YTg7u/+klnrYExuMFzz
-        1+qxUPTP/6GEAc1yB721gmcPZyGGao4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702316993;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
-        b=vlQqGyRmzMB4lY+KXhdWBUUhIgZZkJ41LWZtGOL3JvD4qcgQHLfeKzxUlfA2fPt9TIfs/D
-        ML2z9OGUgqEMsaBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B10D13A6B;
-        Mon, 11 Dec 2023 17:49:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id Q9d8CsFLd2VEIwAAn2gu4w
-        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:49:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id C0B16A07E3; Mon, 11 Dec 2023 18:49:52 +0100 (CET)
-Date:   Mon, 11 Dec 2023 18:49:52 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, willy@infradead.org,
-        akpm@linux-foundation.org, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Message-ID: <20231211174952.mdwyh7fmu7rjzfn3@quack3>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231204144106.fk4yxc422gppifsz@quack3>
- <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
- <20231206193757.k5cppxqew6zjmbx3@quack3>
- <63b1e234-e005-a62b-82c5-fa7acf26d53a@huawei.com>
+        Mon, 11 Dec 2023 12:59:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8D693
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:59:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702317556; x=1733853556;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=PsW2ndOHwv2IudZ4G4zSXL7Cdy6YddJQIjcd3yWNPwA=;
+  b=ewFHaJ/o1Swk9kVnftL7+xRVjvuSU/iw7r/kSaBQWsrcqUJuTEsbDUSx
+   vCBeijs0uSWXPitLvu8tiZTi4W/+kgUE4THvSn88FUKG1dmozRSRmX8fw
+   XUeSRAlZIUJkNQFtnfcBZq57XwVGnRNuhtPn/QYujVbQHH4LaNZ2Nd0iE
+   PaC8NJM8AVCUaMlm1rMGCry/ixQyWWj3FB+7Q6Jz5bVtI8eETqM+/s8wv
+   XlIGJYGFmsoTpRk2SnxO+G4OTk6iseueqas/9Smnz9hxxIJ4f0aUhqIhm
+   6LNnzNTwnckzNUuhqY4QiUzc7n8mIU1PDCiuxzXvN3IMmDm+qHFBpuuKO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1502265"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="1502265"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 09:50:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="839111612"
+X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
+   d="scan'208";a="839111612"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Dec 2023 09:50:47 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCkQX-000IJ4-0D;
+        Mon, 11 Dec 2023 17:50:45 +0000
+Date:   Tue, 12 Dec 2023 01:50:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Deepak Kumar Singh <quic_deesin@quicinc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>
+Subject: drivers/soc/qcom/smem.c:1056:16: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312120157.td2QsaAc-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <63b1e234-e005-a62b-82c5-fa7acf26d53a@huawei.com>
-X-Spam-Score: 5.80
-X-Spamd-Result: default: False [5.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.10)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         R_RATELIMIT(0.00)[to_ip_from(RL9mptuuj8f371ag1nhgyt86ac)];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,gmail.com,huawei.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
-X-Spam-Score: 5.80
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-12-23 22:15:55, Baokun Li wrote:
-> On 2023/12/7 3:37, Jan Kara wrote:
-> > On Tue 05-12-23 20:50:30, Baokun Li wrote:
-> > > On 2023/12/4 22:41, Jan Kara wrote:
-> > > > On Mon 04-12-23 21:50:18, Baokun Li wrote:
-> > > > > On 2023/12/4 20:11, Jan Kara wrote:
-> > > > > The problem is with a one-master-twoslave MYSQL database with three
-> > > > > physical machines, and using sysbench pressure testing on each of the
-> > > > > three machines, the problem occurs about once every two to three hours.
-> > > > > 
-> > > > > The problem is with the relay log file, and when the problem occurs, the
-> > > > > middle dozens of bytes of the file are read as all zeros, while the data on
-> > > > > disk is not. This is a journal-like file where a write process gets the data
-> > > > > from
-> > > > > the master node and writes it locally, and another replay process reads the
-> > > > > file and performs the replay operation accordingly (some SQL statements).
-> > > > > The problem is that when replaying, it finds that the data read is
-> > > > > corrupted,
-> > > > > not valid SQL data, while the data on disk is normal.
-> > > > > 
-> > > > > It's not confirmed that buffered reads vs direct IO writes is actually
-> > > > > causing this issue, but this is the only scenario that we can reproduce
-> > > > > with our local simplified scripts. Also, after merging in patch 1, the
-> > > > > MYSQL pressure test scenario has now been tested for 5 days and has not
-> > > > > been reproduced.
-> > > > > 
-> > > > > I'll double-check the problem scenario, although buffered reads with
-> > > > > buffered writes doesn't seem to have this problem.
-> > > > Yeah, from what you write it seems that the replay code is using buffered
-> > > > reads on the journal file. I guess you could confirm that with a bit of
-> > > > kernel tracing but the symptoms look pretty convincing. Did you try talking
-> > > > to MYSQL guys about why they are doing this?
-> > > The operations performed on the relay log file are buffered reads and
-> > > writes, which I confirmed with the following bpftrace script:
-> > > ```
-> > > #include <linux/fs.h>
-> > > #include <linux/path.h>
-> > > #include <linux/dcache.h>
-> > > 
-> > > kprobe:generic_file_buffered_read /!strncmp(str(((struct kiocb
-> > > *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
-> > >      printf("read path: %s\n", str(((struct kiocb
-> > > *)arg0)->ki_filp->f_path.dentry->d_name.name));
-> > > }
-> > > 
-> > > kprobe:ext4_buffered_write_iter /!strncmp(str(((struct kiocb
-> > > *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
-> > >      printf("write path: %s\n", str(((struct kiocb
-> > > *)arg0)->ki_filp->f_path.dentry->d_name.name));
-> > > }
-> > > ```
-> > > I suspect there are DIO writes causing the problem, but I haven't caught
-> > > any DIO writes to such files via bpftrace.
-> > Interesting. Not sure how your partially zeroed-out buffers could happen
-> > with fully buffered IO.
-> > 
-> After looking at the code again and again, the following concurrency
-> seems to bypass the memory barrier:
-> 
-> ext4_buffered_write_iter
->  generic_perform_write
->   copy_page_from_iter_atomic
->   ext4_da_write_end
->    ext4_da_do_write_end
->     block_write_end
->      __block_commit_write
->       folio_mark_uptodate
->        smp_wmb()
->        set_bit(PG_uptodate, folio_flags(folio, 0))
->     i_size_write(inode, pos + copied)
->     // write isize 2048
->     unlock_page(page)
-> 
-> ext4_file_read_iter
->  generic_file_read_iter
->   filemap_read
->    filemap_get_pages
->     filemap_get_read_batch
->     folio_test_uptodate(folio)
->      ret = test_bit(PG_uptodate, folio_flags(folio, 0));
->      if (ret)
->       smp_rmb();
->       // The read barrier here ensures
->       // that data 0-2048 in the page is synchronized.
->                            ext4_buffered_write_iter
->                             generic_perform_write
->                              copy_page_from_iter_atomic
->                              ext4_da_write_end
->                               ext4_da_do_write_end
->                                block_write_end
->                                 __block_commit_write
->                                  folio_mark_uptodate
->                                   smp_wmb()
->                                   set_bit(PG_uptodate, folio_flags(folio,
-> 0))
->                                i_size_write(inode, pos + copied)
->                                // write isize 4096
->                                unlock_page(page)
->    // read isize 4096
->    isize = i_size_read(inode)
->    // But there is no read barrier here,
->    // so the data in the 2048-4096 range
->    // may not be synchronized yet !!!
->    copy_page_to_iter()
->    // copyout 4096
-> 
-> In the concurrency above, we read the updated i_size, but there is
-> no read barrier to ensure that the data in the page is the same as
-> the i_size at this point. Therefore, we may copy the unsynchronized
-> page out. Is it normal for us to read zero-filled data in this case?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+commit: 20bb6c9de1b7e13f11d2ffe73686f4449c426807 soc: qcom: smem: map only partitions used by local HOST
+date:   1 year, 8 months ago
+config: sh-randconfig-r111-20231116 (https://download.01.org/0day-ci/archive/20231212/202312120157.td2QsaAc-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231212/202312120157.td2QsaAc-lkp@intel.com/reproduce)
 
-Indeed, I have checked and filemap_read() (but this dates back even to old
-do_generic_file_read() code) indeed does copy data only after checking
-uptodate flag and then sampling i_size so we may be copying state in the
-middle of the racing write and indeed there is nothing which would prevent
-prefetching page data before fetching inode size. I agree this is kind of
-nasty so I think adding a read barrier between i_size_read() and
-copy_page_to_iter() makes sense. Does it fix your issue with MYSQL?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312120157.td2QsaAc-lkp@intel.com/
 
-								Honza
+sparse warnings: (new ones prefixed by >>)
+   drivers/soc/qcom/smem.c:422:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_header *header @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:422:16: sparse:     expected struct smem_header *header
+   drivers/soc/qcom/smem.c:422:16: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:507:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_header *header @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:507:16: sparse:     expected struct smem_header *header
+   drivers/soc/qcom/smem.c:507:16: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:520:50: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
+   drivers/soc/qcom/smem.c:520:50: sparse:     expected void *
+   drivers/soc/qcom/smem.c:520:50: sparse:     got void [noderef] __iomem *
+   drivers/soc/qcom/smem.c:648:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_partition_header *phdr @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:648:22: sparse:     expected struct smem_partition_header *phdr
+   drivers/soc/qcom/smem.c:648:22: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:653:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_partition_header *phdr @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:653:22: sparse:     expected struct smem_partition_header *phdr
+   drivers/soc/qcom/smem.c:653:22: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:657:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_header *header @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:657:24: sparse:     expected struct smem_header *header
+   drivers/soc/qcom/smem.c:657:24: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:667:30: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   drivers/soc/qcom/smem.c:667:30: sparse:    void *
+   drivers/soc/qcom/smem.c:667:30: sparse:    void [noderef] __iomem *
+   drivers/soc/qcom/smem.c:688:36: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/qcom/smem.c:697:28: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/qcom/smem.c:706:36: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/qcom/smem.c:721:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_header *header @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:721:16: sparse:     expected struct smem_header *header
+   drivers/soc/qcom/smem.c:721:16: sparse:     got void [noderef] __iomem *virt_base
+   drivers/soc/qcom/smem.c:754:57: sparse: sparse: restricted __le32 degrades to integer
+   drivers/soc/qcom/smem.c:775:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_partition_header *header @@     got void [noderef] __iomem * @@
+   drivers/soc/qcom/smem.c:775:16: sparse:     expected struct smem_partition_header *header
+   drivers/soc/qcom/smem.c:775:16: sparse:     got void [noderef] __iomem *
+   drivers/soc/qcom/smem.c:926:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_ptable *ptable @@     got void [noderef] __iomem * @@
+   drivers/soc/qcom/smem.c:926:22: sparse:     expected struct smem_ptable *ptable
+   drivers/soc/qcom/smem.c:926:22: sparse:     got void [noderef] __iomem *
+   drivers/soc/qcom/smem.c:1035:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct smem_header *header @@     got void [noderef] __iomem *virt_base @@
+   drivers/soc/qcom/smem.c:1035:16: sparse:     expected struct smem_header *header
+   drivers/soc/qcom/smem.c:1035:16: sparse:     got void [noderef] __iomem *virt_base
+>> drivers/soc/qcom/smem.c:1056:16: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got restricted __le32 * @@
+   drivers/soc/qcom/smem.c:1056:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/soc/qcom/smem.c:1056:16: sparse:     got restricted __le32 *
+   drivers/soc/qcom/smem.c:1056:52: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got restricted __le32 * @@
+   drivers/soc/qcom/smem.c:1056:52: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/soc/qcom/smem.c:1056:52: sparse:     got restricted __le32 *
+
+vim +1056 drivers/soc/qcom/smem.c
+
+   973	
+   974	static int qcom_smem_probe(struct platform_device *pdev)
+   975	{
+   976		struct smem_header *header;
+   977		struct reserved_mem *rmem;
+   978		struct qcom_smem *smem;
+   979		unsigned long flags;
+   980		size_t array_size;
+   981		int num_regions;
+   982		int hwlock_id;
+   983		u32 version;
+   984		u32 size;
+   985		int ret;
+   986		int i;
+   987	
+   988		num_regions = 1;
+   989		if (of_find_property(pdev->dev.of_node, "qcom,rpm-msg-ram", NULL))
+   990			num_regions++;
+   991	
+   992		array_size = num_regions * sizeof(struct smem_region);
+   993		smem = devm_kzalloc(&pdev->dev, sizeof(*smem) + array_size, GFP_KERNEL);
+   994		if (!smem)
+   995			return -ENOMEM;
+   996	
+   997		smem->dev = &pdev->dev;
+   998		smem->num_regions = num_regions;
+   999	
+  1000		rmem = of_reserved_mem_lookup(pdev->dev.of_node);
+  1001		if (rmem) {
+  1002			smem->regions[0].aux_base = rmem->base;
+  1003			smem->regions[0].size = rmem->size;
+  1004		} else {
+  1005			/*
+  1006			 * Fall back to the memory-region reference, if we're not a
+  1007			 * reserved-memory node.
+  1008			 */
+  1009			ret = qcom_smem_resolve_mem(smem, "memory-region", &smem->regions[0]);
+  1010			if (ret)
+  1011				return ret;
+  1012		}
+  1013	
+  1014		if (num_regions > 1) {
+  1015			ret = qcom_smem_resolve_mem(smem, "qcom,rpm-msg-ram", &smem->regions[1]);
+  1016			if (ret)
+  1017				return ret;
+  1018		}
+  1019	
+  1020	
+  1021		ret = qcom_smem_map_toc(smem, &smem->regions[0]);
+  1022		if (ret)
+  1023			return ret;
+  1024	
+  1025		for (i = 1; i < num_regions; i++) {
+  1026			smem->regions[i].virt_base = devm_ioremap_wc(&pdev->dev,
+  1027								     smem->regions[i].aux_base,
+  1028								     smem->regions[i].size);
+  1029			if (!smem->regions[i].virt_base) {
+  1030				dev_err(&pdev->dev, "failed to remap %pa\n", &smem->regions[i].aux_base);
+  1031				return -ENOMEM;
+  1032			}
+  1033		}
+  1034	
+  1035		header = smem->regions[0].virt_base;
+  1036		if (le32_to_cpu(header->initialized) != 1 ||
+  1037		    le32_to_cpu(header->reserved)) {
+  1038			dev_err(&pdev->dev, "SMEM is not initialized by SBL\n");
+  1039			return -EINVAL;
+  1040		}
+  1041	
+  1042		hwlock_id = of_hwspin_lock_get_id(pdev->dev.of_node, 0);
+  1043		if (hwlock_id < 0) {
+  1044			if (hwlock_id != -EPROBE_DEFER)
+  1045				dev_err(&pdev->dev, "failed to retrieve hwlock\n");
+  1046			return hwlock_id;
+  1047		}
+  1048	
+  1049		smem->hwlock = hwspin_lock_request_specific(hwlock_id);
+  1050		if (!smem->hwlock)
+  1051			return -ENXIO;
+  1052	
+  1053		ret = hwspin_lock_timeout_irqsave(smem->hwlock, HWSPINLOCK_TIMEOUT, &flags);
+  1054		if (ret)
+  1055			return ret;
+> 1056		size = readl_relaxed(&header->available) + readl_relaxed(&header->free_offset);
+  1057		hwspin_unlock_irqrestore(smem->hwlock, &flags);
+  1058	
+  1059		version = qcom_smem_get_sbl_version(smem);
+  1060		/*
+  1061		 * smem header mapping is required only in heap version scheme, so unmap
+  1062		 * it here. It will be remapped in qcom_smem_map_global() when whole
+  1063		 * partition is mapped again.
+  1064		 */
+  1065		devm_iounmap(smem->dev, smem->regions[0].virt_base);
+  1066		switch (version >> 16) {
+  1067		case SMEM_GLOBAL_PART_VERSION:
+  1068			ret = qcom_smem_set_global_partition(smem);
+  1069			if (ret < 0)
+  1070				return ret;
+  1071			smem->item_count = qcom_smem_get_item_count(smem);
+  1072			break;
+  1073		case SMEM_GLOBAL_HEAP_VERSION:
+  1074			qcom_smem_map_global(smem, size);
+  1075			smem->item_count = SMEM_ITEM_COUNT;
+  1076			break;
+  1077		default:
+  1078			dev_err(&pdev->dev, "Unsupported SMEM version 0x%x\n", version);
+  1079			return -EINVAL;
+  1080		}
+  1081	
+  1082		BUILD_BUG_ON(SMEM_HOST_APPS >= SMEM_HOST_COUNT);
+  1083		ret = qcom_smem_enumerate_partitions(smem, SMEM_HOST_APPS);
+  1084		if (ret < 0 && ret != -ENOENT)
+  1085			return ret;
+  1086	
+  1087		__smem = smem;
+  1088	
+  1089		smem->socinfo = platform_device_register_data(&pdev->dev, "qcom-socinfo",
+  1090							      PLATFORM_DEVID_NONE, NULL,
+  1091							      0);
+  1092		if (IS_ERR(smem->socinfo))
+  1093			dev_dbg(&pdev->dev, "failed to register socinfo device\n");
+  1094	
+  1095		return 0;
+  1096	}
+  1097	
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
