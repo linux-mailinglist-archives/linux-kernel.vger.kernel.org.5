@@ -2,170 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6427080D0C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6EF80D0F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 17:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344468AbjLKQOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 11:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45182 "EHLO
+        id S1344742AbjLKQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 11:16:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344462AbjLKQOW (ORCPT
+        with ESMTP id S1344880AbjLKQPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 11:14:22 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2F06119
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:14:25 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAF0516F2;
-        Mon, 11 Dec 2023 08:15:11 -0800 (PST)
-Received: from [10.57.73.30] (unknown [10.57.73.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBE4A3F738;
-        Mon, 11 Dec 2023 08:14:23 -0800 (PST)
-Message-ID: <f8d92149-bc38-4d16-9ed2-ed5d81859b10@arm.com>
-Date:   Mon, 11 Dec 2023 16:14:22 +0000
+        Mon, 11 Dec 2023 11:15:53 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8F8106
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:15:26 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5c08c47c055so45001077b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 08:15:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702311325; x=1702916125; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fnRSD+sBsefYYvzn3oBRGskx6xnKDW8P+HTWAzvULNU=;
+        b=WL1ZZUAiHI3jgra1bD3B0ZPJ4M8B2vD6DgLOkWeDTst2+Vp15GKXhSfBYuhwURIoJe
+         hSnt9KjWm5kY4+iJZml9qKbwHnM1vVJZhKTi8zzlYcifMGm5NSm/nU/Ba3JjbQoRIfel
+         dpYl5avD1kTMoB5uQXrJ01mclOCcDTRmCkW02YA5WI7POdKbO3oigZhr8tarQEyBT+/e
+         On7qNyOj0csaOO5VnIF+Loe57thEXJuzC0lvWd9vvO0SH3906PQiLICfrOrOh36jUW4a
+         kwJMiyoHgQassjGvZ4SXcpY/kssjMkKC4xn1VumguyK+eqvZo3gQ38OwfTOXeJP8tJPK
+         rNSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702311325; x=1702916125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fnRSD+sBsefYYvzn3oBRGskx6xnKDW8P+HTWAzvULNU=;
+        b=OI6e2OK6ymssDEYjBzZ02hGGy6rhYhqrmICPs8ZIB6ho8N/yi2tHVdFZ6J641h6kth
+         lTtEP/D0vO6CRwZDnxCkU27A9FTOuGfypARrMwqr6NyU4sWdlLdUE4Fe4oI8SaGk9H9u
+         KW0vsXKTujMIvG4QBgcjdZOUiiG/2aKc1GUPBLatLxFeGPCPRoZhvs2Y9sV7IM5wjFDj
+         FRp7QYoPjsNsSD0R/SGPk4yk25xDh6XFDvp9OGFrIG4rmaxWnWmwbWNm3+gZrRUspKo+
+         7Pvd7d7+vkcmdf3kQocC3ikZIKhFotXux0dfbI/ykjSHZ1Kzm8OvLtirGXh42UtgVWbB
+         eVBw==
+X-Gm-Message-State: AOJu0Yz2b3ORFg3HM/EpV51PZkqZ07Zf2ThaaimGZFtGc0C8t/RUQ+XC
+        jKDbJbVem5ThLjz088wg7uqsNKx5boh0ekzgHFjREg==
+X-Google-Smtp-Source: AGHT+IFtvdYDtV18pDROt//QGcMAArJtde9LSDLbsQOqNXlre7oPEzwTXObS2vRBaJiNoebZprMpaahUpj+4Qgxz+Yw=
+X-Received: by 2002:a05:690c:3749:b0:5e1:8875:7cc2 with SMTP id
+ fw9-20020a05690c374900b005e188757cc2mr464939ywb.15.1702311325143; Mon, 11 Dec
+ 2023 08:15:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 01/39] mm/rmap: rename hugepage_add* to hugetlb_add*
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20231211155652.131054-1-david@redhat.com>
- <20231211155652.131054-2-david@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231211155652.131054-2-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231206103702.3873743-1-surenb@google.com> <20231206103702.3873743-6-surenb@google.com>
+ <ZXXJ9NdH61YZfC4c@finisterre.sirena.org.uk> <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
+ <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
+ <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk> <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
+ <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+In-Reply-To: <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 11 Dec 2023 08:15:11 -0800
+Message-ID: <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
+Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+To:     Mark Brown <broonie@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        ryan.roberts@arm.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.2 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2023 15:56, David Hildenbrand wrote:
-> Let's just call it "hugetlb_".
-> 
-> Yes, it's all already inconsistent and confusing because we have a lot
-> of "hugepage_" functions for legacy reasons. But "hugetlb" cannot possibly
-> be confused with transparent huge pages, and it matches "hugetlb.c" and
-> "folio_test_hugetlb()". So let's minimize confusion in rmap code.
-> 
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+On Mon, Dec 11, 2023 at 4:24=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Mon, Dec 11, 2023 at 01:03:27PM +0100, David Hildenbrand wrote:
+> > On 11.12.23 12:15, Mark Brown wrote:
+>
+> > > This is linux-next.  I pasted the commands used to build and sent lin=
+ks
+> > > to a full build log in the original report.
+>
+> > Probably also related to "make headers-install":
+>
+> > https://lkml.kernel.org/r/20231209020144.244759-1-jhubbard@nvidia.com
+>
+> > The general problem is that some mm selftests are currently not written=
+ in
+> > way that allows them to compile with old linux headers. That's why the =
+build
+> > fails if "make headers-install" was not executed, but it does not fail =
+if
+> > "make headers-install" was once upon a time executed, but the headers a=
+re
+> > outdated.
+>
+> Oh, it's obviously the new headers not being installed.  The builds
+> where I'm seeing the problem (my own and KernelCI's) are all fresh
+> containers so there shouldn't be any stale headers lying around.
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
-> ---
->  include/linux/rmap.h | 4 ++--
->  mm/hugetlb.c         | 8 ++++----
->  mm/migrate.c         | 4 ++--
->  mm/rmap.c            | 8 ++++----
->  4 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index af6a32b6f3e7..0bfea866f39b 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -208,9 +208,9 @@ void folio_add_file_rmap_range(struct folio *, struct page *, unsigned int nr,
->  void page_remove_rmap(struct page *, struct vm_area_struct *,
->  		bool compound);
->  
-> -void hugepage_add_anon_rmap(struct folio *, struct vm_area_struct *,
-> +void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
->  		unsigned long address, rmap_t flags);
-> -void hugepage_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
-> +void hugetlb_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
->  		unsigned long address);
->  
->  static inline void __page_dup_rmap(struct page *page, bool compound)
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 6feb3e0630d1..305f3ca1dee6 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5285,7 +5285,7 @@ hugetlb_install_folio(struct vm_area_struct *vma, pte_t *ptep, unsigned long add
->  	pte_t newpte = make_huge_pte(vma, &new_folio->page, 1);
->  
->  	__folio_mark_uptodate(new_folio);
-> -	hugepage_add_new_anon_rmap(new_folio, vma, addr);
-> +	hugetlb_add_new_anon_rmap(new_folio, vma, addr);
->  	if (userfaultfd_wp(vma) && huge_pte_uffd_wp(old))
->  		newpte = huge_pte_mkuffd_wp(newpte);
->  	set_huge_pte_at(vma->vm_mm, addr, ptep, newpte, sz);
-> @@ -5988,7 +5988,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
->  		/* Break COW or unshare */
->  		huge_ptep_clear_flush(vma, haddr, ptep);
->  		page_remove_rmap(&old_folio->page, vma, true);
-> -		hugepage_add_new_anon_rmap(new_folio, vma, haddr);
-> +		hugetlb_add_new_anon_rmap(new_folio, vma, haddr);
->  		if (huge_pte_uffd_wp(pte))
->  			newpte = huge_pte_mkuffd_wp(newpte);
->  		set_huge_pte_at(mm, haddr, ptep, newpte, huge_page_size(h));
-> @@ -6277,7 +6277,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->  		goto backout;
->  
->  	if (anon_rmap)
-> -		hugepage_add_new_anon_rmap(folio, vma, haddr);
-> +		hugetlb_add_new_anon_rmap(folio, vma, haddr);
->  	else
->  		page_dup_file_rmap(&folio->page, true);
->  	new_pte = make_huge_pte(vma, &folio->page, ((vma->vm_flags & VM_WRITE)
-> @@ -6732,7 +6732,7 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
->  	if (folio_in_pagecache)
->  		page_dup_file_rmap(&folio->page, true);
->  	else
-> -		hugepage_add_new_anon_rmap(folio, dst_vma, dst_addr);
-> +		hugetlb_add_new_anon_rmap(folio, dst_vma, dst_addr);
->  
->  	/*
->  	 * For either: (1) CONTINUE on a non-shared VMA, or (2) UFFDIO_COPY
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 35a88334bb3c..4cb849fa0dd2 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -249,8 +249,8 @@ static bool remove_migration_pte(struct folio *folio,
->  
->  			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
->  			if (folio_test_anon(folio))
-> -				hugepage_add_anon_rmap(folio, vma, pvmw.address,
-> -						       rmap_flags);
-> +				hugetlb_add_anon_rmap(folio, vma, pvmw.address,
-> +						      rmap_flags);
->  			else
->  				page_dup_file_rmap(new, true);
->  			set_huge_pte_at(vma->vm_mm, pvmw.address, pvmw.pte, pte,
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 846fc79f3ca9..80d42c31281a 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -2625,8 +2625,8 @@ void rmap_walk_locked(struct folio *folio, struct rmap_walk_control *rwc)
->   *
->   * RMAP_COMPOUND is ignored.
->   */
-> -void hugepage_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
-> -			    unsigned long address, rmap_t flags)
-> +void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
-> +		unsigned long address, rmap_t flags)
->  {
->  	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
->  
-> @@ -2637,8 +2637,8 @@ void hugepage_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
->  			 PageAnonExclusive(&folio->page), folio);
->  }
->  
-> -void hugepage_add_new_anon_rmap(struct folio *folio,
-> -			struct vm_area_struct *vma, unsigned long address)
-> +void hugetlb_add_new_anon_rmap(struct folio *folio,
-> +		struct vm_area_struct *vma, unsigned long address)
->  {
->  	BUG_ON(address < vma->vm_start || address >= vma->vm_end);
->  	/* increment count (starts at -1) */
-
+Ok, I was updating my headers and that's why I could not reproduce it.
+David, should the test be modified to handle old linux headers
+(disable the new tests #ifndef _UFFDIO_MOVE or some other way)?
