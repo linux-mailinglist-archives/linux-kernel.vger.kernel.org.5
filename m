@@ -2,240 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A62D80CF0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300C480CF10
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbjLKPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        id S1343985AbjLKPHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:07:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234927AbjLKPG4 (ORCPT
+        with ESMTP id S1343865AbjLKPHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:06:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B78AB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:07:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4EFC433C7;
-        Mon, 11 Dec 2023 15:07:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702307222;
-        bh=VIp4h9tv1SIR7l1R5ym5KGqEQcZrwRt73SIL4r9uSks=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=trKnAszUuaV39UKT+lAgU4SNWnmm2ddpER9w+YpkhEq2AnuyGrGYczk7el5UO8FIP
-         6owA0pREQXxMGYhJxV+pDOpkxEOC7Pj/eyukKdzt5KoBu3S1ZLtq2JHCMuLGxx0ma6
-         MXlL+5FIrZBN5IJp9PHBxRHFxw8x4+1IWmv6IiHGUfSTnnudZBnmhIrvvm0rrRHX8G
-         O0HcFVpF+pInPcojOtlKxu0chJ4eeuAmASm6KpqZC2qtp5HvOzXm95YUP4QfkbVkMb
-         80Cr+1CcDpocSwci50guVJ62fROwoSx3bhB1ZBy9I2dF5tjPdDiUBTFTDugN8ai/YJ
-         Mt9mPNjgv5n0Q==
-Date:   Mon, 11 Dec 2023 17:06:57 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Daniel Vacek <neelx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Subject: Re: [PATCH 1/2] IB/ipoib: Fix mcast list locking
-Message-ID: <20231211150657.GH4870@unreal>
-References: <20231211130426.1500427-1-neelx@redhat.com>
- <20231211130426.1500427-2-neelx@redhat.com>
- <20231211134542.GG4870@unreal>
- <CACjP9X8zarONgO-QLvyzh-w7ax-7Fx0jdBWCF3VFQ09KDcaYnQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACjP9X8zarONgO-QLvyzh-w7ax-7Fx0jdBWCF3VFQ09KDcaYnQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 10:07:51 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73716CF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:07:57 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbc5f7781faso1933481276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:07:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702307276; x=1702912076; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kG29XMk3lTrWBF1GpEp92hAzbHx2RURAGojiIVdfRzw=;
+        b=mMk0d+CFvuFQRNww/Zwa8Y4syNdv2EZe3KAgWqe35+lpTCdXFnwz6HqhnKkxY+q+jj
+         QpXC8pM1AGnqJa+Uu/JEZatWYzfLjJU6MufThSFhw7KlupHtt8c2sB8DFeGmTS7UoCVh
+         HKXls9wnaCFmFvq1LoaqPRByTPNXdZyKjTpezWjjxHLE1ivkydgx6i2XkHhaRNBoi1Hr
+         kUf1OCSwgTkhk8E/eDfG6inlw6SFcvmnDCzD2OwNQQ5kD8mG7v6CaF71VO6uow8citWe
+         U5zUxvMBHWi9B7uFZjka+BCphBAlxI8UfiNI2McZ879N8mDokG8HGk/HgLhsbYtJy8Xs
+         WS0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702307276; x=1702912076;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kG29XMk3lTrWBF1GpEp92hAzbHx2RURAGojiIVdfRzw=;
+        b=jmqWJDhUGEjAS3fBlw1u4nGOec0g5SaoQrgVnonfGMCdhH17MmM23NdlgTHycqh0Lm
+         mpk5NDe/qnVQUBroTOE2Pg5UJtMRi0LVa9nrQm74XSAamQgQGXCS3kA6OIJZPGT4KpiB
+         qzvOR3Ff180JCXGs6H/ODBGMicLkxoppYD/Gxhnc3TsWgX5Whsy4QfaFjiDvobkOPdh9
+         SyqbvNAhm6damlXvtlRqWSAb3InbyjXvDq5kZmSQlQynHYH3rr2IEkToU6XcMwr5KfoO
+         JYgNEQn6e16KN8O2iJz8UkRTVjT1gWW9ANHO1An58oEnVUTg9wFC6xWMGSgSN1ZH0jdx
+         J4oQ==
+X-Gm-Message-State: AOJu0YzlSW1CG0NwlY/vVZ5uetGSeK/HvIQamn095iUlS3Jd0NPQjAXA
+        Anx1IA/zoF4OA7aYTw5BGQQGD9m8yvAa
+X-Google-Smtp-Source: AGHT+IFaiZEd7+b47BpPdyNVHldfy1fqi8OR1OodEiQIP1OrN47EutSHqBJsH0N98hqvXd26gcgUe+ORfXY6
+X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
+ (user=mmaurer job=sendgmr) by 2002:a05:6902:242:b0:d9a:ec95:9687 with SMTP id
+ k2-20020a056902024200b00d9aec959687mr30873ybs.11.1702307276664; Mon, 11 Dec
+ 2023 07:07:56 -0800 (PST)
+Date:   Mon, 11 Dec 2023 15:07:49 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231211150753.293883-1-mmaurer@google.com>
+Subject: [PATCH] x86/Kconfig: rust: Patchable function Rust compat
+From:   Matthew Maurer <mmaurer@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     Matthew Maurer <mmaurer@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        "=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:25:39PM +0100, Daniel Vacek wrote:
-> On Mon, Dec 11, 2023 at 2:45 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Mon, Dec 11, 2023 at 02:04:24PM +0100, Daniel Vacek wrote:
-> > > We need an additional protection against list removal between ipoib_mcast_join_task()
-> > > and ipoib_mcast_dev_flush() in case the &priv->lock needs to be dropped while
-> > > iterating the &priv->multicast_list in ipoib_mcast_join_task(). If the mcast
-> > > is removed while the lock was dropped, the for loop spins forever resulting
-> > > in a hard lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
-> > >
-> > >     Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
-> > >     -----------------------------------+-----------------------------------
-> > >     ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
-> > >       spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
-> > >       list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
-> > >           &priv->multicast_list, list) |   mutex_lock(&priv->mcast_mutex)
-> > >         ipoib_mcast_join(dev, mcast)   |
-> > >           spin_unlock_irq(&priv->lock) |
-> > >                                        |   spin_lock_irqsave(&priv->lock, flags)
-> > >                                        |   list_for_each_entry_safe(mcast, tmcast,
-> > >                                        |                  &priv->multicast_list, list)
-> > >                                        |     list_del(&mcast->list);
-> > >                                        |     list_add_tail(&mcast->list, &remove_list)
-> > >                                        |   spin_unlock_irqrestore(&priv->lock, flags)
-> > >           spin_lock_irq(&priv->lock)   |
-> > >                                        |   ipoib_mcast_remove_list(&remove_list)
-> > >    (Here, mcast is no longer on the    |     list_for_each_entry_safe(mcast, tmcast,
-> > >     &priv->multicast_list and we keep  |                            remove_list, list)
-> > >     spinning on the &remove_list of the \ >>>  wait_for_completion(&mcast->done)
-> > >     other thread which is blocked and the|
-> > >     list is still valid on it's stack.)  | mutex_unlock(&priv->mcast_mutex)
-> > >
-> > > Fix this by adding mutex_lock(&priv->mcast_mutex) to ipoib_mcast_join_task().
-> >
-> > I don't entirely understand the issue and the proposed solution.
-> > There is only one spin_unlock_irq() in the middle of list_for_each_entry(mcast, &priv->multicast_list, list)
-> > and it is right before return statement which will break the loop. So
-> > how will loop spin forever?
-> 
-> There's another unlock/lock pair around ib_sa_join_multicast() call in
-> ipoib_mcast_join() no matter the outcome of the condition. The
-> ib_sa_join_multicast() cannot be called with the lock being held due
-> to GFP_KERNEL allocation can possibly sleep. That's what's causing the
-> issue.
-> 
-> Actually if you check the code, only if the mentioned condition is
-> false (and the loop is not broken and returned from
-> ipoib_mcast_join_task()) the lock is released and re-acquired,
-> creating the window for
-> ipoib_ib_dev_flush_light()/ipoib_mcast_dev_flush() to break the list.
-> The vmcore data shows/confirms that clearly.
+Rust doesn't yet support patchable entry, but likely will soon. Disable
+function padding when Rust is used but doesn't support it, and propagate
+the flag when it does.
 
-Thanks, it is more clear now.
+Signed-off-by: Matthew Maurer <mmaurer@google.com>
+---
+ arch/x86/Kconfig  | 6 +++++-
+ arch/x86/Makefile | 2 ++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-What about the following change instead of adding extra lock to already
-too much complicated IPoIB?
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 18b9fb7df95b..e9f1814217b5 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2452,6 +2452,10 @@ config CC_HAS_RETURN_THUNK
+ config CC_HAS_ENTRY_PADDING
+ 	def_bool $(cc-option,-fpatchable-function-entry=16,16)
+ 
++config RUSTC_HAS_ENTRY_PADDING
++	depends RUST
++	def_bool $(rs-option,-Zpatchable-function-entry=16,16)
++
+ config FUNCTION_PADDING_CFI
+ 	int
+ 	default 59 if FUNCTION_ALIGNMENT_64B
+@@ -2469,7 +2473,7 @@ config FUNCTION_PADDING_BYTES
+ 
+ config CALL_PADDING
+ 	def_bool n
+-	depends on CC_HAS_ENTRY_PADDING && OBJTOOL
++	depends on CC_HAS_ENTRY_PADDING && (!RUST || RUST_HAS_ENTRY_PADDING) && OBJTOOL
+ 	select FUNCTION_ALIGNMENT_16B
+ 
+ config FINEIBT
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 1a068de12a56..0228af62742e 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -211,7 +211,9 @@ endif
+ 
+ ifdef CONFIG_CALL_PADDING
+ PADDING_CFLAGS := -fpatchable-function-entry=$(CONFIG_FUNCTION_PADDING_BYTES),$(CONFIG_FUNCTION_PADDING_BYTES)
++PADDING_RUSTFLAGS := -Zpatchable-function-entry=$(CONFIG_FUNCTION_PADDING_BYTES),$(CONFIG_FUNCTION_PADDING_BYTES)
+ KBUILD_CFLAGS += $(PADDING_CFLAGS)
++KBUILD_RUSTFLAGS += $(PADDING_RUSTFLAGS)
+ export PADDING_CFLAGS
+ endif
+ 
+-- 
+2.43.0.472.g3155946c3a-goog
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 5b3154503bf4..bca80fe07584 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
-                if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
-                        rec.join_state = SENDONLY_FULLMEMBER_JOIN;
-        }
--       spin_unlock_irq(&priv->lock);
-
-        multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
--                                        &rec, comp_mask, GFP_KERNEL,
-+                                        &rec, comp_mask, GFP_ATOMIC,
-                                         ipoib_mcast_join_complete, mcast);
--       spin_lock_irq(&priv->lock);
-        if (IS_ERR(multicast)) {
-                ret = PTR_ERR(multicast);
-                ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
-                /* Requeue this join task with a backoff delay */
-                __ipoib_mcast_schedule_join_thread(priv, mcast, 1);
-                clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
--               spin_unlock_irq(&priv->lock);
-                complete(&mcast->done);
--               spin_lock_irq(&priv->lock);
-        }
-        return 0;
- }
-
-
-> 
-> --nX
-> 
-> 
-> > Thanks
-> >
-> > > Unfortunately we could not reproduce the lockup and confirm this fix but
-> > > based on the code review I think this fix should address such lockups.
-> > >
-> > > crash> bc 31
-> > > PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
-> > > --
-> > >     [exception RIP: ipoib_mcast_join_task+0x1b1]
-> > >     RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
-> > >     RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
-> > >                                   work (&priv->mcast_task{,.work})
-> > >     RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
-> > >            &mcast->list
-> > >     RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
-> > >     R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
-> > >                                                          mcast
-> > >     R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
-> > >            dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
-> > >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> > > --- <NMI exception stack> ---
-> > >  #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
-> > >  #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
-> > >
-> > > crash> rx ff646f199a8c7e68
-> > > ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
-> > >
-> > > crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
-> > > (empty)
-> > >
-> > > crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
-> > >   mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
-> > >   mcast_mutex.owner.counter = 0xff1c69998efec000
-> > >
-> > > crash> b 8
-> > > PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
-> > > --
-> > >  #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
-> > >  #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
-> > >  #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
-> > >  #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
-> > >  #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
-> > >
-> > > crash> rx ff646f1980153e68
-> > > ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
-> > >
-> > > crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
-> > >   flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
-> > >   broadcast = 0x0,
-> > >
-> > > The mcast(s) on the &remove_list (the remaining part of the ex &priv->multicast_list):
-> > >
-> > > crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
-> > > ff1c6a192bd0c200        done.done = 0x0,
-> > > ff1c6a192d60ac00        done.done = 0x0,
-> > >
-> > > Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-> > > Signed-off-by: Daniel Vacek <neelx@redhat.com>
-> > > ---
-> > >  drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > index 5b3154503bf4..8e4f2c8839be 100644
-> > > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > @@ -580,6 +580,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > >       }
-> > >       netif_addr_unlock_bh(dev);
-> > >
-> > > +     mutex_lock(&priv->mcast_mutex);
-> > >       spin_lock_irq(&priv->lock);
-> > >       if (!test_bit(IPOIB_FLAG_OPER_UP, &priv->flags))
-> > >               goto out;
-> > > @@ -634,6 +635,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > >                               /* Found the next unjoined group */
-> > >                               if (ipoib_mcast_join(dev, mcast)) {
-> > >                                       spin_unlock_irq(&priv->lock);
-> > > +                                     mutex_unlock(&priv->mcast_mutex);
-> > >                                       return;
-> > >                               }
-> > >                       } else if (!delay_until ||
-> > > @@ -655,6 +657,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > >               ipoib_mcast_join(dev, mcast);
-> > >
-> > >       spin_unlock_irq(&priv->lock);
-> > > +     mutex_unlock(&priv->mcast_mutex);
-> > >  }
-> > >
-> > >  void ipoib_mcast_start_thread(struct net_device *dev)
-> > > --
-> > > 2.43.0
-> > >
-> >
-> 
