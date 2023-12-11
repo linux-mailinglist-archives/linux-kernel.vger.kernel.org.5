@@ -2,190 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718D480CA89
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9925480CA8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343608AbjLKNIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
+        id S1343613AbjLKNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343592AbjLKNIe (ORCPT
+        with ESMTP id S1343592AbjLKNIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:08:34 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CD58E;
-        Mon, 11 Dec 2023 05:08:40 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 10B761FB8C;
-        Mon, 11 Dec 2023 13:08:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702300119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SmntiEclpJUrVX6mOseshDU2f41UdhrdCN/1UahG/nA=;
-        b=Ty3aJdb89YN1/TyZTmB8friFjALhJaT7wRhSsvXG9LUl+mrKaL87QNQ3077mSbG9T69P5H
-        ri9bAd29p7hsQ45pDClzY/hLBn92myJMIK1Hp3L+9FyC4H5C/Dhdbr8H/Xj4ED3MJRisa4
-        JX3sdjCD8Ob8PfIeo5Ar0DZintsCFOE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702300119;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SmntiEclpJUrVX6mOseshDU2f41UdhrdCN/1UahG/nA=;
-        b=xrT8La9JMjmb+L1xwUN6brQtsZmB1wfGVHmui83jV19zl80BucV2FEDjO5YHq9LItiU2a8
-        ZRd2rfQ8q1vDO6BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702300119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SmntiEclpJUrVX6mOseshDU2f41UdhrdCN/1UahG/nA=;
-        b=Ty3aJdb89YN1/TyZTmB8friFjALhJaT7wRhSsvXG9LUl+mrKaL87QNQ3077mSbG9T69P5H
-        ri9bAd29p7hsQ45pDClzY/hLBn92myJMIK1Hp3L+9FyC4H5C/Dhdbr8H/Xj4ED3MJRisa4
-        JX3sdjCD8Ob8PfIeo5Ar0DZintsCFOE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702300119;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SmntiEclpJUrVX6mOseshDU2f41UdhrdCN/1UahG/nA=;
-        b=xrT8La9JMjmb+L1xwUN6brQtsZmB1wfGVHmui83jV19zl80BucV2FEDjO5YHq9LItiU2a8
-        ZRd2rfQ8q1vDO6BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 138A1133DE;
-        Mon, 11 Dec 2023 13:08:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 5lRHA9YJd2U8BwAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Dec 2023 13:08:38 +0000
-Message-ID: <b1b0decf-dc0b-b1bb-db9d-2a00a8c81b0d@suse.cz>
-Date:   Mon, 11 Dec 2023 14:08:37 +0100
+        Mon, 11 Dec 2023 08:08:54 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28141AF;
+        Mon, 11 Dec 2023 05:08:59 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rCg1k-0008Ku-TG; Mon, 11 Dec 2023 14:08:52 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     conor+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, robin.murphy@arm.com,
+        devicetree@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, Andy Yan <andyshrk@163.com>
+Cc:     Andy Yan <andy.yan@rock-chips.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        joro@8bytes.org, will@kernel.org
+Subject: Re: [PATCH] dt-bindings: iommu: rockchip: Add Rockchip RK3588
+Date:   Mon, 11 Dec 2023 14:08:51 +0100
+Message-ID: <5370401.0VBMTVartN@diego>
+In-Reply-To: <20231209015038.1457967-1-andyshrk@163.com>
+References: <20231209015038.1457967-1-andyshrk@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-17-michael.roth@amd.com>
- <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
- <b54fdac3-9bdf-184e-f3fc-4790a328837c@amd.com>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <b54fdac3-9bdf-184e-f3fc-4790a328837c@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Score: -4.30
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         R_RATELIMIT(0.00)[to_ip_from(RL81e5qggtdx371s8ik49ru6xr)];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[39];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
+
+Am Samstag, 9. Dezember 2023, 02:50:38 CET schrieb Andy Yan:
+> From: Andy Yan <andy.yan@rock-chips.com>
+> 
+> Add a Rockchip RK3588 compatible
+> 
+> I split it from the vop2 patch series as suggested by Heiko[0]
+
+correct, but something with the addresses did go wrong
+
+# scripts/get_maintainer.pl -f Documentation/devicetree/bindings/iommu/
+lists among the other people especially:
+
+Joerg Roedel <joro@8bytes.org> (maintainer:IOMMU SUBSYSTEM)
+Will Deacon <will@kernel.org> (maintainer:IOMMU SUBSYSTEM)
+
+as the maintainers for the iommu subsystem and I don't see them
+in the recipient list.
 
 
-On 12/8/23 23:10, Kalra, Ashish wrote:
-> Hello Vlastimil,
-> 
-> On 12/7/2023 10:20 AM, Vlastimil Babka wrote:
-> 
->>> +
->>> +void snp_leak_pages(u64 pfn, unsigned int npages)
->>> +{
->>> +    struct page *page = pfn_to_page(pfn);
->>> +
->>> +    pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, pfn,
->>> pfn + npages);
->>> +
->>> +    spin_lock(&snp_leaked_pages_list_lock);
->>> +    while (npages--) {
->>> +        /*
->>> +         * Reuse the page's buddy list for chaining into the leaked
->>> +         * pages list. This page should not be on a free list currently
->>> +         * and is also unsafe to be added to a free list.
->>> +         */
->>> +        list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
->>> +        sev_dump_rmpentry(pfn);
->>> +        pfn++;
->>
->> You increment pfn, but not page, which is always pointing to the page
->> of the
->> initial pfn, so need to do page++ too.
-> 
-> Yes, that is a bug and needs to be fixed.
-> 
->> But that assumes it's all order-0 pages (hard to tell for me whether
->> that's
->> true as we start with a pfn), if there can be compound pages, it would be
->> best to only add the head page and skip the tail pages - it's not
->> expected
->> to use page->buddy_list of tail pages.
-> 
-> Can't we use PageCompound() to check if the page is a compound page and
-> then use page->compound_head to get and add the head page to leaked
-> pages list. I understand the tail pages for compound pages are really
-> limited for usage.
+Heiko
 
-Yeah that should work. Need to be careful though, should probably only
-process head pages and check if the whole compound_order() is within the
-range we are to leak, and then leak the head page and advance the loop
-by compound_order(). And if we encounter a tail page, it should probably
-be just skipped. I'm looking at snp_reclaim_pages() which seems to
-process a number of pages with SEV_CMD_SNP_PAGE_RECLAIM and once any
-fails, call snp_leak_pages() on the rest. Could that invoke
-snp_leak_pages with the first pfn being a tail page?
 
-> Thanks,
-> Ashish
+
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> [0]https://patchwork.kernel.org/project/dri-devel/patch/20231207080235.652719-1-andyshrk@163.com/
+> 
+> ---
+> 
+>  .../devicetree/bindings/iommu/rockchip,iommu.yaml     | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> index ba9124f721f1..621dde0e45d8 100644
+> --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> @@ -19,9 +19,14 @@ description: |+
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - rockchip,iommu
+> -      - rockchip,rk3568-iommu
+> +    oneOf:
+> +      - enum:
+> +          - rockchip,iommu
+> +          - rockchip,rk3568-iommu
+> +      - items:
+> +          - enum:
+> +              - rockchip,rk3588-iommu
+> +          - const: rockchip,rk3568-iommu
+>  
+>    reg:
+>      items:
+> 
+
+
+
+
