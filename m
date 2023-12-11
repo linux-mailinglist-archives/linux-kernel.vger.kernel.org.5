@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CB780CF12
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8BD80CED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343996AbjLKPIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S1343781AbjLKOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343886AbjLKPIJ (ORCPT
+        with ESMTP id S234618AbjLKOxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:08:09 -0500
-X-Greylist: delayed 903 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 07:08:14 PST
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.214])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 322E8D6;
-        Mon, 11 Dec 2023 07:08:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=fHo18
-        EM+IcnpLBqW24a0AePPsWSsCxUc4nRjtM6qLxY=; b=jY7hqMIZSjO2fVU++2hiR
-        pmXvJrXqrGh9gg76HzxuZWLuypmIk5EkGQ2SgnbwwzwWEFjAoaNyAk8LdgkVim5N
-        9CsAobMQv14zYiUVreMgHeoXvWRxExYe/8PgH4NhprPevMolo/sro3VTZApHBpO3
-        V5ngZlGu7XQ47KDL5K4RDE=
-Received: from ubuntu22.localdomain (unknown [117.176.219.50])
-        by zwqz-smtp-mta-g5-3 (Coremail) with SMTP id _____wDXn1gqIndlz9+RFQ--.6479S2;
-        Mon, 11 Dec 2023 22:52:27 +0800 (CST)
-From:   chenguanxi11234@163.com
-To:     rafael@kernel.org
-Cc:     pavel@ucw.cz, len.brown@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chen Haonan <chen.haonan2@zte.com.cn>
-Subject: [PATCH linux-next] kernel/power: Use kmap_local_page() in snapshot.c
-Date:   Mon, 11 Dec 2023 22:52:24 +0800
-Message-Id: <b2fd8c52429b51fc0c060753e6b616f1edf81d92.1702020689.git.chen.haonan2@zte.com.cn>
-X-Mailer: git-send-email 2.34.1
+        Mon, 11 Dec 2023 09:53:45 -0500
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F75C3;
+        Mon, 11 Dec 2023 06:53:50 -0800 (PST)
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 5F00145B45;
+        Mon, 11 Dec 2023 15:53:47 +0100 (CET)
+Message-ID: <a5121397-2a40-4c77-9dd3-8f0f47ec1360@proxmox.com>
+Date:   Mon, 11 Dec 2023 15:53:46 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDXn1gqIndlz9+RFQ--.6479S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WF13CFy5Aw45Xr43WFyDZFb_yoW8WrWkpF
-        43AFyDG3yYvFW8t342qF1v9ry5JwnIyw4fXrW3A3WfXrnxWwnIvr10qa1Ut3W3trW7JFWr
-        ZrZrtFWvyFs5GwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jtiSdUUUUU=
-X-Originating-IP: [117.176.219.50]
-X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/xtbBhhRD+lc664ndOwABsD
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: SCSI hotplug issues with UEFI VM with guest kernel >= 6.5
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Igor Mammedov <imammedo@redhat.com>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com, lenb@kernel.org, rafael@kernel.org,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>
+References: <20231211141239.GA909479@bhelgaas>
+From:   Fiona Ebner <f.ebner@proxmox.com>
+In-Reply-To: <20231211141239.GA909479@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Haonan <chen.haonan2@zte.com.cn>
+Am 11.12.23 um 15:12 schrieb Bjorn Helgaas:
+> On Mon, Dec 11, 2023 at 02:52:42PM +0100, Fiona Ebner wrote:
+>> Am 11.12.23 um 08:46 schrieb Igor Mammedov:
+>>> On Fri, 8 Dec 2023 16:47:23 +0100
+>>> Igor Mammedov <imammedo@redhat.com> wrote:
+>>>> On Thu, 7 Dec 2023 17:28:15 -0600
+>>>> Bjorn Helgaas <helgaas@kernel.org> wrote:
+>>>>
+>>>>> What's the actual symptom that this is broken?  All these log
+>>>>> fragments show the exact same assignments for BARs 0, 1, 4 and for the
+>>>>> bridge windows.
+>>
+>> The disk never shows up in /dev
+>>
+>>>>> I assume 0000:01:02.0 is the hot-added SCSI HBA, and 00:05.0 is a
+>>>>> bridge leading to it?
+>>>>>
+>>>>> Can you put the complete dmesg logs somewhere?  There's a lot of
+>>>>> context missing here.
+>>
+>> Is this still necessary with Igor being able to reproduce the issue?
+> 
+> Only if you want help resolving the problem.  I don't have time to
+> guess what interesting things might be missing and go back and forth
+> to get them.
+> 
 
-kmap_atomic() has been deprecated in favor of kmap_local_page().
+I put the output of dmesg with my original QEMU commandline and kernel
+6.7.0-rc3 here:
 
-Each call to kmap_atomic() in the kernel creates a non-preemptable
-segment and disables the missing page exception. This can be one of
-the sources of unexpected latency. Therefore users should choose
-kmap_local_page() over kmap_atomic().
+https://pastebin.com/UvpGAYf2
 
-Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
----
- kernel/power/snapshot.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index 50a15408c3fc..feef0d4d3288 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -1487,11 +1487,11 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 	s_page = pfn_to_page(src_pfn);
- 	d_page = pfn_to_page(dst_pfn);
- 	if (PageHighMem(s_page)) {
--		src = kmap_atomic(s_page);
--		dst = kmap_atomic(d_page);
-+		src = kmap_local_page(s_page);
-+		dst = kmap_local_page(d_page);
- 		zeros_only = do_copy_page(dst, src);
--		kunmap_atomic(dst);
--		kunmap_atomic(src);
-+		kunmap_local(dst);
-+		kunmap_local(src);
- 	} else {
- 		if (PageHighMem(d_page)) {
- 			/*
-@@ -1499,9 +1499,9 @@ static bool copy_data_page(unsigned long dst_pfn, unsigned long src_pfn)
- 			 * data modified by kmap_atomic()
- 			 */
- 			zeros_only = safe_copy_page(buffer, s_page);
--			dst = kmap_atomic(d_page);
-+			dst = kmap_local_page(d_page);
- 			copy_page(dst, buffer);
--			kunmap_atomic(dst);
-+			kunmap_local(dst);
- 		} else {
- 			zeros_only = safe_copy_page(page_address(d_page), s_page);
- 		}
--- 
-2.25.1
+Best Regards,
+Fiona
 
