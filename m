@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E599A80C5F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D4580C603
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbjLKKJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:09:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
+        id S234807AbjLKKKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbjLKKJp (ORCPT
+        with ESMTP id S234675AbjLKKKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:09:45 -0500
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B855107;
-        Mon, 11 Dec 2023 02:09:51 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyFRZUV_1702289387;
-Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyFRZUV_1702289387)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Dec 2023 18:09:49 +0800
-Message-ID: <1c14f769-8da2-fdac-cec2-a59ab69284ad@linux.alibaba.com>
-Date:   Mon, 11 Dec 2023 18:09:45 +0800
+        Mon, 11 Dec 2023 05:10:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFEFD5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:10:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A75D4C433C9;
+        Mon, 11 Dec 2023 10:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702289423;
+        bh=25mXoOKe5YalTwcXvBl99nBaqvQHsxcaUzjVVE/yeuU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fTvz/BYDTgmZ9jp8/k3fD7Th9vc2p2jkWHouz6/UlWepwRNbpFWJqqZq81KiWkhzf
+         7mVlSHZlGeDH7m9sRZHBzSgaFSwS/syAEOWPvH5EB3EsnsOAjo/cs3n6KhT85yYeWo
+         GrU3h8//SmNHLfX1MLSafKdCkotjO6FrPWFMNoZfWhWBvPqx/1dwqfivWqpvUmgwSX
+         vBjDIxX3+qo35HX6R+0WRxGWcL1AaGhyrJ5V+Vha+cf4e7kJ11FV4IHk6QnbVxySOA
+         U+wDJe2GRM3rhoeZnYfUiHEaXWtkJlvLB61UGg2KhWYu/KCBAktJ6Ro1UroD6fOyns
+         nPb6Hh35wK9SQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8D6F0DFC906;
+        Mon, 11 Dec 2023 10:10:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 7/9] net/smc: support extended GID in SMC-D
- lgr netlink attribute
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-8-git-send-email-guwen@linux.alibaba.com>
- <8b651c68-c51d-49a9-9df0-58e9110fa47d@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <8b651c68-c51d-49a9-9df0-58e9110fa47d@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] octeon_ep: explicitly test for firmware ready value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170228942357.26769.14270472436980157327.git-patchwork-notify@kernel.org>
+Date:   Mon, 11 Dec 2023 10:10:23 +0000
+References: <20231208055646.2602363-1-srasheed@marvell.com>
+In-Reply-To: <20231208055646.2602363-1-srasheed@marvell.com>
+To:     Shinas Rasheed <srasheed@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
+        mschmidt@redhat.com, pabeni@redhat.com, horms@kernel.org,
+        kuba@kernel.org, davem@davemloft.net, wizhao@redhat.com,
+        konguyen@redhat.com, vburru@marvell.com, sedara@marvell.com,
+        edumazet@google.com, aayarekar@marvell.com, sburla@marvell.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-On 2023/12/11 17:39, Alexandra Winter wrote:
+On Thu, 7 Dec 2023 21:56:46 -0800 you wrote:
+> The firmware ready value is 1, and get firmware ready status
+> function should explicitly test for that value. The firmware
+> ready value read will be 2 after driver load, and on unbind
+> till firmware rewrites the firmware ready back to 0, the value
+> seen by driver will be 2, which should be regarded as not ready.
 > 
+> Fixes: 10c073e40469 ("octeon_ep: defer probe if firmware not ready")
+> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 > 
-> On 08.12.23 08:40, Wen Gu wrote:
->> Virtual ISM devices introduced in SMCv2.1 requires a 128 bit extended
->> GID vs. the existing ISM 64bit GID. So the 2nd 64 bit of extended GID
->> should be included in SMC-D linkgroup netlink attribute as well.
->>
->> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->> ---
-> 
-> This patch did not apply cleanly.
-> Please always base patches on the current net-next
+> [...]
 
-Strange.. I can apply them cleanly with the latest net-next
-(6e944cc68633 ("Merge branch 'rswitch-jumbo-frames'")).
+Here is the summary with links:
+  - [net,v3] octeon_ep: explicitly test for firmware ready value
+    https://git.kernel.org/netdev/net/c/284f71762241
 
-Could you please try again? Thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
