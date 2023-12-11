@@ -2,142 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E174380C771
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D51E880C776
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 11:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbjLKK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 05:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
+        id S234439AbjLKK5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 05:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjLKK5Q (ORCPT
+        with ESMTP id S231872AbjLKK5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 05:57:16 -0500
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6559A;
-        Mon, 11 Dec 2023 02:57:17 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyGZV2y_1702292234;
-Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyGZV2y_1702292234)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Dec 2023 18:57:15 +0800
-Message-ID: <64e8d13a-5811-774b-9e94-20ff747b1d0d@linux.alibaba.com>
-Date:   Mon, 11 Dec 2023 18:57:13 +0800
+        Mon, 11 Dec 2023 05:57:37 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36219F;
+        Mon, 11 Dec 2023 02:57:43 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAcjic011590;
+        Mon, 11 Dec 2023 10:57:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=M1BWtUt0iko0Adg1ZOkNjmTGZ72097YAF9y4jIcKxGU=;
+ b=ojnCA0HEGHQ9qrUscY1w6xO8r1ooEoc7j7AVYhWGo6ISun4rjqhl6uv3YU49EvYXryzS
+ FlOIKr7WuGVwlXnQBVvMYnhtc8i28ZjbZaIDrseOd/NMRX/S75hjaFKjKMj+YggljZ3n
+ QNeR15hIzHpiGAvrK+gu+QUKDQcAPl/Jwp8sKhWGnLSCXYO3r2E/Dv+bMHQ+bl3UzV9N
+ uOqzK+47Sx4XeMq8oD+tzJpYe6jM/rI5/GokIvv7dOzk+Z4kwbdCmsDiohMOEdaK1XK1
+ cmeSyS1+IMRLp1CUYUcAGv8pyGCiBiJmjXdM45fRChFnuB173q9vLvMhmFdne2nSfUpb Tw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 10:57:38 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BBAdt9m015254;
+        Mon, 11 Dec 2023 10:57:38 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 10:57:38 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAeHXD012585;
+        Mon, 11 Dec 2023 10:57:36 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jngtn3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 10:57:36 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBAvYrf5505562
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Dec 2023 10:57:34 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF3B620040;
+        Mon, 11 Dec 2023 10:57:34 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B92220043;
+        Mon, 11 Dec 2023 10:57:33 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.31.44])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Mon, 11 Dec 2023 10:57:32 +0000 (GMT)
+Date:   Mon, 11 Dec 2023 16:27:30 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 5/7] block: export blkdev_atomic_write_valid() and refactor
+ api
+Message-ID: <ZXbrGvkJRIJmRtex@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <b53609d0d4b97eb9355987ac5ec03d4e89293b43.1701339358.git.ojaswin@linux.ibm.com>
+ <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
- smc_clc_send_confirm_accept()
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
- <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
- <4ad3a168-f506-fc21-582d-fe8764f404c0@linux.alibaba.com>
- <3b3b5b33-1088-47c3-8cbc-4079c6ff472e@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <3b3b5b33-1088-47c3-8cbc-4079c6ff472e@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2qSPiO9EIfi0hMR8TWZ7coYjvt_2Rxt6
+X-Proofpoint-GUID: wdXyzKPFaRaC5ZtASZOrE_sXJCXo-opo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-11_04,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=856
+ priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312110087
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/11 17:47, Alexandra Winter wrote:
+On Fri, Dec 01, 2023 at 10:47:59AM +0000, John Garry wrote:
+> On 30/11/2023 13:53, Ojaswin Mujoo wrote:
+> > Export the blkdev_atomic_write_valid() function so that other filesystems
+> > can call it as a part of validating the atomic write operation.
+> > 
+> > Further, refactor the api to accept a len argument instead of iov_iter to
+> > make it easier to call from other places.
+> > 
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > 
+> I was actually thinking of moving this functionality to vfs and maybe also
+> calling earlier in write path, as the code is really common to blkdev and
+> FSes.
+
+This makes sense. The code to make sure the underlying device
+will be able to support this atomic write can be moved higher up in vfs.
+And then each fs can do extra fs-specific checks in their code.
+
 > 
-> On 09.12.23 03:50, Wen Gu wrote:
->>
->>
->> On 2023/12/8 15:40, Wen Gu wrote:
->>
->>> There is a large if-else block in smc_clc_send_confirm_accept() and it
->>> is better to split it into two sub-functions.
->>>
->>> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
->>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
->>> ---
->>>    net/smc/smc_clc.c | 196 +++++++++++++++++++++++++++++++-----------------------
->>>    1 file changed, 114 insertions(+), 82 deletions(-)
->>>
->>> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->>> index 0fcb035..52b4ea9 100644
->>> --- a/net/smc/smc_clc.c
->>> +++ b/net/smc/smc_clc.c
->>> @@ -998,6 +998,111 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
->>>        return reason_code;
->>>    }
->>>    +static void smcd_clc_prep_confirm_accept(struct smc_connection *conn,
->>> +                struct smc_clc_msg_accept_confirm_v2 *clc_v2,
->>
->> checkpatch will complain 'Alignment should match open parenthesis' here.
->> But in order to make the length less than 80 columns, there seems to be
->> no other good way.
->>
->>> +                int first_contact, u8 version,
->>> +                u8 *eid, struct smc_init_info *ini,
->>> +                int *fce_len,
->>> +                struct smc_clc_first_contact_ext_v2x *fce_v2x,
->>> +                struct smc_clc_msg_trail *trl)
->>> +{
->> <...>
->>
->>> +
->>> +static void smcr_clc_prep_confirm_accept(struct smc_connection *conn,
->>> +                struct smc_clc_msg_accept_confirm_v2 *clc_v2,
->>
->> And here.
->>
->>> +                int first_contact, u8 version,
->>> +                u8 *eid, struct smc_init_info *ini,
->>> +                int *fce_len,
->>> +                struct smc_clc_first_contact_ext_v2x *fce_v2x,
->>> +                struct smc_clc_fce_gid_ext *gle,
->>> +                struct smc_clc_msg_trail *trl)
->>> +{
->> <...>
->>
+> However, Christoph Hellwig was not so happy about current interface with
+> power-of-2 requirement et al, so I was going to wait until that discussion
+> is concluded before deciding.
+
+Got it, I'll leave this bit to you then :) 
+
 > 
+> Thanks,
+> John
 > 
-> You could shorten the names of the functions
-
-Thank you. I thought about that too, but I think shortening the name may
-have an impact on the understanding.
-
-
-
-I think the following may be another way out and checkpatch is happy:
-
-+static void
-+smcd_clc_prep_confirm_accept(struct smc_connection *conn,
-+                             struct smc_clc_msg_accept_confirm_v2 *clc_v2,
-+                             int first_contact, u8 version,
-+                             u8 *eid, struct smc_init_info *ini,
-+                             int *fce_len,
-+                             struct smc_clc_first_contact_ext_v2x *fce_v2x,
-+                             struct smc_clc_msg_trail *trl)
-
-and
-
-+static void
-+smcr_clc_prep_confirm_accept(struct smc_connection *conn,
-+                             struct smc_clc_msg_accept_confirm_v2 *clc_v2,
-+                             int first_contact, u8 version,
-+                             u8 *eid, struct smc_init_info *ini,
-+                             int *fce_len,
-+                             struct smc_clc_first_contact_ext_v2x *fce_v2x,
-+                             struct smc_clc_fce_gid_ext *gle,
-+                             struct smc_clc_msg_trail *trl)
+> > ---
+> >   block/fops.c           | 18 ++++++++++--------
+> >   include/linux/blkdev.h |  2 ++
+> >   2 files changed, 12 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/block/fops.c b/block/fops.c
+> > index 516669ad69e5..5dae95c49720 100644
+> > --- a/block/fops.c
+> > +++ b/block/fops.c
+> > @@ -41,8 +41,7 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
+> >   		!bdev_iter_is_aligned(bdev, iter);
+> >   }
+> > -static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
+> > -			      struct iov_iter *iter)
+> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len)
+> >   {
+> >   	unsigned int atomic_write_unit_min_bytes =
+> >   			queue_atomic_write_unit_min_bytes(bdev_get_queue(bdev));
+> > @@ -53,16 +52,17 @@ static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
+> >   		return false;
+> >   	if (pos % atomic_write_unit_min_bytes)
+> >   		return false;
+> > -	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
+> > +	if (len % atomic_write_unit_min_bytes)
+> >   		return false;
+> > -	if (!is_power_of_2(iov_iter_count(iter)))
+> > +	if (!is_power_of_2(len))
+> >   		return false;
+> > -	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
+> > +	if (len > atomic_write_unit_max_bytes)
+> >   		return false;
+> > -	if (pos % iov_iter_count(iter))
+> > +	if (pos % len)
+> >   		return false;
+> >   	return true;
+> >   }
+> > +EXPORT_SYMBOL_GPL(blkdev_atomic_write_valid);
+> >   #define DIO_INLINE_BIO_VECS 4
+> > @@ -81,7 +81,8 @@ static ssize_t __blkdev_direct_IO_simple(struct kiocb *iocb,
+> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
+> >   		return -EINVAL;
+> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
+> > +	if (atomic_write &&
+> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
+> >   		return -EINVAL;
+> >   	if (nr_pages <= DIO_INLINE_BIO_VECS)
+> > @@ -348,7 +349,8 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
+> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
+> >   		return -EINVAL;
+> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
+> > +	if (atomic_write &&
+> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
+> >   		return -EINVAL;
+> >   	if (iocb->ki_flags & IOCB_ALLOC_CACHE)
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index f70988083734..5a3124fc191f 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -1566,6 +1566,8 @@ static inline int early_lookup_bdev(const char *pathname, dev_t *dev)
+> >   int freeze_bdev(struct block_device *bdev);
+> >   int thaw_bdev(struct block_device *bdev);
+> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len);
+> > +
+> >   struct io_comp_batch {
+> >   	struct request *req_list;
+> >   	bool need_ts;
+> 
