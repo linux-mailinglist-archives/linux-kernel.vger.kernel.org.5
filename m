@@ -2,150 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D784F80CF5C
+	by mail.lfdr.de (Postfix) with ESMTP id 827CD80CF5B
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343903AbjLKPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:24:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343877AbjLKPX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343887AbjLKPX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Dec 2023 10:23:58 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB287DF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:04 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5c659db0ce2so3851071a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702308244; x=1702913044; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tWUV51STMN0VgL/zumYMl796XbfCKLjzTV15/TIMxFc=;
-        b=OaDxGuWt2M6ux348sqeA5EEori9DTiYjpCE6vofQh7TP06+BLsDDrfWRqps/l1rRlA
-         tjCOVnBFCpVxCxfg6jAL6dTcs8TUMpWjdVlamqgRynbH1edCMWtKmrHxpriM/yliBF8S
-         VSFTa57vOZ4p4tUp3N+d4H3uQsHuiexxmCrVFzIjO3g3+eUN1mA/qxaylArISSXOiDxy
-         WBKfUhuowJsbTLRFlUeQAeb4ycs4vQdvTfLqDOo7He5chRXDpP6W9gi9qPz8/ExL+ww2
-         ibDpNQgzzC0CToIlOxQolr6C463WZqD2TkFzDpyobSbudGFT4OdiBkVdTpnbk33M1sVv
-         j4bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308244; x=1702913044;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tWUV51STMN0VgL/zumYMl796XbfCKLjzTV15/TIMxFc=;
-        b=SXS8H6JE0A2VobRAczOS8Q/84xWktLkPXUHjhRQloRCMZ5+PzAtMwQdOQMe2/V3EQp
-         TmAjsubo55nOJ3iCTi+0YO+UUFPwJieuJOVgRh6P1LSF5v0msl/3W7SPjqmlF1X8U4iX
-         8mwB7CsUdRN81uXsdSrGTSvyNKICcjtQ+mD39WGPFiIZJU9ZeN+30QAk29g+zx/6iiEF
-         O81T+gT+7RY6MVwoXGVduluBWBkGMPm6yp4qCTmL0v+vI043r3wDdtigKs+Svs39M4hd
-         ySXG41KkVCuiWVwf55H6RoL8FbGWB8qCLuWLCxo48GEdCw5wwdKUIY4Z0ROoSXWFKiyB
-         sGJQ==
-X-Gm-Message-State: AOJu0YyEvakVitGZbDCJImHpiFc8tazK/Ton2mmna1xoNIB03Jy81bx9
-        ONkBC/X2cIfPMgxRFvzTD8YdklOn/YgjeWeBSOl/mw==
-X-Google-Smtp-Source: AGHT+IGUtayhIpWLJiLhiSMxDhVNzBpxfuIdsijKeP2UMDS67wo5Ue3DSQ5EuOS7E+5p+jZlIezV4PaVm727wxGEVXk=
-X-Received: by 2002:a05:6a20:8f1e:b0:18f:97c:9768 with SMTP id
- b30-20020a056a208f1e00b0018f097c9768mr5443169pzk.80.1702308244327; Mon, 11
- Dec 2023 07:24:04 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234618AbjLKPX4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Dec 2023 10:23:56 -0500
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009EEDC;
+        Mon, 11 Dec 2023 07:24:01 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VyJONX._1702308238;
+Received: from 30.221.130.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyJONX._1702308238)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Dec 2023 23:23:59 +0800
+Message-ID: <7ff3001a-4254-0382-f8c8-6ebf2807346a@linux.alibaba.com>
+Date:   Mon, 11 Dec 2023 23:23:57 +0800
 MIME-Version: 1.0
-References: <202312101719+0800-wangjinchao@xfusion.com>
-In-Reply-To: <202312101719+0800-wangjinchao@xfusion.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 11 Dec 2023 16:23:52 +0100
-Message-ID: <CAKfTPtCMOPVhjpLW3Y3fb4=rfYnAKzYeDmdMCRHjPzZdXYjVxg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: merge same code in enqueue_task_fair
-To:     WangJinchao <wangjinchao@xfusion.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v5 2/9] net/smc: introduce sub-functions for
+ smc_clc_send_confirm_accept()
+To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
+ <1702021259-41504-3-git-send-email-guwen@linux.alibaba.com>
+ <ac3c0823-8705-4225-96c8-ed7bc55d1bfc@linux.ibm.com>
+ <9a6d57c0-f5b4-9b2c-dc5f-dc47d0518141@linux.alibaba.com>
+ <fb2365f6-1237-4f22-9897-5676757e5157@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <fb2365f6-1237-4f22-9897-5676757e5157@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 at 10:22, WangJinchao <wangjinchao@xfusion.com> wrote:
->
-> 1. The code below is duplicated in two for loops and need to be
->    consolidated
-> 2. Fix the bug where a se's on_rq is true but its parent is not
-
-Could you clarify which bug you want to fix ?
 
 
+On 2023/12/11 21:35, Alexandra Winter wrote:
+> 
+> 
+> On 11.12.23 13:15, Wen Gu wrote:
+>>>> +    clc = (struct smc_clc_msg_accept_confirm *)clc_v2;
+>>>
+>>> Why is this cast neccessary? (Here as well as in smcr_clc_prep_confirm_accept
+>>> and in smc_clc_send_confirm_accept)
+>>> smc_clc_msg_accept_confirm_v2 has hdr and d0 as well.
+>>
+>> I think the cast is to imply that v2 is an expansion of v1, or v1 is the base of v2.
+>> So here using clc(v1) reperesents their common set.
+>>
+>> If we use smc_clc_msg_accept_confirm_v2 for all, I think readers may be tempted to
+>> check whether the hdr and d0 in 'smc_clc_msg_accept_confirm_v2' are also applicable to v1.
+>>
+>> And there are settings below that are specific for v1. It may be confusing if we
+>> change it like this:
+>>
+>> if (version == SMC_V1) {
+>>      clc_v2->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
+>> } else {
+>>
+>>
+>>>
+>>> IMO, it would be a nice seperate patch to get rid of the 2 type defs for
+>>> smc_clc_msg_accept_confirm and smc_clc_msg_accept_confirm_v2
+>>> and all the related casting anyhow.
+>>>
+>>
+>> Do you mean to define only smc_clc_msg_accept_confirm_v2 or define with the name
+>> of smc_clc_msg_accept_confirm but the contents of smc_clc_msg_accept_confirm_v2?
+>>
+>> I have a different opinion on this, since I think the smc_clc_msg_accept_confirm
+>> and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
+>> v2 messages and remind people what is currently working on. So I perfer to keep them.
+>> Am I missing something?
+>>
+> 
+> 
+> This is a discussion about coding style, readability and maintainability (avoid future errors).
+> And the code works today and the rest is opinions. That said, let me list some arguments why
+> I don't like the casts.
+> 
+> Casts in general break the type checking of the compiler.
+> 
+> In some places e.g. clc.d0 points to struct smc_clc_msg_accept_confirm in other
+> places it points to struct smc_clc_msg_accept_confirm_v2.
+> This makes it hard to find all places where e.g. d0 is altered. (e.g. with an IDE).
+> 
+> You say: "smc_clc_msg_accept_confirm
+>> and smc_clc_msg_accept_confirm_v2 clearly shows the difference between v1 and
+>> v2 messages"
+> But that is not even the case in the code that this patch changes:
+> In smcd_clc_prep_confirm_accept() you pass a struct smc_clc_msg_accept_confirm_v2
+> cast it to v1 (even in the v2 case) and then use the v1 layout for the common fields and
+> the v1-only fields. So I don't think that helps very much.
+> 
+> The v2 messages were explicitely defined for compatibility. i.e.
+> all v1 fields are still available. It would be good to see that in the code as well.
+> With 2 differnet structs you don't emphasize that.
+> 
+> With future changes somebody could easily make a mistake that the 2 structures don't
+> have the same size anymore. And then the casting can lead to out-of-bound error that
+> are hard to find.
+> 
+> We want v2 to be the usual case and v1 to be the exception for backwards compatibility.
+> FOr historic reasons, the code looks as if v2 is the exception. I'd rather point out the
+> remaining v1 cases.
+> 
+> 
+> 
+> I could envision something like:
+> 
+> struct smc_clc_msg_accept_confirm {	/* clc accept / confirm message */
+> 	struct smc_clc_msg_hdr hdr;
+> 	union {
+> 		struct { /* SMC-R */
+> 			struct smcr_clc_msg_accept_confirm r0;
+> 			/* v2 only, reserved and ignored in v1: */
+> 			u8 eid[SMC_MAX_EID_LEN];
+> 			u8 reserved6[8];
+> 		} r1;
+> 		struct { /* SMC-D */
+> 			struct smcd_clc_msg_accept_confirm_common d0;
+> 			/* v2 only, reserved and ignored in v1: */
+> 			__be16 chid;
+> 			u8 eid[SMC_MAX_EID_LEN];
+> 			__be64 gid_ext;
+> 		} __packed d1;
+> 	};
+> };
+> 
+> And then only use this one structure.
+> 
 
+Thank you Sandy for the detailed explanation.
 
->
-> ```c
->                 cfs_rq->h_nr_running++;
->                 cfs_rq->idle_h_nr_running += idle_h_nr_running;
->
->                 if (cfs_rq_is_idle(cfs_rq))
->                         idle_h_nr_running = 1;
->
->                 /* end evaluation on encountering a throttled cfs_rq */
->                 if (cfs_rq_throttled(cfs_rq))
->                         goto enqueue_throttle;
-> ```
->
-> Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
-> ---
->  kernel/sched/fair.c | 31 ++++++++-----------------------
->  1 file changed, 8 insertions(+), 23 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d7a3c63a2171..e1373bfd4f2e 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6681,30 +6681,15 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->                 cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT);
->
->         for_each_sched_entity(se) {
-> -               if (se->on_rq)
-> -                       break;
->                 cfs_rq = cfs_rq_of(se);
-> -               enqueue_entity(cfs_rq, se, flags);
-> -
-> -               cfs_rq->h_nr_running++;
-> -               cfs_rq->idle_h_nr_running += idle_h_nr_running;
-> -
-> -               if (cfs_rq_is_idle(cfs_rq))
-> -                       idle_h_nr_running = 1;
-> -
-> -               /* end evaluation on encountering a throttled cfs_rq */
-> -               if (cfs_rq_throttled(cfs_rq))
-> -                       goto enqueue_throttle;
-> -
-> -               flags = ENQUEUE_WAKEUP;
-> -       }
-> -
-> -       for_each_sched_entity(se) {
-> -               cfs_rq = cfs_rq_of(se);
-> -
-> -               update_load_avg(cfs_rq, se, UPDATE_TG);
-> -               se_update_runnable(se);
-> -               update_cfs_group(se);
-> +               if (se->on_rq) {
-> +                       update_load_avg(cfs_rq, se, UPDATE_TG);
-> +                       se_update_runnable(se);
-> +                       update_cfs_group(se);
-> +               } else {
-> +                       enqueue_entity(cfs_rq, se, flags);
-> +                       flags = ENQUEUE_WAKEUP;
-> +               }
->
->                 cfs_rq->h_nr_running++;
->                 cfs_rq->idle_h_nr_running += idle_h_nr_running;
-> --
-> 2.40.0
->
+What I considered, as mentioned above, is that if the two are combined,
+it may be difficult to distinguish according to the name what situation
+I am in, v1 or v2?
+
+But I do agree with your concern about the potential errors that caused
+by future divergence of the two struct if they are defined separately.
+
+I will try to combine them into one struct in a seperate patch.
+
+Thank you.
+
