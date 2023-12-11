@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1F180CAB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1D780CACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343644AbjLKNU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
+        id S1343646AbjLKNVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:21:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343502AbjLKNU4 (ORCPT
+        with ESMTP id S1343615AbjLKNV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:20:56 -0500
+        Mon, 11 Dec 2023 08:21:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2299F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:21:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96BCBC433C7;
-        Mon, 11 Dec 2023 13:20:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2914C3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:21:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4D26C433C7;
+        Mon, 11 Dec 2023 13:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702300862;
-        bh=q1SgpAHgTb9yNjf1ijuF/WsU7ziWgOtp9e+gjYp9MJo=;
+        s=k20201202; t=1702300894;
+        bh=pdOjaPV9Jsg2+hufBUTJoin1FtJ4JLo5gH1YiEsQ8lI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OtVmf+id/i3jL+CkVLVQSKAM+su33w9usY4qz6ohe9ikJJaAELtzij3VYjgA9Ewp8
-         IbjgnPDTmFzYLzisW9RoqzCM+BlinoHFZh9dn8c3DWcsxaE7n/xlIFYd5cNd5iiZYM
-         xn+RGUNrzobVTZmgr2G/YPkzYJMxadR3JbLDRVmqIeguYU5M9B/epx6dLNTOKngCI1
-         MfqbPSRfjDDI0mZH6L+x+WiFuG5bmPQYYmqls0mwsWZmq8aHN3nwqrQ5zwoWRasUBO
-         t0AaPcL5MZAHJ+qrn0787/YMKkAZKw1LM4Ra/RYRDixl9gMGsxMV+U5fiYp+UkKYuN
-         EBTvml+3hP+1Q==
-Date:   Mon, 11 Dec 2023 13:20:55 +0000
+        b=eIX+Piq0oQQdGn8TD0Edg+vyONGxOr1LGqK2bq6Dsi6ovtOvnWpT/rIpQOFhBlA3b
+         RD+M0Y9olHV8bbTdPocbTzZZmSuQtM3wSgOKRufOCXeKAdrG2YkwpRzI1hwx19gfpd
+         R8J7br7NfDKSsDo3Ubfz/IzHwRPxRpH0UZXsDmakCZQtxs8yx3CHcht0dAUUySZ72W
+         7ezqAlqh/1/ULVq4w52iqG1vo6pwpmtsxVWD0ybb3R5KpAvHOys51oI1D1oLC2d49W
+         kbq2skXfspeTVUkdhvgV61N5n4rZQ8glL+SZEddbiQ/dbTg34ryLGY2yDr7oygKcuA
+         WwZRQbf9JcgXw==
+Date:   Mon, 11 Dec 2023 13:21:27 +0000
 From:   Will Deacon <will@kernel.org>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
 Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
         linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -41,15 +41,14 @@ Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
         jianyong.wu@arm.com, justin.he@arm.com,
         James Morse <james.morse@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH 12/21] arm64: setup: Switch over to GENERIC_CPU_DEVICES
- using arch_register_cpu()
-Message-ID: <20231211132054.GC25681@willie-the-truck>
+Subject: Re: [PATCH 13/21] arm64: convert to arch_cpu_is_hotpluggable()
+Message-ID: <20231211132127.GD25681@willie-the-truck>
 References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
- <E1r5R3b-00Csza-Ku@rmk-PC.armlinux.org.uk>
+ <E1r5R3g-00Cszg-PP@rmk-PC.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <E1r5R3b-00Csza-Ku@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r5R3g-00Cszg-PP@rmk-PC.armlinux.org.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -61,43 +60,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 01:44:51PM +0000, Russell King wrote:
-> From: James Morse <james.morse@arm.com>
+On Tue, Nov 21, 2023 at 01:44:56PM +0000, Russell King (Oracle) wrote:
+> Convert arm64 to use the arch_cpu_is_hotpluggable() helper rather than
+> arch_register_cpu().
 > 
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
-> 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
-> 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
-> 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
-> 
-> This patch also has the effect of moving the registration of CPUs from
-> subsys to driver core initialisation, prior to any initcalls running.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 > Reviewed-by: Gavin Shan <gshan@redhat.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
-> Changes since RFC v2:
->  * Add note about initialisation order change.
-> ---
->  arch/arm64/Kconfig           |  1 +
->  arch/arm64/include/asm/cpu.h |  1 -
->  arch/arm64/kernel/setup.c    | 13 ++++---------
->  3 files changed, 5 insertions(+), 10 deletions(-)
+>  arch/arm64/kernel/setup.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 165bd2c0dd5a..42c690bb2d60 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -402,13 +402,9 @@ static inline bool cpu_can_disable(unsigned int cpu)
+>  	return false;
+>  }
+>  
+> -int arch_register_cpu(int num)
+> +bool arch_cpu_is_hotpluggable(int num)
+>  {
+> -	struct cpu *cpu = &per_cpu(cpu_devices, num);
+> -
+> -	cpu->hotpluggable = cpu_can_disable(num);
+> -
+> -	return register_cpu(cpu, num);
+> +	return cpu_can_disable(num);
+>  }
+>  
+>  static void dump_kernel_offset(void)
 
 Acked-by: Will Deacon <will@kernel.org>
 
