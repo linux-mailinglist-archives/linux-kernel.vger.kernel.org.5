@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32A480DE30
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E465E80DE2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbjLKWMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        id S1345610AbjLKWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345736AbjLKWKr (ORCPT
+        with ESMTP id S1345598AbjLKWLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:10:47 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A17E3;
-        Mon, 11 Dec 2023 14:10:54 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 53AAA922;
-        Mon, 11 Dec 2023 23:10:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702332608;
-        bh=VrTyIgpUM/k+qU2dG83GSARqhJhB72+1d672e8YuOxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cHIjNOp3A6ptDnnGiSAxFtLA2NzdWvnTer1TEtKORcEau2KGFZ1gx2Kuq+fHA/i9G
-         V0xHHbM9aL08OXw5b4HQPSRAVcQeR1UvWdQz0TaD0qt6wW3uo0ZjEJlQU3AvXj/jD+
-         OOo/8sYxjHMSRdto7bdC+WLfSavGhSIh/QLWdQdE=
-Date:   Tue, 12 Dec 2023 00:10:59 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH 11/19] media: i2c: ov4689: Implement vflip/hflip controls
-Message-ID: <20231211221059.GJ27535@pendragon.ideasonboard.com>
-References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
- <20231211175023.1680247-12-mike.rudenko@gmail.com>
+        Mon, 11 Dec 2023 17:11:55 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE23E4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:12:01 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c701bd98f3so953044a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:12:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702332721; x=1702937521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DBxEKBNamMvlGFbzwl1mFmti5qczGRc6ilz0oKWYU1E=;
+        b=lJrOZ85HmMUw7bVFmAwdaiCubnbw+AxFUcMy2GU6Re419Nc0AkSEdN3fdxyKYyejMJ
+         UltylsbKsDj1/hr9IOInLIiK/9PphdpPltbr14ghcEBbyxcYv69EloHj11sBHBFfbXbC
+         uSQXe86ntETSvmsnXUgdX9fQXtAlcOFxmLJezJ3wBFqv7kQCu7uo8irfQ0l52RulGvi7
+         J6jc60rnIc57rOUeA/R+Wb/bf3PcPC9Zh7cO7yAERr1qQuw8JM2GP809ZNaaVrrA1+2E
+         BNZarUlpYKfofqdcYxDH/EA09rfXZd4wqxPmdvrMu+GMJjHzO839ERnEd21sHl7Q8zp4
+         zmcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702332721; x=1702937521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DBxEKBNamMvlGFbzwl1mFmti5qczGRc6ilz0oKWYU1E=;
+        b=Vh3ZlI1Wng2T16D2O3nzludQNC9UgVbDxojfW4WPJLQwP9fYzC7RstyNwrpZzKz3Ap
+         X+Hie897IjSM2wq8rieHhS7QYZlpJKOW08lOFH0FKsuAT6c6U1qE+zb6mD5UHyj6OOxl
+         DmfPsFc9yZjGniArNXXbAdUuW4qJ8jMfRIzAV6Jj0cUPOtz8X8lBrDthjTjcn3tdIpAl
+         ClDj51fnBXh1zbL+mrJdyKh5MjaKoAZRY0eNXAuy3mszPWW6VBwT29K8ueLA/7WGMsu4
+         3mShRE2G5wZI9kpt6CSVYKNlRhKYuMR5sYZ5BkrUpOkuvm4MaQYkcfgKT3RDEi05mvC4
+         OLdw==
+X-Gm-Message-State: AOJu0YzhN+wj5kVyuGDEpog3200EUV3HmspuX1nyNgDwN1xpaY7WudST
+        XkT7BU+irD9fcBsQZaMoUih5SdhPE6YN3I8qQ0c=
+X-Google-Smtp-Source: AGHT+IFUW4Y1wSl+tlZXpZOUw7PN1bGTF7r60A8/Qk9ggHCAr7HZp63IhUlul6PSahQAxJWebACXPvmodeXqe1j4W9Y=
+X-Received: by 2002:a17:90b:2204:b0:286:6cc1:28a with SMTP id
+ kw4-20020a17090b220400b002866cc1028amr2291102pjb.85.1702332721019; Mon, 11
+ Dec 2023 14:12:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231211175023.1680247-12-mike.rudenko@gmail.com>
+References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+ <20231204-slub-cleanup-hooks-v1-4-88b65f7cd9d5@suse.cz> <44421a37-4343-46d0-9e5c-17c2cd038cf2@linux.dev>
+ <79e29576-12a2-a423-92f3-d8a7bcd2f0ce@suse.cz> <fdd11528-b0f8-48af-8141-15c4b1b01c65@linux.dev>
+ <CANpmjNO1_LxE9w4m_Wa5xxc1R87LhnJSZ3DV59ia3-SdQUmtpw@mail.gmail.com>
+In-Reply-To: <CANpmjNO1_LxE9w4m_Wa5xxc1R87LhnJSZ3DV59ia3-SdQUmtpw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 11 Dec 2023 23:11:50 +0100
+Message-ID: <CA+fCnZfhqQ+n0SsZU0RKEov3CkwTNJXM7JTMxtkrODmbJPskDQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm/slub: free KFENCE objects in slab_free_hook()
+To:     Marco Elver <elver@google.com>
+Cc:     Chengming Zhou <chengming.zhou@linux.dev>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mikhail,
+On Wed, Dec 6, 2023 at 3:45=E2=80=AFPM Marco Elver <elver@google.com> wrote=
+:
+>
+> The is_kfence_address() implementation tolerates tagged addresses,
+> i.e. if it receives a tagged non-kfence address, it will never return
+> true.
+>
+> The KASAN_HW_TAGS patches and KFENCE patches were in development
+> concurrently, and at the time there was some conflict resolution that
+> happened when both were merged. The
+> is_kfence_address(kasan_reset_tag(..)) initially came from [1] but was
+> squashed into 2b8305260fb.
+>
+> [1] https://lore.kernel.org/all/9dc196006921b191d25d10f6e611316db7da2efc.=
+1611946152.git.andreyknvl@google.com/
+>
+> Andrey, do you recall what issue you encountered that needed kasan_reset_=
+tag()?
 
-Thank you for the patch.
+I don't remember at this point, but this could have been just a safety meas=
+ure.
 
-On Mon, Dec 11, 2023 at 08:50:14PM +0300, Mikhail Rudenko wrote:
-> The OV4689 sensor supports horizontal and vertical flipping. Add
-> appropriate controls to the driver. Toggling both array flip and
-> digital flip bits allows to achieve flipping while maintaining output
-> Bayer order. Note that the default value of hflip control corresponds
-> to both bits set, as it was before this patch.
-
-What happens if only hlip or vflip is set, does the bayer pattern change
-?
-
-Sakari, I think this patch could use your attention.
-
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> ---
->  drivers/media/i2c/ov4689.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index 67d4004bdcfb..62aeae43d749 100644
-> --- a/drivers/media/i2c/ov4689.c
-> +++ b/drivers/media/i2c/ov4689.c
-> @@ -46,6 +46,14 @@
->  #define OV4689_HTS_DIVIDER		4
->  #define OV4689_HTS_MAX			0x7fff
->  
-> +#define OV4689_REG_TIMING_FORMAT1	CCI_REG8(0x3820)
-> +#define OV4689_REG_TIMING_FORMAT2	CCI_REG8(0x3821)
-> +#define OV4689_TIMING_FLIP_MASK		GENMASK(2, 1)
-> +#define OV4689_TIMING_FLIP_ARRAY	BIT(1)
-> +#define OV4689_TIMING_FLIP_DIGITAL	BIT(2)
-> +#define OV4689_TIMING_FLIP_BOTH		(OV4689_TIMING_FLIP_ARRAY |\
-> +					 OV4689_TIMING_FLIP_DIGITAL)
-> +
->  #define OV4689_LANES			4
->  #define OV4689_XVCLK_FREQ		24000000
->  
-> @@ -183,7 +191,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
->  	{CCI_REG8(0x3811), 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
->  	{CCI_REG8(0x3813), 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
->  	{CCI_REG8(0x3819), 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
-> -	{CCI_REG8(0x3821), 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
->  
->  	/* OTP control */
->  	{CCI_REG8(0x3d85), 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
-> @@ -605,6 +612,16 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->  			  (val + ov4689->cur_mode->width) /
->  			  OV4689_HTS_DIVIDER, &ret);
->  		break;
-> +	case V4L2_CID_VFLIP:
-> +		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
-> +				OV4689_TIMING_FLIP_MASK,
-> +				val ? OV4689_TIMING_FLIP_BOTH : 0, &ret);
-> +		break;
-> +	case V4L2_CID_HFLIP:
-> +		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT2,
-> +				OV4689_TIMING_FLIP_MASK,
-> +				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
-> +		break;
->  	default:
->  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
->  			 __func__, ctrl->id, val);
-> @@ -633,7 +650,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  
->  	handler = &ov4689->ctrl_handler;
->  	mode = ov4689->cur_mode;
-> -	ret = v4l2_ctrl_handler_init(handler, 11);
-> +	ret = v4l2_ctrl_handler_init(handler, 13);
-
-This should be 12 if my comment on 10/19 is correct. Further patches in
-the series may need to be adjusted too.
-
->  	if (ret)
->  		return ret;
->  
-> @@ -673,6 +690,9 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  				     ARRAY_SIZE(ov4689_test_pattern_menu) - 1,
->  				     0, 0, ov4689_test_pattern_menu);
->  
-> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
-> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
-> +
->  	if (handler->error) {
->  		ret = handler->error;
->  		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
-
--- 
-Regards,
-
-Laurent Pinchart
+If is_kfence_address tolerates tagged addresses, we should be able to
+drop these kasan_reset_tag calls.
