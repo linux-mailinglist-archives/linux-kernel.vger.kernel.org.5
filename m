@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC39F80D42D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5140A80D426
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:39:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344790AbjLKRj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S1344770AbjLKRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235017AbjLKRjY (ORCPT
+        with ESMTP id S235005AbjLKRjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:39:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E5BC8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:39:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EAB1C433C8;
-        Mon, 11 Dec 2023 17:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702316370;
-        bh=O6AOhUXq8XE/FHy4bPs9tLe8C7adGEEQpi6qHeKwxvI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dr1tUscWRDFTAj58M2+OjPEC0HEZ/kAi6sHKEk24hQ2XyZBlKHO8vrVOZt3N+0znC
-         n/G2QIuH6lJtUFPvfBfBKIS0m+kJCjCmnIItUEztD31mT60ezJrEjOXluhigcPeVR3
-         1CxSuiB51PXHJwn2AS0wTLRUcD/+FEB/s2k1AzoJfyDB1U49pibrM7d5NKmpZdoz7t
-         pMLIiY+III374wx1Ji+BZpS9BlkG+e0dW/kiS7z3/KvHpfeRnczOGqgyNaRVu70+Cv
-         GBh/bDhh09tnJ3CBdTv+qSKXgYVQ4j7ndooxAtzWhg9Yv2BwlJmm6A71q1RGd9Q0KJ
-         0GW/yvOWLp/iA==
-Date:   Mon, 11 Dec 2023 17:39:25 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: mmc: sdhci-msm: document dedicated
- IPQ4019 and IPQ8074
-Message-ID: <20231211-blurb-colonist-af57c8c74ff2@spud>
-References: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
+        Mon, 11 Dec 2023 12:39:23 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E17C7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:39:29 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c3fe6c1b5so19398005e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:39:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702316368; x=1702921168; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yy7vRtXjcFGxV/6rqekBGURy24lF8v5udfGSmbUqfVE=;
+        b=kxUlaD6MHALeF0TXjcg/MsmXW6BqiUE3f19p/0t5ZQvt8fMTYlJrIq8F6QXyAIFg4U
+         ZH3EiUSKp7ZcVaEGL/GCHInNvE8MJubUOJ9g5jmYjULWfITvgg0TDhkhctvq4zTVkpQX
+         uLC4GgwWIds3s+uOKw9CLDvIM1NHeaCXlNRQ7GIwJou24Pd8JqRYxJPjt+yhTBt9kXNS
+         3u93ui9giAsyuLmXTUQmzqZK9mfUPzfyd65LJSW8A0orwIsY846p/zohLYjLkrscds9H
+         /Ep+IfgLoPpQYr9ZssAqSA2AmoavqVXKKajydT1yjP6jrNa9Ltw/NOVZmj5/rwnFhQ0f
+         ERXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702316368; x=1702921168;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yy7vRtXjcFGxV/6rqekBGURy24lF8v5udfGSmbUqfVE=;
+        b=Dw66HMsCWU/jc+a+V+sB0b+F/xzObR47jET6oM/XYyHVo5N1VgjZaUxPHRhULDct6Y
+         RaxhX4j/1/Ex8rxexLcrvZOmzgBpTiELMH8FOoeNV1a3pnINbpYlvMV+dYvYoI4MiPXH
+         WvHktSko7VQl1YPjJRGOs24t43Lv8M9IWgXLIvTdcUoTN7WvhNT4I5UXIqS5lLVHJHj4
+         DII+XOjbX2YqWn/22kwEv7fiNbmfeDaS9DOihwaDc7COJSKF0iLZvT+fQ1At1c9SUNUb
+         uklQ3X+neOEqyjMBTkWowLBWgXpIBBNn3dbYpD0rZlsa0BYUTQRo6Ph71YR44MivqaPy
+         YRCg==
+X-Gm-Message-State: AOJu0YxjPvMa4qCfJGIF2fjexVEGPGTNpZTWWTOZSWWiBAjvyMbdYnoq
+        U4vYThjGemOq+d6CEutxZj+wBA==
+X-Google-Smtp-Source: AGHT+IFKKn02YZnDQaXPtO1z5yFKVke+da9MLmnSbQKfW/EzVDLPVXpfXt9JqlrR/nH7qZ06w8nOzQ==
+X-Received: by 2002:a05:600c:4f11:b0:40b:5e21:cc29 with SMTP id l17-20020a05600c4f1100b0040b5e21cc29mr2351948wmq.84.1702316367804;
+        Mon, 11 Dec 2023 09:39:27 -0800 (PST)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id a19-20020a05600c349300b004064cd71aa8sm13606491wmq.34.2023.12.11.09.39.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 09:39:27 -0800 (PST)
+Message-ID: <03944e4e-d57d-4442-b38d-e36e20cb5ae3@linaro.org>
+Date:   Mon, 11 Dec 2023 18:39:26 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="y3JNkiG3IRiGRNIN"
-Content-Disposition: inline
-In-Reply-To: <20231211085830.25380-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/3] thermal: Drop redundant and confusing
+ device_is_registered() checks
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <1880915.tdWV9SEqCh@kreacher> <8315317.T7Z3S40VBb@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <8315317.T7Z3S40VBb@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---y3JNkiG3IRiGRNIN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Dec 11, 2023 at 09:58:28AM +0100, Krzysztof Kozlowski wrote:
-> Add dedicated compatibles for the Qualcomm IPQ4019 and IPQ8074 SoCs,
-> because usage of generic qcom,sdhci-msm-v4 compatible alone is
-> deprecated.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
+On 08/12/2023 20:19, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> Multiple places in the thermal subsystem (most importantly, sysfs
+> attribute callback functions) check if the given thermal zone device is
+> still registered in order to return early in case the device_del() in
+> thermal_zone_device_unregister() has run already.
+> 
+> However, after thermal_zone_device_unregister() has been made wait for
+> all of the zone-related activity to complete before returning, it is
+> not necessary to do that any more, because all of the code holding a
+> reference to the thermal zone device object will be waited for even if
+> it does not do anything special to enforce this.
+> 
+> Accordingly, drop all of the device_is_registered() checks that are now
+> redundant and get rid of the zone locking that is not necessary any more
+> after dropping them.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  Documentation/devicetree/bindings/mmc/sdhci-msm.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml b/Docum=
-entation/devicetree/bindings/mmc/sdhci-msm.yaml
-> index 86fae733d9a0..c24c537f62b1 100644
-> --- a/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/sdhci-msm.yaml
-> @@ -22,6 +22,8 @@ properties:
->        - items:
->            - enum:
->                - qcom,apq8084-sdhci
-> +              - qcom,ipq4019-sdhci
-> +              - qcom,ipq8074-sdhci
->                - qcom,msm8226-sdhci
->                - qcom,msm8953-sdhci
->                - qcom,msm8974-sdhci
-> --=20
-> 2.34.1
->=20
 
---y3JNkiG3IRiGRNIN
-Content-Type: application/pgp-signature; name="signature.asc"
+[ ... ]
 
------BEGIN PGP SIGNATURE-----
+> @@ -132,11 +120,6 @@ trip_point_temp_store(struct device *dev
+>   
+>   	mutex_lock(&tz->lock);
+>   
+> -	if (!device_is_registered(dev)) {
+> -		ret = -ENODEV;
+> -		goto unlock;
+> -	}
+> -
+>   	trip = &tz->trips[trip_id];
+>   
+>   	if (temp != trip->temperature) {
+> @@ -162,23 +145,12 @@ trip_point_temp_show(struct device *dev,
+>   		     char *buf)
+>   {
+>   	struct thermal_zone_device *tz = to_thermal_zone(dev);
+> -	int trip_id, temp;
+> +	int trip_id;
+>   
+>   	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+>   		return -EINVAL;
+>   
+> -	mutex_lock(&tz->lock);
+> -
+> -	if (!device_is_registered(dev)) {
+> -		mutex_unlock(&tz->lock);
+> -		return -ENODEV;
+> -	}
+> -
+> -	temp = tz->trips[trip_id].temperature;
+> -
+> -	mutex_unlock(&tz->lock);
+> -
+> -	return sprintf(buf, "%d\n", temp);
+> +	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXdJTQAKCRB4tDGHoIJi
-0tXvAQC0yIMoEs0QjZaKYhKOM/7LGjW+c2GpVAf8yCG/qgw8wQEAxw3wwBBHVtsK
-VUjNIMFzAEUlM5nFZyczrZIYAKoZCQ8=
-=0Z1o
------END PGP SIGNATURE-----
+Without the lock, could the trip_temp_store() make the value change 
+while we read it?
 
---y3JNkiG3IRiGRNIN--
+[ ... ]
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
