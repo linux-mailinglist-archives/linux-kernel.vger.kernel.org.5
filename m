@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4709B80CE74
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6380480CE77
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343782AbjLKOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:34:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        id S1343792AbjLKOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343710AbjLKOe0 (ORCPT
+        with ESMTP id S1343803AbjLKOee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:34:26 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F80B8;
-        Mon, 11 Dec 2023 06:34:33 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso2242927a12.2;
-        Mon, 11 Dec 2023 06:34:33 -0800 (PST)
+        Mon, 11 Dec 2023 09:34:34 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAB2D6;
+        Mon, 11 Dec 2023 06:34:39 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c9f7fe6623so55901661fa.3;
+        Mon, 11 Dec 2023 06:34:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702305272; x=1702910072; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BhFeURBLxLzEVc1vRPu/BJJbPB/L1vjdzzDdvH8sMws=;
-        b=LSiMJERzD69cg9RqqDSsZwS57yhv4f3UsqaDIU931qtMo4bCvlXHKJe2QuF8Uon+S7
-         iMasAz4UgR/+Hh4s1bR83woxVwpqW8xxDtqjZV40f8C6AmyE/CqnEJlx/CG/H6A1TW4+
-         vGBu4qHlEBarw7TEjpQtkFB+g77pf7xu7ViuOssQaloRhHXCwNT2wXbnOLRIZmbCgzt7
-         kcA+O5VTtAHekXZeBgcNSijLgX7UpHYb22CzFohWuCmMzJL2tzADeXMirsGuNw95rida
-         aIoDHD2B0BAiLhTi/F89apXzL85kcOeKiUWToV3WjN5TS755/7HUCTYuaZu19ajj5GLv
-         3vMA==
+        d=gmail.com; s=20230601; t=1702305278; x=1702910078; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tiX/dpMN3v7eu8p1bMl5yjJ/dzRHBAIxjhFcaH8YSfs=;
+        b=mFghgW5ZH8IQCbYTp9AMKDwgfQhX4w3ER8HnwItJSkyj5sOcEZyqskAyeyjaeavyfB
+         qTYwe/r0nezQ6OdTzvjBLFisCVnk2DjL9pekw6lgBHj8bEDJi2Kbu2wWfmjerI+cB8IF
+         0HX/UxTIieMzdGW82cOH0sycex6ZqTXiE56Z1+IHjBmiDhojpHlw6gFnYKI32fncEJWB
+         rZATXtzQrtw1vU2xsM4Euul6UkHF2hDNwo3avxfKpmxmZXxBhDaJPPchhZnasL5lnJw8
+         veFtVUVM+LUSNaDtz4w+5EE6auHgR3ncoD6mveeXGlA0TAaqe5GrIwkYfiv6x1IRqZmN
+         kh8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702305272; x=1702910072;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BhFeURBLxLzEVc1vRPu/BJJbPB/L1vjdzzDdvH8sMws=;
-        b=n5e+WcaivL4AWIC3r6+Vc5n8AvaCAQLmNdNaOjT2S8gmVxcLDvNj1XZg3PKYeu/Nm4
-         N/TkzjRIzadRFKPymlqsYuY3WUCFW70J8K3U8TvgnJs6QV0Tpf4xsR8Ci+QhKLz0Qadm
-         c5RlXLnWP9yQUeSai6XV8g0KaKG9s5YNku1mW/PvXUEvV4Qk9R1wLr6n2nXTmsK9ZyU2
-         YITFHFrruoQaze6LIGyNe4x+Owvo9Ywolla4BqKGBbsGXW/6qYqJFeNCSF/IYrHiDwYo
-         pLBx0FTV6w3rfijWFnaJ8cJykmProfNtGLAzvUi3EyfYf4Td8A6+biVdV7W423uhtO2h
-         q2ug==
-X-Gm-Message-State: AOJu0YyfEie4tAOly9IK5LdDObH+m4WwNystpv3IUoRkImVlXivDewwn
-        Swn0k/lEEiHRC9a3+W8N6jF9AXOMS5A=
-X-Google-Smtp-Source: AGHT+IHOFIL1vKAZj4Zu3p22Zn/R1Kq5OPfAzqANWOQ4JZWJBcYr9a0VQ9kgOkHoYdj5IOjrq+uvVA==
-X-Received: by 2002:a05:6a20:8e14:b0:18c:b6:ab4f with SMTP id y20-20020a056a208e1400b0018c00b6ab4fmr1878951pzj.48.1702305272500;
-        Mon, 11 Dec 2023 06:34:32 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b16-20020a056a0002d000b006ce70d26d9csm6389748pft.27.2023.12.11.06.34.31
+        d=1e100.net; s=20230601; t=1702305278; x=1702910078;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tiX/dpMN3v7eu8p1bMl5yjJ/dzRHBAIxjhFcaH8YSfs=;
+        b=jWVEEypkaTph79HxcF+ED06yjbYFd8VHt2JIu8bUk8ihcK5o9Yr1TkSNeFlYmro+Lu
+         Zb61BHeEPjGusozewoxnwzXuw0rQTPiGw/J9ccd51boR1F65GzLCHAiqUxFzM4TT0Z0r
+         Iru/0dAYrqS8i6j0cvWUELoyruT7Ilnz0JoRUIpqgK13CtTpOHq1RW29O+m3wxuwFU2a
+         5+A/FfiuORADEmrMOKCUPZTCRuKSh/+B3yVhim/lqIs19LQr0UBTY6Da4qnPLvvUXMAA
+         Zk4NzO/6dkm23UQ3eRthMb5WCCC0D0DbEWQKmY8l4CxAVcjloYD9/fuKFBVLVzpwws/b
+         jvSw==
+X-Gm-Message-State: AOJu0YzbH0gobSXba3pncseAKULE3mOT9m9UxUlXAHL0YmtVXtBHfn75
+        gpRFwst/R1kJm5m6Z2y5Lzc=
+X-Google-Smtp-Source: AGHT+IFJ662sze6P6FXjb3itAgJ2Il9SUQ02ZJ3x3wK3HC95jjrbQQ6mk1Z4uxxTPawqRvBGBgMY5g==
+X-Received: by 2002:a05:6512:39c9:b0:50b:fe38:53fe with SMTP id k9-20020a05651239c900b0050bfe3853femr1612043lfu.5.1702305277605;
+        Mon, 11 Dec 2023 06:34:37 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id e10-20020adffd0a000000b003334675634bsm8733512wrr.29.2023.12.11.06.34.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:34:32 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Dec 2023 06:34:31 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: arm: hwmon: gpio-fan: Convert txt
- bindings to yaml
-Message-ID: <08ecf10d-03c4-4025-8809-475fb5ee76a9@roeck-us.net>
-References: <20231209171653.85468-1-david@ixit.cz>
+        Mon, 11 Dec 2023 06:34:37 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 11 Dec 2023 15:34:35 +0100
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Hou Tao <houtao@huaweicloud.com>, mhiramat@kernel.org,
+        xingwei lee <xrivendell7@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
+Message-ID: <ZXcd-_lVhoiWBh-4@krava>
+References: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
+ <689db41e-90f5-c5ba-b690-00586f22d616@huaweicloud.com>
+ <ZXcIN-odFOCWX8Ox@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231209171653.85468-1-david@ixit.cz>
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXcIN-odFOCWX8Ox@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09, 2023 at 06:15:39PM +0100, David Heidelberg wrote:
-> Convert fan devices connected to GPIOs to the YAML syntax.
+On Mon, Dec 11, 2023 at 02:01:43PM +0100, Jiri Olsa wrote:
+> On Mon, Dec 11, 2023 at 07:29:40PM +0800, Hou Tao wrote:
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
+> SNIP
+> 
+> > 
+> > It seems a big attr->link_create.uprobe_multi.cnt is passed to
+> > bpf_uprobe_multi_link_attach(). Could you please try the first patch in
+> > the following patch set ?
+> > 
+> > https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/T/#t
+> > > [   68.389633][ T8223]  ? __might_fault+0x13f/0x1a0
+> > > [   68.390129][ T8223]  ? bpf_kprobe_multi_link_attach+0x10/0x10
+> > 
+> > SNIP
+> > >   res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000140ul, /*size=*/0x90ul);
+> > >   if (res != -1) r[0] = res;
+> > >   memcpy((void*)0x20000000, "./file0\000", 8);
+> > >   syscall(__NR_creat, /*file=*/0x20000000ul, /*mode=*/0ul);
+> > >   *(uint32_t*)0x20000340 = r[0];
+> > >   *(uint32_t*)0x20000344 = 0;
+> > >   *(uint32_t*)0x20000348 = 0x30;
+> > >   *(uint32_t*)0x2000034c = 0;
+> > >   *(uint64_t*)0x20000350 = 0x20000080;
+> > >   memcpy((void*)0x20000080, "./file0\000", 8);
+> > 
+> > 0x20000350 is the address of attr->link_create.uprobe_multi.path.
+> > >   *(uint64_t*)0x20000358 = 0x200000c0;
+> > >   *(uint64_t*)0x200000c0 = 0;
+> > >   *(uint64_t*)0x20000360 = 0;
+> > >   *(uint64_t*)0x20000368 = 0;
+> > >   *(uint32_t*)0x20000370 = 0xffffff1f;
+> > 
+> > The value of attr->link_create.uprobe_multi.cnt is 0xffffff1f, so 
+> > 0xffffff1f * sizeof(bpf_uprobe) will be greater than INT_MAX, and
+> > triggers the warning in mm/util.c:
+> > 
+> >         /* Don't even allow crazy sizes */
+> >         if (unlikely(size > INT_MAX)) {
+> >                 WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+> >                 return NULL;
+> >         }
+> > 
+> > Adding __GFP_NOWARN when doing kvcalloc() can fix the warning.
+> 
+> hi,
+> looks like that's the case.. thanks for fixing that
+> 
+> btw while checking on that I found kprobe_multi bench attach test
+> takes forever on latest bpf-next/master
+> 
+> 	test_kprobe_multi_bench_attach:PASS:bpf_program__attach_kprobe_multi_opts 0 nsec
+> 	test_kprobe_multi_bench_attach: found 56140 functions
+> 	test_kprobe_multi_bench_attach: attached in  89.174s
+> 	test_kprobe_multi_bench_attach: detached in  13.245s
+> 	#113/1   kprobe_multi_bench_attach/kernel:OK
+> 
+> Masami,
+> any idea of any change on fprobe/ftrace side recently? I'm going to check ;-)
 
-I keep wondering: What does this have to do with arm (in the subject) ?
+nah sry, I had IBT enabled.. forgot the reason, but it's slow ;-)
 
-Guenter
+jirka
