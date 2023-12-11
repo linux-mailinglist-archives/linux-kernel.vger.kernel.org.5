@@ -2,142 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F31B080DE22
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED0B80DE2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 23:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjLKWPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 17:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
+        id S1344943AbjLKWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 17:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLKWPW (ORCPT
+        with ESMTP id S229493AbjLKWQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 17:15:22 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74585B5;
-        Mon, 11 Dec 2023 14:15:28 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7559B922;
-        Mon, 11 Dec 2023 23:14:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702332882;
-        bh=GL+uqkZRlZtM9CqFWDpU/O4mleiVeJYVJuE+4HaNbzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZnwJeb83+6Ilj6joGWv51eFMSpMn62AY9aSTlBqg7ZxxfjJ0mILeTUdaKPN9NQ9kK
-         wd+toMzn1IDUSbI+VH0gWvsf0twsOZpV50GxOm7SyvZjYc2ufw6lTvgUPDbdKdPv0r
-         pueVyHqiUSJZs/2uKwsk47KX0mSwsgWD7MdB4HgY=
-Date:   Tue, 12 Dec 2023 00:15:33 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH 12/19] media: i2c: ov4689: Implement digital gain control
-Message-ID: <20231211221533.GK27535@pendragon.ideasonboard.com>
-References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
- <20231211175023.1680247-13-mike.rudenko@gmail.com>
+        Mon, 11 Dec 2023 17:16:45 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A4E8F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:16:50 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso22375e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 14:16:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702333008; x=1702937808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nvF5V1Q9Ar02mtoysYDu05U7aSKEzXllew7q5EyIvRE=;
+        b=EJGkd/iw2jT4LICCe7+1ZUUwN7mBfzeOtBXag0ZjSuy9YBg/LBxNWAFQQ7Il7oD0/W
+         natwddcNSVEvix41/0w02yQvnstpeVWLmZW6nHMcMTCn407rnT7CZV5jkkI+ouyYG/O2
+         uAbBZOJlmBL2FhYDMN32/d3PHfZEuVZNkzWhfCti6QFl+1UpEUa+hAxo144ds8nGSZkD
+         X8kVeWtJlLjj6Tuz3dfFEMu56+vgn31UFcAKVsJtIC0vkhg3ItzzyVSWW2hEJApzUJQy
+         Qyq7JtKPNEg7ILjTzWPZObmhA3X5nGxSh4YHyk7wP3BYYZBi+E7KsrdxstPjOez//nmI
+         yKHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702333008; x=1702937808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nvF5V1Q9Ar02mtoysYDu05U7aSKEzXllew7q5EyIvRE=;
+        b=mUFcR8iXUCUaIqvFOG3We4wekkKXxQe6RtOAlhtN0w6QWwgyh3ocf6QRkXfucjl4kw
+         xHoXWr5xZ64Hh42tjAgpiLDgaRamciNcXN/g+h1PYqhpcISNdycEtFDj+au/QRunXMiE
+         lPCZ+/Et7/+8b+y+t4x2GrYwRnlQWmVgbnGCqQbVHUHnqqVjlh3vIsEJ34cfdAKkKLjR
+         JCXEU5nnCp3DURrNlUevjO1KKv2aM9t8ZwWyUDg6u5g/T/ih0QFRvJVdMJlnivFBRc/z
+         7CEAGjoxxrXgUITO2MWb0DYKEI3AaMFbvaRs4+DHQDsCxCE6kq07PlS/XmPLGj66hbiS
+         usTA==
+X-Gm-Message-State: AOJu0YzTBWG7eOOUY4FDQXp+kivxg45gWWfb1ODGg18nYe6EHK5mrTAV
+        /ibwAmV0GRU3AVQSSdgRT7z+i3VPFXtaQBhxV2fYqA==
+X-Google-Smtp-Source: AGHT+IFpb1D1ELfBB0XjKdpLdiG584OwfX3FeJOeBZ0Uir/keSyebeXbF0BprRN9LD/H+g2A9OXUfFP3Ggfu3iAe+mU=
+X-Received: by 2002:a05:600c:1910:b0:40c:337e:f596 with SMTP id
+ j16-20020a05600c191000b0040c337ef596mr258861wmq.0.1702333008321; Mon, 11 Dec
+ 2023 14:16:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231211175023.1680247-13-mike.rudenko@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204221932.1465004-1-rmoar@google.com> <20231204221932.1465004-6-rmoar@google.com>
+ <CABVgOS=JAn49ux6Cg2i1-V_2eNH4Utx_areqg4H1p5xwkT9FMA@mail.gmail.com>
+In-Reply-To: <CABVgOS=JAn49ux6Cg2i1-V_2eNH4Utx_areqg4H1p5xwkT9FMA@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Mon, 11 Dec 2023 17:16:36 -0500
+Message-ID: <CA+GJov7fUjfKL=O2wC4ZKMvO8OMYJm07h0vGQRDxRF6v4EOpxg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] Documentation: Add debugfs docs with run after boot
+To:     David Gow <davidgow@google.com>
+Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
+        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
+        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mikhail,
+On Sat, Dec 9, 2023 at 2:58=E2=80=AFAM David Gow <davidgow@google.com> wrot=
+e:
+>
+> On Tue, 5 Dec 2023 at 06:19, Rae Moar <rmoar@google.com> wrote:
+> >
+> > Expand the documentation on the KUnit debugfs filesystem on the
+> > run_manual.rst page.
+> >
+> > Add section describing how to access results using debugfs.
+> >
+> > Add section describing how to run tests after boot using debugfs.
+> >
+> > Signed-off-by: Rae Moar <rmoar@google.com>
+> > ---
+>
+> Looks good to me, some nitpicks below.
+>
+> The other thing I'd really want to add is some documentation on
+> writing init-section suites, which covers the pitfalls better (as
+> mentioned in the previous emails). Though that could be a separate
+> patch if you want to keep this one debugfs-specific.
+>
+> Otherwise,
+> Reviewed-by: David Gow <davidgow@google.com>
+>
+> Cheers,
+> -- David
 
-Thank you for the patch.
+Hello!
 
-On Mon, Dec 11, 2023 at 08:50:15PM +0300, Mikhail Rudenko wrote:
-> The OV4689 sensor supports digital gain up to 16x. Implement
-> corresponding control in the driver. Default digital gain value is not
-> modified by this patch.
-> 
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-> ---
->  drivers/media/i2c/ov4689.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index 62aeae43d749..ed0ce1b9e55b 100644
-> --- a/drivers/media/i2c/ov4689.c
-> +++ b/drivers/media/i2c/ov4689.c
-> @@ -35,6 +35,12 @@
->  #define OV4689_GAIN_STEP		1
->  #define OV4689_GAIN_DEFAULT		0x80
->  
-> +#define OV4689_REG_DIG_GAIN		CCI_REG16(0x352A)
+I have responded to your comments below. I would also be happy to add
+documentation to the init-section suites either in this patch series
+or in a future one.
 
-Lowercase for hex constatns please.
+Thanks!
+-Rae
 
-> +#define OV4689_DIG_GAIN_MIN		1
-> +#define OV4689_DIG_GAIN_MAX		0x7fff
-> +#define OV4689_DIG_GAIN_STEP		1
-> +#define OV4689_DIG_GAIN_DEFAULT		0x800
-> +
->  #define OV4689_REG_TEST_PATTERN		CCI_REG8(0x5040)
->  #define OV4689_TEST_PATTERN_ENABLE	0x80
->  #define OV4689_TEST_PATTERN_DISABLE	0x0
-> @@ -131,7 +137,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
->  
->  	/* AEC PK */
->  	{CCI_REG8(0x3503), 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
-> -	{CCI_REG8(0x352a), 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
+>
+> >
+> > Changes since v2:
+> > - Add info to documentation about cleaning up data, init tests, and
+> >   running tests concurrently
+> >
+> >  Documentation/dev-tools/kunit/run_manual.rst | 49 ++++++++++++++++++--
+> >  1 file changed, 45 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kunit/run_manual.rst b/Documentati=
+on/dev-tools/kunit/run_manual.rst
+> > index e7b46421f247..aebb52ba9605 100644
+> > --- a/Documentation/dev-tools/kunit/run_manual.rst
+> > +++ b/Documentation/dev-tools/kunit/run_manual.rst
+> > @@ -49,9 +49,50 @@ loaded.
+> >
+> >  The results will appear in TAP format in ``dmesg``.
+> >
+> > +debugfs
+> > +=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +``debugfs`` is a file system that enables user interaction with the fi=
+les to
+> > +make kernel information available to user space (See more information =
+at
+> > +Documentation/filesystems/debugfs.html)
+>
+> Nit: reference debugfs.rst here, not debugfs.html -- sphinx ought to
+> update the link automatically.
 
-Is the default value really x2 ? That's not very nice :-S
+Thanks for catching this! I didn't realize Sphinx would update it.
 
-It would be much nicer if the default value of the control mapped to x1,
-otherwise it's impossible for userspace to interpret the scale of the
-digital gain value in a generic way. I suppose that could break existing
-applications though, which isn't great.
+>
+> Also, maybe we can make this introduction a _little_ bit more
+> KUnit-specific. I'd personally start by saying that KUnit can be
+> accessed from userspace via the debugfs filesystem (link), usually
+> mounted in /sys/kernel/debug/kunit, etc, if CONFIG_KUNIT_DEBUGFS is
+> enabled.
 
-Out of curiosity, can you tell what SoC(s) you're using this sensor with
-?
+Ok I will add this for the next version.
 
->  
->  	/* ADC and analog control*/
->  	{CCI_REG8(0x3603), 0x40},
-> @@ -622,6 +627,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->  				OV4689_TIMING_FLIP_MASK,
->  				val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
->  		break;
-> +	case V4L2_CID_DIGITAL_GAIN:
-> +		cci_write(regmap, OV4689_REG_DIG_GAIN, val, &ret);
-> +		break;
->  	default:
->  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
->  			 __func__, ctrl->id, val);
-> @@ -650,7 +658,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  
->  	handler = &ov4689->ctrl_handler;
->  	mode = ov4689->cur_mode;
-> -	ret = v4l2_ctrl_handler_init(handler, 13);
-> +	ret = v4l2_ctrl_handler_init(handler, 14);
->  	if (ret)
->  		return ret;
->  
-> @@ -693,6 +701,10 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
->  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
->  	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
->  
-> +	v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
-> +			  OV4689_DIG_GAIN_MIN, OV4689_DIG_GAIN_MAX,
-> +			  OV4689_DIG_GAIN_STEP, OV4689_DIG_GAIN_DEFAULT);
-> +
->  	if (handler->error) {
->  		ret = handler->error;
->  		dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
+>
+> > +
+> > +By default, only the root user has access to the debugfs directory.
+> > +
+> > +If ``CONFIG_KUNIT_DEBUGFS`` is enabled, you can use KUnit debugfs
+> > +filesystem to perform the following actions.
+> > +
+> > +Retrieve Test Results
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +You can use debugfs to retrieve KUnit test results. The test results a=
+re
+> > +accessible from the debugfs filesystem in the following read-only file=
+:
+> > +
+> > +.. code-block :: bash
+> > +
+> > +       /sys/kernel/debug/kunit/<test_suite>/results
+> > +
+> > +The test results are available in KTAP format.
+>
+> Do we want to note that this is a separate KTAP document, and so may
+> have different suite numbering from the dmesg log?
 
--- 
-Regards,
+Sure! I will add this for the next version.
 
-Laurent Pinchart
+>
+> > +
+> > +Run Tests After Kernel Has Booted
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +You can use the debugfs filesystem to trigger built-in tests to run af=
+ter
+> > +boot. To run the test suite, you can use the following command to writ=
+e to
+> > +the ``/sys/kernel/debug/kunit/<test_suite>/run`` file:
+> > +
+> > +.. code-block :: bash
+> > +
+> > +       echo "any string" > /sys/kernel/debugfs/kunit/<test_suite>/run
+> > +
+> > +As a result, the test suite runs and the results are printed to the ke=
+rnel
+> > +log.
+> > +
+> > +However, this feature is not available with KUnit tests that use init =
+data.
+>
+> Let's expand this slightly, and mention that this is because the data
+> may have already been discarded, and that you can find such tests by
+> either looking for the kunit_test_init_section_suites() macro or the
+> is_init attribute.
+
+Got it. I will definitely expand this more.
+
+>
+> > +
+> > +Also, you cannot use this feature to run tests concurrently as there i=
+s a
+> > +mutex lock around running KUnit tests at the same time.
+> > +
+>
+> Instead of mentioning the mutex, which is an implementation detail,
+> just mention that tests will either wait for other tests to complete,
+> or fail having timed out.
+>
+
+I will definitely switch this out in the next version.
+
+>
+>
+> >  .. note ::
+> >
+> > -       If ``CONFIG_KUNIT_DEBUGFS`` is enabled, KUnit test results will
+> > -       be accessible from the ``debugfs`` filesystem (if mounted).
+> > -       They will be in ``/sys/kernel/debug/kunit/<test_suite>/results`=
+`, in
+> > -       TAP format.
+> > +       For test authors, to use this feature, tests will need to corre=
+ctly initialise
+> > +       and/or clean up any data, so the test runs correctly a second t=
+ime.
+> > --
+> > 2.43.0.rc2.451.g8631bc7472-goog
+> >
