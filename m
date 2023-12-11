@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFECF80CE08
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ACE80CCAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344350AbjLKOQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 09:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
+        id S1344050AbjLKOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344473AbjLKOPl (ORCPT
+        with ESMTP id S1344011AbjLKOC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:15:41 -0500
+        Mon, 11 Dec 2023 09:02:26 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD81561B2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:59:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77453C433CD;
-        Mon, 11 Dec 2023 13:59:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110165A5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 06:00:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5AA8C433C7;
+        Mon, 11 Dec 2023 13:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303194;
-        bh=mwRMxAXDSDOt3VEbst4HcA3jGRVpwBIp3rlBTdALsj0=;
+        s=k20201202; t=1702303201;
+        bh=Z4zFiJy8nVOqQvwvU48WTvdbUM9MltSNX1w9qcMnUeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q091HkTK6RqgSetdvwEEjX+85/ZCSCxwamELpobrFjw9YoWMsEfOoOXw1CGPn9hAI
-         i3SXDybLzpzKmZfjWUwbafnXnummTLzWfFSnLBL7KABeD0xvBFHIwM1sMXvJR3HL8X
-         kCsng8Vf7QtUFPmC4/q5sRWOM1AgXmOfW9LShBE4JDwPuIjPM3ebgp810OaJ9KldKE
-         ecbSBhaHjMLBguNqDlD9AOLvjtiTzcxQpMqefKc7l9Uup+3i2AnFV+ROcOSCB37wu5
-         Ozg6Ub/KNBx+vAkyBD6RtXAbmp8eisotcmKDJUpzygror6fui0VPaCMN9mwivknq/L
-         IyiOxZXvjS5Lg==
+        b=DCOd6P5K/KzVXOR7bragkvYZLTfwnsrl7Edz0EQ5dwNG899bMBKbyUOVqJB1UqX2L
+         Y1tdv13kcPS9A4pKc1Z8LoRgF+vERQ9289HcjvoxZUb2qbsiR/dHLSMAEya+sLITck
+         LugL1+sAEGXhtVvcDJFIMxRt3aq+AyQIlLLZBQMyiY6rtFLr0fMqyiSdJR/7v2AdBK
+         LAUegGclr3N2TtcpsSJ8P0WZ3cLGNxNc5XeTakAiWAn3cCdoO5F6vmaBlf2/sXd1q2
+         KQdsr9+gYSkZtUJQWeQ2CN7IwhJgb3vara+WHh9m2vAvTl57hhKfz3NLwwjK/B56CP
+         wxnQdr1KC2AUw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
-        liam.r.girdwood@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/19] ASoC: Intel: skl_hda_dsp_generic: Drop HDMI routes when HDMI is not available
-Date:   Mon, 11 Dec 2023 08:57:42 -0500
-Message-ID: <20231211135908.385694-8-sashal@kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, kherbst@redhat.com,
+        lyude@redhat.com, airlied@gmail.com, daniel@ffwll.ch,
+        bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 09/19] nouveau/tu102: flush all pdbs on vmm flush
+Date:   Mon, 11 Dec 2023 08:57:43 -0500
+Message-ID: <20231211135908.385694-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135908.385694-1-sashal@kernel.org>
 References: <20231211135908.385694-1-sashal@kernel.org>
@@ -59,41 +56,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Dave Airlie <airlied@redhat.com>
 
-[ Upstream commit 3d1dc8b1030df8ca0fdfd4905c88ee10db943bf8 ]
+[ Upstream commit cb9c919364653eeafb49e7ff5cd32f1ad64063ac ]
 
-When the HDMI is not present due to disabled display support
-we will use dummy codec and the HDMI routes will refer to non existent
-DAPM widgets.
+This is a hack around a bug exposed with the GSP code, I'm not sure
+what is happening exactly, but it appears some of our flushes don't
+result in proper tlb invalidation for out BAR2 and we get a BAR2
+fault from GSP and it all dies.
 
-Trim the route list from the HDMI routes to be able to probe the card even
-if the HDMI dais are not registered.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20231124124015.15878-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231130010852.4034774-1-airlied@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-index f4b4eeca3e03c..0cbacebe0613e 100644
---- a/sound/soc/intel/boards/skl_hda_dsp_generic.c
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -157,6 +157,8 @@ static int skl_hda_fill_card_info(struct snd_soc_acpi_mach_params *mach_params)
- 		card->dapm_widgets = skl_hda_widgets;
- 		card->num_dapm_widgets = ARRAY_SIZE(skl_hda_widgets);
- 		if (!ctx->idisp_codec) {
-+			card->dapm_routes = &skl_hda_map[IDISP_ROUTE_COUNT];
-+			num_route -= IDISP_ROUTE_COUNT;
- 			for (i = 0; i < IDISP_DAI_COUNT; i++) {
- 				skl_hda_be_dai_links[i].codecs = dummy_codec;
- 				skl_hda_be_dai_links[i].num_codecs =
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
+index 6cb5eefa45e9a..5a08458fe1b7f 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmmtu102.c
+@@ -31,7 +31,7 @@ tu102_vmm_flush(struct nvkm_vmm *vmm, int depth)
+ 
+ 	type |= 0x00000001; /* PAGE_ALL */
+ 	if (atomic_read(&vmm->engref[NVKM_SUBDEV_BAR]))
+-		type |= 0x00000004; /* HUB_ONLY */
++		type |= 0x00000006; /* HUB_ONLY | ALL PDB (hack) */
+ 
+ 	mutex_lock(&vmm->mmu->mutex);
+ 
 -- 
 2.42.0
 
