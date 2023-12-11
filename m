@@ -2,239 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F13D80BF11
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2B980BF1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 03:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjLKC0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 21:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S229948AbjLKC3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 21:29:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjLKC0h (ORCPT
+        with ESMTP id S229483AbjLKC3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 21:26:37 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83153E3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:26:42 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-464a3734e49so783519137.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702261601; x=1702866401; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Tcz5MXT3RaIMrhOVMWBMt5zqWEtLULnUCyi7Vfs29I=;
-        b=zg0V5sOHoV1x0ibRjSnaPxr0iWn/hVo6ErutIg5WI1RH+RpTuXXmLb192Nm57HeGI9
-         TfrNAvlUjAosqvPyULC8MUCgkSXNJqNDI6cqjq8x3+yQYoC1aWC9GTS+9YXHuBuGb97S
-         finhrLouu1k4aZPpCg2+5MyT5BTHxntLPL7R1q/8T/I2EgtW4hcYSBoYRq25bGKoIuGO
-         UB/+v1t02J6O1cfRNy1Ht9z6IisjZc0rcUmOWa6gIHa8oNFng3/P03YUuvSn5whGSgrL
-         m65Bt712PgQHVm0vIRN+vJ8AdzbdA8MRPhOv5FtytBuUXKyNAICvxcQhwR5BaPoHiTBM
-         k3mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702261601; x=1702866401;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Tcz5MXT3RaIMrhOVMWBMt5zqWEtLULnUCyi7Vfs29I=;
-        b=V7da+f3IfukrY0Xl8yw8QDD7pTgdorOJkrYSC3qUVmf3u4h6PJVplTt9w8EJln5caH
-         i57NrrZbOSaAUTsucWY9sRUnlRlJwcHmg9SiXFEyrD7tOJFNNmyKE0/BkBx2KEdetVl0
-         jIfuiFR+W9YvVA/bS/pZpeh4yxdeDxl3FPtHrKBX+W5oY07tDCSKDE4kPJh+/iTrhiDq
-         4fLS7e2SvRAI3CCMda964wwZKkENlWsBsQ1XLscEzL8kQDIHWfSLUIJlsvQCMIQ47cRn
-         UpWsDIq72UpXp7AB6rkFiXQfG3g8eeDl6t4IfeDjpGXKkicxLeY5k05Vu6nAGEWjOyxa
-         lWgg==
-X-Gm-Message-State: AOJu0Yz6tKJV/s6mxNiWaTIxSmt7ELYy9fwZZg+FywEnHvcfF4DrPIJK
-        SEAn5z6Y1VTK7bW0e3OLby+yvNwdvGXGD602pxGbdRAgfDW0pMZckNB+Cg==
-X-Google-Smtp-Source: AGHT+IGnrr9t6+NGhIIi9S1/72Jel2CtjV+XUhQz+4hhYbzgspOPRBlJJQgX/XwiMt+LGK0mGwNI6RyoqYpB1OqRiRo=
-X-Received: by 2002:a67:c11a:0:b0:462:797b:2b62 with SMTP id
- d26-20020a67c11a000000b00462797b2b62mr2228307vsj.32.1702261601420; Sun, 10
- Dec 2023 18:26:41 -0800 (PST)
+        Sun, 10 Dec 2023 21:29:22 -0500
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE16E3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 18:29:26 -0800 (PST)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231211022925epoutp03f82c9276e6b2383ed216c8e913187a34~fpg5sQ0I51817518175epoutp031
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 02:29:25 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231211022925epoutp03f82c9276e6b2383ed216c8e913187a34~fpg5sQ0I51817518175epoutp031
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702261765;
+        bh=9PZVF+Izd/fOscHxPgBInDtGjFKMvs6YTcTU/inrFa4=;
+        h=Date:Subject:To:From:In-Reply-To:References:From;
+        b=sfdCbo4MtCPRblJ/9jt2GCLxDEW96f8kJp9jq5EAB9FCjvFKtW34JVaO191dNUzWF
+         xeAYjA15ES6iqRGmekXgujpIcd3O4DEmpkLS6SQR/g6FUiYSWA3kkxX5Bb/wFJDOPL
+         mhBcnmUTPQ4w7H1EIVGUC81ECzQKUG1rXkPiQaus=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20231211022924epcas2p1381bb2c10e34ff95d5d9a9a677bdf61f~fpg5a_D7x1667216672epcas2p1-;
+        Mon, 11 Dec 2023 02:29:24 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.97]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4SpQg81jPsz4x9QF; Mon, 11 Dec
+        2023 02:29:24 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1E.95.08648.40476756; Mon, 11 Dec 2023 11:29:24 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231211022923epcas2p39263deafcd69ab8a00cae7c851bd4d81~fpg4dvKMh2462424624epcas2p3j;
+        Mon, 11 Dec 2023 02:29:23 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231211022923epsmtrp2042e9716f8f9b573c1ef099ec722a5c7~fpg4c_XSy1413214132epsmtrp2j;
+        Mon, 11 Dec 2023 02:29:23 +0000 (GMT)
+X-AuditID: b6c32a43-721fd700000021c8-12-657674046aeb
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        22.FA.08755.30476756; Mon, 11 Dec 2023 11:29:23 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231211022923epsmtip1df473844cd00b069666697ad1500d674~fpg4KnSPk1130311303epsmtip1h;
+        Mon, 11 Dec 2023 02:29:23 +0000 (GMT)
+Message-ID: <df677a28-284f-4f80-afa7-9bf71bc8ce2e@samsung.com>
+Date:   Mon, 11 Dec 2023 11:26:33 +0900
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com> <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com> <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
-In-Reply-To: <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sun, 10 Dec 2023 18:26:29 -0800
-Message-ID: <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.11.0
+Subject: Re: [PATCH] dt-bindings: samsung: exynos-sysreg: combine
+ exynosautov920 with other enum
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <20231210134834.43943-1-krzysztof.kozlowski@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmuS5LSVmqwbwzXBYP5m1js1iz9xyT
+        xfwj51gt+l48ZLbY+3oru8Wmx9dYLS7vmsNmMeP8PiaL1r1H2B04PTat6mTzuHNtD5vH5iX1
+        Hn1bVjF6fN4kF8AalW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ibaqvk
+        4hOg65aZA3SPkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAvECvODG3uDQvXS8v
+        tcTK0MDAyBSoMCE7Y+7UlcwFs3gqtu3sZ2xg/MPRxcjJISFgIrF83jO2LkYuDiGBHYwSTRde
+        MEI4nxglHt69C5X5xijR0/mTDaZlWs8GqKq9jBKvvm6Ecl4zSkxsns0CUsUrYCfxds1lJhCb
+        RUBV4u31x8wQcUGJkzOfgNWICkRLtC67DzZVWCBJ4v/MCawgNrOAuMStJ/OZQIaKCLxmkvh2
+        +xRYgk1AW+L7+sVgNqeAi0TD9WNMEA3yEtvfzmEGaZAQ6OWQmH/6KtStLhJ3fk9mhLCFJV4d
+        38IOYUtJfH63F6omX6LtyhmoeI3ExgWXoOrtJWb93gK0jANogabE+l36IKaEgLLEkVssEGv5
+        JDoO/2WHCPNKdLQJQTSqSdyfeg5quIzEpCMrmSBsD4lD7Z9YIGE1nVFi/a+fTBMYFWYhBcss
+        JO/PQvLZLIQjFjCyrGIUSy0ozk1PTTYqMIRHd3J+7iZGcGLVct7BeGX+P71DjEwcjIcYJTiY
+        lUR4ZY4UpwrxpiRWVqUW5ccXleakFh9iNAVGzkRmKdHkfGBqzyuJNzSxNDAxMzM0NzI1MFcS
+        573XOjdFSCA9sSQ1OzW1ILUIpo+Jg1OqgWmp76Ybbi1pC7asO6HVFFgoqxykOUF5l/ehY8mf
+        LNJuVxw5smva4xN5XOU6r/ckp+fM81gZOF98ybzDHg45h3yXncpf1dJyz0Hu8k3JBc/MM856
+        s+5b/1/6YO30aQKfezuC/IR0C70fPjxz0llh34RDplzHfjYv1vXraZt2eI2hysxMw1vy8ump
+        rEWctevvhU/2e89ozHQru7Vp4csDLS1XSyTZ+CepMnvlNh2/lWNv89f8/I/LcxiuuZxTXrF+
+        18OJXMk3bn37E6Hsl73yud15vi3biqbMNS/JVnR8+PfG7R05us8/ci19p3O3MMLHYt71Z709
+        P1bv39PL8aJ/UW2uk9H7RfP13Y8/3PBoU5mrEktxRqKhFnNRcSIAte9CWDUEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnC5zSVmqwZNbShYP5m1js1iz9xyT
+        xfwj51gt+l48ZLbY+3oru8Wmx9dYLS7vmsNmMeP8PiaL1r1H2B04PTat6mTzuHNtD5vH5iX1
+        Hn1bVjF6fN4kF8AaxWWTkpqTWZZapG+XwJUxd+pK5oJZPBXbdvYzNjD+4ehi5OSQEDCRmNaz
+        gbGLkYtDSGA3o8SR5h52iISMxPJnfWwQtrDE/ZYjrBBFLxklntxezgyS4BWwk3i75jITiM0i
+        oCrx9vpjqLigxMmZT1hAbFGBaInVny+wgtjCAkkS/2dOALOZBcQlbj2ZzwQyVETgNZPEpL3t
+        7BAbpjNKdP74zwhSxSagLfF9/WKwDk4BF4mG68eYILrNJLq2djFC2PIS29/OYZ7AKDgLyfJZ
+        SJbMQtIyC0nLAkaWVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5uZsYwVGjpbmDcfuqD3qH
+        GJk4GA8xSnAwK4nwyhwpThXiTUmsrEotyo8vKs1JLT7EKM3BoiTOK/6iN0VIID2xJDU7NbUg
+        tQgmy8TBKdXAlMKYemkOm7tQ58kneRZZ6zz3L3a9cJfB3vGU8VvfrBTBbNc5T2ZKLCg15Zru
+        d4LvNgeb3cmalcn1Me5zTERmdGZ5mzh9LD2gMsX340oehvUHzuW773gy44yr86rAEzKFy7mm
+        nsh+N9tObmL5zxNZHlMlTm0XSelKLewI49oYwK+xLtFdaM6iT7c+3Jgu86jN/D3b1g5Z9rP7
+        dzjPcF4SoZs137r8jXZsVfSMbennt3DEH7R/efPZ/pJJbg/zXz12+J/Hd2pqrNGHsJs/LA2V
+        p/hz26xuy3lz8brpC42ju1PWGf++mLkgPoT9T0bW4+Pf3pwWkjjkWJ7RFFC+4EGBZtzk0v4F
+        Pxd3HzHzrq1eqsRSnJFoqMVcVJwIABBTUhkJAwAA
+X-CMS-MailID: 20231211022923epcas2p39263deafcd69ab8a00cae7c851bd4d81
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231210134852epcas2p4166a413502a742b6f558d7b55bd36ae6
+References: <CGME20231210134852epcas2p4166a413502a742b6f558d7b55bd36ae6@epcas2p4.samsung.com>
+        <20231210134834.43943-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 6:04=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
+
+On 23. 12. 10. 22:48, Krzysztof Kozlowski wrote:
+> No need to create a new enum every time we bring-up new SoC.
 >
-> On 2023/12/9 0:05, Mina Almasry wrote:
-> > On Fri, Dec 8, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
-.com> wrote:
-> >>
-> >>
-> >> As mentioned before, it seems we need to have the above checking every
-> >> time we need to do some per-page handling in page_pool core, is there
-> >> a plan in your mind how to remove those kind of checking in the future=
-?
-> >>
-> >
-> > I see 2 ways to remove the checking, both infeasible:
-> >
-> > 1. Allocate a wrapper struct that pulls out all the fields the page poo=
-l needs:
-> >
-> > struct netmem {
-> >         /* common fields */
-> >         refcount_t refcount;
-> >         bool is_pfmemalloc;
-> >         int nid;
-> >         ...
-> >         union {
-> >                 struct dmabuf_genpool_chunk_owner *owner;
-> >                 struct page * page;
-> >         };
-> > };
-> >
-> > The page pool can then not care if the underlying memory is iov or
-> > page. However this introduces significant memory bloat as this struct
-> > needs to be allocated for each page or ppiov, which I imagine is not
-> > acceptable for the upside of removing a few static_branch'd if
-> > statements with no performance cost.
-> >
-> > 2. Create a unified struct for page and dmabuf memory, which the mm
-> > folks have repeatedly nacked, and I imagine will repeatedly nack in
-> > the future.
-> >
-> > So I imagine the special handling of ppiov in some form is critical
-> > and the checking may not be removable.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+
+Reviewed-by: Jaewon Kim <jaewon02.kim@samsung.com>
+
+
+>   .../bindings/soc/samsung/samsung,exynos-sysreg.yaml        | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
 >
-> If the above is true, perhaps devmem is not really supposed to be interga=
-ted
-> into page_pool.
->
-> Adding a checking for every per-page handling in page_pool core is just t=
-oo
-> hacky to be really considerred a longterm solution.
->
-
-The only other option is to implement another page_pool for ppiov and
-have the driver create page_pool or ppiov_pool depending on the state
-of the netdev_rx_queue (or some helper in the net stack to do that for
-the driver). This introduces some code duplication. The ppiov_pool &
-page_pool would look similar in implementation.
-
-But this was all discussed in detail in RFC v2 and the last response I
-heard from Jesper was in favor if this approach, if I understand
-correctly:
-
-https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.=
-com/
-
-Would love to have the maintainer weigh in here.
-
-> It is somewhat ironical that devmem is using static_branch to alliviate t=
-he
-> performance impact for normal memory at the possible cost of performance
-> degradation for devmem, does it not defeat some purpose of intergating de=
-vmem
-> to page_pool?
->
-
-I don't see the issue. The static branch sets the non-ppiov path as
-default if no memory providers are in use, and flips it when they are,
-making the default branch prediction ideal in both cases.
-
-> >
-> >> Even though a static_branch check is added in page_is_page_pool_iov(),=
- it
-> >> does not make much sense that a core has tow different 'struct' for it=
-s
-> >> most basic data.
-> >>
-> >> IMHO, the ppiov for dmabuf is forced fitting into page_pool without mu=
-ch
-> >> design consideration at this point.
-> >>
-> > ...
-> >>
-> >> For now, the above may work for the the rx part as it seems that you a=
-re
-> >> only enabling rx for dmabuf for now.
-> >>
-> >> What is the plan to enable tx for dmabuf? If it is also intergrated in=
-to
-> >> page_pool? There was a attempt to enable page_pool for tx, Eric seemed=
- to
-> >> have some comment about this:
-> >> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@hu=
-awei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
-> >>
-> >> If tx is not intergrated into page_pool, do we need to create a new la=
-yer for
-> >> the tx dmabuf?
-> >>
-> >
-> > I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
-> > helpers, and page_pool_page_*() helpers, but will not need any core
-> > page_pool changes. This is because the TX path will have to piggyback
->
-> We may need another bit/flags checking to demux between page_pool owned
-> devmem and non-page_pool owned devmem.
->
-
-The way I'm imagining the support, I don't see the need for such
-flags. We'd be re-using generic helpers like
-page_pool_iov_get_dma_address() and what not that don't need that
-checking.
-
-> Also calling page_pool_*() on non-page_pool owned devmem is confusing
-> enough that we may need a thin layer handling non-page_pool owned devmem
-> in the end.
->
-
-The page_pool_page* & page_pool_iov* functions can be renamed if
-confusing. I would think that's no issue (note that the page_pool_*
-functions need not be called for TX path).
-
-> > on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation from
-> > the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
-> > implementation based on dmabuf pages without page_pool involvement, I
-> > imagine I'll do something similar.
-> It would be good to have a tx implementation for the next version, so
-> that we can have a whole picture of devmem.
->
-> >
-
-
-
---=20
-Thanks,
-Mina
+> diff --git a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+> index 2de4301a467d..b00f25482fec 100644
+> --- a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+> +++ b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+> @@ -17,6 +17,8 @@ properties:
+>                 - samsung,exynos3-sysreg
+>                 - samsung,exynos4-sysreg
+>                 - samsung,exynos5-sysreg
+> +              - samsung,exynosautov920-peric0-sysreg
+> +              - samsung,exynosautov920-peric1-sysreg
+>                 - tesla,fsd-cam-sysreg
+>                 - tesla,fsd-fsys0-sysreg
+>                 - tesla,fsd-fsys1-sysreg
+> @@ -50,11 +52,6 @@ properties:
+>                 - samsung,exynosautov9-peric1-sysreg
+>             - const: samsung,exynosautov9-sysreg
+>             - const: syscon
+> -      - items:
+> -          - enum:
+> -              - samsung,exynosautov920-peric0-sysreg
+> -              - samsung,exynosautov920-peric1-sysreg
+> -          - const: syscon
+>   
+>     reg:
+>       maxItems: 1
