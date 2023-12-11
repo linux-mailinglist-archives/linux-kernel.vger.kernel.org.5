@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A4180C180
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EED80C183
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 07:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbjLKGrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 01:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        id S233548AbjLKGu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 01:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjLKGrk (ORCPT
+        with ESMTP id S231721AbjLKGu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 01:47:40 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0414BD8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:47:46 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so2102304a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:47:45 -0800 (PST)
+        Mon, 11 Dec 2023 01:50:57 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEECED7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:51:03 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b88f2a37deso3295116b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 22:51:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702277265; x=1702882065; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a48U/31wlYhKh2YcSR/tePNphggIU3CwJSH0jG+cw8E=;
-        b=CxVHFMRlgB3caYI7f54djRbSS7nlsRY6EH1bJoZAmmP8x+HFbdwt4X4taiBgdo4W+S
-         iDrPms4bPKIRQZbgu6KMNkbeu9iysadMyAkMKSKAwtWZjoCdAxuZMHKvJ02cDpexvipD
-         KLf0klhrHjNTZLoXKRMDFDR9iC2geVo9PxNw4+G+/XA4kLnhBnoMv79OaM6ms+yEesXU
-         1Q7hXLprADmXs4IrKGCwIqCPCMYP2lYya08Z/yIfv030QXKnM8bDQ8WxI2xZxBUM48nC
-         5TGJfuvZdLNifk5Yl8s41zm2Ef03E5ID+l6U9kY71+v/ihiUJ4aCPNu7/1IkF/MBCG0F
-         fx7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702277265; x=1702882065;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702277463; x=1702882263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a48U/31wlYhKh2YcSR/tePNphggIU3CwJSH0jG+cw8E=;
-        b=PEeUcNtE/rsk7q8zLDnX3ou6wrzd77bwvL/Si8/VpjjT+H25ZX6pGt+M0lGxIbjgvj
-         3BtYehrnn9TRC53ZU41VNuXqiG2XopkBxuiXPaYJtoqzQNDm/MbKnaClprK/YXvMX/Uz
-         z7QvLF0jRIcnDk1NMsI3EjTVgU24D6aRPZwcMQ4+P7N1t+f0TjIT4y4OIzYm9SUHvL9f
-         LKx01R0XOB9aeCci/CMV2HyReSSp0/23p4nLb7Z5+bfGQk40m2HbxcTalXqed17e9e59
-         yejiSiYcGOl2XWQwHZe9A9pI49YZ9RTx8iWGmr/ASxa7PhMyLyc2QCct0pfwSFXfEjXT
-         VNtA==
-X-Gm-Message-State: AOJu0YwB4aIeFsBy7bxD3CnZz1xIEvyeJYIGcOnU1f8K/H8fQ9S5XM29
-        3DI/0ZxpZZoDdOIfzOrtNoEDfw==
-X-Google-Smtp-Source: AGHT+IH1sraA/ewghKmWcDdZXIY/GSc4x1aDBpmQSc9Y28rj/4GaXYs1TwdtDbpoGr+jWN9S49K08w==
-X-Received: by 2002:a05:6a20:431c:b0:18f:97c:ba03 with SMTP id h28-20020a056a20431c00b0018f097cba03mr1769416pzk.93.1702277265442;
-        Sun, 10 Dec 2023 22:47:45 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id pt8-20020a17090b3d0800b002839679c23dsm6161953pjb.13.2023.12.10.22.47.44
+        bh=YctzTYntyd51jqXxmWwWW3nRDYDfU3b8oocrWrVlruk=;
+        b=PbmooSSiw9uJ4wc+pUMLVMJ+tzGzc27nYJ6LbWqBlcYDkBuvMvj+9xItsnmqrY9n7L
+         /E6O7XMaASy4EWQT6CgjHt/1XZ0MJyP3dv41v2IGdGkHiUbR2cidGgVgiD/Dk2opEgb+
+         VdONGiDy5Xhii9oOF44DW2jNY9voV4VAGJR5+GsjZICyy6YFb8ix+RYWh/DeqoeDFUUs
+         StyPig433YmVHsvpH4ghxeGQXhVx0PvImf90XEKy+KHsc9Ts5V+lL0mbAC0vpfyLzt3w
+         6WQ/ilF31Sp6I8zIMP1/fICUEus6WeYh72wqhLG+Fq2fMR3f6isMOwmck7n8qP0Lcl13
+         ufMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702277463; x=1702882263;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YctzTYntyd51jqXxmWwWW3nRDYDfU3b8oocrWrVlruk=;
+        b=MYUhceb6XGX2QsNCOl7Gx/+PZGyNLv9MwdrQVOppuhw7EcaXaaADJcOrBkGyWRk0iI
+         rnYVFHSJDhKid1lpAEZi7nEeBZdFy0cMjC3pXEG2YDqHT9tFUfsnJZ1rypb4kolEJCLy
+         2AKuD6h4iUtArZSV8ZnlTMEiJl1akpe1456eIwJdiPguTOmv7mHjtlYni6SbWtZlDdCz
+         YnS0IJlAkuukGgdHxpYKbDIRBhurXjOK3Ct+6GPC9yCMHYSGbnBZ+WYi3iauCApuXiwd
+         yJHg6mDl4k5nS44csy0XKzdwBOM9eMJYRu74qmO6/mK/H0EnltrNGDbsiKRGERugc/+v
+         U7GA==
+X-Gm-Message-State: AOJu0YzoIn5k3MwN1WkHyHOHRvYXmBD2dFpL51Inspf7P0ssRWMZBkTH
+        j/rcSA1Hl1AbYCTl8rcm7Bs=
+X-Google-Smtp-Source: AGHT+IGeRQ1ftbcejenpH4uWLA+egcIaOW1gMT6Mg14LZVgPoMPZGIReGmd8m7mRuhAK6i30LrPfhQ==
+X-Received: by 2002:a05:6808:208a:b0:3b9:f08f:6846 with SMTP id s10-20020a056808208a00b003b9f08f6846mr5059593oiw.18.1702277462917;
+        Sun, 10 Dec 2023 22:51:02 -0800 (PST)
+Received: from localhost ([156.236.96.164])
+        by smtp.gmail.com with ESMTPSA id 64-20020a630043000000b005c65d432119sm5533968pga.67.2023.12.10.22.51.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 22:47:44 -0800 (PST)
-Date:   Mon, 11 Dec 2023 12:17:42 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Benno Lossin <benno.lossin@proton.me>
-Cc:     Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: rust: Clarify that 'rustup override' applies to
- build directory
-Message-ID: <20231211064742.63l4cmvxe4uso5us@vireshk-i7>
-References: <bf0d4ff21bc25d1ba3a31e49a32bde06dcaf6e44.1702030679.git.viresh.kumar@linaro.org>
- <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
+        Sun, 10 Dec 2023 22:51:02 -0800 (PST)
+Date:   Mon, 11 Dec 2023 14:50:57 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@coolpad.com
+Subject: Re: [PATCH 0/5] erofs: basic sub-page compressed data support
+Message-ID: <20231211145057.000067eb.zbestahu@gmail.com>
+In-Reply-To: <20231206091057.87027-1-hsiangkao@linux.alibaba.com>
+References: <20231206091057.87027-1-hsiangkao@linux.alibaba.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4738ad1c-eb54-4ad6-98c8-3852de3e8fc3@proton.me>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-12-23, 18:04, Benno Lossin wrote:
-> Shouldn't this be "Note that the override only applies to the current
-> working directory (and its sub-directories)."?
-> I think it would also be useful to continue with this: "But in order
-> to build the kernel, this override must affect the build directory.".
+On Wed,  6 Dec 2023 17:10:52 +0800
+Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+
+> Hi folks,
 > 
-> And then you could also mention that in the default location for the
-> build directory is in the repository.
+> Recently, there are two new cases so that we need to add a preliminary
+> sub-page block support for compressed files;
+> 
+>  - As Android folks requested, Android ecosystem itself is now switching
+>    to 16k page size for their arm64 devices.  They needs an option of
+>    4k-block image compatibility on their new 16k devices;
+> 
+>  - Some arm64 cloud servers use 64k page size for their optimized
+>    workloads, but 4k-block EROFS container images need to be parsed too.
+> 
+> So this patchset mainly addresses the requirements above with a very
+> very simple approach as a start: just allocate short-lived temporary
+> buffers all the time to keep compressed data if sub-page blocks are
+> identified.  In other words, no inplace/cache decompression for
+> the preliminary support.
+> 
+> This patchset survives EROFS stress test on my own testfarms.
+> 
+> Thanks,
+> Gao Xiang
+> 
+> Gao Xiang (5):
+>   erofs: support I/O submission for sub-page compressed blocks
+>   erofs: record `pclustersize` in bytes instead of pages
+>   erofs: fix up compacted indexes for block size < 4096
+>   erofs: refine z_erofs_transform_plain() for sub-page block support
+>   erofs: enable sub-page compressed block support
+> 
+>  fs/erofs/decompressor.c |  81 +++++++++------
+>  fs/erofs/inode.c        |   6 +-
+>  fs/erofs/zdata.c        | 224 ++++++++++++++++++----------------------
+>  fs/erofs/zmap.c         |  32 +++---
+>  4 files changed, 169 insertions(+), 174 deletions(-)
+> 
 
-Based on feedback from Miguel and Benno, how about this instead ?
-
-diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quick-start.rst
-index f382914f4191..dee787f92d26 100644
---- a/Documentation/rust/quick-start.rst
-+++ b/Documentation/rust/quick-start.rst
-@@ -33,14 +33,17 @@ A particular version of the Rust compiler is required. Newer versions may or
- may not work because, for the moment, the kernel depends on some unstable
- Rust features.
-
--If ``rustup`` is being used, enter the checked out source code directory
--and run::
-+If ``rustup`` is being used, enter the kernel build directory and run::
-
-        rustup override set $(scripts/min-tool-version.sh rustc)
-
- This will configure your working directory to use the correct version of
--``rustc`` without affecting your default toolchain. If you are not using
--``rustup``, fetch a standalone installer from:
-+``rustc`` without affecting your default toolchain.
-+
-+Note that the override applies to the current working directory (and its
-+sub-directories).
-+
-+If you are not using ``rustup``, fetch a standalone installer from:
-
-        https://forge.rust-lang.org/infra/other-installation-methods.html#standalone
-
--- 
-viresh
+Reviewed-by: Yue Hu <huyue2@coolpad.com>
