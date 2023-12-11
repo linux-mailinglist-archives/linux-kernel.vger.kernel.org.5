@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BA480C467
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B42380C469
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 10:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbjLKJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 04:22:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
+        id S234567AbjLKJYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 04:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbjLKJWn (ORCPT
+        with ESMTP id S234105AbjLKJX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 04:22:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575D0CE;
-        Mon, 11 Dec 2023 01:22:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702286569; x=1733822569;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=+ODZaxYb7w0tO5TdpkJsX+x6tQ0MA4z3+FLXUMt8UlM=;
-  b=Y1ZI9bH/eR41Rh0LZWF6b7FZavi7Q1F/wgTSz4chlpukSGBFQSM+lnje
-   XLz+pgBO8nlM7goL0EVrL+qYM5fo8Wy4P2+Hh2daxfpjDI9gzijSVv2PN
-   lQIERIr8fGyAf+eKUwNx6rFZ/1f93EkXRGgZpQM4oBYgOuLxOH7Jmqy85
-   KyiggPLSl1ugHjKNcBbOgLEQdd+vBxrzro42Lvinn61gAylRLdPlEb9l2
-   x0RHD2KFB3TtUqGqRajqICM3b5FsKX5ZFvKqsDTyRb8oBxb0MNWhHoqK+
-   QuXEJa7PCwXWZBzNpEJXtILrfb8WgRbF5waM4UxXxxqqCqoeLIzzZKB2K
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="480810409"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="480810409"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 01:22:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="749212539"
-X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
-   d="scan'208";a="749212539"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 01:22:43 -0800
-Message-ID: <41ff6a9a-c32b-41f1-9d72-e26f2008acf3@linux.intel.com>
-Date:   Mon, 11 Dec 2023 17:22:40 +0800
+        Mon, 11 Dec 2023 04:23:59 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4040BF5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:24:05 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so5954368a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 01:24:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702286644; x=1702891444; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6oPnCa6DBd3f+98xEuauxtAQ1S8sjdrlrHr9RLCgoc=;
+        b=S3P3i2nW/PzkYyUhyscxVrRRRNPniGFuPVnWaRkF+99ZXAeVo8U6uZGflK/hSxP2xv
+         zhK1Oz5NSZgaWhqGmMrXwyTtDkTeTNPBSr2ZWRHWvenSadTvVQuGj9eiwyI9AQUqbZRV
+         UZ3bJJb2/FjbN+EZDB8Qcex6y47Vt3pMKylrzGGpRrGTU5ADBT983h4t2v8qSlJfILDg
+         pd5UGKXTvpVzQ72sQkHzct8SxVbD/6Mm446tzPbZzbu1rBcpDV2FrN2/1nz+n6CjPrZa
+         8apumfPRpUIvJCazJvaxCi4OagqexcMZwufhm6aUjiyPWbQtTd4RtrG6nbcplG70OPGf
+         D3aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702286644; x=1702891444;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n6oPnCa6DBd3f+98xEuauxtAQ1S8sjdrlrHr9RLCgoc=;
+        b=Ig4lYsYoiwoBVTlOv3A0hrsYg6kf0mfw2oKsW3eFETFzc0NN17Mf3NjOBeah/UMvT3
+         CivuhpMtJVuYNUWGPzx38B7RnDGzTDM08JghubMysXV7feWsmUiKz+Q5Fa16wC1UTK5I
+         XVCVg/2GSbq1LmuSwfuotlFzfh+WDLn2aT+MhnsD9Nl+P340RTkr+eBwYzK0aBedX0jN
+         7rFdQzRBkmOQdHLTEpfzBqZKigl+QQctttsFxnJnYPDz4fbzaNmvYf/ETftktojt9exj
+         zY+TB1iCr9JC4M5TqJDzHXa+cbfFSkJH5Uk2B4FhA49MObOhwQWiUPROuDlj49N61zth
+         QMpA==
+X-Gm-Message-State: AOJu0YzeAexL09hitV+L3Nuoq6I6OJHEJ63tf9ffzp0ddohNTbNgX0VM
+        BOqhwf73XYSfpeecsRq6mvKPUqxfQ37xGMEaeBc=
+X-Google-Smtp-Source: AGHT+IGgfdy95mNKY3dcynCeXmQN85L2HtJqH+pLYpK7S/8dLAYGnPh0D4hxqe5RKWN0arN/imiGYA==
+X-Received: by 2002:a17:906:7f90:b0:a19:a19b:422d with SMTP id f16-20020a1709067f9000b00a19a19b422dmr1161332ejr.152.1702286643623;
+        Mon, 11 Dec 2023 01:24:03 -0800 (PST)
+Received: from [10.167.154.1] (178235179179.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.179])
+        by smtp.gmail.com with ESMTPSA id tb21-20020a1709078b9500b009ad89697c86sm4570248ejc.144.2023.12.11.01.24.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 01:24:03 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/2] Enable interconnect on SM6115
+Date:   Mon, 11 Dec 2023 10:23:57 +0100
+Message-Id: <20231209-topic-6115iccdt-v1-0-f62da62b7276@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH v17 019/116] KVM: x86, tdx: Make KVM_CAP_MAX_VCPUS backend
- specific
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1699368322.git.isaku.yamahata@intel.com>
- <376bdde3fac2fb13579b33b9db3d3d2bc2774ffa.1699368322.git.isaku.yamahata@intel.com>
-In-Reply-To: <376bdde3fac2fb13579b33b9db3d3d2bc2774ffa.1699368322.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC3VdmUC/x2NQQqEMAwAvyI5G0grW9j9inioMV0DUqXVZUH8u
+ 8HjDAxzQpWiUuHTnFDkp1XXbODaBniO+SuokzF48p3z9MZ93ZQxOPdS5mlHCpRIfEjEHVg1xio
+ 4lph5ti4fy2JyK5L0/2z64bpuLEHcs3YAAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702286641; l=973;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=tmsSXzF1KmW91De4zWGI6eXCqf+wYJAGd6SC/NqLLho=;
+ b=eFsjoUSM1mxD8XDpzXhccY/co+PmWuuma5IMOq5vVzDBMlkYUsSrVMAZwcrqtqbhojfrgbRW+
+ NIQBQwnkEG5Cps5M01s17AGP2BNwcjzuWtTErvTi3NbqEFQPIKLafRm
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,224 +88,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The SM6115 interconnect driver has been merged now. Add nodes required
+to make use of it.
 
+Patch 1 for icc, patch 2 for qcom.
 
-On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata<isaku.yamahata@intel.com>
->
-> TDX has its own limitation on the maximum number of vcpus that the guest
-> can accommodate.  Allow x86 kvm backend to implement its own KVM_ENABLE_CAP
-> handler and implement TDX backend for KVM_CAP_MAX_VCPUS.  user space VMM,
-> e.g. qemu, can specify its value instead of KVM_MAX_VCPUS.
+Likely depends on patch 3/ (qcm2290 BWMON compatible) from [1].
 
-Should use "TDX" instread of "x86, tdx" in shortlog?
+The required bindings changes are available over at an immutable k.org/
+djakov/icc.git/icc-sm6115.
 
+[1] https://lore.kernel.org/linux-arm-msm/20231125-topic-rb1_feat-v3-3-4cbb567743bb@linaro.org/
 
-> Signed-off-by: Isaku Yamahata<isaku.yamahata@intel.com>
-> ---
->   arch/x86/include/asm/kvm-x86-ops.h |  2 ++
->   arch/x86/include/asm/kvm_host.h    |  2 ++
->   arch/x86/kvm/vmx/main.c            | 22 ++++++++++++++++++++++
->   arch/x86/kvm/vmx/tdx.c             | 30 ++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/tdx.h             |  3 +++
->   arch/x86/kvm/vmx/x86_ops.h         |  5 +++++
->   arch/x86/kvm/x86.c                 |  4 ++++
->   7 files changed, 68 insertions(+)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index 09abb53d92ea..b7b591f1ff72 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -21,6 +21,8 @@ KVM_X86_OP(hardware_unsetup)
->   KVM_X86_OP(has_emulated_msr)
->   KVM_X86_OP(vcpu_after_set_cpuid)
->   KVM_X86_OP(is_vm_type_supported)
-> +KVM_X86_OP_OPTIONAL(max_vcpus);
-> +KVM_X86_OP_OPTIONAL(vm_enable_cap)
->   KVM_X86_OP(vm_init)
->   KVM_X86_OP_OPTIONAL(vm_destroy)
->   KVM_X86_OP_OPTIONAL_RET0(vcpu_precreate)
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 6509e967454a..f240c3d025b1 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1574,7 +1574,9 @@ struct kvm_x86_ops {
->   	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
->   
->   	bool (*is_vm_type_supported)(unsigned long vm_type);
-> +	int (*max_vcpus)(struct kvm *kvm);
->   	unsigned int vm_size;
-> +	int (*vm_enable_cap)(struct kvm *kvm, struct kvm_enable_cap *cap);
->   	int (*vm_init)(struct kvm *kvm);
->   	void (*vm_destroy)(struct kvm *kvm);
->   
-> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> index a95bbd10c3d8..5a857c8defd9 100644
-> --- a/arch/x86/kvm/vmx/main.c
-> +++ b/arch/x86/kvm/vmx/main.c
-> @@ -6,6 +6,7 @@
->   #include "nested.h"
->   #include "pmu.h"
->   #include "tdx.h"
-> +#include "tdx_arch.h"
->   
->   static bool enable_tdx __ro_after_init;
->   module_param_named(tdx, enable_tdx, bool, 0444);
-> @@ -16,6 +17,17 @@ static bool vt_is_vm_type_supported(unsigned long type)
->   		(enable_tdx && tdx_is_vm_type_supported(type));
->   }
->   
-> +static int vt_max_vcpus(struct kvm *kvm)
-> +{
-> +	if (!kvm)
-> +		return KVM_MAX_VCPUS;
-> +
-> +	if (is_td(kvm))
-> +		return min3(kvm->max_vcpus, KVM_MAX_VCPUS, TDX_MAX_VCPUS);
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (2):
+      dt-bindings: interconnect: qcom,msm8998-bwmon: Add SM6115 bwmon instance
+      arm64: dts: qcom: sm6115: Hook up interconnects
 
-kvm->max_vcpus is initialized to KVM_MAX_VCPUS when kvm_create_vm().
-Also, when userspace tries to set the value, it's also limited by KVM_MAX_VCPUS.
-So, for x86, the value is <= KVM_MAX_VCPUS for sure.
+ .../bindings/interconnect/qcom,msm8998-bwmon.yaml  |   1 +
+ arch/arm64/boot/dts/qcom/sm6115.dtsi               | 277 +++++++++++++++++++++
+ 2 files changed, 278 insertions(+)
+---
+base-commit: 206dd8f44be8930e25cd6c82873f21ae659abec9
+change-id: 20231209-topic-6115iccdt-060f0e26f0c3
 
-It could be simpler:
-+	if (is_td(kvm))
-+		return min(kvm->max_vcpus, TDX_MAX_VCPUS);
-
-
-
-> +
-> +	return kvm->max_vcpus;
-> +}
-> +
->   static int vt_hardware_enable(void)
->   {
->   	int ret;
-> @@ -43,6 +55,14 @@ static __init int vt_hardware_setup(void)
->   	return 0;
->   }
->   
-> +static int vt_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	if (is_td(kvm))
-> +		return tdx_vm_enable_cap(kvm, cap);
-> +
-> +	return -EINVAL;
-> +}
-> +
->   static int vt_vm_init(struct kvm *kvm)
->   {
->   	if (is_td(kvm))
-> @@ -80,7 +100,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
->   	.has_emulated_msr = vmx_has_emulated_msr,
->   
->   	.is_vm_type_supported = vt_is_vm_type_supported,
-> +	.max_vcpus = vt_max_vcpus,
->   	.vm_size = sizeof(struct kvm_vmx),
-> +	.vm_enable_cap = vt_vm_enable_cap,
->   	.vm_init = vt_vm_init,
->   	.vm_destroy = vmx_vm_destroy,
->   
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index f9e80582865d..331fbaa10d46 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -17,6 +17,36 @@
->   		offsetof(struct tdsysinfo_struct, cpuid_configs))	\
->   		/ sizeof(struct tdx_cpuid_config))
->   
-> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	int r;
-> +
-> +	switch (cap->cap) {
-> +	case KVM_CAP_MAX_VCPUS: {
-> +		if (cap->flags || cap->args[0] == 0)
-> +			return -EINVAL;
-> +		if (cap->args[0] > KVM_MAX_VCPUS)
-> +			return -E2BIG;
-> +		if (cap->args[0] > TDX_MAX_VCPUS)
-> +			return -E2BIG;
-Can merge the two if statements into one.
-
-+        if (cap->args[0] > KVM_MAX_VCPUS || cap->args[0] > TDX_MAX_VCPUS)
-+            return -E2BIG;
-
-> +
-> +		mutex_lock(&kvm->lock);
-> +		if (kvm->created_vcpus)
-> +			r = -EBUSY;
-> +		else {
-> +			kvm->max_vcpus = cap->args[0];
-> +			r = 0;
-> +		}
-> +		mutex_unlock(&kvm->lock);
-> +		break;
-> +	}
-> +	default:
-> +		r = -EINVAL;
-> +		break;
-> +	}
-> +	return r;
-> +}
-> +
->   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
->   {
->   	struct kvm_tdx_capabilities __user *user_caps;
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> index 473013265bd8..22c0b57f69ca 100644
-> --- a/arch/x86/kvm/vmx/tdx.h
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -3,6 +3,9 @@
->   #define __KVM_X86_TDX_H
->   
->   #ifdef CONFIG_INTEL_TDX_HOST
-> +
-> +#include "tdx_ops.h"
-> +
->   struct kvm_tdx {
->   	struct kvm kvm;
->   	/* TDX specific members follow. */
-> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
-> index 6487884a8d8e..ee5d8a38e7f8 100644
-> --- a/arch/x86/kvm/vmx/x86_ops.h
-> +++ b/arch/x86/kvm/vmx/x86_ops.h
-> @@ -138,11 +138,16 @@ void vmx_setup_mce(struct kvm_vcpu *vcpu);
->   int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
->   bool tdx_is_vm_type_supported(unsigned long type);
->   
-> +int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
->   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
->   #else
->   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
->   static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
->   
-> +static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	return -EINVAL;
-> +};
->   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
->   #endif
->   
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ced75e9204b9..de6e6462e7f3 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4694,6 +4694,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   		break;
->   	case KVM_CAP_MAX_VCPUS:
->   		r = KVM_MAX_VCPUS;
-> +		if (kvm_x86_ops.max_vcpus)
-> +			r = static_call(kvm_x86_max_vcpus)(kvm);
->   		break;
->   	case KVM_CAP_MAX_VCPU_ID:
->   		r = KVM_MAX_VCPU_IDS;
-> @@ -6641,6 +6643,8 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->   		break;
->   	default:
->   		r = -EINVAL;
-> +		if (kvm_x86_ops.vm_enable_cap)
-> +			r = static_call(kvm_x86_vm_enable_cap)(kvm, cap);
->   		break;
->   	}
->   	return r;
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
