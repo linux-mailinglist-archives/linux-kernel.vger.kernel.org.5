@@ -2,150 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEAA80C832
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A307580C88E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbjLKLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
+        id S234795AbjLKLk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbjLKLkd (ORCPT
+        with ESMTP id S234414AbjLKLkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:40:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235BACB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:40:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFBA2C433C8;
-        Mon, 11 Dec 2023 11:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702294839;
-        bh=3gaOmYRIZfbiVmht0OPzyhJS1d5RxKW/OEhIAR90v1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hp/BPQfyYMdM+/l1B7ToTZogugssKh2805pDfssVpBiMrpztnBm3IxhG0xX6GS4Ne
-         3rnDUW6FCt13YNi6nHSWM2gqNtWEvmdB7+gU2OSZSHRXJKGwMCdCITXV5Cx4iyUfsM
-         MExdTDBqrNSzDjXhrF02RprgNGtivSRedj3mcsSI7ADcY8MbOZ2MxGUITILnohRvGr
-         ne9T+4+mP4tf8dtfJuBUmA0uq/RD2UQLZb29CYbBEMfix86hBRSQugXpkK9WJ/JqHJ
-         aKGRIgmco9nGhO71B8s0XHI1xIcIB/xSORD9NBAqGB37NTR4Y3kX6CacxY54nSiQpH
-         iFYgqWEmxsihQ==
-Date:   Mon, 11 Dec 2023 20:40:33 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: Re: [PATCH] ring-buffer: Fix buffer max_data_size with
- max_event_size
-Message-Id: <20231211204033.a3658f5f497f0c7541dee025@kernel.org>
-In-Reply-To: <20231209170925.71d4e02e@gandalf.local.home>
-References: <20231209170139.33c1b452@gandalf.local.home>
-        <20231209170925.71d4e02e@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 06:40:39 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB116CF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:40:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1702294842;
+        bh=k4wN68Mq0e2bKIcvTdFsm/pTk95jdSaidC3qaQdYyYU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=OjaZsTBT/hWYSnsoSwj4KCR5Jy3sQDTssSNWeIv+komjJmEafPirJrQjpcL7bvPrk
+         pHubtmp3y+48jrCAPndqJnSRDEom1RfPP2CZW9f7GgR5Bu5ZXvldEqJhffcZLmVkeJ
+         O4YvXEPxHVLvoh1AXro+tBs+8DLxe6hu35qbTZSQTWFCfM8gEqU41ehaH5HUKvTQ8z
+         wdX2EmB0csZsywRtzYoH+gG7mbnTpeILo8jzDRhersMGQU9wTju80irAt44wKoMMPe
+         JeLbuGw8o8MmehEJvsGrpwLs/nMtMak6RbETYVZrr7+iKCh5HK9WG+UK/lP1KA+Msr
+         Blm4bLht2iwbA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpfvG0ZmVz4xPL;
+        Mon, 11 Dec 2023 22:40:41 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Luming Yu <luming.yu@shingroup.cn>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu
+Cc:     luming.yu@gmail.com, ke.zhao@shingroup.cn, dawei.li@shingroup.cn,
+        shenghui.qu@shingroup.cn, Luming Yu <luming.yu@shingroup.cn>
+Subject: Re: [PATCH 1/2] powerpc/locking: implement this_cpu_cmpxchg local API
+In-Reply-To: <0EFBD0242622180B+20231204022303.528-1-luming.yu@shingroup.cn>
+References: <0EFBD0242622180B+20231204022303.528-1-luming.yu@shingroup.cn>
+Date:   Mon, 11 Dec 2023 22:40:38 +1100
+Message-ID: <87jzpldl1l.fsf@mail.lhotse>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Dec 2023 17:09:25 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hi Luming Yu,
 
-> On Sat, 9 Dec 2023 17:01:39 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > The maximum ring buffer data size is the maximum size of data that can be
-> > recorded on the ring buffer. Events must be smaller than the sub buffer
-> > data size minus any meta data. This size is checked before trying to
-> > allocate from the ring buffer because the allocation assumes that the size
-> > will fit on the sub buffer.
-> > 
-> > The maximum size was calculated as the size of a sub buffer page (which is
-> > currently PAGE_SIZE minus the sub buffer header) minus the size of the
-> > meta data of an individual event. But it missed the possible adding of a
-> > time stamp for events that are added long enough apart that the event meta
-> > data can't hold the time delta.
-> > 
-> > When an event is added that is greater than the current BUF_MAX_DATA_SIZE
-> > minus the size of a time stamp, but still less than or equal to
-> > BUF_MAX_DATA_SIZE, the ring buffer would go into an infinite loop, looking
-> > for a page that can hold the event. Luckily, there's a check for this loop
-> > and after 1000 iterations and a warning is emitted and the ring buffer is
-> > disabled. But this should never happen.
-> > 
-> > This can happen when a large event is added first, or after a long period
-> > where an absolute timestamp is prefixed to the event, increasing its size
-> > by 8 bytes. This passes the check and then goes into the algorithm that
-> > causes the infinite loop.
-> > 
-> > Fix this by creating a BUF_MAX_EVENT_SIZE to be used to determine if the
-> > passed in event is too big for the buffer.
-> > 
-> 
-> Forgot to add:
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: a4543a2fa9ef3 ("ring-buffer: Get timestamp after event is allocated")
+Luming Yu <luming.yu@shingroup.cn> writes:
+> ppc appears to have already supported cmpxchg-local atomic semantics
+> that is defined by the kernel convention of the feature.
+> Add this_cpu_cmpxchg ppc local for the performance benefit of arch
+> sepcific implementation than asm-generic c verison of the locking API.
 
-Looks good to me.
+Implementing this has been suggested before but it wasn't clear that it
+was actually going to perform better than the generic version.
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On 64-bit we have interrupt soft masking, so disabling interrupts is
+relatively cheap. So the generic this_cpu_cmpxhg using irq disable just
+becomes a few loads & stores, no atomic ops required.
 
-Thanks,
-> 
-> -- Steve
-> 
-> 
-> > Reported-by: Kent Overstreet <kent.overstreet@linux.dev> # (on IRC)
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> >  kernel/trace/ring_buffer.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > index 8d2a4f00eca9..a38e5a3c6803 100644
-> > --- a/kernel/trace/ring_buffer.c
-> > +++ b/kernel/trace/ring_buffer.c
-> > @@ -378,6 +378,9 @@ static inline bool test_time_stamp(u64 delta)
-> >  /* Max payload is BUF_PAGE_SIZE - header (8bytes) */
-> >  #define BUF_MAX_DATA_SIZE (BUF_PAGE_SIZE - (sizeof(u32) * 2))
-> >  
-> > +/* Events may have a time stamp attached to them */
-> > +#define BUF_MAX_EVENT_SIZE (BUF_MAX_DATA_SIZE - RB_LEN_TIME_EXTEND)
-> > +
-> >  int ring_buffer_print_page_header(struct trace_seq *s)
-> >  {
-> >  	struct buffer_data_page field;
-> > @@ -3810,7 +3813,7 @@ ring_buffer_lock_reserve(struct trace_buffer *buffer, unsigned long length)
-> >  	if (unlikely(atomic_read(&cpu_buffer->record_disabled)))
-> >  		goto out;
-> >  
-> > -	if (unlikely(length > BUF_MAX_DATA_SIZE))
-> > +	if (unlikely(length > BUF_MAX_EVENT_SIZE))
-> >  		goto out;
-> >  
-> >  	if (unlikely(trace_recursive_lock(cpu_buffer)))
-> > @@ -3960,7 +3963,7 @@ int ring_buffer_write(struct trace_buffer *buffer,
-> >  	if (atomic_read(&cpu_buffer->record_disabled))
-> >  		goto out;
-> >  
-> > -	if (length > BUF_MAX_DATA_SIZE)
-> > +	if (length > BUF_MAX_EVENT_SIZE)
-> >  		goto out;
-> >  
-> >  	if (unlikely(trace_recursive_lock(cpu_buffer)))
-> 
+In contrast implementing it using __cmpxchg_local() will use
+ldarx/stdcx etc. which will be more expensive.
 
+Have you done any performance measurements?
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+It probably is a bit fishy that we don't mask PMU interrupts vs
+this_cpu_cmpxchg() etc., but I don't think it's actually a bug given the
+few places using this_cpu_cmpxchg(). Though I could be wrong about that.
+
+> diff --git a/arch/powerpc/include/asm/percpu.h b/arch/powerpc/include/asm/percpu.h
+> index 8e5b7d0b851c..ceab5df6e7ab 100644
+> --- a/arch/powerpc/include/asm/percpu.h
+> +++ b/arch/powerpc/include/asm/percpu.h
+> @@ -18,5 +18,22 @@
+>  #include <asm-generic/percpu.h>
+>  
+>  #include <asm/paca.h>
+> +#include <asm/cmpxchg.h>
+> +#ifdef this_cpu_cmpxchg_1
+> +#undef this_cpu_cmpxchg_1
+ 
+If we need to undef then I think something has gone wrong with the
+header inclusion order, the model should be that the arch defines what
+it has and the generic code provides fallbacks if the arch didn't define
+anything.
+
+> +#define this_cpu_cmpxchg_1(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 1)
+
+I think this is unsafe vs preemption. The raw_cpu_ptr() can generate the
+per-cpu address, but then the task can be preempted and moved to a
+different CPU before the ldarx/stdcx do the cmpxchg.
+
+The arm64 implementation had the same bug until they fixed it.
+
+> +#endif 
+> +#ifdef this_cpu_cmpxchg_2
+> +#undef this_cpu_cmpxchg_2
+> +#define this_cpu_cmpxchg_2(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 2)
+> +#endif
+> +#ifdef this_cpu_cmpxchg_4
+> +#undef this_cpu_cmpxchg_4
+> +#define this_cpu_cmpxchg_4(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 4)
+> +#endif
+> +#ifdef this_cpu_cmpxchg_8
+> +#undef this_cpu_cmpxchg_8
+> +#define this_cpu_cmpxchg_8(pcp, oval, nval)	__cmpxchg_local(raw_cpu_ptr(&(pcp)), oval, nval, 8)
+> +#endif
+>  
+>  #endif /* _ASM_POWERPC_PERCPU_H_ */
+
+cheers
