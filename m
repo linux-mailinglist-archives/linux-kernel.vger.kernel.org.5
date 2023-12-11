@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD4780C0FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEC080C101
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjLKFub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S233313AbjLKFw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjLKFuB (ORCPT
+        with ESMTP id S233244AbjLKFwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:50:01 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26804213E;
-        Sun, 10 Dec 2023 21:49:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702273758;
-        bh=5ownzIkARz43eQTloQkKelbMKKK9J+c14Q+Xkg/VpWU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g1QYRRL0JgzIR/pbzVUeOs0X3Oy8te73acyAmxtMQiUrZtQLpDlFBSkvl0pC0K/uz
-         h/a0AVTGZwQ+RTMd4lFEHpyxrOU3dPIlCgTfIQYP5tZNLNc+bwjmAvYP3QDJG6UorT
-         h5XnUabVn0trae5u3qQpq+3E6IcBF0799Z+ZZAOnUory6qqS79ZMOtjGMTRRuN6gUl
-         JPF8tCcCh+2DycfYsxYbqFoV4zZMMo9MtPmacJ/rUXK7eeLwDg4ZpiMnUl7f/xOF3k
-         9vAyQGYJx0WGLKgWfJNHEIp0AZ+pS/4K+I4NA/bGu5X5GjB6ir/cbuywybHKnhBxbE
-         fQu2W1xABUpFg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpW5p1Rx6z4xGR;
-        Mon, 11 Dec 2023 16:49:18 +1100 (AEDT)
-Date:   Mon, 11 Dec 2023 16:49:16 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the nvmem tree
-Message-ID: <20231211164916.6f0d2357@canb.auug.org.au>
+        Mon, 11 Dec 2023 00:52:12 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6C110A
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:52:15 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3333224c7b9so3699130f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 21:52:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702273934; x=1702878734; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MHJV2PGMjruAfWeCQ41TtmWURkmDfN3OTSvooiPRx+Y=;
+        b=f8BdcQIjY/a8NDfUlBPgs6jJytd5UH/v4rN9QimndE/Fgn6C6VVD6FqxFJJ22AZuys
+         7dHv5sB5oAPnL0fhGi0jh9gitOOoK1T36q4CoTgU1PNAatNZL2mBpToQI9au0yu4UVuq
+         S/XcKWnamkC9qGlOO0nChDW/eGFm6mURmY1QqYI+ZQAYcD+sWfvfzCkl0PeJMVIZdaQY
+         lJUsd1Hwiptz40oHJ4vIhENHk0DusVGB7FJuCSHQ2JGVylCG0o0UapsXUbCeLMpxCR9o
+         Dfj/+9pA2OyRe22r9SocWr/57dWzxN9sZ4BeIqgfSLXIJdLZHenmWXUu3Hk58kC+HkER
+         ETYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702273934; x=1702878734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MHJV2PGMjruAfWeCQ41TtmWURkmDfN3OTSvooiPRx+Y=;
+        b=v3Z8lIP7Qh7M2CeXInkfV1hhE5DQ/SNSkk74TKnGW1VRsNq8FfZO6GLsqhX5XNWVjF
+         53lmfmhLNBvVcyYR2dNyl08Fp0Q0doc77X6fx9uNhLY0bzeWPKdBtthYAIoDmPItRcoF
+         WB36U9euE90NAxGM+2WIEV0zdyu06yGmKdEX6Fn59WlmvfYerVK+HLVUZWb8ibCqXkbt
+         HUytCCUhIJxL8/MQZinqe/3h4AytMflbDeD28sYaqF6BqH+Qv1pmU2hxskpLlugxryVO
+         HRQPqulOARigl31i6xmcRAmW/2qweSPjWf/r4vkHi/b/MrxiNE2sOE8n/wwaTjNGrkmt
+         Rm1w==
+X-Gm-Message-State: AOJu0YwgE8Kz8SrM3omkepdWZxCOPUKq/Bp48xGEmrNE0XkM4kQ1rha2
+        wEAn5mqpUqgEBrckBoaxwiCo9hcZ72hpZiZKQUgNVg==
+X-Google-Smtp-Source: AGHT+IEjOKGFDA2vI+3U82Soa8M47/BlWX+5s44Eg4L1nrXQr5ZUb04KeSpBoC4PSdGVYVSTPrqI1PAj4/mx9UCkEPc=
+X-Received: by 2002:a05:6000:1104:b0:333:4a78:c5ed with SMTP id
+ z4-20020a056000110400b003334a78c5edmr1900351wrw.19.1702273934069; Sun, 10 Dec
+ 2023 21:52:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nYikG/bmL+ZRJ2lLCNwpPJo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208151036.2458921-1-guoren@kernel.org>
+In-Reply-To: <20231208151036.2458921-1-guoren@kernel.org>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Mon, 11 Dec 2023 06:52:02 +0100
+Message-ID: <CAHVXubjfuKZ1PBYQ8By41OX65YpAma3_kmSL7urT8L0PmMxFnQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: pgtable: Enhance set_pte to prevent OoO risk
+To:     guoren@kernel.org
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        akpm@linux-foundation.org, catalin.marinas@arm.com,
+        willy@infradead.org, david@redhat.com, muchun.song@linux.dev,
+        will@kernel.org, peterz@infradead.org, rppt@kernel.org,
+        paulmck@kernel.org, atishp@atishpatra.org, anup@brainfault.org,
+        alex@ghiti.fr, mike.kravetz@oracle.com, dfustini@baylibre.com,
+        wefu@redhat.com, jszhang@kernel.org, falcon@tinylab.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nYikG/bmL+ZRJ2lLCNwpPJo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Guo,
 
-Hi all,
+On Fri, Dec 8, 2023 at 4:10=E2=80=AFPM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> When changing from an invalid pte to a valid one for a kernel page,
+> there is no need for tlb_flush. It's okay for the TSO memory model, but
+> there is an OoO risk for the Weak one. eg:
+>
+> sd t0, (a0) // a0 =3D pte address, pteval is changed from invalid to vali=
+d
+> ...
+> ld t1, (a1) // a1 =3D va of above pte
+>
+> If the ld instruction is executed speculatively before the sd
+> instruction. Then it would bring an invalid entry into the TLB, and when
+> the ld instruction retired, a spurious page fault occurred. Because the
+> vmemmap has been ignored by vmalloc_fault, the spurious page fault would
+> cause kernel panic.
+>
+> This patch was inspired by the commit: 7f0b1bf04511 ("arm64: Fix barriers
+> used for page table modifications"). For RISC-V, there is no requirement
+> in the spec to guarantee all tlb entries are valid and no requirement to
+> PTW filter out invalid entries. Of course, micro-arch could give a more
+> robust design, but here, use a software fence to guarantee.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> ---
+>  arch/riscv/include/asm/pgtable.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
+table.h
+> index 294044429e8e..2fae5a5438e0 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -511,6 +511,13 @@ static inline int pte_same(pte_t pte_a, pte_t pte_b)
+>  static inline void set_pte(pte_t *ptep, pte_t pteval)
+>  {
+>         *ptep =3D pteval;
+> +
+> +       /*
+> +        * Only if the new pte is present and kernel, otherwise TLB
+> +        * maintenance or update_mmu_cache() have the necessary barriers.
+> +        */
+> +       if (pte_val(pteval) & (_PAGE_PRESENT | _PAGE_GLOBAL))
+> +               RISCV_FENCE(rw,rw);
 
-After merging the nvmem tree, today's linux-next build (i386 defconfig)
-failed like this:
+Only a sfence.vma can guarantee that the PTW actually sees a new
+mapping, a fence is not enough. That being said, new kernel mappings
+(vmalloc ones) are correctly handled in the kernel by using
+flush_cache_vmap(). Did you observe something that this patch fixes?
 
-/home/sfr/next/next/drivers/nvmem/core.c: In function 'nvmem_cell_put':
-/home/sfr/next/next/drivers/nvmem/core.c:1603:9: error: implicit declaratio=
-n of function 'nvmem_layout_module_put' [-Werror=3Dimplicit-function-declar=
-ation]
- 1603 |         nvmem_layout_module_put(nvmem);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~
+Thanks,
 
-Caused by commit
+Alex
 
-  ed7778e43271 ("nvmem: core: Rework layouts to become regular devices")
-
-I have applied the following patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 11 Dec 2023 16:34:34 +1100
-Subject: [PATCH] fix up for "nvmem: core: Rework layouts to become regular =
-devices"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/nvmem/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 9fc452e8ada8..784b61eb4d8e 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1491,6 +1491,11 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_n=
-ode *np, const char *id)
- 	return cell;
- }
- EXPORT_SYMBOL_GPL(of_nvmem_cell_get);
-+
-+#else /* IS_ENABLED(CONFIG_OF) */
-+
-+static inline void nvmem_layout_module_put(struct nvmem_device *nvmem) { }
-+
- #endif
-=20
- /**
---=20
-2.40.1
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nYikG/bmL+ZRJ2lLCNwpPJo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV2otwACgkQAVBC80lX
-0GxrhQgAmGlntDh8OyosiXZ5XBpZQRAHQPVjinRKuBEa0QMBqP/ozsVEmRp3VM11
-THPuzzrsaFfFaSyXrHwwI44XDPTbdTZ1X833tsWM5GOtV33pgLq7LLJ5m60Xb8DI
-qNbKR30addnNolHnI9eipaeZSjlKxXwWC7Wg4g2xyMBljtfKERK349Qj85mCnicf
-iLyaM4woBrLBYHBo4ZsWb/h5ykE1DRI40KPuJM9JVNnOiC0vFYRyl7xBsUtfX88I
-WkZ77SQ6iOM8zcV/gWwGZj2FaCBqZD0BMmhunu1E0W1bUsn/2Z2YXJH8bZ1NfLqy
-H/Cd06ddyZK4KcaPcgCl0gZs2xeIoA==
-=4mza
------END PGP SIGNATURE-----
-
---Sig_/nYikG/bmL+ZRJ2lLCNwpPJo--
+>  }
+>
+>  void flush_icache_pte(pte_t pte);
+> --
+> 2.40.1
+>
