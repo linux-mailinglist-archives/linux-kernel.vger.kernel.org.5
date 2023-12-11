@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DC780DB9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE8280DBA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345015AbjLKU1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
+        id S1345018AbjLKU1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:27:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345008AbjLKU1j (ORCPT
+        with ESMTP id S1345014AbjLKU1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:27:39 -0500
+        Mon, 11 Dec 2023 15:27:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D291D98
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:27:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5172C433C8;
-        Mon, 11 Dec 2023 20:27:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE68A98
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 12:27:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE81DC433CB;
+        Mon, 11 Dec 2023 20:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702326465;
-        bh=+f+K1J2zjMnV4XxDy3cuCWY6rDx5LO4Cp2MLoIwdP08=;
+        s=k20201202; t=1702326467;
+        bh=jnLDKDObyODrW4yUrf2GM7i1XjdC3e8rJg72m1Tdr7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jToo/cEQ3vlKq7uXuK6pQ0GhiYMB+ee4x2MXGN1GDctBWWy9YToDQi9E/NJqpDNn5
-         PeO30kk9waFSFEfgmxpTMjF1HztAPVRYsYfEXZb7tnwSCrWuXxPsQekKAJ4EB6Q3ah
-         qfGSeDXlNd/plAfuamlpsjPZwetCcjXv/tZ6QcGfVEaUqRkizOxAM2i8OOvw6igspA
-         xCBSbfxxea++rr2rzEaIhq6UXKQNn6jEkI8NB2lyc8+QVaH08KGPY0Hjvl5HFYf8+6
-         sFUNqH9Ap3B7J5zMnnXu+EYsLYchLw/XKmuKfnSECYoSTVC4YmWmP/mpyRukVxo8q1
-         UFNC3jjQSiwfw==
+        b=kBLNCfzvYJYRFpXpFHfkENqbdH5VwClbg0FEVqhK2k77qqCLGe4hcR0LVoyptVhKb
+         ClBEgSoItksIlWWs4//e+gJntjm0K6/Itq2ewvl6pN2FgqqozgpEFfEwWaWmgo6KIL
+         RkZEDR2Yx/XsgeHFrshsD4lnKf26WmjxGj+AUB8DHc20Ax0DsDu5rI6ARaNWsUEdN2
+         IAlQwQpKjxBM39qKUSKO3ywheqH6dW4bSvyd2yQdNBlspcOCFi0YzkGsuemjTukKdM
+         0orZFg9DQGJm5SZkxUMfnWSv7w7NsJ98f8wovP9Ozz/Oc8WczYDnsUS+1tl5f3L4FQ
+         1Uzf122VTthEg==
 From:   Will Deacon <will@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Shuah Khan <shuah@kernel.org>, Mark Brown <broonie@kernel.org>
+To:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
 Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] kselftest/arm64: Improve output for skipped TPIDR2 ABI test
-Date:   Mon, 11 Dec 2023 20:27:29 +0000
-Message-Id: <170229604354.42938.7367909798766410585.b4-ty@kernel.org>
+Subject: Re: [PATCH] kselftest/arm64: Log SVCR when the SME tests barf
+Date:   Mon, 11 Dec 2023 20:27:30 +0000
+Message-Id: <170229612040.43237.5946498917108951815.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231124-kselftest-arm64-tpidr2-skip-v1-1-e05d0ccef101@kernel.org>
-References: <20231124-kselftest-arm64-tpidr2-skip-v1-1-e05d0ccef101@kernel.org>
+In-Reply-To: <20231205-arm64-kselftest-log-svcr-v1-1-b77abd9ee7f3@kernel.org>
+References: <20231205-arm64-kselftest-log-svcr-v1-1-b77abd9ee7f3@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,22 +52,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023 15:22:21 +0000, Mark Brown wrote:
-> When TPIDR2 is not supported the tpidr2 ABI test prints the same message
-> for each skipped test:
+On Tue, 05 Dec 2023 14:24:44 +0000, Mark Brown wrote:
+> On failure we log the actual and expected value of the register we detect
+> a mismatch in. For SME one obvious potential source of corruption would be
+> if we had corrupted SVCR since changes in streaming mode will reset the
+> register values, log the value to aid in understanding issues.
 > 
->   ok 1 skipped, TPIDR2 not supported
 > 
-> which isn't ideal for test automation software since it tracks kselftest
-> results based on the string used to describe the test. This is also not
-> standard KTAP output, the expected format is:
-> 
-> [...]
 
 Applied to arm64 (for-next/selftests), thanks!
 
-[1/1] kselftest/arm64: Improve output for skipped TPIDR2 ABI test
-      https://git.kernel.org/arm64/c/33c1a7785a41
+[1/1] kselftest/arm64: Log SVCR when the SME tests barf
+      https://git.kernel.org/arm64/c/48f7ab21f731
 
 Cheers,
 -- 
