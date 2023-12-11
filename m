@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE52B80DC17
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B917080DC0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 21:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344928AbjLKUvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 15:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S1344853AbjLKUvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 15:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344856AbjLKUvV (ORCPT
+        with ESMTP id S1344835AbjLKUvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 15:51:21 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F8AC8;
-        Mon, 11 Dec 2023 12:51:27 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67abaab0bc7so30636696d6.2;
-        Mon, 11 Dec 2023 12:51:27 -0800 (PST)
+        Mon, 11 Dec 2023 15:51:10 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4DEB5;
+        Mon, 11 Dec 2023 12:51:16 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d30141d108so8396155ad.2;
+        Mon, 11 Dec 2023 12:51:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702327886; x=1702932686; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702327875; x=1702932675; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nuKB0tiRMyjq3zqgkwtMyPd6sd/CFmnAl3rOjtlfa4Y=;
-        b=HDi7hLG+u6hDrNOY6XNQhn3+iN0yMIj5GhkNHNOyTOaKDH0H4kevLMhUnvqUAqyfSr
-         g5OIqyEM39TJZHMft5DdYqZgK73AZtW2KKHcP2AqhwVDMhjq+PAj/psKcBJjhYPyaaMm
-         lFo4dUp68Lpd4UaT++5aOa8uPYARlB/3OggWTrJ3+jdDO+1xNBXLfyLu0IDlo+MYJoZS
-         zIGy3Idlb2BuVg3eSnV0CUdsfXp2zq5H6NQSB9oLCYarvkvviMxh0SpVPlgEqg3drEjF
-         Oigh5Mcddod0pmioZSKkY3W8nYbd44se6g9sSdOF4077NM17CcxTXmask6wMh4u9G6kX
-         SODQ==
+        bh=OckqF+ycLHzYHFxbjXbvIz3Ml946FujF+AQK5q5s1sM=;
+        b=SCvV/7Lxz/d7iohJx9GUmFTtOF+/EU8OesVEO8ST5BFekp/E3yD+Wbe10dFUheBAkD
+         BbfgNWP1S+kQNooerLH/ldznzvhLzVOsOJMi7ySrp0RkDrlwZrRuWgt/oL2TbqN5iwHP
+         jEMf4GHvEIW3GS8zP73VNbZZ19pvFASmnIhJBPY/IY7BIcq8iIzc5YcFXSp4hs2HYwMO
+         E1pRL0jo/zoEY82xz5apKbZErFrN15UmYBwTiUbaIl4HyUyGsKXZ/3+tls5LHKtSgBVl
+         FGp9rr2Kv/5tYZxyu5kAi6cL1WwDals9YHtWLuw9snV0UsrPSUF4/UFGAIfBh1NydT+g
+         qOwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702327886; x=1702932686;
+        d=1e100.net; s=20230601; t=1702327875; x=1702932675;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nuKB0tiRMyjq3zqgkwtMyPd6sd/CFmnAl3rOjtlfa4Y=;
-        b=UhZGUAeZQAx+B9tRgtKAMlG50s5FtWbxXG3honBf65dbPwwaMzwRKwp5WGJxVvF3qN
-         HHNnfwlpGCF8HAfDtpLnptV9w4izlBI9SBaTCVA1gFgXsVPumszM6EsHeXKMlAoEmvNm
-         ptgPqs2hDJngDonlWAjSoSEnAaFUG2dea5Qv0fjs+poOaV42kv6INqpnhTFpF7a4eYzv
-         nnlZKsWbO/Gn8L9h6kd6xoOLkOP5qwkT6TkodfpoRi+lOyy3CVVROk7U8s0PhRREP6+5
-         arhgXCiTNqrI+X4cc5s8GJZR6edxm1srhaoah20S7FGaSs0zo3exiUqRDHiFebMOlSvf
-         UNaQ==
-X-Gm-Message-State: AOJu0YzHJ+HMcuSXYQxslkT+QXNAludms8goILjWVhsL0kHnuKIuxidl
-        VcRBY/6tc0f+qRvF/nUqb/G/XIRMb4lnpknuGYc=
-X-Google-Smtp-Source: AGHT+IEA228JMjM/VLsHZ915V9UbK6f03W9ktXAMmg3SwRsG2mOK7pzB/x28D2m6o+77RCPh7w7+VYTc3YWxTeCaMDE=
-X-Received: by 2002:a0c:d684:0:b0:67a:a721:9ecc with SMTP id
- k4-20020a0cd684000000b0067aa7219eccmr5100260qvi.125.1702327886385; Mon, 11
- Dec 2023 12:51:26 -0800 (PST)
+        bh=OckqF+ycLHzYHFxbjXbvIz3Ml946FujF+AQK5q5s1sM=;
+        b=tGEGF/3Rnq1TgzZ3wxTJpfPtrCHuudVk4qx2GZPn5VnpCzqDQm53sxALqoKA1qwraK
+         BanmuK90A4XweWcHi2O6+hrLPExMomHUt2AiNcXZU1E18b66d6T8RWCavijJnfstxA0B
+         z+Uo9o9Jga0+x5YbYNWATtgi9dmyFt0eaHRGfRZNqeIQ6w22gJtlPi27P17Y8MqpMOsf
+         BPFWzTmqBaeTL80vVVtDdfjUl8tffQZvJdnAkE91Pf76xc35cawnD/WOkZ7tJ096hZwT
+         0R4isZS/NSTaqaA20RbB+lVk3Q92DCjQnDxV0dCNNkFAf50qGKJ0X/5BCmUGeWan8u9m
+         6+gw==
+X-Gm-Message-State: AOJu0YzPVDvSlhw+mYZ2qxF2CKME/gyiSWwwL1nSsUAiaoApNzRWGX1u
+        rOD+lIm1eg0az73IxbiTPvxQu1Ti5Znp4LnbGjo=
+X-Google-Smtp-Source: AGHT+IEPBlm9uKygnaPDOIUZllJHKtTnroaHPRNtiorenP4WwZXATO18QCas7C3jxxvCCX276R3QqwSsVLgr1jR8DCI=
+X-Received: by 2002:a17:90a:34c1:b0:286:6cc0:b918 with SMTP id
+ m1-20020a17090a34c100b002866cc0b918mr2228620pjf.79.1702327875595; Mon, 11 Dec
+ 2023 12:51:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205130449.8e330a26ecbed1f7b5ad5d7a@linux-foundation.org>
- <CAKwvOdn+VTM+LY6ALcgaZTL57JpiKt5rBPMSPNXsgS3MCENhDQ@mail.gmail.com>
- <20231205132452.418722bea8f6878dca88142a@linux-foundation.org>
- <CAKwvOdn=og6h5gVdDCjFDANs3MN-_CD4OZ9oRM=o9YAvoTzkzw@mail.gmail.com>
- <20231205214359.GF1674809@ZenIV> <CAKwvOdkC0oHWKGJ1Z6k_U9cwkjdcf=iweG-G78jXSJgWFk86Jg@mail.gmail.com>
-In-Reply-To: <CAKwvOdkC0oHWKGJ1Z6k_U9cwkjdcf=iweG-G78jXSJgWFk86Jg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 11 Dec 2023 22:50:49 +0200
-Message-ID: <CAHp75VeQzjdo1z8-bKSnMNgxvwTzjypADiBu-NJopia9h-YYLg@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Christoph Hellwig <hch@infradead.org>
+References: <CAMn1gO7Ve4-d6vP4jvASQsTZ2maHsMF6gKHL3RXSuD9N3tAOfQ@mail.gmail.com>
+ <CANpmjNNvGL--j-20UxqX_WjeXGiAcjfDAQpfds+Orajz0ZeBsg@mail.gmail.com>
+ <CAMn1gO6reT+MTmogLOrOVoNqzLH+fKmQ2JRAGy-tDOTLx-fpyw@mail.gmail.com>
+ <CANpmjNN7Gf_aeX+Y6g0UBL-cmTGEF9zgE7hQ1VK8F+0Yeg5Rvg@mail.gmail.com>
+ <20230215143306.2d563215@rorschach.local.home> <CAMn1gO4_+-0x4ibpcASy4bLeZ+7rsmjx=0AYKGVDUApUbanSrQ@mail.gmail.com>
+ <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
+ <20230505095805.759153de@gandalf.local.home> <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
+ <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com> <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
+In-Reply-To: <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 11 Dec 2023 21:51:04 +0100
+Message-ID: <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
+To:     =?UTF-8?Q?Paul_Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Marco Elver <elver@google.com>, andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,60 +87,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 10:48=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
-> On Tue, Dec 5, 2023 at 1:44=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> =
-wrote:
-> > On Tue, Dec 05, 2023 at 01:39:47PM -0800, Nick Desaulniers wrote:
-> >
-> > > The tooling Tanzir is working on does wrap IWYU, and does support suc=
-h
-> > > mapping (of 'low level' to 'high level' headers; more so, if it
-> > > recommends X you can override to suggest Y instead).
-> > >
-> > > arch/nios/ also doesn't provide a bug.h, which this patch is
-> > > suggesting we include directly.  I guess the same goes for
-> > > asm/rwonce.h.
-> >
-> > See include/asm-generic/Kbuild:
-> > mandatory-y +=3D bug.h
-> > ...
-> > mandatory-y +=3D rwonce.h
-> >
-> > IOW, sh will have asm/bug.h and as/rwonce.h copied from asm-generic.
-> >
-> > Still, includes of asm/*.h had been a massive headache historically
-> > and breeding more of those shouldn't be overdone.
-> >
-> > More painful problem is arch- and config-dependent stuff, though...
+On Mon, Dec 11, 2023 at 7:59=E2=80=AFPM Paul Heidekr=C3=BCger
+<paul.heidekrueger@tum.de> wrote:
 >
-> Ah, it looks like include/uapi/asm-generic/Kbuild also makes use of
-> this pattern using mandatory-y.
+> > Hi Paul,
+> >
+> > I've been successfully running KASAN tests with CONFIG_TRACEPOINTS
+> > enabled on arm64 since this patch landed.
 >
-> So I think we can handle this as a two step translation. We can tell
-> the tooling to 'nevermind recommending X, always replace
-> recommendations for X with Y <for raisins>', so:
-> 1. any recommendation to use asm-generic/foo.h should be replaced with
-> asm/foo.h (always, based on those 2 Kbuild files, could autogenerate)
-> 2. some recommendations to use asm/foo.h should be replaced with
-> linux/foo.h (not necessarily codified anywhere; depends on if there is
-> a linux/foo.h, will manually curate this list for now)
+> Interesting ...
 >
-> Orthogonal but some places in tree can be cleaned up to include
-> linux/foo.h rather than asm/foo.h.
+> > What happens when you try running the tests with .kunitconfig? Does
+> > CONFIG_TRACEPOINTS or CONFIG_KASAN_KUNIT_TEST get disabled during
+> > kernel building?
 >
-> Does this sound like an improvement to my mental model of the
-> conventions used for kernel header inclusion within the linux kernel?
+> Yes, exactly, that's what's happening.
 >
-> Tanzir nearly has the above done (for 1, 2 we will probably need to
-> iterate on more).  We've also beefed up our local testing to test more
-> architectures.  I expect Tanzir to send a v2 of this patch (as a
-> series, with the fix for ARCH=3Dsh) later this week, if the above seems
-> correct.
+> Here's the output kunit.py is giving me. I replaced CONFIG_DEBUG_KERNEL w=
+ith
+> CONFIG_TRACEPOINTS in my .kunitconfig. Otherwise, it's identical with the=
+ one I
+> posted above.
+>
+>         =E2=9E=9C   ./tools/testing/kunit/kunit.py run --kunitconfig=3Dmm=
+/kasan/.kunitconfig --arch=3Darm64
+>         Configuring KUnit Kernel ...
+>         Regenerating .config ...
+>         Populating config with:
+>         $ make ARCH=3Darm64 O=3D.kunit olddefconfig
+>         ERROR:root:Not all Kconfig options selected in kunitconfig were i=
+n the generated .config.
+>         This is probably due to unsatisfied dependencies.
+>         Missing: CONFIG_KASAN_KUNIT_TEST=3Dy, CONFIG_TRACEPOINTS=3Dy
+>
+> Does CONFIG_TRACEPOINTS have some dependency I'm not seeing? I couldn't f=
+ind a
+> reason why it would get disabled, but I could definitely be wrong.
 
-Whatever you choose, please make sure it gets documented, so we won't
-go another round in the future for something similar.
-
---=20
-With Best Regards,
-Andy Shevchenko
+Does your .kunitconfig include CONFIG_TRACEPOINTS=3Dy? I don't see it in
+the listing that you sent earlier.
