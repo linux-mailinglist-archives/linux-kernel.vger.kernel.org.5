@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A5480CC48
+	by mail.lfdr.de (Postfix) with ESMTP id CD11D80CC49
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343960AbjLKN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
+        id S1344054AbjLKN7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343946AbjLKN7b (ORCPT
+        with ESMTP id S1343966AbjLKN7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:59:31 -0500
+        Mon, 11 Dec 2023 08:59:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B0F479C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:57:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C01C433C9;
-        Mon, 11 Dec 2023 13:57:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780EC47A3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:57:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECAAFC433CC;
+        Mon, 11 Dec 2023 13:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702303047;
-        bh=eVk+IjDADeV7mI2sCFJC+yD2gIPM9hrqukVoxYm3I/4=;
+        s=k20201202; t=1702303049;
+        bh=Xzk6QwB/lWLi74oIBRlDiOFUCFUkIl/uQUB+iJ/xC+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fE4a9Lvu9bwvHJ5ISTTWd2e/I0wciJn7uxQSSkiTv+glRQSBGneg4h1MovBE/h/5C
-         RSFOSgX+ki/Y65jhT+yd2KlTOVpcxheZ8SUp5/YkjGOJqPYK/vAFGcB3KnaJsNhyKa
-         IdhcSmx0zjNTNaqNTKZT0pvkthypBbom++4c8GbScDqAQ3ZW5R2/2sFbop+KGEoPB9
-         lMZ7CUr8HR1sqGLuPZSJ3pMC1ZbwaQrGNp4jgEsaY3UUoCOL9mZDFVA3C1Wb87U6Qz
-         QAbQjeyArDMfpJfI7SmOQYPdKLfM8VFUlD70GUfhtTgVtF4zRrlJZPu4f3FdR+iq6U
-         dAeOPzxUjM6yw==
+        b=j4IJmLAs2nPklNIGu5nayf/8RQxKT+PLfInobcRnD23Mvew4xnJp6GSN5CytU0Ni+
+         +gbsevk31IzuAYwfsLKuF4WyiDYVRyZUdsPmL9bPphmIWCpvWtnFlmVE5B4Qe6eAqs
+         91R+o3Ha6cJeDt5jzgy32y59msx6lAe1UlBUt+CblRpQbUKldStYhDZ8s22cUiI77R
+         i79eSmvRpA3BUrCeslQxlDhXHeVvRwwV4O100jeD00WbxX+UrfKiQfQ9aZvJg7wjlA
+         TOEHd4yWC9zkE7yfmmodMymjN0CqZ4woCzm/Z3uCEHB6qPBPklaUNJ+4OEPctYZLdr
+         MKgDpz3oLvdsg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Inki Dae <inki.dae@samsung.com>, Sasha Levin <sashal@kernel.org>,
-        sw0312.kim@samsung.com, kyungmin.park@samsung.com,
-        airlied@gmail.com, daniel@ffwll.ch, krzysztof.kozlowski@linaro.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 27/29] drm/exynos: fix a wrong error checking
-Date:   Mon, 11 Dec 2023 08:54:11 -0500
-Message-ID: <20231211135457.381397-27-sashal@kernel.org>
+Cc:     Armin Wolf <W_Armin@gmx.de>, Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>, wilken.gottwalt@posteo.net,
+        jdelvare@suse.com, linux-hwmon@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 28/29] hwmon: (corsair-psu) Fix probe when built-in
+Date:   Mon, 11 Dec 2023 08:54:12 -0500
+Message-ID: <20231211135457.381397-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231211135457.381397-1-sashal@kernel.org>
 References: <20231211135457.381397-1-sashal@kernel.org>
@@ -56,60 +53,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Inki Dae <inki.dae@samsung.com>
+From: Armin Wolf <W_Armin@gmx.de>
 
-[ Upstream commit 8d1b7809684c688005706125b804e1f9792d2b1b ]
+[ Upstream commit 307004e8b254ad28e150b63f299ab9caa4bc7c3e ]
 
-Fix a wrong error checking in exynos_drm_dma.c module.
+It seems that when the driver is built-in, the HID bus is
+initialized after the driver is loaded, which whould cause
+module_hid_driver() to fail.
+Fix this by registering the driver after the HID bus using
+late_initcall() in accordance with other hwmon HID drivers.
 
-In the exynos_drm_register_dma function, both arm_iommu_create_mapping()
-and iommu_get_domain_for_dev() functions are expected to return NULL as
-an error.
-
-However, the error checking is performed using the statement
-if(IS_ERR(mapping)), which doesn't provide a suitable error value.
-So check if 'mapping' is NULL, and if it is, return -ENODEV.
-
-This issue[1] was reported by Dan.
-
-Changelog v1:
-- fix build warning.
-
-[1] https://lore.kernel.org/all/33e52277-1349-472b-a55b-ab5c3462bfcf@moroto.mountain/
-
-Reported-by : Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Inki Dae <inki.dae@samsung.com>
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+Link: https://lore.kernel.org/r/20231207210723.222552-1-W_Armin@gmx.de
+[groeck: Dropped "compile tested" comment; the patch has been tested
+ but the tester did not provide a Tested-by: tag]
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_dma.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/hwmon/corsair-psu.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_dma.c b/drivers/gpu/drm/exynos/exynos_drm_dma.c
-index a971590b81323..e2c7373f20c6b 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_dma.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_dma.c
-@@ -107,18 +107,16 @@ int exynos_drm_register_dma(struct drm_device *drm, struct device *dev,
- 		return 0;
+diff --git a/drivers/hwmon/corsair-psu.c b/drivers/hwmon/corsair-psu.c
+index 2210aa62e3d06..ec7f27a6ce016 100644
+--- a/drivers/hwmon/corsair-psu.c
++++ b/drivers/hwmon/corsair-psu.c
+@@ -837,7 +837,23 @@ static struct hid_driver corsairpsu_driver = {
+ 	.reset_resume	= corsairpsu_resume,
+ #endif
+ };
+-module_hid_driver(corsairpsu_driver);
++
++static int __init corsair_init(void)
++{
++	return hid_register_driver(&corsairpsu_driver);
++}
++
++static void __exit corsair_exit(void)
++{
++	hid_unregister_driver(&corsairpsu_driver);
++}
++
++/*
++ * With module_init() the driver would load before the HID bus when
++ * built-in, so use late_initcall() instead.
++ */
++late_initcall(corsair_init);
++module_exit(corsair_exit);
  
- 	if (!priv->mapping) {
--		void *mapping;
-+		void *mapping = NULL;
- 
- 		if (IS_ENABLED(CONFIG_ARM_DMA_USE_IOMMU))
- 			mapping = arm_iommu_create_mapping(&platform_bus_type,
- 				EXYNOS_DEV_ADDR_START, EXYNOS_DEV_ADDR_SIZE);
- 		else if (IS_ENABLED(CONFIG_IOMMU_DMA))
- 			mapping = iommu_get_domain_for_dev(priv->dma_dev);
--		else
--			mapping = ERR_PTR(-ENODEV);
- 
--		if (IS_ERR(mapping))
--			return PTR_ERR(mapping);
-+		if (!mapping)
-+			return -ENODEV;
- 		priv->mapping = mapping;
- 	}
- 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
 -- 
 2.42.0
 
