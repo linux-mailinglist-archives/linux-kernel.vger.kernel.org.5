@@ -2,67 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EFF80D401
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF8780D42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbjLKRgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S1344860AbjLKRjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344682AbjLKRgL (ORCPT
+        with ESMTP id S1344792AbjLKRj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:36:11 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D3ED9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:36:17 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-28654179ec0so4606892a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:36:17 -0800 (PST)
+        Mon, 11 Dec 2023 12:39:28 -0500
+Received: from alln-iport-5.cisco.com (alln-iport-5.cisco.com [173.37.142.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B3C93;
+        Mon, 11 Dec 2023 09:39:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702316177; x=1702920977; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPdVH85PHNtuHkJ/XiXbqX9ARcJdxzQjA4e5Iwg8PSI=;
-        b=erGnks2RnRzOnAcHT0XCzdswdDjVCJwbvyspo84P8CmKxSOzeBeMs8OlsYsacTKoIy
-         EfIY6c4XGHgCtvzWbH7+X5codzm3BSxE1v51Dnr2NeToF+1gTfpcQzgQt5YXQgxWLdiO
-         hWC0+Q9jxOzVxCU2mjpRKQtFQuHeFxkqEZAjIubGb7iJxePEryIE2ZmDvmLJFoWs2/DG
-         T01eQ3aOmu8Eza8abx4Lnxkc3lRkS5+s7aW9nBVyBXSxmrwf25eYshutcbulL8qpgYAD
-         umC23Wqetp8NCai0/ocICUvGbJxC7arrv8bUOT232D8w0O/1QGFA+QDTUIDcV/JTtA07
-         zEww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702316177; x=1702920977;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZPdVH85PHNtuHkJ/XiXbqX9ARcJdxzQjA4e5Iwg8PSI=;
-        b=RFzPzktA9k4yZzDJvhEmymcteMOWGsCswR4DIlDMlzmeXBiqMRyiH09YGSWgSBau+C
-         X0JxkDxzVKtQ1GsJZYtyAlXG93JSY0gwfqGMtlDSiE5JyPKRPrv8ydTn0HxcBPtlRkm/
-         4yn9a0tzzdhsZ5WikW+onRgatlshrUMi0Ncs+Vp+Q155Xhv6PEm1TW9OX4W8u+z4NiPl
-         7F8n2A/8traA3HL02n5uHxV5e68bEnc/GUzJ00QzHE7OXWBgMx4I4rBs87abxEL4Bahb
-         JFJtOoc2/jeDDNHli0ZuQvK09AgDSaCh5te+iV5BFQeQo5eb1udS/LbGOhbWNev0YXAO
-         V6eg==
-X-Gm-Message-State: AOJu0YwnRNkoltALz9nCpyVwUqYdQsmhwr6UBZqiiIY4DhfJNBK2UqJP
-        4r/UzbeQx6sBIV1U9ZWGBXgFPhUIJl/lci3x
-X-Google-Smtp-Source: AGHT+IH/W/nbswz7bhHu2QiqSHXIYb5UCTsYZ0FXUQ5NvIRoPZBU0dkpIWMTXVMkKtN0uXyArYbiPQ==
-X-Received: by 2002:a17:90b:3803:b0:285:d32c:670f with SMTP id mq3-20020a17090b380300b00285d32c670fmr3641131pjb.10.1702316176759;
-        Mon, 11 Dec 2023 09:36:16 -0800 (PST)
-Received: from yqt-VirtualBox ([223.166.246.87])
-        by smtp.gmail.com with ESMTPSA id mm22-20020a17090b359600b00286901e226bsm8776565pjb.28.2023.12.11.09.36.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:36:16 -0800 (PST)
-From:   Piro Yang <piroyangg@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Piro Yang <piroyangg@gmail.com>, linux-staging@lists.linux.dev,
-        Linux Outreachy <outreachy@lists.linux.dev>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging:vme_user:fix the issue of using the wrong error code
-Date:   Tue, 12 Dec 2023 01:36:10 +0800
-Message-Id: <20231211173610.106501-1-piroyangg@gmail.com>
-X-Mailer: git-send-email 2.25.1
+  d=cisco.com; i=@cisco.com; l=15141; q=dns/txt;
+  s=iport; t=1702316374; x=1703525974;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=cDVNd5/6nHGLx8yPVJU8kVqgncHWoByE84K2bDAD1DE=;
+  b=Gep9K/MLeSVkpzqJNxpdd+bDj+6G9dyQ3MEaWuRazlJydFkLrleGkvhq
+   X28Du7nuW4EarFVZcz/heb5nqEGVt0iFg//MFug3jcSmHe40nK2602h1D
+   cpPPcEIRj7VjTjj0XytmZOM1svYMcQu+DyvfRGmXTKeBLXcNY3fkl8cuP
+   k=;
+X-CSE-ConnectionGUID: /3oLVJ0mQSesEyUKTx1QBg==
+X-CSE-MsgGUID: PV/LhXTjQw6XJ6IZ4r2f0w==
+X-IronPort-AV: E=Sophos;i="6.04,268,1695686400"; 
+   d="scan'208";a="194303971"
+Received: from rcdn-core-1.cisco.com ([173.37.93.152])
+  by alln-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 17:39:33 +0000
+Received: from localhost.cisco.com ([10.193.101.253])
+        (authenticated bits=0)
+        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3BBHaKr1009547
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 11 Dec 2023 17:39:32 GMT
+From:   Karan Tilak Kumar <kartilak@cisco.com>
+To:     sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v6 07/13] scsi: fnic: Modify ISRs to support multiqueue(MQ)
+Date:   Mon, 11 Dec 2023 09:36:11 -0800
+Message-Id: <20231211173617.932990-8-kartilak@cisco.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20231211173617.932990-1-kartilak@cisco.com>
+References: <20231211173617.932990-1-kartilak@cisco.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Authenticated-User: kartilak@cisco.com
+X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
+X-Outbound-Node: rcdn-core-1.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,29 +66,430 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the error code of ENOSYS indicates Invalid system call number, but there is not system call
+Modify interrupt service routines for INTx, MSI, and MSI-x
+to support multiqueue.
+Modify parameter list of fnic_wq_copy_cmpl_handler
+to take cq_index.
+Modify fnic_cleanup function to use the new
+function call of fnic_wq_copy_cmpl_handler.
+Refactor code to set
+interrupt mode to MSI-x to a new function.
+Add a new stat for intx_dummy.
 
-Signed-off-by: Piro Yang <piroyangg@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310251847.4T8BVZAZ-lkp@intel.com/
+Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
 ---
- v2: split two different changes,
-     only fix the issue of wrong error code
----
- drivers/staging/vme_user/vme.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes between v4 and v5:
+    Incorporate review comments from Martin:
+	Modify patch commits to include a "---" separator.
 
-diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index 5c416c31ec57..9bc2d35405af 100644
---- a/drivers/staging/vme_user/vme.c
-+++ b/drivers/staging/vme_user/vme.c
-@@ -341,7 +341,7 @@ int vme_slave_set(struct vme_resource *resource, int enabled,
+Changes between v2 and v3:
+    Incorporate the following review comments from Hannes:
+        Replace cpy_wq_base with copy_wq_base.
+	Remove C99 style comment.
+    Extend review comments of FNIC_MAIN_DBG and FNIC_SCSI_DBG
+    to FNIC_ISR_DBG:
+        Use fnic_num as an argument to FNIC_ISR_DBG.
+	Modify definition of FNIC_ISR_DBG.
+	Host number is still used as an argument to
+	FNIC_ISR_DBG since it in turn uses
+	shost_printk.
+	Removed reviewed by tag from Hannes due to
+	additional modifications.
+
+Changes between v1 and v2:
+    Suppress warning from kernel test bot.
+---
+ drivers/scsi/fnic/fnic.h       |   9 +-
+ drivers/scsi/fnic/fnic_isr.c   | 166 ++++++++++++++++++++++++---------
+ drivers/scsi/fnic/fnic_main.c  |   4 +-
+ drivers/scsi/fnic/fnic_scsi.c  |  38 +++-----
+ drivers/scsi/fnic/fnic_stats.h |   1 +
+ 5 files changed, 144 insertions(+), 74 deletions(-)
+
+diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+index 47173f1eec1e..8b3e4fe1ce92 100644
+--- a/drivers/scsi/fnic/fnic.h
++++ b/drivers/scsi/fnic/fnic.h
+@@ -160,9 +160,11 @@ do {								\
+ 	FNIC_CHECK_LOGGING(FNIC_SCSI_LOGGING,			\
+ 			 shost_printk(kern_level, host, fmt, ##args);)
  
- 	if (!bridge->slave_set) {
- 		dev_err(bridge->parent, "Function not supported\n");
--		return -ENOSYS;
-+		return -EINVAL;
+-#define FNIC_ISR_DBG(kern_level, host, fmt, args...)		\
++#define FNIC_ISR_DBG(kern_level, host, fnic_num, fmt, args...)		\
+ 	FNIC_CHECK_LOGGING(FNIC_ISR_LOGGING,			\
+-			 shost_printk(kern_level, host, fmt, ##args);)
++			 shost_printk(kern_level, host,			\
++				"fnic<%d>: %s: %d: " fmt, fnic_num,\
++				__func__, __LINE__, ##args);)
+ 
+ #define FNIC_MAIN_NOTE(kern_level, host, fmt, args...)          \
+ 	shost_printk(kern_level, host, fmt, ##args)
+@@ -349,6 +351,7 @@ extern const struct attribute_group *fnic_host_groups[];
+ 
+ void fnic_clear_intr_mode(struct fnic *fnic);
+ int fnic_set_intr_mode(struct fnic *fnic);
++int fnic_set_intr_mode_msix(struct fnic *fnic);
+ void fnic_free_intr(struct fnic *fnic);
+ int fnic_request_intr(struct fnic *fnic);
+ 
+@@ -375,7 +378,7 @@ void fnic_scsi_cleanup(struct fc_lport *);
+ void fnic_scsi_abort_io(struct fc_lport *);
+ void fnic_empty_scsi_cleanup(struct fc_lport *);
+ void fnic_exch_mgr_reset(struct fc_lport *, u32, u32);
+-int fnic_wq_copy_cmpl_handler(struct fnic *fnic, int);
++int fnic_wq_copy_cmpl_handler(struct fnic *fnic, int copy_work_to_do, unsigned int cq_index);
+ int fnic_wq_cmpl_handler(struct fnic *fnic, int);
+ int fnic_flogi_reg_handler(struct fnic *fnic, u32);
+ void fnic_wq_copy_cleanup_handler(struct vnic_wq_copy *wq,
+diff --git a/drivers/scsi/fnic/fnic_isr.c b/drivers/scsi/fnic/fnic_isr.c
+index dff9689023e4..ff85441c6cea 100644
+--- a/drivers/scsi/fnic/fnic_isr.c
++++ b/drivers/scsi/fnic/fnic_isr.c
+@@ -38,8 +38,13 @@ static irqreturn_t fnic_isr_legacy(int irq, void *data)
+ 		fnic_log_q_error(fnic);
  	}
  
- 	if (!(((image->address_attr & aspace) == aspace) &&
++	if (pba & (1 << FNIC_INTX_DUMMY)) {
++		atomic64_inc(&fnic->fnic_stats.misc_stats.intx_dummy);
++		vnic_intr_return_all_credits(&fnic->intr[FNIC_INTX_DUMMY]);
++	}
++
+ 	if (pba & (1 << FNIC_INTX_WQ_RQ_COPYWQ)) {
+-		work_done += fnic_wq_copy_cmpl_handler(fnic, io_completions);
++		work_done += fnic_wq_copy_cmpl_handler(fnic, io_completions, FNIC_MQ_CQ_INDEX);
+ 		work_done += fnic_wq_cmpl_handler(fnic, -1);
+ 		work_done += fnic_rq_cmpl_handler(fnic, -1);
+ 
+@@ -60,7 +65,7 @@ static irqreturn_t fnic_isr_msi(int irq, void *data)
+ 	fnic->fnic_stats.misc_stats.last_isr_time = jiffies;
+ 	atomic64_inc(&fnic->fnic_stats.misc_stats.isr_count);
+ 
+-	work_done += fnic_wq_copy_cmpl_handler(fnic, io_completions);
++	work_done += fnic_wq_copy_cmpl_handler(fnic, io_completions, FNIC_MQ_CQ_INDEX);
+ 	work_done += fnic_wq_cmpl_handler(fnic, -1);
+ 	work_done += fnic_rq_cmpl_handler(fnic, -1);
+ 
+@@ -109,12 +114,22 @@ static irqreturn_t fnic_isr_msix_wq_copy(int irq, void *data)
+ {
+ 	struct fnic *fnic = data;
+ 	unsigned long wq_copy_work_done = 0;
++	int i;
+ 
+ 	fnic->fnic_stats.misc_stats.last_isr_time = jiffies;
+ 	atomic64_inc(&fnic->fnic_stats.misc_stats.isr_count);
+ 
+-	wq_copy_work_done = fnic_wq_copy_cmpl_handler(fnic, io_completions);
+-	vnic_intr_return_credits(&fnic->intr[FNIC_MSIX_WQ_COPY],
++	i = irq - fnic->msix[0].irq_num;
++	if (i >= fnic->wq_copy_count + fnic->copy_wq_base ||
++		i < 0 || fnic->msix[i].irq_num != irq) {
++		for (i = fnic->copy_wq_base; i < fnic->wq_copy_count + fnic->copy_wq_base ; i++) {
++			if (fnic->msix[i].irq_num == irq)
++				break;
++		}
++	}
++
++	wq_copy_work_done = fnic_wq_copy_cmpl_handler(fnic, io_completions, i);
++	vnic_intr_return_credits(&fnic->intr[i],
+ 				 wq_copy_work_done,
+ 				 1 /* unmask intr */,
+ 				 1 /* reset intr timer */);
+@@ -128,7 +143,7 @@ static irqreturn_t fnic_isr_msix_err_notify(int irq, void *data)
+ 	fnic->fnic_stats.misc_stats.last_isr_time = jiffies;
+ 	atomic64_inc(&fnic->fnic_stats.misc_stats.isr_count);
+ 
+-	vnic_intr_return_all_credits(&fnic->intr[FNIC_MSIX_ERR_NOTIFY]);
++	vnic_intr_return_all_credits(&fnic->intr[fnic->err_intr_offset]);
+ 	fnic_log_q_error(fnic);
+ 	fnic_handle_link_event(fnic);
+ 
+@@ -186,26 +201,30 @@ int fnic_request_intr(struct fnic *fnic)
+ 		fnic->msix[FNIC_MSIX_WQ].isr = fnic_isr_msix_wq;
+ 		fnic->msix[FNIC_MSIX_WQ].devid = fnic;
+ 
+-		sprintf(fnic->msix[FNIC_MSIX_WQ_COPY].devname,
+-			"%.11s-scsi-wq", fnic->name);
+-		fnic->msix[FNIC_MSIX_WQ_COPY].isr = fnic_isr_msix_wq_copy;
+-		fnic->msix[FNIC_MSIX_WQ_COPY].devid = fnic;
++		for (i = fnic->copy_wq_base; i < fnic->wq_copy_count + fnic->copy_wq_base; i++) {
++			sprintf(fnic->msix[i].devname,
++				"%.11s-scsi-wq-%d", fnic->name, i-FNIC_MSIX_WQ_COPY);
++			fnic->msix[i].isr = fnic_isr_msix_wq_copy;
++			fnic->msix[i].devid = fnic;
++		}
+ 
+-		sprintf(fnic->msix[FNIC_MSIX_ERR_NOTIFY].devname,
++		sprintf(fnic->msix[fnic->err_intr_offset].devname,
+ 			"%.11s-err-notify", fnic->name);
+-		fnic->msix[FNIC_MSIX_ERR_NOTIFY].isr =
++		fnic->msix[fnic->err_intr_offset].isr =
+ 			fnic_isr_msix_err_notify;
+-		fnic->msix[FNIC_MSIX_ERR_NOTIFY].devid = fnic;
++		fnic->msix[fnic->err_intr_offset].devid = fnic;
+ 
+-		for (i = 0; i < ARRAY_SIZE(fnic->msix); i++) {
+-			err = request_irq(pci_irq_vector(fnic->pdev, i),
+-					  fnic->msix[i].isr, 0,
+-					  fnic->msix[i].devname,
+-					  fnic->msix[i].devid);
++		for (i = 0; i < fnic->intr_count; i++) {
++			fnic->msix[i].irq_num = pci_irq_vector(fnic->pdev, i);
++
++			err = request_irq(fnic->msix[i].irq_num,
++							fnic->msix[i].isr, 0,
++							fnic->msix[i].devname,
++							fnic->msix[i].devid);
+ 			if (err) {
+-				shost_printk(KERN_ERR, fnic->lport->host,
+-					     "MSIX: request_irq"
+-					     " failed %d\n", err);
++				FNIC_ISR_DBG(KERN_ERR, fnic->lport->host, fnic->fnic_num,
++							"request_irq failed with error: %d\n",
++							err);
+ 				fnic_free_intr(fnic);
+ 				break;
+ 			}
+@@ -220,44 +239,99 @@ int fnic_request_intr(struct fnic *fnic)
+ 	return err;
+ }
+ 
+-int fnic_set_intr_mode(struct fnic *fnic)
++int fnic_set_intr_mode_msix(struct fnic *fnic)
+ {
+ 	unsigned int n = ARRAY_SIZE(fnic->rq);
+ 	unsigned int m = ARRAY_SIZE(fnic->wq);
+ 	unsigned int o = ARRAY_SIZE(fnic->hw_copy_wq);
++	unsigned int min_irqs = n + m + 1 + 1; /*rq, raw wq, wq, err*/
+ 
+ 	/*
+-	 * Set interrupt mode (INTx, MSI, MSI-X) depending
+-	 * system capabilities.
+-	 *
+-	 * Try MSI-X first
+-	 *
+ 	 * We need n RQs, m WQs, o Copy WQs, n+m+o CQs, and n+m+o+1 INTRs
+ 	 * (last INTR is used for WQ/RQ errors and notification area)
+ 	 */
+-	if (fnic->rq_count >= n &&
+-	    fnic->raw_wq_count >= m &&
+-	    fnic->wq_copy_count >= o &&
+-	    fnic->cq_count >= n + m + o) {
+-		int vecs = n + m + o + 1;
+-
+-		if (pci_alloc_irq_vectors(fnic->pdev, vecs, vecs,
+-				PCI_IRQ_MSIX) == vecs) {
++	FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++		"rq-array size: %d wq-array size: %d copy-wq array size: %d\n",
++		n, m, o);
++	FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++		"rq_count: %d raw_wq_count: %d wq_copy_count: %d cq_count: %d\n",
++		fnic->rq_count, fnic->raw_wq_count,
++		fnic->wq_copy_count, fnic->cq_count);
++
++	if (fnic->rq_count <= n && fnic->raw_wq_count <= m &&
++		fnic->wq_copy_count <= o) {
++		int vec_count = 0;
++		int vecs = fnic->rq_count + fnic->raw_wq_count + fnic->wq_copy_count + 1;
++
++		vec_count = pci_alloc_irq_vectors(fnic->pdev, min_irqs, vecs,
++					PCI_IRQ_MSIX | PCI_IRQ_AFFINITY);
++		FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++					"allocated %d MSI-X vectors\n",
++					vec_count);
++
++		if (vec_count > 0) {
++			if (vec_count < vecs) {
++				FNIC_ISR_DBG(KERN_ERR, fnic->lport->host, fnic->fnic_num,
++				"interrupts number mismatch: vec_count: %d vecs: %d\n",
++				vec_count, vecs);
++				if (vec_count < min_irqs) {
++					FNIC_ISR_DBG(KERN_ERR, fnic->lport->host, fnic->fnic_num,
++								"no interrupts for copy wq\n");
++					return 1;
++				}
++			}
++
+ 			fnic->rq_count = n;
+ 			fnic->raw_wq_count = m;
+-			fnic->wq_copy_count = o;
+-			fnic->wq_count = m + o;
+-			fnic->cq_count = n + m + o;
+-			fnic->intr_count = vecs;
+-			fnic->err_intr_offset = FNIC_MSIX_ERR_NOTIFY;
+-
+-			FNIC_ISR_DBG(KERN_DEBUG, fnic->lport->host,
+-				     "Using MSI-X Interrupts\n");
+-			vnic_dev_set_intr_mode(fnic->vdev,
+-					       VNIC_DEV_INTR_MODE_MSIX);
++			fnic->copy_wq_base = fnic->rq_count + fnic->raw_wq_count;
++			fnic->wq_copy_count = vec_count - n - m - 1;
++			fnic->wq_count = fnic->raw_wq_count + fnic->wq_copy_count;
++			if (fnic->cq_count != vec_count - 1) {
++				FNIC_ISR_DBG(KERN_ERR, fnic->lport->host, fnic->fnic_num,
++				"CQ count: %d does not match MSI-X vector count: %d\n",
++				fnic->cq_count, vec_count);
++				fnic->cq_count = vec_count - 1;
++			}
++			fnic->intr_count = vec_count;
++			fnic->err_intr_offset = fnic->rq_count + fnic->wq_count;
++
++			FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++				"rq_count: %d raw_wq_count: %d copy_wq_base: %d\n",
++				fnic->rq_count,
++				fnic->raw_wq_count, fnic->copy_wq_base);
++
++			FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++				"wq_copy_count: %d wq_count: %d cq_count: %d\n",
++				fnic->wq_copy_count,
++				fnic->wq_count, fnic->cq_count);
++
++			FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++				"intr_count: %d err_intr_offset: %u",
++				fnic->intr_count,
++				fnic->err_intr_offset);
++
++			vnic_dev_set_intr_mode(fnic->vdev, VNIC_DEV_INTR_MODE_MSIX);
++			FNIC_ISR_DBG(KERN_INFO, fnic->lport->host, fnic->fnic_num,
++					"fnic using MSI-X\n");
+ 			return 0;
+ 		}
+ 	}
++	return 1;
++}
++
++int fnic_set_intr_mode(struct fnic *fnic)
++{
++	int ret_status = 0;
++
++	/*
++	 * Set interrupt mode (INTx, MSI, MSI-X) depending
++	 * system capabilities.
++	 *
++	 * Try MSI-X first
++	 */
++	ret_status = fnic_set_intr_mode_msix(fnic);
++	if (ret_status == 0)
++		return ret_status;
+ 
+ 	/*
+ 	 * Next try MSI
+@@ -277,7 +351,7 @@ int fnic_set_intr_mode(struct fnic *fnic)
+ 		fnic->intr_count = 1;
+ 		fnic->err_intr_offset = 0;
+ 
+-		FNIC_ISR_DBG(KERN_DEBUG, fnic->lport->host,
++		FNIC_ISR_DBG(KERN_DEBUG, fnic->lport->host, fnic->fnic_num,
+ 			     "Using MSI Interrupts\n");
+ 		vnic_dev_set_intr_mode(fnic->vdev, VNIC_DEV_INTR_MODE_MSI);
+ 
+@@ -303,7 +377,7 @@ int fnic_set_intr_mode(struct fnic *fnic)
+ 		fnic->cq_count = 3;
+ 		fnic->intr_count = 3;
+ 
+-		FNIC_ISR_DBG(KERN_DEBUG, fnic->lport->host,
++		FNIC_ISR_DBG(KERN_DEBUG, fnic->lport->host, fnic->fnic_num,
+ 			     "Using Legacy Interrupts\n");
+ 		vnic_dev_set_intr_mode(fnic->vdev, VNIC_DEV_INTR_MODE_INTX);
+ 
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index dacefbeb44f0..5726c0fb6f0f 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -476,6 +476,7 @@ static int fnic_cleanup(struct fnic *fnic)
+ {
+ 	unsigned int i;
+ 	int err;
++	int raw_wq_rq_counts;
+ 
+ 	vnic_dev_disable(fnic->vdev);
+ 	for (i = 0; i < fnic->intr_count; i++)
+@@ -495,10 +496,11 @@ static int fnic_cleanup(struct fnic *fnic)
+ 		err = vnic_wq_copy_disable(&fnic->hw_copy_wq[i]);
+ 		if (err)
+ 			return err;
++		raw_wq_rq_counts = fnic->raw_wq_count + fnic->rq_count;
++		fnic_wq_copy_cmpl_handler(fnic, -1, i + raw_wq_rq_counts);
+ 	}
+ 
+ 	/* Clean up completed IOs and FCS frames */
+-	fnic_wq_copy_cmpl_handler(fnic, io_completions);
+ 	fnic_wq_cmpl_handler(fnic, -1);
+ 	fnic_rq_cmpl_handler(fnic, -1);
+ 
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index b7dc304446f8..c7f3bfc650d1 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -1319,10 +1319,8 @@ static int fnic_fcpio_cmpl_handler(struct vnic_dev *vdev,
+  * fnic_wq_copy_cmpl_handler
+  * Routine to process wq copy
+  */
+-int fnic_wq_copy_cmpl_handler(struct fnic *fnic, int copy_work_to_do)
++int fnic_wq_copy_cmpl_handler(struct fnic *fnic, int copy_work_to_do, unsigned int cq_index)
+ {
+-	unsigned int wq_work_done = 0;
+-	unsigned int i, cq_index;
+ 	unsigned int cur_work_done;
+ 	struct misc_stats *misc_stats = &fnic->fnic_stats.misc_stats;
+ 	u64 start_jiffies = 0;
+@@ -1330,28 +1328,20 @@ int fnic_wq_copy_cmpl_handler(struct fnic *fnic, int copy_work_to_do)
+ 	u64 delta_jiffies = 0;
+ 	u64 delta_ms = 0;
+ 
+-	for (i = 0; i < fnic->wq_copy_count; i++) {
+-		cq_index = i + fnic->raw_wq_count + fnic->rq_count;
+-
+-		start_jiffies = jiffies;
+-		cur_work_done = vnic_cq_copy_service(&fnic->cq[cq_index],
+-						     fnic_fcpio_cmpl_handler,
+-						     copy_work_to_do);
+-		end_jiffies = jiffies;
+-
+-		wq_work_done += cur_work_done;
+-		delta_jiffies = end_jiffies - start_jiffies;
+-		if (delta_jiffies >
+-			(u64) atomic64_read(&misc_stats->max_isr_jiffies)) {
+-			atomic64_set(&misc_stats->max_isr_jiffies,
+-					delta_jiffies);
+-			delta_ms = jiffies_to_msecs(delta_jiffies);
+-			atomic64_set(&misc_stats->max_isr_time_ms, delta_ms);
+-			atomic64_set(&misc_stats->corr_work_done,
+-					cur_work_done);
+-		}
++	start_jiffies = jiffies;
++	cur_work_done = vnic_cq_copy_service(&fnic->cq[cq_index],
++					fnic_fcpio_cmpl_handler,
++					copy_work_to_do);
++	end_jiffies = jiffies;
++	delta_jiffies = end_jiffies - start_jiffies;
++	if (delta_jiffies > (u64) atomic64_read(&misc_stats->max_isr_jiffies)) {
++		atomic64_set(&misc_stats->max_isr_jiffies, delta_jiffies);
++		delta_ms = jiffies_to_msecs(delta_jiffies);
++		atomic64_set(&misc_stats->max_isr_time_ms, delta_ms);
++		atomic64_set(&misc_stats->corr_work_done, cur_work_done);
+ 	}
+-	return wq_work_done;
++
++	return cur_work_done;
+ }
+ 
+ static bool fnic_cleanup_io_iter(struct scsi_cmnd *sc, void *data)
+diff --git a/drivers/scsi/fnic/fnic_stats.h b/drivers/scsi/fnic/fnic_stats.h
+index bdf639eef8cf..07d1556e3c32 100644
+--- a/drivers/scsi/fnic/fnic_stats.h
++++ b/drivers/scsi/fnic/fnic_stats.h
+@@ -103,6 +103,7 @@ struct misc_stats {
+ 	atomic64_t rport_not_ready;
+ 	atomic64_t frame_errors;
+ 	atomic64_t current_port_speed;
++	atomic64_t intx_dummy;
+ };
+ 
+ struct fnic_stats {
 -- 
-2.25.1
+2.31.1
 
