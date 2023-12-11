@@ -2,131 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B644180DA06
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE3E80DA18
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 19:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjLKS6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 13:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        id S1344331AbjLKS7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 13:59:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjLKS6T (ORCPT
+        with ESMTP id S229663AbjLKS7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 13:58:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8425BD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 10:58:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702321104; x=1733857104;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xoFVywqnr3ses9z+O9JRIN/9r9vEQ1AVEHv1eNGy5RA=;
-  b=StYCXljFyVYh2P+tNiNMoFRRGXzLV5bQxIQAK8ogf9gEh14tfjP0P7JY
-   JzNPkqdon/FSp0zr8ZnOTOWamWY6iRejjcZgSzyDL+baTuU1FrWv00CAM
-   8EM7+pOJ5zejRqjwrjatR97FVs8F2FTm8KuP6iw+zKUa+/Mf9VlLukSU4
-   suUxXwHiZ9jfaF/y3IgqBGu2lM7KmZ5Uzpd3V/4UgO3Top5lvTlMJuu9G
-   cuSrB9FxeDIhFPeo6PdzOx5jpjrGxjqhSlFpRFtbnRVMMgPB/+5iw6fkN
-   b7cxCOzMj2NBHtVcemm6TSyhXT98f+n1oBZ0u6knpPaoJWt/fO346k2C5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="461171315"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="461171315"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:58:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="863901427"
-X-IronPort-AV: E=Sophos;i="6.04,268,1695711600"; 
-   d="scan'208";a="863901427"
-Received: from cgherghe-mobl.amr.corp.intel.com (HELO [10.209.30.166]) ([10.209.30.166])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 10:58:23 -0800
-Message-ID: <efb1b6da-0bbc-402c-8034-d15e4cd96500@intel.com>
-Date:   Mon, 11 Dec 2023 10:58:22 -0800
+        Mon, 11 Dec 2023 13:59:17 -0500
+Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [129.187.255.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD920B4;
+        Mon, 11 Dec 2023 10:59:21 -0800 (PST)
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+        by postout1.mail.lrz.de (Postfix) with ESMTP id 4SprdL22mNzyTc;
+        Mon, 11 Dec 2023 19:59:18 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        in-reply-to:content-transfer-encoding:content-disposition
+        :content-type:content-type:mime-version:references:message-id
+        :subject:subject:from:from:date:date:received:received; s=
+        tu-postout21; t=1702321156; bh=wzxkPiBTm3s8ZGp87MxJnVY/QY6RAgQlb
+        fQjTK03dlg=; b=OD+eLULtQirJNVgNfxfD5We9/CnESR3bql7En7h6xjEkCVHqJ
+        /VnNO/xymw6jV9CfXtOQyeeqS22wLqXgnd0Mq+Zm9Ur9sABCAwx0YxqyuXyQvbkU
+        xnIClFKRbPMemo/qb8gb8lN9Ll65aFOCsWRgtrIAF1/0IBT89rB6gC4T6PZbMYph
+        AeHr1LiiRx3Hk4ieM3JCyf727JUcWNSvr6G8Rhxo2oLzKBO4qThwZjRa/kz+6vtm
+        zhOKYbsv2NIgrXkIwyTJY7NT7e5eJ0oK7GAGnRpFMrN51gNd57G8spCj4GjZldHF
+        sIW2SInC3qweh6Larylr9jRDyDS2GnKuyHzMw==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
+X-Spam-Score: -2.881
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id fmaQedN7hfuU; Mon, 11 Dec 2023 19:59:16 +0100 (CET)
+Received: from Monitor.dos.cit.tum.de (Monitor.dos.cit.tum.de [IPv6:2a09:80c0:38::165])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4SprdH6P1fzySj;
+        Mon, 11 Dec 2023 19:59:15 +0100 (CET)
+Date:   Mon, 11 Dec 2023 19:59:10 +0100
+From:   Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Marco Elver <elver@google.com>, andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
+Message-ID: <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
+References: <CAMn1gO7Ve4-d6vP4jvASQsTZ2maHsMF6gKHL3RXSuD9N3tAOfQ@mail.gmail.com>
+ <CANpmjNNvGL--j-20UxqX_WjeXGiAcjfDAQpfds+Orajz0ZeBsg@mail.gmail.com>
+ <CAMn1gO6reT+MTmogLOrOVoNqzLH+fKmQ2JRAGy-tDOTLx-fpyw@mail.gmail.com>
+ <CANpmjNN7Gf_aeX+Y6g0UBL-cmTGEF9zgE7hQ1VK8F+0Yeg5Rvg@mail.gmail.com>
+ <20230215143306.2d563215@rorschach.local.home>
+ <CAMn1gO4_+-0x4ibpcASy4bLeZ+7rsmjx=0AYKGVDUApUbanSrQ@mail.gmail.com>
+ <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
+ <20230505095805.759153de@gandalf.local.home>
+ <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
+ <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86_64: test xmm/ymm register state after execve(2)
-Content-Language: en-US
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-References: <ea599d98-7d26-4278-9d79-a115650289df@p183>
- <cd27c804-a289-4b6f-9dd1-5c4b3bdc564b@intel.com>
- <7bbef366-c897-4cd2-ae69-d3e8019c5b3a@p183>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <7bbef366-c897-4cd2-ae69-d3e8019c5b3a@p183>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 22:15, Alexey Dobriyan wrote:
->>> +".Ltest_xmm:"
->>> +	"movdqu %xmm0, xmm + 16 * 0;"
->>> +	"movdqu %xmm1, xmm + 16 * 1;"
->> Does this work on systems without XMMs?  I know it's not common these
->> days but it's possible, especially in VMs.
-> No. But I think all x86_64 systems have SSE2. So it is up to whoever will
-> port this test to i386.
-I somehow got it in my head that we can't do XMM's unless XSAVE is in
-the picture.  But that's wrong.  FXSAVE works on XMM's just fine and
-it's a requirement for FPU support, and 64-bit requires the FPU.
+Hi Andrey!
 
-It would be nice to spell that out explicitly in the changelog if you
-get a chance to resend this.
+On 11.12.2023 18:50, Andrey Konovalov wrote:
+> On Mon, Dec 11, 2023 at 5:37 PM Paul Heidekrüger
+> <paul.heidekrueger@tum.de> wrote:
+> >
+> > Hi all!
+> >
+> > On 05.05.2023 09:58, Steven Rostedt wrote:
+> > > On Mon, 1 May 2023 15:02:37 -0700
+> > > Peter Collingbourne <pcc@google.com> wrote:
+> > >
+> > > > > > "ftrace" is really for just the function tracing, but CONFIG_FTRACE
+> > > > > > really should just be for the function tracing infrastructure, and
+> > > > > > perhaps not even include trace events :-/ But at the time it was
+> > > > > > created, it was for all the "tracers" (this was added before trace
+> > > > > > events).
+> > > > >
+> > > > > It would be great to see this cleaned up. I found this aspect of how
+> > > > > tracing works rather confusing.
+> > > > >
+> > > > > So do you think it makes sense for the KASAN tests to "select TRACING"
+> > > > > for now if the code depends on the trace event infrastructure?
+> > > >
+> > > > Any thoughts? It looks like someone else got tripped up by this:
+> > > > https://reviews.llvm.org/D144057
+> > >
+> > > Yeah, it really does need to get cleaned up, but unfortunately it's not
+> > > going to be a trivial change. We need to make sure it's done in a way that
+> > > an old .config still keeps the same things enabled with the new config
+> > > settings. That takes some trickery in the dependency.
+> > >
+> > > I'll add this to my todo list, hopefully it doesn't fall into the abyss
+> > > portion of that list :-p
+> > >
+> > > -- Steve
+> >
+> > Just adding to Peter's concern re: CONFIG_KASAN_KUNIT_TEST's dependency on
+> > CONFIG_TRACEPOINTS.
+> >
+> > I'm having no luck running the KASan KUnit tests on arm64 with the following
+> > .kunitconfig on v6.6.0:
+> >
+> >         CONFIG_KUNIT=y
+> >         CONFIG_KUNIT_ALL_TESTS=n
+> >         CONFIG_DEBUG_KERNEL=y
+> >         CONFIG_KASAN=y
+> >         CINFIG_KASAN_GENERIC=y
+> >         CONFIG_KASAN_KUNIT_TEST=y
+> >
+> > CONFIG_TRACEPOINTS, which CONFIG_KASAN_TEST relies on since the patch this
+> > thread is based on, isn't defined for arm64, AFAICT.
+> >
+> > If I comment out the dependency on CONFIG_TRACEPOINTS, the tests appear to run,
+> > but KUnit isn't picking up the KASan output.
+> >
+> > If I revert the patch, the above .kunitconfig appears to work fine on arm64 and
+> > the tests pass.
+> >
+> > The above .kunitconfig works as intended on X86, no changes necessary.
+> >
+> > Am I missing something?
+> 
+> Hi Paul,
+> 
+> I've been successfully running KASAN tests with CONFIG_TRACEPOINTS
+> enabled on arm64 since this patch landed.
 
-Also, on the license... You as the copyright holder are, of course, free
-to distribute it under any license you want yourself.  But for the copy
-in the kernel, it would be nice if you chose something you could stick
-an SPDX label on.  That way, a maintainer knows immediately if the
-license is OK or not.
+Interesting ... 
+
+> What happens when you try running the tests with .kunitconfig? Does
+> CONFIG_TRACEPOINTS or CONFIG_KASAN_KUNIT_TEST get disabled during
+> kernel building? 
+
+Yes, exactly, that's what's happening.
+
+Here's the output kunit.py is giving me. I replaced CONFIG_DEBUG_KERNEL with 
+CONFIG_TRACEPOINTS in my .kunitconfig. Otherwise, it's identical with the one I 
+posted above.
+
+	➜   ./tools/testing/kunit/kunit.py run --kunitconfig=mm/kasan/.kunitconfig --arch=arm64
+	Configuring KUnit Kernel ...
+	Regenerating .config ...
+	Populating config with:
+	$ make ARCH=arm64 O=.kunit olddefconfig
+	ERROR:root:Not all Kconfig options selected in kunitconfig were in the generated .config.
+	This is probably due to unsatisfied dependencies.
+	Missing: CONFIG_KASAN_KUNIT_TEST=y, CONFIG_TRACEPOINTS=y
+
+Does CONFIG_TRACEPOINTS have some dependency I'm not seeing? I couldn't find a 
+reason why it would get disabled, but I could definitely be wrong.
+
+> Or tests just don't get executed?
+> 
+> Thanks!
+
+Many thanks,
+Paul
