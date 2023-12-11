@@ -2,59 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6033F80C87F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6013E80C923
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 13:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbjLKLvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:51:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
+        id S234830AbjLKMMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 07:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234384AbjLKLvM (ORCPT
+        with ESMTP id S234863AbjLKMML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:51:12 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17981F2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 03:51:18 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 257B2FEC;
-        Mon, 11 Dec 2023 03:52:04 -0800 (PST)
-Received: from [10.57.73.30] (unknown [10.57.73.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5762E3F762;
-        Mon, 11 Dec 2023 03:51:14 -0800 (PST)
-Message-ID: <6cc1332d-6ad2-4642-84d1-6a2fcf70d534@arm.com>
-Date:   Mon, 11 Dec 2023 11:51:12 +0000
+        Mon, 11 Dec 2023 07:12:11 -0500
+X-Greylist: delayed 1228 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 04:12:16 PST
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0B4F2;
+        Mon, 11 Dec 2023 04:12:16 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Spg7z2kdDz1vnkK;
+        Mon, 11 Dec 2023 19:51:43 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+        by mail.maildlp.com (Postfix) with ESMTPS id 759501A016F;
+        Mon, 11 Dec 2023 19:51:46 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Dec
+ 2023 19:51:46 +0800
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com>
+ <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+ <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
+ <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
+ <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
+Date:   Mon, 11 Dec 2023 19:51:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 00/10] Multi-size THP for anonymous memory
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207140502.e7dff5d1cfb195b1644b61a5@linux-foundation.org>
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231207140502.e7dff5d1cfb195b1644b61a5@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,26 +80,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/12/2023 22:05, Andrew Morton wrote:
-> On Thu,  7 Dec 2023 16:12:01 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
->> Hi All,
+On 2023/12/11 12:04, Mina Almasry wrote:
+> On Sun, Dec 10, 2023 at 6:26 PM Mina Almasry <almasrymina@google.com> wrote:
 >>
->> This is v9 (and hopefully the last) of a series to implement multi-size THP
->> (mTHP) for anonymous memory (previously called "small-sized THP" and "large
->> anonymous folios").
-> 
-> A general point on the [0/N] intro.  Bear in mind that this is
-> (intended to be) for ever.  Five years hence, people won't be
-> interested in knowing which version the patchset was, in seeing what
-> changed from the previous iteration, etc.  This is all important and
-> useful info, of course.  But it's best suited for being below the
-> "^---$" separator.
-> 
-> Also, those five-years-from-now people won't want to have to go click
-> on some link to find the performance testing results and suchlike. 
-> It's better to paste such important info right into their faces.
+>> On Sun, Dec 10, 2023 at 6:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> On 2023/12/9 0:05, Mina Almasry wrote:
+>>>> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>>
+>>>>>
+>>>>> As mentioned before, it seems we need to have the above checking every
+>>>>> time we need to do some per-page handling in page_pool core, is there
+>>>>> a plan in your mind how to remove those kind of checking in the future?
+>>>>>
+>>>>
+>>>> I see 2 ways to remove the checking, both infeasible:
+>>>>
+>>>> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
+>>>>
+>>>> struct netmem {
+>>>>         /* common fields */
+>>>>         refcount_t refcount;
+>>>>         bool is_pfmemalloc;
+>>>>         int nid;
+>>>>         ...
+>>>>         union {
+>>>>                 struct dmabuf_genpool_chunk_owner *owner;
+>>>>                 struct page * page;
+>>>>         };
+>>>> };
+>>>>
+>>>> The page pool can then not care if the underlying memory is iov or
+>>>> page. However this introduces significant memory bloat as this struct
+>>>> needs to be allocated for each page or ppiov, which I imagine is not
+>>>> acceptable for the upside of removing a few static_branch'd if
+>>>> statements with no performance cost.
+>>>>
+>>>> 2. Create a unified struct for page and dmabuf memory, which the mm
+>>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
+>>>> the future.
+>>>>
+>>>> So I imagine the special handling of ppiov in some form is critical
+>>>> and the checking may not be removable.
+>>>
+>>> If the above is true, perhaps devmem is not really supposed to be intergated
+>>> into page_pool.
+>>>
+>>> Adding a checking for every per-page handling in page_pool core is just too
+>>> hacky to be really considerred a longterm solution.
+>>>
+>>
+>> The only other option is to implement another page_pool for ppiov and
+>> have the driver create page_pool or ppiov_pool depending on the state
+>> of the netdev_rx_queue (or some helper in the net stack to do that for
+>> the driver). This introduces some code duplication. The ppiov_pool &
+>> page_pool would look similar in implementation.
 
-Sorry about this, Andrew - you've given me feedback on this before, and I've
-been trying to improve this. I'm obviously not there yet. Will fix for next time.
+I think there is a design pattern already to deal with this kind of problem,
+refactoring common code used by both page_pool and ppiov into a library to
+aovid code duplication if most of them have similar implementation.
 
+>>
+>> But this was all discussed in detail in RFC v2 and the last response I
+>> heard from Jesper was in favor if this approach, if I understand
+>> correctly:
+>>
+>> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.com/
+>>
+>> Would love to have the maintainer weigh in here.
+>>
+> 
+> I should note we may be able to remove some of the checking, but maybe not all.
+> 
+> - Checks that disable page fragging for ppiov can be removed once
+> ppiov has frag support (in this series or follow up).
+> 
+> - If we use page->pp_frag_count (or page->pp_ref_count) for
+> refcounting ppiov, we can remove the if checking in the refcounting.
+> 
+> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
+> but I'm unsure if that actually works, because the dma_buf dmaddr is
+> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
+> I think). But if it works for pages I may be able to make it work for
+> ppiov as well.
+> 
+> - Checks that obtain the page->pp can work with ppiov if we align the
+> offset of page->pp and ppiov->pp.
+> 
+> - Checks around page->pp_magic can be removed if we also have offset
+> aligned ppiov->pp_magic.
+> 
+> Sadly I don't see us removing the checking for these other cases:
+> 
+> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
+> that helper.
+
+We can do similar trick like above as bit 1 of page->pp_magic is used to
+indicate that if it is a pfmemalloc page.
+
+> 
+> - page_to_nid(): I'm not allowed to pass a non-struct page into that helper.
+
+Yes, this one need special case.
+
+> 
+> - page_pool_free_va(): ppiov have no va.
+
+Doesn't the skb_frags_readable() checking will protect the page_pool_free_va()
+from being called on devmem?
+
+> 
+> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
+> fundamentally can't get mapped again.
+
+Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
+DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
+
+> 
+> Are the removal (or future removal) of these checks enough to resolve this?
+
+Yes, that is somewhat similar to my proposal, the biggest objection seems to
+be that we need to have a safe type checking for it to work correctly.
+
+> 
+>>> It is somewhat ironical that devmem is using static_branch to alliviate the
+>>> performance impact for normal memory at the possible cost of performance
+>>> degradation for devmem, does it not defeat some purpose of intergating devmem
+>>> to page_pool?
+>>>
+>>
+>> I don't see the issue. The static branch sets the non-ppiov path as
+>> default if no memory providers are in use, and flips it when they are,
+>> making the default branch prediction ideal in both cases.
+
+You are assuming the we are not using page pool for both normal memory and
+devmem at the same. But a generic solution should not have that assumption
+as my understanding.
+
+>>
+>>>>
+>>>>> Even though a static_branch check is added in page_is_page_pool_iov(), it
+>>>>> does not make much sense that a core has tow different 'struct' for its
+>>>>> most basic data.
+>>>>>
+>>>>> IMHO, the ppiov for dmabuf is forced fitting into page_pool without much
+>>>>> design consideration at this point.
+>>>>>
+>>>> ...
+>>>>>
+>>>>> For now, the above may work for the the rx part as it seems that you are
+>>>>> only enabling rx for dmabuf for now.
+>>>>>
+>>>>> What is the plan to enable tx for dmabuf? If it is also intergrated into
+>>>>> page_pool? There was a attempt to enable page_pool for tx, Eric seemed to
+>>>>> have some comment about this:
+>>>>> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
+>>>>>
+>>>>> If tx is not intergrated into page_pool, do we need to create a new layer for
+>>>>> the tx dmabuf?
+>>>>>
+>>>>
+>>>> I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
+>>>> helpers, and page_pool_page_*() helpers, but will not need any core
+>>>> page_pool changes. This is because the TX path will have to piggyback
+>>>
+>>> We may need another bit/flags checking to demux between page_pool owned
+>>> devmem and non-page_pool owned devmem.
+>>>
+>>
+>> The way I'm imagining the support, I don't see the need for such
+>> flags. We'd be re-using generic helpers like
+>> page_pool_iov_get_dma_address() and what not that don't need that
+>> checking.
+>>
+>>> Also calling page_pool_*() on non-page_pool owned devmem is confusing
+>>> enough that we may need a thin layer handling non-page_pool owned devmem
+>>> in the end.
+>>>
+>>
+>> The page_pool_page* & page_pool_iov* functions can be renamed if
+>> confusing. I would think that's no issue (note that the page_pool_*
+
+When you rename those functions, you will have a thin layer automatically.
+
+>> functions need not be called for TX path).
+>>
+>>>> on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation from
+>>>> the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
+>>>> implementation based on dmabuf pages without page_pool involvement, I
+>>>> imagine I'll do something similar.
+>>> It would be good to have a tx implementation for the next version, so
+>>> that we can have a whole picture of devmem.
