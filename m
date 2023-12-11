@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7E380DD13
+	by mail.lfdr.de (Postfix) with ESMTP id 2596D80DD11
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345057AbjLKVZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
+        id S230126AbjLKVZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbjLKVZ2 (ORCPT
+        with ESMTP id S229663AbjLKVZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 16:25:28 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5B7D1;
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6226ED9;
         Mon, 11 Dec 2023 13:25:32 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id A6329120024;
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id E93D1100014;
         Tue, 12 Dec 2023 00:25:30 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A6329120024
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E93D1100014
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
         s=mail; t=1702329930;
-        bh=SKw28gVWBdwhaitDnLlDE2+TMPMGWFq+Ahhx/0ntBII=;
+        bh=VolWnmXHF5RMJtGOpmTWJryWny5MPaaiaWlkMXsgHkI=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=Y3J7Fj0/WKGApmyCpRpq4g7XwjabvGNqa/YGCFGIcw/jk4M3Xk3mK2l9HqhcROy3M
-         u350lKFL4MegiLU2naB6GcbFLk5YTrMBcYaYhif9ZQPv6MQovIIcLPaVo8rAdvf8f3
-         0VirHuDrHyQWIJf5iHPWr5loLFgzjqCedjY3FI1xVksz1YD5kqUDE5cd79AFx/O9zF
-         UYRGJpfI75JtmjMVQQuUPILajjFjRtmbkb6/GIAAPtml2gxUku3Jeel8mcjPHtgFiG
-         FjcMns5JID2vLJ14I5Y5S67mxbg2GeNZdryk77kmA0OlFjnn/SDp9vR5VMHY4T4Psz
-         qKT1TwIZW4prg==
+        b=aGt+FjLlsQz3NqcLvSzEpxWP9u9CwDmD/3/QQjau+VPYEMTDt9T2BPNqNtAOR+wzG
+         9QPecN4u1u735DWCedNCG/GLRlGgJacUcQPssGfuoy0U6KlsUA/JHILgDHw2rXB8BO
+         AI232OoUpKQt1BS8on272sHT95XdV7EqCUYjny2eESaOCAIEbfa1ZiA0Vx/Kl0+BTU
+         rbqgnCqrXUVV5KmzBJP7jfUJkn/1q4NJACYfVBnUH0VfU8e0/BkVINro06AvPcRPXS
+         esr+QlPMbAvMZhy7zPd6D5KSNV+iXR+JdwaHyIdjNK8aqdKoh9YMaJQBxSxQJ2kHr8
+         9qH8PoUMBO2dg==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -52,9 +52,9 @@ CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
         <avkrasnov@salutedevices.com>
-Subject: [PATCH net-next v8 2/4] virtio/vsock: send credit update during setting SO_RCVLOWAT
-Date:   Tue, 12 Dec 2023 00:16:56 +0300
-Message-ID: <20231211211658.2904268-3-avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v8 3/4] virtio/vsock: fix logic which reduces credit update messages
+Date:   Tue, 12 Dec 2023 00:16:57 +0300
+Message-ID: <20231211211658.2904268-4-avkrasnov@salutedevices.com>
 X-Mailer: git-send-email 2.35.0
 In-Reply-To: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
 References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
@@ -73,7 +73,7 @@ X-KSMG-AntiSpam-Rate: 0
 X-KSMG-AntiSpam-Status: not_detected
 X-KSMG-AntiSpam-Method: none
 X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
 X-MS-Exchange-Organization-SCL: -1
 X-KSMG-AntiSpam-Interceptor-Info: scan successful
 X-KSMG-AntiPhishing: Clean
@@ -89,123 +89,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Send credit update message when SO_RCVLOWAT is updated and it is bigger
-than number of bytes in rx queue. It is needed, because 'poll()' will
-wait until number of bytes in rx queue will be not smaller than
-SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
-for tx/rx is possible: sender waits for free space and receiver is
-waiting data in 'poll()'.
+Add one more condition for sending credit update during dequeue from
+stream socket: when number of bytes in the rx queue is smaller than
+SO_RCVLOWAT value of the socket. This is actual for non-default value
+of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
+transmission, because we need at least SO_RCVLOWAT bytes in our rx
+queue to wake up user for reading data (in corner case it is also
+possible to stuck both tx and rx sides, this is why 'Fixes' is used).
 
+Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
 Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 ---
  Changelog:
- v1 -> v2:
-  * Update commit message by removing 'This patch adds XXX' manner.
-  * Do not initialize 'send_update' variable - set it directly during
-    first usage.
- v3 -> v4:
-  * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
- v4 -> v5:
-  * Do not change callbacks order in transport structures.
- v5 -> v6:
-  * Reorder callbacks in transport structures.
+ v6 -> v7:
+  * Handle wrap of 'fwd_cnt'.
   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
+ v7 -> v8:
+  * Remove unneeded/wrong handling of wrap for 'fwd_cnt'.
 
- drivers/vhost/vsock.c                   |  1 +
- include/linux/virtio_vsock.h            |  1 +
- net/vmw_vsock/virtio_transport.c        |  1 +
- net/vmw_vsock/virtio_transport_common.c | 30 +++++++++++++++++++++++++
- net/vmw_vsock/vsock_loopback.c          |  1 +
- 5 files changed, 34 insertions(+)
+ net/vmw_vsock/virtio_transport_common.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index f75731396b7e..ec20ecff85c7 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -449,6 +449,7 @@ static struct virtio_transport vhost_transport = {
- 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
- 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
- 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
-+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
- 
- 		.read_skb = virtio_transport_read_skb,
- 	},
-diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-index ebb3ce63d64d..c82089dee0c8 100644
---- a/include/linux/virtio_vsock.h
-+++ b/include/linux/virtio_vsock.h
-@@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
- void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
- int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
- int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
-+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
- #endif /* _LINUX_VIRTIO_VSOCK_H */
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index af5bab1acee1..f495b9e5186b 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -537,6 +537,7 @@ static struct virtio_transport virtio_transport = {
- 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
- 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
- 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
-+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
- 
- 		.read_skb = virtio_transport_read_skb,
- 	},
 diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index f6dc896bf44c..e137d740804e 100644
+index e137d740804e..8572f94bba88 100644
 --- a/net/vmw_vsock/virtio_transport_common.c
 +++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -1684,6 +1684,36 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
- }
- EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+@@ -558,6 +558,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 	struct virtio_vsock_sock *vvs = vsk->trans;
+ 	size_t bytes, total = 0;
+ 	struct sk_buff *skb;
++	u32 fwd_cnt_delta;
++	bool low_rx_bytes;
+ 	int err = -EFAULT;
+ 	u32 free_space;
  
-+int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
-+{
-+	struct virtio_vsock_sock *vvs = vsk->trans;
-+	bool send_update;
-+
-+	spin_lock_bh(&vvs->rx_lock);
-+
-+	/* If number of available bytes is less than new SO_RCVLOWAT value,
-+	 * kick sender to send more data, because sender may sleep in its
-+	 * 'send()' syscall waiting for enough space at our side. Also
-+	 * don't send credit update when peer already knows actual value -
-+	 * such transmission will be useless.
-+	 */
-+	send_update = (vvs->rx_bytes < val) &&
-+		      (vvs->fwd_cnt != vvs->last_fwd_cnt);
-+
-+	spin_unlock_bh(&vvs->rx_lock);
-+
-+	if (send_update) {
-+		int err;
-+
-+		err = virtio_transport_send_credit_update(vsk);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
-+
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Asias He");
- MODULE_DESCRIPTION("common code for virtio vsock");
-diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
-index 048640167411..6dea6119f5b2 100644
---- a/net/vmw_vsock/vsock_loopback.c
-+++ b/net/vmw_vsock/vsock_loopback.c
-@@ -96,6 +96,7 @@ static struct virtio_transport loopback_transport = {
- 		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
- 		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
- 		.notify_buffer_size       = virtio_transport_notify_buffer_size,
-+		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
+@@ -601,7 +603,10 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 		}
+ 	}
  
- 		.read_skb = virtio_transport_read_skb,
- 	},
+-	free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
++	fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt;
++	free_space = vvs->buf_alloc - fwd_cnt_delta;
++	low_rx_bytes = (vvs->rx_bytes <
++			sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
+ 
+ 	spin_unlock_bh(&vvs->rx_lock);
+ 
+@@ -611,9 +616,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 	 * too high causes extra messages. Too low causes transmitter
+ 	 * stalls. As stalls are in theory more expensive than extra
+ 	 * messages, we set the limit to a high value. TODO: experiment
+-	 * with different values.
++	 * with different values. Also send credit update message when
++	 * number of bytes in rx queue is not enough to wake up reader.
+ 	 */
+-	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
++	if (fwd_cnt_delta &&
++	    (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE || low_rx_bytes))
+ 		virtio_transport_send_credit_update(vsk);
+ 
+ 	return total;
 -- 
 2.25.1
 
