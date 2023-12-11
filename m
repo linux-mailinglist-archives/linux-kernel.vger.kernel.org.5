@@ -2,161 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E9380C0FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A82180C0FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 06:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbjLKFta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 00:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
+        id S233852AbjLKFuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 00:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbjLKFsv (ORCPT
+        with ESMTP id S233831AbjLKFti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 00:48:51 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2059.outbound.protection.outlook.com [40.107.215.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD363130;
-        Sun, 10 Dec 2023 21:48:40 -0800 (PST)
+        Mon, 11 Dec 2023 00:49:38 -0500
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2060.outbound.protection.outlook.com [40.107.101.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B1B1FC8;
+        Sun, 10 Dec 2023 21:49:04 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kUP8tcK5L+I+ATUWl0smHVE+EGplk/FYSWL+x1KI2NwzyleTAkGl7q6O0ucw2TlHV/zS6l3MZQ3LL+o/nAAxA7jTbc9/xAKePA7NWTY1rySKuXLQ/22fasGUo98OxA3uDxTc0UDxZzCpA9bPeiiZiXDdV5exMjh07O+t0uJ3YmtLPlLPKyqZei/mn5w84HIrNn14MjYUF/GOnIeraITu4iTnF83lhmZG7OK9c2Dvg6JwxMolTXtHEy7OYtrSMWATEDYA04fTXuUEhvpe1f7bdtpLiPKhRjPHiK0vWs+FdlZU+NDMTBI/XAlyuVVZVa+/8n1n3CGlmPlGyJepKLm5zQ==
+ b=BddHzgH66AHHx/SlVPjN71RgvHULFe6DECC2BxpYV7peMUbyOiLipOGUwSOPI5G1y9e8aQbW5wTifLFOBVBIbSTEgCXcg0RAhu1iqDQPuj/hoq1qSXGCn6WkhkVLVH8o4+eYQQ1W5PReSwDlxu1ZeBaxANBcdzO3YAsEGHqcw/vAhQ2TlQKAu6sj0l5iNHlnaOr38LYhnq/6r5mkFdBZtraBiMVQgmA25gwMzA+mmakzKjb5UjmLn9+C2bXR9e6V7DfubcsmlN17l27nqiJn6ngZA6wPbN5ow4n67zjdY+j91IeMSFfyF+vYyLIZFnYMtIvx9h3bBnQFjo38POcG5A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BjXjpmhQSh+Q1/LQSzTEFjTUT2q5oHytWtDAaWRNQxg=;
- b=PHQg81jr15QdM58gvlnWcK5j/IDpRhduG4SRyzd13NCMdLQATbOOkA7qoLWKDu9zlzo8A7GNvPZcZKH7tOkHLOs2jsknzpO7v1KKmX7spZjQ43PJ2q3Fh7cCmGZX48PBnM8r9G6kkHaAGEVoTRhCMsAIhK5cvbKBBqR+jJFGUaRHvhxUC6NQPNXNmX89/j7V4JmxoJpXdZbfG6BnRB5XBEyR6+CBfo/5ExRHmtTFtL9Kp/2uxPYXKYHgUYXqY7ZuxrTP4e1uTKXVs9OToV3oMiHfIMdggCMXMdrB/oVAzWp4oWj4N012ccqxFJB2AxiO0WP7j8dwms0KfmiFXGpqPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
+ bh=NzpjPwY0DhYAT3tdhaka+vKYDqUmYmMCAGTqGmF5CMY=;
+ b=J2Ehb6uHb84jBy3o6ris3AvMq7uqy66YuGErGQiCs9jOyq/VnKwF6miQEguEgfYgtKzU1YKQfCppWjEXAg6kzcV4dLBwLu7aV+34kXes62gKSiouHxjeMam1Nra6OO2oCHvJKE/en3S4eFrA8g3e7d6qp3tTtFHoyxRvahla5dd4W4iX49xWgSo9U/fYui545sd6UGv0fpuyMgY5Md5Y63CBBwofqw2RBc8f9ZlEOUj1DedrLhJPwxJYiSFqsSon4L7PNCvkMNp7A9Ry2024V6HkdGqHp7HSBK9xSj2q+Q8bS7cO6cSJFmfbEJdtCuoF/AlZCKG6QQf08lfT4GUGTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BjXjpmhQSh+Q1/LQSzTEFjTUT2q5oHytWtDAaWRNQxg=;
- b=34veCkmBXorTOC8kQllnKMUQr8TGWq9QzMyOdvLzPMnx1CjOgRFxri32Ibc/JyU1QsQ8wtIBlN2FYVu4ghH4z03jz5bXKoIyAnCMYm7pncQ0voGqZ16xgfYxWqzNyajm+i6J30FWfEj0WfwtsDeDGXqu1HxsCHqEzQHTOMigdEY5kPAf+VBGItJBmDzPn2KF+1IfU85kNBKH1jkptbri54UhqS2LrnS+T83QElqKjq8gg+wbUqlT3jtz5ZH2RbGdKN3F5EOh+OvrvHbKe+ljIelRKXbsm203YRz7oaeWfXCNh9DDi7Zm/Blth6TBbQ+uG6ebH0oP4UIu9Q900qwfow==
-Received: from SG2PR02CA0060.apcprd02.prod.outlook.com (2603:1096:4:54::24) by
- SEZPR04MB7166.apcprd04.prod.outlook.com (2603:1096:101:17d::14) with
+ bh=NzpjPwY0DhYAT3tdhaka+vKYDqUmYmMCAGTqGmF5CMY=;
+ b=pvXOgbQi9BfqAs9yhXv8yKQxCfxOBtQYxrGL869ymWuqhwNpdLTow8KJNEQXvLz21Ke39F0cwkQxN0vv7FaNgll1Zb2oPDkoLhQB/3jxKa5bVeXW1Fs0YhWzOZHiNweVwrzamSWIXE0MqTO9bZ9OFQEkWicMullYnK9mxZFZbLc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com (2603:10b6:510:1da::16)
+ by DS0PR12MB8368.namprd12.prod.outlook.com (2603:10b6:8:fe::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
- 2023 05:48:33 +0000
-Received: from HK2PEPF00006FAF.apcprd02.prod.outlook.com
- (2603:1096:4:54:cafe::71) by SG2PR02CA0060.outlook.office365.com
- (2603:1096:4:54::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32 via Frontend
- Transport; Mon, 11 Dec 2023 05:48:32 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FAF.mail.protection.outlook.com (10.167.8.5) with Microsoft SMTP
- Server id 15.20.7091.18 via Frontend Transport; Mon, 11 Dec 2023 05:48:32
- +0000
-From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 14/14] ARM: dts: aspeed: yosemite4: Revise gpio name
-Date:   Mon, 11 Dec 2023 13:47:29 +0800
-Message-Id: <20231211054730.208588-15-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231211054730.208588-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20231211054730.208588-1-Delphine_CC_Chiu@wiwynn.com>
-MIME-Version: 1.0
+ 2023 05:49:02 +0000
+Received: from PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::e007:72f7:4102:9258]) by PH7PR12MB5951.namprd12.prod.outlook.com
+ ([fe80::e007:72f7:4102:9258%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 05:49:02 +0000
+Message-ID: <a3357e1f-f354-4d4b-9751-6b2182dceea6@amd.com>
+Date:   Mon, 11 Dec 2023 11:18:49 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/11] ASoC: amd: acp: Use correct DAI link ID for BT
+ codec
+Content-Language: en-US
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-11-cristian.ciocaltea@collabora.com>
+ <8a218987-965b-4228-b1d1-f7c061d553ab@amd.com>
+ <391d2476-8f4a-4670-a248-8d4d9c46ee09@collabora.com>
+ <1de9b77a-5737-40e0-ba3b-79c8713be93e@amd.com>
+ <41e63870-ab22-45d8-b8b0-c406dbcb07f0@collabora.com>
+From:   Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+In-Reply-To: <41e63870-ab22-45d8-b8b0-c406dbcb07f0@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: PN3PR01CA0013.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:95::9) To PH7PR12MB5951.namprd12.prod.outlook.com
+ (2603:10b6:510:1da::16)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FAF:EE_|SEZPR04MB7166:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: c7eece12-fd09-49a0-707d-08dbfa0ccf45
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5951:EE_|DS0PR12MB8368:EE_
+X-MS-Office365-Filtering-Correlation-Id: adf52483-f04e-4861-29e4-08dbfa0ce075
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VVPqT+NiOHLcL2WHagtKNmPCfxY06Oi3vzBmAvE7oql1WBZ8V4A5E0z1gsT8JXJNwR1iSQtP2jiW+an1F4aAvw07dRwdbGwjK0ItAgHHxHLzOTXj9GTjSTv1KomxUnelc0qX7zmKbIomHXUsL7vchr2ay/EKy0Fti1wXisXLO148dErQk7s+FIuaOsAixYXVflQPeSNR4CxGLPd9Xck/6ICS4begadUxhBcXyrYmqX6o/SnJvvVDK4JUucVxsIKmqODFrzS8SEDVe8qUhRSe0dqyjlaUIyAMHGNfqdYMkSG62BZVOsm0d0jYmXToraS4/WWf4QBmLmARfTeSfLpAGrntezNjuzFTsh+oN+YURpSqQpVoD5bIIsiDV1mEQEwqGzXUWd9WmEqmhp1pMBWso8QtDCevfn+I+VegTQ5PPWS0PLKgay4i7htSUE6PzW6zQiRmQBl1Ny06b2nD3poftYcVhO1Y8cTj18U4g/cmcWWhvJ93B9Bqp3zgIOt6Ta4ZfTlUR56WsluBGZajXY+HDRPy/svzLYNJqxjnQDvt6qSdt5Ta+U/9loiThBIUyzZ6P2FWHp3kl7ZnmvgqDEA87Sfa/A9gOP6mV6eynHST1qvbb2m4ZWtH8uj1ka+vxLVBqyqb9si0fVzaSaL+1C7GBQWmgEKomIO28ZjsN6wUVzEsUq8tsRpEFnlm83HJQ39kt4jds1uOIWe1RfUnDrk7JQ==
-X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39850400004)(396003)(376002)(346002)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(82310400011)(36840700001)(46966006)(1076003)(26005)(956004)(2616005)(336012)(6506007)(6666004)(6512007)(36860700001)(83380400001)(47076005)(5660300002)(7416002)(41300700001)(2906002)(4326008)(478600001)(9316004)(6486002)(8676002)(8936002)(70206006)(70586007)(110136005)(316002)(36736006)(82740400003)(81166007)(86362001)(356005)(36756003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 05:48:32.4855
+X-Microsoft-Antispam-Message-Info: fAjSDHurroHAjwkQSJxLjlHSxFzautK1yp99i8BVF1tC0428HXtY1QpB6/ZMSeHY2jfVedj1KgTuX8lMwYG+GbJAIDLteNPSXYi5cboCv+TuNi2+ZBQp3W8AnP1NqLNiCTYs9yQ67t9GbhPN/iVmNFtxviMlGIiszxrpjR2hmSA1TgezYMQcHVIGNBb9adhg2eTxkE6Zrj+06r3snjNTmiIeZlGNWT3St7Xu3Um/gthC8OWs8to/2RZKJyNmVaGoQUEMsA4NbsojookKJi/RG0OJmNLgRNFqKVcQWBxV8Ja4jlCw6aoQubVgfjZJ6D2HxL4QfEjDO4SDLNll4vpQL41HWv9dyqIoH2qBVzqSdDLTk9aFux0jIAsX2GyiZFokX7IfIr1eO0BWaAaFLzxcC3Hssqcisnlj6Sny6UEFiq+5HFIpzqhrRq+jVpLGgyPVCWTGlAYDsaGDO1QzPp5kOvldycXIDkURkW3M+2zRtu8kSALy0qpdGLYMelC1V54a2gop87ghIKY+vbEiGf2KT+10+wOR+UnCwbbJmGmDjFDUEFVKrfquSgYoySBjTYLMD7TdnTwaYcwdFVwWjnxVuu8bWhb61oYgGMwT8rRNWOkZK4HXACxKLThfzbi+9OMhMwALISolKzWoJoqBBmmwPLjFsSHfXCPQdxIqpF2TB4A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5951.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(6512007)(6506007)(53546011)(5660300002)(26005)(2616005)(36756003)(7416002)(6636002)(66476007)(66556008)(66946007)(6486002)(2906002)(83380400001)(31686004)(921008)(41300700001)(478600001)(86362001)(8676002)(8936002)(4326008)(31696002)(110136005)(316002)(38100700002)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTBnSVN3RFRTY0FmbVd6ZHhQd04rL0tDWjBMWXI3M1d2YkhTQ0hYbmFrNHdr?=
+ =?utf-8?B?aC8xOEsxOGdPYkF1L0MzbGxaakxnK1g3am43RDBvRE1PaFd4bGNYM1Y5aHFS?=
+ =?utf-8?B?SFkxQkgwdXJyam5YdlpPbW8vWmVjeGVFaGwzVWNNUk00Z1VhQnlGU3lHRmMx?=
+ =?utf-8?B?Yys2QW1aV0FiUGY3cjUzaEhhRW9WRktRL2d6NGRtT3Y0RlROMCtVS1RaaDRR?=
+ =?utf-8?B?cS9Ydk1lTHJKRTVUK1ltQ1FEeXRBNzJiSGI3dDNXblBoQXkxNGRXVTQxY3gw?=
+ =?utf-8?B?UHd1UDFOekVrbGliMjhKK2pwbjZWY3lUcUpNeVkxejA3RG5Kc2N5bHpIdzlO?=
+ =?utf-8?B?QW8zQ0Q2cnBHb3VsOHkyeWZZMjNiYkNPa1ZZM0JET0RhZFdDZTZncmdDK3pW?=
+ =?utf-8?B?Unc3QTRDOUhuTHBHS1pVV1hiQnJ3NXFJUFJhMjlhNlZtSThIZ2p4emkrd1Rr?=
+ =?utf-8?B?UUVEQlJ2cmpCdi9SWFNDaDlndmN6dXFSOWcyUW82emxQUmdMc0Z5clFpV1Iz?=
+ =?utf-8?B?SDhQaS9Zam5TRnc4dSsrTnovL2Q2ZGNOc3hpQ012eXN0ajhlTU5lbzUxdXJQ?=
+ =?utf-8?B?a0gwQ0hrSGFwSVgycklxTjREZWQ4WVJBbitraVcwZFh3Q0QrKzl0M1hjSjFk?=
+ =?utf-8?B?dmkxRDVQK3EzRGVubmFhVEYrRjZzYzlUUE9lemNlYm1zMXd1Q0hta0tkdllW?=
+ =?utf-8?B?d1VwZzNkZnRlckdYOTM0Qzl0eXpPSzBqMy83WTFMWXVRVUxCZTdEQktnaTF1?=
+ =?utf-8?B?OSt2Qy9EOUp4cnpHWFFTMFp3SUVSN2JCR1JETEJGbUhOR2lUMmpLbC8wZER3?=
+ =?utf-8?B?Sk9ZdUVPYXA4cEdYaTBVRnRPRnlRVllSaHl1bHpBbDR1c3JxU0lLOHZmK096?=
+ =?utf-8?B?d3B0dzFqUVVZK1lIU0ZLanFTdWJ3djltc281Mm40c2Vxcyt6UWQ5MnNVNFJ4?=
+ =?utf-8?B?d0dJT2o2Sk5MS05hN3ZWK0w4Qy8vNzF6R21zN0w4OTVQbUZxZHRwdnBYQk9z?=
+ =?utf-8?B?bW95TjhXTEJxZE9PREwzWFVHZjluMVBzSUZjQ2R1YUJRYjcrMDZGZjhCeEtH?=
+ =?utf-8?B?RUFtT1MxOVl6L0plZ0JtWnNtRFhhVVBrSnNoKzhlNE42Wi9yTnFUZEtjQW9q?=
+ =?utf-8?B?eGNYcUVHVU44eTl6ZUVkWFBKR0tWY0pJc0tKUE5PK2x3VEdnUHlJMFAySS9H?=
+ =?utf-8?B?WllWdnUxbGVWTEI3eGJWeDNrUUZnbHI1bTcvWkxYci9CS1Y3WFRLUVBoSGNX?=
+ =?utf-8?B?bit1UEVrd3h4TFhYbDNGQ200N2g0YmlkYlNpQXZHSFVCRnlqTzdEdFdaUmIw?=
+ =?utf-8?B?QUpoenRqQmNQV0xKQmJNZXB5VTJmVHQ0aFBoM2J6N3NnUkZiSXg2dW11ZWJN?=
+ =?utf-8?B?R2lhNUVyRmE5QWdqTUREcWExOHhMVjgwWWtUcEtBeVFQcy9HYWZ5VzZIUnI1?=
+ =?utf-8?B?NC85WHVtS0RyNlYrdXpHVCsvdDJzQUJVeU1KWVNmL2pLenlPK1JqUEJhMzVr?=
+ =?utf-8?B?NEJqT1ZWaUVZZityR3k4SGtYRFN2SE5jZGhRb2VnRkg2M01TNm04b25jTHo2?=
+ =?utf-8?B?eTB6UThqdmZiQklZck1sNzhGUE1yS1cwNU94Z3hxR1JJOGxaN2JENEE0WFpw?=
+ =?utf-8?B?NHZnR1ZDdVkwVXJ2OEI2T2FxeW5MQnJiNzBWNXN0dXV0Q0ZTaDdJODcrQU1F?=
+ =?utf-8?B?SmNVUjMrUzJlc2ZBMWpjMlVhRlBaMnFhY0tLOHVVc0tIQVVmM0VVbkRXNTJY?=
+ =?utf-8?B?bE1SYUhaZXhCajlIRENYbWpqWFIrWndqTXgwVUcvODl5ZExUbWVkQXJGbGI3?=
+ =?utf-8?B?aDR1QmJpdW82V0NoVGhteUNRY3pweUJQUEx4NE9PdzZwUU1OMFZFTUVQWlU2?=
+ =?utf-8?B?VUhxYzdjbHFqTjRZM2FTYWdiVTFXOTAzRFNtQ29lQzZScnlBTkhmSGwxdWlx?=
+ =?utf-8?B?bUROWFBUSG1rTnZ3V0VuWmlJc0tVZzdId3g5STM2NHBDK0dRcGxUbWlaM2Ey?=
+ =?utf-8?B?Z0lnK242TlN1dUtBNWNKQ2JjY1ZyV295NlhpTXBFNkQ4RTZMcUQ1bVBWWGNi?=
+ =?utf-8?B?V2VuZ2d3UVFQbEFUcFo0VEJ3L2pvZnlwYWlEcEEvRFFHK2MweVpNeFE5U2NW?=
+ =?utf-8?Q?gAjDwFEyxVBWJV82EBpAMHRWO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: adf52483-f04e-4861-29e4-08dbfa0ce075
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5951.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 05:49:01.9142
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7eece12-fd09-49a0-707d-08dbfa0ccf45
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource: HK2PEPF00006FAF.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR04MB7166
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UPPERCASE_50_75,WEIRD_QUOTING autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cw78t5QW+sy/0PZNogyr0OTXCwqiTx7tmNrE6E+SBbnZmYgnI+AoXAMKkunztPor0sFEAWl8m3qv/H728FpEng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8368
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revise gpio name for EVT schematic changes
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
-Changelog:
-  - v3
-    - Correct patch for revising gpio name
-  - v2
-    - Add patch for revising gpio name
----
- .../dts/aspeed/aspeed-bmc-facebook-yosemite4.dts   | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-index fdc33bffd467..8b258b128cfe 100644
---- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-@@ -1414,7 +1414,7 @@ &pinctrl_gpiu4_default &pinctrl_gpiu5_default
- 	/*B0-B7*/       "FLT_HSC_SERVER_SLOT8_N","AC_ON_OFF_BTN_CPLD_SLOT5_N",
- 			"PWRGD_SLOT1_STBY","PWRGD_SLOT2_STBY",
- 			"PWRGD_SLOT3_STBY","PWRGD_SLOT4_STBY","","",
--	/*C0-C7*/       "PRSNT_NIC3_N","","","","FM_NIC0_WAKE_N",
-+	/*C0-C7*/       "","","","","FM_NIC0_WAKE_N",
- 			"FM_NIC1_WAKE_N","","RST_PCIE_SLOT2_N",
- 	/*D0-D7*/       "","","","","","","","",
- 	/*E0-E7*/       "PRSNT_NIC1_N","PRSNT_NIC2_N","","RST_PCIE_SLOT1_N",
-@@ -1432,16 +1432,15 @@ &pinctrl_gpiu4_default &pinctrl_gpiu5_default
- 	/*K0-K7*/       "","","","","","","","",
- 	/*L0-L7*/       "","","","","","","ALT_MEDUSA_P12V_EFUSE_N","",
- 	/*M0-M7*/       "EN_NIC0_POWER_BMC_R","EN_NIC1_POWER_BMC_R",
--			"INT_MEDUSA_IOEXP_TEMP_N","FLT_P12V_NIC0_N",
-+			"INT_MEDUSA_IOEXP_TEMP_N","PRSNT_NIC3_N",
- 			"INT_SMB_BMC_SLOT1_4_BMC_N",
- 			"AC_ON_OFF_BTN_CPLD_SLOT6_N","","",
- 	/*N0-N7*/       "FLT_HSC_SERVER_SLOT1_N","FLT_HSC_SERVER_SLOT2_N",
- 			"FLT_HSC_SERVER_SLOT3_N","FLT_HSC_SERVER_SLOT4_N",
--			"FM_BMC_READY_R2","FLT_P12V_STBY_BMC_N","","",
-+			"FM_BMC_READY_R2","RST_SMB_NIC0_R_N","","",
- 	/*O0-O7*/       "AC_ON_OFF_BTN_CPLD_SLOT8_N","RST_SMB_NIC1_R_N",
- 			"RST_SMB_NIC2_R_N","RST_SMB_NIC3_R_N",
--			"FLT_P3V3_NIC2_N","FLT_P3V3_NIC3_N",
--			"","",
-+			"","","","",
- 	/*P0-P7*/       "ALT_SMB_BMC_CPLD1_N","'BTN_BMC_R2_N",
- 			"EN_P3V_BAT_SCALED_R","PWRGD_P5V_USB_BMC",
- 			"FM_BMC_RTCRST_R","RST_USB_HUB_R_N",
-@@ -1459,9 +1458,8 @@ &pinctrl_gpiu4_default &pinctrl_gpiu5_default
- 			"","ALT_P12V_AUX_N","FAST_PROCHOT_N",
- 			"SPI_WP_DISABLE_STATUS_R_N",
- 	/*T0-T7*/       "","","","","","","","",
--	/*U0-U7*/       "","","FLT_P3V3_NIC1_N","FLT_P12V_NIC1_N",
--			"FLT_P12V_NIC2_N","FLT_P12V_NIC3_N",
--			"FLT_P3V3_NIC0_N","",
-+	/*U0-U7*/       "","","RST_PCIE_SLOT3_N","",
-+			"","PRSNT_NIC0_N","","",
- 	/*V0-V7*/       "FM_RESBTN_SLOT5_BMC_N","FM_RESBTN_SLOT6_BMC_N",
- 			"FM_RESBTN_SLOT7_BMC_N","FM_RESBTN_SLOT8_BMC_N",
- 			"","","","",
--- 
-2.25.1
-
+On 12/10/23 16:02, Cristian Ciocaltea wrote:
+> On 12/10/23 12:05, Venkata Prasad Potturu wrote:
+>> On 12/10/23 14:36, Cristian Ciocaltea wrote:
+>>> On 12/10/23 05:24, Venkata Prasad Potturu wrote:
+>>>> On 12/10/23 02:23, Cristian Ciocaltea wrote:
+>>>>> Commit 671dd2ffbd8b ("ASoC: amd: acp: Add new cpu dai and dailink
+>>>>> creation for I2S BT instance") added I2S BT support in ACP common
+>>>>> machine driver, but using a wrong BT_BE_ID, i.e. 3 instead of 2:
+>>>>>
+>>>>> [ 7.799659] snd_sof_amd_vangogh 0000:04:00.5: Firmware info: version
+>>>>> 0:0:0-7863d
+>>>>> [ 7.803906] snd_sof_amd_vangogh 0000:04:00.5: Firmware: ABI 3:26:0
+>>>>> Kernel ABI 3:23:0
+>>>>> [ 7.872873] snd_sof_amd_vangogh 0000:04:00.5: Topology: ABI 3:26:0
+>>>>> Kernel ABI 3:23:0
+>>>>> [ 8.508218] sof_mach nau8821-max: ASoC: physical link acp-bt-codec (id
+>>>>> 2) not exist
+>>>>> [ 8.513468] sof_mach nau8821-max: ASoC: topology: could not load
+>>>>> header: -22
+>>>>> [ 8.518853] snd_sof_amd_vangogh 0000:04:00.5: error: tplg component
+>>>>> load failed -22
+>>>>> [ 8.524049] snd_sof_amd_vangogh 0000:04:00.5: error: failed to load
+>>>>> DSP topology -22
+>>>>> [ 8.529230] snd_sof_amd_vangogh 0000:04:00.5: ASoC: error at
+>>>>> snd_soc_component_probe on 0000:04:00.5: -22
+>>>>> [ 8.534465] sof_mach nau8821-max: ASoC: failed to instantiate card -22
+>>>>> [ 8.539820] sof_mach nau8821-max: error -EINVAL: Failed to register
+>>>>> card(sof-nau8821-max)
+>>>>> [ 8.545022] sof_mach: probe of nau8821-max failed with error -22
+>>>>>
+>>>>> Move BT_BE_ID to the correct position in the enum.
+>>>>>
+>>>>> Fixes: 671dd2ffbd8b ("ASoC: amd: acp: Add new cpu dai and dailink
+>>>>> creation for I2S BT instance")
+>>>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>>>>> ---
+>>>>>     sound/soc/amd/acp/acp-mach.h | 2 +-
+>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/sound/soc/amd/acp/acp-mach.h
+>>>>> b/sound/soc/amd/acp/acp-mach.h
+>>>>> index a48546d8d407..0c18ccd29305 100644
+>>>>> --- a/sound/soc/amd/acp/acp-mach.h
+>>>>> +++ b/sound/soc/amd/acp/acp-mach.h
+>>>>> @@ -27,8 +27,8 @@
+>>>>>     enum be_id {
+>>>>>         HEADSET_BE_ID = 0,
+>>>>>         AMP_BE_ID,
+>>>>> -    DMIC_BE_ID,
+>>>>>         BT_BE_ID,
+>>>>> +    DMIC_BE_ID,
+>>>> This will break the other platforms as this same enum used in topology
+>>>> to create dailink.
+>>> If I understand this correctly, there is no consistency across firmware
+>>> regarding the IDs used for DAI link identification.  What would be the
+>>> suggested solution in this case?
+>> These id values should be same in machine driver and topology file, then
+>> only dailink can create without an error.
+> Yes, my point was that some topology files seem to require different IDs
+> for the same DAI link types.  In this case the topology expects ID 2 for
+> BT, but other topologies would interpret that as DMIC.
+>
+>> Always new be_id should add at the end only.
+>>
+>> In this case BT_BE_ID should be at the end.
+>>
+>>    enum be_id {
+>>        HEADSET_BE_ID = 0,
+>>        AMP_BE_ID,
+>>        DMIC_BE_ID,
+>>        BT_BE_ID,
+>>    }
+> So you are basically stating the firmware is broken and needs an update
+> to use ID 3 for BT, and there is nothing we can do about it on driver's
+> side.  Is that correct?
+Yes, id 3 should be used for BT_BE_ID in topology file.
+>
+>>
+>>> Thanks,
+>>> Cristian
+>>>
+>>>>>     };
+>>>>>       enum cpu_endpoints {
