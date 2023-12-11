@@ -2,186 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8D080C7FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C61F80C80E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 12:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbjLKL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 06:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        id S234325AbjLKLdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 06:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjLKL3n (ORCPT
+        with ESMTP id S229512AbjLKLdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 06:29:43 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9C4B8;
-        Mon, 11 Dec 2023 03:29:49 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpffY5cv3z4f3lVy;
-        Mon, 11 Dec 2023 19:29:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-        by mail.maildlp.com (Postfix) with ESMTP id A7C131A0713;
-        Mon, 11 Dec 2023 19:29:46 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgBX+0mk8nZlT0rRDQ--.30712S2;
-        Mon, 11 Dec 2023 19:29:44 +0800 (CST)
-Subject: Re: WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
-To:     xingwei lee <xrivendell7@gmail.com>, ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <689db41e-90f5-c5ba-b690-00586f22d616@huaweicloud.com>
-Date:   Mon, 11 Dec 2023 19:29:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Dec 2023 06:33:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF77BD;
+        Mon, 11 Dec 2023 03:33:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702294390; x=1733830390;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lprdIMw1uqwihIgPZhtKDWp5w6uh7VuD6R0Qn/yWbyc=;
+  b=XJZpFO3IEmV9uRndtjpkc7C/z/LyhZdoZA2Zss6vSaqpE1D5BpSuUZIF
+   ZMKM+rDaLNWokDxRlDF/eQ8cySDo2QGDlFXH1bc+5Z+N5PenQmv3RPbPp
+   pbICiJomzzocDgirGdgbfItZudYkVD3JmURZD6QEmdQw1GdwTwUcj9+SC
+   qgTxaoRJw7g0FS2VDePMIUAKyLG50CiFqqdnaMPWGGTSljueqwBSZD3hm
+   gyQmkY0HtV7LcaDP/CkLcCxCN9G79KXH3q9pSPYK9ZVMQFE2IGBV68e23
+   jSav9cxcKDUuld24sc0GwEfprtW0k1LYX3TFSzpy8AXN5+Dgdem0uM7kA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="7986137"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="7986137"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 03:33:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10920"; a="773021063"
+X-IronPort-AV: E=Sophos;i="6.04,267,1695711600"; 
+   d="scan'208";a="773021063"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.46.23])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 03:33:05 -0800
+Message-ID: <a0eb3547-9bdc-40e0-8861-1d8beec50a78@intel.com>
+Date:   Mon, 11 Dec 2023 13:32:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
 Content-Language: en-US
-X-CM-TRANSID: Syh0CgBX+0mk8nZlT0rRDQ--.30712S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr1UWr13ur4DWFWkCFyDZFb_yoW7Gryrpr
-        WrJF4YkrW8JryxJF17ta15trZxArZ8C3WDJwsrGFyFvF18WFyjqF4qqw1F9ry5JrWvyr13
-        tF1DXr4jvr1UW3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE
-        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "christian.loehle@arm.com" <christian.loehle@arm.com>,
+        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+        "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+        "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "yebin10@huawei.com" <yebin10@huawei.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231204150111.3320071-1-jorge@foundries.io>
+ <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+ <DM6PR04MB6575A30D162378E82B4D7DDEFC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZXBGTxS7sUSILtLs@trax> <ZXbBhjZIn5sj6EYO@trax>
+ <7443a730-411a-4dd3-b911-241356493516@intel.com> <ZXbtS9KKQY+vk7Mq@trax>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZXbtS9KKQY+vk7Mq@trax>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/12/23 13:06, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 11/12/23 12:25:19, Adrian Hunter wrote:
+>> On 11/12/23 10:00, Jorge Ramirez-Ortiz, Foundries wrote:
+>>> On 06/12/23 11:00:47, Jorge Ramirez-Ortiz, Foundries wrote:
+>>>> On 06/12/23 07:02:43, Avri Altman wrote:
+>>>>>>
+>>>>>> On 4/12/23 17:01, Jorge Ramirez-Ortiz wrote:
+>>>>>>> Requesting a retune before switching to the RPMB partition has been
+>>>>>>> observed to cause CRC errors on the RPMB reads (-EILSEQ).
+>>>>>>
+>>>>>> There are still 2 concerns:
+>>>>>> 1) We don't really know the root cause.  Have you determined if here are
+>>>>>> CRC errors in the main partition also?
+>>>>
+>>>> right, and I don't disagree with that.
+>>>>
+>>>> As a test I created a 4GB file from /dev/random which I then copied
+>>>> several times (dd if= ....)
+>>>>
+>>>> root@uz3cg-dwg-sec:/sys/kernel/debug/mmc0# cat err_stats
+>>>> # Command Timeout Occurred:      0
+>>>> # Command CRC Errors Occurred:   0
+>>>> # Data Timeout Occurred:         0
+>>>> # Data CRC Errors Occurred:      0
+>>>> # Auto-Cmd Error Occurred:       0
+>>>> # ADMA Error Occurred:   0
+>>>> # Tuning Error Occurred:         0
+>>>> # CMDQ RED Errors:       0
+>>>> # CMDQ GCE Errors:       0
+>>>> # CMDQ ICCE Errors:      0
+>>>> # Request Timedout:      0
+>>>> # CMDQ Request Timedout:         0
+>>>> # ICE Config Errors:     0
+>>>> # Controller Timedout errors:    0
+>>>> # Unexpected IRQ errors:         0
+>>>>
+>>>> However as soon as I access RPMB and fails (it takes just a few tries) I see:
+>>>>
+>>>> I/TC: RPMB: Using generated key
+>>>> [   86.902118] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+>>>> E/TC:? 0
+>>>> E/TC:? 0 TA panicked with code 0xffff0000
+>>>> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+>>>> E/LD:   arch: aarch64
+>>>> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+>>>> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+>>>> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+>>>> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+>>>> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+>>>> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+>>>> E/LD:  region  6: va 0xc0019000 pa 0x818ea9ba8 size 0x002000 flags rw-- (param)
+>>>> E/LD:  region  7: va 0xc001b000 pa 0x818e97ba8 size 0x001000 flags rw-- (param)
+>>>> E/LD:  region  8: va 0xc004f000 pa 0x00001000 size 0x014000 flags r-xs [0]
+>>>> E/LD:  region  9: va 0xc0063000 pa 0x00015000 size 0x008000 flags rw-s [0]
+>>>> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc004f000
+>>>> E/LD:  Call stack:
+>>>> E/LD:   0xc0051a14
+>>>> E/LD:   0xc004f31c
+>>>> E/LD:   0xc0052d40
+>>>> E/LD:   0xc004f624
+>>>>
+>>>> root@uz3cg-dwg-sec:/var/rootdirs/home/fio# cat /sys/kernel/debug/mmc0/err_stats
+>>>> # Command Timeout Occurred:      0
+>>>> # Command CRC Errors Occurred:   0
+>>>> # Data Timeout Occurred:         0
+>>>> # Data CRC Errors Occurred:      1
+>>>> # Auto-Cmd Error Occurred:       0
+>>>> # ADMA Error Occurred:   0
+>>>> # Tuning Error Occurred:         0
+>>>> # CMDQ RED Errors:       0
+>>>> # CMDQ GCE Errors:       0
+>>>> # CMDQ ICCE Errors:      0
+>>>> # Request Timedout:      0
+>>>> # CMDQ Request Timedout:         0
+>>>> # ICE Config Errors:     0
+>>>> # Controller Timedout errors:    0
+>>>> # Unexpected IRQ errors:         0
+>>>>
+>>>>>> 2) Forcing this on everyone
+>>>>>>
+>>>>>> The original idea was that because re-tuning cannot be done in RPMB, the
+>>>>>> need to re-rune in RPMB could be avoided by always re-tuning before
+>>>>>> switching to RPMB and then switching straight back. IIRC re-tuning should
+>>>>>> guarantee at least 4MB more I/O without issue.
+>>>>> Performance is hardly an issue in the context of RPMB access -
+>>>>> For most cases it’s a single frame.
+>>>>
+>>>> Yes, the security use case typically stores hashes, variables
+>>>> (bootcount, upgrade_available, versions, that sort of thing) and
+>>>> certificates in RPMB.
+>>>>
+>>>> Since you mentioned, I am seeing that tuning before switching to RPMB
+>>>> has an impact on performance. As a practical test, just reading a 6 byte
+>>>> variable incurs in 50ms penalty in kernel space due to the need to
+>>>> retune 5 times. Not great since the request is coming from a Trusted
+>>>> Application via OP-TEE through the supplicant meaning this TEE thread
+>>>> (they are statically allocated CFG_NUM_THREADS) will be reserved for
+>>>> quite a bit of time.
+>>>>
+>>>> Roughly:
+>>>> TA --> OP-TEE (core) --> TEE-supplicant --> Kernel (>50ms) --> OP-TEE --> TA
+>>>
+>>> To add more detail to the timing above, when using RPMB, OP-TEE stores
+>>> the secure filesystem on RPMB as well, so accessing one of the variables
+>>> stored in the filesystem consists on a number (~5) of individual RPMB
+>>> requests (each one forcing a retune, each retune taking around 10ms).
+>>>
+>>> BTW, I also tried delaying the timing between those consecutive retunes
+>>> (up to 1 second), but the issue still persisted.
+>>>
+>>>>
+>>>> Adrian, I couldn't find the original performance justification for
+>>>> enabling this feature globally. At which point do you think it becomes
+>>>> beneficial to retune before accessing RPMB?
+>>>
+>>> How should we proceed with this patch then? can it be merged as I
+>>> proposed? should I rewrite it differently? not sure what is next
+>>
+>> It would be good to try to determine if the error happens when the
+>> switch command comes immediately after tuning.  For example, add
+>> a delay after tuning and see if that makes any difference. e.g.
+>>
+>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+>> index c79f73459915..6b168659282a 100644
+>> --- a/drivers/mmc/host/sdhci.c
+>> +++ b/drivers/mmc/host/sdhci.c
+>> @@ -2867,8 +2867,10 @@ int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+>>
+>>  		ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+>>  		if (!(ctrl & SDHCI_CTRL_EXEC_TUNING)) {
+>> -			if (ctrl & SDHCI_CTRL_TUNED_CLK)
+>> +			if (ctrl & SDHCI_CTRL_TUNED_CLK) {
+>> +				msleep(10);
+>>  				return 0; /* Success! */
+>> +			}
+>>  			break;
+>>  		}
+>>
+>>
+> 
+> Thanks Adrian.
+> 
+> The issue sill triggers (in this case on the last but one access to
+> retrieve the 6 byte variable).
+> 
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -2781,6 +2781,7 @@ static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+>          * Issue opcode repeatedly till Execute Tuning is set to 0 or the number
+>          * of loops reaches tuning loop count.
+>          */
+> + printk(KERN_ERR "tune starts[loop %d]\n", host->tuning_loop_count);
+>         for (i = 0; i < host->tuning_loop_count; i++) {
+>                 u16 ctrl;
+> 
+> @@ -2799,8 +2800,11 @@ static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+> 
+>                 ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+>                 if (!(ctrl & SDHCI_CTRL_EXEC_TUNING)) {
+> -                   if (ctrl & SDHCI_CTRL_TUNED_CLK)
+> -                           return 0; /* Success! */
+> +                 if (ctrl & SDHCI_CTRL_TUNED_CLK) {
+> +                         printk(KERN_ERR "tune success[%d]\n", i);
+> +                         msleep(10);
+> +                         return 0; /* Success! */
+> +                 }
+>                         break;
+>                 }
+> 
+> 
+> [  164.919090] tune starts[loop 40]
+> [  164.923152] tune success[39]
+> [  164.952106] tune starts[loop 40]
+> [  164.956611] tune success[39]
+> [  165.084402] tune starts[loop 40]
+> [  165.089350] tune success[39]
+> [  165.116491] tune starts[loop 40]
+> [  165.120806] tune success[39]
+> [  165.145016] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+> E/TC:? 0
+> E/TC:? 0 TA panicked with code 0xffff0000
+> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+> E/LD:   arch: aarch64
+> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+> E/LD:  region  6: va 0xc0019000 pa 0x818ac38e8 size 0x001000 flags rw-- (param)
+> E/LD:  region  7: va 0xc001a000 pa 0x818ac36e8 size 0x001000 flags rw-- (param)
+> E/LD:  region  8: va 0xc0022000 pa 0x00001000 size 0x014000 flags r-xs [0]
+> E/LD:  region  9: va 0xc0036000 pa 0x00015000 size 0x008000 flags rw-s [0]
+> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc0022000
+> E/LD:  Call stack:
+> E/LD:   0xc0024e58
+> E/LD:   0xc0022388
+> E/LD:   0xc0025d40
+> E/LD:   0xc0022624
+> [  166.119598] tune starts[loop 40]
+> [  166.125700] tune success[39]
 
-On 12/11/2023 4:12 PM, xingwei lee wrote:
-> Sorry for containing HTML part, repeat the mail
-> Hello I found a bug in net/bpf in the lastest upstream linux and
-> lastest net tree.
-> WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
->
-> kernel: net 28a7cb045ab700de5554193a1642917602787784
-> Kernel config: https://github.com/google/syzkaller/commits/fc59b78e3174009510ed15f20665e7ab2435ebee
->
-> in the lastest net tree, the crash like:
->
-> [   68.363836][ T8223] ------------[ cut here ]------------
-> [   68.364967][ T8223] WARNING: CPU: 2 PID: 8223 at mm/util.c:632
-> kvmalloc_node+0x18a/0x1a0
-> [   68.366527][ T8223] Modules linked in:
-> [   68.367882][ T8223] CPU: 2 PID: 8223 Comm: 36d Not tainted
-> 6.7.0-rc4-00146-g28a7cb045ab7 #2
-> [   68.369260][ T8223] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> 1996), BIOS 1.16.2-1.fc38 04/014
-> [   68.370811][ T8223] RIP: 0010:kvmalloc_node+0x18a/0x1a0
-> [   68.371689][ T8223] Code: dc 1c 00 eb aa e8 86 33 c6 ff 41 81 e4 00
-> 20 00 00 31 ff 44 89 e6 e8 e5 20
-> [   68.375001][ T8223] RSP: 0018:ffffc9001088fb68 EFLAGS: 00010293
-> [   68.375989][ T8223] RAX: 0000000000000000 RBX: 00000037ffffcec8
-> RCX: ffffffff81c1a32b
-> [   68.377154][ T8223] RDX: ffff88802cc00040 RSI: ffffffff81c1a339
-> RDI: 0000000000000005
-> [   68.377950][ T8223] RBP: 0000000000000400 R08: 0000000000000005
-> R09: 0000000000000000
-> [   68.378744][ T8223] R10: 0000000000000000 R11: 0000000000000000
-> R12: 0000000000000000
-> [   68.379523][ T8223] R13: 00000000ffffffff R14: ffff888017eb4a28
-> R15: 0000000000000000
-> [   68.380307][ T8223] FS:  0000000000827380(0000)
-> GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> [   68.381185][ T8223] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   68.381843][ T8223] CR2: 0000000020000140 CR3: 00000000204d2000
-> CR4: 0000000000750ef0
-> [   68.382624][ T8223] PKRU: 55555554
-> [   68.382978][ T8223] Call Trace:
-> [   68.383312][ T8223]  <TASK>
-> [   68.383608][ T8223]  ? show_regs+0x8f/0xa0
-> [   68.384052][ T8223]  ? __warn+0xe6/0x390
-> [   68.384470][ T8223]  ? kvmalloc_node+0x18a/0x1a0
-> [   68.385111][ T8223]  ? report_bug+0x3b9/0x580
-> [   68.385585][ T8223]  ? handle_bug+0x67/0x90
-> [   68.386032][ T8223]  ? exc_invalid_op+0x17/0x40
-> [   68.386503][ T8223]  ? asm_exc_invalid_op+0x1a/0x20
-> [   68.387065][ T8223]  ? kvmalloc_node+0x17b/0x1a0
-> [   68.387551][ T8223]  ? kvmalloc_node+0x189/0x1a0
-> [   68.388051][ T8223]  ? kvmalloc_node+0x18a/0x1a0
-> [   68.388537][ T8223]  ? kvmalloc_node+0x189/0x1a0
-> [   68.389038][ T8223]  bpf_uprobe_multi_link_attach+0x436/0xfb0
+It might make a difference if there is another command before the
+switch command, e.g. add a CMD13 (could keep the tune print to tell
+that the CMD13 comes after re-tuning)
 
-It seems a big attr->link_create.uprobe_multi.cnt is passed to
-bpf_uprobe_multi_link_attach(). Could you please try the first patch in
-the following patch set ?
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 892e74e611a0..3265049f4132 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -875,6 +875,7 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ 				   unsigned int part_type)
+ {
+ 	int ret = 0;
++	u32 status;
+ 
+ 	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
+ 		if (card->ext_csd.cmdq_en) {
+@@ -883,6 +884,9 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ 				return ret;
+ 		}
+ 		mmc_retune_pause(card->host);
++		ret = mmc_send_status(card, &status);
++		pr_info("%s: %s: status %#x, ret %d\n", mmc_hostname(card->host), __func__, status, ret);
++		ret = 0;
+ 	}
+ 
+ 	return ret;
 
-https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/T/#t
-> [   68.389633][ T8223]  ? __might_fault+0x13f/0x1a0
-> [   68.390129][ T8223]  ? bpf_kprobe_multi_link_attach+0x10/0x10
 
-SNIP
->   res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000140ul, /*size=*/0x90ul);
->   if (res != -1) r[0] = res;
->   memcpy((void*)0x20000000, "./file0\000", 8);
->   syscall(__NR_creat, /*file=*/0x20000000ul, /*mode=*/0ul);
->   *(uint32_t*)0x20000340 = r[0];
->   *(uint32_t*)0x20000344 = 0;
->   *(uint32_t*)0x20000348 = 0x30;
->   *(uint32_t*)0x2000034c = 0;
->   *(uint64_t*)0x20000350 = 0x20000080;
->   memcpy((void*)0x20000080, "./file0\000", 8);
 
-0x20000350 is the address of attr->link_create.uprobe_multi.path.
->   *(uint64_t*)0x20000358 = 0x200000c0;
->   *(uint64_t*)0x200000c0 = 0;
->   *(uint64_t*)0x20000360 = 0;
->   *(uint64_t*)0x20000368 = 0;
->   *(uint32_t*)0x20000370 = 0xffffff1f;
-
-The value of attr->link_create.uprobe_multi.cnt is 0xffffff1f, so 
-0xffffff1f * sizeof(bpf_uprobe) will be greater than INT_MAX, and
-triggers the warning in mm/util.c:
-
-        /* Don't even allow crazy sizes */
-        if (unlikely(size > INT_MAX)) {
-                WARN_ON_ONCE(!(flags & __GFP_NOWARN));
-                return NULL;
-        }
-
-Adding __GFP_NOWARN when doing kvcalloc() can fix the warning.
->   *(uint32_t*)0x20000374 = 0;
->   *(uint32_t*)0x20000378 = 0;
->   syscall(__NR_bpf, /*cmd=*/0x1cul, /*arg=*/0x20000340ul, /*size=*/0x40ul);
->   return 0;
-> }
->
-> =* repro.txt =*
-> r0 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3,
-> &(0x7f0000000200)=@framed, &(0x7f0000000240)='GPL\x00', 0x0, 0x0, 0x0,
-> 0x0, 0x0, '\x00', 0x0, 0x30, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-> 0x0, 0x0, 0x0, 0x0, 0x0}, 0x90)
-> creat(&(0x7f0000000000)='./file0\x00', 0x0)
-> bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000340)={r0, 0x0, 0x30, 0x0,
-> @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00',
-> &(0x7f00000000c0)=[0x0], 0x0, 0x0, 0xffffff1f}}, 0x40
->
->
-> See aslo https://gist.github.com/xrivendell7/15d43946c73aa13247b4b20b68798aaa
->
-> .
+And another thing to try is SDHCI_QUIRK2_TUNING_WORK_AROUND
 
