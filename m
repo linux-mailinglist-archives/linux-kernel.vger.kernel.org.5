@@ -2,164 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3E380C32D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A0480C32E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 09:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjLKI3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 03:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S233763AbjLKI3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 03:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjLKI3f (ORCPT
+        with ESMTP id S229463AbjLKI3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 03:29:35 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F221FE5;
-        Mon, 11 Dec 2023 00:29:39 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BB8TPNC02597530, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BB8TPNC02597530
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 11 Dec 2023 16:29:31 +0800
-Received: from alexlu (172.29.36.158) by RSEXMBS01.realsil.com.cn
- (172.29.17.195) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
- 2023 16:29:25 +0800
-Date:   Mon, 11 Dec 2023 16:29:12 +0800
-From:   Alex Lu <alex_lu@realsil.com.cn>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Max Chou <max.chou@realtek.com>, Karen Hsu <karenhsu@realtek.com>
-Subject: [PATCH] Bluetooth: Add more enc key size check
-Message-ID: <ZXbIWMZyZIYyetff@alexlu>
+        Mon, 11 Dec 2023 03:29:38 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B7AED;
+        Mon, 11 Dec 2023 00:29:43 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB8Jhau008959;
+        Mon, 11 Dec 2023 08:29:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=fTPVzx3Xt7cgea3USz4oMf08V0jVZnDMR8c+j2HEy40=;
+ b=MQL7BxbA4heCJ0e5/jrwxQSm1VIfowoVbFHq+lVUr2A34EWcRL5US7YCKTVB132hFhwv
+ 4p3YGz5gP0BwUFVKhDCSUuKtVnurMlNAxpRZxuQ81btHRVw2Wu7RzwroBFnqsqCKmdXX
+ 2tIbAGhzYzr5k1Qx1wW4okMpCxJgO+sy7SLbit3SEnGxP9+5dNnxa3O/qD1tag7dQvKI
+ +EQU5mcDXCuEtLucfBe19J5urrv3WI+PN7mkiEBbnyFqa1i7Cce/xWC1FpdjP1AkUah+
+ VF3X3WM1YKpQhyMbobV42Ybzs5gjTDsiUT6kuMmxjyFJrd7Wxelm0Yu0/gVTu88EJbJJ ZA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4tx874-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 08:29:38 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BB8KQcO012570;
+        Mon, 11 Dec 2023 08:29:38 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4tx86q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 08:29:38 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB62WIu005066;
+        Mon, 11 Dec 2023 08:29:37 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sjyqd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Dec 2023 08:29:37 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BB8TYr543844250
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Dec 2023 08:29:34 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FF842004B;
+        Mon, 11 Dec 2023 08:29:34 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D72E20040;
+        Mon, 11 Dec 2023 08:29:33 +0000 (GMT)
+Received: from [9.171.1.164] (unknown [9.171.1.164])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Dec 2023 08:29:33 +0000 (GMT)
+Message-ID: <1602d546-636a-4144-9e9f-bad4b5f2fd9f@linux.ibm.com>
+Date:   Mon, 11 Dec 2023 09:29:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-Originating-IP: [172.29.36.158]
-X-ClientProxiedBy: RSEXH36502.realsil.com.cn (172.29.17.3) To
- RSEXMBS01.realsil.com.cn (172.29.17.195)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 9/9] net/smc: manage system EID in SMC stack
+ instead of ISM driver
+Content-Language: en-US
+To:     Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702021259-41504-1-git-send-email-guwen@linux.alibaba.com>
+ <1702021259-41504-10-git-send-email-guwen@linux.alibaba.com>
+From:   Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <1702021259-41504-10-git-send-email-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bqbdL5zNIWrLfA0QxrleQYkPkdYvLS5c
+X-Proofpoint-GUID: xgNRHnxNnaVoXruZgtJ9ZPfUo6fxlzYi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-11_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=599 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312110070
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Lu <alex_lu@realsil.com.cn>
 
-When we are slave role and receives l2cap conn req when encryption has
-started, we should check the enc key size to avoid KNOB attack or BLUFFS
-attack.
-From SIG recommendation, implementations are advised to reject
-service-level connections on an encrypted baseband link with key
-strengths below 7 octets.
 
-The btmon log below shows the case that lacks enc key size check.
+On 08.12.23 08:40, Wen Gu wrote:
+> The System EID (SEID) is an internal EID that is used by the SMCv2
+> software stack that has a predefined and constant value representing
+> the s390 physical machine that the OS is executing on. So it should
+> be managed by SMC stack instead of ISM driver and be consistent for
+> all ISMv2 device (including virtual ISM devices) on s390 architecture.
+> 
+> Suggested-by: Alexandra Winter <wintera@linux.ibm.com>
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> ---
 
-> HCI Event: Connect Request (0x04) plen 10
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Class: 0x480104
-          Major class: Computer (desktop, notebook, PDA, organizers)
-          Minor class: Desktop workstation
-          Capturing (Scanner, Microphone)
-          Telephony (Cordless telephony, Modem, Headset)
-        Link type: ACL (0x01)
-< HCI Command: Accept Connection Request (0x01|0x0009) plen 7
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Role: Peripheral (0x01)
-> HCI Event: Command Status (0x0f) plen 4
-      Accept Connection Request (0x01|0x0009) ncmd 2
-        Status: Success (0x00)
-> HCI Event: Connect Complete (0x03) plen 11
-        Status: Success (0x00)
-        Handle: 1
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Link type: ACL (0x01)
-        Encryption: Disabled (0x00)
-...
-
-> HCI Event: Encryption Change (0x08) plen 4
-        Status: Success (0x00)
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Encryption: Enabled with E0 (0x01)
-< HCI Command: Read Encryption Key Size (0x05|0x0008) plen 2
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-> HCI Event: Command Complete (0x0e) plen 7
-      Read Encryption Key Size (0x05|0x0008) ncmd 2
-        Status: Success (0x00)
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Key size: 6
-...
-
-// We should check the enc key size
-> ACL Data RX: Handle 1 flags 0x02 dlen 12
-      L2CAP: Connection Request (0x02) ident 3 len 4
-        PSM: 25 (0x0019)
-        Source CID: 64
-< ACL Data TX: Handle 1 flags 0x00 dlen 16
-      L2CAP: Connection Response (0x03) ident 3 len 8
-        Destination CID: 64
-        Source CID: 64
-        Result: Connection pending (0x0001)
-        Status: Authorization pending (0x0002)
-> HCI Event: Number of Completed Packets (0x13) plen 5
-        Num handles: 1
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Count: 1
-        #35: len 16 (25 Kb/s)
-        Latency: 5 msec (2-7 msec ~4 msec)
-< ACL Data TX: Handle 1 flags 0x00 dlen 16
-      L2CAP: Connection Response (0x03) ident 3 len 8
-        Destination CID: 64
-        Source CID: 64
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-
-Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
-Signed-off-by: Max Chou <max.chou@realtek.com>
----
- net/bluetooth/l2cap_core.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index 17ca13e8c044..b0f31d798132 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -1669,7 +1669,13 @@ static void l2cap_conn_start(struct l2cap_conn *conn)
- 			rsp.dcid = cpu_to_le16(chan->scid);
- 
- 			if (l2cap_chan_check_security(chan, false)) {
--				if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
-+				if (!l2cap_check_enc_key_size(conn->hcon)) {
-+					l2cap_state_change(chan, BT_DISCONN);
-+					__set_chan_timer(chan,
-+							 L2CAP_DISC_TIMEOUT);
-+					rsp.result = L2CAP_CR_SEC_BLOCK;
-+					rsp.status = L2CAP_CS_NO_INFO;
-+				} else if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
- 					rsp.result = cpu_to_le16(L2CAP_CR_PEND);
- 					rsp.status = cpu_to_le16(L2CAP_CS_AUTHOR_PEND);
- 					chan->ops->defer(chan);
-@@ -4202,7 +4208,15 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
- 
- 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_DONE) {
- 		if (l2cap_chan_check_security(chan, false)) {
--			if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
-+			/* As slave role, we should check the enc key size when
-+			 * l2cap conn req is received.
-+			 */
-+			if (!l2cap_check_enc_key_size(conn->hcon)) {
-+				l2cap_state_change(chan, BT_DISCONN);
-+				__set_chan_timer(chan, L2CAP_DISC_TIMEOUT);
-+				result = L2CAP_CR_SEC_BLOCK;
-+				status = L2CAP_CS_NO_INFO;
-+			} else if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
- 				l2cap_state_change(chan, BT_CONNECT2);
- 				result = L2CAP_CR_PEND;
- 				status = L2CAP_CS_AUTHOR_PEND;
--- 
-2.39.2
-
+I've sent you a Reviewed-by for v3 of this patch. Did you lose it?
