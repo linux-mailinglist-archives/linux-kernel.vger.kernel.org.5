@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EE680D349
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FF680D34F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344273AbjLKRJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
+        id S1344254AbjLKRKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:10:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjLKRJn (ORCPT
+        with ESMTP id S229625AbjLKRKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:09:43 -0500
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116CEBD;
-        Mon, 11 Dec 2023 09:09:49 -0800 (PST)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BBCOhHn012101;
-        Mon, 11 Dec 2023 18:09:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=mBJKy1rd9gg9AQuGgxfNHb9qOFrFe4Ef73PNfhVbtc4=; b=RI
-        1LWxR52FFW4lDBc0VsEERBbgaHACkd7ysFmBnN3M+9f0f7LTO6DgeSIxN7rMB3Um
-        zHeXnfMbznFIsLtfDLy2KHfgaGec0J9mMuWvnSXoX9e+KJygSdRC4By+/T/6vpYo
-        14HJ1QUOhM7YJIj2EI78B6T8lzUgR0OcE9EDnZXDRPQ3HRJNKEpQX+Oq67OONhf9
-        RTNzdUXZyucR0yHc+J4Vdb5NWQF5Mh9Dpx+guu/Ij2ob8kZctsaV9e7eHcMec3ym
-        O08C0R2thMpbur0smAl1dVXb2Oz5koSp4kmCgCZK1O0eMUZ7k9bXlwrZNB8f7UJY
-        mbuuzwpJNongBHYhIYow==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvg0gqnvd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Dec 2023 18:09:47 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 834FC10005C;
-        Mon, 11 Dec 2023 18:09:46 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7A7F929D80F;
-        Mon, 11 Dec 2023 18:09:46 +0100 (CET)
-Received: from [10.201.20.59] (10.201.20.59) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Dec
- 2023 18:09:45 +0100
-Message-ID: <81bbf2f7-6db2-47de-9761-0b196b5348d2@foss.st.com>
-Date:   Mon, 11 Dec 2023 18:09:44 +0100
+        Mon, 11 Dec 2023 12:10:30 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1E5C7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:10:35 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-4258b8632f4so37249261cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:10:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1702314635; x=1702919435; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nVwpXrg5GrAiosSC6uTLQ5GLZb1kq4d2s7vH0wRu8vc=;
+        b=cGwKieTBVsUK/jzxGSaslGatL6BGqmABUjh0qM7SwVk42ENuBemOa9Yjxv9hLegkzH
+         7ZXalBPdQZ/9bPPa+ucVmWrAmkW1muk1ZDVNq1cQOLSQFQCCPNSI2042G03BhvHNp65S
+         Xw66AudqaJDr0JWHahLgp4iffoFmolXM9vOYjRCpyu8wXOjjyJfaRNjQZh5B3wsG8cWy
+         oCRnENPoAT1OuW8Ag7TAlwfpBRIIaycMXtX+IEu19JyMl9RV/NZuwgUUQexBjEsCrDBb
+         8vAUKQOxZTYrjItv5UQfA9/OwxBzgJQCOlEeT395gMfZ1CdbqlnRKAQpCg/dLVJRCuJ5
+         Aypg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702314635; x=1702919435;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nVwpXrg5GrAiosSC6uTLQ5GLZb1kq4d2s7vH0wRu8vc=;
+        b=E6nsaegJAJPt28dx0A7DCYBnGhsK3QuQx7uePZhuYVlvZS8zq2g6LxZrM0SJHxJU4V
+         VrbDKTLkQqXKMGyu7/nl/Os7OQJeexj6kC/UYzvnMQ3qrpOyJgY2f7sl2R4hwM2Fqe7F
+         wF4+LdSkA2OVU+Uci+pJzWpmKK13+mDcTAAfglPLdRe1sL7d2dvcstNsrJmj8XgEq+1a
+         SepIqIBIYC4pv9EiClUE6YFAC1IkPpODoNp1/SohGTsqxU35vPPcnqY4b3b0dWkN0jAn
+         HBLHNb0lEyfhRzrbYgHJeONQVlZsAD7ng7GOgPqdb1t5oNGFVEuz5LIHu2S+1XxBqXAd
+         KHjw==
+X-Gm-Message-State: AOJu0Yz5j7ixUQjekH07MLJKeelK+aixl5oJGP0oabnGPwW/Ldik/kNw
+        UVY8RHTc3cnURL0XCrcyQfeUKIXLKDl+I3mPx9YdW/ws0sgjWm2HDCA=
+X-Google-Smtp-Source: AGHT+IEWA5j2rxU2s7GXnHN22sWHK1yBm26s38obXicdqOGWHUUAbuOhImNg2g09egt6OVEVMwL5e799O3ygWCXSyMg=
+X-Received: by 2002:ac8:4e92:0:b0:425:4043:5f2e with SMTP id
+ 18-20020ac84e92000000b0042540435f2emr7945001qtp.108.1702314634830; Mon, 11
+ Dec 2023 09:10:34 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] MAINTAINERS: add myself as counter watch events
- tool maintainer
-Content-Language: en-US
-To:     William Breathitt Gray <william.gray@linaro.org>
-CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231206164726.418990-1-fabrice.gasnier@foss.st.com>
- <20231206164726.418990-3-fabrice.gasnier@foss.st.com>
- <ZXcx+94QW2pWDBxM@ubuntu-server-vm-macos>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-In-Reply-To: <ZXcx+94QW2pWDBxM@ubuntu-server-vm-macos>
+References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <ZXdAOroKNce1r+TZ@casper.infradead.org>
+In-Reply-To: <ZXdAOroKNce1r+TZ@casper.infradead.org>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 11 Dec 2023 12:09:57 -0500
+Message-ID: <CA+CK2bBnPc=Z4SOPbnMqnDA1X9oLsq_rzsEnAcxNsA5ZWCUWwQ@mail.gmail.com>
+Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, surenb@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        souravpanda@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.59]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_07,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 16:59, William Breathitt Gray wrote:
-> On Wed, Dec 06, 2023 at 05:47:26PM +0100, Fabrice Gasnier wrote:
->> Add MAINTAINERS entry for the counter watch events tool. William has
->> been asking to add at least me as the point of contact for this utility.
->>
->> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->> ---
->> Changes in v3: Add MAINTAINERS entry. This is a split of another patch
->> series[1].
->> [1] https://lore.kernel.org/lkml/20230922143920.3144249-1-fabrice.gasnier@foss.st.com/
->> ---
->>  MAINTAINERS | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index dd5de540ec0b..b8541ab7866a 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -5322,6 +5322,11 @@ F:	include/linux/counter.h
->>  F:	include/uapi/linux/counter.h
->>  F:	tools/counter/
->>  
->> +COUNTER WATCH EVENTS TOOL
->> +M:	Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->> +S:	Maintained
->> +F:	tools/counter/counter_watch_events.c
-> 
-> Add an L line as well for the linux-iio@vger.kernel.org address so
-> discussions get sent to our public mailing list.
+On Mon, Dec 11, 2023 at 12:00=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Mon, Dec 11, 2023 at 03:46:44PM +0000, Pasha Tatashin wrote:
+> > +++ b/drivers/base/node.c
+> > @@ -520,26 +520,34 @@ static ssize_t node_read_vmstat(struct device *de=
+v,
+> >       int i;
+> >       int len =3D 0;
+> >
+> > -     for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+> > -             len +=3D sysfs_emit_at(buf, len, "%s %lu\n",
+> > -                                  zone_stat_name(i),
+> > -                                  sum_zone_node_page_state(nid, i));
+> > +     for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+> > +             if (vmstat_text[ZONE_STAT_NAME_IDX(i)].flags & VMSTAT_SHO=
+W_SYSFS) {
+> > +                     len +=3D sysfs_emit_at(buf, len, "%s %lu\n",
+> > +                                          zone_stat_name(i),
+> > +                                          sum_zone_node_page_state(nid=
+, i));
+> > +             }
+> > +     }
+>
+> This seems overly complicated.  Why not do:
+>
+>         for (i =3D 0; i < NR_VM_ZONE_STAT_SYSFS_ITEMS; i++)
+>
+> and have assertions that this number doesn't change (and require people
+> to add to the list after that point)?
 
-Hi William,
+This is what I wanted to do at the beginning. But, the problem is that
+vmstat_text[] contains names from a number of different structs of
+stats:  zone_stat, numa_stat, node_stat, lru_list, writeback_stat,
+vm_even. Therefore, we can't simply count the number of
+NR_VM_ZONE_STAT_SYSFS_ITEMS, as the new items can be added in the
+middle of vmstat_text[]  when for example numa_stat is expanded.
 
-I can add it, yes. But just to be sure, with current patch,
-get_maintainer.pl gives me:
-
-./scripts/get_maintainer.pl tools/counter/counter_watch_events.c
-Fabrice Gasnier <fabrice.gasnier@foss.st.com> (maintainer:COUNTER WATCH
-EVENTS TOOL)
-William Breathitt Gray <william.gray@linaro.org> (maintainer:COUNTER
-SUBSYSTEM)
-linux-iio@vger.kernel.org (open list:COUNTER SUBSYSTEM)
-linux-kernel@vger.kernel.org (open list)
-
-So is it really needed to add an L line ?
-
-Best Regards,
-Fabrice
-
-> 
-> Thanks,
-> 
-> William Breathitt Gray
+Pasha
