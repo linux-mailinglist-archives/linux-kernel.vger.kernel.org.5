@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994E280C06E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3AE80C076
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 05:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjLKEYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Dec 2023 23:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S232915AbjLKEYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Dec 2023 23:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjLKEYm (ORCPT
+        with ESMTP id S232846AbjLKEYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Dec 2023 23:24:42 -0500
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3050E5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:24:47 -0800 (PST)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1fb1eef9152so7375316fac.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Dec 2023 20:24:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702268687; x=1702873487;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjvSEW93B0Z+a+7NTpKonDf3aftegOCmS4ucjHOUqI4=;
-        b=j8h2BdZygmH54RcwWMx4YlY3Yahp9c2XrZgMp7wwB1FYK4Dlox6FNQ9Fts/gtf68gQ
-         0s/tCjNUZuD84sg3QW8YFsTKNYukvNR/G7e/MXLLlHnHehs9a9sMOMKoRJPNydQgaZ91
-         ZsC1aE3oOjeGg+I033LY8ngucZUk6FVFWTpGUikQO5C3+pZSD9vp0WHssqP3R0XNfG2n
-         2sn7BXD0hFGuJItwtm5ymUjVitI03dMdcdyWT0Vb9gWkT6pAHXox8K/umWIDjST/sYvm
-         ZvXKwbS8BzJfoXkAo5zG6npy+xhx0RfK2h93aBUt7Uvl1xItzL/Y7VyRUpQ+j2IyIwP7
-         kAQw==
-X-Gm-Message-State: AOJu0YwKC9HnmP3YQQc9Ma1v9CnlD+oDJ7EOeCEGrEbAudBvveLeXzh0
-        rVCV7FNfAWpcf0p64hrwV6vmJc1KHkFTEmBOAsPj/cLkqXiNd8s=
-X-Google-Smtp-Source: AGHT+IHLKuO1MFUxXd6RPcAePK1Xh4MK/4N50Fm3IErsDHA8HKB0NKcG1WTIlaaKiF9mG0QoD3IAF1E4cLoT8ed/huJbfyVZf1io
+        Sun, 10 Dec 2023 23:24:53 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920C9102;
+        Sun, 10 Dec 2023 20:24:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1702268698;
+        bh=NkK4CcQOtCz9gszouJKdQt7Kfuc3mtS0aQVX7Rv73y8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CUftbjG5wwLra6KP/KGhCofJDEtmjGrW0cswOWKbDVcJiyxQuVetZ6QVnrUHZDfC8
+         5A4TDyzylKr3Q4p4r5+twCKxwV26isPZQJabcsB2nvE/V0EiyzE7ThfaOtyIPtawEP
+         bj+tPHNo4df/02S3GNbnNGTfASzW5HSl1WjF++AYDGooCTs996hMfJEoflcfr8tuQ3
+         qsrTFFFYC37T+gbCudqdYZhOmhWRMUqT95bsaHEuL/zBLrGisMPzNWQzKDsyz1Tgpy
+         gheQ/QJRSA5IKab4FMqw7BYVOwBCOPiUJWFabv2RSA3Di0Qpm+RITJanfsD27+VQlO
+         xzKm4aInDdDgA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SpTDT5xZZz4xGM;
+        Mon, 11 Dec 2023 15:24:57 +1100 (AEDT)
+Date:   Mon, 11 Dec 2023 15:24:56 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the driver-core tree
+Message-ID: <20231211152456.7526822b@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:783:b0:1fb:166c:e070 with SMTP id
- o3-20020a056871078300b001fb166ce070mr4375220oap.1.1702268687088; Sun, 10 Dec
- 2023 20:24:47 -0800 (PST)
-Date:   Sun, 10 Dec 2023 20:24:47 -0800
-In-Reply-To: <000000000000bfba3a060bf4ffcf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000680812060c3450ed@google.com>
-Subject: Re: [syzbot] [arm-msm?] [net?] memory leak in radix_tree_insert
-From:   syzbot <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/bgHJd+WFM5_7hbJRAgrSwjw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+--Sig_/bgHJd+WFM5_7hbJRAgrSwjw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-***
+Hi all,
 
-Subject: [arm-msm?] [net?] memory leak in radix_tree_insert
-Author: lizhi.xu@windriver.com
+The following commits are also in the pm tree tree as different
+commits (but the same patches):
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 33cc938e65a9
+  3babbf614ae6 ("device property: fwnode_property_get_reference_args allows=
+ NULL args now")
+  1eaea4b3604e ("software node: Let args be NULL in software_node_get_refer=
+ence_args")
+  bef52aa0f3de ("acpi: property: Let args be NULL in __acpi_node_get_proper=
+ty_reference")
 
-diff --git a/lib/radix-tree.c b/lib/radix-tree.c
-index a89df8afa510..0a2dfecdcd30 100644
---- a/lib/radix-tree.c
-+++ b/lib/radix-tree.c
-@@ -613,12 +613,13 @@ static int __radix_tree_create(struct radix_tree_root *root,
- 		unsigned long index, struct radix_tree_node **nodep,
- 		void __rcu ***slotp)
- {
--	struct radix_tree_node *node = NULL, *child;
-+	struct radix_tree_node *node = NULL, *child, *orig;
- 	void __rcu **slot = (void __rcu **)&root->xa_head;
- 	unsigned long maxindex;
--	unsigned int shift, offset = 0;
-+	unsigned int shift, offset = 0, mmshift = 0;
- 	unsigned long max = index;
- 	gfp_t gfp = root_gfp_mask(root);
-+	int ret;
- 
- 	shift = radix_tree_load_root(root, &child, &maxindex);
- 
-@@ -628,7 +629,9 @@ static int __radix_tree_create(struct radix_tree_root *root,
- 		if (error < 0)
- 			return error;
- 		shift = error;
-+		mmshift = error;
- 		child = rcu_dereference_raw(root->xa_head);
-+		orig = child;
- 	}
- 
- 	while (shift > 0) {
-@@ -637,8 +640,11 @@ static int __radix_tree_create(struct radix_tree_root *root,
- 			/* Have to add a child node.  */
- 			child = radix_tree_node_alloc(gfp, node, root, shift,
- 							offset, 0, 0);
--			if (!child)
--				return -ENOMEM;
-+			printk("nc: %p\n", child);
-+			if (!child) {
-+				 ret = -ENOMEM;
-+				 goto freec;
-+			}
- 			rcu_assign_pointer(*slot, node_to_entry(child));
- 			if (node)
- 				node->count++;
-@@ -656,6 +662,18 @@ static int __radix_tree_create(struct radix_tree_root *root,
- 	if (slotp)
- 		*slotp = slot;
- 	return 0;
-+freec:
-+	if (mmshift > 0) {
-+		struct radix_tree_node *dn;
-+		while (shift < mmshift) {
-+			radix_tree_descend(orig, &dn, index);
-+			printk("dc: %p\n", dn);
-+			orig = orig->slots[0];
-+			radix_tree_node_rcu_free(&dn->rcu_head);
-+			shift += RADIX_TREE_MAP_SHIFT;
-+		}
-+	}
-+	return ret;
- }
- 
- /*
+These are commits
+
+  a66cf024b377 ("device property: fwnode_property_get_reference_args() allo=
+ws NULL args now")
+  b912c6530332 ("software node: Let args be NULL in software_node_get_refer=
+ence_args")
+  cab48cbdfd27 ("ACPI: property: Let args be NULL in __acpi_node_get_proper=
+ty_reference()")
+
+in the pm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/bgHJd+WFM5_7hbJRAgrSwjw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV2jxgACgkQAVBC80lX
+0GzXJgf/YeW7C8pLps9MERYbK/UpV0OjUpEBiw81XE1tg7Gormf/fCw57mQHqKBl
+FSr8G5T+JpFVdMwm4k4yCL1HkT1aRQ3wXJm56WRIQMG1wBrRpmsAuoUltEQvB8fr
+ZmAyBhElsuB9VW5EJPNYINWPERXTwAgy4RQm9E1YfonRYZlwFvmKZVBgkFqY6ILt
+40cONShzCDYmBC87HsR5cNEQZN3m5G0wdeblD4Q8yv8ll821GPEkY/n9dOAfBukD
+NhKtE7mxOowKe978NUgP4QhxGbqF5rTZeYwIgmkIyMd9pwn6kJuMESNp6WftKiZ5
+Rv8qD9bMdSR789Mub0uTA+IRZF11zg==
+=AhGB
+-----END PGP SIGNATURE-----
+
+--Sig_/bgHJd+WFM5_7hbJRAgrSwjw--
