@@ -2,128 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F0680CF58
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D784F80CF5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 16:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344201AbjLKPVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 10:21:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S1343903AbjLKPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 10:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344024AbjLKPVp (ORCPT
+        with ESMTP id S1343877AbjLKPX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 10:21:45 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A437EB;
-        Mon, 11 Dec 2023 07:21:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=YcekLTjh5+mk+lg76W+7hew/vEd7NOWaaenP7iwljuk=; b=1gHoyuRtBp6OwbKss/KRVZRgTx
-        sitogZHN0shuA9eFrOI+8VEWHffM/iBomO4CuhwApypwyYqt/41wPkzxPuoP97UqdiylyQhzGN9X2
-        bOUbmeHrtcj2+cUQjbE8gzPxRetCjMcwU5kb1dIFwBM5ZxtbzatjKnHkMh4U3GGAMZS0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rCi6H-002dIn-QD; Mon, 11 Dec 2023 16:21:41 +0100
-Date:   Mon, 11 Dec 2023 16:21:41 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v1 2/2] net: phy: Add support for the DP83TG720S
- Ethernet PHY
-Message-ID: <cfd4f8bd-a06a-4489-8304-e9576151dbce@lunn.ch>
-References: <20231208151159.2791794-1-o.rempel@pengutronix.de>
- <20231208151159.2791794-2-o.rempel@pengutronix.de>
+        Mon, 11 Dec 2023 10:23:58 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB287DF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:04 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5c659db0ce2so3851071a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 07:24:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702308244; x=1702913044; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tWUV51STMN0VgL/zumYMl796XbfCKLjzTV15/TIMxFc=;
+        b=OaDxGuWt2M6ux348sqeA5EEori9DTiYjpCE6vofQh7TP06+BLsDDrfWRqps/l1rRlA
+         tjCOVnBFCpVxCxfg6jAL6dTcs8TUMpWjdVlamqgRynbH1edCMWtKmrHxpriM/yliBF8S
+         VSFTa57vOZ4p4tUp3N+d4H3uQsHuiexxmCrVFzIjO3g3+eUN1mA/qxaylArISSXOiDxy
+         WBKfUhuowJsbTLRFlUeQAeb4ycs4vQdvTfLqDOo7He5chRXDpP6W9gi9qPz8/ExL+ww2
+         ibDpNQgzzC0CToIlOxQolr6C463WZqD2TkFzDpyobSbudGFT4OdiBkVdTpnbk33M1sVv
+         j4bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702308244; x=1702913044;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tWUV51STMN0VgL/zumYMl796XbfCKLjzTV15/TIMxFc=;
+        b=SXS8H6JE0A2VobRAczOS8Q/84xWktLkPXUHjhRQloRCMZ5+PzAtMwQdOQMe2/V3EQp
+         TmAjsubo55nOJ3iCTi+0YO+UUFPwJieuJOVgRh6P1LSF5v0msl/3W7SPjqmlF1X8U4iX
+         8mwB7CsUdRN81uXsdSrGTSvyNKICcjtQ+mD39WGPFiIZJU9ZeN+30QAk29g+zx/6iiEF
+         O81T+gT+7RY6MVwoXGVduluBWBkGMPm6yp4qCTmL0v+vI043r3wDdtigKs+Svs39M4hd
+         ySXG41KkVCuiWVwf55H6RoL8FbGWB8qCLuWLCxo48GEdCw5wwdKUIY4Z0ROoSXWFKiyB
+         sGJQ==
+X-Gm-Message-State: AOJu0YyEvakVitGZbDCJImHpiFc8tazK/Ton2mmna1xoNIB03Jy81bx9
+        ONkBC/X2cIfPMgxRFvzTD8YdklOn/YgjeWeBSOl/mw==
+X-Google-Smtp-Source: AGHT+IGUtayhIpWLJiLhiSMxDhVNzBpxfuIdsijKeP2UMDS67wo5Ue3DSQ5EuOS7E+5p+jZlIezV4PaVm727wxGEVXk=
+X-Received: by 2002:a05:6a20:8f1e:b0:18f:97c:9768 with SMTP id
+ b30-20020a056a208f1e00b0018f097c9768mr5443169pzk.80.1702308244327; Mon, 11
+ Dec 2023 07:24:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208151159.2791794-2-o.rempel@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <202312101719+0800-wangjinchao@xfusion.com>
+In-Reply-To: <202312101719+0800-wangjinchao@xfusion.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 11 Dec 2023 16:23:52 +0100
+Message-ID: <CAKfTPtCMOPVhjpLW3Y3fb4=rfYnAKzYeDmdMCRHjPzZdXYjVxg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: merge same code in enqueue_task_fair
+To:     WangJinchao <wangjinchao@xfusion.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_XBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 04:11:59PM +0100, Oleksij Rempel wrote:
-> The DP83TG720S-Q1 device is an IEEE 802.3bp and Open Alliance compliant
-> automotive Ethernet physical layer transceiver.
-> 
-> This driver was tested with i.MX8MP EQOS (stmmac) on the MAC side and
-> TI same PHY on other side.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+On Sun, 10 Dec 2023 at 10:22, WangJinchao <wangjinchao@xfusion.com> wrote:
+>
+> 1. The code below is duplicated in two for loops and need to be
+>    consolidated
+> 2. Fix the bug where a se's on_rq is true but its parent is not
+
+Could you clarify which bug you want to fix ?
+
+
+
+
+>
+> ```c
+>                 cfs_rq->h_nr_running++;
+>                 cfs_rq->idle_h_nr_running += idle_h_nr_running;
+>
+>                 if (cfs_rq_is_idle(cfs_rq))
+>                         idle_h_nr_running = 1;
+>
+>                 /* end evaluation on encountering a throttled cfs_rq */
+>                 if (cfs_rq_throttled(cfs_rq))
+>                         goto enqueue_throttle;
+> ```
+>
+> Signed-off-by: WangJinchao <wangjinchao@xfusion.com>
 > ---
->  drivers/net/phy/Kconfig     |  13 +++
->  drivers/net/phy/Makefile    |   1 +
->  drivers/net/phy/dp83tg720.c | 190 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 204 insertions(+)
->  create mode 100644 drivers/net/phy/dp83tg720.c
-> 
-> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> index 25cfc5ded1da..bab10c796f24 100644
-> --- a/drivers/net/phy/Kconfig
-> +++ b/drivers/net/phy/Kconfig
-> @@ -372,6 +372,19 @@ config DP83TC811_PHY
->  	help
->  	  Supports the DP83TC811 PHY.
->  
-> +config DP83TG720_PHY
-> +	tristate "Texas Instruments DP83TG720 Ethernet 1000Base-T1 PHY"
-> +	help
-> +	  The DP83TG720S-Q1 is an automotive Ethernet physical layer
-> +	  transceiver compliant with IEEE 802.3bp and Open Alliance
-> +	  standards. It supports key functions necessary for
-> +	  transmitting and receiving data over both unshielded and
-> +	  shielded single twisted-pair cables. This device offers
-> +	  flexible xMII interface options, including support for both
-> +	  RGMII and SGMII MAC interfaces. It's suitable for applications
-> +	  requiring high-speed data transmission in automotive
-> +	  networking environments.
-> +
->  config DP83848_PHY
->  	tristate "Texas Instruments DP83848 PHY"
->  	help
-> diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-> index f65e85c91fc1..defaef190962 100644
-> --- a/drivers/net/phy/Makefile
-> +++ b/drivers/net/phy/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_DP83848_PHY)	+= dp83848.o
->  obj-$(CONFIG_DP83867_PHY)	+= dp83867.o
->  obj-$(CONFIG_DP83869_PHY)	+= dp83869.o
->  obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811.o
-> +obj-$(CONFIG_DP83TG720_PHY)	+= dp83tg720.o
->  obj-$(CONFIG_DP83TD510_PHY)	+= dp83td510.o
-
-Maybe it should come after CONFIG_DP83TD510_PHY in a strict sort ? I
-also wounder about the Kconfig, which should be sorted on the tristate
-string.
-
->  obj-$(CONFIG_FIXED_PHY)		+= fixed_phy.o
->  obj-$(CONFIG_ICPLUS_PHY)	+= icplus.o
-> +		/* After HW reset we need to restore master/slave configuration.
-> +		 */
-> +		if (phydev->drv->config_aneg) {
-
-This test is a bit strange. You know it exists, its this driver and
-the function is there. Why not call it directly?
-
-> +			ret = phydev->drv->config_aneg(phydev);
-> +			if (ret)
-> +				return ret;
-> +		}
-
-
-    Andrew
-
----
-pw-bot: cr
+>  kernel/sched/fair.c | 31 ++++++++-----------------------
+>  1 file changed, 8 insertions(+), 23 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d7a3c63a2171..e1373bfd4f2e 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6681,30 +6681,15 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>                 cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT);
+>
+>         for_each_sched_entity(se) {
+> -               if (se->on_rq)
+> -                       break;
+>                 cfs_rq = cfs_rq_of(se);
+> -               enqueue_entity(cfs_rq, se, flags);
+> -
+> -               cfs_rq->h_nr_running++;
+> -               cfs_rq->idle_h_nr_running += idle_h_nr_running;
+> -
+> -               if (cfs_rq_is_idle(cfs_rq))
+> -                       idle_h_nr_running = 1;
+> -
+> -               /* end evaluation on encountering a throttled cfs_rq */
+> -               if (cfs_rq_throttled(cfs_rq))
+> -                       goto enqueue_throttle;
+> -
+> -               flags = ENQUEUE_WAKEUP;
+> -       }
+> -
+> -       for_each_sched_entity(se) {
+> -               cfs_rq = cfs_rq_of(se);
+> -
+> -               update_load_avg(cfs_rq, se, UPDATE_TG);
+> -               se_update_runnable(se);
+> -               update_cfs_group(se);
+> +               if (se->on_rq) {
+> +                       update_load_avg(cfs_rq, se, UPDATE_TG);
+> +                       se_update_runnable(se);
+> +                       update_cfs_group(se);
+> +               } else {
+> +                       enqueue_entity(cfs_rq, se, flags);
+> +                       flags = ENQUEUE_WAKEUP;
+> +               }
+>
+>                 cfs_rq->h_nr_running++;
+>                 cfs_rq->idle_h_nr_running += idle_h_nr_running;
+> --
+> 2.40.0
+>
