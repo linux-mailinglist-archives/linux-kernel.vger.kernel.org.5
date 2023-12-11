@@ -2,178 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1ED80DDAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B913F80DDAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 22:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbjLKV4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 16:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S230147AbjLKV5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 16:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjLKV4L (ORCPT
+        with ESMTP id S229540AbjLKV5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 16:56:11 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CF5C4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:56:17 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7b37a2e6314so44010939f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 13:56:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702331776; x=1702936576; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QWln+CTTERyZ6ImQ/92s4pzeNQeDoALVr1bp+5tWi4A=;
-        b=Bfd6HASyVBFKiddbCav9xD13UkpAkC/+RDM0FWcUg5sLMJgju+dAC/5uW9DMlzRKEx
-         IaRADmo3PI4CvyVjdmdkkGI+lnl1kWBBSh5LrhQEmwqSDt6WKVO5EWaBl3Jha6Cd957U
-         opexMuPQFSO+OJP28mwWqnKoTBD65sMshOW9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702331776; x=1702936576;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QWln+CTTERyZ6ImQ/92s4pzeNQeDoALVr1bp+5tWi4A=;
-        b=i9fkXalL4+dOXPvm0WWW4SV9XgY68T8gCxNQQVFV3liULRCyjMqJi7dwJ2wJxgJwA1
-         U9sQ9duKlP8MaByDaGl2fPXMtHiitDfQyAd7ev0MdM5tdthqq4w9aObupKbREhjzYjvm
-         sXOU8MFANlTrXjPb8lX584xXgC4XURBWknA3FQypkvThx0Ef5i0/bXQ60DChXee28Mrb
-         cPKhv4CenXnlrw6MWpEIA/uI8QrGDYl76SIK2Kfwwikka9izZ8DTo/RodEpB2DKJ8/01
-         vJbPh3XudO+8DbmZR35q/bbIx+EX7vmxMBWmVFw1sLuDYvdBuKHfb6MvmWKsLol+CGNH
-         lh2w==
-X-Gm-Message-State: AOJu0YwR24m3ccekjh3Trmn2uHR8Kh4AQNNoEH3H3aEnbDIhdfXF9Fj6
-        3u3Uv2mWduxZ2t3jgbkX7AFFwQ==
-X-Google-Smtp-Source: AGHT+IF6u9PBe1663T7e/DMZyJ7Y1Ma1Qz6eO0no0u2sL4WErWGwXoWSypjjC6bPS2hdgwcAG+zcOw==
-X-Received: by 2002:a6b:a0d:0:b0:7b6:f0b4:92aa with SMTP id z13-20020a6b0a0d000000b007b6f0b492aamr8560958ioi.0.1702331776554;
-        Mon, 11 Dec 2023 13:56:16 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id l27-20020a02cd9b000000b0046938c12608sm2097774jap.122.2023.12.11.13.56.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 13:56:16 -0800 (PST)
-Message-ID: <2c4f2771-0557-4b44-9c98-6bd2e6930d2f@linuxfoundation.org>
-Date:   Mon, 11 Dec 2023 14:56:15 -0700
+        Mon, 11 Dec 2023 16:57:37 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4592FA1;
+        Mon, 11 Dec 2023 13:57:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ap0PnTyIVxdRJxPZT9Ae88J0WD566GxZXY4wLzb9ojUks8UQC4hMKeTiSd4CqJfT6NFA7lJdciS1smHCIBYO8wm55bGLY2P6GCooDnScThpO5GJwnZPcjqdGG3LpK5Q6sj1EFZSP2Cf0vKuXjXBoP5ydrsPeNeO7/2FfxgX/zXyPEtWKAjWU+3TAN3F6ki0ALScYk78W33MT/Mi/SgQOrBmccCKRCCJwcOJyqVEEJsVgaI/9Y7qPS9DceGkyKvIA53Ji9H+MXTDrolnwobOcFvMiu3GjxVVUuswEoZP9kY94Ap0FU1u7ME9HGr/UndKgEAm6ENHcMzadE3lIQrDcnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZlL5eLRoUdedfh821ze9eHzie1om8tI74i+byygAh0o=;
+ b=awma7i/mjYA4Xgopjs7ewL9RDDo60JSe/mZ8scZUQ7/PDDcmQIHEE1hx9HI4+AkTko1GkHIxcgdOSthbFB7YqltnFyCeSUPiZ//i79nmLgfdsQm/c1L8e4mWbB9e69mShVPTGLNQwd8sRAeO8uqkgbiSKyCQy5sRRfNh8xjmBAGK5phPy2COsDdWbXcIyiWbOYOtmG3sWIiXN19MpHhtHUyd6VqpziD8hTDoqfUEIWPNO8y4cQlCZO6oxqGSBZM4eQpOj9TnxOtD2jwlN8q43kLwAYA/+yB08pQzR350IBR/yOUiDF/E5o3iGH2S6mBTDKEaUezB8Dhr/hx+2REJ1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZlL5eLRoUdedfh821ze9eHzie1om8tI74i+byygAh0o=;
+ b=tuDuU0ltKXqgJTgbvXpwikMGo2FX0tp11Ir7EaGg0TEde+B9ywlfjVD4fP07YAOF5axrBkpqjIdjO2SgiwLH1qpHZn/1HpIXSAJMq8CN3x4tRaSTDcAFliZZ9w4kzfiiugS6jbJ1V8B/GEO1JAePNYm90wJO7YDdFJEaxAVkvP1eOPNNtJutxdokAZ7me9P7Mavp3bwJaCTzd8rh7IfbttgcGe8KHkt75KtXCNAurwKCt3bBlfeCr9gwY0pGa0adyoMBLPM0N3yC8v4dPhmaykk8+8KrP8c/+7MSZjEcT/sqo47CHfOBwyd4Fhu9YHS8Is+Pe2RorIGSnYKPT/zhgQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by LV2PR12MB5821.namprd12.prod.outlook.com (2603:10b6:408:17a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Mon, 11 Dec
+ 2023 21:57:39 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 21:57:39 +0000
+Date:   Mon, 11 Dec 2023 17:57:38 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, zhenzhong.duan@intel.com,
+        joao.m.martins@oracle.com, xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Message-ID: <20231211215738.GB3014157@nvidia.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+ <ZXd+1UVrcAQePjnD@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXd+1UVrcAQePjnD@Asurada-Nvidia>
+X-ClientProxiedBy: MN2PR15CA0064.namprd15.prod.outlook.com
+ (2603:10b6:208:237::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] livepatch: Move tests from lib/livepatch to
- selftests/livepatch
-Content-Language: en-US
-To:     mpdesouza@suse.com, Joe Lawrence <joe.lawrence@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>
-Cc:     Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        live-patching@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com>
- <20231031-send-lp-kselftests-v3-2-2b1655c2605f@suse.com>
- <ZWn7dEzVWoKxycmy@redhat.com>
- <alpine.LSU.2.21.2312061543280.13051@pobox.suse.cz>
- <273a86d6-d220-fdcf-3c2f-70516c519ff9@redhat.com>
- <57fb9f30afbaddb09def96aac11c45296a59a277.camel@suse.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <57fb9f30afbaddb09def96aac11c45296a59a277.camel@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV2PR12MB5821:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d23b5a4-b982-4b0f-5656-08dbfa943158
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: f//jZAvKCNs+EB6DhagzhZ6LCvXpWfswG1yoODWk3niKAm32kPSQeWNYWNujxnHF/DigE0BcF7l7ISnHHe/RpbTH4rx0wTacP5Rj1sJjcjZJFO20QTljqHXZat5mjuCfU9dDh95XNE0tqjMlYq/W+3biNY0PkxA7gXlE7hTDgM3AZAB7CeiZxAzoVZBwlfkM4Un7ZITMBnjZzDX+lqaRZoLi/fJh+UThKCBOZ2JnA/U8Pgzgv0r6c8vqr/uURc9Fa2sJLK+7RXhxBttVxqgPUibAXMljW9c0K2kIE391TtmioL4JJGHK+wlXJ3qgCNom6zDbhm8I1E/xCSr2UU0r+dZEQ3EhMKmInwrCHM3OFj0WQWwj427AyJv8rLl2seq4dPwHOX6Nex+9mEcE32V3RrUno8Rq20w5QDiFcIQy5lUoeFIiwfa2IDpcd4ChAI4oMNwkGDGA4wYCK3dlC1orse4H+TFQYPYwDNtR1dewqWwZl4BApX3Jg11yEYE1O1fqKpN6OZ9rXgXaj+GrmV1jFO+o8jWpQ3esNh6GTENLsoJTMinYFET6VlXATzN0WsoB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(396003)(366004)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6486002)(26005)(2616005)(1076003)(478600001)(6512007)(6506007)(7416002)(83380400001)(5660300002)(41300700001)(54906003)(66946007)(2906002)(6636002)(66476007)(6862004)(37006003)(316002)(8676002)(66556008)(8936002)(4326008)(38100700002)(86362001)(36756003)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bX6fCWPY3F/ouWVNXyunK7+gCMAsCp2zxjtm6IMhhCsBhuvhcMw6pWOCOwQK?=
+ =?us-ascii?Q?COmF3Wb42RFpSyV+B/jgqC8D8l3xb8AwJTdrmlfiz5uJ+ILpI3pDYDM37BnF?=
+ =?us-ascii?Q?E62ABmWZST2KkqJEWZQn9OTrWkijRKYLAmkd9xRAZW3cW80EkDfpJxX7ImAw?=
+ =?us-ascii?Q?a5VEre6ItVcrZky8e9FtHVk069VcZQ2U5r8nWw4OyRGfEb+qQkAr/rFn+Hif?=
+ =?us-ascii?Q?oGsmH0yaYx21yYJvBnBx0vkTrSzZj3+PmTEy7+otGP4PhVEFqDBJ4JSIE/od?=
+ =?us-ascii?Q?eigYMUF1Kib3kUg2HNOq0pbn46STDPWS5vHYj9X1aGPSUVIilPf2iu2JSt45?=
+ =?us-ascii?Q?rbm80bk2Nb4iHzu0korTIfxetKI9PrwBuid1omRZOuhevZGniy1fNsjjLn+N?=
+ =?us-ascii?Q?UJPuB4GPl0WwVWdV2aXBdaYhmxFUWlP0sFQMmP7qYp2ss/I5+HdAofNkufc8?=
+ =?us-ascii?Q?a6GCkh7TzUWw7XELZEIdQQ6j1JUSUVlP5nR4sbkNFjI292YVnDbPH7SXa4S6?=
+ =?us-ascii?Q?6VSC9WdJP7vCSdTH1RPI+/R/bgS9Pu4gOAyYFDUwssjh962HMa2LsTLy9yzd?=
+ =?us-ascii?Q?eTDSdJyMsN5ReNcQ0bxc5CmXHc0yHZ1QUMObA3jpnsoxNB7spw/d8xlM+ukg?=
+ =?us-ascii?Q?CnIzNupcWeADQhTCxaRHsSIG/XWocJtdSCbPSUtDB7od5anyCO2ywui8XcBp?=
+ =?us-ascii?Q?+EzVBKjC/YeRzA6brI9hV9SkeFGEm4/1cp3TvixAUiMDpHa0GMCBe6jtT8kn?=
+ =?us-ascii?Q?oZCLnLn8rpPv+8gNkB2cc0FkWgM2m+ej86uFjGZANaMqmJyMDUnXFj8gbdEG?=
+ =?us-ascii?Q?u+FsIkdmrHWz1NAqS3XSFFU3JY6JNvKOeTxGWqSbIiao1K0cL9MxjgbmO25x?=
+ =?us-ascii?Q?85h4annTR4w69IaIPbQIBg8alO9qJGZAEca7wBJlrrnzhnnxDkYXWO98MSnP?=
+ =?us-ascii?Q?MqpIVi9W3Ez8Q1oJNqIX7uP38A1B2G+iuSdmBlpXyD4lkg92gRCJDBdNRgO2?=
+ =?us-ascii?Q?W53LAU3TosMQ+pnqX6G53mPCxGYNEa55amb1cSoNbMLyTzNRDuAotmbY2Qa6?=
+ =?us-ascii?Q?qKBUVo5hZLOlQlirKXeQk+ahMyo5ZfsV65Bt3o7Ou7D6GbDWikjUEWxhlQu2?=
+ =?us-ascii?Q?+HXXherHUIKvQAx+UygNGy5lFIrJXpM+/uNjOc/bLmER0JGiDXRtu4UhXGTc?=
+ =?us-ascii?Q?05jLPkd7psZy1iepzKhmvizmVNVdXaE9xd2muoeTOZTv8a4A0JUPmBtsNeBW?=
+ =?us-ascii?Q?EJvVdT2yzSOGLQbCtLaWcPS2y2tl4oZF1ouob42b1mU37vy3JJue1F54lBBg?=
+ =?us-ascii?Q?rtFrybDRPmhJHl5EUEAMszn2T4SKW1BJhYk5/vR04a1nxkGYssB7Tuw7DmVr?=
+ =?us-ascii?Q?5bwKoWVdoh5Vp9XKkffIN9v6dH5Wf2FeVBgHESak+TyXYsNxZy9W5XwhGgaM?=
+ =?us-ascii?Q?OpI+CRuRFgLppADOmxQOYLNUEyQxmxtnBLpNRjld+TQcWO+L9fFwG716C9hS?=
+ =?us-ascii?Q?I4YJ9TxeWFSOXsjSKqx7uGA3lVf1bDqvHpidYJUHFD7rPTAVH+3tGb9LaAMB?=
+ =?us-ascii?Q?YO+fzQH324n3C6hsitguJubfATVS2RSH/UTZJTUM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d23b5a4-b982-4b0f-5656-08dbfa943158
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 21:57:39.4283
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7Ezl5umSFvAHYBApy9xMgl71Iudsvw6hIqSOAmHtGexCZ4D8OGClWDVqZzb5Jty0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5821
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/7/23 12:19, mpdesouza@suse.com wrote:
-> On Thu, 2023-12-07 at 10:20 -0500, Joe Lawrence wrote:
->> On 12/6/23 10:05, Miroslav Benes wrote:
->>> On Fri, 1 Dec 2023, Joe Lawrence wrote:
->>>
->>>> On Tue, Oct 31, 2023 at 06:10:52PM -0300, Marcos Paulo de Souza
->>>> wrote:
->>>>> The modules are being moved from lib/livepatch to
->>>>> tools/testing/selftests/livepatch/test_modules.
->>>>>
->>>>> This code moving will allow writing more complex tests, like
->>>>> for example an
->>>>> userspace C code that will call a livepatched kernel function.
->>>>>
->>>>> The modules are now built as out-of-tree
->>>>> modules, but being part of the kernel source means they will be
->>>>> maintained.
->>>>>
->>>>> Another advantage of the code moving is to be able to easily
->>>>> change,
->>>>> debug and rebuild the tests by running make on the
->>>>> selftests/livepatch directory,
->>>>> which is not currently possible since the modules on
->>>>> lib/livepatch are
->>>>> build and installed using the "modules" target.
->>>>>
->>>>> The current approach also keeps the ability to execute the
->>>>> tests manually by
->>>>> executing the scripts inside selftests/livepatch directory, as
->>>>> it's currently
->>>>> supported. If the modules are modified, they needed to be
->>>>> rebuilt before running
->>>>> the scripts though.
->>>>>
->>>>> The modules are built before running the selftests when using
->>>>> the
->>>>> kselftest invocations:
->>>>>
->>>>> 	make kselftest TARGETS=livepatch
->>>>> or
->>>>> 	make -C tools/testing/selftests/livepatch run_tests
->>>>>
->>>>
->>>> Quick question:
->>>>
->>>> - We have been building with CONFIG_LIVEPATCH_TEST=m to generate
->>>> the
->>>>    test modules at kernel build time
->>>>
->>>> - Our packaging filters out the selftest scripts and supporting
->>>> modules
->>>>    from the general kernel RPM package into their subpackages
->>>>
->>>> - Tests are run as part of CKI or other manual tests by
->>>> installing the
->>>>    pre-built packages from the previous step
->>>>
->>>>
->>>> After this patch, we would need to add something like the
->>>> following to
->>>> our kernel build, before packaging:
->>>>
->>>>    $ make KDIR=$(pwd) -C tools/testing/selftests/livepatch/
->>>>           ^^^^
->>>>
->>>> If this is the correct way to build the test modules for *this*
->>>> tree and
->>>> /lib/modules/$(shell uname -r)/build... it might be useful to
->>>> document
->>>> in the commit message as an alternative use case.
+On Mon, Dec 11, 2023 at 01:27:49PM -0800, Nicolin Chen wrote:
+> On Fri, Dec 08, 2023 at 09:47:26PM -0400, Jason Gunthorpe wrote:
+> > What is in a Nested domain:
+> >  ARM: A CD table pointer
+> >       Nesting domains are created for every unique CD table top pointer.
 > 
-> That's right:
-> 
-> $ make -C tools/testing/selftests/livepatch/
-> 
-> is indeed the way to build the tests without running them. KDIR will be
-> set to  /lib/modules/$(shell uname -r)/build is empty.
-> 
-> Yes, I can definitely add documentation about it inside the
-> tools/testing/selftests/livepatch/README.
-> 
+> I think we basically implemented in a way of syncing STE, i,e,
+> vSTE.Config must be "S1 Translate" besides a CD table pointer,
+> and a nested domain is freed when vSTE.Config=BYPASS even if a
+> CD table pointer is present, right?
 
-How does the default kselftest run work with these changes?
+Yes, but you can also de-duplicate the nested domains based on the CD
+table pointer. It is not as critical for ARM as others, but may
+still be worth doing.
 
-make ksefltest - does this still work as it did before this change?
+> > To make this work the iommu needs to be programmed with:
+> >  AMD: A vDomain-ID -> pDomain-ID table
+> >       A vRID -> pRID table
+> >       This is all bound to some "virtual function"
+> >  ARM: A vRID -> pRID table
+> >       The vCMDQ is bound to a VM_ID, so to the Nesting Parent
+> 
+> VCMDQ also has something called "virtual interface" that holds
+> a VMID and a list of CMDQ queues, which might be a bit similar
+> to AMD's "virtual function".
 
-thanks,
--- Shuah
+Yeah, there must be some kind of logical grouping of HW objects to
+build that kind of stuff.
 
+> > The vRID->pRID table should be some mostly common
+> > IOMMUFD_DEV_ASSIGN_VIRTUAL_ID. AMD will need to pass in the virtual
+> > function ID and ARM will need to pass in the Nesting Parent ID.
+> 
+> It sounds like our previous IOMMUFD_SET/UNSET_IDEV_DATA. I'm
+> wondering if we need to make it exclusive to the ID assigning?
+> Maybe set_idev_data could be reused for other potential cases?
+
+No, it should be an API only for the ID
+ 
+> If we do implement an IOMMUFD_DEV_ASSIGN_VIRTUAL_ID, do we need
+> an IOMMUFD_DEV_RESIGN_VIRTUAL_ID? (or better word than resign).
+
+I don't think so.. The vRID is basically fixed, if it needs to be
+changed then the device can be destroyed (or assign can just change it)
+
+> Could the structure just look like this?
+> struct iommu_dev_assign_virtual_id {
+>        __u32 size;
+>        __u32 dev_id;
+>        __u32 id_type;
+>        __u32 id;
+> };
+
+It needs to take in the viommu_id also, and I'd make the id 64 bits
+just for good luck.
+
+> > In many ways the nesting parent/virtual function are very similar
+> > things. Perhaps ARM should also create a virtual function object which
+> > is just welded to the nesting parent for API consistency.
+> 
+> A virtual function that holds an S2 domain/iopt + a VMID? If
+> this is for VCMDQ, the VMCDQ extension driver has that kinda
+> object holding an S2 domain: I implemented as the extension
+> function at the end of arm_smmu_finalise_s2() previously.
+
+Not so much hold a S2, but that the VMID would be forced to be shared
+amung them somehow.
+
+> > IOMMUFD_DEV_INVALIDATE should be introduced with the same design as
+> > HWPT invalidate. This would be used for AMD/ARM's ATC invalidation
+> > (and just force the stream ID, userspace must direct the vRID to the
+> > correct dev_id).
+> 
+> SMMU's CD invalidations could fall into this category too.
+
+Yes, I forgot to look closely at the CD/GCR3 table invalidations :(
+I actually can't tell how AMD invalidates any GCR3 cache, maybe
+INVALIDATE_DEVTAB_ENTRY?
+
+> > Then in yet another series we can tackle the entire "virtual function"
+> > vRID/pRID translation stuff when the mmapable queue thing is
+> > introduced.
+> 
+> VCMDQ is also a mmapable queue. I feel that there could be
+> more common stuff between "virtual function" and "virtual
+> interface", I'll need to take a look at AMD's stuff though.
+
+I'm not thinking of two things right now at least..
+
+> I previously drafted something to test it out with iommufd.
+> Basically it needs the pairing of vRID/pRID in attach_dev()
+> and another ioctl to mmap/config user queue(s):
+> +struct iommu_hwpt_cache_config_tegra241_vcmdq {
+> +       __u32 vcmdq_id;			// queue id
+> +       __u32 vcmdq_log2size;		// queue size
+> +       __aligned_u64 vcmdq_base;	// queue guest PA
+> +};
+
+vRID/pRID pairing should come from IOMMUFD_DEV_ASSIGN_VIRTUAL_ID. When
+a HWPT is allocated it would be connected to the viommu_id and then it
+would all be bundled together in the HW somehow
+
+From there you can ask the viommu_id to setup a queue.
+
+Jason
