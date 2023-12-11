@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C471E80D488
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B1180D48A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345135AbjLKRvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        id S1345144AbjLKRvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344578AbjLKRut (ORCPT
+        with ESMTP id S1344796AbjLKRuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:50:49 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4012493;
-        Mon, 11 Dec 2023 09:50:55 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50d176eb382so4042209e87.2;
-        Mon, 11 Dec 2023 09:50:55 -0800 (PST)
+        Mon, 11 Dec 2023 12:50:50 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6700FC7;
+        Mon, 11 Dec 2023 09:50:56 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2ca0d14976aso63332731fa.2;
+        Mon, 11 Dec 2023 09:50:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702317053; x=1702921853; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702317054; x=1702921854; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tsJX+Qboa5vi8f2nlAdje7XxRx8QzHIYwHcUKKyZ1AE=;
-        b=FHW5Q7Ge8RTNlxvNzMIVT9FHiIz+3+KLPU9iaku/akVCwWCXOovSH99NRX2uE2EptN
-         BtV42L1xZZZNYjbwNKr4mlc6uVGxj/1837PsA+1DVdl9z0G5DHKCQBjuZJIZILWuGdYk
-         gZPfvQ27RXfGCutmBTg4iAHnIqzPH4fHyeoNvH7Q1c+a7LCkMR2vRFjkp7YvSkvvxih5
-         2x9KFPVYgUNxkiDNXYPcCSe+tMzRgwyc9cd/9ke6c+2N+hwIfwwwMDYufyUIXzt4KK+O
-         bqiZjNlnJIv09rFOweasHRmHfbRb7NaS+EmtmAnboeJAV/AfVu5bSCpV3JG0MXngK+Nx
-         4RxQ==
+        bh=SSLorSrmwJkpM8Qw+vtX+TJSDohLzn/aN7e/ge7Qmsg=;
+        b=ikL22BnHK4Vla7jiqEVbE/smiIIHLZ3A/hqmCsK+cJyfFWOhctUEqM/wjeYybnoYHP
+         dNuCmlnNdd6bD194+Fga/ywjzgWc7qYQP3AHQvDA9Ik2NrbtHllzfQwUTcpw/GvRZxTv
+         vK5IqUS6wAbM4VAdgg9znPclUkE1RalM5z8Yecu/Opy/wGgtcwUaDrxGLlHcWOUPg2OH
+         kfON1bTySuaJ1DaznrzpTWOiOJXW9jhG3xmvKlM5LSUVUpFfC1hrMVILpZuRiYVDwjQS
+         HN9PT2m7FcEi4WwodP2UM5gfZcEOz9A/uD2Dv79vg3/UVD5M1IsiEG23HYlcvaWuWneK
+         pKRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702317053; x=1702921853;
+        d=1e100.net; s=20230601; t=1702317054; x=1702921854;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tsJX+Qboa5vi8f2nlAdje7XxRx8QzHIYwHcUKKyZ1AE=;
-        b=QmzCt5MErbktnaW6E0CaBQeNntLk2jp0BIm67DampV8xZOE97kOB7Y2XYjNjfn/h+S
-         axxVsDlq+X9jIqRMCWqMVojyEe4vkgBSD0PE/W5k2AwfzXOlRfPhfMvGHA/AfiVFZMVn
-         pOUaO7AhAf1b8LBh4AbyQK++zEkVAcIsXQU7luitRceDoHQyPF0qB8Wzo/fru9lZEeFE
-         T0LR72h+gQygNRXkveAmIW+SikBEBdNBRSsQPZobCtKeIzh68y/TZxq9ftuKRk6sHFgl
-         q1mZ4RaK/WhSg6hIFg8l7kNshiWZZ5te7HyeTEw4BCgMWzBk57KuqQSpty/cPjG6lsiJ
-         Y7nw==
-X-Gm-Message-State: AOJu0Yy2enAMxwajp7tpZs4oK5GffwRj/ofNxhwhd9gSzIR1uQIv2bdA
-        Fd8lPxkRtN637UgXE571mnWYfXrHvtLM0/qT
-X-Google-Smtp-Source: AGHT+IHWmoO4gOl4K1CGXOUSRKjBpgui2q6MybzatvHWDbLEyc5cgeIEIekJLGsvIuPTPGHTR4U/XQ==
-X-Received: by 2002:a05:6512:1308:b0:50d:1a14:2f78 with SMTP id x8-20020a056512130800b0050d1a142f78mr3033484lfu.86.1702317052809;
-        Mon, 11 Dec 2023 09:50:52 -0800 (PST)
+        bh=SSLorSrmwJkpM8Qw+vtX+TJSDohLzn/aN7e/ge7Qmsg=;
+        b=jSF/WLgy47mp5bQPtQu44LhO+ElRgfTvZ2zlQ2Dy1JJa8XnSPu81JKufBx9903ro56
+         q7dFYHYE2bodKl2FBK2Im0qPeDFfTaoMuEf9a63bWhSOePkT9icH0XUcknrlJeE3SwE1
+         ZJ4e9Ul/2nbC5gGrB6ZiYwj12DUxVvTXKzEMvbB2vudG1q0yHyfYReUnFkQqQFOgSqpW
+         JjnlEkAhbrZjxGnIJ46Eqtff/4nmAwp2SUEp/vvTatfvNJH/RjTdQEbD0eznbE1ZUOYA
+         SGA6Ijo7w5AW1d2HqjQsbrdfq4tEPrVQZZlohrIz4NUryGJlvocCqTZA/koHmUV7FhCO
+         sz5g==
+X-Gm-Message-State: AOJu0Yw8ejmhunmZ4c3lUvHSxB0skgTFpXN5soE0Sns82JX6O5XBh68V
+        hrVAavrdsdSDntEOWJs3lSLm0Tgl6tcF7sT7
+X-Google-Smtp-Source: AGHT+IEjRjqFvVPuCtszQaaZCq9Xh/DE8LO9Gs+FtbYntjTfD6EC2/nB0YQlQEmyQKcszpY80GRmVw==
+X-Received: by 2002:a2e:a545:0:b0:2cc:202f:6266 with SMTP id e5-20020a2ea545000000b002cc202f6266mr917704ljn.96.1702317053973;
+        Mon, 11 Dec 2023 09:50:53 -0800 (PST)
 Received: from localhost ([83.149.246.185])
-        by smtp.gmail.com with ESMTPSA id k18-20020ac24572000000b0050bfdfe0133sm1127334lfm.134.2023.12.11.09.50.52
+        by smtp.gmail.com with ESMTPSA id 13-20020a2e154d000000b002ca03d01360sm1360796ljv.23.2023.12.11.09.50.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:50:52 -0800 (PST)
+        Mon, 11 Dec 2023 09:50:53 -0800 (PST)
 From:   Mikhail Rudenko <mike.rudenko@gmail.com>
 To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
@@ -60,9 +60,9 @@ Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
         Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH 08/19] media: i2c: ov4689: Enable runtime PM before registering sub-device
-Date:   Mon, 11 Dec 2023 20:50:11 +0300
-Message-ID: <20231211175023.1680247-9-mike.rudenko@gmail.com>
+Subject: [PATCH 09/19] media: i2c: ov4689: Remove max_fps field from struct ov4689_mode
+Date:   Mon, 11 Dec 2023 20:50:12 +0300
+Message-ID: <20231211175023.1680247-10-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231211175023.1680247-1-mike.rudenko@gmail.com>
 References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
@@ -78,39 +78,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the sensor may be accessible right after its async sub-device is
-registered, enable runtime PM before doing so.
+max_fps field of struct ov4689_mode is unused in this driver, so
+remove it.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/media/i2c/ov4689.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/i2c/ov4689.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 2eef64cd0070..ba33b0ced532 100644
+index ba33b0ced532..9fa06941a0e5 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -874,16 +874,16 @@ static int ov4689_probe(struct i2c_client *client)
- 		goto err_clean_entity;
- 	}
- 
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+	pm_runtime_idle(dev);
-+
- 	ret = v4l2_async_register_subdev_sensor(sd);
- 	if (ret) {
- 		dev_err(dev, "v4l2 async register subdev failed\n");
- 		goto err_clean_subdev;
- 	}
- 
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--	pm_runtime_idle(dev);
--
- 	return 0;
- 
- err_clean_subdev:
+@@ -60,7 +60,6 @@ struct ov4689_mode {
+ 	enum ov4689_mode_id id;
+ 	u32 width;
+ 	u32 height;
+-	u32 max_fps;
+ 	u32 hts_def;
+ 	u32 vts_def;
+ 	u32 exp_def;
+@@ -237,7 +236,6 @@ static const struct ov4689_mode supported_modes[] = {
+ 		.sensor_height = 1536,
+ 		.crop_top = 8,
+ 		.crop_left = 16,
+-		.max_fps = 30,
+ 		.exp_def = 1536,
+ 		.hts_def = 4 * 2574,
+ 		.vts_def = 1554,
 -- 
 2.43.0
 
