@@ -2,124 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F91080CB4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC3E80CB50
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343634AbjLKNpD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 08:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S1343632AbjLKNpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234350AbjLKNpC (ORCPT
+        with ESMTP id S1343677AbjLKNpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:45:02 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8288AD;
-        Mon, 11 Dec 2023 05:45:08 -0800 (PST)
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6da06c505ccso470126a34.1;
-        Mon, 11 Dec 2023 05:45:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702302308; x=1702907108;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JuMgu00NLAwah5dEifMlDlKfcOMiONZuqYgJcIiGOM8=;
-        b=i+iRV5V6qyTFUIOc4PMslxyJAy+OSs2yBAcLez0WBYLvDItzVs79T3W36VxNe0jOXw
-         Xls/vjH+aqV+e/LGYQJO6C3afCf3rg6TaUNmT7BaETe4oHH3KxPnoIQGWLq6qyg7qzTt
-         vOcsb1ygdjozEDkpuc73lFzisQUfqqgA0Eb7rhhYhf9v80aLtgTJyQKY60loI0r0sLQ2
-         63magvwBUUm7N8BxeJ4AMnTP2AUs0Tc2bAgreEWaS74jSsQenYBooig2qkwVnaNLF4mO
-         OCk6I8lpYO4QOMzp6pAVdqXgcwPi3RYDxhTD27bqL/S2h0GsUX6/yKz3RZfo3xdhA9jc
-         fXbA==
-X-Gm-Message-State: AOJu0Yxaubv0EP4fZ8nxcdAVhoDmk8qCBbdYfrGYtXjMBSaADU83ApgR
-        dtUIMYWCU5Dnugnzq51ZbKOZQhn9mRhE4kKBIIA=
-X-Google-Smtp-Source: AGHT+IGpVo/RGKXFZCViZPQ7IBpVlFW6xo6IlTjrh3Sd3P8kFOK+vhAun4TccGy7fygLfPuC+ozfhofEy7Ae0nR8fXs=
-X-Received: by 2002:a05:6870:9607:b0:1fb:23ec:3318 with SMTP id
- d7-20020a056870960700b001fb23ec3318mr8409458oaq.0.1702302308012; Mon, 11 Dec
- 2023 05:45:08 -0800 (PST)
+        Mon, 11 Dec 2023 08:45:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C8BC3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:45:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60EA5C433C7;
+        Mon, 11 Dec 2023 13:45:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702302346;
+        bh=Vimk7e5q40vbEzlVSqmm3kbcefcVNReNYU3xVrjn7UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ia8K5YU07aWkSia4+D7y7qWaRQSjVcDxDW60yyrWupGZojJs0MjFRSnA3lYB1ztL5
+         xT9BJBX3m2oTKskbvhVuyIMK9M3rtASK0Rcc3jDUyYVDBRNbY+zj6BtAsMru6dOTA+
+         1f9+4NGo3LpW0314VlkPmTpmk1olfSMGJqC1TV3M3jaMG71JttQ9sqiSFR5ol0aCbI
+         qbvbj4NixxpeOVD7KYX16ZnZTFVMrpZPgpTPviTB9rihySzYIFh+6xNxiPK959LASY
+         gB+OZ3LWpa/naoR/t2GYzpe6vEU1mB75GKvx8YCseHHa293/fZrQUkKE4zGprZjUry
+         4bGhfYhRIis4Q==
+Date:   Mon, 11 Dec 2023 15:45:42 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Daniel Vacek <neelx@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Subject: Re: [PATCH 1/2] IB/ipoib: Fix mcast list locking
+Message-ID: <20231211134542.GG4870@unreal>
+References: <20231211130426.1500427-1-neelx@redhat.com>
+ <20231211130426.1500427-2-neelx@redhat.com>
 MIME-Version: 1.0
-References: <1880915.tdWV9SEqCh@kreacher> <a317fd5b-85df-409f-96e2-8123eea6ca73@arm.com>
-In-Reply-To: <a317fd5b-85df-409f-96e2-8123eea6ca73@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 11 Dec 2023 14:44:51 +0100
-Message-ID: <CAJZ5v0g3exHkX6FLsmbYUcOJHstWOfVf_QnEnm8KmqoYCYwdjA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] thermal: core: Remove thermal zones during unregistration
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211130426.1500427-2-neelx@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
+On Mon, Dec 11, 2023 at 02:04:24PM +0100, Daniel Vacek wrote:
+> We need an additional protection against list removal between ipoib_mcast_join_task()
+> and ipoib_mcast_dev_flush() in case the &priv->lock needs to be dropped while
+> iterating the &priv->multicast_list in ipoib_mcast_join_task(). If the mcast
+> is removed while the lock was dropped, the for loop spins forever resulting
+> in a hard lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
+> 
+>     Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
+>     -----------------------------------+-----------------------------------
+>     ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
+>       spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
+>       list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
+>           &priv->multicast_list, list) |   mutex_lock(&priv->mcast_mutex)
+>         ipoib_mcast_join(dev, mcast)   |
+>           spin_unlock_irq(&priv->lock) |
+>                                        |   spin_lock_irqsave(&priv->lock, flags)
+>                                        |   list_for_each_entry_safe(mcast, tmcast,
+>                                        |                  &priv->multicast_list, list)
+>                                        |     list_del(&mcast->list);
+>                                        |     list_add_tail(&mcast->list, &remove_list)
+>                                        |   spin_unlock_irqrestore(&priv->lock, flags)
+>           spin_lock_irq(&priv->lock)   |
+>                                        |   ipoib_mcast_remove_list(&remove_list)
+>    (Here, mcast is no longer on the    |     list_for_each_entry_safe(mcast, tmcast,
+>     &priv->multicast_list and we keep  |                            remove_list, list)
+>     spinning on the &remove_list of the \ >>>  wait_for_completion(&mcast->done)
+>     other thread which is blocked and the|
+>     list is still valid on it's stack.)  | mutex_unlock(&priv->mcast_mutex)
+> 
+> Fix this by adding mutex_lock(&priv->mcast_mutex) to ipoib_mcast_join_task().
 
-On Mon, Dec 11, 2023 at 2:37 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> Hi Rafael,
->
-> On 12/8/23 19:11, Rafael J. Wysocki wrote:
-> > Hi All,
-> >
-> > This patch series adds a mechanism to guarantee that
-> > thermal_zone_device_unregister() will not return until all of the active
-> > references to the thermal zone device object in question have been dropped
-> > and it has been deleted (patch [1/3]).
-> >
-> > This supersedes the approach used so far in which all thermal zone sysfs
-> > attribute callbacks check if the zone device is still registered under the
-> > zone lock, so as to return early if that is not the case, as it means that
-> > device_del() has been called for the thermal zone in question (and returned).
-> > It is not necessary to do that any more after patch [1/3], so patch [2/3]
-> > removes those checks from the code and drops zone locking that is not
-> > necessary any more either.
-> >
-> > Patch [3/3] uses the observation that the thermal subsystem does not need to
-> > check if a thermal zone device is registered at all, because it can use its
-> > own data to determine whether or not the thermal zone is going away and so
-> > it may not be worth updating it, for example.
-> >
-> > Please refer to the patch changelogs for details.
-> >
-> > The series depends on new thermal material in linux-next, but it should not
-> > substantially depend on any changes that have not made it into linux-next yet.
-> >
-> > Thanks!
-> >
-> >
-> >
->
-> I like the concept with completion thing for this.
-> I have tired to stress test these patches with my mock
-> thermal zone module load/unload and it works good.
->
-> The test was doing the these bits:
-> for i in $(seq 1 1000000) ; do cat
-> /sys/class/thermal/thermal_zone2/trip_point_0_temp > /dev/null 2>&1 ; done &
-> for i in $(seq 1 10000) ; do insmod /data/selftest_ipa.ko ; rmmod
-> selftest_ipa ; done &
->
-> I couldn't trigger any issues in reading from this
-> trip temp file in background, which should go now w/o the
-> locking. I thought it would be nice test, since we have
-> direct call to trips array 'tz->trips[trip_id].temperature'.
-> Let me know if you think about other scenario for stress testing it.
-> (I have also checked the 'temp' sysfs read, where the mutex for
-> tz is used - also no issues).
->
-> Feel free to add to all patches:
->
-> Reviewed-and-tested-by: Lukasz Luba <lukasz.luba@arm.com>
+I don't entirely understand the issue and the proposed solution.
+There is only one spin_unlock_irq() in the middle of list_for_each_entry(mcast, &priv->multicast_list, list)
+and it is right before return statement which will break the loop. So
+how will loop spin forever?
 
-Thank you!
+Thanks
+
+> Unfortunately we could not reproduce the lockup and confirm this fix but
+> based on the code review I think this fix should address such lockups.
+> 
+> crash> bc 31
+> PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
+> --
+>     [exception RIP: ipoib_mcast_join_task+0x1b1]
+>     RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
+>     RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
+>                                   work (&priv->mcast_task{,.work})
+>     RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
+>            &mcast->list
+>     RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
+>     R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
+>                                                          mcast
+>     R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
+>            dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
+>     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+> --- <NMI exception stack> ---
+>  #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
+>  #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
+> 
+> crash> rx ff646f199a8c7e68
+> ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
+> 
+> crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
+> (empty)
+> 
+> crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
+>   mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
+>   mcast_mutex.owner.counter = 0xff1c69998efec000
+> 
+> crash> b 8
+> PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
+> --
+>  #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
+>  #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
+>  #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
+>  #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
+>  #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
+> 
+> crash> rx ff646f1980153e68
+> ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
+> 
+> crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
+>   flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
+>   broadcast = 0x0,
+> 
+> The mcast(s) on the &remove_list (the remaining part of the ex &priv->multicast_list):
+> 
+> crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
+> ff1c6a192bd0c200	  done.done = 0x0,
+> ff1c6a192d60ac00	  done.done = 0x0,
+> 
+> Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+> Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> ---
+>  drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> index 5b3154503bf4..8e4f2c8839be 100644
+> --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> @@ -580,6 +580,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+>  	}
+>  	netif_addr_unlock_bh(dev);
+>  
+> +	mutex_lock(&priv->mcast_mutex);
+>  	spin_lock_irq(&priv->lock);
+>  	if (!test_bit(IPOIB_FLAG_OPER_UP, &priv->flags))
+>  		goto out;
+> @@ -634,6 +635,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+>  				/* Found the next unjoined group */
+>  				if (ipoib_mcast_join(dev, mcast)) {
+>  					spin_unlock_irq(&priv->lock);
+> +					mutex_unlock(&priv->mcast_mutex);
+>  					return;
+>  				}
+>  			} else if (!delay_until ||
+> @@ -655,6 +657,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+>  		ipoib_mcast_join(dev, mcast);
+>  
+>  	spin_unlock_irq(&priv->lock);
+> +	mutex_unlock(&priv->mcast_mutex);
+>  }
+>  
+>  void ipoib_mcast_start_thread(struct net_device *dev)
+> -- 
+> 2.43.0
+> 
