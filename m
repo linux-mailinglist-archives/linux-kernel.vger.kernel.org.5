@@ -2,175 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255CF80CE30
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6739F80CE49
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 15:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbjLKOTz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Dec 2023 09:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S1343847AbjLKOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 09:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344151AbjLKOTm (ORCPT
+        with ESMTP id S235042AbjLKOZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 09:19:42 -0500
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DA0824B;
-        Mon, 11 Dec 2023 06:17:44 -0800 (PST)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a1e35c2807fso601095966b.3;
-        Mon, 11 Dec 2023 06:17:44 -0800 (PST)
+        Mon, 11 Dec 2023 09:25:00 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FEC5B89;
+        Mon, 11 Dec 2023 06:17:32 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1d93da3eb7so525087666b.0;
+        Mon, 11 Dec 2023 06:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702304251; x=1702909051; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xjgDoH5wpFTvBtjku8JEMjQ8hKrrQC8Hfkdc8NZQjks=;
+        b=FR6iqYo4r0ATlem3wbq4NcI62K62L4+Oom6+PvSCOn+jPjJnY+vUwt9cgQFu0EETQ5
+         57EqkROIKrr7aE9TOWQ6CmTZBEJiwdJoCUhsXfkK2xsJLM53cp+66859nrloFABybCza
+         osKVUfQ2ZGfbv4pgu9ZXiGmq7yaBnEaOKmuE8z1vsbxoz+7j4DpL5kR0swHGpfeTpANX
+         zhSJ5FhI/L5vPbHY243UGG3ehksjlxUGADF+G+4gm+a5FqXevtjc2njkf0dNbiiPkOHN
+         NqTdQjrA7T3IpBm6pRPa8jDHvM1VrUPfYNc3UZVYjGKtWVB1DS54PC6h3SB1f8AFf6Kc
+         5DbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702304262; x=1702909062;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702304251; x=1702909051;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+FeyufrOe65ZibAeQSako8BHcEODv5E1MPLsl6l5HtI=;
-        b=fO6OzB0K2KNG1anlqD/oBq5jSfBeyJF83zhsJzP7ZWKwMkchP3fmUXDI6iiya5f38+
-         G2hmBV2+W0a9XUZb2pJ7hC8niYharroqUjufcXYCPn0GuAxz/iqEs/Wxw17obUthgFDL
-         zY27coh822FRBfkjtQwUHPWgsMi8XiKHMomNG9Zm4UOOFuTdtNnWxxHpClydS9K2+Cez
-         +zBp4teEKVbM5M2ty+y+EBju7ELyveiRxzt7ib/GntGE7/eKxJld/mtbmdIsDT+Bt63I
-         WQZnYVzoWMFhpMhhZcZRxGaX5O1sZWSwTfSp3zdAlo8jgpLAaQYwrOamhhoowPnOEAns
-         MmSg==
-X-Gm-Message-State: AOJu0Yz9uqJ309693OgpPJHuHVDSXIUl7qY+E6H8mg56bvog6hUoHw/2
-        dmzxEAta2oAzz5EQb+sHdVXPK7EdEU3KLfXP
-X-Google-Smtp-Source: AGHT+IElSDIxJjWSVnMjDAAtT2qsXohdRhPZR+zEeZhwnYUjsdGpL2ftL7TJVbc0Q0uo68D+fHJDSw==
-X-Received: by 2002:a17:907:968c:b0:a1b:70fe:e896 with SMTP id hd12-20020a170907968c00b00a1b70fee896mr2542319ejc.130.1702304261904;
-        Mon, 11 Dec 2023 06:17:41 -0800 (PST)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id ig8-20020a1709072e0800b00a1d754b30a9sm4839608ejc.86.2023.12.11.06.17.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Dec 2023 06:17:41 -0800 (PST)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54dcfca54e0so5724873a12.1;
-        Mon, 11 Dec 2023 06:17:41 -0800 (PST)
-X-Received: by 2002:a05:6402:1a59:b0:54c:4837:a659 with SMTP id
- bf25-20020a0564021a5900b0054c4837a659mr2627320edb.70.1702304261586; Mon, 11
- Dec 2023 06:17:41 -0800 (PST)
+        bh=xjgDoH5wpFTvBtjku8JEMjQ8hKrrQC8Hfkdc8NZQjks=;
+        b=PY380t9i3U4aglAXgA65ICNJoaFvP8sMYEyKJao9vBQuodToSpsSO06oP++sB1pZpQ
+         YXI8KpJ9ouc0pwu75p7qpSo1xmnbZPTJY0PqPdTXxrGzEfmAq78bA7nvM8vrtHhusk/A
+         1F/MgfdKhrF6pAvh9YBSU+JdIxnKVV8xyyn8FPVKeSlCLUR3O8RCeFN3jq0RlxqeRh6X
+         utx3a7EGkTzwUsQVv4pouyrNfgE2pUPsEVVELhvWxrnh7CTNfS5gQvjS5i3VIpq2omJa
+         cSR7GNtfl13b5F7Ddv0mqu6cisIlhrZjrwpMu1fQjezcBqitfalB8/wC3wrVXqJTFKnE
+         jl1Q==
+X-Gm-Message-State: AOJu0Ywf3MjpRodt/m7L78bAJuu+ZwhUelUhAOzVEKYjKYr7RuhVdh/W
+        xfidIJ0/hTOWra1sjVnp0X0=
+X-Google-Smtp-Source: AGHT+IGvtRp1DsOkZJ5XmsG/dnogTspAPXgW486VHcUzxU/sxVwTq6S7cWTfJRA7TFXSMcwnZYFJ4w==
+X-Received: by 2002:a17:906:512:b0:a19:a1ba:8cb6 with SMTP id j18-20020a170906051200b00a19a1ba8cb6mr2088159eja.84.1702304250718;
+        Mon, 11 Dec 2023 06:17:30 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id vc11-20020a170907d08b00b00a1ce58e9fc7sm4849982ejc.64.2023.12.11.06.17.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 06:17:30 -0800 (PST)
+Date:   Mon, 11 Dec 2023 15:17:28 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/4] pwm: bcm2835: allow pwm driver to be used in
+ atomic context
+Message-ID: <ZXcZ-D2Bc58ydsIn@orome.fritz.box>
+References: <cover.1701248996.git.sean@mess.org>
+ <179dc1ce85702a8b64b43c0e0df656b0c5e3ce30.1701248996.git.sean@mess.org>
+ <ZXNC3JYy7CTfYsyC@orome.fritz.box>
+ <ZXNL5upeUPc4gC1R@gofer.mess.org>
+ <20231208172040.mgw7aicmwlw6yjyb@pengutronix.de>
 MIME-Version: 1.0
-References: <CAOgh=Fwb+JCTQ-iqzjq8st9qbvauxc4gqqafjWG2Xc08MeBabQ@mail.gmail.com>
-In-Reply-To: <CAOgh=Fwb+JCTQ-iqzjq8st9qbvauxc4gqqafjWG2Xc08MeBabQ@mail.gmail.com>
-From:   Neal Gompa <neal@gompa.dev>
-Date:   Mon, 11 Dec 2023 09:17:04 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je_TFh9wF3K0JU2SPkskHB4A-KBkxVKKQ5yn1=PNSZQRdw@mail.gmail.com>
-Message-ID: <CAEg-Je_TFh9wF3K0JU2SPkskHB4A-KBkxVKKQ5yn1=PNSZQRdw@mail.gmail.com>
-Subject: Re: [RFC KERNEL] initoverlayfs - a scalable initial filesystem
-To:     Eric Curtin <ecurtin@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        Daan De Meyer <daan.j.demeyer@gmail.com>,
-        Stephen Smoogen <ssmoogen@redhat.com>,
-        Yariv Rachmani <yrachman@redhat.com>,
-        Daniel Walsh <dwalsh@redhat.com>,
-        Douglas Landgraf <dlandgra@redhat.com>,
-        Alexander Larsson <alexl@redhat.com>,
-        Colin Walters <walters@redhat.com>,
-        Brian Masney <bmasney@redhat.com>,
-        Eric Chanudet <echanude@redhat.com>,
-        Pavol Brilla <pbrilla@redhat.com>,
-        Lokesh Mandvekar <lmandvek@redhat.com>,
-        =?UTF-8?B?UGV0ciDFoGFiYXRh?= <psabata@redhat.com>,
-        Lennart Poettering <lennart@poettering.net>,
-        Luca Boccassi <bluca@debian.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gN2yPszgClY7v+2k"
+Content-Disposition: inline
+In-Reply-To: <20231208172040.mgw7aicmwlw6yjyb@pengutronix.de>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 8:46 AM Eric Curtin <ecurtin@redhat.com> wrote:
->
-> Hi All,
->
-> We have recently been working on something called initoverlayfs, which
-> we sent an RFC email to the systemd and dracut mailing lists to gather
-> feedback. This is an exploratory email as we are unsure if a solution
-> like this fits in userspace or kernelspace and we would like to gather
-> feedback from the community.
->
-> To describe this briefly, the idea is to use erofs+overlayfs as an
-> initial filesystem rather than an initramfs. The benefits are, we can
-> start userspace significantly faster as we do not have to unpack,
-> decompress and populate a tmpfs upfront, instead we can rely on
-> transparent decompression like lz4hc instead. What we believe is the
-> greater benefit, is that we can have less fear of initial filesystem
-> bloat, as when you are using transparent decompression you only pay
-> for decompressing the bytes you actually use.
->
-> We implemented the first version of this, by creating a small
-> initramfs that only contains storage drivers, udev and a couple of 100
-> lines of C code, just enough userspace to mount an erofs with
-> transient overlay. Then we build a second initramfs which has all the
-> contents of a normal everyday initramfs with all the bells and
-> whistles and convert this into an erofs.
->
-> Then at boot time you basically transition to this erofs+overlayfs in
-> userspace and everything works as normal as it would in a traditional
-> initramfs.
->
-> The current implementation looks like this:
->
-> ```
-> From the filesystem perspective (roughly):
->
-> fw -> bootloader -> kernel -> mini-initramfs -> initoverlayfs -> rootfs
->
-> From the process perspective (roughly):
->
-> fw -> bootloader -> kernel -> storage-init   -> init ----------------->
-> ```
->
-> But we have been asking the question whether we should be implementing
-> this in kernelspace so it looks more like:
->
-> ```
-> From the filesystem perspective (roughly):
->
-> fw -> bootloader -> kernel -> initoverlayfs -> rootfs
->
-> From the process perspective (roughly):
->
-> fw -> bootloader -> kernel -> init ----------------->
-> ```
->
-> The kind of questions we are asking are: Would it be possible to
-> implement this in kernelspace so we could just mount the initial
-> filesystem data as an erofs+overlayfs filesystem without unpacking,
-> decompressing, copying the data to a tmpfs, etc.? Could we memmap the
-> initramfs buffer and mount it like an erofs? What other considerations
-> should be taken into account?
->
-> Echo'ing Lennart we must also "keep in mind from the beginning how
-> authentication of every component of your process shall work" as
-> that's essential to a couple of different Linux distributions today.
->
-> We kept this email short because we want people to read it and avoid
-> duplicating information from elsewhere. The effort is described from
-> different perspectives in the systemd/dracut RFC email and github
-> README.md if you'd like to learn more, it's worth reading the
-> discussion in the systemd mailing list:
->
-> https://marc.info/?l=systemd-devel&m=170214639006704&w=2
->
-> https://github.com/containers/initoverlayfs/blob/main/README.md
->
-> We also received feedback informally in the community that it would be
-> nice if we could optionally use btrfs as an alternative.
->
-> Is mise le meas/Regards,
->
-> Eric Curtin
->
 
-Adding linux-btrfs@ to the discussion, because I think it'd be useful
-to include them for what handling btrfs as an alternative to
-erofs+overlayfs would look like.
+--gN2yPszgClY7v+2k
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Dec 08, 2023 at 06:20:40PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> On Fri, Dec 08, 2023 at 05:01:26PM +0000, Sean Young wrote:
+> > On Fri, Dec 08, 2023 at 05:22:52PM +0100, Thierry Reding wrote:
+> > > On Wed, Nov 29, 2023 at 09:13:36AM +0000, Sean Young wrote:
+> > > > clk_get_rate() may do a mutex lock. Fetch the clock rate once, and =
+prevent
+> > > > rate changes using clk_rate_exclusive_get().
+> > > >=20
+> > > > Signed-off-by: Sean Young <sean@mess.org>
+> > > > ---
+> > > >  drivers/pwm/pwm-bcm2835.c | 31 +++++++++++++++++++++----------
+> > > >  1 file changed, 21 insertions(+), 10 deletions(-)
+> > >=20
+> > > s/pwm/PWM/ in the subject. Although, I guess you could just drop the
+> > > "PWM" altogether because the subject prefix implies that this is for
+> > > PWM.
+> >=20
+> > $ git log --no-merges --oneline drivers/pwm/ | sed -r 's/^\w* ([^:]+): =
+=2E*/\1/' | sort | uniq -c
+> >    1197 pwm
+> >       1 PWM
+> >   ...
+> >=20
+> > The vast majority of the commits use pwm: as a prefix, only one uses PW=
+M:.=20
+> > In fact if you look across the tree almost everywhere lower case is used
+> > for the prefix.
+>=20
+> Thierry doesn't want you to change the subject prefix, but only the
+> second "pwm" to make it read:
+>=20
+> 	pwm: bcm2835: allow PWM driver to be used in atomic context
+>=20
+> While I understand Thierry here, I'm fine with a lowercase pwm here,
+> too. In my book a PWM in all uppercase is the type of hardware and pwm
+> in all lowercase is the framework's name. If you use "PWM driver" or
+> "pwm driver" then doesn't matter much.
 
+I'm not fine with a lowercase "pwm" in what is clearly text. Text should
+be grammatically correct and PWM being an abbreviation it should be all
+caps. The framework name is also PWM, not pwm. We use the lowercase pwm
+as prefix because it represents the directory where the subsystem lives
+and we usually don't use capitalization in file and directory names.
 
---
-真実はいつも一つ！/ Always, there's only one truth!
+Thierry
+
+--gN2yPszgClY7v+2k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmV3GfgACgkQ3SOs138+
+s6G4gQ/+JdOurEDhll7cImaJ6eu6WXI6EmxsPcFtvXqydrGyPaoLvSaw1eKq9cYU
+QUWpM6rdBZW3kQTlx+6766tmW5GMa4hK9LZiRUpH5wQfJrq+TMTyp+sOqq2pIw9C
+voiT2ShRE8Z5uYu4lRr+mp08Ws9RcL44wvIYOLXm6V+xNe4IS5kup9N3ObX+HvK6
+OIlbZKPgCLt4zmlDyYDOy0A5v7uAmaaejjx1jeVmBeDc9pIspK7CrNBZSmKS5jVY
+SNJydpNNmoDcGmkPhkTjzB3nyolXuo/UyqdaDGfd7YkCO7sIBhYoxIcXxyF7/6mQ
+1lPy5QM0WxhAjeU2ScfKoHXoPH9YATPYj2Mf2ZQp8ltchmmXnZGLX64WfPcgp8f2
+bJs19PfF24c52n5HvdHkVMVM0loWpbNp+ozY0o/wcKDna6UksuLNkEf2PJ8bS9gD
+vUoBH/uTVRFXtl7QXSRk1Vnbn20dwPoORFmLdBSGQI44K7hcEaUkQtS3/t5PXpBW
+bIOkYwMB5jyARmUgbnFld2wT/6t5FV7hNseEyRHszZc1CFn1gSiPz9j4TRkCAoE8
+CvlZ5QG/6BzU1haNEplHPn9wfsYKOdJ3k/GNfgYAEfWpB7Pi1gkgameq57TuUxSA
+B+Z7nhZCd3hWoNF+oRlqe1e0zH7CuTRIgQ3yBxjX9nNjeclKo5c=
+=FV2f
+-----END PGP SIGNATURE-----
+
+--gN2yPszgClY7v+2k--
