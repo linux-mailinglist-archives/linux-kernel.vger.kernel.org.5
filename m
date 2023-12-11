@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D810780CAED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5304180CAF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 14:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343689AbjLKN0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 08:26:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S1343662AbjLKN0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 08:26:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343668AbjLKN0C (ORCPT
+        with ESMTP id S1343625AbjLKN00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 08:26:02 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637AAC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:26:07 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b5155e154so52474635e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:26:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702301166; x=1702905966; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lYJ6ekCGIROBxHKfB9biqbpmrnuVuPrZ81c+TDg+RPI=;
-        b=lR+XssDYJKjJQvoFa07zuBnlAsHyhD9WzclRs8MVQhxp6Ybdge9b1VaEy85cMlE5W9
-         51Lnljs4C1OKDywnISecoE8ddlc96vLsaShrIWQ7oRvwnHFyBAEpo4N3WNEwmGJnHETn
-         yiP3j5j56eOdn4iYH+uHsL6qhvD/95pnj+u59Vrzluaqa7qHlEXz+vX2NKdQS7+5a0m9
-         47qSbj7QY5DYuFHvFAYuIN5B0RtSbm1cuvp+LY7ceRK35MffaPNd7n/OlIFc8ZYY7/TT
-         /r7CBOMX+AvPByUahQNKohWBGTkzxYIl7gZ9L5gjqJ7mwB8vRoKkLUrLxkGbV0AnTVBr
-         rfCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702301166; x=1702905966;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lYJ6ekCGIROBxHKfB9biqbpmrnuVuPrZ81c+TDg+RPI=;
-        b=p40xMWhwhnZfUu914/hLi6ebKBu3rP2mizRI/eGuTyqFeLG3qjIFkKyJ2SM8nntDPi
-         31EMNZ7LZIEXjjkq84sC6J9G/tLT4klBalc0hDnug4fdtdLjyUQfSaD+EacxASXbWX8v
-         US+dk+qIRXVnwhRuHv2rO6r680exlP6wY9G7Gy4TOA/NiHo78EWj978FTSIc4Nm47zZ6
-         KHew0NASWl5JOkzNOdgsReUZC5HHzdOmz4iy5Ku75OezYrXhcYV865Y2gbOiywJI56Ge
-         fKaFHOsriWVy4leovHGQjk7RuIZjP74Z3XE2TTQudTF9dxYwml3DtoHrNYoX9X42OLS1
-         luMQ==
-X-Gm-Message-State: AOJu0Ywh3WL3NqDnWZPsu6BFvi3w08zPs+u3IhgMeI4GH80OSCXSXbfm
-        Dzl5446f7S3EqAXFL3OEGO91O6s641Ke1+EX/7c=
-X-Google-Smtp-Source: AGHT+IFf5HxSPeDK3DJfL40vWxPIVBU1BjyzisRjUU1H31RfJgiYx4xFZaO7SEXhS1VXxjIXyeb7Lg==
-X-Received: by 2002:a7b:c4d0:0:b0:40c:3272:1fea with SMTP id g16-20020a7bc4d0000000b0040c32721feamr2173115wmk.87.1702301165789;
-        Mon, 11 Dec 2023 05:26:05 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id jg8-20020a05600ca00800b0040b54335d57sm15152226wmb.17.2023.12.11.05.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 05:26:05 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Arnd Bergmann <arnd@arndb.de>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Subject: [PATCH] rtc: MAINTAINERS: drop Alessandro Zummo
-Date:   Mon, 11 Dec 2023 14:26:00 +0100
-Message-Id: <20231211132600.101090-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 11 Dec 2023 08:26:26 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D43AB3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 05:26:31 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BBDQ1GU122474;
+        Mon, 11 Dec 2023 07:26:01 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702301161;
+        bh=UtCzAYAIRzPVfRJP9Kfrt39CwnlXcV5HuJkPTvuZFDE=;
+        h=From:To:CC:Subject:Date;
+        b=nKiXeNd00NFgq3Qb5xq2e7WXspoF7Fc6a0IQA5zR58Bem6Oi3k77JV/nFbIn4Sdnc
+         46jlOnrMWBooDt/EWyEC5yCqbiBAxOBnc9fSqazQs0duyzLacjLouEvydhaU5AEcns
+         2iwSap1f0KwctkKb3H+u/eHAOoFPW/E4Y6R5hn08=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BBDQ1ih015892
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Dec 2023 07:26:01 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Dec 2023 07:26:01 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Dec 2023 07:26:01 -0600
+Received: from localhost ([10.24.69.141])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BBDQ0A4062315;
+        Mon, 11 Dec 2023 07:26:01 -0600
+From:   Vaishnav Achath <vaishnav.a@ti.com>
+To:     <nm@ti.com>, <ssantosh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <vigneshr@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>,
+        <vaishnav.a@ti.com>
+Subject: [PATCH] soc: ti: k3-socinfo: Add JTAG ID for J722S
+Date:   Mon, 11 Dec 2023 18:56:00 +0530
+Message-ID: <20231211132600.25289-1-vaishnav.a@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last email from Alessandro was in 2016, so remove him from maintainers
-of the RTC subsystem.  Stale maintainer entries hide information whether
-subsystem needs help, has a bus-factor or is even orphaned.
+Add JTAG ID info for the J722S SoC family to enable SoC detection.
 
-Link: https://lore.kernel.org/all/?q=f%3A%22Alessandro+Zummo%22
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+More details about this SoC can be found in the TRM:
+	https://www.ti.com/lit/zip/sprujb3
+
+Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 ---
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ec736fccbb26..82ef00014f41 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18271,7 +18271,6 @@ X:	include/linux/srcu*.h
- X:	kernel/rcu/srcu*.c
+Bootlog with changes:
+https://gist.github.com/vaishnavachath/23d859925277df9ccd628190e7c23371
+
+ drivers/soc/ti/k3-socinfo.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
+index 7517a9c8c8fa..59101bf7cf23 100644
+--- a/drivers/soc/ti/k3-socinfo.c
++++ b/drivers/soc/ti/k3-socinfo.c
+@@ -42,6 +42,7 @@
+ #define JTAG_ID_PARTNO_J784S4		0xBB80
+ #define JTAG_ID_PARTNO_AM62AX		0xBB8D
+ #define JTAG_ID_PARTNO_AM62PX		0xBB9D
++#define JTAG_ID_PARTNO_J722S		0xBBA0
  
- REAL TIME CLOCK (RTC) SUBSYSTEM
--M:	Alessandro Zummo <a.zummo@towertech.it>
- M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
- L:	linux-rtc@vger.kernel.org
- S:	Maintained
+ static const struct k3_soc_id {
+ 	unsigned int id;
+@@ -56,6 +57,7 @@ static const struct k3_soc_id {
+ 	{ JTAG_ID_PARTNO_J784S4, "J784S4" },
+ 	{ JTAG_ID_PARTNO_AM62AX, "AM62AX" },
+ 	{ JTAG_ID_PARTNO_AM62PX, "AM62PX" },
++	{ JTAG_ID_PARTNO_J722S, "J722S" },
+ };
+ 
+ static const char * const j721e_rev_string_map[] = {
 -- 
-2.34.1
+2.17.1
 
