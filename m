@@ -2,87 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F64680D46E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C1380D471
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Dec 2023 18:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344523AbjLKRtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 12:49:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37516 "EHLO
+        id S1344717AbjLKRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 12:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjLKRte (ORCPT
+        with ESMTP id S229820AbjLKRts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 12:49:34 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C67C7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:49:40 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5df5d59476cso25095027b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 09:49:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702316979; x=1702921779; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PD4uUBn0YrczoWxlhIt/RaQw+8ZUjArWaAoFtxYQibs=;
-        b=LoVl64DKL/uLggQXwWKmK5BOSOGk1xBpRBZsdQ+6bL5OW1U136GD5QZjuN+N7Dqybr
-         n+Gh+IPjUV/6LYaspAEBa70k3BFpM0xLw1KhGdw86LEhLTgKylkm636a0oFEzv81UXu0
-         AmIzm5OGmwzEfOIzjWJNbJF4EcNPTmxy2pHVBlmNJ8XxAtmxV7dlNkVGTtpV6z+kqNyh
-         vAmk8bGkqiESIjLRvZoUxzQUwR74xBy1g83tecDx/AyrAZsA5IInAyrOO+N/A8cG77KI
-         3wUN0OVro4Xsiku9bESV/bVEajIwKV1AOUlnjqGpY4dCyis0oIA7Az4L6RnT3CSm/VaV
-         cPPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702316979; x=1702921779;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PD4uUBn0YrczoWxlhIt/RaQw+8ZUjArWaAoFtxYQibs=;
-        b=Y6GIlLq+7PZpXt6B7UiFOSnFosBOZV7SXJwJTKEGENO+3yhCkD7718k3q0GjGq9yUj
-         YKjVNn/2tBKjpVol/cQapnLioFqS8Rks2K/X7d3aNsOQ9MpYw17JP+ltalcKkJLh9n0t
-         1W8LtFX+O92j48b1yE/tlucYDrfl966IaL47UT/OCnpyoSDTMLZ7HQZO+lZMaWhY57bN
-         Z5/+46jVJ6LTTHy1ACPWoCd0R1+URy/Xt3DnWLW1SCa5Zlt7UdDoV+VsdjzREAtyz575
-         LXGZixQKGmgwEjtPaaGyA0HLNVjGZimb4a9w4G4lmmCC8w83btR7to2eAKOe1wlts17e
-         VcIw==
-X-Gm-Message-State: AOJu0Yzy4R9/nN9R8bHlJ9VCPcpZ/l8BZdn2+zPnYjOlqs97A5q33lye
-        7d0g5NE+jP/UFwIdLEG7YWOmIL3zhCY=
-X-Google-Smtp-Source: AGHT+IFKl2rS1vD/lL3s8aIyMZ058IVAAiNTpwfw4dqckX0k3J8fVvuHgdqmRgVwbCkxi+5PiutTudxK29M=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:f08:0:b0:dae:49a3:ae23 with SMTP id
- x8-20020a5b0f08000000b00dae49a3ae23mr36764ybr.7.1702316979721; Mon, 11 Dec
- 2023 09:49:39 -0800 (PST)
-Date:   Mon, 11 Dec 2023 09:49:38 -0800
-In-Reply-To: <20231211085956.25bedfe4@canb.auug.org.au>
-Mime-Version: 1.0
-References: <20231211085956.25bedfe4@canb.auug.org.au>
-Message-ID: <ZXdLsg1tN4DfBBSy@google.com>
-Subject: Re: linux-next: duplicate patches in the kvm tree
-From:   Sean Christopherson <seanjc@google.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Dec 2023 12:49:48 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA81E95;
+        Mon, 11 Dec 2023 09:49:54 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3BBA11FBA7;
+        Mon, 11 Dec 2023 17:49:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702316993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
+        b=Mf5cRpVZ5GM9ghuslV9oPpAafIYRuwI93WQVJf4B+qgNuAAF9Gzv6/kfc0QuDlTcTEuCRa
+        c2mUzap33UGntnsg1iTuoM9srE/jJQ4sTOhS/OoOMBdlRulDMx3YTg7u/+klnrYExuMFzz
+        1+qxUPTP/6GEAc1yB721gmcPZyGGao4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702316993;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
+        b=vlQqGyRmzMB4lY+KXhdWBUUhIgZZkJ41LWZtGOL3JvD4qcgQHLfeKzxUlfA2fPt9TIfs/D
+        ML2z9OGUgqEMsaBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702316993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
+        b=Mf5cRpVZ5GM9ghuslV9oPpAafIYRuwI93WQVJf4B+qgNuAAF9Gzv6/kfc0QuDlTcTEuCRa
+        c2mUzap33UGntnsg1iTuoM9srE/jJQ4sTOhS/OoOMBdlRulDMx3YTg7u/+klnrYExuMFzz
+        1+qxUPTP/6GEAc1yB721gmcPZyGGao4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702316993;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RkLrrI1gmexDEyXqv7RkIgYzgnlJqhMidUtAhq81i5Y=;
+        b=vlQqGyRmzMB4lY+KXhdWBUUhIgZZkJ41LWZtGOL3JvD4qcgQHLfeKzxUlfA2fPt9TIfs/D
+        ML2z9OGUgqEMsaBA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B10D13A6B;
+        Mon, 11 Dec 2023 17:49:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id Q9d8CsFLd2VEIwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 17:49:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C0B16A07E3; Mon, 11 Dec 2023 18:49:52 +0100 (CET)
+Date:   Mon, 11 Dec 2023 18:49:52 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, willy@infradead.org,
+        akpm@linux-foundation.org, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Message-ID: <20231211174952.mdwyh7fmu7rjzfn3@quack3>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <20231204144106.fk4yxc422gppifsz@quack3>
+ <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
+ <20231206193757.k5cppxqew6zjmbx3@quack3>
+ <63b1e234-e005-a62b-82c5-fa7acf26d53a@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63b1e234-e005-a62b-82c5-fa7acf26d53a@huawei.com>
+X-Spam-Score: 5.80
+X-Spamd-Result: default: False [5.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         R_RATELIMIT(0.00)[to_ip_from(RL9mptuuj8f371ag1nhgyt86ac)];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,gmail.com,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
+X-Spam-Score: 5.80
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023, Stephen Rothwell wrote:
-> Hi all,
+On Thu 07-12-23 22:15:55, Baokun Li wrote:
+> On 2023/12/7 3:37, Jan Kara wrote:
+> > On Tue 05-12-23 20:50:30, Baokun Li wrote:
+> > > On 2023/12/4 22:41, Jan Kara wrote:
+> > > > On Mon 04-12-23 21:50:18, Baokun Li wrote:
+> > > > > On 2023/12/4 20:11, Jan Kara wrote:
+> > > > > The problem is with a one-master-twoslave MYSQL database with three
+> > > > > physical machines, and using sysbench pressure testing on each of the
+> > > > > three machines, the problem occurs about once every two to three hours.
+> > > > > 
+> > > > > The problem is with the relay log file, and when the problem occurs, the
+> > > > > middle dozens of bytes of the file are read as all zeros, while the data on
+> > > > > disk is not. This is a journal-like file where a write process gets the data
+> > > > > from
+> > > > > the master node and writes it locally, and another replay process reads the
+> > > > > file and performs the replay operation accordingly (some SQL statements).
+> > > > > The problem is that when replaying, it finds that the data read is
+> > > > > corrupted,
+> > > > > not valid SQL data, while the data on disk is normal.
+> > > > > 
+> > > > > It's not confirmed that buffered reads vs direct IO writes is actually
+> > > > > causing this issue, but this is the only scenario that we can reproduce
+> > > > > with our local simplified scripts. Also, after merging in patch 1, the
+> > > > > MYSQL pressure test scenario has now been tested for 5 days and has not
+> > > > > been reproduced.
+> > > > > 
+> > > > > I'll double-check the problem scenario, although buffered reads with
+> > > > > buffered writes doesn't seem to have this problem.
+> > > > Yeah, from what you write it seems that the replay code is using buffered
+> > > > reads on the journal file. I guess you could confirm that with a bit of
+> > > > kernel tracing but the symptoms look pretty convincing. Did you try talking
+> > > > to MYSQL guys about why they are doing this?
+> > > The operations performed on the relay log file are buffered reads and
+> > > writes, which I confirmed with the following bpftrace script:
+> > > ```
+> > > #include <linux/fs.h>
+> > > #include <linux/path.h>
+> > > #include <linux/dcache.h>
+> > > 
+> > > kprobe:generic_file_buffered_read /!strncmp(str(((struct kiocb
+> > > *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
+> > >      printf("read path: %s\n", str(((struct kiocb
+> > > *)arg0)->ki_filp->f_path.dentry->d_name.name));
+> > > }
+> > > 
+> > > kprobe:ext4_buffered_write_iter /!strncmp(str(((struct kiocb
+> > > *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
+> > >      printf("write path: %s\n", str(((struct kiocb
+> > > *)arg0)->ki_filp->f_path.dentry->d_name.name));
+> > > }
+> > > ```
+> > > I suspect there are DIO writes causing the problem, but I haven't caught
+> > > any DIO writes to such files via bpftrace.
+> > Interesting. Not sure how your partially zeroed-out buffers could happen
+> > with fully buffered IO.
+> > 
+> After looking at the code again and again, the following concurrency
+> seems to bypass the memory barrier:
 > 
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
+> ext4_buffered_write_iter
+>  generic_perform_write
+>   copy_page_from_iter_atomic
+>   ext4_da_write_end
+>    ext4_da_do_write_end
+>     block_write_end
+>      __block_commit_write
+>       folio_mark_uptodate
+>        smp_wmb()
+>        set_bit(PG_uptodate, folio_flags(folio, 0))
+>     i_size_write(inode, pos + copied)
+>     // write isize 2048
+>     unlock_page(page)
 > 
->   3b99d46a1170 ("KVM: selftests: Actually print out magic token in NX hugepages skip message")
->   fc6543bb55d4 ("KVM: selftests: add -MP to CFLAGS")
+> ext4_file_read_iter
+>  generic_file_read_iter
+>   filemap_read
+>    filemap_get_pages
+>     filemap_get_read_batch
+>     folio_test_uptodate(folio)
+>      ret = test_bit(PG_uptodate, folio_flags(folio, 0));
+>      if (ret)
+>       smp_rmb();
+>       // The read barrier here ensures
+>       // that data 0-2048 in the page is synchronized.
+>                            ext4_buffered_write_iter
+>                             generic_perform_write
+>                              copy_page_from_iter_atomic
+>                              ext4_da_write_end
+>                               ext4_da_do_write_end
+>                                block_write_end
+>                                 __block_commit_write
+>                                  folio_mark_uptodate
+>                                   smp_wmb()
+>                                   set_bit(PG_uptodate, folio_flags(folio,
+> 0))
+>                                i_size_write(inode, pos + copied)
+>                                // write isize 4096
+>                                unlock_page(page)
+>    // read isize 4096
+>    isize = i_size_read(inode)
+>    // But there is no read barrier here,
+>    // so the data in the 2048-4096 range
+>    // may not be synchronized yet !!!
+>    copy_page_to_iter()
+>    // copyout 4096
 > 
-> These are commits
-> 
->   4a073e813477 ("KVM: selftests: Actually print out magic token in NX hugepages skip message")
->   96f124015f82 ("KVM: selftests: add -MP to CFLAGS")
-> 
-> in Linus' tree.
+> In the concurrency above, we read the updated i_size, but there is
+> no read barrier to ensure that the data in the page is the same as
+> the i_size at this point. Therefore, we may copy the unsynchronized
+> page out. Is it normal for us to read zero-filled data in this case?
 
-This is my bad, I used the wrong base for a selftests branch.  My understanding
-is that we're just going to eat the duplicate commits.
+Indeed, I have checked and filemap_read() (but this dates back even to old
+do_generic_file_read() code) indeed does copy data only after checking
+uptodate flag and then sampling i_size so we may be copying state in the
+middle of the racing write and indeed there is nothing which would prevent
+prefetching page data before fetching inode size. I agree this is kind of
+nasty so I think adding a read barrier between i_size_read() and
+copy_page_to_iter() makes sense. Does it fix your issue with MYSQL?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
