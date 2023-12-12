@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 189B680F4DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6FA80F4DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376901AbjLLRrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:47:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        id S233133AbjLLRry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLRrp (ORCPT
+        with ESMTP id S233101AbjLLRru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:47:45 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D1E83;
-        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d053c45897so52043225ad.2;
-        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
+        Tue, 12 Dec 2023 12:47:50 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB4294;
+        Tue, 12 Dec 2023 09:47:57 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28ac11407cfso372931a91.1;
+        Tue, 12 Dec 2023 09:47:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702403270; x=1703008070; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1702403275; x=1703008075; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uyRFYn/2E3bBEASN5RSINhi7V604PFIKYA1eHnIvDBQ=;
-        b=mnHWsR4BCYswM6xdbTV5EvY8KDDnhaukc0DESRYUXvW46dRFSEYwbmIVFlLibZq1YW
-         GJwddn0m8PrNviUMcby16CXqNWLAWF+Ow8o9QtdA/pvZuLWitCsLdVZnxDbOWZ+7TK+D
-         b4pGWSYQunQwFa48BLAL29/JdqjAZ9RmuRHGq1fCLmLP0IE0xUojr1bIlrQ9b56iQ78Z
-         wpfgzFWNiXQ7JAq12Cjp5oJYhSWpWd/wDlKq8tDS5/lmXwQOKNE4QzAA6+KFWMY/1Ogu
-         iMieLJF01ndrt9M6oPJZAul7SvaOWzKf4qrC9PF34XgYd3EQVgXLu7mvtwehjHvMWAyc
-         npwg==
+        bh=Lpcp9URoW3Nxmv8uilTZFjiHClsiXT96h5WC+LC09D8=;
+        b=AHwIyp6eWN96NQkVsP6j8AG/o4omFQPKqdlgqa1uYkstJ2gGyFZ7wNtlqNI3KzFo3h
+         uEhCgL9TYTWRkfl58aGTFsUW6AqwnOqRzd7BE+fawko9iTzkznh5nxYMRCOZEvI9wjrI
+         yQNhgUXEfm3fKhQr/00l5pSrGHx+UQVnCI5YPj/zvqXe7Y+CyqPejpptKtkR6rp+M7sM
+         IoefbgaA7tAXxU6uPiXhenXDS7gQuRpWf4WizDJOSZ1Drrsu1CJ4tH7lrqFB0QjbhQ1R
+         gPoywW0IiGGIb1YoLUauh+fnRg80Z7Jc1iXEJZlfYQrtNqhNDMPCQPspMCAWCCQE4igZ
+         6e3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702403270; x=1703008070;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702403275; x=1703008075;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uyRFYn/2E3bBEASN5RSINhi7V604PFIKYA1eHnIvDBQ=;
-        b=vizF2ycog+H/lywuvfeXmlo6MOxvJspfE8Z/BALAUkQEcRNFvaXPKATm4WbasDKoxy
-         1OvONQ+A3/5Vw4Kti94N7PEwkBotjBTp0jtvJSF9/wC9rZzA65WQcrwQVxuo2RgINF7L
-         KZsF6hSzdx7jJCQnId2CW+8Tj71kf4rgDXCN2QQEet8Xk5jDvEVnXpfHTBcdcYnu3vOk
-         9hxwz5I8yommpbzG1Jw+pLLMSCJnTgLwJONkf9bRtvZKvT7zANCKPp2m6g8L6fCjD5UH
-         OFsAgTjqu4Aw5CbZ6Ow8yroEd+S7zLLCYWbtfn8t2aJihlFiYL4VdOFaoV+wDgq58NWF
-         d6lw==
-X-Gm-Message-State: AOJu0YzEQXpNSNNAodNX+3NOa1noOOnHHl1H4yyMOC97pstLvRyHvBsv
-        hAfGkccHacTt4fgUNnBJSv0=
-X-Google-Smtp-Source: AGHT+IGmnTAI20jP+s0/IaukLJr8Qhfet/RF5DkK9h1IsC8L8kkioQiHzhGMiqZw4lxucT59b+eQPA==
-X-Received: by 2002:a17:903:11c5:b0:1d0:6ffd:9e21 with SMTP id q5-20020a17090311c500b001d06ffd9e21mr7008997plh.115.1702403270014;
-        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p17-20020a170903249100b001cfde4c84bcsm8905985plw.141.2023.12.12.09.47.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 09:47:49 -0800 (PST)
-Message-ID: <37a418c9-06ee-4bf4-a26d-b7ac3cd2d666@gmail.com>
-Date:   Tue, 12 Dec 2023 09:47:43 -0800
+        bh=Lpcp9URoW3Nxmv8uilTZFjiHClsiXT96h5WC+LC09D8=;
+        b=dUvF/Bhu+SUzozID78n+fct8PapeoXQpfoj2F3vtMVmIchthE35YFMJlpwQ0fqUVff
+         JfktiPJ2MbTQrjf5WMBWMnES0/4F2La1QGVcUXqK3zzLzwo9ZxpRdUl27Y7V4BeNbE5P
+         nY0m9ndPtP2rwMqFvV5jI0Lu4lF6K8/+VGjWLam3qgFL2CZzcQokSDIzK8IT/m7277BA
+         jdZN0+mS8rgxyiG0/e1d2J/0lqLnt1YXU1WL7lT960h+E32oc82zre6LZjREI57q9I6y
+         lq6y0a3s1jfTEqdeoB6LfbV05SyVXAMEgeL8JrV1dmZGghPGymkLNEHY92WLTov3DxDE
+         YVkA==
+X-Gm-Message-State: AOJu0YydioepTpCQLI7XFxBSnABaHxWxs3djhiC9QSSXt46nO0A2g56N
+        ywXS7eVnLgfQGTiBoaqWDzukmvmna9StqdZb
+X-Google-Smtp-Source: AGHT+IE5We6VeCbXzoTpALvI+cZjFzQ1SripHmBSbTqDFzpmZuLx01H3+4+b0Ns3CASoMQ//PPIJvg==
+X-Received: by 2002:a17:90b:203:b0:288:898d:70c2 with SMTP id fy3-20020a17090b020300b00288898d70c2mr2894098pjb.4.1702403275546;
+        Tue, 12 Dec 2023 09:47:55 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id nl13-20020a17090b384d00b0028adcc0f2c4sm64200pjb.18.2023.12.12.09.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:47:55 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:17:50 +0530
+From:   "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/3] SRCU updates for v6.8
+Message-ID: <20231212174750.GA11886@neeraj.linux>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 000/139] 5.15.143-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231212120210.556388977@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231212120210.556388977@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 04:04, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.143 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 14 Dec 2023 12:01:32 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.143-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hello,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+This series contains SRCU updates:
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+1.      Remove superfluous callbacks advancing from srcu_gp_start(),
+        courtesy of Frederic Weisbecker.
 
+2.      No need to advance/accelerate if no callback enqueued, courtesy
+        of Frederic Weisbecker.
+
+3.      Explain why callbacks invocations can't run concurrently,
+        courtesy of Frederic Weisbecker.
+
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ b/kernel/rcu/srcutree.c |   10 ----------
+ kernel/rcu/srcutree.c   |   14 +++++++++++---
+ 2 files changed, 11 insertions(+), 13 deletions(-)
