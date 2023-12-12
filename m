@@ -2,90 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F15A180F1E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8A080F1AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346641AbjLLQHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        id S1376745AbjLLP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346525AbjLLQHk (ORCPT
+        with ESMTP id S1376701AbjLLP7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:07:40 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082E58E;
-        Tue, 12 Dec 2023 08:07:42 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 5109E100049;
-        Tue, 12 Dec 2023 19:07:23 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5109E100049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702397243;
-        bh=iO5xcYncpR7QA6FIyuk49NEwnJymKjT3DGzZbDJaCJI=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=d0IygxhqC6tFXv1UoowiikiZor7Pzdy0DpEOfaUQcQYL3r2ndJ3fyFpAgfyEIdB+E
-         JDQmisvhqwEQb19p6nvcK6I2Y4Pr21TJi4EEtW7POYMghVv0vBgEu4mrEs1e49HtW2
-         15lFnO9w7gUGU4KHxL2x7IMWy4rcEO/gwntBah+4pJp4Mr3vvbIWN1Kc+7Q6gHJ0bi
-         QwGfEdislpmX44Ttt07XYmdRKzCLhKO3p94Va7RyygEAFpqEyI1/30/pCqQv2fBGP7
-         3JcA7U78WcGmFGm0VnAfV9T9Shehdexn/zcbdFMqbGk8mBk19ZHLjYMYE817dKErE3
-         AixxVRwEnETSA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 12 Dec 2023 19:07:22 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Dec 2023 19:07:22 +0300
-Message-ID: <d27f22f0-0f1e-e1bb-5b13-a524dc6e94d7@salutedevices.com>
-Date:   Tue, 12 Dec 2023 18:59:03 +0300
+        Tue, 12 Dec 2023 10:59:11 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA72AA;
+        Tue, 12 Dec 2023 07:59:15 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FxC/426LU/wtHKA+BnlH3NB7hO1iwyF4nQ11RL1D2cKXKBN00wwB8JCxP8fN+SwUZF9mbDgMXZfdw6IKdDxllZXmDhs2g4okKj/Kb8AURiuAIbzZLOjRHn7iGLRYVmZ94aUBHEImGfMJqTyK6SRcPoQEFrQyqF7qC8bfp0voVK3oRCx8iskhQUilfCLCtIj8erDciYz3Zs1fX43F0vCtoT6shrwWYDtnpQo5aE4X+OmyFAfjFniC0wV78ackQT4AWTbutFBmtRy5V6URAj5oQoAO1F0QJzgqdFL+k8BeeJjUketfrnIiwnAcweKUVpeB1NNdL+NrlqAx4kQu10yFqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ETVv9IVOPuZwFuu1RONN+q9OvrA1tFu1scKt0AjuDm4=;
+ b=BriY6R5iQOzxIQIWaMZnzAVfthRkRRQjhY9vZrw9TXnD87bpJABh8zHbqx0EU0CnAF2CPYnLqDkiTo3yTqQ/USzLJ/Gg+4pj2tHYB4NPAxZ23uyk6MtVO44I5beFxejSSyieIY0vGuOduF20jKTd1jgPgkCuc9CSh+b9FhV0z4SVj2fHAwC1Xlnh68tg88ItmvsUarB4HuIzq5uNjP30BTVssRTkFaccV99NlivJcv9I4r5HVLIAZN8RV9Z/KGSqLZoJOEyrHODYxV5deTgBtyGd8ihA+PrhFh9BZXCKKV7ycQlXv2ckoUVd066JvRxh1yd7L4BkKT8QIdBjfhXPOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ETVv9IVOPuZwFuu1RONN+q9OvrA1tFu1scKt0AjuDm4=;
+ b=ZT/wc2Jsrzp9aKGwp8LEsn/rkSTmhEAx3kyg8ZXn7b1s9JsY6O+whZOuUQlU/E1VIlwamItyWyFH+1JXNI/DXf35PpRVs4PtKIUDLq3X9mY5QSFpnU/x967XbCjPibIjyc4aGxv9F2RbXskDLT8kLgy8pMcPpxHGDyx7IpGyemk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SN7PR17MB6483.namprd17.prod.outlook.com (2603:10b6:806:359::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
+ 2023 15:59:12 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 15:59:12 +0000
+Date:   Tue, 12 Dec 2023 10:59:06 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
+        corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
+        honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
+        jgroves@micron.com, ravis.opensrc@micron.com,
+        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com,
+        seungjun.ha@samsung.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Hasan Al Maruf <hasanalmaruf@fb.com>,
+        Hao Wang <haowang3@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>,
+        Frank van der Linden <fvdl@google.com>,
+        John Groves <john@jagalactic.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2 00/11] mempolicy2, mbind2, and weighted interleave
+Message-ID: <ZXiDSrdNfbv8/Ple@memverge.com>
+References: <20231209065931.3458-1-gregory.price@memverge.com>
+ <87r0jtxp23.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZXc74yJzXDkCm+BA@memverge.com>
+ <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0249.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::14) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v8 0/4] send credit update during setting
- SO_RCVLOWAT
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
- <20231212105423-mutt-send-email-mst@kernel.org>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231212105423-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182067 [Dec 12 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;git.kernel.org:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/12/12 13:39:00
-X-KSMG-LinksScanning: Clean, bases: 2023/12/12 13:39:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/12 12:50:00 #22667219
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SN7PR17MB6483:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d1ef72c-d893-4ee3-ae00-08dbfb2b4893
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7BrZyukzSsN0SEnD74MbsJKesD3ver2YH0NAi2ZwsILjdIgnTqkiYOk7GFnmd6UoVvlKAUHhyX5zNTelH3qU3CXNEQ//k0+04q0/s/3+doUE2+52rxDsAtMfYPhfBO+YWBSGLmfY7jYWeSNQJ97/sBDXbc9tkt875JSkB1RjcgLK/5JfBcns3UAzXz1iCrIB/FMJVKwK4p/fO40N3dyshFEXdDqxHOx75mgJWttprOreowwDGOr03Mzu+e8QVUUQN73QjoNtfZCXsikc6uI3ExUVSvi8qVviFGV0KmRNLB/osx6TbPyF2WTrHNhW//xY9tgp2+919jvicIu1arWFNyuXJVnH+kM7VYoD690HWkR7ioeWDhFdx9dkCpRdoYWJCAsKpvz/xEMpMaTqIfKgeTZ8O+qQfkp8oCW/2HziPwzUoW750DfcFMTykbI5+j2Ufn5Eph1VZJOn0BftsZnLMCbOdn8D2j4w8lnAnh+P4UzQXD9AqED6s6/7BIBjwpwguI6FH4B6Azisbd0q/UHLxwDoIgqph5V6KXhd4VOL5u+xoxR1EjlDLgmi7iN3151FYYwZa2U0nGjOU+sflsu+EBtai85mwOV12wIEmOvljibKWkKhH5DitBWw24n42CBw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(39840400004)(346002)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2906002)(5660300002)(7416002)(44832011)(7406005)(8676002)(8936002)(4326008)(41300700001)(316002)(66946007)(66476007)(54906003)(6916009)(66556008)(478600001)(6486002)(2616005)(6512007)(6666004)(26005)(6506007)(36756003)(38100700002)(86362001)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cUDIT1RUMW1buLYnH0XADOIO6FV/AKX1ug/NlUIDaCs/INPodrn08CfIpqN/?=
+ =?us-ascii?Q?3vMyXJ0OpgD7XoETEmnZEJe+bLTICB2A8ouKS6uRH/4viI8pEUW/feNzQzpv?=
+ =?us-ascii?Q?BpHTj74Zc3ZFUl/UE33BieMr8CFYj+4y2XfojIzi3+4pU/ACOuMafOHd5eJu?=
+ =?us-ascii?Q?BlfqhKupowILip5CjGKJ6ANPdMRJrKPPisegUUEqzo7BOSdmm5WhLlXHFrII?=
+ =?us-ascii?Q?pAN37nELkvn739Ve3jOs8Px5i2iRQHwO47czLR2rqSigGiXoa58836Ui+QrA?=
+ =?us-ascii?Q?XHdV0oUMCvvcTzYsFVSDOhK9nxm1PBtfIqIG9Z2yIroWcgedvtv+rrqnHKV7?=
+ =?us-ascii?Q?RaWtjBmIrTZhHH7+zokkzqT0zq2yeI+UK+XYzaW3XRyr5bp0Inr5wDsHwVri?=
+ =?us-ascii?Q?41pU/Me7PwK1DjZjkOWGu0ip2/f9uRd+vcuDafZb6cmtCrQgmAylgZGG06CV?=
+ =?us-ascii?Q?DKrMPBBTm7jO+4kLNIls0GBLKtl8si7oMqVsGlvKHsFBRFKkIsJlFyzLP1up?=
+ =?us-ascii?Q?N2OYVq35FLC42CgG5IvTYv5cPANsAR0LOFggCrwyZ0Z0+66s3NZashCe9FNG?=
+ =?us-ascii?Q?nEpxu24wWrn49e2/mRjpmcf5A0GIcE4rnZ0aDd1SeEsyHb5b8IOS1sP/1+/x?=
+ =?us-ascii?Q?YiLz99dJgl04ug+WRExNRbaE5qXBQLD0MQFrs2ldaAS69AV31vfPVfM7i6PZ?=
+ =?us-ascii?Q?+mli+v1GBmY7ycgGcrUrAlE3TNW7+nSctx54bLzp7TOuT6A9/nR7mUsETYir?=
+ =?us-ascii?Q?plvz3CcXz4gNdgf6EVX5QHrO5GCo+mXsVqjETDEG31yjW3qgsELZ856tRb75?=
+ =?us-ascii?Q?rxu8xe5iKZQNmzEyKlLscNttcuXgQoYJYKWrc4hK+IDB7rJgEdKlXqNoiA/a?=
+ =?us-ascii?Q?zSDW8LxE8lCVXLoJW8kbMwf/DjV8efzcdLQf/0ET0s1kHxyI61FHauZrEHfZ?=
+ =?us-ascii?Q?egg22267zNhUnUtVv1QK+noBlMptkrsp8pgZw2lkeFR8S1W8KAH05DoEN9IV?=
+ =?us-ascii?Q?E6dID4MM2TCWFyl54TwdGn17MP4Ot2Drei9Lbpqy5kt0WE48KRw4A+oHiROk?=
+ =?us-ascii?Q?v1FU1+XYAif5nlee+xIZQxJmNhgdz94WeM85wyPQQ2ER5ccX4CzIVhLcCvf0?=
+ =?us-ascii?Q?tbptXXENv9TB7KfIJ0LvTcCGTAcpxegqJl9B0l/6xwPxoiX2ZkTI+fHSjibF?=
+ =?us-ascii?Q?jRP72260uCUNIC/3/Alovg6S4LRpxNg8ZKLqAKENljVjqMVyadb/DVyN/4WR?=
+ =?us-ascii?Q?PvglkuK2CvPZhN0oN8qEcEvExeSmEG4djD7J/4JmdOoPR7fvClQwidHGtgLC?=
+ =?us-ascii?Q?EaQI7DZYeQFiHle4SwGu6jE9VsxHvq4WMTU2YVO/u0dPKnNA9fCQUkhSGJFQ?=
+ =?us-ascii?Q?e/KGPQI4ELeYydf0FuPEWNlEOcbxkKWVxp2Teq60eXTiP0Jdn/SCyXqtNomc?=
+ =?us-ascii?Q?R6vewHwULw0wWW3gSltsjdE32Li8BUwmRgWSQfGI9Ry+NHJH1Y2doc8U+Z2Q?=
+ =?us-ascii?Q?9unNHlEs3dnnRVrXBcnYg8bS692L8zVyKPEfX1fuF2S43uBrLFKnIcdP76Z0?=
+ =?us-ascii?Q?HPPHPEByHVDRPERgOZ53+v3af5yJozQXCGGOvZHnekmFJVd2f8WSNg28He1E?=
+ =?us-ascii?Q?vw=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d1ef72c-d893-4ee3-ae00-08dbfb2b4893
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:59:12.4440
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IuYZw9TscuJYleWasYe1kJc6odmkEC5HgoUzZgeXEjfMKc/V/cP8OxIBEkko9arlobNSH1WNtLSKv4FHgUBgY7OOxZHV1jxTv79kFeoaaK8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR17MB6483
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,140 +135,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 03:08:24PM +0800, Huang, Ying wrote:
+> Gregory Price <gregory.price@memverge.com> writes:
+> 
+> >> For example, can we use something as below?
+> >> 
+> >>   long set_mempolicy2(int mode, const unsigned long *nodemask, unsigned int *il_weights,
+> >>                           unsigned long maxnode, unsigned long home_node,
+> >>                           unsigned long flags);
+> >> 
+> >>   long mbind2(unsigned long start, unsigned long len,
+> >>                           int mode, const unsigned long *nodemask, unsigned int *il_weights,
+> >>                           unsigned long maxnode, unsigned long home_node,
+> >>                           unsigned long flags);
+> >> 
+> >
+> > Your definition of mbind2 is impossible.
+> >
+> > Neither of these interfaces solve the extensibility issue.  If a new
+> > policy which requires a new format of data arrives, we can look forward
+> > to set_mempolicy3 and mbind3.
+> 
+> IIUC, we will not over-engineering too much.  It's hard to predict the
+> requirements in the future.
+> 
 
+Sure, but having the mempolicy struct at least gives us more flexibility
+than the original interface.
 
-On 12.12.2023 18:54, Michael S. Tsirkin wrote:
-> On Tue, Dec 12, 2023 at 12:16:54AM +0300, Arseniy Krasnov wrote:
->> Hello,
->>
->>                                DESCRIPTION
->>
->> This patchset fixes old problem with hungup of both rx/tx sides and adds
->> test for it. This happens due to non-default SO_RCVLOWAT value and
->> deferred credit update in virtio/vsock. Link to previous old patchset:
->> https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
+> >> A struct may be defined to hold mempolicy iteself.
+> >> 
+> >> struct mpol {
+> >>         int mode;
+> >>         unsigned int home_node;
+> >>         const unsigned long *nodemask;
+> >>         unsigned int *il_weights;
+> >>         unsigned int maxnode;
+> >> };
+> >> 
+> >
+> > addr could be pulled out for get_mempolicy2, so i will do that
+> >
+> > 'addr_node' and 'policy_node' are warts that came from the original
+> > get_mempolicy.  Removing them increases the complexity of handling
+> > arguments in the common get_mempolicy code.
+> >
+> > I could probably just drop support for retrieving the addr_node from
+> > get_mempolicy2, since it's already possible with get_mempolicy.  So I
+> > will do that.
 > 
-> 
-> Patchset:
-> 
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> If it's necessary, we can add another struct for get_mempolicy2().  But
+> I don't think that it's necessary to add get_mempolicy2() specific
+> parameters for set_mempolicy2() or mbind2().
 
-Thanks!
+After edits, the only parameter that doesn't have parity between
+interfaces is `addr_node` and `policy_node`.  This was an unfortunate
+wart on the original get_mempolicy() that multiplexed the output of
+(*mode) based on whether MPOL_F_NODE was set.
 
-> 
-> 
-> But I worry whether we actually need 3/8 in net not in net-next.
+Example:
+if (MPOL_F_ADDR | MPOL_F_NODE), then get_mempolicy() would return
+details about a VMA mempolicy + the node of that address in (*mode).
 
-Because of "Fixes" tag ? I think this problem is not critical and reproducible
-only in special cases, but i'm not familiar with netdev process so good, so I don't
-have strong opinion. I guess @Stefano knows better.
+Right now in get_mempolicy2() I fetch this unconditionally instead of
+requiring MPOL_F_NODE.  I did not want to multiplexing (*mode) output.
 
-Thanks, Arseniy
+I see two options:
+1) Get rid of MPOL_F_NODE functionality in get_mempolicy2()
+   If a user wants that information, they can still use get_mempolicy()
 
-> 
-> Thanks!
-> 
->> Here is what happens step by step:
->>
->>                                   TEST
->>
->>                             INITIAL CONDITIONS
->>
->> 1) Vsock buffer size is 128KB.
->> 2) Maximum packet size is also 64KB as defined in header (yes it is
->>    hardcoded, just to remind about that value).
->> 3) SO_RCVLOWAT is default, e.g. 1 byte.
->>
->>
->>                                  STEPS
->>
->>             SENDER                              RECEIVER
->> 1) sends 128KB + 1 byte in a
->>    single buffer. 128KB will
->>    be sent, but for 1 byte
->>    sender will wait for free
->>    space at peer. Sender goes
->>    to sleep.
->>
->>
->> 2)                                     reads 64KB, credit update not sent
->> 3)                                     sets SO_RCVLOWAT to 64KB + 1
->> 4)                                     poll() -> wait forever, there is
->>                                        only 64KB available to read.
->>
->> So in step 4) receiver also goes to sleep, waiting for enough data or
->> connection shutdown message from the sender. Idea to fix it is that rx
->> kicks tx side to continue transmission (and may be close connection)
->> when rx changes number of bytes to be woken up (e.g. SO_RCVLOWAT) and
->> this value is bigger than number of available bytes to read.
->>
->> I've added small test for this, but not sure as it uses hardcoded value
->> for maximum packet length, this value is defined in kernel header and
->> used to control deferred credit update. And as this is not available to
->> userspace, I can't control test parameters correctly (if one day this
->> define will be changed - test may become useless). 
->>
->> Head for this patchset is:
->> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=021b0c952f226236f2edf89c737efb9a28d1422d
->>
->> Link to v1:
->> https://lore.kernel.org/netdev/20231108072004.1045669-1-avkrasnov@salutedevices.com/
->> Link to v2:
->> https://lore.kernel.org/netdev/20231119204922.2251912-1-avkrasnov@salutedevices.com/
->> Link to v3:
->> https://lore.kernel.org/netdev/20231122180510.2297075-1-avkrasnov@salutedevices.com/
->> Link to v4:
->> https://lore.kernel.org/netdev/20231129212519.2938875-1-avkrasnov@salutedevices.com/
->> Link to v5:
->> https://lore.kernel.org/netdev/20231130130840.253733-1-avkrasnov@salutedevices.com/
->> Link to v6:
->> https://lore.kernel.org/netdev/20231205064806.2851305-1-avkrasnov@salutedevices.com/
->> Link to v7:
->> https://lore.kernel.org/netdev/20231206211849.2707151-1-avkrasnov@salutedevices.com/
->>
->> Changelog:
->> v1 -> v2:
->>  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->>  * New patch is added as 0001 - it removes return from SO_RCVLOWAT set
->>    callback in 'af_vsock.c' when transport callback is set - with that
->>    we can set 'sk_rcvlowat' only once in 'af_vsock.c' and in future do
->>    not copy-paste it to every transport. It was discussed in v1.
->>  * See per-patch changelog after ---.
->> v2 -> v3:
->>  * See changelog after --- in 0003 only (0001 and 0002 still same).
->> v3 -> v4:
->>  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->>  * See per-patch changelog after ---.
->> v4 -> v5:
->>  * Change patchset tag 'RFC' -> 'net-next'.
->>  * See per-patch changelog after ---.
->> v5 -> v6:
->>  * New patch 0003 which sends credit update during reading bytes from
->>    socket.
->>  * See per-patch changelog after ---.
->> v6 -> v7:
->>  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->>  * See per-patch changelog after ---.
->> v7 -> v8:
->>  * See per-patch changelog after ---.
->>
->> Arseniy Krasnov (4):
->>   vsock: update SO_RCVLOWAT setting callback
->>   virtio/vsock: send credit update during setting SO_RCVLOWAT
->>   virtio/vsock: fix logic which reduces credit update messages
->>   vsock/test: two tests to check credit update logic
->>
->>  drivers/vhost/vsock.c                   |   1 +
->>  include/linux/virtio_vsock.h            |   1 +
->>  include/net/af_vsock.h                  |   2 +-
->>  net/vmw_vsock/af_vsock.c                |   9 +-
->>  net/vmw_vsock/hyperv_transport.c        |   4 +-
->>  net/vmw_vsock/virtio_transport.c        |   1 +
->>  net/vmw_vsock/virtio_transport_common.c |  43 +++++-
->>  net/vmw_vsock/vsock_loopback.c          |   1 +
->>  tools/testing/vsock/vsock_test.c        | 175 ++++++++++++++++++++++++
->>  9 files changed, 229 insertions(+), 8 deletions(-)
->>
->> -- 
->> 2.25.1
-> 
+2) Keep MPOL_F_NODE and mpol_args->addr_node/policy_node, but don't allow
+   any future extensions that create this kind of situation.
+
+I'm fine with either.  I originally aimed for get_mempolicy2() to be
+all of get_mempolicy() features + new data, but that obviously isn't
+required.
+
+~Gregory
