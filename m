@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B1580F1CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8815380F1CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346530AbjLLQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
+        id S235104AbjLLQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbjLLQD6 (ORCPT
+        with ESMTP id S232549AbjLLQEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:03:58 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F47F7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:02 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a1e116f2072so1187498566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:02 -0800 (PST)
+        Tue, 12 Dec 2023 11:04:22 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72976B4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:27 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso13117a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702397041; x=1703001841; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MvlXlTqT/1JI2ELUMbuVdrPIpZiYCzyJ2Z/v4btxXcU=;
-        b=ZnZEzBF4ekVaxZEHEQ+EfaUNcf7PbqifWOTWzzwTMvWnUuMryoDEyyvTe79+xaSeTO
-         ROK9FZiPXrZiSfT/W6wGI4Iq4kYDuXt5oD0ICsZQraxC4U7w2eyTCXtuInIERYmg7Tcv
-         zhb9bG4wyS1A3fk+kFxw93Ln6ictDPzybiWhyWk7ThfN4sgGV0UvpEgIstrajeViIz0J
-         qgvGokwcg3SdRvdmBSYGsRfEKJSHpRgd2jXnub5s69MK7dT9tq9Q7Z4jM0zdzHhQXTQH
-         PKXrFl+36xBloUy8ee73jaeOY8EDUiC8iwtt830T1hWkxwcg7os+bmrEOM2oqVI3XMFS
-         uPqw==
+        d=google.com; s=20230601; t=1702397066; x=1703001866; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EySWR5HSLbEbAwQsmlzOeqMwViU2YPMZzWbEWm+2Kgo=;
+        b=CyFnmGD2rNk5SCz1aAqC1E7TtP9XCZ33skehfnNwi+ZaWcFr86n/Zd5eOrmUn+VJus
+         1LycG+H33eTazpAKP/mUcshd1rKFOJZDLl7qdH/6FYPYmIFETEtSk9vJNqWh8mWinaxx
+         s65ZzTqop1r2pojI49Npz0UdXno/8d6SGi20g5kgcbzMfStQOLmpq8xCBiENB496iDZc
+         HyP4xbQ92y6K8c5oNn2+1oKDMLv64D+yQNo/zE1quy+/xxqvZdHxJNwc5WU+BufmLc6k
+         VXTXnn83/jW3niInfbENmoy3iivoYHIITKVkxCwtbcSDOgSD1dD9uf50pUabpY33xa3i
+         UdBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702397041; x=1703001841;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MvlXlTqT/1JI2ELUMbuVdrPIpZiYCzyJ2Z/v4btxXcU=;
-        b=ei8LkgZL6x5EL/6DU77cbEjc72oPJSQwGWtUWhNrFQGLIVC8Pq6DTYGAFtof1S1av7
-         R1kqts/rwarkt6C9LhmbjP3uqakNtxXWc7SN2T5LaEBHJPD44yhsKFk07NstwvFqiJac
-         dJrZjDey3M1b9vIDBjqeQ53Y+pPgXVd+oGSFtqxPQgB6f5sLosFLET1F4W3+KHY3h6sl
-         8CNeCHSbM7Mov3Q1dBQnbhx4cFWtk7ZSD8alVCYetrdaJSPgmf/wBUKOAvMKN+3ly94a
-         KMveSSdRzzNTpqw0+ZZF09SvFxZyU2d3fDbLIuSLvXm/5PT6KOpHHjhn84NL/UOachgN
-         ovGQ==
-X-Gm-Message-State: AOJu0YxtOQTQXiKyx0Cuzrn+I3oP/Qmoe/53MAUsJgO5uW0POcKbY0cG
-        icj9aTkk7Jf5MSqHt8jphK/cCA==
-X-Google-Smtp-Source: AGHT+IFgMCuaknH0J4sB2gnWyA3n6vKJZYJRSK/Aynlmm9ST2Gm/oCk6X+fOmoucguw1kh7RBCdn5A==
-X-Received: by 2002:a17:906:dfda:b0:a1d:9f8f:e54b with SMTP id jt26-20020a170906dfda00b00a1d9f8fe54bmr7433783ejc.33.1702397041050;
-        Tue, 12 Dec 2023 08:04:01 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id mm19-20020a1709077a9300b00a18c2737203sm6505720ejc.109.2023.12.12.08.03.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 08:04:00 -0800 (PST)
-Message-ID: <412d6500-7364-43b0-90a6-98e9c9e30e76@tuxon.dev>
-Date:   Tue, 12 Dec 2023 18:03:59 +0200
+        d=1e100.net; s=20230601; t=1702397066; x=1703001866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EySWR5HSLbEbAwQsmlzOeqMwViU2YPMZzWbEWm+2Kgo=;
+        b=GqIvIMafCILx/OhDqaMBcd6WJ8sIpX2VJ9jkYswQS3qRtvYkWYsTAGt21KuuM+Tqzu
+         AVlYDQGUJcqhrthkavsjzLXDWmlCRtyLMy3rNvigIY8j3kmb2BjDE39WtQ51Rq7iwzd9
+         jBaW0QQKM3zlDcSO03ge2Ues9fWYHg6gVFqaZk1HWqlk1/zoZdqgCip63HUs1O2FtXNy
+         T+Pf7u+SfaDzU57z0W+bklW5Z9d5gflGLw7pT0yPNzbL1/gkSj5r119UK8P3YH5xqbXS
+         3dOenDtnI8it7xAowySHlcIOpU3WNXvLLD4Y4QSS2i95/DC4ybWgWR4CN1F4Fdh0TEkh
+         dA4w==
+X-Gm-Message-State: AOJu0YyMB2qlpsUvUXHcjzf9bVgPjpKdfMh4usjoVyYZr60cuQQj9Ynd
+        jpj2HBf5kfT3adr6PZaCx9hm9mdrvJB/2hOkLkg3Yw==
+X-Google-Smtp-Source: AGHT+IF6ELk9g2qcWWxJGDlTRcFmjUjaR5fvEaQA2WmaGK9QRAgfMLfPXv+AWfS1Jd1b6KSiMglq9KaODFhNn+IyQcI=
+X-Received: by 2002:a50:9fc6:0:b0:551:de83:557 with SMTP id
+ c64-20020a509fc6000000b00551de830557mr18211edf.2.1702397065602; Tue, 12 Dec
+ 2023 08:04:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drivers: soc: atmel: Adjust defines to follow
- aphabetical order
-Content-Language: en-US
-To:     Ryan.Wanner@microchip.com, Nicolas.Ferre@microchip.com,
-        alexandre.belloni@bootlin.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231208194532.579893-1-Ryan.Wanner@microchip.com>
- <de0ddb41-8d78-45eb-bcb7-6d318bf154fd@tuxon.dev>
- <31d470f8-9f82-4c09-a6f9-dac528fda3bf@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <31d470f8-9f82-4c09-a6f9-dac528fda3bf@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231208220545.7452-1-frederic@kernel.org> <20231208220545.7452-4-frederic@kernel.org>
+In-Reply-To: <20231208220545.7452-4-frederic@kernel.org>
+From:   Kalesh Singh <kaleshsingh@google.com>
+Date:   Tue, 12 Dec 2023 11:04:13 -0500
+Message-ID: <CAC_TJvcODXd71icqTLs5fkCKswML5huK-2V2=R2-D9-Fc0R1MA@mail.gmail.com>
+Subject: Re: [PATCH 3/8] rcu/exp: Fix RCU expedited parallel grace period
+ kworker allocation failure recovery
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria.behnsen@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 8, 2023 at 5:06=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
+.org> wrote:
+>
+> Under CONFIG_RCU_EXP_KTHREAD=3Dy, the nodes initialization for expedited
+> grace periods is queued to a kworker. However if the allocation of that
+> kworker failed, the nodes initialization is performed synchronously by
+> the caller instead.
+>
+> Now the check for kworker initialization failure relies on the kworker
+> pointer to be NULL while its value might actually encapsulate an
+> allocation failure error.
+>
+> Make sure to handle this case.
+>
+> Fixes: 9621fbee44df ("rcu: Move expedited grace period (GP) work to RT kt=
+hread_worker")
+> Cc: Kalesh Singh <kaleshsingh@google.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 82f8130d3fe3..055f4817bc70 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4723,6 +4723,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
+>         rcu_exp_par_gp_kworker =3D kthread_create_worker(0, par_gp_kworke=
+r_name);
+>         if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
+>                 pr_err("Failed to create %s!\n", par_gp_kworker_name);
+> +               rcu_exp_par_gp_kworker =3D NULL;
+>                 kthread_destroy_worker(rcu_exp_gp_kworker);
 
+Hi Frederic,
 
-On 11.12.2023 16:47, Ryan.Wanner@microchip.com wrote:
-> On 12/9/23 05:50, claudiu beznea wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Hi, Ryan,
->>
->> On 08.12.2023 21:45, Ryan.Wanner@microchip.com wrote:
->>> From: Ryan Wanner <Ryan.Wanner@microchip.com>
->>>
->>> Move the defines so that they are in aphabetical order based on SOC.
->>
->> s/aphabetical/alphabetical but maybe alphanumerical a better term.
->>
->> Could you please explain what level of alphabetical sort you wanted to
->> achieve? I see SAM9X60/SAMA7G5 b/w AT91SAM9X5_CIDR_MATCH and
->> AT91SAM9M11_EXID_MATCH or, e.g., AT91SAM9G35_EXID_MATCH after
->> AT91SAM9M10_EXID_MATCH.
-> 
-> I wanted to make the CIDR match in alphanumeric, for the EXID I wanted
-> to keep them alphanumeric but keeping them in the original SOC grouping.
+Thanks for catching this. I think we need to remove the
+kthread_destroy_worker() in this case too.
 
-Even so, it looks to me that there is mixed approach in overall file.
+Otherwise,
 
->>
->>>
->>> Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
->>> ---
->>> Changes from v1 -> v2:
->>> - Remove defines that are not yet in v6.7.
->>>
->>>  drivers/soc/atmel/soc.h | 38 +++++++++++++++++++-------------------
->>>  1 file changed, 19 insertions(+), 19 deletions(-)
->>>
->>> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
->>> index 7a9f47ce85fb..1f2af6f74160 100644
->>> --- a/drivers/soc/atmel/soc.h
->>> +++ b/drivers/soc/atmel/soc.h
->>> @@ -39,10 +39,10 @@ at91_soc_init(const struct at91_soc *socs);
->>>  #define AT91SAM9261_CIDR_MATCH               0x019703a0
->>>  #define AT91SAM9263_CIDR_MATCH               0x019607a0
->>>  #define AT91SAM9G20_CIDR_MATCH               0x019905a0
->>> -#define AT91SAM9RL64_CIDR_MATCH              0x019b03a0
->>>  #define AT91SAM9G45_CIDR_MATCH               0x019b05a0
->>> -#define AT91SAM9X5_CIDR_MATCH                0x019a05a0
->>>  #define AT91SAM9N12_CIDR_MATCH               0x019a07a0
->>> +#define AT91SAM9RL64_CIDR_MATCH              0x019b03a0
->>> +#define AT91SAM9X5_CIDR_MATCH                0x019a05a0
->>>  #define SAM9X60_CIDR_MATCH           0x019b35a0
->>>  #define SAMA7G5_CIDR_MATCH           0x00162100
->>>
->>> @@ -61,23 +61,15 @@ at91_soc_init(const struct at91_soc *socs);
->>>  #define AT91SAM9N12_EXID_MATCH               0x00000006
->>>  #define AT91SAM9CN11_EXID_MATCH              0x00000009
->>>
->>> +#define AT91SAM9XE128_CIDR_MATCH     0x329973a0
->>> +#define AT91SAM9XE256_CIDR_MATCH     0x329a93a0
->>> +#define AT91SAM9XE512_CIDR_MATCH     0x329aa3a0
->>> +
->>>  #define SAM9X60_EXID_MATCH           0x00000000
->>>  #define SAM9X60_D5M_EXID_MATCH               0x00000001
->>>  #define SAM9X60_D1G_EXID_MATCH               0x00000010
->>>  #define SAM9X60_D6K_EXID_MATCH               0x00000011
->>>
->>> -#define SAMA7G51_EXID_MATCH          0x3
->>> -#define SAMA7G52_EXID_MATCH          0x2
->>> -#define SAMA7G53_EXID_MATCH          0x1
->>> -#define SAMA7G54_EXID_MATCH          0x0
->>> -#define SAMA7G54_D1G_EXID_MATCH              0x00000018
->>> -#define SAMA7G54_D2G_EXID_MATCH              0x00000020
->>> -#define SAMA7G54_D4G_EXID_MATCH              0x00000028
->>> -
->>> -#define AT91SAM9XE128_CIDR_MATCH     0x329973a0
->>> -#define AT91SAM9XE256_CIDR_MATCH     0x329a93a0
->>> -#define AT91SAM9XE512_CIDR_MATCH     0x329aa3a0
->>> -
->>>  #define SAMA5D2_CIDR_MATCH           0x0a5c08c0
->>>  #define SAMA5D21CU_EXID_MATCH                0x0000005a
->>>  #define SAMA5D225C_D1M_EXID_MATCH    0x00000053
->>> @@ -113,6 +105,14 @@ at91_soc_init(const struct at91_soc *socs);
->>>  #define SAMA5D43_EXID_MATCH          0x00000003
->>>  #define SAMA5D44_EXID_MATCH          0x00000004
->>>
->>> +#define SAMA7G51_EXID_MATCH          0x3
->>> +#define SAMA7G52_EXID_MATCH          0x2
->>> +#define SAMA7G53_EXID_MATCH          0x1
->>> +#define SAMA7G54_EXID_MATCH          0x0
->>> +#define SAMA7G54_D1G_EXID_MATCH              0x00000018
->>> +#define SAMA7G54_D2G_EXID_MATCH              0x00000020
->>> +#define SAMA7G54_D4G_EXID_MATCH              0x00000028
->>> +
->>>  #define SAME70Q21_CIDR_MATCH         0x21020e00
->>>  #define SAME70Q21_EXID_MATCH         0x00000002
->>>  #define SAME70Q20_CIDR_MATCH         0x21020c00
->>> @@ -127,6 +127,11 @@ at91_soc_init(const struct at91_soc *socs);
->>>  #define SAMS70Q19_CIDR_MATCH         0x211d0a00
->>>  #define SAMS70Q19_EXID_MATCH         0x00000002
->>>
->>> +#define SAMV70Q20_CIDR_MATCH         0x21320c00
->>> +#define SAMV70Q20_EXID_MATCH         0x00000002
->>> +#define SAMV70Q19_CIDR_MATCH         0x213d0a00
->>> +#define SAMV70Q19_EXID_MATCH         0x00000002
->>> +
->>>  #define SAMV71Q21_CIDR_MATCH         0x21220e00
->>>  #define SAMV71Q21_EXID_MATCH         0x00000002
->>>  #define SAMV71Q20_CIDR_MATCH         0x21220c00
->>> @@ -134,9 +139,4 @@ at91_soc_init(const struct at91_soc *socs);
->>>  #define SAMV71Q19_CIDR_MATCH         0x212d0a00
->>>  #define SAMV71Q19_EXID_MATCH         0x00000002
->>>
->>> -#define SAMV70Q20_CIDR_MATCH         0x21320c00
->>> -#define SAMV70Q20_EXID_MATCH         0x00000002
->>> -#define SAMV70Q19_CIDR_MATCH         0x213d0a00
->>> -#define SAMV70Q19_EXID_MATCH         0x00000002
->>> -
->>>  #endif /* __AT91_SOC_H */
-> 
+Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+
+--Kalesh
+
+>                 return;
+>         }
+> --
+> 2.42.1
+>
