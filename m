@@ -2,141 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB7580ED0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A753480ED20
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376593AbjLLNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:16:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S1376626AbjLLNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:17:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjLLNQX (ORCPT
+        with ESMTP id S1376632AbjLLNRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:16:23 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BC210E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:16:25 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c25973988so59108435e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702386984; x=1702991784; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXxhQ5e/8QVdF34DlnTqCnedNIr6zdJHDPH+rQPlrZo=;
-        b=sPMb4p1dYxsXwSNxnLkpWsz8coG2SJMv6yhdf4NPe5gEz7btD6ex7uVbJwn0BZvEOK
-         J+naJ8ZLLvSrWJ+0SwK+TBSQxHaaf5iQ87WxufhHeFcJdA3o+ANu/OnbwG1U5uW0H7Ru
-         7IfYZc3lLNofqhKZZwhaFma/bjvjxmKuNtXjlAJtfeMUse5Op9S83WiM8ahUUYMk4VtK
-         lCP71qLuqh01BEniMu/X/a3kx3aYaJ98DjOTsMMHqxIU68EXt3kN4f8wugFx/UexhlLc
-         ifzoYFwDMsHj2S2r60Xh1J9rXEgo6IzJcNS3iuSZfoXJNt2srF08Nm/n/sk/LhUS8iU8
-         JJwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702386984; x=1702991784;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YXxhQ5e/8QVdF34DlnTqCnedNIr6zdJHDPH+rQPlrZo=;
-        b=g34OIXIzO7o7PlINjg903ofwwfdQCN9NUZnFfmEAtRTWk/UtuyH4UieK4haiMQiFxu
-         ihmzdRdZS7GHVa7gr5+J7XvICJyomxdoRJE+M+QnCwk76anYeg50S3Gozw2ldaSFLsEP
-         Gfy2TJJ0ie3ets01iAlyQvSr4ZoMM2c2CyiMyevB+M2vPkyvENxd+h1BlCwyxEkpDNe6
-         uEn7MeF756nLw0ij/11brMryoDgXTYPlXtSa8UMkC5UN63bqGxk3WgIXt3eTMqHR+SOj
-         yAMZbnOEa0uZ7Dtp7x80M1fiI9ThH3G0+TFS60Do/6LH1giYqnJ/peYeTeEKv2o42sWY
-         fSeQ==
-X-Gm-Message-State: AOJu0YwD5on16LawaYCFVJIt9Pb9HnRzjyK/EFUqSZE7Bs1Z4IV5c6Q/
-        nehCOLs60oj8Q2CgRc4jyn2bQA==
-X-Google-Smtp-Source: AGHT+IEUQNnVrh37Nbjc5DxK1DytPyg7lGQIOmoxLrCkwcQ84feYRReIAQ51Tjbj+ZIWyhVoFaeIUQ==
-X-Received: by 2002:a05:600c:3105:b0:40c:46eb:e6ad with SMTP id g5-20020a05600c310500b0040c46ebe6admr1729816wmo.175.1702386984024;
-        Tue, 12 Dec 2023 05:16:24 -0800 (PST)
-Received: from airbuntu ([104.132.45.98])
-        by smtp.gmail.com with ESMTPSA id d13-20020a05600c34cd00b0040c496c64cfsm6258392wmq.12.2023.12.12.05.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 05:16:23 -0800 (PST)
-Date:   Tue, 12 Dec 2023 13:16:22 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-        Rick Yiu <rickyiu@google.com>,
-        Chung-Kai Mei <chungkai@google.com>
-Subject: Re: [PATCH v2 7/8] sched/schedutil: Add a new tunable to dictate
- response time
-Message-ID: <20231212131622.2dpcd7k2r5gny5ki@airbuntu>
-References: <20231208002342.367117-1-qyousef@layalina.io>
- <20231208002342.367117-8-qyousef@layalina.io>
- <CAJZ5v0iYUY-LrL3LNdMqxyMntBij_pkpETB2esYPraPekqtbhw@mail.gmail.com>
- <20231210204032.fficzltp2gq66pne@airbuntu>
- <CAJZ5v0iKwcwkUBYaKkSkz0sPoHxrG_5pD295v_Z0jFDhR4FRFA@mail.gmail.com>
+        Tue, 12 Dec 2023 08:17:18 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D856210E;
+        Tue, 12 Dec 2023 05:17:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=76xsvfvsQao0L1F4mpEWw4iFvDSKTUGOH0rkCxylyR0=; b=QmO1jXrHyamW18FiZ0XlDmH8Gd
+        J6J4dTRw2FLTkkOKvQrns7exRXAFguyfbw2uOyWEWmNoQXBfbqBZNewfmIkmoQ6bdSNxZ1x5tnPZH
+        084wgWpxKkNR2iIpsHjtrRZ9JY1ddTp/EvS2MbTosRtewIEI8Orvb3OQJiNOerl/hksqowqURXjvG
+        fYWtLshBV60dlUDv9CIGwurTqiWt8vAiJIHs2JUjuped4+Ibfiu5fRUW9EHItbwHjIC6CXlZJyNyk
+        OIbxjiE1dEkn9Ncl10qwLKuiHA8BtEyU6VYvKAm8AyY9ExdjsSwpGxcfoUdawzLHnMiAOJUPVSQrR
+        k2K6LA6Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rD2d4-00Bm1M-0C;
+        Tue, 12 Dec 2023 13:16:54 +0000
+Date:   Tue, 12 Dec 2023 05:16:54 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
+Message-ID: <ZXhdRhfr+JoWdhyj@infradead.org>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140552.973290-2-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0iKwcwkUBYaKkSkz0sPoHxrG_5pD295v_Z0jFDhR4FRFA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231211140552.973290-2-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 21:20, Rafael J. Wysocki wrote:
+> +void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
+> +			   pgoff_t end)
+> +{
+> +	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
+> +}
+> +EXPORT_SYMBOL_GPL(invalidate_bdev_range);
 
-> I understand the motivation, but counter-arguments are based on the
-> experience with the cpufreq governors predating schedutil, especially
-> ondemand.  Namely, at one point people focused on adjusting all of the
-> governor tunables to their needs without contributing any code or even
-> insights back, so when schedutil was introduced, a decision was made
-> to reduce the tunability to a minimum (preferably no tunables at all,
-> but it turned out to be hard to avoid the one tunable existing today).
-> Peter was involved in those discussions and I think that the point
-> made then is still valid.
-> 
-> The headroom formula was based on the observation that it would be a
-> good idea to have some headroom in the majority of cases and on the
-> balance between the simplicity of computation and general suitability.
-> 
-> Of course, it is hard to devise a single value that will work for
-> everyone, but tunables complicate things from the maintenance
-> perspective.  For example, the more tunables there are, the harder it
-> is to make changes without altering the behavior in ways that will
-> break someone's setup.
+Can we have kerneldoc comments for the new helpers please?
 
-Okay thanks for the insights Rafael! I hope the matter is open for debate at
-least. I do agree and share the sentiment and if there's another way to avoid
-the tunable I'm all for going to try it out. I just personally failed to see
-how can we do this without delegating. And the current choice of 25% headroom
-is too aggressive for modern hardware IMHO. I'm not sure we can pick a value
-that will truly work for most use cases. In mobile world, it is really hard to
-cover all use cases. Different OEMs tend to focus on different use cases and
-design their systems to optimally work for those. And those use cases don't
-necessarily hit the same bottlenecks on different systems.
+> +struct folio *__bdev_get_folio(struct block_device *bdev, loff_t pos,
+> +			       fgf_t fgp_flags, gfp_t gfp)
+> +{
+> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, pos >> PAGE_SHIFT,
+> +				   fgp_flags, gfp);
+> +}
+> +EXPORT_SYMBOL_GPL(__bdev_get_folio);
 
-If we consider all the possible systems that Linux gets incorporated in, it is
-even harder to tell what's a sensible default.
+It's a bit silly to have a __-prefixed API without a version that
+doesn't have the prefix, so I'd prefer to drop it.  Unless willy has
+a good argument for keeping it the same as the filemap API.
 
-And generally if there's indeed a default that works for most users, what
-should we do if we fall into the minority where this default is not suitable
-for us? I think we need to handle this still. So we need a way somehow even if
-this proposal doesn't hit the mark. Although again, I hope the matter is open
-for debate.
-
-The only ultimate solution I see is userspace becoming fully uclamp aware and
-tell us their perf requirements. Then this value will be NOP as we have direct
-info from the use cases to help us give them the performance they need when
-they need it. And if their usage ends up with bad perf or power, we can at
-least shift the blame for their bad usage :-) /me runs
-
-But this is years from hitting the critical mass. We need to get to a point
-where we can enable uclamp config by default as not all distros enable it
-still.
-
-Anyway, looking forward to learning more on how we can do better.
-
-
-Thanks!
-
---
-Qais Yousef
