@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC2780E757
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C156380E75C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346263AbjLLJUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
+        id S1346303AbjLLJUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346185AbjLLJUV (ORCPT
+        with ESMTP id S1346399AbjLLJUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:20:21 -0500
+        Tue, 12 Dec 2023 04:20:40 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27982EB;
-        Tue, 12 Dec 2023 01:20:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EFB11F;
+        Tue, 12 Dec 2023 01:20:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702372828; x=1733908828;
+  t=1702372844; x=1733908844;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=f3eiUKT+cKcrQtCN2MDItspu7jMjjWkhuuJpCpoi/JE=;
-  b=n7z9RbHlWpmX++R9/nW5SMu7v+8qm4da5teoR+PR7e64kfu2uSMC1eRq
-   BayggVD3GGnQeQJ3lWFU69Lsjxr5/+D0YQ39ZtaMhB1FB7e0rGmKYyNCS
-   OOvIvi8l4RyRvBtrP4DoHD/dDXWRMiCDDoMrV7k0DVWVwvnsvFfezVAK9
-   ldFQ2yDqtZIZx2Kv5WDUhEHpjaHhRtxkn00EKXpMW5KO97xwPC1odQbQe
-   ObpMVJ7pgQN22o4btQRtpbOGsNR41JRKk14TZ5YQssu6R4iydjRL1kqgf
-   3aQzUOToBOuWGbzMeG97IB2XL0TL5wcPc5dChpufzLEzTql94X0XRvT11
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480974301"
+  bh=bCbMxYqsNc6ysevtODH1LdEzA9cmGSP1KVajSHQPjJU=;
+  b=O0O4Qvy55ltuH81dmJRHwdGmihtcQp/Ng3l++Uawa1rpksLfyYAkXxj9
+   EgAb9RoJnl5GVu+84A7tA0p3BmdamG6b4Hs+JOO5ANjRXU5AUNjygSTVh
+   UzT9GNB02HEnNYCl42R2IEfWrKoofeCSnklq9WXhO/bfBz2IGPmBieF0x
+   aclSL7wtjxGhXC+bW1s8+IEI/Jb1hOaUembStnIVomlkQv19byO8FV6JU
+   H6YpW32UcFwzWa88kjmZT+EptnYxtJ3+kp/YLHxG8X3zz94Azh2uRUAms
+   z/2EkubTxYr/1grp1Ijzw33I528wht2+OUcfN3xN/X7Xi4/wNTxVjvJiB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480974352"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="480974301"
+   d="scan'208";a="480974352"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:20:27 -0800
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:20:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="917213010"
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="917213171"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="917213010"
+   d="scan'208";a="917213171"
 Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:20:20 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:20:36 -0800
 From:   Haibo Xu <haibo1.xu@intel.com>
 Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -53,25 +53,27 @@ Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
         Anup Patel <anup@brainfault.org>,
         Atish Patra <atishp@atishpatra.org>,
         Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
         Mayuresh Chitale <mchitale@ventanamicro.com>,
         Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Minda Chen <minda.chen@starfivetech.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Jisheng Zhang <jszhang@kernel.org>,
         Samuel Holland <samuel@sholland.org>,
-        Minda Chen <minda.chen@starfivetech.com>,
         Sean Christopherson <seanjc@google.com>,
-        Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>,
+        Like Xu <likexu@tencent.com>, Peter Xu <peterx@redhat.com>,
         Vipin Sharma <vipinsh@google.com>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Thomas Huth <thuth@redhat.com>,
         Aaron Lewis <aaronlewis@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         kvm-riscv@lists.infradead.org
-Subject: [PATCH v4 05/11] tools: riscv: Add header file vdso/processor.h
-Date:   Tue, 12 Dec 2023 17:31:14 +0800
-Message-Id: <7b633cc441f5133608597463301fef122f5174d3.1702371136.git.haibo1.xu@intel.com>
+Subject: [PATCH v4 06/11] KVM: riscv: selftests: Switch to use macro from csr.h
+Date:   Tue, 12 Dec 2023 17:31:15 +0800
+Message-Id: <5f5f837cd052587f1d49f81a2c4dc58a5330fe47.1702371136.git.haibo1.xu@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1702371136.git.haibo1.xu@intel.com>
 References: <cover.1702371136.git.haibo1.xu@intel.com>
@@ -88,53 +90,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Borrow the cpu_relax() definitions from kernel's
-arch/riscv/include/asm/vdso/processor.h to tools/ for riscv.
-
 Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 ---
- tools/arch/riscv/include/asm/vdso/processor.h | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 tools/arch/riscv/include/asm/vdso/processor.h
+ tools/testing/selftests/kvm/include/riscv/processor.h | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/tools/arch/riscv/include/asm/vdso/processor.h b/tools/arch/riscv/include/asm/vdso/processor.h
-new file mode 100644
-index 000000000000..662aca039848
---- /dev/null
-+++ b/tools/arch/riscv/include/asm/vdso/processor.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __ASM_VDSO_PROCESSOR_H
-+#define __ASM_VDSO_PROCESSOR_H
-+
-+#ifndef __ASSEMBLY__
-+
-+#include <asm-generic/barrier.h>
-+
-+static inline void cpu_relax(void)
-+{
-+#ifdef __riscv_muldiv
-+	int dummy;
-+	/* In lieu of a halt instruction, induce a long-latency stall. */
-+	__asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
-+#endif
-+
-+#ifdef CONFIG_TOOLCHAIN_HAS_ZIHINTPAUSE
-+	/*
-+	 * Reduce instruction retirement.
-+	 * This assumes the PC changes.
-+	 */
-+	__asm__ __volatile__ ("pause");
-+#else
-+	/* Encoding of the pause instruction */
-+	__asm__ __volatile__ (".4byte 0x100000F");
-+#endif
-+	barrier();
-+}
-+
-+#endif /* __ASSEMBLY__ */
-+
-+#endif /* __ASM_VDSO_PROCESSOR_H */
+diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tools/testing/selftests/kvm/include/riscv/processor.h
+index 5b62a3d2aa9b..6f9e1e5e466d 100644
+--- a/tools/testing/selftests/kvm/include/riscv/processor.h
++++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+@@ -7,8 +7,9 @@
+ #ifndef SELFTEST_KVM_PROCESSOR_H
+ #define SELFTEST_KVM_PROCESSOR_H
+ 
+-#include "kvm_util.h"
+ #include <linux/stringify.h>
++#include <asm/csr.h>
++#include "kvm_util.h"
+ 
+ static inline uint64_t __kvm_reg_id(uint64_t type, uint64_t idx,
+ 				    uint64_t  size)
+@@ -95,13 +96,6 @@ static inline uint64_t __kvm_reg_id(uint64_t type, uint64_t idx,
+ #define PGTBL_PAGE_SIZE				PGTBL_L0_BLOCK_SIZE
+ #define PGTBL_PAGE_SIZE_SHIFT			PGTBL_L0_BLOCK_SHIFT
+ 
+-#define SATP_PPN				_AC(0x00000FFFFFFFFFFF, UL)
+-#define SATP_MODE_39				_AC(0x8000000000000000, UL)
+-#define SATP_MODE_48				_AC(0x9000000000000000, UL)
+-#define SATP_ASID_BITS				16
+-#define SATP_ASID_SHIFT				44
+-#define SATP_ASID_MASK				_AC(0xFFFF, UL)
+-
+ #define SBI_EXT_EXPERIMENTAL_START		0x08000000
+ #define SBI_EXT_EXPERIMENTAL_END		0x08FFFFFF
+ 
 -- 
 2.34.1
 
