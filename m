@@ -2,186 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF6A80F8ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F5880F904
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377533AbjLLVJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S1377583AbjLLVSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377456AbjLLVJS (ORCPT
+        with ESMTP id S235208AbjLLVSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:09:18 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2577BBE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:09:23 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d06fffdb65so37280265ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702415362; x=1703020162; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s4klJ8l6fLfAZKVWPgko1830CXSL6+WluuhkBtOdryM=;
-        b=Qd2J5mn2We4mnkEiCEls1VCkboYBr+dlfGZLimYXMEv0Fr125YcU6FhbelmsrYUlmw
-         yhQt8l+jB6J2+Q4mBW1zIR8AdecT02FZYwsyxw/wDV1bfn/r3PlC0W0QI0XOMK0nh3uq
-         SaswAESNfrahm+MVvzj67Lh7E9XIfSP4O2hlQ=
+        Tue, 12 Dec 2023 16:18:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BBD120
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702415889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G0WO36JLXIv5AaAr7yVxA4KjLJZuBfSjRiR5T6MWPYU=;
+        b=Cg4M+oo5St/YzM0hIx8Mx6CIpuDTebAXspCV1MaMeB0e/zfXvPGMb2OsKNKx1EuVpwzGiE
+        LKhVwSdueKf6qbccrvjtm/iPy5ZqgCGJDp2UJPLdEc8GDic3VgogdSnHUyQ0RYuCzZeEAR
+        1S6k2qMdabU5xF+dYKAkPfmNZZx7V7s=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-50-hZHsxwstMmiQxy9Vdh1rVA-1; Tue, 12 Dec 2023 16:18:07 -0500
+X-MC-Unique: hZHsxwstMmiQxy9Vdh1rVA-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ca1c740ff4so1001941a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:18:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702415362; x=1703020162;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s4klJ8l6fLfAZKVWPgko1830CXSL6+WluuhkBtOdryM=;
-        b=XjaPFxw6kM5FXIoNPYOzcpHmmtyfeYI6isgtJTn925ZAYo/GUqBUTDHF7ntSpKdoPa
-         WTY1eZGAGbNbnWIXfMz+2Vs8xIeAtXe7tjHDzqWC9aBBHI4Q9HYmw5WbLZEN+wRF3Rt0
-         aSW4ewwXPXiv4C4+eUWBlZDI3aPTBVUjLkXbB7Rs3ssU+qFhctHZK3VT0MpyC8zEcGdj
-         CocdIfdwCN1MPwK7tHxMyV3sBNynxmPO76gXCX7JBSDszbqbuY5JOLsRcCrU2VtM1p3s
-         RiXV4ZHlTtt7Hi1R/iOD3x7oeptMSKyLXBobg+abbzXzMWpYBOD4CiSVYIkKmoVKJ7nP
-         UGVw==
-X-Gm-Message-State: AOJu0Yw3GGAHtJdUKi96jkqXrG2Edolg7Yv9ivxtjtHCfGc0ClNQr/rP
-        DES2V9L9/AduMbaNiiZL9Mostg==
-X-Google-Smtp-Source: AGHT+IHtd7FszDMGirD1ZPy4kL3dQAz8QrpOLMzWyFxONZj+kxreJ+VdZCKjnt0WLVGQPyhmEcczVA==
-X-Received: by 2002:a17:903:2446:b0:1d0:6ffd:6e6b with SMTP id l6-20020a170903244600b001d06ffd6e6bmr4102435pls.99.1702415362621;
-        Tue, 12 Dec 2023 13:09:22 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d6-20020a170903230600b001d347a98e7asm114457plh.260.2023.12.12.13.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:09:22 -0800 (PST)
-Date:   Tue, 12 Dec 2023 13:09:21 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
-Subject: Re: [PATCH v3] ELF: AT_PAGE_SHIFT_MASK -- supply userspace with
- available page shifts
-Message-ID: <202312121307.D6605DCD@keescook>
-References: <6b399b86-a478-48b0-92a1-25240a8ede54@p183>
- <87v89dvuxg.fsf@oldenburg.str.redhat.com>
- <1d679805-8a82-44a4-ba14-49d4f28ff597@p183>
- <8582f7c9-b49d-4d21-8948-59d580e5317c@p183>
+        d=1e100.net; s=20230601; t=1702415886; x=1703020686;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G0WO36JLXIv5AaAr7yVxA4KjLJZuBfSjRiR5T6MWPYU=;
+        b=Q3SqJEMlLVRMyPdkPhI491OhouLk3SLITySR4y0N5bDIVPkBPsWKrfaNm7Hd2Fo6wO
+         mO4mazIVdX0c350IszdFTtBsIYdEC1/fC5IqUCjq9ibRIWgXJAHNDAitlHnyNSzxKHIs
+         Kb7MrR+q1jbsc0awdPTv9WhWySSTYdz2T0+vqf7ggivn4H2Otc+SA1HrcvvUlttfkCQd
+         eif92zZ4wf+m7y7nDaD2w1sckCo2XxWz8iV+qb+JNPimY7+c7ZR81nEIaV7Iqs0BfaE2
+         LEtPhO1FoCm964e6+aovY/zY2BBL9+CKVHNjiWKmsmd00pTRgdQc7ICbEBoIzQsQp74B
+         vjVg==
+X-Gm-Message-State: AOJu0Yx4AR4SwwaFsaoN8LXH7kUBbifoAgG72xiDa6mvTiUk1kvNHlpN
+        olTqyZNm8qEilXWHwaL05mbK5hv02sZCGLBNMqKYZOleH8sDsA+/mZsmJtJrIWOjMMA+gmht16Z
+        l+C/t4peg4FR6mJEZqemFTHtzNlV0PxV/f9QGuhkd
+X-Received: by 2002:a05:6a21:a5a4:b0:18f:fcc5:4c4f with SMTP id gd36-20020a056a21a5a400b0018ffcc54c4fmr3324479pzc.40.1702415886579;
+        Tue, 12 Dec 2023 13:18:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGaBUhsIKPiauenUWhA450tnBxmPri38tJ3FEk9h3f5UdGgkVU3xuISSVrM65CvHBeTYR1IOqNO0hPKmoRXyW0=
+X-Received: by 2002:a05:6a21:a5a4:b0:18f:fcc5:4c4f with SMTP id
+ gd36-20020a056a21a5a400b0018ffcc54c4fmr3324464pzc.40.1702415886268; Tue, 12
+ Dec 2023 13:18:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8582f7c9-b49d-4d21-8948-59d580e5317c@p183>
+References: <CAOgh=Fwb+JCTQ-iqzjq8st9qbvauxc4gqqafjWG2Xc08MeBabQ@mail.gmail.com>
+ <941aff31-6aa4-4c37-bb94-547c46250304@linux.alibaba.com> <ZXgNQ85PdUKrQU1j@infradead.org>
+ <58d175f8-a06e-4b00-95fe-1bd5a79106df@linux.alibaba.com> <ZXha1IxzRfhsRNOu@infradead.org>
+In-Reply-To: <ZXha1IxzRfhsRNOu@infradead.org>
+From:   Eric Curtin <ecurtin@redhat.com>
+Date:   Tue, 12 Dec 2023 21:17:29 +0000
+Message-ID: <CAOgh=Fw2TcOFgCz1HbU1E=_HGRnf1PTTG2Qp_nD1D9f083RwUA@mail.gmail.com>
+Subject: Re: [RFC KERNEL] initoverlayfs - a scalable initial filesystem
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        Daan De Meyer <daan.j.demeyer@gmail.com>,
+        Stephen Smoogen <ssmoogen@redhat.com>,
+        Yariv Rachmani <yrachman@redhat.com>,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Douglas Landgraf <dlandgra@redhat.com>,
+        Alexander Larsson <alexl@redhat.com>,
+        Colin Walters <walters@redhat.com>,
+        Brian Masney <bmasney@redhat.com>,
+        Eric Chanudet <echanude@redhat.com>,
+        Pavol Brilla <pbrilla@redhat.com>,
+        Lokesh Mandvekar <lmandvek@redhat.com>,
+        =?UTF-8?B?UGV0ciDFoGFiYXRh?= <psabata@redhat.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Neal Gompa <neal@gompa.dev>,
+        nvdimm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:44:33PM +0300, Alexey Dobriyan wrote:
-> Report available page shifts in arch independent manner, so that
-> userspace developers won't have to parse /proc/cpuinfo hunting
-> for arch specific strings.
-> 
-> Main users are supposed to be libhugetlbfs-like libraries which try
-> to abstract huge mappings across multiple architectures. Regular code
-> which queries hugepage support before using them benefits too because
-> it doesn't have to deal with descriptors and parsing sysfs hierarchies
-> while enjoying the simplicity and speed of getauxval(AT_PAGE_SHIFT_MASK).
-> 
-> Note!
-> 
-> This is strictly for userspace, if some page size is shutdown due
-> to kernel command line option or CPU bug workaround, than it must
-> not be reported in aux vector!
-> 
-> x86_64 machine with 1 GiB pages:
-> 
-> 	00000030  06 00 00 00 00 00 00 00  00 10 00 00 00 00 00 00
-> 	00000040  1d 00 00 00 00 00 00 00  00 10 20 40 00 00 00 00
-> 
-> x86_64 machine with 2 MiB pages only:
-> 
-> 	00000030  06 00 00 00 00 00 00 00  00 10 00 00 00 00 00 00
-> 	00000040  1d 00 00 00 00 00 00 00  00 10 20 00 00 00 00 00
-> 
-> AT_PAGESZ always reports one smallest page size which is not interesting.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
-> 
-> 	v3: better comment and changelog
-> 	v2: switch to page shifts, rename to ARCH_AT_PAGE_SHIFT_MASK
-> 
->  arch/x86/include/asm/elf.h  |   12 ++++++++++++
->  fs/binfmt_elf.c             |    3 +++
->  include/uapi/linux/auxvec.h |   13 +++++++++++++
->  3 files changed, 28 insertions(+)
-> 
-> --- a/arch/x86/include/asm/elf.h
-> +++ b/arch/x86/include/asm/elf.h
-> @@ -358,6 +358,18 @@ else if (IS_ENABLED(CONFIG_IA32_EMULATION))				\
->  
->  #define COMPAT_ELF_ET_DYN_BASE	(TASK_UNMAPPED_BASE + 0x1000000)
->  
-> +#define ARCH_AT_PAGE_SHIFT_MASK					\
-> +	do {							\
-> +		u32 val = 1 << 12;				\
-> +		if (boot_cpu_has(X86_FEATURE_PSE)) {		\
-> +			val |= 1 << 21;				\
-> +		}						\
-> +		if (boot_cpu_has(X86_FEATURE_GBPAGES)) {	\
-> +			val |= 1 << 30;				\
-> +		}						\
-> +		NEW_AUX_ENT(AT_PAGE_SHIFT_MASK, val);		\
-> +	} while (0)
-> +
->  #endif /* !CONFIG_X86_32 */
->  
->  #define VDSO_CURRENT_BASE	((unsigned long)current->mm->context.vdso)
+On Tue, 12 Dec 2023 at 13:06, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Dec 12, 2023 at 03:50:25PM +0800, Gao Xiang wrote:
+> > I have no idea how it's faster than the current initramfs or initrd.
+> > So if it's really useful, maybe some numbers can be posted first
+> > with the current `memmap` hack and see it's worth going further with
+> > some new infrastructure like initdax.
+>
+> Agreed.
+>
 
-If I can get an Ack from x86 maintainers for this, I can carry it in my
-execve tree.
+I was politely poked this morning to highlight the graphs on the
+initoverlayfs page, so as promised highlighting. That's not to say
+this is either kernelspace's or userspace's role to optimize, but it
+does prove there are benefits if we put some effort into optimizing
+early boot.
 
-Thanks for the updates to the commit log and comments, it reads better
-now.
+https://github.com/containers/initoverlayfs
 
--Kees
+With this approach systemd starts ~300ms faster on a Raspberry Pi 4
+with sd card, and this systemd instance has access to all the files
+that a traditional initramfs would. I did this test on a Raspberry Pi
+4 with NVMe drive over USB and the results were closer to a 500ms
+benefit in systemd start time.
 
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -240,6 +240,9 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
->  #endif
->  	NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
->  	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
-> +#ifdef ARCH_AT_PAGE_SHIFT_MASK
-> +	ARCH_AT_PAGE_SHIFT_MASK;
-> +#endif
->  	NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
->  	NEW_AUX_ENT(AT_PHDR, phdr_addr);
->  	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
-> --- a/include/uapi/linux/auxvec.h
-> +++ b/include/uapi/linux/auxvec.h
-> @@ -33,6 +33,19 @@
->  #define AT_RSEQ_FEATURE_SIZE	27	/* rseq supported feature size */
->  #define AT_RSEQ_ALIGN		28	/* rseq allocation alignment */
->  
-> +/*
-> + * All page sizes supported by CPU encoded as bitmask.
-> + *
-> + * Example: x86_64 system with pse, pdpe1gb /proc/cpuinfo flags
-> + * reports 4 KiB, 2 MiB and 1 GiB page support.
-> + *
-> + *	$ LD_SHOW_AUXV=1 $(which true) | grep -e AT_PAGE_SHIFT_MASK
-> + *	AT_PAGE_SHIFT_MASK: 0x40201000
-> + *
-> + * For 2^64 hugepage support please contact your Universe sales representative.
-> + */
-> +#define AT_PAGE_SHIFT_MASK	29
-> +
->  #define AT_EXECFN  31	/* filename of program */
->  
->  #ifndef AT_MINSIGSTKSZ
+Is mise le meas/Regards,
 
--- 
-Kees Cook
+Eric Curtin
+
