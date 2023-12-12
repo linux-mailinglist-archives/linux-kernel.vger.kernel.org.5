@@ -2,169 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A82680FB3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDEE80FB3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377978AbjLLXTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:19:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
+        id S1377975AbjLLXT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235286AbjLLXTZ (ORCPT
+        with ESMTP id S235337AbjLLXTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:19:25 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2045.outbound.protection.outlook.com [40.107.22.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C328100;
-        Tue, 12 Dec 2023 15:19:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C0hbhnA+OS061LRs8TYwyans5XxPOelIiCFfzphTh/+Pn4Yt9fUov6Xdvjw3DBKbveKDhTkw06IZtGgoN4++vaijGa1Yn0TfX3Sq3z0patwm4J1lmObwuXKruHJXd4W4HqgJWgXsgJd9uu8UJ99japh7L954aNO6W1m1pEPRZ6idlQx0a6IZlcndqIbCWwBqd1PpiF1Dgnlt194L+o9Xmiqm8Gz/yepsLAvc6Hu3NY1P1aGXTOQMiyQN+MnUh+otLCXbDViiKruk8DESR9E+BvGqLafSLFLWsdhIaSTEbZBat1vmIFdOMHh0A4IZHivGZrcFsaTM/g1ImOPWw7b5ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+vveGhXRNWPtOaY59hn0FvvQqThq02pyK6m9coM5IQk=;
- b=DctFh1G16tkogL+QC6FJXng38HH50AcpjHGT8K4G9hRFPSd33oTyzjRkQYT45+mvfPmYf2zXHsJUZX49lIXexjsuxvT4LKAMjA6qhiDnQ4ZFGgcvYLGoryC3hEeLvFJfNjgokK9gkrI17tTccNEFLpIXBDqQChylJOGlwad6Os4kwnWUCAIh27oAa69tUJ6w5RkrFp8J6b7ueS17i/4/4xJDu4oGnP/yGdfTKmkkg0ZpGhLf5QHJ1yq3NDNfmHyAglj2ZrO5ZSMs0oKL3/L17N2omsaGAyd7ukpd7So8nWXDZAs3GbWpEuPS34yyLMk+0Tvmcxv28/yOXrWqIhlPsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+vveGhXRNWPtOaY59hn0FvvQqThq02pyK6m9coM5IQk=;
- b=ClhlQg0SAuSgjlFIa4Im//WtzTNg87Ase5I0cJ4vetysymLAScbREPafU9iglRLUsO3KDyZln0TZJwB2RxWuJWwGUZQRZ45YPWdiOP82n9UuysGB5ezX3D20Kk3iPW01Nk10eOIvVTWBjymT+xwtK/tcJyA7bemtz10k9MNbI58=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS8PR04MB8359.eurprd04.prod.outlook.com (2603:10a6:20b:3b3::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
- 2023 23:19:05 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
- 23:19:05 +0000
-Date:   Tue, 12 Dec 2023 18:18:55 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        bhelgaas@google.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
-        hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
-        krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-Subject: Re: [PATCH v3 01/13] PCI: imx6: Simplify clock handling by using
- HAS_CLK_* bitmask
-Message-ID: <ZXjqX7uYm3TGFdzE@lizhi-Precision-Tower-5810>
-References: <20231211215842.134823-1-Frank.Li@nxp.com>
- <20231211215842.134823-2-Frank.Li@nxp.com>
- <20231212164913.GA21240@thinkpad>
- <20231212225426.GB2948988-robh@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212225426.GB2948988-robh@kernel.org>
-X-ClientProxiedBy: BY5PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::18) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB8359:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ffae849-a1f7-45c7-c8c7-08dbfb68bbb2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /vWmq2/0QYHH/bYyV453kkityHf1J9eOQ75r6jCZ+TCD3nMRFMPR6OhWN5bzzzmxKZI+VlPp1wwouiG7Hi4NV7b0JhM3b/TE0Jr6JyyYJCZPz1xTNKjQ3aMRsyCYCs9sVl3COoLQ0GdR6+0XHd4JgxqwSAGQmpmqSO/aK2BDmlNiUGiyRw94+b34fLAkYxdyr9Id9KIGEC1D5l4KWvwkf8kw726j3UR2mp98RqrI0N+lnzUf5Y7pBPoeeUWyMy3mWT+i90/VBRT5cjOoY+b4fRDan64ImCD+Vj9mebMSD34Syk++evvXx3yFSp8N5y0lEL8xTeFupUkhdJFHkg4VbSj6CKIuVCSkcyCwUaob2pHOVi0GW+zpo1YzwXc8l44biEEZcIcVztYg3I3HYYXblAvgCFx42jrLen9g8h/wwy4R9S42R9/kzNgSI687skHN1LTyDOwrbPYEYLk47avWteQLhUAZhuS3Qt9ZUPq9kzhEuki3j94LC5pABZJj+VBYS2xvj3Z4nu01OgIUOiRY3MCQt2dXKiTQBYUHlrMSr/9Hhln/BjL/O8tAld6MMdKfFHBjK+4ne/XBVM9/pjMQCkpMhzSiMA2vbsjnCV2FvonHoiLMEiz/jeSoaTXBDgmo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(52116002)(6506007)(6512007)(9686003)(38100700002)(5660300002)(4326008)(8676002)(8936002)(41300700001)(7416002)(2906002)(6486002)(33716001)(6666004)(478600001)(316002)(6916009)(66476007)(66556008)(66946007)(86362001)(38350700005)(66899024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mTkA3Z1JRD7r7XRjQpt0jI3IbmLPY/q4do/NoCfHoZREmYCNc8x/+WQL9LhG?=
- =?us-ascii?Q?FagMTIu/gdXz3sCxTR6b2a4HhocpG+//8RT87YsLcbvGccZD8ItOX8GxBgcF?=
- =?us-ascii?Q?a1Xfdrz75ic/8u4W1oFLpRYj4D2Pd0qwrknxawpnlqX4RAK04DWAsHqQIUJm?=
- =?us-ascii?Q?PaGH24rLJ5WzSLu0m2wIxT0r3eVNJLFVorhaRmkrAEPmzBcEcBVJblbSzGrr?=
- =?us-ascii?Q?UX3rUR16bQjZOhX4g3avKCWyl0V2XCiEL67EjRFEpAVSTjnLxydiZVRqv14n?=
- =?us-ascii?Q?kaOZLakrNj2dzG5mOAsN/rhom2vCMvhb3CqNLMV5K+BxEqtz3cOm0VtB+Ft2?=
- =?us-ascii?Q?ubZoR7j78n8g4IRAIWo9s0zMnUuGmPG1jJhmGWzdCGpxwOqvSkbRjY61nkEa?=
- =?us-ascii?Q?RMTvQznx4Z6n/Rff0DXvd6+i1fj3Sw7Ek4vQUsJlenzMMs0oC/9Ik4o6Ofqp?=
- =?us-ascii?Q?sySXVquAoy3s+VPShklh8RHUuJh9l77iLNw+0dtul/JdWSiLOmfC0gkAQog6?=
- =?us-ascii?Q?DupVUN+iyMp68Sx0jem0VF3oYXR7zbi3Yk5amTtGJA3Rcn1Ghx2AyxVE81MO?=
- =?us-ascii?Q?JU4wYR5zmqlJR2cb8ceLcjiaoYT5yTsagGa7xura0dKhri1yF12p3MAZ/mAs?=
- =?us-ascii?Q?RdQgnbVeA7cXvrI3aWCv/Mnq0246G87k3Bp/BVFjukR/DLRAuKkijFzanxdu?=
- =?us-ascii?Q?hc7DdGpE1hXQSPWqx4Vc+9WoZVbQb9W6s3RIX64nA+d7J+DTomsOdG/Ci8rg?=
- =?us-ascii?Q?MmWe9WKHrF5uOwZoae7Ew2YqmGORW+pBEIqb0++NYOf8wOb0V1ytaRIWLUmc?=
- =?us-ascii?Q?JA03qaDNVMMho6TSxwXei2L8QldYTsg7JZtlY3Pea2SeQJYrGLS44168vuLf?=
- =?us-ascii?Q?Bnm8JpZVyb4PEhOZnIJx5F3kXYAY6f0dYVhd2Jii/ctp6WnCFhelNLzZ3BWZ?=
- =?us-ascii?Q?qM4DY+fucVqgbcjmAe+D/S45zFj7HB1nQe/mw2qTPEmMB18BAnmKNFtKr7C9?=
- =?us-ascii?Q?ZF7MNHy9USmnJbovYU8sSUYOE9cff8xc559p04OgRpwZavg9RAN7MUCtXuqB?=
- =?us-ascii?Q?8flnePv60nqGjkN8QLBOYK1MYSj8Zl+YGIHmR3DUYtuhJ8MyNFpC2x0l/PTj?=
- =?us-ascii?Q?X4a13xqa5Ni3mbguJgX8M281j6HMqA6SupGvQt4po8gJzHpJpfpMJUz3AZAy?=
- =?us-ascii?Q?DDCbLxPVN6kGhwt+IOZ9K5tB9NrG/CXM6UsgoJS6bc+SQlVLSVXnnwNhmMmL?=
- =?us-ascii?Q?FP4laPsY3nUj0uf9uqi52Udqh/3yKt3axNZ1x0NPfO52IIc0vOuCZFx3hX4b?=
- =?us-ascii?Q?Rh48FkGnm/pQhpKylLHP2ABLS9rLH9Vaprf5I1QFDAQ/qSGocL9CPuEbulDx?=
- =?us-ascii?Q?zjQdep2SxeldBc1B37raL2lo75y9EXggN27tYllP90OCb62mXw+JvAZFmBoU?=
- =?us-ascii?Q?cfXsgU5VGA0zZNj7Bs7tWEQNH5UiFXvivkchCrSDFxBb5vIed9c4wvPXWMD0?=
- =?us-ascii?Q?NvjXTH4L5HH8fNjnAE/Kv4FgT/GPvEAkUdezyzrv5kvil6JyQrGfaHom+3uP?=
- =?us-ascii?Q?iQaGJuFTl6Ie3lqFGWc=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ffae849-a1f7-45c7-c8c7-08dbfb68bbb2
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 23:19:05.5735
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fU4FgG9kP0h7cpa7Tux7RiI2LgmgpRZkMhppCgE9dd9wU7hIzQ9ilJ8cF/LmNyrj609+k9A9Hcso8GnDz/dcfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8359
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 12 Dec 2023 18:19:24 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D1EDC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:19:08 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5e1ee53972dso14711367b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:19:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702423147; x=1703027947; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/YmSdHW0YnrgQyxCZCfpHUpcVYgfb1QxvP3xvZamGAg=;
+        b=T0IgtaJB2ly20lZB2MHikNj+HcKJKO2+Y6NXtlLuNyFF92RdVOXjPx9PkOldabIBAK
+         herFA6ZFzq6TMmaMoD9o1UlnuqdefWd8dSE5qdgswnzGNrIpMpOyY+bWMXl3+lJ8oM39
+         3ZE8UA6zhINly1tf364Ju+LLyMXdRBfJwyRiOpq3Su67n3rr1PZiwM5bk5tYdB5AfBFN
+         z/2slIL/OcmfcHIvcW3BGU3HyVrWx9S+Fnc+PHbbs/zdFYqaMUdqkoULagpXmKz6O9Vx
+         gzBjacsWZsoJz98N7xd0qLeluBvd/58qLCXYD7YOOcKnZVY+g0QajHnDGzPslWJ14T+h
+         pn3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702423147; x=1703027947;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/YmSdHW0YnrgQyxCZCfpHUpcVYgfb1QxvP3xvZamGAg=;
+        b=Bq5lon8cFDoBklec7BcgBiF5j4+n7WzkC1Et9UdU5CFNfiA1VeB2QsNltmfumT6duK
+         X1vyUyFbNJDczOKhy24mJLkJ1otLGFaHgtyFas8KLtus5i2PjeY8NdhFrcOORqOlyInE
+         PYOMuZxr6Tjoj68k66jyKUF+BaX8i1ESyjXw25hEQSbO2srdlt7rQlCaTxUooSwWF8LL
+         O/cUmGP+rCn6xhl9VtCYM4moBrtMQ9SNWvrQadMMhuu6v/13M5POwwozv7UiAMt0tdQV
+         7lYdQPxfS5CCBSrwaM2fSWwRq2gBz8vDPLzuLVyhSVKpA7IM4UWiHDnXz2lnkw980NGl
+         GckQ==
+X-Gm-Message-State: AOJu0Yx1Ok6RIoszQCl6smBuvu8oO/M9ZvfSD//2aO0cF0ddDagPrf3z
+        pRGALXDwtb28foFUwp0QbQVYqOtpJmO53LGxXw==
+X-Google-Smtp-Source: AGHT+IEpLi0Rm/0x6D0ko9SJaw0nsb4I84pLyrEFP8w1pM+ISdP1wxAh6qDWor2wI6KeyuvP6T8XV9dzFXyb/rXUVQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:b8d:b0:5d4:2ff3:d280 with
+ SMTP id ck13-20020a05690c0b8d00b005d42ff3d280mr63466ywb.7.1702423147099; Tue,
+ 12 Dec 2023 15:19:07 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:19:06 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAGnqeGUC/5WNQQqDMBBFryJZNyWZqNWueo8ipU0mGmiNZCRUx
+ Ls3ZtWtDAy8v3hvZYTBIbFrsbKA0ZHzYwI4FUwPz7FH7kxiBgKUFFBymsOop4Wb4CIG4qTJcas
+ 95veghSxxzQVKYy020FQVS7IpoHXfHLp3iQdHsw9L7ka5r4cTUfJ0KATUiEKBufXe9288a//Zk 9kHUh7yXdSrLQFUo9r639dt2/YDe0N+py0BAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702423146; l=4253;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=YiBU+J66ZaYx7q1aD7BISZtA4pcTkaCKnD8Tq9532Dc=; b=qaycx8xPm6Y1bhVtOlCyfrYYpwIzDp8dE+H1QlGhA1uuN5u5JDihjUla+CzhLRbk00RO80gRk
+ yTiIV4l3Z3HCtuOp0xW65fVh9g+EjUXg1EuEn2oht/+IoHbtLzb70wk
+X-Mailer: b4 0.12.3
+Message-ID: <20231212-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v2-1-1f2d6b2fc409@google.com>
+Subject: [PATCH v2] scsi: fcoe: use sysfs_match_string over fcoe_parse_mode
+From:   Justin Stitt <justinstitt@google.com>
+To:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 04:54:26PM -0600, Rob Herring wrote:
-> On Tue, Dec 12, 2023 at 10:19:13PM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Dec 11, 2023 at 04:58:30PM -0500, Frank Li wrote:
-> > > Refactors the clock handling logic in the imx6 PCI driver by adding
-> > > HAS_CLK_* bitmask define for drvdata::flags . Simplifies the code and makes
-> > > it more maintainable, as future additions of SOC support will only require
-> > > straightforward changes. The drvdata::flags and a bitmask ensures a cleaner
-> > > and more scalable switch-case structure for handling clocks.
-> > > 
-> > 
-> > Is there any necessity to validate each clock in the driver? I mean, can't you
-> > just rely on devicetree to provide enough clocks for the functioning of the PCIe
-> > controller?
-> > 
-> > If you can rely on devicetree (everyone should in an ideal world), then you can
-> > just use devm_clk_bulk_get_all() to get all available clocks for the SoC and
-> > just enable/disable whatever is available.
-> 
-> Or just use the *_get_optional() variants of functions. They return NULL 
-> such that subsequent calls are just NOPs if the resource is not present. 
-> Of course, they aren't really optional on any given platform in this 
-> case, but does that really matter.
+Instead of copying @buf into a new buffer and carefully managing its
+newline/null-terminating status, we can just use sysfs_match_string()
+as it uses sysfs_streq() internally which handles newline/null-term:
 
-I think it'd better use devm_clk_bulk_get() by passed down a clk name list
-.clk_names = {"pcie_aux", ...},
+|  /**
+|   * sysfs_streq - return true if strings are equal, modulo trailing newline
+|   * @s1: one string
+|   * @s2: another string
+|   *
+|   * This routine returns true iff two strings are equal, treating both
+|   * NUL and newline-then-NUL as equivalent string terminations.  It's
+|   * geared for use with sysfs input strings, which generally terminate
+|   * with newlines but are compared against values without newlines.
+|   */
+|  bool sysfs_streq(const char *s1, const char *s2)
+|  ...
 
-So it will not silient when dts are not matched requirement. It is not
-complex because only check once at probe.
+Then entirely drop the now unused fcoe_parse_mode, being careful to
+change if condition from checking for FIP_CONN_TYPE_UNKNOWN to < 0 as
+sysfs_match_string can return -EINVAL. Also check explicitly if
+ctlr->mode is equal to FIP_CONN_TYPE_UNKNOWN -- this is probably
+preferred to "<=" as the behavior is more obvious while maintaining
+functionality.
 
-Frank
+To get the compiler not to complain, make fip_conn_type_names
+const char * const. Perhaps, this should also be done for
+fcf_state_names.
 
-> 
-> There isn't an optional variant for phys, but it can be added.
-> 
-> > 
-> > This will greatly simplify the code.
-> > 
-> > Only downside of this approach is, if the devicetree is not supplying enough
-> > clocks, then it will be difficult to find why PCIe is not working. But this also
-> > means that the devicetree is screwed.
-> 
-> A sufficient schema should prevent that... That's what they're for, not 
-> just torturing people to learn json-schema. :)
-> 
-> Rob
+This also removes an instance of strncpy() which helps [1].
+
+Link: https://github.com/KSPP/linux/issues/90 [1]
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- update if-cond to check for unknown type (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20231211-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v1-1-73b942238396@google.com
+---
+Builds upon patch and feedback from [2]:
+
+However, this is different enough to warrant its own patch and not be a
+continuation.
+
+[2]: https://lore.kernel.org/all/9f38f4aa-c6b5-4786-a641-d02d8bd92f7f@acm.org/
+---
+ drivers/scsi/fcoe/fcoe_sysfs.c | 26 ++++----------------------
+ 1 file changed, 4 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
+index e17957f8085c..408a806bf4c2 100644
+--- a/drivers/scsi/fcoe/fcoe_sysfs.c
++++ b/drivers/scsi/fcoe/fcoe_sysfs.c
+@@ -10,6 +10,7 @@
+ #include <linux/kernel.h>
+ #include <linux/etherdevice.h>
+ #include <linux/ctype.h>
++#include <linux/string.h>
+ 
+ #include <scsi/fcoe_sysfs.h>
+ #include <scsi/libfcoe.h>
+@@ -214,25 +215,13 @@ static const char *get_fcoe_##title##_name(enum table_type table_key)	\
+ 	return table[table_key];					\
+ }
+ 
+-static char *fip_conn_type_names[] = {
++static const char * const fip_conn_type_names[] = {
+ 	[ FIP_CONN_TYPE_UNKNOWN ] = "Unknown",
+ 	[ FIP_CONN_TYPE_FABRIC ]  = "Fabric",
+ 	[ FIP_CONN_TYPE_VN2VN ]   = "VN2VN",
+ };
+ fcoe_enum_name_search(ctlr_mode, fip_conn_type, fip_conn_type_names)
+ 
+-static enum fip_conn_type fcoe_parse_mode(const char *buf)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(fip_conn_type_names); i++) {
+-		if (strcasecmp(buf, fip_conn_type_names[i]) == 0)
+-			return i;
+-	}
+-
+-	return FIP_CONN_TYPE_UNKNOWN;
+-}
+-
+ static char *fcf_state_names[] = {
+ 	[ FCOE_FCF_STATE_UNKNOWN ]      = "Unknown",
+ 	[ FCOE_FCF_STATE_DISCONNECTED ] = "Disconnected",
+@@ -274,17 +263,10 @@ static ssize_t store_ctlr_mode(struct device *dev,
+ 			       const char *buf, size_t count)
+ {
+ 	struct fcoe_ctlr_device *ctlr = dev_to_ctlr(dev);
+-	char mode[FCOE_MAX_MODENAME_LEN + 1];
+ 
+ 	if (count > FCOE_MAX_MODENAME_LEN)
+ 		return -EINVAL;
+ 
+-	strncpy(mode, buf, count);
+-
+-	if (mode[count - 1] == '\n')
+-		mode[count - 1] = '\0';
+-	else
+-		mode[count] = '\0';
+ 
+ 	switch (ctlr->enabled) {
+ 	case FCOE_CTLR_ENABLED:
+@@ -297,8 +279,8 @@ static ssize_t store_ctlr_mode(struct device *dev,
+ 			return -ENOTSUPP;
+ 		}
+ 
+-		ctlr->mode = fcoe_parse_mode(mode);
+-		if (ctlr->mode == FIP_CONN_TYPE_UNKNOWN) {
++		ctlr->mode = sysfs_match_string(fip_conn_type_names, buf);
++		if (ctlr->mode < 0 || ctlr->mode == FIP_CONN_TYPE_UNKNOWN) {
+ 			LIBFCOE_SYSFS_DBG(ctlr, "Unknown mode %s provided.\n",
+ 					  buf);
+ 			return -EINVAL;
+
+---
+base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+change-id: 20231024-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-0e1dffe82855
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
