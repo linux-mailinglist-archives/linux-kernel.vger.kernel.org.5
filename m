@@ -2,308 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7054080E401
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF7780E3FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjLLFlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 00:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S229815AbjLLFnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 00:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLLFlv (ORCPT
+        with ESMTP id S229460AbjLLFnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 00:41:51 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A153CBD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 21:41:56 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rCvWd-000611-3w; Tue, 12 Dec 2023 06:41:47 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rCvWb-00FGUz-PC; Tue, 12 Dec 2023 06:41:45 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rCvWb-000MmR-2J;
-        Tue, 12 Dec 2023 06:41:45 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next v2 2/2] net: phy: Add support for the DP83TG720S Ethernet PHY
-Date:   Tue, 12 Dec 2023 06:41:44 +0100
-Message-Id: <20231212054144.87527-3-o.rempel@pengutronix.de>
+        Tue, 12 Dec 2023 00:43:11 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B977CBD;
+        Mon, 11 Dec 2023 21:43:17 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d098b87eeeso46391385ad.0;
+        Mon, 11 Dec 2023 21:43:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702359797; x=1702964597; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sKaFlL9xl746TmzT27qUJD5WRcj1vFRppCdyKVFw/p4=;
+        b=bFOppSMZ+J2WQt/dg37AMkUMnlyVHaNnQUr/zbnNwSYlbKRL4/O+o8AaphDrl080ap
+         lZV35Fzb+8Hp3gWU7n5C/GM/LkRkfESCXw3P1q7B1QKxzpd2FQwepnilpQvQRTHQMOar
+         8DEkifOquuuTy549uK67yu4Oa7YN5PHxprJ8G8uRgysJhsY8W8L1tXsxpv0kM1lRHxc4
+         6jLFvtdb8Cof28F2SJRx+Yy9aHg0dXsWcXLVK33szxvLUL75SZInkxwkp/UHeVkh+Rsw
+         UMMpkrOQYYLBJ570dYLVynWTWOjcvgtYt8CVCeqdZt4uOZs65oNiYCkDGeO2XtNUgafH
+         Hv1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702359797; x=1702964597;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sKaFlL9xl746TmzT27qUJD5WRcj1vFRppCdyKVFw/p4=;
+        b=OhPhYOPYX7pwU9JyBCzp0wk+SCCZHNarbx3GQuk27+5yLEkD/5ADpi+s0NFHj+VfhT
+         seONoemibWudBE1Ylywf29/gWQOPo0yTOnPsu1z1ZgcMwzz/zzalsn91qikGMjAUGyU4
+         h4E7VVAK3QxR4inwC5ZLTW2FTQ7H8rnClbcyN/CZolNeUBIWpEXCLuJRu2Syz69Y/kUV
+         4+GayvYFKnnquM+PlIdwC4LJlmJTN/8KC+c4wKqmacZrbfMTZZxJz2MM86EHKjLSW0+t
+         OpPxq3fwh0g19aZLQPUAQCS5S/0C83ibO2txUfAWSjjzSIeJ7zbug4+elSrB+HFQ8luO
+         4+6w==
+X-Gm-Message-State: AOJu0YzRrW/MXn0DicamRube9OZgmsBWfLiaedcSXT7I19958FvdWH9X
+        iioJJyWW+Sv/yMWBPt3D1gTVkQwN8AI=
+X-Google-Smtp-Source: AGHT+IEwFZRH+OeexZrCzz9U3OL5uecmVKuuRLEaWdC7Ig2VZMPe+pmQ0QlwVW2Wrkvk/yg3qX9h+A==
+X-Received: by 2002:a17:902:d203:b0:1d0:910e:5028 with SMTP id t3-20020a170902d20300b001d0910e5028mr5957423ply.47.1702359796931;
+        Mon, 11 Dec 2023 21:43:16 -0800 (PST)
+Received: from rigel.home.arpa (194-223-186-106.tpgi.com.au. [194.223.186.106])
+        by smtp.gmail.com with ESMTPSA id u13-20020a170902e5cd00b001d0be32b0basm7591836plf.217.2023.12.11.21.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 21:43:16 -0800 (PST)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org, andy@kernel.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH 0/4] gpiolib: cdev: relocate debounce_period_us
+Date:   Tue, 12 Dec 2023 13:42:49 +0800
+Message-Id: <20231212054253.50094-1-warthog618@gmail.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231212054144.87527-1-o.rempel@pengutronix.de>
-References: <20231212054144.87527-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DP83TG720S-Q1 device is an IEEE 802.3bp and Open Alliance compliant
-automotive Ethernet physical layer transceiver.
+This series contains minor improvements to gpiolib-cdev.
 
-This driver was tested with i.MX8MP EQOS (stmmac) on the MAC side and
-same TI PHY on other side.
+The banner change is relocating the debounce_period_us from gpiolib's
+struct gpio_desc to cdev's struct line.  The first patch stores the
+field locally in cdev.  The second removes the now unused field from
+gpiolib.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/phy/Kconfig     |  13 +++
- drivers/net/phy/Makefile    |   1 +
- drivers/net/phy/dp83tg720.c | 188 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 202 insertions(+)
- create mode 100644 drivers/net/phy/dp83tg720.c
+The third patch is somewhat related and removes a FIXME from
+gpio_desc_to_lineinfo().  The FIXME relates to a race condition in
+the calculation of the used  flag, but I would assert that from
+the userspace perspective the read operation itself is inherently racy.
+The line being reported as unused in the info provides no guarantee -
+it just an indicator that requesting the line is likely to succeed -
+assuming the line is not otherwise requested in the meantime.
+Give the overall operation is racy, trying to stamp out an unlikely
+race within the operation is pointless. Accept it as a possibility
+that has negligible side-effects and reduce the number of locks held
+simultaneously and the duration that the gpio_lock is held.
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 25cfc5ded1da..098d17d2d3f7 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -394,6 +394,19 @@ config DP83TD510_PHY
- 	  Support for the DP83TD510 Ethernet 10Base-T1L PHY. This PHY supports
- 	  a 10M single pair Ethernet connection for up to 1000 meter cable.
- 
-+config DP83TG720_PHY
-+	tristate "Texas Instruments DP83TG720 Ethernet 1000Base-T1 PHY"
-+	help
-+	  The DP83TG720S-Q1 is an automotive Ethernet physical layer
-+	  transceiver compliant with IEEE 802.3bp and Open Alliance
-+	  standards. It supports key functions necessary for
-+	  transmitting and receiving data over both unshielded and
-+	  shielded single twisted-pair cables. This device offers
-+	  flexible xMII interface options, including support for both
-+	  RGMII and SGMII MAC interfaces. It's suitable for applications
-+	  requiring high-speed data transmission in automotive
-+	  networking environments.
-+
- config VITESSE_PHY
- 	tristate "Vitesse PHYs"
- 	help
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index f65e85c91fc1..4ace41095ee2 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -57,6 +57,7 @@ obj-$(CONFIG_DP83867_PHY)	+= dp83867.o
- obj-$(CONFIG_DP83869_PHY)	+= dp83869.o
- obj-$(CONFIG_DP83TC811_PHY)	+= dp83tc811.o
- obj-$(CONFIG_DP83TD510_PHY)	+= dp83td510.o
-+obj-$(CONFIG_DP83TG720_PHY)	+= dp83tg720.o
- obj-$(CONFIG_FIXED_PHY)		+= fixed_phy.o
- obj-$(CONFIG_ICPLUS_PHY)	+= icplus.o
- obj-$(CONFIG_INTEL_XWAY_PHY)	+= intel-xway.o
-diff --git a/drivers/net/phy/dp83tg720.c b/drivers/net/phy/dp83tg720.c
-new file mode 100644
-index 000000000000..326c9770a6dc
---- /dev/null
-+++ b/drivers/net/phy/dp83tg720.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Driver for the Texas Instruments DP83TG720 PHY
-+ * Copyright (c) 2023 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/phy.h>
-+
-+#define DP83TG720S_PHY_ID			0x2000a284
-+
-+/* MDIO_MMD_VEND2 registers */
-+#define DP83TG720S_MII_REG_10			0x10
-+#define DP83TG720S_STS_MII_INT			BIT(7)
-+#define DP83TG720S_LINK_STATUS			BIT(0)
-+
-+#define DP83TG720S_PHY_RESET			0x1f
-+#define DP83TG720S_HW_RESET			BIT(15)
-+
-+#define DP83TG720S_RGMII_DELAY_CTRL		0x602
-+/* In RGMII mode, Enable or disable the internal delay for RXD */
-+#define DP83TG720S_RGMII_RX_CLK_SEL		BIT(1)
-+/* In RGMII mode, Enable or disable the internal delay for TXD */
-+#define DP83TG720S_RGMII_TX_CLK_SEL		BIT(0)
-+
-+#define DP83TG720S_SQI_REG_1			0x871
-+#define DP83TG720S_SQI_OUT_WORST		GENMASK(7, 5)
-+#define DP83TG720S_SQI_OUT			GENMASK(3, 1)
-+
-+#define DP83TG720_SQI_MAX			7
-+
-+static int dp83tg720_config_aneg(struct phy_device *phydev)
-+{
-+	/* Autoneg is not supported and this PHY supports only one speed.
-+	 * We need to care only about master/slave configuration if it was
-+	 * changed by user.
-+	 */
-+	return genphy_c45_pma_baset1_setup_master_slave(phydev);
-+}
-+
-+static int dp83tg720_read_status(struct phy_device *phydev)
-+{
-+	u16 phy_sts;
-+	int ret;
-+
-+	phydev->pause = 0;
-+	phydev->asym_pause = 0;
-+
-+	/* Most of Clause 45 registers are not present, so we can't use
-+	 * genphy_c45_read_status() here.
-+	 */
-+	phy_sts = phy_read(phydev, DP83TG720S_MII_REG_10);
-+	phydev->link = !!(phy_sts & DP83TG720S_LINK_STATUS);
-+	if (!phydev->link) {
-+		/* According to the "DP83TC81x, DP83TG72x Software
-+		 * Implementation Guide", the PHY needs to be reset after a
-+		 * link loss or if no link is created after at least 100ms.
-+		 *
-+		 * Currently we are polling with the PHY_STATE_TIME (1000ms)
-+		 * interval, which is still enough for not automotive use cases.
-+		 */
-+		ret = phy_init_hw(phydev);
-+		if (ret)
-+			return ret;
-+
-+		/* After HW reset we need to restore master/slave configuration.
-+		 */
-+		ret = dp83tg720_config_aneg(phydev);
-+		if (ret)
-+			return ret;
-+
-+		phydev->speed = SPEED_UNKNOWN;
-+		phydev->duplex = DUPLEX_UNKNOWN;
-+	} else {
-+		/* PMA/PMD control 1 register (Register 1.0) is present, but it
-+		 * doesn't contain the link speed information.
-+		 * So genphy_c45_read_pma() can't be used here.
-+		 */
-+		ret = genphy_c45_pma_baset1_read_master_slave(phydev);
-+		if (ret)
-+			return ret;
-+
-+		phydev->duplex = DUPLEX_FULL;
-+		phydev->speed = SPEED_1000;
-+	}
-+
-+	return 0;
-+}
-+
-+static int dp83tg720_get_sqi(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	if (!phydev->link)
-+		return 0;
-+
-+	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, DP83TG720S_SQI_REG_1);
-+	if (ret < 0)
-+		return ret;
-+
-+	return FIELD_GET(DP83TG720S_SQI_OUT, ret);
-+}
-+
-+static int dp83tg720_get_sqi_max(struct phy_device *phydev)
-+{
-+	return DP83TG720_SQI_MAX;
-+}
-+
-+static int dp83tg720_config_rgmii_delay(struct phy_device *phydev)
-+{
-+	u16 rgmii_delay_mask;
-+	u16 rgmii_delay = 0;
-+
-+	switch (phydev->interface) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		rgmii_delay = 0;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+		rgmii_delay = DP83TG720S_RGMII_RX_CLK_SEL |
-+				DP83TG720S_RGMII_TX_CLK_SEL;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+		rgmii_delay = DP83TG720S_RGMII_RX_CLK_SEL;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		rgmii_delay = DP83TG720S_RGMII_TX_CLK_SEL;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	rgmii_delay_mask = DP83TG720S_RGMII_RX_CLK_SEL |
-+		DP83TG720S_RGMII_TX_CLK_SEL;
-+
-+	return phy_modify_mmd(phydev, MDIO_MMD_VEND2,
-+			      DP83TG720S_RGMII_DELAY_CTRL, rgmii_delay_mask,
-+			      rgmii_delay);
-+}
-+
-+static int dp83tg720_config_init(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	/* Software Restart is not enough to recover from a link failure.
-+	 * Using Hardware Reset instead.
-+	 */
-+	ret = phy_write(phydev, DP83TG720S_PHY_RESET, DP83TG720S_HW_RESET);
-+	if (ret)
-+		return ret;
-+
-+	/* Wait until MDC can be used again.
-+	 * The wait value of one 1ms is documented in "DP83TG720S-Q1 1000BASE-T1
-+	 * Automotive Ethernet PHY with SGMII and RGMII" datasheet.
-+	 */
-+	usleep_range(1000, 2000);
-+
-+	if (phy_interface_is_rgmii(phydev))
-+		return dp83tg720_config_rgmii_delay(phydev);
-+
-+	return 0;
-+}
-+
-+static struct phy_driver dp83tg720_driver[] = {
-+{
-+	PHY_ID_MATCH_MODEL(DP83TG720S_PHY_ID),
-+	.name		= "TI DP83TG720S",
-+
-+	.config_aneg	= dp83tg720_config_aneg,
-+	.read_status	= dp83tg720_read_status,
-+	.get_features	= genphy_c45_pma_read_ext_abilities,
-+	.config_init	= dp83tg720_config_init,
-+	.get_sqi	= dp83tg720_get_sqi,
-+	.get_sqi_max	= dp83tg720_get_sqi_max,
-+
-+	.suspend	= genphy_suspend,
-+	.resume		= genphy_resume,
-+} };
-+module_phy_driver(dp83tg720_driver);
-+
-+static struct mdio_device_id __maybe_unused dp83tg720_tbl[] = {
-+	{ PHY_ID_MATCH_MODEL(DP83TG720S_PHY_ID) },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(mdio, dp83tg720_tbl);
-+
-+MODULE_DESCRIPTION("Texas Instruments DP83TG720S PHY driver");
-+MODULE_AUTHOR("Oleksij Rempel <kernel@pengutronix.de>");
-+MODULE_LICENSE("GPL");
--- 
+The fourth patch is unrelated to debounce or info, but addresses Andy's
+recent assertion that the linereq get/set values functions are confusing
+and under documented.  Figured I may as well add that while I was in
+there.
+
+Kent Gibson (4):
+  gpiolib: cdev: relocate debounce_period_us from struct gpio_desc
+  gpiolib: remove debounce_period_us from struct gpio_desc
+  gpiolib: cdev: reduce locking in gpio_desc_to_lineinfo()
+  gpiolib: cdev: improve documentation of get/set values
+
+ drivers/gpio/gpiolib-cdev.c | 257 ++++++++++++++++++++++++++++--------
+ drivers/gpio/gpiolib.c      |   3 -
+ drivers/gpio/gpiolib.h      |   5 -
+ 3 files changed, 201 insertions(+), 64 deletions(-)
+
+--
 2.39.2
 
