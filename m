@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A76B80F417
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335D880F419
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbjLLRKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        id S232911AbjLLRKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLRJ6 (ORCPT
+        with ESMTP id S232572AbjLLRJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 12:09:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC810B7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:10:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702401004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xTsmW17WUzLud/2jzNOtfYA8w5ZvrrOIfNd+fsou+94=;
-        b=bklj3+33lLMWn+LeyVfLT3jLAwp6n2JEh/h7Fb+UypjeXvrk89D3D8L33LGVPiwjQnctyW
-        tGg7JdVW1CK9paWZpffjOSKpLc35bmOrXcPvURe4Ekc7I28QnpxFrH1eyOeJGcu+8tp2rf
-        O4vdyGOwxbDAo2SZ3nRQEOjUP9IpSvE=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-472-962USCOoOhGd9JKuiWFyvw-1; Tue, 12 Dec 2023 12:10:02 -0500
-X-MC-Unique: 962USCOoOhGd9JKuiWFyvw-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d05708dde4so62727065ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:10:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702401001; x=1703005801;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xTsmW17WUzLud/2jzNOtfYA8w5ZvrrOIfNd+fsou+94=;
-        b=mujophZCkusxKU9Q5ujbb803zggU35lNqVMaZijUrqIzJCL0+uFZEER5mDt4oCYEeX
-         QssjfNPFc/xY+//XZ3OkXONBYVQQ5XpNKzCL4S4kK355eiVyTlQrakbnSdO/WlPLpkPt
-         pU+NYxPE5Q0MMwRCJuyGDc6KWohhPkDDnczLo4MvY2H8tmvliu307nnd6NprpXdfvhmP
-         GgAz++jmyS/FbYasxTw4fbPYO0gelzP8+BPT68ggpMJVkn29mypH0NPc/0TpeBlGG3pW
-         ggnBvCWVij6Ed39l3Uxbr2M2buC+sGs95xj0HEBW+kXktz6HJeikJ4Z5Df/kW1AYasID
-         vqFg==
-X-Gm-Message-State: AOJu0YzBbSuT03O3xucwPMp9pV4sbqD+74pBGdxzpzqDEvP5XLqx2Oie
-        AZUVVJa/ugz1GVy8vGR/L2KTsmtbykqUNWkmyo+a/g84+JvFNXgNy8+jWbRLrpiu1PAgO8OJqDf
-        vVr1SCU4ZraGzueRZcyFnq26FR9yBc3HS
-X-Received: by 2002:a17:902:eb88:b0:1d0:265:6a2c with SMTP id q8-20020a170902eb8800b001d002656a2cmr7793183plg.11.1702401001171;
-        Tue, 12 Dec 2023 09:10:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGUOPW83vh6/yFOfLem9iMzay8K3e+XQC3CNiFpYGPaAVfwiBjhwWox62jHYqHe8pPGMa2chA==
-X-Received: by 2002:a17:902:eb88:b0:1d0:265:6a2c with SMTP id q8-20020a170902eb8800b001d002656a2cmr7793162plg.11.1702401000838;
-        Tue, 12 Dec 2023 09:10:00 -0800 (PST)
-Received: from localhost.localdomain ([2804:1b3:a802:3102:945e:6f76:fb73:6512])
-        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001d0969c5b68sm8851113plk.139.2023.12.12.09.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:10:00 -0800 (PST)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Leonardo Bras <leobras@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [RFC PATCH v5 1/1] scripts: Introduce a default git.orderFile
-Date:   Tue, 12 Dec 2023 14:09:43 -0300
-Message-ID: <ZXiT1zyADQVXOEqw@LeoBras>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ZXhbUmxzH6nWAzaw@infradead.org>
-References: <20231208181802.88528-3-leobras@redhat.com> <ZXgMa57Ere6FJCJB@infradead.org> <CAK7LNAQiJW0eFYQZN0wuURhrdc-8y7=TcEazpxhLf=+mRbKHHQ@mail.gmail.com> <ZXhbUmxzH6nWAzaw@infradead.org>
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0CED0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:10:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D7CFC433C8;
+        Tue, 12 Dec 2023 17:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702401004;
+        bh=yjoopt9NEDUJBXYr+uh0GurA19bZL/znMFFec8DNFHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HKjopVXeO6JVxx8562Q1lAsjA3jLS9Lrq37LUVv/9vpA/h4L49qsljC4USp3nIwKv
+         wmp89DWIDumgmnSah7+tF4tfl/a9iZ7zkwZK5mcLWXS+lrQTEZ5X2aXuv9bwqT6fzH
+         y2/5Lybl5TsflSGLcFCIfaRXroO9XKBtVpZA+5x91ophu6Q13pvLRM4VfBE5+TW2Fn
+         bhlQstwmM50jkVhnlqPxT24RWqgS/ZlS33sPgFiFCJo+u50ZvA9SWyr9EYcu83sm/j
+         0jt35PpifPlW5KwJp7yaxVF4Wa4gu+oJuW4b4gzlmobPImpcV4Rzv0cE8TqtIQrj9y
+         yhBvAVAnrZzZw==
+Date:   Tue, 12 Dec 2023 17:09:57 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ninad Palsule <ninad@linux.ibm.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org, patrick.rudolph@9elements.com,
+        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
+        lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+Subject: Re: [PATCH v1 1/8] dt-bindings: arm: aspeed: add IBM system1-bmc
+Message-ID: <20231212-thrower-ebook-d29a85a6ed96@spud>
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-2-ninad@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="55umEabtpNwX1lRu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231212164004.1683589-2-ninad@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 05:08:34AM -0800, Christoph Hellwig wrote:
-> On Tue, Dec 12, 2023 at 05:09:21PM +0900, Masahiro Yamada wrote:
-> > Unlike .gitignore, this feature is opt-in rather than enforced.
-> > 
-> > To use this, you need to run
-> > 
-> > 'git config diff.orderFile scripts/git.orderFile'
-> > 
-> > or
-> > 
-> > 'git diff -C scripts/git.orderFile'
-> 
-> Oh, ok.  That greatly reduces my concern.
 
-Yes, it's an opt-in, so no user should be directly impacted.
+--55umEabtpNwX1lRu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > 
-> > Indeed, the file order is subjective, leaving
-> > us a question "do we need it in upstream"?
+On Tue, Dec 12, 2023 at 10:39:57AM -0600, Ninad Palsule wrote:
+> Document the new compatibles used on IBM system1-bmc
+>=20
+> Tested:
+>     This board is tested using the simics simulator.
 
-The main idea is patch generation.
-This file's order is supposed to be the best order for reading a raw patch 
-and understanding the code changes. 
+I don't see how this is relevant to dt-bindings patches.
 
-> > 
-> > At least, it is harmless for people who have no interest.
-> 
-> .. but this is still a good question.  I'm not really sure there is
-> much of a need for it, but as long as it doesn't harm everyone else
-> I'm at least neutral on it.
+>=20
+> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> ---
+>  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+>  Documentation/devicetree/bindings/trivial-devices.yaml   | 2 ++
 
-diff.orderfile was introduced in git to help order the git diff, and thus 
-the patch generation, in a way that it's easier to understand what the 
-commit / patch intends on doing. 
+IMO these should be split into two patches.
 
-Take this example introducing a feature foo, you should see:
-- Documentation on foo, if introduced
-- How is foo enabled in build system, if needed
-- The types / stucts / fields introduced by foo, if any
-- The interface for using foo, if any
-- The actual foo implementation.
+Cheers,
+Conor.
 
-Of course the actual order is open to discussion, and I encourage everyone 
-to suggest any other items or order.
+>  2 files changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/D=
+ocumentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> index 6f7543463d89..ebebe14c42aa 100644
+> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> @@ -85,6 +85,7 @@ properties:
+>                - facebook,yosemite4-bmc
+>                - ibm,everest-bmc
+>                - ibm,rainier-bmc
+> +              - ibm,system1-bmc
+>                - ibm,tacoma-bmc
+>                - inventec,starscream-bmc
+>                - inventec,transformer-bmc
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
+umentation/devicetree/bindings/trivial-devices.yaml
+> index 441b55723675..b12a60d2eb0f 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -135,6 +135,8 @@ properties:
+>            - ibm,cffps1
+>              # IBM Common Form Factor Power Supply Versions 2
+>            - ibm,cffps2
+> +            # Infineon barometric pressure and temperature sensor
+> +          - infineon,dps310
+>              # Infineon IR36021 digital POL buck controller
+>            - infineon,ir36021
+>              # Infineon IR38060 Voltage Regulator
+> --=20
+> 2.39.2
+>=20
 
-Thanks!
-Leo
+--55umEabtpNwX1lRu
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiT5AAKCRB4tDGHoIJi
+0pd1AQCSwXdC8RYV745T9gVdIrlReCQJoSuD6J0vvr2NN2/3iAD+Mfx6pgKRXZWu
+G9C1EwvFHJ7rMpBCulVDOhFTvdQLUAA=
+=0EQF
+-----END PGP SIGNATURE-----
+
+--55umEabtpNwX1lRu--
