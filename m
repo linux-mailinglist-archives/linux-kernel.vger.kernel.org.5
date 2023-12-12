@@ -2,513 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A1680E12F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD7C80E13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345585AbjLLCEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S1345630AbjLLCFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345531AbjLLCEC (ORCPT
+        with ESMTP id S1345318AbjLLCFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:04:02 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B2CD1;
-        Mon, 11 Dec 2023 18:04:07 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBNeted027884;
-        Tue, 12 Dec 2023 02:03:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=kHub05U0B+zmWdZnOUL04+cyD7bS/dheX96Vem6982Q=; b=Kv
-        B3QG5HkYGmUZWAck21FxO4icmrvhYSRFK6CoKl56ykTTa2nQ7ougp7S5/zl45gdE
-        SfoRj7m7WcHKhYOJjxIvZcjp2I0lBl38nTHvTUtFJQ8KVTGwbwsV6D3xUzutv851
-        8K2yrqMDn868l88Yxbxy/Tj7fhxg0DupAB9xdWTq34v6wd1w76UkKr1QvTgc5Qup
-        G9JCLAhazJSS7ZNy5eiro4QqRULB6+fnlW6Uw2aGFE20l2wUVioHBdlc6P/JObCF
-        nAkmBrVlId5RN7eYd9IFi0y4tmCOhPFqrHoaNgeEkk6+kh/v3npcc09nTuRkXG4o
-        VFO/uMBp1obqpHUoM9Gw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux653136b-1
+        Mon, 11 Dec 2023 21:05:46 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B29D1;
+        Mon, 11 Dec 2023 18:05:50 -0800 (PST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBNMuXi032321;
+        Tue, 12 Dec 2023 02:05:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Ot8KKoxIBjGSb3I4fQ0uzOZ3rMDzR3TKxD9TleX3+9A=;
+ b=jA6Nr7J6zehZADQRYlcgUNAParhcaZLMCIynCWSG4T1CCxcihjha9ijlOh55MCgJCiHb
+ YbmTeSWM7nuRUvzi/PVuH/z+crlzjAITEIJ6jP1R1yPOk8mBrpQTpdDE2uL30sFUbNmQ
+ dStZsKVeOTKgII52Uolt5PA0MRPxnmPgh9v2NQV+uowdrwavs33HEC7MMrwKh8k0zSuw
+ TPd5UToK+7GiHDFZhsifwqyE86lRogocOZ8d8tw2qboBlgSjOdNLXtPGyrHdYXd1gOEW
+ ZUkA4EFrqGmCQcxhpe1SjlVZ38QF50SdTjUlCkNvSX6xr0zYg7KxY0C2o8usxqI+K44Y yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxc1tjy2r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:03:22 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC23LxJ012477
+        Tue, 12 Dec 2023 02:05:32 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BC1oHKZ006324;
+        Tue, 12 Dec 2023 02:05:31 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxc1tjy27-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:03:21 GMT
-Received: from hu-johmoo-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 18:03:17 -0800
-From:   John Moon <quic_johmoo@quicinc.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Nicolas Schier" <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>
-CC:     John Moon <quic_johmoo@quicinc.com>,
-        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Todd Kjos <tkjos@google.com>,
-        Matthias Maennich <maennich@google.com>,
-        Giuliano Procida <gprocida@google.com>,
-        <kernel-team@android.com>, <libabigail@sourceware.org>,
-        Dodji Seketeli <dodji@redhat.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Jordan Crouse <jorcrous@amazon.com>
-Subject: [PATCH v7 3/3] check-module-params: Introduce check-module-params.sh
-Date:   Mon, 11 Dec 2023 18:02:59 -0800
-Message-ID: <20231212020259.2451253-4-quic_johmoo@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
-References: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
+        Tue, 12 Dec 2023 02:05:31 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBN2wVU013869;
+        Tue, 12 Dec 2023 02:05:30 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw591w85a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 02:05:30 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BC25RGr46989760
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 02:05:27 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 601A520043;
+        Tue, 12 Dec 2023 02:05:27 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EA7920040;
+        Tue, 12 Dec 2023 02:05:26 +0000 (GMT)
+Received: from [9.171.76.38] (unknown [9.171.76.38])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Dec 2023 02:05:25 +0000 (GMT)
+Message-ID: <3897a38ef97742f7f51fb4c84c5ddeb4e36dae79.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 01/33] ftrace: Unpoison ftrace_regs in
+ ftrace_ops_list_func()
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Date:   Tue, 12 Dec 2023 03:05:25 +0100
+In-Reply-To: <20231208093133.62aae274@gandalf.local.home>
+References: <20231121220155.1217090-1-iii@linux.ibm.com>
+         <20231121220155.1217090-2-iii@linux.ibm.com>
+         <CAG_fn=WHf0t=-OJL0031D+X7cX_D25G7TG0TqROsT34QcEnqsw@mail.gmail.com>
+         <20231208093133.62aae274@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: p3ns36G_XC_4MnLHFgxIG4MlSACnGcuD
-X-Proofpoint-GUID: p3ns36G_XC_4MnLHFgxIG4MlSACnGcuD
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LdRjikzPVMkLwO_P5tClkpAJCESuoSPy
+X-Proofpoint-GUID: LtJfjO66RfKFUX7oxZBtF4AB6-D3cx5W
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312120014
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+ definitions=2023-12-11_11,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=884
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312120015
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One part of maintaining backwards compatibility with older
-userspace programs is avoiding changes to module parameters.
+On Fri, 2023-12-08 at 09:31 -0500, Steven Rostedt wrote:
+> On Fri, 8 Dec 2023 15:16:10 +0100
+> Alexander Potapenko <glider@google.com> wrote:
+>=20
+> > On Tue, Nov 21, 2023 at 11:02=E2=80=AFPM Ilya Leoshkevich
+> > <iii@linux.ibm.com> wrote:
+> > >=20
+> > > Architectures use assembly code to initialize ftrace_regs and
+> > > call
+> > > ftrace_ops_list_func(). Therefore, from the KMSAN's point of
+> > > view,
+> > > ftrace_regs is poisoned on ftrace_ops_list_func entry(). This
+> > > causes
+> > > KMSAN warnings when running the ftrace testsuite.=C2=A0=20
+> >=20
+> > I couldn't reproduce these warnings on x86, hope you really need
+> > this
+> > change on s390 :)
 
-To that end, add a script (check-module-params.sh) which
-performs a simple check of module parameter changes across
-git references.
+I just double-checked, and it's still needed. Without it, I get:
 
-For example, if this module parameter:
+[    4.140184] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D =20
+[    4.140416] BUG: KMSAN: uninit-value in
+arch_ftrace_ops_list_func+0x8e6/0x14b0           =20
+[    4.140484]  arch_ftrace_ops_list_func+0x8e6/0x14b0               =20
+[    4.140546]  ftrace_graph_caller+0x0/0x34                         =20
+[    4.140614]  read_tod_clock+0x6/0x1e0                             =20
+[    4.140671]  ktime_get+0x3a4/0x670                                =20
+[    4.140727]  clockevents_program_event+0x1c8/0xb10                =20
+[    4.140785]  tick_program_event+0x11e/0x230                       =20
+[    4.140842]  hrtimer_interrupt+0x118a/0x1d10                      =20
+[    4.140898]  do_IRQ+0x108/0x150                                   =20
+[    4.140959]  do_irq_async+0xfc/0x270                              =20
+[    4.141021]  do_ext_irq+0x98/0x120                                =20
+[    4.141080]  ext_int_handler+0xc4/0xf0                            =20
+[    4.141141]  _raw_spin_unlock_irqrestore+0xfa/0x190               =20
+[    4.141207]  _raw_spin_unlock_irqrestore+0xf6/0x190               =20
+[    4.141271]  s390_kernel_write+0x218/0x250                        =20
+[    4.141328]  ftrace_make_call+0x362/0x4a0                         =20
+[    4.141386]  __ftrace_replace_code+0xb44/0xbd0                    =20
+[    4.141442]  ftrace_replace_code+0x1d8/0x440                      =20
+[    4.141497]  ftrace_modify_all_code+0xfe/0x510                    =20
+[    4.141555]  ftrace_startup+0x4f0/0xcf0                           =20
+[    4.141609]  register_ftrace_function+0x1316/0x1440               =20
+[    4.141670]  function_trace_init+0x2c0/0x3d0                      =20
+[    4.141732]  tracer_init+0x282/0x370                              =20
+[    4.141789]  trace_selftest_startup_function+0x104/0x19d0         =20
+[    4.141857]  run_tracer_selftest+0x7c8/0xab0                      =20
+[    4.141918]  init_trace_selftests+0x200/0x820
+[    4.141977]  do_one_initcall+0x35e/0x1090
+[    4.142032]  do_initcall_level+0x276/0x660
+[    4.142095]  do_initcalls+0x16a/0x2d0
+[    4.142153]  kernel_init_freeable+0x632/0x960
+[    4.142216]  kernel_init+0x36/0x1810
+[    4.142277]  __ret_from_fork+0xc0/0x180
+[    4.142333]  ret_from_fork+0xa/0x30
+[    4.142431] Local variable agg.tmp.i.i created at:                =20
+02:06:55 [30/1836]
+[    4.142476]  timekeeping_advance+0x79a/0x2870
+[    4.142394]=20
+[    4.142431] Local variable agg.tmp.i.i created at:
+[    4.142476]  timekeeping_advance+0x79a/0x2870
+[    4.142534]=20
+[    4.142573] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W     =20
+6.7.0-rc4-g7657d31dc545 #4
+[    4.142638] Hardware name: IBM 3931 A01 704 (KVM/Linux)
+[    4.142686] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+[    4.142734] Kernel panic - not syncing: kmsan.panic set ...
+[    4.142734] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
 
-module_param(max_nullfunc_tries, int, 0644);
+> On x86, ftrace_regs sits on the stack. And IIUC, s390 doesn't have
+> the same
+> concept of a "stack" as other architectures. Perhaps that's the
+> reason s390
+> needs this?
 
-...restricted its mode parameter:
+It's not that different on s390x. There is indeed no architecture-
+mandated stack pointer and no push/pop, but other than that it's fairly
+normal. Linux uses %r15 as a stack pointer.
 
-module_param(max_nullfunc_tries, int, 0600);
+On s390x ftrace_regs is allocated on stack by mcount.S. From what I can
+see, Intel's ftrace_64.S does the same thing, so I don't immediately
+see why uninit-value is not detected on Intel, even though I think it
+should.
 
-The script would flag the change:
-
-Module parameter "max_nullfunc_tries" in net/mac80211/mlme.c changed!
-  Original args: int,0644
-       New args: int,0600
-
-Signed-off-by: John Moon <quic_johmoo@quicinc.com>
----
-    - Added ability to filter out equivalent permission changes
-      (e.g. S_IRUGO -> 0444 is now considered compatible).
-    - Added flag to avoid filtering out equivalent permission changes
-      in case user doesn't have/want a host compiler.
-    - Added flag to skip flagging module param removals as this may
-      be too noisy in some cases.
-    - Fixed typos in log naming.
-
- scripts/check-module-params.sh | 371 +++++++++++++++++++++++++++++++++
- 1 file changed, 371 insertions(+)
- create mode 100755 scripts/check-module-params.sh
-
-diff --git a/scripts/check-module-params.sh b/scripts/check-module-params.sh
-new file mode 100755
-index 000000000000..990b271a8dbf
---- /dev/null
-+++ b/scripts/check-module-params.sh
-@@ -0,0 +1,371 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Script to check commits for UAPI backwards compatibility
-+
-+set -o errexit
-+set -o pipefail
-+
-+print_usage() {
-+	name=$(basename "$0")
-+	cat << EOF
-+$name - check for module parameter stability across git commits.
-+
-+By default, the script will check to make sure the latest commit (or current
-+dirty changes) did not introduce changes when compared to HEAD^1. You can
-+check against additional commit ranges with the -b and -p options.
-+
-+Usage: $name [-b BASE_REF] [-p PAST_REF] [-j N] [-l ERROR_LOG] [-P] [-R] [-q]
-+
-+Options:
-+    -b BASE_REF    Base git reference to use for comparison. If unspecified or empty,
-+                   will use any dirty changes in tree. If there are no dirty changes,
-+                   HEAD will be used.
-+    -p PAST_REF    Compare BASE_REF to PAST_REF (e.g. -p v6.1). If unspecified or empty,
-+                   will use BASE_REF^1. Must be an ancestor of BASE_REF. Only headers
-+                   that exist on PAST_REF will be checked for compatibility.
-+    -j JOBS        Number of checks to run in parallel (default: number of CPU cores).
-+    -l ERROR_LOG   Write error log to file (default: no error log is generated).
-+    -P             Flag all changes to permissions (even if they're compatible). This
-+                   option negates the need for a host C compiler.
-+    -R             Skip flagging parameter removals.
-+    -q             Quiet operation (suppress stdout, still print stderr).
-+
-+Environmental args:
-+    HOSTCC   C compiler for permission conversion to octal (default is "gcc")
-+
-+Exit codes:
-+    $SUCCESS) Success
-+    $FAILURE) Module param differences detected
-+EOF
-+}
-+
-+readonly SUCCESS=0
-+readonly FAILURE=1
-+
-+# Print to stderr
-+eprintf() {
-+	# shellcheck disable=SC2059
-+	printf "$@" >&2
-+}
-+
-+# Check if git tree is dirty
-+tree_is_dirty() {
-+	! git diff --quiet
-+}
-+
-+file_module_params_unmodified() {
-+	local file="$1"
-+	local base_ref="$2"
-+	local past_ref="$3"
-+	local base_params_file="${TMP_DIR}/${file}.base"
-+	local past_params_file="${TMP_DIR}/${file}.past"
-+	local error_log="${TMP_DIR}/${file}.error"
-+
-+	local -r awk_cmd='/^ *module_param.*\(/,/.*\);/'
-+
-+	mkdir -p "$(dirname "$error_log")"
-+	git show "${past_ref}:${file}" 2> /dev/null \
-+		| awk "$awk_cmd" > "$past_params_file" || true
-+
-+	if [ -z "$base_ref" ]; then
-+		awk "$awk_cmd" "${KERNEL_SRC}/${file}" \
-+			> "$base_params_file" 2> /dev/null || true
-+	else
-+		git show "${base_ref}:${file}" 2> /dev/null \
-+			| awk "$awk_cmd" > "$base_params_file" || true
-+	fi
-+
-+	# Ignore files that don't exist at the past ref or don't have module params
-+	if [ ! -s "$past_params_file" ]; then
-+		return 255 # Special return code for "no-op"
-+	fi
-+
-+	# Process the param data to come up with an associative array of param names to param data
-+	# For example:
-+	#   module_param_call(foo, set_result, get_result, NULL, 0600);
-+	#
-+	# is processed into:
-+	#   pre_change_params[foo]="set_result,get_result,NULL,0600"
-+	local -A pre_change_params
-+	local param_name
-+	local param_params
-+
-+	while read -r mod_param_args; do
-+		param_name="$(echo "$mod_param_args" | cut -d ',' -f 1)"
-+		param_params="$(echo "$mod_param_args" | cut -d ',' -f 2-)"
-+
-+		pre_change_params[$param_name]=$param_params
-+	done < <(tr -d '\t\n ' < "$past_params_file" | tr ';' '\n' | perl -lne '/\((.*)\)/ && print $1')
-+
-+	local -A post_change_params
-+	while read -r mod_param_args; do
-+		param_name="$(echo "$mod_param_args" | cut -d ',' -f 1)"
-+		param_params="$(echo "$mod_param_args" | cut -d ',' -f 2-)"
-+
-+		post_change_params[$param_name]=$param_params
-+	done < <(tr -d '\t\n ' < "$base_params_file" | tr ';' '\n' | perl -lne '/\((.*)\)/ && print $1')
-+
-+	#for param in "${!pre_change_params[@]}"; do
-+	#	echo "$param: ${pre_change_params[${param}]}"
-+	#done
-+
-+	# Flag any module param changes that:
-+	#  - Remove/rename a parameter
-+	#  - Change the arguments of the parameter
-+	local incompat_param_changes=0
-+	local pre
-+	local post
-+	for param_name in "${!pre_change_params[@]}"; do
-+		pre="${pre_change_params[$param_name]}"
-+		if [ ! "${post_change_params[$param_name]+set}" ]; then
-+			if [ "$SKIP_PARAM_REMOVALS" = "true" ]; then
-+				continue
-+			fi
-+			{
-+				printf "Module parameter \"%s\" in %s removed!\n" "$param_name" "$file"
-+				printf "  Original args: %s\n" "$pre"
-+			} > "$error_log"
-+			incompat_param_changes=$((incompat_param_changes + 1))
-+			continue
-+		fi
-+
-+		post="${post_change_params[$param_name]}"
-+		if [ "$pre" != "$post" ]; then
-+			if [ "$SKIP_SAFE_PERM_CHANGES" = "true" ] && perm_change_is_safe "$pre" "$post"; then
-+				continue
-+			fi
-+			{
-+				printf "Module parameter \"%s\" in %s changed!\n" "$param_name" "$file"
-+				printf "  Original args: %s\n" "$pre"
-+				printf "       New args: %s\n" "$post"
-+			} > "$error_log"
-+			incompat_param_changes=$((incompat_param_changes + 1))
-+			continue
-+		fi
-+	done
-+
-+	if [ "$incompat_param_changes" -gt 0 ]; then
-+		return 1
-+	fi
-+}
-+
-+perm_change_is_safe() {
-+	local -r pre="$1"
-+	local -r post="$2"
-+
-+	# Assume that the permission arg is always the last one.
-+	pre_perm_arg=$(echo "$pre" | grep -o '[^,]*$')
-+	post_perm_arg=$(echo "$post" | grep -o '[^,]*$')
-+
-+	# If the non-permission arguments are different, then
-+	# don't even bother checking the permission arg.
-+	if [ "${pre/,${pre_perm_arg}/}" != "${post/,${post_perm_arg}/}" ]; then
-+		return 1
-+	fi
-+
-+	# Convert both to octal representation to compare
-+	pre_perm_arg_octal=$(get_octal_val "$pre_perm_arg")
-+	post_perm_arg_octal=$(get_octal_val "$post_perm_arg")
-+
-+	if [ "$pre_perm_arg_octal" = "$post_perm_arg_octal" ]; then
-+		return 0
-+	else
-+		return 1
-+	fi
-+}
-+
-+get_octal_val() {
-+	local -r input="$1"
-+
-+	# Save needing to recompile for input we've seen before
-+	local -r input_hash="$(echo "$input" | md5sum | cut -d ' ' -f 1)"
-+
-+	local -r prog="${TMP_DIR}/get_octal_val_${input_hash}"
-+	local -r stat="include/linux/stat.h"
-+
-+	if [ ! -x "$prog" ]; then
-+		cat << EOF > "${prog}.c"
-+#include <stdio.h>
-+#include <sys/stat.h>
-+
-+$(grep '#define *S_IRWXUGO' "$stat")
-+$(grep '#define *S_IALLUGO' "$stat")
-+$(grep '#define *S_IRUGO' "$stat")
-+$(grep '#define *S_IWUGO' "$stat")
-+$(grep '#define *S_IXUGO' "$stat")
-+
-+int main(void) { printf("%04o\\n", $input); };
-+EOF
-+		"${HOSTCC:-gcc}" -o "$prog" "${prog}.c"
-+	fi
-+
-+	"$prog"
-+}
-+run() {
-+	local base_ref="$1"
-+	local past_ref="$2"
-+	local param_error_log="$3"
-+
-+	diff_args=("$past_ref")
-+	if [ -n "$base_ref" ]; then
-+		diff_args+=("$base_ref")
-+	fi
-+
-+	local -a threads=()
-+	local passed=0
-+	local failed=0
-+	printf "Checking files between %s and %s for module parameter compatibility...\n" \
-+		"$past_ref" "$base_ref"
-+	while read -r modified_file; do
-+		if [ "${#threads[@]}" -ge "$MAX_THREADS" ]; then
-+			wait "${threads[0]}" && ret="$?" || ret="$?"
-+			if [ "$ret" -eq 0 ]; then
-+				passed=$((passed + 1))
-+			elif [ "$ret" -eq 1 ]; then
-+				failed=$((failed + 1))
-+			fi
-+			threads=("${threads[@]:1}")
-+		fi
-+
-+		file_module_params_unmodified "$modified_file" "$base_ref" "$past_ref" &
-+		threads+=("$!")
-+	done < <(git diff --diff-filter=MCD --name-only "${diff_args[@]}" -- '*.c' '*.h')
-+
-+	for t in "${threads[@]}"; do
-+		wait "$t" && ret="$?" || ret="$?"
-+		if [ "$ret" -eq 0 ]; then
-+			passed=$((passed + 1))
-+		elif [ "$ret" -eq 1 ]; then
-+			failed=$((failed + 1))
-+		fi
-+	done
-+
-+	total=$((passed + failed))
-+	if [ "$total" -eq 0 ]; then
-+		printf "No files with module parameters modified between %s and %s\n" \
-+			"$past_ref" "${base_ref:-dirty tree}"
-+		exit "$SUCCESS"
-+	fi
-+
-+	if [ -n "$param_error_log" ]; then
-+		printf 'Generated by "%s %s" from git ref %s\n\n' \
-+			"$0" "$*" "$(git rev-parse HEAD)" > "$param_error_log"
-+	fi
-+
-+	while read -r error_file; do
-+		{
-+			cat "$error_file"
-+			printf "\n\n"
-+		} | tee -a "${param_error_log:-/dev/null}" >&2
-+	done < <(find "$TMP_DIR" -type f -name '*.error' | sort)
-+
-+	if [ "$failed" -gt 0 ]; then
-+		eprintf "error - %d/%d files with modules parameters appear _not_ to be backwards compatible\n" \
-+			"$failed" "$total"
-+		if [ -n "$param_error_log" ]; then
-+			eprintf "Failure summary saved to %s\n" "$param_error_log"
-+		fi
-+	else
-+		printf "All %d files with module_parameters checked appear to be backwards compatible\n" \
-+			"$total"
-+	fi
-+
-+	exit "$failed"
-+}
-+
-+# Make sure the git refs we have make sense
-+check_refs() {
-+	if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-+		eprintf "error - this script requires the kernel tree to be initialized with Git\n"
-+		return 1
-+	fi
-+
-+	if ! git rev-parse --verify "$past_ref" > /dev/null 2>&1; then
-+		printf 'error - invalid git reference "%s"\n' "$past_ref"
-+		return 1
-+	fi
-+
-+	if [ -n "$base_ref" ]; then
-+		if ! git merge-base --is-ancestor "$past_ref" "$base_ref" > /dev/null 2>&1; then
-+			printf 'error - "%s" is not an ancestor of base ref "%s"\n' "$past_ref" "$base_ref"
-+			return 1
-+		fi
-+		if [ "$(git rev-parse "$base_ref")" = "$(git rev-parse "$past_ref")" ]; then
-+			printf 'error - "%s" and "%s" are the same reference\n' "$past_ref" "$base_ref"
-+			return 1
-+		fi
-+	fi
-+}
-+
-+main() {
-+	MAX_THREADS=$(nproc)
-+	SKIP_SAFE_PERM_CHANGES="true"
-+	SKIP_PARAM_REMOVALS="false"
-+	quiet="false"
-+	local base_ref=""
-+	while getopts "hb:p:j:l:PRq" opt; do
-+		case $opt in
-+		h)
-+			print_usage
-+			exit "$SUCCESS"
-+			;;
-+		b)
-+			base_ref="$OPTARG"
-+			;;
-+		p)
-+			past_ref="$OPTARG"
-+			;;
-+		j)
-+			MAX_THREADS="$OPTARG"
-+			;;
-+		l)
-+			param_error_log="$OPTARG"
-+			;;
-+		P)
-+			SKIP_SAFE_PERM_CHANGES="false"
-+			;;
-+		R)
-+			SKIP_PARAM_REMOVALS="true"
-+			;;
-+		q)
-+			quiet="true"
-+			;;
-+		*)
-+			exit "$FAILURE"
-+		esac
-+	done
-+
-+	if [ "$quiet" = "true" ]; then
-+		exec > /dev/null 2>&1
-+	fi
-+
-+	if [ -z "$KERNEL_SRC" ]; then
-+		KERNEL_SRC="$(realpath "$(dirname "$0")"/..)"
-+	fi
-+
-+	cd "$KERNEL_SRC"
-+
-+	if [ -z "$base_ref" ] && ! tree_is_dirty; then
-+		base_ref=HEAD
-+	fi
-+
-+	if [ -z "$past_ref" ]; then
-+		if [ -n "$base_ref" ]; then
-+			past_ref="${base_ref}^1"
-+		else
-+			past_ref=HEAD
-+		fi
-+	fi
-+
-+	if ! check_refs; then
-+		exit "$FAILURE"
-+	fi
-+
-+	TMP_DIR=$(mktemp -d)
-+	readonly TMP_DIR
-+	trap 'rm -rf "$TMP_DIR"' EXIT
-+
-+	run "$base_ref" "$past_ref" "$param_error_log"
-+}
-+
-+main "$@"
---
-2.34.1
+> -- Steve
 
