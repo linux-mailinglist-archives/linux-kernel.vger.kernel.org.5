@@ -2,129 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68D780E179
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DB780E17A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345720AbjLLC2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
+        id S1345718AbjLLC2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:28:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbjLLC1w (ORCPT
+        with ESMTP id S231235AbjLLC1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:27:52 -0500
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B7CD2;
-        Mon, 11 Dec 2023 18:27:58 -0800 (PST)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5d8a772157fso44759417b3.3;
-        Mon, 11 Dec 2023 18:27:58 -0800 (PST)
+        Mon, 11 Dec 2023 21:27:53 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB46D5;
+        Mon, 11 Dec 2023 18:27:59 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6d9e993d94dso2881092a34.0;
+        Mon, 11 Dec 2023 18:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702348076; x=1702952876; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702348078; x=1702952878; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
-        b=ALmaFoSjjUmhUdcoPPCJ5ucJ4Mw6EJ6M6IMpyRxfY2iAdP2Khfsqq2SaP8q74dXX6y
-         6anMXn+gOkaF7yBmLrVre7Bu1ROrLXmZ0pwcMOcMn9GReTq2Mg14kAjP9KDpo4ZVS+SB
-         EMGIr9H+40dHRtYSl+fP3/8olGDf0syIMY6QZKBe8pzZYnQFqKuWMPtZuZuKRmktxqkA
-         a9dXHkMz1Mejjt+9l1LaeEL9lyGywTbYZYssx5E3ChU3594S3t5HMz1a30HvodRm46O6
-         o2zMaTdZfDOjfC1iMLdpe4dAVsilcqTwVV72quzkJ5a0nL2xXvl0yWwSyn9vQsmHLNTN
-         iYKw==
+        bh=LuotiINhbKGxGGef8K7G7yCOze6MU0SeJK9/E0VqPZk=;
+        b=mOu2oZ9PdmyEQBvwYpbB4CxFhLPixosCG/9dqh1Cc/zIR24Fy9cxxE1bnhoq1S4HSH
+         2vlmhvyBtQA6tn2USXss6mEQeM9wt3l7Id3Tbu6029uRdoR/RA2glANWTWs/YjBv1Hrf
+         RO/Bq3AuywwoN+LCLd+t/kP5HmkKKJGtbX3R58KaCqjuMoNFp/yw9rDdjSIIHkKMPiFJ
+         ejqmZaLjmHXR4jE3vqghgoNj8WYXML9w9KOYHNlI/6E8PzshNsPZ6oKg7RLlSFj0GSaE
+         4DFw8w8uzqma1JnB04lU5hqrxYCQFneSE1bTt7mVJi7m4RNINMm7qpk/IDGJxwD7hexQ
+         o9wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702348076; x=1702952876;
+        d=1e100.net; s=20230601; t=1702348078; x=1702952878;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HmvgTcSgTSYSGQ9OhXSlfMgozAivgkoJ1Cnrtk56obw=;
-        b=gj73M48Hj4p0M5RA2PDVQrt10Mou5AbGWu4ucRvX/8vRtcKthQa3YFyXlEnWpDEh/Y
-         mbphfSWyKrx51BHR2Dzs8PljtNjAjY1lQYM9q8Bm4RkVkWNdq/GpE3+Sq1Ck+bLgEKw4
-         hUZGsX1aEEqtjytN6h/dfv4yXA/MPK9EqdW26g/QUOli0EVl6MTc8k/VItOFdiVjGjzW
-         d/KFEzVAGORlvqXDMAyNQ+m/yQ8hwAgyDZzsZYGROsalHb/wpUMGIuCGJUND0vOlNCsG
-         XrNeCVq1QpdlKk5TgZ8wjjVFCXxvSG9uMg+9lUYxxdiEMTc77mmuMZj7bJJZgWeqyZa3
-         /n4w==
-X-Gm-Message-State: AOJu0YzXkPiFZgPtzYyz/MaYpC+EF/jphCXGeIOPa0Smv+r7D6ptVHqu
-        KR3vwe0KZt8NpDvxjUsV4hNTyMmYiUI8Cg==
-X-Google-Smtp-Source: AGHT+IFPs4AvQxtYv4UrJlD5lGh/BMqsDvh12ZnXOoQbI3s9B0hPdqcJ7FPe01OhhQlwKaBiv0CCJg==
-X-Received: by 2002:a81:a505:0:b0:5d7:1941:aa7 with SMTP id u5-20020a81a505000000b005d719410aa7mr4037805ywg.66.1702348076388;
-        Mon, 11 Dec 2023 18:27:56 -0800 (PST)
+        bh=LuotiINhbKGxGGef8K7G7yCOze6MU0SeJK9/E0VqPZk=;
+        b=hNOl2H/obmBkuHof2JdmjYHXOu7+BQ9EvpAl/06W62xhN8MKny6AmKD7YGffI7etC1
+         lpnA5K9w6xOx5pFZQ4V2x8SXsVHz4AnUc1PqpGqXBAMHqsNjZeWdAakpsccUVFS6qetv
+         QGZx0/w6+ZecW/OIU6oI9D8/rcx0DcqVsHuAfpg9LvHKbMxH2YhPTy6IolGN9wvyl2IN
+         zmwvaySq4eUxSEl6Qlo9AYisCF5BLRvQeAr9QbqK+QbmMmgJb67/gpBgIF/Z/5/Pr31q
+         lvR80DxVqOpy3nmrfOHDNZfxyIRpBrl6ovmdsXd/5sw8S7C1ssA5dyI9Vn4BfrNo3Viy
+         ZdIg==
+X-Gm-Message-State: AOJu0YyMGJIhoR/j94c6UT2TGKIBe06djo4hGnT1j80nujKkkwCefYEV
+        RRJemezSlojt0l0VbYAGfpuu5zgrB038Dw==
+X-Google-Smtp-Source: AGHT+IEHnCevx/zjXgMWzqImSiSNPCTlhUeZk/gNmGSenVJT/HCL0VqZAYmviFs6i1xsO2WZY35Fqw==
+X-Received: by 2002:a05:6830:16d9:b0:6d8:74e2:6f48 with SMTP id l25-20020a05683016d900b006d874e26f48mr4356891otr.68.1702348078162;
+        Mon, 11 Dec 2023 18:27:58 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id a200-20020a0dd8d1000000b005d35a952324sm3448999ywe.56.2023.12.11.18.27.55
+        by smtp.gmail.com with ESMTPSA id q1-20020a0de701000000b005cb1bf4d466sm3464287ywe.82.2023.12.11.18.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 18:27:55 -0800 (PST)
+        Mon, 11 Dec 2023 18:27:57 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Disseldorp <ddiss@suse.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
-        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
+To:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -134,9 +62,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Alexey Klimov <klimov.linux@gmail.com>,
         Bart Van Assche <bvanassche@acm.org>,
         Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v3 02/35] lib/find: add test for atomic find_bit() ops
-Date:   Mon, 11 Dec 2023 18:27:16 -0800
-Message-Id: <20231212022749.625238-3-yury.norov@gmail.com>
+Subject: [PATCH v3 03/35] lib/sbitmap; optimize __sbitmap_get_word() by using find_and_set_bit()
+Date:   Mon, 11 Dec 2023 18:27:17 -0800
+Message-Id: <20231212022749.625238-4-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231212022749.625238-1-yury.norov@gmail.com>
 References: <20231212022749.625238-1-yury.norov@gmail.com>
@@ -145,99 +73,94 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic functionality test for new API.
+__sbitmap_get_word() opencodes either find_and_set_bit_wrap(), or
+find_and_set_next_bit() depending on wrap parameter. Simplify it by using
+atomic find_bit() API.
 
+While here, simplify sbitmap_find_bit_in_word(), which calls it.
+
+CC: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- lib/test_bitmap.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ lib/sbitmap.c | 46 +++++++++-------------------------------------
+ 1 file changed, 9 insertions(+), 37 deletions(-)
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 65f22c2578b0..277e1ca9fd28 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -221,6 +221,65 @@ static void __init test_zero_clear(void)
- 	expect_eq_pbl("", bmap, 1024);
+diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+index d0a5081dfd12..8ecd830ba9e8 100644
+--- a/lib/sbitmap.c
++++ b/lib/sbitmap.c
+@@ -133,38 +133,13 @@ void sbitmap_resize(struct sbitmap *sb, unsigned int depth)
  }
+ EXPORT_SYMBOL_GPL(sbitmap_resize);
  
-+static void __init test_find_and_bit(void)
-+{
-+	unsigned long w, w_part, bit, cnt = 0;
-+	DECLARE_BITMAP(bmap, EXP1_IN_BITS);
-+
-+	/*
-+	 * Test find_and_clear{_next}_bit() and corresponding
-+	 * iterators
-+	 */
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+
-+	for_each_test_and_clear_bit(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(w, cnt);
-+	expect_eq_uint(0, bitmap_weight(bmap, EXP1_IN_BITS));
-+
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
-+
-+	cnt = 0;
-+	bit = EXP1_IN_BITS / 3;
-+	for_each_test_and_clear_bit_from(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(bitmap_weight(bmap, EXP1_IN_BITS), bitmap_weight(bmap, EXP1_IN_BITS / 3));
-+	expect_eq_uint(w_part, bitmap_weight(bmap, EXP1_IN_BITS));
-+	expect_eq_uint(w - w_part, cnt);
-+
-+	/*
-+	 * Test find_and_set{_next}_bit() and corresponding
-+	 * iterators
-+	 */
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	cnt = 0;
-+
-+	for_each_test_and_set_bit(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(EXP1_IN_BITS - w, cnt);
-+	expect_eq_uint(EXP1_IN_BITS, bitmap_weight(bmap, EXP1_IN_BITS));
-+
-+	bitmap_copy(bmap, exp1, EXP1_IN_BITS);
-+	w = bitmap_weight(bmap, EXP1_IN_BITS);
-+	w_part = bitmap_weight(bmap, EXP1_IN_BITS / 3);
-+	cnt = 0;
-+
-+	bit = EXP1_IN_BITS / 3;
-+	for_each_test_and_set_bit_from(bit, bmap, EXP1_IN_BITS)
-+		cnt++;
-+
-+	expect_eq_uint(EXP1_IN_BITS - bitmap_weight(bmap, EXP1_IN_BITS),
-+			EXP1_IN_BITS / 3 - bitmap_weight(bmap, EXP1_IN_BITS / 3));
-+	expect_eq_uint(EXP1_IN_BITS * 2 / 3 - (w - w_part), cnt);
-+}
-+
- static void __init test_find_nth_bit(void)
+-static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
++static inline int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+ 			      unsigned int hint, bool wrap)
  {
- 	unsigned long b, bit, cnt = 0;
-@@ -1273,6 +1332,8 @@ static void __init selftest(void)
- 	test_for_each_clear_bitrange_from();
- 	test_for_each_set_clump8();
- 	test_for_each_set_bit_wrap();
-+
-+	test_find_and_bit();
+-	int nr;
+-
+-	/* don't wrap if starting from 0 */
+-	wrap = wrap && hint;
+-
+-	while (1) {
+-		nr = find_next_zero_bit(word, depth, hint);
+-		if (unlikely(nr >= depth)) {
+-			/*
+-			 * We started with an offset, and we didn't reset the
+-			 * offset to 0 in a failure case, so start from 0 to
+-			 * exhaust the map.
+-			 */
+-			if (hint && wrap) {
+-				hint = 0;
+-				continue;
+-			}
+-			return -1;
+-		}
++	if (wrap)
++		return find_and_set_bit_wrap_lock(word, depth, hint);
+ 
+-		if (!test_and_set_bit_lock(nr, word))
+-			break;
+-
+-		hint = nr + 1;
+-		if (hint >= depth - 1)
+-			hint = 0;
+-	}
+-
+-	return nr;
++	return find_and_set_next_bit_lock(word, depth, hint);
  }
  
- KSTM_MODULE_LOADERS(test_bitmap);
+ static int sbitmap_find_bit_in_word(struct sbitmap_word *map,
+@@ -175,15 +150,12 @@ static int sbitmap_find_bit_in_word(struct sbitmap_word *map,
+ 	int nr;
+ 
+ 	do {
+-		nr = __sbitmap_get_word(&map->word, depth,
+-					alloc_hint, wrap);
+-		if (nr != -1)
+-			break;
+-		if (!sbitmap_deferred_clear(map))
+-			break;
+-	} while (1);
++		nr = __sbitmap_get_word(&map->word, depth, alloc_hint, wrap);
++		if (nr < depth)
++			return nr;
++	} while (sbitmap_deferred_clear(map));
+ 
+-	return nr;
++	return -1;
+ }
+ 
+ static int sbitmap_find_bit(struct sbitmap *sb,
 -- 
 2.40.1
 
