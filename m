@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B5E80EC81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FCD80EC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376324AbjLLMuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:50:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S1376351AbjLLMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376275AbjLLMuD (ORCPT
+        with ESMTP id S1376288AbjLLMzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:50:03 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0315E110;
-        Tue, 12 Dec 2023 04:50:07 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C0B3E2000B;
-        Tue, 12 Dec 2023 12:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702385405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GGg92Ioc3V3p1OkpBwikbksUY+03mtQ2MEb/MlWZQlU=;
-        b=VK19KfB5kxoJI9py7HhGYw3rJ7t7LIcC1Jx6E7OpWQkTbVGKrne+w34ilVX9q3rHM3rmZH
-        x/1JIsHy6SrrS1TE2HqfjEYJADvAPAW+HXCkmlDw2lDiDM0dhHpiYdPSil9SIu9sF3+aXb
-        tUDEGc3jcZzrTg4ArATw9pNozpCcKmnW3Jw5UeQ+ikeetb7CbP4vuyAT3gHKAzcieqQSkB
-        ieDImgiybOGlkX0bTNjiP36hxvJfgKJI54h0Hb4htJF7XatSAmolg6dR+JVq1kooTQQwaw
-        y/V5d9M+2SI58H5QzNUn7qHmMjshnjOYFQvuizt1nort9NlKx0j39BFRg1cIkg==
-Date:   Tue, 12 Dec 2023 13:50:01 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-Subject: Re: [PATCH v2 1/5] net: mdio: ipq4019: move eth_ldo_rdy before MDIO
- bus register
-Message-ID: <20231212135001.6bf40e4d@device.home>
-In-Reply-To: <20231212115151.20016-2-quic_luoj@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
-        <20231212115151.20016-2-quic_luoj@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 12 Dec 2023 07:55:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CF9ED;
+        Tue, 12 Dec 2023 04:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702385727; x=1733921727;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=w+lkU+xutOwVwtDcyc729Y4oCnLefQk3xbQDr3f4OT8=;
+  b=Ol4/FqXx7vEDZpIccUO+qS4Prn86mPrnFXatmddCnnMJMNk7Ol9iVXYI
+   GeaSd/BAyKZ0gdt9xenr3Ep22zQQwY4CGQOoawQs6t+SGkZUm+a3Gl9fx
+   27USyw3SePo5Ysjt+wJdafG8x5StGLHP5FiRJY6POfx534j7LsTqoLGD1
+   iGU90fR75SQ2xhCZnCZ2na2YG4PLUAipVUuDhaNDBlA4BZhrqN37DBEvo
+   hhXYhrGWvWgKVfvB5C7Lwyd9llCq/3KXY8a9ce6bH37KmaDQnB41vgaa6
+   SNSuqqakWx4JtDqIiJzwlvifv39tI/77Je/QgU9O6WvDbSbYASSGl7cDN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="459116276"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="459116276"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 04:55:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="802456171"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="802456171"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 12 Dec 2023 04:55:22 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rD2IB-000JAz-1W;
+        Tue, 12 Dec 2023 12:55:19 +0000
+Date:   Tue, 12 Dec 2023 20:50:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Matthew Maurer <mmaurer@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Matthew Maurer <mmaurer@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH] x86/Kconfig: rust: Patchable function Rust compat
+Message-ID: <202312122055.m7s1ccIE-lkp@intel.com>
+References: <20231211150753.293883-1-mmaurer@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211150753.293883-1-mmaurer@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,69 +79,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Matthew,
 
-On Tue, 12 Dec 2023 19:51:46 +0800
-Luo Jie <quic_luoj@quicinc.com> wrote:
+kernel test robot noticed the following build errors:
 
-> The ethernet LDO provides the clock for the ethernet PHY that
-> is connected with PCS, each LDO enables the clock output to
-> each PCS, after the clock output enablement, the PHY GPIO reset
-> can take effect.
-> 
-> For the PHY taking the MDIO bus level GPIO reset, the ethernet
-> LDO should be enabled before the MDIO bus register.
-> 
-> For example, the qca8084 PHY takes the MDIO bus level GPIO
-> reset for quad PHYs, there is another reason for qca8084 PHY
-> using MDIO bus level GPIO reset instead of PHY level GPIO
-> reset as below.
-> 
-> The work sequence of qca8084:
-> 1. enable ethernet LDO.
-> 2. GPIO reset on quad PHYs.
-> 3. register clock provider based on MDIO device of qca8084.
-> 4. PHY probe function called for initializing common clocks.
-> 5. PHY capabilities acquirement.
-> 
-> If qca8084 takes PHY level GPIO reset in the step 4, the clock
-> provider of qca8084 can't be registered correctly, since the
-> clock parent(reading the current qca8084 hardware registers in
-> step 3) of the registered clocks is deserted after GPIO reset.
-> 
-> There are two PCS(UNIPHY) supported in SOC side on ipq5332,
-> and three PCS(UNIPHY) supported on ipq9574.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
+[auto build test ERROR on tip/x86/core]
+[also build test ERROR on peterz-queue/sched/core tip/master tip/auto-latest linus/master v6.7-rc5 next-20231212]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[...]
+url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Maurer/x86-Kconfig-rust-Patchable-function-Rust-compat/20231211-230934
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20231211150753.293883-1-mmaurer%40google.com
+patch subject: [PATCH] x86/Kconfig: rust: Patchable function Rust compat
+config: x86_64-rhel-8.3-bpf (attached as .config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231212/202312122055.m7s1ccIE-lkp@intel.com/reproduce)
 
-> @@ -252,11 +244,32 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
->  	if (IS_ERR(priv->mdio_clk))
->  		return PTR_ERR(priv->mdio_clk);
->  
-> -	/* The platform resource is provided on the chipset IPQ5018 */
-> -	/* This resource is optional */
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -	if (res)
-> -		priv->eth_ldo_rdy = devm_ioremap_resource(&pdev->dev, res);
-> +	/* These platform resources are provided on the chipset IPQ5018 or
-> +	 * IPQ5332.
-> +	 */
-> +	/* This resource are optional */
-> +	for (index = 0; index < ETH_LDO_RDY_CNT; index++) {
-> +		res = platform_get_resource(pdev, IORESOURCE_MEM, index + 1);
-> +		if (res) {
-> +			priv->eth_ldo_rdy[index] = devm_ioremap(&pdev->dev,
-> +								res->start,
-> +								resource_size(res));
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312122055.m7s1ccIE-lkp@intel.com/
 
-You can simplify that sequence by using
-devm_platform_get_and_ioremap_resource(), which will do both the
-platform_get_resource and the devm_ioremap at once for you.
+All errors (new ones prefixed by >>):
 
-Thanks,
+>> arch/x86/Kconfig:2443: syntax error
+   arch/x86/Kconfig:2442: invalid statement
+   arch/x86/Kconfig:2443: invalid statement
+   make[3]: *** [scripts/kconfig/Makefile:77: oldconfig] Error 1
+   make[2]: *** [Makefile:685: oldconfig] Error 2
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'oldconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'oldconfig' not remade because of errors.
+--
+>> arch/x86/Kconfig:2443: syntax error
+   arch/x86/Kconfig:2442: invalid statement
+   arch/x86/Kconfig:2443: invalid statement
+   make[3]: *** [scripts/kconfig/Makefile:77: olddefconfig] Error 1
+   make[2]: *** [Makefile:685: olddefconfig] Error 2
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'olddefconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'olddefconfig' not remade because of errors.
 
-Maxime
 
+vim +2443 arch/x86/Kconfig
+
+  2431	
+  2432	config CC_HAS_SLS
+  2433		def_bool $(cc-option,-mharden-sls=all)
+  2434	
+  2435	config CC_HAS_RETURN_THUNK
+  2436		def_bool $(cc-option,-mfunction-return=thunk-extern)
+  2437	
+  2438	config CC_HAS_ENTRY_PADDING
+  2439		def_bool $(cc-option,-fpatchable-function-entry=16,16)
+  2440	
+  2441	config RUSTC_HAS_ENTRY_PADDING
+  2442		depends RUST
+> 2443		def_bool $(rs-option,-Zpatchable-function-entry=16,16)
+  2444	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
