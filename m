@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0B480E252
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3B180E273
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345771AbjLLCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60668 "EHLO
+        id S1345744AbjLLCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjLLCuQ (ORCPT
+        with ESMTP id S231131AbjLLCvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:50:16 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90358AD;
-        Mon, 11 Dec 2023 18:50:23 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d0b2752dc6so45447915ad.3;
-        Mon, 11 Dec 2023 18:50:23 -0800 (PST)
+        Mon, 11 Dec 2023 21:51:11 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1243EB0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:51:18 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6d9f7b3de20so2381154a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702349423; x=1702954223; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K5wKOiCgqswdmnAE+7GTByJH/L22v0TKX6Ot3bMlqWs=;
-        b=D5Fkcq6lLgkYpR2n3TGxEpX8CyGrJ48HOymhkJwVZzlX0DFTPM8DY4gwS4PRuaZDVx
-         zPrn8mJ6qPeSKdX1UFrh6CTRO6nStm/kyHPfGYSbelo1CP3vSgbCekHX8+mhargJWoVj
-         h+g6mCA09LZOSys/pwu+IGVqaHkdsIvviSfRsyGn8dfhTOSD1mo+kLm3rPbC9VloJoEV
-         fvFJIO75Jn9YkffpNKnKwkY/klZ1oSurQ/ApayM/Q7LaKsgxnM8ZJILlE6KwEekuKCey
-         2CX0ui2RBY+kHB5kXNpiZxNx1N4Qll+broESwoQBrlsOfBpn1R172oX16ZuVIMxKo+3V
-         0q2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702349423; x=1702954223;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702349477; x=1702954277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K5wKOiCgqswdmnAE+7GTByJH/L22v0TKX6Ot3bMlqWs=;
-        b=VphMqxHcwIKTBQmeEXW5bOu8dsWqaYTm7uclozXch1lJB0tzy075nJ2dtnfbcnqSZa
-         26FJ4/ht/uWaoytGFfoH0Bk5QosnOgl30Rzt9813MKq9mV3K51/FeMsc6dfPkgDm4nGF
-         41z/ileQYL84AjfhRTyFAWn2uFcRdZMsDNpmC5J68Dl662x1Px7AB4poUx2X/ANMTb8P
-         CP7P1V+Kosk5yoVV/Hjf4800+NpLZ3yB9Z7l1KPt3y9ChXtcHf2eTJeEYuwoUM6OOyoL
-         9v0JlP7p1NZg4J1KAqsm6lKv94dxjoUR4ETy4jxXkdRlNDYNSllBkNEAUJjsAq7BkDup
-         dNKg==
-X-Gm-Message-State: AOJu0Yz17CIPtgshF7P/8KW7E+ua2hnimeBGWoHwZEmtrdIOPJAOFiQi
-        c8x9uGrkNHfTwt9PZES6qb8J+YkCfPbW5w==
-X-Google-Smtp-Source: AGHT+IHZNi5dCKJ59opPtFzEyCZt2GcAMbOQONIBrgmAJOj06J3uNAoDVaL19FQTCvoYrB8RxekVuw==
-X-Received: by 2002:a17:903:2791:b0:1d0:6ffd:9e30 with SMTP id jw17-20020a170903279100b001d06ffd9e30mr5493893plb.130.1702349422865;
-        Mon, 11 Dec 2023 18:50:22 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:46e0:3920:a552:71cb])
-        by smtp.gmail.com with ESMTPSA id z14-20020a170903018e00b001cfc15993efsm7408879plg.163.2023.12.11.18.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 18:50:22 -0800 (PST)
-Date:   Mon, 11 Dec 2023 18:50:19 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Jonathan.Cameron@huawei.com, tony@atomide.com, robh@kernel.org,
-        frank.li@vivo.com, u.kleine-koenig@pengutronix.de,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Input: omap4-keypad: react on keypresses if device is
- runtime-suspended
-Message-ID: <ZXfKa_LjCgvskb99@google.com>
-References: <20231211221757.517427-1-andreas@kemnade.info>
+        bh=T0aqDUuu9aenJJR4Np5l50Pkm6dm94+30/fi4cOM9ww=;
+        b=S8ZNLwmmAeZGyiuxfCljoX3qsgkSFf6OYkLFEMTfdiV3aaWAYtm99ThIdl61obAnuN
+         xAL4taOQmrMmUCG3UCmvgzaIOnB8JKjQ3lRr3m4b6JoSVOLTLAMswbiwnaI5w6KEzQOJ
+         DZ6lbZV9eGz571YexPJtkMNWo+N9eDzfVouEuekOqx2IeNBhn9sapKuDjQVufojFO0d3
+         nltl55ZuEu3+AYr0CqBySUVp01qNA58D/m25PzYWuqRjnxmoatzvedq7+vXb9vRfR9XI
+         mnkutmEnqFuIwiCcfJ2K/FYQbFk3XXs3FFvmtSAWZxxPIebXZZ7URJi91kwd4qnD+wGE
+         6Vrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702349477; x=1702954277;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T0aqDUuu9aenJJR4Np5l50Pkm6dm94+30/fi4cOM9ww=;
+        b=ogvWYOMbuwCQsvjan5DQIZ06gSHVN2950GBx9x74UP7pgbsgAnewODdADL5XrBkP/o
+         2Wi+3FIlpGBRysP85JV4LUZVvrVlH9wWBic8VEvOVsS4g87LjR6HlK49ZC2ba+gYpuT1
+         va7CpUH4tmgfYNF2HLrot9Pfs+EVYqlrNALPRqvTX/sBtfu9VxwhzsrlefQz7J/rxB2f
+         nLEi/ZLP+80lFDQIR7ijNIVwg4EB1LIzbvzqH6iy+mDAM2+2DflPFEA1wAs6mOQbW+vb
+         V/lG9L5vKWMwU0b/TIC4HcVdJ6FGqQVS+CmgYcd2ILkm4e5B3TUnOcFYYtAgSCRFR/Vi
+         PBZg==
+X-Gm-Message-State: AOJu0Yxjln0kzdVBBPAy8/qglt8RK/bX+m7eIpPPno+vCmV9cPUDeNvI
+        TEF7fevbuArUdEk4RdFIhwSWUYOukAq2w0DvWDw=
+X-Google-Smtp-Source: AGHT+IFgpzLthij4rpf+ngrmQ6+YXdGpHyiX/IJmFbP8yOEti1iOwk1gCRKUsHkaRJXcrC8irvl9qFQpXXSrMy6fDUc=
+X-Received: by 2002:a05:6870:799:b0:1fb:75b:99c7 with SMTP id
+ en25-20020a056870079900b001fb075b99c7mr7298636oab.118.1702349477378; Mon, 11
+ Dec 2023 18:51:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211221757.517427-1-andreas@kemnade.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120073821.1304-1-xuewen.yan@unisoc.com> <7c223b0c-d39a-4d53-8f00-7fbec6b49b6e@bytedance.com>
+In-Reply-To: <7c223b0c-d39a-4d53-8f00-7fbec6b49b6e@bytedance.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Tue, 12 Dec 2023 10:51:05 +0800
+Message-ID: <CAB8ipk9WBNE8Yk9T9SXovnpyUtGu=ps8_i=3hbb4PS9PXovR+w@mail.gmail.com>
+Subject: Re: [PATCH] sched/eevdf: Avoid NULL in pick_eevdf
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, ke.wang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 11:17:57PM +0100, Andreas Kemnade wrote:
-> According to SWPU235AB, table 26-6, fclk is required to generate events
-> at least on OMAP4460, so keep fclk enabled all the time the device
-> is opened.
-> 
-> Suggested-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
+Hi Abel
 
-Applied, thank you.
+On Mon, Nov 20, 2023 at 4:49=E2=80=AFPM Abel Wu <wuyun.abel@bytedance.com> =
+wrote:
+>
+> Hi Xuewen, the pick part has been re-worked, would you please re-test
+> with the newest branch?
+>
+> Thanks,
+>         Abel
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/?h=3Dsched%2F=
+core
 
--- 
-Dmitry
+These patches would be merged into 6.6? If not, the pr_err also has a deadl=
+ock.
+And should be changed to printk_deferred.
+
+
+954 static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+  955 {
+  956         struct sched_entity *se =3D __pick_eevdf(cfs_rq);
+  957
+  958         if (!se) {
+  959                 struct sched_entity *left =3D __pick_first_entity(cfs=
+_rq);
+  960                 if (left) {
+  961                         pr_err("EEVDF scheduling fail, picking
+leftmost\n"); <<<<
+  962                         return left;
+  963                 }
+  964         }
+  965
+  966         return se;
+  967 }
+
+
+>
+> On 11/20/23 3:38 PM, Xuewen Yan Wrote:
+> > Now in pick_eevdf function, add the pick_first_entity to prevent
+> > picking null when using eevdf, however, the leftmost may be null.
+> > As a result, it would cause oops because the se is NULL.
+> >
+> > Fix this by compare the curr and left, if the left is null, set
+> > the se be curr.
+> >
+> > Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling po=
+licy")
+> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> > ---
+> >   kernel/sched/fair.c | 18 +++++++++++++++++-
+> >   1 file changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index d7a3c63a2171..10916f6778ac 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -951,12 +951,28 @@ static struct sched_entity *__pick_eevdf(struct c=
+fs_rq *cfs_rq)
+> >       return NULL;
+> >   }
+> >
+> > +/* Just simply choose the se with the smallest vruntime */
+> > +static struct sched_entity *__pick_cfs(struct cfs_rq *cfs_rq)
+> > +{
+> > +     struct sched_entity *curr =3D cfs_rq->curr;
+> > +     struct sched_entity *left =3D __pick_first_entity(cfs_rq);
+> > +
+> > +     /*
+> > +      * If curr is set we have to see if its left of the leftmost enti=
+ty
+> > +      * still in the tree, provided there was anything in the tree at =
+all.
+> > +      */
+> > +     if (!left || (curr && entity_before(curr, left)))
+> > +             left =3D curr;
+> > +
+> > +     return left;
+> > +}
+> > +
+> >   static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+> >   {
+> >       struct sched_entity *se =3D __pick_eevdf(cfs_rq);
+> >
+> >       if (!se) {
+> > -             struct sched_entity *left =3D __pick_first_entity(cfs_rq)=
+;
+> > +             struct sched_entity *left =3D __pick_cfs(cfs_rq);
+> >               if (left) {
+> >                       pr_err("EEVDF scheduling fail, picking leftmost\n=
+");
+> >                       return left;
