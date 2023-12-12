@@ -2,498 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ECE80E4EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D5A80E4E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345912AbjLLH1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
+        id S230448AbjLLHaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLH1S (ORCPT
+        with ESMTP id S229449AbjLLHaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:27:18 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E4EA1;
-        Mon, 11 Dec 2023 23:27:24 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC6l4vm010724;
-        Tue, 12 Dec 2023 07:27:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=XU9zbZUcaCV50YCOtsO/5zfvVKw4GV2S5Ux9FdjDCKo=; b=YJ
-        OMNVDOzEA9P30e5teFerRldJRt+ufsTVjAW+ppBgCWDJ26sUm480uhZ88NfKs1ex
-        mXJsLMr0eZDYUjME3fjTEgJ8pdr6xJplHSs2TAYAAJxuRRkHezI2Qm3G6lmMB3Ji
-        0vzOGs8K7L01InoFTSD1KUQkvteR1S+80bx4qUOyWI0dfLk47AcWM0Ox/DsMU4tK
-        pvixq2oJ93AfKqpE/ljFJfDzCFNPICW5zwx5ogG1oV1AZBsR3eGFeRMO8BxF97t3
-        Uqk+ta5AQgUp2zSItkNYUb28hNqpjkAkKNBMWXuXwa8aZIBSPNGkYFtsIWCjL8B1
-        qVo82BZOsD4lRnI+x/AQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxctarsbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 07:27:04 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC7R3cF013349
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 07:27:03 GMT
-Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
- 2023 23:27:00 -0800
-Message-ID: <2fff7374-2865-7a95-d699-619f37ed98d4@quicinc.com>
-Date:   Tue, 12 Dec 2023 12:56:57 +0530
+        Tue, 12 Dec 2023 02:30:13 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2079.outbound.protection.outlook.com [40.107.237.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4B7AB;
+        Mon, 11 Dec 2023 23:30:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fNYxG8TdojzxaXxTYNDg68kmL+5E3GXhhTAEr7X6G9NLjgBVptuuX0kVcwrA7yZPqY6jJYzg+xEO5aEKrzUojfNOjMkd22QoXoO9w2VdqA5g302Z5z8H7a6/m157wMoBcj1taeqiHMJKpgJQkbg8HFLgQT9D61DHV16rG11tIEQsOaKaOAUI6z/Yo/7VSbVXOKEK/HSDsVAoScYZrmn4+OrJthQcFwMVxjU4scPwj8UIdmQo0/mOkWTpc1o4sTyW+xrOaVrKyRAC2/a4gyfN8oVSRhNu1hv+LIsHAgk7s69YK2Ya7FiW8Ir2H8DkJ0ssIVtKph9ovyD2t65/J+8qHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XptjxMBNQYJ7lZXSwFu+Z2T6o9exH+CjGyIcjOSxTEk=;
+ b=TUVR3ypC/GTGsaNnUbr50BfE/c1cNv8z049o0echtZH6670eNqNwhOCieqROqhu3WBhh+NhfOpO9v23bQ2G52rLj7z+21yP8ZNDpHjIl6mC8bjTzA7RUybNoHe7BGB0qeDQq2RMFU52wgvUgDx4PDNSrDbJuVY50ubI9gYyrbfwsXpA9Z8R7tFFKV56euQod8qqQwPYI0OpC+/t3+5fNDaPWWSCLdWyVntmiiC49wm73v+mHuT5gdCOc7xbXvbI8D1mDVtQTFm4qMRRtn/x20SiVZXwVDAqDTbnB3bCp96QBeuNct9mdVRUoMvTTrbVyVqgMwmJENIcrRgdP2XJ2uQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XptjxMBNQYJ7lZXSwFu+Z2T6o9exH+CjGyIcjOSxTEk=;
+ b=TILEy6isH6pkxFQHXiRmb7Gw7+5gplp4b7cXJtT6B39dB0roE/xqUNAX5ijWbNTXX9jG2DVOjdVTrMXhXtPpZvHaSTXYXbdqGI07uKS/gjSvVPPNpHP0nHXZ268uHOsJzNVSt9VvQClX8hB4euPlUcuFuU7fIeyWhBFZHRXqyXSM/BLBCn17TADC4rKDa2/xmkOpvNRXjm/58qn+GHGNTd+l1qj0DVX+ABDwLEV9jgdPK1Jstqs2niBXoCNmwpeVh++rrZ2MlnqmOacSnyO7E/KaFFbFoEJRezlhJ3zznJH59cWBMj2NxEOX1Jz1MMnjfemAgG/4FPYbcVbJKnJqbw==
+Received: from BLAPR03CA0121.namprd03.prod.outlook.com (2603:10b6:208:32e::6)
+ by MW4PR12MB6921.namprd12.prod.outlook.com (2603:10b6:303:208::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
+ 2023 07:30:16 +0000
+Received: from BL6PEPF0001AB73.namprd02.prod.outlook.com
+ (2603:10b6:208:32e:cafe::88) by BLAPR03CA0121.outlook.office365.com
+ (2603:10b6:208:32e::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33 via Frontend
+ Transport; Tue, 12 Dec 2023 07:30:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL6PEPF0001AB73.mail.protection.outlook.com (10.167.242.166) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.18 via Frontend Transport; Tue, 12 Dec 2023 07:30:15 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 11 Dec
+ 2023 23:30:03 -0800
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Mon, 11 Dec 2023 23:30:03 -0800
+Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.126.190.182)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 11 Dec 2023 23:30:02 -0800
+Date:   Mon, 11 Dec 2023 23:30:00 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Yi Liu <yi.l.liu@intel.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+        <mjrosato@linux.ibm.com>, <chao.p.peng@linux.intel.com>,
+        <yi.y.sun@linux.intel.com>, <peterx@redhat.com>,
+        <jasowang@redhat.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <lulu@redhat.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        <xin.zeng@intel.com>, <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Message-ID: <ZXgL+GCGPgH+hlXo@Asurada-Nvidia>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+ <ZXd+1UVrcAQePjnD@Asurada-Nvidia>
+ <20231211215738.GB3014157@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v8] bus: mhi: host: Add tracing support
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20231207-ftrace_support-v8-1-7f62d4558555@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JjxY7hN5y9C1Z8LD42wJ1DPwjGOuqUcD
-X-Proofpoint-ORIG-GUID: JjxY7hN5y9C1Z8LD42wJ1DPwjGOuqUcD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120057
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231211215738.GB3014157@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB73:EE_|MW4PR12MB6921:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20950ca9-a22c-4845-c095-08dbfae42f3b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wptgO8K+EY7Z6iyZjoTb+IvXsZ0S8NVAgh7y4Pkt9+JG0JOkdYCY4+HY3jmsX9ZtRvtKu/2ScZblP1Poy19ml6IOnUSmcCcurQ4qADDiRww1QGXfGAaqO5llcNd2Fx4r634EsookGDv2yJVNQk1HP1q35uIKf1LJbKTj5Pld+ClHi5glBUo6HizYoFS94FixfK85RI8DoCGW5FoLQZQvBfXLJLPy8xztprjbhtm36fm4dvWYn96FQzNV6K+Xq9txXozUytfDf1XbU5CwyIu9vLP2JcNeLCUevOaAkSwXJGVO/ma/wEwRwFsuyzfoyCx958u7NZbRPX8W3QIBxIjjbxfxKSrK39RSGagiZW0Ww8tzWOkzaenNa0IB49lYmfqQtfmiglUQjqpcqKRHxi+ffNxNnNox5LMluFalBwOv+m/Per6SQzp9NbhilCqlhRQ4c6TwI5Vave2PAj1EKDKfC/hfnje0YdK/KibjgCHwkuSgN8avs5RM1xg/xLs2xlYDYJVtE5fBnnRLWY6hbnTZDw9DUKfpBfh0TzFletp40oxIzc7vbOxSKWAoQZgi0Ea+7KXtWQwue7+AoecyX92YJzeGwQg2qqOT85qjesjXsRguW8D2bljtlqkdmS1wTcpb+/oPUILQVANWpQSbsxitYRCuADcY5d6clwZ1vnLhxiie60iz1FIX2Jwnen6UIaRDOVY5mEvlSXFwBkgA4TWInOzKk9i5lm+bTiW3x9PWgKQaxVB1fpUK4Wxj1tKpZ3Vi
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(36840700001)(40470700004)(46966006)(7636003)(41300700001)(8676002)(356005)(82740400003)(478600001)(8936002)(6636002)(70586007)(70206006)(33716001)(86362001)(54906003)(316002)(7416002)(26005)(5660300002)(9686003)(336012)(47076005)(36860700001)(6862004)(2906002)(83380400001)(426003)(4326008)(40480700001)(55016003)(40460700003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 07:30:15.3114
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20950ca9-a22c-4845-c095-08dbfae42f3b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB73.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6921
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+On Mon, Dec 11, 2023 at 05:57:38PM -0400, Jason Gunthorpe wrote:
+> On Mon, Dec 11, 2023 at 01:27:49PM -0800, Nicolin Chen wrote:
+> > On Fri, Dec 08, 2023 at 09:47:26PM -0400, Jason Gunthorpe wrote:
+> > > What is in a Nested domain:
+> > >  ARM: A CD table pointer
+> > >       Nesting domains are created for every unique CD table top pointer.
+> > 
+> > I think we basically implemented in a way of syncing STE, i,e,
+> > vSTE.Config must be "S1 Translate" besides a CD table pointer,
+> > and a nested domain is freed when vSTE.Config=BYPASS even if a
+> > CD table pointer is present, right?
+> 
+> Yes, but you can also de-duplicate the nested domains based on the CD
+> table pointer. It is not as critical for ARM as others, but may
+> still be worth doing.
 
-Can you review it once.
+Ah right! Should do that.
 
-Thanks & Regards,
+> > If we do implement an IOMMUFD_DEV_ASSIGN_VIRTUAL_ID, do we need
+> > an IOMMUFD_DEV_RESIGN_VIRTUAL_ID? (or better word than resign).
+> 
+> I don't think so.. The vRID is basically fixed, if it needs to be
+> changed then the device can be destroyed (or assign can just change it)
 
-Krishna Chaitanya.
+OK. Will insert the cleanup piece to the unbind()/destroy().
 
-On 12/7/2023 10:00 AM, Krishna chaitanya chundru wrote:
-> This change adds ftrace support for following functions which
-> helps in debugging the issues when there is Channel state & MHI
-> state change and also when we receive data and control events:
-> 1. mhi_intvec_mhi_states
-> 2. mhi_process_data_event_ring
-> 3. mhi_process_ctrl_ev_ring
-> 4. mhi_gen_tre
-> 5. mhi_update_channel_state
-> 6. mhi_tryset_pm_state
-> 7. mhi_pm_st_worker
->
-> Where ever the trace events are added, debug messages are removed.
->
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
-> Changes in v8:
-> - Pass the structure and derefernce the variables in TP_fast_assign as suggested by steve
-> - Link to v7: https://lore.kernel.org/r/20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com
->
-> Changes in v7:
-> - change log format as pointed by mani.
-> - Link to v6: https://lore.kernel.org/r/20231204-ftrace_support-v6-1-9b206546dac2@quicinc.com
->
-> Changes in v6:
-> - use 'rp' directly as suggested by jeffrey.
-> - Link to v5: https://lore.kernel.org/r/20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com
->
-> Changes in v5:
-> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
-> - Instead of converting to u64 to print address, use %px to print the address to avoid
-> - warnings in some platforms.
-> - Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
->
-> Changes in v4:
-> - Fix compilation issues in previous patch which happended due to rebasing.
-> - In the defconfig FTRACE config is not enabled due to that the compilation issue is not
-> - seen in my workspace.
-> - Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
->
-> Changes in v3:
-> - move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
-> - we can include driver header files.
-> - Use macros directly in the trace events as suggested Jeffrey Hugo.
-> - Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
-> - removed the mhi_to_physical function as this can give security issues.
-> - removed macros to define strings as we can get those from driver headers.
-> - Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
->
-> Changes in v2:
-> - Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
-> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
-> - Fixed the kernel test rebot issues.
-> - Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
-> ---
->   drivers/bus/mhi/host/init.c  |   3 +
->   drivers/bus/mhi/host/main.c  |  19 ++--
->   drivers/bus/mhi/host/pm.c    |   7 +-
->   drivers/bus/mhi/host/trace.h | 205 +++++++++++++++++++++++++++++++++++++++++++
->   4 files changed, 221 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-> index f78aefd2d7a3..6acb85f4c5f8 100644
-> --- a/drivers/bus/mhi/host/init.c
-> +++ b/drivers/bus/mhi/host/init.c
-> @@ -20,6 +20,9 @@
->   #include <linux/wait.h>
->   #include "internal.h"
->   
-> +#define CREATE_TRACE_POINTS
-> +#include "trace.h"
-> +
->   static DEFINE_IDA(mhi_controller_ida);
->   
->   const char * const mhi_ee_str[MHI_EE_MAX] = {
-> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> index dcf627b36e82..189f4786403e 100644
-> --- a/drivers/bus/mhi/host/main.c
-> +++ b/drivers/bus/mhi/host/main.c
-> @@ -15,6 +15,7 @@
->   #include <linux/skbuff.h>
->   #include <linux/slab.h>
->   #include "internal.h"
-> +#include "trace.h"
->   
->   int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
->   			      void __iomem *base, u32 offset, u32 *out)
-> @@ -491,11 +492,8 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
->   
->   	state = mhi_get_mhi_state(mhi_cntrl);
->   	ee = mhi_get_exec_env(mhi_cntrl);
-> -	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
-> -		TO_MHI_EXEC_STR(mhi_cntrl->ee),
-> -		mhi_state_str(mhi_cntrl->dev_state),
-> -		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
->   
-> +	trace_mhi_intvec_states(mhi_cntrl, ee, state);
->   	if (state == MHI_STATE_SYS_ERR) {
->   		dev_dbg(dev, "System error detected\n");
->   		pm_state = mhi_tryset_pm_state(mhi_cntrl,
-> @@ -832,6 +830,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
->   	while (dev_rp != local_rp) {
->   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->   
-> +		trace_mhi_ctrl_event(mhi_cntrl, local_rp);
-> +
->   		switch (type) {
->   		case MHI_PKT_TYPE_BW_REQ_EVENT:
->   		{
-> @@ -997,6 +997,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
->   	while (dev_rp != local_rp && event_quota > 0) {
->   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->   
-> +		trace_mhi_data_event(mhi_cntrl, local_rp);
-> +
->   		chan = MHI_TRE_GET_EV_CHID(local_rp);
->   
->   		WARN_ON(chan >= mhi_cntrl->max_chan);
-> @@ -1235,6 +1237,7 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
->   	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
->   	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
->   
-> +	trace_mhi_gen_tre(mhi_cntrl, mhi_chan, mhi_tre);
->   	/* increment WP */
->   	mhi_add_ring_element(mhi_cntrl, tre_ring);
->   	mhi_add_ring_element(mhi_cntrl, buf_ring);
-> @@ -1327,9 +1330,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->   	enum mhi_cmd_type cmd = MHI_CMD_NOP;
->   	int ret;
->   
-> -	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
-> -		TO_CH_STATE_TYPE_STR(to_state));
-> -
-> +	trace_mhi_channel_command_start(mhi_cntrl, mhi_chan, to_state);
->   	switch (to_state) {
->   	case MHI_CH_STATE_TYPE_RESET:
->   		write_lock_irq(&mhi_chan->lock);
-> @@ -1396,9 +1397,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
->   		write_unlock_irq(&mhi_chan->lock);
->   	}
->   
-> -	dev_dbg(dev, "%d: Channel state change to %s successful\n",
-> -		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
-> -
-> +	trace_mhi_channel_command_end(mhi_cntrl, mhi_chan, to_state);
->   exit_channel_update:
->   	mhi_cntrl->runtime_put(mhi_cntrl);
->   	mhi_device_put(mhi_cntrl->mhi_dev);
-> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-> index 8a4362d75fc4..5a2394b5b2e1 100644
-> --- a/drivers/bus/mhi/host/pm.c
-> +++ b/drivers/bus/mhi/host/pm.c
-> @@ -15,6 +15,7 @@
->   #include <linux/slab.h>
->   #include <linux/wait.h>
->   #include "internal.h"
-> +#include "trace.h"
->   
->   /*
->    * Not all MHI state transitions are synchronous. Transitions like Linkdown,
-> @@ -123,6 +124,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
->   	if (unlikely(!(dev_state_transitions[index].to_states & state)))
->   		return cur_state;
->   
-> +	trace_mhi_tryset_pm_state(mhi_cntrl, state);
->   	mhi_cntrl->pm_state = state;
->   	return mhi_cntrl->pm_state;
->   }
-> @@ -753,7 +755,6 @@ void mhi_pm_st_worker(struct work_struct *work)
->   	struct mhi_controller *mhi_cntrl = container_of(work,
->   							struct mhi_controller,
->   							st_worker);
-> -	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->   
->   	spin_lock_irq(&mhi_cntrl->transition_lock);
->   	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
-> @@ -761,8 +762,8 @@ void mhi_pm_st_worker(struct work_struct *work)
->   
->   	list_for_each_entry_safe(itr, tmp, &head, node) {
->   		list_del(&itr->node);
-> -		dev_dbg(dev, "Handling state transition: %s\n",
-> -			TO_DEV_STATE_TRANS_STR(itr->state));
-> +
-> +		trace_mhi_pm_st_transition(mhi_cntrl, itr->state);
->   
->   		switch (itr->state) {
->   		case DEV_ST_TRANSITION_PBL:
-> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
-> new file mode 100644
-> index 000000000000..73c129bb91d9
-> --- /dev/null
-> +++ b/drivers/bus/mhi/host/trace.h
-> @@ -0,0 +1,205 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM mhi_host
-> +
-> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_EVENT_MHI_HOST_H
-> +
-> +#include <linux/tracepoint.h>
-> +#include <linux/trace_seq.h>
-> +#include "../common.h"
-> +#include "internal.h"
-> +
-> +TRACE_EVENT(mhi_gen_tre,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
-> +		 struct mhi_ring_element *mhi_tre),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, mhi_tre),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, ch_num)
-> +		__field(void *, wp)
-> +		__field(__le64, tre_ptr)
-> +		__field(__le32, dword0)
-> +		__field(__le32, dword1)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->ch_num = mhi_chan->chan;
-> +		__entry->wp = mhi_tre;
-> +		__entry->tre_ptr = mhi_tre->ptr;
-> +		__entry->dword0 = mhi_tre->dword[0];
-> +		__entry->dword1 = mhi_tre->dword[1];
-> +	),
-> +
-> +	TP_printk("%s: Chan: %d Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x\n",
-> +		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
-> +		  __entry->dword0, __entry->dword1)
-> +);
-> +
-> +TRACE_EVENT(mhi_intvec_states,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int dev_ee, int dev_state),
-> +
-> +	TP_ARGS(mhi_cntrl, dev_ee, dev_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, local_ee)
-> +		__field(int, state)
-> +		__field(int, dev_ee)
-> +		__field(int, dev_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->local_ee = mhi_cntrl->ee;
-> +		__entry->state = mhi_cntrl->dev_state;
-> +		__entry->dev_ee = dev_ee;
-> +		__entry->dev_state = dev_state;
-> +	),
-> +
-> +	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-> +		  __get_str(name),
-> +		  TO_MHI_EXEC_STR(__entry->local_ee),
-> +		  mhi_state_str(__entry->state),
-> +		  TO_MHI_EXEC_STR(__entry->dev_ee),
-> +		  mhi_state_str(__entry->dev_state))
-> +);
-> +
-> +TRACE_EVENT(mhi_tryset_pm_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int pm_state),
-> +
-> +	TP_ARGS(mhi_cntrl, pm_state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, pm_state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		if (pm_state)
-> +			pm_state = __fls(pm_state);
-> +		__entry->pm_state = pm_state;
-> +	),
-> +
-> +	TP_printk("%s: PM state: %s\n", __get_str(name),
-> +		  to_mhi_pm_state_str(__entry->pm_state))
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(__le32, dword0)
-> +		__field(__le32, dword1)
-> +		__field(int, state)
-> +		__field(__le64, ptr)
-> +		__field(void *, rp)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->rp = rp;
-> +		__entry->ptr = rp->ptr;
-> +		__entry->dword0 = rp->dword[0];
-> +		__entry->dword1 = rp->dword[1];
-> +		__entry->state = MHI_TRE_GET_EV_STATE(rp);
-> +	),
-> +
-> +	TP_printk("%s: Tre: 0x%p Tre buf: 0x%llx dword0: 0x%08x dword1: 0x%08x state: %s\n",
-> +		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
-> +		  __entry->dword1, mhi_state_str(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_ring_element *rp),
-> +
-> +	TP_ARGS(mhi_cntrl, rp)
-> +);
-> +
-> +DECLARE_EVENT_CLASS(mhi_update_channel_state,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, ch_num)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->ch_num = mhi_chan->chan;
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: chan%d: Updating state to: %s\n",
-> +		  __get_str(name), __entry->ch_num,
-> +		  TO_CH_STATE_TYPE_STR(__entry->state))
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, mhi_chan, state)
-> +);
-> +
-> +TRACE_EVENT(mhi_pm_st_transition,
-> +
-> +	TP_PROTO(struct mhi_controller *mhi_cntrl, int state),
-> +
-> +	TP_ARGS(mhi_cntrl, state),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(name, mhi_cntrl->mhi_dev->name)
-> +		__field(int, state)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(name, mhi_cntrl->mhi_dev->name);
-> +		__entry->state = state;
-> +	),
-> +
-> +	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
-> +		  TO_DEV_STATE_TRANS_STR(__entry->state))
-> +);
-> +
-> +#endif
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH ../../drivers/bus/mhi/host
-> +#undef TRACE_INCLUDE_FILE
-> +#define TRACE_INCLUDE_FILE trace
-> +
-> +#include <trace/define_trace.h>
->
-> ---
-> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
-> change-id: 20231005-ftrace_support-6869d4156139
->
-> Best regards,
+> > Could the structure just look like this?
+> > struct iommu_dev_assign_virtual_id {
+> >        __u32 size;
+> >        __u32 dev_id;
+> >        __u32 id_type;
+> >        __u32 id;
+> > };
+> 
+> It needs to take in the viommu_id also, and I'd make the id 64 bits
+> just for good luck.
+
+What is viommu_id required for in this context? I thought we
+already know which SMMU instance to issue commands via dev_id?
+
+> > > IOMMUFD_DEV_INVALIDATE should be introduced with the same design as
+> > > HWPT invalidate. This would be used for AMD/ARM's ATC invalidation
+> > > (and just force the stream ID, userspace must direct the vRID to the
+> > > correct dev_id).
+> > 
+> > SMMU's CD invalidations could fall into this category too.
+
+Do we need a different iommu API for this ioctl? We currently
+have the cache_invalidate_user as a domain op. The new device
+op will be an iommu op?
+
+And should we rename the "cache_invalidate_user"? Would VT-d
+still uses it for device cache?
+
+> > I previously drafted something to test it out with iommufd.
+> > Basically it needs the pairing of vRID/pRID in attach_dev()
+> > and another ioctl to mmap/config user queue(s):
+> > +struct iommu_hwpt_cache_config_tegra241_vcmdq {
+> > +       __u32 vcmdq_id;			// queue id
+> > +       __u32 vcmdq_log2size;		// queue size
+> > +       __aligned_u64 vcmdq_base;	// queue guest PA
+> > +};
+> 
+> vRID/pRID pairing should come from IOMMUFD_DEV_ASSIGN_VIRTUAL_ID. When
+> a HWPT is allocated it would be connected to the viommu_id and then it
+> would all be bundled together in the HW somehow
+
+Since we were talking about sharing stage-2 domain, the HWPT
+to the stage-2 domain will be shared among the vIOMMU/pIOMMU
+instances too? I think I am not quite getting the viommu_id
+part yet. From the other side of this thread, viommu object
+is created per vIOMMU instance and each one actually tied to
+a pIOMMU by nature?
+
+Thanks
+Nicolin
