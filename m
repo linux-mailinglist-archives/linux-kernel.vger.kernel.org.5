@@ -2,178 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B5280F122
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B3680F12C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376972AbjLLPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S1377022AbjLLPf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376793AbjLLPfC (ORCPT
+        with ESMTP id S1377015AbjLLPfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:35:02 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFDD95;
-        Tue, 12 Dec 2023 07:35:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UfT+FJeFGIMEJQ3cPJ6D+qT2+Hw6zkX8DS6NMbT7NhgpAT0RuWTDdx+LJ7kR2yKB+AgC692+ssB/UaWEb5sFMvg7dj4+CRgKLd7ytDodRscb7V6iAAsT+3QeaKS4Ak5gXhPVJdoTfZoYzavonIY96ilQCZcbb11Wehqas4MBRANjXxSQN2upMfIMWczVlTiGH/95ofBGH6y3hnpCGbKbehD1nC6bslWYDrEQWpporo6Z5hNkLKpxz3m1JP3sLhIyViYYfhe/1vXCRbLBvvIBHWQCG4y5Hx8gwWqy5607lcyzkvVNhlrjTU2x55sUkHv6SAdA1U4X3Ms66+IR4wZPUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gUMrgHmqVVlL5srQ3cIufu0V11MfT2Xjy6T+jg/iiJM=;
- b=mI4ZjZdWMFYRJMNf3J0I2N57FlMdS2tvkL/H7dUCtibhuK/zLInK3kYFpEduTcqDNqkVlE2YdX2zp1S1xH9XaO6g52tTPPZ37LNAgCmlC2jsmnejlWtr9/ha/SW/jqRlLHP6voKIPG93lacpNRrcaskyrKWDs+wLuBvfIroYGkFD3xEaCrRDEJn2QjbFafbGEzHoWxMDkZ5NED1WWaKcO2V3FY/U9MsKAQs8T2KalYicERqtjUkHZYllQtEL4Nwtz6hGGgriTaG6BLwZeC5+/URprX9pUotMBIcgOh4fyfgdozVDgSrUhqhRSrKk5Xc5C25teEbvgjJ5Gh5VxvgOTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gUMrgHmqVVlL5srQ3cIufu0V11MfT2Xjy6T+jg/iiJM=;
- b=FD50YnUr+yo94e2m4TP1WSNOM0gMsh1tWEfY+QK1pPWKC0qFd/ev3rAVDnCIWMdJd2c87dNbKjtZs4KLvS4E0tSQfElR61OW9hfQrylKyMWw9SdKA90AWHagkrRor3Z6x9szrbD2GJv6PfM+AWTZnmjF76s5ORyN70FHdnrRPH5kaAmzOqosY9WHJZKBUomhfGqb/IuevZr2zrWO2vfYRrFi9W0sm/zpbpA98wu5Mip6xmecAjUgybG095Uf2mcH4GwuKooKjS6qW44zYmWr1HC6R3YWKqHDOESt8JLii7jV28+W9Hw/5Rl94edIkfaN3Vy1FG96JhcJJeKlBT1CQA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB5103.namprd12.prod.outlook.com (2603:10b6:5:392::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
- 2023 15:35:05 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 15:35:05 +0000
-Date:   Tue, 12 Dec 2023 11:35:04 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH 3/3] vfio: Report PASID capability via
- VFIO_DEVICE_FEATURE ioctl
-Message-ID: <20231212153504.GL3014157@nvidia.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
- <20231127063909.129153-4-yi.l.liu@intel.com>
- <20231211110345.1b4526c6.alex.williamson@redhat.com>
- <20231211181028.GL2944114@nvidia.com>
- <20231211114949.273b21c0.alex.williamson@redhat.com>
+        Tue, 12 Dec 2023 10:35:55 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE300E4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:36:00 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4254223c150so42082181cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1702395360; x=1703000160; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZXcJtFX60tA1qLiGEO8wBGyAsaG5MN46AN6euEyJwkw=;
+        b=LcNVEnAlEDINzOah32GP4meHrkPT/ryuX3yYGOhjnSn7HYbIKtbJxzMyQXiLxHXFJk
+         JZtpyDSYoc7SWq08Ieq0f/+ac8BZSKhij7D5H8IE5dJh5C7aYKNGxfsVUf2NPT43N59E
+         +XYij1lTnAaqJY86H+X30rTtqNBF0fhFEgXOIEbgvUX4Pc91CgKhZpTTUFbM0o9JyS63
+         ds87Ojtx93L1KJlfFdmNVJrGmSjcDDLBOmQJx3idUq6ubKM7xiC5jMOAazJAjlPrf5EQ
+         Hk93bcZ1jk2VF/TjTL9unpyL+HElKVURbJMXyniEOLAxfRci+9jNDNxz0aHQaDP23FPf
+         Y96A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702395360; x=1703000160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZXcJtFX60tA1qLiGEO8wBGyAsaG5MN46AN6euEyJwkw=;
+        b=O2QQBRR8rdhUU1l9VL1OihjNOM0ZOS00NGS7XXxPbMnUDU9lQjO1c5zv2HoSbZ5x2/
+         9jdgcn+FyqivogJPNKENBu6bZtWnlII2rIZcB4Fl7vW0+Dzsb2LjoskkXQnU2FAxtFzn
+         hzJqq+OExO1OGGtmCISfekAu+k1XUwA9DxtxsHznRIfQoBj/xfHTEL6Cd/n9T2osID15
+         1WFdwgA3VDmr7ylx9uke6lIwnkr9LlypNcrhOey/M8DLLQKeWYkz+2ktdYIudUJDFqG8
+         jGgBcruS9FCTk+vJRRls4rFhcmJwGk+mVV1z2bPWpmkevuBigkjwolhAqHUsOklD7hwk
+         6ZiQ==
+X-Gm-Message-State: AOJu0Yzr8f5kWSlGn9FqBLPRhKBHPyF8WYQyqeRM4hJGOXfmAYrLRJVh
+        SQRCSVr39/MVujWAqSVyNFenZQ==
+X-Google-Smtp-Source: AGHT+IF+nhZFWFH1wPSdf7q8AFiMdrHCNgr9nWw0nKTFrSUNiS6YQ/1wS9TNqOAKUPbNLmAIHWUCaw==
+X-Received: by 2002:ac8:5948:0:b0:421:c6ef:4b0b with SMTP id 8-20020ac85948000000b00421c6ef4b0bmr8033608qtz.17.1702395359848;
+        Tue, 12 Dec 2023 07:35:59 -0800 (PST)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id kq12-20020ac8618c000000b00423b5cf305bsm4130866qtb.65.2023.12.12.07.35.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 07:35:59 -0800 (PST)
+Date:   Tue, 12 Dec 2023 10:35:08 -0500
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/2] pinctrl: stm32: fix GPIO level interrupts
+Message-ID: <ZXh9rIyy6mu9zFry@dell-precision-5540>
+References: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
+ <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
+ <87ttosqvbq.ffs@tglx>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231211114949.273b21c0.alex.williamson@redhat.com>
-X-ClientProxiedBy: MN2PR19CA0050.namprd19.prod.outlook.com
- (2603:10b6:208:19b::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5103:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb8e4706-2061-44d4-30ab-08dbfb27ea13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6rsgQMyZ/cg/RzfEyCL66AAZtHanRHA4LtRdizDIGxDWNczvblFnkGzeG68X/AyncAofvWxlwv685OEf6GCM0RpLGUJV0F4+C/XRsaSV65EeWNJgnMejbO+T10+DiyBniyD67Yd1qddlKgczjnD+MHme4e5137G2ZRh2vEEtAUu3uVwVSlw8OCKnyEUV79sUmYRpMQieiDZNJRyGecZ6J0nsYCocPN/5cmQ3LfR7BWN8MxM4eaJpKhiDPe41JbND6EjcCs6g1RXsiA7HDXPh82OqK6uFm2OtXCMY/YDoA5g+/x5PglCC+HUApzRuzvDLpUMnX8ufJX7u3PngVQuNio749CnqvaO/tsz+P5GngexAO/tQ07Ta71Mw5XTaXMx7m06GN2tLkKPNdSr+NVTDjmC6JvHS/2aFOG95WkuKXKyVpcVQ/sYtiIdbYMYi7l3GmpYJo71/66s0YLISwyetnzj9JXtPVAkgqyuzS+3RevwXGKHknH8N/sc+DF9pRVc2BZo0LwIAwNM4TVeGIqSjiK8x5HqQviySRC9fBqZ6axxRUnn1RX6iWkdHBxN4xNW5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(396003)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(478600001)(6486002)(33656002)(86362001)(316002)(36756003)(66556008)(66476007)(6916009)(66946007)(2616005)(26005)(1076003)(6506007)(6512007)(38100700002)(41300700001)(4326008)(8676002)(8936002)(5660300002)(7416002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F/3pGY9YuUAmH/wOYAVmlw3Xm9Bh5LUrwu3nlH7PA8VINP7IjLm6tW6JBvkz?=
- =?us-ascii?Q?U5g/U7cSyMC16K/CqzY1DMlnF0XReiHpwayTgzbIuNSKeXiyrKXQ5JbzV8CY?=
- =?us-ascii?Q?P8DJ+QyPyaznsUMiKvkxX6AmhyPjw+Euo7BxDUuzRJiZ+J7pMmdDFp06UrCB?=
- =?us-ascii?Q?OIt7TfV5tuqVTgVaXrUypIhj6WVvJ9MDIQxshR+qjPSwrwx/TAs3URyILvIk?=
- =?us-ascii?Q?GBbLiJcWzubzNZZSsyC86njQ/Fvx1uuI4/4XXq9ddQu1b0EWsHka3GEDRpjq?=
- =?us-ascii?Q?C0uYEn7XRAoPRUwAnELVf7ViDNOVQOUnWUkv4gRo0QwlRnC98x5kBFCguilo?=
- =?us-ascii?Q?PsMyqIB89/2ehb44kY3BXb9CCXjPJvaUKUKRo3ZkO+J5QFs0crq6H0yfOICq?=
- =?us-ascii?Q?h4jtH6nDRcn0ZG67M2zK6bKj6QTmw/cIXBjRrlG5m9xr9zuw5voxaKBGm2oW?=
- =?us-ascii?Q?fpV0lABKNT6kiltVVO1DEjlz+xBljpsNQwwMQvjVGbfnluq/B7A/6al6WlFX?=
- =?us-ascii?Q?OjZKQVFTGanXY+gFa9Y0inFxlG/PlUpLtPYNaLSCvJ94KJVnspJK9xz+lgUs?=
- =?us-ascii?Q?E9j5PDpFeflKdnZ1Va89QGweTPlbM5b47ZqK+xv04P1JsMAT2Qt9DUPcwZYy?=
- =?us-ascii?Q?hiZg/KtHI2lXyoN/OOSStltxWDrr1GSOT4P+0+cFjhUb2cvMsV9Sg3eTvM8j?=
- =?us-ascii?Q?NHvShnlYWxo5B53VY68Ycr/+/UG6c5iTFsTrYvbK05OEhLVvkxBWyPhj+I2n?=
- =?us-ascii?Q?KGiTIDGnaNAfKs2UhmSKMLJQfiGnuUTLtpGr6Dr6La6xm6fLGvxdIqVmJEoT?=
- =?us-ascii?Q?bbmTQU5GFv2mY9s1ZLA0NbqaNm1ch/y5kxzJyVSQQVFJtGRjDEiPy3pM8PFH?=
- =?us-ascii?Q?usefjCaaMiqrg8bImTDSIm3ArsSOVJtzemW7JoefqRglLCeNarIJn+HOCXHj?=
- =?us-ascii?Q?J/yhIoj5tpqofYjE2ZqRE/FwbMebWaGE+abxSNshT6fhBXkcFNVkX71WfgF2?=
- =?us-ascii?Q?0KcXrOuAJMGfc3Z+co5NLLHk1Xi3gCvPItBFOrj8vp2CgSczvFMLraCPn7uE?=
- =?us-ascii?Q?h4iQmVWmADJZnIuWDt0M1LyYWcrtjVI7ZhJFTPKiIOnpxY9ZISynnPkan/TJ?=
- =?us-ascii?Q?nTKdZvrwTQUiNC3uDgeGxv+fTAu1Guw0LIeq2Uw3FnT2u+hIDTHih0Zy1l5u?=
- =?us-ascii?Q?4DYVsERAJoxPlzB+8qyxwWujA2P8n1lJApp+LQh2eR33hHLZra9YLK3ZmQ4D?=
- =?us-ascii?Q?AvOW2rwioPd993EX7xDKEVkJUTmZZWRzYNTHuJuoyvHUFdKNJ+yJgcy6zcy7?=
- =?us-ascii?Q?atMXx17NDuBDMJpc44OcZqwcdogSVNvF9OpfosWdCZ/nG5ADvtbRRHHL7db9?=
- =?us-ascii?Q?xM+0XaPOTUFA645Arl6fB4kpcA8EYYe29ohtOr46fBOQ2/ZP+EoF8DSYy51H?=
- =?us-ascii?Q?nKTSmcjyAtIVeYW8bF5W/Amps76PGYZjyvjeaZCXQEyz6bYRGRGTODAkxN8R?=
- =?us-ascii?Q?5a1srxJmbS/1PCkYnfyCzbRTPh+PCM32CCRNaR9ghY79VSu324dp3aboFq8p?=
- =?us-ascii?Q?xoFrn47/m45JzSkhb3vnrUdpjTGvj4amFRIiWlJR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb8e4706-2061-44d4-30ab-08dbfb27ea13
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:35:05.3901
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f3aBEEvZQFC2/3N/NxJYZVnW9s39rcaappZLg2Dtw38NGcxk1G158Ql+KYaJmzMZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5103
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <87ttosqvbq.ffs@tglx>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 11:49:49AM -0700, Alex Williamson wrote:
-> On Mon, 11 Dec 2023 14:10:28 -0400
-> Jason Gunthorpe <jgg@nvidia.com> wrote:
+Thank you for taking the time to look through the STM32 manual and
+review the driver. Unfortunately, I don't have enough experience with
+the Linux IRQ subsystem to give you a correspondingly in depth response,
+but I will attempt to address the parts that relate to the bug in
+question.
+
+On Fri, Dec 08, 2023 at 09:43:21PM +0100, Thomas Gleixner wrote:
+> Ben!
 > 
-> > On Mon, Dec 11, 2023 at 11:03:45AM -0700, Alex Williamson wrote:
-> > > On Sun, 26 Nov 2023 22:39:09 -0800
-> > > Yi Liu <yi.l.liu@intel.com> wrote:
+> On Mon, Dec 04 2023 at 15:33, Ben Wolsieffer wrote:
+> > The STM32 doesn't support GPIO level interrupts in hardware, so the
+> > driver tries to emulate them using edge interrupts, by retriggering the
+> > interrupt if necessary based on the pin state after the handler
+> > finishes.
+> >
+> > Currently, this functionality does not work because the irqchip uses
+> > handle_edge_irq(), which doesn't run the irq_eoi() or irq_unmask()
+> > callbacks after handling the interrupt. This patch fixes this by using
+> > handle_level_irq() for level interrupts, which causes irq_unmask() to be
+> > called to retrigger the interrupt.
 > 
-> > > >    the PF). Creating a virtual PASID capability in vfio-pci config space needs
-> > > >    to find a hole to place it, but doing so may require device specific
-> > > >    knowledge to avoid potential conflict with device specific registers like
-> > > >    hiden bits in VF config space. It's simpler by moving this burden to the
-> > > >    VMM instead of maintaining a quirk system in the kernel.  
-> > > 
-> > > This feels a bit like an incomplete solution though and we might
-> > > already posses device specific knowledge in the form of a variant
-> > > driver.  Should this feature structure include a flag + field that
-> > > could serve to generically indicate to the VMM a location for
-> > > implementing the PASID capability?  The default core implementation
-> > > might fill this only for PFs where clearly an emualted PASID capability
-> > > can overlap the physical capability.  Thanks,  
-> > 
-> > In many ways I would perfer to solve this for good by having a way to
-> > learn a range of available config space - I liked the suggestion to
-> > use a DVSEC to mark empty space.
+> This does not make any sense at all. irq_unmask() does not retrigger
+> anything. It sets the corresponding bit in the mask register, not more
+> not less.
+
+I don't think this is correct. I was referring to
+stm32_gpio_irq_unmask(), which calls stm32_gpio_irq_trigger(), which in
+turn (for level interrupts) checks the GPIO pin state and retriggers the
+interrupt if necessary.
+
 > 
-> Yes, DVSEC is the most plausible option for the device itself to convey
-> unused config space, but that requires hardware adoption so presumably
-> we're going to need to fill the gaps with device specific code.  That
-> code might live in a variant driver or in the VMM.  If we have faith
-> that DVSEC is the way, it'd make sense for a variant driver to
-> implement a virtual DVSEC to work out the QEMU implementation and set a
-> precedent.
+> Switching to handle_level_irq() makes the following difference
+> vs. handle_edge_irq() when an interrupt is handled (ignoring the inner
+> loop):
+> 
+>       + irq_mask();
+>         irq_ack();
+>         ....
+>         handle();
+>         ....
+>       + irq_unmask();
 
-How hard do you think it would be for the kernel to synthesize the
-dvsec if the varient driver can provide a range for it?
+Yes, the additional call to irq_unmask() is the key difference here, as
+that callback performs the retriggering for level interrupts.
 
-On the other hand I'm not so keen on having variant drivers that are
-only doing this just to avoid a table in qemu :\ It seems like a
-reasonable thing to add to existing drivers, though none of them
-support PASID yet..
+> 
+> So in both cases irq_ack() clears the interrupt in the Pending register,
+> right?
+> 
+> Now comes the interesting difference.
+> 
+> When the interrupt is raised again after irq_ack() while the handler is
+> running, i.e. a full toggle from active to inactive and back to active
+> where the back to active transition causes the edge detector to trigger,
+> then:
 
-> I mostly just want us to recognize that this feature structure also has
-> the possibility to fill this gap and we're consciously passing it over
-> and should maybe formally propose the DVSEC solution and reference it
-> in the commit log or comments here to provide a complete picture.
+I don't see how this is relevant. The bug occurs with level interrupts
+in the case where there are no new transitions while the handler is
+running. For example, with a high level interrupt, if the pin is still
+high after the handler finishes, the interrupt should be immediately
+triggered again.
 
-You mean by passing an explicit empty range or something in a feature
-IOCTL?
+> 
+>   1) in case of handle_edge_irq() this should immediately set it in the
+>      pending register again and raise another CPU interrupt, which
+>      should be handled once the interrupt service routine returned.
+> 
+>   2) in case of handle_level_irq() this does not set it in the pending
+>      register because it's masked. The unmask will set the pending
+>      register bit _if_ and only _if_ the edge detector has latched the
+>      detection. No idea whether that's the case. The manual is
+>      exceptionally blury about this.
+> 
+> So in theory both #1 and #2 should work. But the explanation in the
+> changelog is fairy tale material.
+> 
+> As I couldn't figure out why #1 would not work, I looked at the driver
+> in more detail and also at the STM32 manual. That tells me that the
+> irqchip driver is at least suboptimal. Why?
+> 
+> The EXTI controller is just an intermediate between the peripheral
+> (including GPIO pins) and the NVIC:
+> 
+>          |--------------|
+>          | Edge config  |   |-----------------|
+>  Source -|              |---| Int. Mask logic |---> Dedicated NVIC interrupt
+>          | Edge detect  | | |-----------------|
+>          |--------------| |
+>                           | |-----------------|   
+>                           |-| Evt. Mask logic |---> CPU event input
+>                           | |-----------------|   
+>                           |
+>                           | |-----------------|   
+>                           |-| Wakeup logic    |--->....
+>                             |-----------------|   
+> 
+> So there are two classes of sources conntect to EXTI:
+> 
+>    1) Direct events
+> 
+>       - Have a fixed edge
+>       - Can be masked for Interrupt and Event generation
+>       - No software trigger
+>       - Not tracked in the Pending register
+>       - Can evtl. wakeup the CPUs or from D3
+> 
+>    2) Configurable events
+> 
+>       - Have a configurable edge
+>       - Can be masked for Interrupt and Event generation
+>       - Software trigger
+>       - Tracked in the Pending register
+>       - Can evtl. wakeup the CPUs or from D3
+> 
+> The CPU event is a single input to the CPU which can be triggered by any
+> source which has the Event mask enabled.
+> 
+> For both classes there are sources which have no connection to the NVIC,
+> they can only be used to generate CPU events or trigger the wakeup
+> logic.
+> 
+> For direct events there is a category where the peripherial interrupt is
+> routed to both the EXTI and the NVIC directly. The EXTI does not provide
+> a connection to the NVIC and the event cannot be masked in EXTI to
+> prevent CPU interrupts. Only the CPU event masking works.
+> 
+> GPIO pins are configurable events which are connected to the NVIC via
+> the EXTI.
+> 
+> But the EXTI driver implements a chained interrupt handler which listens
+> on a ton of NVIC interrupts. I.e. for the STM32H7 on:
+> 
+>   <1>, <2>, <3>, <6>, <7>, <8>, <9>, <10>, <23>, <40>, <41>, <62>, <76>
+> 
+> NVIC   1: PVD_PVM           EXTI-SRC 16
+> NVIC   2: RTC_TAMP_STAMP    EXTI-SRC 18
+> NVIC   3: RTC_WAKEUP        EXTI-SRC 19
+> NVIC   6: EXTI0             EXTI-SRC  0
+> NVIC   7: EXTI1             EXTI-SRC  1
+> NVIC   8: EXTI2             EXTI-SRC  2
+> NVIC   9: EXTI3             EXTI-SRC  3
+> NVIC  10: EXTI4             EXTI-SRC  4
+> NVIC  23: EXTI5-9           EXTI-SRC  5-9
+> NVIC  40: EXTI10-15         EXTI-SRC 10-15
+> NVIC  41: RTC_ALARM         EXTI-SRC 17
+> NVIC  62: ETH_WKUP          EXTI-SRC 86
+> NVIC  76: OTG_HS_WKUP       EXTI-SRC 43
+> 
+> Each of these chained interrupts handles the full EXTI interrupt domain
+> with all three banks. This does not make any sense at all especially not
+> on a SMP machine.
+> 
+> Though it _should_ work, but it might cause interrupts handlers to be
+> invoked when nothing is pending when the edge handler is active. Which
+> in turn can confuse the underlying device driver depending on the
+> quality...
+> 
+> CPU0					CPU1
+> 
+> NVIC int X                      	NVIC int Y
+> 
+>  // read_pending() is serialized by a lock, but both read the same state
+>  pend = read_pending()			pend = read_pending()
+>  
+>  for_each_bit(bit, pend)	 	for_each_bit(bit, pend)	
+>     handle_irq(domain, base + bit)         handle_irq(domain, base + bit)
+>       lock(desc);                            lock(desc);
+>       ack();
+>       do {
+>          clear(PENDING);
+>          set(IN_PROGRESS);
+>          unlock(desc);
+>          handle();                           if (IN_PROGRESS) {
+>          lock(desc);                           ack();
+>                                                set(PENDING);
+>          				       unlock(desc);
+>          clear(IN_PROGRESS);                   return;
+>                                              }
+>       } while (PENDING); <- Will loop
+> 
+> See?
 
-Jason
+Currently, this driver is only used on single core machines, and the
+more complex devices use exti_h, so this shouldn't be a problem in
+practice.
+
+> 
+> In fact the only NVIC interrupts which actually need demultiplexing are
+> NVIC #23 and NVIC #40 and those should only care about the EXTI
+> interrupts which are actually multiplexed on them. This let's randomly
+> run whatever is pending on any demux handler is far from correct.
+> 
+> All others are direct NVIC interrupts which just have the extra EXTI
+> interrupt masking, event masking and the wakeup magic. The indirection
+> via the chained handler is just pointless overhead and not necessarily
+> correct.
+> 
+> The exti_h variant of that driver does the right thing and installs a
+> hierarchical interrupt domain which acts as man in the middle between
+> the source and the NVIC. Though granted they don't have the odd problem
+> of multiplexing several GPIO interrupts to a single NVIC interrupt.
+> 
+> But in fact the regular exti driver could do the same and just handle
+> the two NVIC interrupts which need demultiplexing separately and let
+> everything else go through the hierarchy without bells and whistles.
+
+This sounds reasonable to me. It did seem strange to me that the exti
+and exti_h drivers used such different approaches, although I wasn't
+aware of the reasons behind them. I think this refactoring is out of
+scope of this bug fix though.
+
+> 
+> Thanks,
+> 
+>         tglx
+
+Thanks, Ben
