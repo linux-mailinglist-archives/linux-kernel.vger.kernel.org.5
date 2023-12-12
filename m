@@ -2,179 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFE180ED42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F6D80EBB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjLLNUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:20:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
+        id S1346488AbjLLMZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbjLLM0K (ORCPT
+        with ESMTP id S232487AbjLLMZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:26:10 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E8ED0;
-        Tue, 12 Dec 2023 04:26:16 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50c02628291so5895860e87.0;
-        Tue, 12 Dec 2023 04:26:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702383975; x=1702988775; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=jDXYMaw1sbntLAVDHeEmPBhzTFML5db/VpzOyY7cHic=;
-        b=AaoCNquIixiVz/sNvhnKBOvmdT69RI3CDVjSimb7j8OKAdNU5ydkk/0ergVkjGuSNy
-         Bt1nsaN6q7glhbq+m5Ukgbs/fxBDiB1EZUPrVyReFdulpG/zzI9uZhroAHOEfv6Zcd/f
-         dm50uiVqdAQrdqFNFu8svE382SlFKKFS5zuQGQSk2hIN/BZX3XnkFw2cRSYkrVMKLfuc
-         KfmxCIX9Rc4XTZsZkQ45Mcvfr/sbgNSYsa89TETlcOqK6YbVd25kpTUnmQ2DmKLMSHer
-         LsPJjExl0VBpZWALtNT5W24WjYII17KSrU5QF7tKWHgqs0gsq/2wkiSPK67s7Id2Ykk7
-         VuAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702383975; x=1702988775;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jDXYMaw1sbntLAVDHeEmPBhzTFML5db/VpzOyY7cHic=;
-        b=qNZ+buYnjSKgp6EKdSODG09uvKuYw4tl4WlSX++ZeEfFX2MNH2rlOUMZ6TsEYAH6sk
-         sDB0tnpVB8XPk/mBlV5ZYL6Gr+1k7f/ykKZmIp9wykPgmXVdcWVXbJc+MdlQJ/9aPGAA
-         e/Vel6Tc3spUnLW2yrhivtmOX5cvdkIktYKNOJ9E84AC1jT0Plp3Q6eSwTituHfFB6q2
-         rx/AZi2sNJc3Rm0IDaK8k415MJZ1RVKPo3aAPWbEQqNJ6GgaSNvhAoRSQyMtrdN0M2n6
-         VRLS0mwtxd3GNfY0OzEEeLVz+kV2OV85XAPGv68Tljj0m7FEo6CzyNFWJ9Bdnviu8DYt
-         8N6Q==
-X-Gm-Message-State: AOJu0Yz7ldfXSgE8VsQosgpFFD3Ra/D9EhMzdVxmkj4cbOI8r4mVfIcz
-        yGbluxSblxm/KReuwr0Gin8=
-X-Google-Smtp-Source: AGHT+IG+wKzm5+bzSB/GcsQVOOmtuyN5ujoI9rs9Fi0kUEnxctzEKSBCI1fsFkUHAXH2ku79m60ahw==
-X-Received: by 2002:ac2:5466:0:b0:50b:eedd:edc6 with SMTP id e6-20020ac25466000000b0050beeddedc6mr2897740lfn.42.1702383974760;
-        Tue, 12 Dec 2023 04:26:14 -0800 (PST)
-Received: from razdolb (95-24-149-38.broadband.corbina.ru. [95.24.149.38])
-        by smtp.gmail.com with ESMTPSA id t17-20020a056512069100b0050bf1e8950esm1333018lfe.10.2023.12.12.04.26.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 04:26:14 -0800 (PST)
-References: <20231211175023.1680247-1-mike.rudenko@gmail.com>
- <20231211175023.1680247-6-mike.rudenko@gmail.com>
- <20231211181106.GD27535@pendragon.ideasonboard.com>
-User-agent: mu4e 1.10.7; emacs 29.1
-From:   Mikhail Rudenko <mike.rudenko@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH 05/19] media: i2c: ov4689: Refactor ov4689_set_ctrl
-Date:   Tue, 12 Dec 2023 15:25:27 +0300
-In-reply-to: <20231211181106.GD27535@pendragon.ideasonboard.com>
-Message-ID: <87y1dzppy2.fsf@gmail.com>
+        Tue, 12 Dec 2023 07:25:33 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2061.outbound.protection.outlook.com [40.107.96.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AECF7;
+        Tue, 12 Dec 2023 04:25:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKq3zlj5S4iCpO418DUSLR5VmI8iFb21MYYdlux1UPrRN3mVE/TRusXiZWNIqrrOgK2mG5/i5zHStWICBc68OSBIy0q9nnqfczhWPawbEATnz7ldQvRWbh643K7ujRBXykiV5TquIDZeSiUgy67ZlsA0ReBfrZpA0xlRiY82vrtR41taqVjkNpG2BJ19KVyC9+OC1WI5ibNXXWibDCJXrMIZ2ezgk3CFEG8Iu6fcv2jzgd0C3yHA9B65NdE/eH42z/qRobiA078wVJtZIcWM3ZwNUffK3HrSMSTpUfOCAEhVbgORPtfdthE4G0vieIIOh5u+7AMVSfuZYCAmdlcD0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/NrrWAlQ7ILJL5VW/t+qCUR/J5lO8tq4fOuYTDBK4v4=;
+ b=cmv2kkKWJGeLWTMFShpQHNSSj9uWaw2CwKlzhj3BB6gj+cpJCVOqd4FOrmvxvM3zIdniGzHLfyu/S1bVTvnfc6q6E4FPc6YfOWIfdp3XpWDJk/AZj69986K0ogmAljCnFAdelEsEKS3sCk0wP60eiVB8cWIZAW1fGgSdLWHqxKkoxOVwi0atXw2ZqR2VA2oqUhdz+7fmmFXS885yKOspZGiXsPYOTE5AK0Ba6TKN+IZilgK2AbU6Zczi7ysiEV5G4ah9Rhowou5KMVXD04JpcbaKF3/pWeUBBU0XfDRvmDAIDizzyVHL/XmsXr4YVl2UUnTc/ae7EY7ahCMYDrIXoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NrrWAlQ7ILJL5VW/t+qCUR/J5lO8tq4fOuYTDBK4v4=;
+ b=HTeGupEZqN+e3/D/wlg9RYpVk+9yy88BlwcOdJWm7DOPWkOuL2GlzDSQdyRcW+SI/uiQJdo1+CJew5lrnlmyLb0qlGBQ6fjZnucCCXrHY2Xp2F3spS6NY9e3X51r9XDkLtOmv3dGtLoDgfm+gaNDjmJPduHSGfWI0rGDlTHgc5Qrz/91C/43+7J/VXZ49cmRvPI+5rurU21covq85ENUCtwmpHDKFRhLkzDPeynHB5NJMQTghf2JF6lEyPvgsZzWfimqaBsFvJ0A0+HD+Tp2p/A+tFX7kU35t/ZltAcRr9L6AyhTainuI4bulU4v68Azqy8WVFlPmJngz1P1y7vEMg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB6256.namprd12.prod.outlook.com (2603:10b6:8:a3::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.26; Tue, 12 Dec 2023 12:25:36 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 12:25:36 +0000
+Date:   Tue, 12 Dec 2023 08:25:35 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
+Message-ID: <20231212122535.GA3029808@nvidia.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208005250.2910004-9-almasrymina@google.com>
+X-ClientProxiedBy: BL1PR13CA0085.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::30) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6256:EE_
+X-MS-Office365-Filtering-Correlation-Id: 31487c9e-7413-40e2-fc23-08dbfb0d71c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dr3LnQeG7pKa2o1xRmhtmeZvzytY3pzh+BCptlMfPF3UetOkAOdQiRRGXXEnBUlL2FCMm8A45MVcu/Zal4J/kgCSpUENIlmaT2DbH/FOZycE++0aehcKWmyGL9r1LIG901qINk2xywrZ688YnX1dE8sOx0hUz8TpetZ+Rtnvk5Np/3tuK5FPwEIZG3/SVgrKcYAba4eA9JPMfTcPwI3CI3iTiLornqivhKxktL6u0si32e/F0HUPAbdw4iE0KCwfa5xf3/fWgOhldrkdiLqahwdnHwsctXcJwH8iLSFibvqXani6HhJTudhdRwyp2M9jWTNnykqGS5lkdpVq+u7FaGWu/Q+Pw2WLEb1qTBe3ZrGR0wQe/SuF21tSmMS/gb0lkDNCuG+Ya3JVPX+hHdojftmOY9pgflGayc+A9NCyYCbHJm45xQY+bcpqNZsiRlU0w9MuSjrfyAO45IY3RrXCbwb4uM3L1r6L6MEmhqko8UTb++c/Q+n7NM8QTmh2WmoKmlhi7nWUq3ikUAVJAjxk9wAC2yPfFAGzC/mZmYjaKqo6r0l8EJfzCO4UzBf96IZM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(136003)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(6506007)(6512007)(2616005)(1076003)(5660300002)(4326008)(8936002)(7406005)(8676002)(41300700001)(7416002)(4744005)(2906002)(6486002)(478600001)(38100700002)(316002)(6916009)(66476007)(54906003)(66556008)(66946007)(33656002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FNzvK+ZPaUM4zj+4pHalQiAz7Hb9dYLj2YtCoSZw4B82oIueziOpU3RHpqZY?=
+ =?us-ascii?Q?0QW0Ycjp1c5NL+dLkHzwC9F4m8SCRf3rU8Antxatx7bn4e242n2vioDRex0T?=
+ =?us-ascii?Q?e8IexuY08eR5iExMWAnM8z3ZtK+eZVw3EzKozvx7VK6yvJRvDlR/sVLkot4l?=
+ =?us-ascii?Q?nibKfJHzwcUmLizjCn6XS2rkb/qo33Q0jcuytw/mz39qgx9aAaZdIWQQz4lY?=
+ =?us-ascii?Q?uzyxkyu+4iaM+Ixm2FQPVHs7o99dlDWkJaU49HfaXNngX7mIJ/3LYBraTeqF?=
+ =?us-ascii?Q?9+6wPw62EKu7VRo7w//svTA3fHCmo7cX6UgNSC+Ljmioam4+BCvEuODG82Ai?=
+ =?us-ascii?Q?FLuU2x34+M1yq1sOFTC96O3MDgtfAcq0jnBxM428I1J+PioHQLKqjVWhk6Xw?=
+ =?us-ascii?Q?WY79EY9KOV4V2VUv+fepzxqctqM5vSNKSG7Uwv1Wf3BevrgEl3mRfaA4ZrzK?=
+ =?us-ascii?Q?dBcB+FaB9hZDHbw5gs3+eKRqbA1EMpgC5plRJh5M8qipNialIxP+0tZdnPV/?=
+ =?us-ascii?Q?cfcLR84KlBs7snZb1pJa0p3aj9QIZM8cdyRtjwYGfsF3Q9PK5tgZSkFtWLmG?=
+ =?us-ascii?Q?Dlg8I9b6gbPWDd8GoeH6Wt8pVI0LuKxzFQ/5NCTddajmFqh3Ltzfaus5QQ9X?=
+ =?us-ascii?Q?CiRb6ymtM1hTlo/h3AB+XAk5gezU2rubZ7IVV7PPxQ6tWRYn6NEGIIhwJ6V1?=
+ =?us-ascii?Q?AW8yvNQkVUieCYHx1qUhH2jviNXlBjnpCeU/e7W+cFABU5Bk5BH0uDgODVTb?=
+ =?us-ascii?Q?e0SoBcysDyirqGWh2Ktkw2eeIHbcO2JFy4rFthxhwEUnBvNgDCozHe4hE/54?=
+ =?us-ascii?Q?UNZBBOGhiIcQDSjmfXBSxNevKOeNvhRSslTeK9OAdhsdXvv1uTLnXDFkZsVw?=
+ =?us-ascii?Q?5QrAkkaBwIn6W//kWY08HRuS+GSypDyxDwjeq3ZKzTUTXa6AD4BUCXIWeSbZ?=
+ =?us-ascii?Q?8rMg1UI2s4gn6o20hras3fDZtY1MA699v2tjvOtvrWA2wAI3+e3VGqVt5a7M?=
+ =?us-ascii?Q?l223Wgm5tg/JcJGd01qP12LHBGPyby0PAEXak+5kKYypgbAOg0EvJC/u7Igu?=
+ =?us-ascii?Q?V+vSFEg1lOSw4F5xcrG72ARg3o0gtIG/cWhSbcDqu+Up1SoVapr2DPXEqwgr?=
+ =?us-ascii?Q?LBVpgV4kS0TgNYfXvah0QlaokksmxfA+GrNkgQNLLSkeHS174qQFjyl8KACb?=
+ =?us-ascii?Q?M2hK4awM+r5Jj8mVDb7ELws+/GI6KWDWBLnqXSFZXrEHXIFAdnMY2+qYGhlf?=
+ =?us-ascii?Q?2UAcapyFU0MTjyrcEjUsD/Ce43ePmeR/gB5vVzLZZyntM2FNvd6konGf+ydl?=
+ =?us-ascii?Q?A/JjWCtdZXfbYCJM0tSYIMRA+fjbEqgjtQQg0wssenlQXKy/FVXbs3AbXm5c?=
+ =?us-ascii?Q?ut0iyXixtF22UUj9q79DUs7aMSWgddRHOOkK4TOWCfZpTXy2EP4ULJ+YsXrV?=
+ =?us-ascii?Q?OQ9PY0Z66D3TUXiGx4tq59++rdxmJWYLf/BBiuRYiSzGjyt8iOGkg9ya4zY1?=
+ =?us-ascii?Q?2b7717rZDdeCOncf4MkrSTBqNQBKsQeIZkP/j6W3/wxD74zjF6zLsHyph9+X?=
+ =?us-ascii?Q?A9p4O3FI0RbMbdtRhcxRw999f0Okszs2zeZ8TL8B?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31487c9e-7413-40e2-fc23-08dbfb0d71c3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 12:25:36.7674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3Q5gs0AcAc1Bx/5MQ0/EIYWiX/LAV6vqMpVkY4v0SjKi8VYIOm6Wy2akKsUVRlTX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6256
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 07, 2023 at 04:52:39PM -0800, Mina Almasry wrote:
 
-On 2023-12-11 at 20:11 +02, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+> +static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
+> +{
+> +	if (page_is_page_pool_iov(page))
+> +		return (struct page_pool_iov *)((unsigned long)page & ~PP_IOV);
+> +
+> +	DEBUG_NET_WARN_ON_ONCE(true);
+> +	return NULL;
+> +}
 
-> Hi Mikhail,
->
-> Thank you for the patch.
->
-> On Mon, Dec 11, 2023 at 08:50:08PM +0300, Mikhail Rudenko wrote:
->> Introduces local variables for regmap and the control value within the
->> ov4689_set_ctrl function. This adjustment eliminates repetition within
->> the function.
->>
->> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
->> ---
->>  drivers/media/i2c/ov4689.c | 22 +++++++++++-----------
->>  1 file changed, 11 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
->> index 8c120d7f7830..42700ecfbe0e 100644
->> --- a/drivers/media/i2c/ov4689.c
->> +++ b/drivers/media/i2c/ov4689.c
->> @@ -584,7 +584,9 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->>  {
->>  	struct ov4689 *ov4689 =
->>  		container_of(ctrl->handler, struct ov4689, ctrl_handler);
->> +	struct regmap *regmap = ov4689->regmap;
->>  	struct device *dev = ov4689->dev;
->> +	s32 val = ctrl->val;
->
-> For ctrl->val, I think the code is clearer without this change. When
-> reading the function, seeing "val", I need to look up what it is, while
-> seeing "ctrl->val" gives me more context and makes (in my opinion) the
-> code more readable.
+We already asked not to do this, please do not allocate weird things
+can call them 'struct page' when they are not. It undermines the
+maintainability of the mm to have things mis-typed like
+this. Introduce a new type for your thing so the compiler can check it
+properly.
 
-Agreed, will revert to ctrl->val in v2.
-
->>  	int sensor_gain;
->>  	s64 max_expo;
->>  	int ret;
->> @@ -593,7 +595,7 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->>  	switch (ctrl->id) {
->>  	case V4L2_CID_VBLANK:
->>  		/* Update max exposure while meeting expected vblanking */
->> -		max_expo = ov4689->cur_mode->height + ctrl->val - 4;
->> +		max_expo = ov4689->cur_mode->height + val - 4;
->>  		__v4l2_ctrl_modify_range(ov4689->exposure,
->>  					 ov4689->exposure->minimum, max_expo,
->>  					 ov4689->exposure->step,
->> @@ -607,36 +609,34 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->>  	switch (ctrl->id) {
->>  	case V4L2_CID_EXPOSURE:
->>  		/* 4 least significant bits of exposure are fractional part */
->> -		ret = cci_write(ov4689->regmap, OV4689_REG_EXPOSURE,
->> -				ctrl->val << 4, NULL);
->> +		cci_write(regmap, OV4689_REG_EXPOSURE, val << 4, &ret);
->>  		break;
->>  	case V4L2_CID_ANALOGUE_GAIN:
->> -		ret = ov4689_map_gain(ov4689, ctrl->val, &sensor_gain);
->> +		ret = ov4689_map_gain(ov4689, val, &sensor_gain);
->>
->> -		cci_write(ov4689->regmap, OV4689_REG_GAIN_H,
->> +		cci_write(regmap, OV4689_REG_GAIN_H,
->>  			  (sensor_gain >> OV4689_GAIN_H_SHIFT) &
->>  			  OV4689_GAIN_H_MASK, &ret);
->>
->> -		cci_write(ov4689->regmap, OV4689_REG_GAIN_L,
->> +		cci_write(regmap, OV4689_REG_GAIN_L,
->>  			  sensor_gain & OV4689_GAIN_L_MASK,
->>  			  &ret);
->>  		break;
->>  	case V4L2_CID_VBLANK:
->> -		ret = cci_write(ov4689->regmap, OV4689_REG_VTS,
->> -				ctrl->val + ov4689->cur_mode->height, NULL);
->> +		cci_write(regmap, OV4689_REG_VTS,
->> +			  val + ov4689->cur_mode->height, &ret);
->>  		break;
->>  	case V4L2_CID_TEST_PATTERN:
->> -		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
->> +		ret = ov4689_enable_test_pattern(ov4689, val);
->>  		break;
->>  	default:
->>  		dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
->> -			 __func__, ctrl->id, ctrl->val);
->> +			 __func__, ctrl->id, val);
->>  		ret = -EINVAL;
->>  		break;
->>  	}
->>
->>  	pm_runtime_put(dev);
->> -
->>  	return ret;
->>  }
->>
->> --
->> 2.43.0
->>
-
-
---
-Best regards,
-Mikhail Rudenko
+Jason
