@@ -2,325 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CA980ED44
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D94580ED46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjLLNU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S1346428AbjLLNVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376479AbjLLMlP (ORCPT
+        with ESMTP id S235152AbjLLMlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:41:15 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A31294
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:41:21 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d336a8e27fso2178495ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:41:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702384881; x=1702989681; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o0UI/+qhCr+lBggOzWzGiJKh9KuolOqGxWBzrz2xh3g=;
-        b=DP9TISn8zf08FZXUq56BoHUgCAQHw+p9tIUnqHGu9kzaFh8CvJVKQD+K8IUAUCtVR0
-         lyPznRnfzDlqiorl06ViVw9LnVtKzX7k3f7vAYE8hLjRXndwSDZvYL/UDohFk/VEfq3h
-         4pSpSuYXDIyAKm6xrSAUL3J6LDNrNsd0l/IHWeexFNdVd6w3LyI9bxI5MO9+7kbDY5wv
-         CNWRjOQUnS7j0XIlut8HA4dFAM88Ik2XjDqYf3mm8G2nyE86EddsaoXvhBrAOpgEY9xx
-         uDu34XkgBzk9jOb/oXm20erZUTK0yXNdcXLC8w7UTcTIgN/D2M+ArGxVv5CmrFMYzHg5
-         UJBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702384881; x=1702989681;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o0UI/+qhCr+lBggOzWzGiJKh9KuolOqGxWBzrz2xh3g=;
-        b=J+ZJWAl+i1zE/8mleboIT2jvBLq/rbFH44Ib11iFJqDZaGKK4A0FHFYSXICZPrGU0N
-         4uZzlbxTZ+mH5xJWYHaBDGaIMS/hIYHY/SbiOvx9ECCpVVlz9IuiU47cqy1eSHjBl8Tc
-         jIszxBNwAOXPo9glbWE6EFbtkNwOPd8YcTlJKFflqApjy/wNkcZgDCaIBRyfavhK1BIw
-         Qlmsp3ihkr57etx2nPfNxYOaK6ndmyIwATRHqmxR3CtZfRwP3nqYizCAkrFOom+DB2Pu
-         6IxTFENpBKbKMTJmcaGZ3elrhfZR1lloK7Vwt/B5jpVEF0Ki4eYGqsX8DSSm25BELFZ6
-         9Btw==
-X-Gm-Message-State: AOJu0YzzS2OI9NT4yw5LxSuQcS0rVUDZA4uNhApyq3Mk21iyrC+Ugzum
-        Xtr+XC87zAxLwn9xfp2JvtL7wQ==
-X-Google-Smtp-Source: AGHT+IHS/Z+mwvpoVVeNK3a4KjPTd64ECoTEIFO60YHkegn5DEbwuewms4n2mKqZR5d7o3VqKAPu8g==
-X-Received: by 2002:a17:902:704c:b0:1d0:6ffd:cec8 with SMTP id h12-20020a170902704c00b001d06ffdcec8mr3005669plt.129.1702384880602;
-        Tue, 12 Dec 2023 04:41:20 -0800 (PST)
-Received: from [157.82.205.15] ([157.82.205.15])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902704200b001d06b63bb98sm8500451plt.71.2023.12.12.04.41.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 04:41:20 -0800 (PST)
-Message-ID: <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-Date:   Tue, 12 Dec 2023 21:41:13 +0900
+        Tue, 12 Dec 2023 07:41:37 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B9295;
+        Tue, 12 Dec 2023 04:41:43 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SqHqB6dJRz9xrpF;
+        Tue, 12 Dec 2023 20:24:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+        by mail.maildlp.com (Postfix) with ESMTP id 1AF9C1404DB;
+        Tue, 12 Dec 2023 20:41:34 +0800 (CST)
+Received: from [10.204.63.22] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwCHN2H0VHhlfMxgAg--.37324S2;
+        Tue, 12 Dec 2023 13:41:33 +0100 (CET)
+Message-ID: <b9ce0bad-4e7d-44e2-bdd4-6ebf1b6b196f@huaweicloud.com>
+Date:   Tue, 12 Dec 2023 13:41:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
+Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
+ security.evm_overlayfs
 Content-Language: en-US
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
- <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
-From:   Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
+        jlayton@kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
+ <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
+ <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
+ <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
+ <CAOQ4uxgvKb520_Nbp+Y7KDq3_7t1tx65w5pOP8y6or1prESv+Q@mail.gmail.com>
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <CAOQ4uxgvKb520_Nbp+Y7KDq3_7t1tx65w5pOP8y6or1prESv+Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwCHN2H0VHhlfMxgAg--.37324S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rJFW5Xw43CryftryxKrg_yoWrAryDpF
+        WYka4UKrs8tr17AwnFya17XFWjy3yrJ3WUXw1Dtr4kZFyDtF1Sgry7Ka4UuF9rWr1xG34j
+        vFWjk347ur9xZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj5ONawAAsL
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/12 19:39, Benjamin Tissoires wrote:
-> Hi,
-> 
-> On Tue, Dec 12, 2023 at 9:11 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+On 11.12.23 19:31, Amir Goldstein wrote:
+> On Mon, Dec 11, 2023 at 4:56 PM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
 >>
->> Hi,
-
-Hi,
-
-Thanks for reply.
-
+>> On Fri, 2023-12-08 at 23:01 +0100, Christian Brauner wrote:
+>>> On Fri, Dec 08, 2023 at 11:55:19PM +0200, Amir Goldstein wrote:
+>>>> On Fri, Dec 8, 2023 at 7:25 PM Roberto Sassu
+>>>> <roberto.sassu@huaweicloud.com> wrote:
+>>>>>
+>>>>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>>>>
+>>>>> EVM updates the HMAC in security.evm whenever there is a setxattr or
+>>>>> removexattr operation on one of its protected xattrs (e.g. security.ima).
+>>>>>
+>>>>> Unfortunately, since overlayfs redirects those xattrs operations on the
+>>>>> lower filesystem, the EVM HMAC cannot be calculated reliably, since lower
+>>>>> inode attributes on which the HMAC is calculated are different from upper
+>>>>> inode attributes (for example i_generation and s_uuid).
+>>>>>
+>>>>> Although maybe it is possible to align such attributes between the lower
+>>>>> and the upper inode, another idea is to map security.evm to another name
+>>>>> (security.evm_overlayfs)
+>>>>
+>>>> If we were to accept this solution, this will need to be trusted.overlay.evm
+>>>> to properly support private overlay xattr escaping.
+>>>>
+>>>>> during an xattr operation, so that it does not
+>>>>> collide with security.evm set by the lower filesystem.
+>>>>
+>>>> You are using wrong terminology and it is very confusing to me.
+>>>
+>>> Same.
 >>
->> It is said eBPF is a safe way to extend kernels and that is very
->> attarctive, but we need to use kfuncs to add new usage of eBPF and
->> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to ask
->> some questions:
+>> Argh, sorry...
 >>
->> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new feature
->> for userspace apps?
->> 2) How should I use BPF kfuncs from userspace apps if I add them?
+>>>> see the overlay mount command has lowerdir= and upperdir=.
+>>>> Seems that you are using lower filesystem to refer to the upper fs
+>>>> and upper filesystem to refer to overlayfs.
+>>>>
+>>>>>
+>>>>> Whenever overlayfs wants to set security.evm, it is actually setting
+>>>>> security.evm_overlayfs calculated with the upper inode attributes. The
+>>>>> lower filesystem continues to update security.evm.
+>>>>>
+>>>>
+>>>> I understand why that works, but I am having a hard time swallowing
+>>>> the solution, mainly because I feel that there are other issues on the
+>>>> intersection of overlayfs and IMA and I don't feel confident that this
+>>>> addresses them all.
 >>
->> Here, a "userspace app" means something not like a system-wide daemon
->> like systemd (particularly, I have QEMU in mind). I'll describe the
->> context more below:
-> 
-> I'm probably not the best person in the world to answer your
-> questions, Alexei and others from the BPF core group are, but given
-> that you pointed at a thread I was involved in, I feel I can give you
-> a few pointers.
-> 
-> But first and foremost, I encourage you to schedule an agenda item in
-> the BPF office hour[4]. Being able to talk with the core people
-> directly was tremendously helpful to me to understand their point.
-
-I prefer emails because I'm not very fluent when speaking in English and 
-may have a difficultly to listen to other people, but I may try it in 
-future.
-
-> 
-> 
+>> This solution is specifically for the collisions on HMACs, nothing
+>> else. Does not interfere/solve any other problem.
 >>
->> ---
+>>>> If you want to try to convince me, please try to write a complete
+>>>> model of how IMA/EVM works with overlayfs, using the section
+>>>> "Permission model" in Documentation/filesystems/overlayfs.rst
+>>>> as a reference.
 >>
->> I'm working on a new feature that aids virtio-net implementations using
->> tuntap virtual network device. You can see [1] for details, but
->> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four more
->> bytes.
+>> Ok, I will try.
 >>
->> However, with long discussions we have confirmed extending
->> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs is
->> the way forward. So I decided how to add kfuncs to the kernel and how to
->> use it. There are rich documentations for the kernel side, but I found
->> little about the userspace. The best I could find is a systemd change
->> proposal that is based on WIP kernel changes[2].
-> 
-> Yes, as Alexei already replied, BPF is not adding new stable APIs,
-> only kfuncs. The reason being that once it's marked as stable, you
-> can't really remove it, even if you think it's badly designed and
-> useless.
-> 
-> Kfuncs, OTOH are "unstable" by default meaning that the constraints
-> around it are more relaxed.
-> 
-> However, "unstable" doesn't mean "unusable". It just means that the
-> kernel might or might not have the function when you load your program
-> in userspace. So you have to take that fact into account from day one,
-> both from the kernel side and the userspace side. The kernel docs have
-> a nice paragraph explaining that situation and makes the distinction
-> between relatively unused kfuncs, and well known established ones.
-> 
-> Regarding the systemd discussion you are mentioning ([2]), this is
-> something that I have on my plate for a long time. I think I even
-> mentioned it to Alexei at Kernel Recipes this year, and he frowned his
-> eyebrows when I mentioned it. And looking at the systemd code and the
-> benefits over a plain ioctl, it is clearer that in that case, a plain
-> ioctl is better, mostly because we already know the API and the
-> semantic.
-> 
-> A kfunc would be interesting in cases where you are not sure about the
-> overall design, and so you can give a shot at various API solutions
-> without having to keep your bad v1 design forever.
-> 
+>> I explain first how EVM works in general, and then why EVM does not
+>> work with overlayfs.
 >>
->> So now I'm wondering how I should use BPF kfuncs from userspace apps if
->> I add them. In the systemd discussion, it is told that Linus said it's
->> fine to use BPF kfuncs in a private infrastructure big companies own, or
->> in systemd as those users know well about the system[3]. Indeed, those
->> users should be able to make more assumptions on the kernel than
->> "normal" userspace applications can.
->>
->> Returning to my proposal, I'm proposing a new feature to be used by QEMU
->> or other VMM applications. QEMU is more like a normal userspace
->> application, and usually does not make much assumptions on the kernel it
->> runs on. For example, it's generally safe to run a Debian container
->> including QEMU installed with apt on Fedora. BPF kfuncs may work even in
->> such a situation thanks to CO-RE, but it sounds like *accidentally*
->> creating UAPIs.
->>
->> Considering all above, how can I integrate BPF kfuncs to the application?
 > 
-> FWIW, I'm not sure you can rely on BPF calls from a container. There
-> is a high chance the syscall gets disabled by the runtime.
-
-Right. Container runtimes will not pass CAP_BPF by default, but that 
-restriction can be lifted and I think that's a valid scenario.
-
+> I understand both of those things.
 > 
->>
->> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle them
->> is to think of BPF programs as some sort of kernel modules and
->> incorporate logic that behaves like modprobe. More concretely, I can put
->> eBPF binaries to a directory like:
->> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
+> What I don't understand is WHY EVM needs to work on overlayfs?
+> What is the use case?
+> What is the threat model?
 > 
-> I would advise against that (one program per kernel release). Simply
-> because your kfunc may or may not have been backported to kernel
-> release v6.X.Y+1 while it was not there when v6.X.Y was out. So
-> relying on the kernel number is just going to be a headache.
+> The purpose of IMA/EVM as far as I understand it is to detect and
+> protect against tampering with data/metadata offline. Right?
 > 
-> As I understand it, the way forward is to rely on the kernel, libbpf
-> and CO-RE: if the function is not available, the program will simply
-> not load, and you'll know that this version of the code is not
-> available (or has changed API).
+> As Seth correctly wrote, overlayfs is just the composition of existing
+> underlying layers.
 > 
-> So what I would do if some kfunc API is becoming deprecated, is
-> embedding both code paths in the same BPF unit, but marking them as
-> not loaded by libppf. Then I can load the compilation unit, try v2 of
-> the API, and if it's not available, try v1, and if not, then mention
-> that I can not rely on BPF. Of course, this can also be done with
-> separate compilation units.
+> Noone can tamper with overlayfs without tampering with the underlying
+> layers.
 
-Doesn't it mean that the kernel is free to break old versions of QEMU 
-including BPF programs? That's something I'd like to avoid.
+Makes sense.
 
+> The correct solution to your problem, and I have tried to say this many
+> times, in to completely opt-out of IMA/EVM for overlayfs.
 > 
->>
->> Then, QEMU can uname() and get the path to the binary. It will give an
->> error if it can't find the binary for the current kernel so that it
->> won't create accidental UAPIs.
->>
->> The obvious downside of this is that it complicates packaging a lot; it
->> requires packaging QEMU eBPF binaries each time a new kernel comes up.
->> This complexity is centrally managed by modprobe for kernel modules, but
->> apparently each application needs to take care of it for BPF programs.
+> EVM should not store those versions of HMAC for overlayfs and for
+> the underlying layers, it should ONLY store a single version for the
+> underlying layer.
+
+If we avoid the checks in IMA and EVM for overlayfs, we need the 
+guarantee that everything passes through overlayfs down, and that there 
+is no external interference to the lower and upper filesystems (the part 
+that is used by overlayfs).
+
+Maybe I'm missing something, I looked at this issue only now, and Mimi 
+knows it much better than me.
+
+Roberto
+
+> Because write() in overlayfs always follows by write() to upper layer
+> and setxattr() in overlayfs always follows by setxattr() to upper layer
+> IMO write() and setxattr() on overlayfs should by ignored by IMA/EVM
+> and only write()/setxattr() on underlying fs should be acted by IMA/EVM
+> which AFAIK, happens anyway.
 > 
-> For my primary use case: HID-BPF, I put kfuncs in kernel v6.3 and
-> given that I haven't touch this part of the API, the same compilation
-> unit compiled in the v6.3 era still works on a v6.7-rcx, so no, IMO
-> it's not complex and doesn't require to follow the kernel releases
-> (which is the whole point of HID-BPF FWIW).
-
-I also expect BPF kfuncs will work well for long if I introduce its 
-usage to QEMU in practice. That said, the interface stability is about 
-when something unexpected happens. What if the interface QEMU relies on 
-is deemed sub-optimal? Without following kernel releases, QEMU may 
-accidentally lose the feature relying on eBPF.
-
+> Please let me know if I am missing something,
 > 
->>
->> In conclusion, I see too much complexity to use BPF in a userspace
->> application, which we didn't have to care for
->> BPF_PROG_TYPE_SOCKET_FILTER. Isn't there a better way? Or shouldn't I
->> use BPF in my case in the first place?
-> 
-> Given that I'm not a network person, I'm not sure about your use case,
-> but I would make my decision based on:
-> - do I know exactly what I want to achieve and I'm confident that I'll
-> write the proper kernel API from day one? (if not then kfuncs is
-> appealing because  it's less workload in the long run, but userspace
-> needs to be slightly smarter)
+> Thanks,
+> Amir.
 
-Personally I'm confident that the initial UAPI design will not do a bad 
-thing at least. However, there is a high chance that the design needs to 
-be extended to accommodate new features.
-
-> - are all of my use cases covered by using BPF? (what happens if I run
-> QEMU in a container?) -> BPF might or might not be a solution
-
-Yes. Containers can be used to 1) have a different userspace or 2) 
-isolate things for security.
-
-Regarding 2), QEMU and libvirt has sandbox mechanisms so we can rely on 
-them instead of containers so we can just pass capabilities to the 
-container. At least, we can always have a setuid helper outside 
-container, and pass around file descriptors it generates.
-
-So 1) is the only problem that matters.
-
-> 
-> But the nice thing about using BPF kfuncs is that it allows you to
-> have a testing (not-)UAPI kernel interface. You can then implement the
-> userspace changes and see how it behaves. And then, once you got the
-> right design, you can decide to promote it to a proper syscall or
-> ioctl if you want.
-
-I expect it's possible to have testing ioctls. Quickly searching online, 
-there are experimental ioctls[1][2]. I also know DRM has a relaxed 
-policy for closed-source userspace[3].
-
-So I'm seeing the distinction of UAPI/kfunc even less definitive; UAPIs 
-can also be broken if the subsystem maintainers agree and there is no 
-real user. I also think it's natural to say a kfunc will be stable as 
-long as there is a user, but it contradicts with the current situation. 
-kfunc is expressed as EXPORT_SYMBOL_GPL in the documentation, and Linus 
-expects kfunc is for users like big companies or systemd, which closely 
-follow the kernel, according to the systemd discussion I cited in the 
-last email.
-
-According to the discussion above, it may be better off abandoning BPF 
-and implementing all in kernel, with ioctl as I have a (hopefully) sound 
-idea of UAPI design. But I'll also continue considering the BPF option; 
-BPF is still attractive due to its extensibility and safety.
-
-Regards,
-Akihiko Odaki
-
-[1] 
-https://www.kernel.org/doc/html/v6.6/userspace-api/media/v4l/hist-v4l2.html?highlight=experimental#experimental-api-elements
-[2] 
-https://www.kernel.org/doc/html/v6.6/userspace-api/media/dvb/dmx-expbuf.html?highlight=experimental
-[3] 
-https://www.kernel.org/doc/html/v6.6/gpu/drm-uapi.html#open-source-userspace-requirements
