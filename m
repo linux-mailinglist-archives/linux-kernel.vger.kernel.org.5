@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC1C80FB9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9205280FB9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377498AbjLLXzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S1377493AbjLLX5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:57:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbjLLXzh (ORCPT
+        with ESMTP id S232512AbjLLX5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:55:37 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A892;
-        Tue, 12 Dec 2023 15:55:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=kvcZNEP58ugqv20Pm1mONv8BuiUHlOHp24bA+swL/RE=; b=CnIU0dTwkYZLeCDDAl7dUkETmw
-        mXDyZZWZ0erdOyMV6hr212MWbfRA8D/Qk7N02Vf6D96nE0J3QoKq/qsrwU967k+WgcKliYYmsG0ZV
-        o7h6bOsx1UNX+Vf98XwJv9VYPg9P6YpbgxRvkokaCgysiGlOWrCejBj2QyUrV/nCxcKCWV5KZArBh
-        i8u4SkGvNIu3Hv4Qok7wd8zUuh0j0RCB1xU30xinXmmkZPv/ugtQxqqYArOgowwgJu70W8GHmxcOh
-        PnaJlj8kyd3Fmix9b5MmMOy1ajiK8vYij+CLHyA8Kkl9o06R4Hfd3rjwyXm3pGZ2XwJ8mq8w7Lh6D
-        SHLgpM7w==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rDCbG-00D5YC-1v;
-        Tue, 12 Dec 2023 23:55:42 +0000
-Message-ID: <fd5e2d54-1309-48a9-8458-ee5f2ebb039e@infradead.org>
-Date:   Tue, 12 Dec 2023 15:55:41 -0800
+        Tue, 12 Dec 2023 18:57:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18E9B2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:57:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD86CC433C8;
+        Tue, 12 Dec 2023 23:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702425431;
+        bh=SuBNtpwXRuXuAk6i9Jjme9Aya8cKB5MGJ2ffLAtpOxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Er3wa+iHzVEwSzheJJ0GWEsxVVCY5FDU9fGqxa7NDhmT0aXDvOoyLQXv3BJgIygat
+         kugiBHCoH9XgFewNSExe9tfQlKXecjZKGyGkZz+0pc6ENp+Jz0W21/T4PRP0Tg0NGR
+         ceAuEbvd9nuVXqGmsMbL5I3VZ4hl7Q95flxPn6JhimdWS6SSRpWhKLzVtzGWmjEU2c
+         7BvMlI3c2PP//XsG6VaLTUbcOGTBsR51teFvlLR1gT/sOTyGCxbdxsGLsBW5FeNffy
+         VG4aq1DCFVodv0f/ovFHrRBBUyi2d3rqgr+3mGChb2/kdWdi5KrkBb+eCkieh7VphP
+         Bjy8QUPf6PFLg==
+Date:   Wed, 13 Dec 2023 00:57:08 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Gianfranco Dutka <gianfranco.dutka@arista.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        Phil Auld <pauld@redhat.com>,
+        Cestmir Kalina <ckalina@redhat.com>
+Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at
+ runtime
+Message-ID: <ZXjzVKAM7Xt3eeAQ@lothringen>
+References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
+ <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
+ <ZXJKAnrRjBUmKx1V@slm.duckdns.org>
+ <d46834f4-a490-4a4a-9e95-cca4a6316570@redhat.com>
+ <25E6E1E4-DC16-490E-B907-A3236FB9317A@arista.com>
+ <ZXhf3A0FNjFZaZGK@lothringen>
+ <7e3bf653-d3ea-48b0-b808-d92a3c5f2c5b@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] parse_phat: Add support for ACPI PHAT Table parsing
-Content-Language: en-US
-To:     Avadhut Naik <avadhut.naik@amd.com>, linux-acpi@vger.kernel.org,
-        linux-edac@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
-        avadnaik@amd.com
-References: <20231212195219.2348858-1-avadhut.naik@amd.com>
- <20231212195219.2348858-2-avadhut.naik@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231212195219.2348858-2-avadhut.naik@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e3bf653-d3ea-48b0-b808-d92a3c5f2c5b@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 12/12/23 11:52, Avadhut Naik wrote:
-> ACPI Platform Health Assessment Table (PHAT) enables a platform to expose
-> an extensible set of platform health-related telemetry. The telemetry is
-> exposed through Firmware Version and Firmware Health Data Records which
-> provide version data and health-related information of their associated
-> components respectively.
+On Tue, Dec 12, 2023 at 03:18:43PM -0500, Waiman Long wrote:
 > 
-> Additionally, the platform also provides Reset Reason Health Record
-> in the table highlighting the cause of the last system reset in case
-> of expected and unexpected events. Vendor-specific data capturing the
-> underlying state of the system during reset can also be optionally
-> provided through the record.[1]
+> On 12/12/23 08:27, Frederic Weisbecker wrote:
+> > On Fri, Dec 08, 2023 at 09:18:53AM -0500, Gianfranco Dutka wrote:
+> > > > The isolcpus, nohz_full and rcu_nocbs are boot-time kernel parameters. I am in the process of improving dynamic CPU isolation at runtime. Right now, we are able to do isolcpus=domain with the isolated cpuset partition functionality. Other aspects of CPU isolation are being looked at with the goal of reducing the gap of what one can do at boot time versus what can be done at run time. It will certain take time to reach that goal.
+> > > > 
+> > > > Cheers,
+> > > > Longman
+> > > > 
+> > > Thank you Waiman for the response. It would seem that getting similar
+> > > functionality through cgroups/cpusets is the only option at the moment. Is it
+> > > completely out of the question to possibly patch the kernel to modify these
+> > > parameters at runtime? Or would that entail a significant change that might
+> > > not be so trivial to accomplish? For instance, the solution wouldn’t be as
+> > > simple as patching the kernel to make these writeable and then calling the
+> > > same functions which run at boot-time when these parameters are originally
+> > > written?
+> > As for nohz_full (which implies rcu_nocb), it's certainly possible to make it
+> > tunable at runtime via cpusets. If people really want it, I'm willing to help.
 > 
-> Introduce support for parsing, decoding, and logging the PHAT table, if
-> supported by the system. By default, the table will be logged to stdout.
-> The same, however, can be changed through the "-o" command line parameter.
-> Additionally, the tool also provides a hexdump of the entire table, if
-> needed, through the "-x" parameter.
-> 
-> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
-> ---
->  Makefile     |  12 ++
->  parse_phat.c | 516 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 528 insertions(+)
->  create mode 100644 Makefile
->  create mode 100644 parse_phat.c
-> 
+> As said by Phil, your help in in enabling dynamic rcu_nocb will be greatly
+> appreciated.
 
-Does acpidump not parse the PHAT table?
-Could it?  Should it?
+rcu_nocb is already ready for that. The not yet ready part is nohz_full and its
+several components (tick, remote tick, [hr-]timers affinity, workqueues affinity, kthreads
+affinity, vmstat, buffer head, etc...). Last debate on plumbers suggested that
+nohz_full should be dynamically turned on/off only on offline CPUs. That will
+indeed simplify the problem.
 
+> My current thought is to have a root level
+> cpuset.cpus.isolation_control file to enable additional CPU isolation like
+> rcu_nocb to be applied to CPUs in isolated partitions.
 
-thanks.
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Last time I tried that, Peter Zijlstra was more in favour of an isolate all or nothing
+switch by default for nohz_full that would include rcu_nocb. And then if people
+are interested in something more finegrained, introduce such a file to control
+individual features (see
+https://lore.kernel.org/lkml/YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net/ )
+
+But so far I never heard about the need for such a finegrained isolation. Users of
+nohz_full= seem to want to isolate everything out.
+
+Thanks.
