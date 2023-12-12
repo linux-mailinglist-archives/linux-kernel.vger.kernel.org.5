@@ -2,52 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CED980E49B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA9F80E49A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbjLLHAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S230274AbjLLHBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLHA2 (ORCPT
+        with ESMTP id S229459AbjLLHBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:00:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1624BF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 23:00:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75CC433C9;
-        Tue, 12 Dec 2023 07:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702364433;
-        bh=hY9xSJJblbAWJZgHacsmi+/6bjhkQNzcCd6xAObVzO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QwQWBbzvgGSjltK/FvX5mtoHzBN8xqpKHEGvpvsOg8PDzdfe9PWTN9pG0ljZv4Uev
-         lWf28z4v1VflknmJNAPCctcj1gs/ubZQ/hBPeR/78S6oICkoPcHoOkD6CqM8cjIUq0
-         GsCm0jSZB2VKgYElS6tpWVDx5b0KbNblQRU/pqlqt7kArgsqyqjCCSpYCHIu8pm5ff
-         YTM/VEnPuigfxbDat4ygU7TGyvd0rba11kT9PQv7jXIQugaI57F//PCPMgyMYHCpa5
-         K9P2a2KCIMzO1dZKVw0UevvgZ5K61qiRUqoSCofggGju0Dz6APDoFvD/2sQjWvnrQv
-         TjSo1Eoc7Hnsg==
-Date:   Tue, 12 Dec 2023 09:00:28 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Daniel Vacek <neelx@redhat.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Subject: Re: [PATCH 1/2] IB/ipoib: Fix mcast list locking
-Message-ID: <20231212070028.GJ4870@unreal>
-References: <20231211130426.1500427-1-neelx@redhat.com>
- <20231211130426.1500427-2-neelx@redhat.com>
- <20231211134542.GG4870@unreal>
- <CACjP9X8zarONgO-QLvyzh-w7ax-7Fx0jdBWCF3VFQ09KDcaYnQ@mail.gmail.com>
- <20231211150657.GH4870@unreal>
- <CACjP9X8wxW5jYiXcjg+2oGt7_aoc9KJ_XxKokt06B5d+FY6kEQ@mail.gmail.com>
+        Tue, 12 Dec 2023 02:01:16 -0500
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AC3D1;
+        Mon, 11 Dec 2023 23:01:21 -0800 (PST)
+Received: from [192.168.0.4] (ip5f5aee94.dynamic.kabel-deutschland.de [95.90.238.148])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E627361E5FE04;
+        Tue, 12 Dec 2023 08:00:34 +0100 (CET)
+Message-ID: <72fe6f18-e3d7-4c74-9734-01a33dc8e100@molgen.mpg.de>
+Date:   Tue, 12 Dec 2023 08:00:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 1/3] dt-bindings: gpio: add NPCM sgpio driver bindings
+Content-Language: en-US
+To:     Jim Liu <jim.t90615@gmail.com>
+Cc:     Jim Liu <JJLIU0@nuvoton.com>, KWLIU@nuvoton.com,
+        linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Rob Herring <robh@kernel.org>,
+        linux-gpio@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231212065147.3475413-1-jim.t90615@gmail.com>
+ <20231212065147.3475413-2-jim.t90615@gmail.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20231212065147.3475413-2-jim.t90615@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACjP9X8wxW5jYiXcjg+2oGt7_aoc9KJ_XxKokt06B5d+FY6kEQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,158 +50,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 05:00:11PM +0100, Daniel Vacek wrote:
-> On Mon, Dec 11, 2023 at 4:18 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > What about the following change instead of adding extra lock to already
-> > too much complicated IPoIB?
-> 
-> Yeah, that's the other option should also work I believe. And it
-> simplifies the code nicely.
-> 
-> The allocated mcast_member and mcast_group structures are small enough
-> so that slab (by default) should not need more then order 1 block to
-> eventually extend/refill the full kmalloc-256 cache. Some arches will
-> even use order 0 I believe.
-> And unless I'm missing something I do not see any other sleeps in that path.
-> 
-> That said, as long as you are fine with occasional failures under
-> memory pressure, it looks OK to me.
+Dear Jim,
 
-Yes, IMHO change from GFP_KERNEL to be GFP_ATOMIC is safer than adding extra lock.
 
-Thanks
+Thank you for your patch.
 
+Am 12.12.23 um 07:51 schrieb Jim Liu:
+> Add dt-bindings document for the Nuvoton NPCM7xx sgpio driver
 > 
-> --nX
+> Signed-off-by: Jim Liu <jim.t90615@gmail.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+
+As you seem to be employed by Nuvoton, should your company/work email be 
+listed somehow, and even be used for the author address?
+
+> ---
+> Changes for v9:
+>     - no changed
+> Changes for v8:
+>     - no changed
+> Changes for v7:
+>     - no changed
+> ---
+>   .../bindings/gpio/nuvoton,sgpio.yaml          | 86 +++++++++++++++++++
+>   1 file changed, 86 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
 > 
-> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > index 5b3154503bf4..bca80fe07584 100644
-> > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > @@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
-> >                 if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
-> >                         rec.join_state = SENDONLY_FULLMEMBER_JOIN;
-> >         }
-> > -       spin_unlock_irq(&priv->lock);
-> >
-> >         multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
-> > -                                        &rec, comp_mask, GFP_KERNEL,
-> > +                                        &rec, comp_mask, GFP_ATOMIC,
-> >                                          ipoib_mcast_join_complete, mcast);
-> > -       spin_lock_irq(&priv->lock);
-> >         if (IS_ERR(multicast)) {
-> >                 ret = PTR_ERR(multicast);
-> >                 ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
-> >                 /* Requeue this join task with a backoff delay */
-> >                 __ipoib_mcast_schedule_join_thread(priv, mcast, 1);
-> >                 clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
-> > -               spin_unlock_irq(&priv->lock);
-> >                 complete(&mcast->done);
-> > -               spin_lock_irq(&priv->lock);
-> >         }
-> >         return 0;
-> >  }
-> >
-> >
-> > >
-> > > --nX
-> > >
-> > >
-> > > > Thanks
-> > > >
-> > > > > Unfortunately we could not reproduce the lockup and confirm this fix but
-> > > > > based on the code review I think this fix should address such lockups.
-> > > > >
-> > > > > crash> bc 31
-> > > > > PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
-> > > > > --
-> > > > >     [exception RIP: ipoib_mcast_join_task+0x1b1]
-> > > > >     RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
-> > > > >     RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
-> > > > >                                   work (&priv->mcast_task{,.work})
-> > > > >     RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
-> > > > >            &mcast->list
-> > > > >     RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
-> > > > >     R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
-> > > > >                                                          mcast
-> > > > >     R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
-> > > > >            dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
-> > > > >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> > > > > --- <NMI exception stack> ---
-> > > > >  #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
-> > > > >  #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
-> > > > >
-> > > > > crash> rx ff646f199a8c7e68
-> > > > > ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
-> > > > >
-> > > > > crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
-> > > > > (empty)
-> > > > >
-> > > > > crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
-> > > > >   mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
-> > > > >   mcast_mutex.owner.counter = 0xff1c69998efec000
-> > > > >
-> > > > > crash> b 8
-> > > > > PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
-> > > > > --
-> > > > >  #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
-> > > > >  #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
-> > > > >  #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
-> > > > >  #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
-> > > > >  #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
-> > > > >
-> > > > > crash> rx ff646f1980153e68
-> > > > > ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
-> > > > >
-> > > > > crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
-> > > > >   flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
-> > > > >   broadcast = 0x0,
-> > > > >
-> > > > > The mcast(s) on the &remove_list (the remaining part of the ex &priv->multicast_list):
-> > > > >
-> > > > > crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
-> > > > > ff1c6a192bd0c200        done.done = 0x0,
-> > > > > ff1c6a192d60ac00        done.done = 0x0,
-> > > > >
-> > > > > Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-> > > > > Signed-off-by: Daniel Vacek <neelx@redhat.com>
-> > > > > ---
-> > > > >  drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > > > index 5b3154503bf4..8e4f2c8839be 100644
-> > > > > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-> > > > > @@ -580,6 +580,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > > > >       }
-> > > > >       netif_addr_unlock_bh(dev);
-> > > > >
-> > > > > +     mutex_lock(&priv->mcast_mutex);
-> > > > >       spin_lock_irq(&priv->lock);
-> > > > >       if (!test_bit(IPOIB_FLAG_OPER_UP, &priv->flags))
-> > > > >               goto out;
-> > > > > @@ -634,6 +635,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > > > >                               /* Found the next unjoined group */
-> > > > >                               if (ipoib_mcast_join(dev, mcast)) {
-> > > > >                                       spin_unlock_irq(&priv->lock);
-> > > > > +                                     mutex_unlock(&priv->mcast_mutex);
-> > > > >                                       return;
-> > > > >                               }
-> > > > >                       } else if (!delay_until ||
-> > > > > @@ -655,6 +657,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
-> > > > >               ipoib_mcast_join(dev, mcast);
-> > > > >
-> > > > >       spin_unlock_irq(&priv->lock);
-> > > > > +     mutex_unlock(&priv->mcast_mutex);
-> > > > >  }
-> > > > >
-> > > > >  void ipoib_mcast_start_thread(struct net_device *dev)
-> > > > > --
-> > > > > 2.43.0
-> > > > >
-> > > >
-> > >
-> >
-> 
+> diff --git a/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
+> new file mode 100644
+> index 000000000000..84e0dbcb066c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
+> @@ -0,0 +1,86 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/nuvoton,sgpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton SGPIO controller
+> +
+> +maintainers:
+> +  - Jim LIU <JJLIU0@nuvoton.com>
+> +
+> +description: |
+> +  This SGPIO controller is for NUVOTON NPCM7xx and NPCM8xx SoC.
+> +  Nuvoton NPCM7xx SGPIO module is combine serial to parallel IC (HC595)
+
+s/is combine/combines a/
+
+> +  and parallel to serial IC (HC165), and use APB3 clock to control it.
+
+use*s*
+
+> +  This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
+
+Only one space before the (.
+
+> +  NPCM7xx/NPCM8xx have two sgpio module each module can support up
+
+… modules. Each module …
+
+> +  to 64 output pins,and up to 64 input pin, the pin is only for gpi or gpo.
+
+1.  Space after the comma.
+2.  64 input pin*s
+
+> +  GPIO pins have sequential, First half is gpo and second half is gpi.
+
+have sequential ?.
+
+> +  GPIO pins can be programmed to support the following options
+> +  - Support interrupt option for each input port and various interrupt
+> +    sensitivity option (level-high, level-low, edge-high, edge-low)
+
+option*s*
+
+> +  - ngpios is number of nuvoton,input-ngpios GPIO lines and nuvoton,output-ngpios GPIO lines.
+> +    nuvoton,input-ngpios GPIO lines is only for gpi.
+
+s/is/are/
+
+> +    nuvoton,output-ngpios GPIO lines is only for gpo.
+
+s/is/are/
+
+It’d be great if you mentioned the datasheet name and revision in the 
+description.
+
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,npcm750-sgpio
+> +      - nuvoton,npcm845-sgpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  nuvoton,input-ngpios:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The numbers of GPIO's exposed. GPIO lines is only for gpi.
+
+s/is/are/
+
+> +    minimum: 0
+> +    maximum: 64
+> +
+> +  nuvoton,output-ngpios:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The numbers of GPIO's exposed. GPIO lines is only for gpo.
+
+s/is/are/
+
+> +    minimum: 0
+> +    maximum: 64
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - interrupts
+> +  - nuvoton,input-ngpios
+> +  - nuvoton,output-ngpios
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    gpio8: gpio@101000 {
+> +        compatible = "nuvoton,npcm750-sgpio";
+> +        reg = <0x101000 0x200>;
+> +        clocks = <&clk NPCM7XX_CLK_APB3>;
+> +        interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+> +        gpio-controller;
+> +        #gpio-cells = <2>;
+> +        nuvoton,input-ngpios = <64>;
+> +        nuvoton,output-ngpios = <64>;
+> +    };
+
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+
+Kind regards,
+
+Paul Menzel
