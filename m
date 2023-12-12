@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158FF80F3E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702D980F3E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbjLLRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S232821AbjLLRCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjLLRBe (ORCPT
+        with ESMTP id S229963AbjLLRCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:01:34 -0500
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7271B10E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1702400497; x=1702659697;
-        bh=pW12o+ZtGJVXWSlbOsdjNFmo7Oz7+eWgJSUXDe0lDR4=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=EtZK1xOybz/DnTE1jmDyCKyrg45e7E5ujPmJ/I6Gq8/sgkfF+YPGE2vRrFs8ZtoJ2
-         vZIdmwNmDM6gGwaMLd6LRq6UkGPaq3Oqc0hX28EH19ciI8Udz7Hy4Gf+Y+TAjl8EbB
-         VNb4IFHRmeG4MEqUiV8tLE0dMK44YGQdFpCBomz4K/PpU7wDXsk2eyv2teS/PQvzzq
-         fMXViXI+vORmX+KlggGQWLgDa/jBQjGFulSMDx/cjiCPyzS10LSA3FJJGA6cJgTEZU
-         XK5ZHtzLGLGXarhIdlcEJ0A6QvaUFwKlZ3nxRc5gK8S5LWbYjPZ2WVDaxg7X5mIAiA
-         FIQNROXGUG1ew==
-Date:   Tue, 12 Dec 2023 17:01:28 +0000
-To:     Alice Ryhl <aliceryhl@google.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
-Message-ID: <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
-In-Reply-To: <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-7-af617c0d9d94@google.com> <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me> <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+        Tue, 12 Dec 2023 12:02:10 -0500
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DBF95;
+        Tue, 12 Dec 2023 09:02:15 -0800 (PST)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1fb37f25399so3765595fac.1;
+        Tue, 12 Dec 2023 09:02:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702400535; x=1703005335; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qoqQk2DmNjPGewPO9m1lqeM/IXVqiFBd3DSgwHMPKp8=;
+        b=TgsmPJ9IAPwrv5HPvPhG7o5o7671I00ltCnlLgdPMrS034Li/kQTtsmDwsItzAPU+t
+         rnd08J64q4Q8StECnkOPvoL/cFmJY7W1O+zy2Zzto1rf+kVPWFVDJrU6E6QrsVGFWK49
+         bmstD8pZOWy9suhPAfpgDesK/5G9Xi+CzQhB/AOUxXIHpkQh2LjXiefEHVjOEAjbTTTv
+         e+tCV8exmiBccSO/Z+uWIaOGvwskiqRESh1n2QA8/U0ezb/VpR0M8ypvrbYA7ydYCjPU
+         uzDGnWQbUggzqvKQnMXIYC5PjfAsgviz8vVyFusCLNSNO9VPy60oD+gtID4MJbEWh1sX
+         a5ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702400535; x=1703005335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qoqQk2DmNjPGewPO9m1lqeM/IXVqiFBd3DSgwHMPKp8=;
+        b=bBxomti1ec6rqsPFYZomZDz6Xpb0NK/Ums8Ud2JF/mH7vOcoG6iCsgHGEhFTR0qJ9x
+         6Sj2x1H5nJEsPUrUWBbUVa1jjCUAgzlbZbkovMi6lOcOJtskBUNbSTtAh4FbpcxnI1zA
+         z+HsFTaLroJHsVKFiLlDS7oTpZLpkr9+6y1JMKVK6el6cObmv8REJrx8AUDbZ1XS/AY6
+         HAl+IAiAsl/aox+9F/ty8MUYS5pEKFPacCyDvQZPEM9AlF0uWoJTutb5BcHRVfShMemm
+         e+uxe90GXlH5x4zT8PTiQxwX22fkGnkoVuC1mKa/BOm7njvQxbbDZqIhmhiFSDSyinp2
+         JVpQ==
+X-Gm-Message-State: AOJu0Yx9fKuVWSGPFk7ywbwEeT0QpRtxfLyWB+YFtY82OiDFq9VxH6cB
+        /SricxZON7QbEXNrlONioHw=
+X-Google-Smtp-Source: AGHT+IF4r5BEwMRI4su0cbkDOAvMvmsdh67c/77qUVUOdyEitoEGMI1BoCTbktLSy9vPBysa16GYxg==
+X-Received: by 2002:a05:6870:e98d:b0:1fb:1f51:e7f3 with SMTP id r13-20020a056870e98d00b001fb1f51e7f3mr5842413oao.39.1702400534905;
+        Tue, 12 Dec 2023 09:02:14 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gy16-20020a056870289000b001fb1bf9f5ddsm3297150oab.21.2023.12.12.09.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:02:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 12 Dec 2023 09:02:13 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/244] 6.6.7-rc1 review
+Message-ID: <7962c895-674f-41c8-a7b2-3b0ec2c19e0d@roeck-us.net>
+References: <20231211182045.784881756@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211182045.784881756@linuxfoundation.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 10:59, Alice Ryhl wrote:
-> On Fri, Dec 8, 2023 at 6:53=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
-me> wrote:
->> On 12/6/23 12:59, Alice Ryhl wrote:
->>> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
->>> +        let ptr =3D self.0.get();
->>> +        // SAFETY: The `ptr` is valid because it originates from a ref=
-erence, and the `_qproc`
->>> +        // field is not modified concurrently with this call since we =
-have an immutable reference.
->>
->> This needs an invariant on `PollTable` (i.e. `self.0` is valid).
->=20
-> How would you phrase it?
+On Mon, Dec 11, 2023 at 07:18:13PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.7 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
+> Anything received after that time might be too late.
+> 
 
-- `self.0` contains a valid `bindings::poll_table`.
-- `self.0` is only modified via references to `Self`.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 546 pass: 546 fail: 0
 
->>> +        unsafe { (*ptr)._qproc }
->>> +    }
->>> +
->>> +    /// Register this [`PollTable`] with the provided [`PollCondVar`],=
- so that it can be notified
->>> +    /// using the condition variable.
->>> +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
->>> +        if let Some(qproc) =3D self.get_qproc() {
->>> +            // SAFETY: The pointers to `self` and `file` are valid bec=
-ause they are references.
->>
->> What about cv.wait_list...
->=20
-> I can add it to the list of things that are valid due to references.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Yes this is getting a bit tedious.
-
-What if we create a newtype wrapping `Opaque<T>` with the invariant
-that it contains a valid value? Then we could have a specially named
-getter for which we would always assume that the returned pointer is
-valid. And thus permit you to not mention it in the SAFETY comment?
-
-[...]
-
->>> +#[pinned_drop]
->>> +impl PinnedDrop for PollCondVar {
->>> +    fn drop(self: Pin<&mut Self>) {
->>> +        // Clear anything registered using `register_wait`.
->>> +        //
->>> +        // SAFETY: The pointer points at a valid wait list.
->>
->> I was a bit confused by "wait list", since the C type is named
->> `wait_queue_head`, maybe just use the type name?
->=20
-> I will update all instances of "wait list" to "wait_queue_head". It's
-> because I incorrectly remembered the C type name to be "wait_list".
-
-Maybe we should also change the name of the field on `CondVar`?
-
-If you guys agree, I can open a good-first-issue, since it is a very
-simple change.
-
---=20
-Cheers,
-Benno
+Guenter
