@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC9180FB17
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F91080FB18
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232521AbjLLXNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
+        id S1377965AbjLLXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbjLLXN3 (ORCPT
+        with ESMTP id S232438AbjLLXOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:13:29 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA78AF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:13:35 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7b712c0fddeso211403439f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:13:35 -0800 (PST)
+        Tue, 12 Dec 2023 18:14:24 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B715E99;
+        Tue, 12 Dec 2023 15:14:29 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id ffacd0b85a97d-336378d3bfdso290085f8f.1;
+        Tue, 12 Dec 2023 15:14:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702422815; x=1703027615; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702422868; x=1703027668; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2yKkUH4ttv5kn1OVlzPtWcAYwRMyQOcULtuLd7pN7WM=;
-        b=RiEagFwUfcstv9Rxzvrv7iajmmZpvaN3vwmMKF82QUWAQMEvZhAdDkH7Q6MrIr7mr8
-         gMJtrFl2ZMDX7t/2DDXlezwJxLuX/u6hFuSGwlolEAWcwkrE0NTrqsNYgXOHp072rUrH
-         brNR0hYdmZws2GAF3H6FvfdEUS738c7XwZ/fgaMTM8lJ7KpfpfBd0jLXNLqi+t3U9L1f
-         +IUvBNgDnfVv/RCJYmLUqP+DQc1lDM5H7dwSu2Ak9vO3umJq638I1M5hs6f0aUhd7iWI
-         aZyjzEKRdwWRoc5sa32NmcaqnMESDGtwPtswqXBYvGOw6d2KB7bQe7GwSFnAyIoHcQmY
-         khEw==
+        bh=8MK4XNOiUczTnCjgph+SkPa+TLs4r2nIM6Me08H3+Bo=;
+        b=nTIeK8ZDZJceP2rMOH/5odbJeIj8IqH2WvAeHTppMrkOt3T1NInXDqmmpwofsYNx81
+         zkcGDhZq9NKgBvpCaaYUAjhJ+IDp+c81psTKmKBoNjY2XJjsw4XZPUpS1X7ygagMHg4K
+         TlU3nSQ/SGGR92rdAn57LvWDibW3xBi3e7MFReRe/OOsO5AodAie17dCl9z21BxWajCi
+         HkcdeGdoHIZUyJeYYa6xUDd4V60yA1rwzuu9CGssGCuainTCHdnqWPyZSe5hu2d8evvM
+         g7971HUfauONgXrfYsCn1aHnHSY0mmFLEI8JOZ2GMotbLR/1cjml2mjQ+Lo3MMXNFoLG
+         uSMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702422815; x=1703027615;
+        d=1e100.net; s=20230601; t=1702422868; x=1703027668;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2yKkUH4ttv5kn1OVlzPtWcAYwRMyQOcULtuLd7pN7WM=;
-        b=hDFgpDVioPH3Ie8HNZOmg+vbGVjm6P8KZzX5eN43s0+cgkn8/1ZzvsDGqxJ/kO6G0W
-         fauSxHl2uwRSGyxJPNxo1jl92QYtum/XOpgPj9/0odGAXpha55LGNiWn9XBPTa1eSWwM
-         oJDf+1DPLAL4kW5YlS9XmjSFOULPevpg8kCcSK2k+bSYcrLOnGAOfHa+QYqls2p9wi+k
-         ITyMRKU4FWSSd1pfW7C9ahUFSJgTjGKh2JvpYcBQNxvAHjXP7iSU/qzWK9Mt1f5wfmGg
-         w5yTTCcrIWzB0Y+5PqwBrI0m2cGhCdylCTaeI9Zb7SJu+wSF+Qf+Ug3AhkasUSI/dfSC
-         wrAg==
-X-Gm-Message-State: AOJu0Yyywz0z4TsCmYhkan3V659V7UQ8rjv14HEaCX1oJb3QylN/dltB
-        NTDx0O9pAt54Ti6bpdDnn3Q/MuqahcD6UEV/z7Q=
-X-Google-Smtp-Source: AGHT+IE+lbniKpziMlK5GHQNqCuorEoY2h0xLtALVCgmnIk7X5wKZ5sLaPC3AQib1iX8zJ6jE6syU/oonRX4DC+zSUM=
-X-Received: by 2002:a6b:5015:0:b0:7b7:ae3:43c with SMTP id e21-20020a6b5015000000b007b70ae3043cmr7456801iob.42.1702422814772;
- Tue, 12 Dec 2023 15:13:34 -0800 (PST)
+        bh=8MK4XNOiUczTnCjgph+SkPa+TLs4r2nIM6Me08H3+Bo=;
+        b=ISrSOM1kstZcg5BjCHUjfu1CViwcmS0ZvIfh2juP2HQV9OBSnVcDuTuIPwwPW3lZFO
+         gxPEomhmbuX6SMPOF2+KThE8Uzmw1Zk34v7K3CgdDeGT/j+dkkIgmzR1Rsyoj/NSAxzy
+         1CViZqpDxLs50n5lKbeoPfTF348lido6VOnfGXJWSVru9eWdU4zMZjs3dfMMNcAGQ/AL
+         lUJHp/esoWjCR2iCbYtPUbm5DlYnJIGbrZWizKwWdekoqNRzXVPAwX4O+jI99fnMa3j9
+         bLI/++h9/APktdKk8OkzQhXSuBuVXnOr0KFdoPmY7bqXlwW/mKEcACIpY0Qx78u0uXPx
+         yKwQ==
+X-Gm-Message-State: AOJu0YxXqu9yICRxuxv5l0488I2STrEFCUSGye2M1vDB/drkRwHME72N
+        0C0b5WruVJzS5K5VQj77X+6ywWXologkmhKyC2k=
+X-Google-Smtp-Source: AGHT+IEn8ug2jnMUFyqlw3I+9kC0xAzvNm7keMaysp7nQ8xDmdPjP/+qNrrL7CKS/5wfABLY2GmxfnCKIB6Xe/SdnHo=
+X-Received: by 2002:a05:600c:30d2:b0:40c:4378:f111 with SMTP id
+ h18-20020a05600c30d200b0040c4378f111mr2377932wmn.80.1702422867897; Tue, 12
+ Dec 2023 15:14:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com> <20231206-zswap-lock-optimize-v1-5-e25b059f9c3a@bytedance.com>
-In-Reply-To: <20231206-zswap-lock-optimize-v1-5-e25b059f9c3a@bytedance.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 12 Dec 2023 15:13:23 -0800
-Message-ID: <CAKEwX=Pj4ALja09PE0gsb_GL+XGv8GaV7bwSBw9Hb5fEDBRQxg@mail.gmail.com>
-Subject: Re: [PATCH 5/7] mm/zswap: refactor out __zswap_load()
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+References: <cover.1702325874.git.dxu@dxuuu.xyz> <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
+ <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+ <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
+ <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp> <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+In-Reply-To: <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Wed, 13 Dec 2023 00:13:51 +0100
+Message-ID: <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net,
+        davem@davemloft.net, shuah@kernel.org, ast@kernel.org,
+        john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org,
+        hawk@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        devel@linux-ipsec.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,204 +84,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 1:46=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
+On Tue, 12 Dec 2023 at 20:52, Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> The zswap_load() and zswap_writeback_entry() have the same part that
-> decompress the data from zswap_entry to page, so refactor out the
-> common part as __zswap_load(entry, page).
+> cc Kumar
+>
+> On Tue, Dec 12, 2023 at 09:17:02AM -0700, Daniel Xu wrote:
+> > On Mon, Dec 11, 2023 at 04:25:06PM -0800, Eyal Birger wrote:
+> > > On Mon, Dec 11, 2023 at 3:49=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wro=
+te:
+> > > >
+> > > > On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
+> > > > > On Mon, Dec 11, 2023 at 2:31=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz>=
+ wrote:
+> > > > > >
+> > > > > > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
+> > > > > > > Hi Daniel,
+> > > > > > >
+> > > > > > > Tiny nits below in case you respin this for other reasons:
+> > > > > > >
+> > > > > > > On Mon, Dec 11, 2023 at 12:20=E2=80=AFPM Daniel Xu <dxu@dxuuu=
+.xyz> wrote:
+> > > > > > > >
+> > > > > > > > This commit extends test_tunnel selftest to test the new XD=
+P xfrm state
+> > > > > > > > lookup kfunc.
+> > > > > > > >
+> > > > > > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
+> > > > > > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
+> > > > > > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > > > > > > ---
+> > > > > > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++-=
+-
+> > > > > > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++=
+++++++++++++
+> > > > > > > >  2 files changed, 67 insertions(+), 4 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tu=
+nnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > > index 2d7f8fa82ebd..fc804095d578 100644
+> > > > > > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > > >         SYS(fail,
+> > > > > > > >             "ip netns exec at_ns0 "
+> > > > > > > >                 "ip xfrm state add src %s dst %s proto esp =
+"
+> > > > > > > > -                       "spi %d reqid 1 mode tunnel "
+> > > > > > > > +                       "spi %d reqid 1 mode tunnel replay-=
+window 42 "
+> > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc =
+'cbc(aes)' %s",
+> > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO=
+_OUT, XFRM_AUTH, XFRM_ENC);
+> > > > > > > >         SYS(fail,
+> > > > > > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > > >         SYS(fail,
+> > > > > > > >             "ip netns exec at_ns0 "
+> > > > > > > >                 "ip xfrm state add src %s dst %s proto esp =
+"
+> > > > > > > > -                       "spi %d reqid 2 mode tunnel "
+> > > > > > > > +                       "spi %d reqid 2 mode tunnel replay-=
+window 42 "
+> > > > > > >
+> > > > > > > nit: why do you need to set the replay-window in both directi=
+ons?
+> > > > > >
+> > > > > > No reason - probably just careless here.
+> > > > > >
+> > > > > > >
+> > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc =
+'cbc(aes)' %s",
+> > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_T=
+O_IN, XFRM_AUTH, XFRM_ENC);
+> > > > > > > >         SYS(fail,
+> > > > > > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > > >          */
+> > > > > > > >         SYS(fail,
+> > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > > -                   "spi %d reqid 1 mode tunnel "
+> > > > > > > > +                   "spi %d reqid 1 mode tunnel replay-wind=
+ow 42 "
+> > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cb=
+c(aes)' %s",
+> > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO=
+_OUT, XFRM_AUTH, XFRM_ENC);
+> > > > > > > >         SYS(fail,
+> > > > > > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > > >         /* root -> at_ns0 */
+> > > > > > > >         SYS(fail,
+> > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > > -                   "spi %d reqid 2 mode tunnel "
+> > > > > > > > +                   "spi %d reqid 2 mode tunnel replay-wind=
+ow 42 "
+> > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cb=
+c(aes)' %s",
+> > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_T=
+O_IN, XFRM_AUTH, XFRM_ENC);
+> > > > > > > >         SYS(fail,
+> > > > > > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
+> > > > > > > >  {
+> > > > > > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
+> > > > > > > >                             .attach_point =3D BPF_TC_INGRES=
+S);
+> > > > > > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+> > > > > > > >         struct test_tunnel_kern *skel =3D NULL;
+> > > > > > > >         struct nstoken *nstoken;
+> > > > > > > > +       int xdp_prog_fd;
+> > > > > > > >         int tc_prog_fd;
+> > > > > > > >         int ifindex;
+> > > > > > > >         int err;
+> > > > > > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
+> > > > > > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
+> > > > > > > >                 goto done;
+> > > > > > > >
+> > > > > > > > +       /* attach xdp prog to tunnel dev */
+> > > > > > > > +       xdp_prog_fd =3D bpf_program__fd(skel->progs.xfrm_ge=
+t_state_xdp);
+> > > > > > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
+> > > > > > > > +               goto done;
+> > > > > > > > +       err =3D bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FL=
+AGS_REPLACE, &opts);
+> > > > > > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
+> > > > > > > > +               goto done;
+> > > > > > > > +
+> > > > > > > >         /* ping from at_ns0 namespace test */
+> > > > > > > >         nstoken =3D open_netns("at_ns0");
+> > > > > > > >         err =3D test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
+> > > > > > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
+> > > > > > > >                 goto done;
+> > > > > > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac10016=
+4, "remote_ip"))
+> > > > > > > >                 goto done;
+> > > > > > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "=
+replay_window"))
+> > > > > > > > +               goto done;
+> > > > > > > >
+> > > > > > > >  done:
+> > > > > > > >         delete_xfrm_tunnel();
+> > > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_=
+kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > > index 3a59eb9c34de..c0dd38616562 100644
+> > > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_bu=
+ff *skb_ctx,
+> > > > > > > >                           struct bpf_fou_encap *encap, int =
+type) __ksym;
+> > > > > > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+> > > > > > > >                           struct bpf_fou_encap *encap) __ks=
+ym;
+> > > > > > > > +struct xfrm_state *
+> > > > > > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm=
+_state_opts *opts,
+> > > > > > > > +                      u32 opts__sz) __ksym;
+> > > > > > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ks=
+ym;
+> > > > > > > >
+> > > > > > > >  struct {
+> > > > > > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > > > > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *s=
+kb)
+> > > > > > > >         return TC_ACT_OK;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > +volatile int xfrm_replay_window =3D 0;
+> > > > > > > > +
+> > > > > > > > +SEC("xdp")
+> > > > > > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > > > > +{
+> > > > > > > > +       struct bpf_xfrm_state_opts opts =3D {};
+> > > > > > > > +       struct xfrm_state *x =3D NULL;
+> > > > > > > > +       struct ip_esp_hdr *esph;
+> > > > > > > > +       struct bpf_dynptr ptr;
+> > > > > > > > +       u8 esph_buf[8] =3D {};
+> > > > > > > > +       u8 iph_buf[20] =3D {};
+> > > > > > > > +       struct iphdr *iph;
+> > > > > > > > +       u32 off;
+> > > > > > > > +
+> > > > > > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
+> > > > > > > > +               goto out;
+> > > > > > > > +
+> > > > > > > > +       off =3D sizeof(struct ethhdr);
+> > > > > > > > +       iph =3D bpf_dynptr_slice(&ptr, off, iph_buf, sizeof=
+(iph_buf));
+> > > > > > > > +       if (!iph || iph->protocol !=3D IPPROTO_ESP)
+> > > > > > > > +               goto out;
+> > > > > > > > +
+> > > > > > > > +       off +=3D sizeof(struct iphdr);
+> > > > > > > > +       esph =3D bpf_dynptr_slice(&ptr, off, esph_buf, size=
+of(esph_buf));
+> > > > > > > > +       if (!esph)
+> > > > > > > > +               goto out;
+> > > > > > > > +
+> > > > > > > > +       opts.netns_id =3D BPF_F_CURRENT_NETNS;
+> > > > > > > > +       opts.daddr.a4 =3D iph->daddr;
+> > > > > > > > +       opts.spi =3D esph->spi;
+> > > > > > > > +       opts.proto =3D IPPROTO_ESP;
+> > > > > > > > +       opts.family =3D AF_INET;
+> > > > > > > > +
+> > > > > > > > +       x =3D bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opt=
+s));
+> > > > > > > > +       if (!x || opts.error)
+> > > > > > >
+> > > > > > > nit: how can opts.error be non zero if x =3D=3D NULL?
+> > > > > >
+> > > > > > Ignoring the new -ENOENT case, it can't. Which is why I'm testi=
+ng that
+> > > > > > behavior here.
+> > > > >
+> > > > > I'm sorry, I don't understand.
+> > > > >
+> > > > > AFAICT, regardless of the -ENOENT change, I don't see
+> > > > > how (!x) is false and (opt.error) is true, and so
+> > > > > "if (!x || opts.error)" is always equivalent to "if (!x)".
+> > > > >
+> > > > > What am I missing?
+> > > > > Eyal.
+> > > >
+> > > > The selftests are tests so my intention was to check edge cases her=
+e.
+> > > > In normal operation it shouldn't be possible that
+> > > > bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
+> > > > another way of writing this would be:
+> > > >
+> > > >         if (!x)
+> > > >                 goto out;
+> > > >         assert(opts.error =3D=3D 0);
+> > >
+> > > I think this would convey the "edge case testing" notion better.
+> > >
+> > > >
+> > > > If I'm trying to be too clever (or maybe just wrong) or it's pointl=
+ess,
+> > > > I can remove the `opts.error` condition.
+> > >
+> > > At least for me the tests also serve as references as to how the
+> > > API is expected to be used, so I think it'd be clearer without
+> > > signaling that opts.error could potentially be nonzero on success.
+> > >
+> > > An assertion would indeed make that clear.
+> >
+> > Sure, sounds good. I will check on the new bpf assert infra.
+>
+> Couldn't quite get bpf_assert() working. The following diff:
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools=
+/testing/selftests/bpf/progs/test_tunnel_kern.c
+> index c0dd38616562..f00dba85ac5d 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> @@ -8,8 +8,9 @@
+>   */
+>  #include "vmlinux.h"
+>  #include <bpf/bpf_core_read.h>
+> -#include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_experimental.h"
+>  #include "bpf_kfuncs.h"
+>  #include "bpf_tracing_net.h"
+>
+> @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+>         opts.family =3D AF_INET;
+>
+>         x =3D bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> -       if (!x || opts.error)
+> +       if (!x)
+>                 goto out;
+> +       bpf_assert_with(opts.error =3D=3D 0, XDP_PASS);
+>
+>         if (!x->replay_esn)
+>                 goto out;
+>
+> results in:
+>
+> 57: (b7) r1 =3D 2                       ; R1_w=3D2 refs=3D5
+> 58: (85) call bpf_throw#115436
+> calling kernel function bpf_throw is not allowed
+>
 
-I love this refactoring a lot :) No reason why we should duplicate the
-decompression logic shared between load and writeback.
+I think this might be because bpf_throw is not registered for use by
+BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
+this program type as well, since it's already done for TC.
 
+> It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+> but I can run the exceptions selftests just fine with the same bzImage.
+> So I'm thinking it's not a kfunc registration or BTF issue.
 >
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  mm/zswap.c | 108 ++++++++++++++++++++++---------------------------------=
-------
->  1 file changed, 39 insertions(+), 69 deletions(-)
+> Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
 >
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 999671dcb469..667b66a3911b 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1380,6 +1380,42 @@ static int zswap_enabled_param_set(const char *val=
-,
->         return ret;
->  }
->
-> +static void __zswap_load(struct zswap_entry *entry, struct page *page)
-> +{
-> +       struct scatterlist input, output;
-> +       unsigned int dlen =3D PAGE_SIZE;
-> +       struct crypto_acomp_ctx *acomp_ctx;
-> +       struct zpool *zpool;
-> +       u8 *src;
-> +       int ret;
-> +
-> +       /* decompress */
 
-nit: I guess all this function does is decompression right? Doesn't
-seem like this comment is necessary anymore... But this is just
-nitpicking.
+Yes, even once you enable this, this will fail for now. I am sending
+out a series later this week that enables bpf_throw with acquired
+references, but until then may I suggest the following:
 
-> +       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> +       mutex_lock(acomp_ctx->mutex);
-> +
-> +       zpool =3D zswap_find_zpool(entry);
-> +       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
-> +       if (!zpool_can_sleep_mapped(zpool)) {
-> +               memcpy(acomp_ctx->dstmem, src, entry->length);
-> +               src =3D acomp_ctx->dstmem;
-> +               zpool_unmap_handle(zpool, entry->handle);
-> +       }
-> +
-> +       sg_init_one(&input, src, entry->length);
-> +       sg_init_table(&output, 1);
-> +       sg_set_page(&output, page, PAGE_SIZE, 0);
-> +       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->=
-length, dlen);
-> +       ret =3D crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), =
-&acomp_ctx->wait);
-> +       dlen =3D acomp_ctx->req->dlen;
-> +       mutex_unlock(acomp_ctx->mutex);
-> +
-> +       if (zpool_can_sleep_mapped(zpool))
-> +               zpool_unmap_handle(zpool, entry->handle);
-> +
-> +       BUG_ON(ret);
-> +       BUG_ON(dlen !=3D PAGE_SIZE);
-> +}
-> +
->  /*********************************
->  * writeback code
->  **********************************/
-> @@ -1401,23 +1437,12 @@ static int zswap_writeback_entry(struct zswap_ent=
-ry *entry,
->         swp_entry_t swpentry =3D entry->swpentry;
->         struct page *page;
->         struct mempolicy *mpol;
-> -       struct scatterlist input, output;
-> -       struct crypto_acomp_ctx *acomp_ctx;
-> -       struct zpool *pool =3D zswap_find_zpool(entry);
->         bool page_was_allocated;
-> -       u8 *src, *tmp =3D NULL;
-> -       unsigned int dlen;
->         int ret;
->         struct writeback_control wbc =3D {
->                 .sync_mode =3D WB_SYNC_NONE,
->         };
->
-> -       if (!zpool_can_sleep_mapped(pool)) {
-> -               tmp =3D kmalloc(PAGE_SIZE, GFP_KERNEL);
-> -               if (!tmp)
-> -                       return -ENOMEM;
-> -       }
-> -
+#define bpf_assert_if(cond) for (int ___i =3D 0, ___j =3D (cond); !(___j) \
+&& !___j; bpf_throw(), ___i++)
 
-Sweet. Less allocation =3D=3D more efficient + less failure case :)
+This will allow you to insert some cleanup code with an assertion.
+Then in my series, I will convert this temporary bpf_assert_if back to
+the normal bpf_assert.
 
->         /* try to allocate swap cache page */
->         mpol =3D get_task_policy(current);
->         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
-> @@ -1450,33 +1475,7 @@ static int zswap_writeback_entry(struct zswap_entr=
-y *entry,
->         }
->         spin_unlock(&tree->lock);
->
-> -       /* decompress */
-> -       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> -       dlen =3D PAGE_SIZE;
-> -
-> -       src =3D zpool_map_handle(pool, entry->handle, ZPOOL_MM_RO);
-> -       if (!zpool_can_sleep_mapped(pool)) {
-> -               memcpy(tmp, src, entry->length);
-> -               src =3D tmp;
-> -               zpool_unmap_handle(pool, entry->handle);
-> -       }
-> -
-> -       mutex_lock(acomp_ctx->mutex);
-> -       sg_init_one(&input, src, entry->length);
-> -       sg_init_table(&output, 1);
-> -       sg_set_page(&output, page, PAGE_SIZE, 0);
-> -       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->=
-length, dlen);
-> -       ret =3D crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), =
-&acomp_ctx->wait);
-> -       dlen =3D acomp_ctx->req->dlen;
-> -       mutex_unlock(acomp_ctx->mutex);
-> -
-> -       if (!zpool_can_sleep_mapped(pool))
-> -               kfree(tmp);
-> -       else
-> -               zpool_unmap_handle(pool, entry->handle);
-> -
-> -       BUG_ON(ret);
-> -       BUG_ON(dlen !=3D PAGE_SIZE);
-> +       __zswap_load(entry, page);
->
->         /* page is up to date */
->         SetPageUptodate(page);
-> @@ -1496,9 +1495,6 @@ static int zswap_writeback_entry(struct zswap_entry=
- *entry,
->         return ret;
->
->  fail:
-> -       if (!zpool_can_sleep_mapped(pool))
-> -               kfree(tmp);
-> -
->         /*
->          * If we get here because the page is already in swapcache, a
->          * load may be happening concurrently. It is safe and okay to
-> @@ -1755,11 +1751,7 @@ bool zswap_load(struct folio *folio)
->         struct page *page =3D &folio->page;
->         struct zswap_tree *tree =3D swap_zswap_tree(swp);
->         struct zswap_entry *entry;
-> -       struct scatterlist input, output;
-> -       struct crypto_acomp_ctx *acomp_ctx;
-> -       unsigned int dlen =3D PAGE_SIZE;
-> -       u8 *src, *dst;
-> -       struct zpool *zpool;
-> +       u8 *dst;
->         bool ret;
->
->         VM_WARN_ON_ONCE(!folio_test_locked(folio));
-> @@ -1781,29 +1773,7 @@ bool zswap_load(struct folio *folio)
->                 goto stats;
->         }
->
-> -       /* decompress */
-> -       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
-> -       mutex_lock(acomp_ctx->mutex);
-> -
-> -       zpool =3D zswap_find_zpool(entry);
-> -       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
-> -       if (!zpool_can_sleep_mapped(zpool)) {
-> -               memcpy(acomp_ctx->dstmem, src, entry->length);
-> -               src =3D acomp_ctx->dstmem;
-> -               zpool_unmap_handle(zpool, entry->handle);
-> -       }
-> -
-> -       sg_init_one(&input, src, entry->length);
-> -       sg_init_table(&output, 1);
-> -       sg_set_page(&output, page, PAGE_SIZE, 0);
-> -       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->=
-length, dlen);
-> -       if (crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &aco=
-mp_ctx->wait))
-> -               WARN_ON(1);
-> -       mutex_unlock(acomp_ctx->mutex);
-> -
-> -       if (zpool_can_sleep_mapped(zpool))
-> -               zpool_unmap_handle(zpool, entry->handle);
-> -
-> +       __zswap_load(entry, page);
->         ret =3D true;
->  stats:
->         count_vm_event(ZSWPIN);
->
-> --
-> b4 0.10.1
+It would look like:
+bpf_assert_if(opts.error =3D=3D 0) {
+  // Execute if assertion failed
+  bpf_xdp_xfrm_state_release(x);
+}
 
-Can't find anything wrong with this patch, so:
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Likewise for bpf_assert_with_if, you get the idea.
+
+
+
+> So for now I think I'll drop checking opts.error.
+>
+> [...]
