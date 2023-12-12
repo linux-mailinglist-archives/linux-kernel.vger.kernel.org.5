@@ -2,189 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B21C80F99B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7E080F9A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377429AbjLLVnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:43:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S1377541AbjLLVpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377185AbjLLVnp (ORCPT
+        with ESMTP id S1377344AbjLLVpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:43:45 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3AAAB;
-        Tue, 12 Dec 2023 13:43:52 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso3278143a12.3;
-        Tue, 12 Dec 2023 13:43:52 -0800 (PST)
+        Tue, 12 Dec 2023 16:45:23 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFA0B7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:45:29 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so711323766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702417432; x=1703022232; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NYFGcvpC2a9QSpzB8tRAV/ZTOG8iYLcCMIlAxh09bmk=;
-        b=SFTB2Hcd4DX6QFV5OwJngSJA4yTgce33EDXqcUzDogJ3DLCI8yQXQcB3axppwVl4g5
-         ELf1KTY6wtm1W17rSOOwVU4S3XY40c2UC7uV/bDGWFE2WyS+EkS76kOWMvjPlGaerJTt
-         rjSSlKN+8HfZ8aa5GyiQ3jI+ws59OroILyJumJw2UBXZgP4NObJmRCVqWfiJpsB8ourT
-         5YZWJiU4ZC1g5DUZBd9zGBs+Yq3nXyaKJQdXxVKJPYgvAWq1gFqV56rSI/OZlc00iuTv
-         5ghqfzwZnbOqQ830Pwd92jh8NOpaGEPTA/GeTjblmPLImpwVgA1VCGaT3JJlFwr1hs/8
-         ZDig==
+        d=linaro.org; s=google; t=1702417528; x=1703022328; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JJCdGKISotv2pJZ+hBcpKEM/45HxdS8m491Gp3+BQ4k=;
+        b=jrn4JmrwLj/wAYQmTRabSvSJ5jluhWevaSXS8+Wvx0kjluYQ+VLJJE7oXPaPm+SLXe
+         aL3rUiQJHI08+wMMocMdzAu6/vRTu1zfrQOiWUNqsH626nkGmRZiTIjAeM7v2E95xv6q
+         w+2aqXe77wi1QFnQvveXOISK6AvSVGFLkPBZta0T/1f5JUkA2iyrlAOmAsP0aKvY/kws
+         YBvGsN/vUYs6Qs7j5NRIJcN9lUiwaOsH4yMbtUekdb6rZxCgRHDpIM/8hIcyCebAnLoN
+         oxpK1hZAQlvWmEOADv9xyO9q5kl7b98GOhUrcLO9knhBHYhuPl9gSBMgcKg7VSj9ggoT
+         USRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702417432; x=1703022232;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NYFGcvpC2a9QSpzB8tRAV/ZTOG8iYLcCMIlAxh09bmk=;
-        b=Xq1NgLcrlU+nfk/ujEZ6Hz2Ihqz/PCynpSDT0DCqZeoFO6Zbv2cOOyuceOiS4tscQV
-         hhJ5Y7VORGgLDJzoO762baZ4PpTQ8gQ1aCwvfan7d06EyZiX0iIwZcJyPChs08RlS2Z0
-         TKIG0sO/hNHgvs0Zve2dg/A1/l+4PSx7pf7TqB/F6p6Tychga/KCGuMZcOE9dJsy9kWa
-         dTIObE7nD0d4AtL4VBsfgihOl3Gj3DzGU2WkE0Bnjn3Zdh+iCjnAUDJCoyB1pdzap62o
-         hSbxNdMR0Y95QlokkX1vsTxMcJoQjCgTwwLxkPq44cLY2/nh0h++j2PkDJMKRi/pqOfE
-         SZ3Q==
-X-Gm-Message-State: AOJu0Yw2cYXAPrURtWiuPOPS/6ObYtoK7ACwrXRTT3QTqennkSMmcmpW
-        4/IQwrAvy4b41Hr/Ju8tt7c=
-X-Google-Smtp-Source: AGHT+IEDWWFSu/2HO7omc9rG7/wpgLn5lEP9tPOE8jeGHF9ecMnMo2w9mQ+i6UiCvYTNQM2v7hVLxA==
-X-Received: by 2002:a17:902:ab45:b0:1d3:46f6:8046 with SMTP id ij5-20020a170902ab4500b001d346f68046mr743839plb.27.1702417431594;
-        Tue, 12 Dec 2023 13:43:51 -0800 (PST)
-Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:671e])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001d0ab572458sm9024911plr.121.2023.12.12.13.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:43:51 -0800 (PST)
-Date:   Tue, 12 Dec 2023 16:43:48 -0500
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Chris Li <chrisl@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZXjUFMwlz3P+4Nmk@dschatzberg-fedora-PF3DHTBV>
-References: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
- <20231211140419.1298178-2-schatzberg.dan@gmail.com>
- <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702417528; x=1703022328;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JJCdGKISotv2pJZ+hBcpKEM/45HxdS8m491Gp3+BQ4k=;
+        b=kZJZnRQMYKNKfndNasMcHbQEyY3fmDhuScCuoPU6Qzkd3ARHO8IjhkMhn4F4AblQwC
+         bt+zzfziLqJRad76tmYr99HcYI788YVuaadgYR1Ncr3O9C/C0cFi1T4fGL43W1rljS+X
+         GDjNW59fb6z0lbLaxDXaAEImfkkNV+UOTk1m630AbQa+i1mU+G6yS11XtA59K0LyYscr
+         rgS5jXH8XVwFpjr3b+8G1awYl3FAVEV6GS1j+LFnKtte7pfj0mDWgEQaqZBQye6qZRt0
+         YrlWBer7FwcmmqzjdApZQm1lG6XCIgW/BaqDHtVUvejL3dAijjIrS1wF+emkZxMAVOdj
+         FMVw==
+X-Gm-Message-State: AOJu0YzXTGsSqfK5stBWzGEnx/iLrt0T5oX7GnIOB6z9RtmX3MTzDFg0
+        CU83E+O6EFX1RXjmGjfT/U3YM6XxflulUzQtJns4fQ==
+X-Google-Smtp-Source: AGHT+IGf5gzmD+F1vkXOu2tcCBuGrRoRRXqRBUwUV+cVy2Hso3cw8EdmMC/vWvmcYkVNE5dnxlCx+uUI1L46s1J0lTg=
+X-Received: by 2002:a17:906:2d2:b0:a1f:821a:11ae with SMTP id
+ 18-20020a17090602d200b00a1f821a11aemr3419980ejk.20.1702417527636; Tue, 12 Dec
+ 2023 13:45:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
+References: <MEYP282MB2697C6AC993637C6E866E492BB8FA@MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <MEYP282MB2697C6AC993637C6E866E492BB8FA@MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Tue, 12 Dec 2023 22:44:51 +0100
+Message-ID: <CAMZdPi-ZxN+eGpHERe1XQ2hyu==bnwx2oHcbzVFtgcfS1k6C_w@mail.gmail.com>
+Subject: Re: [net-next v4 0/5] net: wwan: t7xx: fw flashing & coredump support
+To:     Jinjian Song <SongJinJian@hotmail.com>
+Cc:     "chandrashekar.devegowda@intel.com" 
+        <chandrashekar.devegowda@intel.com>,
+        "chiranjeevi.rapolu@linux.intel.com" 
+        <chiranjeevi.rapolu@linux.intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "danielwinkler@google.com" <danielwinkler@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "haijun.liu@mediatek.com" <haijun.liu@mediatek.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxwwan@intel.com" <linuxwwan@intel.com>,
+        "m.chetan.kumar@linux.intel.com" <m.chetan.kumar@linux.intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "nmarupaka@google.com" <nmarupaka@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "ricardo.martinez@linux.intel.com" <ricardo.martinez@linux.intel.com>,
+        "ryazanov.s.a@gmail.com" <ryazanov.s.a@gmail.com>,
+        "vsankar@lenovo.com" <vsankar@lenovo.com>,
+        Joey Zhao <joey.zhao@fibocom.com>,
+        "Qifeng Liu(Qifeng)" <liuqf@fibocom.com>,
+        "Fuqiang Yan(Felix)" <felix.yan@fibocom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 05:06:54PM -0800, Chris Li wrote:
-> Hi Dan,
-> 
-> Thank you for the patch.
-> 
-> On Mon, Dec 11, 2023 at 6:04 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> >
-> > Allow proactive reclaimers to submit an additional swappiness=<val>
-> > argument to memory.reclaim. This overrides the global or per-memcg
-> > swappiness setting for that reclaim attempt.
-> 
-> I am curious what prompted you to develop this patch. I understand
-> what this patch does, just want to know more of your background story
-> why this is needed.
+Hi Jinjian,
 
-I wrote about this in some detail in the cover letter (0/1). Take a
-look and let me know if the rationale is still unclear.
-
-> Instead of passing -1, maybe we can use mem_cgroup_swappiness(memcg);
+On Mon, 11 Dec 2023 at 03:06, Jinjian Song <SongJinJian@hotmail.com> wrote:
 >
+> > > > Mon, Sep 18, 2023 at 08:56:26AM CEST, SongJinJian@hotmail.com wrote=
+:
+> > > >Tue, Sep 12, 2023 at 11:48:40AM CEST, songjinjian@hotmail.com wrote:
+> > > >>>Adds support for t7xx wwan device firmware flashing & coredump
+> > > >>>collection using devlink.
+> > > >
+> > > >>I don't believe that use of devlink is correct here. It seems like =
+a misfit. IIUC, what you need is to communicate with the modem. Basically a=
+ communication channel to modem. The other wwan drivers implement these cha=
+nnels in _ctrl.c files, using multiple protocols. Why can't you do somethin=
+g similar and let devlink out of this please?
+> > > >
+> > > >>Until you put in arguments why you really need devlink and why is i=
+t a good fit, I'm against this. Please don't send any other versions of thi=
+s patchset that use devlink.
+> > > >
+> > > > Yes, t7xx driver need communicate with modem with a communication c=
+hannel to modem.
+> > > > I took a look at the _ctrl.c files under wwan directory, it seemed =
+the implementation can be well integrated with QualCommon's modem, if we do=
+ like this, I think we need modem firmware change, maybe not be suitable fo=
+r current MTK modem directly.
+> > > > Except for Qualcomm modem driver, there is also an Intel wwan
+> > > > driver 'iosm' and it use devlink to implement firmware
+> > > > flash(https://www.kernel.org/doc/html/latest/networking/devlink/io
+> > > > sm.html), Intel and MTK design and use devlink to do this work on
+> > >
+> > > If that exists, I made a mistake as a gatekeeper. That usage looks
+> > > wrong.
+> > >
+> > > > 'mtk_t7xx' driver and I continue to do this work.
+> > > >
+> > > > I think devlink framework can support this scene and if we use devl=
+ink we don't need to develop other flash tools or other user space applicat=
+ions, use upstream devlink commands directly.
+> > >
+> > > Please don't.
+>
+> > So this is clear that devlink should not be used for this wwan
+> firmware upgrade, if you still want to abstract the fastboot protocol par=
+t, maybe the easier would be to move on the generic firmware framework, and=
+ especially the firmware upload API which seems to be a good fit here? http=
+s://docs.kernel.org/driver-api/firmware/fw_upload.html#firmware-upload-api
+>
+> 1.This API seemed fit here, but I haven't find the refer to use the API, =
+codes in /lib/test_firmware.c shown some intruduce, I think if I'm consider=
+ how to implement ops.prepare(what to verify, it seemed modem will do that)=
+ and ops.poll_complete? And it seemed request_firmware API also can recieve=
+ the data from use space, is it a way to use sysfs to trigger request firmw=
+are to kernel?
+>
+> In addition to this, I may have to create sysfs interface to pass the fir=
+mware partition parameter.And find a nother way to export the coredump port=
+ to user space.
+>
+> 2.How about we add a new WWAN port type, abstract fastboot and dump chann=
+el, like WWAN_PORT_XXX, then use this port with WWAN framework to handle fi=
+rmware ops and dump ops.
+>
+> Hope to get your advice, thanks very much.
+>
+> I want to implement it use the way of title 2, create a new WWAN port typ=
+e used for the channel with modem.
 
-Yeah this makes sense, I'll go ahead and make that change and
-eliminate the -1.
+I understand that the firmware update may not be as simple as
+submitting a single blob, and so firmware-upload-api may not be easy
+to use as is. But can you elaborate a bit on 'abstracting fastboot',
+not sure why it is necessary to add another abstraction level when
+fastboot is already supported by open source tools/libraries.
 
-> >                                 nr_reclaims--;
-> >                         continue;
-> >                 }
-> > @@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
-> >         return nbytes;
-> >  }
-> >
-> > +enum {
-> > +       MEMORY_RECLAIM_SWAPPINESS = 0,
-> > +       MEMORY_RECLAIM_NULL,
-> > +};
-> > +
-> > +static const match_table_t if_tokens = {
-> 
-> What this is called "if_tokens"? I am trying to figure out what "if" refers to.
-
-I used the same logic as in "mm: Add nodes= arg to memory.reclaim". I
-can just call it tokens.
-
-> 
-> > +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-> > +       { MEMORY_RECLAIM_NULL, NULL },
-> > +};
-> > +
-> 
-> Do we foresee a lot of tunable for the try to free page? I see. You
-> want to use match_token() to do the keyword parsing.
-
-See below
-
-> 
-> >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> >                               size_t nbytes, loff_t off)
-> >  {
-> > @@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> >         unsigned int nr_retries = MAX_RECLAIM_RETRIES;
-> >         unsigned long nr_to_reclaim, nr_reclaimed = 0;
-> >         unsigned int reclaim_options;
-> > -       int err;
-> > +       char *old_buf, *start;
-> > +       substring_t args[MAX_OPT_ARGS];
-> > +       int swappiness = -1;
-> >
-> >         buf = strstrip(buf);
-> > -       err = page_counter_memparse(buf, "", &nr_to_reclaim);
-> > -       if (err)
-> > -               return err;
-> > +
-> > +       old_buf = buf;
-> > +       nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-> > +       if (buf == old_buf)
-> > +               return -EINVAL;
-> > +
-> > +       buf = strstrip(buf);
-> > +
-> > +       while ((start = strsep(&buf, " ")) != NULL) {
-> > +               if (!strlen(start))
-> > +                       continue;
-> > +               switch (match_token(start, if_tokens, args)) {
-> > +               case MEMORY_RECLAIM_SWAPPINESS:
-> > +                       if (match_int(&args[0], &swappiness))
-> > +                               return -EINVAL;
-> > +                       if (swappiness < 0 || swappiness > 200)
-> 
-> Agree with Yosry on the 200 magic value.
-> 
-> I am also wondering if there is an easier way to just parse one
-> keyword. Will using strcmp("swappiness=") be a bad idea? I haven't
-> tried it myself though.
-
-As above, "mm: Add nodes= arg to memory.reclaim" was previously in the
-mm tree doing it this way, so I duplicated it. I think given that
-there have been lots of discussions about extending this interface,
-this match table has some potential future value and I don't see a
-major downside to using it in favor of strcmp.
+Regards,
+Loic
