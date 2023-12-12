@@ -2,74 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDCF80E787
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A68880E78E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjLLJ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S229620AbjLLJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346324AbjLLJZr (ORCPT
+        with ESMTP id S229449AbjLLJ1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:25:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82939EA;
-        Tue, 12 Dec 2023 01:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702373153; x=1733909153;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=J7oOLumnJZHBFS2dqddnZ8wo64mptqlvLB8nSpsJYv4=;
-  b=jsm7tUKQb/17tVcTfBJUGHMxhyHTV/1s5erm7YNYBAe3bUZT2SmMQRBf
-   RjMnzH5ma+IgxltPs8935aK2X2T5lOfEFJ+wW1w/v1gYq6QfxsPSXVyG3
-   u5GOPI/JKeNet5zinQ9PP1dmwIReMm4e+I8B3eLhbXcHwnKYU9T2AN1yz
-   9fo+D8wK+HXgzd57YNGH0/35XtMTCzBEclFyAkeAKYK2L6lWKSl1sYvp7
-   CEshtN69QtTnRi2VX5JWU3uQC+IQQeDr3gCKFHHYAgkFFnevgPhBxsWqX
-   m8e0qRT3dM+rcjxjYD1ms//8Pn3ubgG7xxp4M7PWKE8tdAeD9rfYjLkeO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1930671"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="1930671"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:25:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="843847927"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="843847927"
-Received: from tdietric-mobl.ger.corp.intel.com ([10.252.32.93])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:25:46 -0800
-Date:   Tue, 12 Dec 2023 11:25:44 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     Johan Hovold <johan@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v2 1/6] PCI/ASPM: Add locked helper for enabling link
- state
-In-Reply-To: <20231208173932.GA798089@bhelgaas>
-Message-ID: <f0beb640-5c87-7c8e-64ba-908324347613@linux.intel.com>
-References: <20231208173932.GA798089@bhelgaas>
+        Tue, 12 Dec 2023 04:27:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD0199
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:27:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE993C433C7;
+        Tue, 12 Dec 2023 09:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702373272;
+        bh=5RJMKCoYxnXkUiYpXUAFHsON2DTSXvEYzJ4lN4kFgpY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mdjOFL+xi9mY1oQO4/sZfC+28BYlkluFsERL3SXPZ6u1xo72k6ikvJWT/ZO9Au8Pf
+         jKZ2CC5GIv0b8//Q7MYezJmbUeqmjEuaFXc6eDEuohpSJlAxqMNSRedCfRq+rn8bdS
+         3TrYQqMMSiAkSvlTHooXRl1LFOLWFCF/jtP4pjV5YD0juXKcJanf0HiAYzx9VXgpMN
+         22O59I6dIkNdr/Gy185/HEJqESdYGGmreJLugrki3uieIXNm4WUvCmc+pnVb1KizcG
+         JlwzCI9AJysIBGuv/o0/EHjzmmwfFtwVVGh8HWpz69Ss/+FULH9Lo1kU/7so9ZAvSV
+         nVnS6VjoyQjfw==
+Date:   Tue, 12 Dec 2023 10:27:47 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Andrei Vagin <avagin@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] fs/proc: show correct device and inode numbers in
+ /proc/pid/maps
+Message-ID: <20231212-brokkoli-trinken-1581d1e99d6a@brauner>
+References: <20231211193048.580691-1-avagin@google.com>
+ <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,49 +57,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023, Bjorn Helgaas wrote:
-
-> On Fri, Dec 08, 2023 at 09:00:56AM +0100, Johan Hovold wrote:
-> > On Thu, Dec 07, 2023 at 02:47:16PM -0600, Bjorn Helgaas wrote:
-> > > On Tue, Nov 28, 2023 at 09:15:07AM +0100, Johan Hovold wrote:
-> > > > Add a helper for enabling link states that can be used in contexts where
-> > > > a pci_bus_sem read lock is already held (e.g. from pci_walk_bus()).
-> > > > 
-> > > > This helper will be used to fix a couple of potential deadlocks where
-> > > > the current helper is called with the lock already held, hence the CC
-> > > > stable tag.
-> > 
-> > > As far as I can see, we end up with pci_enable_link_state() defined
-> > > but never called and pci_enable_link_state_locked() being called only
-> > > by pcie-qcom.c and vmd.c.
-> > 
-> > Correct, I mentioned this in the cover letter.
+On Tue, Dec 12, 2023 at 07:51:31AM +0200, Amir Goldstein wrote:
+> +fsdevel, +overlayfs, +brauner, +miklos
 > 
-> Ah, right.  I really don't like these exported locked/unlocked
-> interfaces because pci_bus_sem is internal to the PCI core, and the
-> caller shouldn't need to know or be able to specify whether it is held
-> or not.  They exist for now, but I think we should try to get rid of
-> them.
+> On Mon, Dec 11, 2023 at 9:30 PM Andrei Vagin <avagin@google.com> wrote:
+> >
+> > Device and inode numbers in /proc/pid/maps have to match numbers returned by
+> > statx for the same files.
 > 
-> > > Can we just rename pci_enable_link_state() to
-> > > pci_enable_link_state_locked() and assert that pci_bus_sem is held, so
-> > > we don't end up with a function that's never used?
-> > 
-> > That would work too. I went with adding a new helper to facilitate
-> > stable backports and to mirror pci_disable_link_state(). The variants
-> > are simple wrappers around the implementation so there's no real cost to
-> > having the unused one.
+> That statement may be true for regular files.
+> It is not true for block/char as far as I know.
 > 
-> Makes good sense.  There's no real machine cost to the unused one; I'm
-> more concerned about the human cost here.
+> I think that your fix will break that by displaying the ino/dev
+> of the block/char reference inode and not their backing rdev inode.
+> 
+> >
+> > /proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here is
+> > an issue. If a mapped file is on a stackable file system (e.g.,
+> > overlayfs), vma->vm_file is a backing file whose f_inode is on the
+> > underlying filesystem. To show correct numbers, we need to get a user
+> > file and shows its numbers. The same trick is used to show file paths in
+> > /proc/pid/maps.
+> 
+> For the *same* trick, see my patch below.
+> 
+> >
+> > But it isn't the end of this story. A file system can manipulate inode numbers
+> > within the getattr callback (e.g., ovl_getattr), so vfs_getattr must be used to
+> > get correct numbers.
+> 
+> This explanation is inaccurate, because it mixes two different overlayfs
+> traits which are unrelated.
+> It is true that a filesystem *can* manipulate st_dev in a way that will not
+> match i_ino and it is true that overlayfs may do that in some non-default
+> configurations (see [1]), but this is not the reason that you are seeing
+> mismatches ino/dev in /proc/<pid>/maps.
+> 
+> [1] https://docs.kernel.org/filesystems/overlayfs.html#inode-properties
+> 
+> The reason is that the vma->vm_file is a special internal backing file
+> which is not otherwise exposed to userspace.
+> Please see my suggested fix below.
+> 
+> >
+> > Cc: Amir Goldstein <amir73il@gmail.com>
+> > Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+> > Signed-off-by: Andrei Vagin <avagin@google.com>
+> > ---
+> >  fs/proc/task_mmu.c | 20 +++++++++++++++++---
+> >  1 file changed, 17 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index 435b61054b5b..abbf96c091ad 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -273,9 +273,23 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+> >         const char *name = NULL;
+> >
+> >         if (file) {
+> > -               struct inode *inode = file_inode(vma->vm_file);
+> > -               dev = inode->i_sb->s_dev;
+> > -               ino = inode->i_ino;
+> > +               const struct path *path;
+> > +               struct kstat stat;
+> > +
+> > +               path = file_user_path(file);
+> > +               /*
+> > +                * A file system can manipulate inode numbers within the
+> > +                * getattr callback (e.g. ovl_getattr).
+> > +                */
+> > +               if (!vfs_getattr_nosec(path, &stat, STATX_INO, AT_STATX_DONT_SYNC)) {
+> 
+> Should you prefer to keep this solution it should be constrained to
+> regular files.
 
-I know these were already applied but I want to correct one small 
-misconcept that seems to be floating around thanks the misleading name...
+It's also very dicy calling into the filesystem from procfs. You might
+hang the system if you end up talking to a hung NFS server or something.
+What locks does show_map_vma() hold? And is it safe to call helpers that
+might generate io?
 
-pci_enable_link_state() is not really a pair/mirror of 
-pci_disable_link_state() despite its name. It would be better called
-pci_set_default_link_state() to better match what it does.
+> 
+> > +                       dev = stat.dev;
+> > +                       ino = stat.ino;
+> > +               } else {
+> > +                       struct inode *inode = d_backing_inode(path->dentry);
+> 
+> d_inode() please.
+> d_backing_inode()/d_backing_dentry() are relics of an era that never existed
+> (i.e. union mounts).
+> 
+> > +
+> > +                       dev = inode->i_sb->s_dev;
+> > +                       ino = inode->i_ino;
+> > +               }
+> >                 pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+> >         }
+> >
+> 
+> Would you mind trying this alternative (untested) patch?
+> I think it is preferred, because it is simpler.
+> 
+> Thanks,
+> Amir.
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index ef2eb12906da..5328266be6b5 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -273,7 +273,8 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+>         const char *name = NULL;
+> 
+>         if (file) {
+> -               struct inode *inode = file_inode(vma->vm_file);
+> +               struct inode *inode = file_user_inode(vma->vm_file);
+> +
+>                 dev = inode->i_sb->s_dev;
+>                 ino = inode->i_ino;
+>                 pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 900d0cd55b50..d78412c6fd47 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2581,20 +2581,28 @@ struct file *backing_file_open(const struct
+> path *user_path, int flags,
+>  struct path *backing_file_user_path(struct file *f);
+> 
+>  /*
+> - * file_user_path - get the path to display for memory mapped file
+> - *
+>   * When mmapping a file on a stackable filesystem (e.g., overlayfs), the file
+>   * stored in ->vm_file is a backing file whose f_inode is on the underlying
+> - * filesystem.  When the mapped file path is displayed to user (e.g. via
+> - * /proc/<pid>/maps), this helper should be used to get the path to display
+> - * to the user, which is the path of the fd that user has requested to map.
+> + * filesystem.  When the mapped file path and inode number are displayed to
+> + * user (e.g. via /proc/<pid>/maps), these helper should be used to get the
+> + * path and inode number to display to the user, which is the path of the fd
+> + * that user has requested to map and the inode number that would be returned
+> + * by fstat() on that same fd.
+>   */
+> +/* Get the path to display in /proc/<pid>/maps */
+>  static inline const struct path *file_user_path(struct file *f)
+>  {
+>         if (unlikely(f->f_mode & FMODE_BACKING))
+>                 return backing_file_user_path(f);
+>         return &f->f_path;
+>  }
+> +/* Get the inode whose inode number to display in /proc/<pid>/maps */
+> +static inline const struct path *file_user_inode(struct file *f)
+> +{
+> +       if (unlikely(f->f_mode & FMODE_BACKING))
+> +               return d_inode(backing_file_user_path(f)->dentry);
+> +       return file_inode(f);
+> +}
 
--- 
- i.
-
+Way better imho.
