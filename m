@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0121380E804
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 360A280E809
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbjLLJow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
+        id S231419AbjLLJpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:45:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLLJou (ORCPT
+        with ESMTP id S230218AbjLLJpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:44:50 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B2DD2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:44:57 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso7753888a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:44:56 -0800 (PST)
+        Tue, 12 Dec 2023 04:45:47 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FECD2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:45:53 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-4649e4e6fbfso1184946137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:45:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702374295; x=1702979095; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=94p+UQZSMr4vzrhrrlgBDh7qA10Ar2gYNehd9t2N1t8=;
-        b=XT5Mbyv3Zr8jBCPH77HUVad5JJ2aJClR4nXggTqY94575sE3gWwxauF2ib2G6PJDT6
-         heUFan95Sc443e2CjghYszkYjqPBNMHC5a860wvgFOUB3btwn4sb+wMBCeCQxnJzujQ0
-         M+NznvZKI4GuzdwgwhIAP+AR+DBj+UAr7/Ejc3ng6S5uMfs4MtJZYNESkjnSJylGjord
-         jHM/lWxN5omIJtlYc+kml4DmAgK1wOAfzcc/jDtHjCPneVrSyIw3GSQMj/9btVQOCg+b
-         WGUX1qXyMfJ4qkZmwmTLLiikBJwxoZ0AeVzQv8+0AgwdiHDcuMIgDShxfhPDwKXIhOv4
-         9wmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702374295; x=1702979095;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702374352; x=1702979152; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=94p+UQZSMr4vzrhrrlgBDh7qA10Ar2gYNehd9t2N1t8=;
-        b=J7+9nwwyyx7WGJrVK4EmNWAHNPP5IBrgAa0GmkARQ0MG5esFn0dG9nzeZAZ6XunRc0
-         e6WMdrzTpcHS/iyFuQmxVTgSqVb+60peNZrIhKBRTztRwxVeiYkKsguT+Jw6ziFz8uSc
-         nRZPvSeBhkGZLWbmvZfEii5yPhQeU7DKTOprv2q7nq7Jv5rtvEjUchZk7ljB+4bPluOW
-         EGDjjDvAY+0DJpqSLmGjuotHJBjjr0TBgp21jMjq2VfAApVNusD85PoGM+SuoU7B6brF
-         U0DLqBstn+C3E8LPgoJf50HaweZB44XN8sgNhbr+6M3PKgK2bdhNAzxlsz469nC4uHqn
-         Qo4Q==
-X-Gm-Message-State: AOJu0YyAdYU9m4h3h/FQCKI8uZe1gipyOuT+vYDewq+1tFNEJUDaOEeg
-        TukdYg+s2969B79mjy6dlXD8ig==
-X-Google-Smtp-Source: AGHT+IFh/ureGGq9zRE3/B5cuAd0U9ijHRArtKFWf6PNYbErUOfGEruQxIQQasSQPm0NyCnkVOWYOg==
-X-Received: by 2002:a50:cbc1:0:b0:54c:ac4d:f4b7 with SMTP id l1-20020a50cbc1000000b0054cac4df4b7mr3111551edi.1.1702374295419;
-        Tue, 12 Dec 2023 01:44:55 -0800 (PST)
-Received: from localhost (h1f2c.n1.ips.mtn.co.ug. [41.210.159.44])
-        by smtp.gmail.com with ESMTPSA id o29-20020a509b1d000000b0054ca1d90410sm4773417edi.85.2023.12.12.01.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 01:44:55 -0800 (PST)
-Date:   Tue, 12 Dec 2023 12:44:51 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
-Cc:     Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
-        anjan@momi.ca, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] Staging: rtl8192e: Remove variable bFirstSeg
-Message-ID: <347fe54e-d8fe-438e-a1ec-37900ca41f51@suswa.mountain>
-References: <20231210193705.2131807-1-tdavies@darkphysics.net>
- <20231210193705.2131807-2-tdavies@darkphysics.net>
- <2cdb678d-b784-411e-8913-eb7666e08ccc@suswa.mountain>
- <20793387-da59-4192-bb86-b20aeb127a65@gmail.com>
+        bh=kDJfKvrg0IZT8RtTcsIPiv+6i6KEEJtTvRyYtSZWV3Y=;
+        b=Y5LVhpZPNqHDEoEg3Rc/HE3Ti4N2gEKxUuiXm1gIveu69J6pTcKD74TmybLBCaDFnH
+         jyWXuh/zKMDVINNzq05sh1uYlb3pCtMwJA6UeiwJg3IRukbP2yb/K/WLTDTmHlVwN8Yq
+         jVr4gq4cvJjI8EkEh964aQxlckZ6xZqdpuv4kDI1ZyI0NkP5wPY4Bq3qPFf2SOuywriX
+         j9QRdUlYihfSfJM0i3uVvIttrkLX69wsNwfk0BlzrjBp2QRuM7vp/Qf+s/yMWvMCyzQi
+         TsdhLYqTGAx0J3dUheXnjPtA3fnpzEi5MODY/8OcvialziFWl8jK0OzckuFE8f/YJxhZ
+         uYow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702374352; x=1702979152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kDJfKvrg0IZT8RtTcsIPiv+6i6KEEJtTvRyYtSZWV3Y=;
+        b=cvMpuzG9XBH8/46oXiN9s69OiTaqh/4yB5Qthl3qvlz4QaL6AL90VAi9z/4HyJRwMB
+         cuBR3gwycnQh+kJjik41J+dJGDeeGU5mJ2kM3q5cW4SpThlq7f7wZU/od1Mu+YTBft/p
+         3UwJz3Fi50dxmYQ+sN1/WrhYM98O6VPJ4uXTWtVYG+iy9MJ3SuDh71h0RsIXkpEmipwb
+         g28M3u4XuhP5hwCrtp9OXBXPFPTo26Hh2B3qi9vSWmu0b8+969sZAJL6Yw/WqPL0lOsS
+         2iN4RZJQre3KJPRu0UeK2i1qsT20rslAuctXdk49R2d+QoGQdh3w7cht3tRnW3z64a8Z
+         UeJw==
+X-Gm-Message-State: AOJu0Yzg8qECBVi0Va4B3mw1TFyKakg77cSemFzIyWCY6S8EOhyXKbln
+        qQOStnAusdfFdp4DnJ2VFE8Ob7jXKMawkPfJooiDgA==
+X-Google-Smtp-Source: AGHT+IHiKuijr8iqBN16VsK9zHqoh6460srecd+j4cqTS+gkJWAR3e2/4Y0uK11x73YJv0iQFDsxK/FGEG9VkLJQiKg=
+X-Received: by 2002:a05:6102:32c9:b0:464:4eef:b9a9 with SMTP id
+ o9-20020a05610232c900b004644eefb9a9mr4066516vss.0.1702374352425; Tue, 12 Dec
+ 2023 01:45:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20793387-da59-4192-bb86-b20aeb127a65@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
+ <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
+ <1dd1a3e8-ef9a-4e89-891f-b49d82acc5f8@gmail.com> <CAH5fLgijsRK3funsGuG6nbK26C+s6m0nO0i83RYD2cO3z7L22Q@mail.gmail.com>
+ <F8K3EZWwaRdB3qwYwk7P9GGQUc83MNW4XLeqRHj6QsA6WtCtpweykXLuM5sj2RbpRu3y3OoFy6gmCtaV2tBA1sxGFeieUnTdaY2yGVSCXQ4=@proton.me>
+In-Reply-To: <F8K3EZWwaRdB3qwYwk7P9GGQUc83MNW4XLeqRHj6QsA6WtCtpweykXLuM5sj2RbpRu3y3OoFy6gmCtaV2tBA1sxGFeieUnTdaY2yGVSCXQ4=@proton.me>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Tue, 12 Dec 2023 10:45:41 +0100
+Message-ID: <CAH5fLghuRjZHg3BgowvDiAez3ukhm7PEegRB5G9ZbwSCXfAHVw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Tiago Lam <tiagolam@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct talks about firmware and it has reserved bits so that's what
-confused me.
+On Fri, Dec 8, 2023 at 10:27=E2=80=AFAM Benno Lossin <benno.lossin@proton.m=
+e> wrote:
+>
+> On 12/8/23 08:37, Alice Ryhl wrote:
+> > On Wed, Dec 6, 2023 at 6:05=E2=80=AFPM Tiago Lam <tiagolam@gmail.com> w=
+rote:
+> >> On 06/12/2023 10:09, Alice Ryhl wrote:
+> >>> +/// The return type of `wait_timeout`.
+> >>> +pub enum CondVarTimeoutResult {
+> >>> +    /// The timeout was reached.
+> >>> +    Timeout,
+> >>> +    /// Somebody woke us up.
+> >>> +    Woken {
+> >>> +        /// Remaining sleep duration.
+> >>> +        jiffies: u64,
+> >>> +    },
+> >>> +    /// A signal occurred.
+> >>> +    Signal {
+> >>> +        /// Remaining sleep duration.
+> >>> +        jiffies: u64,
+> >>> +    },
+> >>> +}
+> >>
+> >> Is `Signal` and `Woken` only going to hold a single value? Would it be
+> >> best represented as a tuple struct instead, like so?
+> >>
+> >>      pub enum CondVarTimeoutResult {
+> >>          /// The timeout was reached.
+> >>          Timeout,
+> >>          /// Somebody woke us up.
+> >>          Woken (u64),
+> >>          /// A signal occurred.
+> >>          Signal (u64),
+> >>      }
+> >
+> > I could do that, but I like the explicitly named version as it makes
+> > it clear that the unit is jiffies.
+>
+> Why not use `type Jiffies =3D u64;` until we have proper bindings for
+> them? That way we can have both.
 
-You know this code better than I do so since you're fine with it, then
-I'm fine with it.
+I do not mind adding and using a type alias, but I still think the
+named fields are better.
 
-regards,
-dan carpenter
- 
+Alice
