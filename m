@@ -2,188 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E575980E485
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BD080E48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbjLLGw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 01:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
+        id S230247AbjLLGxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjLLGwX (ORCPT
+        with ESMTP id S229484AbjLLGxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 01:52:23 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AF4EB;
-        Mon, 11 Dec 2023 22:52:28 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9f62fca3bso68237391fa.0;
-        Mon, 11 Dec 2023 22:52:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702363946; x=1702968746; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KZo4NVf3AF8ZGR5m2uxx660ix6ln6qBZxuQ/HFN1wu4=;
-        b=go3FEHfwVzBXMoHpXV2jW0ygF+sPerDz4tSDrePz0dKZeCbxfyZs/AqznJy58CYOIB
-         MoPxqoxMRI4VdYNNU6cqj+EkWMdfdS/Lvol/hUhU5RUUx8nIGcDLUWAv/ZVN3Xz2nMWA
-         SD3E6gTEwn7p4PR7fZNcSw+zmlucQUb3d2zztPE3tv2mejhr75xTH9R+WIFCdBaKUaEP
-         oWDLxw96aiq9CGQSsL4+rSkPXi1IEfcj4vQDs4eQtYAY2ptAwYnBvVTL8toqFjw6f24c
-         lt8sSZOyOHkEAxrPvY446HBxya58cMSpgJ7aU06IVlwR0YmKI6BSfCKo/jTvGTIt5L6i
-         F1FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702363946; x=1702968746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KZo4NVf3AF8ZGR5m2uxx660ix6ln6qBZxuQ/HFN1wu4=;
-        b=sOVTA31ua1nBWBWxygWHOTlEFkuwuI28RUp7lMADePNwH+uEg5/rUl6Qo0LdtJkVFN
-         gG/u0BydOg9xUt81Uay1OfllgA4SuU6zRLyL6U/TH9y/H8qnaB72WaaF3kIFWWZjL+J+
-         ABI9+wi7aqgHXB2UfRmVfHGUWVu+1cFpArthEfOSyAlGW4B8R9XIulSnTysZUH0AmlAR
-         HuFuFt6xuQtybOc8pAAQTdbA7neS3GkxjsqQyTM9leAp046svHSWiteIINn2jcT2O1xe
-         UZT2aXQxQYjWb2TuEwdaXkhAcNgj0J6AqvgXC0XqoT5FsYqlCw0C1rtlHxDU9xAWxyK6
-         7KOw==
-X-Gm-Message-State: AOJu0Yy1z4cnAcz7i2UGnws/lGdQZmOeZEqnUSHijSed8Lw7ksfOSMLH
-        o7cuLJ2tmc6apmtTeb6vYzNUfNR0AkpBR2Fgtyg=
-X-Google-Smtp-Source: AGHT+IEgznlicpRXzIo7QVmC4FLAv0DjsNVfS/JO4zV5pX1iElneh0jEkEQOXzst71I9Sb2gALJ/tz4LSshn5I2XDiA=
-X-Received: by 2002:a2e:bd03:0:b0:2cc:20bd:e3a8 with SMTP id
- n3-20020a2ebd03000000b002cc20bde3a8mr2673486ljq.59.1702363946191; Mon, 11 Dec
- 2023 22:52:26 -0800 (PST)
+        Tue, 12 Dec 2023 01:53:49 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC27ECB;
+        Mon, 11 Dec 2023 22:53:53 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3C0CD40E00CC;
+        Tue, 12 Dec 2023 06:53:51 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id pDdtV7Aw2AiP; Tue, 12 Dec 2023 06:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702364029; bh=ew/p29RsERxODejVJK/prbLDG9ex/vpDFzw9MN3tsq4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h9cZgdMOi4AMc5jH32UrN+EA/9cBM1Asn0f/Pr0gfyds7BT+/0Nl8WWbmiFGhFvnL
+         feiBK24dWx5QmKrugrqG+BSkAIjkeoP1DcOAlr/M2EibJQCDDswuey9R+RGJ5GOBlJ
+         Ke4JiNNqMyPNHcXzaLYMVUsplURYCQ0RwHHdrmahz3AGMay87J/8OPpj7rk4tSpVWx
+         bfie+iEo7Ys5+Ckq33dtr0+wXW99FMSLL8DhoG+btVZdKGytgGHbarIRjBV+p3juCO
+         emoCj3qel7qPCyEugklZ4H9n3HSY76Y0c1YrwTA3+61y+5bPZGqJFN8IVUs8TXIlH1
+         15YdOLX5pkgvpOoNGJYKIAhEUmxR/QcsRAbrkbmRTt1A7pFTDLyVLHfzguoLIUpanQ
+         U3jCxGi+/3Wop99zzzymNsV1Y++VkPDUgL31pov6Glf5dVUVjgnaylMQwYtGrHWaTU
+         OZNdBr5Y1qV/GiAuBzSZziTAdc7wTsIHmUOOgg3HRTmDcj3tJnVsieftsrIMOPgLbU
+         cPDLPohB32GLlZcSa0sbWJAb/GhiU51Vl6XWnqftK7X4tvj2EqvSTFcD8DXHQDDIqT
+         Z1KwgUMBNnz0+NuhUZwK0k2PDwNSOxfYqwReoBEx4psdy3ftP8v+81+eCYHbtHFkCs
+         WcXNL786gMn32z/o0RXvSjyI=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 897BA40E00CB;
+        Tue, 12 Dec 2023 06:53:08 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 07:52:59 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        alpergun@google.com, jarkko@kernel.org, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+Subject: Re: [PATCH v10 14/50] crypto: ccp: Add support to initialize the
+ AMD-SP for SEV-SNP
+Message-ID: <20231212065259.GAZXgDSwV+zaH8MvB6@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-15-michael.roth@amd.com>
+ <20231127095937.GLZWRoiaqGlJMX54Xb@fat_crate.local>
+ <d5242390-8904-7ec5-d8a1-9e3fb8f6423c@amd.com>
+ <20231206170807.GBZXCqd0z8uu2rlhpn@fat_crate.local>
+ <9af9b10f-0ab6-1fe8-eaec-c9f98e14a203@amd.com>
+ <20231209162015.GBZXSTv738J09Htf51@fat_crate.local>
+ <2800d4d6-8ae9-e6c9-287a-301beb0a2f50@amd.com>
 MIME-Version: 1.0
-References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
- <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
-In-Reply-To: <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Tue, 12 Dec 2023 14:52:08 +0800
-Message-ID: <CAMgjq7AtceR-CXnKFfQHM3qi0y4oGyJ4_sw_uh5EkpXCBzkCXg@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Charan Teja Kalla <quic_charante@quicinc.com>,
-        Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2800d4d6-8ae9-e6c9-287a-301beb0a2f50@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=97=A5=E5=
-=91=A8=E4=BA=8C 06:07=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Fri, Dec 8, 2023 at 1:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
-> >
-> > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=888=E6=97=A5=
-=E5=91=A8=E4=BA=94 14:14=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > Unmapped folios accessed through file descriptors can be
-> > > underprotected. Those folios are added to the oldest generation based
-> > > on:
-> > > 1. The fact that they are less costly to reclaim (no need to walk the
-> > >    rmap and flush the TLB) and have less impact on performance (don't
-> > >    cause major PFs and can be non-blocking if needed again).
-> > > 2. The observation that they are likely to be single-use. E.g., for
-> > >    client use cases like Android, its apps parse configuration files
-> > >    and store the data in heap (anon); for server use cases like MySQL=
-,
-> > >    it reads from InnoDB files and holds the cached data for tables in
-> > >    buffer pools (anon).
-> > >
-> > > However, the oldest generation can be very short lived, and if so, it
-> > > doesn't provide the PID controller with enough time to respond to a
-> > > surge of refaults. (Note that the PID controller uses weighted
-> > > refaults and those from evicted generations only take a half of the
-> > > whole weight.) In other words, for a short lived generation, the
-> > > moving average smooths out the spike quickly.
-> > >
-> > > To fix the problem:
-> > > 1. For folios that are already on LRU, if they can be beyond the
-> > >    tracking range of tiers, i.e., five accesses through file
-> > >    descriptors, move them to the second oldest generation to give the=
-m
-> > >    more time to age. (Note that tiers are used by the PID controller
-> > >    to statistically determine whether folios accessed multiple times
-> > >    through file descriptors are worth protecting.)
-> > > 2. When adding unmapped folios to LRU, adjust the placement of them s=
-o
-> > >    that they are not too close to the tail. The effect of this is
-> > >    similar to the above.
-> > >
-> > > On Android, launching 55 apps sequentially:
-> > >                            Before     After      Change
-> > >   workingset_refault_anon  25641024   25598972   0%
-> > >   workingset_refault_file  115016834  106178438  -8%
-> >
-> > Hi Yu,
-> >
-> > Thanks you for your amazing works on MGLRU.
-> >
-> > I believe this is the similar issue I was trying to resolve previously:
-> > https://lwn.net/Articles/945266/
-> > The idea is to use refault distance to decide if the page should be
-> > place in oldest generation or some other gen, which per my test,
-> > worked very well, and we have been using refault distance for MGLRU in
-> > multiple workloads.
-> >
-> > There are a few issues left in my previous RFC series, like anon pages
-> > in MGLRU shouldn't be considered, I wanted to collect feedback or test
-> > cases, but unfortunately it seems didn't get too much attention
-> > upstream.
-> >
-> > I think both this patch and my previous series are for solving the
-> > file pages underpertected issue, and I did a quick test using this
-> > series, for mongodb test, refault distance seems still a better
-> > solution (I'm not saying these two optimization are mutually exclusive
-> > though, just they do have some conflicts in implementation and solving
-> > similar problem):
-> >
-> > Previous result:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Execution Results after 905 seconds
-> > ------------------------------------------------------------------
-> >                   Executed        Time (=C2=B5s)       Rate
-> >   STOCK_LEVEL     2542            27121571486.2   0.09 txn/s
-> > ------------------------------------------------------------------
-> >   TOTAL           2542            27121571486.2   0.09 txn/s
-> >
-> > This patch:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Execution Results after 900 seconds
-> > ------------------------------------------------------------------
-> >                   Executed        Time (=C2=B5s)       Rate
-> >   STOCK_LEVEL     1594            27061522574.4   0.06 txn/s
-> > ------------------------------------------------------------------
-> >   TOTAL           1594            27061522574.4   0.06 txn/s
-> >
-> > Unpatched version is always around ~500.
->
-> Thanks for the test results!
->
-> > I think there are a few points here:
-> > - Refault distance make use of page shadow so it can better
-> > distinguish evicted pages of different access pattern (re-access
-> > distance).
-> > - Throttled refault distance can help hold part of workingset when
-> > memory is too small to hold the whole workingset.
-> >
-> > So maybe part of this patch and the bits of previous series can be
-> > combined to work better on this issue, how do you think?
->
-> I'll try to find some time this week to look at your RFC. It'd be a
+On Mon, Dec 11, 2023 at 03:11:17PM -0600, Kalra, Ashish wrote:
+> What we need is a mechanism to do legacy SEV/SEV-ES INIT only if a
+> SEV/SEV-ES guest is being launched, hence, we want an additional parameter
+> added to sev_platform_init() exported interface so that kvm_amd module can
+> call this interface during guest launch and indicate if SNP/legacy guest is
+> being launched.
+> 
+> That's the reason we want to add the probe parameter to
+> sev_platform_init().
 
-Thanks!
+That's not what your original patch does and nowhere in the whole
+patchset do I see this new requirement for KVM to be able to control the
+probing.
 
-> lot easier for me if you could share
-> 1. your latest tree, preferably based on the mainline, and
-> 2. your VM image containing the above test.
+The probe param is added to ___sev_platform_init_locked() which is
+called by this new sev_platform_init_on_probe() thing to signal that
+whatever calls this, it wants the probing.
 
-Sure, I'll update the RFC and try to provide an easier test reproducer.
+And "whatever" is sev_pci_init() which is called from the bowels of the
+secure processor drivers. Suffice it to say, this is some sort of an
+init path.
+
+So, it wants to init SNP stuff which is unconditional during driver init
+- not when KVM starts guests - and probe too on driver init time, *iff*
+that psp_init_on_probe thing is set. Which looks suspicious to me:
+
+  "Add psp_init_on_probe module parameter that allows for skipping the
+  PSP's SEV platform initialization during module init. User may decouple
+  module init from PSP init due to use of the INIT_EX support in upcoming
+  patch which allows for users to save PSP's internal state to file."
+
+From b64fa5fc9f44 ("crypto: ccp - Add psp_init_on_probe module
+parameter").
+
+And reading about INIT_EX, "This command loads the SEV related
+persistent data from user-supplied data and initializes the platform
+context."
+
+So it sounds like HV vendor wants to supply something itself. But then
+looking at init_ex_path and open_file_as_root() makes me cringe.
+I would've never done it this way: we have request_firmware* etc helpers
+for loading blobs from userspace which are widely used. But then reading 
+
+  3d725965f836 ("crypto: ccp - Add SEV_INIT_EX support")
+
+that increases the cringe factor even more because that also wants to
+*write* into that file. Maybe there were good reasons to do it this way
+- it is still yucky for my taste tho...
+
+But I digress - whatever you want to do, the right approach is to split
+the functionality:
+
+SNP init
+legacy SEV init
+
+and to call them from a wrapper function around it which determines
+which ones need to get called depending on that delayed probe thing.
+
+Lumping everything together and handing a silly bool downwards is
+already turning into a mess.
+
+Now, looking at sev_guest_init() which calls sev_platform_init() and if
+you want to pass back'n'forth more information than just that &error
+pointer, then you can define your own struct sev_platform_init_info or
+so which you preset before calling sev_platform_init() and pass in
+a pointer to it.
+
+And in it you can stick &error, bool probe or whatever else you need to
+control what the platform needs to do upon init. And if you need to
+extend that in the future, you can add new struct members and so on.
+
+HTH.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
