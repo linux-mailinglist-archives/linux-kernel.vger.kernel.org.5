@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D83680F4B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D95B080F4B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbjLLRf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S1376802AbjLLRjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbjLLRfz (ORCPT
+        with ESMTP id S229963AbjLLRjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:35:55 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EEA93;
-        Tue, 12 Dec 2023 09:36:02 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d8ddcc433fso43019177b3.1;
-        Tue, 12 Dec 2023 09:36:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402561; x=1703007361; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AqYW6zWEA4DrVdtJ0M0uHwX0AZKuTGbkjdSNuNf9Jsw=;
-        b=WoVNRF8XgvjVELlmulYULfD2xKLV+DTzhPLGN/vVXPZQMTzP614zexwKoNOGGKjWkk
-         rX0U/s27DN9BAZYKd8jOC5OYfZwpWXoehkVHN4CvEY8fmP4FaDS8g0iDtowre6owgY5o
-         zksrCP+6yNyyJNRcafXfC9WpFolCTTlD7R7EUdjO6bTNjc6hqZ0Bnky3/NUnd+l6Uw9b
-         Xq1g3xVwrjRbv31rSFxF3aTNRAiu9RSOl8oUy0f8e/hodHnSi3dNBEDBqodfwoVvXxSr
-         7+YvrdY6MrBK7FdBHmN0YUTz7MbQ9WHnyhcxKZHge4HneKOtc7Wi3EEjJp6WOR6odgVw
-         2ggA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402561; x=1703007361;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AqYW6zWEA4DrVdtJ0M0uHwX0AZKuTGbkjdSNuNf9Jsw=;
-        b=HIXXa0LW2zNwFIetmj0XIbAjTB2xPSgwIDRoTSPR+Y+NIFrHBL8AhiiomM0DL5gii5
-         rlPgurU6+dJ2JHGLBojx+82pX7hK9uYrmXQf3Z/lUdxI3iSp03L71zRpqDEayN5BQ9nb
-         t9n4wLGpxFx7tryZg47lBMFcqdLYL5FBgkOzKbrz8Co6gc3Enb4u6HKdqyAviyyLcFa2
-         Hvs7mSTtWlk0RgchQVYTN5ChoQio+DoJIM3BoAlzkaCntZdrRFTW50iC0zUiPFCQs+Fu
-         QDQJGR+E0w8d/2xIpwmOnf95sZ0NL9pArfOBd7KEcFL53tBKFdS1vOUALmGPGNzy/tiQ
-         W+Yg==
-X-Gm-Message-State: AOJu0YxjE5rEQSbeL6bMnI/vWNU5t2FJ/F4wMtdlRJRCcwzaXbRkmotf
-        T+V8IOTnWQHiaQzaCL9O2wU=
-X-Google-Smtp-Source: AGHT+IE/2pSQ9yKqXyt2sZV+rUNwsE5JpJPh36RxwM+nVPxHryEkYXvEScysoA+RwrJAZ0UpUjbtxA==
-X-Received: by 2002:a0d:fbc2:0:b0:5d8:d2b6:6266 with SMTP id l185-20020a0dfbc2000000b005d8d2b66266mr3054619ywf.99.1702402561267;
-        Tue, 12 Dec 2023 09:36:01 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id o5-20020a817305000000b005cd9cdbc48dsm3897945ywc.72.2023.12.12.09.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:36:00 -0800 (PST)
-Date:   Tue, 12 Dec 2023 09:35:59 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        Tue, 12 Dec 2023 12:39:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFAE8F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BB0BC433C7;
+        Tue, 12 Dec 2023 17:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702402749;
+        bh=3O4MKMSJdcyJ+24RyslOoDD0BR9w2BLkDCO5dQ0GLyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q3NIGmnQXCbRmAhjc6JJ9yBgHrlAeV5Ad9Ny111D3FtGouOkZuReV2gmfVL9mKy5j
+         PrOq+Cstwxnd3HpQ0oYBt+L52EiLOX1g2YdOT8SLI3hjXZkiwE7UMhq1f4zmFTIvZQ
+         ZIrWye/chg5bI9DPrJl71p/AcO6Kg7XnTxrug5GcH6yrHhC4zZMffo5HaqhGUl7ZZ0
+         QSvU5FnIGTKzZqgrqXpok7qkQV5g3V7ajv54kTxpMsg7eiESC1q3pito2NBubgRYLj
+         Y2WyMutZBxgTXolnWTKm5/1GWfJ+2LV0wkMe82xHJxC6jJ1rBQ0ZGmmKTAJCRK3NFZ
+         0dpQXfvdqnEgw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5576F403EF; Tue, 12 Dec 2023 14:39:05 -0300 (-03)
+Date:   Tue, 12 Dec 2023 14:39:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH v3 13/35] KVM: x86: hyper-v: optimize and cleanup
- kvm_hv_process_stimers()
-Message-ID: <ZXiZ9XviH84mXPG5@yury-ThinkPad>
-References: <20231212022749.625238-1-yury.norov@gmail.com>
- <20231212022749.625238-14-yury.norov@gmail.com>
- <ZXiW3AgIENf7whei@google.com>
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v1 02/14] libperf cpumap: Rename and prefer sysfs for
+ perf_cpu_map__default_new
+Message-ID: <ZXiauao3bIbc0ZCo@kernel.org>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-3-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXiW3AgIENf7whei@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <20231129060211.1890454-3-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,31 +91,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 09:22:36AM -0800, Sean Christopherson wrote:
-> On Mon, Dec 11, 2023, Yury Norov wrote:
-> > The function traverses stimer_pending_bitmap in a for-loop bit by bit.
-> > Simplify it by using atomic find_and_set_bit().
+Em Tue, Nov 28, 2023 at 10:01:59PM -0800, Ian Rogers escreveu:
+> Rename perf_cpu_map__default_new to perf_cpu_map__new_online_cpus to
+> better indicate what the implementation does. Read the online CPUs
+> from /sys/devices/system/cpu/online first before using sysconf as
+> sysconf can't accurately configure holes in the CPU map. If sysconf is
+> used, warn when the configured and online processors disagree.
 > 
-> for_each_test_and_clear_bit(), not find_and_set_bit().
+> When reading from a file, if the read doesn't yield a CPU map then
+> return an empty map rather than the default online. This avoids
+> recursion but also better yields being able to detect failures.
 > 
-> It might also be nice to call out that there are only 4 bits, i.e. that using
-> for_each_test_and_clear_bit() will still generate inline code.  Definitely not
-> mandatory though, just nice to have (I highly doubt this code would be sensitive
-> to using less optimal code).
+> Add more comments.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/perf/cpumap.c              | 59 +++++++++++++++++-----------
+>  tools/lib/perf/include/perf/cpumap.h | 15 ++++++-
+>  tools/lib/perf/libperf.map           |  2 +-
+>  tools/lib/perf/tests/test-cpumap.c   |  2 +-
+>  4 files changed, 51 insertions(+), 27 deletions(-)
+> 
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index 2bd6aba3d8c9..463ca8b37d45 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -9,6 +9,7 @@
+>  #include <unistd.h>
+>  #include <ctype.h>
+>  #include <limits.h>
+> +#include "internal.h"
+>  
+>  void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
+>  {
+> @@ -66,15 +67,21 @@ void perf_cpu_map__put(struct perf_cpu_map *map)
+>  	}
+>  }
+>  
+> -static struct perf_cpu_map *cpu_map__default_new(void)
+> +static struct perf_cpu_map *cpu_map__new_sysconf(void)
+>  {
+>  	struct perf_cpu_map *cpus;
+> -	int nr_cpus;
+> +	int nr_cpus, nr_cpus_conf;
+>  
+>  	nr_cpus = sysconf(_SC_NPROCESSORS_ONLN);
+>  	if (nr_cpus < 0)
+>  		return NULL;
+>  
+> +	nr_cpus_conf = sysconf(_SC_NPROCESSORS_CONF);
+> +	if (nr_cpus != nr_cpus_conf) {
+> +		pr_warning("Number of online CPUs (%d) differs from the number configured (%d) the CPU map will only cover the first %d CPUs.",
+> +			nr_cpus, nr_cpus_conf, nr_cpus);
+> +	}
+> +
+>  	cpus = perf_cpu_map__alloc(nr_cpus);
+>  	if (cpus != NULL) {
+>  		int i;
+> @@ -86,9 +93,27 @@ static struct perf_cpu_map *cpu_map__default_new(void)
+>  	return cpus;
+>  }
+>  
+> -struct perf_cpu_map *perf_cpu_map__default_new(void)
+> +static struct perf_cpu_map *cpu_map__new_syfs_online(void)
 
-Sure, will do.
- 
-> > While here, refactor the logic by decreasing indentation level.
-> > 
-> > CC: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
-> >  arch/x86/kvm/hyperv.c | 40 ++++++++++++++++++++--------------------
-> 
-> This doesn't conflict with any of the in-flight Hyper-V changes, so with a fixed
-> changelog, feel free to take this through the bitmap tree.
-> 
-> Acked-by: Sean Christopherson <seanjc@google.com>
+I'm renaming this to cpu_map__new_sysfs_online(), ok?
 
-Thank you!
+- Arnaldo
+
+>  {
+> -	return cpu_map__default_new();
+> +	struct perf_cpu_map *cpus = NULL;
+> +	FILE *onlnf;
+> +
+> +	onlnf = fopen("/sys/devices/system/cpu/online", "r");
+> +	if (onlnf) {
+> +		cpus = perf_cpu_map__read(onlnf);
+> +		fclose(onlnf);
+> +	}
+> +	return cpus;
+> +}
+> +
+> +struct perf_cpu_map *perf_cpu_map__new_online_cpus(void)
+> +{
+> +	struct perf_cpu_map *cpus = cpu_map__new_syfs_online();
+> +
+> +	if (cpus)
+> +		return cpus;
+> +
+> +	return cpu_map__new_sysconf();
+>  }
+>  
+>  
+> @@ -180,27 +205,11 @@ struct perf_cpu_map *perf_cpu_map__read(FILE *file)
+>  
+>  	if (nr_cpus > 0)
+>  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
+> -	else
+> -		cpus = cpu_map__default_new();
+>  out_free_tmp:
+>  	free(tmp_cpus);
+>  	return cpus;
+>  }
+>  
+> -static struct perf_cpu_map *cpu_map__read_all_cpu_map(void)
+> -{
+> -	struct perf_cpu_map *cpus = NULL;
+> -	FILE *onlnf;
+> -
+> -	onlnf = fopen("/sys/devices/system/cpu/online", "r");
+> -	if (!onlnf)
+> -		return cpu_map__default_new();
+> -
+> -	cpus = perf_cpu_map__read(onlnf);
+> -	fclose(onlnf);
+> -	return cpus;
+> -}
+> -
+>  struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+>  {
+>  	struct perf_cpu_map *cpus = NULL;
+> @@ -211,7 +220,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+>  	int max_entries = 0;
+>  
+>  	if (!cpu_list)
+> -		return cpu_map__read_all_cpu_map();
+> +		return perf_cpu_map__new_online_cpus();
+>  
+>  	/*
+>  	 * must handle the case of empty cpumap to cover
+> @@ -268,9 +277,11 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+>  
+>  	if (nr_cpus > 0)
+>  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
+> -	else if (*cpu_list != '\0')
+> -		cpus = cpu_map__default_new();
+> -	else
+> +	else if (*cpu_list != '\0') {
+> +		pr_warning("Unexpected characters at end of cpu list ('%s'), using online CPUs.",
+> +			   cpu_list);
+> +		cpus = perf_cpu_map__new_online_cpus();
+> +	} else
+>  		cpus = perf_cpu_map__new_any_cpu();
+>  invalid:
+>  	free(tmp_cpus);
+> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+> index d0bf218ada11..b24bd8b8f34e 100644
+> --- a/tools/lib/perf/include/perf/cpumap.h
+> +++ b/tools/lib/perf/include/perf/cpumap.h
+> @@ -22,7 +22,20 @@ struct perf_cpu_map;
+>   * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -1 value.
+>   */
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+> -LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
+> +/**
+> + * perf_cpu_map__new_online_cpus - a map read from
+> + *                                 /sys/devices/system/cpu/online if
+> + *                                 available. If reading wasn't possible a map
+> + *                                 is created using the online processors
+> + *                                 assuming the first 'n' processors are all
+> + *                                 online.
+> + */
+> +LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_online_cpus(void);
+> +/**
+> + * perf_cpu_map__new - create a map from the given cpu_list such as "0-7". If no
+> + *                     cpu_list argument is provided then
+> + *                     perf_cpu_map__new_online_cpus is returned.
+> + */
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> index a8ff64baea3e..8a71f841498e 100644
+> --- a/tools/lib/perf/libperf.map
+> +++ b/tools/lib/perf/libperf.map
+> @@ -2,7 +2,7 @@ LIBPERF_0.0.1 {
+>  	global:
+>  		libperf_init;
+>  		perf_cpu_map__new_any_cpu;
+> -		perf_cpu_map__default_new;
+> +		perf_cpu_map__new_online_cpus;
+>  		perf_cpu_map__get;
+>  		perf_cpu_map__put;
+>  		perf_cpu_map__new;
+> diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
+> index 2c359bdb951e..c998b1dae863 100644
+> --- a/tools/lib/perf/tests/test-cpumap.c
+> +++ b/tools/lib/perf/tests/test-cpumap.c
+> @@ -29,7 +29,7 @@ int test_cpumap(int argc, char **argv)
+>  	perf_cpu_map__put(cpus);
+>  	perf_cpu_map__put(cpus);
+>  
+> -	cpus = perf_cpu_map__default_new();
+> +	cpus = perf_cpu_map__new_online_cpus();
+>  	if (!cpus)
+>  		return -1;
+>  
+> -- 
+> 2.43.0.rc1.413.gea7ed67945-goog
+> 
+
+-- 
+
+- Arnaldo
