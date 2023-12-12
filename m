@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA2780E276
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00180E272
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345714AbjLLC6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S1345731AbjLLDAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLC6g (ORCPT
+        with ESMTP id S231142AbjLLDAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:58:36 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC5D83;
-        Mon, 11 Dec 2023 18:58:39 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 1220B24E296;
-        Tue, 12 Dec 2023 10:58:38 +0800 (CST)
-Received: from EXMBX064.cuchost.com (172.16.6.64) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 10:58:38 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX064.cuchost.com
- (172.16.6.64) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 10:58:37 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Tue, 12 Dec 2023 10:58:37 +0800
-From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "emil.renner.berthing@canonical.com" 
-        <emil.renner.berthing@canonical.com>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>
-CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: RE: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
- resets nodes
-Thread-Topic: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
- resets nodes
-Thread-Index: AQHaKDqra6wATad1nUKrJTE2u0DzTrCfKVUAgAXSX4A=
-Date:   Tue, 12 Dec 2023 02:58:37 +0000
-Message-ID: <62705afb652e416695aa26e3bdb2500e@EXMBX066.cuchost.com>
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
- <20231206115000.295825-17-jeeheng.sia@starfivetech.com>
- <4dd53599-5e80-4a00-a708-507c9c2e7b6b@linaro.org>
-In-Reply-To: <4dd53599-5e80-4a00-a708-507c9c2e7b6b@linaro.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [202.188.176.82]
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 11 Dec 2023 22:00:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09589BC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702350027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y/GWabnUccw3NaInncXMDYCSfx9WQ13D52xz9bmZnXo=;
+        b=e9TqMgWq1zdVPcjCfOZwvFxzwvDHf2fOMbTNbWuTNXSGaSh0ksqpI9L2s2IpvXHYgUt1E5
+        7XjxA9mdC0gC8NMtzESSH0LkYN1PIAzZuET8qAgMQJlKjgYnlgH5PgUG8ELMci20P7Vimt
+        pECdYPyoxUWkwkAbrPzXk0YUBx84t8M=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-342-GG9aXc7qPGm78P6MSkt1Gg-1; Mon, 11 Dec 2023 22:00:25 -0500
+X-MC-Unique: GG9aXc7qPGm78P6MSkt1Gg-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-590b580ae39so3674462eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:00:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702350025; x=1702954825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y/GWabnUccw3NaInncXMDYCSfx9WQ13D52xz9bmZnXo=;
+        b=VemnFBwWm70arlDsXIJ6iNl1vvveMSaGsYnMoAASngkJdJa1sobaMje0oy/DAsoECM
+         rTPTyUutqhha3+uigGbZZPWTa1mONeP82r6gROHygetaEGsrnWefx0l+g9lvMCYNLvgS
+         DnOkLWeUYxH+kXTGSTpzS8thr4B9XzW1p6E7QHM7Hvz9dBFaHdpda3ReUc0MuQdSQUwb
+         lT1yb8enqdwGfJCcp6XOTxX71WwgkcTZnjrsPSpov07JBfsD8ByCX74uK16j+oh0ldqP
+         o+PmNe7a4maZLfVZobmBnTeNStxh/fDSHYEN4YMyY9hjU+pDD17IqiAIqfYTyYFTTedd
+         gUUw==
+X-Gm-Message-State: AOJu0Yy80O1SqMwbuPXRDncpyi3dq99SGOfLQgqlqHgdLnxrwWtxbblj
+        Etgde6SN47XRGxiNlBiiXvLMNfCcIhd/D0aFoo7hqv3bb7eV00sRtH5AB///EyBE7s2ND3H1303
+        EOZnUU8rhOgmcXOAaa7BHUsDYI6SkFRc9+Fr/T8VxIAr4GRFVOTyqYQ==
+X-Received: by 2002:a05:6358:260e:b0:16e:4c3:f8c3 with SMTP id l14-20020a056358260e00b0016e04c3f8c3mr6935870rwc.11.1702350024817;
+        Mon, 11 Dec 2023 19:00:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEp3OwNK9PoGoQnXeeX4+viPi6Hk3B5tFT4RIMaX8AFHJ44Lb0NnCW5h1v++Uvw9C1SRvVa6MdgSmune5oTLWk=
+X-Received: by 2002:a05:6358:260e:b0:16e:4c3:f8c3 with SMTP id
+ l14-20020a056358260e00b0016e04c3f8c3mr6935850rwc.11.1702350024367; Mon, 11
+ Dec 2023 19:00:24 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231122100016.GO8262@noisy.programming.kicks-ass.net>
+ <6564a012.c80a0220.adb78.f0e4SMTPIN_ADDED_BROKEN@mx.google.com>
+ <d4110c79-d64f-49bd-9f69-0a94369b5e86@bytedance.com> <07513.123120701265800278@us-mta-474.us.mimecast.lan>
+ <20231207014626-mutt-send-email-mst@kernel.org> <56082.123120804242300177@us-mta-137.us.mimecast.lan>
+ <20231208052150-mutt-send-email-mst@kernel.org> <53044.123120806415900549@us-mta-342.us.mimecast.lan>
+ <20231209053443-mutt-send-email-mst@kernel.org> <CACGkMEuSGT-e-i-8U7hum-N_xEnsEKL+_07Mipf6gMLFFhj2Aw@mail.gmail.com>
+ <20231211115329-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20231211115329-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 12 Dec 2023 11:00:12 +0800
+Message-ID: <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Tobias Huschle <huschle@linux.ibm.com>,
+        Abel Wu <wuyun.abel@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux.dev,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBTYXR1cmRheSwg
-RGVjZW1iZXIgOSwgMjAyMyAxOjU3IEFNDQo+IFRvOiBKZWVIZW5nIFNpYSA8amVlaGVuZy5zaWFA
-c3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5lbEBlc21pbC5kazsgY29ub3JAa2VybmVsLm9yZzsgcm9i
-aCtkdEBrZXJuZWwub3JnOw0KPiBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7IHBh
-dWwud2FsbXNsZXlAc2lmaXZlLmNvbTsgcGFsbWVyQGRhYmJlbHQuY29tOyBhb3VAZWVjcy5iZXJr
-ZWxleS5lZHU7DQo+IG10dXJxdWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJuZWwub3JnOyBw
-LnphYmVsQHBlbmd1dHJvbml4LmRlOyBlbWlsLnJlbm5lci5iZXJ0aGluZ0BjYW5vbmljYWwuY29t
-OyBIYWwgRmVuZw0KPiA8aGFsLmZlbmdAc3RhcmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBXdSA8eGlu
-Z3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+IENjOiBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRl
-YWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2Vy
-bmVsLm9yZzsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4gPGxleWZv
-b24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEgMTYvMTZd
-IHJpc2N2OiBkdHM6IHN0YXJmaXZlOiBqaDgxMDA6IEFkZCBjbG9ja3MgYW5kIHJlc2V0cyBub2Rl
-cw0KPiANCj4gT24gMDYvMTIvMjAyMyAxMjo1MCwgU2lhIEplZSBIZW5nIHdyb3RlOg0KPiA+IEFk
-ZCBTWVNDUkcvU1lTQ1JHLU5FL1NZU0NSRy1OVy9TWVNDUkctU1cvQU9OQ1JHIGNsb2NrIGFuZCBy
-ZXNldA0KPiA+IG5vZGVzIGZvciBKSDgxMDAgUklTQy1WIFNvQy4NCj4gPg0KPiA+IFNpZ25lZC1v
-ZmYtYnk6IFNpYSBKZWUgSGVuZyA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiBS
-ZXZpZXdlZC1ieTogTGV5IEZvb24gVGFuIDxsZXlmb29uLnRhbkBzdGFyZml2ZXRlY2guY29tPg0K
-PiANCj4gUmVhbGx5PyBMb29rcyBhdXRvbWF0ZWQuLi4gQ2FyZSB0byBwcm92aWRlIGFueSBsaW5r
-cyB0byBlZmZlY3RzIG9mDQo+IGludGVybmFsIHJldmlldz8NCmh0dHBzOi8vZ2l0bGFiLnN0YXJm
-aXZldGVjaC5jb20vamVlaGVuZy5zaWEvbGludXgvLS9jb21taXRzL0pIODEwMF9VcHN0cmVhbS8N
-Cj4gDQo+ID4gLS0tDQo+ID4gIGFyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLWNs
-ay5kdHNpIHwgMTgwICsrKysrKysrKysrKysrKysrKysNCj4gPiAgYXJjaC9yaXNjdi9ib290L2R0
-cy9zdGFyZml2ZS9qaDgxMDAuZHRzaSAgICAgfCAxMTUgKysrKysrKysrKysrDQo+ID4gIDIgZmls
-ZXMgY2hhbmdlZCwgMjk1IGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFy
-Y2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLWNsay5kdHNpDQo+ID4NCj4gPiBkaWZm
-IC0tZ2l0IGEvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgxMDAtY2xrLmR0c2kgYi9h
-cmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJmaXZlL2poODEwMC1jbGsuZHRzaQ0KPiA+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi4yN2JhMjQ5ZjUyM2UNCj4gPiAt
-LS0gL2Rldi9udWxsDQo+ID4gKysrIGIvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgx
-MDAtY2xrLmR0c2kNCj4gPiBAQCAtMCwwICsxLDE4MCBAQA0KPiA+ICsvLyBTUERYLUxpY2Vuc2Ut
-SWRlbnRpZmllcjogR1BMLTIuMCBPUiBNSVQNCj4gPiArLyoNCj4gPiArICogQ29weXJpZ2h0IChD
-KSAyMDIzIFN0YXJGaXZlIFRlY2hub2xvZ3kgQ28uLCBMdGQuDQo+ID4gKyAqLw0KPiA+ICsNCj4g
-PiArLyB7DQo+ID4gKwljbGtfb3NjOiBjbGtfb3NjIHsNCj4gDQo+IE5vIHVuZGVyc2NvcmVzIGlu
-IG5vZGUgbmFtZXMuDQpOb3RlZC4NCj4gDQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9j
-ayI7DQo+ID4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9
-IDwyNDAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gDQo+IC4uLg0KPiANCj4gPiBkaWZmIC0t
-Z2l0IGEvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgxMDAuZHRzaSBiL2FyY2gvcmlz
-Y3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLmR0c2kNCj4gPiBpbmRleCBmMjZhZmY1YzFkZGYu
-Ljk4NjNjNjEzMjRhMCAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJm
-aXZlL2poODEwMC5kdHNpDQo+ID4gKysrIGIvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9q
-aDgxMDAuZHRzaQ0KPiA+IEBAIC00LDYgKzQsOSBAQA0KPiA+ICAgKi8NCj4gPg0KPiA+ICAvZHRz
-LXYxLzsNCj4gPiArI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2Nsb2NrL3N0YXJmaXZlLGpoODEwMC1j
-cmcuaD4NCj4gPiArI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3Jlc2V0L3N0YXJmaXZlLGpoODEwMC1j
-cmcuaD4NCj4gPiArI2luY2x1ZGUgImpoODEwMC1jbGsuZHRzaSINCj4gPg0KPiA+ICAvIHsNCj4g
-PiAgCWNvbXBhdGlibGUgPSAic3RhcmZpdmUsamg4MTAwIjsNCj4gPiBAQCAtMzU3LDYgKzM2MCwx
-MDQgQEAgdWFydDQ6IHNlcmlhbEAxMjFhMDAwMCAgew0KPiA+ICAJCQlzdGF0dXMgPSAiZGlzYWJs
-ZWQiOw0KPiA+ICAJCX07DQo+ID4NCj4gPiArCQlzeXNjcmdfbmU6IHN5c2NyZ19uZUAxMjMyMDAw
-MCB7DQo+IA0KPiBjbG9jay1jb250cm9sbGVyQA0KPiANCj4gSnVzdCBvcGVuIHlvdXIgYmluZGlu
-Z3MgYW5kIHRha2UgYSBsb29rIGhvdyBpdCBpcyBkb25lIHRoZXJlLi4uDQo+IA0KPiBUaGlzIGFw
-cGxpZXMgZXZlcnl3aGVyZQ0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCg0K
+On Tue, Dec 12, 2023 at 12:54=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com=
+> wrote:
+>
+> On Mon, Dec 11, 2023 at 03:26:46PM +0800, Jason Wang wrote:
+> > > Try reducing the VHOST_NET_WEIGHT limit and see if that improves thin=
+gs any?
+> >
+> > Or a dirty hack like cond_resched() in translate_desc().
+>
+> what do you mean, exactly?
+
+Ideally it should not matter, but Tobias said there's an unexpectedly
+long time spent on translate_desc() which may indicate that the
+might_sleep() or other doesn't work for some reason.
+
+Thanks
+
+>
+> --
+> MST
+>
+
