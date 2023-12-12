@@ -2,322 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F98280EC93
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C133180EC97
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376356AbjLLMxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
+        id S1376316AbjLLMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:54:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376288AbjLLMxR (ORCPT
+        with ESMTP id S1376342AbjLLMyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:53:17 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487A394;
-        Tue, 12 Dec 2023 04:53:23 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so4945491f8f.2;
-        Tue, 12 Dec 2023 04:53:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702385602; x=1702990402; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QE+VFdcKlT0mTVTVsgugSqDCQ3ICiwFx807Qg0S53+I=;
-        b=dLF645+ClmU5FFO8aUErTx7+PR9n2phBG1XXN8ORdpxVyMUl8dKyQcx5kfL0P9oV96
-         6suEcyA+C44q8R1w4U7tiTM+/+NoSW0JFz+xQGB3U68k16s26pvxPF6ypThdMRh3n38n
-         w1I+0Q3hBX4bCz7HNzFo71SqzL5Fo76PSHB0wtI8JMg+qW+5BKoUS/nhwwuTEXxe62q5
-         Q5i63f3s6ZOZ9Cp8AM0yjSTZxzRZBJzA7y+aUoBNSE3+GuvBeXVSXZXjl2smEky0AMsL
-         RtnEqr/dI1/Vb2uteppABDORSxGRjeuTZ899XQ+bWYW0Ga8dfSXiEAATV1FTxyGlyFcI
-         9PBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702385602; x=1702990402;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QE+VFdcKlT0mTVTVsgugSqDCQ3ICiwFx807Qg0S53+I=;
-        b=wRU4cnOQl1MMAgHOiAO8025dktc7Zw8iaFzrxV5PtrErTuAb9UziX8EVXlmYylnaz/
-         iO19n6Ou4Bhxg+WsvVCw8nl6iVyLrfelUeZLBDyYeYDdsbssmbGhJFBArByGH8D/U4SS
-         EwDmficmDWJzk10EvEzVuQOIU8frLvw04K7ZZ6NyuBXSEXb5Vm+A/qFM3gnL+YpTNxcE
-         qbGwfKkSOjTD8zk7wiHsKR0RAJxsvspOhZ1S9LasPJKyTSpRjGwlbVxrgdmrRYg2f2RB
-         jhlptbCzWagazbLp0AwCXOU8BxrAz0jWgY29X4PFrxF0g8bLrMhCSm1TEH9CLm/BtWuG
-         c7Pw==
-X-Gm-Message-State: AOJu0YxEOzwfb5dEA1JMHqRG4ffXhzjYBMIm04nx5eT5Zgp7AW0go+2s
-        GItAy3/LwtlN8dm0XxyPwiY=
-X-Google-Smtp-Source: AGHT+IGWynIXhAv65hVHQ/6H7/dNDctHxAa6q49iej4FmkAoC4iqt4MmbS9KVDyizBU0LaTIvHVVnw==
-X-Received: by 2002:a05:600c:2247:b0:40c:19ab:99b1 with SMTP id a7-20020a05600c224700b0040c19ab99b1mr3044259wmm.137.1702385601632;
-        Tue, 12 Dec 2023 04:53:21 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
-        by smtp.gmail.com with ESMTPSA id bd19-20020a05600c1f1300b0040839fcb217sm16658633wmb.8.2023.12.12.04.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 04:53:21 -0800 (PST)
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     linuxfancy@googlegroups.com, sakari.ailus@linux.intel.com,
-        Tommaso Merciai <tomm.merciai@gmail.com>,
-        Martin Hecht <martin.hecht@avnet.eu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: i2c: alvium-csi2: adjust code style for alvium driver
-Date:   Tue, 12 Dec 2023 13:53:19 +0100
-Message-Id: <20231212125319.732390-1-tomm.merciai@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Dec 2023 07:54:16 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931FDEE;
+        Tue, 12 Dec 2023 04:54:21 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BDDDBE0005;
+        Tue, 12 Dec 2023 12:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702385660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SUAQ6qv2aDc1m39TxOBaleeDpMHPGrbRMQ0hbDXfaoc=;
+        b=MQuO2Peu2llqSqRR1/YYvEdJdNUf+iPUYijiG0G0ljrK6Kxmy5nmYPEfdiPlRgp5Nl+aGn
+        DkK6lPCLNdX4jgZZZQH50s1pYP0QCtcZXZCdaT5siIkf+oEH8r/YkowVTv+RUjUITj6llU
+        xFKF0rdyfMxCs4Af+4k8/onZDL3nntonTknSTqNyVw45zj09tGmXemDqw1P5mF+f/joSte
+        i7wXbG9l8DMdGVMqvstAh0uHspm9hJ7LiNmEEHGMceFCiQHRomZobD25BIJsFxVwhibl7w
+        NWtyT4VPqO/OLs7Yp7GNfTPGYT08lOiNCAMtiPrJ30UMjr3CyzR2lepTxaeEzQ==
+Date:   Tue, 12 Dec 2023 13:54:17 +0100
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Luo Jie <quic_luoj@quicinc.com>
+Cc:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+Subject: Re: [PATCH v2 3/5] net: mdio: ipq4019: configure CMN PLL clock for
+ ipq5332
+Message-ID: <20231212135417.67ece4d0@device.home>
+In-Reply-To: <20231212115151.20016-4-quic_luoj@quicinc.com>
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+        <20231212115151.20016-4-quic_luoj@quicinc.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make some formatting changes to fix issues generated by
-checkpatch.pl script
+Hello,
 
-cmd:
- - ./scripts/checkpatch.pl --strict --max-line-length=80
+I have some more minor comments for yoi :)
 
-Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
----
- drivers/media/i2c/alvium-csi2.c | 143 ++++++++++++++++++--------------
- 1 file changed, 80 insertions(+), 63 deletions(-)
+On Tue, 12 Dec 2023 19:51:48 +0800
+Luo Jie <quic_luoj@quicinc.com> wrote:
 
-diff --git a/drivers/media/i2c/alvium-csi2.c b/drivers/media/i2c/alvium-csi2.c
-index cff2b67247a7..95da5c3287b4 100644
---- a/drivers/media/i2c/alvium-csi2.c
-+++ b/drivers/media/i2c/alvium-csi2.c
-@@ -356,7 +356,8 @@ static int alvium_write_hshake(struct alvium_dev *alvium, u32 reg, u64 val)
- 	read_poll_timeout(alvium_read, hshake_bit,
- 			  ((hshake_bit & BCRM_HANDSHAKE_W_DONE_EN_BIT) == 1),
- 			  15000, 45000, true,
--			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW, &hshake_bit, &ret);
-+			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW,
-+			  &hshake_bit, &ret);
- 	if (ret) {
- 		dev_err(dev, "poll bit[0] = 1, hshake reg fail\n");
- 		return ret;
-@@ -373,7 +374,8 @@ static int alvium_write_hshake(struct alvium_dev *alvium, u32 reg, u64 val)
- 	read_poll_timeout(alvium_read, hshake_bit,
- 			  ((hshake_bit & BCRM_HANDSHAKE_W_DONE_EN_BIT) == 0),
- 			  15000, 45000, true,
--			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW, &hshake_bit, &ret);
-+			  alvium, REG_BCRM_WRITE_HANDSHAKE_RW,
-+			  &hshake_bit, &ret);
- 	if (ret) {
- 		dev_err(dev, "poll bit[0] = 0, hshake reg fail\n");
- 		return ret;
-@@ -404,10 +406,14 @@ static int alvium_get_fw_version(struct alvium_dev *alvium)
- 	u64 spec, maj, min, pat;
- 	int ret = 0;
- 
--	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_SPEC_VERSION_R, &spec, &ret);
--	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MAJOR_VERSION_R, &maj, &ret);
--	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MINOR_VERSION_R, &min, &ret);
--	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_PATCH_VERSION_R, &pat, &ret);
-+	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_SPEC_VERSION_R,
-+			  &spec, &ret);
-+	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MAJOR_VERSION_R,
-+			  &maj, &ret);
-+	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MINOR_VERSION_R,
-+			  &min, &ret);
-+	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_PATCH_VERSION_R,
-+			  &pat, &ret);
- 	if (ret)
- 		return ret;
- 
-@@ -509,7 +515,8 @@ static void alvium_print_avail_feat(struct alvium_dev *alvium)
- 	dev_dbg(dev, "feature acq_abort: %u\n", alvium->avail_ft.acq_abort);
- 	dev_dbg(dev, "feature acq_fr: %u\n", alvium->avail_ft.acq_fr);
- 	dev_dbg(dev, "feature fr_trigger: %u\n", alvium->avail_ft.fr_trigger);
--	dev_dbg(dev, "feature exp_acq_line: %u\n", alvium->avail_ft.exp_acq_line);
-+	dev_dbg(dev, "feature exp_acq_line: %u\n",
-+		alvium->avail_ft.exp_acq_line);
- }
- 
- static void alvium_print_avail_bayer(struct alvium_dev *alvium)
-@@ -627,12 +634,13 @@ static int alvium_set_csi_clk(struct alvium_dev *alvium)
- 	u64 csi_clk;
- 	int ret;
- 
--	csi_clk = clamp(alvium->ep.link_frequencies[0], (u64)alvium->min_csi_clk,
--			(u64)alvium->max_csi_clk);
-+	csi_clk = clamp(alvium->ep.link_frequencies[0],
-+			(u64)alvium->min_csi_clk, (u64)alvium->max_csi_clk);
- 
- 	if (alvium->ep.link_frequencies[0] != (u64)csi_clk) {
--		dev_warn(dev, "requested csi clock (%llu MHz) out of range [%u, %u]"
--			 "Adjusted to %llu\n", alvium->ep.link_frequencies[0],
-+		dev_warn(dev,
-+			 "requested csi clock (%llu MHz) out of range [%u, %u] Adjusted to %llu\n",
-+			 alvium->ep.link_frequencies[0],
- 			 alvium->min_csi_clk, alvium->max_csi_clk, csi_clk);
- 	}
- 
-@@ -1023,44 +1031,44 @@ static int alvium_get_avail_mipi_data_format(struct alvium_dev *alvium)
- 
- 	avail_fmt = (struct alvium_avail_mipi_fmt *)&val;
- 
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG]
--				  = avail_fmt->yuv420_8_leg;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8]
--				  = avail_fmt->yuv420_8;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10]
--				  = avail_fmt->yuv420_10;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_CSPS]
--				  = avail_fmt->yuv420_8_csps;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10_CSPS]
--				  = avail_fmt->yuv420_10_csps;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_8]
--				  = avail_fmt->yuv422_8;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_10]
--				  = avail_fmt->yuv422_10;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB888]
--				  = avail_fmt->rgb888;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB666]
--				  = avail_fmt->rgb666;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB565]
--				  = avail_fmt->rgb565;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB555]
--				  = avail_fmt->rgb555;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB444]
--				  = avail_fmt->rgb444;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW6]
--				  = avail_fmt->raw6;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW7]
--				  = avail_fmt->raw7;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW8]
--				  = avail_fmt->raw8;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW10]
--				  = avail_fmt->raw10;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW12]
--				  = avail_fmt->raw12;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW14]
--				  = avail_fmt->raw14;
--	alvium->is_mipi_fmt_avail[ALVIUM_BIT_JPEG]
--				  = avail_fmt->jpeg;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG] =
-+				  avail_fmt->yuv420_8_leg;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8] =
-+				  avail_fmt->yuv420_8;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10] =
-+				  avail_fmt->yuv420_10;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_CSPS] =
-+				  avail_fmt->yuv420_8_csps;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_10_CSPS] =
-+				  avail_fmt->yuv420_10_csps;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_8] =
-+				  avail_fmt->yuv422_8;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV422_10] =
-+				  avail_fmt->yuv422_10;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB888] =
-+				  avail_fmt->rgb888;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB666] =
-+				  avail_fmt->rgb666;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB565] =
-+				  avail_fmt->rgb565;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB555] =
-+				  avail_fmt->rgb555;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RGB444] =
-+				  avail_fmt->rgb444;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW6] =
-+				  avail_fmt->raw6;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW7] =
-+				  avail_fmt->raw7;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW8] =
-+				  avail_fmt->raw8;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW10] =
-+				  avail_fmt->raw10;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW12] =
-+				  avail_fmt->raw12;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_RAW14] =
-+				  avail_fmt->raw14;
-+	alvium->is_mipi_fmt_avail[ALVIUM_BIT_JPEG] =
-+				  avail_fmt->jpeg;
- 
- 	alvium_print_avail_mipi_fmt(alvium);
- 
-@@ -1078,8 +1086,8 @@ static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
- 		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
- 			continue;
- 
--		if ((!alvium_csi2_fmts[fmt].is_raw) ||
--		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
-+		if (!alvium_csi2_fmts[fmt].is_raw ||
-+		    alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])
- 			sz++;
- 	}
- 
-@@ -1095,9 +1103,10 @@ static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
- 		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
- 			continue;
- 
--		if ((!alvium_csi2_fmts[fmt].is_raw) ||
--		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
--			alvium->alvium_csi2_fmt[avail_fmt_cnt] = alvium_csi2_fmts[fmt];
-+		if (!alvium_csi2_fmts[fmt].is_raw ||
-+		    alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]) {
-+			alvium->alvium_csi2_fmt[avail_fmt_cnt] =
-+				alvium_csi2_fmts[fmt];
- 			avail_fmt_cnt++;
- 		}
- 	}
-@@ -1300,7 +1309,8 @@ static int alvium_set_ctrl_exposure(struct alvium_dev *alvium, int exposure_ns)
- 	return 0;
- }
- 
--static int alvium_set_ctrl_blue_balance_ratio(struct alvium_dev *alvium, int blue)
-+static int alvium_set_ctrl_blue_balance_ratio(struct alvium_dev *alvium,
-+					      int blue)
- {
- 	struct device *dev = &alvium->i2c_client->dev;
- 	int ret;
-@@ -1667,8 +1677,10 @@ static int alvium_set_frame_interval(struct alvium_dev *alvium,
- 	min_fr = alvium->min_fr;
- 	max_fr = alvium->max_fr;
- 
--	dev_dbg(dev, "fi->interval.numerator = %d\n", fi->interval.numerator);
--	dev_dbg(dev, "fi->interval.denominator = %d\n", fi->interval.denominator);
-+	dev_dbg(dev, "fi->interval.numerator = %d\n",
-+		fi->interval.numerator);
-+	dev_dbg(dev, "fi->interval.denominator = %d\n",
-+		fi->interval.denominator);
- 
- 	req_fr = (u64)((fi->interval.denominator * USEC_PER_SEC) /
- 		       fi->interval.numerator);
-@@ -2114,10 +2126,11 @@ static int alvium_ctrl_init(struct alvium_dev *alvium)
- 
- 	/* Auto/manual exposure */
- 	if (alvium->avail_ft.auto_exp) {
--		ctrls->auto_exp = v4l2_ctrl_new_std_menu(hdl, ops,
--							 V4L2_CID_EXPOSURE_AUTO,
--							 V4L2_EXPOSURE_MANUAL, 0,
--							 V4L2_EXPOSURE_AUTO);
-+		ctrls->auto_exp =
-+			v4l2_ctrl_new_std_menu(hdl, ops,
-+					       V4L2_CID_EXPOSURE_AUTO,
-+					       V4L2_EXPOSURE_MANUAL, 0,
-+					       V4L2_EXPOSURE_AUTO);
- 		v4l2_ctrl_auto_cluster(2, &ctrls->auto_exp, 1, true);
- 	}
- 
-@@ -2188,10 +2201,14 @@ static int alvium_ctrl_init(struct alvium_dev *alvium)
- 						     alvium->dft_sharp);
- 
- 	if (alvium->avail_ft.rev_x)
--		ctrls->hflip = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
-+		ctrls->hflip = v4l2_ctrl_new_std(hdl, ops,
-+						 V4L2_CID_HFLIP,
-+						 0, 1, 1, 0);
- 
- 	if (alvium->avail_ft.rev_y)
--		ctrls->vflip = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
-+		ctrls->vflip = v4l2_ctrl_new_std(hdl, ops,
-+						 V4L2_CID_VFLIP,
-+						 0, 1, 1, 0);
- 
- 	if (hdl->error) {
- 		ret = hdl->error;
--- 
-2.34.1
+> The reference clock of CMN PLL block is selectable, the internal
+> 48MHZ is used by default.
+> 
+> The output clock of CMN PLL block is for providing the clock
+> source of ethernet device(such as qca8084), there are 1 * 25MHZ
+> and 3 * 50MHZ output clocks available for the ethernet devices.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+
+[...]
+
+> +/* For the CMN PLL block, the reference clock can be configured according to
+> + * the device tree property "cmn-reference-clock", the internal 48MHZ is used
+> + * by default on the ipq533 platform.
+> + *
+> + * The output clock of CMN PLL block is provided to the ethernet devices,
+> + * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by default.
+> + *
+> + * Such as the output 50M clock for the qca8084 ethernet PHY.
+> + */
+> +static int ipq_cmn_clock_config(struct mii_bus *bus)
+> +{
+> +	int ret;
+> +	u32 reg_val, src_sel, ref_clk;
+> +	struct ipq4019_mdio_data *priv;
+
+Here you should also use reverse christmas-tree notation
+
+[...]
+
+> @@ -317,6 +441,17 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	/* The CMN block resource is for providing clock source to ethernet,
+> +	 * which can be optionally configured on the platform ipq9574 and
+> +	 * ipq5332.
+> +	 */
+> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cmn_blk");
+> +	if (res) {
+> +		priv->cmn_membase = devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(priv->cmn_membase))
+> +			return PTR_ERR(priv->cmn_membase);
+> +	}
+> +
+
+And here you can simplify a bit by using
+devm_platform_ioremap_resource_byname()
+
+Thanks,
+
+Maxime
 
