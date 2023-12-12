@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DC780F324
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 795AA80F320
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376624AbjLLQgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
+        id S232959AbjLLQgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235061AbjLLQfc (ORCPT
+        with ESMTP id S235047AbjLLQfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 11:35:32 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1435610B;
-        Tue, 12 Dec 2023 08:35:35 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 876196000A;
-        Tue, 12 Dec 2023 16:35:33 +0000 (UTC)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4435E113;
+        Tue, 12 Dec 2023 08:35:36 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6CB22FF817;
+        Tue, 12 Dec 2023 16:35:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
         t=1702398934;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xbVhFI1ZSGx1syULTaPHmMoUG7Z8rPeb2O8T42Bf6J0=;
-        b=Bl13/LklFdMlZCq+xi34hEBNI5XOCfoKecmZRoJXC0V5Zv+kC/4dg46+mSjU8SyCDtxHVz
-        Z7RK4V2/JNx2nRT0EL69glSn0cYryHwTptJOcVKlVCyJzhLqqo4U4+JmVXuWVsGUtrQuVi
-        9D7SJCJwZ1QYsYP8A93mIk3ZkHzyu9B1aE77yRtuVtOJA9zxh10NXzRBGfylvxOLOq9VNA
-        BDNOmIlYgacBoH0iwJZiYQXz4GH4Ls/oko06JFt7cnSIACm7/KhBs89msQTT70im/Zb40V
-        gj42J1SlWOdHfbKofcofYWordNIeTKdJLtBJlJ+bCaDUixbNyAugpGF9U0XBMA==
+        bh=7XY5RosXYCLwcWB1g4w/xI8Tyluf+oMKzZZFQCrss2s=;
+        b=YbcdPJ4zbavgv4jdwBSz0ZDghLADAlyp17PeUykF/oogpxrztDatpkFG9+jDAu6NO/WL+C
+        Qjr58YFL2xpy7DS10OV2aytcLP3Gv1bk9NUgh4U2Hlvya3glyMpNge9OJyunPYyNCuI/KY
+        aPZ+KflXA9kcjQg9AVQFdRuq2wjxhgmUIum+hmyUVJrQVSj/YWSqmoQvTAo+NuaeC4nlnA
+        t08SySZ4cau+sgrdudi5CI6ki9Fr7c1LYOzuwFcBBmLB0FmHBlEnpqw/XtkIzgsSfMKTRo
+        KXBYMdbYwWweEB+48LtTqm8t8yTqEqC/sjyzdRJq+RysWmVJWR4zzvcX9hY9kw==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -40,10 +40,11 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
         Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-Date:   Tue, 12 Dec 2023 17:34:44 +0100
-Message-ID: <20231212163459.1923041-13-gregory.clement@bootlin.com>
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v5 13/22] MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
+Date:   Tue, 12 Dec 2023 17:34:45 +0100
+Message-ID: <20231212163459.1923041-14-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -52,107 +53,45 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+With the expanded support for placing the kernel in XPHYS rather than
+just KSEG0, scenarios where ebase doesn't belong to KSEG0 are more
+likely to occur. In such cases, we currently experience a substantial
+and perplexing stack dump without any accompanying explanation. To
+rectify this, we aim to replace the uninformative stack dump with a
+warning that offers a clear explanation of the issue.
 
-NO_EXCEPT_FILL is employed to signal the platform that there is no
-requirement to reserve EBASE memory at the beginning of the kernel.
-
-This holds true for all R2+ platforms, as they dynamically allocate
-ebase memory. It is also applicable to any platform that doesn't load
-the kernel at the start of physical memory.
-
-Eliminate this Kconfig symbol by employing a macro to identify the
-mentioned conditions.
-
-gc: use KSEG0 only for 32 bit configuration
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/Kconfig       | 8 --------
- arch/mips/kernel/head.S | 7 +++++--
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ arch/mips/kernel/traps.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 518376d578b70..59bc956859292 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -150,7 +150,6 @@ config MIPS_GENERIC_KERNEL
- 	select MIPS_CPU_SCACHE
- 	select MIPS_GIC
- 	select MIPS_L1_CACHE_SHIFT_7
--	select NO_EXCEPT_FILL
- 	select PCI_DRIVERS_GENERIC
- 	select SMP_UP if SMP
- 	select SWAP_IO_SPACE
-@@ -244,7 +243,6 @@ config BMIPS_GENERIC
- 	select ARCH_HAS_RESET_CONTROLLER
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU_ALL
- 	select BOOT_RAW
--	select NO_EXCEPT_FILL
- 	select USE_OF
- 	select CEVT_R4K
- 	select CSRC_R4K
-@@ -288,7 +286,6 @@ config BCM47XX
- 	select HAVE_PCI
- 	select IRQ_MIPS_CPU
- 	select SYS_HAS_CPU_MIPS32_R1
--	select NO_EXCEPT_FILL
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 	select SYS_SUPPORTS_MIPS16
-@@ -424,7 +421,6 @@ config LANTIQ
- 	select IRQ_MIPS_CPU
- 	select CEVT_R4K
- 	select CSRC_R4K
--	select NO_EXCEPT_FILL
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_SUPPORTS_BIG_ENDIAN
-@@ -474,7 +470,6 @@ config MACH_LOONGSON64
- 	select ISA
- 	select I8259
- 	select IRQ_MIPS_CPU
--	select NO_EXCEPT_FILL
- 	select NR_CPUS_DEFAULT_64
- 	select USE_GENERIC_EARLY_PRINTK_8250
- 	select PCI_DRIVERS_GENERIC
-@@ -1157,9 +1152,6 @@ config PCI_GT64XXX_PCI0
- config PCI_XTALK_BRIDGE
- 	bool
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 089247555c752..67c7c23fe4f73 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2420,10 +2420,13 @@ void __init trap_init(void)
+ 		 * EVA is special though as it allows segments to be rearranged
+ 		 * and to become uncached during cache error handling.
+ 		 */
+-		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
++		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
+ 			ebase = CKSEG0ADDR(ebase_pa);
+ 		else
+ 			ebase = (unsigned long)phys_to_virt(ebase_pa);
++		if (ebase_pa >= 0x20000000)
++			pr_warn("ebase(%pa) should better be in KSeg0",
++				&ebase_pa);
+ 	}
  
--config NO_EXCEPT_FILL
--	bool
--
- config MIPS_SPRAM
- 	bool
- 
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index b825ed4476c70..51a0ad49ac388 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -59,10 +59,13 @@
- #endif
- 	.endm
- 
--#ifndef CONFIG_NO_EXCEPT_FILL
-+#if (MIPS_ISA_REV < 2) &&					     \
-+    ((!defined( CONFIG_64BIT) && (VMLINUX_LOAD_ADDRESS == KSEG0)) || \
-+    (VMLINUX_LOAD_ADDRESS == CKSEG0))
- 	/*
- 	 * Reserved space for exception handlers.
--	 * Necessary for machines which link their kernels at KSEG0.
-+	 * Necessary for machines which link their kernels at KSEG0
-+	 * and incapable of moving ebase.
- 	 */
- 	.fill	0x400
- #endif
+ 	if (cpu_has_mmips) {
 -- 
 2.42.0
 
