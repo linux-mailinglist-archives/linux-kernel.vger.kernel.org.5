@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DD080E5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090F080E5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjLLIMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        id S1345999AbjLLITm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 03:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLIMt (ORCPT
+        with ESMTP id S229449AbjLLITj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:12:49 -0500
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BE8DB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=from:to:cc:subject:date:message-id
-        :mime-version:content-transfer-encoding; s=k1; bh=7Rc13HU5Hew3Gt
-        2Ni0E4H3z03yClMr1EWHsYl1/be4g=; b=XipcMupa7b4+rqrWOvIUM2nM3R58/B
-        j4EaCMSK1eGMnNs/5JchrnI3qokaZhJtiuazHJxVJtlenKWeKSM//U8n4jIL9Lor
-        mssJ0q0YhAeBO0iofBfUHt/pzNtBBIgI3BVAS2HQYJiC2Tj6yCEMTTl/Zy4dLXfc
-        TqjdYOjrQ5hO759sxXWiVyIQllgcxa3OOnh7XpFjBvdJameBDdHCAFsca6HKLHN9
-        dEsUMsPOW/5dC61NTJ3pYkMLPnlB5CzukI6mepz3mDqORvtBRXSnuo31TIdQHrWK
-        QeffqZrY+LxmZMw9JaHMOdimK6XHRLIlD1c4+1ymb5i6PEERzoDBWakg==
-Received: (qmail 128790 invoked from network); 12 Dec 2023 09:12:49 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Dec 2023 09:12:49 +0100
-X-UD-Smtp-Session: l3s3148p1@s2HDnUsMMpUujnuR
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Simon Horman <horms+renesas@verge.net.au>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] spi: sh-msiof: Enforce fixed DTDL for R-Car H3
-Date:   Tue, 12 Dec 2023 09:12:38 +0100
-Message-Id: <20231212081239.14254-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.35.1
+        Tue, 12 Dec 2023 03:19:39 -0500
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C823CD;
+        Tue, 12 Dec 2023 00:19:46 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5d74186170fso47827097b3.3;
+        Tue, 12 Dec 2023 00:19:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702369185; x=1702973985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jz85Z8XdgQqhlQatAV59mgkpmbeo3/1i+Ku2kekUiYM=;
+        b=AE0WlbLx2nt/VQ6AVzeKqmw5eKqSs4eIuuLWUYJBqX6VSbHQwgJdisT34N1j+eV2LY
+         4WeK/l9p5V4F9WT+8XaOHE1HJhS8qHat0nqqX5oiUYaE+uEm2Edv3UuY3dBgSkuv4nw0
+         EgzCtZHWrU9Yed+nf23Fzi9QXA9OHnDm7UhI1tcADF8VNqcDdFE8NrZ3ofxIB3jZxyXx
+         th1hWG3Co1NAnHjbqxATjBbFm4yvSZvZA8nsx8sXlkwHNGytox3I5eCjsWmX7ySmysIB
+         /+rQdKQZf2E1xLoOGLql6IkIfKWQZU5yO5HTt57LcQkB6wnGE2PvNMAOW5IQQzd1llmO
+         nNaQ==
+X-Gm-Message-State: AOJu0YxPqPFO63y8i+nDzxmeNtHWh/wIpQo/fG4bXqA5WI3/2Oqxk5xM
+        bWGdFgFBZzzd+NcCff8CKoosoe9c0H/gqQ==
+X-Google-Smtp-Source: AGHT+IG/nJUd5A/IT+XaxgFsazX9RuXKRifXnK6FA0+MllAXtWmP18OaMJDSAsJL2DxaU/AdBbsROw==
+X-Received: by 2002:a25:cf13:0:b0:db7:dacf:3fa3 with SMTP id f19-20020a25cf13000000b00db7dacf3fa3mr2945250ybg.80.1702369185493;
+        Tue, 12 Dec 2023 00:19:45 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id g11-20020a25200b000000b00d7745e2bb19sm3113654ybg.29.2023.12.12.00.19.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 00:19:45 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbc72b692adso2337390276.2;
+        Tue, 12 Dec 2023 00:19:44 -0800 (PST)
+X-Received: by 2002:a5b:792:0:b0:da0:ccd6:b8a2 with SMTP id
+ b18-20020a5b0792000000b00da0ccd6b8a2mr3073704ybq.19.1702369184206; Tue, 12
+ Dec 2023 00:19:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231211-primate-arbitrate-fbcd307a0b00@spud>
+In-Reply-To: <20231211-primate-arbitrate-fbcd307a0b00@spud>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Dec 2023 09:19:32 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
+Message-ID: <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
+Subject: Re: [PATCH v1] soc: renesas: make ARCH_R9A07G043 depend on !DMA_DIRECT_REMAP
+To:     Conor Dooley <conor@kernel.org>
+Cc:     linux-riscv@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Emil Renner Berthing <kernel@esmil.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation says only DTDL of 200 is allowed for this SoC.
+Hi Conor,
 
-Fixes: 4286db8456f4 ("spi: sh-msiof: Add R-Car Gen 2 and 3 fallback bindings")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Mon, Dec 11, 2023 at 11:06 PM Conor Dooley <conor@kernel.org> wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>
+> Randy reported yet another build issue with randconfigs on rv32:
+> WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
+>   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=n] && !DMA_DIRECT_REMAP [=y]
+>   Selected by [y]:
+>   - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y] && NONPORTABLE [=y] && RISCV_ALTERNATIVE [=y] && !RISCV_ISA_ZICBOM [=n] && RISCV_SBI [=y]
+>
+> This happens when DMA_DIRECT_REMAP is selected by the T-Head CMO erratum
+
+or by the Zicbom extension support?
+
+> option and DMA_GLOBAL_POOL is selected by the Andes CMO erratum. Block
+> selecting the RZ/Five config option, and by extension DMA_GLOBAL_POOL,
+> if DMA_DIRECT_REMAP has already been enabled.
+>
+> Fixes: 484861e09f3e ("soc: renesas: Kconfig: Select the required configs for RZ/Five SoC")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> Closes: https://lore.kernel.org/all/24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org/
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
----
+i.e. will queue in renesas-devel for v6.8.
 
-This patch sadly slipped through the cracks since April.
+Or should this be queued as a fix for v6.7 instead?
 
-Changes since v2:
+> ---
+> I don't know what the exact fixes tag here is as I did not bisect with
+> the randconfig, so I blamed the one that added DMA_GLOBAL_POOL.
 
-* added fixes tag
-* rebased to v6.7-rc5
+Bisection leads to commit da323d4640704001 ("dma-direct: add
+dependencies to CONFIG_DMA_GLOBAL_POOL") in v6.7-rc1, but that is
+merely making visible the symptoms, so I think your Fixes tag is fine.
 
- drivers/spi/spi-sh-msiof.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Esmil: I think you need a similar fix for ERRATA_STARFIVE_JH7100 in
+your tree.
 
-diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
-index fb452bc78372..cfc3b1ddbd22 100644
---- a/drivers/spi/spi-sh-msiof.c
-+++ b/drivers/spi/spi-sh-msiof.c
-@@ -29,12 +29,15 @@
- 
- #include <asm/unaligned.h>
- 
-+#define SH_MSIOF_FLAG_FIXED_DTDL_200	BIT(0)
-+
- struct sh_msiof_chipdata {
- 	u32 bits_per_word_mask;
- 	u16 tx_fifo_size;
- 	u16 rx_fifo_size;
- 	u16 ctlr_flags;
- 	u16 min_div_pow;
-+	u32 flags;
- };
- 
- struct sh_msiof_spi_priv {
-@@ -1072,6 +1075,16 @@ static const struct sh_msiof_chipdata rcar_gen3_data = {
- 	.min_div_pow = 1,
- };
- 
-+static const struct sh_msiof_chipdata rcar_r8a7795_data = {
-+	.bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(16) |
-+			      SPI_BPW_MASK(24) | SPI_BPW_MASK(32),
-+	.tx_fifo_size = 64,
-+	.rx_fifo_size = 64,
-+	.ctlr_flags = SPI_CONTROLLER_MUST_TX,
-+	.min_div_pow = 1,
-+	.flags = SH_MSIOF_FLAG_FIXED_DTDL_200,
-+};
-+
- static const struct of_device_id sh_msiof_match[] __maybe_unused = {
- 	{ .compatible = "renesas,sh-mobile-msiof", .data = &sh_data },
- 	{ .compatible = "renesas,msiof-r8a7743",   .data = &rcar_gen2_data },
-@@ -1082,6 +1095,7 @@ static const struct of_device_id sh_msiof_match[] __maybe_unused = {
- 	{ .compatible = "renesas,msiof-r8a7793",   .data = &rcar_gen2_data },
- 	{ .compatible = "renesas,msiof-r8a7794",   .data = &rcar_gen2_data },
- 	{ .compatible = "renesas,rcar-gen2-msiof", .data = &rcar_gen2_data },
-+	{ .compatible = "renesas,msiof-r8a7795",   .data = &rcar_r8a7795_data },
- 	{ .compatible = "renesas,msiof-r8a7796",   .data = &rcar_gen3_data },
- 	{ .compatible = "renesas,rcar-gen3-msiof", .data = &rcar_gen3_data },
- 	{ .compatible = "renesas,rcar-gen4-msiof", .data = &rcar_gen3_data },
-@@ -1279,6 +1293,9 @@ static int sh_msiof_spi_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
-+	if (chipdata->flags & SH_MSIOF_FLAG_FIXED_DTDL_200)
-+		info->dtdl = 200;
-+
- 	if (info->mode == MSIOF_SPI_TARGET)
- 		ctlr = spi_alloc_target(&pdev->dev,
- 				        sizeof(struct sh_msiof_spi_priv));
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.35.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
