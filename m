@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9B480F339
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CCD80F35E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbjLLQjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
+        id S230055AbjLLQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235197AbjLLQja (ORCPT
+        with ESMTP id S235087AbjLLQli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:39:30 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93B1812C;
-        Tue, 12 Dec 2023 08:38:44 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 930CF143D;
-        Tue, 12 Dec 2023 08:39:30 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16B2B3F738;
-        Tue, 12 Dec 2023 08:38:38 -0800 (PST)
-Date:   Tue, 12 Dec 2023 16:38:32 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, hyesoo.yu@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 11/27] arm64: mte: Reserve tag storage memory
-Message-ID: <ZXiMiLz9ZyUdxUP8@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-12-alexandru.elisei@arm.com>
- <CAL_Jsq+k5BeM9+u12AQvWQ0b4Uv5Cy0vPOpK_uLcYtRnunq4iQ@mail.gmail.com>
+        Tue, 12 Dec 2023 11:41:38 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77D4EA;
+        Tue, 12 Dec 2023 08:41:33 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCG8JuS015567;
+        Tue, 12 Dec 2023 16:40:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=OBEYEjrDCz4TuBs07nl5GsWaYiiiFHG+n/liVJd/yj4=;
+ b=s6MjxxM3Z3hO3/K17BpGnxnQeTU8+rqmQNie3gBH3uAW92HtwEHwjf1/kocTNulw8wF+
+ 970lFv8aCUZm5JgP7zpoj9Oxg9PqEGkOw3/3K47D9+T2Gws5O5WA/LKqpsb7ksxvO3wy
+ 1C1iqd8tcuD2dYeN9RRwqUytXxIfzRfjmdeg8we6WHn6aReW9H++kcqD/U63BBEje1MK
+ 7U/M2wW6xnKNUDoN/ZqR0q17HoRGI5qnqgu1q76olZZlD/3nF5PIe++Bv9HeW7bNseoJ
+ l1w5MuLrj6/8lrBpF9jlN9t/3VdQ67V7Rc5KaxXj3HTTUQhQCKHRtxbT93hEMLsmt1Id iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxt64ah2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 16:40:17 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BCGcsej014799;
+        Tue, 12 Dec 2023 16:40:17 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxt64ah1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 16:40:16 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCFPjPG004899;
+        Tue, 12 Dec 2023 16:40:15 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4ska17k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 16:40:15 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BCGeEU638994514
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 16:40:14 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4565F5805F;
+        Tue, 12 Dec 2023 16:40:14 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D66658059;
+        Tue, 12 Dec 2023 16:40:12 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Dec 2023 16:40:12 +0000 (GMT)
+From:   Ninad Palsule <ninad@linux.ibm.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        ninad@linux.ibm.com, johannes.holland@infineon.com,
+        linux@roeck-us.net, broonie@kernel.org
+Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+Subject: [PATCH v1 0/8] Add device tree for IBM system1 BMC
+Date:   Tue, 12 Dec 2023 10:39:56 -0600
+Message-Id: <20231212164004.1683589-1-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_Jsq+k5BeM9+u12AQvWQ0b4Uv5Cy0vPOpK_uLcYtRnunq4iQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Xym3WnYCyVgWyZYHKVAjtb_1ikuXnMGu
+X-Proofpoint-GUID: hSmsCdiV-y1ye3PNOdvlyRWPbvIIxmIP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_10,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 mlxlogscore=947 adultscore=0 malwarescore=0 impostorscore=0
+ phishscore=0 bulkscore=0 clxscore=1011 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312120128
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,448 +99,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+This patchset adds device tree for IBM system1 bmc board.
 
-Thank you so much for the feedback, I'm not very familiar with device tree,
-and any comments are very useful.
+Change log:
+v1:
+ - Added device binding for IBM system1-bmc
+ - Added device binding for TIS I2C devices
+ - Added device tree for IBM system1 BMC board
+ - Added i2c and muxes
+ - Added voltage regulators
+ - Added GPIO, Fan ctrl, Led
+ - Added more compatible strings for tpm_tis_i2c
+ - Added power supplies, sensors, EEPROMS, TPM and more
 
-On Mon, Dec 11, 2023 at 11:29:40AM -0600, Rob Herring wrote:
-> On Sun, Nov 19, 2023 at 10:59 AM Alexandru Elisei
-> <alexandru.elisei@arm.com> wrote:
-> >
-> > Allow the kernel to get the size and location of the MTE tag storage
-> > regions from the DTB. This memory is marked as reserved for now.
-> >
-> > The DTB node for the tag storage region is defined as:
-> >
-> >         tags0: tag-storage@8f8000000 {
-> >                 compatible = "arm,mte-tag-storage";
-> >                 reg = <0x08 0xf8000000 0x00 0x4000000>;
-> >                 block-size = <0x1000>;
-> >                 memory = <&memory0>;    // Associated tagged memory node
-> >         };
-> 
-> I skimmed thru the discussion some. If this memory range is within
-> main RAM, then it definitely belongs in /reserved-memory.
+Andrew Geissler (1):
+  ARM: dts: aspeed: System1: IBM system1 BMC board
 
-Ok, will do that.
+Joel Stanley (1):
+  tpm: tis-i2c: Add more compatible strings
 
-If you don't mind, why do you say that it definitely belongs in
-reserved-memory? I'm not trying to argue otherwise, I'm curious about the
-motivation.
+Johannes Holland (1):
+  dt-bindings: tpm: Add schema for TIS I2C devices
 
-Tag storage is not DMA and can live anywhere in memory. In
-arm64_memblock_init(), the kernel first removes the memory that it cannot
-address from memblock. For example, because it has been compiled with
-CONFIG_ARM64_VA_BITS_39=y. And then calls
-early_init_fdt_scan_reserved_mem().
+Ninad Palsule (5):
+  dt-bindings: arm: aspeed: add IBM system1-bmc
+  ARM: dts: aspeed: System1: Add i2c and muxes
+  ARM: dts: aspeed: System1: Voltage regulators
+  ARM: dts: aspeed: System1: GPIO, Fan ctrl, Led
+  ARM: dts: aspeed: System1: PS, sensor and more
 
-What happens if reserved memory is above what the kernel can address?
+ .../bindings/arm/aspeed/aspeed.yaml           |    1 +
+ .../bindings/security/tpm/tpm-tis-i2c.yaml    |   50 +
+ .../devicetree/bindings/trivial-devices.yaml  |    2 +
+ arch/arm/boot/dts/aspeed/Makefile             |    1 +
+ .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 1644 +++++++++++++++++
+ drivers/char/tpm/tpm_tis_i2c.c                |    2 +
+ 6 files changed, 1700 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
 
-From my testing, when the kernel is compiled with 39 bit VA, if I use
-reserved memory to discover tag storage the lives above the virtua address
-limit and then I try to use CMA to manage the tag storage memory, I get a
-kernel panic:
-
-[    0.000000] Reserved memory: created CMA memory pool at 0x0000010000000000, size 64 MiB
-[    0.000000] OF: reserved mem: initialized node linux,cma, compatible id shared-dma-pool
-[    0.000000] OF: reserved mem: 0x0000010000000000..0x0000010003ffffff (65536 KiB) map reusable linux,cma
-[..]
-[    0.806945] Unable to handle kernel paging request at virtual address 00000001fe000000
-[    0.807277] Mem abort info:
-[    0.807277]   ESR = 0x0000000096000005
-[    0.807693]   EC = 0x25: DABT (current EL), IL = 32 bits
-[    0.808110]   SET = 0, FnV = 0
-[    0.808443]   EA = 0, S1PTW = 0
-[    0.808526]   FSC = 0x05: level 1 translation fault
-[    0.808943] Data abort info:
-[    0.808943]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-[    0.809360]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[    0.809776]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[    0.810221] [00000001fe000000] user address but active_mm is swapper
-[..]
-[    0.820887] Call trace:
-[    0.821027]  cma_init_reserved_areas+0xc4/0x378
-
-> 
-> You need a binding for this too.
-
-By binding you mean having an yaml file in dt-schem [1] describing the tag
-storage node, right?
-
-[1] https://github.com/devicetree-org/dt-schema
-
-> 
-> > The tag storage region represents the largest contiguous memory region that
-> > holds all the tags for the associated contiguous memory region which can be
-> > tagged. For example, for a 32GB contiguous tagged memory the corresponding
-> > tag storage region is 1GB of contiguous memory, not two adjacent 512M of
-> > tag storage memory.
-> >
-> > "block-size" represents the minimum multiple of 4K of tag storage where all
-> > the tags stored in the block correspond to a contiguous memory region. This
-> > is needed for platforms where the memory controller interleaves tag writes
-> > to memory. For example, if the memory controller interleaves tag writes for
-> > 256KB of contiguous memory across 8K of tag storage (2-way interleave),
-> > then the correct value for "block-size" is 0x2000. This value is a hardware
-> > property, independent of the selected kernel page size.
-> >
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >  arch/arm64/Kconfig                       |  12 ++
-> >  arch/arm64/include/asm/mte_tag_storage.h |  15 ++
-> >  arch/arm64/kernel/Makefile               |   1 +
-> >  arch/arm64/kernel/mte_tag_storage.c      | 256 +++++++++++++++++++++++
-> >  arch/arm64/kernel/setup.c                |   7 +
-> >  5 files changed, 291 insertions(+)
-> >  create mode 100644 arch/arm64/include/asm/mte_tag_storage.h
-> >  create mode 100644 arch/arm64/kernel/mte_tag_storage.c
-> >
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index 7b071a00425d..fe8276fdc7a8 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -2062,6 +2062,18 @@ config ARM64_MTE
-> >
-> >           Documentation/arch/arm64/memory-tagging-extension.rst.
-> >
-> > +if ARM64_MTE
-> > +config ARM64_MTE_TAG_STORAGE
-> > +       bool "Dynamic MTE tag storage management"
-> > +       help
-> > +         Adds support for dynamic management of the memory used by the hardware
-> > +         for storing MTE tags. This memory, unlike normal memory, cannot be
-> > +         tagged. When it is used to store tags for another memory location it
-> > +         cannot be used for any type of allocation.
-> > +
-> > +         If unsure, say N
-> > +endif # ARM64_MTE
-> > +
-> >  endmenu # "ARMv8.5 architectural features"
-> >
-> >  menu "ARMv8.7 architectural features"
-> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
-> > new file mode 100644
-> > index 000000000000..8f86c4f9a7c3
-> > --- /dev/null
-> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
-> > @@ -0,0 +1,15 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2023 ARM Ltd.
-> > + */
-> > +#ifndef __ASM_MTE_TAG_STORAGE_H
-> > +#define __ASM_MTE_TAG_STORAGE_H
-> > +
-> > +#ifdef CONFIG_ARM64_MTE_TAG_STORAGE
-> > +void mte_tag_storage_init(void);
-> > +#else
-> > +static inline void mte_tag_storage_init(void)
-> > +{
-> > +}
-> > +#endif /* CONFIG_ARM64_MTE_TAG_STORAGE */
-> > +#endif /* __ASM_MTE_TAG_STORAGE_H  */
-> > diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> > index d95b3d6b471a..5f031bf9f8f1 100644
-> > --- a/arch/arm64/kernel/Makefile
-> > +++ b/arch/arm64/kernel/Makefile
-> > @@ -70,6 +70,7 @@ obj-$(CONFIG_CRASH_CORE)              += crash_core.o
-> >  obj-$(CONFIG_ARM_SDE_INTERFACE)                += sdei.o
-> >  obj-$(CONFIG_ARM64_PTR_AUTH)           += pointer_auth.o
-> >  obj-$(CONFIG_ARM64_MTE)                        += mte.o
-> > +obj-$(CONFIG_ARM64_MTE_TAG_STORAGE)    += mte_tag_storage.o
-> >  obj-y                                  += vdso-wrap.o
-> >  obj-$(CONFIG_COMPAT_VDSO)              += vdso32-wrap.o
-> >  obj-$(CONFIG_UNWIND_PATCH_PAC_INTO_SCS)        += patch-scs.o
-> > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> > new file mode 100644
-> > index 000000000000..fa6267ef8392
-> > --- /dev/null
-> > +++ b/arch/arm64/kernel/mte_tag_storage.c
-> > @@ -0,0 +1,256 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Support for dynamic tag storage.
-> > + *
-> > + * Copyright (C) 2023 ARM Ltd.
-> > + */
-> > +
-> > +#include <linux/memblock.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/of_device.h>
-> 
-> You probably don't need this header. If you depend on what it
-> implicitly includes, then that will now break in linux-next.
-
-I'll have a look if I can remove it. Might be an artifact from an earlier
-version of the patches.
-
-> 
-> > +#include <linux/of_fdt.h>
-> > +#include <linux/range.h>
-> > +#include <linux/string.h>
-> > +#include <linux/xarray.h>
-> > +
-> > +#include <asm/mte_tag_storage.h>
-> > +
-> > +struct tag_region {
-> > +       struct range mem_range; /* Memory associated with the tag storage, in PFNs. */
-> > +       struct range tag_range; /* Tag storage memory, in PFNs. */
-> > +       u32 block_size;         /* Tag block size, in pages. */
-> > +};
-> > +
-> > +#define MAX_TAG_REGIONS        32
-> > +
-> > +static struct tag_region tag_regions[MAX_TAG_REGIONS];
-> > +static int num_tag_regions;
-> > +
-> > +static int __init tag_storage_of_flat_get_range(unsigned long node, const __be32 *reg,
-> > +                                               int reg_len, struct range *range)
-> > +{
-> > +       int addr_cells = dt_root_addr_cells;
-> > +       int size_cells = dt_root_size_cells;
-> > +       u64 size;
-> > +
-> > +       if (reg_len / 4 > addr_cells + size_cells)
-> > +               return -EINVAL;
-> > +
-> > +       range->start = PHYS_PFN(of_read_number(reg, addr_cells));
-> > +       size = PHYS_PFN(of_read_number(reg + addr_cells, size_cells));
-> > +       if (size == 0) {
-> > +               pr_err("Invalid node");
-> > +               return -EINVAL;
-> > +       }
-> > +       range->end = range->start + size - 1;
-> 
-> We have a function to read (and translate which you forgot) addresses.
-> Add what's missing rather than open code your own.
-
-I must have missed that there's already a function to read addresses. Would
-you mind pointing me in the right direction?
-
-> 
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int __init tag_storage_of_flat_get_tag_range(unsigned long node,
-> > +                                                   struct range *tag_range)
-> > +{
-> > +       const __be32 *reg;
-> > +       int reg_len;
-> > +
-> > +       reg = of_get_flat_dt_prop(node, "reg", &reg_len);
-> > +       if (reg == NULL) {
-> > +               pr_err("Invalid metadata node");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       return tag_storage_of_flat_get_range(node, reg, reg_len, tag_range);
-> > +}
-> > +
-> > +static int __init tag_storage_of_flat_get_memory_range(unsigned long node, struct range *mem)
-> > +{
-> > +       const __be32 *reg;
-> > +       int reg_len;
-> > +
-> > +       reg = of_get_flat_dt_prop(node, "linux,usable-memory", &reg_len);
-> > +       if (reg == NULL)
-> > +               reg = of_get_flat_dt_prop(node, "reg", &reg_len);
-> > +
-> > +       if (reg == NULL) {
-> > +               pr_err("Invalid memory node");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       return tag_storage_of_flat_get_range(node, reg, reg_len, mem);
-> > +}
-> > +
-> > +struct find_memory_node_arg {
-> > +       unsigned long node;
-> > +       u32 phandle;
-> > +};
-> > +
-> > +static int __init fdt_find_memory_node(unsigned long node, const char *uname,
-> > +                                      int depth, void *data)
-> > +{
-> > +       const char *type = of_get_flat_dt_prop(node, "device_type", NULL);
-> > +       struct find_memory_node_arg *arg = data;
-> > +
-> > +       if (depth != 1 || !type || strcmp(type, "memory") != 0)
-> > +               return 0;
-> > +
-> > +       if (of_get_flat_dt_phandle(node) == arg->phandle) {
-> > +               arg->node = node;
-> > +               return 1;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int __init tag_storage_get_memory_node(unsigned long tag_node, unsigned long *mem_node)
-> > +{
-> > +       struct find_memory_node_arg arg = { 0 };
-> > +       const __be32 *memory_prop;
-> > +       u32 mem_phandle;
-> > +       int ret, reg_len;
-> > +
-> > +       memory_prop = of_get_flat_dt_prop(tag_node, "memory", &reg_len);
-> > +       if (!memory_prop) {
-> > +               pr_err("Missing 'memory' property in the tag storage node");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       mem_phandle = be32_to_cpup(memory_prop);
-> > +       arg.phandle = mem_phandle;
-> > +
-> > +       ret = of_scan_flat_dt(fdt_find_memory_node, &arg);
-> 
-> Do not use of_scan_flat_dt. It is a relic predating libfdt which can
-> get a node by phandle directly.
-
-I used that because that's what drivers/of/fdt.c uses. With reserved memory
-I shouldn't need it, because struct reserved_mem already includes a
-phandle.
-
-> 
-> > +       if (ret != 1) {
-> > +               pr_err("Associated memory node not found");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       *mem_node = arg.node;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int __init tag_storage_of_flat_read_u32(unsigned long node, const char *propname,
-> > +                                              u32 *retval)
-> 
-> If you are going to make a generic function, make it for everyone.
-
-Sure. If I still need it, should I put the function in
-include/linux/of_fdt.h?
-
-> 
-> > +{
-> > +       const __be32 *reg;
-> > +
-> > +       reg = of_get_flat_dt_prop(node, propname, NULL);
-> > +       if (!reg)
-> > +               return -EINVAL;
-> > +
-> > +       *retval = be32_to_cpup(reg);
-> > +       return 0;
-> > +}
-> > +
-> > +static u32 __init get_block_size_pages(u32 block_size_bytes)
-> > +{
-> > +       u32 a = PAGE_SIZE;
-> > +       u32 b = block_size_bytes;
-> > +       u32 r;
-> > +
-> > +       /* Find greatest common divisor using the Euclidian algorithm. */
-> > +       do {
-> > +               r = a % b;
-> > +               a = b;
-> > +               b = r;
-> > +       } while (b != 0);
-> > +
-> > +       return PHYS_PFN(PAGE_SIZE * block_size_bytes / a);
-> > +}
-> > +
-> > +static int __init fdt_init_tag_storage(unsigned long node, const char *uname,
-> > +                                      int depth, void *data)
-> > +{
-> > +       struct tag_region *region;
-> > +       unsigned long mem_node;
-> > +       struct range *mem_range;
-> > +       struct range *tag_range;
-> > +       u32 block_size_bytes;
-> > +       u32 nid = 0;
-> > +       int ret;
-> > +
-> > +       if (depth != 1 || !strstr(uname, "tag-storage"))
-> > +               return 0;
-> > +
-> > +       if (!of_flat_dt_is_compatible(node, "arm,mte-tag-storage"))
-> > +               return 0;
-> > +
-> > +       if (num_tag_regions == MAX_TAG_REGIONS) {
-> > +               pr_err("Maximum number of tag storage regions exceeded");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       region = &tag_regions[num_tag_regions];
-> > +       mem_range = &region->mem_range;
-> > +       tag_range = &region->tag_range;
-> > +
-> > +       ret = tag_storage_of_flat_get_tag_range(node, tag_range);
-> > +       if (ret) {
-> > +               pr_err("Invalid tag storage node");
-> > +               return ret;
-> > +       }
-> > +
-> > +       ret = tag_storage_get_memory_node(node, &mem_node);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       ret = tag_storage_of_flat_get_memory_range(mem_node, mem_range);
-> > +       if (ret) {
-> > +               pr_err("Invalid address for associated data memory node");
-> > +               return ret;
-> > +       }
-> > +
-> > +       /* The tag region must exactly match the corresponding memory. */
-> > +       if (range_len(tag_range) * 32 != range_len(mem_range)) {
-> > +               pr_err("Tag storage region 0x%llx-0x%llx does not cover the memory region 0x%llx-0x%llx",
-> > +                      PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end),
-> > +                      PFN_PHYS(mem_range->start), PFN_PHYS(mem_range->end));
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       ret = tag_storage_of_flat_read_u32(node, "block-size", &block_size_bytes);
-> > +       if (ret || block_size_bytes == 0) {
-> > +               pr_err("Invalid or missing 'block-size' property");
-> > +               return -EINVAL;
-> > +       }
-> > +       region->block_size = get_block_size_pages(block_size_bytes);
-> > +       if (range_len(tag_range) % region->block_size != 0) {
-> > +               pr_err("Tag storage region size 0x%llx is not a multiple of block size %u",
-> > +                      PFN_PHYS(range_len(tag_range)), region->block_size);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       ret = tag_storage_of_flat_read_u32(mem_node, "numa-node-id", &nid);
-> 
-> I was going to say we already have a way to associate memory nodes
-> other nodes using "numa-node-id", so the "memory" phandle property is
-> somewhat redundant. Maybe the tag node should have a numa-node-id.
-> With that, it looks like you don't even need to access the /memory
-> node. Avoiding that would be good for 2 reasons. It avoids parsing
-> memory nodes twice and it's not the kernel's job to validate the DT.
-> Really, if you want memory info, you should use memblock to get it
-> because all the special cases of memory layout are handled. For
-> example you can have memory nodes with multiple 'reg' entries or
-> multiple memory nodes or both, and then some of those could be
-> contiguous.
-
-I need to have a memory node associated with the tag storage node because
-there is a static relationship between a page from "normal" memory and its
-associated tag storage. If the code doesn't know that the memory region
-A..B has the corresponding tag storage in the region X..Y, then it doesn't
-know which tag storage to reserve when a page is allocated as tagged.
-
-In the example above, assuming that page P is allocated as tagged, the
-corresponding tag storage page that needs to be reserved is:
-
-tag_storage_pfn = (page_to_pfn(P) - PHYS_PFN(A)) / 32* + PHYS_PFN(X)
-
-numa-node-id is not enough for this, because as far I know you can have
-multiple memory regions withing the same numa node.
-
-*32 tagged pages use one tag storage page to store the tags.
-
-Thanks,
-Alex
+-- 
+2.39.2
 
