@@ -2,149 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7383880FA66
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4E380FA64
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377753AbjLLWTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 17:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S1377769AbjLLWU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 17:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbjLLWTc (ORCPT
+        with ESMTP id S1377700AbjLLWUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 17:19:32 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED306DB;
-        Tue, 12 Dec 2023 14:19:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NvPqFOkc98lbwy49nPsPgxfuNfoitENeDeNkZT7zVCPH1VGoy+99UtgYTgdW4zJr2lZLyRhffYLzm3THTVDSK5G8/V7JeDuiz9+vaol0w1df4n1okXQxYrFntB5f5MlkD4Waq7arZxml8EwbMLVanYglB2p00y0e9gedehSsp4LrYhl7xmyix2eN3AjnAA1ApFEmePY2mZkeiGSettWV9o2bHBKAmceyC/T66uJ5UFtb6gtjZt/xW55I8d9arfIC7GUoXwA+xgKsN5zWIgPl4LRb+BRyK6RoxJIh42HGVWB+l6Hdki4RhxxDJMqUqdIo5/VFoT8a2mVtl7s0UY9p2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=itq9JKmL7NfPyd3rFHrbrPUUSRTPkA65LgGoA9EsmYk=;
- b=MyOYMhByU+9SXSly4QfcpPjWctr7GTPerBUqEBvw6vlAigIzFfUVQBYHV5UAZMzLN8kZwtFzHWs0BMx5+NoJtd5jPSu5cmiq9c/iNfXuArD3+GCQM0SQBltR0YhPD7g9FBlnp8kIu7fWGAvUTcxr8xY4ogly1HbcZX+kAgnjqCne6WgvDBP7riFVD7PfO8TN8dd3imsz87U9U4zPfxr6wq0nJAcs8XKInCkQxwK+HQ3QVVJpvaf+nfaewbq+UmDaD37SnlDL76qW13tqS3IFT9O/bK/uguddytDvwsm8hrzt6iCnTALxsDRSGNVQ9ZhkW64OTHRGyWcnu7zcgmdAzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=itq9JKmL7NfPyd3rFHrbrPUUSRTPkA65LgGoA9EsmYk=;
- b=ZHCfHQNvmuyX3CSbqR0Ri4kYhjkw3S93N5DYqbFYgemZAKNy6aRBW7imfOkC9hNW8hq4ycCLjvjVmyJEN7gghFijx9MKs0OOYlaGQMqvRtIya3NPs2+5BcsE5ugPlFSfxxZH7ce6aa1kDScNjU9MfEgpF8btR099OaTj0J1U04WaPdR39kiHVychBbmya/DHOwP5plYo+oyhFE62ZJ/jX/En+7e+mhZwqgRGrz1bqNMVhqX9gxH7ON3cZ4A1RxhfKQFa0bMZm0mTzYtBGzvnQawJlELDydByNmwS/XlsGNakr9q8Hx2jelkx0UbZysDYM/mFfUTgMaCQrvyt0HfAfQ==
-Received: from BL1P223CA0029.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:2c4::34)
- by SJ1PR12MB6074.namprd12.prod.outlook.com (2603:10b6:a03:45f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
- 2023 22:19:32 +0000
-Received: from BL02EPF0001A0FB.namprd03.prod.outlook.com
- (2603:10b6:208:2c4:cafe::18) by BL1P223CA0029.outlook.office365.com
- (2603:10b6:208:2c4::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
- Transport; Tue, 12 Dec 2023 22:19:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BL02EPF0001A0FB.mail.protection.outlook.com (10.167.242.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.26 via Frontend Transport; Tue, 12 Dec 2023 22:19:31 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 12 Dec
- 2023 14:19:20 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Tue, 12 Dec 2023 14:19:20 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Tue, 12 Dec 2023 14:19:20 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.4 00/67] 5.4.264-rc1 review
-In-Reply-To: <20231211182015.049134368@linuxfoundation.org>
-References: <20231211182015.049134368@linuxfoundation.org>
-X-NVConfidentiality: public
+        Tue, 12 Dec 2023 17:20:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE099C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:20:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0FC50C433C9;
+        Tue, 12 Dec 2023 22:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702419629;
+        bh=tRQTTgbl7FgoXWnczF+Nu4dcXEMjiXldZt7YykkAb7c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ELbS/ZBchr9V1OUApYbsPxVfC3QhK6gRdEtyEwYCxImEAmzDbWjyqHJWD7AKHqx7X
+         1+4RfdahigCRl5Jw/P1jtwgOqsSBAhrILUK1xrDmeBifpFfMhi/LmhZ6sBJfpA+LJD
+         CzKdS2nDzPg4mZ3cn+9QPo2uYPUE5o09G91tCT3En/TaWVP37X2hnq6fwH03czEUmS
+         W8nyC/NInZCNDO7/bQvA1MaZLXKS1upyxidzgSVopOC+5TgrYONnszIomeNY9Z0wn2
+         nBdGCcJVcyVbnwWYYIGEY0Lv4g3fl/G3p5VSmbNux35T5zQrM2qefYGD4C8QkGkjCH
+         +Qh/vJAsKuHmA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E9729DD4EFE;
+        Tue, 12 Dec 2023 22:20:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Message-ID: <bb74e203-f6fd-49c3-b506-451918f4bb77@drhqmail201.nvidia.com>
-Date:   Tue, 12 Dec 2023 14:19:20 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FB:EE_|SJ1PR12MB6074:EE_
-X-MS-Office365-Filtering-Correlation-Id: 422dfa84-0342-4018-c293-08dbfb606a2d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c7UWDxXidlMngEeg5L6NTQpNOLh4RMPA9DdIvOF4/Mf8+lHwwzJ1entf2FjbN+Rx67BIoHd2qoSsKwErcnAW6g3kkKDZFLTUC+kuU7joHpqAk8lh/GVL5riMUxZxHYK7PEYQGGCXOs2qYAWjAEAUeTpG2UcVbEgPPJBFldF5q431PRRORsZpOBSntoye9oct2FUlhbYc03+nzjN7xLz7X2Aoyn97ytvLkdybXQJKficUXyGcRNSH+VynmDl7SPvh0X5bfeCtgjMe8k6kwcuJkJYF1aoETHiKrQycHRIwgzwi5un+b2JabzXWDI9uebzA/yAiwWrk8PdNOrM8rMMKDuAikOp4m7SKh6OOkZZTnhdf2JiHaKeujAg4yvEwA8Kf+ng662DOHP/HXHi8WM1X1DAb8xUSWB4mUDQf2dYPND4DetwT9ECPS81MlsbbKttW/XABfCnbI1l5NRM0crqUCPmXM+qKAL9LS81UV61jN2zfU9n/1H/vy6ISZqxIRLTwnIt3TkKA49SCx4z8Ge1Ge7VDUnTUWMUWUFA4dJTgZQrzkNEYhMjA+Gv8Q+4K2vw461s6Rzv2mHiThZk1i+kXIorI5SGqt8szWlqSqy7W5OqXhoGt83e+a6GNDgQyQ95u3aoGyej5SMfQWDiJhzZVhPiJSge3+VsmeRPI0aTuBE+u8fdGEv5saw/SF7bagEMOxvuzH3gAkI1bEQKGmlkgyuxFLnd1mFLNVSOs9IZ58SHvWV5pHztP6+OKwdg5scaDYRuuqDYXVwnlcc7On68tV6AP5WSEvG0Vv501LbBDJwE=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(46966006)(40470700004)(36840700001)(7636003)(47076005)(336012)(966005)(26005)(478600001)(36860700001)(41300700001)(7416002)(5660300002)(54906003)(2906002)(6916009)(426003)(70206006)(8936002)(8676002)(316002)(4326008)(70586007)(86362001)(356005)(82740400003)(31696002)(31686004)(40480700001)(40460700003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 22:19:31.7998
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 422dfa84-0342-4018-c293-08dbfb606a2d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FB.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6074
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 00/20] riscv: report more ISA extensions through hwprobe
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <170241962895.7374.4064539637441634071.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Dec 2023 22:20:28 +0000
+References: <20231114141256.126749-1-cleger@rivosinc.com>
+In-Reply-To: <20231114141256.126749-1-cleger@rivosinc.com>
+To:     =?utf-8?b?Q2zDqW1lbnQgTMOpZ2VyIDxjbGVnZXJAcml2b3NpbmMuY29tPg==?=@ci.codeaurora.org
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        palmer@rivosinc.com, paul.walmsley@sifive.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, aou@eecs.berkeley.edu,
+        corbet@lwn.net, ajones@ventanamicro.com, evan@rivosinc.com,
+        conor@kernel.org, sameo@rivosinc.com, jerry.shih@sifive.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 19:21:44 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.264 release.
-> There are 67 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hello:
+
+This series was applied to riscv/linux.git (for-next)
+by Palmer Dabbelt <palmer@rivosinc.com>:
+
+On Tue, 14 Nov 2023 09:12:36 -0500 you wrote:
+> In order to be able to gather more information about the supported ISA
+> extensions from userspace using the hwprobe syscall, add more ISA
+> extensions report. This series adds the following ISA extensions parsing
+> support:
 > 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
+> - Zfh[min]
+> - Zvfh[min]
+> - Zihintntl
+> - Zbc
+> - Zvbb
+> - Zvbc
+> - Zvkb
+> - Zvkg
+> - Zvkned
+> - Zvknh[ab]
+> - Zvksed
+> - Zvksh
+> - Zvkn
+> - Zvknc
+> - Zvkng
+> - Zvks
+> - Zvksc
+> - Zvksg
+> - Zvkt
+> - Zfa
+> - Zbkb
+> - Zbkc
+> - Zbkx
+> - Zknd
+> - Zkne
+> - Zknh
+> - Zkr
+> - Zksed
+> - Zksh
+> - Zkt
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.264-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> [...]
 
-All tests passing for Tegra ...
+Here is the summary with links:
+  - [v4,01/20] riscv: add ISA extension parsing for Zbc
+    https://git.kernel.org/riscv/c/88e752f0986f
+  - [v4,02/20] riscv: hwprobe: export missing Zbc ISA extension
+    https://git.kernel.org/riscv/c/2ae2b9097b2e
+  - [v4,03/20] riscv: add ISA extension parsing for scalar crypto
+    https://git.kernel.org/riscv/c/5ee88a915d4b
+  - [v4,04/20] riscv: hwprobe: add support for scalar crypto ISA extensions
+    https://git.kernel.org/riscv/c/18883cef7e64
+  - [v4,05/20] dt-bindings: riscv: add scalar crypto ISA extensions description
+    https://git.kernel.org/riscv/c/ffd19e815367
+  - [v4,06/20] riscv: add ISA extension parsing for vector crypto
+    https://git.kernel.org/riscv/c/4fa9e167b63b
+  - [v4,07/20] riscv: hwprobe: export vector crypto ISA extensions
+    https://git.kernel.org/riscv/c/d06b89615a9e
+  - [v4,08/20] dt-bindings: riscv: add vector crypto ISA extensions description
+    https://git.kernel.org/riscv/c/eb8c82b7a8c4
+  - [v4,09/20] riscv: add ISA extension parsing for Zfh/Zfh[min]
+    https://git.kernel.org/riscv/c/68bddb2748ac
+  - [v4,10/20] riscv: hwprobe: export Zfh[min] ISA extensions
+    https://git.kernel.org/riscv/c/5cb9bea00d12
+  - [v4,11/20] dt-bindings: riscv: add Zfh[min] ISA extensions description
+    https://git.kernel.org/riscv/c/6853ab83405c
+  - [v4,12/20] riscv: add ISA extension parsing for Zihintntl
+    https://git.kernel.org/riscv/c/8ab84bf68d2b
+  - [v4,13/20] riscv: hwprobe: export Zhintntl ISA extension
+    https://git.kernel.org/riscv/c/814d9823088a
+  - [v4,14/20] dt-bindings: riscv: add Zihintntl ISA extension description
+    https://git.kernel.org/riscv/c/4bd2e33d1613
+  - [v4,15/20] riscv: add ISA extension parsing for Zvfh[min]
+    https://git.kernel.org/riscv/c/c7fa1ef17e6f
+  - [v4,16/20] riscv: hwprobe: export Zvfh[min] ISA extensions
+    https://git.kernel.org/riscv/c/9a42ab69b658
+  - [v4,17/20] dt-bindings: riscv: add Zvfh[min] ISA extension description
+    https://git.kernel.org/riscv/c/1f532a7d898e
+  - [v4,18/20] riscv: add ISA extension parsing for Zfa
+    https://git.kernel.org/riscv/c/4758aec519ae
+  - [v4,19/20] riscv: hwprobe: export Zfa ISA extension
+    https://git.kernel.org/riscv/c/f838a77a4881
+  - [v4,20/20] dt-bindings: riscv: add Zfa ISA extension description
+    https://git.kernel.org/riscv/c/e810a257576f
 
-Test results for stable-v5.4:
-    10 builds:	10 pass, 0 fail
-    24 boots:	24 pass, 0 fail
-    54 tests:	54 pass, 0 fail
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Linux version:	5.4.264-rc1-g852f04d98505
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
