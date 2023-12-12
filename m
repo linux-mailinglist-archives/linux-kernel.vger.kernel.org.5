@@ -2,179 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABE180EF73
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B749180EF7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376305AbjLLO61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        id S1376311AbjLLPA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:00:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232568AbjLLO60 (ORCPT
+        with ESMTP id S232691AbjLLPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:58:26 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA16ADB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:58:31 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50d176eb382so5451993e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:58:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702393110; x=1702997910; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gzl81dpk3U9T9CudLlEFGkOzt7MaXHqDfkakdpQfiFo=;
-        b=Di+xUrDNquCXrbE4D+7pfjphiGfnnFvnJ9/Q4O0j/kgCgfP9AwhW6edileG02zHDCK
-         Ug2WZfJv083gx7y1zC5N5OA4s2BF+Hgsf4WwxYweX2huuzD1r9O1C3Nf8JmTd223jhpo
-         +5K34kx0JBlvAkN3qJK0TBeNvaqFoyOzPY09+zdHmT/gWAZ249Fuiyo7zUphSdV5997y
-         vj8XnTZFDeNqWujeHGTInKUIXjEymntsdhGdsU/8Ku2S46luA28K2kGokU9NNgogSVdF
-         LfZgPfe/YbCJ/TAWwjQD4MwRNdA17G43XaNJaX/g0EqK03F/9MT2NYNODogcWcseI4zZ
-         s8CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702393110; x=1702997910;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gzl81dpk3U9T9CudLlEFGkOzt7MaXHqDfkakdpQfiFo=;
-        b=g24XK1TjwbuoAJTTO1JDKPJcD2ofSk2nsD3ciWRUwuGpWRuB7DqUrHHuCVJGIwKZKb
-         p1JHvQM/XgTbdEYdYocImXkqHYmxXjdejeUWdwELd/lMc79AsAdHkZrAlq45JUNKxLLX
-         EoFl+hPhvm8igRA93eW27Mj/ALqRupXs/WFCvVmsSUL7+KRcLKquyuAb/UI8OLhQqTmJ
-         BM2nr1+0tDaQRV2ybyRRFKuTcOV8iNBi8B/ppB2gxi2pXk9MF7DobIUSvu9OBezJ4mr/
-         ZPZ+rhyXU/9GUYTfjxIZHT0SA7fYH663xOfKBFHCuG2AHedKtSLxqOzwvNvFt6hgZVwJ
-         uvpg==
-X-Gm-Message-State: AOJu0YyHPSueRohI3kiXwzL0rLImcFgnPk3wQR+fOmoGxN3elfNsTnGI
-        +4ozukNGMxP3DcqhovfHDtsNtGBymEc6XjuaLWcdhw==
-X-Google-Smtp-Source: AGHT+IERGuBL77UBvy25wKoqAwiWF0N6xvXc57i2t65+NTiYJO5PTJJ6k/4UPi+3laDB/s1BgrFICZhicXsZkg8qeMk=
-X-Received: by 2002:ac2:5b4f:0:b0:50b:fa9b:1649 with SMTP id
- i15-20020ac25b4f000000b0050bfa9b1649mr3304569lfp.73.1702393109803; Tue, 12
- Dec 2023 06:58:29 -0800 (PST)
+        Tue, 12 Dec 2023 10:00:25 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2069.outbound.protection.outlook.com [40.107.237.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EF8D5;
+        Tue, 12 Dec 2023 07:00:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KnTUDSUSqiDxbtbsv1ulQEMZQkiZdFpWAX9w3YWoj0x8tqjzoocqFI1hJr7Gz4F3D7qrgj1eIOqcwoQnThXf+BOQ0PCwhEPaOl8/iQZPbk1GMJZ9E8GQlB17aVTMRI6bZCIGqYs35FAM6riK54GKkPjIUTgaI10n2rBOYNAdPo4qrqAkj0wK4MmrsSSipEdmJRKQLLirtEuNVhpdfJLVRXpJlS+FkXxynTawekwnY7k0JZlXqiyuAPId7GgNTvrifozSKarlShlovP1KtaGm9lRC16GIi3M9vecC3gHPL0VPZFAsX8Xm1aI5dIwxDWv82sROJLwsgVBMaQQzTtyLhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KWp0lh2BvH7atoIgGk92tPrsbmBqmrdnWMyouww5FHU=;
+ b=mrtEOhhP0JoNApnVNksmrL1f9IYp8T2ZpE9elRgJsPsCMUwNODMQtehp5nhAP9tiG0Fk9pNQac/qmTbjsJL+l2ui/brTXysHj24xSYbwrHq8gvyOnasAYxrtDPd4chLQ5hYyIU7SfnaaLRcFXgpqAN9r/m95XIbdA4rKXJZCsb/qI8MWkat3nXbOZyCeh6O00qP9PTdBqJVDAnc8OnlfTIua1pR40N/gqycn4g27rB0bAVjm5/GLoysohFVp/z5+PuWGYGdfQX/M1eaHzuVcWH7g03VBoxRtNRMnNDf5UlYojofnVEDkW4EZEsTL7h+pbWG/gkIHtyOkP6A3LLpFcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KWp0lh2BvH7atoIgGk92tPrsbmBqmrdnWMyouww5FHU=;
+ b=nbiBhjc7Khq/KjFLGoSMsEWngrvSmBZWEOBOizTeVW3EKVqmo1udO0abJWoE2+FxBCVUcUcLVGzbQ9xd5BAQVskA47ebey/JQ7ZxqBBEr+9Rp+S8yUtXfUhQMWLGFZAArYjc9vQKeMEVHcAHPM3lVIktGRiTW4h7h4gOda2yWhM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6390.namprd12.prod.outlook.com (2603:10b6:8:ce::7) by
+ SJ0PR12MB5440.namprd12.prod.outlook.com (2603:10b6:a03:3ac::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
+ 2023 15:00:27 +0000
+Received: from DS0PR12MB6390.namprd12.prod.outlook.com
+ ([fe80::eb9d:982c:4c9d:8522]) by DS0PR12MB6390.namprd12.prod.outlook.com
+ ([fe80::eb9d:982c:4c9d:8522%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 15:00:27 +0000
+Message-ID: <ace772f1-475a-4d20-9bf3-3b9901d48dd7@amd.com>
+Date:   Tue, 12 Dec 2023 09:00:24 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] PCI/AER: Use 'Correctable' and 'Uncorrectable' spec
+ terms for errors
+To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
+Cc:     Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Robert Richter <rrichter@amd.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <20231206224231.732765-1-helgaas@kernel.org>
+ <20231206224231.732765-2-helgaas@kernel.org>
+Content-Language: en-US
+From:   Terry Bowman <Terry.Bowman@amd.com>
+In-Reply-To: <20231206224231.732765-2-helgaas@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR06CA0037.namprd06.prod.outlook.com
+ (2603:10b6:8:54::12) To DS0PR12MB6390.namprd12.prod.outlook.com
+ (2603:10b6:8:ce::7)
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <20231212122535.GA3029808@nvidia.com>
- <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com> <20231212143942.GF3014157@nvidia.com>
-In-Reply-To: <20231212143942.GF3014157@nvidia.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 12 Dec 2023 06:58:17 -0800
-Message-ID: <CAHS8izNHtemjjkMf43grCHP1RZ=2UFiMtgea0M6+PaAgC=DDMQ@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6390:EE_|SJ0PR12MB5440:EE_
+X-MS-Office365-Filtering-Correlation-Id: 35e67b2f-7aea-4f02-c390-08dbfb23134d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EXquNbxKwGuU2IHJMRi3Z1XtbJ6MUZbrMMn8qdATt+gPPB/NMMkLG+PVBmfdTRMq7GyC0qEBPMr0YsI915XD5YlFw6fg7ZCWKaz1SVSwahO6qHK0+Ze+0Gs8p6ZevUFyUuG0FOwyJFGQh5m6ebayoGIljLyO0b4C00k/BtDqkCtD1N2e+XomgZndVSVrAdxkNJC7mptpLCKIuTQijw+CL2lni9N63DUgY4K15nDWdVdEIEwxwKhoY2dW1kNMTzf2OubwYDlMzj1CNkhx7dVAas+a2HpAabXEu7LimnVd5aRRSYStSktT/+tDqcowNUoms2i5SmrF0sgn3VTOArpq0Jom2J1Fk3t5itYhcU5GnIxQwZT1VfOU2uPcMjCTL+b4ZU/Y1LrrfNnfmkcIKWzPxAJZ41RjqrDYnpiEXfFzCIqeMoLB6GCZ3UqrYgUg85zgZhGVj++m1ISltVKHe234T0zspHyNVweS0h/B2l6oepBl1c41CKNiTgpxLH64k8o8pn7Vk4qB4I4uIxY6NMrbjtPvDfCWneYd78R531pPOopBfIN7n3YpBekdNYlFcUGGtDq56UgBY4q4wyCddTTFyCCV1HdNjwyfj//R8+zRug5K4UmRmY4qJ23ALPUrBTuXD+xZU4b+DTPcfShfjCPlxA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(346002)(396003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(66946007)(66476007)(66556008)(54906003)(31696002)(36756003)(86362001)(83380400001)(26005)(2616005)(6512007)(6506007)(53546011)(6486002)(2906002)(316002)(38100700002)(6666004)(478600001)(4326008)(5660300002)(8936002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c2J1eUdkRTZYa3p6Q3c1OXVxdmxHeVZ0dW5IeTRpdHhFWUlkV2kxWTBjeDlu?=
+ =?utf-8?B?akFLdjV0SXJNL3JDZy9oUUxNMWtncEhQcGFTeHhwaUxoSGtudDY3MFhOWTBj?=
+ =?utf-8?B?Uis2S0dDT1JxZTlNdStyUEVCcUtSK05YdDNNNlRiZlRxSml0dVg3Ykx1bmEr?=
+ =?utf-8?B?MHRzQzdzUlJRRGVSbU0xMTRLNFNFU0VsV3JHUlEzNXNHOVpGRGpoVVN0ck9D?=
+ =?utf-8?B?dnNnY082TzUwNWh3VEYyN0x4c3JHekpnclh5UVBrTU5JVlhESXNqMUJpY2F2?=
+ =?utf-8?B?V1M3T094NWhTWkhjeFU1OHNSeE9lUlRuV2dyV1hCUkFpVlk2U3UvbXRpeWx6?=
+ =?utf-8?B?ZnE4Sm9PT3UyeFhMendSNkp2eEY5bUxlNWVyN0w4bHRYNlFBR095endFRzhv?=
+ =?utf-8?B?d2xEK2JlSTBEL21QZmt5elpONXpSa0ZPWDNHaGI1Z1AxVjlqQ2xWekJyNXp0?=
+ =?utf-8?B?US9BTWpkVlZ5VHdaUnV0Um1SMXplQzNSZFZzTlcrV3RyWVAwZmY2MXljNVlp?=
+ =?utf-8?B?Ym5EbGJ3b29vd2ZQZi9KRmVSaG1GZDNKNmhIOGZTcXhaak5qTXk5OGczVGRD?=
+ =?utf-8?B?SWtzWUg3ZlJUcWV6NWFlLzl5S2tLaHppMXBOcXlrWTZnU1FFKzQ1WlJmYXIw?=
+ =?utf-8?B?M3liaURWOGcwTVk5Y2ZEWnFTRk1VMEMrV2RPeUcyQyt1akdHREo1K2lWOWtJ?=
+ =?utf-8?B?TG9YSjRqMDJYY0V0bzZxUkViT2pYRmhXeWdJMkllL25Ud3FHR2Nxd3VEUFdx?=
+ =?utf-8?B?RUFUWVdFMTBqQlU5YjFaai84MFVRWDMrTUN0YXl0TTE1bzhBZzFXejV0WEhL?=
+ =?utf-8?B?R2o1MXNiUG9qRFArRlljSGVGZ0JzVUN0ZXZrUjluZWZFNE02QlVmSzNVL0pn?=
+ =?utf-8?B?NDI4NTYvRUtnZzRsZ0JqNzF2Z0pLN21ocWh6bHQ4NFJqN1NxNzRmeGRkdGdR?=
+ =?utf-8?B?dWRBV2RVWE5XT1J0UElkeW9Ma0dSZEJXaFpQdWd4RkZiYXNPWTIvWEQ2ZHgr?=
+ =?utf-8?B?T3ZSd1NpNzQycTM1MXlLUjFiTUVmMDNtVm9za05NdVdvUk9wbHY5dUhiaTI1?=
+ =?utf-8?B?dGo1Q2w4MTFzbkhSTkhyd0luOVBPOEIwbzhmWTBtQk0zRGRXL2kyaEFzRU1k?=
+ =?utf-8?B?R2d2UlU1R01ZWDEvcitBcDVRcS9ybkZpSUdiazZIcUVEUHNkWG41Snh0MFA2?=
+ =?utf-8?B?QWRjVXg4ZEl3RFBvRTVmemhWNzRUUVQzdGk3eWg1YWErR1o0WWl3bkhrUndI?=
+ =?utf-8?B?YjlrbmRRL0FWNmxGL3pDUnJTWG0rdU1JUXZPU293aUV2OUFlcGcwYU81VEZh?=
+ =?utf-8?B?NExxaTVPckhuOTEvSUZCaFFNcXhVZlh2SjgzT3dmRzQvL0VWMGY1WHB2cFZG?=
+ =?utf-8?B?aE5xdk8rWk14UnArVXVLeWJDY0VzNVByNmJlZ0hZMkhCUnFNRS9ScHBBa2Ry?=
+ =?utf-8?B?eWY4bEcvaXQ4dm9QM0hFeWNBdHp6QmtlQTk5Q3pGSURudWFneENYWTVhb3hj?=
+ =?utf-8?B?ZjVzOVpRWGlscWYySFpPY3RqU2VTMUNTK2hGcVNRcU9uMkpSMEIwbXVkODB3?=
+ =?utf-8?B?ODRGQ0JSQmJvVzZ5VkgxWExOUU4rd3dVdzBydGM4U3JtQmVNSTF4cllya3Qv?=
+ =?utf-8?B?L0Y0dUV3SFJwc00vcVJwa0pkMjl0RjlDeHdiYmdLcEF0UlRuYVFCazNVaHdF?=
+ =?utf-8?B?YlVkUjljUFFSK3FCaGlabHkyNzBYcEt0L3dya2s3S0JDU2s0b2oySFZBcEl5?=
+ =?utf-8?B?RWI3Nmo4aTNZZ3pZR2lYaXRpNXBvSXFDdHRtUWRzdkF0WnM0TkkrYWhPK29N?=
+ =?utf-8?B?N3RwYzZkWGhTd0NSdXRhazU4K0ZuOUMxbFp0NzJudUNUUkxldlJWdUIvSkVW?=
+ =?utf-8?B?bThDV3c2MUg3ekJLMHh6UHFDeTJsQkx2RzNEd2hpK20vNldEYjJzb2VrNVBl?=
+ =?utf-8?B?ZXM2RlhYaGtLWW1FakxER2lXOTJhR0I1ZWdtT3Q0VklraWVqdFAwQVl1R1Bn?=
+ =?utf-8?B?R3Robjk4R1c2Qkg1WFNYc2xvY1RBM1hnSFUzRW9yUkdOak9VR2pEUWhSWFR3?=
+ =?utf-8?B?d3J1akh2blRMVi9Pc1ZpVXBQaEJxQm16YjhSTnI3WGZORGJCaHh4Smoyb09I?=
+ =?utf-8?Q?y2Fg121+PIJkw7RQ5RgBVv4tt?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35e67b2f-7aea-4f02-c390-08dbfb23134d
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6390.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:00:27.1380
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NTOjfmRZcAgJ/ND5JGKxSy9WJ5VtbCg7DzuNN0lJWbxFA9cGUP70bBKBGmy+R3L2g9rGg8BddKh7V0u4zmvXAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5440
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 6:39=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
->
-> On Tue, Dec 12, 2023 at 06:26:51AM -0800, Mina Almasry wrote:
-> > On Tue, Dec 12, 2023 at 4:25=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com=
-> wrote:
-> > >
-> > > On Thu, Dec 07, 2023 at 04:52:39PM -0800, Mina Almasry wrote:
-> > >
-> > > > +static inline struct page_pool_iov *page_to_page_pool_iov(struct p=
-age *page)
-> > > > +{
-> > > > +     if (page_is_page_pool_iov(page))
-> > > > +             return (struct page_pool_iov *)((unsigned long)page &=
- ~PP_IOV);
-> > > > +
-> > > > +     DEBUG_NET_WARN_ON_ONCE(true);
-> > > > +     return NULL;
-> > > > +}
-> > >
-> > > We already asked not to do this, please do not allocate weird things
-> > > can call them 'struct page' when they are not. It undermines the
-> > > maintainability of the mm to have things mis-typed like
-> > > this. Introduce a new type for your thing so the compiler can check i=
-t
-> > > properly.
-> > >
-> >
-> > There is a new type introduced, it's the page_pool_iov. We set the LSB
-> > on page_pool_iov* and cast it to page* only to avoid the churn of
-> > renaming page* to page_pool_iov* in the page_pool and all the net
-> > drivers using it. Is that not a reasonable compromise in your opinion?
-> > Since the LSB is set on the resulting page pointers, they are not
-> > actually usuable as pages, and are never passed to mm APIs per your
-> > requirement.
->
-> There were two asks, the one you did was to never pass this non-struct
-> page memory to the mm, which is great.
->
-> The other was to not mistype things, and don't type something as
-> struct page when it is, in fact, not.
->
-> I fear what you've done is make it so only one driver calls these
-> special functions and left the other drivers passing the struct page
-> directly to the mm and sort of obfuscating why it is OK based on this
-> netdev knowledge of not enabling/using the static branch in the other
-> cases.
->
+Hi Bjorn,
 
-Jason, we set the LSB on page_pool_iov pointers before casting it to
-struct page pointers. The resulting pointers are not useable as page
-pointers at all.
+Will help prevent confusion. LGTM. 
 
-In order to use the resulting pointers, the driver _must_ use the
-special functions that first clear the LSB. It is impossible for the
-driver to 'accidentally' use the resulting page pointers with the LSB
-set - the kernel would just crash trying to dereference such a
-pointer.
-
-The way it works currently is that drivers that support devmem TCP
-will declare that support to the net stack, and use the special
-functions that clear the LSB and cast the struct back to
-page_pool_iov. The drivers that don't support devmem TCP will not
-declare support and will get pages allocated from the mm stack from
-the page_pool and use them as pages normally.
-
-> Perhaps you can simply avoid this by arranging for this driver to also
-> exclusively use some special type to indicate the dual nature of the
-> pointer and leave the other drivers as using the struct page version.
->
-
-This is certainly possible, but it requires us to rename all the page
-pointers in the page_pool to the new type, and requires the driver
-adding devmem TCP support to rename all the page* pointer instances to
-the new type. It's possible but it introduces lots of code churn. Is
-the LSB + cast not a reasonable compromise here? I feel like the trick
-of setting the least significant bit on a pointer to indicate it's
-something else has a fair amount of precedent in the kernel.
-
---
-Thanks,
-Mina
+On 12/6/23 16:42, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> The PCIe spec classifies errors as either "Correctable" or "Uncorrectable".
+> Previously we printed these as "Corrected" or "Uncorrected".  To avoid
+> confusion, use the same terms as the spec.
+> 
+> One confusing situation is when one agent detects an error, but another
+> agent is responsible for recovery, e.g., by re-attempting the operation.
+> The first agent may log a "correctable" error but it has not yet been
+> corrected.  The recovery agent must report an uncorrectable error if it is
+> unable to recover.  If we print the first agent's error as "Corrected", it
+> gives the false impression that it has already been resolved.
+> 
+> Sample message change:
+> 
+>   - pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+>   + pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pcie/aer.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 42a3bd35a3e1..20db80018b5d 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -436,9 +436,9 @@ void pci_aer_exit(struct pci_dev *dev)
+>   * AER error strings
+>   */
+>  static const char *aer_error_severity_string[] = {
+> -	"Uncorrected (Non-Fatal)",
+> -	"Uncorrected (Fatal)",
+> -	"Corrected"
+> +	"Uncorrectable (Non-Fatal)",
+> +	"Uncorrectable (Fatal)",
+> +	"Correctable"
+>  };
+>  
+>  static const char *aer_error_layer[] = {
