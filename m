@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA2E80F010
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82BB80F17C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376672AbjLLPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
+        id S232862AbjLLPwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376664AbjLLPYc (ORCPT
+        with ESMTP id S1376764AbjLLPZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:24:32 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEC5EA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:38 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-336356d9092so324069f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702394677; x=1702999477; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LN7cfdgQAjkSsoxFqP1f5cDcD2uFywdfIaaBewRyeQk=;
-        b=GscDMUm5DcwxPRexhZ21fFVz9oFvHgCUDciKEqEDAMZZEztPVJ2lKxrgR6p2IZscy7
-         jWpZSrZHG4SbElx8SrHcNqGudH6ECCUomOm1tTSG6CTcE1To8vppAyUs0qCxbuLFxfry
-         GqI1bt7OYXbpq4vcVOSlL4PBmWXzQrwC2FcfR6TIQ5xJtuLlJ6q4OZ5g0LkN8dIvUJUK
-         MKzGUmTeV8yaOK5leZ3QAvgenmJz4YoCoFHSs7dT0uaW+O0Tr/KMpbxbnIz8uRjC2shm
-         z360MPz8J110bHv6Iwmc1Gd2RDe4BaxGwCChnA9OsmopOrBth1WAefUVxhKW+I2ZQB6W
-         j0og==
+        Tue, 12 Dec 2023 10:25:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D408A12E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:25:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702394735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wIpQw8k3Ji1hQ+Q/rMJi3mOp+fmPt/8e4XsCNKHyBDU=;
+        b=e4rVfJBW6SUYlK502zdXA7lDa5hPdvD86lvhUU2+qOD12w36ynGUYJ2JNiUBiaMGwsb0hQ
+        /pk1234NHu6Edl+qsHsfVCj3Er6riLXTQV+XicUIhjnxjMkaJXbD4noGHbeuqK9wScY/YE
+        kFflxEEYcwaq/E5VWpQv8N+hxxszijY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-660-vD9Rb0xDPHC_Lh-FelK6wg-1; Tue, 12 Dec 2023 10:25:33 -0500
+X-MC-Unique: vD9Rb0xDPHC_Lh-FelK6wg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1f9ab28654so100897666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:25:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702394677; x=1702999477;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LN7cfdgQAjkSsoxFqP1f5cDcD2uFywdfIaaBewRyeQk=;
-        b=TxBvv/fBUd91FmoKvjjJ1hElYdABfEop0L4ICYlwrH6IVhPTkokQ2lw63SofGL331Q
-         J5jwJSAUG1NJaGt2oTzFK4Ab4jjeqA2QuH3H3bAHys8ue3v20eqL/XIpFoChXNhAljx4
-         UgOSdRDefNGPLWO2hawfOmpJMWJm80yvMQLzlHzxiQdvZxyVPD4yo/6HDlncTkjeFea+
-         8L4OkDwxSzs7W1lQ6B5Qij0RVvEQiuFBdvP4Ududl/R4AUeEJqRi2BW4opikiC+7pszw
-         jt6xMcmFIN53QOglOZS7M9DYjLhrVV/5sgX3oZ4UutDkYoS4Tb1N1kn7dk01OJ/4g4W3
-         ncpA==
-X-Gm-Message-State: AOJu0YxcMWHunn+xNJeLvADFxODujDEngjWtOwYCD8tC1x/BbO07d1vk
-        XuXvLNhxgoeVMMUweJk+3iasAQ==
-X-Google-Smtp-Source: AGHT+IHozVD4U0YiFbAu/YdcjR8DiKmGxIQYmCeg73PrL+XEUhQ0LgEDBk9rzgYB6UAAD4H/hUPNmA==
-X-Received: by 2002:a5d:4e01:0:b0:333:6338:f1af with SMTP id p1-20020a5d4e01000000b003336338f1afmr3511573wrt.98.1702394676959;
-        Tue, 12 Dec 2023 07:24:36 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:5894:fa62:26b4:bf82? ([2a01:e0a:982:cbb0:5894:fa62:26b4:bf82])
-        by smtp.gmail.com with ESMTPSA id x15-20020a5d54cf000000b0033635d121besm725476wrv.52.2023.12.12.07.24.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 07:24:36 -0800 (PST)
-Message-ID: <29afe196-7b73-425c-8200-78ffbe17e8c0@linaro.org>
-Date:   Tue, 12 Dec 2023 16:24:36 +0100
+        d=1e100.net; s=20230601; t=1702394732; x=1702999532;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wIpQw8k3Ji1hQ+Q/rMJi3mOp+fmPt/8e4XsCNKHyBDU=;
+        b=fsk/Z1aDD8LymWnDBjn1vXHyUDS3HlmKQYhHn1WpY2p0z0pwrc1W9TuQm10WqKnzFR
+         pb6kqOIMhIRRxh5nc62Vef+2tXFG7IJ3fBTUBDgwBJbnU/wDt7BmxY18MPtGtIqeP8vy
+         YSkQWaj/8Bkv6i/kX0eGvkA+nUJwsbO6K60bWjuAPGIpUIBq3cKpnuvm7N3ACTjJRVnw
+         7GU2PWafS9cCSa+XDEIsoiYTOg9xoOcSeCPE6RyNgaZ2AGQwBYPO4IO2IhQG1RVA+rJm
+         3gl/pGRukhLFlkaMMKckELCIpmN+iVenPwzeyZg434jku1W1+ArSSCmq+o3U2zb1kriJ
+         thCg==
+X-Gm-Message-State: AOJu0Yx7BhkJLkLSyCZXFn/qLSfkSfaDxPsIs1lyDiPbaUJKBjRgfL6y
+        ZkfHDth5WH5yk6omU7LOtiQ42+ibxH00wcUYtAu7IH3jelhZQEVdFoYf6Osyc5cVL3RoOuJBbkT
+        CgyHpJB1kUdJ8QvNKCUIdnusl
+X-Received: by 2002:a17:906:10c7:b0:a1c:e980:3c3 with SMTP id v7-20020a17090610c700b00a1ce98003c3mr2652508ejv.28.1702394732290;
+        Tue, 12 Dec 2023 07:25:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGASJRN+3155/H3UvqxOv26N1RhSjlb8LnjPrXAVZ+i+Dsz6c4kdn853kkeIlOvLJ4UnqcHDA==
+X-Received: by 2002:a17:906:10c7:b0:a1c:e980:3c3 with SMTP id v7-20020a17090610c700b00a1ce98003c3mr2652496ejv.28.1702394731966;
+        Tue, 12 Dec 2023 07:25:31 -0800 (PST)
+Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id vh9-20020a170907d38900b00a1d18c142eesm6445227ejc.59.2023.12.12.07.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 07:25:31 -0800 (PST)
+Date:   Tue, 12 Dec 2023 16:25:29 +0100
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Fiona Ebner <f.ebner@proxmox.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com, lenb@kernel.org, rafael@kernel.org,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>, mst@redhat.com
+Subject: Re: SCSI hotplug issues with UEFI VM with guest kernel >= 6.5
+Message-ID: <20231212162529.09c27fdf@imammedo.users.ipa.redhat.com>
+In-Reply-To: <62363899-d7aa-4f1c-abfa-1f87f0b6b43f@proxmox.com>
+References: <9eb669c0-d8f2-431d-a700-6da13053ae54@proxmox.com>
+        <20231207232815.GA771837@bhelgaas>
+        <20231208164723.12828a96@imammedo.users.ipa.redhat.com>
+        <20231211084604.25e209af@imammedo.users.ipa.redhat.com>
+        <c6233df5-01d8-498f-8235-ce4b102a2e91@proxmox.com>
+        <20231212122608.1b4f75ce@imammedo.users.ipa.redhat.com>
+        <62363899-d7aa-4f1c-abfa-1f87f0b6b43f@proxmox.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 3/3] soc: qcom: pmic_pdcharger_ulog: Fix hypothetical ulog
- request message endianess
-Content-Language: en-US, fr
-To:     Andrew Halaney <ahalaney@redhat.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20231205-pmicpdcharger-ulog-fixups-v1-0-71c95162cb84@redhat.com>
- <20231205-pmicpdcharger-ulog-fixups-v1-3-71c95162cb84@redhat.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231205-pmicpdcharger-ulog-fixups-v1-3-71c95162cb84@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 00:05, Andrew Halaney wrote:
-> Sparse reports the following:
+On Tue, 12 Dec 2023 13:50:20 +0100
+Fiona Ebner <f.ebner@proxmox.com> wrote:
+
+> Am 12.12.23 um 12:26 schrieb Igor Mammedov:
+> > 
+> > it's not necessary, but it would help to find out what's going wrong faster.
+> > Otherwise we would need to fallback to debugging over email.
+> > Are you willing to help with testing/providing debug logs to track down
+> > the cause?.
+> >   
 > 
->      % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make C=2 W=1 drivers/soc/qcom/pmic_pdcharger_ulog.o
->      ...
->        CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
->        CHECK   drivers/soc/qcom/pmic_pdcharger_ulog.c
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34: warning: incorrect type in initializer (different base types)
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34:    expected restricted __le32 [usertype] owner
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34:    got int
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33: warning: incorrect type in initializer (different base types)
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33:    expected restricted __le32 [usertype] type
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33:    got int
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35: warning: incorrect type in initializer (different base types)
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35:    expected restricted __le32 [usertype] opcode
->      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35:    got int
+> I submitted the dmesg logs in bugzilla:
+> https://bugzilla.kernel.org/show_bug.cgi?id=218255
 > 
-> Let's deal with endianness conversion in the rare case this ever runs
-> on a big-endian machine (and to quiet down sparse for this file).
+> > Though debug over email would be slow, so our best option is to revert
+> > offending patches until the cause if found/fixed.
+> >   
+> >>>>> Do you have to revert both cc22522fd55e2 and 40613da52b13f to make it
+> >>>>> work reliably?  If we have to revert something, reverting one would be
+> >>>>> better than reverting both.      
+> >>>>    
+> >>
+> >> Just reverting cc22522fd55e2 is not enough (and cc22522fd55e2 fixes
+> >> 40613da52b13f so I can't revert just 40613da52b13f).  
+> > 
+> > With UEFI setup, it still works for me fine with current master.
+> > 
+> > Kernel 6.7.0-rc5-00014-g26aff849438c on an x86_64 (ttyS0)
+> >   
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312060355.M0eJtq4X-lkp@intel.com/
-> Fixes: 086fdb48bc65 ("soc: qcom: add ADSP PDCharger ULOG driver")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->   drivers/soc/qcom/pmic_pdcharger_ulog.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+> I also built from current master (still 26aff849438c) to verify and it's
+> still broken for me.
 > 
-> diff --git a/drivers/soc/qcom/pmic_pdcharger_ulog.c b/drivers/soc/qcom/pmic_pdcharger_ulog.c
-> index f1aaacf05005..238cd38589dc 100644
-> --- a/drivers/soc/qcom/pmic_pdcharger_ulog.c
-> +++ b/drivers/soc/qcom/pmic_pdcharger_ulog.c
-> @@ -54,9 +54,9 @@ static int pmic_pdcharger_ulog_request(struct pmic_pdcharger_ulog *pg)
->   {
->   	struct get_ulog_req_msg req_msg = {
->   		.hdr = {
-> -			.owner = MSG_OWNER_CHG_ULOG,
-> -			.type = MSG_TYPE_REQ_RESP,
-> -			.opcode = GET_CHG_ULOG_REQ
-> +			.owner = cpu_to_le32(MSG_OWNER_CHG_ULOG),
-> +			.type = cpu_to_le32(MSG_TYPE_REQ_RESP),
-> +			.opcode = cpu_to_le32(GET_CHG_ULOG_REQ)
->   		},
->   		.log_size = MAX_ULOG_SIZE
->   	};
+> > 
+> > it still doesn't work with Fedora's 6.7.0-0.rc2.20231125git0f5cc96c367f.26.fc40.x86_64 kernel.
+> > However it's necessary to have -smp 4 for it to break,
+> > with -smp 1 it works fine as well.
+> >   
+> 
+> For me it's (always with build from current master):
+> 
+> -smp 1 -> it worked 5 times out of 5
+> -smp 2 -> it worked 3 times out of 5
+> -smp 4 -> it worked 0 times out of 5
+> -smp 8 -> it worked 0 times out of 5
+
+
+I managed to reproduce it with upstream using fedora 40 config as is
+(without converting it to mod2yesconfig).
+So give me a couple of days to debug it before reverting.
+
+> 
+> Best Regards,
+> Fiona
 > 
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
