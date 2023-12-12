@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B768C80EA34
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE4D80EA2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346401AbjLLLRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
+        id S1346335AbjLLLR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346325AbjLLLRX (ORCPT
+        with ESMTP id S1346320AbjLLLRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 06:17:23 -0500
 Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C63F3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C675F2
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:17:24 -0800 (PST)
 Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-        by mx0.infotecs.ru (Postfix) with ESMTP id 01A9512012CC;
-        Tue, 12 Dec 2023 14:17:22 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 01A9512012CC
+        by mx0.infotecs.ru (Postfix) with ESMTP id 8BE8711D04A2;
+        Tue, 12 Dec 2023 14:17:21 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 8BE8711D04A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-        t=1702379842; bh=NGgi0dcX52R2Hsj4L3+FbfcgEQzNcKvB9lQQ3MuTsMU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=yf9uSjnfSWd9Z6nU5qzdpDu1E6K56w8q7WFPFG4TuxgPYtF2JMi4zUfPChAPYr/nA
-         8eb0GAF1eTAVW/7Mntf44BrvSbA0Hsrjh/nlAP3kR2IUHPPr9R7KscS7U8/9zzkS4Q
-         atAMHnULdGJb873TXYD3d8cZGVwk/8yxi84neSNU=
-Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
-        by mx0.infotecs-nt (Postfix) with ESMTP id EE62D316EE01;
+        t=1702379841; bh=x2Jm0xUedAtS0RUe8qmWwG38faX4FDQ1yRUOKkXwBI0=;
+        h=From:To:CC:Subject:Date:From;
+        b=gxcsFfRDr17YUaZXFg0rWjatkX9tAvNJ2Gul2BbjiUQr0McXov/6OwDxqjxr/7AdF
+         IfKdmNOfweNTRcpNzjHAwABK5CvsvZ0z0EJHxnmkVelD1hn8PG6aOGcAJSUGWZuWEd
+         f+G9UNnFfQZ7MSPaZBevzgEDWDSLMGagjq0hT8vs=
+Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
+        by mx0.infotecs-nt (Postfix) with ESMTP id 875673029CDE;
         Tue, 12 Dec 2023 14:17:21 +0300 (MSK)
 From:   Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 To:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
@@ -35,15 +35,14 @@ CC:     Daniel Starke <daniel.starke@siemens.com>,
         Jiri Slaby <jirislaby@kernel.org>,
         Russ Gorby <russ.gorby@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 5.10 2/3] tty: n_gsm, remove duplicates of parameters
-Thread-Topic: [PATCH 5.10 2/3] tty: n_gsm, remove duplicates of parameters
-Thread-Index: AQHaLOzGj9Cp/lEMc0uytGwtXjUNjQ==
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH 5.10 0/3] tty: n_gsm: fix tty registration before control
+ channel open
+Thread-Topic: [PATCH 5.10 0/3] tty: n_gsm: fix tty registration before control
+ channel open
+Thread-Index: AQHaLOzG4q0VQXlQGEK0PfABOy9uPw==
 Date:   Tue, 12 Dec 2023 11:17:21 +0000
-Message-ID: <20231212111431.4064760-3-Ilia.Gavrilov@infotecs.ru>
-References: <20231212111431.4064760-1-Ilia.Gavrilov@infotecs.ru>
-In-Reply-To: <20231212111431.4064760-1-Ilia.Gavrilov@infotecs.ru>
+Message-ID: <20231212111431.4064760-1-Ilia.Gavrilov@infotecs.ru>
 Accept-Language: ru-RU, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -69,59 +68,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Slaby <jslaby@suse.cz>
+Syzkaller reports memory leak issue at gsmld_attach_gsm() in
+5.10 stable releases. The reproducer injects the memory allocation
+errors to tty_register_device(); as a result, tty_kref_get() isn't called
+after this error, which leads to tty_struct leak.
+The issue has been fixed by the following patches that can be cleanly
+applied to the 5.10 branch.
 
-commit b93db97e1ca08e500305bc46b08c72e2232c4be1 upstream.
-
-dp, f, and i are only duplicates of gsmld_receive_buf's parameters. Use
-the parameters directly (cp, fp, and count) and delete these local
-variables.
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Link: https://lore.kernel.org/r/20210302062214.29627-41-jslaby@suse.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
----
- drivers/tty/n_gsm.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 7a883a2c0c50..2455f952e0aa 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -2577,27 +2577,24 @@ static void gsmld_receive_buf(struct tty_struct *tt=
-y, const unsigned char *cp,
- 			      char *fp, int count)
- {
- 	struct gsm_mux *gsm =3D tty->disc_data;
--	const unsigned char *dp;
--	char *f;
--	int i;
- 	char flags =3D TTY_NORMAL;
-=20
- 	if (debug & 4)
- 		print_hex_dump_bytes("gsmld_receive: ", DUMP_PREFIX_OFFSET,
- 				     cp, count);
-=20
--	for (i =3D count, dp =3D cp, f =3D fp; i; i--, dp++) {
--		if (f)
--			flags =3D *f++;
-+	for (; count; count--, cp++) {
-+		if (fp)
-+			flags =3D *fp++;
- 		switch (flags) {
- 		case TTY_NORMAL:
--			gsm->receive(gsm, *dp);
-+			gsm->receive(gsm, *cp);
- 			break;
- 		case TTY_OVERRUN:
- 		case TTY_BREAK:
- 		case TTY_PARITY:
- 		case TTY_FRAME:
--			gsm_error(gsm, *dp, flags);
-+			gsm_error(gsm, *cp, flags);
- 			break;
- 		default:
- 			WARN_ONCE(1, "%s: unknown flag %d\n",
---=20
-2.39.2
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with Syzkaller
