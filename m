@@ -2,300 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F00B580E99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E40F880E9B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbjLLLGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
+        id S1346241AbjLLLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjLLLGl (ORCPT
+        with ESMTP id S231984AbjLLLJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:06:41 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0209AA0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:06:47 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b9f727d94cso805818b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:06:46 -0800 (PST)
+        Tue, 12 Dec 2023 06:09:44 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFB9F2;
+        Tue, 12 Dec 2023 03:09:46 -0800 (PST)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BC7hiVL004099;
+        Tue, 12 Dec 2023 11:09:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=jRgivuBGPAiJE3stZe7qo3VAGM2ldFIKOu17TRfwV90=;
+ b=duejtCdpIEq/NrdnwQBn11uIh3VENW89qyGItKngomFhcotnlFpqlPZn3DpGipvMvrLL
+ +Z72IUsxrUdTl/vA3B+BNBKH7cLMZ/cB/vlplZyI0WjBlhrscOa5Z2Fb7GUKjfFVwlYp
+ 3QYxrOScu3p4UmfLDerhqg++/lVO29j3KUlXidGcNnutxWb4KXzbGV/hdewyjidxhuzp
+ WHfvUMJsvtplnDaGh77cN3F2wEM9amw08n8Jvf2vkn6IrMa/22oJqxFX/9ENFJFR/83b
+ /aaWZ1OmxWAB7ZO7xvZfqPGCgXg1kH0TSt9EF8y4JkfikQKAkeR4Uvp+4gcURhzr6VjR EA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvfuu5bhf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 11:09:17 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCAxAst003210;
+        Tue, 12 Dec 2023 11:09:17 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep6e16k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 11:09:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HbbTGi5L9N6yZw+8tNflzIXYTSr8SS5HYWs+tMJcO9ZMRbZWVLO9PxmthOfU4ccbwYhsEc5aFqmUTaejQsA8N1Nljoazy/5kiYJEjGqGxCwrTGItnnfbEAZTHFI2vG00g0Ni7VoRHxulik/IQzd3vsESa1NBHZ7xUJjDwtpfERF3QDS5hiKUwoAGtTYyY+ds00IGyjdKWafTh0hpDBnJEGdVrWRxDjMg+5HxFDxgTQlZNuPRLFXSLzcaiLpvA33ThYijvFyTxoDsqiGs6qot/nlLlR4OczhJ9Pw6hhwmlhsByFRDFq1Nz/DpJQt3DmMLtQa/EQLF0kdAK3Drq6v1eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jRgivuBGPAiJE3stZe7qo3VAGM2ldFIKOu17TRfwV90=;
+ b=LO5Qg3YQM9qdL/eyRE+8OzKfc8mNyu7jmuMKiHE7T8BB36nZkTt2HiQrwgoyI5jYPKKA/5MgSo+MgVZHYRziUnf2REZM8JpOpkoT5A3lSeF96axUVdCMQ6Vt3ilauxAMD9jJMi8/Zfjqq/rwf1eMAuqSlRPSYOtax0CCHIn3rszEy3R6eE2qJNL1RRW+JFi70pauvyuYpWiOX+mWc7GSmeRQbH/BzDK7yzbDeOn6CdRqCjty43VAeTFS94PDLjgPbeV9fZ1dclPZTU7n74abBMRdn3jFaiS2TrStkSFwxk/4mfLLf1EQGsU8WiQh4+s/U4aCsIUIM3VUVrFC6QYe7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702379206; x=1702984006; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dNxF7QXliSE92DNXgeY61a9nlDcm8BgNVtHOlvR8QXg=;
-        b=lskCaD5xq9Kt2OFx1ULEtynGD+FaRQ5Dfv5sSKaR+fhuTWSyhs1vXWszeDjVNjnULL
-         C5xWFRzXyjvP/AXIKlebUJhSPQ8+VO6uu/jJLLnUs4SrYtOdvWFV8hn86f2jCRUBBK5Z
-         T3Ixrf+7iGVxVgJyOwcIh9oe7ZGCEqjmzpwwLN3ZEOqMEhqZkNCwuYFvuYLounVK20rH
-         BweM7NZMjjxO7uApMVnL1xEVvc2VfW4E7J5SD8nsfYDhOaUzrc9kL48itMg+wIx3WFkj
-         X9EvsChxHNoo8eWwjhfrCnioNXxLtmsjFI6xPm6uMVmWeSPpsFiWPbH4ksihtzwPwcAa
-         GRrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702379206; x=1702984006;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dNxF7QXliSE92DNXgeY61a9nlDcm8BgNVtHOlvR8QXg=;
-        b=qps7uHZllepS2E2S0O0o8RymkNGFqr3OvsMaDS1f49oEITCSQ7iCOSpHWdsW241ikC
-         V0IQejaOH72imDveuyI8FM5hFvLzVQP8phy2R/vce75+EVhM0ProxucLnER7BPYo4AvN
-         8Q95LJsq1xr/Lml2mNFBxw3ASjrMnArbhbNmch+s3xEtQaB8w7NSzfYzpdL9+fcPzt6v
-         qmwvbEHikUeKgW3x+nPK0hV2zyf3G2C2yON143xxBbb9PVfmgvlCJTkOKXJqhTSYtKof
-         nqWp8/10WNe8QKEBPiGnLCRkmKdDFe1iH25G0NMJ7VS4zWNrpGTgbfvehKRRpT4245OO
-         PD2Q==
-X-Gm-Message-State: AOJu0YzXTnU2+OljV6DrsNVtmkgjPtmdMZ/vv73hErRC3NawRT//e0wf
-        1eQjL6r4jL7rSaNkduDWI4cJC6ginlSiCQK+syQixw==
-X-Google-Smtp-Source: AGHT+IG9VsGCBbFb71zjlG6HiglE/1G6CAxNkD5Lw3EuI8Ai5PbeHso86ikiUCm9LTYCj3UWUX926IkgL86FRkRwkPM=
-X-Received: by 2002:a05:6808:6506:b0:3ba:b1f:f468 with SMTP id
- fm6-20020a056808650600b003ba0b1ff468mr2183045oib.103.1702379206210; Tue, 12
- Dec 2023 03:06:46 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jRgivuBGPAiJE3stZe7qo3VAGM2ldFIKOu17TRfwV90=;
+ b=ZKUwsH3H2Cvy3qNiE1x9e/HSzlarBLBjFrtTAnjbejZYyEGiHZ7J3eJ41HuNO29+C/3JayREqI2XJyZk+OSNL+a44QGBoIVm6pbAJi+5+4Y2ewXrO33B47z8ML7cqoRcAd+NNgWR3rY2CeFI3Lqd7q4rOiLPTAtsQ/ODMQbz4OU=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SA1PR10MB6663.namprd10.prod.outlook.com (2603:10b6:806:2ba::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
+ 2023 11:09:14 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 11:09:14 +0000
+From:   John Garry <john.g.garry@oracle.com>
+To:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-scsi@vger.kernel.org, ming.lei@redhat.com,
+        jaswin@linux.ibm.com, bvanassche@acm.org,
+        John Garry <john.g.garry@oracle.com>
+Subject: [PATCH v2 00/16] block atomic writes
+Date:   Tue, 12 Dec 2023 11:08:28 +0000
+Message-Id: <20231212110844.19698-1-john.g.garry@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BL0PR02CA0026.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::39) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-References: <20231208015242.385103-1-qyousef@layalina.io> <20231208015242.385103-2-qyousef@layalina.io>
-In-Reply-To: <20231208015242.385103-2-qyousef@layalina.io>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 12 Dec 2023 12:06:33 +0100
-Message-ID: <CAKfTPtAKainBfpPOKTJ21zQmmYw7O0Z0v8utfg=QTBtE1L5O_w@mail.gmail.com>
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling cpufreq_update_util()
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-        Rick Yiu <rickyiu@google.com>,
-        Chung-Kai Mei <chungkai@google.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA1PR10MB6663:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2b644e75-064f-48d2-3a6a-08dbfb02c699
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ez3IhG2vBv+6MJXM3iv8oXvh0i3TPcnSR31HTXxWJHGNaiNgFrgyM30R7POfMm5QiyW6pfYav8la60dnHnuLgdhRs0yNliQNZtZlL3qRcZS6iExr70DLJfDBtJhzOfzpHllOKa6ta4khAdfqrGWUcfFTvduT4c9HjL/A+iRU/RHNHJCEAqo9ziaN36Cxw7LSMalOUE6s6iaM9NFYbpqJwa7d4/1y4qm8wzhs/8r4uMaBrGQiIODRoX9IL+xmbLe8YoOn0P0U0qUVdbZlRvWtNzPUvRt3dl9x4rARyYgvYEijA+VdqmdxE3M5BGVzHIniNXbaEcJQimYNMtIlp56lS9KSNAh+k7eHSsnCPQqF7le0lnYmETxlZHVSHFw6w/gdbtO99VJMykzlcEgQE88Y921fwUybgccL2b00QtJmo9qroV+6t76JsV5If9N4HGW2DRZiSHDa22+z8etbFzCWqCR+Egg7SIKX2Imlpc46Gnbxh+AK69KyiISk6Qj9KAiPYxqCNotXFdl54hC/E6Too/9tEEPGUBCMH4cgiHvtHkFZ8a1+oc9ywC/dEcMpbs2ZT5hQ0wW3pSAmcyPCuXZE7Z4sYi/fVbzpZvDH1CgQ6Uc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(39860400002)(136003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(6506007)(6512007)(2616005)(107886003)(1076003)(478600001)(5660300002)(4326008)(8936002)(8676002)(41300700001)(7416002)(2906002)(966005)(6486002)(6666004)(38100700002)(316002)(66476007)(66556008)(66946007)(103116003)(86362001)(36756003)(921008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0QZVgZrw9rBjdsidp+VWKHx0Z0mnzfBvEGCfLhCV01iCa/S0sd0UR/QkhvoW?=
+ =?us-ascii?Q?62QFYRrD0tmGaUy4WjXLN83o4GYL/1iAcDHw2NOKHW6/cImgQkN6YEDspP6c?=
+ =?us-ascii?Q?m0ELdk/qx4dt0TJnOnBmgH1cGf2U0/wz58wtJ2fvcB5RFdXAYMXtWO9zjs0K?=
+ =?us-ascii?Q?xJ5kzBNae1uTD7XAx/R1T0gvDOJesj6RpjPfXyEp09bPt+b50tPHd0mg7+9W?=
+ =?us-ascii?Q?j6rXTITfXyCpW6WOiMf38KWtZiox1/YyTibtobN2Kcf+t2tM012prNgZ8XQw?=
+ =?us-ascii?Q?5gmMDF+Hv7yyTBuuPX70JZQQl4jLFmuPsV7gRHnilC0oALZ1etZ7yoKMNmdN?=
+ =?us-ascii?Q?jA6DscLkHfNTPw+Gi4yzmg0q6RnJP1i/JQd8e3XXbIhCSI07ax2/E+bUgVLq?=
+ =?us-ascii?Q?80rUclW0CJVw3H1l/cS+5hva5FMMNxKjTl6PxNrdrDld3z2Rf2JMqUTawSee?=
+ =?us-ascii?Q?2Uw6ckAM0mFfHWBbtBRIqlq/VZvrmIKVDzEROnzOhaSBwMg5y95x4JT6rmIq?=
+ =?us-ascii?Q?oBMfnr3ONXPaWRTOFWLD2jhgEXLPuNztznrycxxdULYTCwUfZ0g3p6SY0LrL?=
+ =?us-ascii?Q?OhpagmAcIAPVOLGKunPiIlvugqeBAnSjbC57oCVuICNej+zQHl3jcHwKIZOy?=
+ =?us-ascii?Q?fPU5nig/adzRwH7ArlfsKzJQp5MXa2DlNrEeM8GDRs23boIduUeHi+DJH167?=
+ =?us-ascii?Q?rMkUwi32o9Oh6SWFLZzOkbhv8tHTB1Yso/B7S3OXFaKV+7RzM/J/CIaTFPaZ?=
+ =?us-ascii?Q?qPA5JMoA7dvQcDe9JKtxIX47gJExyIqQUZNXiDxHlKdlQwQSuTIewRwcg2QA?=
+ =?us-ascii?Q?B+2MZEgibzEhq4/oSSfq9wQ+zgtYfKVOK4Jf7LnvvhWzVfFPEUSjS5ejI0b6?=
+ =?us-ascii?Q?6km8ahUItOLkz39QAQtDrv74EyGgOAxrWmMgicSqmhx6lEHkOROBDe7d1C95?=
+ =?us-ascii?Q?ccWY+2kHqu9Hw4r7XLv1QSgnHcMgy9Bc9Og1qcTs7B4QMdFqDWnv8OhQ7WLg?=
+ =?us-ascii?Q?uM//0HMhou6htbF4F+dUeaaYlRXjFMEqg0rjDWPmc2K/hnYrAuHxVV5KJBY1?=
+ =?us-ascii?Q?ByhMtlFiOd9VTFQi9Q4kO5Amfrtz/vL1vNnYirJYPDGBo4rglwQft3ZKCuKk?=
+ =?us-ascii?Q?D5snCOZAkvcVndEha2HfZUhYSmYZRivo6Nq22nk7v+u/Ib0VTTnXyUzk8s9f?=
+ =?us-ascii?Q?ZDgWo8h4YWcSq82eFld2IeJ1trKAKTUSVKyGA49QXY4dBI81taPdq+HQUOLz?=
+ =?us-ascii?Q?Y2EYRHe4eOFUwtzCIzmEB/nJCkllNosVLpq5l/K4BrQ12i7r4YcAsTg5WqFi?=
+ =?us-ascii?Q?Uv2GZ8Yul//4SiENvAfxdWo/3Le35vVtEr4MZsr4vYhPq5YloUhmtF006Ql3?=
+ =?us-ascii?Q?BSUahR7XFET7RAdACcqmXD9V+HEHU6F6tL09zLvtni0peoprEwZYiiH4nWLW?=
+ =?us-ascii?Q?ao6BUY4dlBRqhXLtyb1pqby+gzbQ7akzMPRNyyEE4kq9KUB63I/QhY44l7Fw?=
+ =?us-ascii?Q?9J4ImHzHxN32XQvZhe/O6/PYhRfv0olAPjxSfbEHIOS6QYdlWNoULv3Epgk8?=
+ =?us-ascii?Q?zpBVF6g9U7nBxcpsDBrDy8h7voG51RzBPcz/mpizcLrQHLxSPaQ7pmBHszu+?=
+ =?us-ascii?Q?lA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: rRXR/+UJJfhSLy2aatk12HvFltrRSa41L0Q9FQADCRkOoABpVfchJb7z8LNlTV1m7wz8xGnzPA4FDsELLXBdDIu17FZh3zTFS9FLf26+8CU7lBMS0ZN8K71EbYtoTmf4qsaxMLUgsHGBdUO39alYszLqEFBRhmhmoaKdiuV7UTFJlPEUihsCtLCUBAKCwzyQvKo4+2KHd1yb0eCrQCc/RunR/wjQcHaxYZMV3uST8TLsxuRsnWdLMcmo+wOpu/vUKlGMUXBKgUxcaMRBLexN3STw9VWXmHJOKNVMTzlXOO0LGZFgiYSC/Nok1Sp0MKq2yDALujxHZWf1w1cyUkCjZMnV7PT8Sxv7EazIoVQz8AzDEYwAgBWbdvI+bosOkWQNhxSTm+/c05467vxvGyY4y2/tzobbzzyvK9b6OqL2cWbVrnvB2IHOrggDIKL1r/qCGrHIUt+LIE7c+uLOXBxVDSEpTUC3XgE00sXIvYXJJn0o0dTKcr/872+R6xxZthQ/APe4EoaBhp5x04xZ85qUr6ZwtFYwX44DoPWntpc9z7v8n5mkzqQgo99qyYA4NvA+Xl6czM2x52XiZBYXn2rPWvnr7w7nYWk+Flp9oKwaiMc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b644e75-064f-48d2-3a6a-08dbfb02c699
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 11:09:14.4726
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fk7wU95Ct1MUKPgDBNRrPpHnf7x9qwdW5k+jKHrIISjQPzcW5G4zBzUChbQhmdcbtmUd8xG3xAvhE0KHrLUuLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6663
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_04,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312120089
+X-Proofpoint-GUID: jAd-7shv0zqSgIEqreW_MhyxQ00SoQGU
+X-Proofpoint-ORIG-GUID: jAd-7shv0zqSgIEqreW_MhyxQ00SoQGU
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Dec 2023 at 02:52, Qais Yousef <qyousef@layalina.io> wrote:
->
-> Due to the way code is structured, it makes a lot of sense to trigger
-> cpufreq_update_util() from update_load_avg(). But this is too aggressive
-> as in most cases we are iterating through entities in a loop to
-> update_load_avg() in the hierarchy. So we end up sending too many
-> request in an loop as we're updating the hierarchy.
->
-> Combine this with the rate limit in schedutil, we could end up
-> prematurely send up a wrong frequency update before we have actually
-> updated all entities appropriately.
->
-> Be smarter about it by limiting the trigger to perform frequency updates
-> after all accounting logic has done. This ended up being in the
-> following points:
->
-> 1. enqueue/dequeue_task_fair()
-> 2. throttle/unthrottle_cfs_rq()
-> 3. attach/detach_task_cfs_rq()
-> 4. task_tick_fair()
-> 5. __sched_group_set_shares()
->
-> This is not 100% ideal still due to other limitations that might be
-> a bit harder to handle. Namely we can end up with premature update
-> request in the following situations:
->
-> a. Simultaneous task enqueue on the CPU where 2nd task is bigger and
->    requires higher freq. The trigger to cpufreq_update_util() by the
->    first task will lead to dropping the 2nd request until tick. Or
->    another CPU in the same policy trigger a freq update.
->
-> b. CPUs sharing a policy can end up with the same race in a but the
->    simultaneous enqueue happens on different CPUs in the same policy.
->
-> The above though are limitations in the governor/hardware, and from
-> scheduler point of view at least that's the best we can do. The
-> governor might consider smarter logic to aggregate near simultaneous
-> request and honour the higher one.
->
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
->  kernel/sched/fair.c | 55 ++++++++++++---------------------------------
->  1 file changed, 14 insertions(+), 41 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index b83448be3f79..f99910fc6705 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3997,29 +3997,6 @@ static inline void update_cfs_group(struct sched_entity *se)
->  }
->  #endif /* CONFIG_FAIR_GROUP_SCHED */
->
-> -static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
-> -{
-> -       struct rq *rq = rq_of(cfs_rq);
-> -
-> -       if (&rq->cfs == cfs_rq) {
-> -               /*
-> -                * There are a few boundary cases this might miss but it should
-> -                * get called often enough that that should (hopefully) not be
-> -                * a real problem.
-> -                *
-> -                * It will not get called when we go idle, because the idle
-> -                * thread is a different class (!fair), nor will the utilization
-> -                * number include things like RT tasks.
-> -                *
-> -                * As is, the util number is not freq-invariant (we'd have to
-> -                * implement arch_scale_freq_capacity() for that).
-> -                *
-> -                * See cpu_util_cfs().
-> -                */
-> -               cpufreq_update_util(rq, flags);
-> -       }
-> -}
-> -
->  #ifdef CONFIG_SMP
->  static inline bool load_avg_is_decayed(struct sched_avg *sa)
->  {
-> @@ -4648,8 +4625,6 @@ static void attach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->
->         add_tg_cfs_propagate(cfs_rq, se->avg.load_sum);
->
-> -       cfs_rq_util_change(cfs_rq, 0);
-> -
->         trace_pelt_cfs_tp(cfs_rq);
->  }
->
-> @@ -4678,8 +4653,6 @@ static void detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->
->         add_tg_cfs_propagate(cfs_rq, -se->avg.load_sum);
->
-> -       cfs_rq_util_change(cfs_rq, 0);
-> -
->         trace_pelt_cfs_tp(cfs_rq);
->  }
->
-> @@ -4726,11 +4699,8 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
->                  */
->                 detach_entity_load_avg(cfs_rq, se);
->                 update_tg_load_avg(cfs_rq);
-> -       } else if (decayed) {
-> -               cfs_rq_util_change(cfs_rq, 0);
-> -
-> -               if (flags & UPDATE_TG)
-> -                       update_tg_load_avg(cfs_rq);
-> +       } else if (decayed && (flags & UPDATE_TG)) {
-> +               update_tg_load_avg(cfs_rq);
->         }
->  }
->
-> @@ -5114,7 +5084,6 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->
->  static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se, int not_used1)
->  {
-> -       cfs_rq_util_change(cfs_rq, 0);
->  }
->
->  static inline void remove_entity_load_avg(struct sched_entity *se) {}
-> @@ -5807,6 +5776,8 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
->         sub_nr_running(rq, task_delta);
->
->  done:
-> +       cpufreq_update_util(rq, 0);
-> +
->         /*
->          * Note: distribution will already see us throttled via the
->          * throttled-list.  rq->lock protects completion.
-> @@ -5899,6 +5870,8 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->  unthrottle_throttle:
->         assert_list_leaf_cfs_rq(rq);
->
-> +       cpufreq_update_util(rq, 0);
-> +
->         /* Determine whether we need to wake up potentially idle CPU: */
->         if (rq->curr == rq->idle && rq->cfs.nr_running)
->                 resched_curr(rq);
-> @@ -6704,14 +6677,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->          */
->         util_est_enqueue(&rq->cfs, p);
->
-> -       /*
-> -        * If in_iowait is set, the code below may not trigger any cpufreq
-> -        * utilization updates, so do it here explicitly with the IOWAIT flag
-> -        * passed.
-> -        */
-> -       if (p->in_iowait)
-> -               cpufreq_update_util(rq, SCHED_CPUFREQ_IOWAIT);
-> -
->         for_each_sched_entity(se) {
->                 if (se->on_rq)
->                         break;
-> @@ -6772,6 +6737,8 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->  enqueue_throttle:
->         assert_list_leaf_cfs_rq(rq);
->
+This series introduces a proposal to implementing atomic writes in the
+kernel for torn-write protection.
 
-Here and in the other places below,  you lose :
+This series takes the approach of adding a new "atomic" flag to each of
+pwritev2() and iocb->ki_flags - RWF_ATOMIC and IOCB_ATOMIC, respectively.
+When set, these indicate that we want the write issued "atomically".
 
- -       } else if (decayed) {
+Only direct IO is supported and for block devices here. For this, atomic
+write HW is required, like SCSI ATOMIC WRITE (16). For now, XFS support
+from earlier versions is sidelined. That is until the interface is agreed
+which does not fully rely on HW offload support.
 
-The decayed condition ensures a rate limit (~1ms) in the number of
-calls to cpufreq_update_util.
+man pages update has been posted at:
+https://lore.kernel.org/linux-api/20230929093717.2972367-1-john.g.garry@oracle.com/T/#t
+(not updated since I posted v1 kernel series)
 
-enqueue/dequeue/tick don't create any sudden change in the PELT
-signals that would require to update cpufreq of the change unlike
-attach/detach
+The goal here is to provide an interface that allows applications use
+application-specific block sizes larger than logical block size
+reported by the storage device or larger than filesystem block size as
+reported by stat().
 
+With this new interface, application blocks will never be torn or
+fractured when written. For a power fail, for each individual application
+block, all or none of the data to be written. A racing atomic write and
+read will mean that the read sees all the old data or all the new data,
+but never a mix of old and new.
 
-> +       cpufreq_update_util(rq, p->in_iowait ? SCHED_CPUFREQ_IOWAIT : 0);
-> +
->         hrtick_update(rq);
->  }
->
-> @@ -6849,6 +6816,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->
->  dequeue_throttle:
->         util_est_update(&rq->cfs, p, task_sleep);
-> +       cpufreq_update_util(rq, 0);
->         hrtick_update(rq);
->  }
->
-> @@ -8482,6 +8450,7 @@ done: __maybe_unused;
->
->         update_misfit_status(p, rq);
->         sched_fair_update_stop_tick(rq, p);
-> +       cpufreq_update_util(rq, 0);
->
->         return p;
->
-> @@ -12615,6 +12584,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
->
->         update_misfit_status(curr, rq);
->         update_overutilized_status(task_rq(curr));
-> +       cpufreq_update_util(rq, 0);
->
->         task_tick_core(rq, curr);
->  }
-> @@ -12739,6 +12709,7 @@ static void detach_task_cfs_rq(struct task_struct *p)
->         struct sched_entity *se = &p->se;
->
->         detach_entity_cfs_rq(se);
-> +       cpufreq_update_util(task_rq(p), 0);
->  }
->
->  static void attach_task_cfs_rq(struct task_struct *p)
-> @@ -12746,6 +12717,7 @@ static void attach_task_cfs_rq(struct task_struct *p)
->         struct sched_entity *se = &p->se;
->
->         attach_entity_cfs_rq(se);
-> +       cpufreq_update_util(task_rq(p), 0);
->  }
->
->  static void switched_from_fair(struct rq *rq, struct task_struct *p)
-> @@ -12991,6 +12963,7 @@ static int __sched_group_set_shares(struct task_group *tg, unsigned long shares)
->                         update_load_avg(cfs_rq_of(se), se, UPDATE_TG);
->                         update_cfs_group(se);
->                 }
-> +               cpufreq_update_util(rq, 0);
->                 rq_unlock_irqrestore(rq, &rf);
->         }
->
-> --
-> 2.34.1
->
+Two new fields are added to struct statx - atomic_write_unit_min and
+atomic_write_unit_max. For each atomic individual write, the total length
+of a write must be a between atomic_write_unit_min and
+atomic_write_unit_max, inclusive, and a power-of-2. The write must also be
+at a natural offset in the file wrt the write length.
+
+SCSI sd.c and scsi_debug and NVMe kernel support is added.
+
+Some open questions:
+- How to make API extensible for when we have no HW support? In that case,
+  we would prob not have to follow rule of power-of-2 length et al.
+  As a possible solution, maybe we can say that atomic writes are
+  supported for the file via statx, but not set unit_min and max values,
+  and this means that writes need to be just FS block aligned there.
+- For block layer, should atomic_write_unit_max be limited by
+  max_sectors_kb? Currently it is not.
+- How to improve requirement that iovecs are PAGE-aligned.
+  There are 2x issues:
+  a. We impose this rule to not split BIOs due to virt boundary for
+     NVMe, but there virt boundary is 4K (and not PAGE size, so broken for
+     16K/64K pages). Easy solution is to impose requirement that iovecs
+     are 4K-aligned.
+  b. We don't enforce this rule for virt boundary == 0, i.e. SCSI
+- Since debugging torn-writes due to unwanted kernel BIO splitting/merging
+  would be horrible, should we add some kernel storage stack software
+  integrity checks?
+
+This series is based on v6.7-rc5.
+
+Changes since v1:
+- Drop XFS support for now
+- Tidy NVMe changes and also add checks for atomic write violating max
+  AW PF length and boundary (if any)
+- Reject - instead of ignoring - RWF_ATOMIC for files which do not
+  support atomic writes
+- Update block sysfs documentation
+- Various tidy-ups
+
+Alan Adamson (2):
+  nvme: Support atomic writes
+  nvme: Ensure atomic writes will be executed atomically
+
+Himanshu Madhani (2):
+  block: Add atomic write operations to request_queue limits
+  block: Add REQ_ATOMIC flag
+
+John Garry (10):
+  block: Limit atomic writes according to bio and queue limits
+  fs: Increase fmode_t size
+  block: Pass blk_queue_get_max_sectors() a request pointer
+  block: Limit atomic write IO size according to
+    atomic_write_max_sectors
+  block: Error an attempt to split an atomic write bio
+  block: Add checks to merging of atomic writes
+  block: Add fops atomic write support
+  scsi: sd: Support reading atomic write properties from block limits
+    VPD
+  scsi: sd: Add WRITE_ATOMIC_16 support
+  scsi: scsi_debug: Atomic write support
+
+Prasad Singamsetty (2):
+  fs/bdev: Add atomic write support info to statx
+  fs: Add RWF_ATOMIC and IOCB_ATOMIC flags for atomic write support
+
+ Documentation/ABI/stable/sysfs-block |  47 +++
+ block/bdev.c                         |  31 +-
+ block/blk-merge.c                    |  95 ++++-
+ block/blk-mq.c                       |   2 +-
+ block/blk-settings.c                 |  84 ++++
+ block/blk-sysfs.c                    |  33 ++
+ block/blk.h                          |   9 +-
+ block/fops.c                         |  40 +-
+ drivers/dma-buf/dma-buf.c            |   2 +-
+ drivers/nvme/host/core.c             | 108 ++++-
+ drivers/nvme/host/nvme.h             |   2 +
+ drivers/scsi/scsi_debug.c            | 590 +++++++++++++++++++++------
+ drivers/scsi/scsi_trace.c            |  22 +
+ drivers/scsi/sd.c                    |  93 ++++-
+ drivers/scsi/sd.h                    |   8 +
+ fs/stat.c                            |  44 +-
+ include/linux/blk_types.h            |   2 +
+ include/linux/blkdev.h               |  41 +-
+ include/linux/fs.h                   |  11 +
+ include/linux/stat.h                 |   2 +
+ include/linux/types.h                |   2 +-
+ include/scsi/scsi_proto.h            |   1 +
+ include/trace/events/scsi.h          |   1 +
+ include/uapi/linux/fs.h              |   5 +-
+ include/uapi/linux/stat.h            |   7 +-
+ 25 files changed, 1098 insertions(+), 184 deletions(-)
+
+-- 
+2.35.3
+
