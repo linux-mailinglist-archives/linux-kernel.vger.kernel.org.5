@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34C080EF1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A32880EF28
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376908AbjLLOoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
+        id S1377006AbjLLOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:44:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376900AbjLLOoR (ORCPT
+        with ESMTP id S1376936AbjLLOo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:44:17 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ECBD3;
-        Tue, 12 Dec 2023 06:44:23 -0800 (PST)
-Date:   Tue, 12 Dec 2023 14:44:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702392262;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 12 Dec 2023 09:44:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E263114
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:44:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702392268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=t5Ool1NqEEsQrRX9RqbS/irMaVoOSwObS5yc/0NcmtA=;
-        b=mjRRWEgVbW7Lx71G4NckMFWo1ERhQKlVkzEaxbqXIehn5B7Cz8db/7BD7y64gRLVVwoqGn
-        BIIhBOWd42g9pIm88PHkUbIO4pC0R7TdrZl7Uy964JGTzT/wCJSM13N+2sJpO/zQZr/E7F
-        QBrVrVgjYklycOYocU+hGk78wVr9WR7TLTjPwr7rS+SUitpEcGqqTjVdOp5iQYlRMuQh6E
-        W9FG3GMGBfTXULtylXIsICEhKh49wvJ0nmpIMnNpnhJmyV9FVDw4aVSqJxgcx5SyErB3rY
-        ItHcgF4Rc1j2HAHjquhjs0IauSk81+8YUKdklogiiJs9Sdr+eAfEghut/mlqqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702392262;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t5Ool1NqEEsQrRX9RqbS/irMaVoOSwObS5yc/0NcmtA=;
-        b=c0NzwpbdGFqrST4YSCravcJ70QbljOFWOMG8ldkuzUsv8+wpJojTMot8L/ludHHyWn8+rY
-        B0WfqyQxhLITdzBQ==
-From:   "tip-bot2 for Claudiu Beznea" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] dt-bindings: interrupt-controller:
- renesas,rzg2l-irqc: Document RZ/G3S
-Cc:     Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Conor Dooley <conor.dooley@microchip.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
-References: <20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com>
+        bh=2xjg0etbdLaR5lepvPpgd7mHNgfxLS6jqL5w2wbBqn4=;
+        b=EnLVaIzmwx+396Q5I/z4p4JpVglgVrHGpXTRaeNosBXpH3p0niMuS5WubsjS+IO75NvYm8
+        3UCKqVcEYP01l4Atf+jIYkbRgaabczhxQJqL/ciomrj8rY2mK1xQjZMGLlPtP5AWqSaGrP
+        r+J/pebbIp7U7ytjX7dtM0dXBJ1Nex8=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-164-fBLEDJOPOdCsyHxcjjUcAg-1; Tue, 12 Dec 2023 09:44:26 -0500
+X-MC-Unique: fBLEDJOPOdCsyHxcjjUcAg-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-42593d04ef6so43816671cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:44:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702392266; x=1702997066;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2xjg0etbdLaR5lepvPpgd7mHNgfxLS6jqL5w2wbBqn4=;
+        b=L17iWZMyCS54W2vGm2AEwJm7QdAgZv7IXKl6PEi0BpP59J8tdRk9W2oir07c4D0rzm
+         /jjeY7iGNDOxbANJIsjXG7DqA647LvkRFH27I+GXXV6s1AVYuqOdaReGOFU9IdrWpGVc
+         yNOwmVF2I4HqjB2KqaUL2OD4ieEC+b62UTbguhpuzfSh8fO+Wz07PG1ORc7VfB9EkY8A
+         +MammcccbCiT+a/QUp9FlJn+mV48fwsYiS0kCqLgofk56b3vLrrkFYm5eLnM0Pj6CoK1
+         M0BG8SHLA29akA/J5juN66Q35eQmka+kmGLm+310gdmvO0qEdQaFvSxBaWMmqEGyKFwx
+         P9Xw==
+X-Gm-Message-State: AOJu0YymajvWwNu+cIgE6VoRVZUU69m0pbTIRZeSfhNrJ1TMGP+5DdQt
+        deJ3N2S1z+l8sV/dlmaGRWs4nfdQQi8lIqYpyuG6wVAV8xxLxQhMaTc9lFFyCsx2DcorH5N7jt2
+        GnATpMd6W0VsuF+acWsGoYlHI
+X-Received: by 2002:ac8:5bc1:0:b0:425:8b0b:c626 with SMTP id b1-20020ac85bc1000000b004258b0bc626mr5762288qtb.104.1702392265843;
+        Tue, 12 Dec 2023 06:44:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFDx2IDXua2e+C7h/fWf6gqwxTnbpKX6V9M6OZxvVKCE6ICM3c3GFpuRnOcNIKUdVzrhEBXqA==
+X-Received: by 2002:ac8:5bc1:0:b0:425:8b0b:c626 with SMTP id b1-20020ac85bc1000000b004258b0bc626mr5762274qtb.104.1702392265547;
+        Tue, 12 Dec 2023 06:44:25 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id z23-20020ac87117000000b00423de58d3d8sm4110652qto.40.2023.12.12.06.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 06:44:24 -0800 (PST)
+Date:   Tue, 12 Dec 2023 08:44:21 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     'Guanjun' <guanjun@linux.alibaba.com>
+Cc:     neil.armstrong@linaro.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/1] soc: qcom: Fix compile error caused by uncorrectable
+ definition of TRACE_INCLUDE_PATH
+Message-ID: <kulysgxsa2lazwpbmovqtide3kvt6qq2dwtxmmi3ugznteo233@67ayvx2lduhi>
+References: <20231209074716.2689401-1-guanjun@linux.alibaba.com>
 MIME-Version: 1.0
-Message-ID: <170239226133.398.10244440044393387460.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209074716.2689401-1-guanjun@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,51 +80,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On Sat, Dec 09, 2023 at 03:47:16PM +0800, 'Guanjun' wrote:
+> From: Guanjun <guanjun@linux.alibaba.com>
+> 
+> Compiler reports the error message when compiling the file drivers/soc/qcom/pmic_pdcharger_ulog.c:
+>   - ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+>       95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> 
+> TRACE_INCLUDE_PATH shoule be relative to the path include/trace/define_trace.h, not
+> the file including it. Fix it.
+> 
+> Fixes: 086fdb48bc65d(soc: qcom: add ADSP PDCharger ULOG driver)
+> Signed-off-by: Guanjun <guanjun@linux.alibaba.com>
 
-Commit-ID:     1cf0697a24ef60b3ce8be47090a6e8e79329d962
-Gitweb:        https://git.kernel.org/tip/1cf0697a24ef60b3ce8be47090a6e8e79329d962
-Author:        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-AuthorDate:    Mon, 20 Nov 2023 13:18:19 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 12 Dec 2023 15:40:42 +01:00
+For what it is worth I sent a similar patch (which handled this by using
+the CFLAG -I recommendation) over here about a week ago:
 
-dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Document RZ/G3S
+    https://lore.kernel.org/linux-arm-msm/20231205-pmicpdcharger-ulog-fixups-v1-1-71c95162cb84@redhat.com/
 
-Document the RZ/G3S (R9108G045) interrupt controller. This has few extra
-functionalities compared with RZ/G2UL but the already existing driver
-can still be used.
+I keep disabling this driver locally when developing (or picking up that
+patch) until something gets scooped up.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Link: https://lore.kernel.org/r/20231120111820.87398-9-claudiu.beznea.uj@bp.renesas.com
+> ---
+>  drivers/soc/qcom/pmic_pdcharger_ulog.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/pmic_pdcharger_ulog.h b/drivers/soc/qcom/pmic_pdcharger_ulog.h
+> index 9d5d9af4fbe4..3ac994d160bd 100644
+> --- a/drivers/soc/qcom/pmic_pdcharger_ulog.h
+> +++ b/drivers/soc/qcom/pmic_pdcharger_ulog.h
+> @@ -28,7 +28,7 @@ TRACE_EVENT(pmic_pdcharger_ulog_msg,
+>  /* This part must be outside protection */
+>  
+>  #undef TRACE_INCLUDE_PATH
+> -#define TRACE_INCLUDE_PATH .
+> +#define TRACE_INCLUDE_PATH ../../../drivers/soc/qcom/
+>  
+>  #undef TRACE_INCLUDE_FILE
+>  #define TRACE_INCLUDE_FILE pmic_pdcharger_ulog
+> -- 
+> 2.39.3
+> 
+> 
 
----
- Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-index 2ef3081..d3b5aec 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/renesas,rzg2l-irqc.yaml
-@@ -26,6 +26,7 @@ properties:
-           - renesas,r9a07g043u-irqc   # RZ/G2UL
-           - renesas,r9a07g044-irqc    # RZ/G2{L,LC}
-           - renesas,r9a07g054-irqc    # RZ/V2L
-+          - renesas,r9a08g045-irqc    # RZ/G3S
-       - const: renesas,rzg2l-irqc
- 
-   '#interrupt-cells':
-@@ -167,7 +168,9 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            const: renesas,r9a07g043u-irqc
-+            enum:
-+              - renesas,r9a07g043u-irqc
-+              - renesas,r9a08g045-irqc
-     then:
-       properties:
-         interrupts:
