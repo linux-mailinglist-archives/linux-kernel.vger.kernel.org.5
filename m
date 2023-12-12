@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDE880EA7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E6080EA85
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbjLLLiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        id S1346201AbjLLLim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLLiF (ORCPT
+        with ESMTP id S229963AbjLLLik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:38:05 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FDCD;
-        Tue, 12 Dec 2023 03:38:10 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ba084395d9so1503959b6e.0;
-        Tue, 12 Dec 2023 03:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702381090; x=1702985890; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+L2kxEHCu62/EVSOcD5zqPnIMCZrQemKF2WuvkQ2BF4=;
-        b=Bjn7Fr1/g4Rg38kquG3stvn1yHLCv0gMNYP/hoN0xro7e0kC7SyU+/PxLfE3QMXnPd
-         CojxjjECgy63G5EE10/0CTr7Rs3MBVerZkJIbaN6QKcVuiGqiNuk7gnK91GpaV/mLFL/
-         0hHwrEjRMHnpP7J1HHkPs+KBm1yE3KDkjizb2bIGyapbvsSf6tuJQKs0AQYafmGke5gK
-         iJPTHxYDkhZGnfOfVIeL9HzhNd1N4IiLIJ1MA7aM8idbuSBLgENDMZ50d8WgU5ThqxLa
-         ZmsVjh+D2YbijuY80Y9BxlL8ynWWpmgHq/5FWOJ6mVCgZX598aLT0NB/WuuV5cV88/HX
-         3LUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702381090; x=1702985890;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+L2kxEHCu62/EVSOcD5zqPnIMCZrQemKF2WuvkQ2BF4=;
-        b=hV3fNGm5uc/W1pd6JqflFhU+k504+vnvpfVm7f5M2ZHEL2tKaiezei03pko6K8ARWz
-         rs5rgqVU0ZI48vOcdGLh6N7xcqVeoGRyoZx7i4AGUlwAxgZE5FPfj6EkFBV9tM5nlqCg
-         GjwcVZa3MCY5M1V5b7a4OfGp0P9Y1n3Mwz4Nt8Z2zF9yTWkY8VhUqIQ8vOtJkMgEpgMR
-         dp8IMaNIxRWnLz5AW2972tIw2afLK1zGOdFeXpoZICevTwka0PIkb5vamDm+JhEiZ+l5
-         FJ3QvFLY7zFAx8rtLGA2FGu1DX99qpgHIpVaJA3BRB9x5ydN5sWb867Os89VBP4JNGLk
-         aGeg==
-X-Gm-Message-State: AOJu0YzLQFEb4PZWEz8kJW4b45OlJVIbs11iGV6FRlx38ModB+rIQRXs
-        VosWB+S4/UYBHRQLXOxpk3jjJ99iA6Eyu4ChnTk=
-X-Google-Smtp-Source: AGHT+IF+mLItRlwncGPLaOBSbWrzSF4zO2CcLPzv42Do4B8u1Slt2WF4wMUjE3qjHmiGNMT7cW9QlrmRlFHAq5rq+7I=
-X-Received: by 2002:a05:6870:aa97:b0:1fb:75b:99a0 with SMTP id
- gr23-20020a056870aa9700b001fb075b99a0mr7675745oab.79.1702381089856; Tue, 12
- Dec 2023 03:38:09 -0800 (PST)
+        Tue, 12 Dec 2023 06:38:40 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10823CD;
+        Tue, 12 Dec 2023 03:38:46 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E482143D;
+        Tue, 12 Dec 2023 03:39:32 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C34173F762;
+        Tue, 12 Dec 2023 03:38:40 -0800 (PST)
+Message-ID: <c32bcf09-355a-54af-c136-861a3639f5cf@arm.com>
+Date:   Tue, 12 Dec 2023 11:38:36 +0000
 MIME-Version: 1.0
-References: <20231204144429.45197-1-linux.amoon@gmail.com> <20231204144429.45197-2-linux.amoon@gmail.com>
- <20231206135311.GA2043711-robh@kernel.org> <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
- <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org> <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
- <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org> <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
- <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org> <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
- <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org> <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
- <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org>
-In-Reply-To: <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Tue, 12 Dec 2023 17:07:54 +0530
-Message-ID: <CANAwSgRLORHb6qiHWRBR0tMbYB=O=gwatuGhk72SwZyhYMopCw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 03/14] libperf cpumap: Rename perf_cpu_map__empty
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-4-irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-4-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,199 +83,342 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
 
-On Tue, 12 Dec 2023 at 14:10, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 12/12/2023 07:22, Anand Moon wrote:
-> > Hi Krzysztof,
-> >
-> > On Fri, 8 Dec 2023 at 17:47, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 08/12/2023 12:19, Anand Moon wrote:
-> >>> Hi Krzysztof,
-> >>>
-> >>> On Fri, 8 Dec 2023 at 13:14, Krzysztof Kozlowski
-> >>> <krzysztof.kozlowski@linaro.org> wrote:
-> >>>>
-> >>>> On 08/12/2023 01:24, Anand Moon wrote:
-> >>>>>>>>>
-> >>>>>>>>> If I move reset-gpios to required, I observe the below warning.
-> >>>>>>>>>
-> >>>>>>>>>   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
-> >>>>>>>>> /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-> >>>>>>>>> hub@1: 'reset-gpio' is a required property
-> >>>>>>>>>         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-> >>>>>>>>
-> >>>>>>>> Where are the properties defined? If you open the binding you see:
-> >>>>>>>> nowhere. You cannot define properties in some variant with "true".
-> >>>>>>>> Please define all of them in top-level and only narrow/constrain when
-> >>>>>>>> applicable.
-> >>>>>>>>
-> >>>>>>> What I meant is the example below, required meant applicable for both
-> >>>>>>> the binding
-> >>>>>>> But it shows me the above warning.
-> >>>>>>
-> >>>>>> My explanation stands... So again:
-> >>>>>>
-> >>>>>>>> Please define all of them in top-level and only narrow/constrain when
-> >>>>>>>> applicable.
-> >>>>>>
-> >>>>> Apologies, But I have tried this multiple times but have not been able
-> >>>>> to fix the device tree warning
-> >>>>
-> >>>> Did you document all properties in top-level "properties:" block?
-> >>>>
-> >>> Yes, I have,
-> >>>
-> >>> Can you suggest a couple of examples to follow?
-> >>> I looked at some of the YAML files but could not fix my issue.
-> >>
-> >> 99% of bindings. Look also at example-schema.
-> >>
-> >> You can also attach here complete patch for fast look / short review.
-> >>
-> >
-> > Please find the modified patch, I have tried a few things but none
-> > resolve the binding warning.
-> > I am not able to debug this.
->
-> And where is the warning or the issue? Can you describe what problem do
-> you have?
 
-Here is the list of warnings I observed with this patch
+On 29/11/2023 06:02, Ian Rogers wrote:
+> The name perf_cpu_map_empty is misleading as true is also returned
+> when the map contains an "any" CPU (aka dummy) map. Rename to
+> perf_cpu_map__has_any_cpu_or_is_empty, later changes will
+> (re)introduce perf_cpu_map__empty and perf_cpu_map__has_any_cpu.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra186-xusb.example.dtb
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-hub@1: 'vdd-supply' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-hub@1: 'reset-gpios' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-hub@1: 'peer-hub' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-  DTC_CHK Documentation/devicetree/bindings/usb/ti,tps6598x.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/xlnx,usb2.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usb-xhci.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usbhs.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/cypress,cypd4226.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/cdns,usb3.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/renesas,rzn1-usbf.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra124-xusb.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/ci-hdrc-usb2.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/brcm,usb-pinmap.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usb3-peri.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/qcom,pmic-typec.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/microchip,usb5744.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/smsc,usb3503.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/mediatek,musb.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/vialab,vl817.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/richtek,rt1711h.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/usb.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra210-xusb.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/usb-drd.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/ti,am62-usb.example.dtb
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb:
-hub@1: 'vdd-supply' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb:
-hub@1: 'peer-hub' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-  DTC_CHK Documentation/devicetree/bindings/usb/renesas,rzv2m-usb3drd.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/usb-hcd.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/fsl,imx8mq-dwc3.example.dtb
-  DTC_CHK Documentation/devicetree/bindings/usb/mediatek,mtu3.example.dtb
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
-hub@1: 'vdd-supply' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
-hub@1: 'reset-gpios' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
-hub@1: 'peer-hub' is a required property
-        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
-  DTC_CHK Documentation/devicetree/bindings/usb/nxp,isp1760.example.dtb
-
->
-> >
-> > -Thanks
-> > Anand
-> > -----8<----------8<----------8<----------8<----------8<----------8<-----
-> > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > index ee08b9c3721f..7f75fa3c1945 100644
-> > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
-> >  maintainers:
-> >    - Icenowy Zheng <uwu@icenowy.me>
-> >
-> > -allOf:
-> > -  - $ref: usb-device.yaml#
-> > -
-> >  properties:
-> >    compatible:
-> >      enum:
-> > @@ -27,11 +24,47 @@ properties:
-> >
-> >    vdd-supply:
-> >      description:
-> > -      the regulator that provides 3.3V core power to the hub.
-> > +      The regulator that provides 3.3V or 5.0V core power to the hub.
-> > +
-> > +  peer-hub:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description:
-> > +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs with
-> > +      shared resets and power supplies, this property is used to identify the
-> > +      hubs with which these are shared.
-> >
-> >  required:
-> >    - compatible
-> >    - reg
-> > +  - vdd-supply
-> > +  - reset-gpios
-> > +  - peer-hub
-> > +
-> > +allOf:
-> > +  - $ref: usb-device.yaml#
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - usb5e3,608
-> > +    then:
-> > +      properties:
-> > +        peer-hub: false
-> > +        vdd-supply: false
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - usb5e3,610
-> > +              - usb5e3,620
-> > +    then:
-> > +      properties:
-> > +        peer-hub: true
-> > +        vdd-supply: true
->
-> Drop this if:, redundant.
->
-No, this does not resolve the above issue.
->
-
-Thanks
--Anand
+Reviewed-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/lib/perf/Documentation/libperf.txt |  2 +-
+>  tools/lib/perf/cpumap.c                  |  2 +-
+>  tools/lib/perf/evlist.c                  |  4 ++--
+>  tools/lib/perf/include/perf/cpumap.h     |  4 ++--
+>  tools/lib/perf/libperf.map               |  2 +-
+>  tools/perf/arch/arm/util/cs-etm.c        | 10 +++++-----
+>  tools/perf/arch/arm64/util/arm-spe.c     |  4 ++--
+>  tools/perf/arch/x86/util/intel-bts.c     |  4 ++--
+>  tools/perf/arch/x86/util/intel-pt.c      | 10 +++++-----
+>  tools/perf/builtin-c2c.c                 |  2 +-
+>  tools/perf/builtin-stat.c                |  6 +++---
+>  tools/perf/util/auxtrace.c               |  4 ++--
+>  tools/perf/util/record.c                 |  2 +-
+>  tools/perf/util/stat.c                   |  2 +-
+>  14 files changed, 29 insertions(+), 29 deletions(-)
+> 
+> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+> index a256a26598b0..fcfb9499ef9c 100644
+> --- a/tools/lib/perf/Documentation/libperf.txt
+> +++ b/tools/lib/perf/Documentation/libperf.txt
+> @@ -46,7 +46,7 @@ SYNOPSIS
+>    void perf_cpu_map__put(struct perf_cpu_map *map);
+>    int perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
+>    int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+> -  bool perf_cpu_map__empty(const struct perf_cpu_map *map);
+> +  bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+>    int perf_cpu_map__max(struct perf_cpu_map *map);
+>    bool perf_cpu_map__has(const struct perf_cpu_map *map, int cpu);
+>  
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index 463ca8b37d45..49fc98e16514 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -311,7 +311,7 @@ int perf_cpu_map__nr(const struct perf_cpu_map *cpus)
+>  	return cpus ? __perf_cpu_map__nr(cpus) : 1;
+>  }
+>  
+> -bool perf_cpu_map__empty(const struct perf_cpu_map *map)
+> +bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+>  {
+>  	return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
+>  }
+> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+> index 3acbbccc1901..75f36218fdd9 100644
+> --- a/tools/lib/perf/evlist.c
+> +++ b/tools/lib/perf/evlist.c
+> @@ -619,7 +619,7 @@ static int perf_evlist__nr_mmaps(struct perf_evlist *evlist)
+>  
+>  	/* One for each CPU */
+>  	nr_mmaps = perf_cpu_map__nr(evlist->all_cpus);
+> -	if (perf_cpu_map__empty(evlist->all_cpus)) {
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(evlist->all_cpus)) {
+>  		/* Plus one for each thread */
+>  		nr_mmaps += perf_thread_map__nr(evlist->threads);
+>  		/* Minus the per-thread CPU (-1) */
+> @@ -653,7 +653,7 @@ int perf_evlist__mmap_ops(struct perf_evlist *evlist,
+>  	if (evlist->pollfd.entries == NULL && perf_evlist__alloc_pollfd(evlist) < 0)
+>  		return -ENOMEM;
+>  
+> -	if (perf_cpu_map__empty(cpus))
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+>  		return mmap_per_thread(evlist, ops, mp);
+>  
+>  	return mmap_per_cpu(evlist, ops, mp);
+> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+> index b24bd8b8f34e..9cf361fc5edc 100644
+> --- a/tools/lib/perf/include/perf/cpumap.h
+> +++ b/tools/lib/perf/include/perf/cpumap.h
+> @@ -47,9 +47,9 @@ LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
+>  LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
+>  LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+>  /**
+> - * perf_cpu_map__empty - is map either empty or the "any CPU"/dummy value.
+> + * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
+>   */
+> -LIBPERF_API bool perf_cpu_map__empty(const struct perf_cpu_map *map);
+> +LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+>  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
+>  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
+>  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
+> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> index 8a71f841498e..10b3f3722642 100644
+> --- a/tools/lib/perf/libperf.map
+> +++ b/tools/lib/perf/libperf.map
+> @@ -9,7 +9,7 @@ LIBPERF_0.0.1 {
+>  		perf_cpu_map__read;
+>  		perf_cpu_map__nr;
+>  		perf_cpu_map__cpu;
+> -		perf_cpu_map__empty;
+> +		perf_cpu_map__has_any_cpu_or_is_empty;
+>  		perf_cpu_map__max;
+>  		perf_cpu_map__has;
+>  		perf_thread_map__new_array;
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index 2cf873d71dff..c6b7b3066324 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -211,7 +211,7 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
+>  		 * program can run on any CPUs in this case, thus don't skip
+>  		 * validation.
+>  		 */
+> -		if (!perf_cpu_map__empty(event_cpus) &&
+> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
+>  		    !perf_cpu_map__has(event_cpus, cpu))
+>  			continue;
+>  
+> @@ -435,7 +435,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+>  	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
+>  	 * when a context switch happened.
+>  	 */
+> -	if (!perf_cpu_map__empty(cpus)) {
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+>  					   "timestamp", 1);
+>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+> @@ -461,7 +461,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+>  	evsel->core.attr.sample_period = 1;
+>  
+>  	/* In per-cpu case, always need the time of mmap events etc */
+> -	if (!perf_cpu_map__empty(cpus))
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+>  		evsel__set_sample_bit(evsel, TIME);
+>  
+>  	err = cs_etm_validate_config(itr, cs_etm_evsel);
+> @@ -539,7 +539,7 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
+>  
+>  	/* cpu map is not empty, we have specific CPUs to work with */
+> -	if (!perf_cpu_map__empty(event_cpus)) {
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
+>  		for (i = 0; i < cpu__max_cpu().cpu; i++) {
+>  			struct perf_cpu cpu = { .cpu = i, };
+>  
+> @@ -814,7 +814,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
+>  		return -EINVAL;
+>  
+>  	/* If the cpu_map is empty all online CPUs are involved */
+> -	if (perf_cpu_map__empty(event_cpus)) {
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
+>  		cpu_map = online_cpus;
+>  	} else {
+>  		/* Make sure all specified CPUs are online */
+> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> index e3acc739bd00..51ccbfd3d246 100644
+> --- a/tools/perf/arch/arm64/util/arm-spe.c
+> +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  	 * In the case of per-cpu mmaps, sample CPU for AUX event;
+>  	 * also enable the timestamp tracing for samples correlation.
+>  	 */
+> -	if (!perf_cpu_map__empty(cpus)) {
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_sample_bit(arm_spe_evsel, CPU);
+>  		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
+>  					   "ts_enable", 1);
+> @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  	tracking_evsel->core.attr.sample_period = 1;
+>  
+>  	/* In per-cpu case, always need the time of mmap events etc */
+> -	if (!perf_cpu_map__empty(cpus)) {
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_sample_bit(tracking_evsel, TIME);
+>  		evsel__set_sample_bit(tracking_evsel, CPU);
+>  
+> diff --git a/tools/perf/arch/x86/util/intel-bts.c b/tools/perf/arch/x86/util/intel-bts.c
+> index d2c8cac11470..af8ae4647585 100644
+> --- a/tools/perf/arch/x86/util/intel-bts.c
+> +++ b/tools/perf/arch/x86/util/intel-bts.c
+> @@ -143,7 +143,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+>  	if (!opts->full_auxtrace)
+>  		return 0;
+>  
+> -	if (opts->full_auxtrace && !perf_cpu_map__empty(cpus)) {
+> +	if (opts->full_auxtrace && !perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+>  		pr_err(INTEL_BTS_PMU_NAME " does not support per-cpu recording\n");
+>  		return -EINVAL;
+>  	}
+> @@ -224,7 +224,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+>  		 * In the case of per-cpu mmaps, we need the CPU on the
+>  		 * AUX event.
+>  		 */
+> -		if (!perf_cpu_map__empty(cpus))
+> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+>  			evsel__set_sample_bit(intel_bts_evsel, CPU);
+>  	}
+>  
+> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+> index fa0c718b9e72..d199619df3ab 100644
+> --- a/tools/perf/arch/x86/util/intel-pt.c
+> +++ b/tools/perf/arch/x86/util/intel-pt.c
+> @@ -369,7 +369,7 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
+>  			ui__warning("Intel Processor Trace: TSC not available\n");
+>  	}
+>  
+> -	per_cpu_mmaps = !perf_cpu_map__empty(session->evlist->core.user_requested_cpus);
+> +	per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(session->evlist->core.user_requested_cpus);
+>  
+>  	auxtrace_info->type = PERF_AUXTRACE_INTEL_PT;
+>  	auxtrace_info->priv[INTEL_PT_PMU_TYPE] = intel_pt_pmu->type;
+> @@ -774,7 +774,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  	 * Per-cpu recording needs sched_switch events to distinguish different
+>  	 * threads.
+>  	 */
+> -	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
+> +	if (have_timing_info && !perf_cpu_map__has_any_cpu_or_is_empty(cpus) &&
+>  	    !record_opts__no_switch_events(opts)) {
+>  		if (perf_can_record_switch_events()) {
+>  			bool cpu_wide = !target__none(&opts->target) &&
+> @@ -832,7 +832,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  		 * In the case of per-cpu mmaps, we need the CPU on the
+>  		 * AUX event.
+>  		 */
+> -		if (!perf_cpu_map__empty(cpus))
+> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+>  			evsel__set_sample_bit(intel_pt_evsel, CPU);
+>  	}
+>  
+> @@ -858,7 +858,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  			tracking_evsel->immediate = true;
+>  
+>  		/* In per-cpu case, always need the time of mmap events etc */
+> -		if (!perf_cpu_map__empty(cpus)) {
+> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+>  			evsel__set_sample_bit(tracking_evsel, TIME);
+>  			/* And the CPU for switch events */
+>  			evsel__set_sample_bit(tracking_evsel, CPU);
+> @@ -870,7 +870,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  	 * Warn the user when we do not have enough information to decode i.e.
+>  	 * per-cpu with no sched_switch (except workload-only).
+>  	 */
+> -	if (!ptr->have_sched_switch && !perf_cpu_map__empty(cpus) &&
+> +	if (!ptr->have_sched_switch && !perf_cpu_map__has_any_cpu_or_is_empty(cpus) &&
+>  	    !target__none(&opts->target) &&
+>  	    !intel_pt_evsel->core.attr.exclude_user)
+>  		ui__warning("Intel Processor Trace decoding will not be possible except for kernel tracing!\n");
+> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+> index a4cf9de7a7b5..f78eea9e2153 100644
+> --- a/tools/perf/builtin-c2c.c
+> +++ b/tools/perf/builtin-c2c.c
+> @@ -2320,7 +2320,7 @@ static int setup_nodes(struct perf_session *session)
+>  		nodes[node] = set;
+>  
+>  		/* empty node, skip */
+> -		if (perf_cpu_map__empty(map))
+> +		if (perf_cpu_map__has_any_cpu_or_is_empty(map))
+>  			continue;
+>  
+>  		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index a3af805a1d57..3303aa20f326 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1316,7 +1316,7 @@ static int cpu__get_cache_id_from_map(struct perf_cpu cpu, char *map)
+>  	 * be the first online CPU in the cache domain else use the
+>  	 * first online CPU of the cache domain as the ID.
+>  	 */
+> -	if (perf_cpu_map__empty(cpu_map))
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpu_map))
+>  		id = cpu.cpu;
+>  	else
+>  		id = perf_cpu_map__cpu(cpu_map, 0).cpu;
+> @@ -1622,7 +1622,7 @@ static int perf_stat_init_aggr_mode(void)
+>  	 * taking the highest cpu number to be the size of
+>  	 * the aggregation translate cpumap.
+>  	 */
+> -	if (!perf_cpu_map__empty(evsel_list->core.user_requested_cpus))
+> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
+>  		nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
+>  	else
+>  		nr = 0;
+> @@ -2289,7 +2289,7 @@ int process_stat_config_event(struct perf_session *session,
+>  
+>  	perf_event__read_stat_config(&stat_config, &event->stat_config);
+>  
+> -	if (perf_cpu_map__empty(st->cpus)) {
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(st->cpus)) {
+>  		if (st->aggr_mode != AGGR_UNSET)
+>  			pr_warning("warning: processing task data, aggregation mode not set\n");
+>  	} else if (st->aggr_mode != AGGR_UNSET) {
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index f528c4364d23..3684e6009b63 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -174,7 +174,7 @@ void auxtrace_mmap_params__set_idx(struct auxtrace_mmap_params *mp,
+>  				   struct evlist *evlist,
+>  				   struct evsel *evsel, int idx)
+>  {
+> -	bool per_cpu = !perf_cpu_map__empty(evlist->core.user_requested_cpus);
+> +	bool per_cpu = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
+>  
+>  	mp->mmap_needed = evsel->needs_auxtrace_mmap;
+>  
+> @@ -648,7 +648,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+>  
+>  static int evlist__enable_event_idx(struct evlist *evlist, struct evsel *evsel, int idx)
+>  {
+> -	bool per_cpu_mmaps = !perf_cpu_map__empty(evlist->core.user_requested_cpus);
+> +	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
+>  
+>  	if (per_cpu_mmaps) {
+>  		struct perf_cpu evlist_cpu = perf_cpu_map__cpu(evlist->core.all_cpus, idx);
+> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> index 9eb5c6a08999..40290382b2d7 100644
+> --- a/tools/perf/util/record.c
+> +++ b/tools/perf/util/record.c
+> @@ -237,7 +237,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
+>  
+>  	evsel = evlist__last(temp_evlist);
+>  
+> -	if (!evlist || perf_cpu_map__empty(evlist->core.user_requested_cpus)) {
+> +	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
+>  		struct perf_cpu_map *cpus = perf_cpu_map__new(NULL);
+>  
+>  		if (cpus)
+> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+> index ec3506042217..012c4946b9c4 100644
+> --- a/tools/perf/util/stat.c
+> +++ b/tools/perf/util/stat.c
+> @@ -315,7 +315,7 @@ static int check_per_pkg(struct evsel *counter, struct perf_counts_values *vals,
+>  	if (!counter->per_pkg)
+>  		return 0;
+>  
+> -	if (perf_cpu_map__empty(cpus))
+> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+>  		return 0;
+>  
+>  	if (!mask) {
