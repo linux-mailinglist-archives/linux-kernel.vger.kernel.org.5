@@ -2,171 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBD580E70C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE3480E711
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbjLLJGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:06:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S232338AbjLLJII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbjLLJGe (ORCPT
+        with ESMTP id S229794AbjLLJIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:06:34 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE87B7;
-        Tue, 12 Dec 2023 01:06:40 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC4FqQl012890;
-        Tue, 12 Dec 2023 09:06:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:mime-version:content-type; s=
-        qcppdkim1; bh=s1dBI9/E3rx9/JOjkcgCAjP1EckoNhhcDmODPaccMws=; b=BL
-        qpe9uCg8JL8QZWaret70aPnnT31QOwh+rgVt2H5jcDRmQsnMMnmaAOqCiZ3LkBJi
-        AGWBCAuuShqT/fwNn9wdRaO72FPzvHhfO8f5DwEJMKXX3Mp8TN6MQWEuEWrSkMxO
-        yfIBMH6oSjIf3iax1a0z0nSj54eu3BBMwCvtGIMAr8TIRadhlDCQupK3olUejDM9
-        TkhZie0F8DeBi2WpdzRnanGqdvrSVdeyP8fkt+X3OumKZNLCZ9DCZDBEOXQKSA9h
-        4eIlI8lKUczonCA7g9N+DroMcvDSCM1gBFwOQnKaMt345/QQlKNYhiXTlI2s4bYR
-        T66g9yaFycWXTRiPbQpA==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxgbb0j0t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 09:06:37 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC96aBC030091
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 09:06:36 GMT
-Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Dec 2023 01:06:30 -0800
-From:   Maria Yu <quic_aiquny@quicinc.com>
-To:     <andersson@kernel.org>, <linus.walleij@linaro.org>
-CC:     Maria Yu <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v2] pinctrl: Add lock to ensure the state atomization
-Date:   Tue, 12 Dec 2023 17:06:11 +0800
-Message-ID: <20231212090611.950-1-quic_aiquny@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 12 Dec 2023 04:08:07 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ECAC7;
+        Tue, 12 Dec 2023 01:08:13 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50bce78f145so6232279e87.0;
+        Tue, 12 Dec 2023 01:08:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702372091; x=1702976891; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QIjPBVeqkpjJISDqusXw3EmS1YdMB1wPejTAPOdPhFM=;
+        b=Zglibz5F1zOHeXpIe8espdYCHfBuyKlW4/fsq5XL8o3Fc4XiNRqrNroNkvItm/DJXo
+         IGeRiACqfirCe0tyCQC0z8N0t0X47vnus4zWv+yu7fLor4hewtbrjw4TVnBBahVsvyZE
+         MLQuxcvvO6CTL4UhS3KOsCLv8dPTRdslPjEG50xD0MRct+6i/dsTJe8WzAJMxoTxkary
+         pAuHCIyKdNrz7nb4grYDB6Z/p7xZIeA5d7UKhaUXm+OKrAQsEsLV2w1vD8+u6Lv4JCYC
+         XiSGIjMZvh7yerZz0kurkUgyzs/1eGAdvSQLSTOwIaxulSacCiicsxoq9L+ojgvckycm
+         gg6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702372091; x=1702976891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QIjPBVeqkpjJISDqusXw3EmS1YdMB1wPejTAPOdPhFM=;
+        b=Vz8nzPZ0X5h1QZ4XnzAXS7NwTR1tM27AYBMvB9xoNzPVSzPE0Ht8SVQKeh/ZvFu7O0
+         bm804aeH9xscKKytmL9GmKscOQC3Q2R6wHTzcDPO88UMEqOYqQeJ+c8N2M5I1N716GGb
+         qGPxH+AyH7a67fbiYY2muZW6mn5Jxz0j3Wft67Pe1mqA/erkUk5hH2ukl2g6eMgdh3rN
+         4AWoN4mxzHAAelV66GX7LIRaOJlh8SodsoZKAHZm/tGVYZOiwF6GhQ+SPIWLMijyIdy9
+         BuE/2Gi7aj5ERzlyPrbL4xeL5CG+ozhfoULUJr91xsjT/QrnonNH5YePJfrHSwo6V+4f
+         gqsw==
+X-Gm-Message-State: AOJu0Yyuj6wDUFTS/w/8yl7Yv0rkKUp9GenrmHenAcKb9tUQ9c0JidBR
+        U/NeOZPkVw/X7ryqSJNjYuA=
+X-Google-Smtp-Source: AGHT+IHt99lcd5IUKs49PKtCTF0cKUj5I2Ik89wnLq7Asjoik1V8IuHwNphFLryPGu803yiXf3w+fw==
+X-Received: by 2002:a05:6512:46f:b0:50b:ed48:247a with SMTP id x15-20020a056512046f00b0050bed48247amr1240510lfd.246.1702372091059;
+        Tue, 12 Dec 2023 01:08:11 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id t8-20020a19ad08000000b0050c0f5ce8c2sm1290876lfc.124.2023.12.12.01.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 01:08:10 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:08:07 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        James Li <James.Li1@synopsys.com>,
+        Martin McKenny <Martin.McKenny@synopsys.com>
+Subject: Re: [PATCH net-next] net: stmmac: xgmac3+: add FPE handshaking
+ support
+Message-ID: <ulsdbn3iqzyokqbfejp5krrpbkzz3rqpxfw53m2rfm2ouzs2bz@ys4ynwqwewjo>
+References: <CY5PR12MB63726FED738099761A9B81E7BF8FA@CY5PR12MB6372.namprd12.prod.outlook.com>
+ <d202770a-3a3a-4ee2-b0de-b86e2f3e83ce@lunn.ch>
+ <CY5PR12MB6372C8770900AFF821325400BF8EA@CY5PR12MB6372.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: G0TUX0OI5oYT2_hlsST-JrJWUVlHd4lm
-X-Proofpoint-ORIG-GUID: G0TUX0OI5oYT2_hlsST-JrJWUVlHd4lm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- clxscore=1015 spamscore=0 adultscore=0 mlxlogscore=976 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312120071
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CY5PR12MB6372C8770900AFF821325400BF8EA@CY5PR12MB6372.namprd12.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently pinctrl_select_state is an export symbol and don't have
-effective re-entrance protect design. During async probing of devices
-it's possible to end up in pinctrl_select_state() from multiple
-contexts simultaneously, so make it thread safe.
-More over, when the real racy happened, the system frequently have
-printk message like:
-  "not freeing pin xx (xxx) as part of deactivating group xxx - it is
-already used for some other setting".
-Finally the system crashed after the flood log.
-Add per pinctrl lock to ensure the old state and new state transition
-atomization.
-Also move dev error print message outside the region with interrupts
-disabled.
+On Tue, Dec 12, 2023 at 07:22:24AM +0000, Jianheng Zhang wrote:
+> Hi Andrew,  
+> 
+> > > +static int dwxgmac3_fpe_irq_status(void __iomem *ioaddr, struct net_device *dev)
+> > > +{
+> > > +	u32 value;
+> > > +	int status;
+> > >
+> > > -		writel(value, ioaddr + XGMAC_FPE_CTRL_STS);
+> > > -		return;
+> > > +	status = FPE_EVENT_UNKNOWN;
+> > > +
+> > > +	/* Reads from the XGMAC_FPE_CTRL_STS register should only be performed
+> > > +	 * here, since the status flags of MAC_FPE_CTRL_STS are "clear on read"
+> > > +	 */
+> > > +	value = readl(ioaddr + XGMAC_FPE_CTRL_STS);
+> > > +
+> > > +	if (value & XGMAC_TRSP) {
+> > > +		status |= FPE_EVENT_TRSP;
+> > > +		netdev_info(dev, "FPE: Respond mPacket is transmitted\n");
+> > 
+> > netdev_info()?  Is this going to spam the logs? Should it be netdev_dbg()
+> 
+> Yes, netdev_dbg() should be better, let me fix it in the next patch.
 
-Fixes: 4198a9b57106 ("pinctrl: avoid reload of p state in list iteration")
-Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
----
- drivers/pinctrl/core.c | 11 +++++++++--
- drivers/pinctrl/core.h |  2 ++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+Please do not forget to keep this change in the refactoring patch (if
+one will be introduced). So instead of preserving the DW QoS Eth FPE
+code snipped with netdev_info() utilized, the common FPE
+implementation would have the netdev_dbg() calls.
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index f2977eb65522..a19c286bf82e 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -1066,6 +1066,7 @@ static struct pinctrl *create_pinctrl(struct device *dev,
- 	p->dev = dev;
- 	INIT_LIST_HEAD(&p->states);
- 	INIT_LIST_HEAD(&p->dt_maps);
-+	spin_lock_init(&p->lock);
- 
- 	ret = pinctrl_dt_to_map(p, pctldev);
- 	if (ret < 0) {
-@@ -1262,9 +1263,12 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
- static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- {
- 	struct pinctrl_setting *setting, *setting2;
--	struct pinctrl_state *old_state = READ_ONCE(p->state);
-+	struct pinctrl_state *old_state;
- 	int ret;
-+	unsigned long flags;
- 
-+	spin_lock_irqsave(&p->lock, flags);
-+	old_state = p->state;
- 	if (old_state) {
- 		/*
- 		 * For each pinmux setting in the old state, forget SW's record
-@@ -1329,11 +1333,11 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- 	}
- 
- 	p->state = state;
-+	spin_unlock_irqrestore(&p->lock, flags);
- 
- 	return 0;
- 
- unapply_new_state:
--	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 
- 	list_for_each_entry(setting2, &state->settings, node) {
- 		if (&setting2->node == &setting->node)
-@@ -1349,6 +1353,9 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
- 			pinmux_disable_setting(setting2);
- 	}
- 
-+	spin_unlock_irqrestore(&p->lock, flags);
-+
-+	dev_err(p->dev, "Error applying setting, reverse things back\n");
- 	/* There's no infinite recursive loop here because p->state is NULL */
- 	if (old_state)
- 		pinctrl_select_state(p, old_state);
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 530370443c19..86fc41393f7b 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -12,6 +12,7 @@
- #include <linux/list.h>
- #include <linux/mutex.h>
- #include <linux/radix-tree.h>
-+#include <linux/spinlock.h>
- #include <linux/types.h>
- 
- #include <linux/pinctrl/machine.h>
-@@ -91,6 +92,7 @@ struct pinctrl {
- 	struct pinctrl_state *state;
- 	struct list_head dt_maps;
- 	struct kref users;
-+	spinlock_t lock;
- };
- 
- /**
+-Serge(y)
 
-base-commit: 26aff849438cebcd05f1a647390c4aa700d5c0f1
--- 
-2.17.1
-
+> 
+> Jianheng
+> > 
+> > 	Andrew
+> 
