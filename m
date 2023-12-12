@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB9880F498
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2769980F49A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376779AbjLLR1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
+        id S235082AbjLLR1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:27:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376771AbjLLR1a (ORCPT
+        with ESMTP id S235110AbjLLR1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:27:30 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351779F;
-        Tue, 12 Dec 2023 09:27:37 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0c94397c0so34705025ad.2;
-        Tue, 12 Dec 2023 09:27:37 -0800 (PST)
+        Tue, 12 Dec 2023 12:27:35 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8954A1;
+        Tue, 12 Dec 2023 09:27:41 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d32c5ce32eso13394155ad.0;
+        Tue, 12 Dec 2023 09:27:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402056; x=1703006856; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702402061; x=1703006861; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oy94NtGvJMR2W5ZqUeOhkG8IQpCje9YrX1YzEkIZAAM=;
-        b=Y0KyrIu26IiCXkXXXMv8JuE9bV146lAYbphRQWJPzj+Pukgp5a1w22HlOTpjWF4J4Z
-         JA6HtNihTmyG1emfB6BkNiNN36MNnX1C0VY+I9l/rU5Ev1ZZ2cw+kQ418Bj4US5TcNRD
-         Bvg2LPZ6SyIePc3qBI3lKN7X1zYZSumcP4zGexJUDM8fFPj0bs/3+VQ25dMAGOeq/ATG
-         0RqadBiUjFGLTX4ZkGGMFf9Y40JYaae/bgMoltkVKDd8xRW5H6jRhh0QG7dhMfJofZu/
-         i1C1f3r+Hi7dhHw4cOMLZENFMTzhthMKmyg0GgjN7SQfHpQO4n96Zlph2ZMRCH6AaCMb
-         /JxQ==
+        bh=cn4VwDYjNkD85ZVWjPPzSfZ086ShlP6kMAwWhA80/9Q=;
+        b=hwjbdDt1O/UJWL+mAlcCuRSporlwunbYdqIYobRXPTbY+CsuZJ0nu/rqZ5H6XZK1Yx
+         B2tANzCcDgFXTcNPnS+Mp9bU/7NuT4VABqL/KwfVkxbPGefRwGT70u4AhOfKzkegycO8
+         5FEpVCrDSsGXwVTXPzvEwqdpVhfJWHCuMyqjlUKQY+W9ItQYAuAuW6zlbojkTVs2sKss
+         a3v85Y4K8kffoFAYxY0mEyLCyEI70AO4E8BMRe7ATSVMFBf3Xq0kCT9n7VvXVEs31MfY
+         cIsLkDsT0bn+sBvDGXTYkfxjF0WFc4eEoVsMvELQUjV7QcDSrtuyGB1u1Sdm6FV7V+jx
+         KFbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402056; x=1703006856;
+        d=1e100.net; s=20230601; t=1702402061; x=1703006861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oy94NtGvJMR2W5ZqUeOhkG8IQpCje9YrX1YzEkIZAAM=;
-        b=S2q0LiQj3J5g+Xdl9OYR0lsn9IOhMBbXAdsJNng+NDrMX/jcxemxQzr6oNx/7A+dVY
-         iod0ozAJG6xh3ZD4N/0NiJ1OwLfoiwKXsBdQzsGYxwJ73C4P4aOLcQ3v7DQNsBWiGGh/
-         2C8s14DS73Gbh92fjNy32gVnPt/H0MOIqnERKzuNPbpP0Fr/tLVxRtsjjjDfMYHDdvJg
-         088V1M0tzMsX3FhzMPi9NUSVmoHBCZhsu90uRdiTGFgyDBCkc+JDu+Ov7awb29J3Tj1w
-         /w1vuQvwDx5isy4xI+Dr/GkUrEQFc8fi/EVKJHjzpMDZ4dmcojRlc8PREx5uqcg2/0HB
-         kWTA==
-X-Gm-Message-State: AOJu0YygTsKzYc/P+r+2HvLayJGyEmY3JjKnuwdnMlXgDa0v01bpopNd
-        i/sIpypGZmoaO2vTuK+Ypw6o3dbOyAtHgTuN
-X-Google-Smtp-Source: AGHT+IGALwTtO0ngxAfBMYyJcAkEuG1b3rOwoiD6koZuZtCc8fHOHJYlSLgdrvsE41zp1hguGM8P8w==
-X-Received: by 2002:a17:902:e789:b0:1d0:b8dc:ec90 with SMTP id cp9-20020a170902e78900b001d0b8dcec90mr3964074plb.64.1702402055592;
-        Tue, 12 Dec 2023 09:27:35 -0800 (PST)
+        bh=cn4VwDYjNkD85ZVWjPPzSfZ086ShlP6kMAwWhA80/9Q=;
+        b=POSfohYV2tdmzjTx4B+nmWfRiMXmbRWTvjJsylFVOEhnR/PH55rs8z0ubqOqrK9Iiy
+         OO92p5iYku8CvBUb1HoTv17Ch5pmE51gy77QBrPa/wu10rw+eTw68r9pTdXsGiY8ttVJ
+         0IrburKnsaPi+1CBYmG6wsNrUTSDq1O8NjYF/IZeyQdVX3GZoK/G+KMm7ej65juHVQny
+         ic/OvsD5jJLMvtxMz+HvJa8Z/osWXaaB8LXUVUXcLV8W5xDpB+elAOAwg3MybKAPLhb6
+         q6C/UUcxz/HNJlLJHNz7qgWeATtr7L+Hx/rgCZ5CMYC033z58kxQR3dTtSTm3Lyiu3OJ
+         QBjQ==
+X-Gm-Message-State: AOJu0Yx9JqWxhRHpXim3wAwuQeiLyILI0sR95/O3JDjQbJ/jqe263GTj
+        F2MBnb2O3/Tj780HDsV7nilbI7zyxN8k0LlB
+X-Google-Smtp-Source: AGHT+IFZs+JB5hYaYxpCKaDVO+hzH3H9IIfhFRwa61QlJh+ZDnX9OI3Q1+wWJTWNAzF1pn8LBJozPg==
+X-Received: by 2002:a17:902:7202:b0:1d0:5fd7:867c with SMTP id ba2-20020a170902720200b001d05fd7867cmr8234831plb.4.1702402060726;
+        Tue, 12 Dec 2023 09:27:40 -0800 (PST)
 Received: from localhost.localdomain ([101.0.63.152])
-        by smtp.gmail.com with ESMTPSA id b18-20020a170902d51200b001cf511aa772sm8863170plg.145.2023.12.12.09.27.32
+        by smtp.gmail.com with ESMTPSA id b18-20020a170902d51200b001cf511aa772sm8863170plg.145.2023.12.12.09.27.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:27:35 -0800 (PST)
+        Tue, 12 Dec 2023 09:27:40 -0800 (PST)
 From:   "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+        Akira Yokosawa <akiyks@gmail.com>,
         Neeraj Upadhyay <neeraj.iitr10@gmail.com>
-Subject: [PATCH rcu 3/5] doc: Clarify RCU Tasks reader/updater checklist
-Date:   Tue, 12 Dec 2023 22:56:51 +0530
-Message-Id: <20231212172653.11485-3-neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 4/5] doc: Mention address and data dependencies in rcu_dereference.rst
+Date:   Tue, 12 Dec 2023 22:56:52 +0530
+Message-Id: <20231212172653.11485-4-neeraj.iitr10@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231212172343.GA11383@neeraj.linux>
 References: <20231212172343.GA11383@neeraj.linux>
@@ -76,58 +77,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, the reader/updater compatibility rules for the three RCU
-Tasks flavors are squished together in a single paragraph, which can
-result in confusion.  This commit therefore splits them out into a list,
-clearly showing the distinction between these flavors.
+This commit adds discussion of address and data dependencies to the
+beginning of rcu_dereference.rst in order to enable readers to more
+easily make the connection to the Linux-kernel memory model in general
+and to memory-barriers.txt in particular.
 
-Link: https://lore.kernel.org/all/20231002211936.5948253e@gandalf.local.home/
-
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Reported-by: Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Reported-by: Akira Yokosawa <akiyks@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
 ---
- Documentation/RCU/checklist.rst | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ Documentation/RCU/rcu_dereference.rst | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-index bd3c58c44bef..c432899aff22 100644
---- a/Documentation/RCU/checklist.rst
-+++ b/Documentation/RCU/checklist.rst
-@@ -241,15 +241,22 @@ over a rather long period of time, but improvements are always welcome!
- 	srcu_struct.  The rules for the expedited RCU grace-period-wait
- 	primitives are the same as for their non-expedited counterparts.
+diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
+index 3b739f6243c8..659d5913784d 100644
+--- a/Documentation/RCU/rcu_dereference.rst
++++ b/Documentation/RCU/rcu_dereference.rst
+@@ -3,13 +3,26 @@
+ PROPER CARE AND FEEDING OF RETURN VALUES FROM rcu_dereference()
+ ===============================================================
  
--	If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
--	then the readers must refrain from executing voluntary
--	context switches, that is, from blocking.  If the updater uses
--	call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
--	the corresponding readers must use rcu_read_lock_trace() and
--	rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
--	or synchronize_rcu_tasks_rude(), then the corresponding readers
--	must use anything that disables preemption, for example,
--	preempt_disable() and preempt_enable().
-+	Similarly, it is necssary to correctly use the RCU Tasks flavors:
+-Most of the time, you can use values from rcu_dereference() or one of
+-the similar primitives without worries.  Dereferencing (prefix "*"),
+-field selection ("->"), assignment ("="), address-of ("&"), addition and
+-subtraction of constants, and casts all work quite naturally and safely.
+-
+-It is nevertheless possible to get into trouble with other operations.
+-Follow these rules to keep your RCU code working properly:
++Proper care and feeding of address and data dependencies is critically
++important to correct use of things like RCU.  To this end, the pointers
++returned from the rcu_dereference() family of primitives carry address and
++data dependencies.  These dependencies extend from the rcu_dereference()
++macro's load of the pointer to the later use of that pointer to compute
++either the address of a later memory access (representing an address
++dependency) or the value written by a later memory access (representing
++a data dependency).
 +
-+	a.	If the updater uses synchronize_rcu_tasks() or
-+		call_rcu_tasks(), then the readers must refrain from
-+		executing voluntary context switches, that is, from
-+		blocking.
++Most of the time, these dependencies are preserved, permitting you to
++freely use values from rcu_dereference().  For example, dereferencing
++(prefix "*"), field selection ("->"), assignment ("="), address-of
++("&"), casts, and addition or subtraction of constants all work quite
++naturally and safely.  However, because current compilers do not take
++either address or data dependencies into account it is still possible
++to get into trouble.
 +
-+	b.	If the updater uses call_rcu_tasks_trace()
-+		or synchronize_rcu_tasks_trace(), then the
-+		corresponding readers must use rcu_read_lock_trace()
-+		and rcu_read_unlock_trace().
-+
-+	c.	If an updater uses call_rcu_tasks_rude() or
-+		synchronize_rcu_tasks_rude(), then the corresponding
-+		readers must use anything that disables preemption,
-+		for example, preempt_disable() and preempt_enable().
++Follow these rules to preserve the address and data dependencies emanating
++from your calls to rcu_dereference() and friends, thus keeping your RCU
++readers working properly:
  
- 	Mixing things up will result in confusion and broken kernels, and
- 	has even resulted in an exploitable security issue.  Therefore,
+ -	You must use one of the rcu_dereference() family of primitives
+ 	to load an RCU-protected pointer, otherwise CONFIG_PROVE_RCU
 -- 
 2.40.1
 
