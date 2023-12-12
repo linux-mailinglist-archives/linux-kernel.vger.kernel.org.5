@@ -2,159 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AA580F739
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D54A80F73B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377303AbjLLTwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:52:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
+        id S1377322AbjLLTwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377287AbjLLTwk (ORCPT
+        with ESMTP id S1377326AbjLLTwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:52:40 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631EFA1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:52:46 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c29f7b068so57560265e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:52:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702410765; x=1703015565; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=99wiKlmvZ0yOuhSozih/oH4sju55TXVCbZzwWmMlsn4=;
-        b=HJHrDI/cHnITExOZei1a83padeACCLI7lw8DlVYlPmvyozz41C86sxzLX5lpEnBTiK
-         Xq6X2LZgUd5km8IbFsMZ36xEapwm5O6a5d7b0KJkDs4LPMjNenRrhRNhu3BcAxEnmJpn
-         yJodM9plU0we0hZsnnoyY5mhG1YnV3S0zc+ySvQOFwPhClcRWD9i98C0nUSAiL4wgp4F
-         3X0ZowCL+PBgwEBKLnNPz0dYx5wH3iiTUMJjvzK+cYjYjatJdP8wnN/IQAG6kF9vAGnx
-         3kOY5G2HWXkMP80CB2OF0SsIzH89wjqs5yY9ZH2BxDEdDi+aginZBtGdvqSfy63lr4x6
-         ydsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702410765; x=1703015565;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=99wiKlmvZ0yOuhSozih/oH4sju55TXVCbZzwWmMlsn4=;
-        b=Q8UXWHs4mqclVg5C/bM5cTFosari+J2v8saguzBD8jkqWY3cKH4UUN9EPVoS1YO3k7
-         uhAHJFyWljo0tB5PtBoL7PgVVeXcerPTE/iwOKwP5fXQzuanm5PYpFfky36Nx2fKEE+q
-         ZAuIq50fSJiMhuBQTjqcVEfPf5MThXnLp4gMXA/tg/SevnkEMm0vR/Wv/cY5OzAd5RfD
-         WU3NvGgZluVp0veCqp4GEGKvF2wOevT5Bwm5JBYN2QPBS+tQBN/mtUnuNfSBvo5hMz3p
-         tx3G3p08kRhnGJVxUu+e8eygEnwlcZ86bQglkdTc1L4IXYZkw393/3kGRk6v8hEe820P
-         6ytw==
-X-Gm-Message-State: AOJu0YzXG/NsJeMMBlCjibH93xQWCQFy/G5GeRIVfdtQ78C4x55btl9A
-        aQxX2IHM6huNsqMIPlMl2Q==
-X-Google-Smtp-Source: AGHT+IFOwj3THLrh+pxCdwE4NuSW8VVqSrjWAbsSdvG6RxQkyYixxBUkZ22EmkKXaDkJNOkQowBuOw==
-X-Received: by 2002:a7b:cd87:0:b0:40c:2b4c:623b with SMTP id y7-20020a7bcd87000000b0040c2b4c623bmr3150026wmj.52.1702410764505;
-        Tue, 12 Dec 2023 11:52:44 -0800 (PST)
-Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch. [31.10.153.16])
-        by smtp.gmail.com with ESMTPSA id z4-20020adff1c4000000b003333af25cb2sm11488138wro.66.2023.12.12.11.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 11:52:44 -0800 (PST)
-From:   Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-To:     perex@perex.cz, tiwai@suse.com, sbinding@opensource.cirrus.com
-Cc:     james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, Jasper Smet <josbeir@gmail.com>
-Subject: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD properties
-Date:   Tue, 12 Dec 2023 20:52:43 +0100
-Message-Id: <20231212195243.10666-1-alex.vinarskis@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 12 Dec 2023 14:52:46 -0500
+Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E656D9A;
+        Tue, 12 Dec 2023 11:52:51 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 3F6FA2B001D4;
+        Tue, 12 Dec 2023 14:52:47 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 12 Dec 2023 14:52:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=fm3; t=1702410766;
+         x=1702417966; bh=PWR2ya5pGiPVyjegzqtZ+4qYDOLJjkmxivRf/6mGesQ=; b=
+        IL928oPDrSAYbSUNTSiE9NxEDVeMdmmFFMcofmugw5LAZUgWMFm3dzW2ENQhf29G
+        jrhQw7rWZZf+ASWbGPieceLvbgc27OJvgf6p/z6AKhKWX82M0LO4acU1r4nAkRnT
+        CBEFAV6K+FGEIRexMY2tHVMWPu+9aupieB5BZm/u1NGByyvS4Vjyn9klcu5qmALj
+        opAEBGmgzldrObROMNGUWfAba0bACO/hum6K4LP51zr92oNAYMgrDbyhncH5u1+6
+        rlDBLZk00rCqvBKK4BxnDxfOSckRADRG1VQaBf0Jv1Dt4H+EFhItKkgnsDmC6FLn
+        iEJ4jCw++suOu6A67x7Dcg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702410766; x=
+        1702417966; bh=PWR2ya5pGiPVyjegzqtZ+4qYDOLJjkmxivRf/6mGesQ=; b=u
+        JVvU2Hl07to+U2Yuz+OO8LScs/KD86ueEmDYkMdklLweASdRwUySivIZPppV8Fmj
+        AznjbmV4vo6cAtdRezplsIqFygb43n3lCVWyQVrVysMt9IS5XGBj2T0v3emaRTWc
+        nrKo9rXBn1vIPKi6sHfbH+OkKcoyMLa/5aVm5qEhBPjznuGqsOWkyzZXb1m57DOz
+        +G7uEAgWDYTw3W/jXvTH7eIBNeRP8Ugvr8AoRlso0CJZOyPZoHRt5yl1bT1bhQAp
+        DPmiqZ5BrZXb/E+wSmfZL5VOjR7Rsap/28CLN1CQJgQuDyBbJ9TjTitpcRnecLwR
+        +eJjGRvka7P5YvRC/QJ9Q==
+X-ME-Sender: <xms:Drp4ZcxAeV7xwT7DcKPrAGSjhrDI9h-k7TtdcgQwoxYlxzL_HlrgNQ>
+    <xme:Drp4ZQT73RXm7dCD7qdUWT1zlf_HqjtZunCvWHaRtq7FW3ixUuWS5481NqTuGswW-
+    ALKVcb3JMUDPnIZfg>
+X-ME-Received: <xmr:Drp4ZeXQGZbIoF7cZ9mHvPqYVGeSui__57TcUsq19Yltojzj3fhS_DGhm7eoO3_iwnlpOna7_xBJTCLmZwEThrbU-wzflkuAVvPa>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelgedguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Drp4Zagbq4jmav-kGsN7OxrOoavejutk39dkGmBVnzQ3whTU4NtIBg>
+    <xmx:Drp4ZeB611bMkmZcsRqdBEgTkqLgdtmVcHz_SmUabUjrRoOygdxfhQ>
+    <xmx:Drp4ZbIti5nu9uwcrxFlYK-I7cC1Bpq8Vg0CKMWeIwh4TU4v2ZiZqA>
+    <xmx:Drp4ZZaVSZXwP31ZtFowTJoC1shUbjnmn_mw4g_1H3JM_uWGA6AdbeEpLwg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Dec 2023 14:52:44 -0500 (EST)
+Date:   Tue, 12 Dec 2023 12:52:43 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org,
+        ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
+        andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        devel@linux-ipsec.org, memxor@gmail.com
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+References: <cover.1702325874.git.dxu@dxuuu.xyz>
+ <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
+ <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+ <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
+ <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dell XPS 9530 (2023) has two SPI connected CS35L41 amplifiers, however
-is missing _DSD properties, cs-gpios and has a firmware bug which caps SPI
-controller's speed to unusable 3051Hz. This patch adds _DSD properties and
-sets second cs-gpio. In case SPI speed bug is detected, it will not
-initialize the device to avoid hangs on wake up.
+cc Kumar
 
-Resolution of SPI speed bug requires either a patch to `intel-lpss.c` or an
-UEFI update with corrected values from Dell. Tested with locally applied
-patch to `intel-lpss` on multiple XPS 9530 devices.
+On Tue, Dec 12, 2023 at 09:17:02AM -0700, Daniel Xu wrote:
+> On Mon, Dec 11, 2023 at 04:25:06PM -0800, Eyal Birger wrote:
+> > On Mon, Dec 11, 2023 at 3:49 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > >
+> > > On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
+> > > > On Mon, Dec 11, 2023 at 2:31 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > >
+> > > > > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
+> > > > > > Hi Daniel,
+> > > > > >
+> > > > > > Tiny nits below in case you respin this for other reasons:
+> > > > > >
+> > > > > > On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > >
+> > > > > > > This commit extends test_tunnel selftest to test the new XDP xfrm state
+> > > > > > > lookup kfunc.
+> > > > > > >
+> > > > > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
+> > > > > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
+> > > > > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > > > > > ---
+> > > > > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
+> > > > > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
+> > > > > > >  2 files changed, 67 insertions(+), 4 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > index 2d7f8fa82ebd..fc804095d578 100644
+> > > > > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > >         SYS(fail,
+> > > > > > >             "ip netns exec at_ns0 "
+> > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > -                       "spi %d reqid 1 mode tunnel "
+> > > > > > > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
+> > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
+> > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
+> > > > > > >         SYS(fail,
+> > > > > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > >         SYS(fail,
+> > > > > > >             "ip netns exec at_ns0 "
+> > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > -                       "spi %d reqid 2 mode tunnel "
+> > > > > > > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
+> > > > > >
+> > > > > > nit: why do you need to set the replay-window in both directions?
+> > > > >
+> > > > > No reason - probably just careless here.
+> > > > >
+> > > > > >
+> > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
+> > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
+> > > > > > >         SYS(fail,
+> > > > > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > >          */
+> > > > > > >         SYS(fail,
+> > > > > > >             "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > -                   "spi %d reqid 1 mode tunnel "
+> > > > > > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
+> > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
+> > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
+> > > > > > >         SYS(fail,
+> > > > > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
+> > > > > > >         /* root -> at_ns0 */
+> > > > > > >         SYS(fail,
+> > > > > > >             "ip xfrm state add src %s dst %s proto esp "
+> > > > > > > -                   "spi %d reqid 2 mode tunnel "
+> > > > > > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
+> > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
+> > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
+> > > > > > >         SYS(fail,
+> > > > > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
+> > > > > > >  {
+> > > > > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
+> > > > > > >                             .attach_point = BPF_TC_INGRESS);
+> > > > > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+> > > > > > >         struct test_tunnel_kern *skel = NULL;
+> > > > > > >         struct nstoken *nstoken;
+> > > > > > > +       int xdp_prog_fd;
+> > > > > > >         int tc_prog_fd;
+> > > > > > >         int ifindex;
+> > > > > > >         int err;
+> > > > > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
+> > > > > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
+> > > > > > >                 goto done;
+> > > > > > >
+> > > > > > > +       /* attach xdp prog to tunnel dev */
+> > > > > > > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
+> > > > > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
+> > > > > > > +               goto done;
+> > > > > > > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
+> > > > > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
+> > > > > > > +               goto done;
+> > > > > > > +
+> > > > > > >         /* ping from at_ns0 namespace test */
+> > > > > > >         nstoken = open_netns("at_ns0");
+> > > > > > >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
+> > > > > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
+> > > > > > >                 goto done;
+> > > > > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
+> > > > > > >                 goto done;
+> > > > > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
+> > > > > > > +               goto done;
+> > > > > > >
+> > > > > > >  done:
+> > > > > > >         delete_xfrm_tunnel();
+> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > index 3a59eb9c34de..c0dd38616562 100644
+> > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
+> > > > > > >                           struct bpf_fou_encap *encap, int type) __ksym;
+> > > > > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+> > > > > > >                           struct bpf_fou_encap *encap) __ksym;
+> > > > > > > +struct xfrm_state *
+> > > > > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
+> > > > > > > +                      u32 opts__sz) __ksym;
+> > > > > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
+> > > > > > >
+> > > > > > >  struct {
+> > > > > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > > > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
+> > > > > > >         return TC_ACT_OK;
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +volatile int xfrm_replay_window = 0;
+> > > > > > > +
+> > > > > > > +SEC("xdp")
+> > > > > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > > > +{
+> > > > > > > +       struct bpf_xfrm_state_opts opts = {};
+> > > > > > > +       struct xfrm_state *x = NULL;
+> > > > > > > +       struct ip_esp_hdr *esph;
+> > > > > > > +       struct bpf_dynptr ptr;
+> > > > > > > +       u8 esph_buf[8] = {};
+> > > > > > > +       u8 iph_buf[20] = {};
+> > > > > > > +       struct iphdr *iph;
+> > > > > > > +       u32 off;
+> > > > > > > +
+> > > > > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
+> > > > > > > +               goto out;
+> > > > > > > +
+> > > > > > > +       off = sizeof(struct ethhdr);
+> > > > > > > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
+> > > > > > > +       if (!iph || iph->protocol != IPPROTO_ESP)
+> > > > > > > +               goto out;
+> > > > > > > +
+> > > > > > > +       off += sizeof(struct iphdr);
+> > > > > > > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
+> > > > > > > +       if (!esph)
+> > > > > > > +               goto out;
+> > > > > > > +
+> > > > > > > +       opts.netns_id = BPF_F_CURRENT_NETNS;
+> > > > > > > +       opts.daddr.a4 = iph->daddr;
+> > > > > > > +       opts.spi = esph->spi;
+> > > > > > > +       opts.proto = IPPROTO_ESP;
+> > > > > > > +       opts.family = AF_INET;
+> > > > > > > +
+> > > > > > > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> > > > > > > +       if (!x || opts.error)
+> > > > > >
+> > > > > > nit: how can opts.error be non zero if x == NULL?
+> > > > >
+> > > > > Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
+> > > > > behavior here.
+> > > >
+> > > > I'm sorry, I don't understand.
+> > > >
+> > > > AFAICT, regardless of the -ENOENT change, I don't see
+> > > > how (!x) is false and (opt.error) is true, and so
+> > > > "if (!x || opts.error)" is always equivalent to "if (!x)".
+> > > >
+> > > > What am I missing?
+> > > > Eyal.
+> > >
+> > > The selftests are tests so my intention was to check edge cases here.
+> > > In normal operation it shouldn't be possible that
+> > > bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
+> > > another way of writing this would be:
+> > >
+> > >         if (!x)
+> > >                 goto out;
+> > >         assert(opts.error == 0);
+> > 
+> > I think this would convey the "edge case testing" notion better.
+> > 
+> > >
+> > > If I'm trying to be too clever (or maybe just wrong) or it's pointless,
+> > > I can remove the `opts.error` condition.
+> > 
+> > At least for me the tests also serve as references as to how the
+> > API is expected to be used, so I think it'd be clearer without
+> > signaling that opts.error could potentially be nonzero on success.
+> > 
+> > An assertion would indeed make that clear.
+> 
+> Sure, sounds good. I will check on the new bpf assert infra.
 
-Co-developed-by: Jasper Smet <josbeir@gmail.com>
-Signed-off-by: Jasper Smet <josbeir@gmail.com>
-Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
----
- sound/pci/hda/cs35l41_hda_property.c | 47 ++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+Couldn't quite get bpf_assert() working. The following diff:
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index c83328971728..69446a794397 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -7,9 +7,55 @@
- // Author: Stefan Binding <sbinding@opensource.cirrus.com>
- 
- #include <linux/gpio/consumer.h>
-+#include <linux/spi/spi.h>
- #include <linux/string.h>
- #include "cs35l41_hda_property.h"
- 
-+/*
-+ * Device 10280BEB (Dell XPS 9530) doesn't have _DSD at all. Moreover, pin that is typically
-+ * used for `speaker_id` is missing. SPI's cs-gpios definitions are also missing.
-+ */
-+static int dell_fiorano_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
-+				const char *hid)
-+{
-+	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-+	struct spi_device *spi = to_spi_device(cs35l41->dev);
-+
-+	/*
-+	 * 10280BEB has a firmware bug, which wrongly enables clock divider for intel-lpss
-+	 * Resultant SPI clock is 100Mhz/32767=3051Hz, which leads to ~3 minute hang on boot/wake up
-+	 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
-+	 */
-+	if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ) {
-+		dev_err(cs35l41->dev, "SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
-+			spi->max_speed_hz);
-+		return -EINVAL;
-+	}
-+
-+	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41->acpi_subsystem_id);
-+
-+	/* check SPI address to assign the index */
-+	cs35l41->index = id;
-+	cs35l41->channel_index = 0;
-+	/* 10280BEB is missing pin which is typically assigned to `spk-id-gpios` */
-+	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, 2, -1);
-+	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 1, GPIOD_OUT_LOW);
-+
-+	hw_cfg->spk_pos = cs35l41->index  ? 1 : 0;	// 0th L, 1st R
-+	hw_cfg->bst_type = CS35L41_EXT_BOOST;
-+	hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
-+	hw_cfg->gpio1.valid = true;
-+	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-+	hw_cfg->gpio2.valid = true;
-+	hw_cfg->valid = true;
-+
-+	/* Add second cs-gpio here */
-+	if (cs35l41->index)
-+		spi->cs_gpiod = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-+
-+	return 0;
-+}
-+
- /*
-  * Device CLSA010(0/1) doesn't have _DSD so a gpiod_get by the label reset won't work.
-  * And devices created by serial-multi-instantiate don't have their device struct
-@@ -92,6 +138,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
- 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
- 	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
-+	{ "CSC3551", "10280BEB", dell_fiorano_no_acpi },
- 	{}
- };
- 
--- 
-2.40.1
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index c0dd38616562..f00dba85ac5d 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -8,8 +8,9 @@
+  */
+ #include "vmlinux.h"
+ #include <bpf/bpf_core_read.h>
+-#include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_experimental.h"
+ #include "bpf_kfuncs.h"
+ #include "bpf_tracing_net.h"
 
+@@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+        opts.family = AF_INET;
+
+        x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+-       if (!x || opts.error)
++       if (!x)
+                goto out;
++       bpf_assert_with(opts.error == 0, XDP_PASS);
+
+        if (!x->replay_esn)
+                goto out;
+
+results in:
+
+57: (b7) r1 = 2                       ; R1_w=2 refs=5
+58: (85) call bpf_throw#115436
+calling kernel function bpf_throw is not allowed
+
+It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+but I can run the exceptions selftests just fine with the same bzImage.
+So I'm thinking it's not a kfunc registration or BTF issue.
+
+Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
+
+So for now I think I'll drop checking opts.error.
+
+[...]
