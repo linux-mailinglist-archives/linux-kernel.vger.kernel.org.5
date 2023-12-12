@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD4980EB17
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3ED80EB10
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346391AbjLLL7Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 06:59:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54990 "EHLO
+        id S232257AbjLLL6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLL7X (ORCPT
+        with ESMTP id S229963AbjLLL6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:59:23 -0500
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE12D9;
-        Tue, 12 Dec 2023 03:59:28 -0800 (PST)
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b9ed8c3472so762321b6e.0;
-        Tue, 12 Dec 2023 03:59:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702382367; x=1702987167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2rCobFJUuKz3FJXg7Q8CIUv9LXIFa1ZDDGDNt6L6DlY=;
-        b=PP7rmmSD5zQCoKF2OKWFfwGX+yh3SS5TstFmbfTRm37GgTUEkOInu6Yd7X2uYUZ9cj
-         haieWd/YYG9YstU67YMP03mCSR58npQkovLdP4OUXUX3UQy96ctWR0frlKTPXlgZNvdR
-         3W2a8YterMQh97T+wXze2pUb0FeoBMsmNLAXpOuYGmiqtA42sQObDSUxmTapo0xer+R8
-         NEZp81C6hg+iWEWvCpHvM82aWYXn4ytxkATqXbIxD/mRtyIjN0SwFDWTWhvyL8TRFiql
-         FvoRWen7tbM6QBqSk03XVtTE2UVWCSP39X/IlzC9pqWOdUM+dHqvjXuIfsicMMBC/OG9
-         CMGw==
-X-Gm-Message-State: AOJu0Yx76QS5QVVTvDjmHqWHWVOyVrXgx9u9W+VwHx+n/bVnZS3dcSa/
-        CYkMDj3iathdbD/yqsir1UeWUi0fsf5RGX4T3jY=
-X-Google-Smtp-Source: AGHT+IHayhFRjzODeFjXeZ0kn7mS1NSbOR+l88L1hIBaw/FDrsZJqTZp5zjmYKcxOzKwBBO+Y332ul6oLsGYrH1I6HI=
-X-Received: by 2002:a05:6820:2a18:b0:590:9027:7ab0 with SMTP id
- dr24-20020a0568202a1800b0059090277ab0mr8867335oob.0.1702382367518; Tue, 12
- Dec 2023 03:59:27 -0800 (PST)
+        Tue, 12 Dec 2023 06:58:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03876AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:58:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5096C433C8;
+        Tue, 12 Dec 2023 11:58:40 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 06:59:22 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH v2] ring-buffer: Fix writing to the buffer with
+ max_data_size
+Message-ID: <20231212065922.05f28041@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231127151931.47055-1-ulf.hansson@linaro.org>
- <CAJZ5v0jXRNDV7AhZPkrDvMtrk6cYeMJ+HuUs0kJ=kjbQ-YiyVA@mail.gmail.com> <CAPDyKFpJ6_+nF8q3L4Tg1E9St3stgJ06se0t=FLHkx4_36OJNA@mail.gmail.com>
-In-Reply-To: <CAPDyKFpJ6_+nF8q3L4Tg1E9St3stgJ06se0t=FLHkx4_36OJNA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Dec 2023 12:59:15 +0100
-Message-ID: <CAJZ5v0jxMjb-bUbJiHgehe5xJ6cwspvsRp5P_2N6FyvRFshJQA@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Drop the unused pm_genpd_opp_to_performance_state()
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Kevin Hilman <khilman@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:37 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Mon, 11 Dec 2023 at 21:44, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Mon, Nov 27, 2023 at 4:19 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > Since commit 7c41cdcd3bbe ("OPP: Simplify the over-designed pstate <->
-> > > level dance"), there is no longer any users of the
-> > > pm_genpd_opp_to_performance_state() API. Let's therefore drop it and its
-> > > corresponding ->opp_to_performance_state() callback, which also no longer
-> > > has any users.
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >
-> > I can take this in principle, but I'm wondering if you'd prefer to
-> > apply patches modifying domain.c yourself?  They are definitely
-> > related to the pmdomain tree.
->
-> Yes, it makes sense for me to pick the genpd core patches through the
-> pmdomain tree. In some cases there may be overlapping patches that are
-> more generic and not only limited to genpd, but I guess we can decide
-> on a case by case basis for those ones.
->
-> I can add the pmdomain tree to the GENERIC PM DOMAINS section in the
-> MAINTAINERS file to reflect this, if you think this is a good idea?
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Yes, please.
+The maximum ring buffer data size is the maximum size of data that can be
+recorded on the ring buffer. Events must be smaller than the sub buffer
+data size minus any meta data. This size is checked before trying to
+allocate from the ring buffer because the allocation assumes that the size
+will fit on the sub buffer.
 
-What about moving drivers/base/power/domain.c to drivers/pmdomain/ ?
+The maximum size was calculated as the size of a sub buffer page (which is
+currently PAGE_SIZE minus the sub buffer header) minus the size of the
+meta data of an individual event. But it missed the possible adding of a
+time stamp for events that are added long enough apart that the event meta
+data can't hold the time delta.
+
+When an event is added that is greater than the current BUF_MAX_DATA_SIZE
+minus the size of a time stamp, but still less than or equal to
+BUF_MAX_DATA_SIZE, the ring buffer would go into an infinite loop, looking
+for a page that can hold the event. Luckily, there's a check for this loop
+and after 1000 iterations and a warning is emitted and the ring buffer is
+disabled. But this should never happen.
+
+This can happen when a large event is added first, or after a long period
+where an absolute timestamp is prefixed to the event, increasing its size
+by 8 bytes. This passes the check and then goes into the algorithm that
+causes the infinite loop.
+
+For events that are the first event on the sub-buffer, it does not need to
+add a timestamp, because the sub-buffer itself contains an absolute
+timestamp, and adding one is redundant.
+
+The fix is to check if the event is to be the first event on the
+sub-buffer, and if it is, then do not add a timestamp.
+
+Also, if the buffer has "time_stamp_abs" set, then also check if the
+length plus the timestamp is greater than the BUF_MAX_DATA_SIZE.
+
+Cc: stable@vger.kernel.org
+Fixes: a4543a2fa9ef3 ("ring-buffer: Get timestamp after event is allocated")
+Reported-by: Kent Overstreet <kent.overstreet@linux.dev> # (on IRC)
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231209170139.33c1b452@gandalf.local.home
+
+- Instead of subtracting the timestamp size from the max data, check if the
+  event is the fist event on the sub-buffer and if it is do not add a timestamp.
+
+- If the ring buffer enabled adding timestamps for every event, then check
+  if the added timestamp puts the length over BUF_MAX_DATA_SIZE.
+
+
+ kernel/trace/ring_buffer.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 8d2a4f00eca9..d8ce1dc5110e 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3584,7 +3584,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 			info->length += RB_LEN_TIME_EXTEND;
+ 		} else {
+ 			info->delta = info->ts - info->after;
+-			if (unlikely(test_time_stamp(info->delta))) {
++			if (w && unlikely(test_time_stamp(info->delta))) {
+ 				info->add_timestamp |= RB_ADD_STAMP_EXTEND;
+ 				info->length += RB_LEN_TIME_EXTEND;
+ 			}
+@@ -3737,6 +3737,8 @@ rb_reserve_next_event(struct trace_buffer *buffer,
+ 	if (ring_buffer_time_stamp_abs(cpu_buffer->buffer)) {
+ 		add_ts_default = RB_ADD_STAMP_ABSOLUTE;
+ 		info.length += RB_LEN_TIME_EXTEND;
++		if (info.length > BUF_MAX_DATA_SIZE)
++			goto out_fail;
+ 	} else {
+ 		add_ts_default = RB_ADD_STAMP_NONE;
+ 	}
+-- 
+2.42.0
+
