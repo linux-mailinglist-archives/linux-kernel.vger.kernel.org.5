@@ -2,214 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA9F80E49A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E857880E4B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjLLHBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:01:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S229524AbjLLHFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLLHBQ (ORCPT
+        with ESMTP id S229454AbjLLHFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:01:16 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AC3D1;
-        Mon, 11 Dec 2023 23:01:21 -0800 (PST)
-Received: from [192.168.0.4] (ip5f5aee94.dynamic.kabel-deutschland.de [95.90.238.148])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E627361E5FE04;
-        Tue, 12 Dec 2023 08:00:34 +0100 (CET)
-Message-ID: <72fe6f18-e3d7-4c74-9734-01a33dc8e100@molgen.mpg.de>
-Date:   Tue, 12 Dec 2023 08:00:34 +0100
+        Tue, 12 Dec 2023 02:05:43 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4C5D0;
+        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cda22140f2so4626996b3a.1;
+        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702364750; x=1702969550; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=cSrzQ4FDDeqPwfBNWP1LcLTFq/yFZjcBCmoTNQG3Jbc=;
+        b=QxFcJjjYIDnXD8IUvnNAiAfryIkdOrPDGo0qH2/XA9/Fnk9ktbHEQ+njmVDnumjcab
+         TtKaubL530F80z7dq8mYxVe6lfP6I+OZmZvtfjNstC7WjYxYdoDQxR/rTV5zJokyxTUe
+         e6P2zoKRTNkzvu33ppDiLZd/+dur8eUzzMuZBcsVGoQ0ZN3o1wjYabqDqi1G98BtwhW5
+         idKXyHgw/4GdNuGwQxUssfLHlWMvHu7Vd96VehhjoCD8gs5EibeEURkl/SXzTMfFS7Ds
+         2oqBeZLiXP76zUYNdpvIRTYYUW+s/DUE+q7wExubnxOS2hFFe01VWhtFkQ/bZHs6Lv/q
+         VZ9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702364750; x=1702969550;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cSrzQ4FDDeqPwfBNWP1LcLTFq/yFZjcBCmoTNQG3Jbc=;
+        b=xSrCCpDKykl9PoyjOhkhWVC2McA7MZu7ofRpwdKegZIvll1ih1IaPAFccFINVT0ill
+         w0l0DGwOah/gDAS3Y5DyDMlw1XCPgAptwnTslOTjHKhpx8q9zYuIP63jYdb08fgnkH6A
+         L73uCMfiBbz384PhNuCmWXqsIfKmAziErzezO/06//6zYj9WxavHcg3b4zmMWv6pSt7c
+         wyeSmWi4IlWSuI8mUX1OozZfx4zhkTvZZ/eSYW6C52Lhq14uWABRflfxfFYmDNlPwCRs
+         FzYDTcm19tWUIg9IiH51yULWalxaj0Goh7xJmueomtFwa4jkxngqozcBEyYuIwbdNTTX
+         iYTA==
+X-Gm-Message-State: AOJu0YySjKOYrVxZMQrGXxL+PVIBOxy/cUoWqMOAndUVWJ0gokwOBiVL
+        cccBhYZNdWDnS5lUga9I4wkbDYpO+KmO6w==
+X-Google-Smtp-Source: AGHT+IECAOXD/0B+W79A1JJLZZXjjM6ziU0kkw9o9WVVRBBXjx1IEv5o3dwdJSk4XvSkOKpIiVt8zg==
+X-Received: by 2002:a05:6a20:7d86:b0:18f:f86f:bcdb with SMTP id v6-20020a056a207d8600b0018ff86fbcdbmr6978625pzj.93.1702364749630;
+        Mon, 11 Dec 2023 23:05:49 -0800 (PST)
+Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7da0:5ec4:de63:3cf4])
+        by smtp.gmail.com with ESMTPSA id g17-20020a056a0023d100b006cb6e83bf7fsm7397491pfc.192.2023.12.11.23.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 23:05:49 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Milian Wolff <milian.wolff@kdab.com>,
+        Pablo Galindo <pablogsal@gmail.com>,
+        Fangrui Song <maskray@google.com>
+Subject: [PATCH 0/3] perf tools: Random fixes for DWARF unwind
+Date:   Mon, 11 Dec 2023 23:05:43 -0800
+Message-ID: <20231212070547.612536-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 1/3] dt-bindings: gpio: add NPCM sgpio driver bindings
-Content-Language: en-US
-To:     Jim Liu <jim.t90615@gmail.com>
-Cc:     Jim Liu <JJLIU0@nuvoton.com>, KWLIU@nuvoton.com,
-        linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Rob Herring <robh@kernel.org>,
-        linux-gpio@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231212065147.3475413-1-jim.t90615@gmail.com>
- <20231212065147.3475413-2-jim.t90615@gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20231212065147.3475413-2-jim.t90615@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Jim,
+Hello,
+
+I've found a couple of issues on the unwind code while I'm playing with
+the JIT-dump code for the CPython.  The code assumes normal DSOs mapped
+from the beginning of the file and aligned to the page size.  But it's
+not true for the JIT-dumped DSOs which are generated for each function.
+
+Depending on the JIT implementation, the code address and accompanied
+ELF info (like ELF file headers and unwind info) can be overlapped to
+adjacent (JIT-dumped) DSOs.  So it should take more care when it
+calculates the mapping address for the DSO.
+
+It seems these changes need to go to the stable trees but they are
+changed a lot since then so I'm not sure.
+
+Thanks,
+Namhyung
 
 
-Thank you for your patch.
+Namhyung Kim (3):
+  perf genelf: Set ELF program header addresses properly
+  perf unwind-libdw: Handle JIT-generated DSOs properly
+  perf unwind-libunwind: Fix base address for .eh_frame
 
-Am 12.12.23 um 07:51 schrieb Jim Liu:
-> Add dt-bindings document for the Nuvoton NPCM7xx sgpio driver
-> 
-> Signed-off-by: Jim Liu <jim.t90615@gmail.com>
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+ tools/perf/util/genelf.c                 |  6 +++---
+ tools/perf/util/unwind-libdw.c           | 21 +++++++++++++++++----
+ tools/perf/util/unwind-libunwind-local.c |  2 +-
+ 3 files changed, 21 insertions(+), 8 deletions(-)
 
-As you seem to be employed by Nuvoton, should your company/work email be 
-listed somehow, and even be used for the author address?
+-- 
+2.43.0.472.g3155946c3a-goog
 
-> ---
-> Changes for v9:
->     - no changed
-> Changes for v8:
->     - no changed
-> Changes for v7:
->     - no changed
-> ---
->   .../bindings/gpio/nuvoton,sgpio.yaml          | 86 +++++++++++++++++++
->   1 file changed, 86 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-> new file mode 100644
-> index 000000000000..84e0dbcb066c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-> @@ -0,0 +1,86 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/nuvoton,sgpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Nuvoton SGPIO controller
-> +
-> +maintainers:
-> +  - Jim LIU <JJLIU0@nuvoton.com>
-> +
-> +description: |
-> +  This SGPIO controller is for NUVOTON NPCM7xx and NPCM8xx SoC.
-> +  Nuvoton NPCM7xx SGPIO module is combine serial to parallel IC (HC595)
-
-s/is combine/combines a/
-
-> +  and parallel to serial IC (HC165), and use APB3 clock to control it.
-
-use*s*
-
-> +  This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
-
-Only one space before the (.
-
-> +  NPCM7xx/NPCM8xx have two sgpio module each module can support up
-
-… modules. Each module …
-
-> +  to 64 output pins,and up to 64 input pin, the pin is only for gpi or gpo.
-
-1.  Space after the comma.
-2.  64 input pin*s
-
-> +  GPIO pins have sequential, First half is gpo and second half is gpi.
-
-have sequential ?.
-
-> +  GPIO pins can be programmed to support the following options
-> +  - Support interrupt option for each input port and various interrupt
-> +    sensitivity option (level-high, level-low, edge-high, edge-low)
-
-option*s*
-
-> +  - ngpios is number of nuvoton,input-ngpios GPIO lines and nuvoton,output-ngpios GPIO lines.
-> +    nuvoton,input-ngpios GPIO lines is only for gpi.
-
-s/is/are/
-
-> +    nuvoton,output-ngpios GPIO lines is only for gpo.
-
-s/is/are/
-
-It’d be great if you mentioned the datasheet name and revision in the 
-description.
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nuvoton,npcm750-sgpio
-> +      - nuvoton,npcm845-sgpio
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  gpio-controller: true
-> +
-> +  '#gpio-cells':
-> +    const: 2
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  nuvoton,input-ngpios:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      The numbers of GPIO's exposed. GPIO lines is only for gpi.
-
-s/is/are/
-
-> +    minimum: 0
-> +    maximum: 64
-> +
-> +  nuvoton,output-ngpios:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      The numbers of GPIO's exposed. GPIO lines is only for gpo.
-
-s/is/are/
-
-> +    minimum: 0
-> +    maximum: 64
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpio-controller
-> +  - '#gpio-cells'
-> +  - interrupts
-> +  - nuvoton,input-ngpios
-> +  - nuvoton,output-ngpios
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    gpio8: gpio@101000 {
-> +        compatible = "nuvoton,npcm750-sgpio";
-> +        reg = <0x101000 0x200>;
-> +        clocks = <&clk NPCM7XX_CLK_APB3>;
-> +        interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-> +        gpio-controller;
-> +        #gpio-cells = <2>;
-> +        nuvoton,input-ngpios = <64>;
-> +        nuvoton,output-ngpios = <64>;
-> +    };
-
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-
-
-Kind regards,
-
-Paul Menzel
