@@ -2,130 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4922A80E12B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E95480E12E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345477AbjLLCCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        id S1345500AbjLLCEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjLLCCM (ORCPT
+        with ESMTP id S229562AbjLLCEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:02:12 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60ECD1;
-        Mon, 11 Dec 2023 18:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702346536;
-        bh=CFYtWsn2IndCy2WElq0hCUbRC1bhTMQ9uOInc5HS2sA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Kcptjc94DFtt+rYvILHE0YVLP3yIFPyozcxsHvxriJCYmtNksRJ+eX346j2SAwvm+
-         Gs5xn//QSZQ7gXiZrSxiw+hv0figLo5uATj28UQHcEWFZQBd8KZECpgu4nlwOWCiHb
-         +qRSMDZl7OyaP/7pgWvotD17Vl5xYSjEuKsOUh4izf5SfNzJ709aY6eTF+7zAlmOOy
-         IS6EHc11UpKClz0OuSk/6biH23rBKCG9ZGmvwL3XZ9P934lgXm+OoEFVbsEsO/fyY5
-         Ii57MztAABu6ZWtS/lIgyrEr+ynLImvMCnLHw+dN4Y1/Pir6og7M09U9I2FJOCHcK6
-         tOodoyFkjH0Yg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sq21M6RMCz4x2V;
-        Tue, 12 Dec 2023 13:02:14 +1100 (AEDT)
-Date:   Tue, 12 Dec 2023 13:02:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the block tree
-Message-ID: <20231212130213.631140dd@canb.auug.org.au>
+        Mon, 11 Dec 2023 21:04:00 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896F69F;
+        Mon, 11 Dec 2023 18:04:06 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC1xlnu028454;
+        Tue, 12 Dec 2023 02:03:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=ggdoTQX
+        GQlyccgy7MpErs64XVDViBmAQKfJh1l2iFuU=; b=NE71hSvDtCqGF6ZJU1pqP3W
+        b3k4IVjTqakrn9W3oLJRfYvYbbSerBbukqqEqTfmYGys/asYPltlJoGkglv5GQr/
+        f+nVncIz+NG9UZDkVIgvGhzYVeLdg4kR2Hz3Ra+8deiFpoqk/1TYSejshY3cXaI3
+        NqFaFb7WBPBuDQDTE4uRG9oYhgyzSkEdlQ4WomJojJn5qMCZroDZWMh5sepTJE1o
+        eQylXL2K/vTd/ZieZcep+kZDh5TXAp+9roF9zV166TP7fTP/iBhRQB8eGYaBo9Dk
+        pC1At2l+u3ucq4Y7rXaFjbuJBe7s5/Pzytky57Y8vY3ydTVmXJxhRYCl9JgrGrA=
+        =
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux20esrkq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 02:03:14 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC23CXB012400
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 02:03:12 GMT
+Received: from hu-johmoo-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 11 Dec 2023 18:03:09 -0800
+From:   John Moon <quic_johmoo@quicinc.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>
+CC:     John Moon <quic_johmoo@quicinc.com>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Carlos O'Donell <carlos@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Matthias Maennich <maennich@google.com>,
+        Giuliano Procida <gprocida@google.com>,
+        <kernel-team@android.com>, <libabigail@sourceware.org>,
+        Dodji Seketeli <dodji@redhat.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Jordan Crouse <jorcrous@amazon.com>
+Subject: [PATCH v7 0/3]  Validating UAPI backwards compatibility
+Date:   Mon, 11 Dec 2023 18:02:56 -0800
+Message-ID: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Zxa0WDHCLLo4022RlVaWCNs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -NGv-g96EJ6YXDR75wvtJ9LWiFr6MskK
+X-Proofpoint-ORIG-GUID: -NGv-g96EJ6YXDR75wvtJ9LWiFr6MskK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=876 spamscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1011 suspectscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120014
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Zxa0WDHCLLo4022RlVaWCNs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The kernel community has rigorously enforced a policy of backwards
+compatibility in its userspace interfaces for a long time. This has
+allowed user applications to enjoy stability across kernel upgrades
+without recompiling. Our goal is to add tooling and documentation to
+help kernel developers maintain this stability.
 
-Hi all,
+In terms of tooling, I've attached a couple of shell scripts we've been
+internally to validate backwards compatibility of our UAPI headers.
 
-The following commits are also in the vfs-brauner tree as different
-commits (but the same patches):
+The check-uapi.sh script uses libabigail's[1] tool abidiff[2] to compare a
+modified header's ABI before and after a patch is applied. If an existing
+UAPI is modified in a way that's not backwards compatibile, the script
+exits non-zero. We use this script in our continuous integration system
+to block changes that fail the check.
 
-  45257bc34f6e ("fs: add Jan Kara as reviewer")
-  a6945447b3f5 ("fs/inode: Make relatime_need_update return bool")
-  79b667a29e41 ("file: remove __receive_fd()")
-  cc0f58c94dae ("file: stop exposing receive_fd_user()")
-  ede533a19a06 ("fs: replace f_rcuhead with f_task_work")
-  0e79bba572b3 ("file: remove pointless wrapper")
-  f71d810fb8fa ("file: s/close_fd_get_file()/file_close_fd()/g")
-  c5eb80cff4cc ("pipe: wakeup wr_wait after setting max_usage")
-  9da5933ccd0f ("Improve __fget_files_rcu() code generation (and thus __fge=
-t_light())")
-  115df1ef9d9a ("file: massage cleanup of files that failed to open")
-  8c76d6d99499 ("fs/pipe: Fix lockdep false-positive in watchqueue pipe_wri=
-te()")
-  5e62251b344c ("fs: reformat idmapped mounts entry")
-  4224a79cbaaf ("mnt_idmapping: decouple from namespaces")
-  8917f5d092cf ("mnt_idmapping: remove nop check")
-  f2b04f053aad ("mnt_idmapping: remove check_fsmapping()")
-  1c146b0406bd ("fs/aio: obey min_nr when doing wakeups")
-  4a6fa23bd7cc ("eventfd: make eventfd_signal{_mask}() void")
-  21aeae27900f ("eventfd: simplify eventfd_signal_mask()")
-  1808acc4fab2 ("eventfd: simplify eventfd_signal()")
+It generates output like this when a backwards incompatible change is
+made to a UAPI header:
 
-These are commits
+ABI differences detected in include/uapi/linux/bpf.h from HEAD~1 -> HEAD
+    [C] 'struct bpf_insn' changed:
+      type size hasn't changed
+      2 data member changes:
+        '__u8 dst_reg' offset changed from 8 to 12 (in bits) (by +4 bits)
+        '__u8 src_reg' offset changed from 12 to 8 (in bits) (by -4 bits)
 
-  2b0400c00405 ("fs: add Jan Kara as reviewer")
-  5aa67665b0d5 ("fs/inode: Make relatime_need_update return bool")
-  a125c59d2754 ("file: remove __receive_fd()")
-  475febe21987 ("file: stop exposing receive_fd_user()")
-  5a13208f07dc ("fs: replace f_rcuhead with f_task_work")
-  b89315e5d229 ("file: remove pointless wrapper")
-  33cbb3ccbc3c ("file: s/close_fd_get_file()/file_close_fd()/g")
-  24d78612cdf8 ("pipe: wakeup wr_wait after setting max_usage")
-  a567958e07c9 ("Improve __fget_files_rcu() code generation (and thus __fge=
-t_light())")
-  e87d822a8f96 ("file: massage cleanup of files that failed to open")
-  055ca8355991 ("fs/pipe: Fix lockdep false-positive in watchqueue pipe_wri=
-te()")
-  12c1b632d970 ("fs: reformat idmapped mounts entry")
-  783822e44594 ("mnt_idmapping: decouple from namespaces")
-  90fbd8b175ee ("mnt_idmapping: remove nop check")
-  e65a29f0235a ("mnt_idmapping: remove check_fsmapping()")
-  71eb6b6b0ba9 ("fs/aio: obey min_nr when doing wakeups")
-  b7638ad0c780 ("eventfd: make eventfd_signal{_mask}() void")
-  120ae5859363 ("eventfd: simplify eventfd_signal_mask()")
-  3652117f8548 ("eventfd: simplify eventfd_signal()")
+The check-module-params.sh script is quite a bit simpler. It basically
+greps for module_param.* calls and compares their arguments before/after
+a change is applied.
 
-in the vfs-brauner tree.
+We wanted to share these scripts with the community and hopefully also
+receive general feedback when it comes to tooling/policy surrounding
+UAPI stability.
 
---=20
-Cheers,
-Stephen Rothwell
+Since v6 of this patch, I also presented a talk at LPC[4] on this topic
+in case anyone would like to review that. I've CC'd a few attendees who
+participated in discussion during the presentation.
 
---Sig_/Zxa0WDHCLLo4022RlVaWCNs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Previous discussion on v6 of this patch can be found here[5].
 
------BEGIN PGP SIGNATURE-----
+[1] https://sourceware.org/libabigail/manual/libabigail-overview.html
+[2] https://sourceware.org/libabigail/manual/abidiff.html
+[3] http://mirrors.kernel.org/sourceware/libabigail/libabigail-2.4.tar.xz
+[4] https://www.youtube.com/watch?v=4ijcLgvmcek
+[5] https://lore.kernel.org/all/20231027193016.27516-1-quic_johmoo@quicinc.com/T/#t
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV3vyUACgkQAVBC80lX
-0GwEowf/RGcZ/LZhi7k4Pd1w/uNrsXMyiR5TgX23QFINl+SUaUgLUvaZ3nhcIYwn
-ueYknd97HI3nlKJfsC4mjJo/c71BZVSBAruIRBQOQpcuQ56L8KrSyIQADfqRiAc4
-iFDcyOe+cncpYJufkUeTvArVWwh7t3v9+chD6VUgjSo9xI9iC+GfNxTDoFFm4Cue
-EfRUjYSV/e3rFmFtkxSBrVijiy3Sy9GW/RFRg3JOoyO1dBdWkONyC22mBiQ5rSbn
-E87Egg09Mqdvb5XeyMkZlpDLaFqSiLfSATykazXZn699eea4XOniKvsqJHRCe4r1
-GP34vFd+7q+dmek77uJl7OHLJUtsag==
-=H2i5
------END PGP SIGNATURE-----
+P.S. While at Qualcomm, Jordan Crouse <jorcrous@amazon.com> authored the
+original version of the UAPI checker script. Thanks Jordan!
 
---Sig_/Zxa0WDHCLLo4022RlVaWCNs--
+John Moon (3):
+  check-uapi: Introduce check-uapi.sh
+  docs: dev-tools: Add UAPI checker documentation
+  check-module-params: Introduce check-module-params.sh
+
+ Documentation/dev-tools/checkuapi.rst | 477 +++++++++++++++++++++
+ Documentation/dev-tools/index.rst     |   1 +
+ scripts/check-module-params.sh        | 371 +++++++++++++++++
+ scripts/check-uapi.sh                 | 573 ++++++++++++++++++++++++++
+ 4 files changed, 1422 insertions(+)
+ create mode 100644 Documentation/dev-tools/checkuapi.rst
+ create mode 100755 scripts/check-module-params.sh
+ create mode 100755 scripts/check-uapi.sh
+
+
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+--
+2.34.1
+
