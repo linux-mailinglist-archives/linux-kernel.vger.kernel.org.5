@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A753480ED20
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AC180ED24
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376626AbjLLNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
+        id S1376749AbjLLNRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376632AbjLLNRS (ORCPT
+        with ESMTP id S1376666AbjLLNRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:17:18 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D856210E;
-        Tue, 12 Dec 2023 05:17:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=76xsvfvsQao0L1F4mpEWw4iFvDSKTUGOH0rkCxylyR0=; b=QmO1jXrHyamW18FiZ0XlDmH8Gd
-        J6J4dTRw2FLTkkOKvQrns7exRXAFguyfbw2uOyWEWmNoQXBfbqBZNewfmIkmoQ6bdSNxZ1x5tnPZH
-        084wgWpxKkNR2iIpsHjtrRZ9JY1ddTp/EvS2MbTosRtewIEI8Orvb3OQJiNOerl/hksqowqURXjvG
-        fYWtLshBV60dlUDv9CIGwurTqiWt8vAiJIHs2JUjuped4+Ibfiu5fRUW9EHItbwHjIC6CXlZJyNyk
-        OIbxjiE1dEkn9Ncl10qwLKuiHA8BtEyU6VYvKAm8AyY9ExdjsSwpGxcfoUdawzLHnMiAOJUPVSQrR
-        k2K6LA6Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rD2d4-00Bm1M-0C;
-        Tue, 12 Dec 2023 13:16:54 +0000
-Date:   Tue, 12 Dec 2023 05:16:54 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, willy@infradead.org,
-        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
-Message-ID: <ZXhdRhfr+JoWdhyj@infradead.org>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140552.973290-2-yukuai1@huaweicloud.com>
+        Tue, 12 Dec 2023 08:17:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E315B3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:17:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702387045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uEfBOjzPjblysBMFnX+6a/wE9U/z2J+F0Gwcn3mSyk0=;
+        b=CLnEpjmzsW8BYZ872y4v6Lrb7/+BD/JhNKisqlmW9kTzhMdoSyhcW/nxHu7PVIf/Xrs+C+
+        yYvlfmkhGlk/bPDscv2y87vjwN/lmCAwG/ZWGYuniIMYOr8N0V2zL5TkMyVl6C0J9p5Zym
+        yDfqIuywei7x9TVJlU+NT/DxFth/MKg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-496-iW6Az-r9NfyE7sxNi-GDCw-1; Tue,
+ 12 Dec 2023 08:17:20 -0500
+X-MC-Unique: iW6Az-r9NfyE7sxNi-GDCw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 788B528EC10B;
+        Tue, 12 Dec 2023 13:17:19 +0000 (UTC)
+Received: from max-p1.redhat.com (unknown [10.39.208.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 92FAF1121306;
+        Tue, 12 Dec 2023 13:17:15 +0000 (UTC)
+From:   Maxime Coquelin <maxime.coquelin@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        xieyongji@bytedance.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        david.marchand@redhat.com, lulu@redhat.com, casey@schaufler-ca.com
+Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>
+Subject: [PATCH v5 0/4] vduse: add support for networking devices
+Date:   Tue, 12 Dec 2023 14:17:08 +0100
+Message-ID: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211140552.973290-2-yukuai1@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,24 +64,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
-> +			   pgoff_t end)
-> +{
-> +	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
-> +}
-> +EXPORT_SYMBOL_GPL(invalidate_bdev_range);
+This small series enables virtio-net device type in VDUSE.
+With it, basic operation have been tested, both with
+virtio-vdpa and vhost-vdpa using DPDK Vhost library series
+adding VDUSE support using split rings layout (merged in
+DPDK v23.07-rc1).
 
-Can we have kerneldoc comments for the new helpers please?
+Control queue support (and so multiqueue) has also been
+tested, but requires a Kernel series from Jason Wang
+relaxing control queue polling [1] to function reliably,
+so while Jason rework is done, a patch is added to disable
+CVQ and features that depend on it (tested also with DPDK
+v23.07-rc1).
 
-> +struct folio *__bdev_get_folio(struct block_device *bdev, loff_t pos,
-> +			       fgf_t fgp_flags, gfp_t gfp)
-> +{
-> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, pos >> PAGE_SHIFT,
-> +				   fgp_flags, gfp);
-> +}
-> +EXPORT_SYMBOL_GPL(__bdev_get_folio);
+In this v5, LSM hooks introduced in previous revision are
+unified into a single hook that covers below operations:
+- VDUSE_CREATE_DEV ioctl on VDUSE control file,
+- VDUSE_DESTROY_DEV ioctl on VDUSE control file,
+- open() on VDUSE device file.
 
-It's a bit silly to have a __-prefixed API without a version that
-doesn't have the prefix, so I'd prefer to drop it.  Unless willy has
-a good argument for keeping it the same as the filemap API.
+In combination with the operations permission, a device type
+permission has to be associated:
+- block: Virtio block device type,
+- net: Virtio networking device type.
+
+Changes in v5:
+==============
+- Move control queue disablement patch before Net
+  devices enablement (Jason).
+- Unify operations LSM hooks into a single hook.
+- Rebase on latest master.
+
+Maxime Coquelin (4):
+  vduse: validate block features only with block devices
+  vduse: Temporarily disable control queue features
+  vduse: enable Virtio-net device type
+  vduse: Add LSM hook to check Virtio device type
+
+ MAINTAINERS                         |  1 +
+ drivers/vdpa/vdpa_user/vduse_dev.c  | 65 +++++++++++++++++++++++++++--
+ include/linux/lsm_hook_defs.h       |  2 +
+ include/linux/security.h            |  6 +++
+ include/linux/vduse.h               | 14 +++++++
+ security/security.c                 | 15 +++++++
+ security/selinux/hooks.c            | 32 ++++++++++++++
+ security/selinux/include/classmap.h |  2 +
+ 8 files changed, 133 insertions(+), 4 deletions(-)
+ create mode 100644 include/linux/vduse.h
+
+-- 
+2.43.0
 
