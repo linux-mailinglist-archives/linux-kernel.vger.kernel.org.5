@@ -2,75 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4153680EAC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBED780EAC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbjLLLrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
+        id S1346275AbjLLLr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjLLLrd (ORCPT
+        with ESMTP id S229963AbjLLLrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:47:33 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74018D5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:47:39 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso7928753a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702381658; x=1702986458; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KeJt1SlvJ2BjVo+T8o9WuujZC5zAwSMZRcDz9J4jRUA=;
-        b=t5pLd39D1tYIG6PWp0XUaG3NAnrL3dNKizMtgTSts6mOHbgFeGoax3xr8MCRgJ+Fz1
-         /kosS3OAbOeHW4hCdBMn3C/6fL/o9DF8WDX7rFZauR5jgyotXsBGYdhSQHpTPE0b6u2B
-         rfgv4t3ZnUSVffmeeYQV0CwTEWREzBA+kouKpwvboF5g2m2AzdhBni3E3gdvAA+Pv1TU
-         5WecKjPjKKaUE7RrMcAziZkJ4dRinErJhN1MVV5Ob/u0VTFTpz8rnQsT4TDPh3+9pTAr
-         8BMxC5s4+wv964lI4k1j238HzUka9/b6YtOUMvS9c1kGWasaDuJILxBXSHq1DYfidFH3
-         DbWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702381658; x=1702986458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KeJt1SlvJ2BjVo+T8o9WuujZC5zAwSMZRcDz9J4jRUA=;
-        b=fEVLYyMs8zNAEOP/1huN8pmofN6d9vkNccY3S1qx9vbUNKfN32pT2aNWzREFfNb8ra
-         Y95ZJr5eG2b/JsHen7+PJFNRko5eDYeC6xMnreMdwHty2Yz1RWA2jeRjRgPIm1LAStrf
-         lUz1n1GgG6bYhaRERCoeXHtaITWp5l/4GYoNGn+P+sZv4/nqgEXSAm0FsYWr2ML3QriR
-         CZ8wfDocudwwKesux/SReKXeAi/1ZB6YDqA8wIbDQyFdcduEZdF//WdwE8WQifegZXjO
-         B5dGHrphgMy22oX9GTnni/vVxk9sL7MdIuQEi4UJOY2BxSeE9nVSgf5bO0FD8SzAfDJg
-         5wlw==
-X-Gm-Message-State: AOJu0YwN/mjrQ/TfZpFst9qhjUPOiGMLyYEPSFlfpNwB95oUIApHBPrl
-        plFk4FZgrQUL52cMhbTANRYQuLjnJI2xwdHFlk4=
-X-Google-Smtp-Source: AGHT+IFjELsRWgldVYuEXuwAZ8zX+ftLOkWb54t7FJjL6MAEhFL8aAHQRMir0ZoV8uzFjZ7aN4mCxw==
-X-Received: by 2002:aa7:cc86:0:b0:54c:c464:5b5 with SMTP id p6-20020aa7cc86000000b0054cc46405b5mr3354740edt.46.1702381657928;
-        Tue, 12 Dec 2023 03:47:37 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id k13-20020a50cb8d000000b0054cc7a4dc4csm4521908edi.13.2023.12.12.03.47.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 03:47:37 -0800 (PST)
-Message-ID: <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
-Date:   Tue, 12 Dec 2023 11:47:36 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC, PATCH v2 1/2] ASoC: qcom: sdw: Add TDM support
-Content-Language: en-US
-To:     Jianhua Lu <lujianhua000@gmail.com>,
-        Banajit Goswami <bgoswami@quicinc.com>,
+        Tue, 12 Dec 2023 06:47:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32F4D9;
+        Tue, 12 Dec 2023 03:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702381682; x=1733917682;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C88BH7kQ+Tml6p1PsEMogJ/FdONSdDo+cGr0kn35/6I=;
+  b=Vs6qoRqsqx2OhVfUE+5KsGTRZLS9oCPIurfh0WGA58lWbzQhVC9SQeKL
+   YIfBH7968IQOi8Ocs3xU90Tj0EPcDh0GrVsaIJVA8ohopj9yzBey7Sw30
+   Mb7mTUEKpoYH55k7hQ9SnVmhedlPEBpy4lh0wcsGzXQyXeYBl1RHMrLtm
+   07g1COQxi54wX85S9m+5a1lB48K+xUFtHxfXXwIP9osSmC1Y0PaL0IqCq
+   jPdt5gkxsyDIjy0tjoGiLxW4FMPHqq1SppQarAwpTlskfwdK2IzsXDyvt
+   mlLKgR7HwKYPfv9KCU9QpF4NefRMzfNV1TLY+nUpCDC6blWSo9SCzgOmz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1633771"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="1633771"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:48:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="896893666"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="896893666"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:47:55 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id E4E4311F7E4;
+        Tue, 12 Dec 2023 13:47:52 +0200 (EET)
+Date:   Tue, 12 Dec 2023 11:47:52 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
+        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231212095850.26482-1-lujianhua000@gmail.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231212095850.26482-1-lujianhua000@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v15 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZXhIaB_NTDtSJmj5@kekkonen.localdomain>
+References: <20231204094719.190334-1-tomm.merciai@gmail.com>
+ <20231204094719.190334-4-tomm.merciai@gmail.com>
+ <ZXhGQuqTZogWTJ42@kekkonen.localdomain>
+ <ZXhHrhNQfn0uJMjk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXhHrhNQfn0uJMjk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,126 +82,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thankyou for the patch,
+Hi Tommaso,
 
-
-On 12/12/2023 09:58, Jianhua Lu wrote:
-> Add qcom TDM setup function to support TDM ports for qcom platform.
+On Tue, Dec 12, 2023 at 12:44:46PM +0100, Tommaso Merciai wrote:
+> Hi Sakari,
 > 
-> Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
-> ---
-> Changes in v2:
->    1. remove EXPORT_SYMBOL_GPL
->    2. remove static modifier
+> On Tue, Dec 12, 2023 at 11:38:42AM +0000, Sakari Ailus wrote:
+> > Hi Tommaso,
+> > 
+> > On Mon, Dec 04, 2023 at 10:47:16AM +0100, Tommaso Merciai wrote:
+> > > The Alvium camera is shipped with sensor + isp in the same housing.
+> > > The camera can be equipped with one out of various sensor and abstract
+> > > the user from this. Camera is connected via MIPI CSI-2.
+> > > 
+> > > Most of the camera module features are supported, with the main exception
+> > > being fw update.
+> > > 
+> > > The driver provides all mandatory, optional and recommended V4L2 controls
+> > > for maximum compatibility with libcamera
+> > > 
+> > > References:
+> > >  - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> > > 
+> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> > 
+> > Could you run
+> > 
+> > 	./scripts/checkpatch.pl --strict --max-line-length=80
+> > 
+> > and address the issues in a patch on top of this set?
+> > 
 > 
->   sound/soc/qcom/sdw.c | 63 ++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 63 insertions(+)
+> Yes ofc.
+> You need also the following?
 > 
-> diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
-> index 77dbe0c28b29..948abbd2e0e3 100644
-> --- a/sound/soc/qcom/sdw.c
-> +++ b/sound/soc/qcom/sdw.c
-> @@ -4,6 +4,7 @@
->   
->   #include <dt-bindings/sound/qcom,q6afe.h>
->   #include <linux/module.h>
-> +#include <sound/pcm_params.h>
->   #include <sound/soc.h>
->   #include "sdw.h"
->   
-> @@ -101,6 +102,65 @@ int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
->   }
->   EXPORT_SYMBOL_GPL(qcom_snd_sdw_prepare);
->   
-> +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
-> +			   struct snd_pcm_hw_params *params)
-> +{
+> --- a/drivers/media/i2c/alvium-csi2.c
+> +++ b/drivers/media/i2c/alvium-csi2.c
+> @@ -2426,8 +2426,8 @@ static int alvium_probe(struct i2c_client *client)
+>                 goto err_powerdown;
+> 
+>         if (!alvium_is_alive(alvium)) {
+> -               dev_err_probe(dev, ret, "Device detection failed\n");
+>                 ret = -ENODEV;
+> +               dev_err_probe(dev, ret, "Device detection failed\n");
+>                 goto err_powerdown;
+>         }
+> 
+> Let me know. Thanks for your work.
 
-TBH, this should not be part of sdw.c file, its intended for more of 
-soundwire specific helpers, pl consider moving this to common.c for now.
-Because, Not all old qcom platforms have soundwire controllers.
+Thank you, but I've already addressed that in my tree.
 
-> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-> +	unsigned int tdm_slot_offset[8] = { 0, 4, 8, 12, 16, 20, 24, 28 };
-> +	int channels, slot_width;
-> +	int ret;
-> +
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +		slot_width = 16;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +		slot_width = 24;
-> +		break;
-> +	case SNDRV_PCM_FORMAT_S32_LE:
-> +		slot_width = 32;
-> +		break;
-> +	default:
-> +		dev_err(rtd->dev, "%s: invalid param format 0x%x\n", __func__,
-> +			params_format(params));
-> +		return -EINVAL;
-> +	}
-> +
-> +	channels = params_channels(params);
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3, 8, slot_width);
-
-slot mask is always set to 2 channels in this case, should you not check 
-the number of channels to determine the correct one?
-
-
-These magic number 0, 0x3, 8 seems to make the code unreadable, can you 
-do something like this:
-snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 
-ARRAY_SIZE(tdm_slot_offset), slot_width);
-
-
-> +		if (ret < 0) {
-> +			dev_err(rtd->dev, "%s: failed to set tdm slot, err:%d\n",
-> +				__func__, ret);
-> +			return ret;
-> +		}
-> +
-> +		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL, channels,
-> +						  tdm_slot_offset);
-> +		if (ret < 0) {
-> +			dev_err(rtd->dev, "%s: failed to set channel map, err:%d\n",
-> +				__func__, ret);
-> +			return ret;
-> +		}
-> +	} else {
-> +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0xf, 0, 8, slot_width);
-> +		if (ret < 0) {
-> +			dev_err(rtd->dev, "%s: failed to set tdm slot, err:%d\n",
-> +				__func__, ret);
-> +			return ret;
-> +		}
-> +
-> +		ret = snd_soc_dai_set_channel_map(cpu_dai, channels,
-> +						  tdm_slot_offset, 0, NULL);
-> +		if (ret < 0) {
-> +			dev_err(rtd->dev, "%s: failed to set channel map, err:%d\n",
-> +				__func__, ret);
-> +			return ret;
-> +		}
-> +	}
-Finally  ./sound/soc/qcom/sdm845.c does have exactly same code, can you 
-consider removing this and make use of this new helper in that file too.
-
-
-> +}
-> +
->   int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
->   			   struct snd_pcm_hw_params *params,
->   			   struct sdw_stream_runtime **psruntime)
-> @@ -125,6 +185,9 @@ int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
->   				*psruntime = sruntime;
->   		}
->   		break;
-> +	case PRIMARY_TDM_RX_0...QUINARY_TDM_TX_7:
-> +		qcom_snd_tdm_hw_params(substream, params);
-> +		break;
->   	}
->   
->   	return 0;
+-- 
+Sakari Ailus
