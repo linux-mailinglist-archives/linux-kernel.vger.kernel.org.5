@@ -2,332 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D47180EE1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2897380EE1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376334AbjLLNvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S1376302AbjLLNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346666AbjLLNu7 (ORCPT
+        with ESMTP id S1346637AbjLLNwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:50:59 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB41783;
-        Tue, 12 Dec 2023 05:51:04 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCDimN5007180;
-        Tue, 12 Dec 2023 13:50:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=T31rXM5AHHXnyV37Oyi9+2AhyBaw9lSbBmIZ+PdsSy8=;
- b=Puru/QsBjFEtIVH1QPR9r/FBWRnI6XcPjafZuvBpJ0z5aS5JHhoaJ72jNrd4RXewq2rD
- SGGaYs3rOkbep48OWRDwKF1f12aNlULMMfOMAMBTPnk7KbMhWjSQMHYHZIFi3833xDye
- 5/On6Ez8X66ObnDIxhz2WYLJWXyuqIVuaNKQHY/swDsskrHZlt5AYVovTMNXff5GaeYF
- dq+kf12uaklgk18Mr9HwLs2/yJDbduCJSIExph3lalA4w/G61gF2ZCZ+HpN09qUQKYN8
- LiB2DQon3im3mYhYLNfuTF/n11MY8PwoxOj/0fy1PPIbXCaSfRsltyLHSePOgZikbpmJ 4Q== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwgn3kxbq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 13:50:51 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCD10IL012964;
-        Tue, 12 Dec 2023 13:50:51 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvepcucf7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 13:50:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YmGYv0W1OcTtrVJIDBhBJ2ZGM1pw03nf8bFU5T39ua9rOzHgqsFNkP/516kuerSO6UdpBT4Q8RcaCIpCnqQ/+NdrzXqR9dJQResuRUeSK8BxFF1Kk1hKgAux8zERURSgZaNK2jVZo5F6vxoo69SrT6aFxV+DKckT6gLS2M19Rr8NkJpdpbwjv+t4pNBRfwGS/kT73+QQAJ1p1c3uGsQ1lqH95WTUr39IYiQUJWpa3XdJqkq++iMdADSI5F5fOsLijD/tfbjLetA+Qe+GcNSfBwvEGkau80Cmwfx+WqIAAw7b+tWLFK6nHdOeyHQV4QKP7qFc28Qns0lrDlZxUE0qMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T31rXM5AHHXnyV37Oyi9+2AhyBaw9lSbBmIZ+PdsSy8=;
- b=ewfC4GuNigL5T9G8cWuzZ0gBYXXAWIEs5WpP5nt1ibWpxrbEjicpRE6ggqfy1Wt+/rtVt5BJ2h5XCmD/3UkLINQomAfQMXcNZQpxcxd0A9Xhy1upooAnysC3wUqE/iimmxSfgmu0SdtGX6UHTlOi+u9QC/PptEJf1n1lNi/w9c1qeMnkNB/V9uNTCIkNz0kdN2ysfp4Dc342NzTy4LOJU43u6PmKMcFY52NkdluhMjaK/vhRPEukoQixixL3LGq6R+SN2lx9U2H8YflOvVhNLYFsYHX/7qce2+rGPbYGmbhUuCgbXH0UF0onNYDmtfNxtBQqaj+yWYzlY9qriG9Q2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 12 Dec 2023 08:52:16 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022FDB3;
+        Tue, 12 Dec 2023 05:52:21 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bf69afa99so7297775e87.3;
+        Tue, 12 Dec 2023 05:52:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T31rXM5AHHXnyV37Oyi9+2AhyBaw9lSbBmIZ+PdsSy8=;
- b=Ml/HRcrPGaNq+N1Tg7l6tVE61MSJ9oS/eHBM/jvHJmXBGu8EofrSdCUjU9r/JF6ZMQ1Zoqp9Pd6IrA1h3iXRZIHwaSigbV271iSzXb6nDWf1jkC9V5WaBWobUSgPyF0SbCRXCPiGDRBTtMHvNCh8ZhSUROKiwLzsZNEk0I6zwFQ=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by SA1PR10MB6638.namprd10.prod.outlook.com (2603:10b6:806:2b9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.28; Tue, 12 Dec
- 2023 13:50:49 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 13:50:49 +0000
-Date:   Tue, 12 Dec 2023 08:50:46 -0500
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     NeilBrown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhi Li <yieli@redhat.com>
-Subject: Re: [PATCH] nfsd: properly tear down server when write_ports fails
-Message-ID: <ZXhlNtQ9o+howGbH@tissot.1015granger.net>
-References: <20231211-nfsd-fixes-v1-1-c87a802f4977@kernel.org>
- <170233558429.12910.17902271117186364002@noble.neil.brown.name>
- <a2b59634a697ae07a315d6f663afaff5cd5bf375.camel@kernel.org>
+        d=gmail.com; s=20230601; t=1702389140; x=1702993940; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cFnllcfa91c1zJc4Gntywu/a8dFRpUHFeO6CvIvFtu4=;
+        b=B3SpP+4WEDCrXayc3qWvV8daTzwf2cw3SF/DlDxLD1l3+uAa+1ltZRHd1QxGPWo5CY
+         7ic88L33QXDHm1+MG8lKocupTO4QytkT7ApImWXMyudMAXHzycQZ6+8y9mC7vMxdDtw+
+         2d1oJfqT4SpKd8V8RaUKwKc7rVPHijhY3UcnSWpewVrC6oaiUo6R5j2OVMmmmgTjkYuM
+         LY1BnsAyuJFc6aUiaaNh4it6hUgHXyITFRsFH41liG/ka0MIEbKBJITY50xlz0SiwGqD
+         KUFmSj8KUktZzwZAj0SpUH1jIFdeJ5ZWxccV5xWgv2xSwezwKES9tJt/sqZDCIInidvH
+         sOsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702389140; x=1702993940;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cFnllcfa91c1zJc4Gntywu/a8dFRpUHFeO6CvIvFtu4=;
+        b=Em/VQl8OdPiJY42u2OYy/BKLALeF+26O4NmFTKX7bOe+aQe/fEH+E39iDk2qTJoi2s
+         8DVywiHeEmWHI+RSTwWAj3uHAgojgmNFLdpsXWCfTVt419s+RSLD/Oh9UhfgelFTGTU7
+         6BMWaf+JRbnhIbxWlIbqJ+IsnnbnMn21+FgmOQU8EwelLWFJ+ORJZrIwgLvPyOIRDWx/
+         H6nXU7tEVtTffrT3YjLK8uAHkkf0eoxzvLUk/B7/KZjkkvNCvaB3tdDnSjQaJHKeZdva
+         2yMSJmN4oAi7tcFwaqIFOEzJh4F2+DHJ08LLNZZiiReWC387ZUeXNriUvHEa/4wSLbOV
+         DevQ==
+X-Gm-Message-State: AOJu0YzJIYspMCF0wDH1H+lavHHpl/JkZLWp9sqqS+oV/acJl8Df3lBF
+        HY/AJGb6winVyihAAEMXlu4G2o2Lw/c+cg==
+X-Google-Smtp-Source: AGHT+IHQrUXSxuBn29LhUoJX1ePcDGg56snRNXblvB5VLnQAdFUNh09t5mpngpSLdnTnZAS3jpzzfw==
+X-Received: by 2002:a05:6512:3b8d:b0:50c:c8b8:669a with SMTP id g13-20020a0565123b8d00b0050cc8b8669amr3958930lfv.92.1702389139829;
+        Tue, 12 Dec 2023 05:52:19 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id g4-20020a0565123b8400b0050bfb2a5661sm1363163lfv.103.2023.12.12.05.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 05:52:19 -0800 (PST)
+Date:   Tue, 12 Dec 2023 16:52:15 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
+ MDIO device
+Message-ID: <na6krkoco7pmsl62dfuj2xlrvpsnod74ptpfyy6gv7dzwmowga@mzsiknjian2i>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-7-fancer.lancer@gmail.com>
+ <ZW8ASzkC9IFFlxkV@shell.armlinux.org.uk>
+ <rgp33mm4spbpm5tmgxurkhy4is3lz3z62rz64rni2pygteyrit@zwflw2ejdkn7>
+ <e1806c15-757e-4af0-a8be-075aa77918c2@lunn.ch>
+ <ZW840qQMbVRto442@shell.armlinux.org.uk>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a2b59634a697ae07a315d6f663afaff5cd5bf375.camel@kernel.org>
-X-ClientProxiedBy: CH2PR12CA0029.namprd12.prod.outlook.com
- (2603:10b6:610:57::39) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SA1PR10MB6638:EE_
-X-MS-Office365-Filtering-Correlation-Id: cfa21ff5-e4c4-4a05-9c90-08dbfb195929
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QeC+P5u6itztH8CHWQnm5eCRrlhof2/+QogJWCWJmA0KAbu5a5cE1pf4pji7KTM/INKNChrF51GOpHsB0YykuMaIsFId1b9ud3Jkw1yOyihmbMtSCz1Y31zoa4B9Mp11Id+WeqkzGW8+iUGlrdXh/ZQwop2fMpyHS22yyYrW+zIVc8DTym04DepwQPJPCAGqo9WA5FqSRaYwyDkFMP334v+ursrkac7TniuMuRgTo4Tj2X0ux6Gpt5cVk/WfnFXmyZItl111ygMeh/Cul5VI3Pbneuqk14XBModrohbYXGiwIwYtpXWtLO2FhfelpDDrEmK+xgyT/hnp55tzm3c+tUr/pKt9afrzdydpNIh0C1VleGTOJg+GFX++0JEqnvlgF4OAs/gLaBWP4qolQ0xLaoAXF2Ih3km1MbHPT5T6fp07ugUamPqIyVHxMqbUgJBgjCf6l/Szex4jAN1YVIDngIloOBb5DHxs9CUKVHAhHG2dO6KV0Xm+gdMBwJCuH8ToOXAxk4JHMKkVO7PxpV0L9Y/CLNlWZ7ySVMDtBoUOPLrsquqNIvWUGr4pN7FidRR4jn0tNGxpoWS2pwJu9zRIkdEFxMi8eg4qersPf9Jsf2w=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(396003)(39860400002)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(54906003)(66556008)(66946007)(66476007)(83380400001)(9686003)(6666004)(6512007)(966005)(6486002)(478600001)(44832011)(316002)(6916009)(86362001)(38100700002)(26005)(6506007)(8676002)(4326008)(8936002)(5660300002)(4001150100001)(41300700001)(2906002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gYJ52T89F2NvYilFNNstEoAwjsbNa+rVTMERkZx7b3Q7pP7wfMM1vSi9QtNP?=
- =?us-ascii?Q?WCZsOzuIfgeL4cHBTLzA7LUn+lzzet35VFErU905Lew180+yaRXyaUCfRzSj?=
- =?us-ascii?Q?9qjR/pkfVc1QDmTtBnkJO19g8OqjNE5HDqJNXx8+LUu/Y9jyr4p2/r6Vejbs?=
- =?us-ascii?Q?qh4ZAk0pirDpM/MQYPlFqZDnmkbnM8Bgw4ZDF6VnoZUKOpnCZA55qHBqYSq9?=
- =?us-ascii?Q?lmATbGNBueYjFPeqYvqLbvITaWqTT6wL6owuW4sUPPn/L/k0W/wKxaDPpwsR?=
- =?us-ascii?Q?mrthizag7ReTU2BR5t0a7ncXfLDJ6jjQz12iEPXdB/tSC3Hw+s+iMlHYTT2W?=
- =?us-ascii?Q?yfkwu2H+Y/SrZq4yB2b6FCIKOfxIKeweUUZXEyT5aNBPBXYzkKbknFUZUk2E?=
- =?us-ascii?Q?fd9Jec/ntbSUsHeoqtjSbAkyjZZ//lV8aNGmGyQeFZmvCdbqrDEJRNKofDLG?=
- =?us-ascii?Q?TcgnG1hYNDuwnDFmLNCt+khU6wFO9s1iKz8pWbfKDwXANaWWB91TFSwqtMbK?=
- =?us-ascii?Q?XJR9p0UdhNIjRyu4+DqRm2YvhhEiBrFbiSIVJ0J14bHU1DuZmZX8a+k9ghWq?=
- =?us-ascii?Q?tU5pkn110Aocg6xraB2fF9YF5HKhXUL7RjUA3z6ASSFGt1MEn1BqkvPJubwo?=
- =?us-ascii?Q?py5EW4RpQzaCy/Fql4boI/0Ih8IGAOkFMmRNGxwdG73vhSwhmYHpOT0mxKha?=
- =?us-ascii?Q?TV+m2h1vN5Acandf//k6x4Z87mSpkWD99e+Jb6U4kisaMe5ySBCUEga2QJgZ?=
- =?us-ascii?Q?dIg9+YgHAzIfVZGeM+nqkn95pgyfVbaYMV0wifA/Gc1OlQ7+TtQlNgdjXyrn?=
- =?us-ascii?Q?pRcxSpmKv548OL5K8UZxc3WXCEA0frmocc6CUTOCS+jCkMApwQL7gho8Ad6P?=
- =?us-ascii?Q?f4b3tp5KA91JeDnhBpINW23EgRpMhg2/IBy7/bTLbG3j6miFnpx9BE7STgdT?=
- =?us-ascii?Q?RCogoqzeWKqZnBObWW2JERf9v55nISPI/sQSSMu5DOFhsQvcCzHMbuRDvtHR?=
- =?us-ascii?Q?oRqsokwB/jnwqBh4ILYDUhJKpZV4UwT0kD/WSg3knLyK8LPwYZ+Ba7W+vvQX?=
- =?us-ascii?Q?yX+hFDJc1ei8EJXHbVh9jrw0taSaA86uO2agDjiQNEGjkwNNiPy99DtB6c0o?=
- =?us-ascii?Q?7zKKgogjgyF2CaG9Rk+REjeJxIQMkwqffHg1oGdFxw5UQrVYasM1Ec6Ijonv?=
- =?us-ascii?Q?2ioHs04QMOJ7FpMGukJwCTEw8QT8zBo0jVnYaSeLM9QHIkDavnS5Ca7C0HvT?=
- =?us-ascii?Q?jS/x3oX02TQqUyuap//FZjz2rPDjnXPDP+DO8oHIaO7yzp9c7I9n+mt3yVoV?=
- =?us-ascii?Q?idPHGu89/A1ZChOAl5rYDJlgoxV8bfEvuKY+PyreOyhZfvdxnyROxmhtJBJ1?=
- =?us-ascii?Q?AUJKdN+lpJ/GZD31kF5lZDQa4/jfkOGLZnMFcZL0jR9RCDabecZze1TVy7ts?=
- =?us-ascii?Q?cV6ZPC04T7DBhYITFU6ilqe2Mwm0wfkO6PcuG/wax2PQGr4w2dFmiqKgn9qw?=
- =?us-ascii?Q?r07dL2g5kBS50qDL/cT6OSxtwPuJ5QnCwshNgemPvJwNKKt7wibpy/IUdv/Z?=
- =?us-ascii?Q?dMvFEINjCFeCe0FV6u9dzprW47uYZJsqF9IlcEBq94G+dTbttMPo0ydSD0lk?=
- =?us-ascii?Q?2w=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: t1/ck1qoxU4txX/TyZs4Cp8RwfGIOJeSRB6E0cuT5HpiKRiSXj1jmCJpT4PtN13lHzyIczhpTc7Y53tDL9ZGA6lPY192q7Jme3iAbDjRb9o7zJm80EaSB8t0imTSXNRNebaOhK97a7CgIa0hW97wSx0yvaM4jQS814eUbp2/Uz+hdjQGoa4zz85c/cZyuVO2kVaiV4TkE0AhUqqHPM8q/iM63Rz09rOCmCh/sj69CM9jPDlnsQwyBSzSgcKsgSCLILmTRMzg9tLLNA5hW3BL4nzBBto3aBxlLBRjUlBqeFrnlIPbpDsA8BveWIZGsAN/AGYFctPlreCQYX/oLpLKKZ0eFcuMAc7bXRNzrpl152+92FMEGIvpXgBWyUexpQ1Kfa2aqopZ5AiFpjWY40JXgAl+suSFGBF3xxp0h/rhL3+Vea2PqHQIPEiywaR0y5PH9az9QGiPFw1Bv5qQWA7rCElxx3dYD9qZPweg2rqMqIJTpbv1mpIs9OhtMgSeSwwf6k7GQDuK8vOuaY2uAWXoDewnf8YGoA2VkeFNUavRebTqwc17OO1QcWgwVA8JBssjPS3Xl2Dy7xvGysQPcna1zihIBYtGCP3WKnhgMsEdYdLCEAUrPwPOs1yx8WTmESp/p8gPU/9oNsr2Ktd87KASjX1A4CHOotXIqjLMJnVGHFezxhKHTkxSB9M4PxRF0/55HUo+wyVpGYIbjMFBhdxZa2aCQqtNPu1yVV0jjjcCeXR8TpfTSSgfF4K3oKFJOKa8xZDeyX+tdTTQEzayPxI1xdPxYgi1Ge0mt9zMpuS1FOxNCzpqbbDPOW1TpGyxVHTjvXcZe0Ysgyj6FrgKeTyZTpqldzFFHvFwK5Uf4fPyS6q0i5KODOtoeKRS7RGfdhX/v06n9GSw5KzUrstB6Pe9uw==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfa21ff5-e4c4-4a05-9c90-08dbfb195929
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 13:50:49.3606
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ld3qHV4NEU8jV8/Z5ZcuOGHrqpkbw2mwAlQ2MXRAOePPsbZUj5VW5o0KnjWZ+jBqX50hiXjqn2AM+Py52l78Og==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6638
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_07,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312120107
-X-Proofpoint-ORIG-GUID: g745U0M1zMFI6y3zVFUuHlabhIURfCY-
-X-Proofpoint-GUID: g745U0M1zMFI6y3zVFUuHlabhIURfCY-
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZW840qQMbVRto442@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 06:11:04PM -0500, Jeff Layton wrote:
-> On Tue, 2023-12-12 at 09:59 +1100, NeilBrown wrote:
-> > On Tue, 12 Dec 2023, Jeff Layton wrote:
-> > > When the initial write to the "portlist" file fails, we'll currently put
-> > > the reference to the nn->nfsd_serv, but leave the pointer intact. This
-> > > leads to a UAF if someone tries to write to "portlist" again.
-> > > 
-> > > Simple reproducer, from a host with nfsd shut down:
-> > > 
-> > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > > 
-> > > The kernel will oops on the second one when it trips over the dangling
-> > > nn->nfsd_serv pointer. There is a similar bug in __write_ports_addfd.
-> > > 
-> > > This patch fixes it by adding some extra logic to nfsd_put to ensure
-> > > that nfsd_last_thread is called prior to putting the reference when the
-> > > conditions are right.
-> > > 
-> > > Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_put()")
-> > > Closes: https://issues.redhat.com/browse/RHEL-19081
-> > > Reported-by: Zhi Li <yieli@redhat.com>
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > > This should probably go to stable, but we'll need to backport for v6.6
-> > > since older kernels don't have nfsd_nl_rpc_status_get_done. We should
-> > > just be able to drop that hunk though.
-> > > ---
-> > >  fs/nfsd/nfsctl.c | 32 ++++++++++++++++++++++++++++----
-> > >  fs/nfsd/nfsd.h   |  8 +-------
-> > >  fs/nfsd/nfssvc.c |  2 +-
-> > >  3 files changed, 30 insertions(+), 12 deletions(-)
-> > 
-> > This is much the same as
-> > 
-> > https://lore.kernel.org/linux-nfs/20231030011247.9794-2-neilb@suse.de/
-> > 
-> > It seems that didn't land.  Maybe I dropped the ball...
-> 
-> Indeed it is. I thought the problem seemed familiar. Your set is
-> considerably more comprehensive. Looks like I even sent some Reviewed-
-> bys when you sent it.
-> 
-> Chuck, can we get these in or was there a problem with them?
+Hi Andrew, Russell
 
-Offhand, I'd say either I was waiting for some review comments
-to be addressed or the mail got lost (vger or Exchange or I
-accidentally deleted the series). I'll go take a look.
+Sorry for the delay with response. I had to refresh my understanding
+of the series since it was created sometime ago and I already managed
+to forget some of its aspects (particularly regarding the MDIO-bus
+PHY-mask semantics).
 
+On Tue, Dec 05, 2023 at 02:50:58PM +0000, Russell King (Oracle) wrote:
+> On Tue, Dec 05, 2023 at 02:52:24PM +0100, Andrew Lunn wrote:
+> > On Tue, Dec 05, 2023 at 02:31:41PM +0300, Serge Semin wrote:
+> > > On Tue, Dec 05, 2023 at 10:49:47AM +0000, Russell King (Oracle) wrote:
+> > > > On Tue, Dec 05, 2023 at 01:35:27PM +0300, Serge Semin wrote:
+> > > > > If the DW XPCS MDIO devices are either left unmasked for being auto-probed
+> > > > > or explicitly registered in the MDIO subsystem by means of the
+> > > > > mdiobus_register_board_info() method there is no point in creating the
+> > > > > dummy MDIO device instance in order to get the DW XPCS handler since the
+> > > > > MDIO core subsystem will create the device during the MDIO bus
+> > > > > registration procedure.
+> > > > 
+> > > 
+> > > > Please reword this overly long sentence.
+> > > 
+> > > Ok.
+> > > 
+> > > > 
+> > > > If they're left unmasked, what prevents them being created as PHY
+> > > > devices?
+> > > 
+> > > Not sure I fully get what you meant. If they are left unmasked the
+> > > MDIO-device descriptor will be created by the MDIO subsystem anyway.
+> > > What the point in creating another one?
+> > 
 
-> Thanks,
+> > Saying what Russell said, in a different way:
+> > 
+> > /*
+> >  * Return true if the child node is for a phy. It must either:
+> >  * o Compatible string of "ethernet-phy-idX.X"
+> >  * o Compatible string of "ethernet-phy-ieee802.3-c45"
+> >  * o Compatible string of "ethernet-phy-ieee802.3-c22"
+> >  * o In the white list above (and issue a warning)
+> >  * o No compatibility string
+> >  *
+> >  * A device which is not a phy is expected to have a compatible string
+> >  * indicating what sort of device it is.
+> >  */
+> > bool of_mdiobus_child_is_phy(struct device_node *child)
+> > 
+> > So when walking the bus, if a node is found which fits these criteria,
+> > its assumed to be a PHY. 
+> > 
+> > Anything on the MDIO bus which is not a PHY needs to use a compatible.
 > 
-> > 
-> > > 
-> > > diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
-> > > index 3e15b72f421d..1ceccf804e44 100644
-> > > --- a/fs/nfsd/nfsctl.c
-> > > +++ b/fs/nfsd/nfsctl.c
-> > > @@ -61,6 +61,30 @@ enum {
-> > >  	NFSD_MaxReserved
-> > >  };
-> > >  
-> > > +/**
-> > > + * nfsd_put - put the reference to the nfsd_serv for given net
-> > > + * @net: the net namespace for the serv
-> > > + * @err: current error for the op
-> > > + *
-> > > + * When putting a reference to the nfsd_serv from a control operation
-> > > + * we must first call nfsd_last_thread if all of these are true:
-> > > + *
-> > > + * - the configuration operation is going fail
-> > > + * - there are no running threads
-> > > + * - there are no successfully configured ports
-> > > + *
-> > > + * Otherwise, just put the serv reference.
-> > > + */
-> > > +static inline void nfsd_put(struct net *net, int err)
-> > > +{
-> > > +	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-> > > +	struct svc_serv *serv = nn->nfsd_serv;
-> > > +
-> > > +	if (err < 0 && !nn->nfsd_serv->sv_nrthreads && !nn->keep_active)
-> > > +		nfsd_last_thread(net);
-> > > +	svc_put(serv);
-> > > +}
-> > > +
-> > >  /*
-> > >   * write() for these nodes.
-> > >   */
-> > > @@ -709,7 +733,7 @@ static ssize_t __write_ports_addfd(char *buf, struct net *net, const struct cred
-> > >  	    !nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-> > >  		svc_get(nn->nfsd_serv);
-> > >  
-> > > -	nfsd_put(net);
-> > > +	nfsd_put(net, err);
-> > >  	return err;
-> > >  }
-> > >  
-> > > @@ -748,7 +772,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net, const struct cr
-> > >  	if (!nn->nfsd_serv->sv_nrthreads && !xchg(&nn->keep_active, 1))
-> > >  		svc_get(nn->nfsd_serv);
-> > >  
-> > > -	nfsd_put(net);
-> > > +	nfsd_put(net, 0);
-> > >  	return 0;
-> > >  out_close:
-> > >  	xprt = svc_find_xprt(nn->nfsd_serv, transport, net, PF_INET, port);
-> > > @@ -757,7 +781,7 @@ static ssize_t __write_ports_addxprt(char *buf, struct net *net, const struct cr
-> > >  		svc_xprt_put(xprt);
-> > >  	}
-> > >  out_err:
-> > > -	nfsd_put(net);
-> > > +	nfsd_put(net, err);
-> > >  	return err;
-> > >  }
-> > >  
-> > > @@ -1687,7 +1711,7 @@ int nfsd_nl_rpc_status_get_dumpit(struct sk_buff *skb,
-> > >  int nfsd_nl_rpc_status_get_done(struct netlink_callback *cb)
-> > >  {
-> > >  	mutex_lock(&nfsd_mutex);
-> > > -	nfsd_put(sock_net(cb->skb->sk));
-> > > +	nfsd_put(sock_net(cb->skb->sk), 0);
-> > >  	mutex_unlock(&nfsd_mutex);
-> > >  
-> > >  	return 0;
-> > > diff --git a/fs/nfsd/nfsd.h b/fs/nfsd/nfsd.h
-> > > index f5ff42f41ee7..3aa8cd2c19ac 100644
-> > > --- a/fs/nfsd/nfsd.h
-> > > +++ b/fs/nfsd/nfsd.h
-> > > @@ -113,13 +113,6 @@ int		nfsd_pool_stats_open(struct inode *, struct file *);
-> > >  int		nfsd_pool_stats_release(struct inode *, struct file *);
-> > >  void		nfsd_shutdown_threads(struct net *net);
-> > >  
-> > > -static inline void nfsd_put(struct net *net)
-> > > -{
-> > > -	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-> > > -
-> > > -	svc_put(nn->nfsd_serv);
-> > > -}
-> > > -
-> > >  bool		i_am_nfsd(void);
-> > >  
-> > >  struct nfsdfs_client {
-> > > @@ -153,6 +146,7 @@ struct nfsd_net;
-> > >  enum vers_op {NFSD_SET, NFSD_CLEAR, NFSD_TEST, NFSD_AVAIL };
-> > >  int nfsd_vers(struct nfsd_net *nn, int vers, enum vers_op change);
-> > >  int nfsd_minorversion(struct nfsd_net *nn, u32 minorversion, enum vers_op change);
-> > > +void nfsd_last_thread(struct net *net);
-> > >  void nfsd_reset_versions(struct nfsd_net *nn);
-> > >  int nfsd_create_serv(struct net *net);
-> > >  
-> > > diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-> > > index fe61d9bbcc1f..d6939e23ffcf 100644
-> > > --- a/fs/nfsd/nfssvc.c
-> > > +++ b/fs/nfsd/nfssvc.c
-> > > @@ -542,7 +542,7 @@ static struct notifier_block nfsd_inet6addr_notifier = {
-> > >  /* Only used under nfsd_mutex, so this atomic may be overkill: */
-> > >  static atomic_t nfsd_notifier_refcount = ATOMIC_INIT(0);
-> > >  
-> > > -static void nfsd_last_thread(struct net *net)
-> > > +void nfsd_last_thread(struct net *net)
-> > >  {
-> > >  	struct nfsd_net *nn = net_generic(net, nfsd_net_id);
-> > >  	struct svc_serv *serv = nn->nfsd_serv;
-> > > 
-> > > ---
-> > > base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-> > > change-id: 20231211-nfsd-fixes-d9f21d5c12d7
-> > > 
-> > > Best regards,
-> > > -- 
-> > > Jeff Layton <jlayton@kernel.org>
-> > > 
-> > > 
-> > 
+> Right. I'd actually forgotten about the firmware-based walking, and
+> was thinking more of the non-firmware bus scanning as the commit
+> message was talking about being _unmasked_ and the only mask we have
+> is bus->phy_mask.
+
+Back then when I was working on the series and up until last week I
+had thought that having a device unmasked in mii_bus->phy_mask was a
+correct way to do for _any_ device including our DW XPCS (which BTW
+looks like a normal C45 PHY and if synthesized with a PMA attached
+could be passed to be handled by the PHY subsystem). Can't remember
+why exactly I came to that thought, but likely it was due to finding
+out examples of having mii_bus->phy_mask uninitialized in some of the
+PCS use-cases, like in drivers/net/dsa/ocelot/felix_vsc9959.c (but in
+case of DW XPCS the mask is always set indeed). Anyway obviously I was
+wrong and PHY-device is supposed to be created only if a device is
+actual PHY and handled by the PHY subsystem drivers. So the correct
+ways to create PHY MDIO-devices are:
+
+1. Call mdiobus_register() with PHY-addresses unmasked
+2. Call of_mdiobus_register() for a DT-node with sub-nodes for which
+of_mdiobus_child_is_phy() returns true.
+
+and the correct ways to create non-PHY MDIO-devices are:
+
+1. Call mdiobus_register() with non-PHY-addresses masked and have
+those non-PHY device registered by mdiobus_register_board_info()
+beforehand.
+2. Call of_mdiobus_register() with DT sub-nodes having specific
+compatible string (based on the of_mdiobus_child_is_phy() semantics).
+
+Only in case of having a non-PHY device registered it's allowed to
+use it in in non-PHY MDIO driver, like PCS, etc. Right?
+
+Please correct me if I am wrong or miss something.
+
+> 
+> It seems to me that this is yet another case of a really confusing
+> commit message making review harder than it needs to be.
+
+From the perspective described above the patch log is indeed partly
+wrong. Sorry about that. I shouldn't have mentioned the mask at all
+but instead just listed two use-cases of creating the non-PHY
+MDIO-devices. I'll fix that in v2.
+
+-Serge(y)
+
 > 
 > -- 
-> Jeff Layton <jlayton@kernel.org>
-
--- 
-Chuck Lever
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> 
