@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C9780E08A
+	by mail.lfdr.de (Postfix) with ESMTP id CBC0480E08B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 01:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345603AbjLLA4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 19:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        id S1345614AbjLLA4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 19:56:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345586AbjLLA4A (ORCPT
+        with ESMTP id S1345477AbjLLA4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Dec 2023 19:56:00 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA0EA6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:56:04 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6d089e8b1b2so1013686b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:56:04 -0800 (PST)
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088CAB8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:56:06 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d0a7b72203so44872835ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:56:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702342564; x=1702947364; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AS84DpIlnHadbg548UoBHWDlxNfb0zaNqIcRTC+jUtI=;
-        b=YlSdnOyXMByLaQfNmdthP4sQNIx0oUxERCQngpCzx5282Q831WiOtJmQ0Tr4C5SW4w
-         zRKv57i6UUBpWW/PpeZUuD80IbC+LQaxc/cMkJ0f5NQtLyMvejDtH1dmIlrOo9Lk+a8y
-         aV0ymxy0PYGce8pBu0OvaXrTlJF8ilOZNxsMI=
+        d=chromium.org; s=google; t=1702342565; x=1702947365; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VII/LMlRWrPvYBfcRDAQD7A22/Kx5Gqvp4PO6BWVrDg=;
+        b=eTGscO3FKKVYnqTVIFqA//eGs+yIecl/Jy5zV2jnFp9ltxuwSIweG75uky/8NGwMDW
+         7ir6ZAPnkkwz56fFb6RXuRA7h4h0lvlfhtPeKLRHhJPEsvYE4pM+iLzJtDxPgn8Ei48T
+         G7WzRBbPL8ehFnNGYylvn4jY1W3FO+s7Kao4g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702342564; x=1702947364;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AS84DpIlnHadbg548UoBHWDlxNfb0zaNqIcRTC+jUtI=;
-        b=beTuSs9MkEdM5Iccf7cRdXzFMGd+Q/MlifgsjtKtzBqeqlIdqxExj4k24giAyFDWCH
-         xmYq8045xigNH/pz7HE9WBBctQEhEkadYk/qeWmqOzyQ0L8d0yfLm95t168Uk89beZLt
-         JItaQWVPnhqhY01m6JNfXcxTyAlgZL0Q/dM39VFH8c4PkJzrRli/Tq+X9YlUIHx4DqvK
-         9fpOlnB9TeKs/nZY+OaMSXHWWhfKmAmWRjT2SX5HeD8rqbP64YaoZY9PQydhpvHV/PSA
-         mIqZV7HdbfIcKjl+qYWv3ZF78n3vbFlFFj7iJEUvToUOQrnXCnloIWqPmB3g5mIBCKV3
-         yRaA==
-X-Gm-Message-State: AOJu0YxkkkUkBAJWWxvbt9GdqkJdwFhsY4io7lRBClhE+TTiAERzGRG5
-        zF+yd+0fWgU1VZAO3ZqEtawK/A==
-X-Google-Smtp-Source: AGHT+IEImkGOKriQgUmpcCdrkAlZGOVMJy7dWUFL7Mf+hsw6l3dDIoDd8j4PpPAdxvC2/AV5oSW9hg==
-X-Received: by 2002:a05:6a21:99a4:b0:18c:18d3:c8fd with SMTP id ve36-20020a056a2199a400b0018c18d3c8fdmr3061776pzb.14.1702342563762;
-        Mon, 11 Dec 2023 16:56:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702342565; x=1702947365;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VII/LMlRWrPvYBfcRDAQD7A22/Kx5Gqvp4PO6BWVrDg=;
+        b=akBT6iyBO9PqXgvaAAd6PGbklwiritHQk++yf9l71kAIwgSxeSNGJA/badD/HPcUEx
+         RIBSAkHC+sEU3mrH7mzVxTDsU0F1csPtAQooIWGb4u9HMeEBF0uy/6SRmot/mOu1zWQI
+         iSZIT7BlIoQhn+vr974ZPeh8AOYjX7fE6uJfEwErQuZ3RQgE/zD/x7FzJ070S7pzPbcu
+         05UGrzYDz5sBJW2331vRgueNtlozvcZW/BB4/5DYt/aKIFR1M9ABUuDUdJHMSTZE/tQQ
+         9g1Z/o0U5ypD8CtUTJeh3YQJ/N6RK/q2/5YeU4XrovHg842wfW0Hk2gc+X2FFOKgnuk9
+         3LKg==
+X-Gm-Message-State: AOJu0Yzm5xO8Q2WMYnqeBsdQScf1NM7Nzk09x9ygqPF1bvGroPdwEtDR
+        sBj08wQW/mMw0LHLtvdUWLt1zA==
+X-Google-Smtp-Source: AGHT+IHFyTsa/iL05H+WM4XTWvOGMGTVZlGEhQBpQMBoRW2cN0R6Hrp3MXN3u+9yFFV1wxd9YuCrhQ==
+X-Received: by 2002:a17:903:1206:b0:1d2:f388:6df3 with SMTP id l6-20020a170903120600b001d2f3886df3mr6013703plh.48.1702342565555;
+        Mon, 11 Dec 2023 16:56:05 -0800 (PST)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:5c08:e1ed:d922:d30c])
-        by smtp.gmail.com with ESMTPSA id k10-20020a170902694a00b001cc311ef152sm7251271plt.286.2023.12.11.16.56.02
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902694a00b001cc311ef152sm7251271plt.286.2023.12.11.16.56.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 16:56:03 -0800 (PST)
+        Mon, 11 Dec 2023 16:56:05 -0800 (PST)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Douglas Anderson <dianders@chromium.org>,
@@ -58,16 +59,17 @@ Cc:     Douglas Anderson <dianders@chromium.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        Philip Chen <philipchen@chromium.org>,
         Robert Foss <rfoss@kernel.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         Stephen Boyd <swboyd@chromium.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] drm/bridge: parade-ps8640: Never increase the length when reading from AUX
-Date:   Mon, 11 Dec 2023 16:55:26 -0800
-Message-ID: <20231211165526.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
+Subject: [PATCH 2/2] drm/bridge: ti-sn65dsi86: Never increase the length when reading from AUX
+Date:   Mon, 11 Dec 2023 16:55:27 -0800
+Message-ID: <20231211165526.2.I7b83c0f31aeedc6b1dc98c7c741d3e1f94f040f8@changeid>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+In-Reply-To: <20231211165526.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
+References: <20231211165526.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -80,56 +82,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing, I happened to notice a random crash that looked like:
+For aux reads, the value `msg->size` indicates the size of the buffer
+provided by `msg->buffer`. We should never in any circumstances write
+more bytes to the buffer since it may overflow the buffer.
 
-  Kernel panic - not syncing: stack-protector:
-  Kernel stack is corrupted in: drm_dp_dpcd_probe+0x120/0x120
+In the ti-sn65dsi86 driver there is one code path that reads the
+transfer length from hardware. Even though it's never been seen to be
+a problem, we should make extra sure that the hardware isn't
+increasing the length since doing so would cause us to overrun the
+buffer.
 
-Analysis of drm_dp_dpcd_probe() shows that we pass in a 1-byte buffer
-(allocated on the stack) to the aux->transfer() function. Presumably
-if the aux->transfer() writes more than one byte to this buffer then
-we're in a bad shape.
-
-Dropping into kgdb, I noticed that "aux->transfer" pointed at
-ps8640_aux_transfer().
-
-Reading through ps8640_aux_transfer(), I can see that there are cases
-where it could write more bytes to msg->buffer than were specified by
-msg->size. This could happen if the hardware reported back something
-bogus to us. Let's fix this so we never increase the length.
-
-NOTE: I have no actual way to reproduce this issue but it seems likely
-this is what was happening in the crash I looked at.
-
-Fixes: 13afcdd7277e ("drm/bridge: parade-ps8640: Add support for AUX channel")
+Fixes: 982f589bde7a ("drm/bridge: ti-sn65dsi86: Update reply on aux failures")
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- drivers/gpu/drm/bridge/parade-ps8640.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
-index 8161b1a1a4b1..fb2ec4264549 100644
---- a/drivers/gpu/drm/bridge/parade-ps8640.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-@@ -302,7 +302,7 @@ static ssize_t ps8640_aux_transfer_msg(struct drm_dp_aux *aux,
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+index 5b8e1dfc458d..7ff465241267 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+@@ -527,6 +527,7 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+ 	u32 request_val = AUX_CMD_REQ(msg->request);
+ 	u8 *buf = msg->buffer;
+ 	unsigned int len = msg->size;
++	unsigned int short_len;
+ 	unsigned int val;
+ 	int ret;
+ 	u8 addr_len[SN_AUX_LENGTH_REG + 1 - SN_AUX_ADDR_19_16_REG];
+@@ -600,7 +601,8 @@ static ssize_t ti_sn_aux_transfer(struct drm_dp_aux *aux,
+ 	}
  
- 		fallthrough;
- 	case SWAUX_STATUS_ACKM:
--		len = data & SWAUX_M_MASK;
-+		len = min(len, (unsigned int)(data & SWAUX_M_MASK));
- 		break;
- 	case SWAUX_STATUS_DEFER:
- 	case SWAUX_STATUS_I2C_DEFER:
-@@ -310,7 +310,7 @@ static ssize_t ps8640_aux_transfer_msg(struct drm_dp_aux *aux,
- 			msg->reply |= DP_AUX_NATIVE_REPLY_DEFER;
- 		else
- 			msg->reply |= DP_AUX_I2C_REPLY_DEFER;
--		len = data & SWAUX_M_MASK;
-+		len = min(len, (unsigned int)(data & SWAUX_M_MASK));
- 		break;
- 	case SWAUX_STATUS_INVALID:
- 		return -EOPNOTSUPP;
+ 	if (val & AUX_IRQ_STATUS_AUX_SHORT) {
+-		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &len);
++		ret = regmap_read(pdata->regmap, SN_AUX_LENGTH_REG, &short_len);
++		len = min(len, short_len);
+ 		if (ret)
+ 			goto exit;
+ 	} else if (val & AUX_IRQ_STATUS_NAT_I2C_FAIL) {
 -- 
 2.43.0.472.g3155946c3a-goog
 
