@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC75780EDF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1D680EE13
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376330AbjLLNrp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 08:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        id S1376380AbjLLNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjLLNrl (ORCPT
+        with ESMTP id S1376353AbjLLNtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:47:41 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277E1A1;
-        Tue, 12 Dec 2023 05:47:48 -0800 (PST)
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d9db92bd71so769625a34.1;
-        Tue, 12 Dec 2023 05:47:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702388867; x=1702993667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C/X6R0HR+xbXGN5qRhO2As3RreYVAwdxii2KLmKVXIM=;
-        b=Rkhj3hXQDzoRFr4vvAVaxTx7RzPnw16rqj8UMh4FHUqntPxjMt6iwQQ6tCgoQktUfm
-         y7rW6YOmn2JXyocc5Y0qUnQ9yJEsI1UbB2K/ytZzlC3ZkBekIc76uxCc7jw/9vdb/Iaw
-         GUgUn3ZxdFuxaJGRZZWaZIlmYJhhXiqjWHARy4edRxo/RPE8QumFJc+HzST3WNMNwaFc
-         vmCkLcfysfxHJs2gYF0e1lBERWPm0yTYnLrkW0343E+cZ5oWUa3cys0Euz2LjjmtbQHH
-         ZwTqq4mctDhFfW+wwQsFROzHEaQnwcul+xpmfo9Vr2TtP4KV/AINzJhqsCue7PeSaqNp
-         PS7Q==
-X-Gm-Message-State: AOJu0YwUIew1EEw7PsdYpO2rGd0AS9b6qmqYOcjXBlhdtdx1Pf8SOUBR
-        EiVeWKYuYUTxr8Wy2ybbC27DIxNUecNSRcD+KyeT7G88
-X-Google-Smtp-Source: AGHT+IEJhakpYW3S8EY4DMqvhznErmMox7oe1ZX5qPrH5Xkhs4aGDo5Bbnh5X9aUH+1+IG1hagao25A13pcgEloq/4s=
-X-Received: by 2002:a05:6870:b028:b0:1fb:e5f:c530 with SMTP id
- y40-20020a056870b02800b001fb0e5fc530mr11532372oae.4.1702388867382; Tue, 12
- Dec 2023 05:47:47 -0800 (PST)
+        Tue, 12 Dec 2023 08:49:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC0D1FFF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:48:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1063C433C7;
+        Tue, 12 Dec 2023 13:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702388919;
+        bh=vMWkOLosreYFfJ9xVON5sXNCA2fynG36OvDNxFrE51s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I1bcz+LlvgB6SRxGT6ZdgATiv1KLf3q9mLiOckLOH//Bt/WfHe+7KJ4pbFikHCrFd
+         qinaFVog666Obq0FK2VsYMwyGYl78WaUh9i5/l3r1GPgscTC2S+QgVEDEk45EOEOb7
+         l+JB3Lc3Pke9d+OyFaOvCmY34jxCo/DG2g76bTPjQW0SRGR6BCKhbMLmFvTSCMmU0d
+         fQUool7HZlBQtY2ymybxrXQtnzo4alFNJsup3EQhmQBQ1MyjAU6w3ZDvAgWqDQynrX
+         fqcIm0zsaTs7nbljdzhOr2nUNP/jaTsp25PQ1td9yIfjPwBY/vMyUnkzvfaGwD/Mxm
+         cKHo+xDe9ZFRA==
+Date:   Tue, 12 Dec 2023 13:48:31 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Zheng Wang <zyytlz.wz@163.com>
+Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, kvalo@kernel.org,
+        johannes.berg@intel.com, marcan@marcan.st,
+        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
+        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com, arend.vanspriel@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        security@kernel.org, stable@vger.kernel.org,
+        hackerzheng666@gmail.com
+Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in
+  brcmf_cfg80211_detach
+Message-ID: <20231212134831.GA564365@google.com>
+References: <20231106141704.866455-1-zyytlz.wz@163.com>
 MIME-Version: 1.0
-References: <20231205063537.872834-1-li.meng@amd.com> <20231205063537.872834-3-li.meng@amd.com>
-In-Reply-To: <20231205063537.872834-3-li.meng@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Dec 2023 14:47:36 +0100
-Message-ID: <CAJZ5v0ghO8A2co6tK6-kM-1NdjVggM-_26hj+oiv8hTGQGg1mw@mail.gmail.com>
-Subject: Re: [PATCH V12 2/7] acpi: cppc: Add get the highest performance cppc control
-To:     Meng Li <li.meng@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Wyes Karny <wyes.karny@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231106141704.866455-1-zyytlz.wz@163.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please spell ACPI and CPPC in capitals in the subject.
+On Mon, 06 Nov 2023, Zheng Wang wrote:
 
-On Tue, Dec 5, 2023 at 7:38 AM Meng Li <li.meng@amd.com> wrote:
->
-> Add support for getting the highest performance to the
-> generic CPPC driver. This enables downstream drivers
-> such as amd-pstate to discover and use these values.
->
-> Please refer to the ACPI_Spec for details on continuous
-> performance control of CPPC.
-
-So which section of the spec is the reader supposed to refer to?
-
-> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Reviewed-by: Wyes Karny <wyes.karny@amd.com>
-> Reviewed-by: Perry Yuan <perry.yuan@amd.com>
-> Acked-by: Huang Rui <ray.huang@amd.com>
-> Signed-off-by: Meng Li <li.meng@amd.com>
-> Link: https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html?highlight=cppc#highest-performance
+> This is the candidate patch of CVE-2023-47233 :
+> https://nvd.nist.gov/vuln/detail/CVE-2023-47233
+> 
+> In brcm80211 driver,it starts with the following invoking chain
+> to start init a timeout worker:
+> 
+> ->brcmf_usb_probe
+>   ->brcmf_usb_probe_cb
+>     ->brcmf_attach
+>       ->brcmf_bus_started
+>         ->brcmf_cfg80211_attach
+>           ->wl_init_priv
+>             ->brcmf_init_escan
+>               ->INIT_WORK(&cfg->escan_timeout_work,
+> 		  brcmf_cfg80211_escan_timeout_worker);
+> 
+> If we disconnect the USB by hotplug, it will call
+> brcmf_usb_disconnect to make cleanup. The invoking chain is :
+> 
+> brcmf_usb_disconnect
+>   ->brcmf_usb_disconnect_cb
+>     ->brcmf_detach
+>       ->brcmf_cfg80211_detach
+>         ->kfree(cfg);
+> 
+> While the timeout woker may still be running. This will cause
+> a use-after-free bug on cfg in brcmf_cfg80211_escan_timeout_worker.
+> 
+> Fix it by deleting the timer and canceling the worker in
+> brcmf_cfg80211_detach.
+> 
+> Fixes: e756af5b30b0 ("brcmfmac: add e-scan support.")
+> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/acpi/cppc_acpi.c | 13 +++++++++++++
->  include/acpi/cppc_acpi.h |  5 +++++
->  2 files changed, 18 insertions(+)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 7ff269a78c20..ad388a0e8484 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1154,6 +1154,19 @@ int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->         return cppc_get_perf(cpunum, NOMINAL_PERF, nominal_perf);
->  }
->
-> +/**
-> + * cppc_get_highest_perf - Get the highest performance register value.
-> + * @cpunum: CPU from which to get highest performance.
-> + * @highest_perf: Return address.
-> + *
-> + * Return: 0 for success, -EIO otherwise.
-> + */
-> +int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
-> +{
-> +       return cppc_get_perf(cpunum, HIGHEST_PERF, highest_perf);
-> +}
-> +EXPORT_SYMBOL_GPL(cppc_get_highest_perf);
-> +
->  /**
->   * cppc_get_epp_perf - Get the epp register value.
->   * @cpunum: CPU from which to get epp preference value.
-> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-> index 6126c977ece0..c0b69ffe7bdb 100644
-> --- a/include/acpi/cppc_acpi.h
-> +++ b/include/acpi/cppc_acpi.h
-> @@ -139,6 +139,7 @@ struct cppc_cpudata {
->  #ifdef CONFIG_ACPI_CPPC_LIB
->  extern int cppc_get_desired_perf(int cpunum, u64 *desired_perf);
->  extern int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf);
-> +extern int cppc_get_highest_perf(int cpunum, u64 *highest_perf);
->  extern int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs);
->  extern int cppc_set_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls);
->  extern int cppc_set_enable(int cpu, bool enable);
-> @@ -165,6 +166,10 @@ static inline int cppc_get_nominal_perf(int cpunum, u64 *nominal_perf)
->  {
->         return -ENOTSUPP;
->  }
-> +static inline int cppc_get_highest_perf(int cpunum, u64 *highest_perf)
-> +{
-> +       return -ENOTSUPP;
-> +}
->  static inline int cppc_get_perf_ctrs(int cpu, struct cppc_perf_fb_ctrs *perf_fb_ctrs)
->  {
->         return -ENOTSUPP;
-> --
+> v5:
+> - replace del_timer_sync with timer_shutdown_sync suggested by
+> Arend and Takashi
+> v4:
+> - rename the subject and add CVE number as Ping-Ke Shih suggested
+> v3:
+> - rename the subject as Johannes suggested
+> v2:
+> - fix the error of kernel test bot reported
+> ---
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> index 667462369a32..a8723a61c9e4 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> @@ -8431,6 +8431,8 @@ void brcmf_cfg80211_detach(struct brcmf_cfg80211_info *cfg)
+>  	if (!cfg)
+>  		return;
+>  
+> +	timer_shutdown_sync(&cfg->escan_timeout);
+> +	cancel_work_sync(&cfg->escan_timeout_work);
+>  	brcmf_pno_detach(cfg);
+>  	brcmf_btcoex_detach(cfg);
+>  	wiphy_unregister(cfg->wiphy);
+
+Has there been any progress on this please?
+
+Are we expecting a v6 to this?
+
+-- 
+Lee Jones [李琼斯]
