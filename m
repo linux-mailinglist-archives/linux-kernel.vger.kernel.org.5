@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E857880E4B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1DC80E4B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjLLHFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        id S230338AbjLLHFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:05:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLLHFn (ORCPT
+        with ESMTP id S230266AbjLLHFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:05:43 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4C5D0;
-        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cda22140f2so4626996b3a.1;
-        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
+        Tue, 12 Dec 2023 02:05:45 -0500
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B62D5;
+        Mon, 11 Dec 2023 23:05:51 -0800 (PST)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-20307e91258so11220fac.0;
+        Mon, 11 Dec 2023 23:05:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702364750; x=1702969550; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=cSrzQ4FDDeqPwfBNWP1LcLTFq/yFZjcBCmoTNQG3Jbc=;
-        b=QxFcJjjYIDnXD8IUvnNAiAfryIkdOrPDGo0qH2/XA9/Fnk9ktbHEQ+njmVDnumjcab
-         TtKaubL530F80z7dq8mYxVe6lfP6I+OZmZvtfjNstC7WjYxYdoDQxR/rTV5zJokyxTUe
-         e6P2zoKRTNkzvu33ppDiLZd/+dur8eUzzMuZBcsVGoQ0ZN3o1wjYabqDqi1G98BtwhW5
-         idKXyHgw/4GdNuGwQxUssfLHlWMvHu7Vd96VehhjoCD8gs5EibeEURkl/SXzTMfFS7Ds
-         2oqBeZLiXP76zUYNdpvIRTYYUW+s/DUE+q7wExubnxOS2hFFe01VWhtFkQ/bZHs6Lv/q
-         VZ9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702364750; x=1702969550;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702364751; x=1702969551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cSrzQ4FDDeqPwfBNWP1LcLTFq/yFZjcBCmoTNQG3Jbc=;
-        b=xSrCCpDKykl9PoyjOhkhWVC2McA7MZu7ofRpwdKegZIvll1ih1IaPAFccFINVT0ill
-         w0l0DGwOah/gDAS3Y5DyDMlw1XCPgAptwnTslOTjHKhpx8q9zYuIP63jYdb08fgnkH6A
-         L73uCMfiBbz384PhNuCmWXqsIfKmAziErzezO/06//6zYj9WxavHcg3b4zmMWv6pSt7c
-         wyeSmWi4IlWSuI8mUX1OozZfx4zhkTvZZ/eSYW6C52Lhq14uWABRflfxfFYmDNlPwCRs
-         FzYDTcm19tWUIg9IiH51yULWalxaj0Goh7xJmueomtFwa4jkxngqozcBEyYuIwbdNTTX
-         iYTA==
-X-Gm-Message-State: AOJu0YySjKOYrVxZMQrGXxL+PVIBOxy/cUoWqMOAndUVWJ0gokwOBiVL
-        cccBhYZNdWDnS5lUga9I4wkbDYpO+KmO6w==
-X-Google-Smtp-Source: AGHT+IECAOXD/0B+W79A1JJLZZXjjM6ziU0kkw9o9WVVRBBXjx1IEv5o3dwdJSk4XvSkOKpIiVt8zg==
-X-Received: by 2002:a05:6a20:7d86:b0:18f:f86f:bcdb with SMTP id v6-20020a056a207d8600b0018ff86fbcdbmr6978625pzj.93.1702364749630;
-        Mon, 11 Dec 2023 23:05:49 -0800 (PST)
+        bh=IxQYxpYcrWIqvC1cKCSYLMPQZtsdrNIv93BxHbphWrs=;
+        b=JgTJApR5diAcVXCoDKGxz4igZ2fxk6devxE9l9aWilUpCLVEt5hmDACOGpCpuA1Kd7
+         O1AutN5f6LoIcQFujNmEGDXvHpMkonwiovwiEdVLC/aYmMnjMJe0FQr7K6pC1qGd79Dp
+         lgx03+MTLgyMI+Q2o8SztL+H4dkKuAIKcFkfZintzgqeMyVYmvqyRwE3p1E8Paljh+w3
+         GhWb9iaUapjrdswi7RROufbt6WRZoNd2DXNPZwKEMNNM+ZAKmGEqgRJJ1tJ2bGd/xr9+
+         rV2ocCQslbnjJHJo9hJYXHQg4Xt1grGXJempUkLbUKzIL1ddH+MfPRKRGIvYTj8No8yC
+         uUiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702364751; x=1702969551;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IxQYxpYcrWIqvC1cKCSYLMPQZtsdrNIv93BxHbphWrs=;
+        b=m3WwWqyjKreV11kngzPWAvuacOz1oV23+/FcPX09YyBoQCOIuQ6r6eN4Bg360UdPPz
+         sqMMtF7bvM/l6drLA4njJiW/7R+/s7pKD+LsN9kjZ9PUvcrNTw2aGQFoMzr8tN7hf43J
+         pQ/gPIco3ctMAceGJDQbvMfeWmc95Cih/aD6jeD0hY+zuoa/jShRjuIistByJdrUHrFS
+         Pn61a23Bmgo1Tj1wW8Yz31lB/koACLMW4vXPOjdkB0b5LoJXczBA8hbULGA6HTF07Rq2
+         KXomk/ud3POQahm8PITo/iwzNVSnG1wWoJc08MQT83kziQgPnbTEHCYnPMyZmYOkPWQ/
+         ofaQ==
+X-Gm-Message-State: AOJu0YwcRzHYMDojk45mIoQkkjeqa3pgUwcCmQvZkbLQ1VvHreNPFMME
+        QTz6TOyckD9KbcAJ6Q2p5+k=
+X-Google-Smtp-Source: AGHT+IFIPRwDp5aw1X9LTPnHC7HkFiMRiZ3w/V+YsEOXcNFTStkOgj3TcG3rVDdRoxEiytIyYRjrBg==
+X-Received: by 2002:a05:6870:61d4:b0:1fb:75a:77c1 with SMTP id b20-20020a05687061d400b001fb075a77c1mr5353980oah.114.1702364750851;
+        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7da0:5ec4:de63:3cf4])
-        by smtp.gmail.com with ESMTPSA id g17-20020a056a0023d100b006cb6e83bf7fsm7397491pfc.192.2023.12.11.23.05.48
+        by smtp.gmail.com with ESMTPSA id g17-20020a056a0023d100b006cb6e83bf7fsm7397491pfc.192.2023.12.11.23.05.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 23:05:49 -0800 (PST)
+        Mon, 11 Dec 2023 23:05:50 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -62,10 +63,12 @@ Cc:     Ian Rogers <irogers@google.com>,
         Milian Wolff <milian.wolff@kdab.com>,
         Pablo Galindo <pablogsal@gmail.com>,
         Fangrui Song <maskray@google.com>
-Subject: [PATCH 0/3] perf tools: Random fixes for DWARF unwind
-Date:   Mon, 11 Dec 2023 23:05:43 -0800
-Message-ID: <20231212070547.612536-1-namhyung@kernel.org>
+Subject: [PATCH 1/3] perf genelf: Set ELF program header addresses properly
+Date:   Mon, 11 Dec 2023 23:05:44 -0800
+Message-ID: <20231212070547.612536-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+In-Reply-To: <20231212070547.612536-1-namhyung@kernel.org>
+References: <20231212070547.612536-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,35 +82,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The text section starts after the ELF headers so PHDR.p_vaddr and
+others should have the correct addresses.
 
-I've found a couple of issues on the unwind code while I'm playing with
-the JIT-dump code for the CPython.  The code assumes normal DSOs mapped
-from the beginning of the file and aligned to the page size.  But it's
-not true for the JIT-dumped DSOs which are generated for each function.
+Fixes: babd04386b1d ("perf jit: Include program header in ELF files")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/genelf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Depending on the JIT implementation, the code address and accompanied
-ELF info (like ELF file headers and unwind info) can be overlapped to
-adjacent (JIT-dumped) DSOs.  So it should take more care when it
-calculates the mapping address for the DSO.
-
-It seems these changes need to go to the stable trees but they are
-changed a lot since then so I'm not sure.
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (3):
-  perf genelf: Set ELF program header addresses properly
-  perf unwind-libdw: Handle JIT-generated DSOs properly
-  perf unwind-libunwind: Fix base address for .eh_frame
-
- tools/perf/util/genelf.c                 |  6 +++---
- tools/perf/util/unwind-libdw.c           | 21 +++++++++++++++++----
- tools/perf/util/unwind-libunwind-local.c |  2 +-
- 3 files changed, 21 insertions(+), 8 deletions(-)
-
+diff --git a/tools/perf/util/genelf.c b/tools/perf/util/genelf.c
+index fefc72066c4e..ac17a3cb59dc 100644
+--- a/tools/perf/util/genelf.c
++++ b/tools/perf/util/genelf.c
+@@ -293,9 +293,9 @@ jit_write_elf(int fd, uint64_t load_addr, const char *sym,
+ 	 */
+ 	phdr = elf_newphdr(e, 1);
+ 	phdr[0].p_type = PT_LOAD;
+-	phdr[0].p_offset = 0;
+-	phdr[0].p_vaddr = 0;
+-	phdr[0].p_paddr = 0;
++	phdr[0].p_offset = GEN_ELF_TEXT_OFFSET;
++	phdr[0].p_vaddr = GEN_ELF_TEXT_OFFSET;
++	phdr[0].p_paddr = GEN_ELF_TEXT_OFFSET;
+ 	phdr[0].p_filesz = csize;
+ 	phdr[0].p_memsz = csize;
+ 	phdr[0].p_flags = PF_X | PF_R;
 -- 
 2.43.0.472.g3155946c3a-goog
 
