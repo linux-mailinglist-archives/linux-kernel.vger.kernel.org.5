@@ -2,185 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC3280F410
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362FB80F412
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbjLLRIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S232896AbjLLRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:09:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLRIx (ORCPT
+        with ESMTP id S232546AbjLLRJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:08:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4868999
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:08:59 -0800 (PST)
-Date:   Tue, 12 Dec 2023 18:08:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702400937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHd/GIvEuAFn2fDqEH8KZE4ZeOg4egPJvYnz2DkhrGo=;
-        b=A2snbrL/6oD6Pi26QkpMcd3c/txTX8r0SXA9vlJNAH/E2XeywD2Kb81NjIVJdWVzPBYukG
-        XopQcBKbQZpNqsYAX1n/9U4z/8dSHTEVBaqDLk9Ms+kSn/hLuFgtv9KF3HLbvn3hcopY6C
-        ovowidBdsPT+swOir25Iu6wX5RZRhJQLipK22UPHEjyB5KWxQJhvRv5X/6R7IxXZE3ui68
-        PRnRnoUWOZuDKZyWpuTdxgLAe6t2nAb+Nw8urVn+xSTahv5ier/Wvvwi+uznGNehsk5FH4
-        lcnoGlELWOlZdpGY6ZxW24g7SJlOi9XM6WLNHbNyscgUBsDxVgrkZ+xagpxsjQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702400937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHd/GIvEuAFn2fDqEH8KZE4ZeOg4egPJvYnz2DkhrGo=;
-        b=yjWflIRjqjIJkfSn94KCNfw18uIE9J/UKGXjOXaIBqLVg0R/VVQs83RwX22bSgzMp/8ns/
-        9yGDhvQ+vGD37IAw==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
-Message-ID: <20231212170855.pxX3SZdS@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-31-anna-maria@linutronix.de>
- <20231212121404.C2R9VWj1@linutronix.de>
- <87y1dzlbh8.fsf@somnus>
+        Tue, 12 Dec 2023 12:09:07 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA3EA8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:09:12 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7c522ea69e8so1521697241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:09:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702400951; x=1703005751; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=upBnebOqwsJ597ZlmCLWx528Yzi3Wcu30Pu2fcleukU=;
+        b=rAWyGhEl5QZfENy+2tW1KWXOJt9iy4tJAm3F8/l0IKbulyyqMgyS5WlFH2XYZN9ph4
+         yXM+LTOPpboux6iMsqxOlKiI2A3LOrn2aAwpdOph9tJ51eptXZcBkYw3VRH5TZYBIjk6
+         IwiPxV0dn9/wKrj8bOFzpxKiLuy+ZIQjz7owiV2GbGoh/HuaaUBmNtndOZiHUtqBYOIJ
+         RufYfAN/rbvMYFxEXcThRSGZf8qGSERM2mMEomhH9WBcbMSaYCdXCQQ1RHmJ2gMAp3z8
+         qaC1Ucy4rN79qHxJCz9pxxqkwB8NOhICKOR+i89PxyuUzPBczjXki6m6OT/VDmMcUoSN
+         7iAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702400951; x=1703005751;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=upBnebOqwsJ597ZlmCLWx528Yzi3Wcu30Pu2fcleukU=;
+        b=w2eOoAxXsLjdO2S9bKMW/3FizMvvDKyRXbc88CK46dle3PVIHrIRzg1aiVOXBvEgvJ
+         tAKJtL2UVOMz9+8QtGHHekgw7djEd0I6xcOSNgmpb8xpCQnYK/QF5a3dZHnii+BtiXKP
+         wFtid9UceeRewr+Aj+NuysQwX+h07QnQUg8JZaCmsHN1vljwb08a34q8hJ793cryCXy1
+         7+R4YvFRtvrUK9tV7jf4wp4SHDgVoreyTBvZ4igAoGfppJo5ViVTOMQCVJgNfSgRvwb2
+         x4eFGdOcLQV/RoWFcCUNaMc+3zmAvF1Es0Zov8wb0nzHRFHzvu0umFS3qci96b+GJotj
+         /vXA==
+X-Gm-Message-State: AOJu0Yw4OFSVXk9DQeNM7ijlReVKCsGmiZEVzL8W61Wx93nozn9OsjtC
+        MQpNIb0Iy4LvEHizpcPVnmM61Ce7mPI99dVAjjLxAQ==
+X-Google-Smtp-Source: AGHT+IHWPQk3/S1nqdVFY2SvYM4mv4RMcFM6GJosPjrDfPNXU9stefweNMroytoNPvvl5pcUN2P754MhzBIe3u4BaAY=
+X-Received: by 2002:a05:6122:2897:b0:4b2:acda:e1e4 with SMTP id
+ fl23-20020a056122289700b004b2acdae1e4mr5776460vkb.6.1702400951144; Tue, 12
+ Dec 2023 09:09:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87y1dzlbh8.fsf@somnus>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231212054253.50094-1-warthog618@gmail.com>
+In-Reply-To: <20231212054253.50094-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 12 Dec 2023 18:09:00 +0100
+Message-ID: <CAMRc=Me90Lu7Duc8-4xSfDcHQd6M7+0t0O8FAa6jiizp-OO5=Q@mail.gmail.com>
+Subject: Re: [PATCH 0/4] gpiolib: cdev: relocate debounce_period_us
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, andy@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-12 15:52:19 [+0100], Anna-Maria Behnsen wrote:
-> Sebastian Siewior <bigeasy@linutronix.de> writes:
-> 
-> >> +/* Per group capacity. Must be a power of 2! */
-> >> +#define TMIGR_CHILDREN_PER_GROUP 8
-> >
-> > BUILD_BUG_ON_NOT_POWER_OF_2(TMIGR_CHILDREN_PER_GROUP)
-> >
-> > Maybe in the .c file.
-> >
-> 
-> in tmigr_init() ?
+On Tue, Dec 12, 2023 at 6:43=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
+>
+> This series contains minor improvements to gpiolib-cdev.
+>
+> The banner change is relocating the debounce_period_us from gpiolib's
+> struct gpio_desc to cdev's struct line.  The first patch stores the
+> field locally in cdev.  The second removes the now unused field from
+> gpiolib.
+>
+> The third patch is somewhat related and removes a FIXME from
+> gpio_desc_to_lineinfo().  The FIXME relates to a race condition in
+> the calculation of the used  flag, but I would assert that from
+> the userspace perspective the read operation itself is inherently racy.
+> The line being reported as unused in the info provides no guarantee -
+> it just an indicator that requesting the line is likely to succeed -
+> assuming the line is not otherwise requested in the meantime.
+> Give the overall operation is racy, trying to stamp out an unlikely
+> race within the operation is pointless. Accept it as a possibility
+> that has negligible side-effects and reduce the number of locks held
+> simultaneously and the duration that the gpio_lock is held.
+>
+> The fourth patch is unrelated to debounce or info, but addresses Andy's
+> recent assertion that the linereq get/set values functions are confusing
+> and under documented.  Figured I may as well add that while I was in
+> there.
+>
+> Kent Gibson (4):
+>   gpiolib: cdev: relocate debounce_period_us from struct gpio_desc
+>   gpiolib: remove debounce_period_us from struct gpio_desc
+>   gpiolib: cdev: reduce locking in gpio_desc_to_lineinfo()
+>   gpiolib: cdev: improve documentation of get/set values
+>
+>  drivers/gpio/gpiolib-cdev.c | 257 ++++++++++++++++++++++++++++--------
+>  drivers/gpio/gpiolib.c      |   3 -
+>  drivers/gpio/gpiolib.h      |   5 -
+>  3 files changed, 201 insertions(+), 64 deletions(-)
+>
+> --
+> 2.39.2
+>
 
-Yeah why not. It is used there for the init of the structs.
+Patches 2-4 look fine, I was about to review patch 1 in detail but I
+thought I'd just throw this one in here before we commit to a specific
+solution.
 
-> >> +/**
-> >> + * struct tmigr_group - timer migration hierarchy group
-> >> + * @lock:		Lock protecting the event information and group hierarchy
-> >> + *			information during setup
-> >> + * @migr_state:		State of the group (see union tmigr_state)
-> >
-> > So the lock does not protect migr_state?
-> 
-> Right - this is not required due to the atomic cmpxchg and seqence
-> counter.
-> 
-> > Mind moving it a little down the road? Not only would it be more
-> > obvious what is protected by the lock but it would also move
-> > migr_state in another/ later cache line.
-> >
-> 
-> Where do you want me to move it? Switch places of lock and migr_state?
-> When I put it to another place, I would generate holes. A general
-> question: Is it required to have a look at the struct with pahole also
-> with LOCKDEP enabled? If yes, lock should stay at the first position.
+For some reason I thought this would not work but I'm now considering
+it as an alternative approach: is there anything wrong with adding
+struct kref to struct line, allocating it separately per-line when
+gpio_chardev_data is created, referencing it from struct linereq when
+the line is being requested, and dropping the reference from
+gpio_chardev_data and linereq when either is being removed? Other than
+the increased number of allocations?
 
-Maybe something like:
-| struct tmigr_group {
-|         raw_spinlock_t             lock;                 /*     0     4 */
-| 
-|         /* XXX 4 bytes hole, try to pack */
-| 
-|         struct tmigr_group *       parent;               /*     8     8 */
-|         struct tmigr_event         groupevt __attribute__((__aligned__(8))); /*    16    40 */
-| 
-|         /* XXX last struct has 3 bytes of padding */
-| 
-|         u64                        next_expiry;          /*    56     8 */
-|         /* --- cacheline 1 boundary (64 bytes) --- */
-|         struct timerqueue_head     events;               /*    64    16 */
-|         atomic_t                   migr_state;           /*    80     4 */
-|         unsigned int               level;                /*    84     4 */
-|         int                        numa_node;            /*    88     4 */
-|         unsigned int               num_children;         /*    92     4 */
-|         u8                         childmask;            /*    96     1 */
-| 
-|         /* XXX 7 bytes hole, try to pack */
-| 
-|         struct list_head           list;                 /*   104    16 */
-
-
-Starting with lock isn't bad as you see everything from here is
-protected by lock. If it makes sense you could start with list so that
-the container_of() becomes a NOP.
-I wouldn't make lockdep a thing and assume it is off. Also, I would
-assume the architecture is 64bit.
-
-However with lockdep enabled it becomes:
-
-| struct tmigr_group {
-|         raw_spinlock_t             lock;                 /*     0    64 */
-|         /* --- cacheline 1 boundary (64 bytes) --- */
-|         struct tmigr_group *       parent;               /*    64     8 */
-|         struct tmigr_event         groupevt __attribute__((__aligned__(8))); /*    72    40 */
-| 
-|         /* XXX last struct has 3 bytes of padding */
-| 
-|         u64                        next_expiry;          /*   112     8 */
-|         struct timerqueue_head     events;               /*   120    16 */
-|         /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-|         atomic_t                   migr_state;           /*   136     4 */
-|         unsigned int               level;                /*   140     4 */
-|         int                        numa_node;            /*   144     4 */
-|         unsigned int               num_children;         /*   148     4 */
-|         u8                         childmask;            /*   152     1 */
-| 
-|         /* XXX 7 bytes hole, try to pack */
-| 
-|         struct list_head           list;                 /*   160    16 */
-| } __attribute__((__aligned__(8)));
-
-so it didn't change much.
-
-I shuffled it a bit and everything after migr_state is read only.
-I don't think looking at pahole is required but in your case it makes
-sense to put the locked section into a separate cache line vs migr_state
-variable. It doesn't cost much.
-You can decide if it is worth to move childmask after the lock so you so
-you avoid the 7 byte hole at the end. I wouldn't do it to satisfy pahole
-here. If it makes sense, doesn't hurt/ confuse why not.
-
-You would consider the pahole output more on a structure like dentry
-which is used a _lot_. So saving 4 bytes would mean save a megabyte or
-ten in the end.
-
-> Thanks,
-> 
->         Anna-Maria
-> 
-
-Sebastian
+Bartosz
