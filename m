@@ -2,658 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CD880F4F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D305C80F4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377011AbjLLRvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:51:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        id S1377021AbjLLRxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:53:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLRvx (ORCPT
+        with ESMTP id S233103AbjLLRxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:51:53 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6990AD;
-        Tue, 12 Dec 2023 09:51:58 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCH6Yop024239;
-        Tue, 12 Dec 2023 17:51:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=EAUQ/vmXiEVjXnGy1q5N2zqeDSalL49WgP98KJz/SBc=; b=H+
-        y9wGZfwyoHFEJMwhr03D+V0uv7MYprntwORsQRSyCqxSZd4C87ln+p1rTr6Qj89o
-        H3VMEHv6oQG2czl3TtEpDY9/YLrAS6OWdBJd2l54Ava09E3McDeDnSmiRjULo14k
-        8S6hR6PRkX4npG9082yo+wonNilqpvtbzAkzMTjOIWEC8lry2Sl3i60qyJOjJY3E
-        0nYTMJQzXr9lZeRn0TdR0BDnKR71Zx46wXqpRAA0e5KkcFzKNgqyQBczuv6uQRTX
-        JH3Sl+mwNFDQNgm3xfICULNRMUfgNKrLj1fpBWKdBn0Yv+9sR1hcjXiC3+dX8F21
-        XkK/nYW8MVQ0IgmL52Ig==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxru2gm73-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 17:51:47 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCHplDD002133
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 17:51:47 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
- 2023 09:51:46 -0800
-Message-ID: <6d3a29e3-5f24-010e-483e-282ef93735aa@quicinc.com>
-Date:   Tue, 12 Dec 2023 09:51:45 -0800
+        Tue, 12 Dec 2023 12:53:05 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD81A1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:53:09 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50d11bd3144so129e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:53:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702403587; x=1703008387; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NIFNo9JYm5ATZ9JsBFU9kjn2eRZxaOwVy/sxFVnOmwo=;
+        b=DqQTzV42MyHdbPANPZyF91OgIeflZe9/X46PIeFf/CifV5pXnXLTzX6xnrgcJMo6F6
+         cMJzVkP/vRnvAWUoIsTktLvqvjtfFbw2bOl6rjlqS3XMAxTFOshNns7HmQji5BUhAsCi
+         PVgZf+6YkqTougTOvK6AiW9anqibzfFdp06DrIAPM120QnT+6PkYno4W4fsO4T4KonPM
+         cIKKDYzCQVf8LLVq684gxw8xDKktly2psTd5blIDvQxdHm3p7bN+Av4Yl6aEvjwa9PYE
+         IX59OOzLxmvqn2N352MDbWN9uV81Nn/XmNikeRnhBDxU/KWQp2ENG78EEK7Y8o49sTxR
+         I3sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702403587; x=1703008387;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NIFNo9JYm5ATZ9JsBFU9kjn2eRZxaOwVy/sxFVnOmwo=;
+        b=KqizmoME27O3Gh7QszSW8nWek/T9YPbrNbFLuQCZ2pSkkcoICF+MPDokPuPC7iBnyz
+         N4dgzmc9Gj++le7rebbK5sVstpZsijb+C41uo64DXNfYac+2+H6FV7xXNPpTKvQdkCog
+         50bqQVvCr7AxsKFr5rORrrawaYL+nh7tLJlZYx0LDTMUmVUWKyY5nf+SQKEkslFR/Jnz
+         u/GsuAXOqmrkjOenMFQY3riSqZe7S5AH4yOc2pbTgXOiFJvmmSyWPw8MngCpHGQC6jD5
+         aEEC23BwsxBrMvBmp5eNPcTHFLXs1kaq26JiEi53Zm4sTvAVhMtpFA2s/6mpPBw550Nz
+         rujg==
+X-Gm-Message-State: AOJu0YxVk3m0nyXO8Ky7dZ5pXlBV7DFpQDF/6wnOmQBqZ5dLRHxInBUx
+        TyL+p9HmAXbR05T5vFRTnzqCz4HLQmY+LKyic6uBtQ==
+X-Google-Smtp-Source: AGHT+IEf7VQccaZdvuVrhQlDO1GMzkurXaX9ybjG5vuKiPD2QruYwKP2g5lmqSLcHwJZI3js0y+LLbFb/3+RH7vWSKc=
+X-Received: by 2002:a05:6512:539:b0:50c:e19:b658 with SMTP id
+ o25-20020a056512053900b0050c0e19b658mr265643lfc.1.1702403586994; Tue, 12 Dec
+ 2023 09:53:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 07/15] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM
- block
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <seanpaul@chromium.org>,
-        <quic_jesszhan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        "kernel test robot" <lkp@intel.com>, <linux-kernel@vger.kernel.org>
-References: <20231212002245.23715-1-quic_abhinavk@quicinc.com>
- <20231212002245.23715-8-quic_abhinavk@quicinc.com>
- <CAA8EJpq6VqF51RMdk5x3nULMSpZ8GN4HDGDLkGJuuF+abnQ=Hw@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpq6VqF51RMdk5x3nULMSpZ8GN4HDGDLkGJuuF+abnQ=Hw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _q7GjsXv0k7islLm8A1VVBiHHCYXdgWd
-X-Proofpoint-ORIG-GUID: _q7GjsXv0k7islLm8A1VVBiHHCYXdgWd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120135
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129060211.1890454-1-irogers@google.com> <20231129060211.1890454-3-irogers@google.com>
+ <ZXiauao3bIbc0ZCo@kernel.org>
+In-Reply-To: <ZXiauao3bIbc0ZCo@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 12 Dec 2023 09:52:55 -0800
+Message-ID: <CAP-5=fVY8MOcJfJ77hqGSxD9GoZzVQ2EEgBFsLaZXHM5gHV3aQ@mail.gmail.com>
+Subject: Re: [PATCH v1 02/14] libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 9:39=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Nov 28, 2023 at 10:01:59PM -0800, Ian Rogers escreveu:
+> > Rename perf_cpu_map__default_new to perf_cpu_map__new_online_cpus to
+> > better indicate what the implementation does. Read the online CPUs
+> > from /sys/devices/system/cpu/online first before using sysconf as
+> > sysconf can't accurately configure holes in the CPU map. If sysconf is
+> > used, warn when the configured and online processors disagree.
+> >
+> > When reading from a file, if the read doesn't yield a CPU map then
+> > return an empty map rather than the default online. This avoids
+> > recursion but also better yields being able to detect failures.
+> >
+> > Add more comments.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/perf/cpumap.c              | 59 +++++++++++++++++-----------
+> >  tools/lib/perf/include/perf/cpumap.h | 15 ++++++-
+> >  tools/lib/perf/libperf.map           |  2 +-
+> >  tools/lib/perf/tests/test-cpumap.c   |  2 +-
+> >  4 files changed, 51 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> > index 2bd6aba3d8c9..463ca8b37d45 100644
+> > --- a/tools/lib/perf/cpumap.c
+> > +++ b/tools/lib/perf/cpumap.c
+> > @@ -9,6 +9,7 @@
+> >  #include <unistd.h>
+> >  #include <ctype.h>
+> >  #include <limits.h>
+> > +#include "internal.h"
+> >
+> >  void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
+> >  {
+> > @@ -66,15 +67,21 @@ void perf_cpu_map__put(struct perf_cpu_map *map)
+> >       }
+> >  }
+> >
+> > -static struct perf_cpu_map *cpu_map__default_new(void)
+> > +static struct perf_cpu_map *cpu_map__new_sysconf(void)
+> >  {
+> >       struct perf_cpu_map *cpus;
+> > -     int nr_cpus;
+> > +     int nr_cpus, nr_cpus_conf;
+> >
+> >       nr_cpus =3D sysconf(_SC_NPROCESSORS_ONLN);
+> >       if (nr_cpus < 0)
+> >               return NULL;
+> >
+> > +     nr_cpus_conf =3D sysconf(_SC_NPROCESSORS_CONF);
+> > +     if (nr_cpus !=3D nr_cpus_conf) {
+> > +             pr_warning("Number of online CPUs (%d) differs from the n=
+umber configured (%d) the CPU map will only cover the first %d CPUs.",
+> > +                     nr_cpus, nr_cpus_conf, nr_cpus);
+> > +     }
+> > +
+> >       cpus =3D perf_cpu_map__alloc(nr_cpus);
+> >       if (cpus !=3D NULL) {
+> >               int i;
+> > @@ -86,9 +93,27 @@ static struct perf_cpu_map *cpu_map__default_new(voi=
+d)
+> >       return cpus;
+> >  }
+> >
+> > -struct perf_cpu_map *perf_cpu_map__default_new(void)
+> > +static struct perf_cpu_map *cpu_map__new_syfs_online(void)
+>
+> I'm renaming this to cpu_map__new_sysfs_online(), ok?
 
+Yep, typo. Thanks!
 
-On 12/12/2023 1:40 AM, Dmitry Baryshkov wrote:
-> On Tue, 12 Dec 2023 at 02:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->> CDM block comes with its own set of registers and operations
->> which can be done. In-line with other hardware blocks, this
->> change adds the dpu_hw_cdm abstraction for the CDM block.
->>
->> changes in v3:
->>          - fix commit text from sub-blk to blk for CDM
->>          - fix kbot issue for missing static for dpu_hw_cdm_enable()
->>          - fix kbot issue for incorrect documentation style
->>          - add more documentation for enums and struct in dpu_hw_cdm.h
->>          - drop "enable" parameter from bind_pingpong_blk() as we can
->>            just use PINGPONG_NONE for disable cases
->>          - drop unnecessary bit operation for zero value of cdm_cfg
->>
->> changes in v2:
->>          - replace bit magic with relevant defines
->>          - use drmm_kzalloc instead of kzalloc/free
->>          - some formatting fixes
->>          - inline _setup_cdm_ops()
->>          - protect bind_pingpong_blk with core_rev check
->>          - drop setup_csc_data() and setup_cdwn() ops as they
->>            are merged into enable()
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202312101815.B3ZH7Pfy-lkp@intel.com/
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/Makefile                |   1 +
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 263 ++++++++++++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 130 ++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
->>   4 files changed, 395 insertions(+)
->>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
->>   create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
->>
->> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
->> index 49671364fdcf..b1173128b5b9 100644
->> --- a/drivers/gpu/drm/msm/Makefile
->> +++ b/drivers/gpu/drm/msm/Makefile
->> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
->>          disp/dpu1/dpu_encoder_phys_wb.o \
->>          disp/dpu1/dpu_formats.o \
->>          disp/dpu1/dpu_hw_catalog.o \
->> +       disp/dpu1/dpu_hw_cdm.o \
->>          disp/dpu1/dpu_hw_ctl.o \
->>          disp/dpu1/dpu_hw_dsc.o \
->>          disp/dpu1/dpu_hw_dsc_1_2.o \
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
->> new file mode 100644
->> index 000000000000..4976f8a05ce7
->> --- /dev/null
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
->> @@ -0,0 +1,263 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +#include <drm/drm_managed.h>
->> +
->> +#include "dpu_hw_mdss.h"
->> +#include "dpu_hw_util.h"
->> +#include "dpu_hw_catalog.h"
->> +#include "dpu_hw_cdm.h"
->> +#include "dpu_kms.h"
->> +
->> +#define CDM_CSC_10_OPMODE                  0x000
->> +#define CDM_CSC_10_BASE                    0x004
->> +
->> +#define CDM_CDWN2_OP_MODE                  0x100
->> +#define CDM_CDWN2_CLAMP_OUT                0x104
->> +#define CDM_CDWN2_PARAMS_3D_0              0x108
->> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
->> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
->> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
->> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
->> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
->> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
->> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
->> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
->> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
->> +#define CDM_CDWN2_OUT_SIZE                 0x130
->> +
->> +#define CDM_HDMI_PACK_OP_MODE              0x200
->> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
->> +
->> +#define CDM_MUX                            0x224
->> +
->> +/* CDM CDWN2 sub-block bit definitions */
->> +#define CDM_CDWN2_OP_MODE_EN                  BIT(0)
->> +#define CDM_CDWN2_OP_MODE_ENABLE_H            BIT(1)
->> +#define CDM_CDWN2_OP_MODE_ENABLE_V            BIT(2)
->> +#define CDM_CDWN2_OP_MODE_METHOD_H_AVG        BIT(3)
->> +#define CDM_CDWN2_OP_MODE_METHOD_H_COSITE     BIT(4)
->> +#define CDM_CDWN2_OP_MODE_METHOD_V_AVG        BIT(5)
->> +#define CDM_CDWN2_OP_MODE_METHOD_V_COSITE     BIT(6)
->> +#define CDM_CDWN2_OP_MODE_BITS_OUT_8BIT       BIT(7)
->> +#define CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE    GENMASK(4, 3)
->> +#define CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE    GENMASK(6, 5)
-> 
-> I think it might be easier to define
-> 
-> enum {
->    CDM_CDWN2_METHOD_DROP_PIXEL = 0,
->    CDM_CDWN2_METHOD_AVG = 1,
->    CDM_CDWN2_METHOD_ = 2,
->    CDM_CDWN2_METHOD_DROP_PIXEL = 3,
-> };
-> 
-> then use FIELD_PREP()
-> 
+Ian
 
-Ok, let me explore that option.
-
-We already have below enum in dpu_hw_cdm.h, we can re-use that
-
-+enum dpu_hw_cdwn_type {
-+	CDM_CDWN_DISABLE,
-+	CDM_CDWN_PIXEL_DROP,
-+	CDM_CDWN_AVG,
-+	CDM_CDWN_COSITE,
-+	CDM_CDWN_OFFSITE,
-+};
-
->> +#define CDM_CDWN2_V_PIXEL_DROP_MASK           GENMASK(6, 5)
->> +#define CDM_CDWN2_H_PIXEL_DROP_MASK           GENMASK(4, 3)
-> 
-> Why are they called foo_DROP_bar?
-> 
-
-Because they are always used with ~
-
-And as per the documentation 0 for this field is pixel drop.
-
-If we are dropping the clearing altogether, then these masks will go 
-away too.
-
->> +
->> +/* CDM CSC10 sub-block bit definitions */
->> +#define CDM_CSC10_OP_MODE_EN               BIT(0)
->> +#define CDM_CSC10_OP_MODE_SRC_FMT_YUV      BIT(1)
->> +#define CDM_CSC10_OP_MODE_DST_FMT_YUV      BIT(2)
->> +
->> +/* CDM HDMI pack sub-block bit definitions */
->> +#define CDM_HDMI_PACK_OP_MODE_EN           BIT(0)
->> +
->> +/*
->> + * Horizontal coefficients for cosite chroma downscale
->> + * s13 representation of coefficients
->> + */
->> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
->> +
->> +/*
->> + * Horizontal coefficients for offsite chroma downscale
->> + */
->> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
->> +
->> +/*
->> + * Vertical coefficients for cosite chroma downscale
->> + */
->> +static u32 cosite_v_coeff[] = {0x00080004};
->> +/*
->> + * Vertical coefficients for offsite chroma downscale
->> + */
->> +static u32 offsite_v_coeff[] = {0x00060002};
->> +
->> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
->> +{
->> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
->> +       u32 opmode = 0;
->> +       u32 out_size = 0;
-> 
-> No need to init it, please drop.
-> 
-
-alright.
-
->> +
->> +       if (cfg->output_bit_depth != CDM_CDWN_OUTPUT_10BIT)
->> +               opmode |= CDM_CDWN2_OP_MODE_BITS_OUT_8BIT;
->> +
->> +       /* ENABLE DWNS_H bit */
->> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_H;
->> +
->> +       switch (cfg->h_cdwn_type) {
->> +       case CDM_CDWN_DISABLE:
->> +               /* CLEAR METHOD_H field */
->> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
->> +               /* CLEAR DWNS_H bit */
->> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_H;
-> 
-> Please, can we get rid of clears for the zero-initialised variable? If
-> you move the 10bit/8bit check after this switch, you can drop the = 0
-> from the variable definition and instead have:
-> 
-
-Ok, will refine further.
-
-> switch (type) {
-> case DISABLE:
->      opmode = 0;
->      break;
-> case PIXEL_DROP:
->      opmode = CDM_CDWN2_OP_MODE_ENABLE_H |
->                       FIELD_PREP(CDM_CDWM2_OP_MODE_METHOD_H,
-> CDM_CDWN2_METHOD_DROP_PIXEL);
->      break;
-> case AVG:
->      opmode = CDM_CDWN2_OP_MODE_ENABLE_H |
->                       FIELD_PREP(CDM_CDWM2_OP_MODE_METHOD_H,
-> CDM_CDWN2_METHOD_AVG);
->     break;
-> // etc.
-> }
-> 
-> Same for the v_type.
-> 
-
-> Also could you please drop useless comments which repeat what is being
-> done in the next line?
-> 
-
-ack :)
-
->> +               break;
->> +       case CDM_CDWN_PIXEL_DROP:
->> +               /* Clear METHOD_H field (pixel drop is 0) */
->> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
->> +               break;
->> +       case CDM_CDWN_AVG:
->> +               /* Clear METHOD_H field (Average is 0x1) */
->> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_AVG;
->> +               break;
->> +       case CDM_CDWN_COSITE:
->> +               /* Clear METHOD_H field (Average is 0x2) */
-> 
-> So, is Average 0x1 or 0x2? Or 0x3 as written below?
-> 
-
-The comment is wrong. It should say Co-Site is 0x2, Off-Site is 0x3.
-
-And for the record, average is 0x1 :)
-
-
->> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_COSITE;
->> +               /* Co-site horizontal coefficients */
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
->> +                             cosite_h_coeff[0]);
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
->> +                             cosite_h_coeff[1]);
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
->> +                             cosite_h_coeff[2]);
->> +               break;
->> +       case CDM_CDWN_OFFSITE:
->> +               /* Clear METHOD_H field (Average is 0x3) */
->> +               opmode &= ~CDM_CDWN2_H_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_H_OFFSITE;
->> +
->> +               /* Off-site horizontal coefficients */
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
->> +                             offsite_h_coeff[0]);
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
->> +                             offsite_h_coeff[1]);
->> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
->> +                             offsite_h_coeff[2]);
->> +               break;
->> +       default:
->> +               DPU_ERROR("%s invalid horz down sampling type\n", __func__);
->> +               return -EINVAL;
->> +       }
->> +
->> +       /* ENABLE DWNS_V bit */
->> +       opmode |= CDM_CDWN2_OP_MODE_ENABLE_V;
->> +
->> +       switch (cfg->v_cdwn_type) {
->> +       case CDM_CDWN_DISABLE:
->> +               /* CLEAR METHOD_V field */
->> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
->> +               /* CLEAR DWNS_V bit */
->> +               opmode &= ~CDM_CDWN2_OP_MODE_ENABLE_V;
->> +               break;
->> +       case CDM_CDWN_PIXEL_DROP:
->> +               /* Clear METHOD_V field (pixel drop is 0) */
->> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
->> +               break;
->> +       case CDM_CDWN_AVG:
->> +               /* Clear METHOD_V field (Average is 0x1) */
->> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_AVG;
->> +               break;
->> +       case CDM_CDWN_COSITE:
->> +               /* Clear METHOD_V field (Average is 0x2) */
->> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_COSITE;
->> +               /* Co-site vertical coefficients */
->> +               DPU_REG_WRITE(c,
->> +                             CDM_CDWN2_COEFF_COSITE_V,
->> +                             cosite_v_coeff[0]);
->> +               break;
->> +       case CDM_CDWN_OFFSITE:
->> +               /* Clear METHOD_V field (Average is 0x3) */
->> +               opmode &= ~CDM_CDWN2_V_PIXEL_DROP_MASK;
->> +               opmode |= CDM_CDWN2_OP_MODE_METHOD_V_OFFSITE;
->> +
->> +               /* Off-site vertical coefficients */
->> +               DPU_REG_WRITE(c,
->> +                             CDM_CDWN2_COEFF_OFFSITE_V,
->> +                             offsite_v_coeff[0]);
->> +               break;
->> +       default:
->> +               return -EINVAL;
->> +       }
->> +
->> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
->> +               opmode |= CDM_CDWN2_OP_MODE_EN; /* EN CDWN module */
->> +       else
->> +               opmode &= ~CDM_CDWN2_OP_MODE_EN;
->> +
->> +       out_size = (cfg->output_width & 0xFFFF) | ((cfg->output_height & 0xFFFF) << 16);
->> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
->> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
->> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT, ((0x3FF << 16) | 0x0));
->> +
->> +       return 0;
->> +}
->> +
->> +static int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
->> +{
->> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
->> +       const struct dpu_format *fmt;
->> +       u32 opmode = 0;
->> +       u32 csc = 0;
->> +
->> +       if (!ctx || !cdm)
->> +               return -EINVAL;
->> +
->> +       fmt = cdm->output_fmt;
->> +
->> +       if (!DPU_FORMAT_IS_YUV(fmt))
->> +               return -EINVAL;
->> +
->> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, cdm->csc_cfg, true);
->> +       dpu_hw_cdm_setup_cdwn(ctx, cdm);
->> +
->> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
->> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
->> +                       return -EINVAL; /*unsupported format */
->> +               opmode = CDM_HDMI_PACK_OP_MODE_EN;
->> +               opmode |= (fmt->chroma_sample << 1);
->> +       }
->> +
->> +       csc |= CDM_CSC10_OP_MODE_DST_FMT_YUV;
->> +       csc &= ~CDM_CSC10_OP_MODE_SRC_FMT_YUV;
->> +       csc |= CDM_CSC10_OP_MODE_EN;
->> +
->> +       if (ctx && ctx->ops.bind_pingpong_blk)
->> +               ctx->ops.bind_pingpong_blk(ctx, cdm->pp_id);
->> +
->> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
->> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
->> +       return 0;
->> +}
->> +
->> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, const enum dpu_pingpong pp)
->> +{
->> +       struct dpu_hw_blk_reg_map *c;
->> +       int mux_cfg = 0xF; /* Disabled */
-> 
-> lowercase hex. And it is easier to move it to the if (pp) condition,
-> like it was done for INTF or WB.
-> 
-
-ack for the lowercase hex.
-
-hmm, i followed the dpu_hw_dsc_1_2 model, so basically for 0 
-(PINGPONG_NONE) cases it will stay at 0xf.
-
->> +
->> +       c = &ctx->hw;
->> +
->> +       if (pp)
->> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
->> +
->> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
->> +}
->> +
->> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
->> +                                  const struct dpu_cdm_cfg *cfg, void __iomem *addr,
->> +                                  const struct dpu_mdss_version *mdss_rev)
->> +{
->> +       struct dpu_hw_cdm *c;
->> +
->> +       c = drmm_kzalloc(dev, sizeof(*c), GFP_KERNEL);
->> +       if (!c)
->> +               return ERR_PTR(-ENOMEM);
->> +
->> +       c->hw.blk_addr = addr + cfg->base;
->> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
->> +
->> +       /* Assign ops */
->> +       c->idx = cfg->id;
->> +       c->caps = cfg;
->> +
->> +       c->ops.enable = dpu_hw_cdm_enable;
->> +       if (mdss_rev->core_major_ver >= 5)
->> +               c->ops.bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
->> +
->> +       return c;
->> +}
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
->> new file mode 100644
->> index 000000000000..e7d57dbd6103
->> --- /dev/null
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
->> @@ -0,0 +1,130 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +#ifndef _DPU_HW_CDM_H
->> +#define _DPU_HW_CDM_H
->> +
->> +#include "dpu_hw_mdss.h"
->> +#include "dpu_hw_top.h"
->> +
->> +struct dpu_hw_cdm;
->> +
->> +/**
->> + * struct dpu_hw_cdm_cfg : current configuration of CDM block
->> + *
->> + *  @output_width:         output ROI width of CDM block
->> + *  @output_height:        output ROI height of CDM block
->> + *  @output_bit_depth:     output bit-depth of CDM block
->> + *  @h_cdwn_type:          downsample type used for horizontal pixels
->> + *  @v_cdwn_type:          downsample type used for vertical pixels
->> + *  @output_fmt:           handle to dpu_format of CDM block
->> + *  @csc_cfg:              handle to CSC matrix programmed for CDM block
->> + *  @output_type:          interface to which CDM is paired (HDMI/WB)
->> + *  @pp_id:                ping-pong block to which CDM is bound to
->> + */
->> +struct dpu_hw_cdm_cfg {
->> +       u32 output_width;
->> +       u32 output_height;
->> +       u32 output_bit_depth;
->> +       u32 h_cdwn_type;
->> +       u32 v_cdwn_type;
->> +       const struct dpu_format *output_fmt;
->> +       const struct dpu_csc_cfg *csc_cfg;
->> +       u32 output_type;
->> +       int pp_id;
->> +};
->> +
->> +/*
->> + * These values are used indicate which type of downsample is used
->> + * in the horizontal/vertical direction for the CDM block.
->> + */
->> +enum dpu_hw_cdwn_type {
->> +       CDM_CDWN_DISABLE,
->> +       CDM_CDWN_PIXEL_DROP,
->> +       CDM_CDWN_AVG,
->> +       CDM_CDWN_COSITE,
->> +       CDM_CDWN_OFFSITE,
->> +};
->> +
->> +/*
->> + * CDM block can be paired with WB or HDMI block. These values match
->> + * the input with which the CDM block is paired.
->> + */
->> +enum dpu_hw_cdwn_output_type {
->> +       CDM_CDWN_OUTPUT_HDMI,
->> +       CDM_CDWN_OUTPUT_WB,
->> +};
->> +
->> +/*
->> + * CDM block can give an 8-bit or 10-bit output. These values
->> + * are used to indicate the output bit depth of CDM block
->> + */
->> +enum dpu_hw_cdwn_output_bit_depth {
->> +       CDM_CDWN_OUTPUT_8BIT,
->> +       CDM_CDWN_OUTPUT_10BIT,
->> +};
->> +
->> +/**
->> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
->> + *                         Assumption is these functions will be called after
->> + *                         clocks are enabled
->> + *  @enable:               Enables the output to interface and programs the
->> + *                         output packer
->> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
->> + *                         will feed pixels to this cdm
->> + */
->> +struct dpu_hw_cdm_ops {
->> +       /**
->> +        * Enable the CDM module
->> +        * @cdm         Pointer to chroma down context
->> +        */
->> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
->> +
->> +       /**
->> +        * Enable/disable the connection with pingpong
->> +        * @cdm         Pointer to chroma down context
->> +        * @pp          pingpong block id.
->> +        */
->> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, const enum dpu_pingpong pp);
->> +};
->> +
->> +/**
->> + * struct dpu_hw_cdm - cdm description
->> + * @base: Hardware block base structure
->> + * @hw: Block hardware details
->> + * @idx: CDM index
->> + * @caps: Pointer to cdm_cfg
->> + * @ops: handle to operations possible for this CDM
->> + */
->> +struct dpu_hw_cdm {
->> +       struct dpu_hw_blk base;
->> +       struct dpu_hw_blk_reg_map hw;
->> +
->> +       /* chroma down */
->> +       const struct dpu_cdm_cfg *caps;
->> +       enum  dpu_cdm  idx;
->> +
->> +       /* ops */
->> +       struct dpu_hw_cdm_ops ops;
->> +};
->> +
->> +/**
->> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
->> + * should be called once before accessing every cdm.
->> + * @dev: DRM device handle
->> + * @cdm: CDM catalog entry for which driver object is required
->> + * @addr :   mapped register io address of MDSS
->> + * @mdss_rev: mdss hw core revision
->> + */
->> +struct dpu_hw_cdm *dpu_hw_cdm_init(struct drm_device *dev,
->> +                                  const struct dpu_cdm_cfg *cdm, void __iomem *addr,
->> +                                  const struct dpu_mdss_version *mdss_rev);
->> +
->> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
->> +{
->> +       return container_of(hw, struct dpu_hw_cdm, base);
->> +}
->> +
->> +#endif /*_DPU_HW_CDM_H */
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> index f319c8232ea5..9db4cf61bd29 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
->> @@ -466,6 +466,7 @@ struct dpu_mdss_color {
->>   #define DPU_DBG_MASK_ROT      (1 << 9)
->>   #define DPU_DBG_MASK_DSPP     (1 << 10)
->>   #define DPU_DBG_MASK_DSC      (1 << 11)
->> +#define DPU_DBG_MASK_CDM      (1 << 12)
->>
->>   /**
->>    * struct dpu_hw_tear_check - Struct contains parameters to configure
->> --
->> 2.40.1
->>
-> 
-> 
+> - Arnaldo
+>
+> >  {
+> > -     return cpu_map__default_new();
+> > +     struct perf_cpu_map *cpus =3D NULL;
+> > +     FILE *onlnf;
+> > +
+> > +     onlnf =3D fopen("/sys/devices/system/cpu/online", "r");
+> > +     if (onlnf) {
+> > +             cpus =3D perf_cpu_map__read(onlnf);
+> > +             fclose(onlnf);
+> > +     }
+> > +     return cpus;
+> > +}
+> > +
+> > +struct perf_cpu_map *perf_cpu_map__new_online_cpus(void)
+> > +{
+> > +     struct perf_cpu_map *cpus =3D cpu_map__new_syfs_online();
+> > +
+> > +     if (cpus)
+> > +             return cpus;
+> > +
+> > +     return cpu_map__new_sysconf();
+> >  }
+> >
+> >
+> > @@ -180,27 +205,11 @@ struct perf_cpu_map *perf_cpu_map__read(FILE *fil=
+e)
+> >
+> >       if (nr_cpus > 0)
+> >               cpus =3D cpu_map__trim_new(nr_cpus, tmp_cpus);
+> > -     else
+> > -             cpus =3D cpu_map__default_new();
+> >  out_free_tmp:
+> >       free(tmp_cpus);
+> >       return cpus;
+> >  }
+> >
+> > -static struct perf_cpu_map *cpu_map__read_all_cpu_map(void)
+> > -{
+> > -     struct perf_cpu_map *cpus =3D NULL;
+> > -     FILE *onlnf;
+> > -
+> > -     onlnf =3D fopen("/sys/devices/system/cpu/online", "r");
+> > -     if (!onlnf)
+> > -             return cpu_map__default_new();
+> > -
+> > -     cpus =3D perf_cpu_map__read(onlnf);
+> > -     fclose(onlnf);
+> > -     return cpus;
+> > -}
+> > -
+> >  struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+> >  {
+> >       struct perf_cpu_map *cpus =3D NULL;
+> > @@ -211,7 +220,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *=
+cpu_list)
+> >       int max_entries =3D 0;
+> >
+> >       if (!cpu_list)
+> > -             return cpu_map__read_all_cpu_map();
+> > +             return perf_cpu_map__new_online_cpus();
+> >
+> >       /*
+> >        * must handle the case of empty cpumap to cover
+> > @@ -268,9 +277,11 @@ struct perf_cpu_map *perf_cpu_map__new(const char =
+*cpu_list)
+> >
+> >       if (nr_cpus > 0)
+> >               cpus =3D cpu_map__trim_new(nr_cpus, tmp_cpus);
+> > -     else if (*cpu_list !=3D '\0')
+> > -             cpus =3D cpu_map__default_new();
+> > -     else
+> > +     else if (*cpu_list !=3D '\0') {
+> > +             pr_warning("Unexpected characters at end of cpu list ('%s=
+'), using online CPUs.",
+> > +                        cpu_list);
+> > +             cpus =3D perf_cpu_map__new_online_cpus();
+> > +     } else
+> >               cpus =3D perf_cpu_map__new_any_cpu();
+> >  invalid:
+> >       free(tmp_cpus);
+> > diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/incl=
+ude/perf/cpumap.h
+> > index d0bf218ada11..b24bd8b8f34e 100644
+> > --- a/tools/lib/perf/include/perf/cpumap.h
+> > +++ b/tools/lib/perf/include/perf/cpumap.h
+> > @@ -22,7 +22,20 @@ struct perf_cpu_map;
+> >   * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -=
+1 value.
+> >   */
+> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+> > -LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
+> > +/**
+> > + * perf_cpu_map__new_online_cpus - a map read from
+> > + *                                 /sys/devices/system/cpu/online if
+> > + *                                 available. If reading wasn't possib=
+le a map
+> > + *                                 is created using the online process=
+ors
+> > + *                                 assuming the first 'n' processors a=
+re all
+> > + *                                 online.
+> > + */
+> > +LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_online_cpus(void);
+> > +/**
+> > + * perf_cpu_map__new - create a map from the given cpu_list such as "0=
+-7". If no
+> > + *                     cpu_list argument is provided then
+> > + *                     perf_cpu_map__new_online_cpus is returned.
+> > + */
+> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_lis=
+t);
+> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map=
+ *map);
+> > diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> > index a8ff64baea3e..8a71f841498e 100644
+> > --- a/tools/lib/perf/libperf.map
+> > +++ b/tools/lib/perf/libperf.map
+> > @@ -2,7 +2,7 @@ LIBPERF_0.0.1 {
+> >       global:
+> >               libperf_init;
+> >               perf_cpu_map__new_any_cpu;
+> > -             perf_cpu_map__default_new;
+> > +             perf_cpu_map__new_online_cpus;
+> >               perf_cpu_map__get;
+> >               perf_cpu_map__put;
+> >               perf_cpu_map__new;
+> > diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/=
+test-cpumap.c
+> > index 2c359bdb951e..c998b1dae863 100644
+> > --- a/tools/lib/perf/tests/test-cpumap.c
+> > +++ b/tools/lib/perf/tests/test-cpumap.c
+> > @@ -29,7 +29,7 @@ int test_cpumap(int argc, char **argv)
+> >       perf_cpu_map__put(cpus);
+> >       perf_cpu_map__put(cpus);
+> >
+> > -     cpus =3D perf_cpu_map__default_new();
+> > +     cpus =3D perf_cpu_map__new_online_cpus();
+> >       if (!cpus)
+> >               return -1;
+> >
+> > --
+> > 2.43.0.rc1.413.gea7ed67945-goog
+> >
+>
+> --
+>
+> - Arnaldo
