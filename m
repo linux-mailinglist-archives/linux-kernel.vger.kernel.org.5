@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1324F80E91B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A49D80E921
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbjLLK24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S232322AbjLLK3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjLLK2y (ORCPT
+        with ESMTP id S230509AbjLLK3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:28:54 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02C5A6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:29:00 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so41067255e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:29:00 -0800 (PST)
+        Tue, 12 Dec 2023 05:29:06 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E02D2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:29:12 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5c6734e0c22so2683587a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:29:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702376939; x=1702981739; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SeaHyhX4qasj2Fu/2Tzw0gDqXLK0DSDWi5tqGB7yRow=;
-        b=pWSJc2xFCXZLrPuMMxxRCC9WamSLAAVlaaXps9vZi3jeKCNwbPOk/mlQihc7Kk8B/I
-         Y110Nhjf3FX9MsCR7rlUcwwdYNmYdTCOeykrD/lo8ALEcE1baU7nnhqcduWjrYt9Ioo9
-         5pE/R3wfoTi/7UrmKyPvaZscU8f7f96JCrZxToWW5V0OLLSh820y+zwmOk68LCOiBHy/
-         xCmIYw/aN3IAaNnWVLWtZREFbJawncfqTsAocTku6UAQTS4qtXlqgPxCgh/QhdV6g5Pd
-         fslPcjm9XQ5D/cUkf/9aIaBODH962YSJODqpJePKf//p81xSl6KGKHaorFhlc1Mb36/t
-         YgPg==
+        d=gmail.com; s=20230601; t=1702376951; x=1702981751; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HHmbx/TAJnGNEEz0o7g8cBj5c1EY3ZNmozjuVxS5uaw=;
+        b=Zc3mT6EOiFdPj3Aou0tS5NxRXcidukYZ0EFefyByswGqZrCwliUDrqIVXGvccLxdJ9
+         h6h5BxX+RFzeRBoNZsvk8BKFdTT8uigLF1QZ8+2TIYpD94AgW2Uv2MEggTdYgW2B0fxO
+         G+GS5979ohcYNnF3eSOJhGQhamHnJoQj8eEAA4GTloMUXTWgFwqDLVEZP13ckbgEmvqc
+         DYg9wvdNruH9YBWe32Zc+YBEkjXAVkJiwlPGn++Noy0tFp5XIxUPzdfj4V3GNegKnqrt
+         jU1prFXQcyK48MwcJ1JSbC8U0jOdJgR6h2o6fTsCP4OPbB/t7CXeC4YmT+E0s9+5UfSW
+         1Iaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702376939; x=1702981739;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SeaHyhX4qasj2Fu/2Tzw0gDqXLK0DSDWi5tqGB7yRow=;
-        b=CdPjbT67Ngf+5JYsNGL6oAL65/osp2fAdqKc1YV8lmszCKI4sBBxkN3MdN1XZpLf1G
-         NnczEo1rdfN4YcOGRp5sO0isfB0uWVMjEByh7jgTh0temAjReiCLN5PHgivzzxbvqgrj
-         t6zi8+cpeTUrWGtVxAr7vI7KbmfT0lcb3hElUPk6yVCb+tbtTCByaleMQkpzad+CxlfA
-         Ss+mh2tXbLRUVIkCeCKYkwmgqbWvQSJIeYLAyEU2qB4S9/LJiDBBYeH/ynuXaI6R+T1+
-         UU04Lxx6LlVT8b3lm51kxZHntzQJIYoxQ1AAxRrcrfin/M2m9M7EM9wmZjP/7bU8abDQ
-         R/KA==
-X-Gm-Message-State: AOJu0YyVGaqZBUZr7fS25u2dUTPnazg31bPp3S0H5p7a9usp8NXrcLzv
-        sYAyH3bhy4Fh/EgeBjsrsesjq+KkEESP7JizAI4=
-X-Google-Smtp-Source: AGHT+IG8Mi1NW4ZQL2JUpn9jDg8U09Wzj4C75n5+zKSqiV8ANwx3mL4BdG+yoSgmB2FhjMXbnihMUg==
-X-Received: by 2002:a05:600c:1686:b0:40c:2992:716e with SMTP id k6-20020a05600c168600b0040c2992716emr3176778wmn.129.1702376939137;
-        Tue, 12 Dec 2023 02:28:59 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm18366061wmb.27.2023.12.12.02.28.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 02:28:58 -0800 (PST)
-Message-ID: <727a776d-43bc-479b-bd63-80a0985f99c8@linaro.org>
-Date:   Tue, 12 Dec 2023 11:28:58 +0100
+        d=1e100.net; s=20230601; t=1702376951; x=1702981751;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HHmbx/TAJnGNEEz0o7g8cBj5c1EY3ZNmozjuVxS5uaw=;
+        b=iUbnPyCdOAFiI29B0FuFaQh5+mqB6HnthxiBNwk7zl+HOJr+lYvuTiZTWly588s9mg
+         xSd97R5MR1q8oLqXBLWNeb36kr+x4JdEhniacxxfnRSLXGT2W/70XWSy0k6mWr7i8ZA/
+         EqFmTOwWZwVGAsXKiKu4ve3MRgRFNoSb3ChxfW9Ij6QZnC5tdhfIcoGxGttUplQnlcbk
+         BV2/ULjnlqUaxUVcFptDRjPFvAU3Li/QXWWmp9kQ+pEg/iM333Jbv+gzP4gkHzznE2vs
+         aiS0bHgL6abXDfUXbpjl1GO3JRDdEtH7UgSuzcnPgQdRv9ghWJDyYPcdEE+Hd9RwGEWc
+         IM5Q==
+X-Gm-Message-State: AOJu0YzLV06+QvI+wqovdEbbqiVld0fZIh/7dSgDx8InkXnxFVtDxP0o
+        v9Vllgfo4q5HBFw7uAGMaEHh11AEoHRvjdbtLe8=
+X-Google-Smtp-Source: AGHT+IE48kxlzdKD3yLytlZEb4kSrO2sHIRT3ZAoG2MXpUlCf7iBAfbi5OAjmRU9iIoXDqrpN6Spq6yjmg/XfwEqDd4=
+X-Received: by 2002:a17:90a:8a0e:b0:286:a944:abb2 with SMTP id
+ w14-20020a17090a8a0e00b00286a944abb2mr2532263pjn.20.1702376951377; Tue, 12
+ Dec 2023 02:29:11 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] thermal: core: Rework thermal zone availability
- check
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <1880915.tdWV9SEqCh@kreacher> <2258035.iZASKD2KPV@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <2258035.iZASKD2KPV@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231212033259.189718-1-aford173@gmail.com> <20231212033259.189718-2-aford173@gmail.com>
+In-Reply-To: <20231212033259.189718-2-aford173@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 12 Dec 2023 04:29:00 -0600
+Message-ID: <CAHCN7xJC_+0uHa1_ODXLjEXAL-S2hZWr-GBPATQ_BBZaY2c4_A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation rounding
+To:     dri-devel@lists.freedesktop.org
+Cc:     aford@beaconembedded.com,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 20:20, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> In order to avoid running __thermal_zone_device_update() for thermal
-> zones going away, the thermal zone lock is held around device_del()
-> in thermal_zone_device_unregister() and thermal_zone_device_update()
-> passes the given thermal zone device to device_is_registered().
-> This allows thermal_zone_device_update() to skip the
-> __thermal_zone_device_update() if device_del() has already run for
-> the thermal zone at hand.
-> 
-> However, instead of looking at driver core internals, the thermal
-> subsystem may as well rely on its own data structures for this
-> purpose.  Namely, if the thermal zone is not present in
-> thermal_tz_list, it can be regarded as unavailable, which in fact is
-> already the case in thermal_zone_device_unregister().  Accordingly,
-> the device_is_registered() check in thermal_zone_device_update() can
-> be replaced with checking whether or not the node list_head in struct
-> thermal_zone_device is empty, in which case it is not there in
-> thermal_tz_list.
-> 
-> To make this work, though, it is necessary to initialize tz->node
-> in thermal_zone_device_register_with_trips() before registering the
-> thermal zone device and it needs to be added to thermal_tz_list and
-> deleted from it under its zone lock.
-> 
-> After the above modifications, the zone lock does not need to be
-> held around device_del() in thermal_zone_device_unregister() any more.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
+On Mon, Dec 11, 2023 at 9:33=E2=80=AFPM Adam Ford <aford173@gmail.com> wrot=
+e:
+>
+> When using video sync pulses, the HFP, HBP, and HSA are divided between
+> the available lanes if there is more than one lane.  For certain
+> timings and lane configurations, the HFP may not be evenly divisible.
+> If the HFP is rounded down, it ends up being too small which can cause
+> some monitors to not sync properly. In these instances, adjust htotal
+> and hsync to round the HFP up, and recalculate the htotal.
+>
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+For anyone who's following this,  I added a note which I apparently
+forgot to save:
+
+This adds support for 720p60 in the i.MX8M Plus.
+
+NXP uses a look-up table in their downstream code to accomplish this.
+Using this calculation, the driver can adjust without the need for a
+complicated table and should be flexible for different timings and
+resolutions depending on the monitor.
+
+I don't have a DSI analyzer, and this appears to only work on
+i.MX8M Plus but not Mini and Nano for some reason, despite their
+having a similar DSI bridge.
+
+When Frieder teste this, he reported no changes on the Kontrol BL
+i.MX8MM:   "So at least there is no negative impact in this case"
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+If someone else has an i.MX8MP, I would appreciate any feedback.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+thanks
 
+adam
+
+> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.=
+MX8MM with HDMI monitor
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/brid=
+ge/samsung-dsim.c
+> index 239d253a7d71..f5795da1d8bb 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -1628,6 +1628,27 @@ static int samsung_dsim_atomic_check(struct drm_br=
+idge *bridge,
+>                 adjusted_mode->flags |=3D (DRM_MODE_FLAG_PHSYNC | DRM_MOD=
+E_FLAG_PVSYNC);
+>         }
+>
+> +       /*
+> +        * When using video sync pulses, the HFP, HBP, and HSA are divide=
+d between
+> +        * the available lanes if there is more than one lane.  For certa=
+in
+> +        * timings and lane configurations, the HFP may not be evenly div=
+isible.
+> +        * If the HFP is rounded down, it ends up being too small which c=
+an cause
+> +        * some monitors to not sync properly. In these instances, adjust=
+ htotal
+> +        * and hsync to round the HFP up, and recalculate the htotal. Thr=
+ough trial
+> +        * and error, it appears that the HBP and HSA do not appearto nee=
+d the same
+> +        * correction that HFP does.
+> +        */
+> +       if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lane=
+s > 1) {
+> +               int hfp =3D adjusted_mode->hsync_start - adjusted_mode->h=
+display;
+> +               int remainder =3D hfp % dsi->lanes;
+> +
+> +               if (remainder) {
+> +                       adjusted_mode->hsync_start +=3D remainder;
+> +                       adjusted_mode->hsync_end   +=3D remainder;
+> +                       adjusted_mode->htotal      +=3D remainder;
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.40.1
+>
