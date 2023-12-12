@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F80680EE58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D205280EE59
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376443AbjLLOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        id S1376462AbjLLOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:05:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376427AbjLLOFs (ORCPT
+        with ESMTP id S1376435AbjLLOFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 09:05:48 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB02DFD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:05:53 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BFF8E0002;
-        Tue, 12 Dec 2023 14:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702389952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CA0AD;
+        Tue, 12 Dec 2023 06:05:54 -0800 (PST)
+Date:   Tue, 12 Dec 2023 14:05:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702389952;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8VgCEu9GpjqJrf+SumYZk2dGW/A3Nbxfr4XJ0APRxZs=;
-        b=BQnsfRN2Q+kLg7bzZvez/qL4QLdRn+pFSg8c1FZ/YF2OVoSyOJAj1R6rwt0uDPArfPQ3vV
-        6wdhNvf3KCjEprppYqoafwkNdoW9n8zC5mkOJ4TruaZba/r3rWnjcary3RAVnMeqrwGHf2
-        tfRDonIUwsxe0kJXcaeSsZjgLkEPIZ2/EcZ4THs/4O+YwD7pB0ouWUpBm7Bp+h0TN3teAq
-        xA6Ylq/MDwHbsgTawPYFosctRZgN0KQoQFMoRG1wloIzW/QPSq33RUetApKQRLloBfti8+
-        qiTksBELzNZlWb7dslWsuonqffvdoh05NNtouedFOAgHf3Q5fPTJQRZv1sDHlQ==
-Date:   Tue, 12 Dec 2023 15:05:45 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v6 20/40] mtd: rawnand: add support for ts72xx
-Message-ID: <20231212150545.61806147@xps-13>
-In-Reply-To: <29970d694d155dee0c76612f453eaa06a929e2c1.camel@maquefel.me>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-        <20231212-ep93xx-v6-20-c307b8ac9aa8@maquefel.me>
-        <2023121220-shine-caviar-68dc@gregkh>
-        <29970d694d155dee0c76612f453eaa06a929e2c1.camel@maquefel.me>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=UcMokWq25uAys5K3zaZ/+MW+ia8KqiqZhTtnTFZPKas=;
+        b=h+eOd3J2g2Iyqj5Eg0ooxHw6XCGxHg4gvtqhaOe60A/Q3U+CHD/9yTaL8EWrsUuwEUAD8a
+        H4ti4m8WIPSdIRFeWrM8ZDsUTdvMnTfk1ckQjydATknUkjO6JY7WJaPsI/WAxBi+IwUWLK
+        MMF++VomQG7dr7D5XWUKBRcG6p/WmXPtaCRiPJ75edW30PzZfIwcMZsQ2OyA9D7ACU7+0T
+        YKjuDGeqMtr6byemJazGY5G6fVUepJQchULJ7r9laoVeWK2cdMrf5pAk8DCfCfpFFpC7lo
+        zwntlr8N9yob1WqLoV4f8xYEHSt06C5UiN4GhatC8EehqONEs55OZ3vhF2hUBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702389952;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UcMokWq25uAys5K3zaZ/+MW+ia8KqiqZhTtnTFZPKas=;
+        b=vJ2cDEMliaJe9AtMpEZrJRw5/yBFpnHSXG23r8BCDBOu4sKkWssnPvKmwkcwfSNddwxf6E
+        02AIrP/6dBc/pfCA==
+From:   "tip-bot2 for Nikolay Borisov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/docs: Remove reference to syscall trampoline in PTI
+Cc:     Nikolay Borisov <nik.borisov@suse.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231102130204.41043-1-nik.borisov@suse.com>
+References: <20231102130204.41043-1-nik.borisov@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Message-ID: <170238995160.398.1051285467012003027.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,71 +65,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following commit has been merged into the x86/cleanups branch of tip:
 
-nikita.shubin@maquefel.me wrote on Tue, 12 Dec 2023 11:35:48 +0300:
+Commit-ID:     7a0a6d55ed93fe064039c4e014d5cf3a97391bbb
+Gitweb:        https://git.kernel.org/tip/7a0a6d55ed93fe064039c4e014d5cf3a97391bbb
+Author:        Nikolay Borisov <nik.borisov@suse.com>
+AuthorDate:    Thu, 02 Nov 2023 15:02:04 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 12 Dec 2023 14:43:59 +01:00
 
-> Hello Greg!
->=20
-> On Tue, 2023-12-12 at 09:30 +0100, Greg Kroah-Hartman wrote:
-> > On Tue, Dec 12, 2023 at 11:20:37AM +0300, Nikita Shubin via B4 Relay
-> > wrote: =20
-> > > From: Nikita Shubin <nikita.shubin@maquefel.me>
-> > >=20
-> > > Technologic Systems has it's own nand controller implementation in
-> > > CPLD.
-> > >=20
-> > > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> > > ---
-> > > =C2=A0drivers/mtd/nand/raw/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 7 +
-> > > =C2=A0drivers/mtd/nand/raw/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> > > =C2=A0drivers/mtd/nand/raw/technologic-nand-controller.c | 220
-> > > +++++++++++++++++++++
-> > > =C2=A03 files changed, 228 insertions(+)
-> > >=20
-> > > diff --git a/drivers/mtd/nand/raw/Kconfig
-> > > b/drivers/mtd/nand/raw/Kconfig
-> > > index cbf8ae85e1ae..3937c10dea1c 100644
-> > > --- a/drivers/mtd/nand/raw/Kconfig
-> > > +++ b/drivers/mtd/nand/raw/Kconfig
-> > > @@ -449,6 +449,13 @@ config MTD_NAND_RENESAS
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Enables suppor=
-t for the NAND controller found on Renesas
-> > > R-Car
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Gen3 and RZ/N1=
- SoC families.
-> > > =C2=A0
-> > > +config MTD_NAND_TS72XX
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tristate "ts72xx NAND cont=
-roller"
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0depends on ARCH_EP93XX && =
-HAS_IOMEM
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0help
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Enables support for=
- NAND controller on ts72xx SBCs.
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This is a legacy dr=
-iver based on gen_nand. =20
-> >=20
-> > Why is a new "legacy driver" being written these days?=C2=A0 Why not do=
- it
-> > properly? =20
->=20
-> Sorry, my bad, description is a leftover from older description (when i
-> was allowed to submit a legacy one).
->=20
-> The driver is mostly new, shiny and approved by Miquel:
->=20
-> https://lore.kernel.org/lkml/20231004103911.2aa65354@xps-13/
->=20
-> The KConfig description should be fixed.
+x86/docs: Remove reference to syscall trampoline in PTI
 
-Indeed, later submissions carried a brand new implementation which no
-longer leverages any legacy hook. The Kconfig description is wrong,
-good catch.
+Commit
 
-Thanks,
-Miqu=C3=A8l
+  bf904d2762ee ("x86/pti/64: Remove the SYSCALL64 entry trampoline")
+
+removed the syscall trampoline and instead opted to enable using the
+default SYSCALL64 entry point by mapping the percpu TSS. Unfortunately,
+the PTI documentation wasn't updated when the respective changes were
+made, so bring the doc up to speed.
+
+Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231102130204.41043-1-nik.borisov@suse.com
+---
+ Documentation/arch/x86/pti.rst | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/arch/x86/pti.rst b/Documentation/arch/x86/pti.rst
+index 4b858a9..e08d351 100644
+--- a/Documentation/arch/x86/pti.rst
++++ b/Documentation/arch/x86/pti.rst
+@@ -81,11 +81,9 @@ this protection comes at a cost:
+      and exit (it can be skipped when the kernel is interrupted,
+      though.)  Moves to CR3 are on the order of a hundred
+      cycles, and are required at every entry and exit.
+-  b. A "trampoline" must be used for SYSCALL entry.  This
+-     trampoline depends on a smaller set of resources than the
+-     non-PTI SYSCALL entry code, so requires mapping fewer
+-     things into the userspace page tables.  The downside is
+-     that stacks must be switched at entry time.
++  b. Percpu TSS is mapped into the user page tables to allow SYSCALL64 path
++     to work under PTI. This doesn't have a direct runtime cost but it can
++     be argued it opens certain timing attack scenarios.
+   c. Global pages are disabled for all kernel structures not
+      mapped into both kernel and userspace page tables.  This
+      feature of the MMU allows different processes to share TLB
+@@ -167,7 +165,7 @@ that are worth noting here.
+  * Failures of the selftests/x86 code.  Usually a bug in one of the
+    more obscure corners of entry_64.S
+  * Crashes in early boot, especially around CPU bringup.  Bugs
+-   in the trampoline code or mappings cause these.
++   in the mappings cause these.
+  * Crashes at the first interrupt.  Caused by bugs in entry_64.S,
+    like screwing up a page table switch.  Also caused by
+    incorrectly mapping the IRQ handler entry code.
