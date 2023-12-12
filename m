@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C1D80F604
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE25B80F60C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376710AbjLLTHY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 14:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S233092AbjLLTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLTHX (ORCPT
+        with ESMTP id S230071AbjLLTIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:07:23 -0500
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8764D93
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:07:29 -0800 (PST)
-Received: from omf01.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay03.hostedemail.com (Postfix) with ESMTP id 83586A0AA6;
-        Tue, 12 Dec 2023 19:07:27 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id AC6D460009;
-        Tue, 12 Dec 2023 19:07:23 +0000 (UTC)
-Message-ID: <74126e6e301d2f4a0e5a546caa54961dbc2d492c.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: use utf-8 match for spell checking
-From:   Joe Perches <joe@perches.com>
-To:     Antonio Borneo <antonio.borneo@foss.st.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?ISO-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        =?ISO-8859-1?Q?Cl=E9ment?= Le Goffic 
-        <clement.legoffic@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com
-Date:   Tue, 12 Dec 2023 11:07:22 -0800
-In-Reply-To: <20231212094310.3633-1-antonio.borneo@foss.st.com>
-References: <20231212094310.3633-1-antonio.borneo@foss.st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 12 Dec 2023 14:08:14 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4457E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:08:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D54B9C433C8;
+        Tue, 12 Dec 2023 19:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702408094;
+        bh=jhISTjjXnV6IhH0cY8Vge/0tePQdfehvyIi305w0McY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Au4hC/1gn8GAGqeNMIHMx+pf9H5e6cZx6if1YTAQ6myI1fcVcXp5E5HE2JZd7l5Ox
+         z67YTPNEYCNjnSuydNuYjf11+fIKfzPgHgAvXDJMesthEcR7qviRft/QV/5zK2IHqc
+         ruHQ42BTGcBdnaq77FMuM0r1fOHC9LqNVWjgGTPuAoXZTpwGA7dF5WXD028QLwM5fU
+         83R8uUGoHmwAgKnoHD0ERZyXGTjjQTXsSeJdhkJcoe/E2jvGdjrJ/mAO3N0OzKkaja
+         5wgu6LG6g2ra++dYX1DnvaNKyc0fxe1LJrSA1Kpyox0qvKLpHzYMqlHmzVyMur9vKu
+         ehmZCE5A0RUew==
+Date:   Tue, 12 Dec 2023 19:08:06 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [net-next v1 14/16] net: add SO_DEVMEM_DONTNEED setsockopt to
+ release RX frags
+Message-ID: <20231212190806.GB5817@kernel.org>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-15-almasrymina@google.com>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: AC6D460009
-X-Stat-Signature: w5n7g444nosr9atuewo16cpfkdo4myh4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208005250.2910004-15-almasrymina@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19HSExzuAnmITnpGMOOhmfORfXhjn61ikg=
-X-HE-Tag: 1702408043-976277
-X-HE-Meta: U2FsdGVkX1+qu2fsds+XWX0ynq9IUdQllRFbwE5CL+N19JiQH2TZmrxd8yiWLMztmVJnsfG6mCuWKsrRztDBPx9H9Q68VfHgwSKwHMgdoWmW6aApliF1xHTKVtl7TS3tN2qV+tVrWr5z3vqSMiul5Xxwx40GLUZ2ty3hkYPTYsddFNJlkkPPYXGJYEeArG5xo97Pyw1uSirZJifx5nUp0yP6CypEBIMsq5eBq5/b4aKibqMK3SKQ2rLhmHRpNMos1urMaPKn450vlPJmR1uVkG1TMACEF2mXt1hxHARHpJWZahcZYhgkdX9T4UeHilNYQxxV3wp9SVfvEJowHkJ7r3jz7ZX3ooqkq9q3ztFhk/QnPg6TM2jDzUxIMwPWU3LFdKC4EyoZDTtPUzTbcgGEzyTtXqpHTubMT/GLvqJSjZf9MvTkLOdeUTfZXAokxWsJ
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-12 at 10:43 +0100, Antonio Borneo wrote:
-> The current code that checks for misspelling verifies, in a more
-> complex regex, if $rawline matches [^\w]($misspellings)[^\w]
+On Thu, Dec 07, 2023 at 04:52:45PM -0800, Mina Almasry wrote:
+> Add an interface for the user to notify the kernel that it is done
+> reading the devmem dmabuf frags returned as cmsg. The kernel will
+> drop the reference on the frags to make them available for re-use.
 > 
-> Being $rawline a byte-string, a utf-8 character in $rawline can
-> match the non-word-char [^\w].
-> E.g.:
-> 	./script/checkpatch.pl --git 81c2f059ab9
-> 	WARNING: 'ment' may be misspelled - perhaps 'meant'?
-> 	#36: FILE: MAINTAINERS:14360:
-> 	+M:     Clément Léger <clement.leger@bootlin.com>
-> 	            ^^^^
-> 
-> Use a utf-8 version of $rawline for spell checking.
-> 
-> Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
-> Reported-by: Clément Le Goffic <clement.legoffic@foss.st.com>
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 
-Seems sensible, thanks, but:
+...
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3477,7 +3477,8 @@ sub process {
->  # Check for various typo / spelling mistakes
->  		if (defined($misspellings) &&
->  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
-> -			while ($rawline =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
-> +			my $rawline_utf8 = decode("utf8", $rawline);
-> +			while ($rawline_utf8 =~ /(?:^|[^\w\-'`])($misspellings)(?:[^\w\-'`]|$)/gi) {
->  				my $typo = $1;
->  				my $blank = copy_spacing($rawline);
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index fef349dd72fa..521bdc4ff260 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -1051,6 +1051,41 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
+>  	return 0;
+>  }
+>  
+> +static noinline_for_stack int
+> +sock_devmem_dontneed(struct sock *sk, sockptr_t optval, unsigned int optlen)
+> +{
+> +	struct dmabuf_token tokens[128];
 
-Maybe this needs to use $rawline_utf8 ?
+Hi Mina,
 
->  				my $ptr = substr($blank, 0, $-[1]) . "^" x length($typo);
+I am guessing it is mostly due to the line above,
+but on x86 32bit builds I see:
 
-And may now the $fix bit will not always work properly
+	warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than
 
+> +	unsigned int num_tokens, i, j;
+> +	int ret;
+> +
+> +	if (sk->sk_type != SOCK_STREAM || sk->sk_protocol != IPPROTO_TCP)
+> +		return -EBADF;
+> +
+> +	if (optlen % sizeof(struct dmabuf_token) || optlen > sizeof(tokens))
+> +		return -EINVAL;
+> +
+> +	num_tokens = optlen / sizeof(struct dmabuf_token);
+> +	if (copy_from_sockptr(tokens, optval, optlen))
+> +		return -EFAULT;
+> +
+> +	ret = 0;
+> +	for (i = 0; i < num_tokens; i++) {
+> +		for (j = 0; j < tokens[i].token_count; j++) {
+> +			struct page *page = xa_erase(&sk->sk_user_pages,
+> +						     tokens[i].token_start + j);
+> +
+> +			if (page) {
+> +				if (WARN_ON_ONCE(!napi_pp_put_page(page,
+> +								   false)))
+> +					page_pool_page_put_many(page, 1);
+> +				ret++;
+> +			}
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  void sockopt_lock_sock(struct sock *sk)
+>  {
+>  	/* When current->bpf_ctx is set, the setsockopt is called from
+
+...
