@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B69280F2ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9479680F306
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbjLLQfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S1346709AbjLLQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:35:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbjLLQfY (ORCPT
+        with ESMTP id S232988AbjLLQfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:35:24 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20656118;
-        Tue, 12 Dec 2023 08:35:27 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 21F4DC0002;
+        Tue, 12 Dec 2023 11:35:25 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CB7CF;
+        Tue, 12 Dec 2023 08:35:28 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EC60D1BF206;
         Tue, 12 Dec 2023 16:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702398925;
+        t=1702398926;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1f+FndhwKpT84ogIpFFowDtfhlo7ZPzn2H3k9c4MjvQ=;
-        b=pM3zmtSlclr+D1O/xCkzLaAjtI/B72lxCilVSaiuiSSCUG7EzetyTCB7pOG1Yy8WSqyG81
-        arsA8Q1c8A1TpE0B9PMhO9aWdW6coq3yWFsFoEpJahjVQNXFFyfpxaN1SltHyBmR5cA9Xk
-        U8lXpJWOm5UafZMAclHkoTO4pwtkzPp7HBIgUNBa8PNrGGV3RZFG9EDIaQ67hQpM2E6ghS
-        Ici687NvFqfQxZXDUgOucl7+7J+OTbQVEZ9ADkJUpZwhAhzNAfN8TnVl2XcP994NxXBbW4
-        yco/O0bmEUwpjh4nLjHNGmPRZgURf7W7u5mtjpXt71pGwJgMjtLFVGRBCg7GTA==
+        bh=lKcme3eaH65euvc/e2P73RSdLcgnsk0eRcbckWPUCdg=;
+        b=hV61DdsZAAj98ndi9omfMHJ64OQ103h1zci1b7xPMPI1LEe6X2UpwRXzSwRTP/3K71WgTO
+        4xbWq2ONnAmjcVGBPXj8Ed3viBxklngetrxWiKpw3UpPk1GG262+vfczvzm4jeAj14H5FK
+        cg/ZVreDQSR7LUJ+457DJdUb6m9Sm8PEMrTrULk3xsBQ0OqFDaXd8wCwPcGX4mn7riw6JP
+        rcSkchf6mhbGT9zrClx1kSOVargaobSp0kX9ciKayh2lW/t1HQtlwZd13tBauicNAC7QzA
+        RZ9fT/zbzPwTfbpvNhw6XmMgi6aoy89132BttBKG0Wt9FXXKyezjYx15F9UMfQ==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -40,10 +40,11 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
         Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 02/22] MIPS: Export higher/highest relocation functions in uasm
-Date:   Tue, 12 Dec 2023 17:34:34 +0100
-Message-ID: <20231212163459.1923041-3-gregory.clement@bootlin.com>
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v5 03/22] MIPS: spaces: Define a couple of handy macros
+Date:   Tue, 12 Dec 2023 17:34:35 +0100
+Message-ID: <20231212163459.1923041-4-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -52,70 +53,60 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Define KSEGX_SIZE to represent the size of each KSEG segment.
 
-Export uasm_rel_{higher,highest} functions.
-Those functions can be helpful in dealing with 64bit immediates.
+Introduce TO_CAC and TO_UNCAC specifically for 32-bit builds, pointing
+to KSEG0 and KSEG1.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+TO_PHYS remains exclusive to 64-bit builds to encourage the use of
+__pa and prevent compatibility address space confusion.
+
+KSEGX_SIZE is defined to size of each KSEG segment.
+
+Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/include/asm/uasm.h | 2 ++
- arch/mips/mm/uasm.c          | 6 ++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/addrspace.h           | 5 +++++
+ arch/mips/include/asm/mach-generic/spaces.h | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
-index 296bcf31abb57..12db6d2fca070 100644
---- a/arch/mips/include/asm/uasm.h
-+++ b/arch/mips/include/asm/uasm.h
-@@ -196,6 +196,8 @@ void uasm_build_label(struct uasm_label **lab, u32 *addr,
- #ifdef CONFIG_64BIT
- int uasm_in_compat_space_p(long addr);
- #endif
-+int uasm_rel_highest(long val);
-+int uasm_rel_higher(long val);
- int uasm_rel_hi(long val);
- int uasm_rel_lo(long val);
- void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
-diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-index 125140979d62c..6846bf2084c5e 100644
---- a/arch/mips/mm/uasm.c
-+++ b/arch/mips/mm/uasm.c
-@@ -425,7 +425,7 @@ int uasm_in_compat_space_p(long addr)
- }
- UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
+diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
+index 59a48c60a065c..03a5e2c8b5dc9 100644
+--- a/arch/mips/include/asm/addrspace.h
++++ b/arch/mips/include/asm/addrspace.h
+@@ -47,6 +47,11 @@
+  */
+ #define KSEGX(a)		((_ACAST32_(a)) & _ACAST32_(0xe0000000))
  
--static int uasm_rel_highest(long val)
-+int uasm_rel_highest(long val)
- {
- #ifdef CONFIG_64BIT
- 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -433,8 +433,9 @@ static int uasm_rel_highest(long val)
- 	return 0;
++/*
++ * Gives the size of each kernel segment
++ */
++#define KSEGX_SIZE		0x20000000
++
+ /*
+  * Returns the physical address of a CKSEGx / XKPHYS address
+  */
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
+index b247575c5e699..c502bdd98aad0 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -49,6 +49,8 @@
+ #define HIGHMEM_START		_AC(0x20000000, UL)
  #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_highest);
  
--static int uasm_rel_higher(long val)
-+int uasm_rel_higher(long val)
- {
++#define TO_UNCAC(x)		CKSEG1ADDR(x)
++#define TO_CAC(x)		CKSEG0ADDR(x)
+ #endif /* CONFIG_32BIT */
+ 
  #ifdef CONFIG_64BIT
- 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -442,6 +443,7 @@ static int uasm_rel_higher(long val)
- 	return 0;
- #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_higher);
- 
- int uasm_rel_hi(long val)
- {
 -- 
 2.42.0
 
