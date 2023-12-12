@@ -2,183 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B13180E2DB
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBA480E2DC
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345863AbjLLDhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S1345881AbjLLDii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLDhH (ORCPT
+        with ESMTP id S229562AbjLLDig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:37:07 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FBBAC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:37:12 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VyL-1Lp_1702352229;
-Received: from 30.97.48.77(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VyL-1Lp_1702352229)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Dec 2023 11:37:10 +0800
-Message-ID: <69705c2a-3b6d-480a-bea1-2b602c8fc5ad@linux.alibaba.com>
-Date:   Tue, 12 Dec 2023 11:37:32 +0800
+        Mon, 11 Dec 2023 22:38:36 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01180AC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:38:42 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d9dadc3dc0so3860687a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702352322; x=1702957122; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GfR12TX/dwvBcAH+BhtOx1KSZ94OetGmBU0H8LS/sPA=;
+        b=t7ZaQx2G0hxpGZS+hI5rz8kMJXO7zVbSfTu1n72b1WO5UfTMX7vaM2fJ5Sd9fTd8cv
+         +wdy2kotuUiSBVWsgXJ+ScwxaakTNWJGGx58foV53ntMmr5HtosCL4Yr1U3fsiEtptgK
+         +XX3VMKTJ8o77Y1ye7AAHPJLNhj5DQIs5pkaejyIEq2B1Zhm/O3Tj66pAWKxnUVD+c/L
+         A1zsEPWI7pN8Xq+KpVHFt1l5xceu6JZC9dzr/61MnsTBTdkKBjfJAeUV2MZ2qwQJcAyR
+         JTf2mq/jmiqRuZubjpGDq4r3OwTY+tdBtjM4AWUxXqKO8WQdIxIukTSsbiRTK3vt6G6G
+         sSSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702352322; x=1702957122;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GfR12TX/dwvBcAH+BhtOx1KSZ94OetGmBU0H8LS/sPA=;
+        b=gPv8Rh2BIPEg+4l7kZVZFw3ALVOyqdBRAQdo4i73Y2pudunsyjiCIFOtYVS+3WwI/s
+         uEzkYG73QTWrx276wwIkn+Y1hmY3i+rJORjZGsLwvesFSNQnZd4KkBn4RGGpuZ3kYgz5
+         jRIU/X8m4MHj7jN1lZ/BSikNh6xMDF5dU2iv9Z4hWlj0F1KEmwP/iu4qwNvgmxuVldXa
+         putZNs/e2JLh9a5R4qmS8rh4wDMMinMrggyHSp+q+1uFwrUaUiGWs18NizRRCGpctfvI
+         RFN2FO1h5ZT1wAGjD+eO6alC46ByRtqtttwjNGUeoUmcF6PwjepbfPJA2TFO1EoubYLD
+         FWRg==
+X-Gm-Message-State: AOJu0YzauhExnRAzhk4VjGdtVwSwy34UYHb5XItFMpm4hx/F1zYj6EDG
+        7RKZKpqnvcZlgbsfiJBVSUEbLhqWhOZhLAZ2/xr4Q8gd
+X-Google-Smtp-Source: AGHT+IHp9MhyQyyikun064nStAYIA08DlIfICK3A0xryOIlufQLKkDvyKTo5uaCMgB0OOlCdHV/vGQ==
+X-Received: by 2002:a05:6830:1e83:b0:6d9:d7b0:b with SMTP id n3-20020a0568301e8300b006d9d7b0000bmr5579222otr.17.1702352322240;
+        Mon, 11 Dec 2023 19:38:42 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.62.113])
+        by smtp.gmail.com with ESMTPSA id v15-20020a05683011cf00b006ce2db9e6c4sm2008714otq.36.2023.12.11.19.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 19:38:41 -0800 (PST)
+Message-ID: <a2fbbaa2-51d2-4a8c-b032-5331e72cd116@linaro.org>
+Date:   Mon, 11 Dec 2023 21:38:39 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] nvmem: sprd: Remove the lock operation to support
- customers being able to program efuse multiple times
-To:     Yanxin Huang <yanxin.huang@unisoc.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        huang yanxin <yanxin.huang07@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-References: <20231208061134.26354-1-yanxin.huang@unisoc.com>
- <20231208061134.26354-3-yanxin.huang@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231208061134.26354-3-yanxin.huang@unisoc.com>
+Subject: Re: [PATCH 5.15 000/141] 5.15.143-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, arnd@arndb.de
+References: <20231211182026.503492284@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20231211182026.503492284@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-
-On 12/8/2023 2:11 PM, Yanxin Huang wrote:
-> The customer uses the efuse interface to program efuse based on block
-> size. Each time a part of the content is programmed, according to the
-> original code logic, as long as the bytes parameter is equal to the block
-> size, the block will be locked, which will result in the efuse block
-> being unable to program multiple times.
-
-Initially, we only supported one-time programming. Can you describe the 
-scenarios for multiple programming?
-
-> This patch removes the efuse block locking operation, as the unisoc efuse
-> driver supports customers to program the same block multiple times.If you
-> need to lock a block, you can directly program the lock bit of the block.
-
-How can "directly program the lock bit of the block" for users? You 
-already removed sprd_efuse_set_prog_lock().
-
-
-BTW, You should separate the patches for bugfix and feature 
-modifications into different patch sets, so that the bugfix patches can 
-be reviewed and merged ASAP.
-
-> Signed-off-by: Yanxin Huang <yanxin.huang@unisoc.com>
-> ---
->   drivers/nvmem/sprd-efuse.c | 57 ++------------------------------------
->   1 file changed, 2 insertions(+), 55 deletions(-)
+On 11/12/23 12:20 p. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.143 release.
+> There are 141 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-> index f0880f8fc56d..5220fd680f47 100644
-> --- a/drivers/nvmem/sprd-efuse.c
-> +++ b/drivers/nvmem/sprd-efuse.c
-> @@ -143,30 +143,6 @@ static void sprd_efuse_set_read_power(struct sprd_efuse *efuse, bool en)
->   	usleep_range(1000, 1200);
->   }
->   
-> -static void sprd_efuse_set_prog_lock(struct sprd_efuse *efuse, bool en)
-> -{
-> -	u32 val = readl(efuse->base + SPRD_EFUSE_ENABLE);
-> -
-> -	if (en)
-> -		val |= SPRD_EFUSE_LOCK_WR_EN;
-> -	else
-> -		val &= ~SPRD_EFUSE_LOCK_WR_EN;
-> -
-> -	writel(val, efuse->base + SPRD_EFUSE_ENABLE);
-> -}
-> -
-> -static void sprd_efuse_set_auto_check(struct sprd_efuse *efuse, bool en)
-> -{
-> -	u32 val = readl(efuse->base + SPRD_EFUSE_ENABLE);
-> -
-> -	if (en)
-> -		val |= SPRD_EFUSE_AUTO_CHECK_EN;
-> -	else
-> -		val &= ~SPRD_EFUSE_AUTO_CHECK_EN;
-> -
-> -	writel(val, efuse->base + SPRD_EFUSE_ENABLE);
-> -}
-> -
->   static void sprd_efuse_set_data_double(struct sprd_efuse *efuse, bool en)
->   {
->   	u32 val = readl(efuse->base + SPRD_EFUSE_ENABLE);
-> @@ -191,8 +167,7 @@ static void sprd_efuse_set_prog_en(struct sprd_efuse *efuse, bool en)
->   	writel(val, efuse->base + SPRD_EFUSE_PW_SWT);
->   }
->   
-> -static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
-> -			       bool lock, u32 *data)
-> +static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub, u32 *data)
->   {
->   	u32 status;
->   	int ret = 0;
-> @@ -213,18 +188,8 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
->   	sprd_efuse_set_prog_en(efuse, true);
->   	sprd_efuse_set_data_double(efuse, doub);
->   
-> -	/*
-> -	 * Enable the auto-check function to validate if the programming is
-> -	 * successful.
-> -	 */
-> -	if (lock)
-> -		sprd_efuse_set_auto_check(efuse, true);
-> -
->   	writel(*data, efuse->base + SPRD_EFUSE_MEM(blk));
->   
-> -	/* Disable auto-check and data double after programming */
-> -	if (lock)
-> -		sprd_efuse_set_auto_check(efuse, false);
->   	sprd_efuse_set_data_double(efuse, false);
->   
->   	/*
-> @@ -239,10 +204,6 @@ static int sprd_efuse_raw_prog(struct sprd_efuse *efuse, u32 blk, bool doub,
->   		writel(SPRD_EFUSE_ERR_CLR_MASK,
->   		       efuse->base + SPRD_EFUSE_ERR_CLR);
->   		ret = -EBUSY;
-> -	} else if (lock) {
-> -		sprd_efuse_set_prog_lock(efuse, lock);
-> -		writel(0, efuse->base + SPRD_EFUSE_MEM(blk));
-> -		sprd_efuse_set_prog_lock(efuse, false);
->   	}
->   
->   	sprd_efuse_set_prog_power(efuse, false);
-> @@ -327,7 +288,6 @@ static int sprd_efuse_write(void *context, u32 offset, void *val, size_t bytes)
->   	struct sprd_efuse *efuse = context;
->   	bool blk_double = efuse->data->blk_double;
->   	u32 index = offset / SPRD_EFUSE_BLOCK_WIDTH + efuse->data->blk_offset;
-> -	bool lock;
->   	int ret;
->   
->   	ret = sprd_efuse_lock(efuse);
-> @@ -338,20 +298,7 @@ static int sprd_efuse_write(void *context, u32 offset, void *val, size_t bytes)
->   	if (ret)
->   		goto unlock;
->   
-> -	/*
-> -	 * If the writing bytes are equal with the block width, which means the
-> -	 * whole block will be programmed. For this case, we should not allow
-> -	 * this block to be programmed again by locking this block.
-> -	 *
-> -	 * If the block was programmed partially, we should allow this block to
-> -	 * be programmed again.
-> -	 */
-> -	if (bytes < SPRD_EFUSE_BLOCK_WIDTH)
-> -		lock = false;
-> -	else
-> -		lock = true;
-> -
-> -	ret = sprd_efuse_raw_prog(efuse, index, blk_double, lock, val);
-> +	ret = sprd_efuse_raw_prog(efuse, index, blk_double, val);
->   
->   	clk_disable_unprepare(efuse->clk);
->   
+> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.143-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+We're seeing new warnings with GCC-8 and failures with GCC-12 on x86/i386:
+
+-----8<-----
+   In file included from /builds/linux/drivers/gpu/drm/i915/gem/i915_gem_context.c:2291:
+   /builds/linux/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c: In function '__igt_ctx_sseu':
+   /builds/linux/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c:1284:9: error: left shift of negative value [-Werror=shift-negative-value]
+       ~(~0 << (hweight32(engine->sseu.subslice_mask) / 2));
+            ^~
+   cc1: all warnings being treated as errors
+   make[5]: *** [/builds/linux/scripts/Makefile.build:289: drivers/gpu/drm/i915/gem/i915_gem_context.o] Error 1
+   /builds/linux/drivers/gpu/drm/i915/i915_perf.c: In function 'get_default_sseu_config':
+   /builds/linux/drivers/gpu/drm/i915/i915_perf.c:2817:9: error: left shift of negative value [-Werror=shift-negative-value]
+       ~(~0 << (hweight8(out_sseu->subslice_mask) / 2));
+            ^~
+   cc1: all warnings being treated as errors
+   make[5]: *** [/builds/linux/scripts/Makefile.build:289: drivers/gpu/drm/i915/i915_perf.o] Error 1
+----->8-----
+
+Bisection points to:
+
+   commit 09ebdc1b3dfacc275d5eec3f1dcf632f18bbf5a8
+   Author: Arnd Bergmann <arnd@arndb.de>
+   Date:   Tue Mar 8 22:56:14 2022 +0100
+
+       Kbuild: move to -std=gnu11
+       
+       [ Upstream commit e8c07082a810fbb9db303a2b66b66b8d7e588b53 ]
+
+
+For GCC-12 it's allmodconfig failing, for GCC-8 it's defconfig (i386_defconfig, x86_64_defconfig) just reporting new warnings.
+
+Some reproducers:
+
+   tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-8 --kconfig x86_64_defconfig
+
+   tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-12 --kconfig allmodconfig
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
