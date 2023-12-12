@@ -2,133 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C441980EA4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05D680EA4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346361AbjLLLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:25:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59582 "EHLO
+        id S1346368AbjLLLZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346233AbjLLLZN (ORCPT
+        with ESMTP id S1346356AbjLLLZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:25:13 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A79DB8;
-        Tue, 12 Dec 2023 03:25:19 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C35E143D;
-        Tue, 12 Dec 2023 03:26:05 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24F483F762;
-        Tue, 12 Dec 2023 03:25:14 -0800 (PST)
-Message-ID: <a4e6e2b4-a66a-2aa8-1200-250b4fbcc58d@arm.com>
-Date:   Tue, 12 Dec 2023 11:25:14 +0000
+        Tue, 12 Dec 2023 06:25:33 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94B4F3;
+        Tue, 12 Dec 2023 03:25:39 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC7J7lc002473;
+        Tue, 12 Dec 2023 11:25:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=m/1gc5/
+        vET/rlUp4PJwtLowpOZzoNqriN3cdN+35i2Q=; b=IcvI+wYB5lfvM0GCJ7r0VsF
+        LCb08Ac7gmqHpW9GRwCRmnKgsBYaYtGHeOOSoe5kwHGwt0OueIUMekqXGNoyno+v
+        tHv4/TnvwNxhz1MHtP+rlTECv+Pve7CMnRL1n8eXoRh241OgfNg1L0qQjVDKTQJl
+        adEWO/XzQtbRSt0t36fJ7X4Y0m33eLpaM6Ng/w0OrM+TwccIUTPqepUf5sDB//sR
+        NJi6oiDGViF5Lg+Dkilco9zp1nuysvLCf+wqN8BgXVNoJ509yicYra9af2t0gik9
+        X/9f5s9BDcOXzrzKCCNWJtrw8jMLYQFwY7Q8z10q0BBvOtzfxlrk0HNjCtpJOQg=
+        =
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxctasb25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:25:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCBPYPn016798
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:25:34 GMT
+Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 12 Dec 2023 03:25:32 -0800
+From:   Prashanth K <quic_prashk@quicinc.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Prashanth K <quic_prashk@quicinc.com>
+Subject: [PATCH v2 0/2] Set XHCI_SG_TRB_CACHE_SIZE_QUIRK for DWC3 devices
+Date:   Tue, 12 Dec 2023 16:55:19 +0530
+Message-ID: <20231212112521.3774610-1-quic_prashk@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 13/14] perf cpumap: Use perf_cpu_map__for_each_cpu when
- possible
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-14-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231129060211.1890454-14-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: O3AcRkztajW_Q5ckBo_uICCKZYBj5Q9T
+X-Proofpoint-ORIG-GUID: O3AcRkztajW_Q5ckBo_uICCKZYBj5Q9T
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=649 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120091
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+XHCI_SG_TRB_CACHE_SIZE_QUIRK was introduced in XHCI to resolve
+XHC timeout while using SG buffers, which was seen Synopsys XHCs.
+The support for this isn't present in DWC3 layer, this series
+enables XHCI_SG_TRB_CACHE_SIZE_QUIRK since this is needed for
+DWC3 controller.
 
+In Synopsys DWC3 databook,
+Table 9-3: xHCI Debug Capability Limitations
+Chained TRBs greater than TRB cache size: The debug capability
+driver must not create a multi-TRB TD that describes smaller
+than a 1K packet that spreads across 8 or more TRBs on either
+the IN TR or the OUT TR.
 
-On 29/11/2023 06:02, Ian Rogers wrote:
-> Rather than manually iterating the CPU map, use
-> perf_cpu_map__for_each_cpu. When possible tidy local variables.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/arch/arm64/util/header.c           | 10 ++--
->  tools/perf/tests/bitmap.c                     | 13 +++---
->  tools/perf/tests/topology.c                   | 46 +++++++++----------
->  tools/perf/util/bpf_kwork.c                   | 16 ++++---
->  tools/perf/util/bpf_kwork_top.c               | 12 ++---
->  tools/perf/util/cpumap.c                      | 12 ++---
->  .../scripting-engines/trace-event-python.c    | 12 +++--
->  tools/perf/util/session.c                     |  5 +-
->  tools/perf/util/svghelper.c                   | 20 ++++----
->  9 files changed, 72 insertions(+), 74 deletions(-)
-> 
-[...]
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index 860e1837ba96..8ef0e5ac03c2 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -1693,13 +1693,15 @@ static void python_process_stat(struct perf_stat_config *config,
->  {
->  	struct perf_thread_map *threads = counter->core.threads;
->  	struct perf_cpu_map *cpus = counter->core.cpus;
-> -	int cpu, thread;
->  
-> -	for (thread = 0; thread < perf_thread_map__nr(threads); thread++) {
-> -		for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
-> -			process_stat(counter, perf_cpu_map__cpu(cpus, cpu),
-> +	for (int thread = 0; thread < perf_thread_map__nr(threads); thread++) {
-> +		int idx;
-> +		struct perf_cpu cpu;
-> +
-> +		perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
-> +			process_stat(counter, cpu,
->  				     perf_thread_map__pid(threads, thread), tstamp,
-> -				     perf_counts(counter->counts, cpu, thread));
-> +				     perf_counts(counter->counts, idx, thread));
+More information about this XHCI quirk is mentioned on the
+following thread.
+https://lore.kernel.org/all/20201208092912.1773650-3-mathias.nyman@linux.intel.com/
 
-I thought changing cpu to idx was fixing a bug, but it was actually just
-hard to read before where cpu was actually idx and not cpu, so this
-cleanup is pretty good.
+Changes in v2:
+Changed implementation using device property instead of priv_data
+Split the single patch into 2 patch series, v1 is mentioned below
+https://lore.kernel.org/all/20231121135936.1669167-1-quic_prashk@quicinc.com/
 
-Reviewed-by: James Clark <james.clark@arm.com>
+Prashanth K (2):
+  usb: dwc3: host: Set XHCI_SG_TRB_CACHE_SIZE_QUIRK
+  usb: host: xhci-plat: Add support for XHCI_SG_TRB_CACHE_SIZE_QUIRK
+
+ drivers/usb/dwc3/host.c      | 2 ++
+ drivers/usb/host/xhci-plat.c | 3 +++
+ 2 files changed, 5 insertions(+)
+
+-- 
+2.25.1
+
