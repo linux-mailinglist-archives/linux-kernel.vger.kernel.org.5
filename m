@@ -2,183 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC48F80E0D9
+	by mail.lfdr.de (Postfix) with ESMTP id 74CE380E0D8
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345671AbjLLBUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 20:20:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        id S1345678AbjLLBZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 20:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345638AbjLLBUQ (ORCPT
+        with ESMTP id S1345638AbjLLBZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 20:20:16 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCA3BE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:20:22 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db4004a8aa9so5405494276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:20:22 -0800 (PST)
+        Mon, 11 Dec 2023 20:25:18 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178A0CE;
+        Mon, 11 Dec 2023 17:25:25 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77f380d8f6aso304722685a.2;
+        Mon, 11 Dec 2023 17:25:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702344021; x=1702948821; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1zDhsNUVn4yIMFjkCDRNEin0bHQri3D2G8bRroxp6Us=;
-        b=MZkSx2ZLeyolCz4tPy38TJrR4a+Ag4brz0y7/00ZxtexQDrnHg83AFWT9Li9v1I/Da
-         mtTd8OWVcx+DKpYfpT6o8vTrxDj10swKS9vFr0N/fnCFtf+2qIk7zX1NFPiBSi0lFtJG
-         JbgQY0BzI0am5IlRM4vztZIjcVDd+DY5otYDPH4ukmSp9Cb4TBon6nDdQkB57EWs3PB8
-         duDYTeGUSu3XnIqDPUmxrerrKTuOh4Z3FnMmV85pCvxbwivVjAr937sX0PxEVXWpZulo
-         6t804Rs+mUVB49kLWJupGRKFLQmCt9VChHSMERrqAk2BArA2NnIkfoPxYfT9VwwPkxue
-         8EOg==
+        d=gmail.com; s=20230601; t=1702344324; x=1702949124; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=acdHOCAiQMqkPWM1t1b37j8hmWv8asGLnF3nSjNDtxY=;
+        b=POMy0qqKXSsPfkEQ0KV0+WC8FdZirzY0ulauLmG+mcz7YUKEg4Mf+e7cIEZcb5IWAA
+         ZVrk3jusPz+arx697XjTxGBSd58UqDnGX1asSfVcu0aqL+NOkl7UV3a9mnMS+pGLxpKu
+         MYRTVda/CHdYjvWQ7BgnqvFngD8742QZx0uW8XAGwWEdlPwvmOcDOHviIy/V1+4p9Rbs
+         /Ms4T+LDdaqiIXYOWpp8+vV53VaZtudpDOxFoTsVHIiSomUWGW6EkbUMrDyD/y8YTSxm
+         8jpzcL5VpKj3gKKEDlXZyC6zVO5vzSFMo4d/OYHiJ4rpzGiUWIFPinXxz7DkUEo6F+5Q
+         Jp/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702344021; x=1702948821;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1zDhsNUVn4yIMFjkCDRNEin0bHQri3D2G8bRroxp6Us=;
-        b=po9sAUnafpbtWrblFF5qVEhYZIvoOaZxP92a5acXdBqmXL/3jhzfxor1+h2MhKwxZK
-         U3t8KkD/5ay5DylRKccmBiTPsbqbgDc0JecuZBZ6CF7CJquQq9sPmRzDra38vGPHxZTo
-         pZ0WtFc9Ky8so2M/SHiO1ngTYUmeXkVtEPq2I9MzHtXHqmzKZEwt3+JiFX/Rm7YGM5xT
-         dKZWAmGYXzh9SDGXGuLuEQdXFutJhez2df+9afgPL7ezgLbMmjcWulSi6HeG6V7ilCb5
-         qPCC8JVsNzRWZwQg6IJzQBPC1NlVGJ0Fqypvsek6KEWuE9tIMIrTLcqH+9SbMc1wx7ZE
-         TNUQ==
-X-Gm-Message-State: AOJu0Yw7nCOSUjQkoUVCSWA2+B80tSFGlq/3m74NYm76VBqkzlPqXD/E
-        LG1qwn/79Q/rX/sOHhZfXstFds+REGHjkabY/Q==
-X-Google-Smtp-Source: AGHT+IGCZ/3Hm1oGZDJVqOZYRs9LPHOqFGAgnB5x2qnhyF/MXbWlUssASTcKwx82JlkzLEzUYKLzUY5/EHQX7bbR4Q==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:52f:b0:db5:48c5:302e with
- SMTP id y15-20020a056902052f00b00db548c5302emr45864ybs.4.1702344021701; Mon,
- 11 Dec 2023 17:20:21 -0800 (PST)
-Date:   Tue, 12 Dec 2023 01:20:20 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFS1d2UC/6WOQQ6CMBREr2K6tqYtFsGV9zDEQPspPxFK+ptGQ
- ri7hZ1rd/NmMW9WRhAQiN1PKwuQkNBPGdT5xMzQTg442sxMCVVIUQhOMUxmXrgNmCAQJ0PIsRv
- THl7RxV8wvGrrzgrQ17IsWZ6dA/T4OZTPJvOAFH1YjgdJ7u0fsiS55JWuO21A6VtvH85794aL8 SNrtm37AnDg44XxAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702344020; l=4467;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=9iNx/XHoAbZspBn0RbR1EutQz4ViuX602P3R/36GQ8c=; b=ACnHEmP9avRU458e42EgHVuaVBoRcXII5xatNVn8cssXGucBR8pasyE0oiyg7hd0qGAmlVZEb
- WJGm7jNqDLeDk/nFXjOFe7SEQg4jBctpuaST44ZAsyJIZoqPwCiEGIb
-X-Mailer: b4 0.12.3
-Message-ID: <20231212-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v2-1-bdb9a7cd96c8@google.com>
-Subject: [PATCH v2] scsi: ibmvscsi_tgt: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Michael Cyr <mikecyr@linux.ibm.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1702344324; x=1702949124;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=acdHOCAiQMqkPWM1t1b37j8hmWv8asGLnF3nSjNDtxY=;
+        b=a+DHjoNl7Rtv9YDaoKWwjthh4cRCO6xrSlrW3GReIueKB5Kq0vsQtxGbi/cF99f+dd
+         cZsEs7DBkZTwiSUOFqb+UrwJeE9JugX9H4GUXFalBixkMCz5aWd+XxPWQc6TrvSl4s0f
+         Y1B2NOuTX5ni4hEy/f8FxnBMopqQVabszOhedDs/i5qpBx6a+PmkAHa0q8S8K+yR2k2d
+         PQq8zZRfyEPhsBYvSEyjEgHwzGmi3CQczICgDduVSlopaYMNRply+l40A6nR0VnR8Ikq
+         Sll408hZTh/gzNB0oHkEdei1YSIIBjFnlP6987zNxCIpQnk9kjlip6nkGdz2v7NSrsp/
+         vpiQ==
+X-Gm-Message-State: AOJu0YyXGG3BOFAjVrcuAR0U/0welxqccecOw57nbT5QY7o0/g99krkV
+        OezfTEnCir6EZ1Y8nXwLGSAGj6OF1O4=
+X-Google-Smtp-Source: AGHT+IEb95/ZGm8O6gm2t4mE3gP9Rlo4ON4qD/l33nhdEi2IolELBMvqoa7D3DYD6H7wM0F3aP6BPQ==
+X-Received: by 2002:ae9:e905:0:b0:77d:4cb9:89ac with SMTP id x5-20020ae9e905000000b0077d4cb989acmr6056119qkf.32.1702344324191;
+        Mon, 11 Dec 2023 17:25:24 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id g3-20020a05620a278300b0077f435ed844sm3350413qkp.112.2023.12.11.17.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 17:25:23 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 149FE27C0054;
+        Mon, 11 Dec 2023 20:25:23 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 11 Dec 2023 20:25:23 -0500
+X-ME-Sender: <xms:grZ3Za2GyBNybZZip9ZB5B1oMQqZZ-CX0EmiD_v7HSSL4fPjaMLgng>
+    <xme:grZ3ZdHh0gpTJBJfV81u-qJAjqYnh8HMupNkWs22uaaz1jcHP99ZDknZ5IXa7UiAp
+    CuUM24iNlyfWz_cwQ>
+X-ME-Received: <xmr:grZ3ZS5EuHSYT0-yBVZ3coFRG-9SyvXrkzJDHvh71iplhG2OZ--zJCxqf90>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelfedgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:grZ3Zb3HAUP5xLGHERiqsDk9z4cvm0JP69G-dg7cDyGovICXoF71kQ>
+    <xmx:grZ3ZdGdtWVeQF4bP-6wu4xf6f_3D1u1SXoACg8WlZvHfHYTgfPfuQ>
+    <xmx:grZ3ZU-UsLUKEMc58q7qiOKi_wtOZP9KThtYCCNrgvxDshz7fQaOjA>
+    <xmx:g7Z3ZSvw2CEO67Xk12lvV8pXRZuDsyaZMSfyQmtGbsXoNZ0tY6OgxA>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 11 Dec 2023 20:25:21 -0500 (EST)
+Date:   Mon, 11 Dec 2023 17:25:18 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     benno.lossin@proton.me, a.hindborg@samsung.com,
+        alex.gaynor@gmail.com, arve@android.com, bjorn3_gh@protonmail.com,
+        brauner@kernel.org, cmllamas@google.com, dan.j.williams@intel.com,
+        dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org,
+        joel@joelfernandes.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
+        rust-for-linux@vger.kernel.org, surenb@google.com,
+        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
+        wedsonaf@gmail.com, willy@infradead.org
+Subject: Re: [PATCH v2 6/7] rust: file: add `DeferredFdCloser`
+Message-ID: <ZXe2fpN4zRlkLLJC@boqun-archlinux>
+References: <MjDmZBGV04fVI1qzhceEjQgcmoBuo3YoVuiQdANKj9F1Ux5JFKud8hQpfeyLXI0O5HG6qicKFaYYzM7JAgR_kVQfMCeVdN6t7PjbPaz0D0U=@proton.me>
+ <20231211153440.4162899-1-aliceryhl@google.com>
+ <ZXdJyGFeQEbZU3Eh@boqun-archlinux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXdJyGFeQEbZU3Eh@boqun-archlinux>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Mon, Dec 11, 2023 at 09:41:28AM -0800, Boqun Feng wrote:
+> On Mon, Dec 11, 2023 at 03:34:40PM +0000, Alice Ryhl wrote:
+> > Benno Lossin <benno.lossin@proton.me> writes:
+> > > On 12/6/23 12:59, Alice Ryhl wrote:
+> > > > +    /// Schedule a task work that closes the file descriptor when this task returns to userspace.
+> > > > +    ///
+> > > > +    /// Fails if this is called from a context where we cannot run work when returning to
+> > > > +    /// userspace. (E.g., from a kthread.)
+> > > > +    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdCloseError> {
+> > > > +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
+> > > > +
+> > > > +        // In this method, we schedule the task work before closing the file. This is because
+> > > > +        // scheduling a task work is fallible, and we need to know whether it will fail before we
+> > > > +        // attempt to close the file.
+> > > > +
+> > > > +        // SAFETY: Getting a pointer to current is always safe.
+> > > > +        let current = unsafe { bindings::get_current() };
+> > > > +
+> > > > +        // SAFETY: Accessing the `flags` field of `current` is always safe.
+> > > > +        let is_kthread = (unsafe { (*current).flags } & bindings::PF_KTHREAD) != 0;
+> > > 
+> > > Since Boqun brought to my attention that we already have a wrapper for
+> > > `get_current()`, how about you use it here as well?
+> > 
+> > I can use the wrapper, but it seems simpler to not go through a
+> > reference when we just need a raw pointer.
+> > 
+> > Perhaps we should have a safe `Task::current_raw` function that just
+> > returns a raw pointer? It can still be safe.
+> > 
+> 
+> I think we can have a `as_ptr` function for `Task`?
+> 
+> 	impl Task {
+> 	    pub fn as_ptr(&self) -> *mut bindings::task_struct {
+> 	        self.0.get()
+> 	    }
+> 	}
 
-We don't need the NUL-padding behavior that strncpy() provides as vscsi
-is NUL-allocated in ibmvscsis_probe() which proceeds to call
-ibmvscsis_adapter_info():
-|       vscsi = kzalloc(sizeof(*vscsi), GFP_KERNEL);
+Forgot mention, yes a ptr->ref->ptr trip may not be ideal, but I think
+eventually we will have a task work wrapper, in that case maybe
+Task::as_ptr() is still needed somehow.
 
-ibmvscsis_probe() -> ibmvscsis_handle_crq() -> ibmvscsis_parse_command()
--> ibmvscsis_mad() -> ibmvscsis_process_mad() -> ibmvscsis_adapter_info()
-
-Following the same idea, `partition_name` is defiend as:
-|       static char partition_name[PARTITION_NAMELEN] = "UNKNOWN";
-... which is NUL-padded already, meaning strscpy() is the best option.
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-However, for cap->name and info let's use strscpy_pad as they are
-allocated via dma_alloc_coherent():
-|       cap = dma_alloc_coherent(&vscsi->dma_dev->dev, olen, &token,
-|                                GFP_ATOMIC);
-&
-|       info = dma_alloc_coherent(&vscsi->dma_dev->dev, sizeof(*info), &token,
-|                                 GFP_ATOMIC);
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use strscpy_pad for info->partition_name (thanks Kees)
-- rebase onto mainline bee0e7762ad2c602
-- Link to v1: https://lore.kernel.org/r/20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-index 4dc411a58107..6b16020b1f59 100644
---- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-+++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-@@ -1551,18 +1551,18 @@ static long ibmvscsis_adapter_info(struct scsi_info *vscsi,
- 	if (vscsi->client_data.partition_number == 0)
- 		vscsi->client_data.partition_number =
- 			be32_to_cpu(info->partition_number);
--	strncpy(vscsi->client_data.srp_version, info->srp_version,
-+	strscpy(vscsi->client_data.srp_version, info->srp_version,
- 		sizeof(vscsi->client_data.srp_version));
--	strncpy(vscsi->client_data.partition_name, info->partition_name,
-+	strscpy(vscsi->client_data.partition_name, info->partition_name,
- 		sizeof(vscsi->client_data.partition_name));
- 	vscsi->client_data.mad_version = be32_to_cpu(info->mad_version);
- 	vscsi->client_data.os_type = be32_to_cpu(info->os_type);
- 
- 	/* Copy our info */
--	strncpy(info->srp_version, SRP_VERSION,
--		sizeof(info->srp_version));
--	strncpy(info->partition_name, vscsi->dds.partition_name,
--		sizeof(info->partition_name));
-+	strscpy_pad(info->srp_version, SRP_VERSION,
-+		    sizeof(info->srp_version));
-+	strscpy_pad(info->partition_name, vscsi->dds.partition_name,
-+		    sizeof(info->partition_name));
- 	info->partition_number = cpu_to_be32(vscsi->dds.partition_num);
- 	info->mad_version = cpu_to_be32(MAD_VERSION_1);
- 	info->os_type = cpu_to_be32(LINUX);
-@@ -1645,8 +1645,8 @@ static int ibmvscsis_cap_mad(struct scsi_info *vscsi, struct iu_entry *iue)
- 			 be64_to_cpu(mad->buffer),
- 			 vscsi->dds.window[LOCAL].liobn, token);
- 	if (rc == H_SUCCESS) {
--		strncpy(cap->name, dev_name(&vscsi->dma_dev->dev),
--			SRP_MAX_LOC_LEN);
-+		strscpy_pad(cap->name, dev_name(&vscsi->dma_dev->dev),
-+			sizeof(cap->name));
- 
- 		len = olen - min_len;
- 		status = VIOSRP_MAD_SUCCESS;
-@@ -3650,7 +3650,7 @@ static int ibmvscsis_get_system_info(void)
- 
- 	name = of_get_property(rootdn, "ibm,partition-name", NULL);
- 	if (name)
--		strncpy(partition_name, name, sizeof(partition_name));
-+		strscpy(partition_name, name, sizeof(partition_name));
- 
- 	num = of_get_property(rootdn, "ibm,partition-no", NULL);
- 	if (num)
-
----
-base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-change-id: 20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-8a9bd0e54666
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Regards,
+Boqun
