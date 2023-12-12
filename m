@@ -2,149 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E7080F38C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B55280F38E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346601AbjLLQu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:50:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44486 "EHLO
+        id S1376310AbjLLQvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:51:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjLLQu4 (ORCPT
+        with ESMTP id S229702AbjLLQvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:50:56 -0500
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8E0A6;
-        Tue, 12 Dec 2023 08:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1702399860; x=1702659060;
-        bh=w38LyRHLZtbV6MXFwYHgJYUkLwMl4DKzg/6P9akEIm8=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Jp8ET7bH3aUWWYk2XtraWwxkt6VOsNoTE6yTzBkO/5qlf8Uz7N1EHWsm6NaW0dL34
-         6oSR5bu1enkU96x+sMJJNGD1qmYW/04YQIGibnzU67r8PcDR8IHWGvfejHQ0o9w4ub
-         jKwJFBS7GtZscegHd4KGpVr2YDCPFUpV0R6e2Xj2UKh+qX2iRlsaP/nxolfneYK5hR
-         KrRnoGDXDS/3jpnhYWaqpKCS82I1UNUG5plAcmWZW3n2q/5aRUHYcoUd+9UYINGzM2
-         3miwsR87An1DUJgbf8yedooNSmwy2Lcn+KxifYodaS21XxJbGCWOboZmPwDfD/iuGg
-         l/Eg9bptUz9Zg==
-Date:   Tue, 12 Dec 2023 16:50:53 +0000
-To:     Alice Ryhl <aliceryhl@google.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org,
-        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
-        gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Subject: Re: [PATCH v2 6/7] rust: file: add `DeferredFdCloser`
-Message-ID: <8idgiXA3NzJ1zv5FQ4UVhObREsn81yb7T_M6Z44-Mc0-Rta_Q_jmOAkmDCwLKgE221TtMmFiebz0Q8WJPhy4WpngTiTc5dxwg6qIffueYmY=@proton.me>
-In-Reply-To: <CAH5fLggB_33jR1eyXSFhN=DN34wD7E6-ckSU8ABmQ50H-L3P-w@mail.gmail.com>
-References: <MjDmZBGV04fVI1qzhceEjQgcmoBuo3YoVuiQdANKj9F1Ux5JFKud8hQpfeyLXI0O5HG6qicKFaYYzM7JAgR_kVQfMCeVdN6t7PjbPaz0D0U=@proton.me> <20231211153440.4162899-1-aliceryhl@google.com> <DNn_nN0MKmn9OoY7Gjn4fCUcwKD6ijDZyDXVHvouEa2w0o2yiXeRox3EUfAcbfoWqx0I24-8HqqzONjuTQIVxu2cfAoNQpUFJygPtQNXPM4=@proton.me> <CAH5fLggB_33jR1eyXSFhN=DN34wD7E6-ckSU8ABmQ50H-L3P-w@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+        Tue, 12 Dec 2023 11:51:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059DEB7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:51:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B600CC433C8;
+        Tue, 12 Dec 2023 16:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702399872;
+        bh=pxoxG3L7DCf9PxhMDZX23WIDnwrk05Pc2sbWEHLjkNQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=blDeZJNjTGcsepBC0e9cnsV21kV4vavWGKn7kBDtx5LFlCX50m0ODmn1lOnkUnsnY
+         +iUm5MB3K30bxLX2XmAnHsRXgAyYMKDWD8LVWYA+ydkVvFQo4o8Ml0MMP9xg6Go0uT
+         /4gkSZh8F80TGibEU6dIILcy0ME4SpV0a8RFLhfeSCxD5kyAXYFInUj74nwColB4GF
+         XlAJZIdkH3OMnvB3egXPcF3LO63DbaPMoxV5l/3cIoHXzSSveFbunExJsyLITllSGB
+         LuBfIKV6EHuS9XWfS16UBDl+O3YOeA7fS//0xAYcx7Zl3Up88u9bTOwR4d0MKC16mK
+         OoZslS2ePbgJA==
+Date:   Tue, 12 Dec 2023 16:51:06 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     bhelgaas@google.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
+        hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+        krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+        manivannan.sadhasivam@linaro.org, robh@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v3 12/13] dt-bindings: imx6q-pcie: Add iMX95 pcie
+ endpoint compatible string
+Message-ID: <20231212-snowiness-verbalize-d1fbb8c80a99@spud>
+References: <20231211215842.134823-1-Frank.Li@nxp.com>
+ <20231211215842.134823-13-Frank.Li@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ehk5DdTkek4HJjlY"
+Content-Disposition: inline
+In-Reply-To: <20231211215842.134823-13-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 10:35, Alice Ryhl wrote:
-> On Mon, Dec 11, 2023 at 6:23=E2=80=AFPM Benno Lossin <benno.lossin@proton=
-.me> wrote:
->>
->>>>> +        // We update the file pointer that the task work is supposed=
- to fput.
->>>>> +        //
->>>>> +        // SAFETY: Task works are executed on the current thread onc=
-e we return to userspace, so
->>>>> +        // this write is guaranteed to happen before `do_close_fd` i=
-s called, which means that a
->>>>> +        // race is not possible here.
->>>>> +        //
->>>>> +        // It's okay to pass this pointer to the task work, since we=
- just acquired a refcount with
->>>>> +        // the previous call to `get_file`. Furthermore, the refcoun=
-t will not drop to zero during
->>>>> +        // an `fdget` call, since we defer the `fput` until after re=
-turning to userspace.
->>>>> +        unsafe { *file_field =3D file };
->>>>
->>>> A synchronization question: who guarantees that this write is actually
->>>> available to the cpu that executes `do_close_fd`? Is there some
->>>> synchronization run when returning to userspace?
->>>
->>> It's on the same thread, so it's just a sequenced-before relation.
->>>
->>> It's not like an interrupt. It runs after the syscall invocation has
->>> exited, but before it does the actual return-to-userspace stuff.
->>
->> Reasonable, can you also put this in a comment?
+
+--ehk5DdTkek4HJjlY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Dec 11, 2023 at 04:58:41PM -0500, Frank Li wrote:
+> Add i.MX95 PCIe "fsl,imx95-pcie-ep" compatible string.
+> Add reg-name: "atu", "dbi2", "dma" and "serdes".
 >=20
-> What do you want me to add? I already say that it will be executed on
-> the same thread.
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-Seems I missed that, then no need to add anything.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
->>>>> +/// Represents a failure to close an fd in a deferred manner.
->>>>> +#[derive(Copy, Clone, Eq, PartialEq)]
->>>>> +pub enum DeferredFdCloseError {
->>>>> +    /// Closing the fd failed because we were unable to schedule a t=
-ask work.
->>>>> +    TaskWorkUnavailable,
->>>>> +    /// Closing the fd failed because the fd does not exist.
->>>>> +    BadFd,
->>>>> +}
->>>>> +
->>>>> +impl From<DeferredFdCloseError> for Error {
->>>>> +    fn from(err: DeferredFdCloseError) -> Error {
->>>>> +        match err {
->>>>> +            DeferredFdCloseError::TaskWorkUnavailable =3D> ESRCH,
->>>>
->>>> This error reads "No such process", I am not sure if that is the best
->>>> way to express the problem in that situation. I took a quick look at t=
-he
->>>> other error codes, but could not find a better fit. Do you have any
->>>> better ideas? Or is this the error that C binder uses?
->>>
->>> This is the error code that task_work_add returns. (It can't happen in
->>> Binder.)
->>>
->>> And I do think that it is a reasonable choice, because the error only
->>> happens if you're calling the method from a context that has no
->>> userspace process associated with it.
->>
->> I see.
->>
->> What do you think of making the Rust error more descriptive? So instead
->> of implementing `Debug` like you currently do, you print
->>
->>     $error ($variant)
->>
->> where $error =3D Error::from(*self) and $variant is the name of the
->> variant?
->>
->> This is more of a general suggestion, I don't think that this error type
->> in particular warrants this. But in general with Rust we do have the
->> option to have good error messages for every error while maintaining
->> efficient error values.
->=20
-> I can #[derive(Debug)] instead, I guess?
-
-Hmm I thought that might not be ideal, since then you would not have the
-error code, only `TaskWorkUnavailable` or `BadFd`.
-But if that is also acceptable, then I would go with the derived debug.
-
---=20
 Cheers,
-Benno
+Conor.
 
+> ---
+>=20
+> Notes:
+>     Change from v1 to v3
+>     - new patches at v3
+>=20
+>  .../bindings/pci/fsl,imx6q-pcie-ep.yaml       | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml=
+ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml
+> index ee155ed5f1811..36d8f117fdfb3 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml
+> @@ -22,6 +22,7 @@ properties:
+>        - fsl,imx8mm-pcie-ep
+>        - fsl,imx8mq-pcie-ep
+>        - fsl,imx8mp-pcie-ep
+> +      - fsl,imx95-pcie-ep
+> =20
+>    reg:
+>      minItems: 2
+> @@ -62,11 +63,30 @@ required:
+>  allOf:
+>    - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
+>    - $ref: /schemas/pci/fsl,imx6q-pcie-common.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,imx95-pcie-ep
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 6
+> +        reg-names:
+> +          items:
+> +            - const: dbi
+> +            - const: atu
+> +            - const: dbi2
+> +            - const: serdes
+> +            - const: dma
+> +            - const: addr_space
+> +
+>    - if:
+>        properties:
+>          compatible:
+>            enum:
+>              - fsl,imx8mq-pcie-ep
+> +            - fsl,imx95-pcie-ep
+>      then:
+>        properties:
+>          clocks:
+> --=20
+> 2.34.1
+>=20
+
+--ehk5DdTkek4HJjlY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiPegAKCRB4tDGHoIJi
+0ilmAQDQ1GfJs7PkFWStKchAvAk/4FgCatGA4wPKZ8PH27gQ4QEAmAksUAUSPt0S
+tNrfj2EzCLZd4RIPyNmTSRq1WY6OLgc=
+=KvBM
+-----END PGP SIGNATURE-----
+
+--ehk5DdTkek4HJjlY--
