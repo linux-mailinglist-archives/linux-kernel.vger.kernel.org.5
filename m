@@ -2,268 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB4E80E611
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 930B180E5B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346295AbjLLIYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        id S229695AbjLLIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:21:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346108AbjLLIWK (ORCPT
+        with ESMTP id S232338AbjLLIVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:22:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F68ED5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8E31EC32798;
-        Tue, 12 Dec 2023 08:22:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702369326;
-        bh=rr6q7hqGehAxChMRJyQyeh9gPseemY3qbXcOyMjzHAw=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=Z3J3YQ6yBcXfyvcQCnyR2frVkSgVPRWGv6Jffk1ht9BEORhRJPepNVSYrou7D49D+
-         k3UzLqoVYAgiuGbWmzolQxSgykR9x5vJ1Op1C8RamscGtVdU6YJf663KtYybg8hRJm
-         RB4GQF14IS7I9fQJN6XQaQJIuJLM8uQuDWEk1LDyegbbUxUMY4AEDmULpHasTmFtmZ
-         l/6NAKcU+4M3vJJ2/5EvbG97RiDjdV3qjQydnNpeyJxz90bBV1vEavY5SG8WDPWCC0
-         EJOpM794pfZR2VVg1LAJgAOT9W9V1ZDV9N0uye70NEqaF61H+OAfGTrfeFJ/oFuytb
-         /l6bMa5rDP2xA==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 7F3FAC38147;
-        Tue, 12 Dec 2023 08:22:06 +0000 (UTC)
-From:   Nikita Shubin via B4 Relay 
-        <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Tue, 12 Dec 2023 11:20:57 +0300
-Subject: [PATCH v6 40/40] dma: cirrus: remove platform code
+        Tue, 12 Dec 2023 03:21:15 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCF5CF;
+        Tue, 12 Dec 2023 00:21:21 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+        id C18D420B74C0; Tue, 12 Dec 2023 00:21:20 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C18D420B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702369280;
+        bh=vEgT5Vx3QJOmfVLsCktFuAcxLJotqUz7j9rpr/6mWpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oWJe1wAr2HexS2fWMEHskBZ6wg0mSzobc7mbn3A2E7/cZKKQjzm4d7MYJXKrArVvI
+         SQ5RqW0LE0hGav+GU13PSFOursQHzDrzEHxOMw75qjmY1FGVyLapxCjUi0CLcllrR7
+         Dhr/XhRPymethVcdzGBky3VFQiVYhkavRBaZjQ4E=
+Date:   Tue, 12 Dec 2023 00:21:20 -0800
+From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, decui@microsoft.com
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Message-ID: <20231212082120.GA2800@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
+ <5736414.DvuYhMxLoT@steina-w>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-ep93xx-v6-40-c307b8ac9aa8@maquefel.me>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=6035;
- i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=S2OkZzw9mrYPHmucNS7NVCBHwOKa4SSXUVmcISI3Wc0=; =?utf-8?q?b=3DnGnDR8pqdtK9?=
- =?utf-8?q?7jer2GFKwfrrapeiLdLnY5wHikTvOfvHanAeAlbbQN2M77WN/daSOs2A8PMJQIRe?=
- xWMoJuBuCYLjFOso2KQbNYeXo5ymCLYMkqu5PGKQnGtYlvhszBJl
-X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
- pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
-X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
-X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
-Reply-To: <nikita.shubin@maquefel.me>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5736414.DvuYhMxLoT@steina-w>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikita Shubin <nikita.shubin@maquefel.me>
+On Tue, Dec 12, 2023 at 08:19:11AM +0100, Alexander Stein wrote:
+> Hi Saurabh,
+> 
+> thanks for the patch.
+> 
+> Am Samstag, 9. Dezember 2023, 04:46:16 CET schrieb Saurabh Sengar:
+> > Currently there is a race in calling pci_create_resource_files function
+> > from two different therads, first therad is triggered by pci_sysfs_init
+> > from the late initcall where as the second thread is initiated by
+> > pci_bus_add_devices from the respective PCI drivers probe.
+> > 
+> > The synchronization between these threads relies on the sysfs_initialized
+> > flag. However, in pci_sysfs_init, sysfs_initialized is set right before
+> > calling pci_create_resource_files which is wrong as it can create race
+> > condition with pci_bus_add_devices threads. Fix this by setting
+> > sysfs_initialized flag at the end of pci_sysfs_init and direecly call the
+> 
+> Small typo here: direecly -> directly
 
-Remove DMA platform header, from now on we use device tree for dma
-clients.
+thanks
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
- drivers/dma/ep93xx_dma.c                 |  48 ++++++++++++++-
- include/linux/platform_data/dma-ep93xx.h | 100 -------------------------------
- 2 files changed, 46 insertions(+), 102 deletions(-)
+> 
+> > pci_create_resource_files function from it.
+> > 
+> > There can be an additional case where driver probe is so delayed that
+> > pci_bus_add_devices is called after the sysfs is created by pci_sysfs_init.
+> > In such cases, attempting to access already existing sysfs resources is
+> > unnecessary. Fix this by adding a check for sysfs attributes and return
+> > if they are already allocated.
+> > 
+> > In both cases, the consequence will be the removal of sysfs resources that
+> > were appropriately allocated by pci_sysfs_init following the warning below.
+> 
+> I'm not sure if this is the way to go. Unfortunately I can't trigger this 
+> error on my imx6 platform at the moment (apparently timing is off).
 
-diff --git a/drivers/dma/ep93xx_dma.c b/drivers/dma/ep93xx_dma.c
-index b7dd8361f490..d11cd11f32bf 100644
---- a/drivers/dma/ep93xx_dma.c
-+++ b/drivers/dma/ep93xx_dma.c
-@@ -17,6 +17,7 @@
- #include <linux/clk.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
-@@ -25,8 +26,6 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
--#include <linux/platform_data/dma-ep93xx.h>
--
- #include "dmaengine.h"
- 
- /* M2P registers */
-@@ -106,6 +105,26 @@
- #define DMA_MAX_CHAN_BYTES		0xffff
- #define DMA_MAX_CHAN_DESCRIPTORS	32
- 
-+/*
-+ * M2P channels.
-+ *
-+ * Note that these values are also directly used for setting the PPALLOC
-+ * register.
-+ */
-+#define EP93XX_DMA_I2S1			0
-+#define EP93XX_DMA_I2S2			1
-+#define EP93XX_DMA_AAC1			2
-+#define EP93XX_DMA_AAC2			3
-+#define EP93XX_DMA_AAC3			4
-+#define EP93XX_DMA_I2S3			5
-+#define EP93XX_DMA_UART1		6
-+#define EP93XX_DMA_UART2		7
-+#define EP93XX_DMA_UART3		8
-+#define EP93XX_DMA_IRDA			9
-+/* M2M channels */
-+#define EP93XX_DMA_SSP			10
-+#define EP93XX_DMA_IDE			11
-+
- enum ep93xx_dma_type {
- 	M2P_DMA,
- 	M2M_DMA,
-@@ -242,6 +261,31 @@ static struct ep93xx_dma_chan *to_ep93xx_dma_chan(struct dma_chan *chan)
- 	return container_of(chan, struct ep93xx_dma_chan, chan);
- }
- 
-+static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
-+{
-+	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
-+		return true;
-+
-+	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
-+}
-+
-+/*
-+ * ep93xx_dma_chan_direction - returns direction the channel can be used
-+ *
-+ * This function can be used in filter functions to find out whether the
-+ * channel supports given DMA direction. Only M2P channels have such
-+ * limitation, for M2M channels the direction is configurable.
-+ */
-+static inline enum dma_transfer_direction
-+ep93xx_dma_chan_direction(struct dma_chan *chan)
-+{
-+	if (!ep93xx_dma_chan_is_m2p(chan))
-+		return DMA_TRANS_NONE;
-+
-+	/* even channels are for TX, odd for RX */
-+	return (chan->chan_id % 2 == 0) ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
-+}
-+
- /**
-  * ep93xx_dma_set_active - set new active descriptor chain
-  * @edmac: channel
-diff --git a/include/linux/platform_data/dma-ep93xx.h b/include/linux/platform_data/dma-ep93xx.h
-deleted file mode 100644
-index 67d65f1cb564..000000000000
---- a/include/linux/platform_data/dma-ep93xx.h
-+++ /dev/null
-@@ -1,100 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __ASM_ARCH_DMA_H
--#define __ASM_ARCH_DMA_H
--
--#include <linux/device.h>
--#include <linux/property.h>
--#include <linux/string.h>
--#include <linux/types.h>
--#include <linux/dmaengine.h>
--#include <linux/dma-mapping.h>
--
--/*
-- * M2P channels.
-- *
-- * Note that these values are also directly used for setting the PPALLOC
-- * register.
-- */
--#define EP93XX_DMA_I2S1		0
--#define EP93XX_DMA_I2S2		1
--#define EP93XX_DMA_AAC1		2
--#define EP93XX_DMA_AAC2		3
--#define EP93XX_DMA_AAC3		4
--#define EP93XX_DMA_I2S3		5
--#define EP93XX_DMA_UART1	6
--#define EP93XX_DMA_UART2	7
--#define EP93XX_DMA_UART3	8
--#define EP93XX_DMA_IRDA		9
--/* M2M channels */
--#define EP93XX_DMA_SSP		10
--#define EP93XX_DMA_IDE		11
--
--/**
-- * struct ep93xx_dma_data - configuration data for the EP93xx dmaengine
-- * @port: peripheral which is requesting the channel
-- * @direction: TX/RX channel
-- * @name: optional name for the channel, this is displayed in /proc/interrupts
-- *
-- * This information is passed as private channel parameter in a filter
-- * function. Note that this is only needed for slave/cyclic channels.  For
-- * memcpy channels %NULL data should be passed.
-- */
--struct ep93xx_dma_data {
--	int				port;
--	enum dma_transfer_direction	direction;
--	const char			*name;
--};
--
--/**
-- * struct ep93xx_dma_chan_data - platform specific data for a DMA channel
-- * @name: name of the channel, used for getting the right clock for the channel
-- * @base: mapped registers
-- * @irq: interrupt number used by this channel
-- */
--struct ep93xx_dma_chan_data {
--	const char			*name;
--	void __iomem			*base;
--	int				irq;
--};
--
--/**
-- * struct ep93xx_dma_platform_data - platform data for the dmaengine driver
-- * @channels: array of channels which are passed to the driver
-- * @num_channels: number of channels in the array
-- *
-- * This structure is passed to the DMA engine driver via platform data. For
-- * M2P channels, contract is that even channels are for TX and odd for RX.
-- * There is no requirement for the M2M channels.
-- */
--struct ep93xx_dma_platform_data {
--	struct ep93xx_dma_chan_data	*channels;
--	size_t				num_channels;
--};
--
--static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
--{
--	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
--		return true;
--
--	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
--}
--
--/**
-- * ep93xx_dma_chan_direction - returns direction the channel can be used
-- * @chan: channel
-- *
-- * This function can be used in filter functions to find out whether the
-- * channel supports given DMA direction. Only M2P channels have such
-- * limitation, for M2M channels the direction is configurable.
-- */
--static inline enum dma_transfer_direction
--ep93xx_dma_chan_direction(struct dma_chan *chan)
--{
--	if (!ep93xx_dma_chan_is_m2p(chan))
--		return DMA_TRANS_NONE;
--
--	/* even channels are for TX, odd for RX */
--	return (chan->chan_id % 2 == 0) ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
--}
--
--#endif /* __ASM_ARCH_DMA_H */
+The first case in the commit message is the issue which motivated me to write
+this patch. The additional case I am explaining in the commit message is not
+happening for me as well, I have hacked my driver to add a big sleep (10 second)
+before pci_bus_add_devices to create this scenario. Probably you can try the
+same as well.
 
--- 
-2.41.0
+The check added for "resource already allocated" is for this additional case only.
 
+> But reading [1] again, the most expressive way is that pci_bus_add_devices() 
+> needs to wait until pci_sysfs_init() has passed.
+
+For the first case I agree with you. This patch is doing exactly the same by moving
+sysfs_initialized flag setting at the end of pci_sysfs_init function.
+Is there anything I might be ovelooking ?
+
+- Saurabh
+
+
+> 
+> Best regards,
+> Alexander
+> 
+> [1] https://lore.kernel.org/lkml/a1cca367-52b6-a6b1-fb01-890cad39fd29@suse.com/
+> 
+> > 
+> > [    3.376688] sysfs: cannot create duplicate filename
+> > '/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A03:00/device:07/VMBUS:01/47505500-00
+> > 01-0000-3130-444531454238/pci0001:00/0001:00:00.0/resource0' [    3.385103]
+> > CPU: 3 PID: 9 Comm: kworker/u8:0 Not tainted 5.15.0-1046-azure
+> > #53~20.04.1-Ubuntu [    3.389585] Hardware name: Microsoft Corporation
+> > Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018 [    3.394663]
+> > Workqueue: events_unbound async_run_entry_fn
+> > [    3.397687] Call Trace:
+> > [    3.399312]  <TASK>
+> > [    3.400780]  dump_stack_lvl+0x38/0x4d
+> > [    3.402998]  dump_stack+0x10/0x16
+> > [    3.406050]  sysfs_warn_dup.cold+0x17/0x2b
+> > [    3.408476]  sysfs_add_file_mode_ns+0x17b/0x190
+> > [    3.411072]  sysfs_create_bin_file+0x64/0x90
+> > [    3.413514]  pci_create_attr+0xc7/0x260
+> > [    3.415827]  pci_create_resource_files+0x6f/0x150
+> > [    3.418455]  pci_create_sysfs_dev_files+0x18/0x30
+> > [    3.421136]  pci_bus_add_device+0x30/0x70
+> > [    3.423512]  pci_bus_add_devices+0x31/0x70
+> > [    3.425958]  hv_pci_probe+0x4ce/0x640
+> > [    3.428106]  vmbus_probe+0x67/0x90
+> > [    3.430121]  really_probe.part.0+0xcb/0x380
+> > [    3.432516]  really_probe+0x40/0x80
+> > [    3.434581]  __driver_probe_device+0xe8/0x140
+> > [    3.437119]  driver_probe_device+0x23/0xb0
+> > [    3.439504]  __driver_attach_async_helper+0x31/0x90
+> > [    3.442296]  async_run_entry_fn+0x33/0x120
+> > [    3.444666]  process_one_work+0x225/0x3d0
+> > [    3.447043]  worker_thread+0x4d/0x3e0
+> > [    3.449233]  ? process_one_work+0x3d0/0x3d0
+> > [    3.451632]  kthread+0x12a/0x150
+> > [    3.453583]  ? set_kthread_struct+0x50/0x50
+> > [    3.456103]  ret_from_fork+0x22/0x30
+> > 
+> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > ---
+> > There has been earlier attempts to fix this problem, below are the patches
+> > for reference of these attempts.
+> > 1.
+> > https://lore.kernel.org/linux-pci/20230316103036.1837869-1-alexander.stein@
+> > ew.tq-group.com/T/#u 2.
+> > https://lwn.net/ml/linux-kernel/20230316091540.494366-1-alexander.stein@ew.
+> > tq-group.com/
+> > 
+> > Bug details: https://bugzilla.kernel.org/show_bug.cgi?id=215515
+> > 
+> >  drivers/pci/pci-sysfs.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > index f2909ae93f2f..a31f6f2cf309 100644
+> > --- a/drivers/pci/pci-sysfs.c
+> > +++ b/drivers/pci/pci-sysfs.c
+> > @@ -1230,6 +1230,10 @@ static int pci_create_resource_files(struct pci_dev
+> > *pdev) if (!pci_resource_len(pdev, i))
+> >  			continue;
+> > 
+> > +		/* Check if resource already allocated and proceed no 
+> further */
+> > +		if (pdev->res_attr[i] || pdev->res_attr_wc[i])
+> > +			return 0;
+> > +
+> >  		retval = pci_create_attr(pdev, i, 0);
+> >  		/* for prefetchable resources, create a WC mappable file 
+> */
+> >  		if (!retval && arch_can_pci_mmap_wc() &&
+> > @@ -1411,9 +1415,8 @@ static int __init pci_sysfs_init(void)
+> >  	struct pci_bus *pbus = NULL;
+> >  	int retval;
+> > 
+> > -	sysfs_initialized = 1;
+> >  	for_each_pci_dev(pdev) {
+> > -		retval = pci_create_sysfs_dev_files(pdev);
+> > +		retval = pci_create_resource_files(pdev);
+> >  		if (retval) {
+> >  			pci_dev_put(pdev);
+> >  			return retval;
+> > @@ -1423,6 +1426,8 @@ static int __init pci_sysfs_init(void)
+> >  	while ((pbus = pci_find_next_bus(pbus)))
+> >  		pci_create_legacy_files(pbus);
+> > 
+> > +	sysfs_initialized = 1;
+> > +
+> >  	return 0;
+> >  }
+> >  late_initcall(pci_sysfs_init);
+> 
+> 
+> -- 
+> TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+> Amtsgericht München, HRB 105018
+> Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+> http://www.tq-group.com/
+> 
