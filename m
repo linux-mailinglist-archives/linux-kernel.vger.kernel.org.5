@@ -2,76 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9135580E72B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AED80E728
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346225AbjLLJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
+        id S235099AbjLLJQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235078AbjLLJQ6 (ORCPT
+        with ESMTP id S231748AbjLLJQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:16:58 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19EBD2
+        Tue, 12 Dec 2023 04:16:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94E5DB
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:17:02 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e1a2253045so8807357b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:17:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702372622; x=1702977422; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=p38ZcnMoGySoA9RmMEhaNrnZZBwNT7TlIqnl8C0Lsh4=;
-        b=cLHbrcnTccbzLpgPFtaMkhk8CDo/sdm0AY57ytdW5qVS+9wKPREjSYF/lO7GGtd/QQ
-         C3RRLuaaqVKIVQPGzRggNvWHJd0kDQV8GZZlODhpr26LhWdiqRbM2vXgBtgb5lHENC56
-         1w6+yEAYfy/lXo9Br2XO9MnYqJ1UOPAU0RPOBaZaBZjLY4Xk3aA8rSH4J3StikVdVTqE
-         Dg2TQpNkfdMev4GGOEfw7vSuzAOaZRG3v0nLDKeiZ4M+KrbslZJhs0x7RL9sYivpFQD4
-         4mbKjLMnGtWZDIqLxMqbIgC1eicDHEC+8Vfsc2+TkajwK6jgetQZg9Y1hNA3jyYnZXds
-         rmyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702372622; x=1702977422;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p38ZcnMoGySoA9RmMEhaNrnZZBwNT7TlIqnl8C0Lsh4=;
-        b=NMJBt0JH+ID1Y1Qarm2kJQzJG+I6/PJaYLI85ovPlSkAofjrr/k7tvBFLT676oxvMt
-         wziLBEgc5Ml5NofWE3znyOpU6v7khjAP3bnaH9psFFjGvh2CFqR+6PS5GrgsMpFBZTst
-         xEBX4F4xe7p51d6LiIC8MrU7QfeBm2h0v6r3VN5t3yY2u6CdIvFJPcMrL78j2S2Ar0mO
-         6xr8i2FDEFNaWalbUL0MI09KzNG2rXff98WzEbRmOFTRbYxPU9D9fUg2WE02B6i0xB+c
-         O0BndT8uCWUHeHnPEsdVyO4UYsCpbVYhusiOVxBs5Zvf9kr7wmmCRkH/zsqJ0tXtziiT
-         xIIA==
-X-Gm-Message-State: AOJu0YzW4goRwb9TibKbLLFsUZhxyUtSIL7brtYWaHz7iQ/cuY7D4nDC
-        lkJF0jhCt3pdv40OdAPOejk7WXlNYnVkyVkvajaR7Q==
-X-Google-Smtp-Source: AGHT+IGfK6M82t1BPlvqg9TxCM/9qRj45o0tTiIJ27mtS0gYiaU1mn1aQ6NyYyJKbJ+DgcTtvVTbDhuMjYDaazDF4Ss=
-X-Received: by 2002:a0d:e905:0:b0:5d7:1941:ac7 with SMTP id
- s5-20020a0de905000000b005d719410ac7mr4662948ywe.98.1702372621940; Tue, 12 Dec
- 2023 01:17:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81A3C433C7;
+        Tue, 12 Dec 2023 09:16:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702372620;
+        bh=pAJ3nx5Llui3FrgGOwWJ1sBjH+cYEeTGCkjb+A7qsBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tb1exX7maotv6ujLhPqoFP1C0nl8/QWredniP2WIk+8s+CxcMA48E3PBP9bLi/ObO
+         dcMLa0zNrvd4z43yk7j0X8mXbOu0Ep9isOGqzT0r1RwWWbpKX4koNmB/irb0QXhX5H
+         bisSdNZqbFqCtIblE+UuqPoSbQW+Rx/Dwr7wNtlE/5LBQbz/sFd17fFgrH0vl2DH7T
+         ggm+VZ7Mb5w2k88xAhIVbGpY96hLfkjbbjuRGVRtYTewGx3IlzTQVn06u08R/vxD6p
+         pzQkjY0nKIiLdxawLJLu9cUsGKFE9IgwEj8SJLGFb9AeWTpg8JosVm2Vh0wenu0LhZ
+         Bwppx6/sfawrw==
+Date:   Tue, 12 Dec 2023 09:16:54 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>, catalin.marinas@arm.com
+Cc:     mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com,
+        ilkka@os.amperecomputing.com, renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH] perf/arm-cmn: Fail DTC counter allocation correctly
+Message-ID: <20231212091654.GA28174@willie-the-truck>
+References: <ed589c0d8e4130dc68b8ad1625226d28bdc185d4.1702322847.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-References: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org> <20231212-x1e80100-clock-controllers-v1-10-0de1af44dcb3@linaro.org>
-In-Reply-To: <20231212-x1e80100-clock-controllers-v1-10-0de1af44dcb3@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Dec 2023 11:16:50 +0200
-Message-ID: <CAA8EJpriXaymPkbkr_8Z76SDqZFrNAUOH_ggtpxSE2VA=0gcqA@mail.gmail.com>
-Subject: Re: [PATCH 10/10] clk: qcom: Add camcc clock driver for x1e80100
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Rajendra Nayak <quic_rjendra@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed589c0d8e4130dc68b8ad1625226d28bdc185d4.1702322847.git.robin.murphy@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,128 +51,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 00:46, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
->
-> Add the camcc clock driver for x1e80100
->
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On Mon, Dec 11, 2023 at 07:27:28PM +0000, Robin Murphy wrote:
+> Calling arm_cmn_event_clear() before all DTC indices are allocated is
+> wrong, and can lead to arm_cmn_event_add() erroneously clearing live
+> counters from full DTCs where allocation fails. Since the DTC counters
+> are only updated by arm_cmn_init_counter() after all DTC and DTM
+> allocations succeed, nothing actually needs cleaning up in this case
+> anyway, and it should just return directly as it did before.
+> 
+> Fixes: 7633ec2c262f ("perf/arm-cmn: Rework DTC counters (again)")
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 > ---
->  drivers/clk/qcom/Kconfig          |    8 +
->  drivers/clk/qcom/Makefile         |    1 +
->  drivers/clk/qcom/camcc-x1e80100.c | 2489 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 2498 insertions(+)
->
-> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> index 0633728c870c..4580edbd13ea 100644
-> --- a/drivers/clk/qcom/Kconfig
-> +++ b/drivers/clk/qcom/Kconfig
-> @@ -20,6 +20,14 @@ menuconfig COMMON_CLK_QCOM
->
->  if COMMON_CLK_QCOM
->
-> +config CLK_X1E80100_CAMCC
-> +       tristate "X1E80100 Camera Clock Controller"
-> +       depends on ARM64 || COMPILE_TEST
-> +       select CLK_X1E80100_GCC
-> +       help
-> +         Support for the camera clock controller on X1E80100 devices.
-> +         Say Y if you want to support camera devices and camera functionality.
-> +
->  config CLK_X1E80100_DISPCC
->         tristate "X1E80100 Display Clock Controller"
->         depends on ARM64 || COMPILE_TEST
-> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-> index 750b084553c6..1da65ca78e24 100644
-> --- a/drivers/clk/qcom/Makefile
-> +++ b/drivers/clk/qcom/Makefile
-> @@ -21,6 +21,7 @@ clk-qcom-$(CONFIG_QCOM_GDSC) += gdsc.o
->  obj-$(CONFIG_APQ_GCC_8084) += gcc-apq8084.o
->  obj-$(CONFIG_APQ_MMCC_8084) += mmcc-apq8084.o
->  obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
-> +obj-$(CONFIG_CLK_X1E80100_CAMCC) += camcc-x1e80100.o
->  obj-$(CONFIG_CLK_X1E80100_DISPCC) += dispcc-x1e80100.o
->  obj-$(CONFIG_CLK_X1E80100_GCC) += gcc-x1e80100.o
->  obj-$(CONFIG_CLK_X1E80100_GPUCC) += gpucc-x1e80100.o
-> diff --git a/drivers/clk/qcom/camcc-x1e80100.c b/drivers/clk/qcom/camcc-x1e80100.c
-> new file mode 100644
-> index 000000000000..50dc578692a1
-> --- /dev/null
-> +++ b/drivers/clk/qcom/camcc-x1e80100.c
-> @@ -0,0 +1,2489 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <dt-bindings/clock/qcom,x1e80100-camcc.h>
-> +
-> +#include "clk-alpha-pll.h"
-> +#include "clk-branch.h"
-> +#include "clk-rcg.h"
-> +#include "clk-regmap.h"
-> +#include "common.h"
-> +#include "gdsc.h"
-> +#include "reset.h"
-> +
-> +enum {
-> +       DT_BI_TCXO,
-> +       DT_BI_TCXO_AO,
-> +       DT_SLEEP_CLK,
-> +};
-> +
-> +enum {
-> +       P_BI_TCXO,
-> +       P_CAM_CC_PLL0_OUT_EVEN,
-> +       P_CAM_CC_PLL0_OUT_MAIN,
-> +       P_CAM_CC_PLL0_OUT_ODD,
-> +       P_CAM_CC_PLL1_OUT_EVEN,
-> +       P_CAM_CC_PLL2_OUT_EVEN,
-> +       P_CAM_CC_PLL2_OUT_MAIN,
-> +       P_CAM_CC_PLL3_OUT_EVEN,
-> +       P_CAM_CC_PLL4_OUT_EVEN,
-> +       P_CAM_CC_PLL6_OUT_EVEN,
-> +       P_CAM_CC_PLL8_OUT_EVEN,
-> +       P_SLEEP_CLK,
-> +};
-> +
-> +static const struct pll_vco lucid_ole_vco[] = {
-> +       { 249600000, 2300000000, 0 },
-> +};
-> +
-> +static const struct pll_vco rivian_ole_vco[] = {
-> +       { 777000000, 1285000000, 0 },
-> +};
-> +
-> +static const struct alpha_pll_config cam_cc_pll0_config = {
-> +       .l = 0x3E,
+>  drivers/perf/arm-cmn.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index 86d970e74129..c584165b13ba 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -1816,7 +1816,7 @@ static int arm_cmn_event_add(struct perf_event *event, int flags)
+>  			idx = 0;
+>  			while (cmn->dtc[j].counters[idx])
+>  				if (++idx == CMN_DT_NUM_COUNTERS)
+> -					goto free_dtms;
+> +					return -ENOSPC;
+>  		}
+>  		hw->dtc_idx[j] = idx;
+>  	}
+> -- 
+> 2.39.2.101.g768bb238c484.dirty
 
-Lowercase hex, please.
-Other than that LGTM.
+Acked-by: Will Deacon <will@kernel.org>
 
-> +       .alpha = 0x8000,
-> +       .config_ctl_val = 0x20485699,
-> +       .config_ctl_hi_val = 0x00182261,
-> +       .config_ctl_hi1_val = 0x82AA299C,
-> +       .test_ctl_val = 0x00000000,
-> +       .test_ctl_hi_val = 0x00000003,
-> +       .test_ctl_hi1_val = 0x00009000,
-> +       .test_ctl_hi2_val = 0x00000034,
-> +       .user_ctl_val = 0x00008400,
-> +       .user_ctl_hi_val = 0x00000005,
-> +};
+Catalin -- please can you take this one as a fix?
 
+Cheers,
 
-
--- 
-With best wishes
-Dmitry
+Will
