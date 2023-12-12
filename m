@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64CF80F533
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E62A80F534
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377074AbjLLSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        id S1377056AbjLLSHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377029AbjLLSEm (ORCPT
+        with ESMTP id S230181AbjLLSHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:04:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487B394
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:04:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DBEC433C8;
-        Tue, 12 Dec 2023 18:04:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702404288;
-        bh=nk//IozMK5UtGAQ/gn7b/tWhhxOCqLkulLRTpbFg1zQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oW+oYDoEzayjqebiyy/C7FhsvKbOlDvGllnGrDnx6jqmjPnx63vvu9RHSIaPJ5qYs
-         pG8djXTEAmorTUJFzOi4mft4v07TwgfHvHEpLX5VDbT/p8QkeFe9EBxWlfzparAUz/
-         OofwMCMIbZgd88mr/MmmADAaV5bPBadPQGqmPNIRj3D/q7kZVIFPE4BISJUHGOE/Rc
-         LX5MFFEklOfJipYZI70Xyp3s4C5eGMog4vH+VatH1C/g59YmJ+9WZJzKUudmijFU9A
-         ca3Lee5jIqjBhhDuP7mQcUw5LqfPep6MLc1kLL+W/qlOw2pjishkzUQiCODmHQjOLT
-         yNmos7nQPwCwQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C5850403EF; Tue, 12 Dec 2023 15:04:43 -0300 (-03)
-Date:   Tue, 12 Dec 2023 15:04:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v1] perf stat: Fix help message for --metric-no-threshold
- option
-Message-ID: <ZXigu8c0ee0u4uI/@kernel.org>
-References: <20231129223540.2247030-1-irogers@google.com>
- <CAP-5=fXeZpOg7cHDZmTLvQh=FTamvpdw+=q9vcqrUBd9v7ifLQ@mail.gmail.com>
+        Tue, 12 Dec 2023 13:07:10 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD16AB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:07:15 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bf09be81bso142e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702404434; x=1703009234; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14KyAFs5GhfjaUdeyaHsNjUFEO7kE0hEjwmeNGQaN4E=;
+        b=4ypYS/NCw76YAGeK4JyfqNS7lxtJyErCDQBQZKyi2yGwh4Hw/8tWk6xi64OzPlEuIU
+         3ieAB6Oa/5LLwhZGN4ZDIeIvI4z5yJW2Nr0RIWhkmnWYZcImfrCYJ3m0stxqADgEPW/C
+         zTF88rUYPL+VpyFMtGICDNUaWU/Q0/RapNdpjpojjDTCbHjttvyuMx8KF0MaAsWsshyC
+         wArqvrRu3QWKtyYi2CstFtoY++df5+wteb4t5nnuJtP/PsooVKwFgTxLQWzBMk6agKJT
+         lDXPTeiKh2hmfT1rmm0nwBnDTtXGkSiCoEI2Td1uXyZE1XxlUELgXNElrS9/6nJ92gC2
+         7q/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702404434; x=1703009234;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=14KyAFs5GhfjaUdeyaHsNjUFEO7kE0hEjwmeNGQaN4E=;
+        b=Vp49cDtqOYYq9B7Dgm+YHo9LEp+A16gqU4PfrK61KXwJzZIV2VuuV+RYcjaIS/7scO
+         a8Tp/k75S/yvmV4OG4kfg1OHCyhRCpCcRv0trYpukiv3JnXWSeXCGvXAvLtSCSyEycfv
+         zfqecjX70uO7Aei5lnCRwXqYVm2JMD9rvfJQmADD3dRPKjQvnJ4BGs3ec+zGQkbUI/x/
+         4/rPtZWFl6ItR8G4tHT0SSsGc8wLgtwAgZNaqIQCQ+nVnO7PByXnAaSckQY1RGkVMadF
+         GyjGnh6KerSXhJjiagmIjFETlWYRpGlQSuQtKHq8V6Rw/Wuied8+gUl4x2g6oEkMSLiw
+         nvGQ==
+X-Gm-Message-State: AOJu0YyIvzzYL3Rw3ianC0W6ykCYYRGhjlvz5+dVgy/DTNm2hJllx4A1
+        nJPYSjVk/392VqT8keQxhSkNiqSSOpphIxkl+L1uQg==
+X-Google-Smtp-Source: AGHT+IG5jBaKQ2Zoa4+iRqZCyXfj8awh5fb219w1XF2NyRum9tD6zQvtArJM7ZQJz5KCD50JQF8l0RLxq2WXKK8yKh0=
+X-Received: by 2002:a19:5e41:0:b0:50a:519d:5a8a with SMTP id
+ z1-20020a195e41000000b0050a519d5a8amr278545lfi.5.1702404433671; Tue, 12 Dec
+ 2023 10:07:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXeZpOg7cHDZmTLvQh=FTamvpdw+=q9vcqrUBd9v7ifLQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231212070547.612536-1-namhyung@kernel.org> <20231212070547.612536-3-namhyung@kernel.org>
+In-Reply-To: <20231212070547.612536-3-namhyung@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 12 Dec 2023 10:07:02 -0800
+Message-ID: <CAP-5=fWH=Nt4Dr7-rHqqfPSHPQUP=Bof2iGWEZEpsz5NC+wZiA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] perf unwind-libdw: Handle JIT-generated DSOs properly
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Milian Wolff <milian.wolff@kdab.com>,
+        Pablo Galindo <pablogsal@gmail.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 11, 2023 at 11:39:02AM -0800, Ian Rogers escreveu:
-> On Wed, Nov 29, 2023 at 2:36 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > Copy-paste error led to help message for metric-no-threshold repeating
-> > that of metric-no-merge.
-> >
-> > Reported-by: Stephane Eranian <eranian@google.com>
-> > Fixes: 1fd09e299bdd ("perf metric: Add --metric-no-threshold option")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Ping. Thanks,
-> Ian
+On Mon, Dec 11, 2023 at 11:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
+ wrote:
+>
+> Usually DSOs are mapped from the beginning of the file, so the base
+> address of the DSO can be calculated by map->start - map->pgoff.
+>
+> However, JIT DSOs which are generated by `perf inject -j`, are mapped
+> only the code segment.  This makes unwind-libdw code confusing and
+> rejects processing unwinds in the JIT DSOs.  It should use the map
+> start address as base for them to fix the confusion.
+>
+> Fixes: 1fe627da3033 ("perf unwind: Take pgoff into account when reporting=
+ elf to libdwfl")
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/unwind-libdw.c | 21 +++++++++++++++++----
+>  1 file changed, 17 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/util/unwind-libdw.c b/tools/perf/util/unwind-libd=
+w.c
+> index 8554db3fc0d7..6013335a8dae 100644
+> --- a/tools/perf/util/unwind-libdw.c
+> +++ b/tools/perf/util/unwind-libdw.c
+> @@ -46,6 +46,7 @@ static int __report_module(struct addr_location *al, u6=
+4 ip,
+>  {
+>         Dwfl_Module *mod;
+>         struct dso *dso =3D NULL;
+> +       Dwarf_Addr base;
+>         /*
+>          * Some callers will use al->sym, so we can't just use the
+>          * cheaper thread__find_map() here.
+> @@ -58,13 +59,25 @@ static int __report_module(struct addr_location *al, =
+u64 ip,
+>         if (!dso)
+>                 return 0;
+>
+> +       /*
+> +        * The generated JIT DSO files only map the code segment without
+> +        * ELF headers.  Since JIT codes used to be packed in a memory
+> +        * segment, calculating the base address using pgoff falls into
+> +        * a different code in another DSO.  So just use the map->start
+> +        * directly to pick the correct one.
+> +        */
+> +       if (!strncmp(dso->long_name, "/tmp/jitted-", 12))
 
-This is in perf-tools-next now.
+Perhaps it would be better to test:
+dso->symtab_type =3D=3D DSO_BINARY_TYPE__JAVA_JIT
 
-- Arnaldo
- 
-> > ---
-> >  tools/perf/builtin-stat.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> > index a3af805a1d57..c77a3308d3fb 100644
-> > --- a/tools/perf/builtin-stat.c
-> > +++ b/tools/perf/builtin-stat.c
-> > @@ -1255,7 +1255,7 @@ static struct option stat_options[] = {
-> >         OPT_BOOLEAN(0, "metric-no-merge", &stat_config.metric_no_merge,
-> >                        "don't try to share events between metrics in a group"),
-> >         OPT_BOOLEAN(0, "metric-no-threshold", &stat_config.metric_no_threshold,
-> > -                      "don't try to share events between metrics in a group  "),
-> > +                      "disable adding events for the metric threshold calculation"),
-> >         OPT_BOOLEAN(0, "topdown", &topdown_run,
-> >                         "measure top-down statistics"),
-> >         OPT_UINTEGER(0, "td-level", &stat_config.topdown_level,
-> > --
-> > 2.43.0.rc1.413.gea7ed67945-goog
-> >
+Thanks,
+Ian
 
--- 
-
-- Arnaldo
+> +               base =3D map__start(al->map);
+> +       else
+> +               base =3D map__start(al->map) - map__pgoff(al->map);
+> +
+>         mod =3D dwfl_addrmodule(ui->dwfl, ip);
+>         if (mod) {
+>                 Dwarf_Addr s;
+>
+>                 dwfl_module_info(mod, NULL, &s, NULL, NULL, NULL, NULL, N=
+ULL);
+> -               if (s !=3D map__start(al->map) - map__pgoff(al->map))
+> -                       mod =3D 0;
+> +               if (s !=3D base)
+> +                       mod =3D NULL;
+>         }
+>
+>         if (!mod) {
+> @@ -72,14 +85,14 @@ static int __report_module(struct addr_location *al, =
+u64 ip,
+>
+>                 __symbol__join_symfs(filename, sizeof(filename), dso->lon=
+g_name);
+>                 mod =3D dwfl_report_elf(ui->dwfl, dso->short_name, filena=
+me, -1,
+> -                                     map__start(al->map) - map__pgoff(al=
+->map), false);
+> +                                     base, false);
+>         }
+>         if (!mod) {
+>                 char filename[PATH_MAX];
+>
+>                 if (dso__build_id_filename(dso, filename, sizeof(filename=
+), false))
+>                         mod =3D dwfl_report_elf(ui->dwfl, dso->short_name=
+, filename, -1,
+> -                                             map__start(al->map) - map__=
+pgoff(al->map), false);
+> +                                             base, false);
+>         }
+>
+>         if (mod) {
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
