@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A0980EEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AC080EEDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376821AbjLLOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:33:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
+        id S1376828AbjLLOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376810AbjLLOc7 (ORCPT
+        with ESMTP id S1376827AbjLLOdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:32:59 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3219E9;
-        Tue, 12 Dec 2023 06:33:05 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d076ebf79cso32844625ad.1;
-        Tue, 12 Dec 2023 06:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702391585; x=1702996385; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
-        b=gcdP3N1KA2cWjtkugsIpxjNAxWqO1m2dUA1lOxkZKvC7p+69DfmMUfD9OfwcMlDyvu
-         odrYpYOKPg9fKSg7JApk9j2kbQVDj7jJQpc5ui7UE1OoWeh+V4j0eeDrfwtpf904yCp4
-         nYIkXbXyh9LokEEfJ3Ob/XMTu6tQ0JMQs6sq3gP+9/iE0qfVaWHiVSO8c2cOS7Z15J6R
-         8qSBtRNaGQaZ5PL4DzyZpnbabEHD8wvzrOYJZJkMZFTkJGJJKjNC9fmcTn4UEAiaj0CK
-         gFQabyFqmm1jwp1gRjv5sIle+hvDs4YRz1IS5e6qwZfKlmdknFom+4Hf7q3oeGRf0h3J
-         VtjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702391585; x=1702996385;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FgtrwCld4CcJzZn2fDspIh0QCBOkWG+UpKY4fFhtYqs=;
-        b=pXNjkCLdahd9klLOec+J2uG45IBPjDGI+yu2IDOzd9y9D1TbT9uhmtTkmIzR0m6aTu
-         jRPtgQ9ZTx8GENZavTQpQr+BDn5TyMSZN51ZDiE80UsDoXFTtIBFzvZALGkg/K/T2I/a
-         WO7hh/z3EI9kXvO2uohZMYh+mIs1ae4E2rJ+YxM11ooh9/9+DNdZzeWiuQEaAfXP3yoU
-         mVwu2JZJDegSBhbkGUO2Zck6gNAIFNKywU1Amk2aLSEQwqNHeS7m+ej5/E8sTSRTvpDZ
-         q8COoZQMxmrBy+L/Q00LvWxuTjwQpdlInemK18KhGbZV9Rw6vYHM60rrzCR0YUNVhUU3
-         zb7g==
-X-Gm-Message-State: AOJu0Yx5HX2RZyB/LvW0NXQ84nLa4R91EBZin/q9dw2Wc5z+6VZ3LIim
-        sAxJRxlaoUwBNXeQNxYv8aGN+R/astyC+w==
-X-Google-Smtp-Source: AGHT+IEIsWEtcl3wL28xc8lcH4vTgfH7wPqcFpwscBr1whjZyLhbBmOtDQfzVbXOl/StNV2Ux+dZZg==
-X-Received: by 2002:a17:902:bc4c:b0:1d0:6ffd:cec3 with SMTP id t12-20020a170902bc4c00b001d06ffdcec3mr3345275plz.124.1702391584856;
-        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
-Received: from Gentoo ([2409:8a6a:5426:70b1:a6fc:77ff:fe50:e63d])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170902a71700b001d0c418174fsm2902272plq.117.2023.12.12.06.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 06:33:04 -0800 (PST)
-Date:   Tue, 12 Dec 2023 22:32:56 +0800
-From:   Jianhua Lu <lujianhua000@gmail.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC, PATCH v2 1/2] ASoC: qcom: sdw: Add TDM support
-Message-ID: <ZXhvGEN28L5EqMx-@Gentoo>
-References: <20231212095850.26482-1-lujianhua000@gmail.com>
- <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
+        Tue, 12 Dec 2023 09:33:07 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A37DFE;
+        Tue, 12 Dec 2023 06:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1702391592;
+        bh=T1FTOhn+dhe2RzQli+HA9sglh+MKVmt+QGRK16ISh8c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N/XuIcIC5n/F9LxFkbso1fomRmByzGSpVdY0yHcHKFnqc56Z86rthqwwb81hDbQLl
+         Uh8IPawWVo14yvd+5h+t9oL5MpUcMABxKJvJCOUA+v7c/T9VrlbCAIfi6qNQA5FZJb
+         vu7eezd4Ljb+IfozTCP+OVSwNa4NL6r2Whg4e/eb64BlCws/4+xQUj6Rp/Ocs/tWGW
+         NojGDRAVm+4DhQjcTjQYdvGn2xCpkYo96ByDUx8Ae+2PrsEOJroGzjnqsLCT8Vd2ap
+         noaa5PMANi+SrI26YYNlQvAFJUieMCy7Wk/S/PH7FJMvjCg2AHZQ5sXGw4a8aIIVBL
+         hIFDB56U5nzsw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SqLgr0zpNzGCv;
+        Tue, 12 Dec 2023 09:33:12 -0500 (EST)
+Message-ID: <445ac00d-0f0c-4f6a-b85a-97209635c3f3@efficios.com>
+Date:   Tue, 12 Dec 2023 09:33:11 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c43c4303-ed59-49e7-940a-62df6ad1b575@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] tracing: Allow for max buffer data size trace_marker
+ writes
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20231212090057.41b28efe@gandalf.local.home>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231212090057.41b28efe@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:47:36AM +0000, Srinivas Kandagatla wrote:
-> > +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params)
-> > +{
-> 
-> TBH, this should not be part of sdw.c file, its intended for more of 
-> soundwire specific helpers, pl consider moving this to common.c for now.
-> Because, Not all old qcom platforms have soundwire controllers.
+On 2023-12-12 09:00, Steven Rostedt wrote:
+[...]
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -7272,6 +7272,7 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+>   	enum event_trigger_type tt = ETT_NONE;
+>   	struct trace_buffer *buffer;
+>   	struct print_entry *entry;
+> +	int meta_size;
+>   	ssize_t written;
+>   	int size;
+>   	int len;
+> @@ -7286,12 +7287,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+>   	if (!(tr->trace_flags & TRACE_ITER_MARKERS))
+>   		return -EINVAL;
+>   
+> -	if (cnt > TRACE_BUF_SIZE)
+> -		cnt = TRACE_BUF_SIZE;
 
-Acked.
-> 
-> > +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0x3, 8, slot_width);
-> 
-> slot mask is always set to 2 channels in this case, should you not check 
-> the number of channels to determine the correct one?
-> 
-> 
-> These magic number 0, 0x3, 8 seems to make the code unreadable, can you 
-> do something like this:
-> snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, 
-> ARRAY_SIZE(tdm_slot_offset), slot_width);
+You're removing an early bound check for a size_t userspace input...
 
-Acked.
-> 
-> > +		}
-> > +	}
-> Finally  ./sound/soc/qcom/sdm845.c does have exactly same code, can you 
-> consider removing this and make use of this new helper in that file too.
+> -
+> -	BUILD_BUG_ON(TRACE_BUF_SIZE >= PAGE_SIZE);
+> -
+> -	size = sizeof(*entry) + cnt + 2; /* add '\0' and possible '\n' */
+> +	meta_size = sizeof(*entry) + 2;  /* add '\0' and possible '\n' */
+> + again:
+> +	size = cnt + meta_size;
 
-Acked.
+... and then implicitly casting it into a "int" size variable, which
+can therefore become a negative value.
 
-Thanks for your reveiw very much, I will do it in patch v3.
+Just for the sake of not having to rely on ring_buffer_lock_reserve
+catching (length > BUF_MAX_DATA_SIZE), I would recommend to add an
+early check for negative here.
+
+>   
+>   	/* If less than "<faulted>", then make sure we can still add that */
+>   	if (cnt < FAULTED_SIZE)
+> @@ -7300,9 +7298,25 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+>   	buffer = tr->array_buffer.buffer;
+>   	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
+>   					    tracing_gen_ctx());
+> -	if (unlikely(!event))
+> +	if (unlikely(!event)) {
+> +		/*
+> +		 * If the size was greated than what was allowed, then
+
+greater ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
