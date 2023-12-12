@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B715A80F0E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9F380F107
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377058AbjLLPaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S1376726AbjLLPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377179AbjLLPaE (ORCPT
+        with ESMTP id S1376659AbjLLPbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:30:04 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621EA109;
-        Tue, 12 Dec 2023 07:30:01 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCEx5ER006650;
-        Tue, 12 Dec 2023 15:29:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=1QnPj8eOFdOKbzBUzJWtWMceQ+m+B2C7k4p3TzuE9/k=;
- b=NcKu09smPX6EeAQwHvpzlXCWxZVWnEp7/qUcgFPq0ARXQKSGIx4UKNgyhZ6i35UJ+HcJ
- i2rRrAZAoP2lPzh6VO/j5Za3S7eTgRNyfgb+AVI1dqdwwMEqZuteSGC7py9b4f36g/XD
- JqLqkdmgoYjwyqHKWJD4/DgTlaQTH4EeB+JAC9iWe7P9Oxb3YYzwnqxJjfEdyTeZNRrs
- rlrGsZ4Yq6RImXZ1Tz2P7sglqnNts0qFtvoPzRKHLpX/y36EYc+YFW30c20RhgnwQNvR
- pE+VYlyQKtyN/7zRRxrfQKEwvYF3+IN+rMDlW1MAelv8wQDBgSY+5AzWALzWldQLJ/Jm gg== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxrqckm2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 15:29:51 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCFPVDx004390;
-        Tue, 12 Dec 2023 15:29:50 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sk9jwf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 15:29:50 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BCFTmPE45023712
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 15:29:48 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8015920040;
-        Tue, 12 Dec 2023 15:29:48 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 137DA2004B;
-        Tue, 12 Dec 2023 15:29:47 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.61.159.221])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Dec 2023 15:29:46 +0000 (GMT)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add Roberto Sassu as co-maintainer to IMA and EVM
-Date:   Tue, 12 Dec 2023 10:29:37 -0500
-Message-Id: <20231212152937.928126-2-zohar@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231212152937.928126-1-zohar@linux.ibm.com>
-References: <20231212152937.928126-1-zohar@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fbJCglrVMoWM9eTCtOH3EcYo-EPFiKxO
-X-Proofpoint-ORIG-GUID: fbJCglrVMoWM9eTCtOH3EcYo-EPFiKxO
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 12 Dec 2023 10:31:08 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F759D0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:31:13 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7b7684f0fe4so6134939f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:31:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702395073; x=1702999873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GscAVAQw3jOAPyoMvo+XtWiwO1CMlaNrG73NSDT/aj0=;
+        b=XMu+v3edZybbZ/Dq6vU/eyshSinkTCLEtYl89eQ8RLw7BXKwtpXnVZ7CTRCTEEGEbj
+         FYMYy/JJisWX4DElS0QOxHmcw1+uHANtiQEJaeHDu90sBs9D7lnZjp23qyk5U4gNGlxC
+         7/sR6gEnTPEOCtZXUPTM2PR78AI6U/SnEAvxI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702395073; x=1702999873;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GscAVAQw3jOAPyoMvo+XtWiwO1CMlaNrG73NSDT/aj0=;
+        b=OjDjpgwi6za/rdW+CkI7C+cFPqwjhyJBB2HqvtrKsHpIupuGWh77aLnU1P1Vx4lHss
+         C3T42RYew17pJ4W68qaxsl8RxUC39Beq7c+HRvlKjxPrZu3tXJBBp9drzC0zgRSQXVlA
+         OyHayNyRPbSexU+DmejStBqTVqQ7cWcqUQ8sl8zp2N7TGhvTjaMGwaehRieaoPZOBuCW
+         9UHS6N1lRAfHGKtglqUwJh8BoB6qu9EQOjmtBhmYAn22Kd/PoOtrBqq6ZOprCdbK33y3
+         +7flPG4kCuveJ+ixfZXILr29fo+/nvUaaNJVMfmhQCO3Bh/YISSXvl3GuOt0sagHW+zn
+         trtw==
+X-Gm-Message-State: AOJu0YxOt2xK+DEtWgCi7vXJtK9nSjAZ83ILWjErgk5wcUr8P/lLus0N
+        HFm/SI1Y7Z7oqTugArtI2YQAYA==
+X-Google-Smtp-Source: AGHT+IHpDkWdebgWwXK3Ea4XBvViy8KGX8metxHQsuoTyztbAbyBy5ZkYqONDK/VkPrrr4k5FoFqzA==
+X-Received: by 2002:a92:cd82:0:b0:35d:7a37:5236 with SMTP id r2-20020a92cd82000000b0035d7a375236mr11616101ilb.2.1702395072844;
+        Tue, 12 Dec 2023 07:31:12 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id m6-20020a924a06000000b0035d6bbcede7sm2969309ilf.25.2023.12.12.07.31.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 07:31:12 -0800 (PST)
+Message-ID: <57a7fb54-67e6-4eb8-8772-9cf01452fb00@linuxfoundation.org>
+Date:   Tue, 12 Dec 2023 08:31:11 -0700
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_08,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- lowpriorityscore=0 impostorscore=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312120117
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: nolibc changes for 6.8
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, WillyTarreauw@lwt.eu,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <4208adae-d185-44a6-a564-ec9bc4c6eb2a@t-8ch.de>
+ <4074b0bc-e89b-4b2e-ad11-cb3a9517b725@linuxfoundation.org>
+ <d486df54-4484-4f6a-b40f-aebeb5f0131a@t-8ch.de>
+ <ef2d9d5f-e485-465c-98b7-d993610ae10e@linuxfoundation.org>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ef2d9d5f-e485-465c-98b7-d993610ae10e@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Roberto Sassu has been actively involved in IMA and EVM since 2011.
-His first major IMA contribution was IMA template support.  He also
-contributed extending TPM 2.0 PCRs with properly calculated per TPM
-bank digests and included file metadata information in the IMA
-measurement list.
+On 12/11/23 16:49, Shuah Khan wrote:
+> Hi Thomas,
+> 
+> On 12/11/23 14:40, Thomas Weißschuh wrote:
+>> Hi Shuah,
+>>
+> 
+>>
+>> Thanks for spotting this!
+>>
+>> The fixed commits are published on the same "next" branch as before with
+>> final commit d543d9ddf593b1f4cb1d57d9ac0ad279fe18adaf.
+>>
+> 
+> Thank you.
+> 
+> Pulled and pushed to linux-kselftest nolibc branch.
+> 
 
-Regarding EVM, Roberto contributed to making EVM portable and immutable
-signatures more usable.  He also prepared the LSM infrastructure to
-support EVM as a fully fledged LSM, by ensuring that the latter receives
-from the former all xattrs provided by other registered LSMs at inode
-creation time, for HMAC calculation.
+Forgot to mention that I ran "make run" and "make run-user" and
+saw the same results Paul saw. All good.
 
-Roberto is currently working on making IMA and EVM full fledged LSMs.
-
-Add Roberto as an IMA and EVM maintainer.
-
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 012df8ccf34e..ffaac404d1e0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7977,6 +7977,7 @@ F:	include/uapi/linux/ext4.h
- 
- Extended Verification Module (EVM)
- M:	Mimi Zohar <zohar@linux.ibm.com>
-+M:	Roberto Sassu <roberto.sassu@huawei.com>
- L:	linux-integrity@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
-@@ -10554,6 +10555,7 @@ F:	drivers/crypto/inside-secure/
- 
- INTEGRITY MEASUREMENT ARCHITECTURE (IMA)
- M:	Mimi Zohar <zohar@linux.ibm.com>
-+M:	Roberto Sassu <roberto.sassu@huawei.com>
- M:	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
- L:	linux-integrity@vger.kernel.org
- S:	Supported
--- 
-2.39.3
+thanks,
+-- Shuah
 
