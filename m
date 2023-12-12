@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F88880F54D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92D480F550
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377083AbjLLSOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:14:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S1377100AbjLLSQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLSOs (ORCPT
+        with ESMTP id S230181AbjLLSQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:14:48 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1DCA7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:14:54 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD7HK-00040L-KK; Tue, 12 Dec 2023 19:14:46 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD7HI-00FOxL-SC; Tue, 12 Dec 2023 19:14:44 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD7HI-001p8f-I9; Tue, 12 Dec 2023 19:14:44 +0100
-Date:   Tue, 12 Dec 2023 19:14:44 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/6] pwm: bcm2835: Allow PWM driver to be used in
- atomic context
-Message-ID: <20231212181444.mw5kxff5ijz676qh@pengutronix.de>
-References: <cover.1702369869.git.sean@mess.org>
- <e9e32c9789da3c90b5a2aa7d5a093120b76421fb.1702369869.git.sean@mess.org>
- <20231212160838.k4z4csy455a7qnje@pengutronix.de>
+        Tue, 12 Dec 2023 13:16:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC379B
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:16:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2F8C433C7;
+        Tue, 12 Dec 2023 18:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702404966;
+        bh=55v2YEAEajqeqknulyuWsJXXATDMpGT7WsJUIr0GI/E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cKwKGBqs/hXYX/mV4mPQ1ZwkgUJrnnfWNcTPTyuiWBMJ/leiYEQSgENKdG3sfmvuE
+         bSxth5b7ltOcRFcXTlP8+X9n+jOnsalASL5N2T8+CKUnwMTofd6ykO/MA3iEjkEH1I
+         vyEo/J55wTxQRcgS8Z26G14QuLjkeJL/++nkTRr5TV82egehIoXsWMvKeHxZW1Xyid
+         HlrXsxTNt0sQBUanT+A3LL7p35sHXf4ZvAD3mpjk4w5JT0X9ECdORpdYkQ6uqWc+hj
+         S+MdnAXBQoDEF/jxjxTWyYFWDxeb6TrrrvUcE3mDsEqhmpugczKoOVcl1o+k1jfZrz
+         hwp9ZTajSJYBA==
+Date:   Tue, 12 Dec 2023 10:16:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Paul Greenwalt <paul.greenwalt@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/2] idpf: add get/set for Ethtool's header
+ split ringparam
+Message-ID: <20231212101605.766fbbcc@kernel.org>
+In-Reply-To: <20231212142752.935000-1-aleksander.lobakin@intel.com>
+References: <20231212142752.935000-1-aleksander.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="llbhn5mnvxkhmahv"
-Content-Disposition: inline
-In-Reply-To: <20231212160838.k4z4csy455a7qnje@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Dec 2023 15:27:50 +0100 Alexander Lobakin wrote:
+> Currently, the header split feature (putting headers in one smaller
+> buffer and then the data in a separate bigger one) is always enabled
+> in idpf when supported.
+> One may want to not have fragmented frames per each packet, for example,
+> to avoid XDP frags. To better optimize setups for particular workloads,
+> add ability to switch the header split state on and off via Ethtool's
+> ringparams, as well as to query the current status.
+> There's currently only GET in the Ethtool Netlink interface for now,
+> so add SET first. I suspect idpf is not the only one supporting this.
 
---llbhn5mnvxkhmahv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Sean,
-
-On Tue, Dec 12, 2023 at 05:08:38PM +0100, Uwe Kleine-K=F6nig wrote:
-> On Tue, Dec 12, 2023 at 08:34:04AM +0000, Sean Young wrote:
-> > @@ -169,6 +179,7 @@ static int bcm2835_pwm_suspend(struct device *dev)
-> >  {
-> >  	struct bcm2835_pwm *pc =3D dev_get_drvdata(dev);
-> > =20
-> > +	clk_rate_exclusive_put(pc->clk);
-> >  	clk_disable_unprepare(pc->clk);
->=20
-> I thought this was the remove function, but that's suspend. Adding
-> clk_rate_exclusive_put() there is wrong.
-
-https://lore.kernel.org/linux-clk/744a6371f94fe96f527eea6e52a600914e6fb6b5.=
-1702403904.git.u.kleine-koenig@pengutronix.de/
-might be useful to fix this.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---llbhn5mnvxkhmahv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV4oxMACgkQj4D7WH0S
-/k4mdAgAn2zEXY7AwmY1SR/n2nlH95E9ZMWuZsWEE5YGkmiMVuu3Vxndi5GvL9Dh
-dd1KzI3rvGRWEOh7sNhr8gdfyRFVBwFE8N0IMRWH5SOOL6uMiDV5qB8gcQF4cHJf
-sVZp1wxCIrv8QVmdNVhafSAIz7ojkYJpls9Hp18MfZWAJ40kwuUQSRqx3zu565rr
-fAujilnhb2J/JgM+SBmkERoG5p7RPdJ7Txck7nT2/poL7wwwhxBK5uBAHsIzLbiq
-iiM1wU/uYHSSEln0EYdz74u47W65H8hiKG6e/CdhThnLh6p29h+R9UtQpNSktAe6
-nfXqhhqc2AWJJk1y3kL2nDV/gkykzg==
-=ZifV
------END PGP SIGNATURE-----
-
---llbhn5mnvxkhmahv--
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
