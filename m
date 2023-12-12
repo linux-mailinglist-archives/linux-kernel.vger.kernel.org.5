@@ -2,45 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 180C480E7EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FB080E7EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjLLJlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
+        id S231387AbjLLJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346314AbjLLJlA (ORCPT
+        with ESMTP id S229583AbjLLJlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:41:00 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A817DE3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:41:05 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:dadd:5da9:a38f:8d88])
-        by xavier.telenet-ops.be with bizsmtp
-        id MMh32B0043oFjQr01Mh36z; Tue, 12 Dec 2023 10:41:03 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1rCzFn-00BqYH-8k
-        for linux-kernel@vger.kernel.org;
-        Tue, 12 Dec 2023 10:41:03 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1rCzGA-00C7Zd-UC
-        for linux-kernel@vger.kernel.org;
-        Tue, 12 Dec 2023 10:41:02 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v6.7-rc5
-Date:   Tue, 12 Dec 2023 10:41:02 +0100
-Message-Id: <20231212094102.2889029-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAHk-=wiwpxsPG9vaQnbh3ch9Uh6s6Kf+8x3TnYE_8prKguHDHg@mail.gmail.com>
-References: <CAHk-=wiwpxsPG9vaQnbh3ch9Uh6s6Kf+8x3TnYE_8prKguHDHg@mail.gmail.com>
+        Tue, 12 Dec 2023 04:41:45 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72395DC;
+        Tue, 12 Dec 2023 01:41:51 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2cc2683fdaaso14240131fa.0;
+        Tue, 12 Dec 2023 01:41:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702374109; x=1702978909; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aVLRsdYbktegNzx/Zud+ZtI8big1fblrhu7NGAxTQAw=;
+        b=UhoSrJiGJ532dSxRZ2GtlJrhxqA0dRydAXdnIBka2HNV1twuSCEKnei3fPhee36NY6
+         2joh0ZQMyfPIfYOCLG7HcWkyhqEc7YirrMNToT2UV0lLBOHk8mPsPfm6Gy2KLwre/2DT
+         zAWtfD2iMNDgksIbPyExEb+5q4HvFOiNfKq1Ve+8IpId0TYHAOUaFb9DTi8y4hQM31QN
+         2C6sxplfUCs2ab0QwOlUFLd1kI7oLy1J+7Vwj8QCN/EqS8xkjBU8SdFhlNtThpSRvFer
+         aPITmU42fi+Q6SesVvTAYnWyF6DUR3qcC+26BJeSFecqL9UsPTOjVd6qivnk6nNiEyEt
+         a0TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702374109; x=1702978909;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aVLRsdYbktegNzx/Zud+ZtI8big1fblrhu7NGAxTQAw=;
+        b=tN6IQ8kSIxek428Gb/0NOXylznFtDN3oAJ8iwlKHdVXrrw5eR/sEWo0Dpiy1WdgJ9h
+         Aw/nrL8q8Q1lmTQSg+XCHrV/m50NxAXtzOazOie3zFgcDQtNVaAXASof/nW/urBpll/J
+         +LpA7dfDW6wDQTXPOsk6iIIsN4qcgZsBaXguQDjJu9fh4RwnH/vN9RhT9A9EM3p7kFUC
+         ElOwS00JPWus5rwg4F60IWXAzLgJoijapFhQJAaTNCzLlSrxO535yKlvrkM0DaeGZBWf
+         CHdTjztCwyFlP8vx/lLXjt4XPpumx4tQ149o3p9wWqUy2guShtd6IAlv76vSMjtHBD0P
+         hYUw==
+X-Gm-Message-State: AOJu0Yw6nnXDUnMjn0DdSbksbYQD15O106D01+48OMKrKFCjUE4g8fa9
+        1wNHZuVxSNVHocWjwpBUwdPJyYP8Qo5P7A==
+X-Google-Smtp-Source: AGHT+IGjFCbfOwwOutwRYz9AG4gY6Bjb3gwTl7okXn4Z2UZjyVCgGejFArR0xoCO2FepI8R+GuIWdg==
+X-Received: by 2002:a2e:be83:0:b0:2ca:135:2204 with SMTP id a3-20020a2ebe83000000b002ca01352204mr4525370ljr.16.1702374109370;
+        Tue, 12 Dec 2023 01:41:49 -0800 (PST)
+Received: from dy7lrfj8vfr2jm7whrhxy-4.rev.dnainternet.fi (dy7lrfj8vfr2jm7whrhxy-4.rev.dnainternet.fi. [2001:14bb:6d2:e21f:9123:ac75:6e46:71a6])
+        by smtp.gmail.com with ESMTPSA id l25-20020a2e8699000000b002c9f16d5da9sm1477738lji.95.2023.12.12.01.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 01:41:49 -0800 (PST)
+Message-ID: <d523ca40916a8c17ea8ab6d980265e2985e094b3.camel@gmail.com>
+Subject: Re: [PATCH 0/3] afs: Fix dynamic root interaction with failing DNS
+ lookups
+From:   markus.suvanto@gmail.com
+To:     David Howells <dhowells@redhat.com>
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, keyrings@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Dec 2023 11:41:42 +0200
+In-Reply-To: <2810523.1702371786@warthog.procyon.org.uk>
+References: <59be73c8346ca0c0d6feddcdb56b043cfa0aea4d.camel@gmail.com>
+         <20231211163412.2766147-1-dhowells@redhat.com>
+         <2810523.1702371786@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,102 +77,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v6.7-rc5[1] compared to v6.6[2].
+ti, 2023-12-12 kello 09:03 +0000, David Howells kirjoitti:
+> markus.suvanto@gmail.com wrote:
+>=20
+> > Reproduce:
+> > 1) kinit ....
+> > 2) aklog....
+> > 3) keyctl show=20
+> > Session Keyring
+> >  347100937 --alswrv   1001 65534  keyring: _uid_ses.1001
+> > 1062692655 --alswrv   1001 65534   \_ keyring: _uid.1001
+> >  698363997 --als-rv   1001   100   \_ rxrpc: afs@station.com
+> >=20
+> > klist=20
+> > Ticket cache: KEYRING:persistent:1001:1001
+> > Default principal: .....
+>=20
+> Can you "grep rxrpc /proc/keys" at this point?
+>=20
+different cell though...
 
-Summarized:
-  - build errors: +7/-12
-  - build warnings: +24/-10
+masu@t470 ~ % grep rxrpc /proc/keys
+23e16cda I--Q---     1   3d 3b010000  1001   100 rxrpc     afs@movesole.com=
+: ka
 
-JFYI, when comparing v6.7-rc5[1] to v6.7-rc4[3], the summaries are:
-  - build errors: +0/-13
-  - build warnings: +0/-0
-
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a39b6ac3781d46ba18193c9dbb2110f31e9bffe9/ (238 out of 239 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ffc253263a1375a65fa6c9f62a893e9767fbebfa/ (all 239 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/33cc938e65a98f1d29d0a18403dbbee050dcad9a/ (all 239 configs)
-
-
-*** ERRORS ***
-
-7 error regressions:
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_654' declared with attribute error: FIELD_PREP: value too large for the field:  => 435:38
-  + {standard input}: Error: displacement to undefined symbol .L134 overflows 8-bit field :  => 598
-  + {standard input}: Error: displacement to undefined symbol .L75 overflows 12-bit field:  => 586, 606
-  + {standard input}: Error: displacement to undefined symbol .L76 overflows 8-bit field :  => 577
-  + {standard input}: Error: displacement to undefined symbol .L80 overflows 8-bit field :  => 601
-  + {standard input}: Error: invalid operands for opcode:  => 612
-  + {standard input}: Error: missing operand:  => 612
-
-12 error improvements:
-  - error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
-  - {standard input}: Error: displacement to undefined symbol .L101 overflows 12-bit field: 607 => 
-  - {standard input}: Error: displacement to undefined symbol .L103 overflows 8-bit field : 593 => 
-  - {standard input}: Error: displacement to undefined symbol .L107 overflows 8-bit field : 590 => 
-  - {standard input}: Error: displacement to undefined symbol .L140 overflows 8-bit field : 603 => 
-  - {standard input}: Error: displacement to undefined symbol .L149 overflows 8-bit field : 606 => 
-  - {standard input}: Error: displacement to undefined symbol .L73 overflows 12-bit field: 594 => 
-  - {standard input}: Error: displacement to undefined symbol .L74 overflows 8-bit field : 585 => 
-  - {standard input}: Error: displacement to undefined symbol .L76 overflows 12-bit field: 591 => 
-  - {standard input}: Error: displacement to undefined symbol .L77 overflows 8-bit field : 582 => 
-  - {standard input}: Error: pcrel too far: 604, 598, 577, 601, 595, 574 => 610, 596, 569, 590
-  - {standard input}: Error: unknown pseudo-op: `.': 609 => 
-
-
-*** WARNINGS ***
-
-24 warning regressions:
-  + modpost: WARNING: modpost: "__ashldi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__lshrdi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__ndelay" [drivers/iio/resolver/ad2s1210.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/meson-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/clk/sifive/sifive-prci.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/extcon/extcon-rtk-type-c.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/iio/adc/mcp3564.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/media/i2c/mt9m114.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/media/platform/nuvoton/npcm-video.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-imxdi.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-ssd202d.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/usb/typec/tipd/tps6598x.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "empty_zero_page" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x110 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x14 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x30 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x4c (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x68 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x84 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xa0 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xbc (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xd8 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xf4 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe4 (section: .text.unlikely) -> initcall_level_names (section: .init.data):  => N/A
-
-10 warning improvements:
-  - modpost: WARNING: modpost: "__ashldi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__lshrdi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__lshrdi3" [drivers/thunderbolt/thunderbolt.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/media/platform/cadence/cdns-csi2rx.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/iio/resolver/ad2s1210.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/qlge/qlge.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/rtl8192u/r8192u_usb.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe0 (section: .text.unlikely) -> initcall_level_names (section: .init.data): N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
