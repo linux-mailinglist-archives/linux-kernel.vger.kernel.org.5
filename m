@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D309180F6B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AFF80F6B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376876AbjLLTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
+        id S1376969AbjLLTbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233067AbjLLTb2 (ORCPT
+        with ESMTP id S233299AbjLLTbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:31:28 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 60BD69B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:31:33 -0800 (PST)
-Received: (qmail 175710 invoked by uid 1000); 12 Dec 2023 14:31:31 -0500
-Date:   Tue, 12 Dec 2023 14:31:31 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kevin Hilman <khilman@kernel.org>
-Cc:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        "Vardhan, Vibhore" <vibhore@ti.com>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        =?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 3/6] usb: cdns3-ti: add suspend/resume procedures for
- J7200
-Message-ID: <ae99430d-12a3-4831-b4b7-586d6d045b15@rowland.harvard.edu>
-References: <CX0GOP07I40N.198G7LJ0HYDBG@tleb-bootlin-xps13-01>
- <bdea68ad-7523-4738-8fa1-b670d81a6b93@kernel.org>
- <CX10D9YX1O1C.30PF317AG065N@tleb-bootlin-xps13-01>
- <3e00b2ad-b58f-4b09-9230-683c58d3bb92@kernel.org>
- <CX15J7B8F8HH.1WZ10OOW31X1H@tleb-bootlin-xps13-01>
- <7h34wxfmwn.fsf@baylibre.com>
- <CX63KP2UPL1N.J9Q344Q06IGP@tleb-bootlin-xps13-01>
- <7hil5odtwl.fsf@baylibre.com>
- <CX9MMPFL7HAY.NGULD1FN5WPN@tleb-bootlin-xps13-01>
- <7h7cljcm6a.fsf@baylibre.com>
+        Tue, 12 Dec 2023 14:31:51 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA127106;
+        Tue, 12 Dec 2023 11:31:52 -0800 (PST)
+Received: from [194.95.143.137] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rD8Tp-0005mP-OM; Tue, 12 Dec 2023 20:31:45 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Sam Edwards <cfsworks@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sam Edwards <CFSworks@gmail.com>
+Subject: Re: [PATCH 1/2] xhci: Introduce "disable-usb3" DT property/quirk
+Date:   Tue, 12 Dec 2023 20:31:45 +0100
+Message-ID: <4854020.GXAFRqVoOG@phil>
+In-Reply-To: <20231208210458.912776-2-CFSworks@gmail.com>
+References: <20231208210458.912776-1-CFSworks@gmail.com>
+ <20231208210458.912776-2-CFSworks@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7h7cljcm6a.fsf@baylibre.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:26:05AM -0800, Kevin Hilman wrote:
-> Théo Lebrun <theo.lebrun@bootlin.com> writes:
-
+Am Freitag, 8. Dezember 2023, 22:04:57 CET schrieb Sam Edwards:
+> Some systems may have xHCI controllers that enumerate USB 3.0 ports, but
+> these ports nevertheless cannot be used. Perhaps enabling them triggers a
+> hardware bug, or perhaps they simply aren't connected and it would be
+> confusing to the user to see an unusable USB 3.0 rhub show up -- whatever
+> the case may be, it's reasonable to want to disable these ports.
 > 
-> > Hello,
-> >
-> > On Sun Nov 26, 2023 at 11:36 PM CET, Kevin Hilman wrote:
-> >> Théo Lebrun <theo.lebrun@bootlin.com> writes:
-> >> > On Wed Nov 22, 2023 at 11:23 PM CET, Kevin Hilman wrote:
-> >> >> Théo Lebrun <theo.lebrun@bootlin.com> writes:
-> >> >> The point is to signal to the power domain the device is in that it can
-> >> >> power on/off.  These IP blocks are (re)used on many different SoCs, so
-> >> >> the driver should not make any assumptions about what power domain it is
-> >> >> in (if any.)
-> >> >
-> >> > On my platform, when the device is attached to the PD it gets turned on.
-> >> > That feels logical to me: if a driver is not RPM aware it "just works".
-> >>
-> >> It "just works"... until the domain gets turned off.
-> >>
-> >> > Are there platforms where RPM must get enabled for the attached
-> >> > power-domains to be turned on?
-> >>
-> >> Yes, but but more importantly, there are platforms where RPM must get
-> >> enabled for the power domain to *stay* on.  For example, the power
-> >> domain might get turned on due to devices probing etc, but as soon as
-> >> all the RPM-enabled drivers drop their refcount, the domain will turn
-> >> off.  If there is a device in that domain with a non-RPM enabled driver,
-> >> that device will be powered off anc cause a crash.
-> >
-> > OK, that makes sense, thanks for taking the time to explain. This topic
-> > makes me see two things that I feel are close to being bugs. I'd be
-> > curious to get your view on both.
+> Add a DT property (and associated quirk) to the xHCI driver that skips
+> over (i.e. ignores and doesn't initialize) any USB 3.0 ports discovered
+> during driver initialization.
 > 
-> TL;DR; they are features, not bugs.  ;)
+> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
+
+I'm very much unsure, where the line goes between hw-quirk and
+dt-is-not-a-configuration-space - in this specific instance.
+
+DT is meant to describe the actual hardware present and not how
+any operating system supports it.
+
+So having that usb3phy present in the kernel - even if only in
+a more limited form as you describe would be my preference.
+
+
+But for a short-term thing, the usb3-phy in the binding is optional, so
+so you could "just" deduce the no-usb3 state in your code from its
+absence from the dt-node?
+
+
+Heiko
+
+
+
+>  Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
+>  drivers/usb/host/xhci-mem.c                         | 4 ++++
+>  drivers/usb/host/xhci-plat.c                        | 3 +++
+>  drivers/usb/host/xhci.h                             | 1 +
+>  4 files changed, 12 insertions(+)
 > 
-> >  - If a device does not use RPM but its children do, it might get its
-> >    associated power-domain turned off. That forces every single driver
-> >    that want to stay alive to enable & increment RPM.
-> >
-> >    What I naively expect: a genpd with a device attached to it that is
-> >    not using RPM should mean that it should not be powered off at
-> >    runtime_suspend. Benefit: no RPM calls in drivers that do not use
-> >    it, and the behavior is that the genpd associated stays alive "as
-> >    expected".
+> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> index 180a261c3e8f..8a64e747260a 100644
+> --- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
+> @@ -25,6 +25,10 @@ properties:
+>      description: Set if the controller has broken port disable mechanism
+>      type: boolean
+>  
+> +  disable-usb3:
+> +    description: Ignore (don't initialize, don't use) USB3 ports
+> +    type: boolean
+> +
+>    imod-interval-ns:
+>      description: Interrupt moderation interval
+>      default: 5000
+> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+> index 0a37f0d511cf..bf8fcab626e4 100644
+> --- a/drivers/usb/host/xhci-mem.c
+> +++ b/drivers/usb/host/xhci-mem.c
+> @@ -1968,6 +1968,10 @@ static void xhci_add_in_port(struct xhci_hcd *xhci, unsigned int num_ports,
+>  	minor_revision = XHCI_EXT_PORT_MINOR(temp);
+>  
+>  	if (major_revision == 0x03) {
+> +		/* Ignore USB3 ports entirely if USB3 support is disabled. */
+> +		if (xhci->quirks & XHCI_DISABLE_USB3)
+> +			return;
+> +
+>  		rhub = &xhci->usb3_rhub;
+>  		/*
+>  		 * Some hosts incorrectly use sub-minor version for minor
+> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+> index b93161374293..75285fb5bbbc 100644
+> --- a/drivers/usb/host/xhci-plat.c
+> +++ b/drivers/usb/host/xhci-plat.c
+> @@ -249,6 +249,9 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
+>  		if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
+>  			xhci->quirks |= XHCI_BROKEN_PORT_PED;
+>  
+> +		if (device_property_read_bool(tmpdev, "disable-usb3"))
+> +			xhci->quirks |= XHCI_DISABLE_USB3;
+> +
+>  		device_property_read_u32(tmpdev, "imod-interval-ns",
+>  					 &xhci->imod_interval);
+>  	}
+> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+> index 5df370482521..c53fbeea478f 100644
+> --- a/drivers/usb/host/xhci.h
+> +++ b/drivers/usb/host/xhci.h
+> @@ -1906,6 +1906,7 @@ struct xhci_hcd {
+>  #define XHCI_RESET_TO_DEFAULT	BIT_ULL(44)
+>  #define XHCI_ZHAOXIN_TRB_FETCH	BIT_ULL(45)
+>  #define XHCI_ZHAOXIN_HOST	BIT_ULL(46)
+> +#define XHCI_DISABLE_USB3	BIT_ULL(47)
+>  
+>  	unsigned int		num_active_eps;
+>  	unsigned int		limit_active_eps;
 > 
-> Your expectation makes sense, but unfortunately, that's not how RPM was
-> designed.
 
-I'm not sure how runtime PM is meant to work with power domains.  
 
-However, from the very beginning of runtime PM the intention was that 
-device drivers and subsystems could safely ignore it.  Their devices 
-would have a permanently nonzero disable_depth (permanent because the 
-driver/subsystem would not know to change it) and therefore would always 
-remain in the active state (see rpm_check_suspend_allowed()).
 
-It would be very surprising if runtime PM for power domains was written 
-in a way that would subvert this intention.
 
-Alan Stern
