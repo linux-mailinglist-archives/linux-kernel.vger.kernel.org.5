@@ -2,281 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85B980EA70
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8135680EAD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346286AbjLLLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        id S232411AbjLLLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjLLLcw (ORCPT
+        with ESMTP id S232388AbjLLLwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:32:52 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A455D3;
-        Tue, 12 Dec 2023 03:32:58 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8269A143D;
-        Tue, 12 Dec 2023 03:33:44 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D8943F762;
-        Tue, 12 Dec 2023 03:32:53 -0800 (PST)
-Message-ID: <e2284c10-1dc3-2c55-1e56-2cd8c0c8d461@arm.com>
-Date:   Tue, 12 Dec 2023 11:32:49 +0000
+        Tue, 12 Dec 2023 06:52:15 -0500
+X-Greylist: delayed 1181 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 03:52:18 PST
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277F7109;
+        Tue, 12 Dec 2023 03:52:17 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SqGf74fmNz1kv72;
+        Tue, 12 Dec 2023 19:31:27 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+        by mail.maildlp.com (Postfix) with ESMTPS id 1D5A81800C8;
+        Tue, 12 Dec 2023 19:32:34 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 12 Dec 2023 19:32:33 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>,
+        <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix uaf issue when open the hist or hist_debug file
+Date:   Tue, 12 Dec 2023 19:33:17 +0800
+Message-ID: <20231212113317.4159890-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 02/14] libperf cpumap: Rename and prefer sysfs for
- perf_cpu_map__default_new
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-3-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231129060211.1890454-3-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KASAN report following issue. The root cause is when opening 'hist'
+file of an instance and accessing 'trace_event_file' in hist_show(),
+but 'trace_event_file' has been freed due to the instance being removed.
+'hist_debug' file has the same problem. To fix it, use
+tracing_{open, release}_file_tr() as instead when open these two files.
 
+  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
+  Read of size 8 at addr ffff242541e336b8 by task head/190
 
-On 29/11/2023 06:01, Ian Rogers wrote:
-> Rename perf_cpu_map__default_new to perf_cpu_map__new_online_cpus to
-> better indicate what the implementation does. Read the online CPUs
-> from /sys/devices/system/cpu/online first before using sysconf as
-> sysconf can't accurately configure holes in the CPU map. If sysconf is
-> used, warn when the configured and online processors disagree.
-> 
-> When reading from a file, if the read doesn't yield a CPU map then
-> return an empty map rather than the default online. This avoids
-> recursion but also better yields being able to detect failures.
-> 
-> Add more comments.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
+  Hardware name: linux,dummy-virt (DT)
+  Call trace:
+   dump_backtrace+0x98/0xf8
+   show_stack+0x1c/0x30
+   dump_stack_lvl+0x44/0x58
+   print_report+0xf0/0x5a0
+   kasan_report+0x80/0xc0
+   __asan_report_load8_noabort+0x1c/0x28
+   hist_show+0x11e0/0x1278
+   seq_read_iter+0x344/0xd78
+   seq_read+0x128/0x1c0
+   vfs_read+0x198/0x6c8
+   ksys_read+0xf4/0x1e0
+   __arm64_sys_read+0x70/0xa8
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
 
-Reviewed-by: James Clark <james.clark@arm.com>
+  Allocated by task 188:
+   kasan_save_stack+0x28/0x50
+   kasan_set_track+0x28/0x38
+   kasan_save_alloc_info+0x20/0x30
+   __kasan_slab_alloc+0x6c/0x80
+   kmem_cache_alloc+0x15c/0x4a8
+   trace_create_new_event+0x84/0x348
+   __trace_add_new_event+0x18/0x88
+   event_trace_add_tracer+0xc4/0x1a0
+   trace_array_create_dir+0x6c/0x100
+   trace_array_create+0x2e8/0x568
+   instance_mkdir+0x48/0x80
+   tracefs_syscall_mkdir+0x90/0xe8
+   vfs_mkdir+0x3c4/0x610
+   do_mkdirat+0x144/0x200
+   __arm64_sys_mkdirat+0x8c/0xc0
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
 
-> ---
->  tools/lib/perf/cpumap.c              | 59 +++++++++++++++++-----------
->  tools/lib/perf/include/perf/cpumap.h | 15 ++++++-
->  tools/lib/perf/libperf.map           |  2 +-
->  tools/lib/perf/tests/test-cpumap.c   |  2 +-
->  4 files changed, 51 insertions(+), 27 deletions(-)
-> 
-> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> index 2bd6aba3d8c9..463ca8b37d45 100644
-> --- a/tools/lib/perf/cpumap.c
-> +++ b/tools/lib/perf/cpumap.c
-> @@ -9,6 +9,7 @@
->  #include <unistd.h>
->  #include <ctype.h>
->  #include <limits.h>
-> +#include "internal.h"
->  
->  void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
->  {
-> @@ -66,15 +67,21 @@ void perf_cpu_map__put(struct perf_cpu_map *map)
->  	}
->  }
->  
-> -static struct perf_cpu_map *cpu_map__default_new(void)
-> +static struct perf_cpu_map *cpu_map__new_sysconf(void)
->  {
->  	struct perf_cpu_map *cpus;
-> -	int nr_cpus;
-> +	int nr_cpus, nr_cpus_conf;
->  
->  	nr_cpus = sysconf(_SC_NPROCESSORS_ONLN);
->  	if (nr_cpus < 0)
->  		return NULL;
->  
-> +	nr_cpus_conf = sysconf(_SC_NPROCESSORS_CONF);
-> +	if (nr_cpus != nr_cpus_conf) {
-> +		pr_warning("Number of online CPUs (%d) differs from the number configured (%d) the CPU map will only cover the first %d CPUs.",
-> +			nr_cpus, nr_cpus_conf, nr_cpus);
-> +	}
-> +
->  	cpus = perf_cpu_map__alloc(nr_cpus);
->  	if (cpus != NULL) {
->  		int i;
-> @@ -86,9 +93,27 @@ static struct perf_cpu_map *cpu_map__default_new(void)
->  	return cpus;
->  }
->  
-> -struct perf_cpu_map *perf_cpu_map__default_new(void)
-> +static struct perf_cpu_map *cpu_map__new_syfs_online(void)
->  {
-> -	return cpu_map__default_new();
-> +	struct perf_cpu_map *cpus = NULL;
-> +	FILE *onlnf;
-> +
-> +	onlnf = fopen("/sys/devices/system/cpu/online", "r");
-> +	if (onlnf) {
-> +		cpus = perf_cpu_map__read(onlnf);
-> +		fclose(onlnf);
-> +	}
-> +	return cpus;
-> +}
-> +
-> +struct perf_cpu_map *perf_cpu_map__new_online_cpus(void)
-> +{
-> +	struct perf_cpu_map *cpus = cpu_map__new_syfs_online();
-> +
-> +	if (cpus)
-> +		return cpus;
-> +
-> +	return cpu_map__new_sysconf();
->  }
->  
->  
-> @@ -180,27 +205,11 @@ struct perf_cpu_map *perf_cpu_map__read(FILE *file)
->  
->  	if (nr_cpus > 0)
->  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
-> -	else
-> -		cpus = cpu_map__default_new();
->  out_free_tmp:
->  	free(tmp_cpus);
->  	return cpus;
->  }
->  
-> -static struct perf_cpu_map *cpu_map__read_all_cpu_map(void)
-> -{
-> -	struct perf_cpu_map *cpus = NULL;
-> -	FILE *onlnf;
-> -
-> -	onlnf = fopen("/sys/devices/system/cpu/online", "r");
-> -	if (!onlnf)
-> -		return cpu_map__default_new();
-> -
-> -	cpus = perf_cpu_map__read(onlnf);
-> -	fclose(onlnf);
-> -	return cpus;
-> -}
-> -
->  struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  {
->  	struct perf_cpu_map *cpus = NULL;
-> @@ -211,7 +220,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  	int max_entries = 0;
->  
->  	if (!cpu_list)
-> -		return cpu_map__read_all_cpu_map();
-> +		return perf_cpu_map__new_online_cpus();
->  
->  	/*
->  	 * must handle the case of empty cpumap to cover
-> @@ -268,9 +277,11 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  
->  	if (nr_cpus > 0)
->  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
-> -	else if (*cpu_list != '\0')
-> -		cpus = cpu_map__default_new();
-> -	else
-> +	else if (*cpu_list != '\0') {
-> +		pr_warning("Unexpected characters at end of cpu list ('%s'), using online CPUs.",
-> +			   cpu_list);
-> +		cpus = perf_cpu_map__new_online_cpus();
-> +	} else
->  		cpus = perf_cpu_map__new_any_cpu();
->  invalid:
->  	free(tmp_cpus);
-> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
-> index d0bf218ada11..b24bd8b8f34e 100644
-> --- a/tools/lib/perf/include/perf/cpumap.h
-> +++ b/tools/lib/perf/include/perf/cpumap.h
-> @@ -22,7 +22,20 @@ struct perf_cpu_map;
->   * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -1 value.
->   */
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
-> -LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
-> +/**
-> + * perf_cpu_map__new_online_cpus - a map read from
-> + *                                 /sys/devices/system/cpu/online if
-> + *                                 available. If reading wasn't possible a map
-> + *                                 is created using the online processors
-> + *                                 assuming the first 'n' processors are all
-> + *                                 online.
-> + */
-> +LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_online_cpus(void);
-> +/**
-> + * perf_cpu_map__new - create a map from the given cpu_list such as "0-7". If no
-> + *                     cpu_list argument is provided then
-> + *                     perf_cpu_map__new_online_cpus is returned.
-> + */
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
-> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> index a8ff64baea3e..8a71f841498e 100644
-> --- a/tools/lib/perf/libperf.map
-> +++ b/tools/lib/perf/libperf.map
-> @@ -2,7 +2,7 @@ LIBPERF_0.0.1 {
->  	global:
->  		libperf_init;
->  		perf_cpu_map__new_any_cpu;
-> -		perf_cpu_map__default_new;
-> +		perf_cpu_map__new_online_cpus;
->  		perf_cpu_map__get;
->  		perf_cpu_map__put;
->  		perf_cpu_map__new;
-> diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
-> index 2c359bdb951e..c998b1dae863 100644
-> --- a/tools/lib/perf/tests/test-cpumap.c
-> +++ b/tools/lib/perf/tests/test-cpumap.c
-> @@ -29,7 +29,7 @@ int test_cpumap(int argc, char **argv)
->  	perf_cpu_map__put(cpus);
->  	perf_cpu_map__put(cpus);
->  
-> -	cpus = perf_cpu_map__default_new();
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus)
->  		return -1;
->  
+  Freed by task 191:
+   kasan_save_stack+0x28/0x50
+   kasan_set_track+0x28/0x38
+   kasan_save_free_info+0x34/0x58
+   __kasan_slab_free+0xe4/0x158
+   kmem_cache_free+0x19c/0x508
+   event_file_put+0xa0/0x120
+   remove_event_file_dir+0x180/0x320
+   event_trace_del_tracer+0xb0/0x180
+   __remove_instance+0x224/0x508
+   instance_rmdir+0x44/0x78
+   tracefs_syscall_rmdir+0xbc/0x140
+   vfs_rmdir+0x1cc/0x4c8
+   do_rmdir+0x220/0x2b8
+   __arm64_sys_unlinkat+0xc0/0x100
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
+
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace_events_hist.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 1abc07fba1b9..00447ea7dabd 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -5623,10 +5623,12 @@ static int event_hist_open(struct inode *inode, struct file *file)
+ {
+ 	int ret;
+ 
+-	ret = security_locked_down(LOCKDOWN_TRACEFS);
++	ret = tracing_open_file_tr(inode, file);
+ 	if (ret)
+ 		return ret;
+ 
++	/* Clear private_data to avoid warning in single_open */
++	file->private_data = NULL;
+ 	return single_open(file, hist_show, file);
+ }
+ 
+@@ -5634,7 +5636,7 @@ const struct file_operations event_hist_fops = {
+ 	.open = event_hist_open,
+ 	.read = seq_read,
+ 	.llseek = seq_lseek,
+-	.release = single_release,
++	.release = tracing_release_file_tr,
+ };
+ 
+ #ifdef CONFIG_HIST_TRIGGERS_DEBUG
+@@ -5900,10 +5902,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
+ {
+ 	int ret;
+ 
+-	ret = security_locked_down(LOCKDOWN_TRACEFS);
++	ret = tracing_open_file_tr(inode, file);
+ 	if (ret)
+ 		return ret;
+ 
++	/* Clear private_data to avoid warning in single_open */
++	file->private_data = NULL;
+ 	return single_open(file, hist_debug_show, file);
+ }
+ 
+@@ -5911,7 +5915,7 @@ const struct file_operations event_hist_debug_fops = {
+ 	.open = event_hist_debug_open,
+ 	.read = seq_read,
+ 	.llseek = seq_lseek,
+-	.release = single_release,
++	.release = tracing_release_file_tr,
+ };
+ #endif
+ 
+-- 
+2.25.1
+
