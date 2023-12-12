@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466CE80F5FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6333680F600
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232829AbjLLTFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
+        id S1376703AbjLLTHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:07:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjLLTFs (ORCPT
+        with ESMTP id S230181AbjLLTHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:05:48 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73810BD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:05:54 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so91415551fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702407952; x=1703012752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gk+33qG5mMsD2Pf/ecpSWilCtbmUpvnM36Mhb9UlmbE=;
-        b=uCEFcw5QDiHzlB6b0k20dS/kE5sCRrxAFssLu4hzy5SxK66Lx+gnPo1SGxTDRlg29f
-         4a2guomvx2w1eyv7iWyFq55NkNo1Py/3Siq1ZAfMyvjnZEFh9rIleamR3DBxVOpZQx7s
-         IxWkDTgVgAZ/Ge5iZ7ufu6VmeiC4caTx12YDh3ULWdAAa9J5gxOqEW5zcFpq5hl4lLmM
-         iHm6krlWJ38Ocs2R93YE4WMKoMfirKO8F+/iTFxNVLm+N0/5yEevfWaUHlhRuoL/QvfE
-         Mmxqr4ill0w8qBQKF9jkT1ZcgtExfEjNDDqZTyoiJTa6o5v++pPBZ1vl9BsRoujUlUrm
-         RUtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702407952; x=1703012752;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gk+33qG5mMsD2Pf/ecpSWilCtbmUpvnM36Mhb9UlmbE=;
-        b=eys2NI9Ce5l/YaToPeuzjo2psM/j3b1SpDu6DhJatwrxEd7KnyS4eJTZc6OjSai99P
-         znLYsEtuWaLmnygjbdTGceA6FY7/cj2lSpBvGIYE0UyMT/3pvqoLyhzQq4gl+qTVgt9P
-         rHXnveyDnUdHNnnIY1L82dmj26QHfgpANycg7m0BjibI4iQwVDsLpz1mQSBKU31Uvj4r
-         os1/oivwoQaDigY9uDf1jEAp5gaxGi+fGlT6+7l/j8pEkAgUxgsb/+gwK6zsqEhqipFY
-         0qvaOMoez6/Eu/MUokL6EseWYVmdQYH2R8YVu/KZ8S2r8HmwJJ63NMznOBC+jdVSUCRr
-         qqUA==
-X-Gm-Message-State: AOJu0YzhmsM8VDKHthdnFg5+BwYOVw3TsR7bXydPL9bFapnqcBVnb+x6
-        K7ODk74asK09JaWMAetg87ZBoQ==
-X-Google-Smtp-Source: AGHT+IEukNRKT45tP6/egDMvn/HPARfZoQNQiDW5zwKEdUjpCsk3Wmlf1yqWmQI95KFk3e46O8dt1w==
-X-Received: by 2002:a05:6512:3187:b0:50b:f23f:d691 with SMTP id i7-20020a056512318700b0050bf23fd691mr3617578lfe.136.1702407952556;
-        Tue, 12 Dec 2023 11:05:52 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tz4-20020a170907c78400b00a1aad4d92dbsm6592547ejc.123.2023.12.12.11.05.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 11:05:52 -0800 (PST)
-Message-ID: <562380aa-4ed5-49de-9c21-e650a3a84a1b@linaro.org>
-Date:   Tue, 12 Dec 2023 20:05:50 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sm8650: drop unneeded assigned-clocks
- from WSA macro
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
+        Tue, 12 Dec 2023 14:07:00 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE3491;
+        Tue, 12 Dec 2023 11:07:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WDyfD09PAON4LZuIakiggNErHuklPdxdPhsExRCINO0=; b=vMLMHfKuWjpOeCgqj+OLSIbKsG
+        WCGncmPzax+s7ErnI8PlwoAcxDgi7JafMKVhEz++U+ZVQ0XP+ohiULCrVXD/1dsSQSk5yjcm0zHBK
+        XJSYcF2axTnD1zNtKD5UhlW9zlwLRjW3JYr1H0mjXegUeu0pkeLE3MwLfePZ5fVAWlL23Am0I3PL5
+        NT+gIKBnCPzCh8jjkzWC4o0487W4InM+Or5UWQfd6BDMvNIV9pIIIE1jc+pWQizWWt+hHLFeDOT09
+        rdDi0N33mI6WDlJ+FmCYpG7ErF4HC1LSmRNgAAZM97w65nNqWkVz7kUwz5Y9zFE6ftvqJdadzd2vK
+        vwdMQbbQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35082)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rD85g-0007Hq-0s;
+        Tue, 12 Dec 2023 19:06:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rD85e-0000gA-UH; Tue, 12 Dec 2023 19:06:46 +0000
+Date:   Tue, 12 Dec 2023 19:06:46 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231212133143.100575-1-krzysztof.kozlowski@linaro.org>
- <52aa1fdb-ebdf-4cef-80d6-6c1b83d626ab@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <52aa1fdb-ebdf-4cef-80d6-6c1b83d626ab@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
+ MDIO device
+Message-ID: <ZXivRofyIpvmfOyR@shell.armlinux.org.uk>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-7-fancer.lancer@gmail.com>
+ <ZW8pxM3RvyHJTwqH@shell.armlinux.org.uk>
+ <ZW85iBGAAf5RAsN1@shell.armlinux.org.uk>
+ <kagwzutwnbpiyc7mmtq7ka3vhffw4fejuti5vepnla74rocruh@tryn6lxhwbjz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <kagwzutwnbpiyc7mmtq7ka3vhffw4fejuti5vepnla74rocruh@tryn6lxhwbjz>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,26 +78,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 15:41, Konrad Dybcio wrote:
-> 
-> 
-> On 12/12/23 14:31, Krzysztof Kozlowski wrote:
->> Review of v1 patch resulting in commit 58872a54e4a8 ("arm64: dts: qcom:
->> sm8650: add ADSP audio codec macros") pointed to remove unneeded
->> assigned-clock-rates from macro codecs.  One assignment was left in WSA
->> macro codec, so drop it now as it is redundant: these clocks have fixed
->> 19.2 MHz frequency.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
-> Thanks, could you also check if they're fixed on older platforms?
-> 
+On Tue, Dec 12, 2023 at 06:26:16PM +0300, Serge Semin wrote:
+> I would have used in the first place if it was externally visible, but
+> it's defined as static. Do you suggest to make it global or ...
 
-Ack. To my understand they should not be needed in none of Audioreach
-platforms (sc8280xp, sm8[45]50), but I can test only sm8550.
+That would be one option - I didn't make it visible when I introduced it
+beacuse there were no users for it.
 
-Best regards,
-Krzysztof
+> > At some point, we should implement
+> > mdiobus_get_mdiodev() which also deals with the refcount.
+> 
+> ... create mdiobus_get_mdiodev() instead?
+> 
+> * Note in the commit message I mentioned that having a getter would be
+> * better than directly touching the mii_bus instance guts.
 
+What I'm thinking is:
+
+/**
+ * mdiobus_get_mdiodev() - get a mdiodev for the specified bus
+ * @bus: mii_bus to get mdio device from
+ * @addr: mdio address of mdio device
+ *
+ * Return the struct mdio_device attached to the MII bus @bus at MDIO
+ * address @addr. On success, the refcount on the device will be
+ * increased, which must be dropped using mdio_device_put(), and the
+ * mdio device returned. Otherwise, returns NULL.
+ */
+struct mdio_device *mdiobus_get_mdiodev(struct mii_bus *bus, int addr)
+{
+	struct mdio_device *mdiodev;
+
+	mdiodev = mdiobus_find_device(bus, addr);
+	if (mdiodev)
+		get_device(&mdiodev->dev);
+	return mdiodev;
+}
+EXPORT_SYMBOL(mdiobus_get_mdiodev);
+
+should do it, and will hold a reference on the mdiodev structure (which
+won't be freed) and also on the mii_bus (since this device is a child
+of the bus device, the parent can't be released until the child has
+been, so struct mii_bus should at least stay around.)
+
+What would help the "the bus driver has been unbound" situation is if
+we took the mdio_lock on the bus, and then set the {read,write}{,_c45}
+functions to dummy stubs when the bus is being unregistered which then
+return e.g. -ENXIO. That will probably make unbinding/unloading all
+MDIO bus drivers safe from kernel oops, although phylib will spit out
+a non-useful backtrace if it tries an access. I don't think there's
+much which can be done about that - I did propose a patch to change
+that behaviour but apparently folk like having it!
+
+It isn't perfect - it's racy, but then accessing mdio_map[] is
+inherently racy due to no locking with mdiobus_.*register_device().
+At least if we have everyone using a proper getter function rather
+than directly fiddling with bus->mdio_map[]. We only have one driver
+that accesses it directly at the moment (mscc_ptp):
+
+                dev = phydev->mdio.bus->mdio_map[vsc8531->ts_base_addr];
+                phydev = container_of(dev, struct phy_device, mdio);
+
+                return phydev->priv;
+
+and that should really be using mdiobus_get_phy().
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
