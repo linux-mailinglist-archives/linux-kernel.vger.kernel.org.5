@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1D880F20F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F02E280F211
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjLLQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:13:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
+        id S232568AbjLLQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbjLLQM7 (ORCPT
+        with ESMTP id S232461AbjLLQNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:12:59 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB559DC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:05 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7b7117ca63eso34962639f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:05 -0800 (PST)
+        Tue, 12 Dec 2023 11:13:31 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0573AD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:36 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9fdf53abcso56772321fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702397585; x=1703002385; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702397615; x=1703002415; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1oyzEVdmAliGsUngMkAe6aQzEr895fuMODSqQrJ+wJs=;
-        b=Fw+lP5ouz3iD0Wk9+iyQrlYs/g/a+SqRzeOo7MYF7YRLnybCkrRsG+ZoCfyorteqzQ
-         2MBQ85fFyNK1/+Qlfmsq0oIvhv1f8M+XYOEZvdorZek9lINuR829QfznNXy6UTchPuIp
-         mty//N/b9wFmu01rSCoVoxqeJlU54J5QI6Taw=
+        bh=EieXF+G/Fj2+HMWIrp65YeNhRWmBnutanD5ialKbuFM=;
+        b=glwcASmXoojWLO7P9pcbgQ8PaFeGkvCLQXTf5etZyP4oZVNMG4RZT2vqzbsc+5uMvE
+         4PV1Ztg+CBLOCb7yAR+HOth6DwgO6NsG77sDuhTEngn10Dc7tAhuKnYTgBrKLivVv7j1
+         NaL8BVXTyE6QhF6AoN1RDRhQ6W1LHPiRB7ZCL3rpmrXdZ/f8obFmwcK0hL5GKF5VRExf
+         8grLScV1Rjy2u89YQ9GVd27WqUAv5JBKIxP0Pcu9dYd0TlUGBAA7fL3snagdjO/zWC+o
+         9yThIpcW5Mm9ai4qbFQz+M0yLL59tfg5MtMJMminVMbrDKU0bcmecXQjE/Jmld0OZhtS
+         r3Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702397585; x=1703002385;
+        d=1e100.net; s=20230601; t=1702397615; x=1703002415;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1oyzEVdmAliGsUngMkAe6aQzEr895fuMODSqQrJ+wJs=;
-        b=JPVfzMOUlPvRDggE5WdiAqPZBGvlc2E9Vw0X99gsChy6l4+STP8lv6YTqV3xGZIovn
-         Uoe8jNZOIuZ81IFZpirpeu+R1dpVm1uJbBOhs/rBKmLJpD6p8UOphnRcbu7LGFvE7+fC
-         YjkMCjvBj/X5GjOW6b14vT6OlEiipgV2y3teLjg3PqtXiGY2y0ULALjqyGR6wlTP7233
-         av5H7T/e7d4XLEH6XOym93N2v0jZu6gCs5jJ2vic7HjWQki+JElT1/qvUQmaaxnBSaDp
-         yw/StJSVz5HKG1ItBiLBjpQI0Lwv2zLl3+rOjTXRhk0yLHVOuDgQ2PyVepb8VZRYjNuv
-         LBVw==
-X-Gm-Message-State: AOJu0Yw/suK2dCrWKjpqp/8cKkHaMUJ+vau7/E9ryF5LqeTpOr17gGm9
-        bgl8oXWFSH3HfiKtPG0F3rlMZIP9QvYH6X8FpLU=
-X-Google-Smtp-Source: AGHT+IFjRYP2mc0SFnikAhhPerZKmWl5K81RkC+VqPe7I6E24/T0KK8w6EA39VLWbZw9d5EE73Wiig==
-X-Received: by 2002:a05:6602:257c:b0:7b4:2bdf:5a27 with SMTP id dj28-20020a056602257c00b007b42bdf5a27mr10661594iob.0.1702397585277;
-        Tue, 12 Dec 2023 08:13:05 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id t1-20020a6b5f01000000b007a6816de789sm3012606iob.48.2023.12.12.08.13.04
+        bh=EieXF+G/Fj2+HMWIrp65YeNhRWmBnutanD5ialKbuFM=;
+        b=sJLQWweqf9c7+/Gje815RiVwwUaI/XUhN3GLehzYmO9sea2Oy9Rk1VtTQ36FwH4YlH
+         od6K4w0Yn8A9ViHHLPtxBc+Q6ElVk/7ZkJp2u4wb0o3npIcY2ojt0ejg6KR9fEKEUQVg
+         qIpOgSJUOLSAHPI/aOK5iky9JVDZfC9SaYOXmH6zAXVlQwtH16V6Z6JSrrjHX/XjGMK7
+         2vVeQXyMCbjeFEtiguPKPiI9FtHWtsQdJ7UaxgpEuckPKyETlCLMTwacdA8DpxlSAisi
+         lePM0x4lNxvnFAhzWgmN+DtBwhKI4X0VCp1nKi3R69bM1eoFLeZwGdmMvwXlKSF2/cy8
+         DZ5g==
+X-Gm-Message-State: AOJu0YwA1GYGDCe7OcfbDzqKcncWA7uDACWDB1ydYWckCElBnR0X4ujm
+        XI9YthPQC81EbBOfKRIdkXzvV0kyeQNbRowR+KwdKg==
+X-Google-Smtp-Source: AGHT+IEYA+Az4d9iUrd7j3wZih1isE7ATbKUF2CUBdcqcG9KL43Qwz32Rnbk2xRr12rDB28KqLPacA==
+X-Received: by 2002:a2e:bc05:0:b0:2cb:280a:ad3c with SMTP id b5-20020a2ebc05000000b002cb280aad3cmr4713277ljf.13.1702397615111;
+        Tue, 12 Dec 2023 08:13:35 -0800 (PST)
+Received: from [172.30.205.64] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id y26-20020a2e545a000000b002c9f2a716e2sm1676866ljd.54.2023.12.12.08.13.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 08:13:04 -0800 (PST)
-Message-ID: <1d900249-4160-46b0-aa66-00ff2a7733b2@linuxfoundation.org>
-Date:   Tue, 12 Dec 2023 09:13:04 -0700
+        Tue, 12 Dec 2023 08:13:34 -0800 (PST)
+Message-ID: <4542652d-f69a-474d-9c77-aa502da4d54c@linaro.org>
+Date:   Tue, 12 Dec 2023 17:13:32 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 000/141] 5.15.143-rc1 review
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: x1e80100: add LPASS LPI pin
+ controller
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, Shuah Khan <skhan@linuxfoundation.org>
-References: <20231211182026.503492284@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231211182026.503492284@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Abel Vesa <abel.vesa@linaro.org>
+References: <20231212125632.54021-1-krzysztof.kozlowski@linaro.org>
+ <20231212125632.54021-3-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231212125632.54021-3-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 11:20, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.143 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.143-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On 12/12/23 13:56, Krzysztof Kozlowski wrote:
+> Add the Low Power Audio SubSystem Low Power Island (LPASS LPI) pin
+> controller device node as part of audio subsystem in Qualcomm X1E80100
+> SoC.
+> 
+> Cc: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-thanks,
--- Shuah
+Konrad
