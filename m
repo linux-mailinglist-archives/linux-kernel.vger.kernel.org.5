@@ -2,216 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9109E80F13D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E5F80F134
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377117AbjLLPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:38:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S1377015AbjLLPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377020AbjLLPid (ORCPT
+        with ESMTP id S1376876AbjLLPhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:38:33 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42DDCEA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:38:38 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36FDF143D;
-        Tue, 12 Dec 2023 07:39:24 -0800 (PST)
-Received: from [10.1.39.183] (XHFQ2J9959.cambridge.arm.com [10.1.39.183])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 312083F738;
-        Tue, 12 Dec 2023 07:38:35 -0800 (PST)
-Message-ID: <d67754d6-8f11-4d36-8e16-4f93bc04bea6@arm.com>
-Date:   Tue, 12 Dec 2023 15:38:34 +0000
+        Tue, 12 Dec 2023 10:37:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3448599
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:37:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37719C433C7;
+        Tue, 12 Dec 2023 15:37:53 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 10:38:35 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH v2] ring-buffer: Never use absolute timestamp for first
+ event
+Message-ID: <20231212103835.00cc75fd@gandalf.local.home>
+In-Reply-To: <20231212232008.5b79e5d7fcb8967604ae5c3a@kernel.org>
+References: <20231212071837.5fdd6c13@gandalf.local.home>
+        <20231212232008.5b79e5d7fcb8967604ae5c3a@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207161211.2374093-5-ryan.roberts@arm.com>
- <2bebcf33-e8b7-468d-86cc-31d6eb355b66@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <2bebcf33-e8b7-468d-86cc-31d6eb355b66@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 15:02, David Hildenbrand wrote:
-> On 07.12.23 17:12, Ryan Roberts wrote:
->> Introduce the logic to allow THP to be configured (through the new sysfs
->> interface we just added) to allocate large folios to back anonymous
->> memory, which are larger than the base page size but smaller than
->> PMD-size. We call this new THP extension "multi-size THP" (mTHP).
->>
->> mTHP continues to be PTE-mapped, but in many cases can still provide
->> similar benefits to traditional PMD-sized THP: Page faults are
->> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending on
->> the configured order), but latency spikes are much less prominent
->> because the size of each page isn't as huge as the PMD-sized variant and
->> there is less memory to clear in each page fault. The number of per-page
->> operations (e.g. ref counting, rmap management, lru list management) are
->> also significantly reduced since those ops now become per-folio.
-> 
-> I'll note that with always-pte-mapped-thp it will be much easier to support
-> incremental page clearing (e.g., zero only parts of the folio and map the
-> remainder in a pro-non-like fashion whereby we'll zero on the next page fault).
-> With a PMD-sized thp, you have to eventually place/rip out page tables to
-> achieve that.
+On Tue, 12 Dec 2023 23:20:08 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-But then you lose the benefits of reduced number of page faults; reducing page
-faults gives a big speed up for workloads with lots of short lived processes
-like compiling.
+> On Tue, 12 Dec 2023 07:18:37 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > On 32bit machines, the 64 bit timestamps are broken up into 32 bit words
+> > to keep from using local64_cmpxchg(), as that is very expensive on 32 bit
+> > architectures.
+> > 
+> > On 32 bit architectures, reading these timestamps can happen in a middle
+> > of an update. In this case, the read returns "false", telling the caller
+> > that the timestamp is in the middle of an update, and it needs to assume
+> > it is corrupted. The code then accommodates this.
+> > 
+> > When first reserving space on the ring buffer, a "before_stamp" and
+> > "write_stamp" are read. If they do not match, or if either is in the
+> > process of being updated (false was returned from the read), an absolute
+> > timestamp is added and the delta is not used, as that requires reading
+> > theses timestamps without being corrupted.
+> > 
+> > The one case that this does not matter is if the event is the first event
+> > on the sub-buffer, in which case, the event uses the sub-buffer's
+> > timestamp and doesn't need the other stamps for calculating them.
+> > 
+> > After some work to consolidate the code, if the before or write stamps are
+> > in the process of updating, an absolute timestamp will be added regardless
+> > if the event is the first event on the sub-buffer. This is wrong as it
+> > should not care about the success of these reads if it is the first event
+> > on the sub-buffer.
+> > 
+> > Fix up the parenthesis so that even if the timestamps are corrupted, if
+> > the event is the first event on the sub-buffer (w == 0) it still does not
+> > force an absolute timestamp.
+> > 
+> > It's actually likely that w is not zero, but move it out of the unlikeyl()
+> > and test it first. It should be in hot cache anyway, and there's no reason
+> > to do the rest of the test for the first event on the sub-buffer. And this
+> > prevents having to test all the 'or' statements in that case.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Fixes: 58fbc3c63275c ("ring-buffer: Consolidate add_timestamp to remove some branches")
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > ---
+> > Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231211115949.4692e429@gandalf.local.home
+> > 
+> > - Move the test to 'w' out of the unlikely and do it first.
+> >   It's already in hot cache, and the rest of test shouldn't be done
+> >   if 'w' is zero.
+> > 
+> >  kernel/trace/ring_buffer.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > index b416bdf6c44a..095b86081ea8 100644
+> > --- a/kernel/trace/ring_buffer.c
+> > +++ b/kernel/trace/ring_buffer.c
+> > @@ -3581,7 +3581,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+> >  		 * absolute timestamp.
+> >  		 * Don't bother if this is the start of a new page (w == 0).
+> >  		 */
+> > -		if (unlikely(!a_ok || !b_ok || (info->before != info->after && w))) {
+> > +		if (w && unlikely(!a_ok || !b_ok || info->before != info->after)) {
+> >  			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
+> >  			info->length += RB_LEN_TIME_EXTEND;
+> >  		} else {  
+> 
+> After this else,
+> 
+>                 } else {
+>                         info->delta = info->ts - info->after;
+> 
+> The code is using info_after, but it is not sure 'a_ok'. Does this mean if
+> 'w == 0 && !a_ok' this doesn't work correctly?
+> What will be the expected behavior when w == 0 here?
+> 
 
-But yes, I agree this could be an interesting future optimization for some
-workloads.
+Hmm, looking at this and
 
-> 
->>
->> Some architectures also employ TLB compression mechanisms to squeeze
->> more entries in when a set of PTEs are virtually and physically
->> contiguous and approporiately aligned. In this case, TLB misses will
->> occur less often.
->>
->> The new behaviour is disabled by default, but can be enabled at runtime
->> by writing to /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled
->> (see documentation in previous commit). The long term aim is to change
->> the default to include suitable lower orders, but there are some risks
->> around internal fragmentation that need to be better understood first.
->>
->> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> Tested-by: John Hubbard <jhubbard@nvidia.com>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>   include/linux/huge_mm.h |   6 ++-
->>   mm/memory.c             | 111 ++++++++++++++++++++++++++++++++++++----
->>   2 files changed, 106 insertions(+), 11 deletions(-)
->>
->> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->> index 609c153bae57..fa7a38a30fc6 100644
->> --- a/include/linux/huge_mm.h
->> +++ b/include/linux/huge_mm.h
->> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
->>   #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> 
-> [...]
-> 
->> +
->> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->> +{
->> +    struct vm_area_struct *vma = vmf->vma;
->> +    unsigned long orders;
->> +    struct folio *folio;
->> +    unsigned long addr;
->> +    pte_t *pte;
->> +    gfp_t gfp;
->> +    int order;
->> +
->> +    /*
->> +     * If uffd is active for the vma we need per-page fault fidelity to
->> +     * maintain the uffd semantics.
->> +     */
->> +    if (unlikely(userfaultfd_armed(vma)))
->> +        goto fallback;
->> +
->> +    /*
->> +     * Get a list of all the (large) orders below PMD_ORDER that are enabled
->> +     * for this vma. Then filter out the orders that can't be allocated over
->> +     * the faulting address and still be fully contained in the vma.
->> +     */
->> +    orders = thp_vma_allowable_orders(vma, vma->vm_flags, false, true, true,
->> +                      BIT(PMD_ORDER) - 1);
->> +    orders = thp_vma_suitable_orders(vma, vmf->address, orders);
->> +
->> +    if (!orders)
->> +        goto fallback;
->> +
->> +    pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->> +    if (!pte)
->> +        return ERR_PTR(-EAGAIN);
->> +
->> +    /*
->> +     * Find the highest order where the aligned range is completely
->> +     * pte_none(). Note that all remaining orders will be completely
->> +     * pte_none().
->> +     */
->> +    order = highest_order(orders);
->> +    while (orders) {
->> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +        if (pte_range_none(pte + pte_index(addr), 1 << order))
->> +            break;
->> +        order = next_order(&orders, order);
->> +    }
->> +
->> +    pte_unmap(pte);
->> +
->> +    /* Try allocating the highest of the remaining orders. */
->> +    gfp = vma_thp_gfp_mask(vma);
->> +    while (orders) {
->> +        addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->> +        folio = vma_alloc_folio(gfp, order, vma, addr, true);
->> +        if (folio) {
->> +            clear_huge_page(&folio->page, vmf->address, 1 << order);
->> +            return folio;
->> +        }
->> +        order = next_order(&orders, order);
->> +    }
->> +
->> +fallback:
->> +    return vma_alloc_zeroed_movable_folio(vma, vmf->address);
->> +}
->> +#else
->> +#define alloc_anon_folio(vmf) \
->> +        vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address)
->> +#endif
-> 
-> A neater alternative might be
-> 
-> static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-> {
-> #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->     /* magic */
-> fallback:
-> #endif
->     return vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address):
-> }
+  https://lore.kernel.org/linux-trace-kernel/20231212065922.05f28041@gandalf.local.home/
 
-I guess beauty lies in the eye of the beholder... I don't find it much neater
-personally :). But happy to make the change if you insist; what's the process
-now that its in mm-unstable? Just send a patch to Andrew for squashing?
+I think the proper solution is simply:
 
-> 
-> [...]
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> 
+		if (!w) {
+			/* Use the sub-buffer timestamp */
+			info->delta = 0;
+		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
+			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
+			info->length += RB_LEN_TIME_EXTEND;
+		} else {
+			info->delta = info->ts - info->after;
+			if (unlikely(test_time_stamp(info->delta))) {
+				info->add_timestamp |= RB_ADD_STAMP_EXTEND;
+				info->length += RB_LEN_TIME_EXTEND;
+			}
+		}
+
+Thanks,
+
+-- Steve
 
