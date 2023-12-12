@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D5680F729
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C63580F72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377312AbjLLTs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
+        id S1377316AbjLLTsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:48:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377305AbjLLTsX (ORCPT
+        with ESMTP id S1377284AbjLLTsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:48:23 -0500
+        Tue, 12 Dec 2023 14:48:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE48AE9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:48:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0450C433C8;
-        Tue, 12 Dec 2023 19:48:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF91FD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:48:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE7AC433CB;
+        Tue, 12 Dec 2023 19:48:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702410508;
-        bh=phkCbBjwGt+n6h2sfVSgzetITkrs0kG9itajhDj2yNo=;
+        s=k20201202; t=1702410510;
+        bh=oqY4K6jG5BE7MOa8w7xZ5OE+AG4WMHalMWId0VgXocY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oFG5wkkBOF2x9j9gyGGLubTMYkzkbJstAmoQ25ym5KEkYMW7LQSg7VlkHT0VsBewq
-         PNQQrckZItir6nXXD95z1008764sdQl/AiClTuGyEzxA+qnRMrnO9PCNHTged7xwEN
-         qCSwu9EgddoVUVOAvIS6hDQt1O2WtLZvpLEv08pY3pxg/Preb3AwtoWheHB9hto/QU
-         r/phUw+qZQTWEpXEvJVsB79kWl/o/4LLOYYtZJYxFkXkSaVxiOMAmTyP6xAwrhuHSp
-         BXq//Pn/qh8xeJ9APQLYtPyVUMvuu0BYixIg+JQAUvz+QOwPAJVfOO7SECXW7UgdL1
-         XHNxiSAwN4dxw==
+        b=tnzxvu7BVIdvv9Ic+qurUQy08ciyvLKjizQmFRbi04fR8a3sqd6LqpKeq6mcwP8Zv
+         eY8cV+zJH2kwV7qi4LahoFIcN6NrYshFn3VFzeTRsSaFBX1dabyreTm1nT1+HBv1GC
+         ZnNAHfBSfmGfvpivfX7vkQPeAH/oaxqWKKV8I3s0HzfGGxwSQPV/XYGGYkCmjERBzT
+         5KPrWUvNUwetqb/syAj2X7gA6u/ovpEZvvE+CbPXzeHzsPZxyuFCPIkubXJ67Wh2sT
+         9/6duqy8LuyB7t1zMc27sMWSH0zgFXE3L196jMplrgOlGxLivrxPKOBgWnMkbQULsF
+         nlhSNbD+4hbWg==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>,
         damon@lists.linux.dev, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] selftests/damon: add a test for update_schemes_tried_regions sysfs command
-Date:   Tue, 12 Dec 2023 19:48:09 +0000
-Message-Id: <20231212194810.54457-5-sj@kernel.org>
+Subject: [PATCH v2 5/5] selftests/damon: add a test for update_schemes_tried_regions hang bug
+Date:   Tue, 12 Dec 2023 19:48:10 +0000
+Message-Id: <20231212194810.54457-6-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212194810.54457-1-sj@kernel.org>
 References: <20231212194810.54457-1-sj@kernel.org>
@@ -50,101 +50,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a selftest for verifying the accuracy of DAMON's access monitoring
-functionality.  The test starts a program of artificial access pattern,
-monitor the access pattern using DAMON, and check if DAMON finds
-expected amount of hot data region (working set size) with only
-acceptable error rate.
-
-Note that the acceptable error rate is set with only naive assumptions
-and small number of tests.  Hence failures of the test may not always
-mean DAMON is broken.  Rather than that, those could be a signal to
-better understand the real accuracy level of DAMON in wider
-environments.  Based on further finding, we could optimize DAMON or
-adjust the expectation of the test.
+Add a test for reproducing the update_schemes_tried_{regions,bytes}
+command-causing indefinite hang bug that fixed by commit 7d6fa31a2fd7
+("mm/damon/sysfs-schemes: add timeout for
+update_schemes_tried_regions"), to avoid mistakenly re-introducing the
+bug.  Refer to the fix commit for more details of the bug.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- tools/testing/selftests/damon/Makefile        |  2 +
- tools/testing/selftests/damon/access_memory.c | 41 ++++++++++++++
- ...te_schemes_tried_regions_wss_estimation.py | 55 +++++++++++++++++++
- 3 files changed, 98 insertions(+)
- create mode 100644 tools/testing/selftests/damon/access_memory.c
- create mode 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+ tools/testing/selftests/damon/Makefile        |  1 +
+ ...sysfs_update_schemes_tried_regions_hang.py | 33 +++++++++++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
 
 diff --git a/tools/testing/selftests/damon/Makefile b/tools/testing/selftests/damon/Makefile
-index b71247ba7196..90ffafc42c5e 100644
+index 90ffafc42c5e..8a1cc2bf1864 100644
 --- a/tools/testing/selftests/damon/Makefile
 +++ b/tools/testing/selftests/damon/Makefile
-@@ -2,6 +2,7 @@
- # Makefile for damon selftests
- 
- TEST_GEN_FILES += huge_count_read_write
-+TEST_GEN_FILES += access_memory
- 
- TEST_FILES = _chk_dependency.sh _debugfs_common.sh
- TEST_PROGS = debugfs_attrs.sh debugfs_schemes.sh debugfs_target_ids.sh
-@@ -9,6 +10,7 @@ TEST_PROGS += debugfs_empty_targets.sh debugfs_huge_count_read_write.sh
+@@ -10,6 +10,7 @@ TEST_PROGS += debugfs_empty_targets.sh debugfs_huge_count_read_write.sh
  TEST_PROGS += debugfs_duplicate_context_creation.sh
  TEST_PROGS += debugfs_rm_non_contexts.sh
  TEST_PROGS += sysfs.sh sysfs_update_removed_scheme_dir.sh
-+TEST_PROGS += sysfs_update_schemes_tried_regions_wss_estimation.py
++TEST_PROGS += sysfs_update_schemes_tried_regions_hang.py
+ TEST_PROGS += sysfs_update_schemes_tried_regions_wss_estimation.py
  TEST_PROGS += reclaim.sh lru_sort.sh
  
- include ../lib.mk
-diff --git a/tools/testing/selftests/damon/access_memory.c b/tools/testing/selftests/damon/access_memory.c
-new file mode 100644
-index 000000000000..585a2fa54329
---- /dev/null
-+++ b/tools/testing/selftests/damon/access_memory.c
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Artificial memory access program for testing DAMON.
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <time.h>
-+
-+int main(int argc, char *argv[])
-+{
-+	char **regions;
-+	clock_t start_clock;
-+	int nr_regions;
-+	int sz_region;
-+	int access_time_ms;
-+	int i;
-+
-+	if (argc != 4) {
-+		printf("Usage: %s <number> <size (bytes)> <time (ms)>\n",
-+				argv[0]);
-+		return -1;
-+	}
-+
-+	nr_regions = atoi(argv[1]);
-+	sz_region = atoi(argv[2]);
-+	access_time_ms = atoi(argv[3]);
-+
-+	regions = malloc(sizeof(*regions) * nr_regions);
-+	for (i = 0; i < nr_regions; i++)
-+		regions[i] = malloc(sz_region);
-+
-+	for (i = 0; i < nr_regions; i++) {
-+		start_clock = clock();
-+		while ((clock() - start_clock) * 1000 / CLOCKS_PER_SEC <
-+				access_time_ms)
-+			memset(regions[i], i, 1024 * 1024 * 10);
-+	}
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
 new file mode 100755
-index 000000000000..cdbf19b442c9
+index 000000000000..8c690ba1a573
 --- /dev/null
-+++ b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
-@@ -0,0 +1,55 @@
++++ b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
+@@ -0,0 +1,33 @@
 +#!/usr/bin/env python3
 +# SPDX-License-Identifier: GPL-2.0
 +
@@ -154,17 +90,14 @@ index 000000000000..cdbf19b442c9
 +import _damon_sysfs
 +
 +def main():
-+    # access two 10 MiB memory regions, 2 second per each
-+    sz_region = 10 * 1024 * 1024
-+    proc = subprocess.Popen(['./access_memory', '2', '%d' % sz_region, '2000'])
++    proc = subprocess.Popen(['sleep', '2'])
 +    kdamonds = _damon_sysfs.Kdamonds([_damon_sysfs.Kdamond(
 +            contexts=[_damon_sysfs.DamonCtx(
 +                ops='vaddr',
 +                targets=[_damon_sysfs.DamonTarget(pid=proc.pid)],
 +                schemes=[_damon_sysfs.Damos(
 +                    access_pattern=_damon_sysfs.DamosAccessPattern(
-+                        # >= 25% access rate, >= 200ms age
-+                        nr_accesses=[5, 20], age=[2, 2**64 - 1]))] # schemes
++                        nr_accesses=[200, 200]))] # schemes
 +                )] # contexts
 +            )]) # kdamonds
 +
@@ -173,29 +106,10 @@ index 000000000000..cdbf19b442c9
 +        print('kdmaond start failed: %s' % err)
 +        exit(1)
 +
-+    wss_collected = []
 +    while proc.poll() == None:
-+        time.sleep(0.1)
 +        err = kdamonds.kdamonds[0].update_schemes_tried_bytes()
 +        if err != None:
 +            print('tried bytes update failed: %s' % err)
-+            exit(1)
-+
-+        wss_collected.append(
-+                kdamonds.kdamonds[0].contexts[0].schemes[0].tried_bytes)
-+
-+    wss_collected.sort()
-+    acceptable_error_rate = 0.2
-+    for percentile in [50, 75]:
-+        sample = wss_collected[int(len(wss_collected) * percentile / 100)]
-+        error_rate = abs(sample - sz_region) / sz_region
-+        print('%d-th percentile (%d) error %f' %
-+                (percentile, sample, error_rate))
-+        if error_rate > acceptable_error_rate:
-+            print('the error rate is not acceptable (> %f)' %
-+                    acceptable_error_rate)
-+            print('samples are as below')
-+            print('\n'.join(['%d' % wss for wss in wss_collected]))
 +            exit(1)
 +
 +if __name__ == '__main__':
