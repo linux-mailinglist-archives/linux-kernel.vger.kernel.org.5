@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF2F80EF58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EB880EF55
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376963AbjLLOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40788 "EHLO
+        id S1376941AbjLLOwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376948AbjLLOwj (ORCPT
+        with ESMTP id S1376901AbjLLOwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:52:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B500DB;
-        Tue, 12 Dec 2023 06:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702392765; x=1733928765;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5Aif7QrnAd9W5yo96FxEp06RSdRH+JWuuWAFgtJdcIo=;
-  b=Gvh04hDH6cRekSkJ5kn8JaVIxcb7AihEZD//Ny3eSTZQEiKDmte4McSP
-   clqE/lSC55rBsJPT3sbQ5PUrsUxBkB6c8mUbQmMpIQReITXCkVashB24S
-   woA5mRYLBYl68vCnft2GdLO/yRp+Ed6UZA5TiRqEXYlHnUcx57Oc3ONnC
-   Z8w98x1JK4Pi/Qs8AjYkip+2yWM1zDforfx/TjsitgTarAlkKHGnIc9Uy
-   qztyXqDZKvaI0O7aj7vZQS1BJ0OUbMrml3Egv3k2Qh0BXfW/oTY0Nrjxl
-   HkZCRUf/TtIpUpwc4t9pwIkI9UBLgFcNkgl49TO82NcTklFlyNffHBuL7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="393686596"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="393686596"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 06:52:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839467440"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="839467440"
-Received: from mdabrows-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.5.65])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 06:52:42 -0800
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     shuah@kernel.org, fenghua.yu@intel.com, reinette.chatre@intel.com
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 0/4] selftests/resctrl: Add non-contiguous CBMs in Intel CAT selftest
-Date:   Tue, 12 Dec 2023 15:52:08 +0100
-Message-ID: <cover.1702392177.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.0
+        Tue, 12 Dec 2023 09:52:15 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F42D5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:52:22 -0800 (PST)
+From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702392740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6jl2CgwKBV0Qktq6WkukabpmaDXPHyrDvhtR3X2AQME=;
+        b=lhwM+Gg1Nzt7GRTvWQg+PkHUb32pRcGVq5OpIMhm3PRXPHPi44Lsc+8xW4MyOlCNBH8MQ6
+        6dukKBEc41ZMlUHd3ekc32ccFLqyxb21ydGdizM864V39Uq95+eO0X+GyAjzMwhCqUnFSW
+        OfHAh20FpPfd44Xng1zXxFAIcTabWaJgbtelAzTUZLF8cSw/7t3OImwnoMhLjc3DcWv+3i
+        lTxQBUWYhtyywK/NAy3G9Yi9tOStCbsJGoTR9gPz+JVxZNyX1SKWuKEGCL6dz2JQQnEzvB
+        rX7heWj1vcf9CIHPx95b3h0HeRQu8VqJpW9szSk9JFf6vzpjV3ll6lBneUSCIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702392740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6jl2CgwKBV0Qktq6WkukabpmaDXPHyrDvhtR3X2AQME=;
+        b=RbhaudChB16gmCKyWqTxvZjfI8vjVZyf/Y9yzGGeMvm9aEGb6Z/wCXHvkTZRWhZJlFEhuO
+        +15dqCRqujqEKNAw==
+To:     Sebastian Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+In-Reply-To: <20231212121404.C2R9VWj1@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
+ <20231212121404.C2R9VWj1@linutronix.de>
+Date:   Tue, 12 Dec 2023 15:52:19 +0100
+Message-ID: <87y1dzlbh8.fsf@somnus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,45 +71,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Non-contiguous CBM support for Intel CAT has been merged into the kernel
-with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
-Intel CAT") but there is no selftest that would validate if this feature
-works correctly.
-The selftest needs to verify if writing non-contiguous CBMs to the
-schemata file behaves as expected in comparison to the information about
-non-contiguous CBMs support.
+Sebastian Siewior <bigeasy@linutronix.de> writes:
 
-The patch series is based on a rework of resctrl selftests that's currently in
-review [1]. The patch also implements a similiar functionality presented
-in the bash script included in the cover letter of the original
-non-contiguous CBMs in Intel CAT series [2].
+> On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
 
-Changelog v2:
-- Rebase onto v3 of [1] series.
-- Add two patches that prepare helpers for the new test.
-- Move Ilpo's patch that adds test grouping to this series.
-- Apply Ilpo's suggestion to the patch that adds a new test.
+[...]
 
-[1] https://lore.kernel.org/all/20231211121826.14392-1-ilpo.jarvinen@linux.intel.com/
-[2] https://lore.kernel.org/all/cover.1696934091.git.maciej.wieczor-retman@intel.com/
+>> diff --git a/kernel/time/timer_migration.h b/kernel/time/timer_migration.h
+>> new file mode 100644
+>> index 000000000000..260b87e5708d
+>> --- /dev/null
+>> +++ b/kernel/time/timer_migration.h
+>> @@ -0,0 +1,144 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +#ifndef _KERNEL_TIME_MIGRATION_H
+>> +#define _KERNEL_TIME_MIGRATION_H
+>> +
+>> +/* Per group capacity. Must be a power of 2! */
+>> +#define TMIGR_CHILDREN_PER_GROUP 8
+>
+> BUILD_BUG_ON_NOT_POWER_OF_2(TMIGR_CHILDREN_PER_GROUP)
+>
+> Maybe in the .c file.
+>
 
-Ilpo Järvinen (1):
-  selftests/resctrl: Add test groups and name L3 CAT test L3_CAT
+in tmigr_init() ?
 
-Maciej Wieczor-Retman (3):
-  selftests/resctrl: Add helpers for the non-contiguous test
-  selftests/resctrl: Split validate_resctrl_feature_request()
-  selftests/resctrl: Add non-contiguous CBMs CAT test
+>> +/**
+>> + * struct tmigr_event - a timer event associated to a CPU
+>> + * @nextevt:	The node to enqueue an event in the parent group queue
+>> + * @cpu:	The CPU to which this event belongs
+>> + * @ignore:	Hint whether the event could be ignored; it is set when
+>> + *		CPU or group is active;
+>> + */
+>> +struct tmigr_event {
+>> +	struct timerqueue_node	nextevt;
+>> +	unsigned int		cpu;
+>> +	bool			ignore;
+>> +};
+>> +
+>> +/**
+>> + * struct tmigr_group - timer migration hierarchy group
+>> + * @lock:		Lock protecting the event information and group hierarchy
+>> + *			information during setup
+>> + * @migr_state:		State of the group (see union tmigr_state)
+>
+> So the lock does not protect migr_state?
 
- tools/testing/selftests/resctrl/cat_test.c    | 80 ++++++++++++++++-
- tools/testing/selftests/resctrl/cmt_test.c    |  4 +-
- tools/testing/selftests/resctrl/mba_test.c    |  5 +-
- tools/testing/selftests/resctrl/mbm_test.c    |  6 +-
- tools/testing/selftests/resctrl/resctrl.h     | 12 ++-
- .../testing/selftests/resctrl/resctrl_tests.c | 18 ++--
- tools/testing/selftests/resctrl/resctrlfs.c   | 86 ++++++++++++++++---
- 7 files changed, 185 insertions(+), 26 deletions(-)
+Right - this is not required due to the atomic cmpxchg and seqence
+counter.
 
--- 
-2.43.0
+> Mind moving it a little down the road? Not only would it be more
+> obvious what is protected by the lock but it would also move
+> migr_state in another/ later cache line.
+>
+
+Where do you want me to move it? Switch places of lock and migr_state?
+When I put it to another place, I would generate holes. A general
+question: Is it required to have a look at the struct with pahole also
+with LOCKDEP enabled? If yes, lock should stay at the first position.
+
+[...]
+
+>> + * @cpuevt:		CPU event which could be queued into the parent group
+>
+> I don't know why but it feels like s/queued/enqueued/g
+> But it might be a British vs American thing.
+
+I think this queued/enqueued is not used consistent all over the place
+(in my patchset). But I'm also not a native speaker and not sure which
+is the proper one :). Nevertheless, I'll change it.
+
+Thanks,
+
+        Anna-Maria
 
