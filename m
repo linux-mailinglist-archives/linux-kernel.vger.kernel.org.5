@@ -2,193 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE9B80E8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C47780E898
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346100AbjLLKKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
+        id S1346151AbjLLKFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbjLLKKC (ORCPT
+        with ESMTP id S229379AbjLLKFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:10:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEE7D2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:10:08 -0800 (PST)
+        Tue, 12 Dec 2023 05:05:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55FD92
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:05:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702375808;
+        s=mimecast20190719; t=1702375557;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N2qrZxP2ac93pT6YGUui4NzQE6+RjwLeXcnutigWb1E=;
-        b=aHZvhNYoeX2tHlqvnQ+zfbTuJMnWLSYwLidwh0M5UykZGrJvCNCONGETKgtSHsiaN5bMul
-        2N51NzZayu67lKC/3ov61HY1nqyIK/m55RXInrK1snFwdjSZiRkrY2YyYycW531HDCvWie
-        Wl1KNE5fXY8GyWn1XHtKnE6fMTSgJOI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=MaFI2nLzy2BuURLvmJJteNjl3+hrowavzBk9ysSya2U=;
+        b=WaXWekMIk/pi1sScJ7v+mw1TCO41ttqokUq2PcIjywEux9rg5HuqK+GHvM5ZsdNoey6a7l
+        f+b9wTuOuteZnVdRP20fHp1KaawCtedLJBawV3MSFHPuFl9/zVUHWeE2mXTu2tujR6JOeL
+        186oQLUHio2VUZmHhq9TPbnmf209LpA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-VOcCwo4nPKSLKH09Cv3YIg-1; Tue, 12 Dec 2023 05:10:06 -0500
-X-MC-Unique: VOcCwo4nPKSLKH09Cv3YIg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1fae8cca5bso33449066b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:10:06 -0800 (PST)
+ us-mta-359-Zfu8SN73MDKF2UjRL58iog-1; Tue, 12 Dec 2023 05:05:56 -0500
+X-MC-Unique: Zfu8SN73MDKF2UjRL58iog-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3334b472196so4525177f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:05:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702375494; x=1702980294;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N2qrZxP2ac93pT6YGUui4NzQE6+RjwLeXcnutigWb1E=;
-        b=gtDSorF8magbEOoDRJhUVbW5dxYbSZ9cRZCeb1SsfyC0kmvseoc3Lc4uwAEq7Lwlwm
-         Aks1L9LvXfcIYyIq/m1a9g2EzuW+vhdvxvXk6EzRhKcck2j/1ElSmKMZwjN+KRCI500Y
-         V3LLYlaUl1p0uuKhxirZWG6alM70/WZNloFvfMHcpcG/NZGT1rzjNxMh6wLYAxAHtB2o
-         qQ0TY0uh7G6mo4tURUFHhU+fNpWXNy8qGVEZk0g2xL8pBSjyDQDAy4lvjmJaeaEnZ71P
-         he6X2+aNBZL5f+4Sxn3FTIsy6ye4RpB6zpVkc2qnl4zKcNU5OLiJ2x110qnHDqW83lG1
-         MNGQ==
-X-Gm-Message-State: AOJu0YyIqAndv7jBO/elWBvAbeOOBn6TuNZ7HJb20xwUL0bjAZIIwWgy
-        zuTIVVAwzabZ3wI8KT4oPQr8n2i/i95H+oRUNHqnlA2LoJ4+Cfy4plokfaPchqJyGLsvPUJ0UVQ
-        gYMmzkOb3qcmlwfpwl98FKfiY
-X-Received: by 2002:a17:907:d404:b0:a19:6a79:2d3f with SMTP id vi4-20020a170907d40400b00a196a792d3fmr6406029ejc.1.1702375494302;
-        Tue, 12 Dec 2023 02:04:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGNLmDK0LntFpfQyTxBGq5iBngVThe6Flhn8iBAKDAdFkx2IrX7xyD1bHIG7Sm6lIMpdOJKNw==
-X-Received: by 2002:a17:907:d404:b0:a19:6a79:2d3f with SMTP id vi4-20020a170907d40400b00a196a792d3fmr6406020ejc.1.1702375493991;
-        Tue, 12 Dec 2023 02:04:53 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-249-182.dyn.eolo.it. [146.241.249.182])
-        by smtp.gmail.com with ESMTPSA id tp25-20020a170907c49900b00a1f7c502736sm4760617ejc.164.2023.12.12.02.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 02:04:53 -0800 (PST)
-Message-ID: <18552cff6fe32d4c21b4751cd6be4ff4757c63e8.camel@redhat.com>
-Subject: Re: [PATCH net-next v14 07/13] rtase: Implement a function to
- receive packets
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com
-Date:   Tue, 12 Dec 2023 11:04:52 +0100
-In-Reply-To: <20231208094733.1671296-8-justinlai0215@realtek.com>
-References: <20231208094733.1671296-1-justinlai0215@realtek.com>
-         <20231208094733.1671296-8-justinlai0215@realtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        d=1e100.net; s=20230601; t=1702375555; x=1702980355;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MaFI2nLzy2BuURLvmJJteNjl3+hrowavzBk9ysSya2U=;
+        b=WwvSSYdqS9RcdPz+7MH0esJuWKp6r34jpVQW+2osNoUZAno1AbF5h1afWwAW2Dn3Um
+         NU9mprgBwXnq/RF7MEySNREz0ntcxu4CErLCDB1D838tfSHKtm/JRRU/cyWn0tk3U5XS
+         TlTD2VxHKnNNH0egGTTvchZEI5D/zFqqDPgHEpLq4cgWrMowLjR24R3bjZz7XTjTLmKk
+         udecjw8LKaeSp+xMOPFlbeGr9HDqXpq9azot1RhHudwrz5NrNoCRrjgvs2WYJVPYFJeP
+         wEdMgQtpiq74cacl4tbCf19gSDDtbm6aVruYn6K/qagm76H5gdP0gCndMbqsg3llCb0z
+         Bg1w==
+X-Gm-Message-State: AOJu0YycO63UHFjSTPYSHrHOl/3d0Ip3ce96+AGurifSYhwkNuddPGhi
+        ToFKDIF/PkU8aCRUg2xgzk+srapGHvJAdzj/vZJoFsIE7QrFZtIxI+D+XJikOfOYDk0aWYy4Ofu
+        cPwnfkgjjRVzCmBzdlVQNQIW7
+X-Received: by 2002:a5d:620a:0:b0:333:3c28:767a with SMTP id y10-20020a5d620a000000b003333c28767amr2470370wru.46.1702375555456;
+        Tue, 12 Dec 2023 02:05:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5Dy61sE9ZXZtGCeZ0WlhrlSS7Rh+IeqOz5YqaPlLVTMbyBr6u2EqtyUTB9ZcBSyRZqpupdw==
+X-Received: by 2002:a5d:620a:0:b0:333:3c28:767a with SMTP id y10-20020a5d620a000000b003333c28767amr2470357wru.46.1702375554983;
+        Tue, 12 Dec 2023 02:05:54 -0800 (PST)
+Received: from ?IPV6:2003:cb:c74b:ca00:4ca2:ff2c:9092:f070? (p200300cbc74bca004ca2ff2c9092f070.dip0.t-ipconnect.de. [2003:cb:c74b:ca00:4ca2:ff2c:9092:f070])
+        by smtp.gmail.com with ESMTPSA id e18-20020a056000121200b00333404e9935sm10381362wrx.54.2023.12.12.02.05.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 02:05:54 -0800 (PST)
+Message-ID: <68582759-c74e-4bd8-b055-58eff81ef2e2@redhat.com>
+Date:   Tue, 12 Dec 2023 11:05:53 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] dax: add a sysfs knob to control memmap_on_memory
+ behavior
+Content-Language: en-US
+To:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-cxl@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Li Zhijian <lizhijian@fujitsu.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20231211-vv-dax_abi-v3-0-acf6cc1bde9f@intel.com>
+ <20231211-vv-dax_abi-v3-2-acf6cc1bde9f@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231211-vv-dax_abi-v3-2-acf6cc1bde9f@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 17:47 +0800, Justin Lai wrote:
-> Implement rx_handler to read the information of the rx descriptor,
-> thereby checking the packet accordingly and storing the packet
-> in the socket buffer to complete the reception of the packet.
->=20
-> Signed-off-by: Justin Lai <justinlai0215@realtek.com>
+On 11.12.23 23:52, Vishal Verma wrote:
+> Add a sysfs knob for dax devices to control the memmap_on_memory setting
+> if the dax device were to be hotplugged as system memory.
+> 
+> The default memmap_on_memory setting for dax devices originating via
+> pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
+> preserve legacy behavior. For dax devices via CXL, the default is on.
+> The sysfs control allows the administrator to override the above
+> defaults if needed.
+> 
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Tested-by: Li Zhijian <lizhijian@fujitsu.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 > ---
->  .../net/ethernet/realtek/rtase/rtase_main.c   | 148 ++++++++++++++++++
->  1 file changed, 148 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/realtek/rtase/rtase_main.c b/drivers/ne=
-t/ethernet/realtek/rtase/rtase_main.c
-> index eee792ea4760..83a119389110 100644
-> --- a/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> +++ b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> @@ -451,6 +451,154 @@ static void rtase_rx_ring_clear(struct rtase_ring *=
-ring)
->  	}
->  }
-> =20
-> +static int rtase_fragmented_frame(u32 status)
+>   drivers/dax/bus.c                       | 47 +++++++++++++++++++++++++++++++++
+>   Documentation/ABI/testing/sysfs-bus-dax | 17 ++++++++++++
+>   2 files changed, 64 insertions(+)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 1ff1ab5fa105..2871e5188f0d 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -1270,6 +1270,52 @@ static ssize_t numa_node_show(struct device *dev,
+>   }
+>   static DEVICE_ATTR_RO(numa_node);
+>   
+> +static ssize_t memmap_on_memory_show(struct device *dev,
+> +				     struct device_attribute *attr, char *buf)
 > +{
-> +	return (status & (RX_FIRST_FRAG | RX_LAST_FRAG)) !=3D
-> +		(RX_FIRST_FRAG | RX_LAST_FRAG);
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +
+> +	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
 > +}
 > +
-> +static void rtase_rx_csum(const struct rtase_private *tp, struct sk_buff=
- *skb,
-> +			  const union rx_desc *desc)
+> +static ssize_t memmap_on_memory_store(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      const char *buf, size_t len)
 > +{
-> +	u32 opts2 =3D le32_to_cpu(desc->desc_status.opts2);
+> +	struct device_driver *drv = dev->driver;
+> +	struct dev_dax *dev_dax = to_dev_dax(dev);
+> +	struct dax_region *dax_region = dev_dax->region;
+> +	struct dax_device_driver *dax_drv = to_dax_drv(drv);
+> +	ssize_t rc;
+> +	bool val;
 > +
-> +	/* rx csum offload */
-> +	if (((opts2 & RX_V4F) && !(opts2 & RX_IPF)) || (opts2 & RX_V6F)) {
-> +		if (((opts2 & RX_TCPT) && !(opts2 & RX_TCPF)) ||
-> +		    ((opts2 & RX_UDPT) && !(opts2 & RX_UDPF))) {
-> +			skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> +		} else {
-> +			skb->ip_summed =3D CHECKSUM_NONE;
-> +		}
-> +	} else {
-> +		skb->ip_summed =3D CHECKSUM_NONE;
+> +	rc = kstrtobool(buf, &val);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (dev_dax->memmap_on_memory == val)
+> +		return len;
+> +
+> +	device_lock(dax_region->dev);
+> +	if (!dax_region->dev->driver) {
+> +		device_unlock(dax_region->dev);
+> +		return -ENXIO;
 > +	}
+> +
+> +	if (dax_drv->type == DAXDRV_KMEM_TYPE) {
+> +		device_unlock(dax_region->dev);
+> +		return -EBUSY;
+> +	}
+> +
+> +	device_lock(dev);
+> +	dev_dax->memmap_on_memory = val;
+> +	device_unlock(dev);
+> +
+> +	device_unlock(dax_region->dev);
+> +	return len;
 > +}
+> +static DEVICE_ATTR_RW(memmap_on_memory);
 > +
-> +static void rtase_rx_vlan_skb(union rx_desc *desc, struct sk_buff *skb)
-> +{
-> +	u32 opts2 =3D le32_to_cpu(desc->desc_status.opts2);
+>   static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+>   {
+>   	struct device *dev = container_of(kobj, struct device, kobj);
+> @@ -1296,6 +1342,7 @@ static struct attribute *dev_dax_attributes[] = {
+>   	&dev_attr_align.attr,
+>   	&dev_attr_resource.attr,
+>   	&dev_attr_numa_node.attr,
+> +	&dev_attr_memmap_on_memory.attr,
+>   	NULL,
+>   };
+>   
+> diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
+> index a61a7b186017..b1fd8bf8a7de 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-dax
+> +++ b/Documentation/ABI/testing/sysfs-bus-dax
+> @@ -149,3 +149,20 @@ KernelVersion:	v5.1
+>   Contact:	nvdimm@lists.linux.dev
+>   Description:
+>   		(RO) The id attribute indicates the region id of a dax region.
 > +
-> +	if (!(opts2 & RX_VLAN_TAG))
-> +		return;
-> +
-> +	__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), swab16(opts2 & VLAN_TAG=
-_MASK));
-> +}
-> +
-> +static void rtase_rx_skb(const struct rtase_ring *ring, struct sk_buff *=
-skb)
-> +{
-> +	struct rtase_int_vector *ivec =3D ring->ivec;
-> +
-> +	napi_gro_receive(&ivec->napi, skb);
-> +}
-> +
-> +static int rx_handler(struct rtase_ring *ring, int budget)
-> +{
-> +	const struct rtase_private *tp =3D ring->ivec->tp;
-> +	u32 pkt_size, cur_rx, delta, entry, status;
-> +	union rx_desc *desc_base =3D ring->desc;
-> +	struct net_device *dev =3D tp->dev;
-> +	struct sk_buff *skb;
-> +	union rx_desc *desc;
-> +	int workdone =3D 0;
-> +
-> +	if (!ring->desc)
-> +		return workdone;
+> +What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
+> +Date:		October, 2023
+> +KernelVersion:	v6.8
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RW) Control the memmap_on_memory setting if the dax device
+> +		were to be hotplugged as system memory. This determines whether
+> +		the 'altmap' for the hotplugged memory will be placed on the
+> +		device being hotplugged (memmap_on_memory=1) or if it will be
+> +		placed on regular memory (memmap_on_memory=0). This attribute
+> +		must be set before the device is handed over to the 'kmem'
+> +		driver (i.e.  hotplugged into system-ram). Additionally, this
+> +		depends on CONFIG_MHP_MEMMAP_ON_MEMORY, and a globally enabled
+> +		memmap_on_memory parameter for memory_hotplug. This is
+> +		typically set on the kernel command line -
+> +		memory_hotplug.memmap_on_memory set to 'true' or 'force'."
+> 
 
-Why is the above test required? How can be ring->desc NULL here?
+Thinking about it, I wonder if we could disallow setting that property 
+to "true" if the current configuration does not allow it.
 
-> +
-> +	cur_rx =3D ring->cur_idx;
-> +	entry =3D cur_rx % NUM_DESC;
-> +	desc =3D &desc_base[entry];
-> +
-> +	do {
-> +		/* make sure discriptor has been updated */
-> +		rmb();
-> +		status =3D le32_to_cpu(desc->desc_status.opts1);
-> +
-> +		if (status & DESC_OWN)
-> +			break;
-> +
-> +		if (unlikely(status & RX_RES)) {
-> +			if (net_ratelimit())
-> +				netdev_warn(dev, "Rx ERROR. status =3D %08x\n",
-> +					    status);
-> +
-> +			dev->stats.rx_errors++;
-> +
-> +			if (status & (RX_RWT | RX_RUNT))
-> +				dev->stats.rx_length_errors++;
+That is:
 
-The device has a single RX queue, right? Otherwise this kind of stats
-accounting is going to be costly.
+1) Removing the "size" parameter from mhp_supports_memmap_on_memory(), 
+it doesn't make any sense anymore.
 
+2) Exporting mhp_supports_memmap_on_memory() to modules.
+
+3) When setting memmap_on_memory, check whether 
+mhp_supports_memmap_on_memory() == true.
+
+Then, the user really gets an error when trying to set it to "true".
+
+-- 
 Cheers,
 
-Paolo
+David / dhildenb
 
