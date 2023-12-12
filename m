@@ -2,219 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5FB80E249
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E3C80E240
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345717AbjLLCo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:44:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
+        id S1345726AbjLLCp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjLLCoz (ORCPT
+        with ESMTP id S231250AbjLLCp4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:44:55 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9D0B5;
-        Mon, 11 Dec 2023 18:45:01 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC1d3UL013078;
-        Tue, 12 Dec 2023 02:44:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=JrEO67lajTGW8YcWpp+GMjeHTeTZ0xsoLSkntHgPSUQ=; b=Nl
-        uAA8zPyZvy0vxBTwUc4ZAbPyG4cf2R9b4ZTrdWSsihsPXT7s/Fv2N8K8mlV1j/Sp
-        FczTVwhib+4J8R56Ifdw7bRzMvlL/YhDjUPJkVjwjy5FPkuGx9dF6YdBm99XMVwa
-        Olo2gElwjsa8ofC/78vBZezTzOynqPnNpVtDtyIpxpTl+F3H/10WH+hG9LLxMDjw
-        uJw7IQ3p62kgCDQl/GG27wPZyFbQt8iGFP3AsUug8oT1yXBNfPtZOoqLH0ouGToP
-        fxHp7kjtS+bCrU2IHeerjjw/s6tXCzgUw8/AFYnt/G/ZQ3PNym/cqc0QlQxhkeFt
-        1cgDRitYLmkA7+6MSTSQ==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxa8jgh68-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:44:57 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC2iujs030930
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:44:56 GMT
-Received: from [10.47.206.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 11 Dec
- 2023 18:44:53 -0800
-Message-ID: <e1ea82cb-e812-9a1e-3c4d-7f468f5069e9@quicinc.com>
-Date:   Mon, 11 Dec 2023 18:44:52 -0800
+        Mon, 11 Dec 2023 21:45:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFFDB5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:46:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702349162; x=1733885162;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=LzGp7e5lRNJcfZk/kZG8UfEgksYE3+20ek8qnOmVoIU=;
+  b=PpqWt+w6OGar7943IYaarj0W34CKep1nobrEOJW+DMAjols+HD9VFBF+
+   peEH9n9+auWjr8pWGHt172p8KWK06v9e1TGp9kCduR/ZGqGQ2vARFIn9F
+   IkmKOZphbd5N7teT0DsXGsgbiYNWJAeKSAtgbpRCtdc8nJdvhCuDNulfc
+   NM6875PJEuBxq265f5vrB25FkkoI8HDlDUJm3uW6jlTuYTlANfSfluuHe
+   PTEGOWKu/gF6clK7HhwzZLEe7tn26JV31OlEO/P3ZYamqVh0rMQK73MKX
+   yFnZUQv4zoe6QNHeQLWXbEVolIyoVnDCb6OX3eLzP7YnQLvCn/joSAvY6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="425868416"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="425868416"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 18:46:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="896729941"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="896729941"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 11 Dec 2023 18:45:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCsmT-000Ih5-1f;
+        Tue, 12 Dec 2023 02:45:57 +0000
+Date:   Tue, 12 Dec 2023 10:45:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Schmitz <schmitzmic@gmail.com>
+Subject: drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202312121026.69R96xQ2-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 3/4] regulator: qcom-rpmh: add support for pm8010
- regulators
-Content-Language: en-US
-To:     <quic_fenglinw@quicinc.com>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <kernel@quicinc.com>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_subbaram@quicinc.com>,
-        <quic_jprakash@quicinc.com>
-References: <20231211-pm8010-regulator-v1-0-571e05fb4ecc@quicinc.com>
- <20231211-pm8010-regulator-v1-3-571e05fb4ecc@quicinc.com>
-From:   David Collins <quic_collinsd@quicinc.com>
-In-Reply-To: <20231211-pm8010-regulator-v1-3-571e05fb4ecc@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: U6pyP53BWKuClDFlxFWERVMTcPo_TH4_
-X-Proofpoint-ORIG-GUID: U6pyP53BWKuClDFlxFWERVMTcPo_TH4_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- impostorscore=0 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120021
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/23 19:17, Fenglin Wu via B4 Relay wrote:
-> From: Fenglin Wu <quic_fenglinw@quicinc.com>
-> 
-> Add RPMH regulators exposed by Qualcomm Technologies, Inc. PM8010
-> PMIC. It has 7 LDOs with 3 different types, LDO1 - LDO2 are L502
-> NMOS LDOs, LDO5 and LDO7 are L502 PMOS LDOs, LDO3/LDO4/LDO6 are
-> L502 PMOS LDO for low noise applications. Also, LDO3 - LDO7 don't
-> support LPM.
-> 
-> Suggested-by: David Collins <quic_collinsd@quicinc.com>
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   26aff849438cebcd05f1a647390c4aa700d5c0f1
+commit: 30b5e6ef4a32ea4985b99200e06d6660a69f9246 m68k: atari: Make Atari ROM port I/O write macros return void
+date:   1 year, 7 months ago
+config: m68k-randconfig-r131-20231119 (https://download.01.org/0day-ci/archive/20231212/202312121026.69R96xQ2-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231212/202312121026.69R96xQ2-lkp@intel.com/reproduce)
 
-Reviewed-by: David Collins <quic_collinsd@quicinc.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312121026.69R96xQ2-lkp@intel.com/
 
+sparse warnings: (new ones prefixed by >>)
+>> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
+>> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
+>> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
+>> drivers/comedi/drivers/ni_daq_700.c:163:17: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:173:21: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
+   drivers/comedi/drivers/ni_daq_700.c:205:9: sparse: sparse: cast to restricted __le16
 
-> ---
->  drivers/regulator/qcom-rpmh-regulator.c | 62 +++++++++++++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
-> 
-> diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-> index 43b45feb02e6..80e304711345 100644
-> --- a/drivers/regulator/qcom-rpmh-regulator.c
-> +++ b/drivers/regulator/qcom-rpmh-regulator.c
-> @@ -511,6 +511,14 @@ static const int pmic_mode_map_pmic5_ldo[REGULATOR_MODE_STANDBY + 1] = {
->  	[REGULATOR_MODE_FAST]    = -EINVAL,
->  };
->  
-> +static const int pmic_mode_map_pmic5_ldo_hpm[REGULATOR_MODE_STANDBY + 1] = {
+vim +163 drivers/comedi/drivers/ni_daq_700.c
 
-Minor: This is fine as-is.  However, it might be a bit better with the
-name: "pmic_mode_map_pmic5_ldo_hpm_only".
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  129  
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  130  static int daq700_ai_rinsn(struct comedi_device *dev,
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  131  			   struct comedi_subdevice *s,
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  132  			   struct comedi_insn *insn, unsigned int *data)
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  133  {
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  134  	int n;
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  135  	int d;
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  136  	int ret;
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  137  	unsigned int chan	= CR_CHAN(insn->chanspec);
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  138  	unsigned int aref	= CR_AREF(insn->chanspec);
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  139  	unsigned int range	= CR_RANGE(insn->chanspec);
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  140  	unsigned int r3_bits	= 0;
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  141  
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  142  	/* set channel input modes */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  143  	if (aref == AREF_DIFF)
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  144  		r3_bits |= CMD_R3_DIFF;
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  145  	/* write channel mode/range */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  146  	if (range >= 1)
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  147  		range++;        /* convert range to hardware value */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  148  	outb(r3_bits | (range & 0x03), dev->iobase + CMD_R3);
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  149  
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  150  	/* write channel to multiplexer */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  151  	/* set mask scan bit high to disable scanning */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  152  	outb(chan | 0x80, dev->iobase + CMD_R1);
+ffed54dced8672 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  153  	/* mux needs 2us to really settle [Fred Brooks]. */
+ffed54dced8672 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2014-05-19  154  	udelay(2);
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  155  
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  156  	/* convert n samples */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  157  	for (n = 0; n < insn->n; n++) {
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  158  		/* trigger conversion with out0 L to H */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  159  		outb(0x00, dev->iobase + CMD_R2); /* enable ADC conversions */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  160  		outb(0x30, dev->iobase + CMO_R); /* mode 0 out0 L, from H */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  161  		outb(0x00, dev->iobase + ADCLEAR_R);	/* clear the ADC FIFO */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20  162  		/* read 16bit junk from FIFO to clear */
+cf695df834efc7 drivers/staging/comedi/drivers/ni_daq_700.c Fred Brooks       2014-06-20 @163  		inw(dev->iobase + ADFIFO_R);
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  164  		/* mode 1 out0 H, L to H, start conversion */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  165  		outb(0x32, dev->iobase + CMO_R);
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  166  
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  167  		/* wait for conversion to end */
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  168  		ret = comedi_timeout(dev, s, insn, daq700_ai_eoc, 0);
+22ca19d93d92c7 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  169  		if (ret)
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  170  			return ret;
+a9f9d831454114 drivers/staging/comedi/drivers/ni_daq_700.c H Hartley Sweeten 2014-02-10  171  
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  172  		/* read data */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  173  		d = inw(dev->iobase + ADFIFO_R);
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  174  		/* mangle the data as necessary */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  175  		/* Bipolar Offset Binary: 0 to 4095 for -10 to +10 */
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  176  		d &= 0x0fff;
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  177  		d ^= 0x0800;
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  178  		data[n] = d;
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  179  	}
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  180  	return n;
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  181  }
+198b0fa48b25b6 drivers/staging/comedi/drivers/ni_daq_700.c Ian Abbott        2012-09-21  182  
 
+:::::: The code at line 163 was first introduced by commit
+:::::: cf695df834efc718b2ed17e9c83e127fd63c9033 staging: comedi: ni_daq_700: add AI range and input mode switching
 
-> +	[REGULATOR_MODE_INVALID] = -EINVAL,
-> +	[REGULATOR_MODE_STANDBY] = -EINVAL,
-> +	[REGULATOR_MODE_IDLE]    = -EINVAL,
-> +	[REGULATOR_MODE_NORMAL]  = PMIC5_LDO_MODE_HPM,
-> +	[REGULATOR_MODE_FAST]    = -EINVAL,
-> +};
-> +
->  static unsigned int rpmh_regulator_pmic4_ldo_of_map_mode(unsigned int rpmh_mode)
->  {
->  	unsigned int mode;
-> @@ -733,6 +741,33 @@ static const struct rpmh_vreg_hw_data pmic5_pldo515_mv = {
->  	.of_map_mode = rpmh_regulator_pmic4_ldo_of_map_mode,
->  };
->  
-> +static const struct rpmh_vreg_hw_data pmic5_pldo502 = {
-> +	.regulator_type = VRM,
-> +	.ops = &rpmh_regulator_vrm_ops,
-> +	.voltage_ranges = (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(1504000, 0, 255, 8000),
-> +	},
-> +	.n_linear_ranges = 1,
-> +	.n_voltages = 256,
-> +	.pmic_mode_map = pmic_mode_map_pmic5_ldo_hpm,
-> +	.of_map_mode = rpmh_regulator_pmic4_ldo_of_map_mode,
-> +};
-> +
-> +static const struct rpmh_vreg_hw_data pmic5_pldo502ln = {
-> +	.regulator_type = VRM,
-> +	.ops = &rpmh_regulator_vrm_ops,
-> +	.voltage_ranges = (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(1800000, 0,  2,  200000),
-> +		REGULATOR_LINEAR_RANGE(2608000, 3,  28, 16000),
-> +		REGULATOR_LINEAR_RANGE(3104000, 29, 30, 96000),
-> +		REGULATOR_LINEAR_RANGE(3312000, 31, 31, 0),
-> +	},
-> +	.n_linear_ranges = 4,
-> +	.n_voltages = 32,
-> +	.pmic_mode_map = pmic_mode_map_pmic5_ldo_hpm,
-> +	.of_map_mode = rpmh_regulator_pmic4_ldo_of_map_mode,
-> +};
-> +
->  static const struct rpmh_vreg_hw_data pmic5_nldo = {
->  	.regulator_type = VRM,
->  	.ops = &rpmh_regulator_vrm_drms_ops,
-> @@ -759,6 +794,19 @@ static const struct rpmh_vreg_hw_data pmic5_nldo515 = {
->  	.of_map_mode = rpmh_regulator_pmic4_ldo_of_map_mode,
->  };
->  
-> +static const struct rpmh_vreg_hw_data pmic5_nldo502 = {
-> +	.regulator_type = VRM,
-> +	.ops = &rpmh_regulator_vrm_drms_ops,
-> +	.voltage_ranges = (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(528000, 0, 127, 8000),
-> +	},
-> +	.n_linear_ranges = 1,
-> +	.n_voltages = 128,
-> +	.hpm_min_load_uA = 30000,
-> +	.pmic_mode_map = pmic_mode_map_pmic5_ldo,
-> +	.of_map_mode = rpmh_regulator_pmic4_ldo_of_map_mode,
-> +};
-> +
->  static const struct rpmh_vreg_hw_data pmic5_hfsmps510 = {
->  	.regulator_type = VRM,
->  	.ops = &rpmh_regulator_vrm_ops,
-> @@ -1210,6 +1258,16 @@ static const struct rpmh_vreg_init_data pm8009_1_vreg_data[] = {
->  	{}
->  };
->  
-> +static const struct rpmh_vreg_init_data pm8010_vreg_data[] = {
-> +	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo502,   "vdd-l1-l2"),
-> +	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_nldo502,   "vdd-l1-l2"),
-> +	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_pldo502ln, "vdd-l3-l4"),
-> +	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_pldo502ln, "vdd-l3-l4"),
-> +	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo502,   "vdd-l5"),
-> +	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo502ln, "vdd-l6"),
-> +	RPMH_VREG("ldo7",   "ldo%s7",  &pmic5_pldo502,   "vdd-l7"),
-> +};
-> +
->  static const struct rpmh_vreg_init_data pm6150_vreg_data[] = {
->  	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps510, "vdd-s1"),
->  	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
-> @@ -1525,6 +1583,10 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
->  		.compatible = "qcom,pm8009-1-rpmh-regulators",
->  		.data = pm8009_1_vreg_data,
->  	},
-> +	{
-> +		.compatible = "qcom,pm8010-rpmh-regulators",
-> +		.data = pm8010_vreg_data,
-> +	},
->  	{
->  		.compatible = "qcom,pm8150-rpmh-regulators",
->  		.data = pm8150_vreg_data,
-> 
+:::::: TO: Fred Brooks <frederick.brooks@microchip.com>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
