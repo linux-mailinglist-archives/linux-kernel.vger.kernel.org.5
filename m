@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E8280E622
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D69A80E650
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjLLI24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S1346037AbjLLIgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjLLI2o (ORCPT
+        with ESMTP id S1346137AbjLLIft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:28:44 -0500
+        Tue, 12 Dec 2023 03:35:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8F71991
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:26:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D72DC433C7;
-        Tue, 12 Dec 2023 08:25:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A076FBB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:26:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85825C433C9;
+        Tue, 12 Dec 2023 08:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702369533;
-        bh=UyrCZ5NeqkIbDqZ4IfzKB2v4FwYYwyufuxet/S+xQZg=;
+        s=korg; t=1702369548;
+        bh=3a9AxDt7rKdnQt1lB7x7eM9PZxjgwdVCfCxEm49JQi0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y0tTobdaLmy4VCh/NwI9a3Snubd38cOqAeFoPopo7s4MuUU8zj92krFHmnPOxV22x
-         gpap/U1YH6sUfKArJWBVkst/TOgQIYPkRkI1wKdzDCUWhPBIZN+Lj+WfWr85YYx5z9
-         urcYYae/Sc5eiRb35t0jXR6xHCqsAW/yosWauCtE=
-Date:   Tue, 12 Dec 2023 09:25:31 +0100
+        b=ga8GfI4RYaUAlSj8fu+eIRYZS/vv75ipHwGI5bbnI4pXxIrSlsTzwVHl4zqa5cF0u
+         NtqxzH+P39uUeVJ9XrXiWb+8Vnh5+BmDbhh80sKcdyyjccCE5gBl0lxyuJCI5xo5zh
+         d2eombqosAAEVyS7L4d1kPhT8jKw68sc3vo3Pj7E=
+Date:   Tue, 12 Dec 2023 09:25:46 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     shitao <shitao@kylinos.cn>
 Cc:     justin.chen@broadcom.com, alcooperx@gmail.com,
@@ -32,7 +32,7 @@ Cc:     justin.chen@broadcom.com, alcooperx@gmail.com,
         linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
         k2ci <kernel-bot@kylinos.cn>
 Subject: Re: [PATCH] usb: fix comment typos
-Message-ID: <2023121249-swan-steep-dc94@gregkh>
+Message-ID: <2023121236-earful-email-ea09@gregkh>
 References: <20231212074557.3100489-1-shitao@kylinos.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,8 +52,13 @@ On Tue, Dec 12, 2023 at 03:45:57PM +0800, shitao wrote:
 > Fix two comment typos in usb module files.
 > 
 > Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: shitao <shitao@kylinos.cn>
+> ---
+>  drivers/usb/gadget/udc/bdc/bdc_core.c | 2 +-
+>  drivers/usb/mtu3/mtu3_qmu.c           | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-What is this?  It needs to be documented better, sorry.
+Also why isn't this two different patches?
 
 thanks,
 
