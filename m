@@ -2,264 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EE280E281
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A1280E280
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345796AbjLLDIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S1345793AbjLLDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLDIK (ORCPT
+        with ESMTP id S229562AbjLLDGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:08:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0849C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:08:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC9D3C43391
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702350495;
-        bh=JYGLebhaxKY94YGV32z1rxes4CY+cai+W0U5f3FyFgk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RFPSSzeeqlpe+2q4ASli1nCSUaxyClpv4WCoj0d1t39j8BeM+Dp/k6sPH5x9s8ayl
-         B9RH5eI7sUP8HBAwQV1TF/BQB4rG+jsH1A956UVoM7zyEKINp64JIjJc2z774DRbUn
-         FVdW7NM982wvgRl/0PoPiBtTY0of3Ggb9So8RmUhiXu1zMaox9wiX1/TiAym4utOF8
-         ff/7/XzU0rkP4Zfic6IHCOz7dRvYo4wHBGsSP+NKnBuOshIBr9BeYGtdSIVGX+enLs
-         qGJ1zjqb5rXtEVHBTS/+69xI2g+/kSCVG25E4BropD8bGDkKuqDSMKkqXzDudTGNRI
-         Dkbc0Ww5orlhA==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a1db99cd1b2so638375666b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:08:15 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzkeu2Agc4hGGfCQG3xpoqMSKrdteu+Jdf/7UFyc72R4qm89qxb
-        tIciR/8CfNeSkveaggND+/NUMcfD5vz8eQCotVQ=
-X-Google-Smtp-Source: AGHT+IGXr7ae2BWJft9h8JEOb/sSf8K5iF07E47tmBVS0fwPBOhl+VPU25Wmv1IiH8/z0FdVuT6ZcgjwLPT+rmGqD2w=
-X-Received: by 2002:a17:907:7e95:b0:a1e:86c2:dcce with SMTP id
- qb21-20020a1709077e9500b00a1e86c2dccemr2248167ejc.11.1702350494003; Mon, 11
- Dec 2023 19:08:14 -0800 (PST)
+        Mon, 11 Dec 2023 22:06:19 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02CFCB5;
+        Mon, 11 Dec 2023 19:06:23 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.183])
+        by gateway (Coremail) with SMTP id _____8Ax2uguzndl1zwAAA--.1533S3;
+        Tue, 12 Dec 2023 11:06:22 +0800 (CST)
+Received: from [10.20.42.183] (unknown [10.20.42.183])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxXeEqzndl6BQAAA--.709S3;
+        Tue, 12 Dec 2023 11:06:20 +0800 (CST)
+Subject: Re: [PATCH v5 1/4] KVM: selftests: Add KVM selftests header files for
+ LoongArch
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
+References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
+ <20231130111804.2227570-2-zhaotianrui@loongson.cn>
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <e40d3884-bf39-8286-627f-e0ce7dacfcbe@loongson.cn>
+Date:   Tue, 12 Dec 2023 11:08:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20231208151036.2458921-1-guoren@kernel.org> <CAHVXubjfuKZ1PBYQ8By41OX65YpAma3_kmSL7urT8L0PmMxFnQ@mail.gmail.com>
- <CAJF2gTSB-4hDo8ncSLVKvbnOOEwLSrV716kQM9d9HrzXFs7D8A@mail.gmail.com>
- <CAHVXubiK0TXMuhZhYjLq7tyk_dhFP9W2uReacECWDC7HToYuXA@mail.gmail.com>
- <CAJF2gTSCZ4ytzkenibT+38TzqoYKjBebRRabzn7YQ79bY5yp3g@mail.gmail.com> <b9292e35-6870-4c6d-8831-c9b15a33f52f@sifive.com>
-In-Reply-To: <b9292e35-6870-4c6d-8831-c9b15a33f52f@sifive.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 12 Dec 2023 11:07:57 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRGjn+Tz-R3us057B4zm801XUZrue38V_dDyVAhy+1Zng@mail.gmail.com>
-Message-ID: <CAJF2gTRGjn+Tz-R3us057B4zm801XUZrue38V_dDyVAhy+1Zng@mail.gmail.com>
-Subject: Re: [PATCH] riscv: pgtable: Enhance set_pte to prevent OoO risk
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, willy@infradead.org, david@redhat.com,
-        muchun.song@linux.dev, will@kernel.org, peterz@infradead.org,
-        rppt@kernel.org, paulmck@kernel.org, atishp@atishpatra.org,
-        anup@brainfault.org, alex@ghiti.fr, mike.kravetz@oracle.com,
-        dfustini@baylibre.com, wefu@redhat.com, jszhang@kernel.org,
-        falcon@tinylab.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231130111804.2227570-2-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8CxXeEqzndl6BQAAA--.709S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3XrW3Ar4UKryxuFW8Xr1rZrc_yoWxZFy5pF
+        WjkFy0kr48tF47K348KFn5Z3W7Gr4xAF18K347XrWj9F45X34kGr12gF45JFy5Xrs5XFyU
+        Ar1vqw4a9rZrW3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+        6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8m9aDUUUU
+        U==
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 11:27=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
+Hi, Sean:
+
+I want to change the definition of  DEFAULT_GUEST_TEST_MEM in the common 
+file "memstress.h", like this:
+
+  /* Default guest test virtual memory offset */
++#ifndef DEFAULT_GUEST_TEST_MEM
+  #define DEFAULT_GUEST_TEST_MEM		0xc0000000
++#endif
+
+As this address should be re-defined in LoongArch headers.
+So, do you have any suggesstion?
+
+Thanks
+Tianrui Zhao
+
+在 2023/11/30 下午7:18, Tianrui Zhao 写道:
+> Add KVM selftests header files for LoongArch, including processor.h
+> and kvm_util_base.h. Those mainly contain LoongArch CSR register defines
+> and page table information. And change DEFAULT_GUEST_TEST_MEM base addr
+> for LoongArch.
 >
-> On 2023-12-11 5:36 AM, Guo Ren wrote:
-> > On Mon, Dec 11, 2023 at 5:04=E2=80=AFPM Alexandre Ghiti <alexghiti@rivo=
-sinc.com> wrote:
-> >>
-> >> On Mon, Dec 11, 2023 at 9:41=E2=80=AFAM Guo Ren <guoren@kernel.org> wr=
-ote:
-> >>>
-> >>> On Mon, Dec 11, 2023 at 1:52=E2=80=AFPM Alexandre Ghiti <alexghiti@ri=
-vosinc.com> wrote:
-> >>>>
-> >>>> Hi Guo,
-> >>>>
-> >>>> On Fri, Dec 8, 2023 at 4:10=E2=80=AFPM <guoren@kernel.org> wrote:
-> >>>>>
-> >>>>> From: Guo Ren <guoren@linux.alibaba.com>
-> >>>>>
-> >>>>> When changing from an invalid pte to a valid one for a kernel page,
-> >>>>> there is no need for tlb_flush. It's okay for the TSO memory model,=
- but
-> >>>>> there is an OoO risk for the Weak one. eg:
-> >>>>>
-> >>>>> sd t0, (a0) // a0 =3D pte address, pteval is changed from invalid t=
-o valid
-> >>>>> ...
-> >>>>> ld t1, (a1) // a1 =3D va of above pte
-> >>>>>
-> >>>>> If the ld instruction is executed speculatively before the sd
-> >>>>> instruction. Then it would bring an invalid entry into the TLB, and=
- when
-> >>>>> the ld instruction retired, a spurious page fault occurred. Because=
- the
-> >>>>> vmemmap has been ignored by vmalloc_fault, the spurious page fault =
-would
-> >>>>> cause kernel panic.
-> >>>>>
-> >>>>> This patch was inspired by the commit: 7f0b1bf04511 ("arm64: Fix ba=
-rriers
-> >>>>> used for page table modifications"). For RISC-V, there is no requir=
-ement
-> >>>>> in the spec to guarantee all tlb entries are valid and no requireme=
-nt to
-> >>>>> PTW filter out invalid entries. Of course, micro-arch could give a =
-more
-> >>>>> robust design, but here, use a software fence to guarantee.
-> >>>>>
-> >>>>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> >>>>> Signed-off-by: Guo Ren <guoren@kernel.org>
-> >>>>> ---
-> >>>>>  arch/riscv/include/asm/pgtable.h | 7 +++++++
-> >>>>>  1 file changed, 7 insertions(+)
-> >>>>>
-> >>>>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/=
-asm/pgtable.h
-> >>>>> index 294044429e8e..2fae5a5438e0 100644
-> >>>>> --- a/arch/riscv/include/asm/pgtable.h
-> >>>>> +++ b/arch/riscv/include/asm/pgtable.h
-> >>>>> @@ -511,6 +511,13 @@ static inline int pte_same(pte_t pte_a, pte_t =
-pte_b)
-> >>>>>  static inline void set_pte(pte_t *ptep, pte_t pteval)
-> >>>>>  {
-> >>>>>         *ptep =3D pteval;
-> >>>>> +
-> >>>>> +       /*
-> >>>>> +        * Only if the new pte is present and kernel, otherwise TLB
-> >>>>> +        * maintenance or update_mmu_cache() have the necessary bar=
-riers.
-> >>>>> +        */
-> >>>>> +       if (pte_val(pteval) & (_PAGE_PRESENT | _PAGE_GLOBAL))
-> >>>>> +               RISCV_FENCE(rw,rw);
-> >>>>
-> >>>> Only a sfence.vma can guarantee that the PTW actually sees a new
-> >>>> mapping, a fence is not enough. That being said, new kernel mappings
-> >>>> (vmalloc ones) are correctly handled in the kernel by using
-> >>>> flush_cache_vmap(). Did you observe something that this patch fixes?
-> >>> Thx for the reply!
-> >>>
-> >>> The sfence.vma is too expensive, so the situation is tricky. See the
-> >>> arm64 commit: 7f0b1bf04511 ("arm64: Fix barriers used for page table
-> >>> modifications"), which is similar. That is, linux assumes invalid pte
-> >>> won't get into TLB. Think about memory hotplug:
-> >>>
-> >>> mm/sparse.c: sparse_add_section() {
-> >>> ...
-> >>>         memmap =3D section_activate(nid, start_pfn, nr_pages, altmap,=
- pgmap);
-> >>>         if (IS_ERR(memmap))
-> >>>                 return PTR_ERR(memmap);
-> >>>
-> >>>         /*
-> >>>          * Poison uninitialized struct pages in order to catch invali=
-d flags
-> >>>          * combinations.
-> >>>          */
-> >>>         page_init_poison(memmap, sizeof(struct page) * nr_pages);
-> >>> ...
-> >>> }
-> >>> The section_activate would use set_pte to setup vmemmap, and
-> >>> page_init_poison would access these pages' struct.
-> >>
-> >> So I think the generic code must be fixed by adding a
-> >> flush_cache_vmap() in vmemmap_populate_range() or similar: several
-> >> architectures implement flush_cache_vmap() because they need to do
-> >> "something" after a new mapping is established, so vmemmap should not
-> >> be any different.
-> > Perhaps generic code assumes TLB won't contain invalid entries. When
-> > invalid -> valid, Linux won't do any tlb_flush, ref:
-> >
-> > * Use set_p*_safe(), and elide TLB flushing, when confident that *no*
-> >  * TLB flush will be required as a result of the "set". For example, us=
-e
-> >  * in scenarios where it is known ahead of time that the routine is
-> >  * setting non-present entries, or re-setting an existing entry to the
-> >  * same value. Otherwise, use the typical "set" helpers and flush the
-> >  * TLB.
-> >
-> >>
-> >>>
-> >>> That means:
-> >>> sd t0, (a0) // a0 =3D struct page's pte address, pteval is changed fr=
-om
-> >>> invalid to valid
-> >>>  ...
-> >>> lw/sw t1, (a1) // a1 =3D va of struct page
-> >>>
-> >>> If the lw/sw instruction is executed speculatively before the set_pte=
-,
-> >>> we need a fence to prevent this.
-> >>
-> >> Yes I agree, but to me we need the fence property of sfence.vma to
-> >> make sure the PTW sees the new pte, unless I'm mistaken and something
-> >> in the privileged specification states that a fence is enough?
-> > All PTW are triggered by IFU & load/store. For the "set" scenarios, we
-> > just need to prevent the access va before the set_pte. So:
-> >  - Don't worry about IFU, which fetches the code sequentially.
-> >  - Use a fence prevent load/store before set_pte.
-> >
-> > Sfence.vma is used for invalidate TLB, not for invalid -> valid.
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>   .../selftests/kvm/include/kvm_util_base.h     |   5 +
+>   .../kvm/include/loongarch/processor.h         | 133 ++++++++++++++++++
+>   .../testing/selftests/kvm/include/memstress.h |   2 +
+>   3 files changed, 140 insertions(+)
+>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
 >
-> I think the problem is that, architecturally, you can't prevent a PTW by
-> preventing access to the virtual address. The RISC-V privileged spec allo=
-ws
-> caching the results of PTWs from speculative execution, and it allows cac=
-hing
-> invalid PTEs. So effectively, as soon as satp is written, software must b=
-e able
-> to handle _any_ virtual address being in the TLB.
->
-> To avoid the sfence.vma in the invalid->valid case, you need to handle th=
-e
-> possible page fault, like in Alex's series here:
->
-> https://lore.kernel.org/linux-riscv/20231207150348.82096-1-alexghiti@rivo=
-sinc.com/
-Just as this patch series said:
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> index a18db6a7b3c..97f8b24741b 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -218,6 +218,11 @@ extern enum vm_guest_mode vm_mode_default;
+>   #define MIN_PAGE_SHIFT			12U
+>   #define ptes_per_page(page_size)	((page_size) / 8)
+>   
+> +#elif defined(__loongarch__)
+> +#define VM_MODE_DEFAULT			VM_MODE_P36V47_16K
+> +#define MIN_PAGE_SHIFT			14U
+> +#define ptes_per_page(page_size)	((page_size) / 8)
+> +
+>   #endif
+>   
+>   #define MIN_PAGE_SIZE		(1U << MIN_PAGE_SHIFT)
+> diff --git a/tools/testing/selftests/kvm/include/loongarch/processor.h b/tools/testing/selftests/kvm/include/loongarch/processor.h
+> new file mode 100644
+> index 00000000000..cea6b284131
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/loongarch/processor.h
+> @@ -0,0 +1,133 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +
+> +#ifndef SELFTEST_KVM_PROCESSOR_H
+> +#define SELFTEST_KVM_PROCESSOR_H
+> +
+> +#define _PAGE_VALID_SHIFT	0
+> +#define _PAGE_DIRTY_SHIFT	1
+> +#define _PAGE_PLV_SHIFT		2  /* 2~3, two bits */
+> +#define _CACHE_SHIFT		4  /* 4~5, two bits */
+> +#define _PAGE_PRESENT_SHIFT	7
+> +#define _PAGE_WRITE_SHIFT	8
+> +
+> +#define PLV_KERN		0
+> +#define PLV_USER		3
+> +#define PLV_MASK		0x3
+> +
+> +#define _PAGE_VALID		(0x1UL << _PAGE_VALID_SHIFT)
+> +#define _PAGE_PRESENT		(0x1UL << _PAGE_PRESENT_SHIFT)
+> +#define _PAGE_WRITE		(0x1UL << _PAGE_WRITE_SHIFT)
+> +#define _PAGE_DIRTY		(0x1UL << _PAGE_DIRTY_SHIFT)
+> +#define _PAGE_USER		(PLV_USER << _PAGE_PLV_SHIFT)
+> +#define __READABLE		(_PAGE_VALID)
+> +#define __WRITEABLE		(_PAGE_DIRTY | _PAGE_WRITE)
+> +#define _CACHE_CC		(0x1UL << _CACHE_SHIFT) /* Coherent Cached */
+> +
+> +/* general registers */
+> +#define zero	$r0
+> +#define ra	$r1
+> +#define tp	$r2
+> +#define sp	$r3
+> +#define a0	$r4
+> +#define a1	$r5
+> +#define a2	$r6
+> +#define a3	$r7
+> +#define a4	$r8
+> +#define a5	$r9
+> +#define a6	$r10
+> +#define a7	$r11
+> +#define t0	$r12
+> +#define t1	$r13
+> +#define t2	$r14
+> +#define t3	$r15
+> +#define t4	$r16
+> +#define t5	$r17
+> +#define t6	$r18
+> +#define t7	$r19
+> +#define t8	$r20
+> +#define u0	$r21
+> +#define fp	$r22
+> +#define s0	$r23
+> +#define s1	$r24
+> +#define s2	$r25
+> +#define s3	$r26
+> +#define s4	$r27
+> +#define s5	$r28
+> +#define s6	$r29
+> +#define s7	$r30
+> +#define s8	$r31
+> +
+> +#define PS_4K				0x0000000c
+> +#define PS_8K				0x0000000d
+> +#define PS_16K				0x0000000e
+> +#define PS_DEFAULT_SIZE			PS_16K
+> +
+> +/* Basic CSR registers */
+> +#define LOONGARCH_CSR_CRMD		0x0 /* Current mode info */
+> +#define CSR_CRMD_PG_SHIFT		4
+> +#define CSR_CRMD_PG			(0x1UL << CSR_CRMD_PG_SHIFT)
+> +#define CSR_CRMD_IE_SHIFT		2
+> +#define CSR_CRMD_IE			(0x1UL << CSR_CRMD_IE_SHIFT)
+> +#define CSR_CRMD_PLV_SHIFT		0
+> +#define CSR_CRMD_PLV_WIDTH		2
+> +#define CSR_CRMD_PLV			(0x3UL << CSR_CRMD_PLV_SHIFT)
+> +#define PLV_MASK			0x3
+> +
+> +#define LOONGARCH_CSR_PRMD		0x1
+> +#define LOONGARCH_CSR_EUEN		0x2
+> +#define LOONGARCH_CSR_ECFG		0x4
+> +#define LOONGARCH_CSR_ESTAT		0x5 /* Exception status */
+> +#define LOONGARCH_CSR_ERA		0x6 /* ERA */
+> +#define LOONGARCH_CSR_BADV		0x7 /* Bad virtual address */
+> +#define LOONGARCH_CSR_EENTRY		0xc
+> +#define LOONGARCH_CSR_TLBIDX		0x10 /* TLB Index, EHINV, PageSize, NP */
+> +#define CSR_TLBIDX_PS_SHIFT		24
+> +#define CSR_TLBIDX_PS_WIDTH		6
+> +#define CSR_TLBIDX_PS			(0x3fUL << CSR_TLBIDX_PS_SHIFT)
+> +#define CSR_TLBIDX_SIZEM		0x3f000000
+> +#define CSR_TLBIDX_SIZE			CSR_TLBIDX_PS_SHIFT
+> +
+> +#define LOONGARCH_CSR_ASID		0x18 /* ASID */
+> +/* Page table base address when VA[VALEN-1] = 0 */
+> +#define LOONGARCH_CSR_PGDL		0x19
+> +/* Page table base address when VA[VALEN-1] = 1 */
+> +#define LOONGARCH_CSR_PGDH		0x1a
+> +/* Page table base */
+> +#define LOONGARCH_CSR_PGD		0x1b
+> +#define LOONGARCH_CSR_PWCTL0		0x1c
+> +#define LOONGARCH_CSR_PWCTL1		0x1d
+> +#define LOONGARCH_CSR_STLBPGSIZE	0x1e
+> +#define LOONGARCH_CSR_CPUID		0x20
+> +#define LOONGARCH_CSR_KS0		0x30
+> +#define LOONGARCH_CSR_KS1		0x31
+> +#define LOONGARCH_CSR_TMID		0x40
+> +#define LOONGARCH_CSR_TCFG		0x41
+> +#define LOONGARCH_CSR_TLBRENTRY		0x88 /* TLB refill exception entry */
+> +/* KSave for TLB refill exception */
+> +#define LOONGARCH_CSR_TLBRSAVE		0x8b
+> +#define LOONGARCH_CSR_TLBREHI		0x8e
+> +#define CSR_TLBREHI_PS_SHIFT		0
+> +#define CSR_TLBREHI_PS			(0x3fUL << CSR_TLBREHI_PS_SHIFT)
+> +
+> +#define DEFAULT_LOONARCH64_STACK_MIN		0x4000
+> +#define DEFAULT_LOONARCH64_PAGE_TABLE_MIN	0x4000
+> +#define EXREGS_GPRS				(32)
+> +
+> +#ifndef __ASSEMBLER__
+> +struct ex_regs {
+> +	unsigned long regs[EXREGS_GPRS];
+> +	unsigned long pc;
+> +	unsigned long estat;
+> +	unsigned long badv;
+> +};
+> +
+> +extern void handle_tlb_refill(void);
+> +extern void handle_exception(void);
+> +#endif
+> +
+> +#define PC_OFFSET_EXREGS		((EXREGS_GPRS + 0) * 8)
+> +#define ESTAT_OFFSET_EXREGS		((EXREGS_GPRS + 1) * 8)
+> +#define BADV_OFFSET_EXREGS		((EXREGS_GPRS + 2) * 8)
+> +#define EXREGS_SIZE			((EXREGS_GPRS + 3) * 8)
+> +
+> +#endif /* SELFTEST_KVM_PROCESSOR_H */
+> diff --git a/tools/testing/selftests/kvm/include/memstress.h b/tools/testing/selftests/kvm/include/memstress.h
+> index ce4e603050e..5bcdaf2efab 100644
+> --- a/tools/testing/selftests/kvm/include/memstress.h
+> +++ b/tools/testing/selftests/kvm/include/memstress.h
+> @@ -13,7 +13,9 @@
+>   #include "kvm_util.h"
+>   
+>   /* Default guest test virtual memory offset */
+> +#ifndef DEFAULT_GUEST_TEST_MEM
+>   #define DEFAULT_GUEST_TEST_MEM		0xc0000000
+> +#endif
+>   
+>   #define DEFAULT_PER_VCPU_MEM_SIZE	(1 << 30) /* 1G */
+>   
 
-+ * The RISC-V kernel does not eagerly emit a sfence.vma after each
-+ * new vmalloc mapping, which may result in exceptions:
-+ * - if the uarch caches invalid entries, the new mapping would not be
-+ *   observed by the page table walker and an invalidation is needed.
-+ * - if the uarch does not cache invalid entries, a reordered access
-+ *   could "miss" the new mapping and traps: in that case, we only need
-+ *   to retry the access, no sfence.vma is required.
-
-I'm talking about "uarch does not cache invalid entries, a reordered
-access could "miss" the new mapping and traps".
-Using a fence in set_pte is another solution, and better than
-retrying. Of course the premise is that the fence is not expensive for
-micro-arch.
-
- - Arm64 used this way: commit: 7f0b1bf04511 ("arm64: Fix barriers
- - X86 is similar, because it's TSO, so any load + store instructions
-between set_pte & next access would give a barrier, eg:
-   set_pte va
-   load (acquire)
-   store (release)
-   load/store va
-
-
-Another topic is about "retry the access", this is about kernel
-virtual address space spurious page fault right? And Alex is
-preventing that in the riscv linux kernel and it would cause a lot of
-side effects.
-
->
-> Regards,
-> Samuel
->
-
-
---=20
-Best Regards
- Guo Ren
