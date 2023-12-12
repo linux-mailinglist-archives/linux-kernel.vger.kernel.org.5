@@ -2,113 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9888180E85D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDD280E866
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjLLJ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S1346090AbjLLJ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjLLJ7N (ORCPT
+        with ESMTP id S231440AbjLLJ7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:59:13 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9955A6;
-        Tue, 12 Dec 2023 01:59:18 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 89DD2FF803;
-        Tue, 12 Dec 2023 09:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702375156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q0/3Sh2eETJdeZKVLmp2oI+wYLwADP2lZuTfmz4YhfQ=;
-        b=Rk79/zp7ossMcvHhiqp98keiVcv2gf1k87JOuYi/QLilq8f6xx+Gh19mWu7nDU4GeYpq5Q
-        lRAq+xxqZKFZMqfm3v4apQZT8Eo9qLKTSvd08PZJt9pgPyMHVvNPn3vGh/gy+jkcjjZu5r
-        wCvV60IHuTJoUZ/9pXNbrDOHs/6pqvz4+6vJDPlffMiVNhwS5sKlSDDoJbM/82dbwdegCM
-        e/wzYFgh3Eyy3Q4vUTWXVi+n7g+kWD2I4tihNRFoZePsrg5xf0CTlntvsMEHd0sUIf5F+a
-        GeETxE6cLFojuL7k1GfrfDLArZPz425zbHBa/uR6Zj/b3legUK3tmLo+C1qbLA==
-Date:   Tue, 12 Dec 2023 10:59:14 +0100
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 0/5] Add support for framer infrastructure and PEF2256
- framer
-Message-ID: <20231212105914.7eeb092b@bootlin.com>
-In-Reply-To: <CACRpkdbrH-WWVrVWx6MvReUuUW8tU_J8Mb7nW3G8fJGAoiS38g@mail.gmail.com>
-References: <20231128132534.258459-1-herve.codina@bootlin.com>
-        <17b2f126-f6a4-431c-9e72-56a9c2932a88@sirena.org.uk>
-        <CACRpkda5VMuXccwSBd-DBkM4W7A1E+UfZwBxWqtqxZzKjrqY4A@mail.gmail.com>
-        <511c83d1-d77f-4ac0-927e-91070787bc34@sirena.org.uk>
-        <CACRpkdYmN4318b1wXwUOeFjPN0S2w8M9FpXHOs3LtFa+XoTxVw@mail.gmail.com>
-        <20231128173110.0ccb8f53@kernel.org>
-        <CACRpkdbrH-WWVrVWx6MvReUuUW8tU_J8Mb7nW3G8fJGAoiS38g@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 12 Dec 2023 04:59:41 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E78113A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:59:46 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b9e6262fccso3337276b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702375185; x=1702979985; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JMGbv/XdWHrVqK7oSPhh0cmVjs8GCEDKwCdy5CLJlsU=;
+        b=auvRWkHaXuSi9lUfLE2Ju1mbC6HAW5cO9QurxiQZWdrnh+XjdrIN+tmCiLMvtytLjV
+         UQi5Ql4EirrFbH/PLI1RCZVWoKR3/z9AOafcKCbj/flM4HtFt9JI/IegDbRPHC0yJpCS
+         cD9Cv95OpG+EOhggCJNmnVWwPZGZKSnlmCO4moK9Th28Wg+lMjOEJ6uo9CGQ1J/GygLb
+         Yee1TuqOJHRwl9H/SZlYgP+3llwxsOJJo9NkMJlvRVIXaiI5fq1Pv03z7E4hjSjqoVGB
+         GLrwkOLfUrum0yGu5VVxn3NN1P+/cUZDVTkESsqiflzcu4/5MXFsi/ETD/smcUMDq8FJ
+         9aKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702375185; x=1702979985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JMGbv/XdWHrVqK7oSPhh0cmVjs8GCEDKwCdy5CLJlsU=;
+        b=eRWn1S/8UQGzPh6LjJRVTkP4DL3CRJ9Wt/zZUeOmKP89raY+MAp2XMGagjxP5Taohl
+         aWyMfKrghXPXqDzzwIBLaHqXfztIhedRXTvR/MzHtAWuqZ43U7qdBgW/STEYbwNV7pnH
+         GYJEr19C0Td/bAqQWyCEUdOntj2/xA0z8bR+n9m1wN01oPverYXhW23NYxnuZzLBDG9+
+         qx19/89+skC0raxV4CTwU3cs3UTJsqTyn7HoosPkhZ+NIITYVQI80WHJt+0LgrnfLTV1
+         UDtDOn1ltja/s7AuNJpNaP9gLojwmoVNo/V0ZdIYD/pg0P0cAugonGRCmRw1mlATFnEX
+         Y+KQ==
+X-Gm-Message-State: AOJu0Yx1VAu2k5rGGWY7ndtaW2xrAGMXN19S7Fa2X3yGOuyirvA5JEcY
+        5jfYza1V/CtsJ6eYdMLNwCHRF3H25U615sod83n+zA==
+X-Google-Smtp-Source: AGHT+IFiBYDSREKvLHh1CmS/eZckElNLSWD8xf/QdPXW2I00WhSzxNo9IpGvT/aBr5y749jMq6osV+xRHfZNA9T+zZE=
+X-Received: by 2002:a05:6808:1817:b0:3b9:f016:fb89 with SMTP id
+ bh23-20020a056808181700b003b9f016fb89mr8589210oib.53.1702375183991; Tue, 12
+ Dec 2023 01:59:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-7-af617c0d9d94@google.com> <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
+In-Reply-To: <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Tue, 12 Dec 2023 10:59:32 +0100
+Message-ID: <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Wed, 29 Nov 2023 15:00:40 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
-
-> On Wed, Nov 29, 2023 at 2:31 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Tue, 28 Nov 2023 15:51:01 +0100 Linus Walleij wrote:  
-> > > > > I thought this thing would be merged primarily into the networking
-> > > > > tree, and I don't know if they do signed tags, I usually create an
-> > > > > immutable branch but that should work just as fine I guess.  
-> > > >
-> > > > Right, I'd expect a signed tag on the immutable branch - it's generally
-> > > > helpful to avoid confusion about the branch actually being immutable.  
-> > >
-> > > Makes sense, best to create that in the netdev tree if possible
-> > > I guess.  
+On Fri, Dec 8, 2023 at 6:53=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>
+> On 12/6/23 12:59, Alice Ryhl wrote:
+> > diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
+> > index 9bcbea04dac3..eeb291cc60db 100644
+> > --- a/rust/bindings/lib.rs
+> > +++ b/rust/bindings/lib.rs
+> > @@ -51,3 +51,4 @@ mod bindings_helper {
 > >
-> > I think you offered creating the branch / tag in an earlier reply,
-> > that's less work for me so yes please! :)  
-> 
-> OK I fix!
-> 
-> Just waiting for some final reviews to trickle in.
-> 
-> Herve: nag me if it doesn't happen in time!
+> >  pub const GFP_KERNEL: gfp_t =3D BINDINGS_GFP_KERNEL;
+> >  pub const __GFP_ZERO: gfp_t =3D BINDINGS___GFP_ZERO;
+> > +pub const POLLFREE: __poll_t =3D BINDINGS_POLLFREE;
+>
+> You are no longer using this constant, should this still exist?
 
-As you tell me, this is my reminder.
+Nice catch, thanks!
 
-Best regards,
-Hervé
+> > +    fn get_qproc(&self) -> bindings::poll_queue_proc {
+> > +        let ptr =3D self.0.get();
+> > +        // SAFETY: The `ptr` is valid because it originates from a ref=
+erence, and the `_qproc`
+> > +        // field is not modified concurrently with this call since we =
+have an immutable reference.
+>
+> This needs an invariant on `PollTable` (i.e. `self.0` is valid).
 
-> 
-> > FWIW I usually put the branches / tags in my personal k.org tree.
-> > I don't wanna pollute the trees for the $many people who fetch
-> > netdev with random tags.  
-> 
-> Aha yeah pin control is relatively small so I just carry misc sync
-> tags there.
-> 
-> Yours,
-> Linus Walleij
+How would you phrase it?
+
+> > +        unsafe { (*ptr)._qproc }
+> > +    }
+> > +
+> > +    /// Register this [`PollTable`] with the provided [`PollCondVar`],=
+ so that it can be notified
+> > +    /// using the condition variable.
+> > +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
+> > +        if let Some(qproc) =3D self.get_qproc() {
+> > +            // SAFETY: The pointers to `self` and `file` are valid bec=
+ause they are references.
+>
+> What about cv.wait_list...
+
+I can add it to the list of things that are valid due to references.
+
+> > +            //
+> > +            // Before the wait list is destroyed, the destructor of `P=
+ollCondVar` will clear
+> > +            // everything in the wait list, so the wait list is not us=
+ed after it is freed.
+> > +            unsafe { qproc(file.as_ptr() as _, cv.wait_list.get(), sel=
+f.0.get()) };
+> > +        }
+> > +    }
+> > +}
+> > +
+> > +/// A wrapper around [`CondVar`] that makes it usable with [`PollTable=
+`].
+> > +///
+> > +/// # Invariant
+> > +///
+> > +/// If `needs_synchronize_rcu` is false, then there is nothing registe=
+red with `register_wait`.
+>
+> Not able to find `needs_synchronize_rcu` anywhere else, should this be
+> here?
+
+Sorry, this shouldn't be there. It was something I experimented with,
+but gave up on.
+
+> > +#[pinned_drop]
+> > +impl PinnedDrop for PollCondVar {
+> > +    fn drop(self: Pin<&mut Self>) {
+> > +        // Clear anything registered using `register_wait`.
+> > +        //
+> > +        // SAFETY: The pointer points at a valid wait list.
+>
+> I was a bit confused by "wait list", since the C type is named
+> `wait_queue_head`, maybe just use the type name?
+
+I will update all instances of "wait list" to "wait_queue_head". It's
+because I incorrectly remembered the C type name to be "wait_list".
+
+Alice
