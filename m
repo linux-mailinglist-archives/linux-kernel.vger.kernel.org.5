@@ -2,234 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263BD80E073
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 01:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2877F80E075
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 01:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345583AbjLLAsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 19:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        id S1345587AbjLLAu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 19:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbjLLAsW (ORCPT
+        with ESMTP id S1345477AbjLLAu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 19:48:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F5599
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:48:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702342108; x=1733878108;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jQOI600A4meekimHAfIuWHVBDyEa00WuwZPad0eKMYw=;
-  b=e4MbFAijdARrSyBmddJlyQzEjxJTrLPiIJU1pFecz+6d7gA82BYHyibV
-   9dZONTFF5M6omvA2tA6bzmD38SZ+EXYVSy+X3emRySaMYhkFdv+2mMe9o
-   xcAQM+ksZU6P7TnjrGxQYbh8rJ5uM9YR6ZqTd6EkA8Ag/aGGzhd6o8apY
-   +acpJR/b4uqMN/w415n4WYKvpsLKyPY7awwDOFw5maTg00CDGhLrq/mTs
-   kpaVyEyp9kh2IBj+RjsJNFc+Z+9cfev7kwY9LZpA8tKmZIWu11yxhbyw4
-   rfzQvWFUdDwsdQPYTujYat+9+v741Hoh+UPXwP+13be9VMU+gPRk4yTNX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="379729781"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="379729781"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 16:48:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104690469"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="1104690469"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Dec 2023 16:48:25 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCqwh-000IcZ-2L;
-        Tue, 12 Dec 2023 00:48:23 +0000
-Date:   Tue, 12 Dec 2023 08:48:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        syzbot+afb726d49f84c8d95ee1@syzkaller.appspotmail.com
-Subject: Re: [PATCH -fixes] riscv: Fix wrong usage of lm_alias() when
- splitting a huge linear mapping
-Message-ID: <202312120825.UkTJCa1g-lkp@intel.com>
-References: <20231211141929.74027-1-alexghiti@rivosinc.com>
+        Mon, 11 Dec 2023 19:50:56 -0500
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30CDA6;
+        Mon, 11 Dec 2023 16:51:01 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VyKKeJX_1702342257;
+Received: from 192.168.71.57(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VyKKeJX_1702342257)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Dec 2023 08:50:59 +0800
+Message-ID: <941aff31-6aa4-4c37-bb94-547c46250304@linux.alibaba.com>
+Date:   Tue, 12 Dec 2023 08:50:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211141929.74027-1-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC KERNEL] initoverlayfs - a scalable initial filesystem
+To:     Eric Curtin <ecurtin@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org, linux-erofs@lists.ozlabs.org
+Cc:     Daan De Meyer <daan.j.demeyer@gmail.com>,
+        Stephen Smoogen <ssmoogen@redhat.com>,
+        Yariv Rachmani <yrachman@redhat.com>,
+        Daniel Walsh <dwalsh@redhat.com>,
+        Douglas Landgraf <dlandgra@redhat.com>,
+        Alexander Larsson <alexl@redhat.com>,
+        Colin Walters <walters@redhat.com>,
+        Brian Masney <bmasney@redhat.com>,
+        Eric Chanudet <echanude@redhat.com>,
+        Pavol Brilla <pbrilla@redhat.com>,
+        Lokesh Mandvekar <lmandvek@redhat.com>,
+        =?UTF-8?Q?Petr_=C5=A0abata?= <psabata@redhat.com>,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Neal Gompa <neal@gompa.dev>,
+        nvdimm@lists.linux.dev
+References: <CAOgh=Fwb+JCTQ-iqzjq8st9qbvauxc4gqqafjWG2Xc08MeBabQ@mail.gmail.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <CAOgh=Fwb+JCTQ-iqzjq8st9qbvauxc4gqqafjWG2Xc08MeBabQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On 2023/12/11 21:45, Eric Curtin wrote:
+> Hi All,
+> 
+> We have recently been working on something called initoverlayfs, which
+> we sent an RFC email to the systemd and dracut mailing lists to gather
+> feedback. This is an exploratory email as we are unsure if a solution
+> like this fits in userspace or kernelspace and we would like to gather
+> feedback from the community.
+> 
+> To describe this briefly, the idea is to use erofs+overlayfs as an
+> initial filesystem rather than an initramfs. The benefits are, we can
+> start userspace significantly faster as we do not have to unpack,
+> decompress and populate a tmpfs upfront, instead we can rely on
+> transparent decompression like lz4hc instead. What we believe is the
+> greater benefit, is that we can have less fear of initial filesystem
+> bloat, as when you are using transparent decompression you only pay
+> for decompressing the bytes you actually use.
+> 
+> We implemented the first version of this, by creating a small
+> initramfs that only contains storage drivers, udev and a couple of 100
+> lines of C code, just enough userspace to mount an erofs with
+> transient overlay. Then we build a second initramfs which has all the
+> contents of a normal everyday initramfs with all the bells and
+> whistles and convert this into an erofs.
+> 
+> Then at boot time you basically transition to this erofs+overlayfs in
+> userspace and everything works as normal as it would in a traditional
+> initramfs.
+> 
+> The current implementation looks like this:
+> 
+> ```
+>  From the filesystem perspective (roughly):
+> 
+> fw -> bootloader -> kernel -> mini-initramfs -> initoverlayfs -> rootfs
+> 
+>  From the process perspective (roughly):
+> 
+> fw -> bootloader -> kernel -> storage-init   -> init ----------------->
+> ```
+> 
+> But we have been asking the question whether we should be implementing
+> this in kernelspace so it looks more like:
+> 
+> ```
+>  From the filesystem perspective (roughly):
+> 
+> fw -> bootloader -> kernel -> initoverlayfs -> rootfs
+> 
+>  From the process perspective (roughly):
+> 
+> fw -> bootloader -> kernel -> init ----------------->
+> ```
+> 
+> The kind of questions we are asking are: Would it be possible to
+> implement this in kernelspace so we could just mount the initial
+> filesystem data as an erofs+overlayfs filesystem without unpacking,
+> decompressing, copying the data to a tmpfs, etc.? Could we memmap the
+> initramfs buffer and mount it like an erofs? What other considerations
+> should be taken into account?
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.7-rc5 next-20231211]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Since Linux 5.15, EROFS has supported FSDAX feature so that it can
+mount from persistent memory devices with `-o dax`.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alexandre-Ghiti/riscv-Fix-wrong-usage-of-lm_alias-when-splitting-a-huge-linear-mapping/20231211-222156
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231211141929.74027-1-alexghiti%40rivosinc.com
-patch subject: [PATCH -fixes] riscv: Fix wrong usage of lm_alias() when splitting a huge linear mapping
-config: riscv-alldefconfig (https://download.01.org/0day-ci/archive/20231212/202312120825.UkTJCa1g-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231212/202312120825.UkTJCa1g-lkp@intel.com/reproduce)
+That is already used for virtualization cases like VM rootfs and
+container image passthrough with virtio-pmem [1] to share page cache
+memory between host and guest.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312120825.UkTJCa1g-lkp@intel.com/
+For non-virtualization cases, I guess you could try to use `memmap`
+kernel option [2] to specify a memory region by bootloaders which
+contains an EROFS rootfs and a customized init for booting as
+erofs+overlayfs at least for `initoverlayfs`.  The main benefit is
+that the memory region specified by the bootloader can be directly
+used for mounting.  But I never tried if this option actually works.
 
-All warnings (new ones prefixed by >>):
+Furthermore, compared to traditional ramdisks, using direct address
+can avoid page cache totally for uncompressed files like it can
+just use unencoded data as mmaped memory.  For compressed files, it
+still needs page cache to support mmaped access but we could adapt
+more for persistent memory scenarios such as disable cache
+decompression compared to previous block devices.
 
->> arch/riscv/mm/pageattr.c:311:14: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
-     311 |                 } else if (is_linear_mapping(start)) {
-         |                            ^~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/page.h:130:2: note: expanded from macro 'is_linear_mapping'
-     130 |         ((x) >= PAGE_OFFSET && (!IS_ENABLED(CONFIG_64BIT) || (x) < PAGE_OFFSET + KERN_VIRT_SIZE))
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/mm/pageattr.c:348:9: note: uninitialized use occurs here
-     348 |         return ret;
-         |                ^~~
-   arch/riscv/mm/pageattr.c:311:10: note: remove the 'if' if its condition is always true
-     311 |                 } else if (is_linear_mapping(start)) {
-         |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     312 |                         lm_start = start;
-     313 |                         lm_end = end;
-     314 |                 } else {
-         |                  ~~~~~~~
-     315 |                         goto unlock;
-         | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     316 |                 }
-         | ~~~~~~~~~~~~~~~~~
->> arch/riscv/mm/pageattr.c:311:14: warning: variable 'ret' is used uninitialized whenever '&&' condition is false [-Wsometimes-uninitialized]
-     311 |                 } else if (is_linear_mapping(start)) {
-         |                            ^~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/page.h:130:3: note: expanded from macro 'is_linear_mapping'
-     130 |         ((x) >= PAGE_OFFSET && (!IS_ENABLED(CONFIG_64BIT) || (x) < PAGE_OFFSET + KERN_VIRT_SIZE))
-         |          ^~~~~~~~~~~~~~~~~~
-   arch/riscv/mm/pageattr.c:348:9: note: uninitialized use occurs here
-     348 |         return ret;
-         |                ^~~
-   arch/riscv/mm/pageattr.c:311:14: note: remove the '&&' if its condition is always true
-     311 |                 } else if (is_linear_mapping(start)) {
-         |                            ^
-   arch/riscv/include/asm/page.h:130:3: note: expanded from macro 'is_linear_mapping'
-     130 |         ((x) >= PAGE_OFFSET && (!IS_ENABLED(CONFIG_64BIT) || (x) < PAGE_OFFSET + KERN_VIRT_SIZE))
-         |          ^
-   arch/riscv/mm/pageattr.c:265:9: note: initialize the variable 'ret' to silence this warning
-     265 |         int ret;
-         |                ^
-         |                 = 0
-   2 warnings generated.
+I'm not sure if it's worth implementing this in kernelspace since
+it's out of scope of an individual filesystem anyway.
 
+[1] https://www.qemu.org/docs/master/system/devices/virtio-pmem.html
+[2] https://docs.pmem.io/persistent-memory/getting-started-guide/creating-development-environments/linux-environments/linux-memmap
 
-vim +311 arch/riscv/mm/pageattr.c
+Thanks,
+Gao Xiang
 
-   261	
-   262	static int __set_memory(unsigned long addr, int numpages, pgprot_t set_mask,
-   263				pgprot_t clear_mask)
-   264	{
-   265		int ret;
-   266		unsigned long start = addr;
-   267		unsigned long end = start + PAGE_SIZE * numpages;
-   268		unsigned long __maybe_unused lm_start;
-   269		unsigned long __maybe_unused lm_end;
-   270		struct pageattr_masks masks = {
-   271			.set_mask = set_mask,
-   272			.clear_mask = clear_mask
-   273		};
-   274	
-   275		if (!numpages)
-   276			return 0;
-   277	
-   278		mmap_write_lock(&init_mm);
-   279	
-   280	#ifdef CONFIG_64BIT
-   281		/*
-   282		 * We are about to change the permissions of a kernel mapping, we must
-   283		 * apply the same changes to its linear mapping alias, which may imply
-   284		 * splitting a huge mapping.
-   285		 */
-   286	
-   287		if (is_vmalloc_or_module_addr((void *)start)) {
-   288			struct vm_struct *area = NULL;
-   289			int i, page_start;
-   290	
-   291			area = find_vm_area((void *)start);
-   292			page_start = (start - (unsigned long)area->addr) >> PAGE_SHIFT;
-   293	
-   294			for (i = page_start; i < page_start + numpages; ++i) {
-   295				lm_start = (unsigned long)page_address(area->pages[i]);
-   296				lm_end = lm_start + PAGE_SIZE;
-   297	
-   298				ret = split_linear_mapping(lm_start, lm_end);
-   299				if (ret)
-   300					goto unlock;
-   301	
-   302				ret = walk_page_range_novma(&init_mm, lm_start, lm_end,
-   303							    &pageattr_ops, NULL, &masks);
-   304				if (ret)
-   305					goto unlock;
-   306			}
-   307		} else {
-   308			if (is_kernel_mapping(start)) {
-   309				lm_start = (unsigned long)lm_alias(start);
-   310				lm_end = (unsigned long)lm_alias(end);
- > 311			} else if (is_linear_mapping(start)) {
-   312				lm_start = start;
-   313				lm_end = end;
-   314			} else {
-   315				goto unlock;
-   316			}
-   317	
-   318			ret = split_linear_mapping(lm_start, lm_end);
-   319			if (ret)
-   320				goto unlock;
-   321	
-   322			ret = walk_page_range_novma(&init_mm, lm_start, lm_end,
-   323						    &pageattr_ops, NULL, &masks);
-   324			if (ret)
-   325				goto unlock;
-   326		}
-   327	
-   328		ret =  walk_page_range_novma(&init_mm, start, end, &pageattr_ops, NULL,
-   329					     &masks);
-   330	
-   331	unlock:
-   332		mmap_write_unlock(&init_mm);
-   333	
-   334		/*
-   335		 * We can't use flush_tlb_kernel_range() here as we may have split a
-   336		 * hugepage that is larger than that, so let's flush everything.
-   337		 */
-   338		flush_tlb_all();
-   339	#else
-   340		ret =  walk_page_range_novma(&init_mm, start, end, &pageattr_ops, NULL,
-   341					     &masks);
-   342	
-   343		mmap_write_unlock(&init_mm);
-   344	
-   345		flush_tlb_kernel_range(start, end);
-   346	#endif
-   347	
-   348		return ret;
-   349	}
-   350	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> Echo'ing Lennart we must also "keep in mind from the beginning how
+> authentication of every component of your process shall work" as
+> that's essential to a couple of different Linux distributions today.
+> 
+> We kept this email short because we want people to read it and avoid
+> duplicating information from elsewhere. The effort is described from
+> different perspectives in the systemd/dracut RFC email and github
+> README.md if you'd like to learn more, it's worth reading the
+> discussion in the systemd mailing list:
+> 
+> https://marc.info/?l=systemd-devel&m=170214639006704&w=2
+> 
+> https://github.com/containers/initoverlayfs/blob/main/README.md
+> 
+> We also received feedback informally in the community that it would be
+> nice if we could optionally use btrfs as an alternative.
+> 
+> Is mise le meas/Regards,
+> 
+> Eric Curtin
+> 
