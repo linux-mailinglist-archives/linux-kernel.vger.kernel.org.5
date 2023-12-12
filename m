@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F66C80F4A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E76CE80F4AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346582AbjLLReA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S1346521AbjLLReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbjLLRd6 (ORCPT
+        with ESMTP id S232358AbjLLReT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:33:58 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E377BA1;
-        Tue, 12 Dec 2023 09:34:04 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b8b8372e30so4410672b6e.3;
-        Tue, 12 Dec 2023 09:34:04 -0800 (PST)
+        Tue, 12 Dec 2023 12:34:19 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894FF8E;
+        Tue, 12 Dec 2023 09:34:25 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-28abd1ecb85so602476a91.0;
+        Tue, 12 Dec 2023 09:34:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702402444; x=1703007244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L0z2AT1BJQCnr747Qe1roJ7ZoVnIRvZI+JcfC+nIFJY=;
-        b=L0Gg8vLBN/QdLnBK+t25yyYd5JFQJumGXF5XELe+oBMae3Fk8PQ3OGe4Hs8mfZclrI
-         XPuUTeGGHScuRZr3NqDg+tmsg7J87TvqvXs3nfZemXOTAGW5RfbALaZzEXFBUqmXHRGy
-         nvOy6TUxWWkR++XjGrKRjocTP6i+rzgI9Od3dATmHPxm2X4HtoHQ7/Zf2YwbLaPZvH7N
-         7rUcMtCTC8pcJacY1jVtYzCEplyBTmC5jkkQsfVR0ALl+mB2Lyh6Ew5APPcRvtfJumnS
-         bynd0agfkvp8VEXWhfFNoCGbpMBo5U78nVn8mXiCCqgx6ahNG26Uuz+T/HViRVuKNNmw
-         zOZQ==
+        d=gmail.com; s=20230601; t=1702402464; x=1703007264; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kOjHx9AciPI0bIXgcXZ7IgsUeZnP8qbNbJ9CPNPXPQE=;
+        b=lHWQAdTXFMDmV/UPQDigQ/B08OhulArDOg8M+HDT7yHh7mIp/ksVoYLE8jYPITDQza
+         J8lWRrDDn4ezQdvsm49m1eaYNe+PO+HOdAXmnJHFDl/yvwkjBl8QGeOQurUNfkA6zEKw
+         7A+lB/xA1EquCDk7wKtVLVCWGYAxy6K9Z9tT/B8550VQF2zwH/lSAUgK1Sjl4p8bxMy0
+         tsmAYgTH5YlxFCvzW+pS3nmxlEaqPcO02IQsRoYgtjHsWCaqra97vBgTdppH25VKvxfp
+         At1ylBOnSUAiDbTKAeSMDkrDpCoD/66dTFU7dP1pw0dsnhesk70wgIyE33tTvPCY/xj+
+         QlOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402444; x=1703007244;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702402464; x=1703007264;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L0z2AT1BJQCnr747Qe1roJ7ZoVnIRvZI+JcfC+nIFJY=;
-        b=I9yjtAS+mVA7rtn+OjF+sQN54cIAAzQ/q2BdXw3nl54UQtdSE6JMAy74iEF7gdMnlD
-         3dmcVPkHqR92WNTle6g+ywGThQdWGZSijExZmPN7wRL1XSLW8f/3mloMfHo+07yO6PLH
-         h1/hZWH51B/5pfe0W50M6AIiYwIgq1bnx1YE4oy3NOPtv4PugPE1933QMvZKXpIznzQ0
-         fr7WegjSyRlMhO1RbmGiwiuUDWMxbto2gr86ffIj7Xhx9pluin5aDGM2gitMOkjIr+bd
-         2XO01hL735Pd0SjT2wbzmYJQ5vASb5AD5W7EMS7eLj4PhYP4RQ/CEOICK7K6ooM0R0P1
-         5SFA==
-X-Gm-Message-State: AOJu0YzUOBInNKk2G1RJRMUd09qUeaHyXDQG1NIJi+IUK3qV6Fhsr8OM
-        zzk4hvJDGZLaYuh2J0wtk8s=
-X-Google-Smtp-Source: AGHT+IFCiLt4rwoXp6x0bRjRpea/9EBC/0MF+xgyL2PXBDccmn3cy84+U+frpTFB5Idvb9FJiO+44A==
-X-Received: by 2002:a05:6870:4153:b0:1fa:fe4b:21d0 with SMTP id r19-20020a056870415300b001fafe4b21d0mr8077857oad.47.1702402444232;
-        Tue, 12 Dec 2023 09:34:04 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ps5-20020a0568709e0500b001fb33181cfasm3180566oab.55.2023.12.12.09.34.02
+        bh=kOjHx9AciPI0bIXgcXZ7IgsUeZnP8qbNbJ9CPNPXPQE=;
+        b=Ol9FjyM4DgdpixGtRzFBXEvCC3GcebbpL/tS4ueNCHtKUKqL07bZXIoea3AWDpgSq5
+         P+gwanrpm6Nev4xFeVaFlwDj6OgBXUei5QQ+UhCK2m23ECIHgveo5fdDwz6dfZIFkbOV
+         13YrD1ght5ucZRyjVLs+JSBneXUxShIaXLli/N1zhOn97TbCiwTAdog/cmWfPLSyIx+u
+         EgJ5onp6eGKl1qEMT8PWcYYrI0W/vh2AAPkCrNw7CXB/bYBYQ2gKHJKdU9Vy4JkiYpKr
+         Ej3Cw5wwwFbXTqA2RcGvWLkVPnm6zKPh5bI6EWREDgqosPi/Db/pB1j4+nIVdBKMBW8C
+         Gmyg==
+X-Gm-Message-State: AOJu0YxbQjYw5cgnMVgO4bg2S3Nzy6e7XPU3Xp1lX8C8E1IG8RDe0mfU
+        NZMrXEIdsIDe1yHnAfasuDx1u8l+w5qRGifM
+X-Google-Smtp-Source: AGHT+IE4wTs42pptzmoD3ldD3SBz8bD8IWZocjwoJa+8yqUeJ3f9fVmRfb++MOlvMkmXmtizjwyDVg==
+X-Received: by 2002:a17:90b:b14:b0:286:c399:7c16 with SMTP id bf20-20020a17090b0b1400b00286c3997c16mr3097304pjb.44.1702402463875;
+        Tue, 12 Dec 2023 09:34:23 -0800 (PST)
+Received: from localhost.localdomain ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id nc4-20020a17090b37c400b00285545ac9d2sm9213862pjb.47.2023.12.12.09.34.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:34:03 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 12 Dec 2023 09:34:02 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/194] 6.1.68-rc1 review
-Message-ID: <a461d8ce-cf28-4840-af5c-6c7895c300e5@roeck-us.net>
-References: <20231211182036.606660304@linuxfoundation.org>
+        Tue, 12 Dec 2023 09:34:23 -0800 (PST)
+From:   "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+Subject: [PATCH rcu 1/4] locktorture: Increase Hamming distance between call_rcu_chain and rcu_call_chains
+Date:   Tue, 12 Dec 2023 23:04:11 +0530
+Message-Id: <20231212173414.11602-1-neeraj.iitr10@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231212173334.GA11572@neeraj.linux>
+References: <20231212173334.GA11572@neeraj.linux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211182036.606660304@linuxfoundation.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 07:19:50PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.68 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
-> 
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 545 pass: 545 fail: 0
+One letter difference is really not enough, so this commit changes
+call_rcu_chain to call_rcu_chain_list.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+---
+ kernel/locking/locktorture.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Guenter
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 69d3cd2cfc3b..415d81e6ce70 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -124,7 +124,7 @@ struct call_rcu_chain {
+ 	struct rcu_head crc_rh;
+ 	bool crc_stop;
+ };
+-struct call_rcu_chain *call_rcu_chain;
++struct call_rcu_chain *call_rcu_chain_list;
+ 
+ /* Forward reference. */
+ static void lock_torture_cleanup(void);
+@@ -1074,12 +1074,12 @@ static int call_rcu_chain_init(void)
+ 
+ 	if (call_rcu_chains <= 0)
+ 		return 0;
+-	call_rcu_chain = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain), GFP_KERNEL);
+-	if (!call_rcu_chain)
++	call_rcu_chain_list = kcalloc(call_rcu_chains, sizeof(*call_rcu_chain_list), GFP_KERNEL);
++	if (!call_rcu_chain_list)
+ 		return -ENOMEM;
+ 	for (i = 0; i < call_rcu_chains; i++) {
+-		call_rcu_chain[i].crc_stop = false;
+-		call_rcu(&call_rcu_chain[i].crc_rh, call_rcu_chain_cb);
++		call_rcu_chain_list[i].crc_stop = false;
++		call_rcu(&call_rcu_chain_list[i].crc_rh, call_rcu_chain_cb);
+ 	}
+ 	return 0;
+ }
+@@ -1089,13 +1089,13 @@ static void call_rcu_chain_cleanup(void)
+ {
+ 	int i;
+ 
+-	if (!call_rcu_chain)
++	if (!call_rcu_chain_list)
+ 		return;
+ 	for (i = 0; i < call_rcu_chains; i++)
+-		smp_store_release(&call_rcu_chain[i].crc_stop, true);
++		smp_store_release(&call_rcu_chain_list[i].crc_stop, true);
+ 	rcu_barrier();
+-	kfree(call_rcu_chain);
+-	call_rcu_chain = NULL;
++	kfree(call_rcu_chain_list);
++	call_rcu_chain_list = NULL;
+ }
+ 
+ static void lock_torture_cleanup(void)
+-- 
+2.40.1
+
