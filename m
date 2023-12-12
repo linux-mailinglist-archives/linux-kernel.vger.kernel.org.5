@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3F080FA6B
+	by mail.lfdr.de (Postfix) with ESMTP id B030C80FA6C
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377812AbjLLWXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 17:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        id S1377831AbjLLWXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 17:23:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377804AbjLLWXa (ORCPT
+        with ESMTP id S1377700AbjLLWXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 17:23:30 -0500
+        Tue, 12 Dec 2023 17:23:31 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797BEA1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0E3B3;
         Tue, 12 Dec 2023 14:23:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1702419817; x=1733955817;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=ozp3JOHCZkR8rjYbeX9k9xgnEnDFYEFFgWgRZ7ytBZk=;
-  b=KSICwt3GnwIiqUgmtr/pYFf0phdUHXZ3smRgJ4nL9UjDBFMUNDhmCmmD
-   2SDxQ7fKphsoE7bKvENIQlYIcf536dnMbf78/I9MKBj+LcNTWmodcj4yi
-   Nwh/YFEbPxtb6eIEllAztlTSWSZvj3/9io2RD+/a+PLOsdgtylg619H2A
-   QUhSUQR6LblPrNOKeA8OSyH6YAgE7FJS+ltrxtK8ZsGnwXl7XZwFkFWXu
-   7/K8IEGdmn0bx9HEqPXKpofnxAb7anCrbi1ZqTILCIp1432HwLVtzG2s1
-   l96z/E5G6j2w7bW4EkGtYOwRf+Phbc4XTJkpD0hFn4RDctRvg8zx7s30F
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2049303"
+  bh=W4YA1C9BueESa8/SGirgrSDyXjHGqZ5rFE/K4wRbmoQ=;
+  b=c2q54uVasS/9EyT+b0OVaBzSu05xzC9t1FaTFmvNfepSLsv48cHdpiM3
+   g4MEphnlyQ61dqTZ9jn2SXeo+/r1iZX852SmMx8unUOyMw6S2gGB4RYed
+   fcRNmerT5/ABz+xLfRmDaVD4MoU9bJjvrPLt5d4O0qvxi2RUhhCxSGvAt
+   h/bEnh6phKgLcV+bFgYYy5jBU1wH54jmYDU5qbR/eylSOtfwqIBBSpmnM
+   kB3xKKHAwdlEVNa6/5WuyBKtv/nqrIQmOAPnzdIvJVuHk3+FZd1j3idwx
+   OXl8dP4MsJsc6Mq6HOCMWB8/tTCMI2/a6/71LtmGDRKMEbI/4siNsty28
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2049314"
 X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="2049303"
+   d="scan'208";a="2049314"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 14:23:36 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="802631185"
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="802631188"
 X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="802631185"
+   d="scan'208";a="802631188"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga008.jf.intel.com with ESMTP; 12 Dec 2023 14:23:35 -0800
+  by orsmga008.jf.intel.com with ESMTP; 12 Dec 2023 14:23:36 -0800
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 To:     x86@kernel.org
 Cc:     Andreas Herrmann <aherrmann@suse.com>,
@@ -56,9 +56,9 @@ Cc:     Andreas Herrmann <aherrmann@suse.com>,
         stable@vger.kernel.org, linux-kernel@vger.kernel.org,
         Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 1/4] cacheinfo: Check for null last-level cache info
-Date:   Tue, 12 Dec 2023 14:25:16 -0800
-Message-Id: <20231212222519.12834-2-ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH v4 2/4] cacheinfo: Allocate memory for memory if not done from the primary CPU
+Date:   Tue, 12 Dec 2023 14:25:17 -0800
+Message-Id: <20231212222519.12834-3-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231212222519.12834-1-ricardo.neri-calderon@linux.intel.com>
 References: <20231212222519.12834-1-ricardo.neri-calderon@linux.intel.com>
@@ -72,14 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before determining the validity of the last-level cache info, ensure that
-it has been allocated. Simply checking for non-zero cache_leaves() is not
-sufficient, as some architectures (e.g., Intel processors) have non-zero
-cache_leaves() before allocation.
+Commit 5944ce092b97 ("arch_topology: Build cacheinfo from primary CPU")
+adds functionality that architectures can use to optionally allocate and
+build cacheinfo early during boot. Commit 6539cffa9495 ("cacheinfo: Add
+arch specific early level initializer") lets secondary CPUs correct (and
+reallocate memory) cacheinfo data if needed.
 
-Dereferencing NULL cacheinfo can occur in update_per_cpu_data_slice_size().
-This function iterates over all online CPUs. However, a CPU may have come
-online recently, but its cacheinfo may not have been allocated yet.
+If the early build functionality is not used and cacheinfo does not need
+correction, memory for cacheinfo is never allocated. x86 does not use the
+early build functionality. Consequently, during the cacheinfo CPU hotplug
+callback, last_level_cache_is_valid() attempts to dereference a NULL
+pointer:
+
+     BUG: kernel NULL pointer dereference, address: 0000000000000100
+     #PF: supervisor read access in kernel mode
+     #PF: error_code(0x0000) - not present page
+     PGD 0 P4D 0
+     Oops: 0000 [#1] PREEPMT SMP NOPTI
+     CPU: 0 PID 19 Comm: cpuhp/0 Not tainted 6.4.0-rc2 #1
+     RIP: 0010: last_level_cache_is_valid+0x95/0xe0a
+
+Allocate memory for cacheinfo during the cacheinfo CPU hotplug callback if
+not done earlier.
 
 Cc: Andreas Herrmann <aherrmann@suse.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -96,41 +110,51 @@ Cc: Will Deacon <will@kernel.org>
 Cc: Zhang Rui <rui.zhang@intel.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: stable@vger.kernel.org
+Reviewed-by: Radu Rendec <rrendec@redhat.com>
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Fixes: 6539cffa9495 ("cacheinfo: Add arch specific early level initializer")
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
+The motivation for commit 5944ce092b97 was to prevent a BUG splat in
+PREEMPT_RT kernels during memory allocation. This splat is not observed on
+x86 because the memory allocation for cacheinfo happens in
+detect_cache_attributes() from the cacheinfo CPU hotplug callback.
+
+The dereference of a NULL pointer is not observed today because
+cache_leaves(cpu) is zero until after init_cache_level() is called (also
+during the CPU hotplug callback). A subsequent changeset will set the
+number of cache leaves earlier and the NULL-pointer dereference will be
+observed.
+---
 Changes since v3:
- * Introduced this patch.
+ * Added Reviewed-by tag from Radu and Sudeep. Thanks!
 
 Changes since v2:
- * N/A
+ * Introduced this patch.
 
 Changes since v1:
  * N/A
 ---
-
-The dereference of a NULL cacheinfo is not observed today because
-cache_leaves(cpu) is zero until after init_cache_level() is called
-(during the CPU hotplug callback). A subsequent changeset will set
-the number of cache leaves earlier and the NULL-pointer dereference
-will be observed.
----
- drivers/base/cacheinfo.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/cacheinfo.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-index f1e79263fe61..967c5cf3fb1d 100644
+index 967c5cf3fb1d..735ccead190e 100644
 --- a/drivers/base/cacheinfo.c
 +++ b/drivers/base/cacheinfo.c
-@@ -61,6 +61,9 @@ bool last_level_cache_is_valid(unsigned int cpu)
- 	if (!cache_leaves(cpu))
- 		return false;
+@@ -557,7 +557,11 @@ static inline int init_level_allocate_ci(unsigned int cpu)
+ 	 */
+ 	ci_cacheinfo(cpu)->early_ci_levels = false;
  
-+	if (!per_cpu_cacheinfo(cpu))
-+		return false;
-+
- 	llc = per_cpu_cacheinfo_idx(cpu, cache_leaves(cpu) - 1);
+-	if (cache_leaves(cpu) <= early_leaves)
++	/*
++	 * Some architectures (e.g., x86) do not use early initialization.
++	 * Allocate memory now in such case.
++	 */
++	if (cache_leaves(cpu) <= early_leaves && per_cpu_cacheinfo(cpu))
+ 		return 0;
  
- 	return (llc->attributes & CACHE_ID) || !!llc->fw_token;
+ 	kfree(per_cpu_cacheinfo(cpu));
 -- 
 2.25.1
 
