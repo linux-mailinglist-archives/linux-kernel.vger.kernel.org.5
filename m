@@ -2,114 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3E580E49C
+	by mail.lfdr.de (Postfix) with ESMTP id 1CED980E49B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjLLG7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 01:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S229558AbjLLHAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLG7P (ORCPT
+        with ESMTP id S229449AbjLLHA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 01:59:15 -0500
-X-Greylist: delayed 71897 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 22:59:21 PST
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAC3BF;
-        Mon, 11 Dec 2023 22:59:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702364359;
-        bh=F41feDTLD6EeSRJQf7rvDdapR+nQMsHfWA39oKGkLZw=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=0ktkwAIOn1gHRVA2zhrHIyNM2u35YJz/y5vQZFlw6eFQbWsCHcaZo3qZv8LihEq9A
-         /2yEYGNfbCpbvzn+Xbw4ZGhQMZ1X0nrOOUs8UCu79FRTAltvEmzsIuA1U81di7r9xR
-         TykJ4WuqkOCCnrLjXiVqN9fr55Vd08Y8nZ3AGT9qpv9t/m3mQU/yeYvfxeEQ7nhPdT
-         7+nBysn+06H6syKxsX5U4s7iVIXYD756YTfSXuDtnEefCci0uNFoo7XTvTynasmLvR
-         wU1sBknUJ5aeFVg3DStDQhk/rznCeo5rihTztnZ0gB7AG7wjcZeaCycHBsf1lKUncw
-         3pGxxuqMbIbEg==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id A2D7E37809D0;
-        Tue, 12 Dec 2023 06:59:15 +0000 (UTC)
-Message-ID: <54a02895-26e5-4113-84f4-3f04358f09e6@collabora.com>
-Date:   Tue, 12 Dec 2023 11:59:12 +0500
+        Tue, 12 Dec 2023 02:00:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1624BF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 23:00:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75CC433C9;
+        Tue, 12 Dec 2023 07:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702364433;
+        bh=hY9xSJJblbAWJZgHacsmi+/6bjhkQNzcCd6xAObVzO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QwQWBbzvgGSjltK/FvX5mtoHzBN8xqpKHEGvpvsOg8PDzdfe9PWTN9pG0ljZv4Uev
+         lWf28z4v1VflknmJNAPCctcj1gs/ubZQ/hBPeR/78S6oICkoPcHoOkD6CqM8cjIUq0
+         GsCm0jSZB2VKgYElS6tpWVDx5b0KbNblQRU/pqlqt7kArgsqyqjCCSpYCHIu8pm5ff
+         YTM/VEnPuigfxbDat4ygU7TGyvd0rba11kT9PQv7jXIQugaI57F//PCPMgyMYHCpa5
+         K9P2a2KCIMzO1dZKVw0UevvgZ5K61qiRUqoSCofggGju0Dz6APDoFvD/2sQjWvnrQv
+         TjSo1Eoc7Hnsg==
+Date:   Tue, 12 Dec 2023 09:00:28 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Daniel Vacek <neelx@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Subject: Re: [PATCH 1/2] IB/ipoib: Fix mcast list locking
+Message-ID: <20231212070028.GJ4870@unreal>
+References: <20231211130426.1500427-1-neelx@redhat.com>
+ <20231211130426.1500427-2-neelx@redhat.com>
+ <20231211134542.GG4870@unreal>
+ <CACjP9X8zarONgO-QLvyzh-w7ax-7Fx0jdBWCF3VFQ09KDcaYnQ@mail.gmail.com>
+ <20231211150657.GH4870@unreal>
+ <CACjP9X8wxW5jYiXcjg+2oGt7_aoc9KJ_XxKokt06B5d+FY6kEQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] Revert "selftests: error out if kernel header files are
- not yet built"
-Content-Language: en-US
-To:     John Hubbard <jhubbard@nvidia.com>, Shuah Khan <shuah@kernel.org>
-References: <20231209020144.244759-1-jhubbard@nvidia.com>
- <0b35fcbd-ce8c-4c12-9725-01f18ade9fc0@collabora.com>
- <cf4e9f8b-7d31-44d9-93fd-1677918b56f4@nvidia.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <cf4e9f8b-7d31-44d9-93fd-1677918b56f4@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACjP9X8wxW5jYiXcjg+2oGt7_aoc9KJ_XxKokt06B5d+FY6kEQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 12:00 AM, John Hubbard wrote:
-> On 12/11/23 03:00, Muhammad Usama Anjum wrote:
->> On 12/9/23 7:01 AM, John Hubbard wrote:
->>> This reverts commit 9fc96c7c19df ("selftests: error out if kernel header
->>> files are not yet built").
->> I don't think whole of this commit needs to be reverted. Lets leave the
->> warning message as it is and just remove the condition to abort the
->> compilation.
->>
+On Mon, Dec 11, 2023 at 05:00:11PM +0100, Daniel Vacek wrote:
+> On Mon, Dec 11, 2023 at 4:18 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > What about the following change instead of adding extra lock to already
+> > too much complicated IPoIB?
 > 
-> Hi Muhammad!
+> Yeah, that's the other option should also work I believe. And it
+> simplifies the code nicely.
 > 
-> If we do decide that "make headers" or something like it is required,
-> then yes, this patch should be changed from a revert, to a "warn instead
-> of failing out" patch.
-I support this is as most of the times when the latest headers aren't
-installed in the system. Hence the build of all those kselftests would fail
-which require the recently added macros. There is no workaround to build
-those tests until `make headers` is done or the latest headers are
-installed. The former is easier.
+> The allocated mcast_member and mcast_group structures are small enough
+> so that slab (by default) should not need more then order 1 block to
+> eventually extend/refill the full kmalloc-256 cache. Some arches will
+> even use order 0 I believe.
+> And unless I'm missing something I do not see any other sleeps in that path.
+> 
+> That said, as long as you are fine with occasional failures under
+> memory pressure, it looks OK to me.
 
-If we just turn this into warning, most people reporting issues with `make
-headers` would go away. They will be able to build all those kselftest
-which don't require latest headers. For example mincore kselftest gets
-build without KHDR_INCLUDES. In case people want to build failing tests,
-they should add #ifdefs to the tests and submit patches which is idea 4.
+Yes, IMHO change from GFP_KERNEL to be GFP_ATOMIC is safer than adding extra lock.
+
+Thanks
 
 > 
-> First, though, I'd like us to choose a design direction. The patch as
-> written is intended to put us on a design that does not require "make
-> headers" before building the selftests, because that approach would work
-> for all the cases I've seen so far.
+> --nX
 > 
-> If we want something else, then David Hildenbrand has listed several
-> ideas, and I've added a 4th one to the list, in [1].
+> > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > index 5b3154503bf4..bca80fe07584 100644
+> > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > @@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
+> >                 if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
+> >                         rec.join_state = SENDONLY_FULLMEMBER_JOIN;
+> >         }
+> > -       spin_unlock_irq(&priv->lock);
+> >
+> >         multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
+> > -                                        &rec, comp_mask, GFP_KERNEL,
+> > +                                        &rec, comp_mask, GFP_ATOMIC,
+> >                                          ipoib_mcast_join_complete, mcast);
+> > -       spin_lock_irq(&priv->lock);
+> >         if (IS_ERR(multicast)) {
+> >                 ret = PTR_ERR(multicast);
+> >                 ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
+> >                 /* Requeue this join task with a backoff delay */
+> >                 __ipoib_mcast_schedule_join_thread(priv, mcast, 1);
+> >                 clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+> > -               spin_unlock_irq(&priv->lock);
+> >                 complete(&mcast->done);
+> > -               spin_lock_irq(&priv->lock);
+> >         }
+> >         return 0;
+> >  }
+> >
+> >
+> > >
+> > > --nX
+> > >
+> > >
+> > > > Thanks
+> > > >
+> > > > > Unfortunately we could not reproduce the lockup and confirm this fix but
+> > > > > based on the code review I think this fix should address such lockups.
+> > > > >
+> > > > > crash> bc 31
+> > > > > PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
+> > > > > --
+> > > > >     [exception RIP: ipoib_mcast_join_task+0x1b1]
+> > > > >     RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
+> > > > >     RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
+> > > > >                                   work (&priv->mcast_task{,.work})
+> > > > >     RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
+> > > > >            &mcast->list
+> > > > >     RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
+> > > > >     R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
+> > > > >                                                          mcast
+> > > > >     R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
+> > > > >            dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
+> > > > >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+> > > > > --- <NMI exception stack> ---
+> > > > >  #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
+> > > > >  #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
+> > > > >
+> > > > > crash> rx ff646f199a8c7e68
+> > > > > ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
+> > > > >
+> > > > > crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
+> > > > > (empty)
+> > > > >
+> > > > > crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
+> > > > >   mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
+> > > > >   mcast_mutex.owner.counter = 0xff1c69998efec000
+> > > > >
+> > > > > crash> b 8
+> > > > > PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
+> > > > > --
+> > > > >  #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
+> > > > >  #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
+> > > > >  #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
+> > > > >  #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
+> > > > >  #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
+> > > > >
+> > > > > crash> rx ff646f1980153e68
+> > > > > ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
+> > > > >
+> > > > > crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
+> > > > >   flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
+> > > > >   broadcast = 0x0,
+> > > > >
+> > > > > The mcast(s) on the &remove_list (the remaining part of the ex &priv->multicast_list):
+> > > > >
+> > > > > crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
+> > > > > ff1c6a192bd0c200        done.done = 0x0,
+> > > > > ff1c6a192d60ac00        done.done = 0x0,
+> > > > >
+> > > > > Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+> > > > > Signed-off-by: Daniel Vacek <neelx@redhat.com>
+> > > > > ---
+> > > > >  drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 3 +++
+> > > > >  1 file changed, 3 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > > > index 5b3154503bf4..8e4f2c8839be 100644
+> > > > > --- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > > > +++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+> > > > > @@ -580,6 +580,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+> > > > >       }
+> > > > >       netif_addr_unlock_bh(dev);
+> > > > >
+> > > > > +     mutex_lock(&priv->mcast_mutex);
+> > > > >       spin_lock_irq(&priv->lock);
+> > > > >       if (!test_bit(IPOIB_FLAG_OPER_UP, &priv->flags))
+> > > > >               goto out;
+> > > > > @@ -634,6 +635,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+> > > > >                               /* Found the next unjoined group */
+> > > > >                               if (ipoib_mcast_join(dev, mcast)) {
+> > > > >                                       spin_unlock_irq(&priv->lock);
+> > > > > +                                     mutex_unlock(&priv->mcast_mutex);
+> > > > >                                       return;
+> > > > >                               }
+> > > > >                       } else if (!delay_until ||
+> > > > > @@ -655,6 +657,7 @@ void ipoib_mcast_join_task(struct work_struct *work)
+> > > > >               ipoib_mcast_join(dev, mcast);
+> > > > >
+> > > > >       spin_unlock_irq(&priv->lock);
+> > > > > +     mutex_unlock(&priv->mcast_mutex);
+> > > > >  }
+> > > > >
+> > > > >  void ipoib_mcast_start_thread(struct net_device *dev)
+> > > > > --
+> > > > > 2.43.0
+> > > > >
+> > > >
+> > >
+> >
 > 
-> 
-> [1] https://lore.kernel.org/3eadd79c-c02a-495f-92c0-0315046ef59f@nvidia.com
-> 
-> 
-> thanks,
-
--- 
-BR,
-Muhammad Usama Anjum
