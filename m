@@ -2,202 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9768C80F7A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C2B80F7AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377240AbjLLUPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S1377320AbjLLURC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjLLUPp (ORCPT
+        with ESMTP id S1377335AbjLLURA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:15:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922F1B7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:15:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 644CBC433C7;
-        Tue, 12 Dec 2023 20:15:50 +0000 (UTC)
-Date:   Tue, 12 Dec 2023 15:16:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2] tracing/selftests: Add test to test max subbuf size with
- trace_marker
-Message-ID: <20231212151632.25c9b67d@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 12 Dec 2023 15:17:00 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E04DB;
+        Tue, 12 Dec 2023 12:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PDwWMvE707rKJbV02zug7t37qFDv7YOoytMyP2X6xyQ=; b=Le1a7b+MYxlb3kfygQ0jhZGDz+
+        1KEl3WefH1wExk5k9L8RKfyjQb31NtNsFDmeS4rbyNsnV/AXUNGZ4lb5p5n6bzlws55DQTx6h0Pci
+        2u3wY6NiE6B+lMqsPbDzadz2m2GUvO+8cAcQqTDUn2jhye7PisBrMewyqd/QZUPpAurEe+jBmHuOo
+        QZY3oxISKjP6uooc+4ddKW0Y68+IKpagaLdIr/CvX94n5Xo5rkXFcE7Uvf+3APlWLA0ytjjrnZlrN
+        8dsbOoFtwrn6T2CxI8FRZWBoRtSUTRQ8ww5gyZJb/FHHmDSGFj8cA+TDfANxb1MalWyb1DtUqoygz
+        L/AUbcjQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58234)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rD9Ba-0007OH-0y;
+        Tue, 12 Dec 2023 20:16:58 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rD9Bb-0000jo-UJ; Tue, 12 Dec 2023 20:16:59 +0000
+Date:   Tue, 12 Dec 2023 20:16:59 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH v3 00/39] ACPI/arm64: add support for virtual
+ cpuhotplug
+Message-ID: <ZXi/u7dZ20oLPF9n@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
+ <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
+ <ZXi7do4mVfdsz/k0@shell.armlinux.org.uk>
+ <CAJZ5v0jOU4Re2g5QtxpG0RjP3MYBxqz5Z+TtfXq2dz8HTq9A0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jOU4Re2g5QtxpG0RjP3MYBxqz5Z+TtfXq2dz8HTq9A0A@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, Dec 12, 2023 at 09:05:14PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Dec 12, 2023 at 8:58 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Mon, Dec 04, 2023 at 06:23:02PM +0000, Russell King (Oracle) wrote:
+> > > On Tue, Oct 24, 2023 at 08:26:58PM +0200, Rafael J. Wysocki wrote:
+> > > > I've gone through the series and there is at least one thing in it
+> > > > that concerns me a lot and some others that at least appear to be
+> > > > really questionable.
+> > > >
+> > > > I need more time to send comments which I'm not going to do before the
+> > > > 6.7 merge window (sorry), but from what I can say right now, this is
+> > > > not looking good.
+> > >
+> > > Hi Rafael,
+> > >
+> > > Will you be able to send your comments, so that we can find out what
+> > > your other concerns are please? I'm getting questions from interested
+> > > parties who want to know what your concerns are.
+> > >
+> > > Nothing much has changed to the ACPI changes, so I think it's still
+> > > valid to have the comments back for this.
+> >
+> > Hi Rafael,
+> >
+> > Another gentle prod on this...
+> 
+> There was a selection of the patches in the series sent separately and
+> I believe that some of them have been applied already.
+> 
+> Can you please send the remaining patches again so it is clear what's
+> still outstanding?
 
-Now that the trace_marker can write up to the max size of the sub buffer.
-Add a test to see if it actually can happen.
+I can do tomorrow, thanks. I will re-post as RFC again because it will
+depend on the cleanup part that was merged into Greg's tree - and thus
+the series isn't standalone (and I'll mention that in the cover
+message.)
 
-The README is updated to state that the trace_marker writes can be broken
-up, and the test checks the README for that statement so that it does not
-fail on older kernels that does not support this.
+We need to hear your concerns, which sounded quite damning for the
+series, so that if it's possible to save this a plan to address your
+concerns can be formulated.
 
-If the README does not have the specified update, the test will still test
-if all the string is written, as that should work with older kernels.
+Thanks.
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231212135441.0337c3e9@gandalf.local.home/
-
-- Fix description as it was a cut and paste from the subbuffer size tests
-  that are not added yet.
-
- kernel/trace/trace.c                          |   1 +
- .../ftrace/test.d/00basic/trace_marker.tc     | 112 ++++++++++++++++++
- 2 files changed, 113 insertions(+)
- create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2f8d59834c00..cbfcdd882590 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -5595,6 +5595,7 @@ static const char readme_msg[] =
- 	"       delta:   Delta difference against a buffer-wide timestamp\n"
- 	"    absolute:   Absolute (standalone) timestamp\n"
- 	"\n  trace_marker\t\t- Writes into this file writes into the kernel buffer\n"
-+	"\n           May be broken into multiple events based on sub-buffer size.\n"
- 	"\n  trace_marker_raw\t\t- Writes into this file writes binary data into the kernel buffer\n"
- 	"  tracing_cpumask\t- Limit which CPUs to trace\n"
- 	"  instances\t\t- Make sub-buffers with: mkdir instances/foo\n"
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-new file mode 100755
-index 000000000000..bf7f6f50c88a
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-@@ -0,0 +1,112 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Basic tests on writing to trace_marker
-+# requires: trace_marker
-+# flags: instance
-+
-+get_buffer_data_size() {
-+	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
-+}
-+
-+get_buffer_data_offset() {
-+	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
-+}
-+
-+get_event_header_size() {
-+	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-+	total_bits=$((type_len+time_len+array_len))
-+	total_bits=$((total_bits+7))
-+	echo $((total_bits/8))
-+}
-+
-+get_print_event_buf_offset() {
-+	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
-+}
-+
-+event_header_size=`get_event_header_size`
-+print_header_size=`get_print_event_buf_offset`
-+
-+# Find the README
-+README=""
-+if [ -f README ]; then
-+	README="README"
-+# instance?
-+elif [ -f ../../README ]; then
-+	README="../../README"
-+fi
-+
-+testone=0
-+if [ ! -z "$README" ]; then
-+	if grep -q  "May be broken into multiple events based on sub-buffer size" $README; then
-+		testone=1
-+	fi
-+fi
-+
-+data_offset=`get_buffer_data_offset`
-+
-+marker_meta=$((event_header_size+print_header_size))
-+
-+make_str() {
-+        cnt=$1
-+	# subtract two for \n\0 as marker adds these
-+	cnt=$((cnt-2))
-+	printf -- 'X%.0s' $(seq $cnt)
-+}
-+
-+write_buffer() {
-+	size=$1
-+
-+	str=`make_str $size`
-+
-+	# clear the buffer
-+	echo > trace
-+
-+	# write the string into the marker
-+	echo -n $str > trace_marker
-+
-+	echo $str
-+}
-+
-+test_buffer() {
-+
-+	size=`get_buffer_data_size`
-+	oneline_size=$((size-marker_meta))
-+	echo size = $size
-+	echo meta size = $marker_meta
-+
-+	if [ $testone -eq 1 ]; then
-+		echo oneline size = $oneline_size
-+
-+		str=`write_buffer $oneline_size`
-+
-+		# Should be in one single event
-+		new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; exit}' trace`
-+
-+		if [ "$new_str" != "$str" ]; then
-+			exit fail;
-+		fi
-+	fi
-+
-+	# Now add a little more the meta data overhead will overflow
-+
-+	str=`write_buffer $size`
-+
-+	# Make sure the line was broken
-+	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
-+
-+	if [ "$new_str" = "$str" ]; then
-+		exit fail;
-+	fi
-+
-+	# Make sure the entire line can be found
-+	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
-+
-+	if [ "$new_str" != "$str" ]; then
-+		exit fail;
-+	fi
-+}
-+
-+test_buffer
-+
 -- 
-2.42.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
