@@ -2,164 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B88280E1F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3925F80E207
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345645AbjLLCii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
+        id S1345674AbjLLCkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLCih (ORCPT
+        with ESMTP id S231131AbjLLCkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:38:37 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44358E;
-        Mon, 11 Dec 2023 18:38:42 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BC2Uhc763147471, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BC2Uhc763147471
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 12 Dec 2023 10:30:45 +0800
-Received: from alexlu (172.29.36.158) by RSEXMBS01.realsil.com.cn
- (172.29.17.195) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 12 Dec
- 2023 10:30:43 +0800
-Date:   Tue, 12 Dec 2023 10:30:34 +0800
-From:   Alex Lu <alex_lu@realsil.com.cn>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Max Chou <max.chou@realtek.com>, Karen Hsu <karenhsu@realtek.com>
-Subject: [PATCH v3] Bluetooth: Add more enc key size check
-Message-ID: <ZXfFyoEhCj_S70qp@alexlu>
+        Mon, 11 Dec 2023 21:40:03 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D521B0;
+        Mon, 11 Dec 2023 18:40:09 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c4846847eso15362715e9.1;
+        Mon, 11 Dec 2023 18:40:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google; t=1702348808; x=1702953608; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zAXD1RodxLCJLaHsUmAJZ2pqAt9clRdJT0+EpmZ3Uto=;
+        b=Df9w9eNh9ln//OYAh75cLwnZK37TcwDWM6U1ISnJHs0ziLCRX36EspnRsmvvjHDcL4
+         umg1XVdo4i0fexkDTKPiIhBmfD9oDQ0cbhZAWhj7Cjmv0Vjbylq7w+xxdd9G+ykZ3Gpq
+         mWm2F0GySqdHZjjxsLlJHOmO5l9DiVpaAAAbE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702348808; x=1702953608;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zAXD1RodxLCJLaHsUmAJZ2pqAt9clRdJT0+EpmZ3Uto=;
+        b=HYzN92CQ2mpm49TqT3leUevVPZRWvXMXXgCzlt2ZloQX4QTluyz+WO2oJwFHZjeitJ
+         P+rIr4mjcMsWOGJ0pVhjrf9gWm7wxjYY2UH2aUQqD3IERVafSrQbZfQd96zV5/lKMO3e
+         AQsv5Y42HEBuMlAWSrlxIJL/4UHN01syvyXPExu9PmeFZzf8m9/2nGlUikpRLHmYORML
+         +v4lA7/baSS1xqhvxlabyo5vRYsIaXwI0UaygsfuHc4zGi9buqB8xGVOWuxGRy8IdgZI
+         1gKjxaxpgNMuKsTeLF22mik2LqOP+O1kpM+9J/DJnE7nxXs9z/Ec9zC+vZ+4OGSjOirz
+         jkWQ==
+X-Gm-Message-State: AOJu0YwCZYg9rUYXxaXrCzwn0vuVRa4Sj4ZBGeDj1vZAoPiwM+lg03Qa
+        gwdf7qvn7GIvHqmmvfzC3o+jgLbViXzf9sApzXY=
+X-Google-Smtp-Source: AGHT+IGro7ebzIbDoL45S1IR1W+QmdX6go9COEOECHXrDlJuyCg39Z2Svxx69OR3G5dk255FoNyjGuIcZuMlOJIug34=
+X-Received: by 2002:a05:600c:11ce:b0:40c:377c:4b62 with SMTP id
+ b14-20020a05600c11ce00b0040c377c4b62mr2683948wmi.50.1702348807434; Mon, 11
+ Dec 2023 18:40:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-Originating-IP: [172.29.36.158]
-X-ClientProxiedBy: RSEXH36502.realsil.com.cn (172.29.17.3) To
- RSEXMBS01.realsil.com.cn (172.29.17.195)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231211102217.2436294-1-quan@os.amperecomputing.com>
+In-Reply-To: <20231211102217.2436294-1-quan@os.amperecomputing.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 12 Dec 2023 13:09:56 +1030
+Message-ID: <CACPK8Xc6-M9fsx3AUPobzvG6sjCrr8Sj5B3Q4Onp5wGvMm_BrA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] i2c: aspeed: Late ack Tx done irqs and handle
+ coalesced start with stop conditions
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Lu <alex_lu@realsil.com.cn>
+On Mon, 11 Dec 2023 at 20:52, Quan Nguyen <quan@os.amperecomputing.com> wrote:
+>
+> This series consists of two patches to handle the below issues observed
+> when testing with slave mode:
+>   + The coalesced stop condition with the start conditions
+>   + Early ack'ed of Tx done (ACK and NAK) causing "Unexpected Ack on
+>   read request".
 
-When we are slave role and receives l2cap conn req when encryption has
-started, we should check the enc key size to avoid KNOB attack or BLUFFS
-attack.
-From SIG recommendation, implementations are advised to reject
-service-level connections on an encrypted baseband link with key
-strengths below 7 octets.
-A simple and clear way to achieve this is to place the enc key size
-check in hci_cc_read_enc_key_size()
+Looks good. I've reached out to a few people who use slave mode to ask
+for review and testing on hardware. As long as they don't come back
+with issues, we should get this merged and backported to stable.
 
-The btmon log below shows the case that lacks enc key size check.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-> HCI Event: Connect Request (0x04) plen 10
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Class: 0x480104
-          Major class: Computer (desktop, notebook, PDA, organizers)
-          Minor class: Desktop workstation
-          Capturing (Scanner, Microphone)
-          Telephony (Cordless telephony, Modem, Headset)
-        Link type: ACL (0x01)
-< HCI Command: Accept Connection Request (0x01|0x0009) plen 7
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Role: Peripheral (0x01)
-> HCI Event: Command Status (0x0f) plen 4
-      Accept Connection Request (0x01|0x0009) ncmd 2
-        Status: Success (0x00)
-> HCI Event: Connect Complete (0x03) plen 11
-        Status: Success (0x00)
-        Handle: 1
-        Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Link type: ACL (0x01)
-        Encryption: Disabled (0x00)
-...
+Cheers,
 
-> HCI Event: Encryption Change (0x08) plen 4
-        Status: Success (0x00)
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Encryption: Enabled with E0 (0x01)
-< HCI Command: Read Encryption Key Size (0x05|0x0008) plen 2
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-> HCI Event: Command Complete (0x0e) plen 7
-      Read Encryption Key Size (0x05|0x0008) ncmd 2
-        Status: Success (0x00)
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Key size: 6
-// We should check the enc key size
-...
-
-> ACL Data RX: Handle 1 flags 0x02 dlen 12
-      L2CAP: Connection Request (0x02) ident 3 len 4
-        PSM: 25 (0x0019)
-        Source CID: 64
-< ACL Data TX: Handle 1 flags 0x00 dlen 16
-      L2CAP: Connection Response (0x03) ident 3 len 8
-        Destination CID: 64
-        Source CID: 64
-        Result: Connection pending (0x0001)
-        Status: Authorization pending (0x0002)
-> HCI Event: Number of Completed Packets (0x13) plen 5
-        Num handles: 1
-        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
-        Count: 1
-        #35: len 16 (25 Kb/s)
-        Latency: 5 msec (2-7 msec ~4 msec)
-< ACL Data TX: Handle 1 flags 0x00 dlen 16
-      L2CAP: Connection Response (0x03) ident 3 len 8
-        Destination CID: 64
-        Source CID: 64
-        Result: Connection successful (0x0000)
-        Status: No further information available (0x0000)
-
-Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
-Signed-off-by: Max Chou <max.chou@realtek.com>
----
-Changes in v3:
-  - Use a simple and clear approach according to maintainer's suggestion
-Changes in v2:
-  - Fix compiling issue reported by sparse
-
- net/bluetooth/hci_event.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 2ad7b9f86f74..ef8c3bed7361 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -750,9 +750,23 @@ static u8 hci_cc_read_enc_key_size(struct hci_dev *hdev, void *data,
- 	} else {
- 		conn->enc_key_size = rp->key_size;
- 		status = 0;
-+
-+		if (conn->enc_key_size < hdev->min_enc_key_size) {
-+			/* As slave role, the conn->state has been set to
-+			 * BT_CONNECTED and l2cap conn req might not be received
-+			 * yet, at this moment the l2cap layer almost does
-+			 * nothing with the non-zero status.
-+			 * So we also clear encrypt related bits, and then the
-+			 * handler of l2cap conn req will get the right secure
-+			 * state at a later time.
-+			 */
-+			status = HCI_ERROR_AUTH_FAILURE;
-+			clear_bit(HCI_CONN_ENCRYPT, &conn->flags);
-+			clear_bit(HCI_CONN_AES_CCM, &conn->flags);
-+		}
- 	}
- 
--	hci_encrypt_cfm(conn, 0);
-+	hci_encrypt_cfm(conn, status);
- 
- done:
- 	hci_dev_unlock(hdev);
--- 
-2.39.2
-
+Joel
