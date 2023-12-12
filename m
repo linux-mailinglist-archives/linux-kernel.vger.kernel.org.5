@@ -2,234 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CFB80F3DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89AB80F3E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbjLLQ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39240 "EHLO
+        id S232682AbjLLRBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjLLQ6y (ORCPT
+        with ESMTP id S232642AbjLLRBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:58:54 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FCCB7;
-        Tue, 12 Dec 2023 08:58:57 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BCGwlba011999;
-        Tue, 12 Dec 2023 10:58:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702400327;
-        bh=Yp1l87QMy8UzAnUtVPzrggfH8DwMWHj/HeW5IYFg2Wo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=OH3e73J7ypwmYq70bM0rLIJv5SY7PE4pKZ+tPtWjL+5f6GC25/Hy1elp67UJtkQPr
-         dhVYyB1R5UkJ4ArTZxOaxslSBFPQjRTCYfz+Ysz/E3TBbk/N0+PD0cZmR43zBdsF9h
-         1HkgtyuBhwN+1U3ruC/VRpiBSU9LucEJT8ZUL080=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BCGwlfT037517
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Dec 2023 10:58:47 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 12
- Dec 2023 10:58:46 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 12 Dec 2023 10:58:46 -0600
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BCGwkgB045579;
-        Tue, 12 Dec 2023 10:58:46 -0600
-Received: from localhost (dhcp-10-24-69-31.dhcp.ti.com [10.24.69.31])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 3BCGwkgo018981;
-        Tue, 12 Dec 2023 10:58:46 -0600
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>, <afd@ti.com>, <andrew@lunn.ch>,
-        MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH v2 3/3] arm64: dts: ti: k3-am642-evm: add overlay for icssg1 2nd port
-Date:   Tue, 12 Dec 2023 22:28:32 +0530
-Message-ID: <20231212165832.3933335-4-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212165832.3933335-1-danishanwar@ti.com>
-References: <20231212165832.3933335-1-danishanwar@ti.com>
+        Tue, 12 Dec 2023 12:01:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D007A95;
+        Tue, 12 Dec 2023 09:01:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702400476; x=1733936476;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=3410O6vBbNBzYb56kfXVqGF8agdDn64q5jMUwC3JV0c=;
+  b=Rr1tfOrTrVCffj2ntJ0EJCdTjOWOoKZz57/K/AzE+lxPYEWUyjM+PrwN
+   ksnUcoZXo4byl6X8fGDVQt1W5ZIP+3EoR2Qun2S/oDf/FX0jAuPOXBKDJ
+   wdIAbfpE1ZN+nvFbSYGwhuA8o0Ic9yVUdZG5M88Yi77P5LRJrRcILHfue
+   qABXge3B9FJdAlaI5VAGLCeI4V0aEZTU7yb+27iV2isAk4K/zXUDaND9g
+   wQP/gMW9K0XsTEPK95b4aZon46f908iOeahk3gl4HClucuWepd9FkMhCN
+   pMfDI9mNqjtPe114LFQi8rs9/adnUDObYIJb1mAdTv0TANmzie8pCMsJ6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="459155258"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="459155258"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 09:00:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="864272739"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="864272739"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Dec 2023 09:00:57 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 12 Dec 2023 09:00:56 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 12 Dec 2023 09:00:56 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 12 Dec 2023 09:00:56 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EnHtfseqkEEFreC7VoPNaxcdzdhsR2cAagbEg00Nj21T9MOH7HKC1CPNhx4VJoE57AW6WCwehdaK9SFo+q0wciLNTGMVIiqz9MYdb2bPEvoEM+uBwNCMsiPflXskZzi/VwQr5sINFxdn2BfOgWASCpsaA/jZwQ0olEszyMBE0uK0uNT3Ed/+IRvv6tFx6CmObX7thoMxrZcJPiINs991GT8w56chTJIyzW2y0j0+To9/XJqNCEsVuydFUtALJr/Es1eQB8vYFjdt8Y5NY6CVKTYbRO5fOlbU2hVueGcYqkZaBqMsS3ulva5iFzj1gtDeXN3NhMEbb2JdGzRWh7aEDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q+wWGI4CcNV2w5Fy7xr7KXwuO/VbkOAkPqpLtwXcRZY=;
+ b=fVOXRqzR1q/eKRwVOQM/EuZcw2T2PPE0dFvuF9q34+5SIPghqeuC8+25scH7mULiYExMNIqv4aflw58Rn5UrRdLMwIZRBEwKtn8LVxodtV2W938Cw8XoBHgyoHD70MB/gKnb9ZWUIzX2E53YRFQejXO+dOgx72/llB8LEZLopM4Pd3TmninoQgGLv9wjip/DYhVgoE+hnBVSCq95yiIaDbjizCQByGdVBY1SUcmNrcmTcQCEz4eb060xrNcgDVhDbMBidBTaqtR76Lio5rhg4BPmWBn4HBWUuvv53nyV/YatAUW46vp0wqZuKnnHqHQW5i6f6mMtjcfE8VI473T0RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CO1PR11MB5076.namprd11.prod.outlook.com (2603:10b6:303:90::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
+ 2023 17:00:52 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
+ 17:00:51 +0000
+Date:   Tue, 12 Dec 2023 09:00:43 -0800
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH v2 6/7] firmware/efi: Process CXL Component Events
+Message-ID: <657891bb7ec69_269bd29421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20231211-cxl-cper-v2-0-c116900ba658@intel.com>
+ <20231211-cxl-cper-v2-6-c116900ba658@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231211-cxl-cper-v2-6-c116900ba658@intel.com>
+X-ClientProxiedBy: MW2PR16CA0054.namprd16.prod.outlook.com
+ (2603:10b6:907:1::31) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CO1PR11MB5076:EE_
+X-MS-Office365-Filtering-Correlation-Id: c42ac28c-ec51-447a-83bd-08dbfb33e58d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ibcNoiKpk6NCMjkHTkNupF3wg/382JdimvFAYRJJQ7N00KHpyKxlET1VrsQlXGIqjD0BwBtVICpRSUH2Y2Vx55cHUZslkTlh2cXWPkTkDiVobt8LvzQ/WxoE4gVKaFCWPhUJFj2ZazTE8/oGbjEh9EMrvqk+olZ0Ny9sEBua9PAJpHb2bjST3ywzxx/E+7PXtYUMGaDhRXUl+/n8j7trvMx8oD+UsjQivQsQzignEi+vWKy0XY/Wgm7AqKAT7pGc2+ndF0OpENivtAq7NjRCgvMJhcKir5zKJrfF7AByqn8gHl7OHmqKTsRyz+Iyzxv5G1M1Bg21Me+jCxhZmYaXnqfCYRC2/EU0RDBZ0bvqdzS/Df15uzTUW1T1E3ZF+IqvcO006MYj2XTMYgpogSrYB1byF7ii3xLGm4KrsI8i+hycuQHTbrhBfQvEFRyLwJxemFH5pzRT4QEgo1fG482rjFjob3I3znZDwq4RJwKsXPPupHTUQGYra2CyvbjV+2FpBJOfw5KWg3JnvQ0CYF26l4BPum8Dh9qGzhHoGHclEYDxSY9YnqXQ6CBDSPfIol+P
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(346002)(376002)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6512007)(9686003)(6506007)(5660300002)(26005)(107886003)(54906003)(66946007)(66476007)(66556008)(6486002)(2906002)(83380400001)(82960400001)(86362001)(478600001)(41300700001)(8936002)(8676002)(4326008)(110136005)(316002)(38100700002)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IMRAq6SUr4wWClcMhcaL0Tztg0lgdvEGZ1QfLp/46NyFQTlIkckSSdY31J6N?=
+ =?us-ascii?Q?bvTJQ0HQw3jo31SG7xBfDhrItEQA/8Tt8l30mn3SmhR0ejVW49pO+CRyaRw8?=
+ =?us-ascii?Q?+n9KgE2BHkWaYuyz6GGVLZ4qEUGOYaVtZUfIEzGi4M+Sxb3kpoMDeijDjyaF?=
+ =?us-ascii?Q?5wQWL+GQSn1Ca7P7pJpRt8ztBGfemk0nP8Zlm0ieI48hWz7rqEbOw98Kmk5U?=
+ =?us-ascii?Q?iGVS3RnXqa15VcU3MO1QNEhYVc3L78aC+OJFXbFCQgpNvjaY+ZdJKwVoGnRc?=
+ =?us-ascii?Q?R7oCLt19r9NdkBCYraGhR643xmV5cpkAhJwyQTGI9l158NJgAjCMY9JDms5s?=
+ =?us-ascii?Q?IvkUA1KJ8/nn+m74u0/3vc15XXduofrWgNCzw93AotaR66F5Ujzvih3sy/A2?=
+ =?us-ascii?Q?8MM/0TuX6HZt/4N7//Bi0S2W5VtxA7lol4ya3vAyZPWtEkzC1h5+LXQgRLvB?=
+ =?us-ascii?Q?UVzudOHRBbrFaA+M3jhamdmpW6aLxkh06S26CYmoDyvVX0zgSk9pZp95wM9P?=
+ =?us-ascii?Q?byJKXdiMqITQhHFcrcxa7FQAc+8J9zM5my226J5POhy7rnGKpzRRyZHwATAm?=
+ =?us-ascii?Q?wv2W/BOgI7bioZC2lWBH5ySjvdetNuLaa1XoNYn49HyaDWxdAD5cibSMzGCy?=
+ =?us-ascii?Q?ELnyr9y/+DvH5Of3EY03rb/YhBvpDwKX8zUg2tdJAoLaVYVZZEvnuO/yW873?=
+ =?us-ascii?Q?0paHKecTpF2DEAfvkzJ8hEyMjh1zqIyEBUW2BRWZl02jTNiDjgT5Tg14mUmp?=
+ =?us-ascii?Q?7YRlBa/bu3y7nGCIQMYxWzejCjHF4GeMm3MXS3gdBnKOgQITtvQLsmcQYGKE?=
+ =?us-ascii?Q?b76/SLxECDkSkoxMypIuNNrsPiO57IKfNrT4opULSrd0ahDjMKJ2zTbXtBlJ?=
+ =?us-ascii?Q?GKKHGpPxmaXW6ABMhVgJSwab27g+L4z7dlo0L52HtqXNMdz7Xto3vuEQlNIo?=
+ =?us-ascii?Q?GxGDKltYA9ubYb+ETiL0zyfDX16xu6Ezq0C1/5MJ4T0oNaQGcIzQS3j7xU7O?=
+ =?us-ascii?Q?FCniR/hOnWFG4cghKUYpvW0YUw/W4UAVDrJfK8D/X85iE+k/We2fDSLJDh75?=
+ =?us-ascii?Q?ecXdMrDUh56TDrLfI3x1lG8PedNAcKhzVUnyR/dONnur0fn1KuMQTy1QjmAK?=
+ =?us-ascii?Q?soED2d584P4fm1AVsvrACCnKzhRgjet52oVrHpC448Gv1VzGB869Q3jk0BI7?=
+ =?us-ascii?Q?2Ka/6NmM8KU4UPB9b/S2STj49kThitFouqj0kKrAyIQ21mMwBAznOVekoa4m?=
+ =?us-ascii?Q?K43bPczQXZrsKp7XOAleP9YlFFSx3dmC9MQWywiyaAJX/t3DQVaRmMraYW9E?=
+ =?us-ascii?Q?JKseyiU+IlgVmH2c5vYKjvgUar8BZ1GUD2n34CyG/2jWS/Blcm0cpQbQvYSJ?=
+ =?us-ascii?Q?2xvFxFhReVzwOBXB2EwBFelI+eXFh1rhOJgD0tB/4WUKVcFv+5obbEVjh5lK?=
+ =?us-ascii?Q?z2g6MSWs8HyBDf3Bz4n2mA3JBK7qZp5UIaVT9IBac7oo/ZwFXzmywlp8/yo7?=
+ =?us-ascii?Q?wwiOhzt2PEKPULHZZFIyunw8xrKp5sX8bCeA7cxwFXbM+tRTKklfEt/K+iue?=
+ =?us-ascii?Q?jMq1cuMSHiiqtmcnB+XMAF8LtGnCE9JwLRwmRPm7QcEY6f5R+u1D3dneRD+b?=
+ =?us-ascii?Q?bA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c42ac28c-ec51-447a-83bd-08dbfb33e58d
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 17:00:51.8398
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QKJCy2ln8VS2NehzX4WbJFFd+l21kqmNCd0l+TgddCJhGr9OHS0zpTqMWSM7WkDUJJSrAPi3kK00iaDA+4PdqKmGTJLt/TCXP7l6E6CUGXI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5076
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The am642-evm doesn't allow to enable 2 x CPSW3g ports and 2 x ICSSG1 ports
-all together, so base k3-am642-evm.dts enables by default 2 x CPSW3g ports
-and 1 x ICSSG1 ports, but it also possible to support 1 x CPSW3g ports and
-2 x ICSSG1 ports configuration.
+Ira Weiny wrote:
+> BIOS can configure memory devices as firmware first.  This will send CXL
+> events to the firmware instead of the OS.  The firmware can then send
+> these events to the OS via UEFI.
+> 
+> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
+> format for CXL Component Events.  The format is mostly the same as the
+> CXL Common Event Record Format.  The difference is a GUID is used in
+> the Section Type to identify the event type.
+> 
+> Add EFI support to detect CXL CPER records and call a notifier chain
+> with the record data blobs to be processed by the CXL code.
 
-This patch adds overlay to support 1 x CPSW3g ports and 2 x ICSSG1 ports
-configuration:
-- Add label name 'mdio_mux_1' for 'mdio-mux-1' node so that the node
-  'mdio-mux-1' can be disabled in the overlay using the label name.
-- disable 2nd CPSW3g port
-- update CPSW3g pinmuxes to not use RGMII2
-- disable mdio-mux-1 and define mdio-mux-2 to route ICSSG1 MDIO to the
-  shared DP83869 PHY
-- add and enable ICSSG1 RGMII2 pinmuxes
-- enable ICSSG1 MII1 port
+It is no longer a notifier chain in this version. I wouldn't even call
+it a notifier, it's just a registered callback.
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  7 +-
- .../dts/ti/k3-am642-evm-icssg1-dualemac.dtso  | 75 +++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  2 +-
- 3 files changed, 82 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v1:
+> [djbw: convert to single notifier callback]
+> [djbw: append _GUID to guid defines]
+> [iweiny: clean up function names]
+> ---
+>  drivers/firmware/efi/cper.c     | 15 ++++++++++++
+>  drivers/firmware/efi/cper_cxl.c | 45 ++++++++++++++++++++++++++++++++++++
+>  drivers/firmware/efi/cper_cxl.h | 29 +++++++++++++++++++++++
+>  include/linux/cxl-event.h       | 51 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 140 insertions(+)
+> 
+> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+> index 35c37f667781..39c65733ae9b 100644
+> --- a/drivers/firmware/efi/cper.c
+> +++ b/drivers/firmware/efi/cper.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/aer.h>
+>  #include <linux/printk.h>
+>  #include <linux/bcd.h>
+> +#include <linux/cxl-event.h>
+>  #include <acpi/ghes.h>
+>  #include <ras/ras_event.h>
+>  #include "cper_cxl.h"
+> @@ -607,6 +608,20 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
+>  			cper_print_prot_err(newpfx, prot_err);
+>  		else
+>  			goto err_section_too_small;
+> +	} else if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID) ||
+> +		   guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID) ||
+> +		   guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID)) {
+> +		struct cper_cxl_event_rec *rec = acpi_hest_get_payload(gdata);
+> +
+> +		if (rec->hdr.length <= sizeof(rec->hdr))
+> +			goto err_section_too_small;
+> +
+> +		if (rec->hdr.length > sizeof(*rec)) {
+> +			pr_err(FW_WARN "error section length is too big\n");
+> +			return;
+> +		}
+> +
+> +		cxl_cper_post_event(newpfx, sec_type, rec);
+>  	} else {
+>  		const void *err = acpi_hest_get_payload(gdata);
+>  
+> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
+> index a55771b99a97..669983f7956f 100644
+> --- a/drivers/firmware/efi/cper_cxl.c
+> +++ b/drivers/firmware/efi/cper_cxl.c
+> @@ -8,6 +8,7 @@
+>   */
+>  
+>  #include <linux/cper.h>
+> +#include <linux/cxl-event.h>
+>  #include "cper_cxl.h"
+>  
+>  #define PROT_ERR_VALID_AGENT_TYPE		BIT_ULL(0)
+> @@ -187,3 +188,47 @@ void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_e
+>  			       sizeof(cxl_ras->header_log), 0);
+>  	}
+>  }
+> +
+> +DECLARE_RWSEM(cxl_cper_rw_sem);
+> +static cxl_cper_notifier cper_notifier;
+> +
+> +void cxl_cper_post_event(const char *pfx, guid_t *sec_type,
+> +			 struct cper_cxl_event_rec *rec)
+> +{
+> +	struct cxl_cper_event_data data = {
+> +		.rec = rec,
+> +	};
+> +
+> +	if (!(rec->hdr.validation_bits & CPER_CXL_COMP_EVENT_LOG_VALID)) {
+> +		pr_err(FW_WARN "cxl event no Component Event Log present\n");
+> +		return;
+> +	}
+> +
+> +	if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID))
+> +		data.event_type = CXL_CPER_EVENT_GEN_MEDIA;
+> +	else if (guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID))
+> +		data.event_type = CXL_CPER_EVENT_DRAM;
+> +	else if (guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID))
+> +		data.event_type = CXL_CPER_EVENT_MEM_MODULE;
+> +
+> +	down_read(&cxl_cper_rw_sem);
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 1ac47876bc99..654d9cb6cfea 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am642-evm-icssg1-dualemac.dtbo
- 
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
-@@ -103,6 +104,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
- k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
- 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-+k3-am642-evm-icssg1-dualemac-dtbs := \
-+	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
- dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
- 	k3-am625-sk-csi2-imx219.dtb \
-@@ -113,7 +116,8 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am62a7-sk-csi2-imx219.dtb \
- 	k3-am62a7-sk-csi2-ov5640.dtb \
- 	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
--	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-+	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
-+	k3-am642-evm-icssg1-dualemac.dtb
- 
- # Enable support for device-tree overlays
- DTC_FLAGS_k3-am625-beagleplay += -@
-@@ -121,6 +125,7 @@ DTC_FLAGS_k3-am625-sk += -@
- DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
- DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
-+DTC_FLAGS_k3-am642-evm += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
-new file mode 100644
-index 000000000000..b2b1a6252e73
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm-icssg1-dualemac.dtso
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT overlay for enabling 2nd ICSSG1 port on AM642 EVM
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "k3-pinctrl.h"
-+
-+&{/} {
-+	mdio-mux-2 {
-+		compatible = "mdio-mux-multiplexer";
-+		mux-controls = <&mdio_mux>;
-+		mdio-parent-bus = <&icssg1_mdio>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		mdio@0 {
-+			reg = <0x0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			icssg1_phy2: ethernet-phy@3 {
-+				reg = <3>;
-+				tx-internal-delay-ps = <250>;
-+				rx-internal-delay-ps = <2000>;
-+			};
-+		};
-+	};
-+};
-+
-+&main_pmx0 {
-+	icssg1_rgmii2_pins_default: icssg1-rgmii2-default-pins {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0108, PIN_INPUT, 2) /* (W11) PRG1_PRU1_GPO0.RGMII2_RD0 */
-+			AM64X_IOPAD(0x010c, PIN_INPUT, 2) /* (V11) PRG1_PRU1_GPO1.RGMII2_RD1 */
-+			AM64X_IOPAD(0x0110, PIN_INPUT, 2) /* (AA12) PRG1_PRU1_GPO2.RGMII2_RD2 */
-+			AM64X_IOPAD(0x0114, PIN_INPUT, 2) /* (Y12) PRG1_PRU1_GPO3.RGMII2_RD3 */
-+			AM64X_IOPAD(0x0120, PIN_INPUT, 2) /* (U11) PRG1_PRU1_GPO6.RGMII2_RXC */
-+			AM64X_IOPAD(0x0118, PIN_INPUT, 2) /* (W12) PRG1_PRU1_GPO4.RGMII2_RX_CTL */
-+			AM64X_IOPAD(0x0134, PIN_OUTPUT, 2) /* (AA10) PRG1_PRU1_GPO11.RGMII2_TD0 */
-+			AM64X_IOPAD(0x0138, PIN_OUTPUT, 2) /* (V10) PRG1_PRU1_GPO12.RGMII2_TD1 */
-+			AM64X_IOPAD(0x013c, PIN_OUTPUT, 2) /* (U10) PRG1_PRU1_GPO13.RGMII2_TD2 */
-+			AM64X_IOPAD(0x0140, PIN_OUTPUT, 2) /* (AA11) PRG1_PRU1_GPO14.RGMII2_TD3 */
-+			AM64X_IOPAD(0x0148, PIN_OUTPUT, 2) /* (Y10) PRG1_PRU1_GPO16.RGMII2_TXC */
-+			AM64X_IOPAD(0x0144, PIN_OUTPUT, 2) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
-+		>;
-+	};
-+};
-+
-+&cpsw3g {
-+	pinctrl-0 = <&rgmii1_pins_default>;
-+};
-+
-+&cpsw_port2 {
-+	status = "disabled";
-+};
-+
-+&mdio_mux_1 {
-+	status = "disabled";
-+};
-+
-+&icssg1_eth {
-+	pinctrl-0 = <&icssg1_rgmii1_pins_default>, <&icssg1_rgmii2_pins_default>;
-+};
-+
-+&icssg1_emac1 {
-+	status = "okay";
-+	phy-handle = <&icssg1_phy2>;
-+	phy-mode = "rgmii-id";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index c08b0223be52..6ae43c12419f 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -200,7 +200,7 @@ mdio_mux: mux-controller {
- 		mux-gpios = <&exp1 12 GPIO_ACTIVE_HIGH>;
- 	};
- 
--	mdio-mux-1 {
-+	mdio_mux_1: mdio-mux-1 {
- 		compatible = "mdio-mux-multiplexer";
- 		mux-controls = <&mdio_mux>;
- 		mdio-parent-bus = <&cpsw3g_mdio>;
--- 
-2.34.1
+   guard(rwsem_read)(&cxl_cper_rw_sem);
+
+> +	if (cper_notifier)
+> +		cper_notifier(&data);
+> +	up_read(&cxl_cper_rw_sem);
+> +}
+> +
+> +void cxl_cper_register_notifier(cxl_cper_notifier notifier)
+> +{
+> +	down_write(&cxl_cper_rw_sem);
+
+   guard(rwsem_write)(&cxl_cper_rw_sem);
+
+> +	cper_notifier = notifier;
+
+I would enforce that there is only one registrant and explicitly fail
+attempts to assign more than one.
+
+> +	up_write(&cxl_cper_rw_sem);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_register_notifier, CXL);
+> +
+> +void cxl_cper_unregister_notifier(void)
+> +{
+> +	down_write(&cxl_cper_rw_sem);
+
+   guard(rwsem_write)(&cxl_cper_rw_sem);
+
+> +	cper_notifier = NULL;
+
+This could enforce that the same callback specified at registration time
+must also be passed at unregistration to disallow anonymous
+unregistration.
+
+Makes the code self documenting that the registrant is a singleton, and
+that unregistration must precede the next registration.
+
+> +	up_write(&cxl_cper_rw_sem);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_unregister_notifier, CXL);
+> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
+> index 86bfcf7909ec..b1b1b0514f6b 100644
+> --- a/drivers/firmware/efi/cper_cxl.h
+> +++ b/drivers/firmware/efi/cper_cxl.h
+> @@ -10,11 +10,38 @@
+>  #ifndef LINUX_CPER_CXL_H
+>  #define LINUX_CPER_CXL_H
+>  
+> +#include <linux/cxl-event.h>
+> +
+>  /* CXL Protocol Error Section */
+>  #define CPER_SEC_CXL_PROT_ERR						\
+>  	GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,	\
+>  		  0x4B, 0x77, 0x10, 0x48)
+>  
+> +/* CXL Event record UUIDs are formated at GUIDs and reported in section type */
+> +/*
+> + * General Media Event Record
+> + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
+> + */
+> +#define CPER_SEC_CXL_GEN_MEDIA_GUID					\
+> +	GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,				\
+> +		  0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
+> +
+> +/*
+> + * DRAM Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
+> + */
+> +#define CPER_SEC_CXL_DRAM_GUID						\
+> +	GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,				\
+> +		  0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
+> +
+> +/*
+> + * Memory Module Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
+> + */
+> +#define CPER_SEC_CXL_MEM_MODULE_GUID					\
+> +	GUID_INIT(0xfe927475, 0xdd59, 0x4339,				\
+> +		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
+> +
+>  #pragma pack(1)
+>  
+>  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
+> @@ -62,5 +89,7 @@ struct cper_sec_prot_err {
+>  #pragma pack()
+>  
+>  void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_err);
+> +void cxl_cper_post_event(const char *pfx, guid_t *sec_type,
+> +			 struct cper_cxl_event_rec *rec);
+>  
+>  #endif //__CPER_CXL_
+> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> index 18dab4d90dc8..c764ff877a6d 100644
+> --- a/include/linux/cxl-event.h
+> +++ b/include/linux/cxl-event.h
+> @@ -108,4 +108,55 @@ struct cxl_event_record_raw {
+>  	union cxl_event event;
+>  } __packed;
+>  
+> +enum cxl_event_type {
+> +	CXL_CPER_EVENT_GEN_MEDIA,
+> +	CXL_CPER_EVENT_DRAM,
+> +	CXL_CPER_EVENT_MEM_MODULE,
+> +};
+> +
+> +#pragma pack(1)
+
+Looks like there is usage of __packed a few lines up, just pick
+one-style. Prefer __packed vs #pragma when only a small handful of
+structures need annotation as that is easier to check for correctness in
+patch form.
+
+> +
+> +#define CPER_CXL_DEVICE_ID_VALID		BIT(0)
+> +#define CPER_CXL_DEVICE_SN_VALID		BIT(1)
+> +#define CPER_CXL_COMP_EVENT_LOG_VALID		BIT(2)
+> +struct cper_cxl_event_rec {
+> +	struct {
+> +		u32 length;
+> +		u64 validation_bits;
+> +		struct cper_cxl_event_devid {
+> +			u16 vendor_id;
+> +			u16 device_id;
+> +			u8 func_num;
+> +			u8 device_num;
+> +			u8 bus_num;
+> +			u16 segment_num;
+> +			u16 slot_num; /* bits 2:0 reserved */
+> +			u8 reserved;
+> +		} device_id;
+> +		struct cper_cxl_event_sn {
+> +			u32 lower_dw;
+> +			u32 upper_dw;
+> +		} dev_serial_num;
+> +	} hdr;
+> +
+> +	union cxl_event event;
+> +};
+> +
+> +struct cxl_cper_event_data {
+> +	enum cxl_event_type event_type;
+> +	struct cper_cxl_event_rec *rec;
+> +};
+> +
+> +#pragma pack()
+
+> +
+> +typedef void (*cxl_cper_notifier)(struct cxl_cper_event_data *ev_data);
+> +
+> +#ifdef CONFIG_UEFI_CPER
+> +void cxl_cper_register_notifier(cxl_cper_notifier notifier);
+> +void cxl_cper_unregister_notifier(void);
+> +#else
+> +static inline void cxl_cper_register_notifier(cxl_cper_notifier notifier) { }
+> +static inline void cxl_cper_unregister_notifier(void) { }
+> +#endif
+> +
+>  #endif /* _LINUX_CXL_EVENT_H */
+> 
+> -- 
+> 2.43.0
+> 
+
 
