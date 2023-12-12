@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D2780EDEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7EC80EDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346644AbjLLNp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S1376328AbjLLNpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:45:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjLLNp0 (ORCPT
+        with ESMTP id S1346660AbjLLNpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:45:26 -0500
+        Tue, 12 Dec 2023 08:45:39 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4AFAD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:45:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFDAF7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:45:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702388730;
+        s=mimecast20190719; t=1702388744;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=iGm9KLE/pE130EnHFNjjiHoY0waSGBlkZUatIGs4SP0=;
-        b=bZMelrk+Lb7rQHWWa6lGG3MCN1u1OCKK9vOR3cBtXjtDessgfqAIXqkqfKZbusqLvdPaLg
-        Dd0YkG6xWzGokzJw9RemKzbqcdhzF629gGwXbPEeBZnfLMQW6iuwiflHjFEKc1FBp9yWSQ
-        BwsJSifL/sIXSP98f/4Mdz7p6/KVmhc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UepGytcdOyzcSccbTHC7MPkRQKFLI21tGVw9d/A2bBo=;
+        b=H9WSDW6f7nEFnnujUP/s7jTeJH6DMVPwY/VVzf8DQbAogqy7qTDldIHMf4KczjFG7yrgD+
+        8NSOH6tf/SBVx+RkjMUnfLhH2eaqjZG6jpLC5OfX4QYBfaTwavYOjCdqERuqpCp1stqFT8
+        rUK2QMwa+hi6ToIqb0sp8kPrasJHrz0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-cwsc7ImnOZ-WTErM_0ZfDg-1; Tue, 12 Dec 2023 08:45:28 -0500
-X-MC-Unique: cwsc7ImnOZ-WTErM_0ZfDg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3334e7d1951so4962884f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:45:28 -0800 (PST)
+ us-mta-279-0i2oeVTmPDCo7RSyHLIDGQ-1; Tue, 12 Dec 2023 08:45:42 -0500
+X-MC-Unique: 0i2oeVTmPDCo7RSyHLIDGQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40c2dd83bc4so33864055e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:45:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702388727; x=1702993527;
+        d=1e100.net; s=20230601; t=1702388741; x=1702993541;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iGm9KLE/pE130EnHFNjjiHoY0waSGBlkZUatIGs4SP0=;
-        b=CI6wH+4a0m9+Bwe99h4iupHotEthJ8/XfougsAOzfTlFWS8kBUEsO6t0GgX3uloQ4w
-         tPBohhlkwOLZsf6MnKxHaM1STVZNojPfve/qWEJV/FBYAaJ7Kjkoe2gp5AllIh3Y5ChZ
-         fap3hILwGdpaE4sHxDnvF18kNF4SR1nj4xPto0CJBpnbCT1LuCYdwfnQAbbZGx09Fsd0
-         DMB8JQ3CxaQwCdcUoYiGYInWT1mpcatOgPPgyOXfxD8v938z8/DgNInM8UoBMrW3y7qX
-         5SuLpc5qldEN35uZde1IccwXKpJoSp4F3PCrwjw2lqc9FhM1nvRyCBwSB4i59Ay1fB1t
-         SFOA==
-X-Gm-Message-State: AOJu0YyoTqb1BPqBlwENnpQSkP8JRXWksujkkr6culPAUh4wC/MeTv7K
-        XSUe5xm0VPYSn7cLghQp2Y669E2Iwixy27El6XVcENqoV0TJCCfPdfwxpaOvKPcCiicpdZYOi46
-        0vhlqVYeJOzLoWlYwZbF+mjXI
-X-Received: by 2002:a05:600c:3793:b0:40b:4007:11f1 with SMTP id o19-20020a05600c379300b0040b400711f1mr1636969wmr.11.1702388727669;
-        Tue, 12 Dec 2023 05:45:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHVDpB21ik6TcsZDgEF4G512B0k2ImaLvUYMPDbqxF5km1WNr5D1D02+a1eKpq9FVsQdwad5A==
-X-Received: by 2002:a05:600c:3793:b0:40b:4007:11f1 with SMTP id o19-20020a05600c379300b0040b400711f1mr1636962wmr.11.1702388727254;
-        Tue, 12 Dec 2023 05:45:27 -0800 (PST)
+        bh=UepGytcdOyzcSccbTHC7MPkRQKFLI21tGVw9d/A2bBo=;
+        b=OoIk4VYelvT3HEelZe8j/iNDpsQFnqZy7F9/gNTvweEfpmDxGogyio+S8UK31KJ9Y/
+         TpiHH4aPk7MfJi7uvrbUyO9eCoJlz0K7InpuqFfGh7FaLkJ85HYoSyU+BhaiC1WaAGwj
+         u9ek9u6sL/32l+QxmuJReD+5SlUi+GAONflQcHQwf2rgf+K5JbYYwev4h4YNJEiBDkWc
+         2rN28fEGPF1LNOzPyXy6JjEz2uoAp7a6pFChPOmxzDIwNIvzNRlPZUoEz36Tovsk34Y7
+         9+4Jkl1BMdbcr0KJNoP5VVBA6alWF0JhxDINOV1OHkw2UTMozDZLZPscpWjcUjhumWke
+         lq9w==
+X-Gm-Message-State: AOJu0Yzchz3RkhB0DXDPrLAUViOKKYJkfAKzu4PnjxGbbVXAQ6U3RzOA
+        RYK3PcvCChXivnVablbNB+eHaTb03Y/IMgLSy8EBrVDz+TllmHmCS16O19q/F/ZhUx5dvMBklF6
+        4mPMngH2UjgUkixeP2YA1SZMt
+X-Received: by 2002:a05:600c:1715:b0:40c:2bfa:fb03 with SMTP id c21-20020a05600c171500b0040c2bfafb03mr2859316wmn.72.1702388741417;
+        Tue, 12 Dec 2023 05:45:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHd+An8QCmlQVZ+U53kq7SOOHyVxwOHR9N+B8aAHfIrTr1fwzM854k8Zm4pYiMs2orOax1hhw==
+X-Received: by 2002:a05:600c:1715:b0:40c:2bfa:fb03 with SMTP id c21-20020a05600c171500b0040c2bfafb03mr2859311wmn.72.1702388741042;
+        Tue, 12 Dec 2023 05:45:41 -0800 (PST)
 Received: from ?IPV6:2003:cb:c74b:ca00:4ca2:ff2c:9092:f070? (p200300cbc74bca004ca2ff2c9092f070.dip0.t-ipconnect.de. [2003:cb:c74b:ca00:4ca2:ff2c:9092:f070])
-        by smtp.gmail.com with ESMTPSA id e10-20020adffd0a000000b003334675634bsm10885476wrr.29.2023.12.12.05.45.26
+        by smtp.gmail.com with ESMTPSA id e10-20020adffd0a000000b003334675634bsm10885476wrr.29.2023.12.12.05.45.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 05:45:26 -0800 (PST)
-Message-ID: <ebea3b6f-efc0-4d98-bf4d-3e2b867fa886@redhat.com>
-Date:   Tue, 12 Dec 2023 14:45:26 +0100
+        Tue, 12 Dec 2023 05:45:40 -0800 (PST)
+Message-ID: <2bbbd69e-0804-4f9c-8aca-572032eeedf8@redhat.com>
+Date:   Tue, 12 Dec 2023 14:45:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] mm/ksm: add sysfs knobs for advisor
+Subject: Re: [PATCH v3 3/4] mm/ksm: add tracepoint for ksm advisor
 Content-Language: en-US
 To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
 Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
 References: <20231204234906.1237478-1-shr@devkernel.io>
- <20231204234906.1237478-3-shr@devkernel.io>
+ <20231204234906.1237478-4-shr@devkernel.io>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -114,7 +114,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231204234906.1237478-3-shr@devkernel.io>
+In-Reply-To: <20231204234906.1237478-4-shr@devkernel.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -129,66 +129,74 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 05.12.23 00:49, Stefan Roesch wrote:
-> This adds four new knobs for the KSM advisor to influence its behaviour.
-> 
-> The knobs are:
-> - advisor_mode:
->      none:      no advisor (default)
->      scan-time: scan time advisor
-> - advisor_max_cpu: 70 (default, cpu usage percent)
-> - advisor_min_pages: 500 (default)
-> - advisor_max_pages: 30000 (default)
-> - advisor_target_scan_time: 200 (default in seconds)
-> 
-> The new values will take effect on the next scan round.
+> This adds a new tracepoint for the ksm advisor. It reports the last scan
+> time, the new setting of the pages_to_scan parameter and the average cpu
+> percent usage of the ksmd background thread for the last scan.
 > 
 > Signed-off-by: Stefan Roesch <shr@devkernel.io>
 > ---
->   mm/ksm.c | 127 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 127 insertions(+)
+>   include/trace/events/ksm.h | 33 +++++++++++++++++++++++++++++++++
+>   mm/ksm.c                   |  1 +
+>   2 files changed, 34 insertions(+)
 > 
+> diff --git a/include/trace/events/ksm.h b/include/trace/events/ksm.h
+> index b5ac35c1d0e88..e728647b5d268 100644
+> --- a/include/trace/events/ksm.h
+> +++ b/include/trace/events/ksm.h
+> @@ -245,6 +245,39 @@ TRACE_EVENT(ksm_remove_rmap_item,
+>   			__entry->pfn, __entry->rmap_item, __entry->mm)
+>   );
+>   
+> +/**
+> + * ksm_advisor - called after the advisor has run
+> + *
+> + * @scan_time:		scan time in seconds
+> + * @pages_to_scan:	new pages_to_scan value
+> + * @cpu_percent:	cpu usage in percent
+> + *
+> + * Allows to trace the ksm advisor.
+> + */
+> +TRACE_EVENT(ksm_advisor,
+> +
+> +	TP_PROTO(s64 scan_time, unsigned long pages_to_scan,
+> +		 unsigned int cpu_percent),
+> +
+> +	TP_ARGS(scan_time, pages_to_scan, cpu_percent),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(s64,		scan_time)
+> +		__field(unsigned long,	pages_to_scan)
+> +		__field(unsigned int,	cpu_percent)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->scan_time	= scan_time;
+> +		__entry->pages_to_scan	= pages_to_scan;
+> +		__entry->cpu_percent	= cpu_percent;
+> +	),
+> +
+> +	TP_printk("ksm scan time %lld pages_to_scan %lu cpu percent %u",
+> +			__entry->scan_time, __entry->pages_to_scan,
+> +			__entry->cpu_percent)
+> +);
+> +
+>   #endif /* _TRACE_KSM_H */
+>   
+>   /* This part must be outside protection */
 > diff --git a/mm/ksm.c b/mm/ksm.c
-> index b27010fa2e946..18b7185bbc65b 100644
+> index 18b7185bbc65b..b8065c5d5f833 100644
 > --- a/mm/ksm.c
 > +++ b/mm/ksm.c
-> @@ -3735,6 +3735,128 @@ static ssize_t smart_scan_store(struct kobject *kobj,
->   }
->   KSM_ATTR(smart_scan);
+> @@ -455,6 +455,7 @@ static void scan_time_advisor(void)
+>   	advisor_ctx.cpu_time = cpu_time;
 >   
-> +static ssize_t advisor_mode_show(struct kobject *kobj,
-> +				 struct kobj_attribute *attr, char *buf)
-> +{
-> +	const char *output;
-> +
-> +	if (ksm_advisor == KSM_ADVISOR_NONE)
-> +		output = "[none] scan-time";
-> +	else if (ksm_advisor == KSM_ADVISOR_SCAN_TIME)
-> +		output = "none [scan-time]";
-> +
-> +	return sysfs_emit(buf, "%s\n", output);
-> +}
-> +
-> +static ssize_t advisor_mode_store(struct kobject *kobj,
-> +				  struct kobj_attribute *attr, const char *buf,
-> +				  size_t count)
-> +{
-> +	if (sysfs_streq("scan-time", buf))
-> +		ksm_advisor = KSM_ADVISOR_SCAN_TIME;
-> +	else if (sysfs_streq("none", buf))
-> +		ksm_advisor = KSM_ADVISOR_NONE;
-> +	else
-> +		return -EINVAL;
-> +
-> +	/* Set advisor default values */
-> +	init_advisor();
+>   	ksm_thread_pages_to_scan = pages;
+> +	trace_ksm_advisor(scan_time, pages, cpu_percent);
+>   }
+>   
+>   static void run_advisor(void)
 
-Is the "init_advisor()" really required?
-
-> +	set_advisor_defaults();
-
-That function should go to this patch.
-
-
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
