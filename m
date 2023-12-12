@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF85580E8DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F111880E8E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235033AbjLLKN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        id S231546AbjLLKQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235110AbjLLKNI (ORCPT
+        with ESMTP id S229379AbjLLKQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:13:08 -0500
-Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38125D6F;
-        Tue, 12 Dec 2023 02:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1702375980;
-        bh=n8Tz0tvGMgfdPFnvnOzQj+h8yUtCIOndgwGis4T/GEQ=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=PWAYJ5/7wGUdmHMz7N8QIQ4ekEIZwUOQDYzI8AfNrITIDjbYq/1SNBNUO6W2SXSRv
-         hHzG6JjeJdhYvhET3HtOFwVx7kZpYdfNJb0N4PNZ4Lf5NS72RwZWqsE9VCRHUT4uNd
-         VU8uSlJz1K+dzahePgbnKs38jkUTqmiYE7P3nYtFQWaCygmhG32bYliYjHHmTlG1KI
-         mdDKFVuCqnSLSBu2vIkOS/9tA8a1SdrvQL1HJMFNmq1Va+zTspvwE0iEUB2pP7/5l+
-         ff1OarfhS7x54MiYVFBlTqGta7IxiFzcLEVZeR2JDhYw0QUu+LL1fi2GoLbRIoy01Z
-         8/hsDv3xIzpdQ==
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 4061D13784;
-        Tue, 12 Dec 2023 11:13:00 +0100 (CET)
-Date:   Tue, 12 Dec 2023 11:13:00 +0100
-From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
-        <nabijaczleweli@nabijaczleweli.xyz>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 11/11] splice: splice_to_socket: always request
- MSG_DONTWAIT
-Message-ID: <1813e1805aa942862d300bec4d0563c5a466dce78.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
-User-Agent: NeoMutt/20231103
-References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+        Tue, 12 Dec 2023 05:16:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B09A6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:16:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14397C433C8;
+        Tue, 12 Dec 2023 10:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702376193;
+        bh=QNcLcqvo2jYrSjQ/cTdC3kektegzfqa7FvSTeFHo/l4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BEopNWgCWiBewoT41V5fXjtJugYtBLvX1JVPMStxjPpXbBsNZ88/6rgT+f6UaxNTN
+         pNmbw3i13OgeeqS0tSa1nB3HnUw37tpaQFVyoPsvAwhhUfZ0LSDZLWKngcuVsf9Xzh
+         vgCVmIHOyd2gGNhjLFxdi9IJY8fojNMmzfYcmbng=
+Date:   Tue, 12 Dec 2023 11:16:30 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Gan, Yi Fang" <yi.fang.gan@intel.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        John Stultz <jstultz@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Halaney <ahalaney@redhat.com>, Lobakin@kroah.com,
+        Aleksander <aleksander.lobakin@intel.com>, Gan@kroah.com,
+        linux-kernel@vger.kernel.org,
+        Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>, Lai@kroah.com,
+        Peter Jun Ann <peter.jun.ann.lai@intel.com>
+Subject: Re: [PATCH net-next 1/1] driver.h: add helper macro for
+ module_exit() boilerplate
+Message-ID: <2023121245-unspoiled-aging-214d@gregkh>
+References: <20231212094352.2263283-1-yi.fang.gan@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wcobgse6hj3ubesx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231212094352.2263283-1-yi.fang.gan@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,61 +55,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 05:43:52PM +0800, Gan, Yi Fang wrote:
+> For the modules need a module_init() but don't need to do
+> anything special in module_exit() might need to have an empty
+> module_exit(). This patch add a new macro module_exit_stub() to
+> replace the empty module_exit(). The macro is useful to remove
+> the module_exit() boilerplate.
+> 
+> Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
+> ---
+>  include/linux/device/driver.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 
---wcobgse6hj3ubesx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why would we take a macro that no one actually uses?
 
-Otherwise we risk sleeping with the pipe locked for indeterminate
-lengths of time.
+Please submit this with a user, you all know that this is the case, how
+did it pass your internal reviews (hint, I don't think it did...)
 
-Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
----
- fs/splice.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+thanks,
 
-diff --git a/fs/splice.c b/fs/splice.c
-index 81788bf7daa1..d5885032f9a8 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -869,13 +869,11 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe=
-, struct file *out,
- 		if (!bc)
- 			break;
-=20
--		msg.msg_flags =3D MSG_SPLICE_PAGES;
-+		msg.msg_flags =3D MSG_SPLICE_PAGES | MSG_DONTWAIT;
- 		if (flags & SPLICE_F_MORE)
- 			msg.msg_flags |=3D MSG_MORE;
- 		if (remain && pipe_occupancy(pipe->head, tail) > 0)
- 			msg.msg_flags |=3D MSG_MORE;
--		if (out->f_flags & O_NONBLOCK)
--			msg.msg_flags |=3D MSG_DONTWAIT;
-=20
- 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, bvec, bc,
- 			      len - remain);
---=20
-2.39.2
-
---wcobgse6hj3ubesx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV4MisACgkQvP0LAY0m
-WPGwRxAAs6fr478UQ2p25vI1thcEvzX4w5WUOAwBkLcqvY9dMJZ7vZTzRqlmIFnO
-IiI7kNBIre5AaHQn8I2d7YQddxrurwLLa5MkuvdfxSRzOt3lU6jsZotQKCg1pAmh
-vJqsRNkQk0n0w7HTsx/xBTYFbw73DiJGxYJrdYdhhd7W66rVCr7lc8SuOPXG67sG
-ngKc80p1H3XASjYpXHuKSF//z0QNRPZt/YbSVNFFMJ0CjJoIb8XjOsPvtVSnl7Hq
-iVOE/mpqDpsBuibIVk/iPTWYRrt0RiHl7jIMcTaEpr5AZ8T0kn4wapEbISmBxhU7
-Tn5FH3QH76qSZWBrbD/fuh1OTdQbqUDlCSSwOS44M3Y3Indafsor+8D+RxpY46Fl
-9BedCQqc+dPTNtEeL8R1b6PUn7BPug0h/M+L7U3TT1burIAqgmaGGaqIK49Pps8Y
-c1pH1bx4BWWB4F75amTC+A0uZEWCKnA/4BORvMTpATwBnsPOngznOREP3yzoNoiR
-1QdmcJL7YAs52Nq219+RM5CEJhQqA1Y6vGAHA2WWOMsoue8su8FhMO/SL9dafcq+
-Tvw6BW1jnxUdeOOK5I4eOwzTIi8B7FoJNk8O6E5I9YWwxPPk79v6MnICMKVCNcSQ
-4BIxIGjVD6EhR6GowE44L19F8GBFkiJKe8Lx/iOyW3AyLjUElBM=
-=NDdt
------END PGP SIGNATURE-----
-
---wcobgse6hj3ubesx--
+greg k-h
