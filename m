@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A3A80F994
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7E880F991
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377314AbjLLViH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        id S1377372AbjLLVh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235132AbjLLVh4 (ORCPT
+        with ESMTP id S231345AbjLLVhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:37:56 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B265BC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:38:02 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d3644ca426so60949357b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:38:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702417082; x=1703021882; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hzxdy4DAqYYy/QedSXGsAE7/tNvWAE0PzW8vKkT/Z+Q=;
-        b=mWtC57EgH17ygeRM7FPM1w6jTUZW6gJhR3YJ98ARpUQLJkLUifHY6VCPXF50frkD35
-         tKLLPJUGDaF7rdfR81lcLUfl9J6QpLInjT4s8qeAQx+W/60tCZoq/OpCMxokbWRDdALM
-         agkNrk6k1D/4gvfq3MKCTR3RhmnCgQQSek1NOhdJR6M2Cb8ARZe2IZ7JghwPJ4cBpFbG
-         oawKFBMje7mxt1jVlSc3qckYS4b9sKDDdsboeFSyS6sLPwpJ/iXKCzAgsTVoU/Wi0tMn
-         7eJe7VHJDAk5CuPrPgz/GQ10aRVb+6ePJ+qll5JYRTfmonU6SV+k/dy+G+BP+kFI4EKd
-         Oa3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702417082; x=1703021882;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hzxdy4DAqYYy/QedSXGsAE7/tNvWAE0PzW8vKkT/Z+Q=;
-        b=ZUC3Sh5Y44LaNnL32kDYRPzgNy5JasGQG2aDd9nzVwgR8DPZU3KAPi+6QWWSzwXp37
-         mg9Ob6p3HIWdjydKLw3dWcf6fx5TsPlymsM6ObAwdKYLRacYbA/+hKfleRCjwK89AGLM
-         0FT2c9UUSb+Ek2N/SYxSewdUCd4iP/SYJqmdAhSFBUkiVGEBIFKzKQIpu0tFD99e1Fht
-         UtOBIfAWr3TgcvcRqEALW9QbibI4WBGWK2YcI1fWSVdNBa/Hf4Yo9WTo9vsTofE/ZcyI
-         vr4xuRzxoVkAwUlXxU9DoMSTvPdjCilm0w6yB4jr7xS48Sn2s6ykgVrSo/LIUri3WLsh
-         WYaw==
-X-Gm-Message-State: AOJu0YyIqhHE8fBZ8kVGdZx7Ibb9Nu6GEz88eN+IJk1lwzylWiVlfHDn
-        74UHvFyyKlZp6J+226wJfSFBClUf1zTbLtuboWU6eDVQqCbOSSOxMLE=
-X-Google-Smtp-Source: AGHT+IHOaQxAO03DA1eRwI9KuaEK/YYi+78fp45l1XIByFOvK8wRRxPSjLqjbcQfM3q4ZBmUdltsfAN58G975GhgKo0=
-X-Received: by 2002:a05:690c:4705:b0:5e1:80b6:a731 with SMTP id
- gz5-20020a05690c470500b005e180b6a731mr2364533ywb.60.1702417081817; Tue, 12
- Dec 2023 13:38:01 -0800 (PST)
+        Tue, 12 Dec 2023 16:37:55 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB59DB3;
+        Tue, 12 Dec 2023 13:38:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1702417080;
+        bh=fvRCGNHhInfrca07PkN6n9fo3WBgL+C2V/czG3LgI6o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KUkMEO8R0i7Wa1ufMi6lexwcEjqPNrQG5aNDi8Bzdo/avKU80eHkcTANG5sAtqa0T
+         Qh8ghOl+9gNc+/IrxPagtmYac0hzEXyssM0LOTFShpvjXTR0OJDRafgb2dRjg+7woN
+         xT5KAGeV5ZDUJoPt3NP6CxJgsfDwYwmcEzrv4jliJG3o27C3lUYQl6l3pq7C7ldcqu
+         T9FKxi22dwTBJImanc0NgQ5h2zjE+6tM8EdZS9OVk/eb8LwFiOWX8oVTYZh7OdizeE
+         UHj7kbE02tphhAKyiA2YYqrWBHv1tFgGXEs9oB8D4VNfsG1nY1mlSf/dBirX/DiIAG
+         AHxEmmKq78xMg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SqX6048vVz4wcX;
+        Wed, 13 Dec 2023 08:38:00 +1100 (AEDT)
+Date:   Wed, 13 Dec 2023 08:37:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Subject: Re: linux-next: Tree for Dec 11 (drivers/perf/riscv_pmu_sbi.c)
+Message-ID: <20231213083759.738f0798@canb.auug.org.au>
+In-Reply-To: <CAHVXubitXvkWmvHd7JXs5kTZC4L2VvOD2B_ue3D5hUhevOpwfA@mail.gmail.com>
+References: <20231211172504.058ad6b6@canb.auug.org.au>
+        <846f4d8a-16ad-4ce2-9bcc-34e03f057421@infradead.org>
+        <CAHVXubitXvkWmvHd7JXs5kTZC4L2VvOD2B_ue3D5hUhevOpwfA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231212205254.12422-1-quic_abhinavk@quicinc.com> <20231212205254.12422-8-quic_abhinavk@quicinc.com>
-In-Reply-To: <20231212205254.12422-8-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Dec 2023 23:37:51 +0200
-Message-ID: <CAA8EJprBF35zAhNjTrQ85yDOQwu3rssr3+xstSBVBLZyD0gfKQ@mail.gmail.com>
-Subject: Re: [PATCH v4 07/15] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, seanpaul@chromium.org,
-        quic_jesszhan@quicinc.com, linux-arm-msm@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/qbFGRDteV3hlvbqKI=wJrAu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 22:53, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> CDM block comes with its own set of registers and operations
-> which can be done. In-line with other hardware blocks, this
-> change adds the dpu_hw_cdm abstraction for the CDM block.
->
-> changes in v4:
->         - used FIELD_PREP() for dpu_hw_cdm_setup_cdwn() operations
->         - change to lowercase hex in dpu_hw_cdm_bind_pingpong_blk()
->         - move disable assignment inside else in dpu_hw_cdm_bind_pingpong_blk()
->
-> changes in v3:
->         - fix commit text from sub-blk to blk for CDM
->         - fix kbot issue for missing static for dpu_hw_cdm_enable()
->         - fix kbot issue for incorrect documentation style
->         - add more documentation for enums and struct in dpu_hw_cdm.h
->         - drop "enable" parameter from bind_pingpong_blk() as we can
->           just use PINGPONG_NONE for disable cases
->         - drop unnecessary bit operation for zero value of cdm_cfg
->
-> changes in v2:
->         - replace bit magic with relevant defines
->         - use drmm_kzalloc instead of kzalloc/free
->         - some formatting fixes
->         - inline _setup_cdm_ops()
->         - protect bind_pingpong_blk with core_rev check
->         - drop setup_csc_data() and setup_cdwn() ops as they
->           are merged into enable()
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312101815.B3ZH7Pfy-lkp@intel.com/
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/Makefile                |   1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 245 ++++++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 142 ++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
->  4 files changed, 389 insertions(+)
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+--Sig_/qbFGRDteV3hlvbqKI=wJrAu
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Hi all,
 
--- 
-With best wishes
-Dmitry
+On Tue, 12 Dec 2023 08:24:54 +0100 Alexandre Ghiti <alexghiti@rivosinc.com>=
+ wrote:
+>
+> On Mon, Dec 11, 2023 at 10:22=E2=80=AFPM Randy Dunlap <rdunlap@infradead.=
+org> wrote:
+> >
+> > on riscv32:
+> >
+> > ../drivers/perf/riscv_pmu_sbi.c:1015:35: error: initialization of 'int =
+(*)(const struct ctl_table *, int,  void *, size_t *, loff_t *)' {aka 'int =
+(*)(const struct ctl_table *, int,  void *, unsigned int *, long long int *=
+)'} from incompatible pointer type 'int (*)(struct ctl_table *, int,  void =
+*, size_t *, loff_t *)' {aka 'int (*)(struct ctl_table *, int,  void *, uns=
+igned int *, long long int *)'} [-Werror=3Dincompatible-pointer-types]
+> >  1015 |                 .proc_handler   =3D riscv_pmu_proc_user_access_=
+handler,
+> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~
+> > ../drivers/perf/riscv_pmu_sbi.c:1015:35: note: (near initialization for=
+ 'sbi_pmu_sysctl_table[0].proc_handler')
+>
+> I already sent a fix for that here:
+> https://lore.kernel.org/all/20231207083512.51792-1-alexghiti@rivosinc.com/
+
+I have added that patch to linux-next today and will keep it until it
+turns up in the sysctl tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qbFGRDteV3hlvbqKI=wJrAu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV40rcACgkQAVBC80lX
+0GxV7Af/QwhYbcoWsMdJIIFO0tko1rCwK/E6gTa1AFUsTcmChBp8DqtUyZLBwFX9
+E3HXxUvLoEAra02Icv+m5r2ngYJTbRN+uzvqhE14XrifnRZxaziquztjC6s/U/h7
+OeLeOArcDrsT3yIZREl1Hee7M9g+V7j7VfYQjBrXU+K1Gr8H8WWSw579dVw++I4e
+w9rPGbUorYwtQiv47BXUUSbRXCcWs+6A3mvjFmXIkUSL5E+6F4C+KmxvAW1CZOg1
+2CD0L1sjj9+9vig5ssrAz8nuDviPQ0pHdzCm30tYPxNFVfl62mhVwD5Igx2M5Jrt
+scG4B/UIqJ8HKCxEeZfPtYXgZVKsxQ==
+=CDKO
+-----END PGP SIGNATURE-----
+
+--Sig_/qbFGRDteV3hlvbqKI=wJrAu--
