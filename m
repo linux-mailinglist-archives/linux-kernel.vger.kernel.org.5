@@ -2,343 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBF280F512
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7859680F51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377045AbjLLSAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:00:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S1377062AbjLLSA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbjLLSAE (ORCPT
+        with ESMTP id S230181AbjLLSAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:00:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9A2CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702404008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hi+Je7A1ir5Jf7RMpbBJ6wePhajEbToaWXnOvXBTaw4=;
-        b=fa86RfOdJa+Sg5z5/sDpxENwVJfMvQXj/IfL943+MKHbP0hRUKJornbh8SHNTytHlUQhDW
-        +qBOI6qZLTvMXHPTlAQ1bHiw9Amz8fjkFvFZPfqVUQVXDf6sCs9K/cUJf13x2ZT1wb/2FX
-        elBo57IXf9ydiWjfhyZRS4msD8vAms8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636---V4Bn4YMCaF8N_Xv78Xfg-1; Tue, 12 Dec 2023 13:00:07 -0500
-X-MC-Unique: --V4Bn4YMCaF8N_Xv78Xfg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c299d1e36so41114525e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:00:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702404005; x=1703008805;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 12 Dec 2023 13:00:23 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE56B7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:00:29 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50beed2a46eso177e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:00:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702404028; x=1703008828; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hi+Je7A1ir5Jf7RMpbBJ6wePhajEbToaWXnOvXBTaw4=;
-        b=e2NBW3+9avMXZs/UXtV1RwL7c9E0Pb3yB0FgP6QPnj0oPobSwIg9v8SvL2HRu/HmcY
-         lKGs1FXh3e/pZpZOtE0bWa2+wNyKm2sHPubv7kjZhlCHJaYNJclAQDVXHbQpZOAXY9em
-         WesODP0TuvWSfl67UwDlzWnl1p7tepxPjdQ0YPveRqkkGHi71AFXk0FAzmSc3kr909oh
-         XAaSDVfJnNZKy6va6aH77amU1zdOvrZVNNyF0Kq0RQJLrzD/5iWK6Jsg9bFyuNsuV/Qr
-         B5wLCQJN9Po8k1NNjniQQAGoZb8pisTEhFaSiNTKAysjjL81EncQaJZkxwBKA+9V+/BA
-         Zc9A==
-X-Gm-Message-State: AOJu0YxCp+hmZ2Qh+KrVmRo9tsbUpNXRJypRjtcmiVAq+ZobON+RPmdy
-        fwigHpzBdWTfQ/wQyjJuQlkfofzlZkMpKjVXuD4eNPE0rZcrg1/oFozURPlhVGHdV3wrFb7eepa
-        0WDTxW9vKsJM1ALai3Ec4sEn4
-X-Received: by 2002:a05:600c:22d7:b0:40b:5f03:6f2f with SMTP id 23-20020a05600c22d700b0040b5f036f2fmr2295079wmg.265.1702404004890;
-        Tue, 12 Dec 2023 10:00:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFSDxTS0Dbwm0yWFWvFpkddTtVCdD25MSkyGCWfgQkzixXvX6A/om8nqxSeqL3MjgQ1Ea26IA==
-X-Received: by 2002:a05:600c:22d7:b0:40b:5f03:6f2f with SMTP id 23-20020a05600c22d700b0040b5f036f2fmr2295066wmg.265.1702404004421;
-        Tue, 12 Dec 2023 10:00:04 -0800 (PST)
-Received: from redhat.com ([2.52.23.105])
-        by smtp.gmail.com with ESMTPSA id c17-20020a05600c0a5100b0040b4fca8620sm19831250wmq.37.2023.12.12.10.00.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 10:00:03 -0800 (PST)
-Date:   Tue, 12 Dec 2023 12:59:59 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>, jasowang@redhat.com,
-        xuanzhuo@linux.alibaba.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, xieyongji@bytedance.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        david.marchand@redhat.com, lulu@redhat.com
-Subject: Re: [PATCH v5 4/4] vduse: Add LSM hook to check Virtio device type
-Message-ID: <20231212124518-mutt-send-email-mst@kernel.org>
-References: <20231212131712.1816324-1-maxime.coquelin@redhat.com>
- <20231212131712.1816324-5-maxime.coquelin@redhat.com>
- <c58da5f5-131f-425e-b008-260506d1bc0d@schaufler-ca.com>
+        bh=CLc2uwTCsXHrkyfMISisr6i9Izcj9rKOSvz6R6z0jK8=;
+        b=1+GrW/PL+8KSPt7tJTWJJmQEFkBa54Y+7z0E/Ov2Z6uyi9irIKdjO61mnQFQyH7dEP
+         j15p3cm9MEzj0zOzeio1JV/RcBAtnf2rxUf/ncdqTHS+w12yDoIMi7gOdAXfxt8jHatM
+         n+hgOuJACS5NmFzT8CGZcSdog7KzoTbgT5EpSC1N9fzcRo+wbsXKMLulm+1oPgWzNpzh
+         NJYRYh7Wx6OjrysBqZeU6me9B7IJqFktgEK909UEyOc/CrQbbpCRxO8gRWq/xmhiHA5f
+         MCp9DbFaVEuWoIjsVRhWIU0s5IC91TBzy9SlaFG4/qDaDoyWBEcvReJhbeswnI0aAuOZ
+         ldQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702404028; x=1703008828;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CLc2uwTCsXHrkyfMISisr6i9Izcj9rKOSvz6R6z0jK8=;
+        b=K4tqC9qaLph+6ooHAhPuQlafrile6N/sB78rvRtgU1YRpxRPlLQiJ2eBH3DjRbd5A3
+         Kf+9HIeH4pOQ54JSq9VTRUkrHitlBhT4wVVRo+0s3M3DHkTVzovwK6cgHXosfptFPcBx
+         Va86V84zL4ZkuM7htxiUXnJsuI0H4iJcuCarpxKwOcn04nG/96nNmu+SbnmiavCdwQ1Q
+         z9Qaj9u5S9ZNijGACafstTNHErVJICT8lDFVMs3JfJcxI5VS8G0znUimnQ0QQ+QrCWR1
+         3E0+oCba0VGV5WxpRDlzbBBKHZc4SoWcWZyZEhPF9QbuUl1Ze/Gk2a6s9v5iz9G2gfOx
+         ow2A==
+X-Gm-Message-State: AOJu0YzbmB8yFX1GJnBjebacyVGFCEZn+sBX00m/cESQobDqu/tphAeW
+        E25dAdeibBktu7Y0Bh4m+PmNQTsboLFa6K1YuTqLAw==
+X-Google-Smtp-Source: AGHT+IEO6SMKP18mW79wlSCfRL85uc/ZxGxAtrMNO3aesJ0MKMM65U17ubTZNlIPBFHjTe8ED02eAlkrmkn47QZmOkU=
+X-Received: by 2002:a19:e058:0:b0:50b:fc76:42c with SMTP id
+ g24-20020a19e058000000b0050bfc76042cmr240096lfj.2.1702404027469; Tue, 12 Dec
+ 2023 10:00:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c58da5f5-131f-425e-b008-260506d1bc0d@schaufler-ca.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208210855.407580-1-kan.liang@linux.intel.com>
+ <ZXd7ZuxbNNsjAyqm@kernel.org> <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
+ <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
+In-Reply-To: <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 12 Dec 2023 10:00:16 -0800
+Message-ID: <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com>
+Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        mark.rutland@arm.com, maz@kernel.org, marcan@marcan.st,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 08:33:39AM -0800, Casey Schaufler wrote:
-> On 12/12/2023 5:17 AM, Maxime Coquelin wrote:
-> > This patch introduces a LSM hook for devices creation,
-> > destruction (ioctl()) and opening (open()) operations,
-> > checking the application is allowed to perform these
-> > operations for the Virtio device type.
-> 
-> My earlier comments on a vduse specific LSM hook still hold.
-> I would much prefer to see a device permissions hook(s) that
-> are useful for devices in general. Not just vduse devices.
-> I know that there are already some very special purpose LSM
-> hooks, but the experience with maintaining them is why I don't
-> want more of them. 
-
-What exactly does this mean? Devices like tap etc? How do we
-find them all though?
-
+On Tue, Dec 12, 2023 at 9:23=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Tue, Dec 12, 2023 at 7:56=E2=80=AFAM Liang, Kan <kan.liang@linux.intel=
+.com> wrote:
 > >
-> > Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> > ---
-> >  MAINTAINERS                         |  1 +
-> >  drivers/vdpa/vdpa_user/vduse_dev.c  | 13 ++++++++++++
-> >  include/linux/lsm_hook_defs.h       |  2 ++
-> >  include/linux/security.h            |  6 ++++++
-> >  include/linux/vduse.h               | 14 +++++++++++++
-> >  security/security.c                 | 15 ++++++++++++++
-> >  security/selinux/hooks.c            | 32 +++++++++++++++++++++++++++++
-> >  security/selinux/include/classmap.h |  2 ++
-> >  8 files changed, 85 insertions(+)
-> >  create mode 100644 include/linux/vduse.h
 > >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index a0fb0df07b43..4e83b14358d2 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -23040,6 +23040,7 @@ F:	drivers/net/virtio_net.c
-> >  F:	drivers/vdpa/
-> >  F:	drivers/virtio/
-> >  F:	include/linux/vdpa.h
-> > +F:	include/linux/vduse.h
-> >  F:	include/linux/virtio*.h
-> >  F:	include/linux/vringh.h
-> >  F:	include/uapi/linux/virtio_*.h
-> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > index fa62825be378..59ab7eb62e20 100644
-> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > @@ -8,6 +8,7 @@
-> >   *
-> >   */
-> >  
-> > +#include "linux/security.h"
-> >  #include <linux/init.h>
-> >  #include <linux/module.h>
-> >  #include <linux/cdev.h>
-> > @@ -30,6 +31,7 @@
-> >  #include <uapi/linux/virtio_blk.h>
-> >  #include <uapi/linux/virtio_ring.h>
-> >  #include <linux/mod_devicetable.h>
-> > +#include <linux/vduse.h>
-> >  
-> >  #include "iova_domain.h"
-> >  
-> > @@ -1442,6 +1444,10 @@ static int vduse_dev_open(struct inode *inode, struct file *file)
-> >  	if (dev->connected)
-> >  		goto unlock;
-> >  
-> > +	ret = -EPERM;
-> > +	if (security_vduse_perm_check(VDUSE_PERM_OPEN, dev->device_id))
-> > +		goto unlock;
-> > +
-> >  	ret = 0;
-> >  	dev->connected = true;
-> >  	file->private_data = dev;
-> > @@ -1664,6 +1670,9 @@ static int vduse_destroy_dev(char *name)
-> >  	if (!dev)
-> >  		return -EINVAL;
-> >  
-> > +	if (security_vduse_perm_check(VDUSE_PERM_DESTROY, dev->device_id))
-> > +		return -EPERM;
-> > +
-> >  	mutex_lock(&dev->lock);
-> >  	if (dev->vdev || dev->connected) {
-> >  		mutex_unlock(&dev->lock);
-> > @@ -1828,6 +1837,10 @@ static int vduse_create_dev(struct vduse_dev_config *config,
-> >  	int ret;
-> >  	struct vduse_dev *dev;
-> >  
-> > +	ret = -EPERM;
-> > +	if (security_vduse_perm_check(VDUSE_PERM_CREATE, config->device_id))
-> > +		goto err;
-> > +
-> >  	ret = -EEXIST;
-> >  	if (vduse_find_dev(config->name))
-> >  		goto err;
-> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> > index ff217a5ce552..3930ab2ae974 100644
-> > --- a/include/linux/lsm_hook_defs.h
-> > +++ b/include/linux/lsm_hook_defs.h
-> > @@ -419,3 +419,5 @@ LSM_HOOK(int, 0, uring_override_creds, const struct cred *new)
-> >  LSM_HOOK(int, 0, uring_sqpoll, void)
-> >  LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
-> >  #endif /* CONFIG_IO_URING */
-> > +
-> > +LSM_HOOK(int, 0, vduse_perm_check, enum vduse_op_perm op_perm, u32 device_id)
-> > diff --git a/include/linux/security.h b/include/linux/security.h
-> > index 1d1df326c881..2a2054172394 100644
-> > --- a/include/linux/security.h
-> > +++ b/include/linux/security.h
-> > @@ -32,6 +32,7 @@
-> >  #include <linux/string.h>
-> >  #include <linux/mm.h>
-> >  #include <linux/sockptr.h>
-> > +#include <linux/vduse.h>
-> >  
-> >  struct linux_binprm;
-> >  struct cred;
-> > @@ -484,6 +485,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
-> >  int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
-> >  int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
-> >  int security_locked_down(enum lockdown_reason what);
-> > +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id);
-> >  #else /* CONFIG_SECURITY */
-> >  
-> >  static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
-> > @@ -1395,6 +1397,10 @@ static inline int security_locked_down(enum lockdown_reason what)
-> >  {
-> >  	return 0;
-> >  }
-> > +static inline int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> > +{
-> > +	return 0;
-> > +}
-> >  #endif	/* CONFIG_SECURITY */
-> >  
-> >  #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
-> > diff --git a/include/linux/vduse.h b/include/linux/vduse.h
-> > new file mode 100644
-> > index 000000000000..7a20dcc43997
-> > --- /dev/null
-> > +++ b/include/linux/vduse.h
-> > @@ -0,0 +1,14 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _LINUX_VDUSE_H
-> > +#define _LINUX_VDUSE_H
-> > +
-> > +/*
-> > + * The permission required for a VDUSE device operation.
-> > + */
-> > +enum vduse_op_perm {
-> > +	VDUSE_PERM_CREATE,
-> > +	VDUSE_PERM_DESTROY,
-> > +	VDUSE_PERM_OPEN,
-> > +};
-> > +
-> > +#endif /* _LINUX_VDUSE_H */
-> > diff --git a/security/security.c b/security/security.c
-> > index dcb3e7014f9b..150abf85f97d 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -5337,3 +5337,18 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
-> >  	return call_int_hook(uring_cmd, 0, ioucmd);
-> >  }
-> >  #endif /* CONFIG_IO_URING */
-> > +
-> > +/**
-> > + * security_vduse_perm_check() - Check if a VDUSE device type operation is allowed
-> > + * @op_perm: the operation type
-> > + * @device_id: the Virtio device ID
-> > + *
-> > + * Check whether the Virtio device creation is allowed
-> > + *
-> > + * Return: Returns 0 if permission is granted.
-> > + */
-> > +int security_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> > +{
-> > +	return call_int_hook(vduse_perm_check, 0, op_perm, device_id);
-> > +}
-> > +EXPORT_SYMBOL(security_vduse_perm_check);
-> > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > index feda711c6b7b..18845e4f682f 100644
-> > --- a/security/selinux/hooks.c
-> > +++ b/security/selinux/hooks.c
-> > @@ -21,6 +21,8 @@
-> >   *  Copyright (C) 2016 Mellanox Technologies
-> >   */
-> >  
-> > +#include "av_permissions.h"
-> > +#include "linux/vduse.h"
-> >  #include <linux/init.h>
-> >  #include <linux/kd.h>
-> >  #include <linux/kernel.h>
-> > @@ -92,6 +94,7 @@
-> >  #include <linux/fsnotify.h>
-> >  #include <linux/fanotify.h>
-> >  #include <linux/io_uring.h>
-> > +#include <uapi/linux/virtio_ids.h>
-> >  
-> >  #include "avc.h"
-> >  #include "objsec.h"
-> > @@ -6950,6 +6953,34 @@ static int selinux_uring_cmd(struct io_uring_cmd *ioucmd)
-> >  }
-> >  #endif /* CONFIG_IO_URING */
-> >  
-> > +static int selinux_vduse_perm_check(enum vduse_op_perm op_perm, u32 device_id)
-> > +{
-> > +	u32 requested_op, requested_type, sid = current_sid();
-> > +	int ret;
-> > +
-> > +	if (op_perm == VDUSE_PERM_CREATE)
-> > +		requested_op = VDUSE__CREATE;
-> > +	else if (op_perm == VDUSE__DESTROY)
-> > +		requested_op = VDUSE__DESTROY;
-> > +	else if (op_perm == VDUSE_PERM_OPEN)
-> > +		requested_op = VDUSE__OPEN;
-> > +	else
-> > +		return -EINVAL;
-> > +
-> > +	ret = avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_op, NULL);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (device_id == VIRTIO_ID_NET)
-> > +		requested_type = VDUSE__NET;
-> > +	else if (device_id == VIRTIO_ID_BLOCK)
-> > +		requested_type = VDUSE__BLOCK;
-> > +	else
-> > +		return -EINVAL;
-> > +
-> > +	return avc_has_perm(sid, sid, SECCLASS_VDUSE, requested_type, NULL);
-> > +}
-> > +
-> >  /*
-> >   * IMPORTANT NOTE: When adding new hooks, please be careful to keep this order:
-> >   * 1. any hooks that don't belong to (2.) or (3.) below,
-> > @@ -7243,6 +7274,7 @@ static struct security_hook_list selinux_hooks[] __ro_after_init = {
-> >  #ifdef CONFIG_PERF_EVENTS
-> >  	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
-> >  #endif
-> > +	LSM_HOOK_INIT(vduse_perm_check, selinux_vduse_perm_check),
-> >  };
-> >  
-> >  static __init int selinux_init(void)
-> > diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> > index a3c380775d41..b0a358cbac1c 100644
-> > --- a/security/selinux/include/classmap.h
-> > +++ b/security/selinux/include/classmap.h
-> > @@ -256,6 +256,8 @@ const struct security_class_mapping secclass_map[] = {
-> >  	  { "override_creds", "sqpoll", "cmd", NULL } },
-> >  	{ "user_namespace",
-> >  	  { "create", NULL } },
-> > +	{ "vduse",
-> > +	  { "create", "destroy", "open", "net", "block", NULL} },
-> >  	{ NULL }
-> >    };
-> >  
+> >
+> > On 2023-12-11 4:13 p.m., Arnaldo Carvalho de Melo wrote:
+> > > Em Fri, Dec 08, 2023 at 01:08:55PM -0800, kan.liang@linux.intel.com e=
+screveu:
+> > >> From: Kan Liang <kan.liang@linux.intel.com>
+> > >>
+> > >> perf top errors out on a hybrid machine
+> > >>  $perf top
+> > >>
+> > >>  Error:
+> > >>  The cycles:P event is not supported.
+> > >>
+> > >> The user_requested_cpus may contain CPUs that are invalid for a hybr=
+id
+> > >> PMU. It causes perf_event_open to fail.
+> > >
+> > > ?
+> > >
+> > > All perf top expects is that the "cycles", the most basic one, be
+> > > collected, on all CPUs in the system.
+> > >
+> >
+> > Yes, but for hybrid there is no single "cycles" event which can cover
+> > all CPUs.
+>
+> Does that mean the kernel would reject the legacy "cycles" event
+> on hybrid CPUs?
 
+I believe not. When the extended type isn't set on legacy cycles we
+often have the CPU and from that can determine the PMU. The issue is
+with the -1 any CPU perf_event_open option. As I was told, the PMU the
+event is opened on in this case is the first one registered in the
+kernel, on Intel hybrid this could be cpu_core or cpu_atom.. but IIRC
+it'll probably be cpu_core. On ARM =C2=AF\_(=E3=83=84)_/=C2=AF. In any case=
+ you only
+have an event that will be enabled on a fraction of the CPU cores the
+thread you are monitoring could be scheduled on. This is why 2 or more
+events are needed (depending on how many core types you have).
+
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
