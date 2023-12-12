@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBB880FB6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBECE80FB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbjLLXd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S232566AbjLLXhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:37:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjLLXd4 (ORCPT
+        with ESMTP id S231786AbjLLXhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:33:56 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E31B2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:34:02 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7b72d574399so263694739f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:34:02 -0800 (PST)
+        Tue, 12 Dec 2023 18:37:52 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E79A0;
+        Tue, 12 Dec 2023 15:37:59 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c41df5577so32019005e9.0;
+        Tue, 12 Dec 2023 15:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702424042; x=1703028842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TtJTpyn6WHnHGJdQw4Qk327F16W+w6nqd2j0/8/aQGg=;
-        b=dseTZj7EeYLbQYMJMjFX7Nf+m7nMM4lABs7JcEEvFBtSZhNEIts/WND445GoPSMdZ5
-         k9fbjDyghZ+6r7+qt/A8GWMwF+iP0aTJcrulFTiHt4V1sxlMXX0AO+4rC93eXQMfpuHm
-         GtNnQsskBSUVuS0F4qKPmbpZfw7xci6xH2st+nsvGy9P0dUWb3rnaMe48A5ocwdLK0Hm
-         UWOTjiYrL+5di4ccXSFvf9koBI5jMBeiPA4l0BhqKHrxxVgNcQc/eHHRJ4CoTmGMbsOd
-         Sryb9Pz5DFTEaNol/1ywUvJasP9YN5vVDAEpTSJ34k8evC81gsUc5zjMyz23S4HTwxpn
-         DeiQ==
+        d=gmail.com; s=20230601; t=1702424277; x=1703029077; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JDRHHu41MUvYy9KEdDWgKfdTcRdh7spHhW6VGjs11Mo=;
+        b=G8rsWgGH71vbuO0EB9y7r7W3kg/XqvfPf6ffYgVpDfBOI/pOVOLE1WxhSEyuRRQFE/
+         gogcFHrevGF+Gu7FSHzLcqIp42tyq7kwV4+ZL+ew2OFgt3de6k7H1H3ANT3ogdb+laqg
+         RYYvmY28TvXRSUHyTkQQG/lHDb7AjoGqKcC2OXzJ/cjWxHqHK5AB3KSg6eNWKKYnbWJT
+         6hvvf8r0uP9/m+7lXvGV7GoKWvWGGqLQwtWK320S6hSRRt16yvzSjOQZ26dUF2cRPmQj
+         c2VQ9KnKne2QX4Y3lbdmNZ2BAsxoF2d9RDlJ3wmOlb67ahoKe3orFdRMaU8oTzLbXJZ7
+         ICkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702424042; x=1703028842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TtJTpyn6WHnHGJdQw4Qk327F16W+w6nqd2j0/8/aQGg=;
-        b=YpWfPeexs8snh78vcZf3XNaO4F6Z4pHVf/xs9m5RWlg9uDU9FxUwiJKY34eTJ+n+nt
-         ysDFiB/N/v6LzD5XH3/YnhYQPtrEclZMXWYwXa4HHpOjn4gpmai2g4R2aKv4FKUDYdGW
-         LEU5x0IlI9q/TJO195s007g1isaUjN5H3vovkWY4HOv6We2ObX39D15Jyl3lCJYqdZTV
-         oY+LRmWpvz1YKa5qm/fFJkuvtJotBp5tpTDxqcPZrQL+3SGhZvKfa/MPOjxZ9IBlUn8C
-         Un4rEmPVyzxRSo3Ig6/bjuRucR/QOsI6yt2UYLDF8sD9ejj5AWbT1EOdBj937YSLvcl9
-         2BKg==
-X-Gm-Message-State: AOJu0YxNXl5NPDgOONMMa4sNg4R5E0KirEdLFleGCMakDlIjCEka5Elr
-        lTQKNlpc8YCF82ThKoBSXSwne9GKhcNKpces+r8=
-X-Google-Smtp-Source: AGHT+IHCY5+Y1tkrzrKpX+SOVRIfVFFKwbCOM1fg2+bB2QO5CZhoT5QRozIYql6CKJDECrDXP1XSG+88KNrIHJj/L7o=
-X-Received: by 2002:a05:6602:2bd4:b0:7b6:fb93:89a8 with SMTP id
- s20-20020a0566022bd400b007b6fb9389a8mr6566058iov.31.1702424041698; Tue, 12
- Dec 2023 15:34:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
- <CAKEwX=NXcY3_GuKbh0=Ceg9wj=7u4y0NgmfSVEG3-+deY0jiWQ@mail.gmail.com>
- <CAJD7tkbErWz7Rjn-JdY8LjSW=GzEyyrNeJ5P1ipChFSufmQmLQ@mail.gmail.com>
- <CAF8kJuMegmMD3+YZfvsW3h1y1z1-kH7SiyJHPVnrSc89OZASuA@mail.gmail.com>
- <77d628dc-ab8c-4d8c-bc63-7e4518ea92d7@bytedance.com> <CAJD7tkZCxwDpNm-jQv_ieDvYhrtvMTXXjRp9_dQW3_VqYgUUsw@mail.gmail.com>
-In-Reply-To: <CAJD7tkZCxwDpNm-jQv_ieDvYhrtvMTXXjRp9_dQW3_VqYgUUsw@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 12 Dec 2023 15:33:47 -0800
-Message-ID: <CAKEwX=PfRNLL_t5q8vfEKA_rxgFcAer=9EFwLWDo9kDsmroAGw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
-        Chris Li <chriscli@google.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+        d=1e100.net; s=20230601; t=1702424277; x=1703029077;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JDRHHu41MUvYy9KEdDWgKfdTcRdh7spHhW6VGjs11Mo=;
+        b=Z8hhhH+BbpAyUtZ0hb73Q62E7vgMKIEBWtTFawS8cgP+cNkHqQraG2vXJhhxtifEef
+         jPdSpKkyr1vw2KK3F93vZeGUTybP3Cz3cDcp+oQ7zuqsAkff7GO8+aCZzcPhJ5Ma3PLe
+         njjLeG1F5WKc4zITcswYWOG9wC+v8QH3wa2hc1EKg0U0Z1WZdYPMkuryfUFRU3gVcx76
+         ti0k3r2zAtcAkNvig9j6PexZVd3spGc35bIunfCZeCWMwa9Q81HW7llk2DCtKeQqsbxw
+         8SaMcxGJB+DgM84vW8s3ecp+/KoFEhltgPczPo7Gs/BPDZEMDaWSTeWuRk8KCVfOvdNJ
+         phmw==
+X-Gm-Message-State: AOJu0YwdHdESMWz83XQkCK7fPdXWNVFxl2laKibNuKKBpOftzGGutOj3
+        WZN6ZNn1ONRpnUTH3zXT23k=
+X-Google-Smtp-Source: AGHT+IEyCBBiSFw4UjL5YO9pJqkRzY4Ck6yvZL6gY29TnAwnQL/bblhhtoKTb3h3AIaOiBjMrnjJJQ==
+X-Received: by 2002:a05:600c:54cf:b0:40c:32ee:3837 with SMTP id iw15-20020a05600c54cf00b0040c32ee3837mr1849173wmb.173.1702424277130;
+        Tue, 12 Dec 2023 15:37:57 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05600c198900b0040c490db950sm7912788wmq.47.2023.12.12.15.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 15:37:56 -0800 (PST)
+Message-ID: <8a9d03eb74918123615cc3579cefc484566cad5d.camel@gmail.com>
+Subject: Re: [PATCH net-next v2 2/2] selftests/bpf: activate the OP_NE login
+ in range_cond()
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Menglong Dong <menglong8.dong@gmail.com>, andrii@kernel.org,
+        yonghong.song@linux.dev
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Dec 2023 01:37:55 +0200
+In-Reply-To: <20231212131031.3088661-3-menglong8.dong@gmail.com>
+References: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+         <20231212131031.3088661-3-menglong8.dong@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.50.1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 3:27=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> Let's split the rbtree breakdown into a separate series. This series
-> has irrelevant (and very nice) cleanups and optimizations, let's get
-> them separately and defer the rbtree breakdown part until we get data
-> about the xarray implementation. Perhaps the tree breakdown is not
-> needed as much with an xarray, or at the very least the implementation
-> would look different on top of an xarray.
+On Tue, 2023-12-12 at 21:10 +0800, Menglong Dong wrote:
+> The edge range checking for the registers is supported by the verifier
+> now, so we can activate the extended login in
+> tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
+> such logic.
+>=20
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/reg_bounds.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
+testing/selftests/bpf/prog_tests/reg_bounds.c
+> index 0c9abd279e18..49d8d4bafe99 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x,=
+ struct range y,
+>  		*newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b));
+>  		break;
+>  	case OP_NE:
+> -		/* generic case, can't derive more information */
+> -		*newx =3D range(t, x.a, x.b);
+> -		*newy =3D range(t, y.a, y.b);
+> -		break;
+> -
+> -		/* below extended logic is not supported by verifier just yet */
+> +		/* below logic is supported by the verifier now */
+>  		if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+>  			/* X is a constant matching left side of Y */
+>  			*newx =3D range(t, x.a, x.b);
 
-Actually, kinda agree - I quite like the cleanup/optimization done
-w.r.t dstmem reuse :)
+I think that some crafted tests have to be added.
+Note that reg_bounds only runs a subset of tests during CI
+(controlled by variable SLOW_TESTS).
+By default only randomized and crafted tests are run.
+It appears to me that probability of randomly generating specific
+ranges explored by this series is quite low.
