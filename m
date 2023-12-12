@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7E880F991
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A24B80F997
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377372AbjLLVh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
+        id S1377367AbjLLVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjLLVhz (ORCPT
+        with ESMTP id S1377185AbjLLVkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:37:55 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB59DB3;
-        Tue, 12 Dec 2023 13:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702417080;
-        bh=fvRCGNHhInfrca07PkN6n9fo3WBgL+C2V/czG3LgI6o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KUkMEO8R0i7Wa1ufMi6lexwcEjqPNrQG5aNDi8Bzdo/avKU80eHkcTANG5sAtqa0T
-         Qh8ghOl+9gNc+/IrxPagtmYac0hzEXyssM0LOTFShpvjXTR0OJDRafgb2dRjg+7woN
-         xT5KAGeV5ZDUJoPt3NP6CxJgsfDwYwmcEzrv4jliJG3o27C3lUYQl6l3pq7C7ldcqu
-         T9FKxi22dwTBJImanc0NgQ5h2zjE+6tM8EdZS9OVk/eb8LwFiOWX8oVTYZh7OdizeE
-         UHj7kbE02tphhAKyiA2YYqrWBHv1tFgGXEs9oB8D4VNfsG1nY1mlSf/dBirX/DiIAG
-         AHxEmmKq78xMg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SqX6048vVz4wcX;
-        Wed, 13 Dec 2023 08:38:00 +1100 (AEDT)
-Date:   Wed, 13 Dec 2023 08:37:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Subject: Re: linux-next: Tree for Dec 11 (drivers/perf/riscv_pmu_sbi.c)
-Message-ID: <20231213083759.738f0798@canb.auug.org.au>
-In-Reply-To: <CAHVXubitXvkWmvHd7JXs5kTZC4L2VvOD2B_ue3D5hUhevOpwfA@mail.gmail.com>
-References: <20231211172504.058ad6b6@canb.auug.org.au>
-        <846f4d8a-16ad-4ce2-9bcc-34e03f057421@infradead.org>
-        <CAHVXubitXvkWmvHd7JXs5kTZC4L2VvOD2B_ue3D5hUhevOpwfA@mail.gmail.com>
+        Tue, 12 Dec 2023 16:40:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69D2B3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:40:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3BB30C433C9;
+        Tue, 12 Dec 2023 21:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702417223;
+        bh=W+a8QMxDJQ/wYzGPICirRFBKNDviDAgz3f9h+vYPOVs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ahltqe3GMajhJjOwZIMS9LnC1dVNv/CJeMj99NUsY5zFpeify4fEmCnVLrIz/WA5B
+         ilQQlRw/Xe8TI7WdIfHPQYAKP5rdzG8CH8Zs18AMs8DUMhnrS4bnzK+axx0d6JHBsg
+         u58Ih445lqMrBnj0Szjl72+txqphW594iZ6/u52lwWhtBpbgUt+Qyvc8k4FABBpyFv
+         CXS4fb2E4v6QkfsegyCYmh82PA9InOlT21aui99zGZZvOuamjqgVV1qMW+AvYcOYaF
+         iT47kGgYTzp4wxgJ0uhnno41Ypl/RSfVshxtyu47MgRsXCMNlD7MjJWpcWcqF820pc
+         q9eHw4EFsAN6w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 233A6DD4EFE;
+        Tue, 12 Dec 2023 21:40:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qbFGRDteV3hlvbqKI=wJrAu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [v3] qed: Fix a potential use-after-free in
+ qed_cxt_tables_alloc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170241722314.18097.10660076112019451693.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Dec 2023 21:40:23 +0000
+References: <20231210045255.21383-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20231210045255.21383-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     aelior@marvell.com, manishc@marvell.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        Yuval.Mintz@qlogic.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qbFGRDteV3hlvbqKI=wJrAu
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue, 12 Dec 2023 08:24:54 +0100 Alexandre Ghiti <alexghiti@rivosinc.com>=
- wrote:
->
-> On Mon, Dec 11, 2023 at 10:22=E2=80=AFPM Randy Dunlap <rdunlap@infradead.=
-org> wrote:
-> >
-> > on riscv32:
-> >
-> > ../drivers/perf/riscv_pmu_sbi.c:1015:35: error: initialization of 'int =
-(*)(const struct ctl_table *, int,  void *, size_t *, loff_t *)' {aka 'int =
-(*)(const struct ctl_table *, int,  void *, unsigned int *, long long int *=
-)'} from incompatible pointer type 'int (*)(struct ctl_table *, int,  void =
-*, size_t *, loff_t *)' {aka 'int (*)(struct ctl_table *, int,  void *, uns=
-igned int *, long long int *)'} [-Werror=3Dincompatible-pointer-types]
-> >  1015 |                 .proc_handler   =3D riscv_pmu_proc_user_access_=
-handler,
-> >       |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~
-> > ../drivers/perf/riscv_pmu_sbi.c:1015:35: note: (near initialization for=
- 'sbi_pmu_sysctl_table[0].proc_handler')
->
-> I already sent a fix for that here:
-> https://lore.kernel.org/all/20231207083512.51792-1-alexghiti@rivosinc.com/
+On Sun, 10 Dec 2023 12:52:55 +0800 you wrote:
+> qed_ilt_shadow_alloc() will call qed_ilt_shadow_free() to
+> free p_hwfn->p_cxt_mngr->ilt_shadow on error. However,
+> qed_cxt_tables_alloc() accesses the freed pointer on failure
+> of qed_ilt_shadow_alloc() through calling qed_cxt_mngr_free(),
+> which may lead to use-after-free. Fix this issue by setting
+> p_mngr->ilt_shadow to NULL in qed_ilt_shadow_free().
+> 
+> [...]
 
-I have added that patch to linux-next today and will keep it until it
-turns up in the sysctl tree.
+Here is the summary with links:
+  - [v3] qed: Fix a potential use-after-free in qed_cxt_tables_alloc
+    https://git.kernel.org/netdev/net/c/b65d52ac9c08
 
---=20
-Cheers,
-Stephen Rothwell
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---Sig_/qbFGRDteV3hlvbqKI=wJrAu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV40rcACgkQAVBC80lX
-0GxV7Af/QwhYbcoWsMdJIIFO0tko1rCwK/E6gTa1AFUsTcmChBp8DqtUyZLBwFX9
-E3HXxUvLoEAra02Icv+m5r2ngYJTbRN+uzvqhE14XrifnRZxaziquztjC6s/U/h7
-OeLeOArcDrsT3yIZREl1Hee7M9g+V7j7VfYQjBrXU+K1Gr8H8WWSw579dVw++I4e
-w9rPGbUorYwtQiv47BXUUSbRXCcWs+6A3mvjFmXIkUSL5E+6F4C+KmxvAW1CZOg1
-2CD0L1sjj9+9vig5ssrAz8nuDviPQ0pHdzCm30tYPxNFVfl62mhVwD5Igx2M5Jrt
-scG4B/UIqJ8HKCxEeZfPtYXgZVKsxQ==
-=CDKO
------END PGP SIGNATURE-----
-
---Sig_/qbFGRDteV3hlvbqKI=wJrAu--
