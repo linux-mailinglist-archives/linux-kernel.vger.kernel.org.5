@@ -2,73 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F297880E67A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:43:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFB380E671
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbjLLIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45258 "EHLO
+        id S230005AbjLLInW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:43:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjLLInj (ORCPT
+        with ESMTP id S229489AbjLLInU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:43:39 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4E6CF;
-        Tue, 12 Dec 2023 00:43:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702370625; x=1733906625;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wgVHBzqoKPPGjfmpxOQWTXb8ZDh9UV5MdaG4pwJ/vWI=;
-  b=YeZFOe5+gHlb8iFFB/pn7raHKb2flh/Jngf/A6tw2hzcTz/BZjhgAvaR
-   mmTmZjGbwrTsOg4cYv94DoxZyiUub8zU36iLPd3EgP2dp6qWPub1nwq+Q
-   t6ZEI1kEFRPzqyMxzgX04Bgmgjbwc2sZ9tEaZ4iOGFaHTaHZK8gEe3b7I
-   fdFkkFadZM+9QYsAuRi7nfXGyUYih2FJf8oUbOt3ddwWt0NHwP0qlDWRx
-   dRlRSrez4h8i4gH5uIHMDooD2+NuGkMZi5Hsb22kBHGitz/nq7bDyIJT9
-   v9fgnl2jgibwr5jvcH2vYYCQSXWi1xidU6lvUhgmHOMmVfHbfOuKEzBRh
-   A==;
-X-CSE-ConnectionGUID: WiO6fCDNTCCj2lq+o3a3hw==
-X-CSE-MsgGUID: am4cvTE2TnicaDYOgADGLw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="asc'?scan'208";a="180345961"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Dec 2023 01:43:45 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 01:43:38 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 12 Dec 2023 01:43:36 -0700
-Date:   Tue, 12 Dec 2023 08:43:06 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Conor Dooley <conor@kernel.org>, <linux-riscv@lists.infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>
-Subject: Re: [PATCH v1] soc: renesas: make ARCH_R9A07G043 depend on
- !DMA_DIRECT_REMAP
-Message-ID: <20231212-ambition-karma-4834afd4eb16@wendy>
-References: <20231211-primate-arbitrate-fbcd307a0b00@spud>
- <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
+        Tue, 12 Dec 2023 03:43:20 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9902ACD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:43:26 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-33334480eb4so5964699f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:43:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702370605; x=1702975405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kQcc/YfPssm0xogTrIWChkgBPwvOx8b6CqdMK4YnOOs=;
+        b=U/cmr20qDgvBQoCdBrSSGfeuqctrTO6pNStwkCaZrO3jTUyQeWwErPbPFz4NeQABc1
+         yLpDbBoHkKgMPhDJFVbLRGBmjM1lSCC+zxDyVaPuDQK8BvFhbFVp98qsG37B9b7Pi3xk
+         pthcE2ooK5LYgsESFqSmCuc4IzBD74WgvehvdrS2TMwaOWv88X8JqKQK4RBRpfCUjY8F
+         UC9KIS586HX9tbpPXAaFY+WsZEhgrwCoZRMQLLzfDgq1JkrXW1sqjz9nuripQynEM7Kq
+         2HBA8IzRpPLctUw1MY34Wy5NYq+p1gnIImSVpA2faxKU1aOMMClDNROEpLWPOVVvYOka
+         9ryw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702370605; x=1702975405;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kQcc/YfPssm0xogTrIWChkgBPwvOx8b6CqdMK4YnOOs=;
+        b=L4fGpm4FxGLQ4mNCtN2g4i0KRMJJiPjlV7fqd+u1q4meZi6H/lHYltcWb3kD9isHjB
+         e5I8R/39vH5D9KqkpZzrK9651K0R6Pnhr4DBSP7VD4uD9CyCx5bHosmlnIjKaZXQ6muo
+         xZTeXs8bas1HD2HNxOQiB74MmdzvP7MxPP7p/3anKUdbmm3VORwN9+l9qG00BjD1ZB/o
+         f6hf3WxIk4bBXdk2PPv+2gZxCHvYxZe8Y9RMxrjSBhatubjcJo7It/sJ7arVnnzE92So
+         d4J8JwaGF8BR3yWTix+XiyHL0gOrmGYK0o3fM69MsdV9VX7JBv1fBHQKLA2hD7TUfbGG
+         DKiQ==
+X-Gm-Message-State: AOJu0YznpWFw/QuLOrXi4xfNDxcu4ESryfV33V5yxCSqddzHPCHk7eQV
+        2Do1Y9LjrKxlf83L7hAtksHcsw==
+X-Google-Smtp-Source: AGHT+IHPd1l/xK0kEMMJvemrraSx1ErJgBfqV8lx6KiQMf8m02BSaQnQttN2+iNTwrjGu6AAynU+Iw==
+X-Received: by 2002:a05:600c:1ca7:b0:40c:3742:5a9 with SMTP id k39-20020a05600c1ca700b0040c374205a9mr2516559wms.177.1702370604980;
+        Tue, 12 Dec 2023 00:43:24 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id m3-20020a5d56c3000000b003334520e49bsm10326308wrw.53.2023.12.12.00.43.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 00:43:24 -0800 (PST)
+Message-ID: <7585685b-151f-46fd-bb57-29000b916e1e@linaro.org>
+Date:   Tue, 12 Dec 2023 09:43:21 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="e2oQTY8OE7jKY5sj"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 05/16] dt-bindings: clock: Add StarFive JH8100 System
+ clock and reset generator
+Content-Language: en-US
+To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "conor@kernel.org" <conor@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "emil.renner.berthing@canonical.com" 
+        <emil.renner.berthing@canonical.com>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-6-jeeheng.sia@starfivetech.com>
+ <1ebb4733-0f1d-46ea-b399-34af7df088ac@linaro.org>
+ <090f2d44fc8b4113b5b5e002d15b0675@EXMBX066.cuchost.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <090f2d44fc8b4113b5b5e002d15b0675@EXMBX066.cuchost.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,76 +140,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---e2oQTY8OE7jKY5sj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 12/12/2023 03:47, JeeHeng Sia wrote:
+>>> +#define SYSCRG_CLK_NNE_ICG_EN						108
+>>> +
+>>> +#define SYSCRG_CLK_END							109
+>>
+>> Drop from binding header.
+> Do you mean don’t define the number of clk in the header? 
 
-On Tue, Dec 12, 2023 at 09:19:32AM +0100, Geert Uytterhoeven wrote:
-> Hi Conor,
->=20
-> On Mon, Dec 11, 2023 at 11:06=E2=80=AFPM Conor Dooley <conor@kernel.org> =
-wrote:
-> > From: Conor Dooley <conor.dooley@microchip.com>
-> >
-> > Randy reported yet another build issue with randconfigs on rv32:
-> > WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
-> >   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=3Dn] && !DMA_DIRECT_REMA=
-P [=3Dy]
-> >   Selected by [y]:
-> >   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONP=
-ORTABLE [=3Dy] && RISCV_ALTERNATIVE [=3Dy] && !RISCV_ISA_ZICBOM [=3Dn] && R=
-ISCV_SBI [=3Dy]
-> >
-> > This happens when DMA_DIRECT_REMAP is selected by the T-Head CMO erratum
->=20
-> or by the Zicbom extension support?
+Yes
 
-Probably, yeah. That was just the conditions for this particular
-randconfig IIRC.
+> I'll have to define
+> It in the driver then..
 
-> > option and DMA_GLOBAL_POOL is selected by the Andes CMO erratum. Block
-> > selecting the RZ/Five config option, and by extension DMA_GLOBAL_POOL,
-> > if DMA_DIRECT_REMAP has already been enabled.
-> >
-> > Fixes: 484861e09f3e ("soc: renesas: Kconfig: Select the required config=
-s for RZ/Five SoC")
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> > Closes: https://lore.kernel.org/all/24942b4d-d16a-463f-b39a-f9dfcb89d74=
-2@infradead.org/
-> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
->=20
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v6.8.
->=20
-> Or should this be queued as a fix for v6.7 instead?
+And this is a problem because?
 
-Depends on your opinion on how critical such a fix is I suppose.
 
-> > ---
-> > I don't know what the exact fixes tag here is as I did not bisect with
-> > the randconfig, so I blamed the one that added DMA_GLOBAL_POOL.
->=20
-> Bisection leads to commit da323d4640704001 ("dma-direct: add
-> dependencies to CONFIG_DMA_GLOBAL_POOL") in v6.7-rc1, but that is
-> merely making visible the symptoms, so I think your Fixes tag is fine.
->=20
-> Esmil: I think you need a similar fix for ERRATA_STARFIVE_JH7100 in
-> your tree.
+Best regards,
+Krzysztof
 
-I probably need a similar fix in my tree for that, since I applied
-Emil's patches...
-
---e2oQTY8OE7jKY5sj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXgdGQAKCRB4tDGHoIJi
-0jbuAP91y7WApBZFEeiqbfME/Mo6p2pI+fFTDQeQretgcPSVNQEA0ZQFUcwsk10K
-K1XlumMMEm3Lyb4/BNoAfFhLqNBlIA8=
-=AJxt
------END PGP SIGNATURE-----
-
---e2oQTY8OE7jKY5sj--
