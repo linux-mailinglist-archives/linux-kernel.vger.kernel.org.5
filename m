@@ -2,242 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26F780FB57
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7781280FB59
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378014AbjLLX0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:26:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        id S231690AbjLLX0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjLLX0e (ORCPT
+        with ESMTP id S232490AbjLLX0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:26:34 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2A09B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:26:40 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50beed2a46eso1497e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:26:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702423599; x=1703028399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qrt2s01oMZVD4mhR15uTSmxZTKdPalmcYJucqtImqko=;
-        b=XN+XxYf31SslepDApLBoMqqnVxyZIchqVOjOoP0ufTpTIHCjfRoRmCxIvcocJkDyNn
-         26EHQaMb95eOPy0VN5g5TnjitrXuemhFU9FDULXohLuj0eaF6EVQ/AO8bvZAiunE8bN4
-         AMg/TAhFyRwOlfWGuT9LW3+E8GvcsPjVwfMmyoPKjg/cZScoEoWWe7KIEy15NaKrdQ8G
-         TA4o6JzgSd+VpQfMV2jsYUhhFCXP1r4eKt0FSLSpESEDRtbsFHsg4YnyjiIsY2ex3hpu
-         M9Kjgep6QLnDq+jLmDZTLOd7P1KH09QgWbJE48oG6K5KMOcSTpeUv7IN2vvjGHKIhMkV
-         5xSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702423599; x=1703028399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qrt2s01oMZVD4mhR15uTSmxZTKdPalmcYJucqtImqko=;
-        b=ACXGXl4sPPn6CmMkHFuXafHcsj2j+vK3kEEYt8poiQ6SEoCo94C4jOPArvTnzfwZzZ
-         VK3k6NSPZiQwy+q4vObRA02QJ75NzjWuk8VDru74KLXDCMmOP9cz60n+GUhHzGdaVJZG
-         RBcZNmoQ4zoYjtR1w8nCOvTJ5NYTuSJ1AC2OZhOk91Rdn1ArVb2WyHZUO8b9k2YyF6J2
-         QmxZER14G+JTjTa2+PxHG1lVDwe/MRp9jBQsaRGYZuvqnGy+Q6H/1dKMnlPiuEJGh8l+
-         LXsrrI1L+H9//WFeJImjiYrcF9+cHDowGEz7N4WHTMUSDlbnPz3tqgcSHYHef9+4dGif
-         1h0w==
-X-Gm-Message-State: AOJu0YwzX6+GVxTJJ7klbxw+ydptTs3p+fiiKO82B8I0sZqOfQyA4XUi
-        z9aYpqAZnR8ZY5lvjpf91lJATOw75vZ6Jba4mEQ+bg==
-X-Google-Smtp-Source: AGHT+IHnAXl/bM8sb+akXNIjO3WtnqzYgqYnJROqM0OXHKZ2Tp0uHSq5BzSUbTCSJ9WOBYraJ+JL60uEaTWJN7OgsPk=
-X-Received: by 2002:a05:6512:6c9:b0:50d:1a0e:ce06 with SMTP id
- u9-20020a05651206c900b0050d1a0ece06mr226121lff.5.1702423598909; Tue, 12 Dec
- 2023 15:26:38 -0800 (PST)
+        Tue, 12 Dec 2023 18:26:36 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2067.outbound.protection.outlook.com [40.107.244.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A16AA;
+        Tue, 12 Dec 2023 15:26:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WtfwEonri4XoWcQpYqISO8Aj26hCvuHd6QdNCKJh+xSFc6VOcmEJxApyr0XHrQmiI23exGvgWDUwVye4dwvl4/KBy4zuploqCloIrbZJcXC2FCGqRVPByFfp3EM19nPJ5kqtlcWOk4v+x/FpMpsJN41400vHg0+mh7MKIILvXXGwPzcsGrfmxAGNinUJhL6SZTwej4Zqn3UaK6awVzSwg7ZiSXO5B2st5+Umsh14bhh4ckZE4vof/Bqg3001W1Ym0ZhWgcoSVezgWo9wUoizIrBaXc7WhxIDWq+1PpKQVtD3UotdFRalEnCNtC9i2d5iqH8StOZdlHZc1wcNWpX52Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kAeYh07IaJqFQNQOZpHKvjFAub0xGlzznmwwXTzkgiM=;
+ b=BnXuWuDuYGpXJrPsSJkeAt1YbFqF+9AA1SdcZezzavoBl7QOpjUUTbC1sNd73qZgFeD6SMUNKZcboqsDdHTJyN4NWVmp13SSpg7penQ0h2jXsZDkUkK1Ks608wIpJvjPI2pLlRdhoDWifGP4HuEsKOLZ3ZjoyRTQiuSs+WKds15oyupFpas79pMggzlVrXeAmgdtt5SBiFliiL22JQ8fh9zjjybAGdmPuy2v+Jg7ID6YRJa0R0snk/NVtNVJwlwgoi4DZUhyiMM28HFsIVl0bptiO01xUzn2s0L5SHf5Lq0ziVS8k42zIp9y6PgY4dgFUHy0ReaDz9pUmVZ6lrCFUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kAeYh07IaJqFQNQOZpHKvjFAub0xGlzznmwwXTzkgiM=;
+ b=TiHBqR45WhnuxIr/PKdT83SpJiWlPDbHhLHeyy+N4kV3a5xWwqRmYuWnfz6endthunLnvc8GAB3Jpx65tnQZDr42vREoLPwI9dEX4p9qYrsYlVMhRPLCyZKALC3/+xps8jjr1GjNRiQg1C6bFwP0Y6O9Y4kYGBz3gS0w3Zbvuak=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by DS7PR12MB8289.namprd12.prod.outlook.com (2603:10b6:8:d8::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.36; Tue, 12 Dec 2023 23:26:35 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::3341:faaf:5974:f152%7]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 23:26:35 +0000
+Message-ID: <8c1fd8da-912a-a9ce-9547-107ba8a450fc@amd.com>
+Date:   Tue, 12 Dec 2023 17:26:29 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v10 16/50] x86/sev: Introduce snp leaked pages list
+Content-Language: en-US
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
+Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        bp@alien8.de, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-17-michael.roth@amd.com>
+ <0e84720f-bb52-c77f-e496-40d91e94a4f6@suse.cz>
+ <b54fdac3-9bdf-184e-f3fc-4790a328837c@amd.com>
+ <b1b0decf-dc0b-b1bb-db9d-2a00a8c81b0d@suse.cz>
+From:   "Kalra, Ashish" <ashish.kalra@amd.com>
+In-Reply-To: <b1b0decf-dc0b-b1bb-db9d-2a00a8c81b0d@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BN0PR02CA0017.namprd02.prod.outlook.com
+ (2603:10b6:408:e4::22) To SN6PR12MB2767.namprd12.prod.outlook.com
+ (2603:10b6:805:75::23)
 MIME-Version: 1.0
-References: <20231212230224.1473300-1-weilin.wang@intel.com> <20231212230224.1473300-2-weilin.wang@intel.com>
-In-Reply-To: <20231212230224.1473300-2-weilin.wang@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 12 Dec 2023 15:26:27 -0800
-Message-ID: <CAP-5=fUNkFvSxCz=Tss6FSR2xZPGkteVgfeRWMjgCAosDj-CLg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 01/18] perf stat: Add new field in stat_config to
- enable hardware aware grouping.
-To:     weilin.wang@intel.com
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Perry Taylor <perry.taylor@intel.com>,
-        Samantha Alt <samantha.alt@intel.com>,
-        Caleb Biggers <caleb.biggers@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Yang Jihong <yangjihong1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|DS7PR12MB8289:EE_
+X-MS-Office365-Filtering-Correlation-Id: 517df2c1-6902-466a-4de7-08dbfb69c846
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BXd42ElP1wNJ0d8pjXhdQ6fOIFhqtr8+vp/KjED2RjTF6A4BEWFloBrAEBPa9t0OxqEv2ccZMNWgL9PFVcl8sppgKu7pKmRvbI8FMmReS7Fk4FPd7Ig6Fw0dH3NUCgYmOsfEdp2tXWLoc98rLhC2fmjLca1RsOWZx6thM+2WxHQP2YOy4Wmv6Vr6FWq2fuO1QA8dzB1gP1zWtun61KvWJJQwZkzqwrtMsd7YLSyEI1Os4QPssEGjKqIx+OcpAMIH6EtK0MBXdg3BU94xrViww/N4ZoEiWzBC5mDXxRtYT+R7lNOJc8scGupdjdToQ+Ts4qWqu/92sE9j0eGxqVwKa4bmt/h+G/KRiFQvIatMlgHMuTFFwFV7zEgbhkFhToWnJvWyAorgA4ceyNxjRw732WizmVpb+lBQtWmxlWboyyj9ICWUAYYnDqe1/SAIP4Fw4z55QDAPstt+54hHa4+teybwwIIQ2kcsa4xQlLY2H1hFTpYJL1HvGYPAfDrgukfqcMIXfJ672oChQqWniZfHHmP0NNfE1XGZHZwB4vWgFNvugQXhJdHNcJwt6lHIRrzoGahiGLiPFX3Viy5u3jxtGEhpLrIhOKdve5Z+zmZioUOHdeX/rpQ2R5yVloIbwCB1ortH6Wwvs5cuX3lnbuZlKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(396003)(376002)(136003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(478600001)(53546011)(26005)(6512007)(6506007)(6486002)(6666004)(2616005)(7416002)(7406005)(83380400001)(5660300002)(2906002)(66946007)(66476007)(66556008)(41300700001)(110136005)(4326008)(8936002)(316002)(8676002)(38100700002)(31696002)(86362001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXZvOFE0YzFneU8wWEJqNUgvVlFZNm0wU0xod1ZmUnB6S1ZjdVhZc0hLVFVY?=
+ =?utf-8?B?S2p1ekdubzM3VmhuYW5lQUs1Q0FreVEvdU5MamJ0VktyTnphWlZ6ZDJMTlps?=
+ =?utf-8?B?bHBYWUYvNS9kYW9MQVVkanJmd2NPb3dTclFKd29ReVF6b2hjOWdIT2o4OGRz?=
+ =?utf-8?B?L0Q4UW5kZHZlSGtORE9uWEdBdlRxZjMzRXIvdjdscjQzaU9nVG10aXIwbTQ1?=
+ =?utf-8?B?Wk5OOEhoa2ZFbjlIUTErb0gvU3dTZW1ISXV4QXlSZFF4ZlBiVW4xMmdISTZB?=
+ =?utf-8?B?SGszdHNTUkFlM2ZEdE1ES24veFkvL3h3SnQ0SkJPTUNIU1k5ZGlIL0IyUVUz?=
+ =?utf-8?B?aXdHZE0waTloNzE0THZXUG9KVXFyODJObmwrUlRyM1U4c2ZIT0JlRVVsV0R5?=
+ =?utf-8?B?dGNxTFR6TldGQzN1QzRnaENvSlpDVU5TeHlKYjk1RHRIQnZ3K3hhUWxqeVk5?=
+ =?utf-8?B?VjVoMGJtM3RKMGZBN3hubmhjTzh3SnJFa1VFc0M0VTBEVGZIRHdQV2pOOVNI?=
+ =?utf-8?B?QXpCM2d4RTcwRXhFdEo1NUxwYkl2U2xqZEp4Q1hpSm9UalIySVFEREsxNndk?=
+ =?utf-8?B?bWdYK0o1TElaRVhUb1Q1MVQyNzdHck13azFJaHFUMmhXSGYzTVZ3SFk0REMr?=
+ =?utf-8?B?Z2haT1VWTWF1RzJyTHNpVVlaaDhINC9Cd1AyVmR5OEhrRDk4Z0JuZkNOS2to?=
+ =?utf-8?B?T0RkNVlWZ3Rac0dxMnZjTE9zdW1IVEd4Y2pQWkUvNERGTStzcmZZclB5cHdm?=
+ =?utf-8?B?aVBrdnB6dGx0K3d4cUkzaEtxZ28xZk9hWThMcjAzNmFrZXordWtJSC9Jbisz?=
+ =?utf-8?B?eXlPU1Z4Sm85Vm5yb1hWZldkWVlyMjdWaERuTHU1ZEM3eklodjRIWUFoRDI4?=
+ =?utf-8?B?ZzM1bjRLczFGb3F2UnFPTTVBWm9XMkVPT0J1aXkzWkt2TlNaZ2V4V1gwUndm?=
+ =?utf-8?B?cExpK0xUV2V6dXFpanEwUUc0d1I1d3dFNWttT21VSWtBbVRjbSt0ODFiZktm?=
+ =?utf-8?B?eUpWZ3hoOWtjRUszRkpNWUhUQjJZVi82M2c1MEZwYWdwOE9FS3ovbm5vQUdC?=
+ =?utf-8?B?Wk5zaFMySjg3aVFRSnd0K3dQaDlubFdNM1ZFQy8wTHBLbW03MzBHTENGUk8r?=
+ =?utf-8?B?RjFpU09MTnFaQnhFK2JYRFpjU1o3d2VYbXZXbVRPZGpITFdFZjU0dWZnOTht?=
+ =?utf-8?B?T0JncWxaTU5kdmtzNHFXZnZBUVZnOXphdjZGMzFuYnROaG9xbnV3UHdkeHNx?=
+ =?utf-8?B?OXBqTTZYZFloY1ZRc012Zkp1cXJzYyt6eU1uT05xM0xRSlRSdVZBWE5BL2R1?=
+ =?utf-8?B?RThXTGNOZUhpaGJhSzl0MGZYcWZkYUFxcmpvRG9tVkx1blVKWFoyTUNXLzNq?=
+ =?utf-8?B?RVRaelQvbm1FVlRFa3pWRWFmb2NIdktrOHF2bVJUUWtlSW13SUg1N0F0bmNn?=
+ =?utf-8?B?ZUNZUFhSMmcwZW5paDVnUXVBN1FuNHdKbk10dm9EK2NYS3FIeTB4RDRSZWdl?=
+ =?utf-8?B?dm9UMVplYzRZZXpzTnVXQmJHcmtqSFordFphT28vdEZqMzYwN0JQeXZvVW9n?=
+ =?utf-8?B?cXBLZ2pMQnZyY1dZMjRyMnd3Tnp3TnFmaVJlNnl5VU8xM2ZGNjRQUGRmbTRK?=
+ =?utf-8?B?ZVdjNzNXTXZRdUNiajIxRmxBbmFoWHh4QVpOT1N5em12SDlrUUtJWjQ5UWo1?=
+ =?utf-8?B?WW1pekdZcmpVMGNKVTVESGFBWFJoajBPSjJZekNuM0VURDIxT2pBMHk1bERQ?=
+ =?utf-8?B?WGE1c3pUSHlZQVBUbGJwVjg1OFJQZTZRVlhHQU5YS0R4cEFoSU91TklQbEVI?=
+ =?utf-8?B?bVAzcm4vSHdPVmV3UG5UNHUyaERiUzZDL2thc1RYbzY4NzNtTHU2MDliRFRl?=
+ =?utf-8?B?S3Q5ckUvSDcvQlVMWVVtbVhPa1hyUlNNZXI2U1FQb0RhS3hndGl5YjluNzVC?=
+ =?utf-8?B?VFliTkdDS0Fka2xnakNvSG1CY2FWVFM5a0ZxdU5oL2NCNm02aGFSN3FDUXho?=
+ =?utf-8?B?V1NlS1Q1SUVucVRTOHJ4RjY0UnhBRVoybXI0TzlDWGIrRHNCRFZrcHNFZFFt?=
+ =?utf-8?B?Q1VRYjBXcGc2b1lzNngrQjg1WS9PWms4N2I5cHZBUURvTzlmQ0l4czlOWm9x?=
+ =?utf-8?Q?1rdVYX5XFxmxfye/j3G2Un99V?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 517df2c1-6902-466a-4de7-08dbfb69c846
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 23:26:35.4995
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IjUoJRxm3N7+OcQiD2ZH+iulff258JyBWIIyOEJkbDj1uwYIlle5ExJD8rPi+icbSA5JHbbtAf92j6GoKUE4mw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8289
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 3:02=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Hardware counter and event information could be used to help creating eve=
-nt
-> groups that better utilize hardware counters and improve multiplexing.
->
-> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+Hello Vlastimil,
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+On 12/11/2023 7:08 AM, Vlastimil Babka wrote:
+> 
+> 
+> On 12/8/23 23:10, Kalra, Ashish wrote:
+>> Hello Vlastimil,
+>>
+>> On 12/7/2023 10:20 AM, Vlastimil Babka wrote:
+>>
+>>>> +
+>>>> +void snp_leak_pages(u64 pfn, unsigned int npages)
+>>>> +{
+>>>> +    struct page *page = pfn_to_page(pfn);
+>>>> +
+>>>> +    pr_debug("%s: leaking PFN range 0x%llx-0x%llx\n", __func__, pfn,
+>>>> pfn + npages);
+>>>> +
+>>>> +    spin_lock(&snp_leaked_pages_list_lock);
+>>>> +    while (npages--) {
+>>>> +        /*
+>>>> +         * Reuse the page's buddy list for chaining into the leaked
+>>>> +         * pages list. This page should not be on a free list currently
+>>>> +         * and is also unsafe to be added to a free list.
+>>>> +         */
+>>>> +        list_add_tail(&page->buddy_list, &snp_leaked_pages_list);
+>>>> +        sev_dump_rmpentry(pfn);
+>>>> +        pfn++;
+>>>
+>>> You increment pfn, but not page, which is always pointing to the page
+>>> of the
+>>> initial pfn, so need to do page++ too.
+>>
+>> Yes, that is a bug and needs to be fixed.
+>>
+>>> But that assumes it's all order-0 pages (hard to tell for me whether
+>>> that's
+>>> true as we start with a pfn), if there can be compound pages, it would be
+>>> best to only add the head page and skip the tail pages - it's not
+>>> expected
+>>> to use page->buddy_list of tail pages.
+>>
+>> Can't we use PageCompound() to check if the page is a compound page and
+>> then use page->compound_head to get and add the head page to leaked
+>> pages list. I understand the tail pages for compound pages are really
+>> limited for usage.
+> 
+> Yeah that should work. Need to be careful though, should probably only
+> process head pages and check if the whole compound_order() is within the
+> range we are to leak, and then leak the head page and advance the loop
+> by compound_order(). And if we encounter a tail page, it should probably
+> be just skipped. I'm looking at snp_reclaim_pages() which seems to
+> process a number of pages with SEV_CMD_SNP_PAGE_RECLAIM and once any
+> fails, call snp_leak_pages() on the rest. Could that invoke
+> snp_leak_pages with the first pfn being a tail page?
 
-> ---
->  tools/perf/builtin-stat.c     | 8 ++++++++
->  tools/perf/util/metricgroup.c | 5 +++++
->  tools/perf/util/metricgroup.h | 1 +
->  tools/perf/util/stat.h        | 1 +
->  4 files changed, 15 insertions(+)
->
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index d8e5d6f7a87a..a7a8018c3511 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -2061,6 +2061,7 @@ static int add_default_attributes(void)
->                                                 stat_config.metric_no_thr=
-eshold,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> +                                               stat_config.hardware_awar=
-e_grouping,
->                                                 &stat_config.metric_event=
-s);
->         }
->
-> @@ -2094,6 +2095,7 @@ static int add_default_attributes(void)
->                                                 stat_config.metric_no_thr=
-eshold,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> +                                               stat_config.hardware_awar=
-e_grouping,
->                                                 &stat_config.metric_event=
-s);
->         }
->
-> @@ -2128,6 +2130,7 @@ static int add_default_attributes(void)
->                                                 /*metric_no_threshold=3D*=
-/true,
->                                                 stat_config.user_requeste=
-d_cpu_list,
->                                                 stat_config.system_wide,
-> +                                               stat_config.hardware_awar=
-e_grouping,
->                                                 &stat_config.metric_event=
-s) < 0)
->                         return -1;
->         }
-> @@ -2169,6 +2172,7 @@ static int add_default_attributes(void)
->                                                         /*metric_no_thres=
-hold=3D*/true,
->                                                         stat_config.user_=
-requested_cpu_list,
->                                                         stat_config.syste=
-m_wide,
-> +                                                       stat_config.hardw=
-are_aware_grouping,
->                                                         &stat_config.metr=
-ic_events) < 0)
->                                 return -1;
->
-> @@ -2502,6 +2506,9 @@ int cmd_stat(int argc, const char **argv)
->                                         (const char **) stat_usage,
->                                         PARSE_OPT_STOP_AT_NON_OPTION);
->
-> +       /* Set hardware_aware_grouping to false on default before complet=
-ely enable it.*/
-> +       stat_config.hardware_aware_grouping =3D false;
+Yes i don't think we can assume that the first pfn will not be a tail 
+page. But then this becomes complex as we might have already reclaimed 
+the head page and one or more tail pages successfully or probably never 
+transitioned head page to FW state as alloc_page()/alloc_pages() would 
+have returned subpage(s) of a largepage.
 
-nit: we don't normally zero values like this as the curly brace
-initializer will implicitly zero all non named values being
-initialized.
+But then we really can't use the buddy_list of a tail page to insert it 
+in the snp leaked pages list, right ?
+
+These non-reclaimed pages are not usable anymore anyway, any access to 
+them will cause fatal RMP #PF, so don't know if i can use the buddy_list 
+to insert tail pages as that will corrupt the page metadata ?
+
+We initially used to invoke memory_failure() here to try to gracefully 
+handle failure of these non-reclaimed pages and that used to handle 
+hugepages, etc., but as pointed in previous review feedback that is not 
+a logical approach for this as that's meant more for the RAS stuff.
+
+Maybe it is a simpler approach to have our own container object on top 
+and have this page pointer and list_head in it and use that list_head to 
+insert into the snp leaked list instead of re-using the buddy_list for 
+chaining into the leaked pages list ?
 
 Thanks,
-Ian
+Ashish
 
-> +
->         if (stat_config.csv_sep) {
->                 stat_config.csv_output =3D true;
->                 if (!strcmp(stat_config.csv_sep, "\\t"))
-> @@ -2702,6 +2709,7 @@ int cmd_stat(int argc, const char **argv)
->                                         stat_config.metric_no_threshold,
->                                         stat_config.user_requested_cpu_li=
-st,
->                                         stat_config.system_wide,
-> +                                       stat_config.hardware_aware_groupi=
-ng,
->                                         &stat_config.metric_events);
->                 zfree(&metrics);
->         }
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
-c
-> index 0484736d9fe4..dfbcdb517b78 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -1690,12 +1690,17 @@ int metricgroup__parse_groups(struct evlist *perf=
-_evlist,
->                               bool metric_no_threshold,
->                               const char *user_requested_cpu_list,
->                               bool system_wide,
-> +                             bool hardware_aware_grouping,
->                               struct rblist *metric_events)
->  {
->         const struct pmu_metrics_table *table =3D pmu_metrics_table__find=
-();
->
->         if (!table)
->                 return -EINVAL;
-> +       if (hardware_aware_grouping) {
-> +               pr_debug("Use hardware aware grouping instead of traditio=
-nal metric grouping method\n");
-> +       }
-> +
->
->         return parse_groups(perf_evlist, pmu, str, metric_no_group, metri=
-c_no_merge,
->                             metric_no_threshold, user_requested_cpu_list,=
- system_wide,
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.=
-h
-> index d5325c6ec8e1..779f6ede1b51 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -77,6 +77,7 @@ int metricgroup__parse_groups(struct evlist *perf_evlis=
-t,
->                               bool metric_no_threshold,
->                               const char *user_requested_cpu_list,
->                               bool system_wide,
-> +                             bool hardware_aware_grouping,
->                               struct rblist *metric_events);
->  int metricgroup__parse_groups_test(struct evlist *evlist,
->                                    const struct pmu_metrics_table *table,
-> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-> index 325d0fad1842..f97d6282ba3d 100644
-> --- a/tools/perf/util/stat.h
-> +++ b/tools/perf/util/stat.h
-> @@ -87,6 +87,7 @@ struct perf_stat_config {
->         bool                     metric_no_group;
->         bool                     metric_no_merge;
->         bool                     metric_no_threshold;
-> +       bool                     hardware_aware_grouping;
->         bool                     stop_read_counter;
->         bool                     iostat_run;
->         char                     *user_requested_cpu_list;
-> --
-> 2.39.3
->
