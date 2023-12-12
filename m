@@ -2,140 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E95EF80F987
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC0180F985
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377601AbjLLVg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S1377609AbjLLVgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:36:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377344AbjLLVg5 (ORCPT
+        with ESMTP id S1377195AbjLLVga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:36:57 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C29FCF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:37:03 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so58038945e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:37:03 -0800 (PST)
+        Tue, 12 Dec 2023 16:36:30 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D090DC;
+        Tue, 12 Dec 2023 13:36:36 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-35da93ba227so22255695ab.0;
+        Tue, 12 Dec 2023 13:36:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702417021; x=1703021821; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702416995; x=1703021795; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qCOh69caXbVfDD+nz3SkSSNJ4LOnzQLxIG6SJxHDatw=;
-        b=kWzrDwvMmsJfhjS2OUJRnJ7Jc8pQ0F63OTXPGjJ22mC4F4vrT8oZVF6y4dtUGmzr89
-         O6nB8mV04/9zKblb2CRy9cwUQ4R+f9xObyOmNfsNP3Jx8SCLuzMXuiuhoZVESqrKlQl5
-         pAso5bQGRGunHFW7dLf4KvDKSZUD59wYK1Qfi0j6pD6sFfA7MyIx+iG2fa9KnWGkUc2O
-         zE2OW1EH4xOXd7mKfA54+crJjMXBkcMIPhOsDip4N/SVKxdy5aN7BxWJmTWidqPktrNi
-         3aJTI4idDGfJ6+EKQSyyS4AXhoQjxVLY8xwnFEh3Vu9llT4mdaGsryoH+7j9FIPaw0E2
-         lfSg==
+        bh=QqP0NZs3Xrf1lShIPhdYETxSBrVBzpiJjKpJblNh5Yc=;
+        b=AYjQLFc1mWm7PsZVf+mTAK5HAKJH5Poe3QMyAHDIxYkbtkv+J4MDVuGgR0FErzujJW
+         DJmboS3UaiwT5HeUUHSW7Mi7veWepqgiSn+HrTg6o4VXVTLslmzgCbdM1LIwRSWnvTIP
+         mlzUTaF13btk/yk4E0LqjFlDiHqUqzH66AK4QgReh2YaiYzuXOuZRrF4xZvEpHv7rsg2
+         XBYItqI3wTbOUhBWvI/7ceA8dCTad3fEQ1S0Z9MrJwWDQHJ/dUJ6v20pfG2rK0BLAnvH
+         kRmUrO76zkvxw8vFeE7o1HBr2bVVC7mqemNnHoLQpkzGFgoMnHAGirim2KXr+08kYPl/
+         FarA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702417021; x=1703021821;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702416995; x=1703021795;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qCOh69caXbVfDD+nz3SkSSNJ4LOnzQLxIG6SJxHDatw=;
-        b=NAHObNWkUuSNRoGmKOA8lQqpJQ6iTh2qi4ESovDKmtoWVshBqJonuRRZZtwaM0ZDK6
-         KhTooBWvhmaEOcrU0bZR8OtGNkDK4UUHrPII3hY8peg7w1iEpAB4wYjtGraGWIty3cn6
-         Wf6nUgZ4Adv4cIcKDFaqOwqPl7Bs/2mHE/VpfeFATZt21HYMmUHgbzRi53kp2smbHMg6
-         mbOJCAIgNQc8hKpojekVVdo9ELHc668btOhuKm4ukiDbopwFIzpqhKFhU6fVODpixCgy
-         lZUK7tpYxc3deF5pno3GOL1Y+fFsyddPIfGbAOR8yqYbM8dzJJ8FMLGwCxjHYOgSl0G1
-         Vkkw==
-X-Gm-Message-State: AOJu0Yxp7BbUb8tEu+MRqipGr48ZhR52B7QBhsJwmQWHYrTBeBlAKHHn
-        tp95WE3BO+rLGJL7evVWXbEwOQ==
-X-Google-Smtp-Source: AGHT+IFqqgEgVUuuLcp/jxl4AbRQVAxPSPDTSvhp/ckLGpwai+H0FWmy2ZTFwQBh1m466TRnZ7G6vg==
-X-Received: by 2002:a05:600c:2814:b0:40b:5f03:b43f with SMTP id m20-20020a05600c281400b0040b5f03b43fmr1885174wmb.353.1702417021655;
-        Tue, 12 Dec 2023 13:37:01 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id ay35-20020a05600c1e2300b0040b2b38a1fasm17954734wmb.4.2023.12.12.13.37.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:37:01 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH v2 2/2] riscv: Enable pcpu page first chunk allocator
-Date:   Tue, 12 Dec 2023 22:34:57 +0100
-Message-Id: <20231212213457.132605-3-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231212213457.132605-1-alexghiti@rivosinc.com>
-References: <20231212213457.132605-1-alexghiti@rivosinc.com>
+        bh=QqP0NZs3Xrf1lShIPhdYETxSBrVBzpiJjKpJblNh5Yc=;
+        b=dGStNsrYZOnZ4QmnKq+SwhazG2ccfOLI3X3knYzWl+yM37m8UN/i3GhSEIzlKY8Xes
+         Tat2WrvruKSoSJ1Ea1lc53Vs9UHr3NogHD2+t3RCyHI7H7/Jw1GoeR7x2biXVA+/XbmD
+         hmdK4gaC021qlV46qh7Ak1LTt7xIBCqwnXyTDzgICusBcwISTG4RCnNL2ca4NCkUtliz
+         v6rzjHqczuH4+ZiTm6wRXEFwXyQ+fcS86z5BihJ/oJMsvG3XQPrAOgDymf24u/RmSGKy
+         76mWlhda8BZ28p58ef8O2J88lixSSziPP7cnLeY1H/ZDcQ+Qnx1Gvq19zOJec3L4kqNj
+         r6ig==
+X-Gm-Message-State: AOJu0YykSIsb24nuSose2vY500n+4NGoNyQ3WURZKWCvV7hQZvz3XZeu
+        f4CioT1pVi5KZ8DpoN3VrF2ERxjuUvJjZ5fklgg=
+X-Google-Smtp-Source: AGHT+IGaXYEoLEr7Vl2t1G4tynNtJ16suiLjYiz3UnBB/rUz8+LCA+G682Aa3nkZfTqfgfl4TLs0wlZZOnzseTz//+8=
+X-Received: by 2002:a05:6e02:1cab:b0:35d:59a2:bb5 with SMTP id
+ x11-20020a056e021cab00b0035d59a20bb5mr6404771ill.75.1702416994943; Tue, 12
+ Dec 2023 13:36:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com> <20231209034229.GA1001962@cmpxchg.org>
+In-Reply-To: <20231209034229.GA1001962@cmpxchg.org>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 12 Dec 2023 13:36:23 -0800
+Message-ID: <CAKEwX=OPQE3eTsfqwQa-bq3NE5YcqnkKfud84+FV4HF-Q_wcTg@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Chris Li <chrisl@kernel.org>, akpm@linux-foundation.org,
+        tj@kernel.org, lizefan.x@bytedance.com,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz, Kairui Song <kasong@tencent.com>,
+        Minchan Kim <minchan@google.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As explained in commit 6ea529a2037c ("percpu: make embedding first chunk
-allocator check vmalloc space size"), the embedding first chunk allocator
-needs the vmalloc space to be larger than the maximum distance between
-units which are grouped into NUMA nodes.
+On Fri, Dec 8, 2023 at 7:42=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
+>
+> On Fri, Dec 08, 2023 at 03:55:59PM -0800, Chris Li wrote:
+> > I can give you three usage cases right now:
+> > 1) Google producting kernel uses SSD only swap, it is currently on
+> > pilot. This is not expressible by the memory.zswap.writeback. You can
+> > set the memory.zswap.max =3D 0 and memory.zswap.writeback =3D 1, then S=
+SD
+> > backed swapfile. But the whole thing feels very clunky, especially
+> > what you really want is SSD only swap, you need to do all this zswap
+> > config dance. Google has an internal memory.swapfile feature
+> > implemented per cgroup swap file type by "zswap only", "real swap file
+> > only", "both", "none" (the exact keyword might be different). running
+> > in the production for almost 10 years. The need for more than zswap
+> > type of per cgroup control is really there.
+>
+> We use regular swap on SSD without zswap just fine. Of course it's
+> expressible.
+>
+> On dedicated systems, zswap is disabled in sysfs. On shared hosts
+> where it's determined based on which workload is scheduled, zswap is
+> generally enabled through sysfs, and individual cgroup access is
+> controlled via memory.zswap.max - which is what this knob is for.
+>
+> This is analogous to enabling swap globally, and then opting
+> individual cgroups in and out with memory.swap.max.
+>
+> So this usecase is very much already supported, and it's expressed in
+> a way that's pretty natural for how cgroups express access and lack of
+> access to certain resources.
+>
+> I don't see how memory.swap.type or memory.swap.tiers would improve
+> this in any way. On the contrary, it would overlap and conflict with
+> existing controls to manage swap and zswap on a per-cgroup basis.
+>
+> > 2) As indicated by this discussion, Tencent has a usage case for SSD
+> > and hard disk swap as overflow.
+> > https://lore.kernel.org/linux-mm/20231119194740.94101-9-ryncsn@gmail.co=
+m/
+> > +Kairui
+>
+> Multiple swap devices for round robin or with different priorities
+> aren't new, they have been supported for a very, very long time. So
+> far nobody has proposed to control the exact behavior on a per-cgroup
+> basis, and I didn't see anybody in this thread asking for it either.
+>
+> So I don't see how this counts as an obvious and automatic usecase for
+> memory.swap.tiers.
+>
+> > 3) Android has some fancy swap ideas led by those patches.
+> > https://lore.kernel.org/linux-mm/20230710221659.2473460-1-minchan@kerne=
+l.org/
+> > It got shot down due to removal of frontswap. But the usage case and
+> > product requirement is there.
+> > +Minchan
+>
+> This looks like an optimization for zram to bypass the block layer and
+> hook directly into the swap code. Correct me if I'm wrong, but this
+> doesn't appear to have anything to do with per-cgroup backend control.
+>
+> > > zswap.writeback is a more urgent need, and does not prevent swap.tier=
+s
+> > > if we do decide to implement it.
+> >
+> > I respect that urgent need, that is why I Ack on the V5 path, under
+> > the understanding that this zswap.writeback is not carved into stones.
+> > When a better interface comes alone, that interface can be obsolete.
+> > Frankly speaking I would much prefer not introducing the cgroup API
+> > which will be obsolete soon.
+> >
+> > If you think zswap.writeback is not removable when another better
+> > alternative is available, please voice it now.
+> >
+> > If you squash my minimal memory.swap.tiers patch, it will also address
+> > your urgent need for merging the "zswap.writeback", no?
+>
+> We can always deprecate ABI if something better comes along.
+>
+> However, it's quite bold to claim that memory.swap.tiers is the best
+> way to implement backend control on a per-cgroup basis, and that it'll
+> definitely be needed in the future. You might see this as a foregone
+> conclusion, but I very much doubt this.
+>
+> Even if such a file were to show up, I'm not convinced it should even
+> include zswap as one of the tiers. Zswap isn't a regular swap backend,
+> it doesn't show up in /proc/swaps, it can't be a second tier, the way
+> it interacts with its backend file is very different than how two
+> swapfiles of different priorities interact with each other, it's
+> already controllable with memory.zswap.max, etc.
 
-On a very sparse NUMA configurations and a small vmalloc area (for example,
-it is 64GB in sv39), the allocation of dynamic percpu data in the vmalloc
-area could fail.
+This is honestly the thing I was originally most iffy about :) zswap
+is architecturally and semantically separate from other swap options.
+It gets really confusing to lump it as part of the swap tiers.
 
-So provide the pcpu page allocator as a fallback in case we fall into
-such a sparse configuration (which happened in arm64 as shown by
-commit 09cea6195073 ("arm64: support page mapping percpu first chunk
-allocator")).
+>
+> I'm open to discussing usecases and proposals for more fine-grained
+> per-cgroup backend control. We've had discussions about per-cgroup
+> swapfiles in the past. Cgroup parameters for swapon are another
+> thought. There are several options and many considerations. The
+> memory.swap.tiers idea is the newest, has probably had the least
+> amount of discussion among them, and looks the least convincing to me.
 
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
- arch/riscv/Kconfig         | 2 ++
- arch/riscv/mm/kasan_init.c | 8 ++++++++
- 2 files changed, 10 insertions(+)
+Definitely. zswap.writeback is a really concrete feature, with
+immediate use-case, whereas swap.tiers seem a bit nebulous to me now,
+the more we discuss it. I'm not against the inclusion of something
+along its line though, and I'm definitely not trying to limit the use
+case of other folks - I'd be happy to contribute my engineering hours
+towards the discussion of the multi-tier swapping design (both
+internal implementation and and public interface), as well as actual
+code, when that design is fully fleshed out :)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 7603bd8ab333..8ba4a63e0ae5 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -415,7 +415,9 @@ config NUMA
- 	depends on SMP && MMU
- 	select ARCH_SUPPORTS_NUMA_BALANCING
- 	select GENERIC_ARCH_NUMA
-+	select HAVE_SETUP_PER_CPU_AREA
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
-+	select NEED_PER_CPU_PAGE_FIRST_CHUNK
- 	select OF_NUMA
- 	select USE_PERCPU_NUMA_NODE_ID
- 	help
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index 5e39dcf23fdb..4c9a2c527f08 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -438,6 +438,14 @@ static void __init kasan_shallow_populate(void *start, void *end)
- 	kasan_shallow_populate_pgd(vaddr, vend);
- }
- 
-+#ifdef CONFIG_KASAN_VMALLOC
-+void __init kasan_populate_early_vm_area_shadow(void *start, unsigned long size)
-+{
-+	kasan_populate(kasan_mem_to_shadow(start),
-+		       kasan_mem_to_shadow(start + size));
-+}
-+#endif
-+
- static void __init create_tmp_mapping(void)
- {
- 	void *ptr;
--- 
-2.39.2
+>
+> Let's work out the requirements first.
+>
+> The "conflict" with memory.zswap.writeback is a red herring - it's no
+> more of a conflict than setting memory.swap.tiers to "zswap" or "all"
+> and then setting memory.zswap.max or memory.swap.max to 0.
 
+Yup.
+
+>
+> So the notion that we have to rush in a minimal version of a MUCH
+> bigger concept, just to support zswap writeback disabling is
+> misguided. And then hope that this format works as the concept evolves
+> and real usecases materialize... There is no reason to take that risk.
