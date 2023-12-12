@@ -2,228 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55BF80EA27
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621F180EA2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346317AbjLLLQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S232187AbjLLLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346218AbjLLLQv (ORCPT
+        with ESMTP id S232043AbjLLLRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:16:51 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF753EA;
-        Tue, 12 Dec 2023 03:16:56 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BCBGpKE033446;
-        Tue, 12 Dec 2023 05:16:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702379811;
-        bh=ijZ7Kd9e8XLuPz/p9aDC9vgO7qpudm0ugtsmHbdg3Ug=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Tqv+8XUTsgBF2ecdhZFtWCMjjX6hyuTvAlmJtQgbtNMa807Js51VsHIrxNUQM6be9
-         KqGxAqhGlF9QRSvJTfY8Bi8/ogr2Xj4LVX6gH5InzjfGoQT8IT4sWMI+cZgRzakn2X
-         /8/A4Q54PqOKpz+i50m7wElVnNfYqK7LaIs0jihA=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BCBGprj049088
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Dec 2023 05:16:51 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 12
- Dec 2023 05:16:51 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 12 Dec 2023 05:16:51 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BCBGd8Z094897;
-        Tue, 12 Dec 2023 05:16:48 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-am6*: Add additional regs for DMA components
-Date:   Tue, 12 Dec 2023 16:46:34 +0530
-Message-ID: <20231212111634.3515175-4-vigneshr@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231212111634.3515175-1-vigneshr@ti.com>
-References: <20231212111634.3515175-1-vigneshr@ti.com>
+        Tue, 12 Dec 2023 06:17:18 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD5EBE;
+        Tue, 12 Dec 2023 03:17:24 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SqGKp54dqzZcl2;
+        Tue, 12 Dec 2023 19:17:18 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+        by mail.maildlp.com (Postfix) with ESMTPS id 4699618005A;
+        Tue, 12 Dec 2023 19:17:22 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 12 Dec
+ 2023 19:17:21 +0800
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com>
+ <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+ <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
+ <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
+ <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+ <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
+ <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <2cdf173c-95e4-2141-56f7-0761705cd737@huawei.com>
+Date:   Tue, 12 Dec 2023 19:17:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
+In-Reply-To: <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add additional reg properties for BCDMA and PKTDMA nodes which are
-mostly used by bootloader components before Device Manager firmware
-services are available, in order to setup DMA transfers.
+On 2023/12/12 2:14, Mina Almasry wrote:
+> On Mon, Dec 11, 2023 at 3:51 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/12/11 12:04, Mina Almasry wrote:
+>>> On Sun, Dec 10, 2023 at 6:26 PM Mina Almasry <almasrymina@google.com> wrote:
+>>>>
+>>>> On Sun, Dec 10, 2023 at 6:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>>
+>>>>> On 2023/12/9 0:05, Mina Almasry wrote:
+>>>>>> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> As mentioned before, it seems we need to have the above checking every
+>>>>>>> time we need to do some per-page handling in page_pool core, is there
+>>>>>>> a plan in your mind how to remove those kind of checking in the future?
+>>>>>>>
+>>>>>>
+>>>>>> I see 2 ways to remove the checking, both infeasible:
+>>>>>>
+>>>>>> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
+>>>>>>
+>>>>>> struct netmem {
+>>>>>>         /* common fields */
+>>>>>>         refcount_t refcount;
+>>>>>>         bool is_pfmemalloc;
+>>>>>>         int nid;
+>>>>>>         ...
+>>>>>>         union {
+>>>>>>                 struct dmabuf_genpool_chunk_owner *owner;
+>>>>>>                 struct page * page;
+>>>>>>         };
+>>>>>> };
+>>>>>>
+>>>>>> The page pool can then not care if the underlying memory is iov or
+>>>>>> page. However this introduces significant memory bloat as this struct
+>>>>>> needs to be allocated for each page or ppiov, which I imagine is not
+>>>>>> acceptable for the upside of removing a few static_branch'd if
+>>>>>> statements with no performance cost.
+>>>>>>
+>>>>>> 2. Create a unified struct for page and dmabuf memory, which the mm
+>>>>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
+>>>>>> the future.
+>>>>>>
+>>>>>> So I imagine the special handling of ppiov in some form is critical
+>>>>>> and the checking may not be removable.
+>>>>>
+>>>>> If the above is true, perhaps devmem is not really supposed to be intergated
+>>>>> into page_pool.
+>>>>>
+>>>>> Adding a checking for every per-page handling in page_pool core is just too
+>>>>> hacky to be really considerred a longterm solution.
+>>>>>
+>>>>
+>>>> The only other option is to implement another page_pool for ppiov and
+>>>> have the driver create page_pool or ppiov_pool depending on the state
+>>>> of the netdev_rx_queue (or some helper in the net stack to do that for
+>>>> the driver). This introduces some code duplication. The ppiov_pool &
+>>>> page_pool would look similar in implementation.
+>>
+>> I think there is a design pattern already to deal with this kind of problem,
+>> refactoring common code used by both page_pool and ppiov into a library to
+>> aovid code duplication if most of them have similar implementation.
+>>
+> 
+> Code can be refactored if it's identical, not if it is similar. I
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++----
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++----
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 18 ++++++++++++++----
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi  | 18 ++++++++++++++----
- 4 files changed, 56 insertions(+), 16 deletions(-)
+Similarity indicates an opportunity to the refactor out the common
+code, like the page_frag case below:
+https://patchwork.kernel.org/project/netdevbpf/cover/20231205113444.63015-1-linyunsheng@huawei.com/
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index e5c64c86d1d5..4514a140ad38 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -121,8 +121,13 @@ main_bcdma: dma-controller@485c0100 {
- 			      <0x00 0x4c000000 0x00 0x20000>,
- 			      <0x00 0x4a820000 0x00 0x20000>,
- 			      <0x00 0x4aa40000 0x00 0x20000>,
--			      <0x00 0x4bc00000 0x00 0x100000>;
--			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4bc00000 0x00 0x100000>,
-+			      <0x00 0x48600000 0x00 0x8000>,
-+			      <0x00 0x484a4000 0x00 0x2000>,
-+			      <0x00 0x484c2000 0x00 0x2000>,
-+			      <0x00 0x48420000 0x00 0x2000>;
-+			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "bchan";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <3>;
- 
-@@ -138,8 +143,13 @@ main_pktdma: dma-controller@485c0000 {
- 			reg = <0x00 0x485c0000 0x00 0x100>,
- 			      <0x00 0x4a800000 0x00 0x20000>,
- 			      <0x00 0x4aa00000 0x00 0x40000>,
--			      <0x00 0x4b800000 0x00 0x400000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4b800000 0x00 0x400000>,
-+			      <0x00 0x485e0000 0x00 0x20000>,
-+			      <0x00 0x484a0000 0x00 0x4000>,
-+			      <0x00 0x484c0000 0x00 0x2000>,
-+			      <0x00 0x48430000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "rflow";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <2>;
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index 4ae7fdc5221b..36947d9d644d 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
- 			      <0x00 0x4c000000 0x00 0x20000>,
- 			      <0x00 0x4a820000 0x00 0x20000>,
- 			      <0x00 0x4aa40000 0x00 0x20000>,
--			      <0x00 0x4bc00000 0x00 0x100000>;
--			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4bc00000 0x00 0x100000>,
-+			      <0x00 0x48600000 0x00 0x8000>,
-+			      <0x00 0x484a4000 0x00 0x2000>,
-+			      <0x00 0x484c2000 0x00 0x2000>,
-+			      <0x00 0x48420000 0x00 0x2000>;
-+			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "bchan";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <3>;
- 			ti,sci = <&dmsc>;
-@@ -117,8 +122,13 @@ main_pktdma: dma-controller@485c0000 {
- 			reg = <0x00 0x485c0000 0x00 0x100>,
- 			      <0x00 0x4a800000 0x00 0x20000>,
- 			      <0x00 0x4aa00000 0x00 0x40000>,
--			      <0x00 0x4b800000 0x00 0x400000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4b800000 0x00 0x400000>,
-+			      <0x00 0x485e0000 0x00 0x20000>,
-+			      <0x00 0x484a0000 0x00 0x4000>,
-+			      <0x00 0x484c0000 0x00 0x2000>,
-+			      <0x00 0x48430000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "rflow";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <2>;
- 			ti,sci = <&dmsc>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-index 963758c7d377..21981489b4db 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-@@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
- 			      <0x00 0x4c000000 0x00 0x20000>,
- 			      <0x00 0x4a820000 0x00 0x20000>,
- 			      <0x00 0x4aa40000 0x00 0x20000>,
--			      <0x00 0x4bc00000 0x00 0x100000>;
--			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4bc00000 0x00 0x100000>,
-+			      <0x00 0x48600000 0x00 0x8000>,
-+			      <0x00 0x484a4000 0x00 0x2000>,
-+			      <0x00 0x484c2000 0x00 0x2000>,
-+			      <0x00 0x48420000 0x00 0x2000>;
-+			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "bchan";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <3>;
- 
-@@ -119,8 +124,13 @@ main_pktdma: dma-controller@485c0000 {
- 			reg = <0x00 0x485c0000 0x00 0x100>,
- 			      <0x00 0x4a800000 0x00 0x20000>,
- 			      <0x00 0x4aa00000 0x00 0x40000>,
--			      <0x00 0x4b800000 0x00 0x400000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4b800000 0x00 0x400000>,
-+			      <0x00 0x485e0000 0x00 0x20000>,
-+			      <0x00 0x484a0000 0x00 0x4000>,
-+			      <0x00 0x484c0000 0x00 0x2000>,
-+			      <0x00 0x48430000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "rflow";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <2>;
- 			bootph-all;
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 0be642bc1b86..bcdfd61c7d98 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -138,8 +138,13 @@ main_bcdma: dma-controller@485c0100 {
- 			      <0x00 0x4c000000 0x00 0x20000>,
- 			      <0x00 0x4a820000 0x00 0x20000>,
- 			      <0x00 0x4aa40000 0x00 0x20000>,
--			      <0x00 0x4bc00000 0x00 0x100000>;
--			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4bc00000 0x00 0x100000>,
-+			      <0x00 0x48600000 0x00 0x8000>,
-+			      <0x00 0x484a4000 0x00 0x2000>,
-+			      <0x00 0x484c2000 0x00 0x2000>,
-+			      <0x00 0x48420000 0x00 0x2000>;
-+			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "bchan";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <3>;
- 
-@@ -155,8 +160,13 @@ main_pktdma: dma-controller@485c0000 {
- 			reg = <0x00 0x485c0000 0x00 0x100>,
- 			      <0x00 0x4a800000 0x00 0x20000>,
- 			      <0x00 0x4aa00000 0x00 0x40000>,
--			      <0x00 0x4b800000 0x00 0x400000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
-+			      <0x00 0x4b800000 0x00 0x400000>,
-+			      <0x00 0x485e0000 0x00 0x20000>,
-+			      <0x00 0x484a0000 0x00 0x4000>,
-+			      <0x00 0x484c0000 0x00 0x2000>,
-+			      <0x00 0x48430000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
-+				    "ring", "tchan", "rchan", "rflow";
- 			msi-parent = <&inta_main_dmss>;
- 			#dma-cells = <2>;
- 
--- 
-2.43.0
+But untill we do a proof of concept implemention, it is hard to tell if
+it is feasiable or not.
 
+> suspect the page_pools will be only similar, and if you're not willing
+> to take devmem handling into the page pool then refactoring page_pool
+> code into helpers that do devmem handling may also not be an option.
+> 
+>>>>
+>>>> But this was all discussed in detail in RFC v2 and the last response I
+>>>> heard from Jesper was in favor if this approach, if I understand
+>>>> correctly:
+>>>>
+>>>> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.com/
+>>>>
+>>>> Would love to have the maintainer weigh in here.
+>>>>
+>>>
+>>> I should note we may be able to remove some of the checking, but maybe not all.
+>>>
+>>> - Checks that disable page fragging for ppiov can be removed once
+>>> ppiov has frag support (in this series or follow up).
+>>>
+>>> - If we use page->pp_frag_count (or page->pp_ref_count) for
+>>> refcounting ppiov, we can remove the if checking in the refcounting.
+>>>
+> 
+> I'm not sure this is actually possible in the short term. The
+> page_pool uses both page->_refcount and page->pp_frag_count for
+> refcounting, and I will not be able to remove the special handling
+> around page->_refcount as i'm not allowed to call page_ref_*() APIs on
+> a non-struct page.
+
+the page_ref_*() API may be avoided using the below patch:
+https://patchwork.kernel.org/project/netdevbpf/patch/20231113130041.58124-7-linyunsheng@huawei.com/
+
+But I am not sure how to do that for tx part if devmem for tx is not
+intergating into page_pool, that is why I suggest having a tx implementation
+for the next version, so that we can have a whole picture of devmem.
+
+> 
+>>> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
+>>> but I'm unsure if that actually works, because the dma_buf dmaddr is
+>>> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
+>>> I think). But if it works for pages I may be able to make it work for
+>>> ppiov as well.
+>>>
+>>> - Checks that obtain the page->pp can work with ppiov if we align the
+>>> offset of page->pp and ppiov->pp.
+>>>
+>>> - Checks around page->pp_magic can be removed if we also have offset
+>>> aligned ppiov->pp_magic.
+>>>
+>>> Sadly I don't see us removing the checking for these other cases:
+>>>
+>>> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
+>>> that helper.
+>>
+>> We can do similar trick like above as bit 1 of page->pp_magic is used to
+>> indicate that if it is a pfmemalloc page.
+>>
+> 
+> Likely yes.
+> 
+>>>
+>>> - page_to_nid(): I'm not allowed to pass a non-struct page into that helper.
+>>
+>> Yes, this one need special case.
+>>
+>>>
+>>> - page_pool_free_va(): ppiov have no va.
+>>
+>> Doesn't the skb_frags_readable() checking will protect the page_pool_free_va()
+>> from being called on devmem?
+>>
+> 
+> This function seems to be only called from veth which doesn't support
+> devmem. I can remove the handling there.
+> 
+>>>
+>>> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
+>>> fundamentally can't get mapped again.
+>>
+>> Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
+>> DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
+>>
+> 
+> Jakub says PP_FLAG_DMA_MAP must be enabled for devmem, such that the
+> page_pool handles the dma mapping of the devmem and the driver doesn't
+> use it on its own.
+
+I am not sure what benefit does it bring by enabling the DMA_MAP for devmem,
+as devmem seems to call dma_buf_map_attachment() in netdev_bind_dmabuf(), it
+does not really need enabling PP_FLAG_DMA_MAP to get the dma addr for the
+devmem chunk.
