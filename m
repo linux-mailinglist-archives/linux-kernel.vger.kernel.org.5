@@ -2,214 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAA380F687
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF7F80F68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377222AbjLLTWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57140 "EHLO
+        id S1376784AbjLLTWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235135AbjLLTWP (ORCPT
+        with ESMTP id S230071AbjLLTWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:22:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E76B9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:22:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE4CC433C8;
-        Tue, 12 Dec 2023 19:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702408941;
-        bh=i5eA2fXhaq3Do9ywFpJzwHOFQOS7qYLx5BFeshX3BZI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lSUwxVgDk2j4cnZPH/Zy7xE7vjsRTnpogG2abp5kyPRCtT/TZgdYhJerl+EIt8XO+
-         AZCxf+fPMQpNamCpOTnjqC4DOxO2jnXg7wVICwPQJUTf6RfCL14WhPZuHupkqX7l0O
-         Hq+nJ2IAFAZtDifyGfoR91Vlrlzdh0w8cg/NWZlNbz/mzlhu3X4Kwv8yuSz6GB6uHz
-         PVUgx+D3XmLxKMS4vyobPs59mP5iwt/lGzRutQe8tew0eS6GZcND9rnTgF9gVWr8sg
-         0Nerc0Xi7synedvS/VCWgFV37xO/7MVPkRGY//8a+vJkxCv/bYg7Qcn9afsFwQw62R
-         IjULLbahcHfEg==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] selftests/damon: add a test for update_schemes_tried_regions sysfs command
-Date:   Tue, 12 Dec 2023 19:22:18 +0000
-Message-Id: <20231212192218.54095-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212191206.52917-5-sj@kernel.org>
-References: 
+        Tue, 12 Dec 2023 14:22:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CCBCF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:22:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702408977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXopr8ue2K1cVGD2mD+ppNHToF8ZtCpiGeLOAu9qGlU=;
+        b=UGCNKBD8Hm8dQsYP6pQWWU+a+fE3Z3U7dIaYR6R+Oigxce1F+cZy0PBsO563Ykr9P08Fcf
+        G9DH6QlX9CnHB5efOcLqvCwnkWpfop4dOfYcEuwB1VeLh3y/BEhp2PgqTnmTefcXxBAkfz
+        s8LtuxZ/79zAFdlB8ak2qz0/yhIjoXY=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-658-i9IZWEoEPrqeeO5aJp2RHw-1; Tue, 12 Dec 2023 14:22:56 -0500
+X-MC-Unique: i9IZWEoEPrqeeO5aJp2RHw-1
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5de8e375768so54904487b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:22:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702408975; x=1703013775;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CXopr8ue2K1cVGD2mD+ppNHToF8ZtCpiGeLOAu9qGlU=;
+        b=HS/SCekrE4XC9+OuZFaQBT/vVmD7ggsYTyyQdyufg6LrSfz3JyhvhGRkFHo8oZgnvm
+         rGGiQb1G1czMG25c7WP6aqmtCLup9+sd+BIVB8rDzHvv3xpAGwhNOwCFCmRH37mipn2e
+         XM7DZAGW4Qwh6biuR7nmqlliqmh8ASDa7reLwE47ITXJ+63u2LnA4MFcIZ8zIaFLjDbV
+         pdl9ABWcttaXbUlBpl+2KdmdZxUJLJmlr7iagdAPZhpgcttkE5hH8DWJ3bLIHw+ZzsUC
+         11yiXGLULtGTknrq5p/zXvqnhAlHa8rfKuDkTghs7T4THg9flrIIYC6xx5AW+PYeJXfB
+         WqPA==
+X-Gm-Message-State: AOJu0Yyq4W+XvaAZNkjiuf1ioU+tdesdf7VKjfWQ+Y9KNsJzBn10p6n1
+        ANYQnYGugUKFFarSPZDb8gxE7uHQQb0qC0inVRK9F++C3aIG6WNHkgku+g84or5E0jPmasqAZt4
+        etIDSZ2uu65ubstHvHULi1VdO84aCgZNvU1Pf3gCB
+X-Received: by 2002:a81:df0b:0:b0:5c7:47f:59e8 with SMTP id c11-20020a81df0b000000b005c7047f59e8mr5940291ywn.42.1702408975691;
+        Tue, 12 Dec 2023 11:22:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFI4DdCCjsgiWNQwBvsJQ5lMA58uV0BznVcQ8eTOzDL0scgZ05CCCu/TFJUcNbpGUK3iBmS2/pwIeY0tEJYZvg=
+X-Received: by 2002:a81:df0b:0:b0:5c7:47f:59e8 with SMTP id
+ c11-20020a81df0b000000b005c7047f59e8mr5940281ywn.42.1702408975363; Tue, 12
+ Dec 2023 11:22:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231205104609.876194-1-dtatulea@nvidia.com> <20231205104609.876194-7-dtatulea@nvidia.com>
+In-Reply-To: <20231205104609.876194-7-dtatulea@nvidia.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 12 Dec 2023 20:22:19 +0100
+Message-ID: <CAJaqyWdcCvt=QeAGBVEkPHmj9i29KJfjwuYMETLUBgDY7dLSug@mail.gmail.com>
+Subject: Re: [PATCH vhost v2 6/8] vdpa/mlx5: Use vq suspend/resume during .set_map
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This and fifth patch of this patchset may not cleanly applicable, since those
-are made on top of my out-of-tree experimental changes.  I will rebase these
-and send v2.  Sorry for the noise.
+On Tue, Dec 5, 2023 at 11:47=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> Instead of tearing down and setting up vq resources, use vq
+> suspend/resume during .set_map to speed things up a bit.
+>
+> The vq mr is updated with the new mapping while the vqs are suspended.
+>
+> If the device doesn't support resumable vqs, do the old teardown and
+> setup dance.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Gal Pressman <gal@nvidia.com>
+> Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
+I didn't ack it, but I'm ok with it, so:
 
-Thanks,
-SJ
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-On 2023-12-12T19:12:05+00:00 SeongJae Park <sj@kernel.org> wrote:
+Thanks!
 
-> Add a selftest for verifying the accuracy of DAMON's access monitoring
-> functionality.  The test starts a program of artificial access pattern,
-> monitor the access pattern using DAMON, and check if DAMON finds
-> expected amount of hot data region (working set size) with only
-> acceptable error rate.
-> 
-> Note that the acceptable error rate is set with only naive assumptions
-> and small number of tests.  Hence failures of the test may not always
-> mean DAMON is broken.  Rather than that, those could be a signal to
-> better understand the real accuracy level of DAMON in wider
-> environments.  Based on further finding, we could optimize DAMON or
-> adjust the expectation of the test.
-> 
-> Signed-off-by: SeongJae Park <sj@kernel.org>
 > ---
->  tools/testing/selftests/damon/Makefile        |  2 +
->  tools/testing/selftests/damon/access_memory.c | 41 ++++++++++++++
->  ...te_schemes_tried_regions_wss_estimation.py | 55 +++++++++++++++++++
->  3 files changed, 98 insertions(+)
->  create mode 100644 tools/testing/selftests/damon/access_memory.c
->  create mode 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
-> 
-> diff --git a/tools/testing/selftests/damon/Makefile b/tools/testing/selftests/damon/Makefile
-> index d2105d41ea25..1363987709c6 100644
-> --- a/tools/testing/selftests/damon/Makefile
-> +++ b/tools/testing/selftests/damon/Makefile
-> @@ -4,6 +4,7 @@
->  TEST_GEN_FILES += huge_count_read_write
->  TEST_GEN_FILES += dbgfs_target_ids_read_before_terminate_race
->  TEST_GEN_FILES += dbgfs_target_ids_pid_leak
-> +TEST_GEN_FILES += access_memory
->  
->  TEST_FILES = _chk_dependency.sh _debugfs_common.sh
->  TEST_PROGS = debugfs_attrs.sh debugfs_schemes.sh debugfs_target_ids.sh
-> @@ -11,6 +12,7 @@ TEST_PROGS += debugfs_empty_targets.sh debugfs_huge_count_read_write.sh
->  TEST_PROGS += debugfs_duplicate_context_creation.sh
->  TEST_PROGS += debugfs_rm_non_contexts.sh
->  TEST_PROGS += sysfs.sh sysfs_update_removed_scheme_dir.sh
-> +TEST_PROGS += sysfs_update_schemes_tried_regions_wss_estimation.py
->  TEST_PROGS += reclaim.sh lru_sort.sh
->  TEST_PROGS += dbgfs_target_ids_read_before_terminate_race.sh
->  TEST_PROGS += dbgfs_target_ids_pid_leak.sh
-> diff --git a/tools/testing/selftests/damon/access_memory.c b/tools/testing/selftests/damon/access_memory.c
-> new file mode 100644
-> index 000000000000..585a2fa54329
-> --- /dev/null
-> +++ b/tools/testing/selftests/damon/access_memory.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Artificial memory access program for testing DAMON.
-> + */
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 46 ++++++++++++++++++++++++------
+>  include/linux/mlx5/mlx5_ifc_vdpa.h |  1 +
+>  2 files changed, 39 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index d6c8506cec8f..6a21223d97a8 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -1206,6 +1206,7 @@ static int modify_virtqueue(struct mlx5_vdpa_net *n=
+dev,
+>  {
+>         int inlen =3D MLX5_ST_SZ_BYTES(modify_virtio_net_q_in);
+>         u32 out[MLX5_ST_SZ_DW(modify_virtio_net_q_out)] =3D {};
+> +       struct mlx5_vdpa_dev *mvdev =3D &ndev->mvdev;
+>         bool state_change =3D false;
+>         void *obj_context;
+>         void *cmd_hdr;
+> @@ -1255,6 +1256,24 @@ static int modify_virtqueue(struct mlx5_vdpa_net *=
+ndev,
+>         if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_I=
+DX)
+>                 MLX5_SET(virtio_net_q_object, obj_context, hw_used_index,=
+ mvq->used_idx);
+>
+> +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_MKEY) =
+{
+> +               struct mlx5_vdpa_mr *mr =3D mvdev->mr[mvdev->group2asid[M=
+LX5_VDPA_DATAVQ_GROUP]];
 > +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <time.h>
+> +               if (mr)
+> +                       MLX5_SET(virtio_q, vq_ctx, virtio_q_mkey, mr->mke=
+y);
+> +               else
+> +                       mvq->modified_fields &=3D ~MLX5_VIRTQ_MODIFY_MASK=
+_VIRTIO_Q_MKEY;
+> +       }
 > +
-> +int main(int argc, char *argv[])
-> +{
-> +	char **regions;
-> +	clock_t start_clock;
-> +	int nr_regions;
-> +	int sz_region;
-> +	int access_time_ms;
-> +	int i;
+> +       if (mvq->modified_fields & MLX5_VIRTQ_MODIFY_MASK_DESC_GROUP_MKEY=
+) {
+> +               struct mlx5_vdpa_mr *mr =3D mvdev->mr[mvdev->group2asid[M=
+LX5_VDPA_DATAVQ_DESC_GROUP]];
 > +
-> +	if (argc != 4) {
-> +		printf("Usage: %s <number> <size (bytes)> <time (ms)>\n",
-> +				argv[0]);
-> +		return -1;
-> +	}
+> +               if (mr && MLX5_CAP_DEV_VDPA_EMULATION(mvdev->mdev, desc_g=
+roup_mkey_supported))
+> +                       MLX5_SET(virtio_q, vq_ctx, desc_group_mkey, mr->m=
+key);
+> +               else
+> +                       mvq->modified_fields &=3D ~MLX5_VIRTQ_MODIFY_MASK=
+_DESC_GROUP_MKEY;
+> +       }
 > +
-> +	nr_regions = atoi(argv[1]);
-> +	sz_region = atoi(argv[2]);
-> +	access_time_ms = atoi(argv[3]);
+>         MLX5_SET64(virtio_net_q_object, obj_context, modify_field_select,=
+ mvq->modified_fields);
+>         err =3D mlx5_cmd_exec(ndev->mvdev.mdev, in, inlen, out, sizeof(ou=
+t));
+>         if (err)
+> @@ -2784,24 +2803,35 @@ static int mlx5_vdpa_change_map(struct mlx5_vdpa_=
+dev *mvdev,
+>                                 unsigned int asid)
+>  {
+>         struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+> +       bool teardown =3D !is_resumable(ndev);
+>         int err;
+>
+>         suspend_vqs(ndev);
+> -       err =3D save_channels_info(ndev);
+> -       if (err)
+> -               return err;
+> +       if (teardown) {
+> +               err =3D save_channels_info(ndev);
+> +               if (err)
+> +                       return err;
+>
+> -       teardown_driver(ndev);
+> +               teardown_driver(ndev);
+> +       }
+>
+>         mlx5_vdpa_update_mr(mvdev, new_mr, asid);
+>
+> +       for (int i =3D 0; i < ndev->cur_num_vqs; i++)
+> +               ndev->vqs[i].modified_fields |=3D MLX5_VIRTQ_MODIFY_MASK_=
+VIRTIO_Q_MKEY |
+> +                                               MLX5_VIRTQ_MODIFY_MASK_DE=
+SC_GROUP_MKEY;
 > +
-> +	regions = malloc(sizeof(*regions) * nr_regions);
-> +	for (i = 0; i < nr_regions; i++)
-> +		regions[i] = malloc(sz_region);
+>         if (!(mvdev->status & VIRTIO_CONFIG_S_DRIVER_OK) || mvdev->suspen=
+ded)
+>                 return 0;
+>
+> -       restore_channels_info(ndev);
+> -       err =3D setup_driver(mvdev);
+> -       if (err)
+> -               return err;
+> +       if (teardown) {
+> +               restore_channels_info(ndev);
+> +               err =3D setup_driver(mvdev);
+> +               if (err)
+> +                       return err;
+> +       }
 > +
-> +	for (i = 0; i < nr_regions; i++) {
-> +		start_clock = clock();
-> +		while ((clock() - start_clock) * 1000 / CLOCKS_PER_SEC <
-> +				access_time_ms)
-> +			memset(regions[i], i, 1024 * 1024 * 10);
-> +	}
-> +	return 0;
-> +}
-> diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
-> new file mode 100755
-> index 000000000000..cdbf19b442c9
-> --- /dev/null
-> +++ b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
-> @@ -0,0 +1,55 @@
-> +#!/usr/bin/env python3
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +import subprocess
-> +import time
-> +
-> +import _damon_sysfs
-> +
-> +def main():
-> +    # access two 10 MiB memory regions, 2 second per each
-> +    sz_region = 10 * 1024 * 1024
-> +    proc = subprocess.Popen(['./access_memory', '2', '%d' % sz_region, '2000'])
-> +    kdamonds = _damon_sysfs.Kdamonds([_damon_sysfs.Kdamond(
-> +            contexts=[_damon_sysfs.DamonCtx(
-> +                ops='vaddr',
-> +                targets=[_damon_sysfs.DamonTarget(pid=proc.pid)],
-> +                schemes=[_damon_sysfs.Damos(
-> +                    access_pattern=_damon_sysfs.DamosAccessPattern(
-> +                        # >= 25% access rate, >= 200ms age
-> +                        nr_accesses=[5, 20], age=[2, 2**64 - 1]))] # schemes
-> +                )] # contexts
-> +            )]) # kdamonds
-> +
-> +    err = kdamonds.start()
-> +    if err != None:
-> +        print('kdmaond start failed: %s' % err)
-> +        exit(1)
-> +
-> +    wss_collected = []
-> +    while proc.poll() == None:
-> +        time.sleep(0.1)
-> +        err = kdamonds.kdamonds[0].update_schemes_tried_bytes()
-> +        if err != None:
-> +            print('tried bytes update failed: %s' % err)
-> +            exit(1)
-> +
-> +        wss_collected.append(
-> +                kdamonds.kdamonds[0].contexts[0].schemes[0].tried_bytes)
-> +
-> +    wss_collected.sort()
-> +    acceptable_error_rate = 0.2
-> +    for percentile in [50, 75]:
-> +        sample = wss_collected[int(len(wss_collected) * percentile / 100)]
-> +        error_rate = abs(sample - sz_region) / sz_region
-> +        print('%d-th percentile (%d) error %f' %
-> +                (percentile, sample, error_rate))
-> +        if error_rate > acceptable_error_rate:
-> +            print('the error rate is not acceptable (> %f)' %
-> +                    acceptable_error_rate)
-> +            print('samples are as below')
-> +            print('\n'.join(['%d' % wss for wss in wss_collected]))
-> +            exit(1)
-> +
-> +if __name__ == '__main__':
-> +    main()
-> -- 
-> 2.34.1
+> +       resume_vqs(ndev);
+>
+>         return 0;
+>  }
+> diff --git a/include/linux/mlx5/mlx5_ifc_vdpa.h b/include/linux/mlx5/mlx5=
+_ifc_vdpa.h
+> index 32e712106e68..40371c916cf9 100644
+> --- a/include/linux/mlx5/mlx5_ifc_vdpa.h
+> +++ b/include/linux/mlx5/mlx5_ifc_vdpa.h
+> @@ -148,6 +148,7 @@ enum {
+>         MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_ADDRS           =3D (u64)1 << 6,
+>         MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_AVAIL_IDX       =3D (u64)1 << 7,
+>         MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_USED_IDX        =3D (u64)1 << 8,
+> +       MLX5_VIRTQ_MODIFY_MASK_VIRTIO_Q_MKEY            =3D (u64)1 << 11,
+>         MLX5_VIRTQ_MODIFY_MASK_DESC_GROUP_MKEY          =3D (u64)1 << 14,
+>  };
+>
+> --
+> 2.42.0
+>
+
