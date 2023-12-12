@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E50180F677
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD7C80F678
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377102AbjLLTTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:19:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S1377136AbjLLTT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbjLLTTq (ORCPT
+        with ESMTP id S1377195AbjLLTTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:19:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ECDB7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:19:50 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702408788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mkw8JtiCsJ7Vl1QsUbzE+YPMdmlFa+V9d5Dq1ZeMtcg=;
-        b=d6nwsqetR2ucbIY6xrRRRbb/rNiQpPWHgVEsptGHLwKfTlq40KfGslD1rRMh27nku9fUjJ
-        Iv6MexGumb2wdebAgrmcgByGSsodCWc/vzCmPXxeQfHZzDpWVkHgm6aitKoZITWqSB+gav
-        t37GzUnWkQOJlvISwLvAwu2aNsU3mxtjx6bV5UVzs0xtw0NLMov4LTJ+01B4t3tY/bVN/W
-        w4C5xLB8au2Sl6baY/w2Ls7k/b8IKY706GJizfjTK/wBEDZX0GiYU69CcYzwBom8jMlrT4
-        ZMxjkPF37QxAgHxu/pF2vfPA7Z+F759MOEjAhiUoUCD+bCotSlBacxucqZ8epg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702408788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mkw8JtiCsJ7Vl1QsUbzE+YPMdmlFa+V9d5Dq1ZeMtcg=;
-        b=q96ghufpNLOIMSR+mzJKN7xpP9jxSrmd5YuaG4anK3gyn7MN7OKEqZYiqc1UmHalUxmNX4
-        Pw0QgWMV3p+LG0Dg==
-To:     xingwei lee <xrivendell7@gmail.com>
-Cc:     syzbot+f2c4e7bfcca6c6d6324c@syzkaller.appspotmail.com,
-        jstultz@google.com, linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] possible deadlock in alarm_handle_timer
-In-Reply-To: <CABOYnLzNSp+ESUEtSFYfKbS=RS9XdQM=4uECpqbsdkTiv4scNg@mail.gmail.com>
-References: <CABOYnLyHJjv7bZ3CcXo4zAxZ-o49FO9OsWpQrY4tTLNqCbA4Mw@mail.gmail.com>
- <87o7f0qslm.ffs@tglx>
- <CABOYnLzNSp+ESUEtSFYfKbS=RS9XdQM=4uECpqbsdkTiv4scNg@mail.gmail.com>
-Date:   Tue, 12 Dec 2023 20:19:47 +0100
-Message-ID: <87o7evp6ss.ffs@tglx>
+        Tue, 12 Dec 2023 14:19:55 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E3EF2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:20:00 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-590a2a963baso2391522eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:20:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702408799; x=1703013599; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fDZO9rUEaSCIKGPTNLQORxAuPrrJryJu9QjeOQcq1A4=;
+        b=ULRIiX7NQXM5WPHI3stffAwtHpawpC++J7zI5HHwtWwZGetYluDUHaPZwz0/hg0gn8
+         2K2MK2IvA+P7jZGRS5uhbJ/tFXLg2Nkw9XOFNmgqIbmJe4CMBBFaowB9AOQ60dFCcB8q
+         +CmEeFEtIcctb8A3ltc+uNotzk5BKlv9l8WACyONkuvQbZRIbfAb3ZZYlHKYXeXeBjZM
+         NN1EtyRt434GQNQtkDlw6wGzVhKd1jjbVuT/Wi8gGWEuAhOVHrEpROmgGt9vDaOpciEL
+         5ZHMygSMGAE3wGLqNgsIQwT/OeJ7dd8An0XYfRPFTP3WN50b58RVTmWUMbVb6f8a8Cmt
+         bKcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702408799; x=1703013599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fDZO9rUEaSCIKGPTNLQORxAuPrrJryJu9QjeOQcq1A4=;
+        b=boyiBo+jd5dOqL3hwve/xuDIQ1C/kQqhElsHouebBZ67S1K4h/mATxflQRw1mhkPX9
+         A8OIceMWvd8Ny77amhA3/yzEVc68JSv54Y8oABlZZbEOHLHaKDxB7KEcdxhUkFhB/twB
+         2HB1+z/BcN9rANDFbs+lOIWF5zmX6Zgaxw9r9RRvN7O27QQiEJdV3mF7flvh2aB1Hg4U
+         +du9Mq62nkh8GnDtXc5QU2z+s4XH+CqZbvCXYBD0V/KWYJ2eDVszK57399F1c0Nwc1bI
+         jBj8mJehFd51BIByEvSaKmUdu4lZpy8witBp5xegR+g+dDHQjVGoKqGjASLuqTVcHypF
+         87Lg==
+X-Gm-Message-State: AOJu0YxGOc7+Jsi6eJ9pHozvTZ0RY34fGrCvfKylpQfSxBbMSDqndry7
+        DFJtGVkOrfpl7pTdMcV706AYvjirwsNfYQJriBMToA==
+X-Google-Smtp-Source: AGHT+IHhHldkkKWSw5/c1UASxLGabkICfwtszvf2fhz0+qfzxSM9eqL1W0JVD3z3i8kQ+OE2shxpMKk0DM9YNWaT9QU=
+X-Received: by 2002:a4a:1d86:0:b0:58e:1c47:879b with SMTP id
+ 128-20020a4a1d86000000b0058e1c47879bmr4535569oog.16.1702408799400; Tue, 12
+ Dec 2023 11:19:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231211193048.580691-1-avagin@google.com> <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
+ <20231212-brokkoli-trinken-1581d1e99d6a@brauner>
+In-Reply-To: <20231212-brokkoli-trinken-1581d1e99d6a@brauner>
+From:   Andrei Vagin <avagin@google.com>
+Date:   Tue, 12 Dec 2023 11:19:48 -0800
+Message-ID: <CAEWA0a6AzM0xLGW+_iFV11h8acqSZ3MfQuivf_inSjR+veh1Ng@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs/proc: show correct device and inode numbers in /proc/pid/maps
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09 2023 at 11:08, xingwei lee wrote:
-> Hello, tglx.
+On Tue, Dec 12, 2023 at 1:27=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> On Tue, Dec 12, 2023 at 07:51:31AM +0200, Amir Goldstein wrote:
+> > +fsdevel, +overlayfs, +brauner, +miklos
+> >
+> > On Mon, Dec 11, 2023 at 9:30=E2=80=AFPM Andrei Vagin <avagin@google.com=
+> wrote:
+> > >
+> > > Device and inode numbers in /proc/pid/maps have to match numbers retu=
+rned by
+> > > statx for the same files.
+> >
+> > That statement may be true for regular files.
+> > It is not true for block/char as far as I know.
+> >
+> > I think that your fix will break that by displaying the ino/dev
+> > of the block/char reference inode and not their backing rdev inode.
+> >
+> > >
+> > > /proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here=
+ is
+> > > an issue. If a mapped file is on a stackable file system (e.g.,
+> > > overlayfs), vma->vm_file is a backing file whose f_inode is on the
+> > > underlying filesystem. To show correct numbers, we need to get a user
+> > > file and shows its numbers. The same trick is used to show file paths=
+ in
+> > > /proc/pid/maps.
+> >
+> > For the *same* trick, see my patch below.
+> >
+> > >
+> > > But it isn't the end of this story. A file system can manipulate inod=
+e numbers
+> > > within the getattr callback (e.g., ovl_getattr), so vfs_getattr must =
+be used to
+> > > get correct numbers.
+> >
+> > This explanation is inaccurate, because it mixes two different overlayf=
+s
+> > traits which are unrelated.
+> > It is true that a filesystem *can* manipulate st_dev in a way that will=
+ not
+> > match i_ino and it is true that overlayfs may do that in some non-defau=
+lt
+> > configurations (see [1]), but this is not the reason that you are seein=
+g
+> > mismatches ino/dev in /proc/<pid>/maps.
+> >
+> > [1] https://docs.kernel.org/filesystems/overlayfs.html#inode-properties
+> >
+> > The reason is that the vma->vm_file is a special internal backing file
+> > which is not otherwise exposed to userspace.
+> > Please see my suggested fix below.
+> >
+> > >
+> > > Cc: Amir Goldstein <amir73il@gmail.com>
+> > > Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+> > > Signed-off-by: Andrei Vagin <avagin@google.com>
+> > > ---
+> > >  fs/proc/task_mmu.c | 20 +++++++++++++++++---
+> > >  1 file changed, 17 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > > index 435b61054b5b..abbf96c091ad 100644
+> > > --- a/fs/proc/task_mmu.c
+> > > +++ b/fs/proc/task_mmu.c
+> > > @@ -273,9 +273,23 @@ show_map_vma(struct seq_file *m, struct vm_area_=
+struct *vma)
+> > >         const char *name =3D NULL;
+> > >
+> > >         if (file) {
+> > > -               struct inode *inode =3D file_inode(vma->vm_file);
+> > > -               dev =3D inode->i_sb->s_dev;
+> > > -               ino =3D inode->i_ino;
+> > > +               const struct path *path;
+> > > +               struct kstat stat;
+> > > +
+> > > +               path =3D file_user_path(file);
+> > > +               /*
+> > > +                * A file system can manipulate inode numbers within =
+the
+> > > +                * getattr callback (e.g. ovl_getattr).
+> > > +                */
+> > > +               if (!vfs_getattr_nosec(path, &stat, STATX_INO, AT_STA=
+TX_DONT_SYNC)) {
+> >
+> > Should you prefer to keep this solution it should be constrained to
+> > regular files.
+>
+> It's also very dicy calling into the filesystem from procfs. You might
+> hang the system if you end up talking to a hung NFS server or something.
+> What locks does show_map_vma() hold? And is it safe to call helpers that
+> might generate io?
 
-Please do not top-post: https://people.kernel.org/tglx/notes-about-netiquette
-
-> I reprduce this bug with
-> linux-next commit:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/log/?id=eff99d8edbed7918317331ebd1e365d8e955d65e
-> kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=61991b2630c19677
-> the same configuration as the syzbot dashboard:
-> https://syzkaller.appspot.com/bug?extid=f2c4e7bfcca6c6d6324c.
-
-If you want that people look after your report, then the report needs to
-carry the information right away.
-
-> However, I do not entangled the information and just try to generate
-> repro.c with the configuration provided by syzbot dashboard.
-
-The reproducer file alone is useless without the rest of the information.
-
-> When I try the repro.c in the lasted upstream commit:
-> f2e8a57ee9036c7d5443382b6c3c09b51a92ec7e, it can't crash the kernel at
-> all. Should I assume this bug was fixed by the mainline?
-
-Assumptions are not helpful. And if you look at the syzkaller report
-then it's entirely clear that the problem is _NOT_ in
-alarm_handle_timer().
-
- Possible interrupt unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sighand->siglock);
-                               local_irq_disable();
-                               lock(&new_timer->it_lock);
-                               lock(&sighand->siglock);
-  <Interrupt>
-    lock(&new_timer->it_lock);
-
- *** DEADLOCK ***
-
-So it's clear that sighand->siglock is taken without interrupts disabled
-somewhere and the report tells you exactly where:
-
- -> (&sighand->siglock){+.+.}-{2:2} {
-    HARDIRQ-ON-W at:
-                      <SNIP/>
-                      ptrace_set_stopped kernel/ptrace.c:391 [inline]
-                      ptrace_attach+0x401/0x650 kernel/ptrace.c:478
-                      <SNIP/>
-
-Now if you'd dig into the git history of linux-next then you'd figure
-out that the commit which introduced the problem:
-
-   5431fdd2c181 ("ptrace: Convert ptrace_attach() to use lock guards")
-
-was removed from linux-next on 2023-11-20, which is 3 days later than
-the commit tag you linked to and never came back and therefore is not in
-mainline.
-
-It's all fine if you try to get a reproducer for something, but you
-could have spared all of us a lot of time if you validated that the
-problem still persists in linux-next and upstream.
+I had the same thoughts when I was thinking about whether it is safe
+to use it here
+or not. Then I found AT_STATX_DONT_SYNC (don't sync attributes with
+the server) and
+decided that it should be safe. Anyway, Amir explains that
+vfs_getattr_nosec isn't
+needed for overlay files.
 
 Thanks,
-
-        tglx
-
-
+Andrei
