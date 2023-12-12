@@ -2,295 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95B080F4B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF7780F4BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376802AbjLLRjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        id S229963AbjLLRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLRjE (ORCPT
+        with ESMTP id S232546AbjLLRjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:39:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFAE8F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BB0BC433C7;
-        Tue, 12 Dec 2023 17:39:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702402749;
-        bh=3O4MKMSJdcyJ+24RyslOoDD0BR9w2BLkDCO5dQ0GLyQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q3NIGmnQXCbRmAhjc6JJ9yBgHrlAeV5Ad9Ny111D3FtGouOkZuReV2gmfVL9mKy5j
-         PrOq+Cstwxnd3HpQ0oYBt+L52EiLOX1g2YdOT8SLI3hjXZkiwE7UMhq1f4zmFTIvZQ
-         ZIrWye/chg5bI9DPrJl71p/AcO6Kg7XnTxrug5GcH6yrHhC4zZMffo5HaqhGUl7ZZ0
-         QSvU5FnIGTKzZqgrqXpok7qkQV5g3V7ajv54kTxpMsg7eiESC1q3pito2NBubgRYLj
-         Y2WyMutZBxgTXolnWTKm5/1GWfJ+2LV0wkMe82xHJxC6jJ1rBQ0ZGmmKTAJCRK3NFZ
-         0dpQXfvdqnEgw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5576F403EF; Tue, 12 Dec 2023 14:39:05 -0300 (-03)
-Date:   Tue, 12 Dec 2023 14:39:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v1 02/14] libperf cpumap: Rename and prefer sysfs for
- perf_cpu_map__default_new
-Message-ID: <ZXiauao3bIbc0ZCo@kernel.org>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-3-irogers@google.com>
+        Tue, 12 Dec 2023 12:39:22 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125469F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:28 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-20316647099so84181fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1702402767; x=1703007567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lUNcmTOafhUTvYQgQCAZ2J3XidKSJdEQq/nWiWeUEgE=;
+        b=Uahcjca7Pm5sO1adSdHjqXTnJtThnJjHeBLrMAimlYmIVG+2c27XbPPYX5mKWdj7cR
+         G8+CliuYp+mTllA7GyLcztbWkHeufOcDajzRhMGxc/M2AyrGeIcs1NOHzUPjdygumhPM
+         R2u9e82H4++WVPFS9rxxg5D9b8+7ocMoORY1UI0Bf17X8EChcUiBfjnQ2b2CLcrBdk2G
+         BMCkjU5l1LEFKDmjlk3JC9IZu+T+JicfqJkv5DKdvIuUcipqV9UNYblCfeDkZc0zjWlC
+         E1kKDeylDS8YfBNaK+W6S6ByxuMg7wJlJ5S0y96Ryfk+xkJ+6hxE9HvbThLnkZluZ8G7
+         h85g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702402767; x=1703007567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lUNcmTOafhUTvYQgQCAZ2J3XidKSJdEQq/nWiWeUEgE=;
+        b=fGVhNE0IDRXY/uL8T/v8cUwn5lhPgbJaC85A1Uh/FH7abcHB2+93hE58/znfL/qfcG
+         uBqUdSPU1rM67nfe2Jpoa4aQ+Z1Er8fBI9RHRy++fnGZ6vV4CcLPPe9ZamFzEaiWpz55
+         lAoKiXsH8mMMif9WXn/Cl4cv+eaI8HWrKLhw8Yf2sM2oPpoyt/Eaa+n9Q7XZ9DqoElkr
+         SsMCxohSV2KyGFEEZoa+/kw3VA+kUVr+kp067v4kr0mYJ1mhCYTr6ZXpxV0OASeA0STI
+         LoxHyaqQpsA9nuI8y4HgMlVVZhx0EI2s0hxAzAnnaaHw6/AcEN6n0F3v0rKlAR//bXjK
+         j9YA==
+X-Gm-Message-State: AOJu0Yxd5CU/h7hZJj6PREJT5bf1v/j1mBP2/IA4gXiFrzVs6iRB4HfS
+        UiwmkvlaTR35Jdp1Ryw+p/lM47m4G27TL5t3MC/F7J7W0DQEopWh
+X-Google-Smtp-Source: AGHT+IH8FppDOJz1c2vNZhu2IoyiV03XlApPbOHQwSfNyieubu2559mIvdKWWArZPTLxB5xikCyyW94EFosm8JLdBec=
+X-Received: by 2002:a05:6870:659e:b0:1fb:3741:4dc5 with SMTP id
+ fp30-20020a056870659e00b001fb37414dc5mr8515512oab.34.1702402766687; Tue, 12
+ Dec 2023 09:39:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129060211.1890454-3-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231212141200.62579-1-eichest@gmail.com> <20231212170704.74565969@device.home>
+In-Reply-To: <20231212170704.74565969@device.home>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Tue, 12 Dec 2023 18:39:14 +0100
+Message-ID: <CAPv3WKfY2ATjPPV=yFQNUE=dV4wpyV3d0cQNBGOuSPb+id=mvw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net: mvpp2: add support for mii
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Stefan Eichenberger <eichest@gmail.com>, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 28, 2023 at 10:01:59PM -0800, Ian Rogers escreveu:
-> Rename perf_cpu_map__default_new to perf_cpu_map__new_online_cpus to
-> better indicate what the implementation does. Read the online CPUs
-> from /sys/devices/system/cpu/online first before using sysconf as
-> sysconf can't accurately configure holes in the CPU map. If sysconf is
-> used, warn when the configured and online processors disagree.
-> 
-> When reading from a file, if the read doesn't yield a CPU map then
-> return an empty map rather than the default online. This avoids
-> recursion but also better yields being able to detect failures.
-> 
-> Add more comments.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/lib/perf/cpumap.c              | 59 +++++++++++++++++-----------
->  tools/lib/perf/include/perf/cpumap.h | 15 ++++++-
->  tools/lib/perf/libperf.map           |  2 +-
->  tools/lib/perf/tests/test-cpumap.c   |  2 +-
->  4 files changed, 51 insertions(+), 27 deletions(-)
-> 
-> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> index 2bd6aba3d8c9..463ca8b37d45 100644
-> --- a/tools/lib/perf/cpumap.c
-> +++ b/tools/lib/perf/cpumap.c
-> @@ -9,6 +9,7 @@
->  #include <unistd.h>
->  #include <ctype.h>
->  #include <limits.h>
-> +#include "internal.h"
->  
->  void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
->  {
-> @@ -66,15 +67,21 @@ void perf_cpu_map__put(struct perf_cpu_map *map)
->  	}
->  }
->  
-> -static struct perf_cpu_map *cpu_map__default_new(void)
-> +static struct perf_cpu_map *cpu_map__new_sysconf(void)
->  {
->  	struct perf_cpu_map *cpus;
-> -	int nr_cpus;
-> +	int nr_cpus, nr_cpus_conf;
->  
->  	nr_cpus = sysconf(_SC_NPROCESSORS_ONLN);
->  	if (nr_cpus < 0)
->  		return NULL;
->  
-> +	nr_cpus_conf = sysconf(_SC_NPROCESSORS_CONF);
-> +	if (nr_cpus != nr_cpus_conf) {
-> +		pr_warning("Number of online CPUs (%d) differs from the number configured (%d) the CPU map will only cover the first %d CPUs.",
-> +			nr_cpus, nr_cpus_conf, nr_cpus);
-> +	}
-> +
->  	cpus = perf_cpu_map__alloc(nr_cpus);
->  	if (cpus != NULL) {
->  		int i;
-> @@ -86,9 +93,27 @@ static struct perf_cpu_map *cpu_map__default_new(void)
->  	return cpus;
->  }
->  
-> -struct perf_cpu_map *perf_cpu_map__default_new(void)
-> +static struct perf_cpu_map *cpu_map__new_syfs_online(void)
+Hi,
 
-I'm renaming this to cpu_map__new_sysfs_online(), ok?
+wt., 12 gru 2023 o 17:07 Maxime Chevallier
+<maxime.chevallier@bootlin.com> napisa=C5=82(a):
+>
+> Hi Stefan,
+>
+> On Tue, 12 Dec 2023 15:12:00 +0100
+> Stefan Eichenberger <eichest@gmail.com> wrote:
+>
+> > Currently, mvpp2 only supports RGMII. This commit adds support for MII.
+> > The description in Marvell's functional specification seems to be wrong=
+.
+> > To enable MII, we need to set GENCONF_CTRL0_PORT3_RGMII, while for RGMI=
+I
+> > we need to clear it. This is also how U-Boot handles it.
+> >
+> > Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
+>
+> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
-- Arnaldo
+LGTM, as well.
+Reviewed-by: Marcin Wojtas <mw@semihalf.com>
 
->  {
-> -	return cpu_map__default_new();
-> +	struct perf_cpu_map *cpus = NULL;
-> +	FILE *onlnf;
-> +
-> +	onlnf = fopen("/sys/devices/system/cpu/online", "r");
-> +	if (onlnf) {
-> +		cpus = perf_cpu_map__read(onlnf);
-> +		fclose(onlnf);
-> +	}
-> +	return cpus;
-> +}
-> +
-> +struct perf_cpu_map *perf_cpu_map__new_online_cpus(void)
-> +{
-> +	struct perf_cpu_map *cpus = cpu_map__new_syfs_online();
-> +
-> +	if (cpus)
-> +		return cpus;
-> +
-> +	return cpu_map__new_sysconf();
->  }
->  
->  
-> @@ -180,27 +205,11 @@ struct perf_cpu_map *perf_cpu_map__read(FILE *file)
->  
->  	if (nr_cpus > 0)
->  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
-> -	else
-> -		cpus = cpu_map__default_new();
->  out_free_tmp:
->  	free(tmp_cpus);
->  	return cpus;
->  }
->  
-> -static struct perf_cpu_map *cpu_map__read_all_cpu_map(void)
-> -{
-> -	struct perf_cpu_map *cpus = NULL;
-> -	FILE *onlnf;
-> -
-> -	onlnf = fopen("/sys/devices/system/cpu/online", "r");
-> -	if (!onlnf)
-> -		return cpu_map__default_new();
-> -
-> -	cpus = perf_cpu_map__read(onlnf);
-> -	fclose(onlnf);
-> -	return cpus;
-> -}
-> -
->  struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  {
->  	struct perf_cpu_map *cpus = NULL;
-> @@ -211,7 +220,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  	int max_entries = 0;
->  
->  	if (!cpu_list)
-> -		return cpu_map__read_all_cpu_map();
-> +		return perf_cpu_map__new_online_cpus();
->  
->  	/*
->  	 * must handle the case of empty cpumap to cover
-> @@ -268,9 +277,11 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
->  
->  	if (nr_cpus > 0)
->  		cpus = cpu_map__trim_new(nr_cpus, tmp_cpus);
-> -	else if (*cpu_list != '\0')
-> -		cpus = cpu_map__default_new();
-> -	else
-> +	else if (*cpu_list != '\0') {
-> +		pr_warning("Unexpected characters at end of cpu list ('%s'), using online CPUs.",
-> +			   cpu_list);
-> +		cpus = perf_cpu_map__new_online_cpus();
-> +	} else
->  		cpus = perf_cpu_map__new_any_cpu();
->  invalid:
->  	free(tmp_cpus);
-> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
-> index d0bf218ada11..b24bd8b8f34e 100644
-> --- a/tools/lib/perf/include/perf/cpumap.h
-> +++ b/tools/lib/perf/include/perf/cpumap.h
-> @@ -22,7 +22,20 @@ struct perf_cpu_map;
->   * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -1 value.
->   */
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
-> -LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
-> +/**
-> + * perf_cpu_map__new_online_cpus - a map read from
-> + *                                 /sys/devices/system/cpu/online if
-> + *                                 available. If reading wasn't possible a map
-> + *                                 is created using the online processors
-> + *                                 assuming the first 'n' processors are all
-> + *                                 online.
-> + */
-> +LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_online_cpus(void);
-> +/**
-> + * perf_cpu_map__new - create a map from the given cpu_list such as "0-7". If no
-> + *                     cpu_list argument is provided then
-> + *                     perf_cpu_map__new_online_cpus is returned.
-> + */
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
->  LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
-> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> index a8ff64baea3e..8a71f841498e 100644
-> --- a/tools/lib/perf/libperf.map
-> +++ b/tools/lib/perf/libperf.map
-> @@ -2,7 +2,7 @@ LIBPERF_0.0.1 {
->  	global:
->  		libperf_init;
->  		perf_cpu_map__new_any_cpu;
-> -		perf_cpu_map__default_new;
-> +		perf_cpu_map__new_online_cpus;
->  		perf_cpu_map__get;
->  		perf_cpu_map__put;
->  		perf_cpu_map__new;
-> diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
-> index 2c359bdb951e..c998b1dae863 100644
-> --- a/tools/lib/perf/tests/test-cpumap.c
-> +++ b/tools/lib/perf/tests/test-cpumap.c
-> @@ -29,7 +29,7 @@ int test_cpumap(int argc, char **argv)
->  	perf_cpu_map__put(cpus);
->  	perf_cpu_map__put(cpus);
->  
-> -	cpus = perf_cpu_map__default_new();
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus)
->  		return -1;
->  
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-> 
-
--- 
-
-- Arnaldo
+Best regards,
+Marcin
