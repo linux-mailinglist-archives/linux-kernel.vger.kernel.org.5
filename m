@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C64880F4CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EC380F4D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376812AbjLLRnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:43:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        id S1376914AbjLLRne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbjLLRnX (ORCPT
+        with ESMTP id S235106AbjLLRnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:43:23 -0500
-X-Greylist: delayed 113441 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 09:43:28 PST
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E112BCF;
-        Tue, 12 Dec 2023 09:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=gooevbgqcfc2zodvlhx4jfz534.protonmail; t=1702403007; x=1702662207;
-        bh=y+TsCR4PW7NrBLfHsIFxa3geiSOoWWNUlAyAMODXi2o=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=lBoMODRjoIgqkk2bFCaW9BdVbEtpFOIDRkaLhi7QraiqqCQjY/TXaRk5xPU7corMA
-         WHNsgewGeHQMQr1Ru2hl0lGPh+vxMJHAFOnVImnoT9YdkVSebVZR6LALSiU+f6NZQT
-         vtfBUpD+p40GW8QhhycSYqzgLV4Z9H7ulmw3BU+MO+tk98QUb0z/Khj8jWo5ahwaoU
-         gm3gxI2zROKKqCPDPtRXn+ZRl5lPK2JJZ+Jmwvoow33CaaHxMTbwn/5mADQk5bedQb
-         9gkj9t+sVSW9N+v1iCNWVAaJT90eJDmrJQKvfDJoBU3MCijhRIS9HOwJXSeWoHQT9J
-         qAgfsygmmfxGA==
-Date:   Tue, 12 Dec 2023 17:43:16 +0000
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to build directory
-Message-ID: <e9d84003-79bd-4b56-b0db-97f06f88af2f@proton.me>
-In-Reply-To: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-Feedback-ID: 71780778:user:proton
+        Tue, 12 Dec 2023 12:43:31 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7069693;
+        Tue, 12 Dec 2023 09:43:38 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d08a924fcfso54683735ad.2;
+        Tue, 12 Dec 2023 09:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702403017; x=1703007817; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hdTQW81TUFg8C2LBr5hrwnNeuP2zn3bh5csoTb3XyjI=;
+        b=Th/XAmoQ8XiaGaIU0QhPrPo8MNs9Av50+nb4a+d7Gl2jMMO0hS4emsHmJB13K3myVJ
+         mtIxGwkbpDx0C2Vh+zX1KVrNqGlVxY5+Ix+FN6m75GmgoEc1xOt2qbuxC9wqgdYmoT8G
+         V3+PLdxJYtz18K1z5VQQRvr+qnVN6K/+Iy2nPidowsPi9tTL69tmDZXpsfPDY3IcR+D+
+         OoRwjO1BNjtxOF91mHF8v6EKRgmskHelMt0xtbwqxDFb5qh9ynTbDD/rc1CWyEyaLF3s
+         EKLee8q8MgGnlydY/J4xLOS/8IwIpS5OaSVIAIXA2RUznxQVCmJw7eTNKZAp8SeM1+dQ
+         s+aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702403017; x=1703007817;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdTQW81TUFg8C2LBr5hrwnNeuP2zn3bh5csoTb3XyjI=;
+        b=tcemOMRHC8XB5n3juiCNL77D5pUMLIPfmYz3kmrFTj151dgd3lD9m/JuZYnfSlAd1g
+         UVX0hfGpB0Solo5Ee2lVI5nRd5lbqHV+8NjnfAeCilPt7Z7hqRHqnFNUnMZqYSqLe6Cp
+         BYIG0/v3eJglvrFgu8epNgVwg33cz374FWCyLHS9TFQXhDAQaQFnUeoca3H3Tjq//wQL
+         LHaUNVXcnmIdKfHSVnqGqNQC9zeyKyrSZ3iKg1Uu6Oed6KWjWoOpKdQiVKh91ewrpQWm
+         e0APQiZfx3t5PnFJFS4TiUpC67G0uNLhhkpZZWDulv4xESYHR7ClUbrKi0unXOJ3I7Xa
+         0NwQ==
+X-Gm-Message-State: AOJu0Yx/nZ2piuC60lM//jx6+ay2NDFsP+WsgKcHYCtzH5UngkHUBk/8
+        M2nrGiwVf7FsKVyFcbVXIcd5G8qJgBsSUNRr
+X-Google-Smtp-Source: AGHT+IHrMylmsFnbfZdBfw3h6puUyjP7GPaQE/O6Xp2+Ck8XHtHLmh5SanXcd0daviKb27ZqWIF65g==
+X-Received: by 2002:a17:902:e88a:b0:1cc:43af:f568 with SMTP id w10-20020a170902e88a00b001cc43aff568mr6900604plg.6.1702403016900;
+        Tue, 12 Dec 2023 09:43:36 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id 3-20020a170902c10300b001d1cd7e4acesm8892791pli.68.2023.12.12.09.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:43:36 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:13:31 +0530
+From:   "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/1] RCU tasks updates for v6.8
+Message-ID: <20231212174331.GA11807@neeraj.linux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 08:43, Viresh Kumar wrote:
-> Rustup override is required to be set for the build directory and not
-> necessarily the kernel source tree (unless the build directory is its
-> subdir).
->=20
-> Clarify the same in quick-start guide.
->=20
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Hello,
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+This series contains RCU tasks updates:
 
---=20
-Cheers,
-Benno
+1.      rcu-tasks: Mark RCU Tasks accesses to current->rcu_tasks_idle_cpu.
 
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ tasks.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
