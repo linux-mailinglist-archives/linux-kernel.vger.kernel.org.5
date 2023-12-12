@@ -2,49 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D36680F6C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD57580F6C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376879AbjLLTdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        id S1377111AbjLLThz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 14:37:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjLLTdH (ORCPT
+        with ESMTP id S229975AbjLLThx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:33:07 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23239F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:33:13 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-124-235.bstnma.fios.verizon.net [173.48.124.235])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3BCJX4aW019833
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 14:33:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1702409585; bh=0KcL42PTALNe0VGoTmysrDUPSzlpFZnc0OMkkvwj0Ao=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=lBu/BoK7jac5GT20dUnuHoD6xmpq2Cd6+nzPPA8Fr5KUaVtDI15hytaqT9soPxmu2
-         BJV77cs6rooh/OFv6O/BmcM6pNaWgqC6YNja8yaJrB8sFDj5Ttpeml9wuTpjCjHuGB
-         asQgq5eOFtsTcojM3vyXgVOTM+Z5XHOpUUp/4Fs91gzpT/nbaceCU9z0+CuP9Qi168
-         377MtoCjCxhNMgNmg79diIrQ2xFG7f7X5r9s71HrjEZivQe9CxNvEOO+YbKqj+rGRS
-         +9403Bvd2U3den4apvrtXW/4/90Y98PPR/5a74R1uShMtP2y3J8Lw0B1nAaQsj9JHj
-         OwzgB3uXj7jEA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D1D1315C410D; Tue, 12 Dec 2023 14:33:03 -0500 (EST)
-Date:   Tue, 12 Dec 2023 14:33:03 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] ext4 bug fixes for 6.7-rc6
-Message-ID: <20231212193303.GA154795@mit.edu>
+        Tue, 12 Dec 2023 14:37:53 -0500
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722FBA1;
+        Tue, 12 Dec 2023 11:38:00 -0800 (PST)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5908b15f43eso480655eaf.1;
+        Tue, 12 Dec 2023 11:38:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702409880; x=1703014680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R6TjCFcD7qqsRK8I7srUQGOuOzdomezjScNXBNfHm3c=;
+        b=CriFQhx5hk5W2tseS+MUQG7YSyBpLDiMlDX/E1QASIDxaKmuTLtWhw1u8LxnBkX35i
+         eGM0ijNr2paMNz8bORQ84gHzmJ1Pkcr/pUJnHAkroMuol4NslaEn2qOkKXN2vacNi+o4
+         arNL4VqeBFuSFKWjpAtG9dFfpLjcm6TpBATpqWNaA5qUujQbQ4g7ifRpfGXhf6NYofTC
+         +ilPXIEaMLj9aV1fBrdDR+La+ZzClbqHP7Pba5dH6mjPKGk4Y8W8+UO7EuTFLZp/0CDQ
+         80vDdzwdFLTgDHDjj/2OmnLKt3Gl781UNR0usdhy3gBdIz0uxA437bP5VwpTYYFxdWRF
+         4FIw==
+X-Gm-Message-State: AOJu0YzfBpMZ2GMCi5qdiOZRDTrQD5trpU6+5tvpt+K4xRKEEkKcKB72
+        odWo4WEh7qUyYOhWXRx6lSVl2atM8bxjyi6Kqv7A5e0u
+X-Google-Smtp-Source: AGHT+IHUeZ5IA6EI9od+HcRjK7eilawttVi9sYNw6E2NHqGjYEiKVBQT4v0dg1zTZkhRiOEKPeNkOLpWPWsZu0OWTCE=
+X-Received: by 2002:a05:6820:220d:b0:58d:5302:5b18 with SMTP id
+ cj13-20020a056820220d00b0058d53025b18mr13895661oob.1.1702409879802; Tue, 12
+ Dec 2023 11:37:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20231206104318.182759-1-ytcoode@gmail.com>
+In-Reply-To: <20231206104318.182759-1-ytcoode@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Dec 2023 20:37:48 +0100
+Message-ID: <CAJZ5v0gUO-mz2=nN_Xz7ngw0hms1CziDMAKBv=xndqZtHd44UQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] ACPI/NUMA: A few fixes and cleanups in drivers/acpi/numa/srat.c
+To:     Yuntao Wang <ytcoode@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,39 +62,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+On Wed, Dec 6, 2023 at 11:44 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+>
+> This series fixes an issue and does some cleanups in drivers/acpi/numa/srat.c.
+>
+> Yuntao Wang (3):
+>   ACPI/NUMA: Remove unnecessary check in acpi_parse_gi_affinity()
+>   ACPI/NUMA: Optimize the check for the availability of node values
+>   ACPI/NUMA: Fix the logic of getting the fake_pxm value
 
-  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+All patches applied as 6.8 material with some edits in the changelogs.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.7-rc6
-
-for you to fetch changes up to 6c02757c936063f0631b4e43fe156f8c8f1f351f:
-
-  jbd2: fix soft lockup in journal_finish_inode_data_buffers() (2023-12-12 10:25:46 -0500)
-
-----------------------------------------------------------------
-Fix various bugs / regressions for ext4, including a soft lockup, a
-WARN_ON, and a BUG.
-
-----------------------------------------------------------------
-Baokun Li (1):
-      ext4: prevent the normalized size from exceeding EXT_MAX_BLOCKS
-
-Jan Kara (1):
-      ext4: fix warning in ext4_dio_write_end_io()
-
-Ye Bin (1):
-      jbd2: fix soft lockup in journal_finish_inode_data_buffers()
-
-Zhang Yi (2):
-      jbd2: correct the printing of write_flags in jbd2_write_superblock()
-      jbd2: increase the journal IO's priority
-
- fs/ext4/file.c       | 14 ++++++++------
- fs/ext4/mballoc.c    |  4 ++++
- fs/jbd2/commit.c     | 10 ++++++----
- fs/jbd2/journal.c    | 24 ++++++++++++++----------
- include/linux/jbd2.h |  3 +++
- 5 files changed, 35 insertions(+), 20 deletions(-)
+Thanks!
