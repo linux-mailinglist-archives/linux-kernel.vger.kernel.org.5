@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADCD80F4AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D83680F4B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376799AbjLLRet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S235112AbjLLRf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235113AbjLLReq (ORCPT
+        with ESMTP id S233101AbjLLRfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:34:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE3D123;
-        Tue, 12 Dec 2023 09:34:50 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702402489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=Vh5gxobmwSqeONL44Vg/pUFT6mcMvW2fhVncm4gDIi8=;
-        b=kiOLCvlACFYSKEgH59hIsxkmAN5yOqVOdbfEWvZJYIq8JsqT26+3HhG+yzIX+K55d9nXA4
-        w1XDM7B7/PvaycakMIWXkJ8eJ2cDGy9bO8bMddNkesig2IKPb8gdhpd2ikkR3XPLAIyZ85
-        /cZgBx+yDd8wMewgMg5aoWd5A7pcHwIDwJqoVOQakQuW4A4haNBONlaUgvpCSq82UHmpKz
-        HOLy/Nedm7xiskcCEbiriL47qD4B4nUOS/sNlmU0BcA+z3oBe0IuTj021F99fQkKoLsoRV
-        1Ge/LAePtPsoxgrrxrtOpsQlZtFac0+La2hMFCc6PYdhhOwPhaS7tvWRBN3M/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702402489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=Vh5gxobmwSqeONL44Vg/pUFT6mcMvW2fhVncm4gDIi8=;
-        b=qaSr8NfzQX7db88EzLqItcs4NM5/uhqHSjuaV5nPbD5gfhErZun+m+2bD7sbcqoW79SxkM
-        XD34XlI0gs9wIPAQ==
-To:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "jsperbeck@google.com" <jsperbeck@google.com>,
-        "tip-bot2@linutronix.de" <tip-bot2@linutronix.de>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-tip-commits@vger.kernel.org" 
-        <linux-tip-commits@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Andres Freund <andres@anarazel.de>
-Subject: Re: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
-In-Reply-To: <1e565bb08ebdd03897580a5905d1d2de01e15add.camel@intel.com>
-Date:   Tue, 12 Dec 2023 18:34:48 +0100
-Message-ID: <87ttonpbnr.ffs@tglx>
+        Tue, 12 Dec 2023 12:35:55 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EEA93;
+        Tue, 12 Dec 2023 09:36:02 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d8ddcc433fso43019177b3.1;
+        Tue, 12 Dec 2023 09:36:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702402561; x=1703007361; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AqYW6zWEA4DrVdtJ0M0uHwX0AZKuTGbkjdSNuNf9Jsw=;
+        b=WoVNRF8XgvjVELlmulYULfD2xKLV+DTzhPLGN/vVXPZQMTzP614zexwKoNOGGKjWkk
+         rX0U/s27DN9BAZYKd8jOC5OYfZwpWXoehkVHN4CvEY8fmP4FaDS8g0iDtowre6owgY5o
+         zksrCP+6yNyyJNRcafXfC9WpFolCTTlD7R7EUdjO6bTNjc6hqZ0Bnky3/NUnd+l6Uw9b
+         Xq1g3xVwrjRbv31rSFxF3aTNRAiu9RSOl8oUy0f8e/hodHnSi3dNBEDBqodfwoVvXxSr
+         7+YvrdY6MrBK7FdBHmN0YUTz7MbQ9WHnyhcxKZHge4HneKOtc7Wi3EEjJp6WOR6odgVw
+         2ggA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702402561; x=1703007361;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AqYW6zWEA4DrVdtJ0M0uHwX0AZKuTGbkjdSNuNf9Jsw=;
+        b=HIXXa0LW2zNwFIetmj0XIbAjTB2xPSgwIDRoTSPR+Y+NIFrHBL8AhiiomM0DL5gii5
+         rlPgurU6+dJ2JHGLBojx+82pX7hK9uYrmXQf3Z/lUdxI3iSp03L71zRpqDEayN5BQ9nb
+         t9n4wLGpxFx7tryZg47lBMFcqdLYL5FBgkOzKbrz8Co6gc3Enb4u6HKdqyAviyyLcFa2
+         Hvs7mSTtWlk0RgchQVYTN5ChoQio+DoJIM3BoAlzkaCntZdrRFTW50iC0zUiPFCQs+Fu
+         QDQJGR+E0w8d/2xIpwmOnf95sZ0NL9pArfOBd7KEcFL53tBKFdS1vOUALmGPGNzy/tiQ
+         W+Yg==
+X-Gm-Message-State: AOJu0YxjE5rEQSbeL6bMnI/vWNU5t2FJ/F4wMtdlRJRCcwzaXbRkmotf
+        T+V8IOTnWQHiaQzaCL9O2wU=
+X-Google-Smtp-Source: AGHT+IE/2pSQ9yKqXyt2sZV+rUNwsE5JpJPh36RxwM+nVPxHryEkYXvEScysoA+RwrJAZ0UpUjbtxA==
+X-Received: by 2002:a0d:fbc2:0:b0:5d8:d2b6:6266 with SMTP id l185-20020a0dfbc2000000b005d8d2b66266mr3054619ywf.99.1702402561267;
+        Tue, 12 Dec 2023 09:36:01 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
+        by smtp.gmail.com with ESMTPSA id o5-20020a817305000000b005cd9cdbc48dsm3897945ywc.72.2023.12.12.09.36.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:36:00 -0800 (PST)
+Date:   Tue, 12 Dec 2023 09:35:59 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v3 13/35] KVM: x86: hyper-v: optimize and cleanup
+ kvm_hv_process_stimers()
+Message-ID: <ZXiZ9XviH84mXPG5@yury-ThinkPad>
+References: <20231212022749.625238-1-yury.norov@gmail.com>
+ <20231212022749.625238-14-yury.norov@gmail.com>
+ <ZXiW3AgIENf7whei@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXiW3AgIENf7whei@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23 2023 at 12:50, Rui Zhang wrote:
-> On Wed, 2023-11-22 at 22:19 +0000, John Sperbeck wrote:
->> I have a platform with both LOCAL_APIC and LOCAL_X2APIC entries for
->> each CPU.=C2=A0 However, the ids for the LOCAL_APIC entries are all
->> invalid ids of 255, so they have always been skipped in
->> acpi_parse_lapic()
->> by this code from f3bf1dbe64b6 ("x86/acpi: Prevent LAPIC id 0xff from
->> being
->> accounted"):
->>=20
->> =C2=A0=C2=A0=C2=A0 /* Ignore invalid ID */
->> =C2=A0=C2=A0=C2=A0 if (processor->id =3D=3D 0xff)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
-n 0;
->>=20
->> With the change in this thread, the return value of 0 means that the
->> 'count' variable in acpi_parse_entries_array() is incremented.=C2=A0 The
->> positive return value means that 'has_lapic_cpus' is set, even though
->> no entries were actually matched.
->
-> So in acpi_parse_madt_lapic_entries, without this patch,
-> madt_proc[0].count is a positive value on this platform, right?
->
-> This sounds like a potential issue because the following checks to fall
-> back to MPS mode can also break. (If all LOCAL_APIC entries have
-> apic_id 0xff and all LOCAL_X2APIC entries have apic_id 0xffffffff)
->
->> =C2=A0 Then, when the MADT is iterated
->> with acpi_parse_x2apic(), the x2apic entries with ids less than 255
->> are skipped and most of my CPUs aren't recognized.
->>=20
->> I think the original version of this change was okay for this case in
->> https://lore.kernel.org/lkml/87pm4bp54z.ffs@tglx/T/
->
-> Yeah.
->
-> But if we want to fix the potential issue above, we need to do
-> something more.
->
-> Say we can still use acpi_table_parse_entries_array() and convert
-> acpi_parse_lapic()/acpi_parse_x2apic() to
-> acpi_subtable_proc.handler_arg and save the real valid entries via the
-> parameter.
+On Tue, Dec 12, 2023 at 09:22:36AM -0800, Sean Christopherson wrote:
+> On Mon, Dec 11, 2023, Yury Norov wrote:
+> > The function traverses stimer_pending_bitmap in a for-loop bit by bit.
+> > Simplify it by using atomic find_and_set_bit().
+> 
+> for_each_test_and_clear_bit(), not find_and_set_bit().
+> 
+> It might also be nice to call out that there are only 4 bits, i.e. that using
+> for_each_test_and_clear_bit() will still generate inline code.  Definitely not
+> mandatory though, just nice to have (I highly doubt this code would be sensitive
+> to using less optimal code).
 
-Nah.
+Sure, will do.
+ 
+> > While here, refactor the logic by decreasing indentation level.
+> > 
+> > CC: Sean Christopherson <seanjc@google.com>
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > ---
+> >  arch/x86/kvm/hyperv.c | 40 ++++++++++++++++++++--------------------
+> 
+> This doesn't conflict with any of the in-flight Hyper-V changes, so with a fixed
+> changelog, feel free to take this through the bitmap tree.
+> 
+> Acked-by: Sean Christopherson <seanjc@google.com>
 
-> or can we just use num_processors & disabled_cpus to check if there is
-> any CPU probed when parsing LOCAL_APIC/LOCAL_X2APIC entires?
-
-No, we are not going to do that because that's just a proliferation of
-boundary violations.
-
-Let ACPI deal with it's own problems and not depend on something which
-is subject to change.
-
-The simple change below should do the trick.
-
-Thanks,
-
-        tglx
----
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 1a0dd80d81ac..85a3ce2a3666 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -293,6 +293,7 @@ acpi_parse_lapic(union acpi_subtable_headers * header, =
-const unsigned long end)
- 			    processor->processor_id, /* ACPI ID */
- 			    processor->lapic_flags & ACPI_MADT_ENABLED);
-=20
-+	has_lapic_cpus =3D true;
- 	return 0;
- }
-=20
-@@ -1134,7 +1135,6 @@ static int __init acpi_parse_madt_lapic_entries(void)
- 	if (!count) {
- 		count =3D acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_APIC,
- 					acpi_parse_lapic, MAX_LOCAL_APIC);
--		has_lapic_cpus =3D count > 0;
- 		x2count =3D acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_X2APIC,
- 					acpi_parse_x2apic, MAX_LOCAL_APIC);
- 	}
-
-
+Thank you!
