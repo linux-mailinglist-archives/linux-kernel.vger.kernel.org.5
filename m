@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC0980F5B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E180F5BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376642AbjLLStV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 13:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S1376712AbjLLSt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbjLLStT (ORCPT
+        with ESMTP id S1376638AbjLLStv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:49:19 -0500
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D4DEA;
-        Tue, 12 Dec 2023 10:49:25 -0800 (PST)
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2866af9d73bso4274508a91.3;
-        Tue, 12 Dec 2023 10:49:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702406965; x=1703011765;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ieLFoul+mPd07DhlmLbEOA93lnztioXfkR7OG/Df+DA=;
-        b=bAcc2eIzWeoo3OBxHov2eG3v9sOKkirmyvwy2vzWOyv25FliibRP0Q9VpbP6xQ0Sd2
-         6LVXnKeIHP47XKcJuF6O17MpXG3+yUxPiuxpigXHrN7MYQvMiXsDeXToo2aBJRwbwg6o
-         HzFff+Sy/JEKk+Bn7txemmIyyKRrEyabunGs9gbJUo7iyW0078y8HT6dmNAaZZs2oJYG
-         HvEJ6kAKfDL1FtrN5VpB9cSz7FsYhPQstkn+/nzx2Qred318rw+I7Ub8SyxfZmxZgO9d
-         IGmNlPX65GRa2JCOQ7LhwLqDiqTKFuwQUfAW0RVRIJlu+OSK/vJumwqHjSahi8+4S4tq
-         mOLg==
-X-Gm-Message-State: AOJu0YzYnKHWrs2pZZW2+OWGXstGxcFFdUD8R7/7gtpN6cKcuaP3hjZp
-        t0J/0Ijbp0Z5RhCND0jONx9h/pz16Z2hQEKHvJs=
-X-Google-Smtp-Source: AGHT+IHdP3JrLMVcqtMfuENRl0xtVa+FaokLT1DzuYhAg4/9SPuXyOZnu4rxOzqkQLlNZeaWchecIL4bXQ7nH+WRKrQ=
-X-Received: by 2002:a17:90b:1210:b0:28a:6137:149b with SMTP id
- gl16-20020a17090b121000b0028a6137149bmr2980031pjb.94.1702406965050; Tue, 12
- Dec 2023 10:49:25 -0800 (PST)
+        Tue, 12 Dec 2023 13:49:51 -0500
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB41D0;
+        Tue, 12 Dec 2023 10:49:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1702406967; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=OEDbM/7Nh+ThCBsFEQCeUubWdsTOEL0mGX/WzouBF5FpVS4sOTYuO2tOUkbBrOTds2pYNTJCQ5CIYGSn3R1uZnZnOq1swBXt782sMcecgey0PZNjaEycKghALTTK02XTlzFkb2hOym5ITH/n0alRrAyKnVEd3ru7WCElqbY2qW8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1702406967; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=Y9BKQtIfmMm0sVY++cu3R+sS5q4tdRr2o2bcRqoIeps=; 
+        b=CJqBDTw3OYrKBVuWr/2Kro6k7cevoqsJY2QRpxKn4AdYKipiHrgAlh9FnsGSViqMgzkTiJwqrrwOFUgT+z5w3FCa2R7dwDqRalqhhaHbgCEbxpEwosAkj1ReDaLHBvANVUCVxCrwZ1NYH1V8tFasJ5BjPOBac02YSMjAb3YDjMw=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702406967;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=Y9BKQtIfmMm0sVY++cu3R+sS5q4tdRr2o2bcRqoIeps=;
+        b=qJDjqT1P2Rcgd2vYjnvrmn/yBZknNWDIc7p+MFgb5DfZoxdjMuvY+bsslJBPKNpm
+        H69CGMzXQtO6Jxt/FTHtdGJXgkTn75sjhhTxWVVPK0UhbSPhYzEfhxAU7ghlUXUFEC0
+        DNK6TC2esVHvQ7dEuHNEtuJFPr1ZgJf/CsyVpAj8=
+Received: from kampyooter.. (182.69.31.144 [182.69.31.144]) by mx.zoho.in
+        with SMTPS id 1702406965316224.42754580873793; Wed, 13 Dec 2023 00:19:25 +0530 (IST)
+From:   Siddh Raman Pant <code@siddh.me>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Suman Ghosh <sumang@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v5 0/2] nfc: Fix UAF during datagram sending caused by missing refcounting
+Date:   Wed, 13 Dec 2023 00:19:18 +0530
+Message-ID: <cover.1702404519.git.code@siddh.me>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231208210855.407580-1-kan.liang@linux.intel.com>
- <ZXd7ZuxbNNsjAyqm@kernel.org> <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
- <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
- <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com> <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 12 Dec 2023 10:49:13 -0800
-Message-ID: <CAM9d7cgxCg0bgWRUg2rkR1dFfpTEUX6AZdw-Od5yALiL33ymQg@mail.gmail.com>
-Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        "Liang, Kan" <kan.liang@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>, maz@kernel.org,
-        marcan@marcan.st, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,62 +60,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:31 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Dec 12, 2023 at 10:00:16AM -0800, Ian Rogers wrote:
-> > On Tue, Dec 12, 2023 at 9:23 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > On Tue, Dec 12, 2023 at 7:56 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 2023-12-11 4:13 p.m., Arnaldo Carvalho de Melo wrote:
-> > > > > Em Fri, Dec 08, 2023 at 01:08:55PM -0800, kan.liang@linux.intel.com escreveu:
-> > > > >> From: Kan Liang <kan.liang@linux.intel.com>
-> > > > >>
-> > > > >> perf top errors out on a hybrid machine
-> > > > >>  $perf top
-> > > > >>
-> > > > >>  Error:
-> > > > >>  The cycles:P event is not supported.
-> > > > >>
-> > > > >> The user_requested_cpus may contain CPUs that are invalid for a hybrid
-> > > > >> PMU. It causes perf_event_open to fail.
-> > > > >
-> > > > > ?
-> > > > >
-> > > > > All perf top expects is that the "cycles", the most basic one, be
-> > > > > collected, on all CPUs in the system.
-> > > > >
-> > > >
-> > > > Yes, but for hybrid there is no single "cycles" event which can cover
-> > > > all CPUs.
-> > >
-> > > Does that mean the kernel would reject the legacy "cycles" event
-> > > on hybrid CPUs?
-> >
-> > I believe not. When the extended type isn't set on legacy cycles we
-> > often have the CPU and from that can determine the PMU. The issue is
-> > with the -1 any CPU perf_event_open option. As I was told, the PMU the
-> > event is opened on in this case is the first one registered in the
-> > kernel, on Intel hybrid this could be cpu_core or cpu_atom.. but IIRC
-> > it'll probably be cpu_core. On ARM ¯\_(ツ)_/¯.
->
-> On ARM it'll be essentially the same as on x86: if you open an event with
-> type==PERF_EVENT_TYPE_HARDWARE (without the extended HW type pointing to a
-> specific PMU), and with cpu==-1, it'll go to an arbitrary CPU PMU, whichever
-> happens to be found by perf_init_event() when iterating over the 'pmus' list.
->
-> If you open an event with type==PERF_EVENT_TYPE_HARDWARE and cpu!=-1, the event
-> will opened on the appropriate CPU PMU, by virtue of being rejected by others
-> when perf_init_event() iterates over the 'pmus' list.
+Changes in v5:
+- Move reason = LLCP_DM_REJ under the fail_put_sock label.
+- Checkpatch now warns about == NULL check for new_sk, so fix that,
+  and also at other similar places in the same function.
 
-Ok, that means "cycles" with cpu == -1 would not work well.
+Changes in v4:
+- Fix put ordering and comments.
+- Separate freeing in recv() into end labels.
+- Remove obvious comment and add reasoning.
+- Picked up r-bs by Suman.
 
-I'm curious if it's possible to do some basic work at the event_init()
-like to preserve (common) resource and to do some other work at
-sched to config PMU on the current CPU.  So that users can simply
-use "cycles" or "instructions" for their processes.
+Changes in v3:
+- Fix missing freeing statements.
+
+Changes in v2:
+- Add net-next in patch subject.
+- Removed unnecessary extra lock and hold nfc_dev ref when holding llcp_sock.
+- Remove last formatting patch.
+- Picked up r-b from Krzysztof for LLCP_BOUND patch.
+
+---
+
+For connectionless transmission, llcp_sock_sendmsg() codepath will
+eventually call nfc_alloc_send_skb() which takes in an nfc_dev as
+an argument for calculating the total size for skb allocation.
+
+virtual_ncidev_close() codepath eventually releases socket by calling
+nfc_llcp_socket_release() (which sets the sk->sk_state to LLCP_CLOSED)
+and afterwards the nfc_dev will be eventually freed.
+
+When an ndev gets freed, llcp_sock_sendmsg() will result in an
+use-after-free as it
+
+(1) doesn't have any checks in place for avoiding the datagram sending.
+
+(2) calls nfc_llcp_send_ui_frame(), which also has a do-while loop
+    which can race with freeing. This loop contains the call to
+    nfc_alloc_send_skb() where we dereference the nfc_dev pointer.
+
+nfc_dev is being freed because we do not hold a reference to it when
+we hold a reference to llcp_local. Thus, virtual_ncidev_close()
+eventually calls nfc_release() due to refcount going to 0.
+
+Since state has to be LLCP_BOUND for datagram sending, we can bail out
+early in llcp_sock_sendmsg().
+
+Please review and let me know if any errors are there, and hopefully
+this gets accepted.
 
 Thanks,
-Namhyung
+Siddh
+
+Siddh Raman Pant (2):
+  nfc: llcp_core: Hold a ref to llcp_local->dev when holding a ref to
+    llcp_local
+  nfc: Do not send datagram if socket state isn't LLCP_BOUND
+
+ net/nfc/llcp_core.c | 72 +++++++++++++++++++++++++++++----------------
+ net/nfc/llcp_sock.c |  5 ++++
+ 2 files changed, 52 insertions(+), 25 deletions(-)
+
+-- 
+2.42.0
+
