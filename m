@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9745B80F813
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72FF80F816
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377232AbjLLUq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S1377258AbjLLUrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377219AbjLLUqz (ORCPT
+        with ESMTP id S1377235AbjLLUq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:46:55 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26389BE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:02 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5e1e74d9d0eso8075877b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:02 -0800 (PST)
+        Tue, 12 Dec 2023 15:46:57 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84E8BD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:03 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5df9f98994bso22942177b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702414021; x=1703018821; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702414023; x=1703018823; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIyNCwZuG05oGqfsGJdjuxWZ9bJhVxMnAF0jWTMuK/Y=;
-        b=s6iIYI84SnTkiUokmIAErHmVvzwNUtLYpwfRJAQow7T+J6rtYc1RURHMRWzx9wIR/p
-         soCLqbIVqHyhen4U98VvDl7XMpmy5UdCN1gJE1yYS7uCSXLZOiuW99WB4w0PJ2Rkm0gz
-         8cA+Eudl30rUumS/5oRkTVTOz7aidNvVoAfOeRWy877C4L0HdCq5vmFF1R2O4FtLX6rO
-         /zPxbr1oU85fTeSQyWesaN+TYGRUaVLe2rnDqfx3mFW7FrEq5s8hmFL4DTVy5VzoebJF
-         JNsZV21lOXsD8FQgq6CDfQtM9xgaX9yYSeu2Ytfq6k0WFVrJBJsDbcjwMP/aeHTUUk4g
-         NK2A==
+        bh=ir7Qh8CW4lvS6Nb/8/FOXimO+77Lwly2G5VfmqeIAwU=;
+        b=mKnVKtaLzz92jCYRp6EPap2lEuR2Ltznu7AUYXOTqHFp9r+93Xb4LgOrqRZ2hs9cvE
+         fu1w5OKc4nSSrms2nsLNDKTSccJD1EG0YS0Gz7hvMVpoyT9EqEK3pfplUcBqrey37+7I
+         F6gpHgP1kJ6dcFyyJkGReiIGh7OM9BkQTtuNVRW9JbUiZgcFGsyluFwRzgDJ/zWL4ku0
+         x6unFUGGqXruJzLPPQHZUwa5gfgNAL4YFO6scmoPySYy9BIiqmrxx3A3XeookSYFiK4a
+         yXhB7w2+8vdydEh7ocG7Tkk7Qpz2nBlp653rUwZYRNBJbKTxmZBObdRBKm8hVv+UJXaB
+         hdYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702414021; x=1703018821;
+        d=1e100.net; s=20230601; t=1702414023; x=1703018823;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mIyNCwZuG05oGqfsGJdjuxWZ9bJhVxMnAF0jWTMuK/Y=;
-        b=szSLJh6gsFsKEF21EpXqH+lCA55beKAmnLx+pRZ+f93hTrVm5P9wqGlOPNDYSNjw44
-         +Ym4EQyfjYNVzUU2pZ0FTol+LQzxIBk2RBKMDC87pvNO0KRDUcPeOj9FWQHhAp6Qa1x3
-         /hSGb0pgn7Nwhq7SOxw2tMUr+AfYP96phHTw80F8FHOOPMdK4hJ5jXN8DxDJLy++RhPo
-         oRqiSDdreJkgSwYl7r5SHLu7bOIbGCdSaAZMxMz4HMooQvcV1OURp8YuH/VPc50yhf2J
-         ViUDY6fvZzEhDWmFxuUovvGFh0WoP6oPw4siyeOBdYhwybAMOizx1Iinnj3dgXlST742
-         XOBw==
-X-Gm-Message-State: AOJu0Ywyvmg4bqykw21JViOZTq88DFH3/XsiwufHxTf4KTHlbsoUMI+T
-        TB3TrafmlayktQEn/LKYaz1eDFoiWg==
-X-Google-Smtp-Source: AGHT+IHEJxnUHSPsv9KIXDu3heSKIoacV+x0M8UFkzddC1cs8FogPFrD0AfIFp+QKPSNxV4NPrVCkUJUTA==
+        bh=ir7Qh8CW4lvS6Nb/8/FOXimO+77Lwly2G5VfmqeIAwU=;
+        b=tLN88VdINNiXn4DxqEvJsAYnbcZD+2NyW1DbaCvy0Zb7P749ac+GyvRdySZ5cSjJfB
+         MvlmylJyynQmcEaA8Jd4qhcf5s6yHbeKa3t6fCDGXa97zYcALV6BJxncO+ev/RDOZl/g
+         KGZ7i3zJkvRaLi1pDc3fO+NAG1OXTvGZyKF5vEziv6mbVWrSwXHjZxqip/tWgRVejWBx
+         J/dRpeH1IoSW5uQkkkICgnffKrr8NrP+1BNTl9fSKWO14j9McJGT5sMpbHfoodvW+J4r
+         Zpy6pcEueyN0iVInHUXaBHuMtUINaMPYUBAzztRpys0/+wDIPIbK9JCAB2gqdcNnu2bw
+         LxWw==
+X-Gm-Message-State: AOJu0YzXTG4SN3sUNJjd/GEkx01Oaq02F/2yXE6NeuLrKmzKl2pMGy7b
+        dzUr+3f8gk4zqG44QFUx6jGEHV2XHw==
+X-Google-Smtp-Source: AGHT+IFD5ajTV8O858cXODhPLGEEFN7xEKYfb0cjWPaPFQbSpbsFud7FYSS4rJTN/cV8ArjTn5X1GoxmxA==
 X-Received: from sagi.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:241b])
- (user=sagis job=sendgmr) by 2002:a05:690c:2e8a:b0:5d8:ef49:748 with SMTP id
- eu10-20020a05690c2e8a00b005d8ef490748mr107655ywb.5.1702414021164; Tue, 12 Dec
- 2023 12:47:01 -0800 (PST)
-Date:   Tue, 12 Dec 2023 12:46:17 -0800
+ (user=sagis job=sendgmr) by 2002:a25:cb55:0:b0:dbc:b2d4:4793 with SMTP id
+ b82-20020a25cb55000000b00dbcb2d44793mr34903ybg.6.1702414023009; Tue, 12 Dec
+ 2023 12:47:03 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:46:18 -0800
 In-Reply-To: <20231212204647.2170650-1-sagis@google.com>
 Mime-Version: 1.0
 References: <20231212204647.2170650-1-sagis@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231212204647.2170650-3-sagis@google.com>
-Subject: [RFC PATCH v5 02/29] KVM: selftests: Expose function that sets up
- sregs based on VM's mode
+Message-ID: <20231212204647.2170650-4-sagis@google.com>
+Subject: [RFC PATCH v5 03/29] KVM: selftests: Store initial stack address in
+ struct kvm_vcpu
 From:   Sagi Shahar <sagis@google.com>
 To:     linux-kselftest@vger.kernel.org,
         Ackerley Tng <ackerleytng@google.com>,
@@ -75,8 +75,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,93 +84,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ackerley Tng <ackerleytng@google.com>
 
-This allows initializing sregs without setting vCPU registers in
-KVM.
+TDX guests' registers cannot be initialized directly using
+vcpu_regs_set(), hence the stack pointer needs to be initialized by
+the guest itself, running boot code beginning at the reset vector.
 
-No functional change intended.
+We store the stack address as part of struct kvm_vcpu so that it can
+be accessible later to be passed to the boot code for rsp
+initialization.
 
 Signed-off-by: Ackerley Tng <ackerleytng@google.com>
 Signed-off-by: Ryan Afranji <afranji@google.com>
 Signed-off-by: Sagi Shahar <sagis@google.com>
 ---
- .../selftests/kvm/include/x86_64/processor.h  |  2 +
- .../selftests/kvm/lib/x86_64/processor.c      | 39 ++++++++++---------
- 2 files changed, 23 insertions(+), 18 deletions(-)
+ tools/testing/selftests/kvm/include/kvm_util_base.h | 1 +
+ tools/testing/selftests/kvm/lib/x86_64/processor.c  | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 35fcf4d78dfa..0b8855d68744 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -958,6 +958,8 @@ static inline struct kvm_cpuid2 *allocate_kvm_cpuid2(int nr_entries)
- void vcpu_init_cpuid(struct kvm_vcpu *vcpu, const struct kvm_cpuid2 *cpuid);
- void vcpu_set_hv_cpuid(struct kvm_vcpu *vcpu);
- 
-+void vcpu_setup_mode_sregs(struct kvm_vm *vm, struct kvm_sregs *sregs);
-+
- static inline struct kvm_cpuid_entry2 *__vcpu_get_cpuid_entry(struct kvm_vcpu *vcpu,
- 							      uint32_t function,
- 							      uint32_t index)
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index c2e5c5f25dfc..b353617fcdd1 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -68,6 +68,7 @@ struct kvm_vcpu {
+ 	int fd;
+ 	struct kvm_vm *vm;
+ 	struct kvm_run *run;
++	vm_vaddr_t initial_stack_addr;
+ #ifdef __x86_64__
+ 	struct kvm_cpuid2 *cpuid;
+ #endif
 diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-index aef1c021c4bb..f130f78a4974 100644
+index f130f78a4974..b6b9438e0a33 100644
 --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
 +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-@@ -543,36 +543,39 @@ static void kvm_setup_tss_64bit(struct kvm_vm *vm, struct kvm_segment *segp,
- 	kvm_seg_fill_gdt_64bit(vm, segp);
- }
+@@ -621,10 +621,12 @@ struct kvm_vcpu *vm_arch_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id,
+ 	vcpu_init_cpuid(vcpu, kvm_get_supported_cpuid());
+ 	vcpu_setup(vm, vcpu);
  
--static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-+void vcpu_setup_mode_sregs(struct kvm_vm *vm, struct kvm_sregs *sregs)
- {
--	struct kvm_sregs sregs;
--
--	/* Set mode specific system register values. */
--	vcpu_sregs_get(vcpu, &sregs);
--
--	sregs.idt.limit = 0;
-+	sregs->idt.limit = 0;
- 
--	kvm_setup_gdt(vm, &sregs.gdt);
-+	kvm_setup_gdt(vm, &sregs->gdt);
- 
- 	switch (vm->mode) {
- 	case VM_MODE_PXXV48_4K_SEV:
- 	case VM_MODE_PXXV48_4K:
--		sregs.cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
--		sregs.cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
--		sregs.efer |= (EFER_LME | EFER_LMA | EFER_NX);
--
--		kvm_seg_set_unusable(&sregs.ldt);
--		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs.cs);
--		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.ds);
--		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs.es);
--		kvm_setup_tss_64bit(vm, &sregs.tr, 0x18);
-+		sregs->cr0 = X86_CR0_PE | X86_CR0_NE | X86_CR0_PG;
-+		sregs->cr4 |= X86_CR4_PAE | X86_CR4_OSFXSR;
-+		sregs->efer |= (EFER_LME | EFER_LMA | EFER_NX);
++	vcpu->initial_stack_addr = stack_vaddr;
 +
-+		kvm_seg_set_unusable(&sregs->ldt);
-+		kvm_seg_set_kernel_code_64bit(vm, DEFAULT_CODE_SELECTOR, &sregs->cs);
-+		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs->ds);
-+		kvm_seg_set_kernel_data_64bit(vm, DEFAULT_DATA_SELECTOR, &sregs->es);
-+		kvm_setup_tss_64bit(vm, &sregs->tr, 0x18);
- 		break;
- 
- 	default:
- 		TEST_FAIL("Unknown guest mode, mode: 0x%x", vm->mode);
- 	}
- 
--	sregs.cr3 = vm->pgd;
-+	sregs->cr3 = vm->pgd;
-+}
-+
-+static void vcpu_setup(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_sregs sregs;
-+
-+	vcpu_sregs_get(vcpu, &sregs);
-+	vcpu_setup_mode_sregs(vm, &sregs);
- 	vcpu_sregs_set(vcpu, &sregs);
- }
+ 	/* Setup guest general purpose registers */
+ 	vcpu_regs_get(vcpu, &regs);
+ 	regs.rflags = regs.rflags | 0x2;
+-	regs.rsp = stack_vaddr;
++	regs.rsp = vcpu->initial_stack_addr;
+ 	regs.rip = (unsigned long) guest_code;
+ 	vcpu_regs_set(vcpu, &regs);
  
 -- 
 2.43.0.472.g3155946c3a-goog
