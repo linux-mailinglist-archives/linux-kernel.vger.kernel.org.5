@@ -2,113 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A50B80F2C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209C480F2E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjLLQd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        id S233034AbjLLQfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232498AbjLLQd6 (ORCPT
+        with ESMTP id S232849AbjLLQfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:33:58 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA53CA;
-        Tue, 12 Dec 2023 08:34:04 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5e266e8d39eso2066937b3.1;
-        Tue, 12 Dec 2023 08:34:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702398844; x=1703003644; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQQid16GHvnaAbZDXuQkDV5jUsLgdBWxDY6lNDo1oPs=;
-        b=H9sQ8j1fiRZpYcqEEIN8G5ISwagxt8ZN/q5pDUYNwLbeBdWwX6MgQ1O0FpsbFnrB2N
-         yy4Sx54ERsaIl4ZEP+JkNZyrfZvkM8kuGvWFzOLLDtzJjjLFf/4XZY8AKKR2zQ8eimCp
-         154KRylzd4H0tiaohrch0AwttZhjLcZyiI0CQuCLyb6UzK8IiRa8mWs11PBNzPvimY/Q
-         7sluQhhMxxnKcnEiYQjqsEm0DyD7aSA9fyWIDSlFRBVRQDUNV01Fe+Sc3GLDPX8tTpNP
-         F6zGndn8woOXwbcyiHSwiOrjMvlaqODX03iIeqGiWuRY464fv+252Tn30dEVpmhSKHyW
-         4afg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702398844; x=1703003644;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tQQid16GHvnaAbZDXuQkDV5jUsLgdBWxDY6lNDo1oPs=;
-        b=GKx40R6aBIS0Qxe80kLOh3JCVQvUE0R9lxa3Qw6em26JmlfwakU1zDaIr30qidSjHC
-         apTfw11LGqbYoNGViQB87Khn8IC7hBuQUwo7c8Cs7x82uE4qqwgsxBpVBLajw273ZKWx
-         xRP4GOwBYo+k+/B1LORmyFIMmoF/5Po9GSqPvdOYzfmzn6T11NzlEDbzOSBgAUpJNM5b
-         nhkiNofPFUT2/oy15oLmxEqb+P8ji0IePgSWJ0dzHehA40Qqepp++WY9q7fy4isTxqS2
-         s0qcPnIoxHmCazClpP5jWwTB+8f2Ufv5/VDrNtU0h3x6a5OPq722AVshoerAnVdCTflT
-         42Gg==
-X-Gm-Message-State: AOJu0YzbXxx6aT7Cay2ArQ/XuNSig0qQOu1f4i496eFA1a7HZYNSMvX/
-        Bk/UKtVYqkADEKyc2f2qA5tYvk1PCz9VrQ==
-X-Google-Smtp-Source: AGHT+IGUMfA963Iva3P4h6VxRTz6ACMNoJFaBpjoNF2iLJIc3MZ40Jgs6Zf05O3kHPg2oOV2DUsu6g==
-X-Received: by 2002:a0d:e28e:0:b0:5d3:37fe:54ce with SMTP id l136-20020a0de28e000000b005d337fe54cemr5304212ywe.8.1702398843573;
-        Tue, 12 Dec 2023 08:34:03 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id d63-20020a0ddb42000000b005845e6f9b50sm566704ywe.113.2023.12.12.08.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 08:34:02 -0800 (PST)
-Date:   Tue, 12 Dec 2023 08:34:02 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <ZXiLetPnY5TlAQGY@yury-ThinkPad>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
- <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+        Tue, 12 Dec 2023 11:35:22 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB679126;
+        Tue, 12 Dec 2023 08:35:25 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 37411240003;
+        Tue, 12 Dec 2023 16:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702398923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RfVo3Eb7PyOCWr+dqACdc0CSxpF97Mq3VObJyFRYc7s=;
+        b=oVsQxEp3T+Zmt1QxKnN54GJTwaDPmchb7PGyqaL5Mw87GggaCbd4gPS73bm4izyFpyBmt0
+        I1S5zhihB6tk0ldov0K5Xjsu48Zq2WYahHag4Y63jvYb1R8buxjc69mjSl3rU5Cu6VgtWN
+        hB81I4oeNxlHocnpJBVDzChpySUwMeiqvM+QayRV/dXYB/WUt5/i4x7B0hkp15SqDKtHHj
+        ocoG6WCeAH/5xxiea5AhyTcy1wHa2L8CsXqeg5f/i9+uVrb8nUdXVi6rsOfaIM8eVlGi0l
+        zbG9fRNJ5TaJol9ckls+Eej3DAkqO50OxVOq9yPqCFdZeyw9brHQxmncTmBVaA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
+Date:   Tue, 12 Dec 2023 17:34:32 +0100
+Message-ID: <20231212163459.1923041-1-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > > +	rcu_read_lock();
-> > > > > +	for_each_numa_hop_mask(next, next_node) {
-> > > > > +		cpumask_andnot(curr, next, prev);
-> > > > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-> > > > > +			cpumask_copy(cpus, curr);
-> > > > > +			for_each_cpu(cpu, cpus) {
-> > > > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
-> > > > > +				if (++i == nvec)
-> > > > > +					goto done;
-> > > > 
-> > > > Think what if you're passed with irq_setup(NULL, 0, 0).
-> > > > That's why I suggested to place this check at the beginning.
-> > > > 
-> > > irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
-> > > care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
-> > > 
-> > > nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> > > if (nvec < 0)
-> > > 	return nvec;
-> > 
-> > I know that. But still it's a bug. The common convention is that if a
-> > 0-length array is passed to a function, it should not dereference the
-> > pointer.
-> > 
-> I will add one if check in the begining of irq_setup() to verify the pointer
-> and the nvec number.
+Hello,
 
-Yes you can, but what for? This is an error anyways, and you don't
-care about early return. So instead of adding and bearing extra logic,
-I'd just swap 2 lines of existing code.
+The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+and features multiple controllers such as the classic UART, I2C, SPI,
+as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+Security Module, Functional Safety Hardware, and MJPEG encoder.
+
+One peculiarity of this SoC is that the physical address of the DDDR
+exceeds 32 bits. Given that the architecture is 64 bits, this is not
+an issue, but it requires some changes in how the mips64 is currently
+managed during boot.
+
+In this fifth version, there aren't many changes, mostly just tweaking
+commit messages based on Sergey's feedback and fixing up the code
+style. But, the real reason for this series is a bit of a whoopsie on
+my end. It turns out, despite what I confidently claimed in the last
+round, some configuration tweaks were missing. All sorted now, though!
+
+To build and test the kernel, we need to run the following commands:
+
+make 64r6el_defconfig BOARDS=eyeq5
+make vmlinuz.itb
+
+Changelog:
+
+ v4 -> v5:
+
+   - Improve commit messages for patch 3, 5, 12 and 13.
+
+   - Fix style in patch 9
+
+   - Really enable SPARSMEM and use correct address in
+     board-eyeq5.config in patch 21
+
+ v3 -> v4:
+
+ - Fix build warning in "MIPS: Get rid of CONFIG_NO_EXCEPT_FILL":
+   check that we are in 64bit mode before using KSEG0 that exist only
+   in this mode.
+
+ - Modify "MIPS: spaces: Define a couple of handy macros" to be
+   buildable in 32bit mode.
+
+ - Use correct format specifier to print address in "MIPS: traps: Give
+   more explanations if ebase doesn't belong to KSEG0"
+
+ - In "MIPS: generic: Add support for Mobileye EyeQ5",remove
+   CONFIG_ZBOOT_LOAD_ADDRESS from board-eyeq5.config, (as well as
+   CONFIG_USE_XKPHYS that does not exist anymore) and add
+   CONFIG_SPARSEMEM_MANUAL to enable SPARSMEM.
+
+v2 -> v3
+
+ - Added more reviewed-by and acked-by tags
+
+ - Fix sorting for cpus entries in
+
+ - Fix indentation issue in Documentation/devicetree/bindings/mips/mobileye.yaml
+
+ v1 -> v2
+
+ - Added reviewed-by and acked-by tags
+
+ - Fix typos reported
+
+ - In patch 15 use 'img' vendor string instead of mti
+
+ - In patch 16 modify licence
+
+ - In patch 17 give more explanations about the block usage.
+
+ - In patch 18, remove _ in node names, don't use anymore
+   CONFIG_BUILTIN_DTB in Makefile, remove macro, modify licence.
+
+ - In patch 19 remove most of the bootargs and only keeps earlycon. I
+   also split the memory in 2 part in the device tree.
+
+ - Integrate the series from Jiaxun Yang
+   https://lore.kernel.org/linux-mips/20231027221106.405666-1-jiaxun.yang@flygoat.com/
+
+  They are patches 2 to 6 and 8 to 12
+
+  Then I added patch 7 to fix the cache issue visible on the Mobileye
+  platform, I also add patch 13 to improve warning message when ebase
+  doesn't belong to KSEG0
+
+Regards,
+
+Gregory
+
+Gregory CLEMENT (13):
+  MIPS: compressed: Use correct instruction for 64 bit code
+  MIPS: spaces: Define a couple of handy macros
+  MIPS: Fix cache issue with mips_cps_core_entry
+  MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
+  dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
+  dt-bindings: mips: cpus: Sort the entries
+  dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
+  dt-bindings: mips: Add bindings for Mobileye SoCs
+  dt-bindings: mfd: syscon: Document EyeQ5 OLB
+  MIPS: mobileye: Add EyeQ5 dtsi
+  MIPS: mobileye: Add EPM5 device tree
+  MIPS: generic: Add support for Mobileye EyeQ5
+  MAINTAINERS: Add entry for Mobileye MIPS SoCs
+
+Jiaxun Yang (9):
+  MIPS: Export higher/highest relocation functions in uasm
+  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+  MIPS: Fix set_uncached_handler for ebase in XKPHYS
+  MIPS: Refactor mips_cps_core_entry implementation
+  MIPS: Allow kernel base to be set from Kconfig for all platforms
+  MIPS: traps: Handle CPU with non standard vint offset
+  MIPS: Avoid unnecessary reservation of exception space
+  MIPS: traps: Enhance memblock ebase allocation process
+  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
+
+ .../devicetree/bindings/mfd/syscon.yaml       |   1 +
+ .../devicetree/bindings/mips/cpus.yaml        |  13 +-
+ .../devicetree/bindings/mips/mobileye.yaml    |  32 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  12 +
+ arch/mips/Kconfig                             |  26 +-
+ arch/mips/boot/compressed/head.S              |   4 +-
+ arch/mips/boot/dts/Makefile                   |   1 +
+ arch/mips/boot/dts/mobileye/Makefile          |   4 +
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts    |  24 ++
+ .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 134 ++++++++
+ arch/mips/configs/generic/board-eyeq5.config  |  42 +++
+ arch/mips/generic/Kconfig                     |  15 +
+ arch/mips/generic/Platform                    |   2 +
+ arch/mips/generic/board-epm5.its.S            |  24 ++
+ arch/mips/include/asm/addrspace.h             |   5 +
+ arch/mips/include/asm/mach-generic/spaces.h   |   2 +
+ arch/mips/include/asm/mips-cm.h               |   1 +
+ arch/mips/include/asm/smp-cps.h               |   4 +-
+ arch/mips/include/asm/traps.h                 |   1 -
+ arch/mips/include/asm/uasm.h                  |   2 +
+ arch/mips/kernel/cps-vec.S                    | 110 +++----
+ arch/mips/kernel/cpu-probe.c                  |   5 -
+ arch/mips/kernel/cpu-r3k-probe.c              |   2 -
+ arch/mips/kernel/genex.S                      |  19 +-
+ arch/mips/kernel/head.S                       |   7 +-
+ arch/mips/kernel/smp-cps.c                    | 171 ++++++++--
+ arch/mips/kernel/traps.c                      |  90 ++++--
+ arch/mips/mm/uasm.c                           |   6 +-
+ 30 files changed, 894 insertions(+), 159 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
+ create mode 100644 arch/mips/boot/dts/mobileye/Makefile
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
+ create mode 100644 arch/mips/configs/generic/board-eyeq5.config
+ create mode 100644 arch/mips/generic/board-epm5.its.S
+
+-- 
+2.42.0
+
