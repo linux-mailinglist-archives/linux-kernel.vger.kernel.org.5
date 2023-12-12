@@ -2,298 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5548B80EBFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458C180EC02
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346610AbjLLMhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        id S1346619AbjLLMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346535AbjLLMhv (ORCPT
+        with ESMTP id S1346615AbjLLMiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:37:51 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997B0CA;
-        Tue, 12 Dec 2023 04:37:57 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3332f1512e8so5216691f8f.2;
-        Tue, 12 Dec 2023 04:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702384676; x=1702989476; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M+NoPfid+7puCdo9sPDvLb7zjUyvTkje5iwQvI0aUXs=;
-        b=WfEvKaOC7IunAbmL2INIRuNOivmbuJS9r886wPoLsBadp1m0gSBTWEVPqlF7vmw6Hv
-         Int2y/nhZtrJlH6fmSB2d1bz9KEBJVp/AmB0aeHDaiKeVwDsjbXB97Fv/RqqyPNaAOHf
-         DESQad97cc9HmPbylzzcyh5yLsjgOdml+Uts6MsMQMw9FSl+6x4i4Kl8ZgCdIGVh0zaP
-         iZaKprjQuDyRj0GkUsdjtUM7mEQaPLzJFIPnLJDMRlM49oqW0u951zrv7vd/8iumI5GG
-         Q0LMS+H5s+QdH9FakGJIyrrRSvbaTN7j52fv+V+nQFO3+nX4sY2H/e8jbCsy2XPoYio2
-         vRFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702384676; x=1702989476;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M+NoPfid+7puCdo9sPDvLb7zjUyvTkje5iwQvI0aUXs=;
-        b=jx2Wgqg5D0I3y1+SPWQ8YIQkT9b5uWWaDzuObjWBe3OAvOb/OO2PzkTVIAw8jpYDqn
-         iSlQHLSgnHF8mT7XO4Emx8dHCD1ZKOlZEQnMICHutuweYDe/GtBVUL1rLXKCFzcTvCFy
-         iJrPg4gLpM4zmTTeKOMLxgYjtMlS4ZLX2p6IfS46y0y32mCX9LvPwXvHWdB3skpp/aO2
-         iArdI5B3DyzrhNx61q/qk6ImNNxv9ceUkt+Gr/Z/baFSrqFX9ly7YUWLQ3/e/FjQxoUn
-         V2OpER2jqLzMlhZ8Cir6TOEn1Uge1kIN5wSTUw516JchmOvuRyXF3P6OdmsXUlCNqfvk
-         30lQ==
-X-Gm-Message-State: AOJu0YxZGov1QJSA5ORPnIcS+l1RcgfHMDxxlUIQ/bppCkOym2FslrTY
-        9W7k4BGtwUw4mdxZe1dMRHk=
-X-Google-Smtp-Source: AGHT+IEHAHhVKkWk55roEEIbIKKtUna1tr6SgO8v6ZoCpb3I8MNpNNzue8zDqGm+cu8ZJUbIJ9oo4Q==
-X-Received: by 2002:a05:600c:304a:b0:40c:233f:e02a with SMTP id n10-20020a05600c304a00b0040c233fe02amr3520971wmh.7.1702384675674;
-        Tue, 12 Dec 2023 04:37:55 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id o12-20020a05600c4fcc00b0040c552a1338sm214890wmq.1.2023.12.12.04.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 04:37:55 -0800 (PST)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [net-next PATCH v5 3/3] net: phy: add support for PHY package MMD read/write
-Date:   Tue, 12 Dec 2023 13:37:43 +0100
-Message-Id: <20231212123743.29829-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231212123743.29829-1-ansuelsmth@gmail.com>
-References: <20231212123743.29829-1-ansuelsmth@gmail.com>
+        Tue, 12 Dec 2023 07:38:10 -0500
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444DB110;
+        Tue, 12 Dec 2023 04:38:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1702384695; x=1733920695;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=HxLnsy+1wzJFDbdBgEWHFKFPXH75LHkJH8uVaiHdWO0=;
+  b=fuh3S6cznHcmN0xl/8jz9/9DUQDWiGPV+EN8qb6RRVk356qSfZwAccfW
+   bWqmKur7LZIAYoUV+tp0gRZh8VaPwP8Zw79vAqo93gV2UzCA3eq+9iQtG
+   Et/f+z54200iCT+BbAHRVQn1+hjolXb0zuFOhitMieha9mZhMA3/sgkJl
+   Vc7iIGV+1QhEDlKNteIdCcK55i6JuTniwUX4+XcsLacG94qvu9S33OkVa
+   +V84U64utzSwCPPzFNkCbFiPSzgiiptAlfzawa7vaJgfs5vOdFepsK0xy
+   +j4hLgbiaCpEdCIDBB5zyyY9eNzLFxJkjpOBfj+lf33ponx5c/0GbYTDH
+   Q==;
+X-CSE-ConnectionGUID: xCwpIT7FSHaErwldKyunDg==
+X-CSE-MsgGUID: UdtOej1lRbKvuC80Tl2gXQ==
+X-IronPort-AV: E=Sophos;i="6.04,270,1695657600"; 
+   d="scan'208";a="4629785"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Dec 2023 20:38:13 +0800
+IronPort-SDR: 5Fhmkq7VxQSiyP2WOKOmkC97fn6L5aMvXcdglI8a0KvblJDJ/Yt56eNDh2bWmqIG5gjC1gWHkt
+ vz+OcEYEGPqw==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Dec 2023 03:43:26 -0800
+IronPort-SDR: WzDIvKQqA3LLyuNHm+UkZVLffG9NuRobe5ag3IJc77mUmdGQv/ZThDS0U338FLmLswjLsOAfWe
+ R9teZsu2MpUw==
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 12 Dec 2023 04:38:12 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 00/13] btrfs: clean up RAID I/O geometry calculation
+Date:   Tue, 12 Dec 2023 04:37:58 -0800
+Message-Id: <20231212-btrfs_map_block-cleanup-v1-0-b2d954d9a55b@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACZUeGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDIwNz3aSSorTi+NzEgviknPzkbN3knNTEvNICXWMTszRT48S0NEuDFCW
+ g7oKi1LTMCrDJ0bG1tQCdbVldaQAAAA==
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702384691; l=1540;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=HxLnsy+1wzJFDbdBgEWHFKFPXH75LHkJH8uVaiHdWO0=;
+ b=s0YTYTdmfza6AEe2dcweU8WfdAEb56Vd6rQELH/ft5wMIDIdr8u7D8NPLSKllTdu6Wn2fHsRE
+ Dg/6r7NPbA+BWojqQDifnWwlMwyFN5b6IB2XbUlDuMbqISpXTbgTXPD
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some PHY in PHY package may require to read/write MMD regs to correctly
-configure the PHY package.
+The calculation of the RAID I/O geometry in btrfs_map_block has been a maze of
+if-else statements for a very long time and the advent of the
+raid-stripe-tree made the situation even worse.
 
-Add support for these additional required function in both lock and no
-lock variant.
+This patchset refactors btrfs_map_block() to untagle the maze and make I/O
+geometry setting easier to follow, but does not introduce any functional
+changes.
 
-It's assumed that the entire PHY package is either C22 or C45. We use
-C22 or C45 way of writing/reading to mmd regs based on the passed phydev
-whether it's C22 or C45.
+I've also run it through Josef's CI and there have been test failures, but
+none of them introduced by these patches.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
-Changes v5:
-- Improve function description
-Changes v4:
-- Drop function comments in header file
-Changes v3:
-- Move in phy-core.c from phy.h
-- Base c45 from phydev
-Changes v2:
-- Rework to use newly introduced helper
-- Add common check for regnum and devad
+Johannes Thumshirn (13):
+      btrfs: factor out helper for single device IO check
+      btrfs: re-introduce struct btrfs_io_geometry
+      btrfs: factor out block-mapping for RAID0
+      btrfs: factor out RAID1 block mapping
+      btrfs: factor out block mapping for DUP profiles
+      btrfs: factor out block mapping for RAID10
+      btrfs: reduce scope of data_stripes in btrfs_map_block
+      btrfs: factor out block mapping for RAID5/6
+      btrfs: factor out block mapping for single profiles
+      btrfs: untagle if else maze in btrfs_map_block
+      btrfs: open code set_io_stripe for RAID56
+      btrfs: pass struct btrfs_io_geometry to set_io_stripe
+      btrfs: pass btrfs_io_geometry into btrfs_max_io_len
 
- drivers/net/phy/phy-core.c | 144 +++++++++++++++++++++++++++++++++++++
- include/linux/phy.h        |  16 +++++
- 2 files changed, 160 insertions(+)
+ fs/btrfs/volumes.c | 388 +++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 245 insertions(+), 143 deletions(-)
+---
+base-commit: 14d1d39586246ca9d4ce97049c98be849e3bbcd9
+change-id: 20231207-btrfs_map_block-cleanup-346f53aff90d
 
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index b729ac8b2640..8132ed83cff8 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -650,6 +650,150 @@ int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
- }
- EXPORT_SYMBOL(phy_write_mmd);
- 
-+/**
-+ * __phy_package_read_mmd - read MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Convenience helper for reading a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for __phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum);
-+}
-+EXPORT_SYMBOL(__phy_package_read_mmd);
-+
-+/**
-+ * phy_package_read_mmd - read MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Convenience helper for reading a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+	int val;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	val = mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			   regnum);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL(phy_package_read_mmd);
-+
-+/**
-+ * __phy_package_write_mmd - write MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to write to
-+ * @regnum: The register on the MMD to write
-+ * @val: value to write to @regnum
-+ *
-+ * Convenience helper for writing a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for __phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			     regnum, val);
-+}
-+EXPORT_SYMBOL(__phy_package_write_mmd);
-+
-+/**
-+ * __phy_package_write_mmd - write MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to write to
-+ * @regnum: The register on the MMD to write
-+ * @val: value to write to @regnum
-+ *
-+ * Convenience helper for writing a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val)
-+{
-+	struct phy_package_shared *shared = phydev->shared;
-+	int addr = shared->base_addr + addr_offset;
-+	int ret;
-+
-+	if (addr >= PHY_MAX_ADDR)
-+		return -EIO;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	ret = mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum, val);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(phy_package_write_mmd);
-+
- /**
-  * phy_modify_changed - Function for modifying a PHY register
-  * @phydev: the phy_device struct
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 51702e349d83..f58a9ff52e0d 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -2049,6 +2049,22 @@ static inline int __phy_package_write(struct phy_device *phydev,
- 	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
- }
- 
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum);
-+
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum);
-+
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val);
-+
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val);
-+
- static inline bool __phy_package_set_once(struct phy_device *phydev,
- 					  unsigned int b)
- {
+Best regards,
 -- 
-2.40.1
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
