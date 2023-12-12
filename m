@@ -2,57 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EF980F173
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD3A80F177
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377155AbjLLPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
+        id S1377160AbjLLPsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377023AbjLLPrd (ORCPT
+        with ESMTP id S1377023AbjLLPsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:47:33 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1BE3399;
-        Tue, 12 Dec 2023 07:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=IpOE+
-        yOb38TYE+chSPo0EQBJbqg59f0ue3S/ECPEw9U=; b=jQC4uwFCJwe0bL3XkN72E
-        ziI6IK1+bbbz9d9kzqM7EMZrtWb0qwEQegRnG/LyiDekJLieLdWotkVm6qsTjYwZ
-        BGuIhi+yjmMHQ97Bim+CEyMCicKhGflFEE1158o+dltNDZAuAsBU/cw1IETmMdu7
-        dPko4gHA5W+Hz7aS4K+VuY=
-Received: from ubuntu22.localdomain (unknown [117.176.219.50])
-        by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wD3n0KHgHhly6dkBA--.31946S2;
-        Tue, 12 Dec 2023 23:47:20 +0800 (CST)
-From:   chenguanxi11234@163.com
-To:     rafael@kernel.org
-Cc:     chen.haonan2@zte.com.cn, chenguanxi11234@163.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz
-Subject: Re: [PATCH linux-next] kernel/power: Use kmap_local_page() in snapshot.c
-Date:   Tue, 12 Dec 2023 23:47:19 +0800
-Message-Id: <20231212154719.2667-1-chenguanxi11234@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAJZ5v0gLswRMBR1-b_TQTau7KMpuBbR5hYJyat6pMOD5zYSi7Q@mail.gmail.com>
-References: <CAJZ5v0gLswRMBR1-b_TQTau7KMpuBbR5hYJyat6pMOD5zYSi7Q@mail.gmail.com>
+        Tue, 12 Dec 2023 10:48:54 -0500
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50B099
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=m4AvD8h69P6jG+auD+vR6e1/m2tGMZdbgOU3KePGX4M=;
+  b=rF1XvoPOC5u/sWU8xZYeD41fwZFokMd87BI3ZDirU+I6ecso13NBUddt
+   255gwCtLcGzuOFjPuU/zlv7+rh+KN57I31hoUqHga34i90LB4+EF9kyiN
+   HjIO5GQMv7qgP34mHKm5alEzsFBKBYXFas5XBmZhvtyGCc+lu/p4Dm2I2
+   g=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,270,1695679200"; 
+   d="scan'208";a="141878901"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 16:48:58 +0100
+Date:   Tue, 12 Dec 2023 16:48:58 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+To:     Ivan Vecera <ivecera@redhat.com>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Failed to start Raise network interfaces error
+In-Reply-To: <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com>
+Message-ID: <18fd8fc3-3165-768a-700-60f344649af@inria.fr>
+References: <alpine.DEB.2.22.394.2312102317350.3198@hadrien> <21977757-3a63-4586-ae03-e6630c1f009d@redhat.com> <d87c79b9-d0d2-2819-030-12c7df86eb38@inria.fr> <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3n0KHgHhly6dkBA--.31946S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RG38nDUUUU
-X-Originating-IP: [117.176.219.50]
-X-CM-SenderInfo: xfkh0wxxdq5xirrsjki6rwjhhfrp/1tbiDglE+mSAZJK76AAAs4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your explanation, I have modified my description 
-information and submitted the updated version of patch.
 
+
+On Tue, 12 Dec 2023, Ivan Vecera wrote:
+
+> On 12. 12. 23 16:08, Julia Lawall wrote:
+> >
+> >
+> > On Tue, 12 Dec 2023, Ivan Vecera wrote:
+> >
+> > > On 10. 12. 23 23:28, Julia Lawall wrote:
+> > > > Hello,
+> > > >
+> > > > Starting with the commit:
+> > > >
+> > > > commit 9e479d64dc58f11792f638ea2e8eff3304edaabf
+> > > > Author: Ivan Vecera <ivecera@redhat.com>
+> > > > Date:   Fri Oct 13 19:07:51 2023 +0200
+> > > >
+> > > >       i40e: Add initial devlink support
+> > > >
+> > > > I am not able to boot normally.  The console shows the message
+> > > >
+> > > > Failed to start Raise network interfaces
+> > > >
+> > > > Searching for this message on th internet produces some old discussions
+> > > > that suggest to look at the file /etc/network/interfaces.  That file on
+> > > > my
+> > > > system contains:
+> > > >
+> > > > # This file describes the network interfaces available on your system
+> > > > # and how to activate them. For more information, see interfaces(5).
+> > > >
+> > > > source /etc/network/interfaces.d/*
+> > > >
+> > > > # The loopback network interface
+> > > > auto lo
+> > > > iface lo inet loopback
+> > > >
+> > > > auto enp24s0f0
+> > > > iface enp24s0f0 inet dhcp
+> > >
+> > > The problem is maybe with interface name... after this commit the
+> > > interface
+> > > should contain port_name suffix. In your case the name should be
+> > > `enp24s0f0np0`.
+> > >
+> > > Could you please check it?
+> >
+> > Thanks for the feedback.  But I'm not clear on how this would work.  Does
+> > there have to be one name for kernels before this patch and another name
+> > for kernels starting with this patch?  Or is the new name also acceptable
+> > for older kernels?
+>
+> The name of a network interface is configured by udev. And it takes network
+> interface attributes and compose a name for it. One of these attributes is
+> phys_port_name [1] and if it is provided then its value is appended to the
+> name.
+>
+> Prior this commit the i40e driver didn't provided this attribute so the name
+> is (in your case) enp24s0f0. After this commit the value is provided so it is
+> appended -> enp24s0f0np0
+>
+> Look at 'systemd.net-naming-scheme' man page for details how the interface
+> names are composed.
+>
+> Thanks,
+> Ivan
+>
+> [1] /sys/class/net/enp2s0f0np0/phys_port_name
+
+OK, thanks.  I will see if the administrators of the cluster can help with
+this.  I'll get back to you soon.
+
+julia
