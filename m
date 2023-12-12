@@ -2,176 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B2380E322
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 05:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5731580E320
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 05:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbjLLD4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        id S229500AbjLLD71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjLLD4R (ORCPT
+        with ESMTP id S229468AbjLLD70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:56:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0B2DC;
-        Mon, 11 Dec 2023 19:56:23 -0800 (PST)
+        Mon, 11 Dec 2023 22:59:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB59B8E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:59:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702353383; x=1733889383;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=5JXSV8bF1Tf84vfe6DgGFV7kgNvhN8rNVuG8fNTVHZI=;
-  b=mHJXpJU7kS5NZ31MrYLcBxmPIAyk9y87DPzbJZfurVCdBn58eLiZj5XF
-   c35/IqYCEHucQCKiABqG+5T14Z+A2uduaqFwEnBO3UENgNWaw9TI5Q58H
-   Cm2E48WQzLZxEtZKGJI5utuUxbuhNi2SlFtJT3lgBa4oKjyHztd3m7PhH
-   DkpTaHtQKaA1UE+qqTeP2/cIJi4qebk++XnYiyW7rEgQ8OGiNV45ifplX
-   gwkY6zyDXLb9kr463sF6i4l1ED6TfmV+HrSnFzYr9yvp/ztGeO/Jl3Nv4
-   +Tbhv8icXJJ+ty1rrxV4CvVLqxMHLKfcEq86tKChhrY6r5rpxi51v33Ve
+  t=1702353572; x=1733889572;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Afw15phHVe1Jt4mVG0qU1/2iUMnOrh9UOSr/5QymW6g=;
+  b=K6MHO7DD4KnK+YGkFt82nl4vg0ywVtK+5mIRDJMMDIIfmk386FGeOShe
+   mjlQyMTSbmuxT77CwtfnPfb9tPAIvgRKpLFIo7+nRepuSPTmYFLiygABn
+   eKdVEoGbItM/q+n5AVWVU7bTyXh9ifIYagL6C+wFXWpPY9gwr4Fv82Ea/
+   3wTqFYPTCOc30Y+SwisaQvxeRZO4gPqdhrwNeI70HB04tB0pFUyrAbLAg
+   nm1wOM7m7kuLPUQunMAFmLVQf3eYwWQVNAyYpdAz0t5nfgdLEwmAnwwCg
+   DcmFyZsNsDvbqQJ09mXhmGZrvQ3av+gDMOHlOHsRHA2FjH9Ej+ITDyVBB
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="425874515"
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="374907654"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="425874515"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 19:56:23 -0800
+   d="scan'208";a="374907654"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 19:59:32 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1020525995"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="21360671"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 19:56:22 -0800
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 19:56:21 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 19:56:21 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Dec 2023 19:56:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lYU+sVQAVWnjTcZUy7IkoQqhDTSUVjrjX3r2NVCUjg/gtNJTy3w22B6w4dwCOw3EsxbZyN5w8VswwjDZfETVXe4VYN52s8NqR0rOMdWnMOkY3y4Ua57h2kiMbiEJ6VJTx14CaZkerBxqVRF++jjwr9FXjfJubI6KZc0EERbuYbPndI+FoYL5vrBXikE6ZDnGR64l3XhT2+1yLZU1tls2qxe+UX+xSxv6JPBdcDRNdAZoxZp7bg/C1bQrW4DD9WkcdccUWTln8lci/hfuxbnmFZdIKXWPwXY123+ZUgWqgLPWcTS+ONZRDIpTaPtwdiJ8I1nf/5foYh8XcTQkDV2xaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rdaKDeZugsZlZ4OlGop3dHgIKItrrF+Oickzvck/dCI=;
- b=FjAYr6p+KH9V6HfY6Jn1kMO8IOXiwQ64jT6SvfB8iIodMkpxK8N8cJWkNF8VuRlP2t1MzvJN6mV7Tb4CD2tLNgknr5IOS/9YMNnaBlenEjrm+UFd8XnX+/LHS6PGkWOhjOPtPO9AoaEa72o8EapTBRU3/MqJRtqjnFNXCDP3L4jh2eYWWCn6V3MLJBkonn1RVONw0VF2BDXwfECmbIkyRv6lKEM0Eny2buZsjgkFXubac2KdgW5JmbIo08T+Xjt0DyB7TIH7XHhHm2OzLUdcc5axQJ/EyA1jEzZkJEbXJ5XZgQb8288Alazt3FTtRnPaYhcJYzUqDauYv4fF80BEVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DS0PR11MB7631.namprd11.prod.outlook.com (2603:10b6:8:14e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
- 2023 03:56:19 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
- 03:56:19 +0000
-Message-ID: <8b36ee07-c5b5-4cf7-8eb5-650de86bedc1@intel.com>
-Date:   Tue, 12 Dec 2023 11:58:52 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 3/3] iommu/vt-d: Add iotlb flush for nested domain
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-References: <20231117131816.24359-1-yi.l.liu@intel.com>
- <20231117131816.24359-4-yi.l.liu@intel.com>
- <BN9PR11MB52761F99B115765CCBCAC9F48CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <BN9PR11MB52761F99B115765CCBCAC9F48CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR02CA0043.apcprd02.prod.outlook.com
- (2603:1096:4:196::12) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+   d="scan'208";a="1020525995"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Dec 2023 19:59:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rCtvd-000IkJ-0C;
+        Tue, 12 Dec 2023 03:59:29 +0000
+Date:   Tue, 12 Dec 2023 11:59:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
+Subject: arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312121137.0sza62Xl-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DS0PR11MB7631:EE_
-X-MS-Office365-Filtering-Correlation-Id: e1389733-67f0-4397-0e41-08dbfac64bc7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EEO98siWqCUsP4mH9M7/zMTVx+RuFfEcS+EFE1us1NMzIdqpHD5pgqWST45rLh6PqPRWuQMl0gJ7PAG5rRDpFUkUV/PgWOwPBo6RBemv4ewzzKERO+q6YH38n4K9F+cHAHMT1Tx+SJ6pm2dioFEnP0YToSKOXzYV1ahvfpNk71Ff75uG1fyzhnC03HM08a6H4Ye0LKxBsA9P3O0BzFsvPQa7SnXdAzm+Cfb49op8brRBrKNVxTcTFu2M9pakw90RENhBxMRCALj1CgJ3fGYMKbcVnzdCtX/dCjWDotc7D5djcoVKUAp1manuWlRq8ccbYxUHLBGb+hlGCsEDG3n5VMun4BZW+uPb2kmsTxgX4+Aj0OSJhspv9Ok0R7r6iNClZlHpB6MV6v1x6eC9xxgu0sDJdg6IVlGjK+rMsCoi/ICjC6XmV09N9evCmc3qijSJsDO7U9Azk7DpB2BFW3+AabRVbo1r+sHNL+BJASawujiybLENGniNyUd5R9Ski9s4xa448Dri4CPekZD0nrcSoGZoFm+w27LF6MNzw/PWHpngpZ6z9njodvpHzB2ihf5LLG4QaezPEr67t/gb+uJydGfBdR1/eEJ9r2xvnZpQ/Nc5QrC4W7X3JuOvRIdQJQ4mS1s/8FbuSfJ9LlrVkZcbMw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(396003)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6512007)(53546011)(26005)(2616005)(6486002)(6666004)(6506007)(478600001)(41300700001)(7416002)(4744005)(2906002)(5660300002)(66946007)(54906003)(66476007)(66556008)(4326008)(110136005)(8936002)(8676002)(316002)(38100700002)(82960400001)(86362001)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WFBRemVHQ0twL1ZONkEzL0gwTXE2Tnh4cW1qcVl3czEzUDduVnZFN2JpQ0g5?=
- =?utf-8?B?a2dRYTRuVDlub09WdjBBakNITmJaRHlDYXo0WXJ6QTRVdy9aOUZXM1I5aEI5?=
- =?utf-8?B?b2RIdFhZbi85c2RVS21vd00rVS81bk9NVlVHMDNZVU8zMlBNSGU4cWIrL2hY?=
- =?utf-8?B?bUtPd0pTZDFNQzFQbkZxdVFWb3pBdzFDeTVza1VUQUdFT2VETEVlN1kvUWtq?=
- =?utf-8?B?V3VpMHVucnduV29lQkVydVdjcm9YVk1xaTd6a202eEw1R2hoQXVaMHdZSit4?=
- =?utf-8?B?V1dZMEx6dUlqdkJDbHd2YXVTMUpzeUhGWEVmYy9rOTREOHlEM0htSjhDL1B1?=
- =?utf-8?B?T3I2UlVEcU1WTjdRRFBvVkpubnEyd0lhb0VjSU44YWpGa1RicmprNFRhU2Mr?=
- =?utf-8?B?Y1J6ZlFJaWxqYko5RC9DTm0vQW9YWVhJNUN4eGpYRUtMOUlvV1F1bTVuV2dR?=
- =?utf-8?B?RXV2aVNCMGR5eTlLYldKckVUUTdKcS9hUjA5Y1lSNzA1RWpXbXQ3dklmbjlP?=
- =?utf-8?B?dnZpanYyZFhNMzZzbm9keFZ5Z05XamdPaTQ0L25sSGZOOE1GbEpIUUR1VVZ6?=
- =?utf-8?B?YmZ6R3duQlFDV1FnWGhNRDFnMEx6YnRIWTZoN1lnZW1WeTlrZWVOTnhkUGhh?=
- =?utf-8?B?NFpiSTY2VzJsTHF1T0xod2pOVklNUHN0bG1SZkw2QmhxODg3QlZSdFZNM0xx?=
- =?utf-8?B?dy80aEJDVGpWNytpZTBBREkwVEpkSk9tM2k2eEJOeFVablZaOEJBVUh3eXhR?=
- =?utf-8?B?dW9HMW1JWUdIeE45MW9tY2syM3VVSVMxMWlQWUVIcVZwU2lMb2JxV0pxRGlr?=
- =?utf-8?B?VDZaS1B1RlI5ZWRvR1FsTXIzMnB6SmNwa3dFUEN4S2FCb2pYRmFXNTlYTW5p?=
- =?utf-8?B?WGcra0l0bC9CQ3JCTDZaS3BMMjMwVWt1dlFUbzM2WDVHZG9FTElRZ3Z4TDNB?=
- =?utf-8?B?MGQxbldNOThRVGdtTUhUZitKSFRnZVFRUlU1bGtxK1hrWGMyTmJodUxIdzVN?=
- =?utf-8?B?aE1WQkRRb0R1bTdJQTlDZXRlVlFJazFmNm56UmZVV0xpTkphSS9Bd3R2TStx?=
- =?utf-8?B?N1RIaW9OZmJzWFRiTElNV2xYaE52amN0MDBueFp3V1VrK1dWbEk2aktjcEFq?=
- =?utf-8?B?a1hKbXQwVjVKUDJZcGtJQ1NEUmVtVGs1MEFCNC9WVHVHM2lXa2pXbHNOcStC?=
- =?utf-8?B?b2RPZmx5aC9OT0lVZDVRRkgxUVU0YWVaZjBRMU14Q3JzWEd1dXFDWThLRjZE?=
- =?utf-8?B?VTVROXVoVkJBeHFpQWZDM2x4K3NJZ0VLakVQU0U1M0lKYnBaMGtPcUxwc0Rm?=
- =?utf-8?B?ekgyOWZBb0E4bUIxWUhvT2dkb3RYLzRRUngycjBaei8rQWpyb0lCNjdUMzk0?=
- =?utf-8?B?NTlaTGY3UmVUOGtmdFlxWFdTdUt1N3BVemxDRGNXd0liQXk2Nnc1L0E4bU1v?=
- =?utf-8?B?azQvQnFPTHlrcmhmSjc1d2dCY1VjMFJRL0F3V0t0VzBNazhhUjNvbVlRWVAx?=
- =?utf-8?B?L2lUdUR3d0pQcUJtc0NGOEJNU2I2ZVdxUkNNUTNNMGpUNUR2Y1VWd25QZUow?=
- =?utf-8?B?M1RKOHVBaXBqNGJGVk1jZG5mZEFUMXI0bnFnR0tTNm1Qb3VETjlaVUNCdm5y?=
- =?utf-8?B?a0ZRSXhOd2JXYkZpNHNPS3hGcXRHeFVBTlN1YzNuVjFZMFFzTkc3eXQ3V3hN?=
- =?utf-8?B?RjZFNURlNi9lWWVsbjlheUJDdTRXM3N2YWNldFFpaWo5aVM1Tnd0NXNKbXpq?=
- =?utf-8?B?Zk9ndGlsMzE1STVIbitXbW1tWUlDSTUwY0ZsYzZhYmZ1eldJWEpuRzQvdHlQ?=
- =?utf-8?B?REZXVzVOaG1zS0JVOVNWNkhvY0U0aGdaUGFWUDYrNjAyYXhiZm5OcXk0WDJq?=
- =?utf-8?B?c3Q4ZUhOcXp5bER6SDEvb2xJQWxvbHNLUXdNekFETXBXcGtWeGhxOWQwQWNN?=
- =?utf-8?B?dGlpQVkxSUpIaHhOdTVMMDlvcnpnV0FUQzEwc2ZzY2xmYXBSeUNHVkN1MVpW?=
- =?utf-8?B?VTNYTXpXOHk5RS92ZEpQaCsxWFJqdXZMV3FIbHpLS1cxdXNKdkIwWVRKWWZk?=
- =?utf-8?B?QXNQeXNTeDZkS2xXcXRwazA4YjBFN3ZhN1Vya05KRlF4cHZXdXJZbjdJbEJq?=
- =?utf-8?Q?FKy1KrifZCMQ08KDxXwUZx448?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1389733-67f0-4397-0e41-08dbfac64bc7
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 03:56:19.2005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PEaL4ko3D7bmKOUajd82CsOLVkhu9x1mqSfLWhzp3aiHjUgbdPNmaOwE05phWXrh002HTGSZTlrCG8NHvqz+tg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7631
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -180,21 +63,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/20 16:32, Tian, Kevin wrote:
->> From: Liu, Yi L <yi.l.liu@intel.com>
->> Sent: Friday, November 17, 2023 9:18 PM
->> +
->> +		if (inv_info.__reserved || (inv_info.flags &
->> ~IOMMU_VTD_INV_FLAGS_LEAF) ||
->> +		    !IS_ALIGNED(inv_info.addr, VTD_PAGE_SIZE)) {
->> +			ret = -EINVAL;
->> +			break;
->> +		}
-> 
-> -EOPNOTSUPP for the first two checks.
-> 
-yes.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   26aff849438cebcd05f1a647390c4aa700d5c0f1
+commit: 96f1b00138cb8f04c742c82d0a7c460b2202e887 ARCv2: save ABI registers across signal handling
+date:   2 years, 6 months ago
+config: arc-randconfig-r111-20231107 (https://download.01.org/0day-ci/archive/20231212/202312121137.0sza62Xl-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231212/202312121137.0sza62Xl-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312121137.0sza62Xl-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:77:31: sparse:     expected void [noderef] __user *to
+   arch/arc/kernel/signal.c:77:31: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:88:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:88:41: sparse:     expected void const [noderef] __user *from
+   arch/arc/kernel/signal.c:88:41: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:134:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:134:42: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:134:42: sparse:     got struct sigcontext [noderef] __user *
+   arch/arc/kernel/signal.c:153:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:153:45: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:153:45: sparse:     got struct sigcontext [noderef] __user *
+
+vim +77 arch/arc/kernel/signal.c
+
+    63	
+    64	static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    65	{
+    66		int err = 0;
+    67	#ifndef CONFIG_ISA_ARCOMPACT
+    68		struct user_regs_arcv2 v2abi;
+    69	
+    70		v2abi.r30 = regs->r30;
+    71	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    72		v2abi.r58 = regs->r58;
+    73		v2abi.r59 = regs->r59;
+    74	#else
+    75		v2abi.r58 = v2abi.r59 = 0;
+    76	#endif
+  > 77		err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
+    78	#endif
+    79		return err;
+    80	}
+    81	
+    82	static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    83	{
+    84		int err = 0;
+    85	#ifndef CONFIG_ISA_ARCOMPACT
+    86		struct user_regs_arcv2 v2abi;
+    87	
+  > 88		err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
+    89	
+    90		regs->r30 = v2abi.r30;
+    91	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    92		regs->r58 = v2abi.r58;
+    93		regs->r59 = v2abi.r59;
+    94	#endif
+    95	#endif
+    96		return err;
+    97	}
+    98	
+    99	static int
+   100	stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+   101		       sigset_t *set)
+   102	{
+   103		int err;
+   104		struct user_regs_struct uregs;
+   105	
+   106		uregs.scratch.bta	= regs->bta;
+   107		uregs.scratch.lp_start	= regs->lp_start;
+   108		uregs.scratch.lp_end	= regs->lp_end;
+   109		uregs.scratch.lp_count	= regs->lp_count;
+   110		uregs.scratch.status32	= regs->status32;
+   111		uregs.scratch.ret	= regs->ret;
+   112		uregs.scratch.blink	= regs->blink;
+   113		uregs.scratch.fp	= regs->fp;
+   114		uregs.scratch.gp	= regs->r26;
+   115		uregs.scratch.r12	= regs->r12;
+   116		uregs.scratch.r11	= regs->r11;
+   117		uregs.scratch.r10	= regs->r10;
+   118		uregs.scratch.r9	= regs->r9;
+   119		uregs.scratch.r8	= regs->r8;
+   120		uregs.scratch.r7	= regs->r7;
+   121		uregs.scratch.r6	= regs->r6;
+   122		uregs.scratch.r5	= regs->r5;
+   123		uregs.scratch.r4	= regs->r4;
+   124		uregs.scratch.r3	= regs->r3;
+   125		uregs.scratch.r2	= regs->r2;
+   126		uregs.scratch.r1	= regs->r1;
+   127		uregs.scratch.r0	= regs->r0;
+   128		uregs.scratch.sp	= regs->sp;
+   129	
+   130		err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
+   131				     sizeof(sf->uc.uc_mcontext.regs.scratch));
+   132	
+   133		if (is_isa_arcv2())
+ > 134			err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
+   135	
+   136		err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+   137	
+   138		return err ? -EFAULT : 0;
+   139	}
+   140	
 
 -- 
-Regards,
-Yi Liu
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
