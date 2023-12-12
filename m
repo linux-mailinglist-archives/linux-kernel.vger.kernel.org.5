@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE9580E627
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB4180E658
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbjLLI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S1345935AbjLLIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbjLLI3n (ORCPT
+        with ESMTP id S235109AbjLLIhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:29:43 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C792A325F;
-        Tue, 12 Dec 2023 00:28:05 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id 546A320B74C0; Tue, 12 Dec 2023 00:28:05 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 546A320B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702369685;
-        bh=E9qH6anoPIu1fFHlQdJcDaDMF2TZeaJBTSNCTizOVQg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gFYAT/+Lmsxa9SwAlA9n+5OHbwSCyty97O0d521bMKxld/+Ka3eJmK80OJBUpoXZz
-         TetpPHNvq1W7jz22x0W382/PEScSES7rKFSNi4sTAJdZlP5jYuvhXn5Hnvv4i9q/Ux
-         q1bnTzetUat6Rx442nYBO7eS8uAeWipb4Je6sq3M=
-Date:   Tue, 12 Dec 2023 00:28:05 -0800
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, decui@microsoft.com
-Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
-Message-ID: <20231212082805.GA3521@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
- <5736414.DvuYhMxLoT@steina-w>
+        Tue, 12 Dec 2023 03:37:01 -0500
+X-Greylist: delayed 147 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 00:35:43 PST
+Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.155.80.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDC712E;
+        Tue, 12 Dec 2023 00:35:43 -0800 (PST)
+X-QQ-mid: bizesmtp76t1702369740tggbgcmn
+Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 12 Dec 2023 16:28:58 +0800 (CST)
+X-QQ-SSF: 01400000000000B0B000000A0000000
+X-QQ-FEAT: aBJFcW+uBGZOIRSRO8DCOUwTInVzTYjBETeL0cf/Z9l32nz/XJIwpk4Ia+x8O
+        qSoY3kzIRnkTKft/UdrEKONsHv8i0Or+bOURHFN64urNRvsmkUYiTstYB9WkGUc0H4AyiI/
+        y5Rh/py1UY9vdgNj/u5P3AFZgvoZtTCBpUVdu8n191TWAQL6ipsp+/41OS5ss3hFNkDZVvw
+        jUrNNFgxXp4FwK3YNa75dPjYtn/G4vA/xXaHiEZNoEgaqzTqdBRqfEPxMgSYYQT+FgXWyOR
+        DX/rV+c55mDOnrzKDhMZmW49m5O2Y4kEod61nM1ZxfBK6UJsJZTSwEzO0ju9ZemGsREAAq8
+        sw5F3Gy2xGw/BNf1LHTTInBq+TG0/dHuHBFTLfPanexCat+VxxwF2G9MMomGnsaw6/O5wa3
+        60+RSDEeRCdPjtAel6CVXQ==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 2540312450627616497
+From:   "JiaLong.Yang" <jialong.yang@shingroup.cn>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     "JiaLong.Yang" <jialong.yang@shingroup.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tools/perf: PVN for HX-C2000 CPU with Power8 Architecture
+Date:   Tue, 12 Dec 2023 16:28:43 +0800
+Message-Id: <20231212082843.9664-1-jialong.yang@shingroup.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5736414.DvuYhMxLoT@steina-w>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 08:19:11AM +0100, Alexander Stein wrote:
-> Hi Saurabh,
-> 
-> thanks for the patch.
-> 
-> Am Samstag, 9. Dezember 2023, 04:46:16 CET schrieb Saurabh Sengar:
-> > Currently there is a race in calling pci_create_resource_files function
-> > from two different therads, first therad is triggered by pci_sysfs_init
-> > from the late initcall where as the second thread is initiated by
-> > pci_bus_add_devices from the respective PCI drivers probe.
-> > 
-> > The synchronization between these threads relies on the sysfs_initialized
-> > flag. However, in pci_sysfs_init, sysfs_initialized is set right before
-> > calling pci_create_resource_files which is wrong as it can create race
-> > condition with pci_bus_add_devices threads. Fix this by setting
-> > sysfs_initialized flag at the end of pci_sysfs_init and direecly call the
-> 
-> Small typo here: direecly -> directly
-> 
-> > pci_create_resource_files function from it.
-> > 
-> > There can be an additional case where driver probe is so delayed that
-> > pci_bus_add_devices is called after the sysfs is created by pci_sysfs_init.
-> > In such cases, attempting to access already existing sysfs resources is
-> > unnecessary. Fix this by adding a check for sysfs attributes and return
-> > if they are already allocated.
-> > 
-> > In both cases, the consequence will be the removal of sysfs resources that
-> > were appropriately allocated by pci_sysfs_init following the warning below.
-> 
-> I'm not sure if this is the way to go. Unfortunately I can't trigger this 
-> error on my imx6 platform at the moment (apparently timing is off).
-> But reading [1] again, the most expressive way is that pci_bus_add_devices() 
-> needs to wait until pci_sysfs_init() has passed.
+HX-C2000 is a new CPU made by HEXIN Technologies Co., Ltd. And a new
+PVN 0x0066 has been applied from the OpenPower Community for this CPU. Here is
+a patch to make perf tool run in the CPU.
 
-(I correct my self a bit in my earlier reply)
-The problem with waiting is that sysfs entries will be created by pci_sysfs_init
-already and when pci_bus_add_devices try to create it will observe that the
-entries are already existing and in such case PCI code will remove the sysfs
-entries created by pci_sysfs_init. Resulting system will be having no sysfs
-entries.
+Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+Link: https://lore.kernel.org/all/20231129075845.57976-1-ke.zhao@shingroup.cn/
+---
+ tools/perf/pmu-events/arch/powerpc/mapfile.csv | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-- Saurabh
+diff --git a/tools/perf/pmu-events/arch/powerpc/mapfile.csv b/tools/perf/pmu-events/arch/powerpc/mapfile.csv
+index f4908af7ad66..599a588dbeb4 100644
+--- a/tools/perf/pmu-events/arch/powerpc/mapfile.csv
++++ b/tools/perf/pmu-events/arch/powerpc/mapfile.csv
+@@ -11,8 +11,7 @@
+ #
+ # Multiple PVRs could map to a single JSON file.
+ #
+-
+-# Power8 entries
+ 0x004[bcd][[:xdigit:]]{4},1,power8,core
++0x0066[[:xdigit:]]{4},1,power8,core
+ 0x004e[[:xdigit:]]{4},1,power9,core
+ 0x0080[[:xdigit:]]{4},1,power10,core
+-- 
+2.25.1
+
