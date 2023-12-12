@@ -2,167 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB35280F77F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B832280F779
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377178AbjLLUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
+        id S1377159AbjLLUGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:06:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbjLLUHd (ORCPT
+        with ESMTP id S230181AbjLLUGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:07:33 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7BBA2;
-        Tue, 12 Dec 2023 12:07:38 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCJudOR012024;
-        Tue, 12 Dec 2023 20:06:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TmH9w3blNDPKBoDlTf4OpLYjlao5d1XQCukjpJGG/z4=;
- b=e8AbT5JibmPkZ8TLdpystRRxmeii14CJ+sDVjlSzpkXZkZcInk9mGQl5DWk1fBGi57QW
- dOhheEsvVoP1Smi1XBaSugn1zK0IS8qqwnEvMyHsGyyb3+HoK73i+ytJFbGWnQFco2dr
- mfc5T10B7N2af8SnmrpkLdwkRHJKe88SSYY4pkd/J+ozUxR6H9xY6oegzaes9JmlYOoA
- IPKr8PCA/qsSilcDrIO6eGRHHTVPg08jbmOeamPuJ3JG/WvDAE7AxQPlXM6wE0YvfiyH
- x6mzOrVMM/BfN/9kC7chODyWU2LV6X8YienRhY4jaj8Xe3QWAxxsjh8eQu+0cQKdZoSn zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxw6bsu2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 20:06:44 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BCJxMk8022179;
-        Tue, 12 Dec 2023 20:06:43 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxw6bsu21-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 20:06:43 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCJ8VKR014808;
-        Tue, 12 Dec 2023 20:06:42 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42kdecj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 20:06:42 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BCK6ftc66191868
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 20:06:41 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 984E958065;
-        Tue, 12 Dec 2023 20:06:41 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04AB75805E;
-        Tue, 12 Dec 2023 20:06:41 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Dec 2023 20:06:40 +0000 (GMT)
-Message-ID: <2ddae2e4-de55-41a1-a93e-819f8d55dde6@linux.ibm.com>
-Date:   Tue, 12 Dec 2023 14:06:40 -0600
+        Tue, 12 Dec 2023 15:06:37 -0500
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13ADCB9;
+        Tue, 12 Dec 2023 12:06:44 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5913922ab10so600965eaf.1;
+        Tue, 12 Dec 2023 12:06:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702411603; x=1703016403;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R8geil9tvbaN7HFo/6GZKxMiCtuP3jXSKj9KAGFYxaw=;
+        b=GDEsMCkYTXCUUOY+Q7ePkTSVcVWhabWHLMnrgOSrulukGizDjszR8sWFfJsKtilvnR
+         Le3Bqny8OkA7AyhNGztuJBaYdAgMpuOkYagqIrFK3g4iPzb3y9tTWQPLuNYsv6thKPmq
+         N647WoR31+XWfLS1QaFaWBoLemdWM85ZvSex1/d8HfyRrp4oYM4kzBkI1VWJzSSWVT97
+         GF8shdyJvvIubdBsWOxmFYeXQ7uC5Xfw+Ni1wckLOANZGRsaxQ7i9+8QSMmfTwk3g9YR
+         FdZggsFGm5ircDv2UBRb82eMBPWecvcb2AN2LDUNAIzbzYuhaROzqpsHh+yf57QMkx17
+         HwTQ==
+X-Gm-Message-State: AOJu0YxkfAvdaBZ3WgVyzWG7LlPN9sCkbCt8L7jrzT7f6p8MqlPpgJOc
+        TeyqOucRjZt+znBaQVFTdQ==
+X-Google-Smtp-Source: AGHT+IH7jxGi5ypSPpeOqUsvcN4v2uWH6feiDoZUUpsKHHfmeUZ9aMS03ruIyRAily1J5bH3d1LoOg==
+X-Received: by 2002:a05:6820:607:b0:590:97b9:5565 with SMTP id e7-20020a056820060700b0059097b95565mr4906684oow.12.1702411603276;
+        Tue, 12 Dec 2023 12:06:43 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id o14-20020a4a384e000000b0058dc4a5de5bsm2628979oof.14.2023.12.12.12.06.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 12:06:42 -0800 (PST)
+Received: (nullmailer pid 2549596 invoked by uid 1000);
+        Tue, 12 Dec 2023 20:06:41 -0000
+Date:   Tue, 12 Dec 2023 14:06:41 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Luo Jie <quic_luoj@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, robert.marko@sartura.hr,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Message-ID: <20231212200641.GA2331615-robh@kernel.org>
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+ <20231212115151.20016-6-quic_luoj@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/8] dt-bindings: arm: aspeed: add IBM system1-bmc
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org, patrick.rudolph@9elements.com,
-        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
-        lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-2-ninad@linux.ibm.com>
- <20231212-thrower-ebook-d29a85a6ed96@spud>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <20231212-thrower-ebook-d29a85a6ed96@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: U8PFgQodpMDqjUJfIhz1uaYjKOARbEhV
-X-Proofpoint-GUID: IRw5VQBoZgxysgbkI057XToVO0Ukxlaf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_12,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
- clxscore=1011 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312120154
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212115151.20016-6-quic_luoj@quicinc.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Conor,
+On Tue, Dec 12, 2023 at 07:51:50PM +0800, Luo Jie wrote:
+> Update the yaml file for the new DTS properties.
+> 
+> 1. cmn-reference-clock for the CMN PLL source clock select.
+> 2. clock-frequency for MDIO clock frequency config.
+> 3. add uniphy AHB & SYS GCC clocks.
+> 4. add reset-gpios for MDIO bus level reset.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+>  .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++++++++++-
+>  1 file changed, 153 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+> index 3407e909e8a7..9546a6ad7841 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+> @@ -20,6 +20,8 @@ properties:
+>            - enum:
+>                - qcom,ipq6018-mdio
+>                - qcom,ipq8074-mdio
+> +              - qcom,ipq9574-mdio
+> +              - qcom,ipq5332-mdio
+>            - const: qcom,ipq4019-mdio
 
-On 12/12/23 11:09, Conor Dooley wrote:
-> On Tue, Dec 12, 2023 at 10:39:57AM -0600, Ninad Palsule wrote:
->> Document the new compatibles used on IBM system1-bmc
->>
->> Tested:
->>      This board is tested using the simics simulator.
-> I don't see how this is relevant to dt-bindings patches.
-Make sense. Removed it.
->
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> ---
->>   Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
->>   Documentation/devicetree/bindings/trivial-devices.yaml   | 2 ++
-> IMO these should be split into two patches.
+A driver can function without knowing about all these new registers and 
+clocks? If not, then it can't be compatible with "qcom,ipq4019-mdio".
 
-Make sense. Split it into two patches.
+>  
+>    "#address-cells":
+> @@ -30,19 +32,71 @@ properties:
+>  
+>    reg:
+>      minItems: 1
+> -    maxItems: 2
+> +    maxItems: 5
+>      description:
+> -      the first Address and length of the register set for the MDIO controller.
+> -      the second Address and length of the register for ethernet LDO, this second
+> -      address range is only required by the platform IPQ50xx.
+> +      the first Address and length of the register set for the MDIO controller,
+> +      the optional second, third and fourth address and length of the register
+> +      for ethernet LDO, these three address range are required by the platform
+> +      IPQ50xx/IPQ5332/IPQ9574, the last address and length is for the CMN clock
+> +      to select the reference clock.
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    maxItems: 5
+>  
+>    clocks:
+> +    minItems: 1
+>      items:
+>        - description: MDIO clock source frequency fixed to 100MHZ
+> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
+> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
+> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
+> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
 
-Thank you for the review.
+These are all clock inputs to this h/w block and not some other clocks 
+you want to manage?
 
-Thanks & Regards,
+>  
+>    clock-names:
+> +    minItems: 1
+>      items:
+>        - const: gcc_mdio_ahb_clk
+> +      - const: gcc_uniphy0_ahb_clk
+> +      - const: gcc_uniphy1_ahb_clk
+> +      - const: gcc_uniphy0_sys_clk
+> +      - const: gcc_uniphy1_sys_clk
 
-Ninad
+"gcc" is presumably the name of the clock controller in QCom chips. 
+Well, the clock source should not be part of the binding. The names 
+should be local for what they are for. So drop 'gcc_'. And '_clk' is 
+also redundant, so drop it too. Unfortunately you are stuck with the 
+name of the 1st entry.
 
->
-> Cheers,
-> Conor.
->
->>   2 files changed, 3 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
->> index 6f7543463d89..ebebe14c42aa 100644
->> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
->> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
->> @@ -85,6 +85,7 @@ properties:
->>                 - facebook,yosemite4-bmc
->>                 - ibm,everest-bmc
->>                 - ibm,rainier-bmc
->> +              - ibm,system1-bmc
->>                 - ibm,tacoma-bmc
->>                 - inventec,starscream-bmc
->>                 - inventec,transformer-bmc
->> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
->> index 441b55723675..b12a60d2eb0f 100644
->> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
->> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
->> @@ -135,6 +135,8 @@ properties:
->>             - ibm,cffps1
->>               # IBM Common Form Factor Power Supply Versions 2
->>             - ibm,cffps2
->> +            # Infineon barometric pressure and temperature sensor
->> +          - infineon,dps310
->>               # Infineon IR36021 digital POL buck controller
->>             - infineon,ir36021
->>               # Infineon IR38060 Voltage Regulator
->> -- 
->> 2.39.2
->>
+> +
+> +  cmn-reference-clock:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - 0   # CMN PLL reference internal 48MHZ
+> +              - 1   # CMN PLL reference external 25MHZ
+> +              - 2   # CMN PLL reference external 31250KHZ
+> +              - 3   # CMN PLL reference external 40MHZ
+> +              - 4   # CMN PLL reference external 48MHZ
+> +              - 5   # CMN PLL reference external 50MHZ
+> +              - 6   # CMN PLL reference internal 96MHZ
+> +
+> +  clock-frequency:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - 12500000
+> +              - 6250000
+> +              - 3125000
+> +              - 1562500
+> +              - 781250
+> +              - 390625
+> +    description:
+> +      The MDIO bus clock that must be output by the MDIO bus hardware,
+> +      only the listed frequecies above can be configured, other frequency
+> +      will cause malfunction. If absent, the default hardware value is used.
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  reset-assert-us:
+> +    maxItems: 1
+> +
+> +  reset-deassert-us:
+> +    maxItems: 1
+>  
+>  required:
+>    - compatible
+> @@ -61,6 +115,8 @@ allOf:
+>                - qcom,ipq5018-mdio
+>                - qcom,ipq6018-mdio
+>                - qcom,ipq8074-mdio
+> +              - qcom,ipq5332-mdio
+> +              - qcom,ipq9574-mdio
+>      then:
+>        required:
+>          - clocks
+> @@ -70,6 +126,40 @@ allOf:
+>          clocks: false
+>          clock-names: false
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq5332-mdio
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 5
+> +          maxItems: 5
+> +        reg-names:
+> +          items:
+> +            - const: mdio
+> +            - const: eth_ldo1
+> +            - const: eth_ldo2
+> +            - const: cmn_blk
+
+Perhaps cmn_blk should come 2nd, so all the variants have the same entry 
+indices. Then you can move this to the top level and just say 'minItems: 
+4' here.
+
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq9574-mdio
+> +    then:
+> +      properties:
+> +        reg-names:
+> +          items:
+> +            - const: mdio
+> +            - const: eth_ldo1
+> +            - const: eth_ldo2
+> +            - const: eth_ldo3
+> +            - const: cmn_blk
+
+And 'minItems: 5' here.
+
+The ipq9574 adds the CMN block, but none of the clocks? Weird.
+
+Rob
