@@ -2,130 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1D680EE13
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3014180EDFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376380AbjLLNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S1346677AbjLLNrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:47:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376353AbjLLNtX (ORCPT
+        with ESMTP id S1346637AbjLLNru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:49:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC0D1FFF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:48:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1063C433C7;
-        Tue, 12 Dec 2023 13:48:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702388919;
-        bh=vMWkOLosreYFfJ9xVON5sXNCA2fynG36OvDNxFrE51s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I1bcz+LlvgB6SRxGT6ZdgATiv1KLf3q9mLiOckLOH//Bt/WfHe+7KJ4pbFikHCrFd
-         qinaFVog666Obq0FK2VsYMwyGYl78WaUh9i5/l3r1GPgscTC2S+QgVEDEk45EOEOb7
-         l+JB3Lc3Pke9d+OyFaOvCmY34jxCo/DG2g76bTPjQW0SRGR6BCKhbMLmFvTSCMmU0d
-         fQUool7HZlBQtY2ymybxrXQtnzo4alFNJsup3EQhmQBQ1MyjAU6w3ZDvAgWqDQynrX
-         fqcIm0zsaTs7nbljdzhOr2nUNP/jaTsp25PQ1td9yIfjPwBY/vMyUnkzvfaGwD/Mxm
-         cKHo+xDe9ZFRA==
-Date:   Tue, 12 Dec 2023 13:48:31 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Zheng Wang <zyytlz.wz@163.com>
-Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, kvalo@kernel.org,
-        johannes.berg@intel.com, marcan@marcan.st,
-        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
-        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com, arend.vanspriel@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        security@kernel.org, stable@vger.kernel.org,
-        hackerzheng666@gmail.com
-Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in
-  brcmf_cfg80211_detach
-Message-ID: <20231212134831.GA564365@google.com>
-References: <20231106141704.866455-1-zyytlz.wz@163.com>
+        Tue, 12 Dec 2023 08:47:50 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D058100;
+        Tue, 12 Dec 2023 05:47:57 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42004143D;
+        Tue, 12 Dec 2023 05:48:43 -0800 (PST)
+Received: from e129166.arm.com (unknown [10.57.82.227])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0E613F738;
+        Tue, 12 Dec 2023 05:47:55 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        rafael@kernel.org
+Cc:     linux-pm@vger.kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com
+Subject: [PATCH v2 0/8] Add callback for cooling list update to speed-up IPA
+Date:   Tue, 12 Dec 2023 13:48:36 +0000
+Message-Id: <20231212134844.1213381-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231106141704.866455-1-zyytlz.wz@163.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Nov 2023, Zheng Wang wrote:
+Hi all,
 
-> This is the candidate patch of CVE-2023-47233 :
-> https://nvd.nist.gov/vuln/detail/CVE-2023-47233
-> 
-> In brcm80211 driver,it starts with the following invoking chain
-> to start init a timeout worker:
-> 
-> ->brcmf_usb_probe
->   ->brcmf_usb_probe_cb
->     ->brcmf_attach
->       ->brcmf_bus_started
->         ->brcmf_cfg80211_attach
->           ->wl_init_priv
->             ->brcmf_init_escan
->               ->INIT_WORK(&cfg->escan_timeout_work,
-> 		  brcmf_cfg80211_escan_timeout_worker);
-> 
-> If we disconnect the USB by hotplug, it will call
-> brcmf_usb_disconnect to make cleanup. The invoking chain is :
-> 
-> brcmf_usb_disconnect
->   ->brcmf_usb_disconnect_cb
->     ->brcmf_detach
->       ->brcmf_cfg80211_detach
->         ->kfree(cfg);
-> 
-> While the timeout woker may still be running. This will cause
-> a use-after-free bug on cfg in brcmf_cfg80211_escan_timeout_worker.
-> 
-> Fix it by deleting the timer and canceling the worker in
-> brcmf_cfg80211_detach.
-> 
-> Fixes: e756af5b30b0 ("brcmfmac: add e-scan support.")
-> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-> Cc: stable@vger.kernel.org
-> ---
-> v5:
-> - replace del_timer_sync with timer_shutdown_sync suggested by
-> Arend and Takashi
-> v4:
-> - rename the subject and add CVE number as Ping-Ke Shih suggested
-> v3:
-> - rename the subject as Johannes suggested
-> v2:
-> - fix the error of kernel test bot reported
-> ---
->  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> index 667462369a32..a8723a61c9e4 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> @@ -8431,6 +8431,8 @@ void brcmf_cfg80211_detach(struct brcmf_cfg80211_info *cfg)
->  	if (!cfg)
->  		return;
->  
-> +	timer_shutdown_sync(&cfg->escan_timeout);
-> +	cancel_work_sync(&cfg->escan_timeout_work);
->  	brcmf_pno_detach(cfg);
->  	brcmf_btcoex_detach(cfg);
->  	wiphy_unregister(cfg->wiphy);
+The patch set a new callback for thermal governors and implementation for
+Intelligent Power Allocator.
 
-Has there been any progress on this please?
+The goal is to move some heavy operarions like the memory allocations and heavy
+computations (multiplications) out of throttle() callback hot path.
 
-Are we expecting a v6 to this?
+The new callback is generic enough to handle other imporants update events.
+It re-uses existing thermal_notify_event definitions.
+
+In addition there are some small clean-ups for IPA code.
+
+changes:
+v2:
+- change callback name to update_tz() and add parameter (Rafael)
+- added new event to trigger this callback - instance 'weight' update
+
+Regards,
+Lukasz
+
+Lukasz Luba (8):
+  thermal: core: Add governor callback for thermal zone change
+  thermal: gov_power_allocator: Refactor check_power_actors()
+  thermal: gov_power_allocator: Move memory allocation out of throttle()
+  thermal: gov_power_allocator: Simplify checks for valid power actor
+  thermal: gov_power_allocator: Refactor checks in divvy_up_power()
+  thermal/sysfs: Update instance->weight under tz lock
+  thermal/sysfs: Update governors when the 'weight' has changed
+  thermal: gov_power_allocator: Support new update callback of weights
+
+ drivers/thermal/gov_power_allocator.c | 216 ++++++++++++++++++--------
+ drivers/thermal/thermal_core.c        |  13 ++
+ drivers/thermal/thermal_sysfs.c       |  15 ++
+ include/linux/thermal.h               |   6 +
+ 4 files changed, 182 insertions(+), 68 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
+2.25.1
+
