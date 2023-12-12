@@ -2,73 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3192C80F240
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C18280F246
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbjLLQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:18:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
+        id S232866AbjLLQS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346726AbjLLQRx (ORCPT
+        with ESMTP id S235114AbjLLQSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:17:53 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79CD7E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:17:33 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-35d559a71d8so3098285ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:17:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702397852; x=1703002652; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mZZsDTMwulx2C3PHKVWLrfVDevlLtMgvyrHa2kD2onU=;
-        b=My5iUGhMjRl7x8qpUmPLn1QgT7QenFhVs7dVxTpeffupXcFR0RxmYnCOoCx00M3tOj
-         4wWhmqV/8TWdRAhBZyOVEhp02zjFTPU3S0np/GamYs+C2e2rfv9xlr2oNv7PyG53Itq4
-         AsxFd9E4pXYAAqQDdJrE2y3NkgWNqoJvZ/tlc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702397852; x=1703002652;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZZsDTMwulx2C3PHKVWLrfVDevlLtMgvyrHa2kD2onU=;
-        b=oZANHHcN6EWbQoxAHpMHE6gpuB4AipbXkYE/uZ4M5WH/kOrWJ679PH9NEDXH01nWqd
-         crAMDD4Z+eUAAjJJ4p9kjjTGMdf/UTu1M7W9oaKn0ZZsxCDTFTMELTHEkOCz61+730TF
-         iGWA9QAKaF6az9Z35zszSj3ng7avChICUhOotd3a/aSWdR6R1J8Fm3f7Pz0KnTlxVyk9
-         LjHO0OaxUU1vxeTSjligAOk1mSAQPyR16eohXrrOYw+XQYyeSBRInT5fZFbWsbdab//G
-         mBAByHtLayh1cKEUvkR+woEECJ2kDslNe1s1juBVT8HPAa5KcMdmS0SyBZnkpOc/xrPO
-         49MA==
-X-Gm-Message-State: AOJu0Yw4/lGjSr+FJlgJVUTL693QTn1vZebCj2LiPy25y5c8sjqNnslN
-        zGT8SbFs+W6e2Z/7Z9jEs0U6tx60DoRu84CzEL8=
-X-Google-Smtp-Source: AGHT+IEw06m80JBwgXxznxRucxWd2rsVfnN7r+g4/CDkw9yYXOxydY/mOkQq1kN0lweotU7cVET3yA==
-X-Received: by 2002:a05:6e02:17c8:b0:35d:5550:76b7 with SMTP id z8-20020a056e0217c800b0035d555076b7mr12405452ilu.0.1702397852518;
-        Tue, 12 Dec 2023 08:17:32 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id by4-20020a056e02260400b0035cb9b85123sm3014243ilb.46.2023.12.12.08.17.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 08:17:32 -0800 (PST)
-Message-ID: <a716de20-d5fa-40c0-bb11-e34c1034d2eb@linuxfoundation.org>
-Date:   Tue, 12 Dec 2023 09:17:31 -0700
+        Tue, 12 Dec 2023 11:18:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9182111
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:18:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AFC3C433C7;
+        Tue, 12 Dec 2023 16:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702397929;
+        bh=UYaXZrFDR/cy/SyqvoOFltStolzjOE3ACy1szjYwMKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uY9B8bTGeoApiuOFnJoml3G+mhJpKS4M7gpksSdv8eIO/TM1Q/6bOcRWyWMql1eFy
+         SFSeCAMH9JpJCXM3I0ZQNo4gx0/gx2mfxDSluDvRkLk7ceSrpAe5L6CjlFT/HPxtph
+         HfgoyafWpBfd/J1Omjoral0LpYzL6JW3iO28+/0JJ9KBx4v0p72azZZQY5HaztlUHu
+         pWK4DyLohwVfCqhS6MXNbDWZaY6VSla3fyzcjpCe6gogZ3E18mO3j/kgk8YSMePsKW
+         Kbh3wNKfJpD5QNsv1A/S0h3Pk6fkNrtpg3bkzqjyA8fTJVeaslqC7RIDbwlQ621ews
+         vP4J4lK7i8WLQ==
+Date:   Tue, 12 Dec 2023 16:18:43 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     arnd@arndb.de, pmenzel@molgen.mpg.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: soc: nuvoton: Add NPCM BPC
+Message-ID: <20231212-uncut-sixfold-9359b141b149@spud>
+References: <20231212100703.3374555-1-tmaimon77@gmail.com>
+ <20231212100703.3374555-2-tmaimon77@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 000/131] 5.10.203-rc3 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231205183249.651714114@linuxfoundation.org>
- <fa221062-03b4-46d7-8708-9d3ce49961dd@linuxfoundation.org>
- <2023120932-revolver-apple-d4c9@gregkh>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <2023120932-revolver-apple-d4c9@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="EKatXyW3mv8oRlRW"
+Content-Disposition: inline
+In-Reply-To: <20231212100703.3374555-2-tmaimon77@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,41 +56,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/23 04:44, Greg Kroah-Hartman wrote:
-> On Wed, Dec 06, 2023 at 09:31:48AM -0700, Shuah Khan wrote:
->> On 12/5/23 12:22, Greg Kroah-Hartman wrote:
->>> This is the start of the stable review cycle for the 5.10.203 release.
->>> There are 131 patches in this series, all will be posted as a response
->>> to this one.  If anyone has any issues with these being applied, please
->>> let me know.
->>>
->>> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
->>> Anything received after that time might be too late.
->>>
->>> The whole patch series can be found in one patch at:
->>> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.203-rc3.gz
->>> or in the git tree and branch at:
->>> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
->>> and the diffstat can be found below.
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->>
->> Compiled. Fails to boot up. Boot hangs during systemd init sequence.
->> I am debugging this and will update you.
-> 
-> Anything come of this?
-> 
 
-Still working on it. I upgraded distro on my system which is complicating
-things. Not sure if this is related distro upgrade or not. I suspect it
-is distro related since 5.10.202 which booted just fine prior to distro
-upgrade is behaving the same way.
+--EKatXyW3mv8oRlRW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For now ignore this and I will update you.
+On Tue, Dec 12, 2023 at 12:07:01PM +0200, Tomer Maimon wrote:
+> Added device tree binding documentation for Nuvoton BMC NPCM BIOS Post
+> Code (BPC).
+>=20
+> The NPCM BPC monitoring two configurable I/O addresses written by the
+> host on the bus.
+>=20
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> ---
+>  .../soc/nuvoton/nuvoton,npcm-bpc.yaml         | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton=
+,npcm-bpc.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-b=
+pc.yaml b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.ya=
+ml
+> new file mode 100644
+> index 000000000000..30033cdac8f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/nuvoton/nuvoton,npcm-bpc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton BMC NPCM BIOS Post Code (bpc) controller
+> +
+> +maintainers:
+> +  - Tomer Maimon <tmaimon77@gmail.com>
+> +
+> +description:
+> +  Nuvoton BMC NPCM BIOS Post Code (BPC) monitoring two configurable I/O
+> +  addresses written by the host on the bus, the capture data stored in
+> +  128-word FIFO.
+> +
+> +  NPCM BPC supports capture double words, when using capture
+> +  double word only I/O address 1 is monitored.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,npcm750-bpc
+> +      - nuvoton,npcm845-bpc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  nuvoton,monitor-ports:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description:
+> +      Contain monitor I/O addresses on the bus, at least one monitor I/O
+> +      address required.
+> +
+> +  nuvoton,bpc-en-dwcapture:
+> +    description:
+> +      If present, Enable FIFO capture of the DWord address according to
+> +      one address setting.
 
-thanks,
--- Shuah
+This sounds like something you can either infer from the compatible or
+is determining software policy. A more detailed
+explanation/justification is required here.
 
+Thanks,
+Conor.
+
+> +    type: boolean
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - nuvoton,monitor-ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    bpc: bpc@f0007040 {
+> +        compatible =3D "nuvoton,npcm750-bpc";
+> +        reg =3D <0xf0007040 0x20>;
+> +        interrupts =3D <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +        nuvoton,monitor-ports =3D <0x80>;
+> +    };
+> +...
+> --=20
+> 2.34.1
+>=20
+>=20
+
+--EKatXyW3mv8oRlRW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiH4wAKCRB4tDGHoIJi
+0sLCAQDUf4LaNco4BW20mKaW2lH+BVibKLD9Jte4xNrK4aGvzQD+O4RM8COYi+g1
+NthOdrrQn5Cf2XV545V37YT7QRKckAI=
+=Ch0H
+-----END PGP SIGNATURE-----
+
+--EKatXyW3mv8oRlRW--
