@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7B980E71E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDA980E724
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbjLLJOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        id S231518AbjLLJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjLLJOG (ORCPT
+        with ESMTP id S229583AbjLLJQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:14:06 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F86BD5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:14:12 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5df49931b4eso30999297b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702372451; x=1702977251; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=94mArPi0KBLNCW+9/5j6k94DKj0W9iwezw/gK4SeWNw=;
-        b=i/RA8czSn8NHJ77rUq8fpNBebUWp3+qX1rj4dvxzlcCC66KYB2Zboda8GfdaTOPt1o
-         MTJg6nPuvTng/SDyqIVjxeWX/I9jP4ASSEeF/D5fJuuEIl92NbFYWTNsJHKJHqD3l5Ot
-         WEmNq2VzjlC5yDeMC/nP2fJEbz9ah3ULIDiPtDb1olKdDxu/f+M1h+hjrJWdhK96R2eU
-         PbjB6/1er/zlVRvsMw+i+j61I63PDJRIBUb7HsE0yi7TViQ2ZvsXnXPirmLIZEyVbCR2
-         AQ2IBIkq/d7G6ZhMB56kv3g1mCm8w8az2VAq85znHJN2WeCJ82otAyzEJz7Ey/YOIUtc
-         6Fcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702372451; x=1702977251;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=94mArPi0KBLNCW+9/5j6k94DKj0W9iwezw/gK4SeWNw=;
-        b=P8yyafTo+HgNE/3pzMVA/fSf+RaKqScZcowWux1PkAuarXwrqlbkwdZTylPB2q4Zwq
-         WfQFU1JUoWKUzWDkRl4oK3+2QCtaNGbmnFfKknzibPLsO8t51tNdZ/AYjiVHVa9bCyBk
-         iuX3WwOW6BKyayJq5w0kiEp09xgbRg17qHfu6Re3KKxZbCHNNwEblwf275/6gh1KDnUC
-         PwNKZwLhZhW/++zc94BU0+CezFtlHSF+/gSvMVaOUN+CJ9NFwklyC/jQkRoibI0Uaj6j
-         a5JIPl7ZpAAEo94hIUtXzWlKcPMX0fCgFKyeosfSe4iUG5JqZVEDVrU9fGDWLvkwW2V7
-         ZMlQ==
-X-Gm-Message-State: AOJu0Yz7zU915Hvc4egsYTrsKE/3FBqydnxYMBTBRPaKOiGmUec2269s
-        2qG1spo+b4iuQkvLrsRPRueSSATCJSvluUSgQtcllA==
-X-Google-Smtp-Source: AGHT+IEM/V0yIgohqydrpyBc5XyPo5SnxiZzn3s8K+OkWsi4tAsIzwUabgxsCocaEqBDGw3AWP5HKXJFT+e/tKMQ+IQ=
-X-Received: by 2002:a0d:c386:0:b0:5d7:1940:b386 with SMTP id
- f128-20020a0dc386000000b005d71940b386mr4641044ywd.82.1702372451507; Tue, 12
- Dec 2023 01:14:11 -0800 (PST)
+        Tue, 12 Dec 2023 04:16:08 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181B2C7;
+        Tue, 12 Dec 2023 01:16:14 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC7jh3u009842;
+        Tue, 12 Dec 2023 01:16:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=pfpt0220; bh=8Fi6JKQ6
+        hzjc5TlTDLGpAytVBONJviRalvFedjkioj0=; b=D6C1v4MgfuQ6il0V41KGiZJh
+        jP2GdC/sJC/8OZIMIHZ8LaK0lH4SlvHju6gJ/AF7VufwoPUp5aHIrMEbS6aYRAQD
+        s9egYCd3xv89wmMw1rHDXtT84HGXSGGTkgFU0UBphB85sj6U3ItOuFVufYbSiwII
+        0tYj59ZHukadgwd6Mmd9S9PQEnKQuFEN+XCCRpAzdqzl6i5y/CX5jUWVo5AIRTnP
+        cxvkE4imJzjZQbkYt3vN81d0sFYQMWbrTevU1cBlXvizmtR4Tv0BkQFxUrptg0hl
+        rZL4siUpfEmFIyL2RvVQZugSms6AiPkCvpIFyHmPnXRpNn9DZm5Se6gkjAsB3w==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uwyp4m9n4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 01:16:06 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Dec
+ 2023 01:16:05 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 12 Dec 2023 01:16:05 -0800
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 2BD283F7043;
+        Tue, 12 Dec 2023 01:16:00 -0800 (PST)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <sgoutham@marvell.com>, <sbhatta@marvell.com>,
+        <jerinj@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
+        <lcherian@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH] octeontx2-af: Fix multicast/mirror group lock/unlock issue
+Date:   Tue, 12 Dec 2023 14:45:58 +0530
+Message-ID: <20231212091558.49579-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org> <20231212-x1e80100-clock-controllers-v1-7-0de1af44dcb3@linaro.org>
-In-Reply-To: <20231212-x1e80100-clock-controllers-v1-7-0de1af44dcb3@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Dec 2023 11:13:58 +0200
-Message-ID: <CAA8EJpoaydf3Fqpo5baAihGS5X37LCytKuYP5EmQt75ibMmKmQ@mail.gmail.com>
-Subject: Re: [PATCH 07/10] clk: qcom: Add dispcc clock driver for x1e80100
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Rajendra Nayak <quic_rjendra@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mdvrYMnmTWV766XtHWctnrpE8w_O9Zp1
+X-Proofpoint-GUID: mdvrYMnmTWV766XtHWctnrpE8w_O9Zp1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,22 +69,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 00:46, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
->
-> Add the dispcc clock driver for x1e80100.
->
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  drivers/clk/qcom/Kconfig           |   10 +
->  drivers/clk/qcom/Makefile          |    1 +
->  drivers/clk/qcom/dispcc-x1e80100.c | 1699 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 1710 insertions(+)
+As per the existing implementation, there exists a race between finding
+a multicast/mirror group entry and deleting that entry. The group lock
+was taken and released independently by rvu_nix_mcast_find_grp_elem()
+function. Which is incorrect and group lock should be taken during the
+entire operation of group updation/deletion. This patch fixes the same.
 
-Reviewed-by: Dmitry Baryshov <dmitry.baryshov@linaro.org>
+Fixes: 51b2804c19cd ("octeontx2-af: Add new mbox to support multicast/mirror offload")
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
+---
 
+Note: This is a follow up of
+
+https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_netdev_net-2Dnext_c_51b2804c19cd&d=DwIDaQ&c=nKjWec2b6R0mOyPaz7xtfQ&r=7si3Xn9Ly-Se1a655kvEPIYU0nQ9HPeN280sEUv5ROU&m=NjKPoTkYVlL5Dh4aSr3-dVo-AukiIperlvB0S4_Mqzkyl_VcYAAKrWhkGZE5Cx-p&s=AkBf0454Xm-0adqV0Os7ZE8peaCXtYyuNbCS5kit6Jk&e=
+
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 58 +++++++++++++------
+ 1 file changed, 40 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index b01503acd520..0ab5626380c5 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -6142,14 +6142,12 @@ static struct nix_mcast_grp_elem *rvu_nix_mcast_find_grp_elem(struct nix_mcast_g
+ 	struct nix_mcast_grp_elem *iter;
+ 	bool is_found = false;
+ 
+-	mutex_lock(&mcast_grp->mcast_grp_lock);
+ 	list_for_each_entry(iter, &mcast_grp->mcast_grp_head, list) {
+ 		if (iter->mcast_grp_idx == mcast_grp_idx) {
+ 			is_found = true;
+ 			break;
+ 		}
+ 	}
+-	mutex_unlock(&mcast_grp->mcast_grp_lock);
+ 
+ 	if (is_found)
+ 		return iter;
+@@ -6162,7 +6160,7 @@ int rvu_nix_mcast_get_mce_index(struct rvu *rvu, u16 pcifunc, u32 mcast_grp_idx)
+ 	struct nix_mcast_grp_elem *elem;
+ 	struct nix_mcast_grp *mcast_grp;
+ 	struct nix_hw *nix_hw;
+-	int blkaddr;
++	int blkaddr, ret;
+ 
+ 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+ 	nix_hw = get_nix_hw(rvu->hw, blkaddr);
+@@ -6170,11 +6168,15 @@ int rvu_nix_mcast_get_mce_index(struct rvu *rvu, u16 pcifunc, u32 mcast_grp_idx)
+ 		return NIX_AF_ERR_INVALID_NIXBLK;
+ 
+ 	mcast_grp = &nix_hw->mcast_grp;
++	mutex_lock(&mcast_grp->mcast_grp_lock);
+ 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, mcast_grp_idx);
+ 	if (!elem)
+-		return NIX_AF_ERR_INVALID_MCAST_GRP;
++		ret = NIX_AF_ERR_INVALID_MCAST_GRP;
++	else
++		ret = elem->mce_start_index;
+ 
+-	return elem->mce_start_index;
++	mutex_unlock(&mcast_grp->mcast_grp_lock);
++	return ret;
+ }
+ 
+ void rvu_nix_mcast_flr_free_entries(struct rvu *rvu, u16 pcifunc)
+@@ -6238,7 +6240,7 @@ int rvu_nix_mcast_update_mcam_entry(struct rvu *rvu, u16 pcifunc,
+ 	struct nix_mcast_grp_elem *elem;
+ 	struct nix_mcast_grp *mcast_grp;
+ 	struct nix_hw *nix_hw;
+-	int blkaddr;
++	int blkaddr, ret = 0;
+ 
+ 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
+ 	nix_hw = get_nix_hw(rvu->hw, blkaddr);
+@@ -6246,13 +6248,15 @@ int rvu_nix_mcast_update_mcam_entry(struct rvu *rvu, u16 pcifunc,
+ 		return NIX_AF_ERR_INVALID_NIXBLK;
+ 
+ 	mcast_grp = &nix_hw->mcast_grp;
++	mutex_lock(&mcast_grp->mcast_grp_lock);
+ 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, mcast_grp_idx);
+ 	if (!elem)
+-		return NIX_AF_ERR_INVALID_MCAST_GRP;
+-
+-	elem->mcam_index = mcam_index;
++		ret = NIX_AF_ERR_INVALID_MCAST_GRP;
++	else
++		elem->mcam_index = mcam_index;
+ 
+-	return 0;
++	mutex_unlock(&mcast_grp->mcast_grp_lock);
++	return ret;
+ }
+ 
+ int rvu_mbox_handler_nix_mcast_grp_create(struct rvu *rvu,
+@@ -6306,6 +6310,13 @@ int rvu_mbox_handler_nix_mcast_grp_destroy(struct rvu *rvu,
+ 		return err;
+ 
+ 	mcast_grp = &nix_hw->mcast_grp;
++
++	/* If AF is requesting for the deletion,
++	 * then AF is already taking the lock
++	 */
++	if (!req->is_af)
++		mutex_lock(&mcast_grp->mcast_grp_lock);
++
+ 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, req->mcast_grp_idx);
+ 	if (!elem)
+ 		return NIX_AF_ERR_INVALID_MCAST_GRP;
+@@ -6333,12 +6344,6 @@ int rvu_mbox_handler_nix_mcast_grp_destroy(struct rvu *rvu,
+ 	mutex_unlock(&mcast->mce_lock);
+ 
+ delete_grp:
+-	/* If AF is requesting for the deletion,
+-	 * then AF is already taking the lock
+-	 */
+-	if (!req->is_af)
+-		mutex_lock(&mcast_grp->mcast_grp_lock);
+-
+ 	list_del(&elem->list);
+ 	kfree(elem);
+ 	mcast_grp->count--;
+@@ -6370,9 +6375,20 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
+ 		return err;
+ 
+ 	mcast_grp = &nix_hw->mcast_grp;
++
++	/* If AF is requesting for the updation,
++	 * then AF is already taking the lock
++	 */
++	if (!req->is_af)
++		mutex_lock(&mcast_grp->mcast_grp_lock);
++
+ 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, req->mcast_grp_idx);
+-	if (!elem)
++	if (!elem) {
++		if (!req->is_af)
++			mutex_unlock(&mcast_grp->mcast_grp_lock);
++
+ 		return NIX_AF_ERR_INVALID_MCAST_GRP;
++	}
+ 
+ 	/* If any pcifunc matches the group's pcifunc, then we can
+ 	 * delete the entire group.
+@@ -6383,8 +6399,11 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
+ 				/* Delete group */
+ 				dreq.hdr.pcifunc = elem->pcifunc;
+ 				dreq.mcast_grp_idx = elem->mcast_grp_idx;
+-				dreq.is_af = req->is_af;
++				dreq.is_af = 1;
+ 				rvu_mbox_handler_nix_mcast_grp_destroy(rvu, &dreq, NULL);
++				if (!req->is_af)
++					mutex_unlock(&mcast_grp->mcast_grp_lock);
++
+ 				return 0;
+ 			}
+ 		}
+@@ -6467,5 +6486,8 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
+ 
+ done:
+ 	mutex_unlock(&mcast->mce_lock);
++	if (!req->is_af)
++		mutex_unlock(&mcast_grp->mcast_grp_lock);
++
+ 	return ret;
+ }
 -- 
-With best wishes
-Dmitry
+2.25.1
+
