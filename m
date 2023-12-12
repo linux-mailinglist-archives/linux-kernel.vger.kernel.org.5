@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDFE80F0D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDF080F0E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377163AbjLLP3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
+        id S1377138AbjLLPaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:30:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235130AbjLLP33 (ORCPT
+        with ESMTP id S1377165AbjLLPaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:29:29 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB9E1FC9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:28:57 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcc6933a14so152842276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702394936; x=1702999736; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ESTPXNxaOVzfRXXRx0Fvol8yzry2uxBEEuLKqef2q4U=;
-        b=BkYDT2p7AZjoPKT1n33qcBzraBObsSid1Kav0bwVkxm03TEVNC9zjkvdoIvsP0gO75
-         moN91EoItYKY7bE8DYrJiANZQGFCmkf5HIebed+p+oequNpXhL+YOR4EpL4dpgIKSQ5Q
-         rdxafRPM1EMvN39DPwz196VoqroHUedjHpsNgY60Ny4L70huLqKg9p0/ZqM3NMyNGdm6
-         B2u/IQXRbgTONYPciifuv1nD9dRK0KUIoy1No1oaQwluBNg6Ll9BXgX2qVuEIV52N94P
-         uqorvgEZE7Y9ffnxMRIbnnF1PGv2zPAMLd+YB1lWZuWINHkNV+Y+C0LRq892mFgzBrA5
-         /IwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702394936; x=1702999736;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ESTPXNxaOVzfRXXRx0Fvol8yzry2uxBEEuLKqef2q4U=;
-        b=V9vWkzERuupIFVGC7NcvVTEDqPuZZ1T9giEuiDg9bj6a7rakvfzqYVep4Enq97oSdv
-         K5LYPW4cl5hNa+HzgM2Tv++YuOuItpERxC3dVL1J1teMEkFZxYmOVKiz6g4dWerKfNaC
-         s+o+LLsH2MHn4L9vsSr1yz7tvSwhJtKX1fZF/VoasHl7mcO8tItDy5ZVHKHM4JGs7cyB
-         qa4SdT/5FSci5J3rs3lszsqQeE8CyguveqsmHc/6NyYx735L6BqRwuQdBmGJhgXYikkd
-         VMc3Y0EbX6kfVf1A40/HEQPQV1QzDdV3VvQoL0JDe9aAQJX4RLQJXlJXUPYCizVgMee8
-         Lxeg==
-X-Gm-Message-State: AOJu0Yxt6KPSmuKAk9+bMVuiota0LEp/KIgmUOkFDDnV+b6CYyX7v7ku
-        9YO2maAxofd5XkayXxD3JCjn++jE7SQ=
-X-Google-Smtp-Source: AGHT+IHBX6jt6VDhWuABWGol0Nx+Ii84S8r8nT9g/gNamSIHnZwQhzhs+bFmpCR2BuKO/hKALNdpvESE74w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:db94:0:b0:db4:7ac:fea6 with SMTP id
- g142-20020a25db94000000b00db407acfea6mr41805ybf.7.1702394935890; Tue, 12 Dec
- 2023 07:28:55 -0800 (PST)
-Date:   Tue, 12 Dec 2023 07:28:54 -0800
-In-Reply-To: <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20220921003201.1441511-11-seanjc@google.com> <20231207010302.2240506-1-jmattson@google.com>
- <ZXHw7tykubfG04Um@google.com> <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
-Message-ID: <ZXh8Nq_y_szj1WN0@google.com>
-Subject: Re: [PATCH v4 10/12] KVM: x86: never write to memory from kvm_vcpu_check_block()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     alexandru.elisei@arm.com, anup@brainfault.org,
-        aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        borntraeger@linux.ibm.com, chenhuacai@kernel.org, david@redhat.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, james.morse@arm.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, maz@kernel.org, mlevitsk@redhat.com,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, pbonzini@redhat.com,
-        suzuki.poulose@arm.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 12 Dec 2023 10:30:02 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210DFD6E;
+        Tue, 12 Dec 2023 07:29:57 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCEtXdd029416;
+        Tue, 12 Dec 2023 15:29:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=w1ODz96wzh/XsSmij5pnqGAR0TWyczrhaf7tqTa/lOM=;
+ b=rClKY08++F+YMfiPl9BK0taJ8CwWk9sH5VojXyqee3Py41p6Vne9A6KDRtsxucHEuTOd
+ EXaeiSTl3e945GYoD6YaT5qWEXdwtvDH6KNN1LL+viknx/7+tYSzcvlGnmNYsPsACgvw
+ 8Xn2kIXyLVE8+GEtlUP/qrpeJZf2oPgDCN0tHg4v5oEiLTChrjJV/mtCrfZtBurcYVzr
+ 1qCpvkxPr/Uxk9SGkC9Vk3HW9Gw7I8tkmS17hVsa1J9+RbRHBxAUt3kmeI7P8Aif/ZmH
+ X9HNOVsnnNRMrBqraUXziPIWrp9E9AHuxxL2T1rs6prMJ2EDlfuJgv6RLTYjVIe9ZmQr 5w== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxnjyskbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 15:29:45 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCEI0bi028229;
+        Tue, 12 Dec 2023 15:29:45 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw2xyj233-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 15:29:44 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BCFTh5H45220230
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 15:29:43 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 096A620040;
+        Tue, 12 Dec 2023 15:29:43 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6496920043;
+        Tue, 12 Dec 2023 15:29:41 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com.com (unknown [9.61.159.221])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Dec 2023 15:29:41 +0000 (GMT)
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MAINTAINERS: Add Eric Snowberg as a reviewer to IMA
+Date:   Tue, 12 Dec 2023 10:29:36 -0500
+Message-Id: <20231212152937.928126-1-zohar@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NIXSGYKjKeFZbtxB4Dzvje-feiDmQUhb
+X-Proofpoint-ORIG-GUID: NIXSGYKjKeFZbtxB4Dzvje-feiDmQUhb
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_08,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ malwarescore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0 phishscore=0
+ mlxscore=0 adultscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312120117
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023, Jim Mattson wrote:
-> On Thu, Dec 7, 2023 at 8:21=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
-> > Doh.  We got the less obvious cases and missed the obvious one.
-> >
-> > Ugh, and we also missed a related mess in kvm_guest_apic_has_interrupt(=
-).  That
-> > thing should really be folded into vmx_has_nested_events().
-> >
-> > Good gravy.  And vmx_interrupt_blocked() does the wrong thing because t=
-hat
-> > specifically checks if L1 interrupts are blocked.
-> >
-> > Compile tested only, and definitely needs to be chunked into multiple p=
-atches,
-> > but I think something like this mess?
->=20
-> The proposed patch does not fix the problem. In fact, it messes things
-> up so much that I don't get any test results back.
+Digital signature based IMA-appraisal relies heavily on kernel keyrings.
+Eric Snowberg has been involved in adding the machine keyring to allow
+the system owner to add their own keys.  With this addition,
+IMA-appraisal usage can be extended to allow loading local and 3rd party
+software keys onto the IMA keyring.
 
-Drat.
+Add Eric as a reviewer.
 
-> Google has an internal K-U-T test that demonstrates the problem. I
-> will post it soon.
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Received, I'll dig in soonish, though "soonish" might unfortunately might m=
-ean
-2024.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ffaac404d1e0..4dbf1cc238c9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10557,6 +10557,7 @@ INTEGRITY MEASUREMENT ARCHITECTURE (IMA)
+ M:	Mimi Zohar <zohar@linux.ibm.com>
+ M:	Roberto Sassu <roberto.sassu@huawei.com>
+ M:	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
++R:	Eric Snowberg <eric.snowberg@oracle.com>
+ L:	linux-integrity@vger.kernel.org
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+-- 
+2.39.3
+
