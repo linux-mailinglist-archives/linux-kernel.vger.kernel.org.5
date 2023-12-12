@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6175C80EFF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2E680EFF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376645AbjLLPTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S1376657AbjLLPTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376636AbjLLPS7 (ORCPT
+        with ESMTP id S1376651AbjLLPTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:18:59 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F8BF3;
-        Tue, 12 Dec 2023 07:19:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hJFVEyxAqaTyWKn0xSoqtwuxX6IerRG8qVGzGaggA8w=; b=eVfUKNx7/zwo0Jk2745c8DeHo7
-        jfdzDxn3mUmUlDnLLxBVOcyh2AwO1sarWBBQ3lZ0oVuNEwQkVEFl5cl0ug7S5ZnP2S8Gjy8/vMHO5
-        yiwOgVoZglwFhIkNpijSLvb6/eZS6Ra2SZdHovI6kYsvtHLuBh/4nRswsA04x3YNKZ8GklgBiUxNP
-        XPfJx7dYDDO7OekU/2bEJjDJhNXxmnrwrgnAXftScECU4kXCjj18edbJCSo13/rerkQ7+CodIy33Z
-        iloe7U278Oi8ZvdZg9v4rxyYR/S8ouHhc2lCnYMe+nF8dsJ+jAkhwvFNPG/kzRrReBWxJ1YAqCil7
-        PhskmXsQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rD4XG-00C1V5-06;
-        Tue, 12 Dec 2023 15:19:02 +0000
-Date:   Tue, 12 Dec 2023 07:19:02 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        linux-ext4@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
-Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
- DIO
-Message-ID: <ZXh55vLzrs9VTGHc@infradead.org>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
- <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
- <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
- <ZXhb0tKFvAge/GWf@infradead.org>
- <20231212151613.GA142380@mit.edu>
+        Tue, 12 Dec 2023 10:19:08 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A57D3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:19:14 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BCFJ8uH113351;
+        Tue, 12 Dec 2023 09:19:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702394348;
+        bh=yaLGJWGfWftZDx1uGZYMZ+WryggEg5xs+v0/XyGHDHk=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=jFiDvYC1Uu/o9dQC6HyIfogspRcAJ7xElxnsIyN8oHDi1x852PgSD5MYX/0sE9R9K
+         0ZA/ABmH+4tHNWBfGcVrCYVo2RvR8+Aj1ArjxY8SswcudI+i7ijlNWXbcf2jB8HREA
+         zCqZd2FjpY5F7WYaUc67jp5+6wX23FlIntskk+sA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BCFJ8qb011548
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Dec 2023 09:19:08 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 12
+ Dec 2023 09:19:08 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 12 Dec 2023 09:19:08 -0600
+Received: from [10.247.16.251] (ula0226330.dhcp.ti.com [10.247.16.251])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BCFJ7nn118671;
+        Tue, 12 Dec 2023 09:19:08 -0600
+Message-ID: <81f90d13-da10-4a68-a0e7-95212f40b3e8@ti.com>
+Date:   Tue, 12 Dec 2023 09:19:07 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212151613.GA142380@mit.edu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: ti: k3-socinfo: Add JTAG ID for J722S
+Content-Language: en-US
+To:     Vaishnav Achath <vaishnav.a@ti.com>, <nm@ti.com>,
+        <ssantosh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <vigneshr@ti.com>, <u-kumar1@ti.com>, <j-choudhary@ti.com>
+References: <20231211132600.25289-1-vaishnav.a@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20231211132600.25289-1-vaishnav.a@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:16:13AM -0500, Theodore Ts'o wrote:
-> On Tue, Dec 12, 2023 at 05:10:42AM -0800, Christoph Hellwig wrote:
-> > On Tue, Dec 12, 2023 at 07:46:51AM +0000, John Garry wrote:
-> > > It is assumed that the user will fallocate/dd the complete file before
-> > > issuing atomic writes, and we will have extent alignment and length as
-> > > required.
-> > 
-> > I don't think that's a long time maintainable usage model.
+On 12/11/23 7:26 AM, Vaishnav Achath wrote:
+> Add JTAG ID info for the J722S SoC family to enable SoC detection.
 > 
-> For databases that are trying to use this to significantly improve
-> their performance by eliminating double writes, the allocation and
-> writes are being done by a single process.  So for *that* use case, it
-> is quite maintainable.
+> More details about this SoC can be found in the TRM:
+> 	https://www.ti.com/lit/zip/sprujb3
+> 
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> ---
 
-That's not the freaking point.  We need to have proper kernel interfaces
-that don't rely on intimate knowledge and control of details.  We need
-to build proper genral purpose interfaces and not layer hacks on top of
-hacks.
+Simple enough,
 
+Reviewed-by: Andrew Davis <afd@ti.com>
+
+Although I do question our use of the J7x names. All of our parts here
+also have a "Sitara AMxx" branding. For instance here we could call
+this new device by its "AM67" name, then J784S4 renamed as AM69, etc.
+Then we would have a consistent naming (internally we will have to deal
+with the part name madness, but why expose that externally if we don't
+have to).
+
+Andrew
+
+> 
+> Bootlog with changes:
+> https://gist.github.com/vaishnavachath/23d859925277df9ccd628190e7c23371
+> 
+>   drivers/soc/ti/k3-socinfo.c | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
+> index 7517a9c8c8fa..59101bf7cf23 100644
+> --- a/drivers/soc/ti/k3-socinfo.c
+> +++ b/drivers/soc/ti/k3-socinfo.c
+> @@ -42,6 +42,7 @@
+>   #define JTAG_ID_PARTNO_J784S4		0xBB80
+>   #define JTAG_ID_PARTNO_AM62AX		0xBB8D
+>   #define JTAG_ID_PARTNO_AM62PX		0xBB9D
+> +#define JTAG_ID_PARTNO_J722S		0xBBA0
+>   
+>   static const struct k3_soc_id {
+>   	unsigned int id;
+> @@ -56,6 +57,7 @@ static const struct k3_soc_id {
+>   	{ JTAG_ID_PARTNO_J784S4, "J784S4" },
+>   	{ JTAG_ID_PARTNO_AM62AX, "AM62AX" },
+>   	{ JTAG_ID_PARTNO_AM62PX, "AM62PX" },
+> +	{ JTAG_ID_PARTNO_J722S, "J722S" },
+>   };
+>   
+>   static const char * const j721e_rev_string_map[] = {
