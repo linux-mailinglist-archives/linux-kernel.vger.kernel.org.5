@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A277480F64E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381BF80F647
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233085AbjLLTOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S1377197AbjLLTNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377231AbjLLTN6 (ORCPT
+        with ESMTP id S235215AbjLLTNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:13:58 -0500
+        Tue, 12 Dec 2023 14:13:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1473ECE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:14:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ADBCC433C8;
-        Tue, 12 Dec 2023 19:13:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB2FD5A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:13:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CA342C433C8;
+        Tue, 12 Dec 2023 19:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702408442;
-        bh=nK/y8/qUXY7F2IgQswKtBoiDfCkV7oJ4o9v84Y/gt78=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qvM6pfgvzQmzHstdmAkuK7g04qLNqLvH1xnvBr8a3P/o36g8RWyNZvlarV+sOT2ol
-         2HOQ07hbi2uUiMowasK7NCK/WqLVsUgxrhzMmyJ5cH0cUcrV2VDbhbNTezyWjqztoQ
-         qMvuMaUvvtvsOSJLiZcAQlI8is871KcVoTE1cUq+As7DWKL3p73qZeIBbrety9Hmie
-         Q0nYYtjYvW4xnb/LMjFNjxhiwssgougV/xa6dvT+us+YoMKTG+wTdBOeq/EBZoJU3D
-         xKiufJgpO1Ru0miCxmWZnwtVZ32HzaOG7wdYQXfSbpF0hH926Ybpj9g9pUGjMo4aKc
-         0WQr9wkCyA9gg==
-From:   Conor Dooley <conor@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Drew Fustini <dfustini@baylibre.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: (subset) [PATCH v8 0/4] RISC-V: Add MMC support for TH1520 boards
-Date:   Tue, 12 Dec 2023 19:13:25 +0000
-Message-Id: <20231212-flammable-idiom-660b1d85e20d@spud>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
-References: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=938; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=4ixJChM136tV/vmqI/fCZ0fGsIfqx2jkzvnLGq0g6Vc=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKkVGy4vyF1R/GWzKmvcLfF7aj763g1lexT/Lf5RZ+Fzx lHnSfDajlIWBjEOBlkxRZbE230tUuv/uOxw7nkLM4eVCWQIAxenAEzEwpfhn9aN/f47GEJkrgk9 m5848WjB1KNcM3ZcOpwc9cJK69uPHm+Gf5abF+6ruJpwpbiOlSFlOueShXc/csrJCk4pnm8RunF VBAcA
-X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1702408417;
+        bh=8/hLp1SyzouiwzvoUdUpcbUA5V2wQNYhhSq/i1K7OQc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=kBBF/fBhYfvZkyvTksY8zrF8wk/ifyboa+M16bue92o1goq71JJaq34IdT4dtscDF
+         w8H4wk74IaYxHcHcq4VnAzp94XRCJjPN6JN80i+YTnJmyJ2fdV8EY7ngwiJvrdIrsW
+         cCcOaxH9PunwaYKdAO4e4R2tia7JSaKEAneo05LxonbWPUBqSwrpJagoMEidOcFL/K
+         fY8RomOBlzcGF8OdbcZwmis+7cFISsVQZPfliAnCTgnFJvWe4x9lvF51b+3x5HRVv2
+         1/5r2RNiYsjsVpj1umIhU0aRPd4tsrnYGM0W6xAb+5h4/eKo86wa15ZMsx/kZWeR5w
+         OjvTKp3uQ0lFA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B8395DFC907;
+        Tue, 12 Dec 2023 19:13:37 +0000 (UTC)
+Subject: Re: [GIT PULL] fuse fixes for 6.7-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJfpeguzG6EGi2FXspV-sQDrFkyf5umF6jHg3G=9XpWN95Bsug@mail.gmail.com>
+References: <CAJfpeguzG6EGi2FXspV-sQDrFkyf5umF6jHg3G=9XpWN95Bsug@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJfpeguzG6EGi2FXspV-sQDrFkyf5umF6jHg3G=9XpWN95Bsug@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-6.7-rc6
+X-PR-Tracked-Commit-Id: 3f29f1c336c0e8a4bec52f1e5217f88835553e5b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: eaadbbaaff74ac9a7f84f412fbaac221a04896c1
+Message-Id: <170240841774.26992.1629314593169004589.pr-tracker-bot@kernel.org>
+Date:   Tue, 12 Dec 2023 19:13:37 +0000
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,29 +56,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Conor Dooley <conor.dooley@microchip.com>
+The pull request you sent on Tue, 12 Dec 2023 16:25:46 +0100:
 
-On Wed, 06 Dec 2023 00:09:20 -0800, Drew Fustini wrote:
-> This series enables the MMC controller in the T-Head TH1520 SoC and
-> enables the eMMC and microSD on both the BeagleV Ahead and the Sipeed
-> LicheePi 4A.
-> 
-> The drivers/mmc/host patches from v6 were applied by Ulf and are already
-> in the linux-next [1][2] as well as the bindings patch [3]. Thus v7 was
-> only a defconfig patch and three device tree patches. This v8 is a
-> followup to change the dwcmshc node names to match the documentation.
-> 
-> [...]
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-6.7-rc6
 
-Applied to riscv-dt-for-next, thanks! The defconfig patch is Palmer's
-to take :)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/eaadbbaaff74ac9a7f84f412fbaac221a04896c1
 
-[2/4] riscv: dts: thead: Add TH1520 mmc controllers and sdhci clock
-      https://git.kernel.org/conor/c/a77f02e84896
-[3/4] riscv: dts: thead: Enable BeagleV Ahead eMMC and microSD
-      https://git.kernel.org/conor/c/18d92a03b319
-[4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and microSD
-      https://git.kernel.org/conor/c/b6b5028473ce
+Thank you!
 
-Thanks,
-Conor.
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
