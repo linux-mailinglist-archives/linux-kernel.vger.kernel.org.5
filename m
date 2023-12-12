@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF2480EF56
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FD780EF5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376952AbjLLOwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S1376948AbjLLOwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376901AbjLLOwf (ORCPT
+        with ESMTP id S1376986AbjLLOws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:52:35 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8FCD5;
-        Tue, 12 Dec 2023 06:52:41 -0800 (PST)
-Date:   Tue, 12 Dec 2023 14:52:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702392760;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 12 Dec 2023 09:52:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9375D5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702392772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4z8tpZKqZ4UtXMm//5sO6ZKH1IbaOHgpQQp7lY2ai5U=;
-        b=3zfsLQscP/6RK9Dr7FHmjpSo+JO0zkF+VZVtR/iToB6gwWwGTko7C6o4yctrhDyUstTmNt
-        i4/5s9aNQtp8HHW2BAoauk3T6aZKsa6gJVCtc4w+BVzYDNQkIrVJt+FL+yfL69QHvLJJ/8
-        PmFQEf6UA7o7u5BfMN2J0UYiiyLSORhVQFSsS6ZLCcyZn011MZ3VaAbEfEMKw6Owgq3vZ9
-        UP8lrYcDke70mSH6gVC36KO2AQ+gcfcCMM2w1FFpX3mXzuiqQ0eRSby/BK92lNpXPRPrVG
-        6UT3S4ARoaRDV+tyqFInoYCP0QWi071/z0hmh5j9s2iEMoG435qtkhZAVEN0KQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702392760;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4z8tpZKqZ4UtXMm//5sO6ZKH1IbaOHgpQQp7lY2ai5U=;
-        b=Vd+sjz6PcIbYtijpY7NH47GvJWvwifNCec8CA7txEFDPVhky3UxDo63BtQyLSoWYb4mbmx
-        nW6hsz5PtOSE/LDQ==
-From:   "tip-bot2 for Max Filippov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/irq-xtensa-pic: Clean up
-Cc:     Max Filippov <jcmvbkbc@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20231208163857.82644-1-jcmvbkbc@gmail.com>
-References: <20231208163857.82644-1-jcmvbkbc@gmail.com>
+        bh=/TM/ETYDn3/wj6XRz5306aJPuGSPiUb3WuXkZY3U46Y=;
+        b=dFs52zzinLh9JAabxGvngVd+b8LE3mRGwh2sj32NXq2l5teoEDOef20Bd+cELnNbV7DQzN
+        3PrnREuUu41BSYv2trVuRO3677aCBMXYbJa+q1JFb4U3Rdlmqp2Axg4gypFsA5dpmclYJ8
+        va4RACE9hSTD3n9znkZg1R0BBuJW3pM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-646-csq-8HPtM6eEJ0-9qvy6CQ-1; Tue, 12 Dec 2023 09:52:51 -0500
+X-MC-Unique: csq-8HPtM6eEJ0-9qvy6CQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ABEB383B871;
+        Tue, 12 Dec 2023 14:52:50 +0000 (UTC)
+Received: from [10.43.3.45] (unknown [10.43.3.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 39488492BE6;
+        Tue, 12 Dec 2023 14:52:50 +0000 (UTC)
+Message-ID: <21977757-3a63-4586-ae03-e6630c1f009d@redhat.com>
+Date:   Tue, 12 Dec 2023 15:52:49 +0100
 MIME-Version: 1.0
-Message-ID: <170239275928.398.14591907265015447414.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Failed to start Raise network interfaces error
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.22.394.2312102317350.3198@hadrien>
+Content-Language: en-US
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <alpine.DEB.2.22.394.2312102317350.3198@hadrien>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+On 10. 12. 23 23:28, Julia Lawall wrote:
+> Hello,
+> 
+> Starting with the commit:
+> 
+> commit 9e479d64dc58f11792f638ea2e8eff3304edaabf
+> Author: Ivan Vecera <ivecera@redhat.com>
+> Date:   Fri Oct 13 19:07:51 2023 +0200
+> 
+>      i40e: Add initial devlink support
+> 
+> I am not able to boot normally.  The console shows the message
+> 
+> Failed to start Raise network interfaces
+> 
+> Searching for this message on th internet produces some old discussions
+> that suggest to look at the file /etc/network/interfaces.  That file on my
+> system contains:
+> 
+> # This file describes the network interfaces available on your system
+> # and how to activate them. For more information, see interfaces(5).
+> 
+> source /etc/network/interfaces.d/*
+> 
+> # The loopback network interface
+> auto lo
+> iface lo inet loopback
+> 
+> auto enp24s0f0
+> iface enp24s0f0 inet dhcp
 
-Commit-ID:     69ffab9b9e698248cbb4042e47f82afb00dc1bb4
-Gitweb:        https://git.kernel.org/tip/69ffab9b9e698248cbb4042e47f82afb00dc1bb4
-Author:        Max Filippov <jcmvbkbc@gmail.com>
-AuthorDate:    Fri, 08 Dec 2023 08:38:57 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 12 Dec 2023 15:45:39 +01:00
+The problem is maybe with interface name... after this commit the 
+interface should contain port_name suffix. In your case the name should 
+be `enp24s0f0np0`.
 
-irqchip/irq-xtensa-pic: Clean up
+Could you please check it?
 
-  - get rid of the cached_irq_mask variable
-  - use BIT() macro instead of bit shifts
-  - drop .disable and .enable as they are equivalent to the default
-    implementations
+Thx,
+Ivan
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20231208163857.82644-1-jcmvbkbc@gmail.com
----
- drivers/irqchip/irq-xtensa-pic.c | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/irqchip/irq-xtensa-pic.c b/drivers/irqchip/irq-xtensa-pic.c
-index 0c18d1f..f9d6fce 100644
---- a/drivers/irqchip/irq-xtensa-pic.c
-+++ b/drivers/irqchip/irq-xtensa-pic.c
-@@ -12,6 +12,7 @@
-  * Kevin Chea
-  */
- 
-+#include <linux/bits.h>
- #include <linux/interrupt.h>
- #include <linux/irqdomain.h>
- #include <linux/irq.h>
-@@ -19,8 +20,6 @@
- #include <linux/irqchip/xtensa-pic.h>
- #include <linux/of.h>
- 
--unsigned int cached_irq_mask;
--
- /*
-  * Device Tree IRQ specifier translation function which works with one or
-  * two cell bindings. First cell value maps directly to the hwirq number.
-@@ -44,34 +43,30 @@ static const struct irq_domain_ops xtensa_irq_domain_ops = {
- 
- static void xtensa_irq_mask(struct irq_data *d)
- {
--	cached_irq_mask &= ~(1 << d->hwirq);
--	xtensa_set_sr(cached_irq_mask, intenable);
--}
-+	u32 irq_mask;
- 
--static void xtensa_irq_unmask(struct irq_data *d)
--{
--	cached_irq_mask |= 1 << d->hwirq;
--	xtensa_set_sr(cached_irq_mask, intenable);
-+	irq_mask = xtensa_get_sr(intenable);
-+	irq_mask &= ~BIT(d->hwirq);
-+	xtensa_set_sr(irq_mask, intenable);
- }
- 
--static void xtensa_irq_enable(struct irq_data *d)
-+static void xtensa_irq_unmask(struct irq_data *d)
- {
--	xtensa_irq_unmask(d);
--}
-+	u32 irq_mask;
- 
--static void xtensa_irq_disable(struct irq_data *d)
--{
--	xtensa_irq_mask(d);
-+	irq_mask = xtensa_get_sr(intenable);
-+	irq_mask |= BIT(d->hwirq);
-+	xtensa_set_sr(irq_mask, intenable);
- }
- 
- static void xtensa_irq_ack(struct irq_data *d)
- {
--	xtensa_set_sr(1 << d->hwirq, intclear);
-+	xtensa_set_sr(BIT(d->hwirq), intclear);
- }
- 
- static int xtensa_irq_retrigger(struct irq_data *d)
- {
--	unsigned int mask = 1u << d->hwirq;
-+	unsigned int mask = BIT(d->hwirq);
- 
- 	if (WARN_ON(mask & ~XCHAL_INTTYPE_MASK_SOFTWARE))
- 		return 0;
-@@ -81,8 +76,6 @@ static int xtensa_irq_retrigger(struct irq_data *d)
- 
- static struct irq_chip xtensa_irq_chip = {
- 	.name		= "xtensa",
--	.irq_enable	= xtensa_irq_enable,
--	.irq_disable	= xtensa_irq_disable,
- 	.irq_mask	= xtensa_irq_mask,
- 	.irq_unmask	= xtensa_irq_unmask,
- 	.irq_ack	= xtensa_irq_ack,
