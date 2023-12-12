@@ -2,103 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD1880E8B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1495980E8C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346115AbjLLKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:09:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        id S231409AbjLLKM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjLLKJ1 (ORCPT
+        with ESMTP id S230038AbjLLKM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:09:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584FCD2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702375772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6M/XvsgEA+noH1tcrJHEuC0orIXI1iUMmdFqUMBoqe8=;
-        b=NaXWuvLkVbyZyRqh5NUEcyOWGb4lUt0nwRsN+RoevZDyI4A2nlmIkuskv8ADn1yzdXl/pD
-        LEsrODgUdK9nQVOYxZjqIb97EcLjq8VswKBTD4vVTJjpJUraweSCZKfwihzHeA1W5xU4Rn
-        DKwvl1UjEjN7XVkkA9d3uBa8oVnBI0Y=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-663-Ji4Ynf9xMDGn7Ugvxm2-Dw-1; Tue, 12 Dec 2023 05:09:29 -0500
-X-MC-Unique: Ji4Ynf9xMDGn7Ugvxm2-Dw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1e27c6de0eso116501766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:09:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702375768; x=1702980568;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6M/XvsgEA+noH1tcrJHEuC0orIXI1iUMmdFqUMBoqe8=;
-        b=skbJxZIEbHu4CUgpgSzzR33IyT1ajzhGHtmHlkM3hEv1VJRHzt+FGTkHQXYquO1B5D
-         kWjPVQp34Zi9T9/U+pV6gshPh642euqZ9myvQCx2kcRonGUvyriB/SnkfPptVl4JC1Ly
-         94GmqVO3MEUeLqTMh5SeQZbbPR/vnG0dL79LkG9TaQ4BZy/pgxvy4+QcYOmROKBn8JP+
-         /84STKTaKxt8aRPf0No1LajiqQiPUgbfGYyeVZo2Hun4SNXwPXdG7x0O5uMEsduAmPtl
-         U5oyPoW6xlX2VCWYHyzSvyY98qvZqw8EGIytnQrpXa+STOsM34C0jvpiu4cgmv+hKBUY
-         D+Sw==
-X-Gm-Message-State: AOJu0YwOeIC9q214N+xiAc8nFTfhKEcWq3YpjMg7Ik66zSKbOKh/Azub
-        YBisswLpVFDJFJd1ZcUKgiR/vqdn8jZeiccd0n4rcw6eEdWRGL5eS+BL7paFSy/B6eY5n9jAKY6
-        DL3neq1OB2IiG+bESQIBVabEl
-X-Received: by 2002:a17:906:99cf:b0:a1c:5944:29bb with SMTP id s15-20020a17090699cf00b00a1c594429bbmr6089853ejn.7.1702375768352;
-        Tue, 12 Dec 2023 02:09:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMk1yIC7lV8N6DHVhTHBZBSHd+M1WbawYmyYj2VdjRNDphGCbZUoQdjg2Snt8KS+xKq/RRMg==
-X-Received: by 2002:a17:906:99cf:b0:a1c:5944:29bb with SMTP id s15-20020a17090699cf00b00a1c594429bbmr6089833ejn.7.1702375767944;
-        Tue, 12 Dec 2023 02:09:27 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-249-182.dyn.eolo.it. [146.241.249.182])
-        by smtp.gmail.com with ESMTPSA id rr17-20020a170907899100b00a1d457954d6sm5994983ejc.75.2023.12.12.02.09.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 02:09:27 -0800 (PST)
-Message-ID: <955d390c57a93406d40985fbd1856bd1c500d75c.camel@redhat.com>
-Subject: Re: [PATCH net-next v14 08/13] rtase: Implement net_device_ops
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com
-Date:   Tue, 12 Dec 2023 11:09:26 +0100
-In-Reply-To: <20231208094733.1671296-9-justinlai0215@realtek.com>
-References: <20231208094733.1671296-1-justinlai0215@realtek.com>
-         <20231208094733.1671296-9-justinlai0215@realtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 12 Dec 2023 05:12:28 -0500
+Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30FB92;
+        Tue, 12 Dec 2023 02:12:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+        s=202305; t=1702375948;
+        bh=U4+gQjJyG5sCFFevTUtDJUXwqd+t6d4Aj1eppeMFxIU=;
+        h=Date:From:To:Subject:From;
+        b=hrriArzaMC954IEtGs8poOmZh3+vJGbwR0o5rc12KtXbc0F+xnbk9qDYnZ74dzWcl
+         jaHZIKp0zdxnvEeWDyzLXpsN/uNt7tkP+pzsjAWgerZBCqZ4IMJ6Gw70DrYF45EWEk
+         tPVYAp7wjuGq6nielZ3CTHDT2IROW6Y1+y+5G+aMnXM30ZSFk+cK93IrIxitOr9NG9
+         EwG/E28xJJnZoIbnQB8R8YvBRE9pP8cYkRftnePifAHDS3EWMRofkmiQFnHRo2YssL
+         X1kQ9+hUfglnF0oRXWbrPH1zUzEPnh+vQyvFOpL9jibrfitD8F+xWx8yKXam1bVkjd
+         XuuAivg9f15Cg==
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 40ABF13416;
+        Tue, 12 Dec 2023 11:12:28 +0100 (CET)
+Date:   Tue, 12 Dec 2023 11:12:28 +0100
+From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
+        <nabijaczleweli@nabijaczleweli.xyz>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foudation.org>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        David Ahern <dsahern@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Kirill Tkhai <tkhai@ya.ru>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Li kunyu <kunyu@nfschina.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pengcheng Yang <yangpc@wangsu.com>,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Xu Panda <xu.panda@zte.com.cn>,
+        Zhang Zhengming <zhang.zhengming@h3c.com>
+Subject: [PATCH RESEND 00/11] splice(file<>pipe) I/O on file as-if O_NONBLOCK
+Message-ID: <1cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+User-Agent: NeoMutt/20231103
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rlh52ym2emyghdto"
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-08 at 17:47 +0800, Justin Lai wrote:
-> +static netdev_features_t rtase_fix_features(struct net_device *dev,
-> +					    netdev_features_t features)
-> +{
-> +	netdev_features_t features_fix =3D features;
-> +
-> +	if (dev->mtu > MSS_MAX)
-> +		features_fix &=3D ~NETIF_F_ALL_TSO;
-> +
-> +	if (dev->mtu > ETH_DATA_LEN)
-> +		features_fix &=3D ~NETIF_F_ALL_TSO;
 
-This latter condition is strictly more restrictive than the previous
-one, you can drop the latter. Also could you please drop a note about
-the why of it?
+--rlh52ym2emyghdto
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
+(Originally sent on 2023-10-16 as
+ <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>;
+ received no replies, resending unchanged per
+ Documentation/process/submitting-patches.rst#_resend_reminders).
 
-Paolo
+Hi!
 
+As it stands, splice(file -> pipe):
+1. locks the pipe,
+2. does a read from the file,
+3. unlocks the pipe.
+
+For reading from regular files and blcokdevs this makes no difference.
+But if the file is a tty or a socket, for example, this means that until
+data appears, which it may never do, every process trying to read from
+or open the pipe enters an uninterruptible sleep,
+and will only exit it if the splicing process is killed.
+
+This trivially denies service to:
+* any hypothetical pipe-based log collexion system
+* all nullmailer installations
+* me, personally, when I'm pasting stuff into qemu -serial chardev:pipe
+
+This follows:
+1. https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5is2e=
+kkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
+2. a security@ thread rooted in
+   <irrrblivicfc7o3lfq7yjm2lrxq35iyya4gyozlohw24gdzyg7@azmluufpdfvu>
+3. https://nabijaczleweli.xyz/content/blogn_t/011-linux-splice-exclusion.ht=
+ml
+
+Patches were posted and then discarded on principle or funxionality,
+all in all terminating in Linus posting
+> But it is possible that we need to just bite the bullet and say
+> "copy_splice_read() needs to use a non-blocking kiocb for the IO".
+
+This does that, effectively making splice(file -> pipe)
+request (and require) O_NONBLOCK on reads fron the file:
+this doesn't affect splicing from regular files and blockdevs,
+since they're always non-blocking
+(and requesting the stronger "no kernel sleep" IOCB_NOWAIT is non-sensical),
+but always returns -EINVAL for ttys.
+Sockets behave as expected from O_NONBLOCK reads:
+splice if there's data available else -EAGAIN.
+
+This should all pretty much behave as-expected.
+
+Mostly a re-based version of the summary diff from
+<gnj4drf7llod4voaaasoh5jdlq545gduishrbc3ql3665pw7qy@ytd5ykxc4gsr>.
+
+Bisexion yields commit 8924feff66f35fe22ce77aafe3f21eb8e5cff881
+("splice: lift pipe_lock out of splice_to_pipe()") as first bad.
+
+
+The patchset is made quite wide due to the many implementations
+of the splice_read callback, and was based entirely on results from
+  $ git grep '\.splice_read.*=3D' | cut -d=3D -f2 |
+      tr -s ',;[:space:]' '\n' | sort -u
+
+I'm assuming this is exhaustive, but it's 27 distinct implementations.
+Of these, I've classified these as trivial delegating wrappers:
+  nfs_file_splice_read               filemap_splice_read
+  afs_file_splice_read               filemap_splice_read
+  ceph_splice_read                   filemap_splice_read
+  ecryptfs_splice_read_update_atime  filemap_splice_read
+  ext4_file_splice_read              filemap_splice_read
+  f2fs_file_splice_read              filemap_splice_read
+  ntfs_file_splice_read              filemap_splice_read
+  ocfs2_file_splice_read             filemap_splice_read
+  orangefs_file_splice_read          filemap_splice_read
+  v9fs_file_splice_read              filemap_splice_read
+  xfs_file_splice_read               filemap_splice_read
+  zonefs_file_splice_read            filemap_splice_read
+  sock_splice_read                   copy_splice_read or a socket-specific =
+one
+  coda_file_splice_read              vfs_splice_read
+  ovl_splice_read                    vfs_splice_read
+
+
+filemap_splice_read() is used for regular files and blockdevs,
+and thus needs no changes, and is thus unchanged.
+
+vfs_splice_read() delegates to copy_splice_read() or f_op->splice_read().
+
+
+The rest are fixed, in patch order:
+01. copy_splice_read() by simply doing the I/O with IOCB_NOWAIT;
+    diff from Linus:
+      https://lore.kernel.org/lkml/5osglsw36dla3mubtpsmdwdid4fsdacplyd6acx2=
+igo4atogdg@yur3idyim3cc/t/#ee67de5a9ec18886c434113637d7eff6cd7acac4b
+02. unix_stream_splice_read() by unconditionally passing MSG_DONTWAIT
+03. fuse_dev_splice_read() by behaving as-if O_NONBLOCK
+04. tracing_buffers_splice_read() by behaving as-if O_NONBLOCK
+    (this also removes the retry loop)
+05. relay_file_splice_read() by behaving as-if SPLICE_F_NONBLOCK
+    (this just means EAGAINing unconditionally for an empty transfer)
+06. smc_splice_read() by unconditionally passing MSG_DONTWAIT
+07. kcm_splice_read() by unconditionally passing MSG_DONTWAIT
+08. tls_sw_splice_read() by behaving as-if SPLICE_F_NONBLOCK
+09. tcp_splice_read() by behaving as-if O_NONBLOCK
+    (this also removes the retry loop)
+
+10. EINVALs on files that neither have FMODE_NOWAIT nor are S_ISREG
+
+    We don't want this to be just FMODE_NOWAIT since most regular files
+    don't have it set and that's not the right semantic anyway,
+    as noted at the top of this mail,
+
+    But this allows blockdevs "by accident", effectively,
+    since they have FMODE_NOWAIT (at least the ones I tried),
+    even though they're just like regular files:
+    handled by filemap_splice_read(),
+    thus not dispatched with IOCB_NOWAIT. since always non-blocking.
+
+    Should this be a check for FMODE_NOWAIT && (S_ISREG || S_ISBLK)?
+    Should it remain FMODE_NOWAIT && S_ISREG?
+    Is there an even better way of spelling this?
+
+
+In net/kcm, this also fixes kcm_splice_read() passing SPLICE_F_*-style
+flags to skb_recv_datagram(), which takes MSG_*-style flags.
+I don't think they did anything anyway? But.
+
+
+
+I would of course be remiss to not analyse splice(pipe -> file) as well:
+  gfs2_file_splice_write  iter_file_splice_write
+  ovl_splice_write        iter_file_splice_write
+  splice_write_null       splice_from_pipe(pipe_to_null), does nothing
+
+fuse_dev_splice_write() locks, copies the iovs, unlocks, does I/O,
+                        locks, frees the pipe's iovs, unlocks
+port_fops_splice_write() locks, steals or copies pages, unlocks, does I/O
+
+
+11. splice_to_socket():
+    has sock_sendmsg() inside the pipe lock;
+    filling the socket buffer sleeps in splice with the pipe locked,
+    and this is trivial to trigger with
+      ./af_unix_ptf ./splicing-cat < fifo &
+      cat > fifo &
+      cp 64k fifo a couple times
+    patch does unconditional MSG_DONTWAIT, tests sensibly
+
+
+iter_file_splice_write():
+  has vfs_iter_write() inside the pipe lock,
+  but appears to be attached to regular files and blockdevs,
+  but also random_fops & urandom_fops (looks like not an issue)
+  and tty_fops & console_fops
+  (this only means non-pty ttys so no issue with a full buffer?
+   idk if there's a situation where a tty or the discipline can block forev=
+er
+   or if it's guaranteed forward progress, however slow?
+   still kinda ass to have the pipe lock hard-held for, say,
+   (64*1024)/(300/8)s=3D30min if the pipe has 64k in the buffer?
+   this predixion aligns precisely with what I measured:
+    1# stty 300 < /dev/ttyS0
+    1# ./splicing-cat < fifo > /dev/ttyS0
+
+    2$ cat > fifo    # and typing works
+    3$ cp 64k fifo   # uninterrupitbly sleeps in write(4, "SzmprOmdIIkciMwb=
+pxhsEyFVORaPGbRQ"..., 66560
+    1: now sleeping in splice
+    2: typing more into the cat uninterruptibly sleeps in write
+    4$ : > /tmp/fifo # uninterruptibly hangs in open
+
+   similarly, "cp 10k fifo" uninterruptibly sleeps in close,
+   with the same effects on other (potential) writers,
+   and woke up after around five minutes, which matches my maths
+
+   so presumably something should be done about this as well?
+   just idk what)
+
+So. AFAIK, just iter_file_splice_write() on ttys remains.
+
+
+This needs a man-pages patch as well,
+but I'd go rabid if I were to write it rn.
+
+
+For the samples above, af_unix_ptf.c:
+-- >8 --
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+int main(int argc, char ** argv) {
+  int fds[2];
+  if(socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, fds))
+    abort();
+
+  if(!vfork()) {
+    dup2(fds[1], 1);
+    _exit(execvp(argv[1], argv + 1));
+  }
+  dup2(fds[0], 0);
+  for(;;) {
+    char buf[16];
+    int r =3D read(0, buf, 16);
+    fprintf(stderr, "read %d\n", r);
+    sleep(10);
+  }
+}
+-- >8 --
+
+splicing-cat.c:
+-- >8 --
+#define _GNU_SOURCE
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+int main() {
+  int lasterr =3D -1;
+  unsigned ctr =3D 0;
+  for(;;) {
+    errno =3D 0;
+    ssize_t ret =3D splice(0, 0, 1, 0, 128 * 1024 * 1024, 0);
+    if(ret >=3D 0 || errno !=3D lasterr) {
+      fprintf(stderr, "\n\t%m" + (lasterr =3D=3D -1));
+      lasterr =3D errno;
+      ctr =3D 0;
+    }
+    if(ret =3D=3D -1) {
+      ++ctr;
+      fprintf(stderr, "\r%u", ctr);
+    } else
+      fprintf(stderr, "\r%zu", ret);
+    if(!ret)
+      break;
+  }
+  fprintf(stderr, "\n");
+}
+-- >8 --
+
+Ahelenia Ziemia=C5=84ska (11):
+  splice: copy_splice_read: do the I/O with IOCB_NOWAIT
+  af_unix: unix_stream_splice_read: always request MSG_DONTWAIT
+  fuse: fuse_dev_splice_read: use nonblocking I/O
+  tracing: tracing_buffers_splice_read: behave as-if non-blocking I/O
+  relayfs: relay_file_splice_read: always return -EAGAIN for no data
+  net/smc: smc_splice_read: always request MSG_DONTWAIT
+  kcm: kcm_splice_read: always request MSG_DONTWAIT
+  tls/sw: tls_sw_splice_read: always request non-blocking I/O
+  net/tcp: tcp_splice_read: always do non-blocking reads
+  splice: file->pipe: -EINVAL for non-regular files w/o FMODE_NOWAIT
+  splice: splice_to_socket: always request MSG_DONTWAIT
+
+ fs/fuse/dev.c        | 10 ++++++----
+ fs/splice.c          |  7 ++++---
+ kernel/relay.c       |  3 +--
+ kernel/trace/trace.c | 32 ++++----------------------------
+ net/ipv4/tcp.c       | 30 +++---------------------------
+ net/kcm/kcmsock.c    |  2 +-
+ net/smc/af_smc.c     |  6 +-----
+ net/tls/tls_sw.c     |  5 ++---
+ net/unix/af_unix.c   |  5 +----
+ 9 files changed, 23 insertions(+), 77 deletions(-)
+
+
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+--
+2.39.2
+
+--rlh52ym2emyghdto
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV4MgsACgkQvP0LAY0m
+WPFuEg/9HcyPh9w1WsygPtMB92wQp/PKk51N9ddqKdXF/Y4z2lds3JvSZnsqFBTH
+5MdSby4mdcg/xlfweRmqsysCqJGUzNulfXihfYvtsxQSRYpNWKWPG51G1LOKHWkz
+c/a8HzA1LEBjPRz1Y9+wzg+lJNrySLewjeuf6GLMQUViv2LHKKmO1QjaRg4BwHcR
+vVaKktjkvD3dGDcO7tMAI+54Zt9UZYLYPbQPvQ8Gj03ljQfPRZJNTY7ZiXxsr+kC
+5jIo0lnvlH1zRylx0/a+q4Wzj4F1JIQgCOp5+I6Uh2W+N753vm8wrUF/Zdk4WdZK
+kJo/Nmodlf6/9MMzYQ2j4e3PXNGQV9d0Im6QH9UnaECpW+/gzpI+eYRxCQX65M9Q
+SNSGhp54zxrY9edz+gbDzIafClWlYZ0Dv32R+HtvN04QVVTg2ixkJhkTdR2Ya4kQ
+3bxP+yEa40QTZOkO7TKyQOuR9vJspREVlhS7pv5QA8MwOJrxZBl5w1sqtft3Fel+
+LQy4EK7RKaUjBS8O1RZsSD1x4LnLA3wuIY3Qwvv8bFakLUAbgQK3MK/NMWu36e1p
+4UOIrUIsGcSEPp7B9tt7yHhZqgdz/tK/zn3B2rn6RoOiUJstlqq9UT6vZT+A2xLK
+6WqaNwmFxTWL5oAwWUgMbOJhImVCzEdL0MGBGnoNbvFWweNtsdo=
+=tl8X
+-----END PGP SIGNATURE-----
+
+--rlh52ym2emyghdto--
