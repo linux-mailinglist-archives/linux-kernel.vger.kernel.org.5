@@ -2,200 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D8980F3CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D7E80F3D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbjLLQ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
+        id S232756AbjLLQ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjLLQ5L (ORCPT
+        with ESMTP id S232222AbjLLQ6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:57:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CB010A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:57:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C79F0C433C8;
-        Tue, 12 Dec 2023 16:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702400237;
-        bh=TgHYmk9iqQrgfTRXmZN7f9jKttmEsbZ20P4e6kUne2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hOPb+jNQj+pifTS74tbWjcK0c7HWfbbgv534jvKIKCX/gLlZAVAq2tNmy952p9HSj
-         GmAD0fb6BU7iWXzp1RUYp/0Pe6hsi5363W17zkCEld+EjxTqHHESaLKuNHKpUQ+jPx
-         9tsCEDrtYyK6TGIfLIqQLYM/0rMgg0HDr71VirFqPJ6cy3XLvf8TwPfwyrLDB/MlV8
-         e3K+WVVgWSd1ipSEach6IHUGT3PxnDb7iZNtfxeGfuUl+kBAh9z3aKIHZZcOnjaEQq
-         xHIUlhTZUGaBB9KoIUg8k143F5fBIyRLYTEQRWCNf/AwULX5vSagfS3xbJ7epbIat9
-         FNz8KCRLd/HDA==
-Date:   Tue, 12 Dec 2023 16:57:11 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>,
-        catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v5 2/3] dt-bindings: input: Add TouchNetix axiom
- touchscreen
-Message-ID: <20231212-rework-bounce-f4d9d12362a4@spud>
-References: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
- <20231211121430.1689139-3-kamel.bouhara@bootlin.com>
+        Tue, 12 Dec 2023 11:58:41 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D191D0;
+        Tue, 12 Dec 2023 08:58:47 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCEqSvo009428;
+        Tue, 12 Dec 2023 16:58:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=jhBalFlX48WTtgwjKZojCIP/0MD0GEfIc7dBnLPHiHA=; b=Ew
+        kbD5g83NfWt2d4l4w9Ptra9tXkGqsqAGg2EBj2DirTlYx7nxzZ2SNglEklywrPtf
+        v8PAYWyJkJJ9B0w+VhGWjUwD+lerWQghj1vnk85pdnc9tFWGN1qYF11phDC0OLBM
+        bA7mflr3ryEo8C1UCyRcwARREfWKDEditmL40h1BW5C+ZLvoE425Qw3QC2GmhBpQ
+        91r3+8Um6qW+7jNIdr3CIdr0JM1AIqtXGZiupwL1uRkKEA5Kqx/+vBJBGVfJMjgR
+        JpaTC/KWIhf84WYAcwnfipAWZqQdayNyR4pqKKBNGKfVcNV0GeScsf5BPMZAS5xE
+        Kt7YH1iZgDkfmi6FnBMA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxsms0bub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 16:58:22 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCGwL9d017898
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 16:58:21 GMT
+Received: from [10.110.2.246] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
+ 2023 08:58:16 -0800
+Message-ID: <93ee22bc-b357-4291-b3d9-07ff2cd6c87b@quicinc.com>
+Date:   Tue, 12 Dec 2023 08:58:16 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UaIdxHTfrnxPNhdH"
-Content-Disposition: inline
-In-Reply-To: <20231211121430.1689139-3-kamel.bouhara@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/3] check-module-params: Introduce
+ check-module-params.sh
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rob Herring" <robh@kernel.org>,
+        Carlos O'Donell <carlos@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Matthias Maennich <maennich@google.com>,
+        Giuliano Procida <gprocida@google.com>,
+        <kernel-team@android.com>, <libabigail@sourceware.org>,
+        Dodji Seketeli <dodji@redhat.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        "Satya Durga Srinivasu Prabhala" <quic_satyap@quicinc.com>,
+        Jordan Crouse <jorcrous@amazon.com>
+References: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
+ <20231212020259.2451253-4-quic_johmoo@quicinc.com>
+ <ZXgOpRzNYGtiE35T@infradead.org>
+From:   John Moon <quic_johmoo@quicinc.com>
+In-Reply-To: <ZXgOpRzNYGtiE35T@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5h373aL0YDslVqiXd_u9Y6Cj9sS6r_Pw
+X-Proofpoint-GUID: 5h373aL0YDslVqiXd_u9Y6Cj9sS6r_Pw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=820 mlxscore=0 priorityscore=1501
+ adultscore=0 bulkscore=0 impostorscore=0 spamscore=0 malwarescore=0
+ clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312120131
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/11/2023 11:41 PM, Christoph Hellwig wrote:
+> On Mon, Dec 11, 2023 at 06:02:59PM -0800, John Moon wrote:
+>> One part of maintaining backwards compatibility with older
+>> userspace programs is avoiding changes to module parameters.
+> 
+> Really?  I don't think module parameters are a UAPI in the traditional
+> sense.  
 
---UaIdxHTfrnxPNhdH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Agreed, they're not UAPI in the traditional sense. But, we're trying to 
+establish tooling to help the community stabilize all interfaces that 
+cross the kernel <-> userspace boundary and module params do fall into 
+that bucket.
 
-On Mon, Dec 11, 2023 at 01:14:28PM +0100, Kamel Bouhara wrote:
-> Add the TouchNetix axiom I2C touchscreen device tree bindings
-> documentation.
->=20
-> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> ---
->  .../input/touchscreen/touchnetix,ax54a.yaml   | 64 +++++++++++++++++++
->  MAINTAINERS                                   |  6 ++
->  2 files changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/t=
-ouchnetix,ax54a.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchnet=
-ix,ax54a.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchne=
-tix,ax54a.yaml
-> new file mode 100644
-> index 000000000000..cbdf48fc538b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54=
-a.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/touchnetix,ax54a.ya=
-ml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TouchNetix Axiom series touchscreen controller
-> +
-> +maintainers:
-> +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
+> Now if you break a heavily used one you got to fix it, but
+> applying strict stability guarantees on module options which are not
+> availble to normal users or even normal programs doesn't make a whole
+> lot of sense.
+> 
 
-Weird, you add this ref here but do not actually allow any properties
-=66rom it since you have "additionalProperties: false" below.
+True, but unfortunately we don't have any heuristic to determine if a 
+param is "heavily used". However, in this rev, we added the ability to 
+parse the permissions of a module param, so we could add a filter which 
+does not flag change/removal of params with 0{0,4,6}000 permissions.
 
-What's the point of its inclusion?
+It's also obviously fine if the community has no interest in the script. 
+We just wanted to share it as we find it to be a useful supplement to 
+our code reviews and thought maintainers may find it useful as well.
 
 Cheers,
-Conor.
-
-> +  - $ref: /schemas/input/input.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: touchnetix,ax54a
-> +
-> +  reg:
-> +    const: 0x66
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  vdda-supply:
-> +    description: Analog power supply regulator on VDDA pin
-> +
-> +  vddi-supply:
-> +    description: I/O power supply regulator on VDDI pin
-> +
-> +  poll-interval: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - vdda-supply
-> +  - vddi-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    i2c {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      touchscreen@66 {
-> +        compatible =3D "touchnetix,ax54a";
-> +        reg =3D <0x66>;
-> +        interrupt-parent =3D <&gpio2>;
-> +        interrupts =3D <2 IRQ_TYPE_EDGE_FALLING>;
-> +        reset-gpios =3D <&gpio1 1 GPIO_ACTIVE_HIGH>;
-> +        vdda-supply =3D <&vdda_reg>;
-> +        vddi-supply =3D <&vddi_reg>;
-> +        poll-interval =3D <20>;
-> +      };
-> +    };
-> +...
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7608b714653f..4752d8436dbb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21431,6 +21431,12 @@ S:	Maintained
->  F:	Documentation/ABI/testing/sysfs-class-firmware-attributes
->  F:	drivers/platform/x86/think-lmi.?
-> =20
-> +TOUCHNETIX AXIOM I2C TOUCHSCREEN DRIVER
-> +M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
-> +L:	linux-input@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.=
-yaml
-> +
->  THUNDERBOLT DMA TRAFFIC TEST DRIVER
->  M:	Isaac Hazan <isaac.hazan@intel.com>
->  L:	linux-usb@vger.kernel.org
-> --=20
-> 2.25.1
->=20
-
---UaIdxHTfrnxPNhdH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiQ5wAKCRB4tDGHoIJi
-0p61AQDuO5fLGaE3qnBLRE7Yb2SlwrllyQnQEJ6VCaUxkZ/xVQD/eNd1ZcqIUMWN
-sbNXReqN3/dm5vO8dznluM11EW1TugM=
-=K8S0
------END PGP SIGNATURE-----
-
---UaIdxHTfrnxPNhdH--
+John
