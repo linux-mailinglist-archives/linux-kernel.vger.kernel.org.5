@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC5780EF65
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C95E80EF72
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376919AbjLLOza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S232670AbjLLO57 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 09:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376947AbjLLOz2 (ORCPT
+        with ESMTP id S232575AbjLLO55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:55:28 -0500
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE13D5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:55:33 -0800 (PST)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1ef36a04931so4072232fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:55:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702392932; x=1702997732; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FC/Vpfr7MIARIwnwGGWmXjjUlNgWi23Htq/xmbvsJCk=;
-        b=RYUg6dECdrY1AhiwPnaDqtSRgtZ+3Oh6WngOnbdJepOPTj+9uOByxTVo+t7fod4Hn9
-         091rsdOomHvQS7CV19zrTlIsO8kgHg/uBu5hRhYWNE8emgoyGYt8tyyjLtCCVUz4lSlp
-         9fAkvwzTVVy31ZwwaX1jxkWylpo/CHdrmO2ulUqjMWZeqndKwmbbUJAyPLyIGh8dXruW
-         U86U2wmxYbOi67lu+edQCY0IkOk6l4dkKCr26udoMkvolCKVUlhgYFMt/7u2skM3f87f
-         AU3WqLFUlywYbuuxnzgykl0lTB1XcpJpnRvlF9B7gZKCu3Iq5b8rUALgTWgcUUxFtk60
-         QH/A==
+        Tue, 12 Dec 2023 09:57:57 -0500
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1210C3;
+        Tue, 12 Dec 2023 06:58:03 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6da09f8ce35so710475a34.0;
+        Tue, 12 Dec 2023 06:58:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702392932; x=1702997732;
+        d=1e100.net; s=20230601; t=1702393083; x=1702997883;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FC/Vpfr7MIARIwnwGGWmXjjUlNgWi23Htq/xmbvsJCk=;
-        b=dUJ/WqGdtEWZzqQYmTBX/lHIdFFf/882pvDqcueXbb3r/G7dFa2e0VGbxg/mdyYUKU
-         tBjToCXomWCB2WCignt6mYM5Dq/MbmY7nZtVLjmvV7o/6vmTXts4MyAFZa9lC0O7toJX
-         WCBja3DXfJZuJdi2NTHlvL4wACFtzyiTgvZfCm/OyGlaqbV3P/Uglm0bn95Vb5pTu6JJ
-         dSVu9X5KguEH7ZHNapFRda1yyQHSIfkQSt6p73pFgG89r7VgJahrDkI/8PzyUHnLOWyH
-         b15xGB2etNmCeVnwjYMJJmeS1j+L40vQ/vE5tj+RtknaLhsjT6YqleGHVqveUXP0dFX/
-         Ixiw==
-X-Gm-Message-State: AOJu0Yx2SzcHvOVOJx/yYdbPqVFqV3f+x5+/BzNQHuS6J7zEhxECD3NS
-        YCfg1vjF/GCzmJ3G5nARQGLAI5tM8yVPyoCAJeAONbs7
-X-Google-Smtp-Source: AGHT+IHq+QzxCX8gQUM6S0hC7Fo7q1dTCZTgvw/J1vuRyfhGGu2MpPtuJGqJYnc/6KWnfR91d4qZpois0AOaWLPWIjw=
-X-Received: by 2002:a05:6870:f155:b0:1fb:75a:c417 with SMTP id
- l21-20020a056870f15500b001fb075ac417mr5948435oac.64.1702392932689; Tue, 12
- Dec 2023 06:55:32 -0800 (PST)
+        bh=uI7/niVPwJXrqn+aODJkyH9Zg/KMSJ6EEIEaKjbnNpY=;
+        b=otyzK4LO7asNGssByl2eJz5+J44qgQgCNdAd5TrA2L3M/S0fbh600e12HlDcnlbg96
+         9uy94ntnzniIb3QZl05FwmsoVGkUJxEDz/GsxdmnvRIPla7moqOLp4VXuZWbN6CdQoxr
+         Az41+V9xyI24qV/emrdw7dzlTt7rgick4LS6pDZCi98tSnKv/15SkOE2xp21ZoUYQj06
+         +fXdYKyrtSQugGVQ7p4UJymMIQ+vGdcKwjwbseWqirmfwun+L/0VjebFDaldlj4qJu/d
+         7ynEClg90t5NeOMj3LDy88v/CLMw6zDPuFpq+LdQTg1Ikrncgiub6CGwKVZywbmgE5X9
+         IZpg==
+X-Gm-Message-State: AOJu0YwPzQ2jSKrNnylq083/NetHKuvIYgnJ6I2XoRoxh2+6XwjCKfDc
+        0ntlgR6aSDJKhKWPjOD0jp0S/pG7ZCIf+mQERGw=
+X-Google-Smtp-Source: AGHT+IFX85hOWBf/RrXFpoD9jaXzKOGxn2HXgJByjv/5kq8gOM68c2U1NhKQYr3oCRj/lN3h7WobxtedVxKE9Of+nJU=
+X-Received: by 2002:a4a:da02:0:b0:590:8a57:8012 with SMTP id
+ e2-20020a4ada02000000b005908a578012mr10635729oou.0.1702393083230; Tue, 12 Dec
+ 2023 06:58:03 -0800 (PST)
 MIME-Version: 1.0
-References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com> <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
- <87jzq2ixtm.fsf@vps.thesusis.net> <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
- <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com> <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
- <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
- <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com> <CADnq5_N6DF-huOzgaVygvS5N_j_oNUEC1aa4zRsZTzx8GOD_aw@mail.gmail.com>
- <CADnq5_PgMxoW=4iabtgeHydwye-6DvwvCyETdfBToEpuYWocmA@mail.gmail.com>
- <CADnq5_P0S7Jem0e4K6mG2+bboG8P56nELaGC1p4Pfx-8eV-BjQ@mail.gmail.com>
- <CADnq5_Oy6RMyJ52TbsxVjZ=0p=wYJHduE4X8B3DiYnqHYJUAvw@mail.gmail.com>
- <87edg3koka.fsf@vps.thesusis.net> <CADnq5_PtSV1C6Up78XX8ejExqaiM-wzHVFhCRtxboS1Y4cF-Ow@mail.gmail.com>
- <87y1e05me4.fsf@vps.thesusis.net> <87r0jsw9g3.fsf@vps.thesusis.net>
-In-Reply-To: <87r0jsw9g3.fsf@vps.thesusis.net>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Dec 2023 09:55:21 -0500
-Message-ID: <CADnq5_MYSCd32p2doPMN1_vcrUZvHMDPn83LU-0oVBS6fuRVuA@mail.gmail.com>
-Subject: Re: Radeon regression in 6.6 kernel
-To:     Phillip Susi <phill@thesusis.net>
-Cc:     Luben Tuikov <ltuikov89@gmail.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>
+References: <170108151076.780347.2482745314490930894.stgit@mhiramat.roam.corp.google.com>
+ <170108152012.780347.6355289232990337333.stgit@mhiramat.roam.corp.google.com>
+ <CAJZ5v0j8x_hzKg4RHx-xyd6Mye9=xj7MgACcWa7R1PcagFLzwQ@mail.gmail.com> <20231212233245.14ae64258bdf07ae1d2f2ff9@kernel.org>
+In-Reply-To: <20231212233245.14ae64258bdf07ae1d2f2ff9@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Dec 2023 15:57:52 +0100
+Message-ID: <CAJZ5v0gObpUYXBydJG-JA5Ew=gScFMEdp6Xu=viv5FT0xyLQQQ@mail.gmail.com>
+Subject: Re: [PATCH v5] PM: sleep: Expose last succeeded resumed timestamp in sysfs
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>, suleiman@google.com,
+        briannorris@google.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 7:28=E2=80=AFPM Phillip Susi <phill@thesusis.net> w=
-rote:
+On Tue, Dec 12, 2023 at 3:32 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> Phillip Susi <phill@thesusis.net> writes:
+> Hi Rafael,
 >
-> > And it works, but 6.7-rc5 does not, even though it includes that patch.
-> > Here's the syslog from the attempt.  I'll start bisecting again.
+> On Tue, 12 Dec 2023 14:39:17 +0100
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
 >
-> I checked out the patch that got merged upstream and it also fails.  I
-> looked at the two commits, and I see what happened.  Your original patch
-> MOVED the call to amdgpu_ttm_set_buffer_funcs_status().  The one that
-> got merged into Linus' tree instead DUPLICATES the call.  Oops?
+> > On Mon, Nov 27, 2023 at 11:38 AM Masami Hiramatsu (Google)
+> > <mhiramat@kernel.org> wrote:
+> > >
+> > > From: Masami Hiramatsu <mhiramat@kernel.org>
+> > >
+> > > Expose last succeeded resumed timestamp as last_success_resume_time
+> > > attribute of suspend_stats in sysfs.
+> > >
+> > > There are some printk()s for printing the similar resume timing to
+> > > dmesg, but those are recorded with local_clock(), and user can not
+> > > compare it with current time. We also have tracing events but it
+> > > requires CAP_SYS_ADMIN to use it.
+> > >
+> > > This suspend_stats attribute is easy to access and only expose the
+> > > timestamp in CLOCK_MONOTONIC.
+> >
+> > Why CLOCK_MONOTONIC?
 >
+> CLOCK_MONOTONIC is the simplest clock which can be used in both user
+> space and kernel space. If we use the CLOCK_LOCAL here, user can not
+> know the actual time delta from the succeeded resume.
 
-Yeah, I messed up the patch somehow when I applied it.  Fix up already
-queued up to add the missing chunk.
+So what does user space need to do to use this value?
 
-Alex
+> >
+> > > So user can find the actual resumed
+> > > time and measure the elapsed time from the time when the kernel
+> > > finished the resume to the user-space action (e.g. display the UI).
+> >
+> > Can you please say a bit more about why this is useful?
+>
+> This is a reference timestamp from the user space to measure their
+> processing time for resuming. The kernel side is OK to just trace
+> or printk the each component or subsystem internally. But the user
+> space needs to know when the kernel resume has been done for measuring
+> its component or processes done.
+
+Why does it need to know that?
+
+> Actually this is obscure because the
+> end of resuming in userspace is defined by the user-space application
+> or desktop systems. But anyway if there is a reference point, user
+> process can calculate the delta at any point from that.
+>
+> >
+> > The time stamp is taken at the point when user space has been already
+> > running for some time, so what's the exact benefit of it?
+>
+> Yes, but that timestamp can be scheduled afterwards so it may not
+> be so accurate. This can provide the accurate time of the kernel
+> resume.
+
+I'm talking about the timestamp added by this patch, that is
+/sys/power/suspend_stats/last_success_resume_time.
+
+By the time ktime_get_ts64() in pm_suspend() is called, user space has
+already been thawed and is running, so why is this useful?
