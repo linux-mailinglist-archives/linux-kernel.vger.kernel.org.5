@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D4280F914
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35EB80F919
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377573AbjLLVUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
+        id S1377568AbjLLVWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377567AbjLLVUP (ORCPT
+        with ESMTP id S1377485AbjLLVWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:20:15 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFCED3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:20:20 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1d30141d108so15823775ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702416019; x=1703020819; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o4PtHmb7h7cjkMdU7+gili3cUJ8EUgY6EkxjVCjKgrI=;
-        b=NYLUScjO2XHVuAXl4F9gnGJv8CZ+pd2VksCe+NeS5ye6KyDTjRizOhOX8j71SQY5Dy
-         0Nz2H4LlieKUYxGIvH0QIB3Sl1p+Gd9xI+hRA5w1L/5HaekbPRUV3WLRRZ3mkWvPwipf
-         2SDuc5LQM9k0R8tLoimKfPabW4WpUPaPp7G2U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702416019; x=1703020819;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o4PtHmb7h7cjkMdU7+gili3cUJ8EUgY6EkxjVCjKgrI=;
-        b=aPX1o4l/SfcoKFYx47SYEukQrKo3jdymIOLq8Khf1uuWyIUK2X6Ob9VSef5bEqU8dy
-         5ME96m48Vpo7N+NwiQMcr9vW5/lVQWXlzEVejS1Qt4PrYDROJBcinVAiqFXMzOpIFViz
-         dPROXhq9696K1NBgJgXmJFZfx5jyloNYOTCZRXMVKbnF360nxVg74PE9J/UtolddWWzZ
-         4SFQF7bSo7inhrlrd4kRcEYByBoyp7uYZPaGI4Yd5BEU+IhyVUoXTCFKp6j2qPphT6qO
-         GtOP5PNPEdNfj/CAgMEa1kQ9CmkPC0+7BX9usS1HpkZkop1I3Y691x1RhRmeisTehRXB
-         gdDQ==
-X-Gm-Message-State: AOJu0YzxNQ2h9wfcCfX3VLMa/wmjLxLh3kFg/5UqAY1uw5Yv3s5kg0C6
-        LzuHncyENgbVX3Qdgbq1e99xJA==
-X-Google-Smtp-Source: AGHT+IFlDS2uaGb+KjVZJ4SyvoBSZrz/iRr5YDrQNhwh54rEmgWqvkqV+B1gwdtK5G+Q3dAMbqwDDQ==
-X-Received: by 2002:a17:902:650f:b0:1d3:3a5d:d5d3 with SMTP id b15-20020a170902650f00b001d33a5dd5d3mr693274plk.19.1702416019386;
-        Tue, 12 Dec 2023 13:20:19 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p17-20020a170903249100b001cfbe348ca5sm9066719plw.187.2023.12.12.13.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:20:18 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Anders Larsen <al@alarsen.net>, Kees Cook <keescook@chromium.org>
-Cc:     Ronald Monthero <debug.penguin32@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] qnx4: Avoid confusing compiler about buffer lengths
-Date:   Tue, 12 Dec 2023 13:19:39 -0800
-Message-Id: <170241597608.164694.1762861756800879766.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130205010.it.412-kees@kernel.org>
-References: <20231130205010.it.412-kees@kernel.org>
+        Tue, 12 Dec 2023 16:22:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBE7AD;
+        Tue, 12 Dec 2023 13:22:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702416165; x=1733952165;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kSQPBcRC7qiyHc9BBLXSnCeVZp/WbDJvRtGqOuMn0T0=;
+  b=HCbsEDvsUnwkyuAyqqiaO5i+RheqKLg63SqAJzvvWs5b/oWjzJ3uQJzr
+   U7cRA21iGEGEbse/Yx2em7SPmII7nV48gfQFFcnVWnq9kZYjfWS0OrPZl
+   0y+IJcHHQct3IgYfMOUcpQYbCGi/OxS3LCx3Ryxi5Ywge2kA1cgtMXDhI
+   yKt+DitqgCntcyACJqQw8dliRpkjECKhdRo6yJ8+MmKecECopd2qDteV6
+   630iVayMmv0Vx8lEw2DxVDskN/OkOux8r0wHp72lRkv2b2lkU3eawTJbq
+   l6E6R00govdti4l+76Mbu+TLHrx/WeU8mhb46ateDHg0x5QLEmFuoN0yY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2040514"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="2040514"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 13:22:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="17648342"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 13:22:45 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Erwin Tsaur <erwin.tsaur@intel.com>,
+        Borislav Petkov <bp@alien8.de>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH] ACPI: extlog: Clear Extended Error Log status when RAS_CEC handled the error
+Date:   Tue, 12 Dec 2023 13:22:39 -0800
+Message-ID: <20231212212239.8971-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 12:51:17 -0800, Kees Cook wrote:
-> This attempts to fix the issue Ronald Monthero found[1]. Avoids using a
-> too-short struct buffer when reading the string, by using the existing
-> struct union.
-> 
-> -Kees
-> 
-> [1] https://lore.kernel.org/lkml/20231112095353.579855-1-debug.penguin32@gmail.com/
-> 
-> [...]
+When both CONFIG_RAS_CEC and CONFIG_ACPI_EXTLOG are enabled, Linux does
+not clear the status word of the BIOS supplied error record for corrected
+errors. This may prevent logging of subsequent uncorrected errors.
 
-I'll put these in -next since there's been no more discussion on it.
+Fix by clearing the status.
 
-Applied to for-next/hardening, thanks!
+Fixes: 23ba710a0864 ("x86/mce: Fix all mce notifiers to update the mce->kflags bitmask")
+Reported-by: Erwin Tsaur <erwin.tsaur@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+---
+ drivers/acpi/acpi_extlog.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-[1/2] qnx4: Extract dir entry filename processing into helper
-      https://git.kernel.org/kees/c/49a85c02a189
-[2/2] qnx4: Use get_directory_fname() in qnx4_match()
-      https://git.kernel.org/kees/c/0a0fb20f5e08
-
-Take care,
-
+diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
+index e120a96e1eae..71e8d4e7a36c 100644
+--- a/drivers/acpi/acpi_extlog.c
++++ b/drivers/acpi/acpi_extlog.c
+@@ -145,9 +145,14 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
+ 	static u32 err_seq;
+ 
+ 	estatus = extlog_elog_entry_check(cpu, bank);
+-	if (estatus == NULL || (mce->kflags & MCE_HANDLED_CEC))
++	if (!estatus)
+ 		return NOTIFY_DONE;
+ 
++	if (mce->kflags & MCE_HANDLED_CEC) {
++		estatus->block_status = 0;
++		return NOTIFY_DONE;
++	}
++
+ 	memcpy(elog_buf, (void *)estatus, ELOG_ENTRY_LEN);
+ 	/* clear record status to enable BIOS to update it again */
+ 	estatus->block_status = 0;
 -- 
-Kees Cook
+2.43.0
 
