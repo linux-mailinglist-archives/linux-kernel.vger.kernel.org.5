@@ -2,135 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBED780EAC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A72780EAC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346275AbjLLLr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
+        id S231987AbjLLLsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:48:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLLrz (ORCPT
+        with ESMTP id S232383AbjLLLsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:47:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32F4D9;
-        Tue, 12 Dec 2023 03:48:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702381682; x=1733917682;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=C88BH7kQ+Tml6p1PsEMogJ/FdONSdDo+cGr0kn35/6I=;
-  b=Vs6qoRqsqx2OhVfUE+5KsGTRZLS9oCPIurfh0WGA58lWbzQhVC9SQeKL
-   YIfBH7968IQOi8Ocs3xU90Tj0EPcDh0GrVsaIJVA8ohopj9yzBey7Sw30
-   Mb7mTUEKpoYH55k7hQ9SnVmhedlPEBpy4lh0wcsGzXQyXeYBl1RHMrLtm
-   07g1COQxi54wX85S9m+5a1lB48K+xUFtHxfXXwIP9osSmC1Y0PaL0IqCq
-   jPdt5gkxsyDIjy0tjoGiLxW4FMPHqq1SppQarAwpTlskfwdK2IzsXDyvt
-   mlLKgR7HwKYPfv9KCU9QpF4NefRMzfNV1TLY+nUpCDC6blWSo9SCzgOmz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1633771"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="1633771"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:48:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="896893666"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="896893666"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:47:55 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id E4E4311F7E4;
-        Tue, 12 Dec 2023 13:47:52 +0200 (EET)
-Date:   Tue, 12 Dec 2023 11:47:52 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
-        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v15 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZXhIaB_NTDtSJmj5@kekkonen.localdomain>
-References: <20231204094719.190334-1-tomm.merciai@gmail.com>
- <20231204094719.190334-4-tomm.merciai@gmail.com>
- <ZXhGQuqTZogWTJ42@kekkonen.localdomain>
- <ZXhHrhNQfn0uJMjk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+        Tue, 12 Dec 2023 06:48:13 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADDCDB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:48:19 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD1FF-0006p6-5q; Tue, 12 Dec 2023 12:48:13 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD1FE-00FKLC-PE; Tue, 12 Dec 2023 12:48:12 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD1FE-001bJi-Fs; Tue, 12 Dec 2023 12:48:12 +0100
+Date:   Tue, 12 Dec 2023 12:48:12 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 4/6] pwm: Make it possible to apply PWM changes in
+ atomic context
+Message-ID: <20231212114812.afzgjiunzc6druov@pengutronix.de>
+References: <cover.1702369869.git.sean@mess.org>
+ <57f48330eb606356e86be17f85253f0e3d6ab104.1702369869.git.sean@mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wotwwsshk5kuseg6"
 Content-Disposition: inline
-In-Reply-To: <ZXhHrhNQfn0uJMjk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <57f48330eb606356e86be17f85253f0e3d6ab104.1702369869.git.sean@mess.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
 
-On Tue, Dec 12, 2023 at 12:44:46PM +0100, Tommaso Merciai wrote:
-> Hi Sakari,
-> 
-> On Tue, Dec 12, 2023 at 11:38:42AM +0000, Sakari Ailus wrote:
-> > Hi Tommaso,
-> > 
-> > On Mon, Dec 04, 2023 at 10:47:16AM +0100, Tommaso Merciai wrote:
-> > > The Alvium camera is shipped with sensor + isp in the same housing.
-> > > The camera can be equipped with one out of various sensor and abstract
-> > > the user from this. Camera is connected via MIPI CSI-2.
-> > > 
-> > > Most of the camera module features are supported, with the main exception
-> > > being fw update.
-> > > 
-> > > The driver provides all mandatory, optional and recommended V4L2 controls
-> > > for maximum compatibility with libcamera
-> > > 
-> > > References:
-> > >  - https://www.alliedvision.com/en/products/embedded-vision-solutions
-> > > 
-> > > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > 
-> > Could you run
-> > 
-> > 	./scripts/checkpatch.pl --strict --max-line-length=80
-> > 
-> > and address the issues in a patch on top of this set?
-> > 
-> 
-> Yes ofc.
-> You need also the following?
-> 
-> --- a/drivers/media/i2c/alvium-csi2.c
-> +++ b/drivers/media/i2c/alvium-csi2.c
-> @@ -2426,8 +2426,8 @@ static int alvium_probe(struct i2c_client *client)
->                 goto err_powerdown;
-> 
->         if (!alvium_is_alive(alvium)) {
-> -               dev_err_probe(dev, ret, "Device detection failed\n");
->                 ret = -ENODEV;
-> +               dev_err_probe(dev, ret, "Device detection failed\n");
->                 goto err_powerdown;
->         }
-> 
-> Let me know. Thanks for your work.
+--wotwwsshk5kuseg6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you, but I've already addressed that in my tree.
+Hello Sean,
 
--- 
-Sakari Ailus
+On Tue, Dec 12, 2023 at 08:34:03AM +0000, Sean Young wrote:
+> +/**
+> + * pwm_apply_might_sleep() - atomically apply a new state to a PWM device
+> + * Cannot be used in atomic context.
+> + * @pwm: PWM device
+> + * @state: new state to apply
+> + */
+> +int pwm_apply_might_sleep(struct pwm_device *pwm, const struct pwm_state=
+ *state)
+> +{
+> +	int err;
+> +
+> +	/*
+> +	 * Some lowlevel driver's implementations of .apply() make use of
+> +	 * mutexes, also with some drivers only returning when the new
+> +	 * configuration is active calling pwm_apply_might_sleep() from atomic =
+context
+> +	 * is a bad idea. So make it explicit that calling this function might
+> +	 * sleep.
+> +	 */
+> +	might_sleep();
+> +
+> +	if (IS_ENABLED(CONFIG_PWM_DEBUG) && pwm->chip->atomic) {
+> +		/*
+> +		 * Catch any drivers that have been marked as atomic but
+> +		 * that will sleep anyway.
+> +		 */
+> +		non_block_start();
+> +		err =3D pwm_apply_unchecked(pwm, state);
+> +		non_block_end();
+> +	} else {
+> +		err =3D pwm_apply_unchecked(pwm, state);
+> +	}
+> +
+>  	/*
+>  	 * only do this after pwm->state was applied as some
+>  	 * implementations of .get_state depend on this
+>  	 */
+> -	pwm_apply_debug(pwm, state);
+> +	if (!err)
+> +		pwm_apply_debug(pwm, state);
+
+It's easier to keep that in pwm_apply_unchecked(), isn't it? Then
+pwm_apply_atomic() also benefits from the checks.
+
+I'm not so happy with the function name of pwm_apply_unchecked(), but I
+don't have a good suggestion either. Probably I'd have chosen
+__pam_apply(), but that's probably subjective.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--wotwwsshk5kuseg6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV4SHsACgkQj4D7WH0S
+/k74ygf/d/ALSfb+yMsRUGqLtZbQ7QFlbxZ7Xdahj4u3XgKiwSJwV5WlK8qFsm0T
+Pd7U8STpUt+HJggcHMTOmPYd18XmSZOkX86VPlDLbVFXAGTE9jpy15ll9VLw5vFm
+AqBdeFm81hYOkHvi+9oEkaw6kXhRNlLoGmpxkhWkW7RE2lx+M7I9C/KghvfSJiss
+o77C2/Ak8dhPq1b0c9Nc5DsFQ02QZ7QTujr/eAbPPhmDNv188GKlA7AzTBaGdzEd
+pP01de0tkFB/DDJRsD64YZ2T7UOzzv4RlQGtNVokEpxG8UYLpqhfC5SPjt02Slqz
+AgOY1Y5o7nXSqD6vq9KIFUL7kezbNA==
+=rd9i
+-----END PGP SIGNATURE-----
+
+--wotwwsshk5kuseg6--
