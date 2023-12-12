@@ -2,344 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E95180EFB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62C480EFBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376487AbjLLPKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S1376489AbjLLPKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376469AbjLLPKD (ORCPT
+        with ESMTP id S232770AbjLLPKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:10:03 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BE0E8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:10:07 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so87060001fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:10:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702393806; x=1702998606; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sgb02zIfWO9XtSI9qBoLEAqXEVat4zbB8qv+HQtNLV8=;
-        b=LHHGslb9jPETtJXQjN4Vk2QASbgCA6FkG3oCg1n9IS1L10xamOppZWjcS9nROeYuQK
-         /q0w3D7SmGzlXRS5oT1MmC7KoFhYYoMkg5ytqDGyoqMqWm+3y2KxEWuQEuaNR/kpcBV0
-         RiWB3f6zW3EGg6KafI44c990/ZuZ0hEaMvCOXByoy9BXGfbKr1pD3AEjuQ+lsNjep5JI
-         RK9RGlOPmFLHyLkmjgx1ApoEpJhnKRGpxmqKcp3cFgTHYrvfKxlYYQDYG3t4w/O/0NEB
-         ZqK/n6FLnDNgHiLWKPo8rImb/0Y9EGyxAZoN7WHh9wBuIuYvrlhOuAa4WI8y05fWhVvT
-         2nAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702393806; x=1702998606;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sgb02zIfWO9XtSI9qBoLEAqXEVat4zbB8qv+HQtNLV8=;
-        b=FiJVrZjR1kqsRi9uDUYaIfpbqEHfzSiHGXDnUcEYBXL2YlwswWUqgV9cepqLYsEkzC
-         bnxbaC1XIrCpRyEKiCj+JPCi2SO6QO33u68nXmkQ66E9nWyXXTyiKIkTUntrlIHZ+ZvN
-         quxw3qy02G9TXcaEiuB1hoeiV8wWkyEpU9rP7V88z9rZbqOtVo7/paX0oP/3mEuyHZX/
-         xcphTTh27CdFcLqEIiT78KGff8zepsdrQ0wzfoKXO+1kjjxiWZzs9iXKRGdUgmm2MI23
-         I9aMLuLucEetalz7PAute4KLOurtKRNiQzpnQNVXQYIBPuYYcmovD9LM2buFUtoc5A2h
-         gq4A==
-X-Gm-Message-State: AOJu0YwdWzWJGSdGtfPh2umzFnVPkD29QKCkPnHV9IwtEsAa2PFOMe4R
-        YfRHmAfDwsq4+Ukv2yCfUle28cOflBiJLtUntZ8oDQ==
-X-Google-Smtp-Source: AGHT+IEnmlxt1GZYnvsKLadBA5gaJL+Mw8J602tleM6Cq/s5xYNH1uxRqd0ikhqf6EblAuUXcVfJtJqyQ/mZTWNqVIM=
-X-Received: by 2002:a2e:9f08:0:b0:2c9:f1a2:c396 with SMTP id
- u8-20020a2e9f08000000b002c9f1a2c396mr2674735ljk.101.1702393805929; Tue, 12
- Dec 2023 07:10:05 -0800 (PST)
+        Tue, 12 Dec 2023 10:10:35 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61D64EB;
+        Tue, 12 Dec 2023 07:10:41 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DFBB143D;
+        Tue, 12 Dec 2023 07:11:27 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB6293F738;
+        Tue, 12 Dec 2023 07:10:35 -0800 (PST)
+Message-ID: <b9165c97-1097-6bc8-751a-2bc2ac464edb@arm.com>
+Date:   Tue, 12 Dec 2023 15:10:31 +0000
 MIME-Version: 1.0
-References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
-In-Reply-To: <20231212104451.22522-1-mitrutzceclan@gmail.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Tue, 12 Dec 2023 16:09:55 +0100
-Message-ID: <CAMknhBEfisaSbHhnnei=gT1HZvHNWHrJD3O2y4b_TikkH=v2Ag@mail.gmail.com>
-Subject: Re: [PATCH v8 1/2] dt-bindings: adc: add AD7173
-To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 09/14] perf cpumap: Clean up use of
+ perf_cpu_map__has_any_cpu_or_is_empty
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-10-irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-10-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:45=E2=80=AFAM Dumitru Ceclan <mitrutzceclan@gmai=
-l.com> wrote:
->
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel application=
-s
-> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-> primarily for measurement of signals close to DC but also delivers
-> outstanding performance with input bandwidths out to ~10kHz.
 
-As stated in [1], we should try to make complete bindings. I think
-more could be done here to make this more complete. Most notably, the
-gpio-controller binding is missing. Also maybe something is needed to
-describe how the SYNC/ERROR pin is wired up since it can be an input
-or an output with different functions?
 
-[1]: https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-bin=
-dings.html
+On 29/11/2023 06:02, Ian Rogers wrote:
+> Most uses of what was perf_cpu_map__empty but is now
+> perf_cpu_map__has_any_cpu_or_is_empty want to do something with the
+> CPU map if it contains CPUs. Replace uses of
+> perf_cpu_map__has_any_cpu_or_is_empty with other helpers so that CPUs
+> within the map can be handled.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
->
-> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Reviewed-by: James Clark <james.clark@arm.com>
+
 > ---
-> V7->V8
->  - include missing fix from V6
-
-Including the cumulative changelog for all revisions would be helpful
-to reviewers who haven't been following closely.
-
->
->  .../bindings/iio/adc/adi,ad7173.yaml          | 170 ++++++++++++++++++
->  1 file changed, 170 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.=
-yaml
->
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/=
-Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-> new file mode 100644
-> index 000000000000..25a5404ee353
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-> @@ -0,0 +1,170 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD7173 ADC
-> +
-> +maintainers:
-> +  - Ceclan Dumitru <dumitru.ceclan@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported=
- chips:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
-AD7172-2.pdf
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
-AD7173-8.pdf
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
-AD7175-2.pdf
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/=
-AD7176-2.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad7172-2
-> +      - adi,ad7173-8
-> +      - adi,ad7175-2
-> +      - adi,ad7176-2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-
-Shouldn't this be 2? The datasheet says there is a "Data Output Ready"
-signal on the DOUT/RDY pin and an "Error Output" on the SYNC/ERROR
-pin. Although I could see how RDY could be considered part of the SPI
-bus. In any case, a description explaining what the interrupt is would
-be useful.
-
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  spi-max-frequency:
-> +    maximum: 20000000
-> +
-> +  refin-supply:
-> +    description: external reference supply, can be used as reference for=
- conversion.
-> +
-> +  refin2-supply:
-> +    description: external reference supply, can be used as reference for=
- conversion.
-> +
-> +  avdd-supply:
-> +    description: avdd supply, can be used as reference for conversion.
-
-What about other supplies? AVDD1, AVDD2, IOVDD.
-
-
-> +
-> +patternProperties:
-> +  "^channel@[0-9a-f]$":
-> +    type: object
-> +    $ref: adc.yaml
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 15
-> +
-> +      diff-channels:
-> +        items:
-> +          minimum: 0
-> +          maximum: 31
-
-Do we need to add overrides to limit the maximums for each compatible strin=
-g?
-
-> +
-> +      adi,reference-select:
-> +        description: |
-> +          Select the reference source to use when converting on
-> +          the specific channel. Valid values are:
-> +          refin      : REFIN(+)/REFIN(=E2=88=92).
-> +          refin2     : REFIN2(+)/REFIN2(=E2=88=92)
-> +          refout-avss: REFOUT/AVSS (Internal reference)
-> +          avdd       : AVDD
-> +
-> +          External reference refin2 only available on ad7173-8.
-> +          If not specified, internal reference used.
-> +        enum:
-> +          - refin
-> +          - refin2
-> +          - refout-avss
-> +          - avdd
-> +        default: refout-avss
-
-Missing string type?
-
-> +
-> +    required:
-> +      - reg
-> +      - diff-channels
-
-Individual analog inputs can be used as single-ended or in pairs as
-differential, right? If so, diff-channels should not be required to
-allow for single-ended use.
-
-And we would need to add something like a single-ended-channel
-property to adc.yaml to allow mapping analog input pins to channels
-similar to how diff-channels works, I think (I don't see anything like
-that there already)?
-
-So maybe something like:
-
-oneOf:
-  - required:
-      single-ended-channel
-  - required:
-      diff-channels
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +allOf:
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          not:
-> +            contains:
-> +              const: adi,ad7173-8
-> +    then:
-> +      properties:
-> +        refin2-supply: false
-> +      patternProperties:
-> +        "^channel@[0-9a-f]$":
-> +          properties:
-> +            adi,reference-select:
-> +              enum:
-> +                - refin
-> +                - refout-avss
-> +                - avdd
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    spi {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      adc@0 {
-> +        compatible =3D "adi,ad7173-8";
-> +        reg =3D <0>;
-> +
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        interrupts =3D <25 IRQ_TYPE_EDGE_FALLING>;
-> +        interrupt-parent =3D <&gpio>;
-> +        spi-max-frequency =3D <5000000>;
-> +
-> +        refin-supply =3D <&dummy_regulator>;
-> +
-> +        channel@0 {
-> +          reg =3D <0>;
-> +          bipolar;
-> +          diff-channels =3D <0 1>;
-> +          adi,reference-select =3D "refin";
-> +        };
-> +
-> +        channel@1 {
-> +          reg =3D <1>;
-> +          diff-channels =3D <2 3>;
-> +        };
-> +
-> +        channel@2 {
-> +          reg =3D <2>;
-> +          bipolar;
-> +          diff-channels =3D <4 5>;
-> +        };
-> +
-> +        channel@3 {
-> +          reg =3D <3>;
-> +          bipolar;
-> +          diff-channels =3D <6 7>;
-> +        };
-> +
-> +        channel@4 {
-> +          reg =3D <4>;
-> +          diff-channels =3D <8 9>;
-> +          adi,reference-select =3D "avdd";
-> +        };
-> +      };
-> +    };
-> --
-> 2.42.0
->
->
+>  tools/perf/builtin-c2c.c   | 6 +-----
+>  tools/perf/builtin-stat.c  | 9 ++++-----
+>  tools/perf/util/auxtrace.c | 4 ++--
+>  tools/perf/util/record.c   | 2 +-
+>  tools/perf/util/stat.c     | 2 +-
+>  5 files changed, 9 insertions(+), 14 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+> index f78eea9e2153..ef7ed53a4b4e 100644
+> --- a/tools/perf/builtin-c2c.c
+> +++ b/tools/perf/builtin-c2c.c
+> @@ -2319,11 +2319,7 @@ static int setup_nodes(struct perf_session *session)
+>  
+>  		nodes[node] = set;
+>  
+> -		/* empty node, skip */
+> -		if (perf_cpu_map__has_any_cpu_or_is_empty(map))
+> -			continue;
+> -
+> -		perf_cpu_map__for_each_cpu(cpu, idx, map) {
+> +		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
+>  			__set_bit(cpu.cpu, set);
+>  
+>  			if (WARN_ONCE(cpu2node[cpu.cpu] != -1, "node/cpu topology bug"))
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 3303aa20f326..f583027a0639 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1316,10 +1316,9 @@ static int cpu__get_cache_id_from_map(struct perf_cpu cpu, char *map)
+>  	 * be the first online CPU in the cache domain else use the
+>  	 * first online CPU of the cache domain as the ID.
+>  	 */
+> -	if (perf_cpu_map__has_any_cpu_or_is_empty(cpu_map))
+> +	id = perf_cpu_map__min(cpu_map).cpu;
+> +	if (id == -1)
+>  		id = cpu.cpu;
+> -	else
+> -		id = perf_cpu_map__cpu(cpu_map, 0).cpu;
+>  
+>  	/* Free the perf_cpu_map used to find the cache ID */
+>  	perf_cpu_map__put(cpu_map);
+> @@ -1622,7 +1621,7 @@ static int perf_stat_init_aggr_mode(void)
+>  	 * taking the highest cpu number to be the size of
+>  	 * the aggregation translate cpumap.
+>  	 */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
+> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
+>  		nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
+>  	else
+>  		nr = 0;
+> @@ -2289,7 +2288,7 @@ int process_stat_config_event(struct perf_session *session,
+>  
+>  	perf_event__read_stat_config(&stat_config, &event->stat_config);
+>  
+> -	if (perf_cpu_map__has_any_cpu_or_is_empty(st->cpus)) {
+> +	if (perf_cpu_map__is_empty(st->cpus)) {
+>  		if (st->aggr_mode != AGGR_UNSET)
+>  			pr_warning("warning: processing task data, aggregation mode not set\n");
+>  	} else if (st->aggr_mode != AGGR_UNSET) {
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index 3684e6009b63..6b1d4bafad59 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -174,7 +174,7 @@ void auxtrace_mmap_params__set_idx(struct auxtrace_mmap_params *mp,
+>  				   struct evlist *evlist,
+>  				   struct evsel *evsel, int idx)
+>  {
+> -	bool per_cpu = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
+> +	bool per_cpu = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
+>  
+>  	mp->mmap_needed = evsel->needs_auxtrace_mmap;
+>  
+> @@ -648,7 +648,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+>  
+>  static int evlist__enable_event_idx(struct evlist *evlist, struct evsel *evsel, int idx)
+>  {
+> -	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
+> +	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
+>  
+>  	if (per_cpu_mmaps) {
+>  		struct perf_cpu evlist_cpu = perf_cpu_map__cpu(evlist->core.all_cpus, idx);
+> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> index 87e817b3cf7e..e867de8ddaaa 100644
+> --- a/tools/perf/util/record.c
+> +++ b/tools/perf/util/record.c
+> @@ -237,7 +237,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
+>  
+>  	evsel = evlist__last(temp_evlist);
+>  
+> -	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
+> +	if (!evlist || perf_cpu_map__is_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
+>  		struct perf_cpu_map *cpus = perf_cpu_map__new_online_cpus();
+>  
+>  		if (cpus)
+> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+> index 012c4946b9c4..915808a6211a 100644
+> --- a/tools/perf/util/stat.c
+> +++ b/tools/perf/util/stat.c
+> @@ -315,7 +315,7 @@ static int check_per_pkg(struct evsel *counter, struct perf_counts_values *vals,
+>  	if (!counter->per_pkg)
+>  		return 0;
+>  
+> -	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+> +	if (perf_cpu_map__is_any_cpu_or_is_empty(cpus))
+>  		return 0;
+>  
+>  	if (!mask) {
