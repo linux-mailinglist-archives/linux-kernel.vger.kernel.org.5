@@ -2,238 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E1180FB89
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E52680FB8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377481AbjLLXpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S1377513AbjLLXp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjLLXpe (ORCPT
+        with ESMTP id S233299AbjLLXp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:45:34 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB48C8F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:45:40 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5e2b8f480b3so380887b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:45:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702424740; x=1703029540; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nyjaDMcAOxN0dCLePetIVRjmx5K1JwIuU6FTTfYueuY=;
-        b=HBdGiqKwvrDjWIT9O0tBbrNs0N781+aWJlZBmHpcmurV8Y9WSFkYJDM69AQdXm+MdO
-         e4B9oRIpi5Zlmq8WMobdy2U9v6KtR8mnDVosPDP4RCdkZoELhiDsJj96TZZRznjcOlDW
-         E7czyvZ9vOIhxPFarEMLNF5IN3AfzYbHW5l0ZOytOid+1etTqmfSDIOXRqiiltWyx1mh
-         7mfBsPCBJx2n19aW3zGCgdR4AxHOz1iodmN8HfaayJJtT4Q9n/ryXt6xldIbckGG7wqi
-         7YQ4xKSdm4DMez5bo5QELGBJkCE47E7RjUivcUirHhSt89acskn6ocLk35hXYiV6VKgk
-         1q7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702424740; x=1703029540;
-        h=content-transfer-encoding:cc:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nyjaDMcAOxN0dCLePetIVRjmx5K1JwIuU6FTTfYueuY=;
-        b=RSb8L0lgbmSScYmle7/sIrCKtYXKIsmjgTH1pas4dvLJXrFb2lyjg72Z7IJpnvGWRq
-         JKZKBCArRlEeznjV3UGsbOhYTtYNIf5Rhcj/q/X+gUFkY72gL2ajfHgJ86RPK4LGmGbU
-         l0Cwq0mPz2bPWZgCjtXw4k9uxB9YXBzmH2GxtSc1m+FlvhhxDrb26+fKDLg/4nnvoUGn
-         4lUInz+fCC/HJ33BNiBc8xLWkqmNW8MQ6i7tW3OY4uUN9pXfNdHapxhx49rsV9PLSQI0
-         qtLRtUZRYrYp9JVockOyjCS5rLrDNSQaCN6v00OuS1QfRWk7kJbEJNc/YYe1qG8b5oHA
-         fmlA==
-X-Gm-Message-State: AOJu0Yw5ud0eaXrmFQYDablB7I5F/v6G3/hxUqT4ry7s/s8lpJtApL55
-        n2RKMWv+bnccRI7khOloqVS3rq8+J8lGyRI44GQPpKmQzfPt6iPQFDcosA==
-X-Received: by 2002:a5b:889:0:b0:db9:e78d:7eff with SMTP id
- e9-20020a5b0889000000b00db9e78d7effmt942246ybq.59.1702424739879; Tue, 12 Dec
- 2023 15:45:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20231212234310.2034900-1-debug@rivosinc.com>
-In-Reply-To: <20231212234310.2034900-1-debug@rivosinc.com>
-From:   Deepak Gupta <debug@rivosinc.com>
-Date:   Tue, 12 Dec 2023 15:45:28 -0800
-Message-ID: <CAKC1njTpVN51j=xFHkbZBY6PDeGp8tVRBcgATTZPVHMuaGEz8A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] riscv: abstract envcfg CSR
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Evan Green <evan@rivosinc.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,MISSING_HEADERS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Tue, 12 Dec 2023 18:45:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B47B7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:46:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC954C433C9;
+        Tue, 12 Dec 2023 23:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702424762;
+        bh=pGrGsb6BqxBVwTK3LkmsdHZprxehakyiO1idycywAO0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gwJ8APWwAUn/s8Kn8zl7ScvgcxqA/yEKePvL7j0R1K7INopMzTXpKrtOv4A0JO5nj
+         m11Hsk+B6NaVlH7AHuOxZFE+uQiKOviAP/APCmS4OFBIxyuFK0uQRPf4jP/hlJe/Nz
+         QfsgDfyc9fqy8Kvw3EnKkUnJECSQfgSdsrYSuFkCV9CblO46Q4giWeRf7jFMgd5mkb
+         LIlH/UWhYLQmg7V9fZ0PROuM5FXzUrScDc+ic/xbPOeNsjCJFPtxT76iCzYT35pUQR
+         TnCk8LV+bl7wdQ/R24wPhxndUGdpulAvjSh2Uk3ZzfPTTd7nmVJaQBuGKQVio6YWdn
+         /2Reh/5NTEf/w==
+Date:   Wed, 13 Dec 2023 08:45:58 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: Re: [PATCH v3] ring-buffer: Fix writing to the buffer with
+ max_data_size
+Message-Id: <20231213084558.90dc9a9064c48cebb3d0ab8f@kernel.org>
+In-Reply-To: <20231212111617.39e02849@gandalf.local.home>
+References: <20231212111617.39e02849@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some issues in workflow. Patches didn't come out separately.
+On Tue, 12 Dec 2023 11:16:17 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Ignore this.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> The maximum ring buffer data size is the maximum size of data that can be
+> recorded on the ring buffer. Events must be smaller than the sub buffer
+> data size minus any meta data. This size is checked before trying to
+> allocate from the ring buffer because the allocation assumes that the size
+> will fit on the sub buffer.
+> 
+> The maximum size was calculated as the size of a sub buffer page (which is
+> currently PAGE_SIZE minus the sub buffer header) minus the size of the
+> meta data of an individual event. But it missed the possible adding of a
+> time stamp for events that are added long enough apart that the event meta
+> data can't hold the time delta.
+> 
+> When an event is added that is greater than the current BUF_MAX_DATA_SIZE
+> minus the size of a time stamp, but still less than or equal to
+> BUF_MAX_DATA_SIZE, the ring buffer would go into an infinite loop, looking
+> for a page that can hold the event. Luckily, there's a check for this loop
+> and after 1000 iterations and a warning is emitted and the ring buffer is
+> disabled. But this should never happen.
+> 
+> This can happen when a large event is added first, or after a long period
+> where an absolute timestamp is prefixed to the event, increasing its size
+> by 8 bytes. This passes the check and then goes into the algorithm that
+> causes the infinite loop.
+> 
+> For events that are the first event on the sub-buffer, it does not need to
+> add a timestamp, because the sub-buffer itself contains an absolute
+> timestamp, and adding one is redundant.
+> 
+> The fix is to check if the event is to be the first event on the
+> sub-buffer, and if it is, then do not add a timestamp.
+> 
+> This also fixes 32 bit adding a timestamp when a read of before_stamp or
+> write_stamp is interrupted. There's still no need to add that timestamp if
+> the event is going to be the first event on the sub buffer.
+> 
+> Also, if the buffer has "time_stamp_abs" set, then also check if the
+> length plus the timestamp is greater than the BUF_MAX_DATA_SIZE.
+> 
+> Link: https://lore.kernel.org/all/20231212104549.58863438@gandalf.local.home/
+> Link: https://lore.kernel.org/linux-trace-kernel/20231212071837.5fdd6c13@gandalf.local.home
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: a4543a2fa9ef3 ("ring-buffer: Get timestamp after event is allocated")
+> Fixes: 58fbc3c63275c ("ring-buffer: Consolidate add_timestamp to remove some branches")
+> Reported-by: Kent Overstreet <kent.overstreet@linux.dev> # (on IRC)
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-On Tue, Dec 12, 2023 at 3:43=E2=80=AFPM Deepak Gupta <debug@rivosinc.com> w=
-rote:
->
-> This patch abstracts envcfg CSR in kernel (as is done for other homonyn
-> CSRs). CSR_ENVCFG is used as alias for CSR_SENVCFG or CSR_MENVCFG dependi=
-ng
-> on how kernel is compiled.
->
-> Additionally it changes CBZE enabling to start using CSR_ENVCFG instead o=
-f
-> CSR_SENVCFG.
->
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+This looks good to me :)
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you!
+
 > ---
->  arch/riscv/include/asm/csr.h   | 2 ++
->  arch/riscv/kernel/cpufeature.c | 2 +-
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index 306a19a5509c..b3400517b0a9 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -415,6 +415,7 @@
->  # define CSR_STATUS    CSR_MSTATUS
->  # define CSR_IE                CSR_MIE
->  # define CSR_TVEC      CSR_MTVEC
-> +# define CSR_ENVCFG CSR_MENVCFG
->  # define CSR_SCRATCH   CSR_MSCRATCH
->  # define CSR_EPC       CSR_MEPC
->  # define CSR_CAUSE     CSR_MCAUSE
-> @@ -439,6 +440,7 @@
->  # define CSR_STATUS    CSR_SSTATUS
->  # define CSR_IE                CSR_SIE
->  # define CSR_TVEC      CSR_STVEC
-> +# define CSR_ENVCFG CSR_SENVCFG
->  # define CSR_SCRATCH   CSR_SSCRATCH
->  # define CSR_EPC       CSR_SEPC
->  # define CSR_CAUSE     CSR_SCAUSE
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index b3785ffc1570..98623393fd1f 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -725,7 +725,7 @@ arch_initcall(check_unaligned_access_all_cpus);
->  void riscv_user_isa_enable(void)
->  {
->         if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_IS=
-A_EXT_ZICBOZ))
-> -               csr_set(CSR_SENVCFG, ENVCFG_CBZE);
-> +               csr_set(CSR_ENVCFG, ENVCFG_CBZE);
->  }
->
->  #ifdef CONFIG_RISCV_ALTERNATIVE
-> --
-> 2.43.0
->
->
-> From 2ad5b91bda97f6dbc9f48a2e0e8c6eae5b8452ca Mon Sep 17 00:00:00 2001
-> From: Deepak Gupta <debug@rivosinc.com>
-> Date: Tue, 12 Dec 2023 14:28:59 -0800
-> Subject: [PATCH v1 2/2] riscv: envcfg save and restore on trap entry/exit
->
-> envcfg CSR defines enabling bits for cache management instructions and so=
-on
-> will control enabling for control flow integrity and pointer masking feat=
-ures.
->
-> Control flow integrity and pointer masking features need to be enabled on=
- per
-> thread basis. Additionally, I believe cache management instructions need =
-to be
-> enabled on per thread basis. As an example a seccomped task on riscv may =
-be
-> restricted to not use cache management instructions
->
-> This patch creates a place holder for envcfg CSR in `thread_info` and add=
-s
-> logic to save and restore on trap entry and exits. This allows such isa f=
-eature
-> to be enabled on per thread basis.
->
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->  arch/riscv/include/asm/thread_info.h | 1 +
->  arch/riscv/kernel/asm-offsets.c      | 1 +
->  arch/riscv/kernel/entry.S            | 6 ++++++
->  3 files changed, 8 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/as=
-m/thread_info.h
-> index 574779900bfb..320bc899a63b 100644
-> --- a/arch/riscv/include/asm/thread_info.h
-> +++ b/arch/riscv/include/asm/thread_info.h
-> @@ -57,6 +57,7 @@ struct thread_info {
->         long                    user_sp;        /* User stack pointer */
->         int                     cpu;
->         unsigned long           syscall_work;   /* SYSCALL_WORK_ flags */
-> +       unsigned long envcfg;
->  #ifdef CONFIG_SHADOW_CALL_STACK
->         void                    *scs_base;
->         void                    *scs_sp;
-> diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offs=
-ets.c
-> index a03129f40c46..cdd8f095c30c 100644
-> --- a/arch/riscv/kernel/asm-offsets.c
-> +++ b/arch/riscv/kernel/asm-offsets.c
-> @@ -39,6 +39,7 @@ void asm_offsets(void)
->         OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_co=
-unt);
->         OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
->         OFFSET(TASK_TI_USER_SP, task_struct, thread_info.user_sp);
-> +       OFFSET(TASK_TI_ENVCFG, task_struct, thread_info.envcfg);
->  #ifdef CONFIG_SHADOW_CALL_STACK
->         OFFSET(TASK_TI_SCS_SP, task_struct, thread_info.scs_sp);
->  #endif
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 54ca4564a926..a1d87013f15a 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -64,12 +64,14 @@ SYM_CODE_START(handle_exception)
->         csrr s3, CSR_TVAL
->         csrr s4, CSR_CAUSE
->         csrr s5, CSR_SCRATCH
-> +       csrr s6, CSR_ENVCFG
->         REG_S s0, PT_SP(sp)
->         REG_S s1, PT_STATUS(sp)
->         REG_S s2, PT_EPC(sp)
->         REG_S s3, PT_BADADDR(sp)
->         REG_S s4, PT_CAUSE(sp)
->         REG_S s5, PT_TP(sp)
-> +       REG_S s6, TASK_TI_ENVCFG(tp)
->
->         /*
->          * Set the scratch register to 0, so that if a recursive exceptio=
-n
-> @@ -129,6 +131,10 @@ SYM_CODE_START_NOALIGN(ret_from_exception)
->         addi s0, sp, PT_SIZE_ON_STACK
->         REG_S s0, TASK_TI_KERNEL_SP(tp)
->
-> +       /* restore envcfg bits for current thread */
-> +       REG_L s0, TASK_TI_ENVCFG(tp)
-> +       csrw CSR_ENVCFG, s0
-> +
->         /* Save the kernel shadow call stack pointer */
->         scs_save_current
->
-> --
-> 2.43.0
->
+> Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231212065922.05f28041@gandalf.local.home
+> 
+> - Just test 'w' first, and then do the rest of the checks.
+> 
+>  kernel/trace/ring_buffer.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 8d2a4f00eca9..b8986f82eccf 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -3579,7 +3579,10 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+>  		 * absolute timestamp.
+>  		 * Don't bother if this is the start of a new page (w == 0).
+>  		 */
+> -		if (unlikely(!a_ok || !b_ok || (info->before != info->after && w))) {
+> +		if (!w) {
+> +			/* Use the sub-buffer timestamp */
+> +			info->delta = 0;
+> +		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
+>  			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
+>  			info->length += RB_LEN_TIME_EXTEND;
+>  		} else {
+> @@ -3737,6 +3740,8 @@ rb_reserve_next_event(struct trace_buffer *buffer,
+>  	if (ring_buffer_time_stamp_abs(cpu_buffer->buffer)) {
+>  		add_ts_default = RB_ADD_STAMP_ABSOLUTE;
+>  		info.length += RB_LEN_TIME_EXTEND;
+> +		if (info.length > BUF_MAX_DATA_SIZE)
+> +			goto out_fail;
+>  	} else {
+>  		add_ts_default = RB_ADD_STAMP_NONE;
+>  	}
+> -- 
+> 2.42.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
