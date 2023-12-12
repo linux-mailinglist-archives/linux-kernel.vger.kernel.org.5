@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3014180EDFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C364C80EDFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346677AbjLLNrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:47:53 -0500
+        id S1376343AbjLLNr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:47:57 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjLLNru (ORCPT
+        with ESMTP id S1346686AbjLLNrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:47:50 -0500
+        Tue, 12 Dec 2023 08:47:53 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D058100;
-        Tue, 12 Dec 2023 05:47:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D6F6CD;
+        Tue, 12 Dec 2023 05:47:58 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42004143D;
-        Tue, 12 Dec 2023 05:48:43 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE0491474;
+        Tue, 12 Dec 2023 05:48:44 -0800 (PST)
 Received: from e129166.arm.com (unknown [10.57.82.227])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0E613F738;
-        Tue, 12 Dec 2023 05:47:55 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 298873F738;
+        Tue, 12 Dec 2023 05:47:57 -0800 (PST)
 From:   Lukasz Luba <lukasz.luba@arm.com>
 To:     linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
         rafael@kernel.org
 Cc:     linux-pm@vger.kernel.org, rui.zhang@intel.com, lukasz.luba@arm.com
-Subject: [PATCH v2 0/8] Add callback for cooling list update to speed-up IPA
-Date:   Tue, 12 Dec 2023 13:48:36 +0000
-Message-Id: <20231212134844.1213381-1-lukasz.luba@arm.com>
+Subject: [PATCH v2 1/8] thermal: core: Add governor callback for thermal zone change
+Date:   Tue, 12 Dec 2023 13:48:37 +0000
+Message-Id: <20231212134844.1213381-2-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231212134844.1213381-1-lukasz.luba@arm.com>
+References: <20231212134844.1213381-1-lukasz.luba@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -40,43 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Add a new callback which can update governors when there is a change in
+the thermal zone internals, e.g. thermal cooling instance list changed.
 
-The patch set a new callback for thermal governors and implementation for
-Intelligent Power Allocator.
+That makes possible to move some heavy operations like memory allocations
+related to the number of cooling instances out of the throttle() callback.
 
-The goal is to move some heavy operarions like the memory allocations and heavy
-computations (multiplications) out of throttle() callback hot path.
+Reuse the 'enum thermal_notify_event' and extend it with a new event:
+THERMAL_INSTANCE_LIST_UPDATE.
 
-The new callback is generic enough to handle other imporants update events.
-It re-uses existing thermal_notify_event definitions.
+Both callback code paths (throttle() and update_tz()) are protected with
+the same thermal zone lock, which guaranties the consistency.
 
-In addition there are some small clean-ups for IPA code.
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+ drivers/thermal/thermal_core.c | 13 +++++++++++++
+ include/linux/thermal.h        |  5 +++++
+ 2 files changed, 18 insertions(+)
 
-changes:
-v2:
-- change callback name to update_tz() and add parameter (Rafael)
-- added new event to trigger this callback - instance 'weight' update
-
-Regards,
-Lukasz
-
-Lukasz Luba (8):
-  thermal: core: Add governor callback for thermal zone change
-  thermal: gov_power_allocator: Refactor check_power_actors()
-  thermal: gov_power_allocator: Move memory allocation out of throttle()
-  thermal: gov_power_allocator: Simplify checks for valid power actor
-  thermal: gov_power_allocator: Refactor checks in divvy_up_power()
-  thermal/sysfs: Update instance->weight under tz lock
-  thermal/sysfs: Update governors when the 'weight' has changed
-  thermal: gov_power_allocator: Support new update callback of weights
-
- drivers/thermal/gov_power_allocator.c | 216 ++++++++++++++++++--------
- drivers/thermal/thermal_core.c        |  13 ++
- drivers/thermal/thermal_sysfs.c       |  15 ++
- include/linux/thermal.h               |   6 +
- 4 files changed, 182 insertions(+), 68 deletions(-)
-
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 625ba07cbe2f..592c956f6fd5 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -314,6 +314,14 @@ static void handle_non_critical_trips(struct thermal_zone_device *tz,
+ 		       def_governor->throttle(tz, trip);
+ }
+ 
++static void handle_instances_list_update(struct thermal_zone_device *tz)
++{
++	if (!tz->governor || !tz->governor->update_tz)
++		return;
++
++	tz->governor->update_tz(tz, THERMAL_INSTANCE_LIST_UPDATE);
++}
++
+ void thermal_zone_device_critical(struct thermal_zone_device *tz)
+ {
+ 	/*
+@@ -723,6 +731,8 @@ int thermal_bind_cdev_to_trip(struct thermal_zone_device *tz,
+ 		list_add_tail(&dev->tz_node, &tz->thermal_instances);
+ 		list_add_tail(&dev->cdev_node, &cdev->thermal_instances);
+ 		atomic_set(&tz->need_update, 1);
++
++		handle_instances_list_update(tz);
+ 	}
+ 	mutex_unlock(&cdev->lock);
+ 	mutex_unlock(&tz->lock);
+@@ -781,6 +791,9 @@ int thermal_unbind_cdev_from_trip(struct thermal_zone_device *tz,
+ 		if (pos->tz == tz && pos->trip == trip && pos->cdev == cdev) {
+ 			list_del(&pos->tz_node);
+ 			list_del(&pos->cdev_node);
++
++			handle_instances_list_update(tz);
++
+ 			mutex_unlock(&cdev->lock);
+ 			mutex_unlock(&tz->lock);
+ 			goto unbind;
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index c7190e2dfcb4..9fd0d3fb234a 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -51,6 +51,7 @@ enum thermal_notify_event {
+ 	THERMAL_DEVICE_POWER_CAPABILITY_CHANGED, /* power capability changed */
+ 	THERMAL_TABLE_CHANGED, /* Thermal table(s) changed */
+ 	THERMAL_EVENT_KEEP_ALIVE, /* Request for user space handler to respond */
++	THERMAL_INSTANCE_LIST_UPDATE, /* List of thermal instances changed */
+ };
+ 
+ /**
+@@ -195,6 +196,8 @@ struct thermal_zone_device {
+  *			thermal zone.
+  * @throttle:	callback called for every trip point even if temperature is
+  *		below the trip point temperature
++ * @update_tz:	callback called when thermal zone internals have changed, e.g.
++ *		thermal cooling instance was added/removed
+  * @governor_list:	node in thermal_governor_list (in thermal_core.c)
+  */
+ struct thermal_governor {
+@@ -203,6 +206,8 @@ struct thermal_governor {
+ 	void (*unbind_from_tz)(struct thermal_zone_device *tz);
+ 	int (*throttle)(struct thermal_zone_device *tz,
+ 			const struct thermal_trip *trip);
++	void (*update_tz)(struct thermal_zone_device *tz,
++			  enum thermal_notify_event reason);
+ 	struct list_head	governor_list;
+ };
+ 
 -- 
 2.25.1
 
