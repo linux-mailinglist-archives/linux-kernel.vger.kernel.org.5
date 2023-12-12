@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4335B80F639
+	by mail.lfdr.de (Postfix) with ESMTP id EC2C880F63B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377180AbjLLTMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S1377199AbjLLTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjLLTMK (ORCPT
+        with ESMTP id S1377118AbjLLTMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:12:10 -0500
+        Tue, 12 Dec 2023 14:12:12 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE75D2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:12:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48521C433C9;
-        Tue, 12 Dec 2023 19:12:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F60AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:12:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAEBAC433C8;
+        Tue, 12 Dec 2023 19:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702408336;
-        bh=KLuaGh8EwddqX7r2J8YW9fbCxq8vkVUE+TA3xcNvnkw=;
+        s=k20201202; t=1702408338;
+        bh=Nae8nBQge9ILU6mOkKP2BWSbfolFXrAD4ZUt2jzv2tE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rwumpu7pqmpvnDomf+Hqsnh0almVLDis4X1s3RgGsNDBz1ZNxaQgGZbkGcHD2x/om
-         J9NHY7Nzm0oEjemCVbKBPT7iOAW3johkbPXm490MuyodKOhYIuS5rsfTARZVtZU1E5
-         O0kOzVSh0a+F09ETl+b3CSjG7q+9sd3xzsgXymt5ebJVzKRQJFLuL/Kao+V7ppEse+
-         eg2aB2v3Z5oWVnQDpYZqszt1gRobfnX8MahYjx5ZdRL1mJJw+IPIoRr07D4ilPKjIV
-         Bft87B19yWmf4YZud7k7g/adUKpw/LAVDb87F0MOmJoi+ySJPPFGcHbGB5tIFddkKL
-         TRJHV+KZqehZQ==
+        b=ogvwZ8MntEnfHRb+BB81wAbNlQrUsGfiI02mB3lXfwqqxzVxq0LV2k+kUXz9bjedX
+         xpR74JJercrj9aD09mx99JV8Cx44NCcQHbEEsd2yHf+iJyduUkZrw2xRveOHsBqS0S
+         neGGA6Gg72oX/Rr6gP8WitqOUuCIYSSOvdwQ/7k8wyfrwcx0CaH9KVzMhYfDB8HTuq
+         knP81Jn2ELPbWLrbC7o3RDxOGraCLtOJsiqrSi3AClriuVx4Aijrvqm4Bz+OJJnr53
+         Tep0z/RiPk92+WwbzKVlV3HSOXsIvFvx12hXqzbOuj5hIOfYx0oPWubYFS075bgYm0
+         CEauJGxnArJ2w==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>,
         damon@lists.linux.dev, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] selftests/damon/_damon_sysfs: implement updat_schemes_tried_bytes command
-Date:   Tue, 12 Dec 2023 19:12:04 +0000
-Message-Id: <20231212191206.52917-4-sj@kernel.org>
+Subject: [PATCH 4/5] selftests/damon: add a test for update_schemes_tried_regions sysfs command
+Date:   Tue, 12 Dec 2023 19:12:05 +0000
+Message-Id: <20231212191206.52917-5-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212191206.52917-1-sj@kernel.org>
 References: <20231212191206.52917-1-sj@kernel.org>
@@ -50,48 +50,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement update_schemes_tried_bytes command of DAMON sysfs interface in
-_damon_sysfs.py.  It is not only making the update, but also read the
-updated value from the sysfs interface and store it in the Kdamond
-python objects so that the user of the module can easily get the value.
+Add a selftest for verifying the accuracy of DAMON's access monitoring
+functionality.  The test starts a program of artificial access pattern,
+monitor the access pattern using DAMON, and check if DAMON finds
+expected amount of hot data region (working set size) with only
+acceptable error rate.
+
+Note that the acceptable error rate is set with only naive assumptions
+and small number of tests.  Hence failures of the test may not always
+mean DAMON is broken.  Rather than that, those could be a signal to
+better understand the real accuracy level of DAMON in wider
+environments.  Based on further finding, we could optimize DAMON or
+adjust the expectation of the test.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- tools/testing/selftests/damon/_damon_sysfs.py | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ tools/testing/selftests/damon/Makefile        |  2 +
+ tools/testing/selftests/damon/access_memory.c | 41 ++++++++++++++
+ ...te_schemes_tried_regions_wss_estimation.py | 55 +++++++++++++++++++
+ 3 files changed, 98 insertions(+)
+ create mode 100644 tools/testing/selftests/damon/access_memory.c
+ create mode 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
 
-diff --git a/tools/testing/selftests/damon/_damon_sysfs.py b/tools/testing/selftests/damon/_damon_sysfs.py
-index 6b99f87a5f1e..e98cf4b6a4b7 100644
---- a/tools/testing/selftests/damon/_damon_sysfs.py
-+++ b/tools/testing/selftests/damon/_damon_sysfs.py
-@@ -76,6 +76,7 @@ class Damos:
-     # todo: Support quotas, watermarks, stats, tried_regions
-     idx = None
-     context = None
-+    tried_bytes = None
+diff --git a/tools/testing/selftests/damon/Makefile b/tools/testing/selftests/damon/Makefile
+index d2105d41ea25..1363987709c6 100644
+--- a/tools/testing/selftests/damon/Makefile
++++ b/tools/testing/selftests/damon/Makefile
+@@ -4,6 +4,7 @@
+ TEST_GEN_FILES += huge_count_read_write
+ TEST_GEN_FILES += dbgfs_target_ids_read_before_terminate_race
+ TEST_GEN_FILES += dbgfs_target_ids_pid_leak
++TEST_GEN_FILES += access_memory
  
-     def __init__(self, action='stat', access_pattern=DamosAccessPattern()):
-         self.action = action
-@@ -284,6 +285,19 @@ class Kdamond:
-         err = write_file(os.path.join(self.sysfs_dir(), 'state'), 'on')
-         return err
- 
-+    def update_schemes_tried_bytes(self):
-+        err = write_file(os.path.join(self.sysfs_dir(), 'state'),
-+                'update_schemes_tried_bytes')
-+        if err != None:
-+            return err
-+        for context in self.contexts:
-+            for scheme in context.schemes:
-+                content, err = read_file(os.path.join(scheme.sysfs_dir(),
-+                    'tried_regions', 'total_bytes'))
-+                if err != None:
-+                    return err
-+                scheme.tried_bytes = int(content)
+ TEST_FILES = _chk_dependency.sh _debugfs_common.sh
+ TEST_PROGS = debugfs_attrs.sh debugfs_schemes.sh debugfs_target_ids.sh
+@@ -11,6 +12,7 @@ TEST_PROGS += debugfs_empty_targets.sh debugfs_huge_count_read_write.sh
+ TEST_PROGS += debugfs_duplicate_context_creation.sh
+ TEST_PROGS += debugfs_rm_non_contexts.sh
+ TEST_PROGS += sysfs.sh sysfs_update_removed_scheme_dir.sh
++TEST_PROGS += sysfs_update_schemes_tried_regions_wss_estimation.py
+ TEST_PROGS += reclaim.sh lru_sort.sh
+ TEST_PROGS += dbgfs_target_ids_read_before_terminate_race.sh
+ TEST_PROGS += dbgfs_target_ids_pid_leak.sh
+diff --git a/tools/testing/selftests/damon/access_memory.c b/tools/testing/selftests/damon/access_memory.c
+new file mode 100644
+index 000000000000..585a2fa54329
+--- /dev/null
++++ b/tools/testing/selftests/damon/access_memory.c
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Artificial memory access program for testing DAMON.
++ */
 +
- class Kdamonds:
-     kdamonds = []
- 
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++
++int main(int argc, char *argv[])
++{
++	char **regions;
++	clock_t start_clock;
++	int nr_regions;
++	int sz_region;
++	int access_time_ms;
++	int i;
++
++	if (argc != 4) {
++		printf("Usage: %s <number> <size (bytes)> <time (ms)>\n",
++				argv[0]);
++		return -1;
++	}
++
++	nr_regions = atoi(argv[1]);
++	sz_region = atoi(argv[2]);
++	access_time_ms = atoi(argv[3]);
++
++	regions = malloc(sizeof(*regions) * nr_regions);
++	for (i = 0; i < nr_regions; i++)
++		regions[i] = malloc(sz_region);
++
++	for (i = 0; i < nr_regions; i++) {
++		start_clock = clock();
++		while ((clock() - start_clock) * 1000 / CLOCKS_PER_SEC <
++				access_time_ms)
++			memset(regions[i], i, 1024 * 1024 * 10);
++	}
++	return 0;
++}
+diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+new file mode 100755
+index 000000000000..cdbf19b442c9
+--- /dev/null
++++ b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_wss_estimation.py
+@@ -0,0 +1,55 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++
++import subprocess
++import time
++
++import _damon_sysfs
++
++def main():
++    # access two 10 MiB memory regions, 2 second per each
++    sz_region = 10 * 1024 * 1024
++    proc = subprocess.Popen(['./access_memory', '2', '%d' % sz_region, '2000'])
++    kdamonds = _damon_sysfs.Kdamonds([_damon_sysfs.Kdamond(
++            contexts=[_damon_sysfs.DamonCtx(
++                ops='vaddr',
++                targets=[_damon_sysfs.DamonTarget(pid=proc.pid)],
++                schemes=[_damon_sysfs.Damos(
++                    access_pattern=_damon_sysfs.DamosAccessPattern(
++                        # >= 25% access rate, >= 200ms age
++                        nr_accesses=[5, 20], age=[2, 2**64 - 1]))] # schemes
++                )] # contexts
++            )]) # kdamonds
++
++    err = kdamonds.start()
++    if err != None:
++        print('kdmaond start failed: %s' % err)
++        exit(1)
++
++    wss_collected = []
++    while proc.poll() == None:
++        time.sleep(0.1)
++        err = kdamonds.kdamonds[0].update_schemes_tried_bytes()
++        if err != None:
++            print('tried bytes update failed: %s' % err)
++            exit(1)
++
++        wss_collected.append(
++                kdamonds.kdamonds[0].contexts[0].schemes[0].tried_bytes)
++
++    wss_collected.sort()
++    acceptable_error_rate = 0.2
++    for percentile in [50, 75]:
++        sample = wss_collected[int(len(wss_collected) * percentile / 100)]
++        error_rate = abs(sample - sz_region) / sz_region
++        print('%d-th percentile (%d) error %f' %
++                (percentile, sample, error_rate))
++        if error_rate > acceptable_error_rate:
++            print('the error rate is not acceptable (> %f)' %
++                    acceptable_error_rate)
++            print('samples are as below')
++            print('\n'.join(['%d' % wss for wss in wss_collected]))
++            exit(1)
++
++if __name__ == '__main__':
++    main()
 -- 
 2.34.1
 
