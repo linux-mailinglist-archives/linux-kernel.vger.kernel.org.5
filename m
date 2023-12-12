@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 686A380FA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7ABB80FA88
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbjLLWoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 17:44:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        id S1377833AbjLLWrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 17:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbjLLWoW (ORCPT
+        with ESMTP id S231481AbjLLWrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 17:44:22 -0500
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE61592;
-        Tue, 12 Dec 2023 14:44:28 -0800 (PST)
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3b844357f7cso4750041b6e.1;
-        Tue, 12 Dec 2023 14:44:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702421068; x=1703025868;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMphJ493+DciN8lLws8RSRlMD94qy0SoU2WP5DJOjj4=;
-        b=kwQylEoU8SK+V8fU2+QG8mF3SIhcOplIlJX2Yx5KYzCmKiICY9DVMYb2TdWlTN+FKs
-         OmQkbGvAHe6pTFFIYsVIIggVV6OQr87kU/qZkr9KuF7Iv4yiUDzlyFoBdSUME+ddYwT5
-         uk8Yd5BXp1JT7Uy9PmmGa3OAhwYnaOa8fGV9IY5AowDl3ex5IcTgecfAY5cfDn1I7+74
-         wuyJgVD7HLSeFXxJGGKXYfIUWXfuUDvaHQ8Q3e0GPyqT5jWyABymAKvQK7IVLE+fDeW1
-         Fd1rFjVR1j/MV+pafjeq9oowg/7ks5Kl01BJTn3o0LG2htTE2BeR92qeH3h4SntkP6r2
-         4VDQ==
-X-Gm-Message-State: AOJu0YySHBo7hzq3x5WAxwiuwHJeO1Z8YtP6EsrBN/h2pHHquM6jDZMq
-        MZxdyQyR0+1IaWfl6aCnqQ==
-X-Google-Smtp-Source: AGHT+IFjb8zyZy6HgbNr/jID6qfej7EjNW9FQEisDXKCGMer4Y5UYOBAfKHQdPfu1aEWyVUhGqcagQ==
-X-Received: by 2002:a05:6808:148a:b0:3b9:ca51:5186 with SMTP id e10-20020a056808148a00b003b9ca515186mr7781124oiw.42.1702421068119;
-        Tue, 12 Dec 2023 14:44:28 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id ct7-20020a056808360700b003b9fd2af1f1sm1970848oib.32.2023.12.12.14.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 14:44:27 -0800 (PST)
-Received: (nullmailer pid 2966246 invoked by uid 1000);
-        Tue, 12 Dec 2023 22:44:26 -0000
-Date:   Tue, 12 Dec 2023 16:44:26 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     bhelgaas@google.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
-        hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
-        krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
-        manivannan.sadhasivam@linaro.org, s.hauer@pengutronix.de,
-        shawnguo@kernel.org
-Subject: Re: [PATCH v3 08/13] dt-bindings: imx6q-pcie: Add imx95 pcie
- compatible string
-Message-ID: <20231212224426.GA2948988-robh@kernel.org>
-References: <20231211215842.134823-1-Frank.Li@nxp.com>
- <20231211215842.134823-9-Frank.Li@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211215842.134823-9-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 12 Dec 2023 17:47:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C36AA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:47:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E35C433C7;
+        Tue, 12 Dec 2023 22:47:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702421270;
+        bh=fTzQszjJZI1SU83F2DPicXFge7TTPi0j6QJoBbVl1TI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UQoT7kHuV6vYeIp2c9J97rMAU/aseRE7+I8zj2u86LxOKPQN1l4BJR9RdO27xHGKh
+         bAMyPCc/73mlXUi9IKA+ZnB9OzETYfDcVhTlammymBEyJHwM15dEhUzojsa5nolcjr
+         yWtWXwtFNhy5mzf7KKrLDLZ2KkOWER5le/4pWK0RCxipo+VHPi0UGCKgcp0wyHR1uo
+         xbNi7X8Ugo4Opw8qTpYwfLVUrUslrclsAr0xLXyNOWR05u+TO9w5++hx59S5vO8Y2T
+         +eFu5FGg/fyWaT4J5LYjd0FpZ72mODhtnIubXfkRVjFLSnnZfwXpH9bg/jpNp9jinI
+         yPVerbXa1ysiw==
+Date:   Wed, 13 Dec 2023 07:47:46 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] tracing: Add size check when printing trace_marker
+ output
+Message-Id: <20231213074746.cd2dbd703bd19fe791c5d44a@kernel.org>
+In-Reply-To: <20231212084444.4619b8ce@gandalf.local.home>
+References: <20231212084444.4619b8ce@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 04:58:37PM -0500, Frank Li wrote:
-> From: Richard Zhu <hongxing.zhu@nxp.com>
+On Tue, 12 Dec 2023 08:44:44 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Add i.MX95 PCIe "fsl,imx95-pcie" compatible string.
-> Add "atu" and "serdes" to reg-names.
+> If for some reason the trace_marker write does not have a nul byte for the
+> string, it will overflow the print:
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+>   trace_seq_printf(s, ": %s", field->buf);
+> 
+> The field->buf could be missing the nul byte. To prevent overflow, add the
+> max size that the buf can be by using the event size and the field
+> location.
+> 
+>   int max = iter->ent_size - offsetof(struct print_entry, buf);
+> 
+>   trace_seq_printf(s, ": %*s", max, field->buf);
+> 
+
+This looks good to me.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thanks!
+
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
+>  kernel/trace/trace_output.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> Notes:
->     Change from v2 to v3
->     - Remove krzy's ACK tag
->     - Add condition check for imx95, which required more reg-names then old
->     platform, so need Krzy review again,
->     
->     Change from v1 to v2
->     - add Krzy's ACK tag
-> 
->  .../bindings/pci/fsl,imx6q-pcie.yaml           | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> index 81bbb8728f0f9..b8fcf8258f031 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
-> @@ -29,6 +29,7 @@ properties:
->        - fsl,imx8mq-pcie
->        - fsl,imx8mm-pcie
->        - fsl,imx8mp-pcie
-> +      - fsl,imx95-pcie
+> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> index d8b302d01083..e11fb8996286 100644
+> --- a/kernel/trace/trace_output.c
+> +++ b/kernel/trace/trace_output.c
+> @@ -1587,11 +1587,12 @@ static enum print_line_t trace_print_print(struct trace_iterator *iter,
+>  {
+>  	struct print_entry *field;
+>  	struct trace_seq *s = &iter->seq;
+> +	int max = iter->ent_size - offsetof(struct print_entry, buf);
 >  
->    reg:
->      items:
-> @@ -90,6 +91,22 @@ required:
->  allOf:
->    - $ref: /schemas/pci/snps,dw-pcie.yaml#
->    - $ref: /schemas/pci/fsl,imx6q-pcie-common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,imx95-pcie
-> +    then:
-> +      properties:
-> +        reg:
-> +          minItems: 4
-> +        reg-names:
-> +          items:
-> +            - const: dbi
-> +            - const: serdes
+>  	trace_assign_type(field, iter->ent);
+>  
+>  	seq_print_ip_sym(s, field->ip, flags);
+> -	trace_seq_printf(s, ": %s", field->buf);
+> +	trace_seq_printf(s, ": %*s", max, field->buf);
+>  
+>  	return trace_handle_return(s);
+>  }
+> @@ -1600,10 +1601,11 @@ static enum print_line_t trace_print_raw(struct trace_iterator *iter, int flags,
+>  					 struct trace_event *event)
+>  {
+>  	struct print_entry *field;
+> +	int max = iter->ent_size - offsetof(struct print_entry, buf);
+>  
+>  	trace_assign_type(field, iter->ent);
+>  
+> -	trace_seq_printf(&iter->seq, "# %lx %s", field->ip, field->buf);
+> +	trace_seq_printf(&iter->seq, "# %lx %*s", field->ip, max, field->buf);
+>  
+>  	return trace_handle_return(&iter->seq);
+>  }
+> -- 
+> 2.42.0
+> 
 
-Did you test this? It should fail because 'serdes' would need to be 
-added to snps,dw-pcie.yaml.
 
-Is this really not a separate phy block? A separate node would be 
-ideal. If not, there's already a 'phy' name you can use here. We don't 
-want more random names.
-
-Rob
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
