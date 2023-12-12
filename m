@@ -2,87 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA8880F978
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5330B80F97F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377191AbjLLVex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
+        id S1377395AbjLLVgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:36:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235131AbjLLVev (ORCPT
+        with ESMTP id S1377574AbjLLVf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:34:51 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CDDCE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:34:57 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so4439922b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:34:57 -0800 (PST)
+        Tue, 12 Dec 2023 16:35:57 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E79BD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:36:02 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c55872d80so5120625e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:36:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702416897; x=1703021697; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hVaNEiqljo3E3EXGRWD9OJDtRSGtGupo/F0W9RJyA9Y=;
-        b=ePJaVRCYQkAmb4oTX3Ee5XFGGvlkk+Lj44VWmjS3GCTcZ9WsuXCwZbgjCJdksJIUo0
-         rRtHi4uC1FIQdZCZ73eAJGr1PtytVk5Jz0qsYULnSJKVWXQk7vlLX57PIgGuZOaiAi+y
-         rxrBXQ3i9wL2oyairnKxarpJ04rgvvf96kc+A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702416897; x=1703021697;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702416961; x=1703021761; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hVaNEiqljo3E3EXGRWD9OJDtRSGtGupo/F0W9RJyA9Y=;
-        b=LuNmtzu7W2Imwp/ujCnz5ZjnXYgXqrw8mJTHVGAsupE2Vtnu+cBErfVAQUDhAZKu83
-         hzFGCTr5jWcTy/LOYi4fZrqBVQmrgiHhDpMgQowmvYRc0borQdex332+Y2RrFwb8Qo8v
-         082G07g021hqQpkJtKsnSjrSqNyaLiMS4zTbmWCwFuEnvD3fOPW2Vx+9/JbPyhETCv0b
-         aBVjbEJbS8XkcpqlpjtbQfDB+EwfXXGcmJYOlOt4mJQhgvAMDnIhs+TCWT5Y2IxI/4EV
-         pnd3VaG9meZfFepfyZZjBb916PwHfySwxL1QqMRov/kcE9b+qZotP82zoA5tDVUH2/pK
-         AFMQ==
-X-Gm-Message-State: AOJu0YwnXfS1J0eW7PQ6pP4YWqfNtuA8i4GimSeZEoUnU87dTu9HVUnF
-        p+mowm+crpMOBKrbTWrQMPBflw==
-X-Google-Smtp-Source: AGHT+IGrjdrYE8TdMjASxj4xkbtqabKRt1i/GLLm6pVTSOTn+15PoLIG2QekdDTvI5rmHrrxiENUQg==
-X-Received: by 2002:a05:6a20:734f:b0:17b:1f76:86ee with SMTP id v15-20020a056a20734f00b0017b1f7686eemr7870972pzc.16.1702416897330;
-        Tue, 12 Dec 2023 13:34:57 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id gx4-20020a056a001e0400b006cbb71186f7sm8557572pfb.29.2023.12.12.13.34.56
+        bh=BLS75Mo77acz6k4jx++nul4Z+bTVnVv2nm8SBcxb6zo=;
+        b=SXqg6mfXq/Ej1V7mNeB+b+lZT3sJ/pa3YY7cxeDM2rNaE9IQvP5y0aHmxwUnaMA5li
+         2x1ic8A8QBNSKgVQn7i1XW5u8GWfLWd/E0bJ5Q357MTjswC9d/fI5jmIvZB8ws1qYedV
+         QGWzYK+stGiqGX1DfHsqoCOkqIJZufjhpE0SNel4IwrxLt5qrkMryIjOfe5xl+5p5pEr
+         rxpjF3MISctp/4p14cG5AWr8t2nE0+id6Nx/fU6IyT1AvYL9f4gAgbGhDkCEa5W19Vp0
+         sA+CpZQIf50HKDNmNsTpdnZhmE43hGmhs5IBAzOi3svOaRyjLEu4UhoAwabXkJcKhMVL
+         Rc2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702416961; x=1703021761;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BLS75Mo77acz6k4jx++nul4Z+bTVnVv2nm8SBcxb6zo=;
+        b=jYNzmT0RWiuv39APL+zoa5vqgzybtP7C0prkGe3Tk702NBibe/qauJn+Tytre19Eel
+         WFJ0ORyllBaXRQvyqCS4Sow1p17Nm6j9Gy630xIiELTErro5XRjFhLt70IIdLSFCyctP
+         E74Q8lLCEwt1kgF5iKcXHvbKJkk1LjNHwHVjG2LXwtnEsAtLtJdmONXQJNMxsV+FZA+I
+         VY8hMDY2B76BGIPvAJn/S9QWPWMUlH32pILceeWX78S04QcZTIrYK19EMNEA/k0/iyXi
+         7/99UdTBMUQ3XV6hUWIlR8e1t6mww4tRiwnRo7GiD9SUwKLApgCHeT3/baFAT+rEzgH2
+         UvtQ==
+X-Gm-Message-State: AOJu0Yxo9Iupwd+LcZOdU3Kab+h5CHtikQ85uQHlXA7EoN9NHDsrzDem
+        oUsjdSeZ3mKeMh41FtkX5t7b6A==
+X-Google-Smtp-Source: AGHT+IESLuoBQNsAkgxVuWPb1AKal27QjvlJbqXJPQE4veBnAzTcYr3uBF9MZ4rqSOkrlsCnVLUuRA==
+X-Received: by 2002:a7b:c456:0:b0:40b:5e4a:2365 with SMTP id l22-20020a7bc456000000b0040b5e4a2365mr3632834wmi.103.1702416960633;
+        Tue, 12 Dec 2023 13:36:00 -0800 (PST)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id u21-20020a05600c139500b00405d9a950a2sm19994483wmf.28.2023.12.12.13.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:34:56 -0800 (PST)
-Date:   Tue, 12 Dec 2023 13:34:56 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Bryan Tan <bryantan@vmware.com>, Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] VMCI: Remove handle_arr_calc_size()
-Message-ID: <202312121334.459D42A1F@keescook>
-References: <84e7f2d8e7c4c2eab68f958307d56546978f76e3.1702125347.git.christophe.jaillet@wanadoo.fr>
+        Tue, 12 Dec 2023 13:36:00 -0800 (PST)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH v2 1/2] mm: Introduce flush_cache_vmap_early()
+Date:   Tue, 12 Dec 2023 22:34:56 +0100
+Message-Id: <20231212213457.132605-2-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231212213457.132605-1-alexghiti@rivosinc.com>
+References: <20231212213457.132605-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84e7f2d8e7c4c2eab68f958307d56546978f76e3.1702125347.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 09, 2023 at 01:36:14PM +0100, Christophe JAILLET wrote:
-> Use struct_size() instead of handle_arr_calc_size().
-> This is much more conventional.
-> 
-> While at it, use size_add() when computing the needed size in
-> vmci_handle_arr_append_entry(). This prevents from (unlikely) overflow
-> when computing the new size to reallocate.
-> 
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+The pcpu setup when using the page allocator sets up a new vmalloc
+mapping very early in the boot process, so early that it cannot use the
+flush_cache_vmap() function which may depend on structures not yet
+initialized (for example in riscv, we currently send an IPI to flush
+other cpus TLB).
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+But on some architectures, we must call flush_cache_vmap(): for example,
+in riscv, some uarchs can cache invalid TLB entries so we need to flush
+the new established mapping to avoid taking an exception.
 
+So fix this by introducing a new function flush_cache_vmap_early() which
+is called right after setting the new page table entry and before
+accessing this new mapping. This new function implements a local flush
+tlb on riscv and is no-op for other architectures (same as today).
+
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+---
+ arch/arc/include/asm/cacheflush.h      | 1 +
+ arch/arm/include/asm/cacheflush.h      | 2 ++
+ arch/csky/abiv1/inc/abi/cacheflush.h   | 1 +
+ arch/csky/abiv2/inc/abi/cacheflush.h   | 1 +
+ arch/m68k/include/asm/cacheflush_mm.h  | 1 +
+ arch/mips/include/asm/cacheflush.h     | 2 ++
+ arch/nios2/include/asm/cacheflush.h    | 1 +
+ arch/parisc/include/asm/cacheflush.h   | 1 +
+ arch/riscv/include/asm/cacheflush.h    | 3 ++-
+ arch/riscv/include/asm/tlbflush.h      | 1 +
+ arch/riscv/mm/tlbflush.c               | 5 +++++
+ arch/sh/include/asm/cacheflush.h       | 1 +
+ arch/sparc/include/asm/cacheflush_32.h | 1 +
+ arch/sparc/include/asm/cacheflush_64.h | 1 +
+ arch/xtensa/include/asm/cacheflush.h   | 6 ++++--
+ include/asm-generic/cacheflush.h       | 6 ++++++
+ mm/percpu.c                            | 8 +-------
+ 17 files changed, 32 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arc/include/asm/cacheflush.h b/arch/arc/include/asm/cacheflush.h
+index bd5b1a9a0544..6fc74500a9f5 100644
+--- a/arch/arc/include/asm/cacheflush.h
++++ b/arch/arc/include/asm/cacheflush.h
+@@ -40,6 +40,7 @@ void dma_cache_wback(phys_addr_t start, unsigned long sz);
+ 
+ /* TBD: optimize this */
+ #define flush_cache_vmap(start, end)		flush_cache_all()
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		flush_cache_all()
+ 
+ #define flush_cache_dup_mm(mm)			/* called on fork (VIVT only) */
+diff --git a/arch/arm/include/asm/cacheflush.h b/arch/arm/include/asm/cacheflush.h
+index f6181f69577f..1075534b0a2e 100644
+--- a/arch/arm/include/asm/cacheflush.h
++++ b/arch/arm/include/asm/cacheflush.h
+@@ -340,6 +340,8 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
+ 		dsb(ishst);
+ }
+ 
++#define flush_cache_vmap_early(start, end)	do { } while (0)
++
+ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+ {
+ 	if (!cache_is_vipt_nonaliasing())
+diff --git a/arch/csky/abiv1/inc/abi/cacheflush.h b/arch/csky/abiv1/inc/abi/cacheflush.h
+index 908d8b0bc4fd..d011a81575d2 100644
+--- a/arch/csky/abiv1/inc/abi/cacheflush.h
++++ b/arch/csky/abiv1/inc/abi/cacheflush.h
+@@ -43,6 +43,7 @@ static inline void flush_anon_page(struct vm_area_struct *vma,
+  */
+ extern void flush_cache_range(struct vm_area_struct *vma, unsigned long start, unsigned long end);
+ #define flush_cache_vmap(start, end)		cache_wbinv_all()
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		cache_wbinv_all()
+ 
+ #define flush_icache_range(start, end)		cache_wbinv_range(start, end)
+diff --git a/arch/csky/abiv2/inc/abi/cacheflush.h b/arch/csky/abiv2/inc/abi/cacheflush.h
+index 40be16907267..6513ac5d2578 100644
+--- a/arch/csky/abiv2/inc/abi/cacheflush.h
++++ b/arch/csky/abiv2/inc/abi/cacheflush.h
+@@ -41,6 +41,7 @@ void flush_icache_mm_range(struct mm_struct *mm,
+ void flush_icache_deferred(struct mm_struct *mm);
+ 
+ #define flush_cache_vmap(start, end)		do { } while (0)
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		do { } while (0)
+ 
+ #define copy_to_user_page(vma, page, vaddr, dst, src, len) \
+diff --git a/arch/m68k/include/asm/cacheflush_mm.h b/arch/m68k/include/asm/cacheflush_mm.h
+index ed12358c4783..9a71b0148461 100644
+--- a/arch/m68k/include/asm/cacheflush_mm.h
++++ b/arch/m68k/include/asm/cacheflush_mm.h
+@@ -191,6 +191,7 @@ extern void cache_push_v(unsigned long vaddr, int len);
+ #define flush_cache_all() __flush_cache_all()
+ 
+ #define flush_cache_vmap(start, end)		flush_cache_all()
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		flush_cache_all()
+ 
+ static inline void flush_cache_mm(struct mm_struct *mm)
+diff --git a/arch/mips/include/asm/cacheflush.h b/arch/mips/include/asm/cacheflush.h
+index f36c2519ed97..1f14132b3fc9 100644
+--- a/arch/mips/include/asm/cacheflush.h
++++ b/arch/mips/include/asm/cacheflush.h
+@@ -97,6 +97,8 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
+ 		__flush_cache_vmap();
+ }
+ 
++#define flush_cache_vmap_early(start, end)     do { } while (0)
++
+ extern void (*__flush_cache_vunmap)(void);
+ 
+ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+diff --git a/arch/nios2/include/asm/cacheflush.h b/arch/nios2/include/asm/cacheflush.h
+index 348cea097792..81484a776b33 100644
+--- a/arch/nios2/include/asm/cacheflush.h
++++ b/arch/nios2/include/asm/cacheflush.h
+@@ -38,6 +38,7 @@ void flush_icache_pages(struct vm_area_struct *vma, struct page *page,
+ #define flush_icache_pages flush_icache_pages
+ 
+ #define flush_cache_vmap(start, end)		flush_dcache_range(start, end)
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		flush_dcache_range(start, end)
+ 
+ extern void copy_to_user_page(struct vm_area_struct *vma, struct page *page,
+diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
+index b4006f2a9705..ba4c05bc24d6 100644
+--- a/arch/parisc/include/asm/cacheflush.h
++++ b/arch/parisc/include/asm/cacheflush.h
+@@ -41,6 +41,7 @@ void flush_kernel_vmap_range(void *vaddr, int size);
+ void invalidate_kernel_vmap_range(void *vaddr, int size);
+ 
+ #define flush_cache_vmap(start, end)		flush_cache_all()
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		flush_cache_all()
+ 
+ void flush_dcache_folio(struct folio *folio);
+diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
+index 3cb53c4df27c..a129dac4521d 100644
+--- a/arch/riscv/include/asm/cacheflush.h
++++ b/arch/riscv/include/asm/cacheflush.h
+@@ -37,7 +37,8 @@ static inline void flush_dcache_page(struct page *page)
+ 	flush_icache_mm(vma->vm_mm, 0)
+ 
+ #ifdef CONFIG_64BIT
+-#define flush_cache_vmap(start, end)	flush_tlb_kernel_range(start, end)
++#define flush_cache_vmap(start, end)		flush_tlb_kernel_range(start, end)
++#define flush_cache_vmap_early(start, end)	local_flush_tlb_kernel_range(start, end)
+ #endif
+ 
+ #ifndef CONFIG_SMP
+diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+index 8f3418c5f172..a60416bbe190 100644
+--- a/arch/riscv/include/asm/tlbflush.h
++++ b/arch/riscv/include/asm/tlbflush.h
+@@ -41,6 +41,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		     unsigned long end);
+ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
++void local_flush_tlb_kernel_range(unsigned long start, unsigned long end);
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index e6659d7368b3..8aadc5f71c93 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -66,6 +66,11 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
+ 		local_flush_tlb_range_threshold_asid(start, size, stride, asid);
+ }
+ 
++void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
++{
++	local_flush_tlb_range_asid(start, end, PAGE_SIZE, FLUSH_TLB_NO_ASID);
++}
++
+ static void __ipi_flush_tlb_all(void *info)
+ {
+ 	local_flush_tlb_all();
+diff --git a/arch/sh/include/asm/cacheflush.h b/arch/sh/include/asm/cacheflush.h
+index 878b6b551bd2..51112f54552b 100644
+--- a/arch/sh/include/asm/cacheflush.h
++++ b/arch/sh/include/asm/cacheflush.h
+@@ -90,6 +90,7 @@ extern void copy_from_user_page(struct vm_area_struct *vma,
+ 	unsigned long len);
+ 
+ #define flush_cache_vmap(start, end)		local_flush_cache_all(NULL)
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		local_flush_cache_all(NULL)
+ 
+ #define flush_dcache_mmap_lock(mapping)		do { } while (0)
+diff --git a/arch/sparc/include/asm/cacheflush_32.h b/arch/sparc/include/asm/cacheflush_32.h
+index f3b7270bf71b..9fee0ccfccb8 100644
+--- a/arch/sparc/include/asm/cacheflush_32.h
++++ b/arch/sparc/include/asm/cacheflush_32.h
+@@ -48,6 +48,7 @@ static inline void flush_dcache_page(struct page *page)
+ #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+ #define flush_cache_vmap(start, end)		flush_cache_all()
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		flush_cache_all()
+ 
+ /* When a context switch happens we must flush all user windows so that
+diff --git a/arch/sparc/include/asm/cacheflush_64.h b/arch/sparc/include/asm/cacheflush_64.h
+index 0e879004efff..2b1261b77ecd 100644
+--- a/arch/sparc/include/asm/cacheflush_64.h
++++ b/arch/sparc/include/asm/cacheflush_64.h
+@@ -75,6 +75,7 @@ void flush_ptrace_access(struct vm_area_struct *, struct page *,
+ #define flush_dcache_mmap_unlock(mapping)	do { } while (0)
+ 
+ #define flush_cache_vmap(start, end)		do { } while (0)
++#define flush_cache_vmap_early(start, end)	do { } while (0)
+ #define flush_cache_vunmap(start, end)		do { } while (0)
+ 
+ #endif /* !__ASSEMBLY__ */
+diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/asm/cacheflush.h
+index 785a00ce83c1..38bcecb0e457 100644
+--- a/arch/xtensa/include/asm/cacheflush.h
++++ b/arch/xtensa/include/asm/cacheflush.h
+@@ -116,8 +116,9 @@ void flush_cache_page(struct vm_area_struct*,
+ #define flush_cache_mm(mm)		flush_cache_all()
+ #define flush_cache_dup_mm(mm)		flush_cache_mm(mm)
+ 
+-#define flush_cache_vmap(start,end)	flush_cache_all()
+-#define flush_cache_vunmap(start,end)	flush_cache_all()
++#define flush_cache_vmap(start,end)		flush_cache_all()
++#define flush_cache_vmap_early(start,end)	do { } while (0)
++#define flush_cache_vunmap(start,end)		flush_cache_all()
+ 
+ void flush_dcache_folio(struct folio *folio);
+ #define flush_dcache_folio flush_dcache_folio
+@@ -140,6 +141,7 @@ void local_flush_cache_page(struct vm_area_struct *vma,
+ #define flush_cache_dup_mm(mm)				do { } while (0)
+ 
+ #define flush_cache_vmap(start,end)			do { } while (0)
++#define flush_cache_vmap_early(start,end)		do { } while (0)
+ #define flush_cache_vunmap(start,end)			do { } while (0)
+ 
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+diff --git a/include/asm-generic/cacheflush.h b/include/asm-generic/cacheflush.h
+index 84ec53ccc450..7ee8a179d103 100644
+--- a/include/asm-generic/cacheflush.h
++++ b/include/asm-generic/cacheflush.h
+@@ -91,6 +91,12 @@ static inline void flush_cache_vmap(unsigned long start, unsigned long end)
+ }
+ #endif
+ 
++#ifndef flush_cache_vmap_early
++static inline void flush_cache_vmap_early(unsigned long start, unsigned long end)
++{
++}
++#endif
++
+ #ifndef flush_cache_vunmap
+ static inline void flush_cache_vunmap(unsigned long start, unsigned long end)
+ {
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 7b97d31df767..4e11fc1e6def 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -3333,13 +3333,7 @@ int __init pcpu_page_first_chunk(size_t reserved_size, pcpu_fc_cpu_to_node_fn_t
+ 		if (rc < 0)
+ 			panic("failed to map percpu area, err=%d\n", rc);
+ 
+-		/*
+-		 * FIXME: Archs with virtual cache should flush local
+-		 * cache for the linear mapping here - something
+-		 * equivalent to flush_cache_vmap() on the local cpu.
+-		 * flush_cache_vmap() can't be used as most supporting
+-		 * data structures are not set up yet.
+-		 */
++		flush_cache_vmap_early(unit_addr, unit_addr + ai->unit_size);
+ 
+ 		/* copy static data */
+ 		memcpy((void *)unit_addr, __per_cpu_load, ai->static_size);
 -- 
-Kees Cook
+2.39.2
+
