@@ -2,82 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D301780F8F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE9B80F982
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377530AbjLLVRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        id S1377574AbjLLVgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:36:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjLLVRh (ORCPT
+        with ESMTP id S1377564AbjLLVg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:17:37 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C784ABC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:17:42 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d0b2752dc6so54812055ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702415862; x=1703020662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YgP6QDGYW90+EPtUKh6hhExTw/nr/8L1WXYuh71GNlI=;
-        b=EBII8CWqTewHCYUKQvaukG1zWeJjB2pl/RbMg+j8fFcvUq11md9ygurXaQ0F8RZJRd
-         QN9d/19YNp3UbZ8oh9br9LCWCn2S3HP6xRQ592cXogzBEjuqKMlAo7D2tjJgS0BmhQwY
-         x3edF44sbx8FhzObBflU+lF0Lssb3eOq3JnHc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702415862; x=1703020662;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YgP6QDGYW90+EPtUKh6hhExTw/nr/8L1WXYuh71GNlI=;
-        b=iuhE7Nkn8Reo7m6bFH0pWTKdAC6Ae3+H5cnNOjBqs3/dbY6tFHDJT7hBwnPxRt3FUm
-         fJfk7Fo+zxsA8v2rJLZrLIQVFHDkshB9Ni3P4o62jOLSnMetgm3s/e6vDdJNS8JB8U9V
-         upTdCJkyZDRwKA8B8OvBY1/V/qZ96Byucqz96GHtsH9YvQgkb2sh9soyXpmTUuTfYN05
-         wM3DCA1TM58cLdtNyrLp7+SzHWu6oa1MdOQSPs+S200sUCLj76QSXz0nKIY3GYNN9fZR
-         8+KT0z4chNyH9d1+uxbo4UIcTF8fKvtLCdiYSylgzA7jH04hOT6/Typ384iCujEayVhG
-         U43Q==
-X-Gm-Message-State: AOJu0YyR/cbIYnwwSr5UoDdYPmjaGi7l8kxdDHEixt6sntj1YdvOWikR
-        pyvqFOc9bqQyMQbIqqm17gCAhg==
-X-Google-Smtp-Source: AGHT+IFjDgIDgEDyV0NYMtC7wrznCUmiU5/lWSweOP8HyZzQAO0+By9K4rXrnLgAr+Ii7qKKdIvgKg==
-X-Received: by 2002:a17:902:e74e:b0:1cc:5e1b:98b5 with SMTP id p14-20020a170902e74e00b001cc5e1b98b5mr7270093plf.66.1702415862230;
-        Tue, 12 Dec 2023 13:17:42 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g14-20020a1709029f8e00b001cf7c07be50sm9052322plq.58.2023.12.12.13.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:17:41 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v3 3/3] kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to strscpy()
-Date:   Tue, 12 Dec 2023 13:17:40 -0800
-Message-Id: <20231212211741.164376-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212211606.make.155-kees@kernel.org>
-References: <20231212211606.make.155-kees@kernel.org>
+        Tue, 12 Dec 2023 16:36:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A364CE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:36:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13DFC433C7;
+        Tue, 12 Dec 2023 21:36:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702416993;
+        bh=7eLZmT4c+fhFsyeFMw0JfCmjrU8I9lIkdJtLdS55xkI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jogJziO6KMjsDBdgTJ3ForpAxZ2uFB69WZGXd3/IfFyg5tI+o5RHURJQ5VRTxE6Fr
+         C7Zbo3zE8fb2bRohJVE808bYOONGZLkZg+KBkwOZb/yHfUpsimO4JHhTJed8xjn6Od
+         F2HFZr0skIQJQRqzTV/DbxXbxZG6TLjbK3B3fG+kEHSmDbz7rMlQSFjus3J1wPqEko
+         RqOhl9hRq8kXc/4jUEJunbPBlWk+qDiAjxoZ9XlsuqqVrTkeEcADCMv/QhZvgLqX1e
+         zZ85U+5FZbgw/vVOC6RlquCAdfIJMGzs6J0yNJuKc0qayPp5USq1o1vZsSITFzKmYm
+         c8mZD3flToCpw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] media: i2c: mt9m114: add CONFIG_COMMON_CLK dependency
+Date:   Tue, 12 Dec 2023 22:18:04 +0100
+Message-Id: <20231212213625.3653558-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8042; i=keescook@chromium.org;
- h=from:subject; bh=shZXUYfHvcn83JB9rTJeaRzUZqZ1UgzjWRrQTVCVtxU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM30G+t8NV/vyHSFzjkC+K+Zj47yXA4kAs33K
- S4H3DoxNmuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN9AAKCRCJcvTf3G3A
- JkyTEAConGhiBLHsocQ8sbSwq6RTnjeVAFv2A72J5kJK8MHW3sFiydk6ragXK0H4NjhddAT6k9R
- Iwpc+sAMeXtC5LSHlbkxzwxmAmTpvdZ0+HkpGNofYnO1GRBS2tNZQBx2xovmaBZGLhI3uL1S2Mf
- uFy1jEp7IRjwOUbM1zHWV4bM+TLIxRHQDtwtec7aUCS9kz92muBO+LZI8wOqu3//0chhPA/oJYK
- OmIQjfULUR5a/IzcHJAYVXdcRoDKXwclSWSFPM/lbR+ZX7XOdatfwteancUB7mA3VqMASoK6jzD
- /WWodvOyGvMywKDybb9iVwPwLdcDqi6f6YRwUsKHrO1PU0X/vaRreWv0AW+McpdjcGDDak159n5
- dLG/EkNlTRggxw61NNRmjuUIplvXSnvWAMjv1qumw8iiEzajnLTxs+d3rF7yWOneFFWz8cuucBs
- T6q984RP+2VM4dWIU9dRcdMhF4+sfRiXBnCq95xZcrcakrbEqaZ1G6JMiaKn+pTpTGFBrSw9CAT
- 91oa2XERahlLlqpV8VMm0QS8tptziqLPqdU3+jQq45xdbDLw4g26B01O8G9PkgXEBkYxNXi2CfE
- mc85dyxzgFB/wBjBPh0kEN9HaDc4FwRSQ25SkObRCYaStboeynzw51FRZV/pJz/aF6MJJlMUqNu aYQ0Cy79yRW6wZg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -89,209 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of the last remaining users of strlcpy() in the kernel is
-kernfs_path_from_node_locked(), which passes back the problematic "length
-we _would_ have copied" return value to indicate truncation.  Convert the
-chain of all callers to use the negative return value (some of which
-already doing this explicitly). All callers were already also checking
-for negative return values, so the risk to missed checks looks very low.
+From: Arnd Bergmann <arnd@arndb.de>
 
-In this analysis, it was found that cgroup1_release_agent() actually
-didn't handle the "too large" condition, so this is technically also a
-bug fix. :)
+With clang-16, building without COMMON_CLK triggers a range check on
+udelay() because of a constant division-by-zero calculation:
 
-Here's the chain of callers, and resolution identifying each one as now
-handling the correct return value:
+ld.lld: error: undefined symbol: __bad_udelay
+>>> referenced by mt9m114.c
+>>>               drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
 
-kernfs_path_from_node_locked()
-        kernfs_path_from_node()
-                pr_cont_kernfs_path()
-                        returns void
-                kernfs_path()
-                        sysfs_warn_dup()
-                                return value ignored
-                        cgroup_path()
-                                blkg_path()
-                                        bfq_bic_update_cgroup()
-                                                return value ignored
-                                TRACE_IOCG_PATH()
-                                        return value ignored
-                                TRACE_CGROUP_PATH()
-                                        return value ignored
-                                perf_event_cgroup()
-                                        return value ignored
-                                task_group_path()
-                                        return value ignored
-                                damon_sysfs_memcg_path_eq()
-                                        return value ignored
-                                get_mm_memcg_path()
-                                        return value ignored
-                                lru_gen_seq_show()
-                                        return value ignored
-                        cgroup_path_from_kernfs_id()
-                                return value ignored
-                cgroup_show_path()
-                        already converted "too large" error to negative value
-                cgroup_path_ns_locked()
-                        cgroup_path_ns()
-                                bpf_iter_cgroup_show_fdinfo()
-                                        return value ignored
-                                cgroup1_release_agent()
-                                        wasn't checking "too large" error
-                        proc_cgroup_show()
-                                already converted "too large" to negative value
+Avoid this by adding a Kconfig dependency that avoids the broken build.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: cgroups@vger.kernel.org
-Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/kernfs/dir.c           | 34 +++++++++++++++++-----------------
- kernel/cgroup/cgroup-v1.c |  2 +-
- kernel/cgroup/cgroup.c    |  4 ++--
- kernel/cgroup/cpuset.c    |  2 +-
- 4 files changed, 21 insertions(+), 21 deletions(-)
+ drivers/media/i2c/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8c0e5442597e..8ec73f6cf6ec 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
-  *
-  * [3] when @kn_to is %NULL result will be "(null)"
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	struct kernfs_node *kn, *common;
- 	const char parent_str[] = "/..";
- 	size_t depth_from, depth_to, len = 0;
-+	ssize_t copied;
- 	int i, j;
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index aae05142e191..b224c37bfd77 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -228,6 +228,7 @@ config VIDEO_MT9M111
  
- 	if (!kn_to)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
- 
- 	if (!kn_from)
- 		kn_from = kernfs_root(kn_to)->kn;
- 
- 	if (kn_from == kn_to)
--		return strlcpy(buf, "/", buflen);
-+		return strscpy(buf, "/", buflen);
- 
- 	common = kernfs_common_ancestor(kn_from, kn_to);
- 	if (WARN_ON(!common))
-@@ -158,18 +159,19 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 
- 	buf[0] = '\0';
- 
--	for (i = 0; i < depth_from; i++)
--		len += strlcpy(buf + len, parent_str,
--			       len < buflen ? buflen - len : 0);
-+	for (i = 0; i < depth_from; i++) {
-+		copied = strscpy(buf + len, parent_str, buflen - len);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
-+	}
- 
- 	/* Calculate how many bytes we need for the rest */
- 	for (i = depth_to - 1; i >= 0; i--) {
- 		for (kn = kn_to, j = 0; j < i; j++)
- 			kn = kn->parent;
--		len += strlcpy(buf + len, "/",
--			       len < buflen ? buflen - len : 0);
--		len += strlcpy(buf + len, kn->name,
--			       len < buflen ? buflen - len : 0);
-+
-+		len += scnprintf(buf + len, buflen - len, "/%s", kn->name);
- 	}
- 
- 	return len;
-@@ -214,7 +216,7 @@ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
-  * path (which includes '..'s) as needed to reach from @from to @to is
-  * returned.
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -265,12 +267,10 @@ void pr_cont_kernfs_path(struct kernfs_node *kn)
- 	sz = kernfs_path_from_node(kn, NULL, kernfs_pr_cont_buf,
- 				   sizeof(kernfs_pr_cont_buf));
- 	if (sz < 0) {
--		pr_cont("(error)");
--		goto out;
--	}
--
--	if (sz >= sizeof(kernfs_pr_cont_buf)) {
--		pr_cont("(name too long)");
-+		if (sz == -E2BIG)
-+			pr_cont("(name too long)");
-+		else
-+			pr_cont("(error)");
- 		goto out;
- 	}
- 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 76db6c67e39a..9cb00ebe9ac6 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -802,7 +802,7 @@ void cgroup1_release_agent(struct work_struct *work)
- 		goto out_free;
- 
- 	ret = cgroup_path_ns(cgrp, pathbuf, PATH_MAX, &init_cgroup_ns);
--	if (ret < 0 || ret >= PATH_MAX)
-+	if (ret < 0)
- 		goto out_free;
- 
- 	argv[0] = agentbuf;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4b9ff41ca603..8d2674c6aaef 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
- 	spin_unlock_irq(&css_set_lock);
- 
--	if (len >= PATH_MAX)
-+	if (len == -E2BIG)
- 		len = -ERANGE;
- 	else if (len > 0) {
- 		seq_escape(sf, buf, " \t\n\\");
-@@ -6301,7 +6301,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
- 			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
- 						current->nsproxy->cgroup_ns);
--			if (retval >= PATH_MAX)
-+			if (retval == -E2BIG)
- 				retval = -ENAMETOOLONG;
- 			if (retval < 0)
- 				goto out_unlock;
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 615daaf87f1f..fb29158ae825 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
- 				current->nsproxy->cgroup_ns);
- 	css_put(css);
--	if (retval >= PATH_MAX)
-+	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
- 		goto out_free;
+ config VIDEO_MT9M114
+ 	tristate "onsemi MT9M114 sensor support"
++	depends on COMMON_CLK
+ 	select V4L2_CCI_I2C
+ 	help
+ 	  This is a Video4Linux2 sensor-level driver for the onsemi MT9M114
 -- 
-2.34.1
+2.39.2
 
