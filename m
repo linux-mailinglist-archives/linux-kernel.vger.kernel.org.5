@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E49080EEE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 850CC80EEE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376834AbjLLOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
+        id S1376839AbjLLOgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376799AbjLLOgU (ORCPT
+        with ESMTP id S1376799AbjLLOgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:36:20 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 808608E;
-        Tue, 12 Dec 2023 06:36:26 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55E94143D;
-        Tue, 12 Dec 2023 06:37:12 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BB023F738;
-        Tue, 12 Dec 2023 06:36:21 -0800 (PST)
-Message-ID: <2adf8e9c-e08d-a772-bfe2-378d6759721f@arm.com>
-Date:   Tue, 12 Dec 2023 14:36:21 +0000
+        Tue, 12 Dec 2023 09:36:46 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4993BED;
+        Tue, 12 Dec 2023 06:36:51 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BCEaeNx103930;
+        Tue, 12 Dec 2023 08:36:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702391800;
+        bh=cACDINKX/NHaJbO2EEIFjsKsxwauenGaOvSIM4XU+YI=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=GHScZKdA1s4vcjIOBkAsB8Dz5SOs6uRPGA2J+b94vsI21fDtpG3UgzmNhGR2bLCDv
+         GvZIGWKvpIDiuLMDJfVXKNPib5B8YSlK/cqZXgDqKRbEJrlEN0yPc5qSp3h1eAoQSu
+         XmaKRLAcVJkq3LBzGyloS+ZbBr+PkgL7oFJ1DUOI=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BCEaee8017392
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Dec 2023 08:36:40 -0600
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 12
+ Dec 2023 08:36:40 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 12 Dec 2023 08:36:40 -0600
+Received: from [10.247.16.251] (ula0226330.dhcp.ti.com [10.247.16.251])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BCEad2B063051;
+        Tue, 12 Dec 2023 08:36:39 -0600
+Message-ID: <5c92ae04-f8c3-40b4-a727-ac7ea5df4295@ti.com>
+Date:   Tue, 12 Dec 2023 08:36:39 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 07/14] perf arm-spe/cs-etm: Directly iterate CPU maps
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] arm64: dts: ti: k3-j721e-evm: Add overlay for
+ PCIE0 Endpoint Mode
 Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org, Leo Yan <leo.yan@linaro.org>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-8-irogers@google.com>
- <e3a01313-ed03-bc54-0260-5445fb2c15ee@arm.com>
-In-Reply-To: <e3a01313-ed03-bc54-0260-5445fb2c15ee@arm.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>
+References: <20231211115535.1264353-1-s-vadapalli@ti.com>
+ <20231211115535.1264353-2-s-vadapalli@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20231211115535.1264353-2-s-vadapalli@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,210 +70,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/12/2023 14:17, James Clark wrote:
+On 12/11/23 5:55 AM, Siddharth Vadapalli wrote:
+> Add overlay to enable the PCIE0 instance of PCIe on J721E-EVM in
+> Endpoint mode of operation.
 > 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Reviewed-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/Makefile               |  6 ++-
+>   .../boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso    | 53 +++++++++++++++++++
+>   2 files changed, 58 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso
 > 
-> On 29/11/2023 06:02, Ian Rogers wrote:
->> Rather than iterate all CPUs and see if they are in CPU maps, directly
->> iterate the CPU map. Similarly make use of the intersect
->> function. Switch perf_cpu_map__has_any_cpu_or_is_empty to more
->> appropriate alternatives.
->>
->> Signed-off-by: Ian Rogers <irogers@google.com>
->> ---
->>  tools/perf/arch/arm/util/cs-etm.c    | 77 ++++++++++++----------------
->>  tools/perf/arch/arm64/util/arm-spe.c |  4 +-
->>  2 files changed, 34 insertions(+), 47 deletions(-)
->>
->> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
->> index 77e6663c1703..a68a72f2f668 100644
->> --- a/tools/perf/arch/arm/util/cs-etm.c
->> +++ b/tools/perf/arch/arm/util/cs-etm.c
->> @@ -197,38 +197,32 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
->>  static int cs_etm_validate_config(struct auxtrace_record *itr,
->>  				  struct evsel *evsel)
->>  {
->> -	int i, err = -EINVAL;
->> +	int idx, err = -EINVAL;
->>  	struct perf_cpu_map *event_cpus = evsel->evlist->core.user_requested_cpus;
->>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->> +	struct perf_cpu_map *intersect_cpus = perf_cpu_map__intersect(event_cpus, online_cpus);
->> +	struct perf_cpu cpu;
->>  
->> -	/* Set option of each CPU we have */
->> -	for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -		struct perf_cpu cpu = { .cpu = i, };
->> -
->> -		/*
->> -		 * In per-cpu case, do the validation for CPUs to work with.
->> -		 * In per-thread case, the CPU map is empty.  Since the traced
->> -		 * program can run on any CPUs in this case, thus don't skip
->> -		 * validation.
->> -		 */
->> -		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
->> -		    !perf_cpu_map__has(event_cpus, cpu))
->> -			continue;
-> 
-> This has broken validation for per-thread sessions.
-> perf_cpu_map__intersect() doesn't seem to be able to handle the case
-> where an 'any' map intersected with an online map should return the
-> online map. Or at least it should for this to work, and it seems to make
-> sense for it to work that way.
-> 
-> At least that was my initial impression, but I only debugged it and saw
-> that the loop is now skipped entirely.
-> 
->> -
->> -		if (!perf_cpu_map__has(online_cpus, cpu))
->> -			continue;
->> +	perf_cpu_map__put(online_cpus);
->>  
->> -		err = cs_etm_validate_context_id(itr, evsel, i);
->> +	/*
->> +	 * Set option of each CPU we have. In per-cpu case, do the validation
->> +	 * for CPUs to work with.  In per-thread case, the CPU map is empty.
->> +	 * Since the traced program can run on any CPUs in this case, thus don't
->> +	 * skip validation.
->> +	 */
->> +	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
->> +		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
->>  		if (err)
->>  			goto out;
->> -		err = cs_etm_validate_timestamp(itr, evsel, i);
->> +		err = cs_etm_validate_timestamp(itr, evsel, idx);
->>  		if (err)
->>  			goto out;
->>  	}
->>  
->>  	err = 0;
->>  out:
->> -	perf_cpu_map__put(online_cpus);
->> +	perf_cpu_map__put(intersect_cpus);
->>  	return err;
->>  }
->>  
->> @@ -435,7 +429,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->>  	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
->>  	 * when a context switch happened.
->>  	 */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
->>  					   "timestamp", 1);
->>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
->> @@ -461,7 +455,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->>  	evsel->core.attr.sample_period = 1;
->>  
->>  	/* In per-cpu case, always need the time of mmap events etc */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
->>  		evsel__set_sample_bit(evsel, TIME);
->>  
->>  	err = cs_etm_validate_config(itr, cs_etm_evsel);
->> @@ -533,38 +527,32 @@ static size_t
->>  cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
->>  		      struct evlist *evlist __maybe_unused)
->>  {
->> -	int i;
->> +	int idx;
->>  	int etmv3 = 0, etmv4 = 0, ete = 0;
->>  	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
->>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->> +	struct perf_cpu cpu;
->>  
->>  	/* cpu map is not empty, we have specific CPUs to work with */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> -
->> -			if (!perf_cpu_map__has(event_cpus, cpu) ||
->> -			    !perf_cpu_map__has(online_cpus, cpu))
->> -				continue;
->> +	if (!perf_cpu_map__is_empty(event_cpus)) {
->> +		struct perf_cpu_map *intersect_cpus =
->> +			perf_cpu_map__intersect(event_cpus, online_cpus);
->>  
->> -			if (cs_etm_is_ete(itr, i))
->> +		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
->> +			if (cs_etm_is_ete(itr, cpu.cpu))
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 1ac47876bc99..c6606b7678a3 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -67,6 +67,7 @@ k3-j721e-evm-dtbs := k3-j721e-common-proc-board.dtb k3-j721e-evm-quad-port-eth-e
+>   dtb-$(CONFIG_ARCH_K3) += k3-j721e-beagleboneai64.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
+> +dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-pcie0-ep.dtbo
 
-Similar problem here. For a per-thread session, the CPU map is not empty
-(it's an 'any' map, presumably length 1), so it comes into this first
-if, rather than the else below which is for the 'any' scenario.
+See, much easier :)
 
-Then the intersect with online CPUs results in an empty map, so no CPU
-metadata is recorded, then the session fails.
+Reviewed-by: Andrew Davis <afd@ti.com>
 
-If you made the intersect work in the way I mentioned above we could
-also delete the else below, because that's just another way to convert
-from 'any' to 'all online'.
-
->>  				ete++;
->> -			else if (cs_etm_is_etmv4(itr, i))
->> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
->>  				etmv4++;
->>  			else
->>  				etmv3++;
->>  		}
->> +		perf_cpu_map__put(intersect_cpus);
->>  	} else {
->>  		/* get configuration for all CPUs in the system */
->> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> -
->> -			if (!perf_cpu_map__has(online_cpus, cpu))
->> -				continue;
->> -
->> -			if (cs_etm_is_ete(itr, i))
->> +		perf_cpu_map__for_each_cpu(cpu, idx, online_cpus) {
->> +			if (cs_etm_is_ete(itr, cpu.cpu))
->>  				ete++;
->> -			else if (cs_etm_is_etmv4(itr, i))
->> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
->>  				etmv4++;
->>  			else
->>  				etmv3++;
->> @@ -814,15 +802,14 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
->>  		return -EINVAL;
->>  
->>  	/* If the cpu_map is empty all online CPUs are involved */
->> -	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->> +	if (perf_cpu_map__is_empty(event_cpus)) {
->>  		cpu_map = online_cpus;
->>  	} else {
->>  		/* Make sure all specified CPUs are online */
->> -		for (i = 0; i < perf_cpu_map__nr(event_cpus); i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> +		struct perf_cpu cpu;
->>  
->> -			if (perf_cpu_map__has(event_cpus, cpu) &&
->> -			    !perf_cpu_map__has(online_cpus, cpu))
->> +		perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
->> +			if (!perf_cpu_map__has(online_cpus, cpu))
->>  				return -EINVAL;
->>  		}
->>  
->> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
->> index 51ccbfd3d246..0b52e67edb3b 100644
->> --- a/tools/perf/arch/arm64/util/arm-spe.c
->> +++ b/tools/perf/arch/arm64/util/arm-spe.c
->> @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->>  	 * In the case of per-cpu mmaps, sample CPU for AUX event;
->>  	 * also enable the timestamp tracing for samples correlation.
->>  	 */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_sample_bit(arm_spe_evsel, CPU);
->>  		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
->>  					   "ts_enable", 1);
->> @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->>  	tracking_evsel->core.attr.sample_period = 1;
->>  
->>  	/* In per-cpu case, always need the time of mmap events etc */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_sample_bit(tracking_evsel, TIME);
->>  		evsel__set_sample_bit(tracking_evsel, CPU);
->>  
+>   dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
+>   
+>   # Boards with J721s2 SoC
+> @@ -103,6 +104,8 @@ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
+>   	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+>   k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
+>   	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
+> +k3-j721e-evm-pcie0-ep-dtbs := k3-j721e-common-proc-board.dtb \
+> +	k3-j721e-evm-pcie0-ep.dtbo
+>   dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>   	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
+>   	k3-am625-sk-csi2-imx219.dtb \
+> @@ -113,7 +116,8 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+>   	k3-am62a7-sk-csi2-imx219.dtb \
+>   	k3-am62a7-sk-csi2-ov5640.dtb \
+>   	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
+> -	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
+> +	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb \
+> +	k3-j721e-evm-pcie0-ep.dtb
+>   
+>   # Enable support for device-tree overlays
+>   DTC_FLAGS_k3-am625-beagleplay += -@
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso b/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso
+> new file mode 100644
+> index 000000000000..0c82a13b65a4
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-j721e-evm-pcie0-ep.dtso
+> @@ -0,0 +1,53 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/**
+> + * DT Overlay for enabling PCIE0 instance in Endpoint Configuration with the
+> + * J7 common processor board.
+> + *
+> + * J7 Common Processor Board Product Link: https://www.ti.com/tool/J721EXCPXEVM
+> + *
+> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> +#include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +
+> +#include "k3-pinctrl.h"
+> +
+> +/*
+> + * Since Root Complex and Endpoint modes are mutually exclusive
+> + * disable Root Complex mode.
+> + */
+> +&pcie0_rc {
+> +	status = "disabled";
+> +};
+> +
+> +&cbass_main {
+> +	#address-cells = <2>;
+> +	#size-cells = <2>;
+> +	interrupt-parent = <&gic500>;
+> +
+> +	pcie0_ep: pcie-ep@2900000 {
+> +		compatible = "ti,j721e-pcie-ep";
+> +		reg = <0x00 0x02900000 0x00 0x1000>,
+> +		      <0x00 0x02907000 0x00 0x400>,
+> +		      <0x00 0x0d000000 0x00 0x00800000>,
+> +		      <0x00 0x10000000 0x00 0x08000000>;
+> +		reg-names = "intd_cfg", "user_cfg", "reg", "mem";
+> +		interrupt-names = "link_state";
+> +		interrupts = <GIC_SPI 318 IRQ_TYPE_EDGE_RISING>;
+> +		ti,syscon-pcie-ctrl = <&scm_conf 0x4070>;
+> +		max-link-speed = <3>;
+> +		num-lanes = <1>;
+> +		power-domains = <&k3_pds 239 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 239 1>;
+> +		clock-names = "fck";
+> +		max-functions = /bits/ 8 <6>;
+> +		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
+> +		dma-coherent;
+> +		phys = <&serdes0_pcie_link>;
+> +		phy-names = "pcie-phy";
+> +	};
+> +};
