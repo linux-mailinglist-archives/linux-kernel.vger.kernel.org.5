@@ -2,175 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5731580E320
+	by mail.lfdr.de (Postfix) with ESMTP id AA29380E321
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 05:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbjLLD71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        id S229486AbjLLD4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLLD70 (ORCPT
+        with ESMTP id S229470AbjLLD4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:59:26 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB59B8E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:59:32 -0800 (PST)
+        Mon, 11 Dec 2023 22:56:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E768E;
+        Mon, 11 Dec 2023 19:56:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702353572; x=1733889572;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Afw15phHVe1Jt4mVG0qU1/2iUMnOrh9UOSr/5QymW6g=;
-  b=K6MHO7DD4KnK+YGkFt82nl4vg0ywVtK+5mIRDJMMDIIfmk386FGeOShe
-   mjlQyMTSbmuxT77CwtfnPfb9tPAIvgRKpLFIo7+nRepuSPTmYFLiygABn
-   eKdVEoGbItM/q+n5AVWVU7bTyXh9ifIYagL6C+wFXWpPY9gwr4Fv82Ea/
-   3wTqFYPTCOc30Y+SwisaQvxeRZO4gPqdhrwNeI70HB04tB0pFUyrAbLAg
-   nm1wOM7m7kuLPUQunMAFmLVQf3eYwWQVNAyYpdAz0t5nfgdLEwmAnwwCg
-   DcmFyZsNsDvbqQJ09mXhmGZrvQ3av+gDMOHlOHsRHA2FjH9Ej+ITDyVBB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="374907654"
+  t=1702353412; x=1733889412;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=YyYiw+x6CmSh+3IRMF7aGK/2pcCSXztQnOzkF5LisFM=;
+  b=f+OKzykHWfraue+Pq8OrCD6FGOWAWUmGkNs+SBdIQAFZTsZaK2rM1Zz2
+   oWaB2yFvsTXIcjsia7Rc+thPiMwUUQTgnqw+RiECE7XdVOZuytDl1/5JT
+   u55gvSIISyXIiKKwSAmwwyXHHTv5fj3uAL0Y0FDFQf+lOeXoK8D8JqRTK
+   CEhlcWYG+LtgWwbDgqo/8g6xCU2eoaORMGSlQjaKMAlJ/1isbTFzd5VeP
+   TgMPs2XkMRbYT4kb2G7oOwy/w9cUX+32QBRo8LFSCQJ2p5ENuiU3g+d8w
+   vrNn0WhLL4agKEqBy+mIOBUMhT4TNiH31wEiKIU8bYLezdRO0KTlRjomo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="461225551"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="374907654"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 19:59:32 -0800
+   d="scan'208";a="461225551"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 19:56:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1020525995"
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="723073359"
 X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="1020525995"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Dec 2023 19:59:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rCtvd-000IkJ-0C;
-        Tue, 12 Dec 2023 03:59:29 +0000
-Date:   Tue, 12 Dec 2023 11:59:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Vineet Gupta <vgupta@synopsys.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org
-Subject: arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202312121137.0sza62Xl-lkp@intel.com>
+   d="scan'208";a="723073359"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 19:56:51 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 19:56:51 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 19:56:51 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 19:56:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OUREAGlAOtfa5JT3IxiyjzXqJ7KoTH+mR3bRdp53MHkJGvh0DnANyN5M0yFsF6keaMSOxwukK19N3xzpcQq1iEORjZaqDRKOgWHdbGtLIIbxRtlzXTac4Cqc0sDcz6MGB/u8Ef5Lwn4ySNqZWP2rHzg3Ue+mGCBZFJfMRNa6e3oFJeQ/tmOMgfRbYGWF15P+jIdxkm1wxa9I9Rlt6m+Fiu+gPSKjyLNdss81+9NF2KsA7/eLp+L47hN0bDhjsWJLP+7PhRLv6q7/phnefCZu0ON5sSRbGXYiWKpkSJitgUdXqkLaV+E2I1T96kt2UersJ7mJ8DHqRUc1IBdcUhJ9Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IYR5VAE/TWoMYR3KFBqrYMyxZYuqUCXiqUCYfLrADuQ=;
+ b=ilHiHNGCqS0n9mLu4VYUh5O97zxbM2k9ZKvg/H6nZg/1VPI9jNZm07aBQRYUC8ibger/faUocs49T9xS6+FsAjPS6p90DkaMuvZHzvWu2yU658hSvqB8qDSg9rRonW7f2Z22NJuV7RzeI5t6OO76JsYTd1Zi6jfVoAfbLKeyJv3SGukkvwXheWyqBfjc7hAONr7Sl3m0l3PuENMH0Am1kUY00ZJJ4ufcDyfY9j8HiFGpztDxgFaIDDDCwOQNT/CNzRfUpIvMExFFWXOm9B8WzvGSLbL4jMr+y8EWbasHIEs955184pP6BP1/5oRdpfptA1UQ/zTuhe7F5V+hhvSJYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by DS0PR11MB7631.namprd11.prod.outlook.com (2603:10b6:8:14e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
+ 2023 03:56:49 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
+ 03:56:49 +0000
+Message-ID: <3c5840c1-7526-4275-becd-ad5af9fc78a5@intel.com>
+Date:   Tue, 12 Dec 2023 11:59:26 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/3] iommu/vt-d: Add iotlb flush for nested domain
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        <xin.zeng@intel.com>, <yan.y.zhao@intel.com>
+References: <20231117131816.24359-1-yi.l.liu@intel.com>
+ <20231117131816.24359-4-yi.l.liu@intel.com>
+ <20231206185657.GC2692119@nvidia.com>
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <20231206185657.GC2692119@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0043.apcprd02.prod.outlook.com
+ (2603:1096:4:196::12) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DS0PR11MB7631:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78bea3ed-fede-4c57-ce73-08dbfac65dda
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HfW/s25WEOb5ICSHPV5toQEK9C7DqYha0rUpt2BauMtlSPSS8m9VOFNZtzTgxsw2FuB3SKN5mf9E9jK/Kr2SoJ+XC02VXl4unilImx3qcVg/0sJS+lSBQ6C25XfitRwSuJ/L3M4W92g7SYplQHACJMznOiRbyXty9nDCWGh2V96SkjEDXDEYp9nkg+FN+lLwEScQltmaCyog5gPryNtfOd/U3Q5RFQJ9Rz5mD/juEwfJfwCyJKmAFvM2tMvmeHu04FpM7Txn5xdgGkTf0vHcP0kIjIyLp+Eyt5kKnbcD7OlKgmUzDu07y8PZ6eMTO5LIHktuYpShqjz6WcRQMukrs9hZTDhaNJz+LK+WmleGkgI07t64DEFbaTt9nYP5RzhnjAuWYubv8t3FArCR91XOKQsa/oNdV7qvJgCD6Ya5rPPulqJ4P2xOqeSYF7qEy/ZE7+3mDwh2i0E3m+1QgiWFP6iJ9YYrnzpdcjaXI1hXvDxd09EhsuP6E6Sqdh1UE/wJwGVgQQiGgDIH3cjZu7bLCctRSFpFrwdRd9Bq19e8bu/cEj6nEediFzlTj+sB9rkLpG1ZQF0nxzF9Q95kcNA5ZAUCmk/So1PJTKl3bKGrp9eV7oIwsKnHpVQE2+DyUCsYCY+YPski54ILWAPdSb8zYg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(366004)(396003)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(6512007)(53546011)(26005)(2616005)(6486002)(6666004)(6506007)(478600001)(41300700001)(83380400001)(7416002)(2906002)(5660300002)(66946007)(6916009)(66476007)(66556008)(4326008)(8936002)(8676002)(316002)(38100700002)(82960400001)(86362001)(31696002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VFNnM0xGUTRieVYyR3dZSVlXSnZ2cmp5WnI3akpDQmZWQXRsSlNBOWtEQjZ5?=
+ =?utf-8?B?eUdWVGlRY0xXbXNiYXlhYTJ6a3VlY1VJcXNyeFE0Sy9GOStha2krZ04zYTdh?=
+ =?utf-8?B?UHV5T0RQOG9jZWEzQzBZbDhMNG5wVXNGNW5uTzBhNi96ZVRBZlNuQmRpZi9a?=
+ =?utf-8?B?MHlZdmRQSHZDa2NVMW11VHo1YzdCaG55bjhzNFFQaUdjUzJYWEtybmYyYkJD?=
+ =?utf-8?B?cXI1WlNicXk0L3RuU1gvaVNBS2FycHVkNDdQRU9CaTEwc2NOYkhmZ29pRWt6?=
+ =?utf-8?B?bUM4Z3ZURlZYWWxLQ1gvQVpDbGtsVWNsWDdIN2JJcjR5bTRpaDlRMTM3R1Ji?=
+ =?utf-8?B?Rk5zS2JwQXcyNi9JVWR5d0NoeWlSRXFTUnh2QTVtOEl6d0hyYkx3ejJ4ajRN?=
+ =?utf-8?B?SEl2NkQ1ZHdoelJvRmRBTlZWY3VPdEhlV21LbHR2aGJMeGtNeEZBOTRrZUYy?=
+ =?utf-8?B?Q3puY3JvN1dMZWs3VS9sUTBEYWdJMFgrbFNGYlIwVTNDc2ZPbkRPSDZEQ0xK?=
+ =?utf-8?B?bm1yQ3laUEkvSVJnYXhmTzZkZDE1VzVqMGVZRlFVRDdVaWlPV3U0Mk1maFI0?=
+ =?utf-8?B?N0ZXbFE0bzNSdFlrd1lFUEJ2b2crTWZjRWNvd1dCLzJIM1cxSmNuZnU5QUVt?=
+ =?utf-8?B?RTQxOVUrSDd4aldvbE5vOGdQY1Q2RUtmcXBxK3V4Um9CcUE2NEcwTVRjaHZT?=
+ =?utf-8?B?Q3FBRDFDUCt2dHYwaFFZcGtjQUZ1UHdFcTVYUmIwZkUrMnl2M3EvckpqcW1U?=
+ =?utf-8?B?RGRYQVBvWjUwQU5QT01ucy9jcGtTSFhKdU1VczloVnVmcjFyYXlWVk9GUEZU?=
+ =?utf-8?B?Nlo2cjl3c2dZRlBPdk1zd1ZLaUNBdmVFSTIzdm5OMDFUbkhQZHROTVRLQzRw?=
+ =?utf-8?B?RmpnbkhzN3B1YzdlSmRkeHo3OVdmSE9uS2s3aEMza2hKcnhQRnRiQW1rR21V?=
+ =?utf-8?B?QUxSSWw5SG9mY3hTMUlsK0YvcjNKZ1J4LzRkaFE0bDlBVWNiUS9HdkIwUEhC?=
+ =?utf-8?B?eVg3RHpiQVprcGR0WnRadk5xZ3pKNFhuZWZLQUprT29QWXN5aElVM1BzMnQ4?=
+ =?utf-8?B?MFZVMHFNTkN1M0wybm1uMVluMlBLSEtxRXY0cTRnbHV6VzVvMitKV3JXL25O?=
+ =?utf-8?B?RXVQSSt0KytFZmhGbUNRTlAzWkM2VlMzeGNHbjY3Y2d5UGs2K2ZkT01ndm5D?=
+ =?utf-8?B?T2IvL1dhOVREamNRSTdqYXJNN2V5VU5iMFMyRVlqRUFyUHdpTFlBbFZzOEtr?=
+ =?utf-8?B?NVQrMnVKU1BMdWJhL0dNZkNTa3lsbmQvM2U0c1UzREUrTFUwc1U2QVhGV094?=
+ =?utf-8?B?cFd4V3Fwd3F6YnlUL0NOZHBlN3hVOGFXalluZGRNaWU0ZTRjMzd0WEZmSGVB?=
+ =?utf-8?B?NXd6RVFMOWpoSTByQ1ZhdWZLc2QrTUYzblFUZ1BmMnYycjVyOEFmSmhhc1o1?=
+ =?utf-8?B?TUcrcENPNmJOZ2lYT1NBaVN3N3MyU3p3ajJoWFNmZURRT0lnNUJMVWdkT3Nq?=
+ =?utf-8?B?YVJSVHIzRFFDbjNyN1dTa1ZydDRYRXU1SnF1KytCTUtpMjFSaDJEU3V5dmEz?=
+ =?utf-8?B?SUNGQXhhNjkveHh4TnJOYmw3MHhCZ0d0NjV5YlAwNVdnWTduOE5zSHh3QS9B?=
+ =?utf-8?B?a1VIdXFyeGIwM3A4OWxSRUxyVTd2OG1mRVlBRG51WVVrVkRRL0V0Ym1Ba1kv?=
+ =?utf-8?B?aHNlYTgvRkoyLzhlN1ZSWG5tc2kzNUNsQzlVWktFM3Y1eXFxWURUd2RvSVlC?=
+ =?utf-8?B?RlNCYlFqVVZsSm0valFPYWlyclhTVFZzM3EvalJhd3J2NEMrcUhwMTNCb05C?=
+ =?utf-8?B?eTlZMzVENUdKbytnZ0xHaHVYNXNub3hwNUJkNGlTam5jek54WStZSk5sQjFk?=
+ =?utf-8?B?R016ZzlhZjRuUE01QjJqNCtDUmJUSzhQamRjeW9Zai83QWkwbTBwTEVZaTNq?=
+ =?utf-8?B?Y1RrdWhuVWRsN2V2NDhDUmlLWTYrWU1yd1p2OUp0MFVXc1Y0YktFY0pqUzhR?=
+ =?utf-8?B?ZzJoNnpIRXU3R1NNWlJXc1lGeHZzYjcvUzdad2w3bFkxQnlNTTNLaW1YTzdz?=
+ =?utf-8?B?VU1PM3Jnd0FuZzlyRndTeERjMmU3OFJrNVRocFRWdE5wWE5GSU5uVW5kQ0ly?=
+ =?utf-8?Q?Ggwn+jHLXcnW2AQbZ06wUNxG4?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78bea3ed-fede-4c57-ce73-08dbfac65dda
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 03:56:49.1345
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pb85pqasjCLlwtvvpJe0ryMgDgaJAxZmxQvkp8G9Lu6uW7y0sPDQDgiYx4MPd8ewSprqMv0YcQlg3Bd6pMV6+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7631
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   26aff849438cebcd05f1a647390c4aa700d5c0f1
-commit: 96f1b00138cb8f04c742c82d0a7c460b2202e887 ARCv2: save ABI registers across signal handling
-date:   2 years, 6 months ago
-config: arc-randconfig-r111-20231107 (https://download.01.org/0day-ci/archive/20231212/202312121137.0sza62Xl-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231212/202312121137.0sza62Xl-lkp@intel.com/reproduce)
+On 2023/12/7 02:56, Jason Gunthorpe wrote:
+> On Fri, Nov 17, 2023 at 05:18:16AM -0800, Yi Liu wrote:
+>> +static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
+>> +					      struct iommu_user_data_array *array,
+>> +					      u32 *cerror_idx)
+>> +{
+>> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+>> +	struct iommu_hwpt_vtd_s1_invalidate inv_info;
+>> +	u32 index;
+>> +	int ret;
+>> +
+>> +	/* REVISIT:
+>> +	 * VT-d has defined ITE, ICE, IQE for invalidation failure per hardware,
+>> +	 * but no error code yet, so just set the error code to be 0.
+>> +	 */
+>> +	*cerror_idx = 0;
+>> +
+>> +	for (index = 0; index < array->entry_num; index++) {
+>> +		ret = iommu_copy_struct_from_user_array(&inv_info, array,
+>> +							IOMMU_HWPT_DATA_VTD_S1,
+>> +							index, __reserved);
+>> +		if (ret) {
+>> +			pr_err_ratelimited("Failed to fetch invalidation request\n");
+>> +			break;
+> 
+> No error prints on ioctls!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312121137.0sza62Xl-lkp@intel.com/
+ok, will remove it.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got struct user_regs_arcv2 * @@
-   arch/arc/kernel/signal.c:77:31: sparse:     expected void [noderef] __user *to
-   arch/arc/kernel/signal.c:77:31: sparse:     got struct user_regs_arcv2 *
->> arch/arc/kernel/signal.c:88:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got struct user_regs_arcv2 * @@
-   arch/arc/kernel/signal.c:88:41: sparse:     expected void const [noderef] __user *from
-   arch/arc/kernel/signal.c:88:41: sparse:     got struct user_regs_arcv2 *
->> arch/arc/kernel/signal.c:134:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
-   arch/arc/kernel/signal.c:134:42: sparse:     expected struct sigcontext *mctx
-   arch/arc/kernel/signal.c:134:42: sparse:     got struct sigcontext [noderef] __user *
-   arch/arc/kernel/signal.c:153:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
-   arch/arc/kernel/signal.c:153:45: sparse:     expected struct sigcontext *mctx
-   arch/arc/kernel/signal.c:153:45: sparse:     got struct sigcontext [noderef] __user *
+> 
+>> +		if (inv_info.addr == 0 && inv_info.npages == -1)
+>> +			intel_flush_iotlb_all(domain);
+> 
+> -1 is clearer written as U64_MAX - same remark for the comment
+> documenting it.
 
-vim +77 arch/arc/kernel/signal.c
-
-    63	
-    64	static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-    65	{
-    66		int err = 0;
-    67	#ifndef CONFIG_ISA_ARCOMPACT
-    68		struct user_regs_arcv2 v2abi;
-    69	
-    70		v2abi.r30 = regs->r30;
-    71	#ifdef CONFIG_ARC_HAS_ACCL_REGS
-    72		v2abi.r58 = regs->r58;
-    73		v2abi.r59 = regs->r59;
-    74	#else
-    75		v2abi.r58 = v2abi.r59 = 0;
-    76	#endif
-  > 77		err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
-    78	#endif
-    79		return err;
-    80	}
-    81	
-    82	static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
-    83	{
-    84		int err = 0;
-    85	#ifndef CONFIG_ISA_ARCOMPACT
-    86		struct user_regs_arcv2 v2abi;
-    87	
-  > 88		err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
-    89	
-    90		regs->r30 = v2abi.r30;
-    91	#ifdef CONFIG_ARC_HAS_ACCL_REGS
-    92		regs->r58 = v2abi.r58;
-    93		regs->r59 = v2abi.r59;
-    94	#endif
-    95	#endif
-    96		return err;
-    97	}
-    98	
-    99	static int
-   100	stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
-   101		       sigset_t *set)
-   102	{
-   103		int err;
-   104		struct user_regs_struct uregs;
-   105	
-   106		uregs.scratch.bta	= regs->bta;
-   107		uregs.scratch.lp_start	= regs->lp_start;
-   108		uregs.scratch.lp_end	= regs->lp_end;
-   109		uregs.scratch.lp_count	= regs->lp_count;
-   110		uregs.scratch.status32	= regs->status32;
-   111		uregs.scratch.ret	= regs->ret;
-   112		uregs.scratch.blink	= regs->blink;
-   113		uregs.scratch.fp	= regs->fp;
-   114		uregs.scratch.gp	= regs->r26;
-   115		uregs.scratch.r12	= regs->r12;
-   116		uregs.scratch.r11	= regs->r11;
-   117		uregs.scratch.r10	= regs->r10;
-   118		uregs.scratch.r9	= regs->r9;
-   119		uregs.scratch.r8	= regs->r8;
-   120		uregs.scratch.r7	= regs->r7;
-   121		uregs.scratch.r6	= regs->r6;
-   122		uregs.scratch.r5	= regs->r5;
-   123		uregs.scratch.r4	= regs->r4;
-   124		uregs.scratch.r3	= regs->r3;
-   125		uregs.scratch.r2	= regs->r2;
-   126		uregs.scratch.r1	= regs->r1;
-   127		uregs.scratch.r0	= regs->r0;
-   128		uregs.scratch.sp	= regs->sp;
-   129	
-   130		err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
-   131				     sizeof(sf->uc.uc_mcontext.regs.scratch));
-   132	
-   133		if (is_isa_arcv2())
- > 134			err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
-   135	
-   136		err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
-   137	
-   138		return err ? -EFAULT : 0;
-   139	}
-   140	
+sure.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Yi Liu
