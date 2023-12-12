@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BA280E573
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539BA80E575
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbjLLIH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
+        id S1345972AbjLLIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:08:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLIHx (ORCPT
+        with ESMTP id S229455AbjLLIHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:07:53 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2570CD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:07:56 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50e0ba402b4so149864e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702368475; x=1702973275; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KEK+GLviJvtTbzYzmtDV4AEm8T+lMdwOyDcx0NSd3/o=;
-        b=yjDyLlX+WKvy4KTLqbEPOCBw4F+IfDEZIpxf47iaC+QwGIVN2mrumhoyWdfOJrZ4ln
-         elyQuYvRjFjTkc6oFXoVx6liygAGXgNq2KJsItw/ovqcLu0yKy56kIVV7YzDoowB1pRi
-         ks/5kNP3Pq4YwfnuN81N/o7hZ2oHD+mjhjXXeHtoNCrudwV9wg5+35c5/sB/6TI3b9Sj
-         4RESd8RD116cSDinYlkJ2MSyEmBrXvxm3GeUBqTMhncOnEV2ldV3DjKpqwGuotby8Jlb
-         krIJQANQDL1ceXf/yKAp7b2enwvIJlKKajnuMCFKYnGeVzM3m0o7sGrSs98s6tchC2Fo
-         oaaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702368475; x=1702973275;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KEK+GLviJvtTbzYzmtDV4AEm8T+lMdwOyDcx0NSd3/o=;
-        b=vU/IsQpTy4KqaZRQtN7a2Cx1Hv5wBHJVHuO0xdL3dvKU1GB1KWTy0YL937hHFTHLSp
-         YKmZhE6ySg41cUo5zSJ0I4nciC7DcxggZZS4UaorWDNkMHhQxNQ7ibOcLd3ghjUW8B6v
-         95iYo1l9raOakhKI5OopFTXeW4jacK7TTK6eljbhjwskjeVzsiWK7Xm44BDE3INi5rui
-         adBzM9U5UzrtntahU9EOLR1alpy5bT02/XyYQkyZSBdPqjRq3/CrT5rWgJs4lrMYHopW
-         cDN+FVfX6TzXNnu9zjqMhB5eTof3i/Aa9yjg7zj7Hrx94SHDfvO/Tqp/F/onzstT8DkB
-         T/nA==
-X-Gm-Message-State: AOJu0Ywzi2KLNs4PTzUCIbrhgkpB7+uqx/stu98cjHD6qvAW73Npdqv1
-        Qmc1O6OC+8j4pAn/FslhtN4F6LRNlCky81LMqZ9e+w==
-X-Google-Smtp-Source: AGHT+IEyDnIHVqAdsBAK/Xj7zNRHMZz0/zXmDbcUqKkjG+kJeiX3tGS1DN1FlCnS9R/LXR3IKWLy3yX4hnlm0fdZnR8=
-X-Received: by 2002:a05:6512:a8c:b0:50c:6b:f164 with SMTP id
- m12-20020a0565120a8c00b0050c006bf164mr3620875lfu.27.1702368474939; Tue, 12
- Dec 2023 00:07:54 -0800 (PST)
+        Tue, 12 Dec 2023 03:07:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EE8DB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702368479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WXqf2vh/WJNQMCP9P3WEFWf2Hyjzd2SEqm/uvxIkz6Y=;
+        b=combx/CsHrh+k8BWFHkVZa/4UotYcSkmjJ/gw0Fwp7Y8x8TTXPUX1MvlfLK6l7gP1bt8eF
+        42d74sbcCM131OyuEO1oSP+UpIgWKg9xOS4wkEbefV/J0uvwUfQAskec6J9xCXp97n2U+m
+        t2VnmRvp4hLLkknq1lsR15eFd7L06zg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-0rMprEnIO2CiBXKl6z94Hg-1; Tue, 12 Dec 2023 03:07:56 -0500
+X-MC-Unique: 0rMprEnIO2CiBXKl6z94Hg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B41AA85A588;
+        Tue, 12 Dec 2023 08:07:55 +0000 (UTC)
+Received: from metal.redhat.com (unknown [10.45.224.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 17ECD492BE6;
+        Tue, 12 Dec 2023 08:07:53 +0000 (UTC)
+From:   Daniel Vacek <neelx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Vacek <neelx@redhat.com>,
+        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Subject: [PATCH v2] IB/ipoib: Fix mcast list locking
+Date:   Tue, 12 Dec 2023 09:07:45 +0100
+Message-ID: <20231212080746.1528802-1-neelx@redhat.com>
+In-Reply-To: <20231211130426.1500427-1-neelx@redhat.com>
+References: <20231211130426.1500427-1-neelx@redhat.com>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com> <20231208005250.2910004-3-almasrymina@google.com>
-In-Reply-To: <20231208005250.2910004-3-almasrymina@google.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Tue, 12 Dec 2023 10:07:18 +0200
-Message-ID: <CAC_iWjKikzwpjR0hBjYuRxgYjyqp_EYrrxoveB_2DgCxk6vWYw@mail.gmail.com>
-Subject: Re: [net-next v1 02/16] net: page_pool: create hooks for custom page providers
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,208 +63,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mina,
+Releasing the `priv->lock` while iterating the `priv->multicast_list` in
+`ipoib_mcast_join_task()` opens a window for `ipoib_mcast_dev_flush()` to
+remove the items while in the middle of iteration. If the mcast is removed
+while the lock was dropped, the for loop spins forever resulting in a hard
+lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
 
-Apologies for not participating in the party earlier.
+    Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
+    -----------------------------------+-----------------------------------
+    ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
+      spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
+      list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
+          &priv->multicast_list, list) |
+        ipoib_mcast_join(dev, mcast)   |
+          spin_unlock_irq(&priv->lock) |
+                                       |   spin_lock_irqsave(&priv->lock, flags)
+                                       |   list_for_each_entry_safe(mcast, tmcast,
+                                       |                  &priv->multicast_list, list)
+                                       |     list_del(&mcast->list);
+                                       |     list_add_tail(&mcast->list, &remove_list)
+                                       |   spin_unlock_irqrestore(&priv->lock, flags)
+          spin_lock_irq(&priv->lock)   |
+                                       |   ipoib_mcast_remove_list(&remove_list)
+   (Here, `mcast` is no longer on the  |     list_for_each_entry_safe(mcast, tmcast,
+    `priv->multicast_list` and we keep |                            remove_list, list)
+    spinning on the `remove_list` of   |  >>>  wait_for_completion(&mcast->done)
+    the other thread which is blocked  |
+    and the list is still valid on     |
+    it's stack.)
 
-On Fri, 8 Dec 2023 at 02:52, Mina Almasry <almasrymina@google.com> wrote:
->
-> From: Jakub Kicinski <kuba@kernel.org>
->
-> The page providers which try to reuse the same pages will
-> need to hold onto the ref, even if page gets released from
-> the pool - as in releasing the page from the pp just transfers
-> the "ownership" reference from pp to the provider, and provider
-> will wait for other references to be gone before feeding this
-> page back into the pool.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
->
-> ---
->
-> This is implemented by Jakub in his RFC:
-> https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@redhat.com/T/
->
-> I take no credit for the idea or implementation; I only added minor
-> edits to make this workable with device memory TCP, and removed some
-> hacky test code. This is a critical dependency of device memory TCP
-> and thus I'm pulling it into this series to make it revewable and
-> mergable.
->
-> RFC v3 -> v1
-> - Removed unusued mem_provider. (Yunsheng).
-> - Replaced memory_provider & mp_priv with netdev_rx_queue (Jakub).
->
-> ---
->  include/net/page_pool/types.h | 12 ++++++++++
->  net/core/page_pool.c          | 43 +++++++++++++++++++++++++++++++----
->  2 files changed, 50 insertions(+), 5 deletions(-)
->
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index ac286ea8ce2d..0e9fa79a5ef1 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -51,6 +51,7 @@ struct pp_alloc_cache {
->   * @dev:       device, for DMA pre-mapping purposes
->   * @netdev:    netdev this pool will serve (leave as NULL if none or multiple)
->   * @napi:      NAPI which is the sole consumer of pages, otherwise NULL
-> + * @queue:     struct netdev_rx_queue this page_pool is being created for.
->   * @dma_dir:   DMA mapping direction
->   * @max_len:   max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
->   * @offset:    DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
-> @@ -63,6 +64,7 @@ struct page_pool_params {
->                 int             nid;
->                 struct device   *dev;
->                 struct napi_struct *napi;
-> +               struct netdev_rx_queue *queue;
->                 enum dma_data_direction dma_dir;
->                 unsigned int    max_len;
->                 unsigned int    offset;
-> @@ -125,6 +127,13 @@ struct page_pool_stats {
->  };
->  #endif
->
-> +struct memory_provider_ops {
-> +       int (*init)(struct page_pool *pool);
-> +       void (*destroy)(struct page_pool *pool);
-> +       struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
-> +       bool (*release_page)(struct page_pool *pool, struct page *page);
-> +};
-> +
->  struct page_pool {
->         struct page_pool_params_fast p;
->
-> @@ -174,6 +183,9 @@ struct page_pool {
->          */
->         struct ptr_ring ring;
->
-> +       void *mp_priv;
-> +       const struct memory_provider_ops *mp_ops;
-> +
->  #ifdef CONFIG_PAGE_POOL_STATS
->         /* recycle stats are per-cpu to avoid locking */
->         struct page_pool_recycle_stats __percpu *recycle_stats;
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index ca1b3b65c9b5..f5c84d2a4510 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -25,6 +25,8 @@
->
->  #include "page_pool_priv.h"
->
-> +static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
+Fix this by keeping the lock held and changing to GFP_ATOMIC to prevent
+eventual sleeps.
+Unfortunately we could not reproduce the lockup and confirm this fix but
+based on the code review I think this fix should address such lockups.
 
-We could add the existing page pool mechanisms as another 'provider',
-but I assume this is coded like this for performance reasons (IOW skip
-the expensive ptr call for the default case?)
+crash> bc 31
+PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
+--
+    [exception RIP: ipoib_mcast_join_task+0x1b1]
+    RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
+    RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
+                                  work (&priv->mcast_task{,.work})
+    RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
+           &mcast->list
+    RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
+    R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
+                                                         mcast
+    R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
+           dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+--- <NMI exception stack> ---
+ #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
+ #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
 
-> +
->  #define DEFER_TIME (msecs_to_jiffies(1000))
->  #define DEFER_WARN_INTERVAL (60 * HZ)
->
-> @@ -174,6 +176,7 @@ static int page_pool_init(struct page_pool *pool,
->                           const struct page_pool_params *params)
->  {
->         unsigned int ring_qsize = 1024; /* Default */
-> +       int err;
->
->         memcpy(&pool->p, &params->fast, sizeof(pool->p));
->         memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
-> @@ -234,10 +237,25 @@ static int page_pool_init(struct page_pool *pool,
->         /* Driver calling page_pool_create() also call page_pool_destroy() */
->         refcount_set(&pool->user_cnt, 1);
->
-> +       if (pool->mp_ops) {
-> +               err = pool->mp_ops->init(pool);
-> +               if (err) {
-> +                       pr_warn("%s() mem-provider init failed %d\n",
-> +                               __func__, err);
-> +                       goto free_ptr_ring;
-> +               }
-> +
-> +               static_branch_inc(&page_pool_mem_providers);
-> +       }
-> +
->         if (pool->p.flags & PP_FLAG_DMA_MAP)
->                 get_device(pool->p.dev);
->
->         return 0;
-> +
-> +free_ptr_ring:
-> +       ptr_ring_cleanup(&pool->ring, NULL);
-> +       return err;
->  }
->
->  static void page_pool_uninit(struct page_pool *pool)
-> @@ -519,7 +537,10 @@ struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp)
->                 return page;
->
->         /* Slow-path: cache empty, do real allocation */
-> -       page = __page_pool_alloc_pages_slow(pool, gfp);
-> +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_ops)
+crash> rx ff646f199a8c7e68
+ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
 
-Why do we need && pool->mp_ops? On the init function, we only bump
-page_pool_mem_providers if the ops are there
+crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
+(empty)
 
-> +               page = pool->mp_ops->alloc_pages(pool, gfp);
-> +       else
-> +               page = __page_pool_alloc_pages_slow(pool, gfp);
->         return page;
->  }
->  EXPORT_SYMBOL(page_pool_alloc_pages);
-> @@ -576,10 +597,13 @@ void __page_pool_release_page_dma(struct page_pool *pool, struct page *page)
->  void page_pool_return_page(struct page_pool *pool, struct page *page)
->  {
->         int count;
-> +       bool put;
->
-> -       __page_pool_release_page_dma(pool, page);
-> -
-> -       page_pool_clear_pp_info(page);
-> +       put = true;
-> +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_ops)
+crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
+  mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
+  mcast_mutex.owner.counter = 0xff1c69998efec000
 
-ditto
+crash> b 8
+PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
+--
+ #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
+ #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
+ #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
+ #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
+ #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
 
-> +               put = pool->mp_ops->release_page(pool, page);
-> +       else
-> +               __page_pool_release_page_dma(pool, page);
->
->         /* This may be the last page returned, releasing the pool, so
->          * it is not safe to reference pool afterwards.
-> @@ -587,7 +611,10 @@ void page_pool_return_page(struct page_pool *pool, struct page *page)
->         count = atomic_inc_return_relaxed(&pool->pages_state_release_cnt);
->         trace_page_pool_state_release(pool, page, count);
->
-> -       put_page(page);
-> +       if (put) {
-> +               page_pool_clear_pp_info(page);
-> +               put_page(page);
-> +       }
->         /* An optimization would be to call __free_pages(page, pool->p.order)
->          * knowing page is not part of page-cache (thus avoiding a
->          * __page_cache_release() call).
-> @@ -857,6 +884,12 @@ static void __page_pool_destroy(struct page_pool *pool)
->
->         page_pool_unlist(pool);
->         page_pool_uninit(pool);
-> +
-> +       if (pool->mp_ops) {
+crash> rx ff646f1980153e68
+ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
 
-Same here. Using a mix of pool->mp_ops and page_pool_mem_providers
-will work, but since we always check the ptr on init, can't we simply
-rely on page_pool_mem_providers for the rest of the code?
+crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
+  flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
+  broadcast = 0x0,
 
-Thanks
-/Ilias
-> +               pool->mp_ops->destroy(pool);
-> +               static_branch_dec(&page_pool_mem_providers);
-> +       }
-> +
->         kfree(pool);
->  }
->
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+The mcast(s) on the `remove_list` (the remaining part of the ex `priv->multicast_list`):
+
+crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
+ff1c6a192bd0c200	  done.done = 0x0,
+ff1c6a192d60ac00	  done.done = 0x0,
+
+Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
+Signed-off-by: Daniel Vacek <neelx@redhat.com>
+---
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+index 5b3154503bf4..bca80fe07584 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+@@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
+ 		if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
+ 			rec.join_state = SENDONLY_FULLMEMBER_JOIN;
+ 	}
+-	spin_unlock_irq(&priv->lock);
+ 
+ 	multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
+-					 &rec, comp_mask, GFP_KERNEL,
++					 &rec, comp_mask, GFP_ATOMIC,
+ 					 ipoib_mcast_join_complete, mcast);
+-	spin_lock_irq(&priv->lock);
+ 	if (IS_ERR(multicast)) {
+ 		ret = PTR_ERR(multicast);
+ 		ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
+ 		/* Requeue this join task with a backoff delay */
+ 		__ipoib_mcast_schedule_join_thread(priv, mcast, 1);
+ 		clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
+-		spin_unlock_irq(&priv->lock);
+ 		complete(&mcast->done);
+-		spin_lock_irq(&priv->lock);
+ 	}
+ 	return 0;
+ }
+-- 
+2.43.0
+
