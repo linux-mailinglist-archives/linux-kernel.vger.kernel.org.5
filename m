@@ -2,169 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D91980E26F
+	by mail.lfdr.de (Postfix) with ESMTP id 7F29180E270
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345790AbjLLDBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:01:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
+        id S1345776AbjLLDCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbjLLDBh (ORCPT
+        with ESMTP id S229562AbjLLDCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:01:37 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26ECF9C;
-        Mon, 11 Dec 2023 19:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702350098;
-        bh=m86dpOAQjGsXOqUOF2XV2eQduIA9Rj06UpCPyxJanKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZTNRVue1JqufBNS4qBi7Pi21dinUU0cY13S3OajzQve10wY9A2mKFLlQo0+WODgPE
-         5fnpCSAOLeV1FUAKLbczWpfrOOwdwT5cJ2Ct1hyfFzs475aKzDODHHpGKdeFIcuakS
-         t9YDf8NRJ8kzlIOnqHSIN/4qgR6bpMu2q78M7hjSQVRYqTaJ041fnYybVOeTyPDhjL
-         R/Vxe0INiTJNWd1ILhnn7qgbqhu+DuNuBa8fRRdR+WCIfvCPenxh6/NOzEhu4KrFEC
-         gSzg3utINzvbeCvupKMW3Z/VM9IHgZ5rIPgUKnSg+DXWdN4kKnP22OaP0YOIEjhsqJ
-         5h/UYT4dusB9w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sq3Kt0BFXz4wb2;
-        Tue, 12 Dec 2023 14:01:37 +1100 (AEDT)
-Date:   Tue, 12 Dec 2023 14:01:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20231212140134.13ffafa8@canb.auug.org.au>
-In-Reply-To: <20231212110415.6f849fb4@canb.auug.org.au>
-References: <20231212110415.6f849fb4@canb.auug.org.au>
+        Mon, 11 Dec 2023 22:02:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93436BC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702350128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/NcUhW82kVg4Fgb3Dq1SvC66NLPOJJ84gCXl550jBOg=;
+        b=YTAQLKmeRK52CKGEKwZvDgFRDUiOtUz0V6bQEdXiPYfn6dY/0pCCXCtrnhwMxVVih6uQj5
+        3VQHz7sbTBhuTu2qQNfzp4GM1zMwNpMUKHOxjObviOQ/j1AHjEricSwPdILkPuoz5QZW7m
+        buVzfXnfmzP4njL3LzsJ2/YtFBR8YBY=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-20-h2tEYMXiPDOuYJTnXNXyrQ-1; Mon, 11 Dec 2023 22:02:07 -0500
+X-MC-Unique: h2tEYMXiPDOuYJTnXNXyrQ-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-286ecc0e220so6170385a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:02:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702350126; x=1702954926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/NcUhW82kVg4Fgb3Dq1SvC66NLPOJJ84gCXl550jBOg=;
+        b=XkiivduKQiIXtxYDGb2pRXdtdBIYXtt1gHzZNfXR9GTR2y5/Fm54yExcBHH9KhXCwc
+         0NiGGGg4OWdYfpFnkhN4T/RT/gkW81wnfQzJ3YDl23fNsHBferVxYUl9F2Gka1zz7B5x
+         ht9/3nToRNeKoYbx7pnCZoZS76D6xyNH9leNnUeXJ5ViqR9NKxbNNWD6cszBFxdc7X29
+         8AqAqkrQzWvyEDKxWlnOHllibHy9XAwI3QdDCRwJYvlptwBaxQl9JTOyE6HouP2KsYUw
+         DKhtADMUNjMD6QzJEYmj4vSEA8/YmxV/BKTvklHfBTda2jVFwL2zWQj/mvetUsuEHyIE
+         qh9w==
+X-Gm-Message-State: AOJu0YyXjaOztuHfWCwrRZqULWd5L0twBKm4B7ml6rKHYJFl30ymkKLD
+        ycwhlvnV4Oc4Wrda5fgvz0JgsaL6n6sAvxcHAzAEnEHQatekpkNapL7V+zlfqtDmiQFgPKoXlWl
+        A9DTiYpOx6kRmpC+LttUP9Ha0fKjaUOU3E/48pRP5DEBc9UMTUfA=
+X-Received: by 2002:a17:90b:152:b0:286:db83:a092 with SMTP id em18-20020a17090b015200b00286db83a092mr4170420pjb.20.1702350125880;
+        Mon, 11 Dec 2023 19:02:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEGo0L3DeFF6N2EfhNxrYtxwbIS2B3jOa/l8pkOd4cweE+LAc92ES33i4Vds/ETJ1R24YNUMPLgjbPbXCLyTOg=
+X-Received: by 2002:a17:90b:152:b0:286:db83:a092 with SMTP id
+ em18-20020a17090b015200b00286db83a092mr4170415pjb.20.1702350125585; Mon, 11
+ Dec 2023 19:02:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gu_LY_vSkXSh5An5Ar8/IKl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208070754.3132339-1-stevensd@chromium.org> <20231211113710-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20231211113710-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 12 Dec 2023 11:01:53 +0800
+Message-ID: <CACGkMEs_MajTFxGVcK5R8oqQzTxuL4Pm=uUnOonDczWzqaucsw@mail.gmail.com>
+Subject: Re: [PATCH v2] virtio: Add support for no-reset virtio PCI PM
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     David Stevens <stevensd@chromium.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gu_LY_vSkXSh5An5Ar8/IKl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Tue, 12 Dec 2023 11:04:15 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Tue, Dec 12, 2023 at 12:37=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com=
+> wrote:
 >
-> After merging the amdgpu tree, today's linux-next build (arm
-> multi_v7_defconfig) produced this warning:
->=20
-> drivers/gpu/drm/drm_atomic_uapi.c:366:1: warning: 'drm_atomic_replace_pro=
-perty_blob_from_id' defined but not used [-Wunused-function]
->   366 | drm_atomic_replace_property_blob_from_id(struct drm_device *dev,
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->=20
-> Introduced by commit
->=20
->   1d2b049e4582 ("drm/drm_property: make replace_property_blob_from_id a D=
-RM helper")
+> On Fri, Dec 08, 2023 at 04:07:54PM +0900, David Stevens wrote:
+> > If a virtio_pci_device supports native PCI power management and has the
+> > No_Soft_Reset bit set, then skip resetting and reinitializing the devic=
+e
+> > when suspending and restoring the device. This allows system-wide low
+> > power states like s2idle to be used in systems with stateful virtio
+> > devices that can't simply be re-initialized (e.g. virtio-fs).
+> >
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+>
+> tagged, thanks!
+> I'm still debating with myself whether we can classify this
+> as a bugfix ... better not risk it I guess.
 
-This became a build failure in the i386 defconfig build, so I applied
-the following patch for today.
+It might be suitable if there's a hypervisor that advertises
+no_soft_reset (but it seems Qemu doesn't).
 
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 12 Dec 2023 13:53:55 +1100
-Subject: [PATCH] drm: remove unused function drm_atomic_replace_property_bl=
-ob_from_id()
+Thanks
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/drm_atomic_uapi.c | 42 -------------------------------
- 1 file changed, 42 deletions(-)
+>
+> > ---
+> > v1 -> v2:
+> >  - Check the No_Soft_Reset bit
+> >
+> >  drivers/virtio/virtio_pci_common.c | 34 +++++++++++++++++++++++++++++-
+> >  1 file changed, 33 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio=
+_pci_common.c
+> > index c2524a7207cf..3a95ecaf12dc 100644
+> > --- a/drivers/virtio/virtio_pci_common.c
+> > +++ b/drivers/virtio/virtio_pci_common.c
+> > @@ -492,8 +492,40 @@ static int virtio_pci_restore(struct device *dev)
+> >       return virtio_device_restore(&vp_dev->vdev);
+> >  }
+> >
+> > +static bool vp_supports_pm_no_reset(struct device *dev)
+> > +{
+> > +     struct pci_dev *pci_dev =3D to_pci_dev(dev);
+> > +     u16 pmcsr;
+> > +
+> > +     if (!pci_dev->pm_cap)
+> > +             return false;
+> > +
+> > +     pci_read_config_word(pci_dev, pci_dev->pm_cap + PCI_PM_CTRL, &pmc=
+sr);
+> > +     if (PCI_POSSIBLE_ERROR(pmcsr)) {
+> > +             dev_err(dev, "Unable to query pmcsr");
+> > +             return false;
+> > +     }
+> > +
+> > +     return pmcsr & PCI_PM_CTRL_NO_SOFT_RESET;
+> > +}
+> > +
+> > +static int virtio_pci_suspend(struct device *dev)
+> > +{
+> > +     return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_freeze(dev);
+> > +}
+> > +
+> > +static int virtio_pci_resume(struct device *dev)
+> > +{
+> > +     return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_restore(dev)=
+;
+> > +}
+> > +
+> >  static const struct dev_pm_ops virtio_pci_pm_ops =3D {
+> > -     SET_SYSTEM_SLEEP_PM_OPS(virtio_pci_freeze, virtio_pci_restore)
+> > +     .suspend =3D virtio_pci_suspend,
+> > +     .resume =3D virtio_pci_resume,
+> > +     .freeze =3D virtio_pci_freeze,
+> > +     .thaw =3D virtio_pci_restore,
+> > +     .poweroff =3D virtio_pci_freeze,
+> > +     .restore =3D virtio_pci_restore,
+> >  };
+> >  #endif
+> >
+> > --
+> > 2.43.0.472.g3155946c3a-goog
+>
 
-diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic=
-_uapi.c
-index 70ddbb93e466..29d4940188d4 100644
---- a/drivers/gpu/drm/drm_atomic_uapi.c
-+++ b/drivers/gpu/drm/drm_atomic_uapi.c
-@@ -362,48 +362,6 @@ static s32 __user *get_out_fence_for_connector(struct =
-drm_atomic_state *state,
- 	return fence_ptr;
- }
-=20
--static int
--drm_atomic_replace_property_blob_from_id(struct drm_device *dev,
--					 struct drm_property_blob **blob,
--					 uint64_t blob_id,
--					 ssize_t expected_size,
--					 ssize_t expected_elem_size,
--					 bool *replaced)
--{
--	struct drm_property_blob *new_blob =3D NULL;
--
--	if (blob_id !=3D 0) {
--		new_blob =3D drm_property_lookup_blob(dev, blob_id);
--		if (new_blob =3D=3D NULL) {
--			drm_dbg_atomic(dev,
--				       "cannot find blob ID %llu\n", blob_id);
--			return -EINVAL;
--		}
--
--		if (expected_size > 0 &&
--		    new_blob->length !=3D expected_size) {
--			drm_dbg_atomic(dev,
--				       "[BLOB:%d] length %zu different from expected %zu\n",
--				       new_blob->base.id, new_blob->length, expected_size);
--			drm_property_blob_put(new_blob);
--			return -EINVAL;
--		}
--		if (expected_elem_size > 0 &&
--		    new_blob->length % expected_elem_size !=3D 0) {
--			drm_dbg_atomic(dev,
--				       "[BLOB:%d] length %zu not divisible by element size %zu\n",
--				       new_blob->base.id, new_blob->length, expected_elem_size);
--			drm_property_blob_put(new_blob);
--			return -EINVAL;
--		}
--	}
--
--	*replaced |=3D drm_property_replace_blob(blob, new_blob);
--	drm_property_blob_put(new_blob);
--
--	return 0;
--}
--
- static int drm_atomic_crtc_set_property(struct drm_crtc *crtc,
- 		struct drm_crtc_state *state, struct drm_property *property,
- 		uint64_t val)
---=20
-2.40.1
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gu_LY_vSkXSh5An5Ar8/IKl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV3zQ4ACgkQAVBC80lX
-0GyDyQf/f/yMfxfOTBIoZNh2eftasEz9FRuSkwWYs8Z2mW0n+grtNvtXrYhro/d4
-1S2b9eEoe51uL+RgYPT23JPjcKdlg0xx3D6VUDxG81JOz4AB+hzitV/dIaEbhM6r
-cqLlL6O90z2dM7ousgXUkWl2kIDghLMExGP9PzQ/5JaD93S6zJcATP9/ZAEd74T2
-HWossy/nhDTGM0yH5sZkhr2VOAkGdrizJeJxnSwriYTvOUlwcmC7dU1KqX5XTRtd
-S9ffgTpW6O9DjPblAcOEMvgJkd+GK49HKTx2Bb5Gm7Zo57JiE3hMdWsVz38yyGtB
-HFftrG6eyceZLeQNpNmREqE1Ts0z5Q==
-=rGPM
------END PGP SIGNATURE-----
-
---Sig_/gu_LY_vSkXSh5An5Ar8/IKl--
