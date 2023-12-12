@@ -2,181 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AE580F615
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E925B80F61B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376988AbjLLTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
+        id S1376959AbjLLTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376776AbjLLTIn (ORCPT
+        with ESMTP id S233112AbjLLTIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:08:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99763DB;
-        Tue, 12 Dec 2023 11:08:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702408130; x=1733944130;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=vTibnNia0m6NhSJs+iWLq3VahLdeYpQQkT1+4mwIgB4=;
-  b=bSRoxJvmp0ln6eGrvMnjx8ic2mK10FffCg1AoPih5jsrzMmuiAlP+BU9
-   ffmCLyZ78JGFSCs94RPuZSea8W7mx31d3UXC1ea97fOfY1Q9iS6HB/2t/
-   NT4UHMp5SgYIQfZMcjuahVh7eFxTmuoIUKhVlA2/Pe2Ih4JXspG15pdw6
-   vzRhU8ABksDIaw9gVHbbnyv1vfXgX7Tz32DEEKHKpfQEaw5q6ZywTDtXz
-   Znk0p+UJClb+0rfla7GP4mb0X/ixrHc31zNnkgIibjfucKSVRt9UOZY5h
-   nBiwNuFgIfnnYx094NYqPz69v7D7mPH+e/QLGoEliOfCjLSoXUp430oAF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="13550598"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="13550598"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 11:08:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844017864"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="844017864"
-Received: from cmperez2-mobl2.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.66.25])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 11:08:47 -0800
-From:   Vishal Verma <vishal.l.verma@intel.com>
-Date:   Tue, 12 Dec 2023 12:08:32 -0700
-Subject: [PATCH v4 3/3] dax: add a sysfs knob to control memmap_on_memory
- behavior
+        Tue, 12 Dec 2023 14:08:54 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B87AF3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:08:55 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-58ceab7daddso2530330eaf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:08:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702408134; x=1703012934; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7rUE7pKrnOIxQx5S7SZFNs2Wa5Tl3bUr3B6PiXYrTnM=;
+        b=khgiX6KdaR2dl70A9wTujsTNFxNvd/TtP1my5Gq15PciFa95vPilVAjKLoFotCeLG/
+         UmEeLqfUFdQz2SDyWiKujiMJAhx2maiGRA90h9JUUAN8hRSX0/1Hezq1I7+HN3fVUWHa
+         dw3bNPPGfWQ/fa6A4jlBPGShZKResuEjIxmT91moxC7+R5H55+yWOfsoaQgJKE1DYJGA
+         Iq69tNULJtuG5sd67BAZ6NpPoBvTPhkfOc3yviUQfaiPCb++ziADU3eRdNnzfAorPTTn
+         VNdc7wuAy555E5YpyJWkbh5r/yunjGm4w3sv2EuwAfjkb3hoD8mI2Zsw6zJuIjxLWQTW
+         u+kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702408134; x=1703012934;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7rUE7pKrnOIxQx5S7SZFNs2Wa5Tl3bUr3B6PiXYrTnM=;
+        b=q9CUTigwmFn0NtaT26i50SVgjUkt1yDcV6DhnftyqdQoUdV0zyUD0n8qTyZUsDyzqi
+         Vv4UNtxciJ4uFLxTozxEzhUe84AGFhVt7JgeY2LIM0fNMBZok7+viW6EOaFsvwLTaGxW
+         cNaNHvfZWZKg06uvukZnAFv4l6EgbH8R5KjU3P0WKKTC2Pjjj45D08kT/3UUb+bGxtbf
+         pqGiPQjFgbyRgVQKdEZQcT76AA1CuTruWl4oqtnhtLk95VWjPvOkoj5E5OW3qFI3D7/o
+         NfemGiZT8/csLORnSJ20jXTqxOl6w4USkTtH+vSq77VAg+G/I4RB0JILdYAjt2CJ7SCp
+         0y8A==
+X-Gm-Message-State: AOJu0YwjTp5zb9uRXwdK/Siqe6hVbD4tXVu/P2pi/LED04XfB3zZu3h4
+        1YKcsnXhqGUWInSyy1r56Y3NLKw7WUzfGhxFr30o0DVLN7nzOujgOpdxYw==
+X-Google-Smtp-Source: AGHT+IGo6pgC3gqBBgC31XC6ONDH83K9lm+lgkRFNSVphJ4DvQu97KYd8nv6XkgLA1bsO9v5snNs2M6grUX2q4NQSIw=
+X-Received: by 2002:a05:6820:47:b0:590:8cbd:5b39 with SMTP id
+ v7-20020a056820004700b005908cbd5b39mr4045345oob.15.1702408134126; Tue, 12 Dec
+ 2023 11:08:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-vv-dax_abi-v4-3-1351758f0c92@intel.com>
-References: <20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com>
-In-Reply-To: <20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-cxl@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Li Zhijian <lizhijian@fujitsu.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-X-Mailer: b4 0.13-dev-433a8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3733;
- i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=vTibnNia0m6NhSJs+iWLq3VahLdeYpQQkT1+4mwIgB4=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKkV6/eGzgvpDIjI2VB4MUV8v1HGFaXvqUqPjRxU7QQCG
- y6fvfmyo5SFQYyLQVZMkeXvno+Mx+S25/MEJjjCzGFlAhnCwMUpABNx2cvwz1j+5PvunqhiqR3P
- mjfIVipLnm6YtOpDe4iNsoWtxoPzLIwMlx02Ru3YvTtjqfq+sg6NPF3butUeWav+XPN8E+q7c6I
- 3KwA=
-X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
- fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231211193048.580691-1-avagin@google.com> <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
+From:   Andrei Vagin <avagin@google.com>
+Date:   Tue, 12 Dec 2023 11:08:43 -0800
+Message-ID: <CAEWA0a6Ow+BvrPm5O-4-tGRLQYr3+eahj45voF1gdmN3OfadGg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs/proc: show correct device and inode numbers in /proc/pid/maps
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a sysfs knob for dax devices to control the memmap_on_memory setting
-if the dax device were to be hotplugged as system memory.
+Hi Amir,
 
-The default memmap_on_memory setting for dax devices originating via
-pmem or hmem is set to 'false' - i.e. no memmap_on_memory semantics, to
-preserve legacy behavior. For dax devices via CXL, the default is on.
-The sysfs control allows the administrator to override the above
-defaults if needed.
+On Mon, Dec 11, 2023 at 9:51=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
+ wrote:
+>
+> +fsdevel, +overlayfs, +brauner, +miklos
+>
+> On Mon, Dec 11, 2023 at 9:30=E2=80=AFPM Andrei Vagin <avagin@google.com> =
+wrote:
+> >
+> > Device and inode numbers in /proc/pid/maps have to match numbers return=
+ed by
+> > statx for the same files.
+>
+> That statement may be true for regular files.
+> It is not true for block/char as far as I know.
+>
+> I think that your fix will break that by displaying the ino/dev
+> of the block/char reference inode and not their backing rdev inode.
 
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Tested-by: Li Zhijian <lizhijian@fujitsu.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
----
- drivers/dax/bus.c                       | 32 ++++++++++++++++++++++++++++++++
- Documentation/ABI/testing/sysfs-bus-dax | 17 +++++++++++++++++
- 2 files changed, 49 insertions(+)
+I think it doesn't break anything here. /proc/pid/maps shows dev of a
+filesystem where the device file resides.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index ce1356ac6dc2..423adee6f802 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -1245,6 +1245,37 @@ static ssize_t numa_node_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(numa_node);
- 
-+static ssize_t memmap_on_memory_show(struct device *dev,
-+				     struct device_attribute *attr, char *buf)
-+{
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+
-+	return sprintf(buf, "%d\n", dev_dax->memmap_on_memory);
-+}
-+
-+static ssize_t memmap_on_memory_store(struct device *dev,
-+				      struct device_attribute *attr,
-+				      const char *buf, size_t len)
-+{
-+	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	ssize_t rc;
-+	bool val;
-+
-+	rc = kstrtobool(buf, &val);
-+	if (rc)
-+		return rc;
-+
-+	guard(device)(dev);
-+	if (dev_dax->memmap_on_memory != val &&
-+	    dax_drv->type == DAXDRV_KMEM_TYPE)
-+		return -EBUSY;
-+	dev_dax->memmap_on_memory = val;
-+
-+	return len;
-+}
-+static DEVICE_ATTR_RW(memmap_on_memory);
-+
- static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
- {
- 	struct device *dev = container_of(kobj, struct device, kobj);
-@@ -1271,6 +1302,7 @@ static struct attribute *dev_dax_attributes[] = {
- 	&dev_attr_align.attr,
- 	&dev_attr_resource.attr,
- 	&dev_attr_numa_node.attr,
-+	&dev_attr_memmap_on_memory.attr,
- 	NULL,
- };
- 
-diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
-index a61a7b186017..b1fd8bf8a7de 100644
---- a/Documentation/ABI/testing/sysfs-bus-dax
-+++ b/Documentation/ABI/testing/sysfs-bus-dax
-@@ -149,3 +149,20 @@ KernelVersion:	v5.1
- Contact:	nvdimm@lists.linux.dev
- Description:
- 		(RO) The id attribute indicates the region id of a dax region.
-+
-+What:		/sys/bus/dax/devices/daxX.Y/memmap_on_memory
-+Date:		October, 2023
-+KernelVersion:	v6.8
-+Contact:	nvdimm@lists.linux.dev
-+Description:
-+		(RW) Control the memmap_on_memory setting if the dax device
-+		were to be hotplugged as system memory. This determines whether
-+		the 'altmap' for the hotplugged memory will be placed on the
-+		device being hotplugged (memmap_on_memory=1) or if it will be
-+		placed on regular memory (memmap_on_memory=0). This attribute
-+		must be set before the device is handed over to the 'kmem'
-+		driver (i.e.  hotplugged into system-ram). Additionally, this
-+		depends on CONFIG_MHP_MEMMAP_ON_MEMORY, and a globally enabled
-+		memmap_on_memory parameter for memory_hotplug. This is
-+		typically set on the kernel command line -
-+		memory_hotplug.memmap_on_memory set to 'true' or 'force'."
+7f336b6c3000-7f336b6c4000 rw-p 00000000 00:05 7
+  /dev/zero
+$ stat /dev/zero
+Device: 0,5 Inode: 7           Links: 1     Device type: 1,5
 
--- 
-2.41.0
+I checked that it works with and without my patch. It doesn't matter, look =
+at
+the following comments.
 
+>
+> >
+> > /proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here i=
+s
+> > an issue. If a mapped file is on a stackable file system (e.g.,
+> > overlayfs), vma->vm_file is a backing file whose f_inode is on the
+> > underlying filesystem. To show correct numbers, we need to get a user
+> > file and shows its numbers. The same trick is used to show file paths i=
+n
+> > /proc/pid/maps.
+>
+> For the *same* trick, see my patch below.
+
+The patch looks good to me. Thanks! Will you send it?
+
+>
+> >
+> > But it isn't the end of this story. A file system can manipulate inode =
+numbers
+> > within the getattr callback (e.g., ovl_getattr), so vfs_getattr must be=
+ used to
+> > get correct numbers.
+>
+> This explanation is inaccurate, because it mixes two different overlayfs
+> traits which are unrelated.
+> It is true that a filesystem *can* manipulate st_dev in a way that will n=
+ot
+> match i_ino and it is true that overlayfs may do that in some non-default
+> configurations (see [1]), but this is not the reason that you are seeing
+> mismatches ino/dev in /proc/<pid>/maps.
+>
+> [1] https://docs.kernel.org/filesystems/overlayfs.html#inode-properties
+>
+> The reason is that the vma->vm_file is a special internal backing file
+> which is not otherwise exposed to userspace.
+> Please see my suggested fix below.
+
+I understand that this is the main root cause of issues that we have seen.
+
+But when I was preparing this patch, I found that ovl_getattr manipulates
+with inode numbers and decided that it can return a different inode number
+than file_user_inode(vma->vm_file).i_ino. I am glad that I was wrong and we
+don't need to use vfs_getattr here.
+
+>
+> >
+> > Cc: Amir Goldstein <amir73il@gmail.com>
+> > Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+> > Signed-off-by: Andrei Vagin <avagin@google.com>
+
+<snip>
+
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index ef2eb12906da..5328266be6b5 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -273,7 +273,8 @@ show_map_vma(struct seq_file *m, struct vm_area_struc=
+t *vma)
+>         const char *name =3D NULL;
+>
+>         if (file) {
+> -               struct inode *inode =3D file_inode(vma->vm_file);
+> +               struct inode *inode =3D file_user_inode(vma->vm_file);
+> +
+>                 dev =3D inode->i_sb->s_dev;
+>                 ino =3D inode->i_ino;
+>                 pgoff =3D ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 900d0cd55b50..d78412c6fd47 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2581,20 +2581,28 @@ struct file *backing_file_open(const struct
+> path *user_path, int flags,
+>  struct path *backing_file_user_path(struct file *f);
+>
+>  /*
+> - * file_user_path - get the path to display for memory mapped file
+> - *
+>   * When mmapping a file on a stackable filesystem (e.g., overlayfs), the=
+ file
+>   * stored in ->vm_file is a backing file whose f_inode is on the underly=
+ing
+> - * filesystem.  When the mapped file path is displayed to user (e.g. via
+> - * /proc/<pid>/maps), this helper should be used to get the path to disp=
+lay
+> - * to the user, which is the path of the fd that user has requested to m=
+ap.
+> + * filesystem.  When the mapped file path and inode number are displayed=
+ to
+> + * user (e.g. via /proc/<pid>/maps), these helper should be used to get =
+the
+> + * path and inode number to display to the user, which is the path of th=
+e fd
+> + * that user has requested to map and the inode number that would be ret=
+urned
+> + * by fstat() on that same fd.
+>   */
+> +/* Get the path to display in /proc/<pid>/maps */
+>  static inline const struct path *file_user_path(struct file *f)
+>  {
+>         if (unlikely(f->f_mode & FMODE_BACKING))
+>                 return backing_file_user_path(f);
+>         return &f->f_path;
+>  }
+> +/* Get the inode whose inode number to display in /proc/<pid>/maps */
+> +static inline const struct path *file_user_inode(struct file *f)
+
+nit: struct inode *
+
+> +{
+> +       if (unlikely(f->f_mode & FMODE_BACKING))
+> +               return d_inode(backing_file_user_path(f)->dentry);
+> +       return file_inode(f);
+> +}
+
+Thanks,
+Andrei
