@@ -2,256 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE73C80E788
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F297880E67A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbjLLJ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S231469AbjLLIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbjLLIlk (ORCPT
+        with ESMTP id S231210AbjLLInj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:41:40 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04881CD;
-        Tue, 12 Dec 2023 00:41:46 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50c0478f970so5606681e87.3;
-        Tue, 12 Dec 2023 00:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702370504; x=1702975304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oPld8vpr14XTiVIBO9OqUWjltLKOYMI1v6JQhvMLahY=;
-        b=HTf1RxFwlSjD4YK19k7c3zbDHQ1AjW3ba+pig2Mkg/8rAf5mwbevdbYVrF2SZIfOl1
-         LG0kfhFtXXDKlYN7rlNDl822x7ynWVEnEYWnRRWtakJSn1pe6ByuZPhlq/+9Jc+nmMog
-         ZUkOeNS849m5tWJ39Y4Uh99WSlFHS5tBlMNGA7XNKTRKKJNc6gBwbbfKuZlBjxR6YB33
-         GI4VrWWSQBgfyWm46lzmiCbufAcwYfmbuXIUeTCM2rZPHJAfc4DG/j7g8ynvapurSugL
-         V0Rjd4YL5Xo4JjPyistF/LmmOaanE08CTdG4aVHzsJFTlpRlHLilrHXoa5qZxCHrfv09
-         wxPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702370504; x=1702975304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oPld8vpr14XTiVIBO9OqUWjltLKOYMI1v6JQhvMLahY=;
-        b=nbx7JqNIwXRLObmHuFR/XIh9gYG9xJoElNKb9ZzgLD2IeHNSvgA3/xBQap5pK2lN1P
-         DXqNL80WHOWxjiMTtH798lvMVSDHeUOwt2ajGsGKbB2na5F8OdyjhSBIO0/3Z7cq8dfc
-         6cb+xExxlgigDdtIE1y+OQMnxrDiByp8f1o4WgnjOXWY/b8unAJKaoEOCm+Ke7QZenOl
-         grrbTAgdLazBKFCX6Jm67+boBC5mrsukXRAFOw4vZ5CuH1ZZgVkNmQn3k2Ij9tNjQnXj
-         rPKXhZ/EUIWhWM92pgpwarBbRjmF4p2r3E9iU6bpYDZjg3mnWOLSdB310Sok6Xyrd1VJ
-         MqFg==
-X-Gm-Message-State: AOJu0Yy7FAnQHgIj66/RK9Wn3D23W9OpLMmQo6H9VdsUEesgBMuBawtQ
-        p1m8qRLpb+5R/tUldxAjmPUrIkIdJYAtpy0fiqc=
-X-Google-Smtp-Source: AGHT+IEnmLpJcpamygkwP+7KOsXkqETOpVob6/2P22G2CYhFSXy52IIq0Hg6V/NCKv/PygX9xNpkXY0DHWV/woCamb0=
-X-Received: by 2002:a05:6512:2019:b0:50b:d764:8046 with SMTP id
- a25-20020a056512201900b0050bd7648046mr2243403lfb.121.1702370503834; Tue, 12
- Dec 2023 00:41:43 -0800 (PST)
+        Tue, 12 Dec 2023 03:43:39 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4E6CF;
+        Tue, 12 Dec 2023 00:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1702370625; x=1733906625;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wgVHBzqoKPPGjfmpxOQWTXb8ZDh9UV5MdaG4pwJ/vWI=;
+  b=YeZFOe5+gHlb8iFFB/pn7raHKb2flh/Jngf/A6tw2hzcTz/BZjhgAvaR
+   mmTmZjGbwrTsOg4cYv94DoxZyiUub8zU36iLPd3EgP2dp6qWPub1nwq+Q
+   t6ZEI1kEFRPzqyMxzgX04Bgmgjbwc2sZ9tEaZ4iOGFaHTaHZK8gEe3b7I
+   fdFkkFadZM+9QYsAuRi7nfXGyUYih2FJf8oUbOt3ddwWt0NHwP0qlDWRx
+   dRlRSrez4h8i4gH5uIHMDooD2+NuGkMZi5Hsb22kBHGitz/nq7bDyIJT9
+   v9fgnl2jgibwr5jvcH2vYYCQSXWi1xidU6lvUhgmHOMmVfHbfOuKEzBRh
+   A==;
+X-CSE-ConnectionGUID: WiO6fCDNTCCj2lq+o3a3hw==
+X-CSE-MsgGUID: am4cvTE2TnicaDYOgADGLw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="asc'?scan'208";a="180345961"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Dec 2023 01:43:45 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 12 Dec 2023 01:43:38 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 12 Dec 2023 01:43:36 -0700
+Date:   Tue, 12 Dec 2023 08:43:06 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Conor Dooley <conor@kernel.org>, <linux-riscv@lists.infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>
+Subject: Re: [PATCH v1] soc: renesas: make ARCH_R9A07G043 depend on
+ !DMA_DIRECT_REMAP
+Message-ID: <20231212-ambition-karma-4834afd4eb16@wendy>
+References: <20231211-primate-arbitrate-fbcd307a0b00@spud>
+ <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231212065147.3475413-1-jim.t90615@gmail.com>
- <20231212065147.3475413-2-jim.t90615@gmail.com> <72fe6f18-e3d7-4c74-9734-01a33dc8e100@molgen.mpg.de>
-In-Reply-To: <72fe6f18-e3d7-4c74-9734-01a33dc8e100@molgen.mpg.de>
-From:   Jim Liu <jim.t90615@gmail.com>
-Date:   Tue, 12 Dec 2023 16:41:32 +0800
-Message-ID: <CAKUZ0+Ekx=-G0V1OXXdQCraL+sAXvmZffT65iLsGJ2QHs=1cAg@mail.gmail.com>
-Subject: Re: [PATCH v9 1/3] dt-bindings: gpio: add NPCM sgpio driver bindings
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Jim Liu <JJLIU0@nuvoton.com>, KWLIU@nuvoton.com,
-        linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Rob Herring <robh@kernel.org>,
-        linux-gpio@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="e2oQTY8OE7jKY5sj"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX0bETuMoZCZM7pAodbwyf0ttZMpKuq0ibBZX7S-YV8xw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul
+--e2oQTY8OE7jKY5sj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your review.
-I will modify it in the next version.
-
-Best regards,
-Jim
-
-On Tue, Dec 12, 2023 at 3:00=E2=80=AFPM Paul Menzel <pmenzel@molgen.mpg.de>=
- wrote:
->
-> Dear Jim,
->
->
-> Thank you for your patch.
->
-> Am 12.12.23 um 07:51 schrieb Jim Liu:
-> > Add dt-bindings document for the Nuvoton NPCM7xx sgpio driver
+On Tue, Dec 12, 2023 at 09:19:32AM +0100, Geert Uytterhoeven wrote:
+> Hi Conor,
+>=20
+> On Mon, Dec 11, 2023 at 11:06=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> > From: Conor Dooley <conor.dooley@microchip.com>
 > >
-> > Signed-off-by: Jim Liu <jim.t90615@gmail.com>
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
->
-> As you seem to be employed by Nuvoton, should your company/work email be
-> listed somehow, and even be used for the author address?
->
-> > ---
-> > Changes for v9:
-> >     - no changed
-> > Changes for v8:
-> >     - no changed
-> > Changes for v7:
-> >     - no changed
-> > ---
-> >   .../bindings/gpio/nuvoton,sgpio.yaml          | 86 ++++++++++++++++++=
-+
-> >   1 file changed, 86 insertions(+)
-> >   create mode 100644 Documentation/devicetree/bindings/gpio/nuvoton,sgp=
-io.yaml
+> > Randy reported yet another build issue with randconfigs on rv32:
+> > WARNING: unmet direct dependencies detected for DMA_GLOBAL_POOL
+> >   Depends on [n]: !ARCH_HAS_DMA_SET_UNCACHED [=3Dn] && !DMA_DIRECT_REMA=
+P [=3Dy]
+> >   Selected by [y]:
+> >   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy] && NONP=
+ORTABLE [=3Dy] && RISCV_ALTERNATIVE [=3Dy] && !RISCV_ISA_ZICBOM [=3Dn] && R=
+ISCV_SBI [=3Dy]
 > >
-> > diff --git a/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml =
-b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-> > new file mode 100644
-> > index 000000000000..84e0dbcb066c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-> > @@ -0,0 +1,86 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/gpio/nuvoton,sgpio.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Nuvoton SGPIO controller
-> > +
-> > +maintainers:
-> > +  - Jim LIU <JJLIU0@nuvoton.com>
-> > +
-> > +description: |
-> > +  This SGPIO controller is for NUVOTON NPCM7xx and NPCM8xx SoC.
-> > +  Nuvoton NPCM7xx SGPIO module is combine serial to parallel IC (HC595=
-)
->
-> s/is combine/combines a/
->
-> > +  and parallel to serial IC (HC165), and use APB3 clock to control it.
->
-> use*s*
->
-> > +  This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
->
-> Only one space before the (.
->
-> > +  NPCM7xx/NPCM8xx have two sgpio module each module can support up
->
-> =E2=80=A6 modules. Each module =E2=80=A6
->
-> > +  to 64 output pins,and up to 64 input pin, the pin is only for gpi or=
- gpo.
->
-> 1.  Space after the comma.
-> 2.  64 input pin*s
->
-> > +  GPIO pins have sequential, First half is gpo and second half is gpi.
->
-> have sequential ?.
->
-> > +  GPIO pins can be programmed to support the following options
-> > +  - Support interrupt option for each input port and various interrupt
-> > +    sensitivity option (level-high, level-low, edge-high, edge-low)
->
-> option*s*
->
-> > +  - ngpios is number of nuvoton,input-ngpios GPIO lines and nuvoton,ou=
-tput-ngpios GPIO lines.
-> > +    nuvoton,input-ngpios GPIO lines is only for gpi.
->
-> s/is/are/
->
-> > +    nuvoton,output-ngpios GPIO lines is only for gpo.
->
-> s/is/are/
->
-> It=E2=80=99d be great if you mentioned the datasheet name and revision in=
- the
-> description.
->
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - nuvoton,npcm750-sgpio
-> > +      - nuvoton,npcm845-sgpio
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  gpio-controller: true
-> > +
-> > +  '#gpio-cells':
-> > +    const: 2
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  nuvoton,input-ngpios:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description:
-> > +      The numbers of GPIO's exposed. GPIO lines is only for gpi.
->
-> s/is/are/
->
-> > +    minimum: 0
-> > +    maximum: 64
-> > +
-> > +  nuvoton,output-ngpios:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description:
-> > +      The numbers of GPIO's exposed. GPIO lines is only for gpo.
->
-> s/is/are/
->
-> > +    minimum: 0
-> > +    maximum: 64
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - gpio-controller
-> > +  - '#gpio-cells'
-> > +  - interrupts
-> > +  - nuvoton,input-ngpios
-> > +  - nuvoton,output-ngpios
-> > +  - clocks
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +    gpio8: gpio@101000 {
-> > +        compatible =3D "nuvoton,npcm750-sgpio";
-> > +        reg =3D <0x101000 0x200>;
-> > +        clocks =3D <&clk NPCM7XX_CLK_APB3>;
-> > +        interrupts =3D <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-> > +        gpio-controller;
-> > +        #gpio-cells =3D <2>;
-> > +        nuvoton,input-ngpios =3D <64>;
-> > +        nuvoton,output-ngpios =3D <64>;
-> > +    };
->
-> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
->
->
-> Kind regards,
->
-> Paul Menzel
+> > This happens when DMA_DIRECT_REMAP is selected by the T-Head CMO erratum
+>=20
+> or by the Zicbom extension support?
+
+Probably, yeah. That was just the conditions for this particular
+randconfig IIRC.
+
+> > option and DMA_GLOBAL_POOL is selected by the Andes CMO erratum. Block
+> > selecting the RZ/Five config option, and by extension DMA_GLOBAL_POOL,
+> > if DMA_DIRECT_REMAP has already been enabled.
+> >
+> > Fixes: 484861e09f3e ("soc: renesas: Kconfig: Select the required config=
+s for RZ/Five SoC")
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> > Closes: https://lore.kernel.org/all/24942b4d-d16a-463f-b39a-f9dfcb89d74=
+2@infradead.org/
+> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+>=20
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v6.8.
+>=20
+> Or should this be queued as a fix for v6.7 instead?
+
+Depends on your opinion on how critical such a fix is I suppose.
+
+> > ---
+> > I don't know what the exact fixes tag here is as I did not bisect with
+> > the randconfig, so I blamed the one that added DMA_GLOBAL_POOL.
+>=20
+> Bisection leads to commit da323d4640704001 ("dma-direct: add
+> dependencies to CONFIG_DMA_GLOBAL_POOL") in v6.7-rc1, but that is
+> merely making visible the symptoms, so I think your Fixes tag is fine.
+>=20
+> Esmil: I think you need a similar fix for ERRATA_STARFIVE_JH7100 in
+> your tree.
+
+I probably need a similar fix in my tree for that, since I applied
+Emil's patches...
+
+--e2oQTY8OE7jKY5sj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXgdGQAKCRB4tDGHoIJi
+0jbuAP91y7WApBZFEeiqbfME/Mo6p2pI+fFTDQeQretgcPSVNQEA0ZQFUcwsk10K
+K1XlumMMEm3Lyb4/BNoAfFhLqNBlIA8=
+=AJxt
+-----END PGP SIGNATURE-----
+
+--e2oQTY8OE7jKY5sj--
