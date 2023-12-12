@@ -2,214 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC5180E444
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 087CA80E448
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjLLGaN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 01:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S230019AbjLLGbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:31:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLGaL (ORCPT
+        with ESMTP id S229449AbjLLGbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 01:30:11 -0500
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51AFEA;
-        Mon, 11 Dec 2023 22:30:17 -0800 (PST)
-Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay10.hostedemail.com (Postfix) with ESMTP id 18D8AC08D4;
-        Tue, 12 Dec 2023 06:30:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 77F9A32;
-        Tue, 12 Dec 2023 06:30:13 +0000 (UTC)
-Message-ID: <f03d372a282712dee8412e47aff9bb54f181efd9.camel@perches.com>
-Subject: Re: [PATCH v3] iio: sx9324: avoid copying property strings
-From:   Joe Perches <joe@perches.com>
-To:     Justin Stitt <justinstitt@google.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Stephen Boyd <swboyd@chromium.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date:   Mon, 11 Dec 2023 22:30:12 -0800
-In-Reply-To: <20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com>
-References: <20231212-strncpy-drivers-iio-proximity-sx9324-c-v3-1-b8ae12fc8a5d@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 12 Dec 2023 01:31:53 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FFA6C7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 22:31:59 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d3c7ef7b31so51536327b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 22:31:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702362719; x=1702967519; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GTyimt7NL0UKlmZiXkz9uafKVfa8o+8ACsFlcy9zsvM=;
+        b=SP96YnY6GQafSBIMWcKBHkXDjR3K0Km9NxcDDSY7i9dE6ZVvVA2ToXtu/baWiCaF6W
+         IDK5mmkm3/Bfw26piaVm6XoaQiVXBdjIhn2qFL4lsBZUOpcZ1N8TbEcfW1JzI2wXMFTf
+         EU68wdDb2EFVtFFip04Jg9HTei7LWz/t4RNq6N3Bb9GwtCSeJ5P83knOSEXc/JG4UiBP
+         xpPXKr/njJ9vaeVVg3trjHCQSHKbc9mocfs3YgOC27uMgUdBylaHp9qEBRqidwHVbifX
+         tVh/TesCxc5SbJ8H0N364gr8wifRgUmjDNUDKVUnVhrZbTTrDLGr8EpiOVFupgru0a3J
+         5W1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702362719; x=1702967519;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GTyimt7NL0UKlmZiXkz9uafKVfa8o+8ACsFlcy9zsvM=;
+        b=pD3X34AbG/l6ZTm4Yp2kLfU86EmQt2nCShtYy7bMXKP8M3gXE06CgWSZDTtQ5nOgrt
+         T5jfIR3+ouICytAOXHirChXMJC1ttNaZNHK0ZJA4W9A5sj8P9BHNSom1Wdp2IbIilMhH
+         jOgKMWW/DKvG+TdmGPUwGOoe6vdcjWuHKKwyknb6MhA6av2BVilq5SjDUAGKUrMcEdra
+         7Tdo4fuSd22WoFVfN2pBSmd8vBruwn0Cr6KG8xtzKboo6K7sQ0f6AHP0zMKs9z8wulvR
+         CLiCD6Xrm3S0DJY0Dczq2BgoLnHrOkgNAa+lUvEmvbv6tJIeWVCom6AJdOaYtvTYTgvC
+         QTog==
+X-Gm-Message-State: AOJu0Yz5lyBYGef0bke0OV5iywV8K7FUVBRrodPzk1UizJfzcBHUzptZ
+        H0xGwEGpMSoLiLVqCq9Wm1Cn5CTrCaRcad9OZ/ARfw==
+X-Google-Smtp-Source: AGHT+IGs3HI6JS3zf1kNU/4zxKRcKFHbTh53Sxa3Dui91Qy2eQXtvbSqGZ/ne5wF8+f6nUF/3SZPXetlFOQSuaig8Ag=
+X-Received: by 2002:a0d:d305:0:b0:5d7:2c6b:623 with SMTP id
+ v5-20020a0dd305000000b005d72c6b0623mr4258949ywd.39.1702362718756; Mon, 11 Dec
+ 2023 22:31:58 -0800 (PST)
 MIME-Version: 1.0
-X-Stat-Signature: phty865o753pcccfgobmbjixq886ngut
-X-Rspamd-Server: rspamout04
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+References: <1702319923-24518-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqAch3Qhq_nfecA06d9fk1jUMD1Dx0ZgNGrom6BrwFo5A@mail.gmail.com> <baf2ebe7-7895-9249-8487-a7c7e61a67c6@quicinc.com>
+In-Reply-To: <baf2ebe7-7895-9249-8487-a7c7e61a67c6@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 12 Dec 2023 08:31:47 +0200
+Message-ID: <CAA8EJpoN8OVhPEyHzAjO7DUK9b+7_iJmc0k-XO8B8PrG12ZTVA@mail.gmail.com>
+Subject: Re: [PATCH v3] drm/msm/dpu: improve DSC allocation
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Rspamd-Queue-Id: 77F9A32
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19KB/KFUBqn8Mv2AYKskQceelw0LpRgeF8=
-X-HE-Tag: 1702362613-104366
-X-HE-Meta: U2FsdGVkX1/Rm4DJ1kl4WgyqfPYbh3ciIzLs0+/i1MmIHs710d6iZ3iVuY2VSxAN51cu5/6F8ymqllhraoJox4+clD3FQTrULWI8Jis3sEu4Ok5I163X9ZvBX+O5mq8bq0E0z1XQhwKuPg4xT9Xg++Wb/uLzuxn9qZeFi6zJLJD6dKoq9K9m4V0zFgqHdt1Dn67J1smEJnBCU0bhRTWGB0ExvHozZdCsk9v6pVBlobrOC8RnMzgdtwQVfiRdiklTsdCXCkhGQa1/+QEemCB7SoAfquPUR6O+fFi0QS6wleZFHQHkaPQXuGNJCI3TTm2e
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-12 at 00:42 +0000, Justin Stitt wrote:
-> We're doing some needless string copies when trying to assign the proper
-> `prop` string. We can make `prop` a const char* and simply assign to
-> string literals.
+On Tue, 12 Dec 2023 at 02:03, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+>
+> On 12/11/2023 1:30 PM, Dmitry Baryshkov wrote:
+> > On Mon, 11 Dec 2023 at 20:38, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> A DCE (Display Compression Engine) contains two DSC hard slice
+> >> encoders. Each DCE start with even DSC encoder index followed by
+> > "starts". But it will not be correct. The DCE doesn't start with the
+> > DSC encoder. DCE consists of two DSC encoders, one has an odd index
+> > and another one has an even index.
+> >
+> >> an odd DSC encoder index. Each encoder can work independently.
+> >> But Only two DSC encoders from same DCE can be paired to work
+> > only
+> >
+> >> together to support merge mode. In addition, the DSC with even
+> > There are different merge modes. Here you are talking about the DSC merge mode.
+> >
+> >> index have to mapping to even pingpong index and DSC with odd
+> > PINGPONG (end everywhere else).
+> >
+> > have to be mapped, should be used, etc.
+> >
+> >> index have to mapping to odd pingpong index at its data path.
+> >> This patch improve DSC allocation mechanism with consideration
+> > improves
+> >
+> >> of above factors.
+> > of these factors.
+> >
+> >> Changes in V3:
+> >> -- add dpu_rm_pingpong_dsc_check()
+> >> -- for pair allocation use i += 2 at for loop
+> >>
+> >> Changes in V2:
+> >>      -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
+> >>         _dpu_rm_reserve_dsc_pair()
+> >>
+> >> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
+> > This tag is incorrect. The patch should be split into two pieces. One
+> > which fixes DSC allocation for DSC 1.1 encoders, where there were no
+> > DCE blocks, another one which adds proper handling for DCE.
+> > Unless the paired allocation requirement also applies to pre-DCE DSC
+> > encoders. But in that case the commit message doesn't make any sense.
+> >
+> > I checked 4.x Qualcomm kernels. None of them contained any of these
+> > restrictions for DSC blocks. Only the displaypack targeting 4.19
+> > kernel got these changes. But it predates DCE pairs support.
+>
+> as I said earlier the rule of odd/even pp-index map to odd/even
+> dsc-index is there since dsc v1.1.
+>
+> I think current code (including down stream code) works by luck to not
+> encounter a configuration with two independence paths, one with single
+> dsc and the other one use two dsc to support dsc merge mode.
+>
+> this patch is the fix to enforce this rule for both dsc v1.1 and v1.2
+> and I will rework commit message yo have better description.
 
-trivia:
+Good. Does this apply to paired allocation too? I think so, as the
+techpack first got the paired allocation and only afterwards it has
+got the DSC/PP idx check.
 
-I would have updated it like this moving the
-various declarations into the case blocks
-where they are used and removing a few unused
-#defines
+Regarding the patch itself. May I suggest an alternative approach,
+which should work better, I think. At least it will not require
+'deleting' the PP indices. First you preprocess the pp_to_enc_id array
+and list all PP indices selected for this encoder. Then you work with
+this array, matching PP and DSC blocks.
 
----
- drivers/iio/proximity/sx9324.c | 69 +++++++++++++++++++++++++-----------------
- 1 file changed, 41 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/iio/proximity/sx9324.c b/drivers/iio/proximity/sx9324.c
-index ac2ed2da21ccc..c50c1108a69cc 100644
---- a/drivers/iio/proximity/sx9324.c
-+++ b/drivers/iio/proximity/sx9324.c
-@@ -877,17 +877,8 @@ static const struct sx_common_reg_default *
- sx9324_get_default_reg(struct device *dev, int idx,
- 		       struct sx_common_reg_default *reg_def)
- {
--	static const char * const sx9324_rints[] = { "lowest", "low", "high",
--		"highest" };
--	static const char * const sx9324_csidle[] = { "hi-z", "hi-z", "gnd",
--		"vdd" };
--#define SX9324_PIN_DEF "semtech,ph0-pin"
--#define SX9324_RESOLUTION_DEF "semtech,ph01-resolution"
--#define SX9324_PROXRAW_DEF "semtech,ph01-proxraw-strength"
--	unsigned int pin_defs[SX9324_NUM_PINS];
--	char prop[] = SX9324_PROXRAW_DEF;
--	u32 start = 0, raw = 0, pos = 0;
--	int ret, count, ph, pin;
-+	u32 raw = 0;
-+	int ret;
- 
- 	memcpy(reg_def, &sx9324_default_regs[idx], sizeof(*reg_def));
- 
-@@ -896,7 +887,13 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 	case SX9324_REG_AFE_PH0:
- 	case SX9324_REG_AFE_PH1:
- 	case SX9324_REG_AFE_PH2:
--	case SX9324_REG_AFE_PH3:
-+	case SX9324_REG_AFE_PH3: {
-+		unsigned int pin_defs[SX9324_NUM_PINS];
-+		int count;
-+		int pin;
-+		int ph;
-+		char prop[32];
-+
- 		ph = reg_def->reg - SX9324_REG_AFE_PH0;
- 		snprintf(prop, ARRAY_SIZE(prop), "semtech,ph%d-pin", ph);
- 
-@@ -913,7 +910,15 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 			       SX9324_REG_AFE_PH0_PIN_MASK(pin);
- 		reg_def->def = raw;
- 		break;
--	case SX9324_REG_AFE_CTRL0:
-+	}
-+	case SX9324_REG_AFE_CTRL0: {
-+		static const char * const sx9324_csidle[] = {
-+			"hi-z", "hi-z", "gnd", "vdd"
-+		};
-+		static const char * const sx9324_rints[] = {
-+			"lowest", "low", "high", "highest"
-+		};
-+
- 		ret = device_property_match_property_string(dev, "semtech,cs-idle-sleep",
- 							    sx9324_csidle,
- 							    ARRAY_SIZE(sx9324_csidle));
-@@ -930,16 +935,17 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 			reg_def->def |= ret << SX9324_REG_AFE_CTRL0_RINT_SHIFT;
- 		}
- 		break;
-+	}
- 	case SX9324_REG_AFE_CTRL4:
--	case SX9324_REG_AFE_CTRL7:
-+	case SX9324_REG_AFE_CTRL7: {
-+		const char *type;
-+
- 		if (reg_def->reg == SX9324_REG_AFE_CTRL4)
--			strncpy(prop, "semtech,ph01-resolution",
--				ARRAY_SIZE(prop));
-+			type = "semtech,ph01-resolution";
- 		else
--			strncpy(prop, "semtech,ph23-resolution",
--				ARRAY_SIZE(prop));
-+			type = "semtech,ph23-resolution";
- 
--		ret = device_property_read_u32(dev, prop, &raw);
-+		ret = device_property_read_u32(dev, type, &raw);
- 		if (ret)
- 			break;
- 
-@@ -949,6 +955,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 		reg_def->def |= FIELD_PREP(SX9324_REG_AFE_CTRL4_RESOLUTION_MASK,
- 					   raw);
- 		break;
-+	}
- 	case SX9324_REG_AFE_CTRL8:
- 		ret = device_property_read_u32(dev,
- 				"semtech,input-precharge-resistor-ohms",
-@@ -982,17 +989,21 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 					   6 + raw * (raw + 3) / 2);
- 		break;
- 
--	case SX9324_REG_ADV_CTRL5:
-+	case SX9324_REG_ADV_CTRL5: {
-+		u32 start = 0;
-+
- 		ret = device_property_read_u32(dev, "semtech,startup-sensor",
- 					       &start);
- 		if (ret)
- 			break;
--
- 		reg_def->def &= ~SX9324_REG_ADV_CTRL5_STARTUPSENS_MASK;
- 		reg_def->def |= FIELD_PREP(SX9324_REG_ADV_CTRL5_STARTUPSENS_MASK,
- 					   start);
- 		break;
--	case SX9324_REG_PROX_CTRL4:
-+	}
-+	case SX9324_REG_PROX_CTRL4: {
-+		u32 pos = 0;
-+
- 		ret = device_property_read_u32(dev, "semtech,avg-pos-strength",
- 					       &pos);
- 		if (ret)
-@@ -1005,15 +1016,16 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 		reg_def->def |= FIELD_PREP(SX9324_REG_PROX_CTRL4_AVGPOSFILT_MASK,
- 					   raw);
- 		break;
-+	}
- 	case SX9324_REG_PROX_CTRL0:
--	case SX9324_REG_PROX_CTRL1:
-+	case SX9324_REG_PROX_CTRL1: {
-+		const char *type;
-+
- 		if (reg_def->reg == SX9324_REG_PROX_CTRL0)
--			strncpy(prop, "semtech,ph01-proxraw-strength",
--				ARRAY_SIZE(prop));
-+			type = "semtech,ph01-proxraw-strength";
- 		else
--			strncpy(prop, "semtech,ph23-proxraw-strength",
--				ARRAY_SIZE(prop));
--		ret = device_property_read_u32(dev, prop, &raw);
-+			type = "semtech,ph23-proxraw-strength";
-+		ret = device_property_read_u32(dev, type, &raw);
- 		if (ret)
- 			break;
- 
-@@ -1022,6 +1034,7 @@ sx9324_get_default_reg(struct device *dev, int idx,
- 					   raw);
- 		break;
- 	}
-+	}
- 	return reg_def;
- }
- 
 
+
+-- 
+With best wishes
+Dmitry
