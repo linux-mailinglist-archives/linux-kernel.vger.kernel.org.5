@@ -2,172 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7164A80ED59
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9C580ED5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjLLNWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:22:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S234965AbjLLNW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235094AbjLLNWV (ORCPT
+        with ESMTP id S235081AbjLLNWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:22:21 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733821BB;
-        Tue, 12 Dec 2023 05:22:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SqK4p4tzWzvS07;
-        Tue, 12 Dec 2023 21:21:14 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-        by mail.maildlp.com (Postfix) with ESMTPS id 9296E1800BB;
-        Tue, 12 Dec 2023 21:22:00 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 21:21:59 +0800
-Message-ID: <45178e80-bba4-4afe-2c74-50facd78169d@huawei.com>
-Date:   Tue, 12 Dec 2023 21:21:59 +0800
+        Tue, 12 Dec 2023 08:22:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E6D171F;
+        Tue, 12 Dec 2023 05:22:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=d82RgBMGaaclCmfp4Tm9o8eeAr
+        5J48k2Y7WjvnZqrEyGwMif8AAp7lsxMyHiRerWCDvpM+uuCkRl8uH/kRItJxP6H9xqP63/lNRLlFO
+        Mi3EN+Wdw5I6UIRMMc6ELZZyD3L7wP+bD2lYalA86sv9mMQqNAQViWtFhVollnzaiMdmN3PvuL77w
+        B4AeTARacirMv82QpCndK6O66Jrjem548Vcc8ddZDiWQpd04d5vhGpZhyqQeFOu64id6pQ7SyWzdE
+        wTLNH0jXL9/RDjUKqR4jJVLb2XB4YSMSVMxSw5TIZve4XEGZxW6DpOEYnRkYkZFu+YnDDTqzbDEoi
+        zpVEFjSw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rD2i1-00BmdA-1Z;
+        Tue, 12 Dec 2023 13:22:01 +0000
+Date:   Tue, 12 Dec 2023 05:22:01 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 17/18] ext4: remove
+ block_device_ejected()
+Message-ID: <ZXheecmAqhb8dN8E@infradead.org>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140833.975935-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [RFC PATCH] mm/filemap: avoid buffered read/write race to read
- inconsistent data
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>, <david@fromorbit.com>,
-        <hch@infradead.org>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>, <stable@kernel.org>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20231212093634.2464108-1-libaokun1@huawei.com>
- <20231212124157.ew6q6jp2wsezvqzd@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231212124157.ew6q6jp2wsezvqzd@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211140833.975935-1-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/12 20:41, Jan Kara wrote:
-> On Tue 12-12-23 17:36:34, Baokun Li wrote:
->> The following concurrency may cause the data read to be inconsistent with
->> the data on disk:
->>
->>               cpu1                           cpu2
->> ------------------------------|------------------------------
->>                                 // Buffered write 2048 from 0
->>                                 ext4_buffered_write_iter
->>                                  generic_perform_write
->>                                   copy_page_from_iter_atomic
->>                                   ext4_da_write_end
->>                                    ext4_da_do_write_end
->>                                     block_write_end
->>                                      __block_commit_write
->>                                       folio_mark_uptodate
->> // Buffered read 4096 from 0          smp_wmb()
->> ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
->>   generic_file_read_iter            i_size_write // 2048
->>    filemap_read                     unlock_page(page)
->>     filemap_get_pages
->>      filemap_get_read_batch
->>      folio_test_uptodate(folio)
->>       ret = test_bit(PG_uptodate, folio_flags)
->>       if (ret)
->>        smp_rmb();
->>        // Ensure that the data in page 0-2048 is up-to-date.
->>
->>                                 // New buffered write 2048 from 2048
->>                                 ext4_buffered_write_iter
->>                                  generic_perform_write
->>                                   copy_page_from_iter_atomic
->>                                   ext4_da_write_end
->>                                    ext4_da_do_write_end
->>                                     block_write_end
->>                                      __block_commit_write
->>                                       folio_mark_uptodate
->>                                        smp_wmb()
->>                                        set_bit(PG_uptodate, folio_flags)
->>                                     i_size_write // 4096
->>                                     unlock_page(page)
->>
->>     isize = i_size_read(inode) // 4096
->>     // Read the latest isize 4096, but without smp_rmb(), there may be
->>     // Load-Load disorder resulting in the data in the 2048-4096 range
->>     // in the page is not up-to-date.
->>     copy_page_to_iter
->>     // copyout 4096
->>
->> In the concurrency above, we read the updated i_size, but there is no read
->> barrier to ensure that the data in the page is the same as the i_size at
->> this point, so we may copy the unsynchronized page out. Hence adding the
->> missing read memory barrier to fix this.
->>
->> This is a Load-Load reordering issue, which only occurs on some weak
->> mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
->> mem-ordering architectures (e.g. X86). And theoretically the problem
-> AFAIK x86 can also reorder loads vs loads so the problem can in theory
-> happen on x86 as well.
-According to what I read in the perfbook at the link below,
-  Loads Reordered After Loads does not happen on x86.
-pdf sheet 562 corresponds to page 550,
-Table 15.5: Summary of Memory Ordering
-https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook-1c.2023.06.11a.pdf 
+Looks good:
 
->> doesn't only happen on ext4, filesystems that call filemap_read() but
->> don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
->> problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
->> this problem.
->>
->> Cc: stable@kernel.org
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   mm/filemap.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 71f00539ac00..6324e2ac3e74 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -2607,6 +2607,9 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->>   			goto put_folios;
->>   		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
->>   
->> +		/* Ensure that the page cache within isize is updated. */
-> Barries have to be in pairs to work and it is a good practice to document
-> this. So here I'd have comment like:
-> 		/*
-> 		 * Pairs with a barrier in
-> 		 * block_write_end()->mark_buffer_dirty() or other page
-> 		 * dirtying routines like iomap_write_end() to ensure
-> 		 * changes to page contents are visible before we see
-> 		 * increased inode size.
-> 		 */
->
-> 								Honza
-That's a very accurate description! Thanks a lot!
-I will add this comment in the next version.
->> +		smp_rmb();
->> +
->>   		/*
->>   		 * Once we start copying data, we don't want to be touching any
->>   		 * cachelines that might be contended:
->> -- 
->> 2.31.1
->>
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
