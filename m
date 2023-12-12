@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EBC80E52E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F146A80E532
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346010AbjLLHyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
+        id S1345968AbjLLHyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345988AbjLLHyH (ORCPT
+        with ESMTP id S1345994AbjLLHyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:54:07 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8865EB8;
-        Mon, 11 Dec 2023 23:54:13 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-28ac6ecb9bdso94366a91.1;
-        Mon, 11 Dec 2023 23:54:13 -0800 (PST)
+        Tue, 12 Dec 2023 02:54:14 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE624113;
+        Mon, 11 Dec 2023 23:54:16 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b9efed2e6fso2878556b6e.0;
+        Mon, 11 Dec 2023 23:54:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702367653; x=1702972453; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702367656; x=1702972456; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QYoSEBzEJ/i6iAAejX6uD3fB03NRJtyC9eYU806fHGg=;
-        b=PPHfo99I7XoPlU/cK3WiDppZkywZM73gPBp+bX4YXTWyFij9gQ6cdSpM6ApRakUoCl
-         YtDyWWuMNI48Ca7o1s0m3TlYhl8HK9X6w0NXPGO2e/kP8K0y2pk28jf+w4khqMNuImMt
-         GwA0x7Y3V4BRsnMXJkaPNUE4vrUVeeuBtvUvCp2ow13EOCPTjXFbG84X2qvxmHBWduz0
-         YvomjBZCGpJM1ZdQsAXU8Gisdqiqw4lWI9/L4hc1enZxC7n598H0rmp/BnJAN7xSHHI4
-         Hx8HtB5If/N6VU6tqBchDn7zBCtI6On/LWpgnQ7GW4ZlOOOmcD78pgmGHHygl7nl1n+5
-         xZGw==
+        bh=wECkqtuJuNq4vKf49CMC3VZgJYROzMEL16NeUTjnLOQ=;
+        b=JP3qThNAEkZnkHCcMonwVFJZU3spKH1QGJT8kfLY5f/SzPqVZSO37h3efJ433lGIwU
+         j/UpckjevWJMmpoOugMncH1B9uvU4gGhiw+EnlJpHH7O5rPUtsjdk2lBSywjk2mioHDF
+         FaC1/8Ihs7P026IEuc1ADE9j3rtaWLaPkuhHoaBakCCfKEn7m/g2YHytCRZpKd/53pCv
+         KcyIqGV5qpsyILZSZYd2YPUFfdzzY6DXfGNsPG+Hh6bA/uHMdwwKxTsw25geBkTYvmfy
+         EFjD+HtiplwrxOzUeBLi++D7xXc4xt6OF8W3/yArU+PmZDMObzWisplCBdgIxvhPxtcY
+         j+YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702367653; x=1702972453;
+        d=1e100.net; s=20230601; t=1702367656; x=1702972456;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QYoSEBzEJ/i6iAAejX6uD3fB03NRJtyC9eYU806fHGg=;
-        b=AbvxegchFRFEzxPOiWw5b9PiHXePeqc2LtvcnGNYCbcRBISy+7vgwKWxyRcS4rJEkn
-         P8gMtVoDGf9C1ufpwZCE7L2ZJAys7Vn7Fzpvc/1/hwXr5ZB2ETdWb1AOI58U7M4nMtOs
-         Gw/IqOQla7+dysuApMvuy3abGYmdIMzq4juHpHP4d37NyUBN2SZSQd7E1beJBGdR2NRA
-         L6UpQl3InL7tKC1/BzOxajoxMph7jCscv5ukMH/sXKNC5O4R6h8dfqZ8IdG+YKiwaO/b
-         wsAhkJtGTOXXgRrUrQpfbs7/6kZtVtxcQCWkTAC08xApyoXZ+3ri9DX96JmAUc7HXeLZ
-         4OnQ==
-X-Gm-Message-State: AOJu0YzbSHXiB/sc0yc/5aL/P6WWCcSonwgoBVU81H+Sr3zHudsX7ab5
-        gy/nLG6HoO2+x0VWQbJODxI=
-X-Google-Smtp-Source: AGHT+IF7Zo4TS0bMKNUvfOxKnxKYa98o6T4jSkePwBsMjb1i6QJF38Uq++dQYabgc50/Zho+o/KXew==
-X-Received: by 2002:a17:90a:9918:b0:286:1e90:fe2f with SMTP id b24-20020a17090a991800b002861e90fe2fmr7032544pjp.15.1702367652929;
-        Mon, 11 Dec 2023 23:54:12 -0800 (PST)
+        bh=wECkqtuJuNq4vKf49CMC3VZgJYROzMEL16NeUTjnLOQ=;
+        b=fhmkvH3cSZQy/OL/B0R4levm4Ma214e/LESSFD760AqM2W8VPVHrtCwuDXp3K1mLlx
+         HSIpmHtO9CkvFzcv6UBP4U6ke5fjSynZzpqNQFUB65mAamdCAnzY/l+UJQOcDRzKooiq
+         d/UxaMyQrT8kyEoS17PdaPFb2PKFbWPmD9LzMawTO8WD5r5rBRyhmV52jZap7ftfZIAr
+         4rCsth4NcCOE2EpTYdkN2oL2gnpK9+IVK1Cj96hqvcZEKDsnVuMtc/qpAXVVUJ3XTeL1
+         Uapnaq8X19LGauRgYj8KP1bdrne4MMili98V8mOTN16Mki4A00/+NIGdbKgBOFfjJ7kZ
+         6Ljg==
+X-Gm-Message-State: AOJu0YwGCii/jrAK0rB6cEEIDLcx64FZe4pHwhJdqkVJ+MjJfHBaaVs3
+        GtV6QcMS3/gTdLPiazgq7UPljZM6zgc=
+X-Google-Smtp-Source: AGHT+IGQGVQfpsD+7aVeGROKJ2gCtJW313/hYWDkA6RE83+q24qAb7TXxK2YreBWYGv+y6b18OOdJA==
+X-Received: by 2002:a05:6808:640f:b0:3b9:f10f:b69f with SMTP id fg15-20020a056808640f00b003b9f10fb69fmr6399289oib.11.1702367655768;
+        Mon, 11 Dec 2023 23:54:15 -0800 (PST)
 Received: from obliging-System-Product-Name.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id qi9-20020a17090b274900b0028a28ad810csm8144319pjb.56.2023.12.11.23.54.10
+        by smtp.gmail.com with ESMTPSA id qi9-20020a17090b274900b0028a28ad810csm8144319pjb.56.2023.12.11.23.54.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 23:54:12 -0800 (PST)
+        Mon, 11 Dec 2023 23:54:15 -0800 (PST)
 From:   Yang Chen <yangchen.openbmc@gmail.com>
 To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
@@ -58,9 +58,9 @@ To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
 Cc:     Jerry.Lin@quantatw.com, EasonChen1@quantatw.com,
         Leslie.Tong@quantatw.com, yangchen.openbmc@gmail.com
-Subject: [PATCH 03/11] ARM: dts: aspeed: minerva: Change sgpio use
-Date:   Tue, 12 Dec 2023 15:51:52 +0800
-Message-Id: <20231212075200.983536-4-yangchen.openbmc@gmail.com>
+Subject: [PATCH 04/11] ARM: dts: aspeed: minerva: Enable power monitor device
+Date:   Tue, 12 Dec 2023 15:51:53 +0800
+Message-Id: <20231212075200.983536-5-yangchen.openbmc@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212075200.983536-1-yangchen.openbmc@gmail.com>
 References: <20231212075200.983536-1-yangchen.openbmc@gmail.com>
@@ -76,26 +76,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct the sgpio use from sgpiom1 to sgpiom0
+Enable power monitor device ina230 and ltc2945 on the i2c bus 0
 
 Signed-off-by: Yang Chen <yangchen.openbmc@gmail.com>
 ---
- arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../aspeed/aspeed-bmc-facebook-minerva.dts    | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts
-index 9979dba1ef0e..ad77057f921c 100644
+index ad77057f921c..ee9691647e4a 100644
 --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts
 +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts
-@@ -78,7 +78,7 @@ &rtc {
+@@ -86,6 +86,28 @@ &sgpiom0 {
+ 
+ &i2c0 {
  	status = "okay";
++
++	power-monitor@40 {
++		compatible = "ti,ina230";
++		reg = <0x40>;
++		shunt-resistor = <1000>;
++	};
++
++	power-monitor@41 {
++		compatible = "ti,ina230";
++		reg = <0x41>;
++		shunt-resistor = <1000>;
++	};
++
++	power-monitor@67 {
++		compatible = "adi,ltc2945";
++		reg = <0x67>;
++	};
++
++	power-monitor@68 {
++		compatible = "adi,ltc2945";
++		reg = <0x68>;
++	};
  };
  
--&sgpiom1 {
-+&sgpiom0 {
- 	status = "okay";
- 	ngpios = <128>;
- 	bus-frequency = <2000000>;
+ &i2c1 {
 -- 
 2.34.1
 
