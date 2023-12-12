@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 903C080EE74
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3629080EE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376433AbjLLOL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S1376457AbjLLOMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbjLLOL5 (ORCPT
+        with ESMTP id S1376452AbjLLOMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:11:57 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD359FF;
-        Tue, 12 Dec 2023 06:12:02 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-336356d9092so263881f8f.2;
-        Tue, 12 Dec 2023 06:12:02 -0800 (PST)
+        Tue, 12 Dec 2023 09:12:06 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897D410A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:12:11 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4259c7dfb63so28477971cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702390321; x=1702995121; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pwano9guwZgppKOMB5aK4J4782C3dg8VANWXqW1Jv/c=;
-        b=khkQlVtJs8MSXYRAN5wSrbK8t/Ky9YjqhQgy8B5S6Iw1YsxPhKJmWeocvnNxND9P4y
-         geTm6pbrOfexcYtiWx2M+5see8KhTyL5gjt8TPXn/bbh3XtUTszoZTpjcX5FU+ON9Qzv
-         CA+/fAYf5JVvQIw4vWBdqwd55DQhnsYnB1YJrduPepJV2a/ckNHOzNcBOuT8dnrTmfsT
-         WAEy2XuGniKhqoaxUihBYOVIHw2diTD/77aNeMX9ZfzNY2ONPK+TogcoiKQTOLi8HFaF
-         TF/3xz/GETRgop8ZZCZ6CFF99jx/9ZvZXLe5p3Dz26vRWcxFaDxoMcB45yJ924DT/YN3
-         cIGw==
+        d=ziepe.ca; s=google; t=1702390330; x=1702995130; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQ2TiLoD9Gaq6xkoyUSluJ0KHWLQt9mZyTQyaXIVvpI=;
+        b=Ma6EWX39Bj1+T9k0jBia+zrZupD7uZ+MvPqsdYZzuIIsCDzoZlisglAN5yH5/oEK9g
+         a1AAT63J2/G5xRWwi2oo1rppz6IWnTX3OZoTyKWZt++m1ECcRYhwSzlN5MvnZXiLi/rJ
+         l/E7r9Fan781Jhhyr9OVRLLCSF1oORTqZ/bw5C0bAmUzamQdXNNvfwmQHXn63uZr52n8
+         2UobjmltDa40DJ/hOqZTPFxpzzmrugA/7QL5aXuWv9AzO6nJ9M5sRc1i8jnP1ydUQSKR
+         JLaxJ8nyPCqhEe8Of6xlQdlg5KeLG/wfT3+naYeO9P+eC7SxHLMnnstTnJ8iOTbr1c9D
+         U+LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702390321; x=1702995121;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Pwano9guwZgppKOMB5aK4J4782C3dg8VANWXqW1Jv/c=;
-        b=vC96whIY0BXCSjQ/8WdtytROVNNnVIou8DWFterfsf0GyWGoTeUK0ys5avlxRNteL0
-         QhgmyQudusMpPGwFUmlMrBpktwlMC7LbRHvDfwLHq3zBUVh1bQkY3j/BKZjm9QQPbAtr
-         EFmcXXmlY6XCwAJRu1yvY4fjGghbMbMOKUSZSxrffZELx6LLCTtKpQakMljgkD9SlRnF
-         1yHYOF2XKsho/3busYsxMKCAXLTq6Fs7jkOTBpaffYTLt21XgcDSHKxN36BmmKqfPd1Q
-         vSECA7BZhRE6t7qOgnk/IzS6TZheClCMbY5s0TMJCYBKvokhZCNWTUb09BxOQMh9VfcF
-         LiEw==
-X-Gm-Message-State: AOJu0YwffVN/XmbJCTzbwFx5Dav2Ywfsb5YH0T9ilgoHhzjjDazW70mN
-        fgMEdvaLstuwXl957MPOPxs=
-X-Google-Smtp-Source: AGHT+IHU7VRTf2bVnL21KJoSeULrZCVIcNlyZpBJvxAksi4Ci/dj7EQpfx/j7ClSjfOl9OX7jnsOAA==
-X-Received: by 2002:adf:ee47:0:b0:333:2fd2:8170 with SMTP id w7-20020adfee47000000b003332fd28170mr3211089wro.141.1702390321048;
-        Tue, 12 Dec 2023 06:12:01 -0800 (PST)
-Received: from eichest-laptop.. ([178.197.202.123])
-        by smtp.gmail.com with ESMTPSA id p16-20020a5d48d0000000b0033616ea5a0fsm7906913wrs.45.2023.12.12.06.12.00
+        d=1e100.net; s=20230601; t=1702390330; x=1702995130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQ2TiLoD9Gaq6xkoyUSluJ0KHWLQt9mZyTQyaXIVvpI=;
+        b=gHszmwcl5dPNOe2XPlvoVykZ/L/hJke6la7sKShGbNACfJkjXrgX18Q7enXhc1tJHW
+         qyrWtWBOBLCu6e2Lfz9Y3tRUqPFzHcYvBcdUrdeC+at+4yFe53DGeU5/N+9ERYonvgP/
+         Pdo4xpAPuDIdgY87jE9V0wT8ZpZYU7Y3PYvzwkIK5xc3V5cqPVuxkaN4gAXzI88N+bif
+         V7DUke6AgPrrpSmgqinej0juo3+R84V8Hno+unNo4ZAWBrkr/KF2l94+6Wr4+W/50h5Y
+         w40+PUgPZkpZSI1pSx19MV6KuiBQghgiagw8090nbHXrYHj1GUx/jXtyt7Ghpt9oHrMA
+         9K5Q==
+X-Gm-Message-State: AOJu0YxxKhevtWOjpIle9Gt3CxF9tqAe3fKAYzS5IW4ilb3A3/xP/PRq
+        iMsoZvuQlclzNBzxoOuZiFqGww==
+X-Google-Smtp-Source: AGHT+IGRkRQVaTR68B5qveU70mgfrGlXmlTMF+z308FUs0i5H1yAdurOHwLdhvMF64yVQEAU8ICGfg==
+X-Received: by 2002:ac8:7dc6:0:b0:425:4043:29ff with SMTP id c6-20020ac87dc6000000b00425404329ffmr7750741qte.122.1702390330535;
+        Tue, 12 Dec 2023 06:12:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id t22-20020ac85316000000b0041cb787ff41sm4082934qtn.67.2023.12.12.06.12.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 06:12:00 -0800 (PST)
-From:   Stefan Eichenberger <eichest@gmail.com>
-To:     maxime.chevallier@bootlin.com, mw@semihalf.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] net: mvpp2: add support for mii
-Date:   Tue, 12 Dec 2023 15:12:00 +0100
-Message-Id: <20231212141200.62579-1-eichest@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 12 Dec 2023 06:12:09 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1rD3UW-00CjJP-VZ;
+        Tue, 12 Dec 2023 10:12:08 -0400
+Date:   Tue, 12 Dec 2023 10:12:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] iommufd: Initializing and releasing IO page fault
+ data
+Message-ID: <20231212141208.GA3013885@ziepe.ca>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231026024930.382898-4-baolu.lu@linux.intel.com>
+ <CGME20231212131010eucas1p104d069ac6d6c97fce4987caa62c996ee@eucas1p1.samsung.com>
+ <20231212131008.k6s5xwjgolp6geps@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212131008.k6s5xwjgolp6geps@localhost>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, mvpp2 only supports RGMII. This commit adds support for MII.
-The description in Marvell's functional specification seems to be wrong.
-To enable MII, we need to set GENCONF_CTRL0_PORT3_RGMII, while for RGMII
-we need to clear it. This is also how U-Boot handles it.
+On Tue, Dec 12, 2023 at 02:10:08PM +0100, Joel Granados wrote:
 
-Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
----
-v2:
-- Remove PHY_INTERFACE_MODE_100BASEX from supported_interfaces (Maxime)
----
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 21 ++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+> > diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+> > index 645ab5d290fe..0a8e03d5e7c5 100644
+> > --- a/drivers/iommu/iommufd/device.c
+> > +++ b/drivers/iommu/iommufd/device.c
+> > @@ -456,6 +456,16 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
+> >  	if (rc)
+> >  		goto err_unlock;
+> >  
+> > +	if (hwpt->fault) {
+> > +		void *curr;
+> > +
+> > +		curr = iopf_pasid_cookie_set(idev->dev, IOMMU_NO_PASID, idev);
+> I'm hitting an error here when I try to attach to a hwpt that I created
+> previously with the `IOMMU_HWPT_ALLOC_IOPF_CAPABLE` flag.
+> 
+> I get an -ENODEV from iopf_pasid_cookie_set which is triggered by
+> dev->iommu->fault_param being 0x0.
+> 
+> I looked around and I see that the fault param gets set in
+> iopf_queue_add_device which is called from iommu_dev_enable_feature
+> only. Furthermore iommu_dev_enable_feature is only called in idxd and
+> uacce drivers.
+> 
+> Questions:
+> 1. Should iopf_queue_add_device get called from the
+>    IOMMU_HWPT_ALLOC_IOPF_CAPABLE ioctl call? This make sense to me as
+>    this is where the device and the IOPF are related from user space.
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 93137606869e..c5f72a1ef928 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1513,10 +1513,21 @@ static void mvpp22_gop_init_rgmii(struct mvpp2_port *port)
- 	regmap_write(priv->sysctrl_base, GENCONF_PORT_CTRL0, val);
- 
- 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
--	if (port->gop_id == 2)
-+	if (port->gop_id == 2) {
- 		val |= GENCONF_CTRL0_PORT2_RGMII;
--	else if (port->gop_id == 3)
-+	} else if (port->gop_id == 3) {
- 		val |= GENCONF_CTRL0_PORT3_RGMII_MII;
-+
-+		/* According to the specification, GENCONF_CTRL0_PORT3_RGMII
-+		 * should be set to 1 for RGMII and 0 for MII. However, tests
-+		 * show that it is the other way around. This is also what
-+		 * U-Boot does for mvpp2, so it is assumed to be correct.
-+		 */
-+		if (port->phy_interface == PHY_INTERFACE_MODE_MII)
-+			val |= GENCONF_CTRL0_PORT3_RGMII;
-+		else
-+			val &= ~GENCONF_CTRL0_PORT3_RGMII;
-+	}
- 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
- }
- 
-@@ -1615,6 +1626,7 @@ static int mvpp22_gop_init(struct mvpp2_port *port, phy_interface_t interface)
- 		return 0;
- 
- 	switch (interface) {
-+	case PHY_INTERFACE_MODE_MII:
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
- 	case PHY_INTERFACE_MODE_RGMII_RXID:
-@@ -6948,8 +6960,11 @@ static int mvpp2_port_probe(struct platform_device *pdev,
- 					MAC_10000FD;
- 		}
- 
--		if (mvpp2_port_supports_rgmii(port))
-+		if (mvpp2_port_supports_rgmii(port)) {
- 			phy_interface_set_rgmii(port->phylink_config.supported_interfaces);
-+			__set_bit(PHY_INTERFACE_MODE_MII,
-+				  port->phylink_config.supported_interfaces);
-+		}
- 
- 		if (comphy) {
- 			/* If a COMPHY is present, we can support any of the
--- 
-2.40.1
+It probably needs to call the set feature thing in the short term.
 
+In the medium term I would like the drivers to manage the iopf based
+on domain attachment not explicit feature asks
+
+> 2. This is not intended to work only with idxd and uacce. right?
+
+It should work everywhere, I suspect Intel Team didn't hit this
+because they are testing IDXD SIOV? Can you guys also test it as a PF
+assignment?
+
+Jason
