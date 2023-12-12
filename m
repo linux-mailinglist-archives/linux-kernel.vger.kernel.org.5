@@ -2,55 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF7D80E5DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9E080E5DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346203AbjLLIWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:22:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        id S1346192AbjLLIWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346051AbjLLIWC (ORCPT
+        with ESMTP id S1346045AbjLLIWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:22:02 -0500
+        Tue, 12 Dec 2023 03:22:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3619BD2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA79CD
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 146E7C43140;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 21814C4167E;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702369325;
-        bh=JYhlVS3mSs8KoKQ2tJkR/S6VzJHwrvPnrsSQOGZzOgE=;
+        bh=7ExsGWYEQIIInuR7uJ4VrJxxLfA/5YuhSMVK8oL9Zmk=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=UIRVdAfYSCgFVrKABlglRWFqtAbbSLi3KvAPw1KfLMPGMH7bql0QGppL++7UMkQxq
-         TxDucjZXYxvO8RFj0u6RL5XHZy4r+oGuzPi4mLi4jdWUlnhg+VMOwv2nc4jB644lWq
-         n3tS1Ij+2fiqujAXYHNbTks8qjQGnUYrSa8qWtFuX7jfE2Rghrsqw/uWisXB/vn6Sl
-         Ef/6DzwKWBg3MTp4Of1guKxUbMilVFWALEFQNtV2hDgVvdutekEa2J404Lrb8UV7g1
-         ig0Ayy7D4nk6ItqFyeTAqLvffgUO3PtBFRuE8Bz/scscWZrgGbEJOMK522YFuupYft
-         7933BcAivdq2Q==
+        b=d1Nnda6VhkKmfYMJfecIjMksEIX+vj8wGpnQS5QJ/9a1Nyxi4zK5Ex8e4Z+4no0Qi
+         WRCcqNnqlR+bmlMxGsju/1QsH3qEY60t+cZVt0wUUfj6CfxFNm48vQexqN+r+7EWXv
+         Fxtx5dzS/dswBQr2HT17KMGyQTP3KybBbdianbg9zlYaMS7SSo2TJwDofp4dlHciNs
+         T72d2Jp+pmYZEElRRboQxDmRv2Dq+jG6xVU1Y3NbzKkcTz6MT+u9uDlRKmLDEwnNwn
+         lkRWx1XlXFl2fkuDIMbB2EB9YnX8UIZUs47g9AfeRoRLcnlibbuuXGmx2FXCXd0u/U
+         QCELNbofAKhrw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 051DDC38145;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 0F354C4332F;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Tue, 12 Dec 2023 11:20:27 +0300
-Subject: [PATCH v6 10/40] dma: cirrus: Convert to DT for Cirrus EP93xx
+Date:   Tue, 12 Dec 2023 11:20:28 +0300
+Subject: [PATCH v6 11/40] dt-bindings: watchdog: Add Cirrus EP93x
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-ep93xx-v6-10-c307b8ac9aa8@maquefel.me>
+Message-Id: <20231212-ep93xx-v6-11-c307b8ac9aa8@maquefel.me>
 References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-To:     Vinod Koul <vkoul@kernel.org>,
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Nikita Shubin <nikita.shubin@maquefel.me>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=14429;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=1622;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=xS6dq+Pt4G2Y7Fqd9ou/OIYBY+c1gf0BHMMeIPP2zjU=; =?utf-8?q?b=3D6FLmzeuVOQxg?=
- =?utf-8?q?8okaTUDrAIgYK14GSojcVT6W2E4j41BeaqOUyR04xCJY9sFP12CAZzj5jLezDVDY?=
- jv/XKGU+AgxyM9u8PsylCZaEld02TxuCMNyysK8OCIU14/sNglxY
+ bh=oi1524pxijJgURrfk58fykAJeXaA1N46ukZR7iTBG5Q=; =?utf-8?q?b=3D1wvmNqEe4dJ6?=
+ =?utf-8?q?m1vZAkH2IIRofHEZn1td8hyqdvJqtBQl6YeUFbCcYiIV3gR6k/3CTq6CFs0eCUa2?=
+ aGyZzxmcDA6S8Hvg/zpwuLnKZq0IJlfws6DTYOIv8fVYN/G6FCNS
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -68,471 +73,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Convert Cirrus EP93xx DMA to device tree usage:
+Add device tree bindings for the Cirrus Logic EP93xx watchdog block
+used in these SoCs.
 
-- add OF ID match table with data
-- add of_probe for device tree
-- add xlate for m2m/m2p
-- drop subsys_initcall code
-- drop platform probe
-- drop platform structs usage
-
-From now only it supports only device tree probing.
-
-Co-developed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/dma/ep93xx_dma.c                 | 238 ++++++++++++++++++++++++-------
- include/linux/platform_data/dma-ep93xx.h |   6 +
- 2 files changed, 191 insertions(+), 53 deletions(-)
+ .../bindings/watchdog/cirrus,ep9301-wdt.yaml       | 42 ++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/dma/ep93xx_dma.c b/drivers/dma/ep93xx_dma.c
-index d6c60635e90d..b7dd8361f490 100644
---- a/drivers/dma/ep93xx_dma.c
-+++ b/drivers/dma/ep93xx_dma.c
-@@ -20,6 +20,8 @@
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/of_dma.h>
-+#include <linux/overflow.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-@@ -104,6 +106,11 @@
- #define DMA_MAX_CHAN_BYTES		0xffff
- #define DMA_MAX_CHAN_DESCRIPTORS	32
- 
-+enum ep93xx_dma_type {
-+	M2P_DMA,
-+	M2M_DMA,
-+};
+diff --git a/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+new file mode 100644
+index 000000000000..5dbe891c70c6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/cirrus,ep9301-wdt.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/cirrus,ep9301-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- struct ep93xx_dma_engine;
- static int ep93xx_dma_slave_config_write(struct dma_chan *chan,
- 					 enum dma_transfer_direction dir,
-@@ -129,11 +136,17 @@ struct ep93xx_dma_desc {
- 	struct list_head		node;
- };
- 
-+struct ep93xx_dma_chan_cfg {
-+	u8				port;
-+	enum dma_transfer_direction	dir;
-+};
++title: Cirrus Logic EP93xx Watchdog Timer
 +
- /**
-  * struct ep93xx_dma_chan - an EP93xx DMA M2P/M2M channel
-  * @chan: dmaengine API channel
-  * @edma: pointer to the engine device
-  * @regs: memory mapped registers
-+ * @dma_cfg: channel number, direction
-  * @irq: interrupt number of the channel
-  * @clk: clock used by this channel
-  * @tasklet: channel specific tasklet used for callbacks
-@@ -157,14 +170,12 @@ struct ep93xx_dma_desc {
-  * descriptor in the chain. When a descriptor is moved to the @active queue,
-  * the first and chained descriptors are flattened into a single list.
-  *
-- * @chan.private holds pointer to &struct ep93xx_dma_data which contains
-- * necessary channel configuration information. For memcpy channels this must
-- * be %NULL.
-  */
- struct ep93xx_dma_chan {
- 	struct dma_chan			chan;
- 	const struct ep93xx_dma_engine	*edma;
- 	void __iomem			*regs;
-+	struct ep93xx_dma_chan_cfg	dma_cfg;
- 	int				irq;
- 	struct clk			*clk;
- 	struct tasklet_struct		tasklet;
-@@ -216,6 +227,11 @@ struct ep93xx_dma_engine {
- 	struct ep93xx_dma_chan	channels[] __counted_by(num_channels);
- };
- 
-+struct ep93xx_edma_data {
-+	u32	id;
-+	size_t	num_channels;
-+};
++maintainers:
++  - Nikita Shubin <nikita.shubin@maquefel.me>
++  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
 +
- static inline struct device *chan2dev(struct ep93xx_dma_chan *edmac)
- {
- 	return &edmac->chan.dev->device;
-@@ -318,10 +334,9 @@ static void m2p_set_control(struct ep93xx_dma_chan *edmac, u32 control)
- 
- static int m2p_hw_setup(struct ep93xx_dma_chan *edmac)
- {
--	struct ep93xx_dma_data *data = edmac->chan.private;
- 	u32 control;
- 
--	writel(data->port & 0xf, edmac->regs + M2P_PPALLOC);
-+	writel(edmac->dma_cfg.port & 0xf, edmac->regs + M2P_PPALLOC);
- 
- 	control = M2P_CONTROL_CH_ERROR_INT | M2P_CONTROL_ICE
- 		| M2P_CONTROL_ENABLE;
-@@ -458,16 +473,15 @@ static int m2p_hw_interrupt(struct ep93xx_dma_chan *edmac)
- 
- static int m2m_hw_setup(struct ep93xx_dma_chan *edmac)
- {
--	const struct ep93xx_dma_data *data = edmac->chan.private;
- 	u32 control = 0;
- 
--	if (!data) {
-+	if (edmac->dma_cfg.dir == DMA_MEM_TO_MEM) {
- 		/* This is memcpy channel, nothing to configure */
- 		writel(control, edmac->regs + M2M_CONTROL);
- 		return 0;
- 	}
- 
--	switch (data->port) {
-+	switch (edmac->dma_cfg.port) {
- 	case EP93XX_DMA_SSP:
- 		/*
- 		 * This was found via experimenting - anything less than 5
-@@ -477,7 +491,7 @@ static int m2m_hw_setup(struct ep93xx_dma_chan *edmac)
- 		control = (5 << M2M_CONTROL_PWSC_SHIFT);
- 		control |= M2M_CONTROL_NO_HDSK;
- 
--		if (data->direction == DMA_MEM_TO_DEV) {
-+		if (edmac->dma_cfg.dir == DMA_MEM_TO_DEV) {
- 			control |= M2M_CONTROL_DAH;
- 			control |= M2M_CONTROL_TM_TX;
- 			control |= M2M_CONTROL_RSS_SSPTX;
-@@ -493,7 +507,7 @@ static int m2m_hw_setup(struct ep93xx_dma_chan *edmac)
- 		 * This IDE part is totally untested. Values below are taken
- 		 * from the EP93xx Users's Guide and might not be correct.
- 		 */
--		if (data->direction == DMA_MEM_TO_DEV) {
-+		if (edmac->dma_cfg.dir == DMA_MEM_TO_DEV) {
- 			/* Worst case from the UG */
- 			control = (3 << M2M_CONTROL_PWSC_SHIFT);
- 			control |= M2M_CONTROL_DAH;
-@@ -548,7 +562,6 @@ static void m2m_fill_desc(struct ep93xx_dma_chan *edmac)
- 
- static void m2m_hw_submit(struct ep93xx_dma_chan *edmac)
- {
--	struct ep93xx_dma_data *data = edmac->chan.private;
- 	u32 control = readl(edmac->regs + M2M_CONTROL);
- 
- 	/*
-@@ -574,7 +587,7 @@ static void m2m_hw_submit(struct ep93xx_dma_chan *edmac)
- 	control |= M2M_CONTROL_ENABLE;
- 	writel(control, edmac->regs + M2M_CONTROL);
- 
--	if (!data) {
-+	if (edmac->dma_cfg.dir == DMA_MEM_TO_MEM) {
- 		/*
- 		 * For memcpy channels the software trigger must be asserted
- 		 * in order to start the memcpy operation.
-@@ -636,7 +649,7 @@ static int m2m_hw_interrupt(struct ep93xx_dma_chan *edmac)
- 		 */
- 		if (ep93xx_dma_advance_active(edmac)) {
- 			m2m_fill_desc(edmac);
--			if (done && !edmac->chan.private) {
-+			if (done && edmac->dma_cfg.dir == DMA_MEM_TO_MEM) {
- 				/* Software trigger for memcpy channel */
- 				control = readl(edmac->regs + M2M_CONTROL);
- 				control |= M2M_CONTROL_START;
-@@ -867,25 +880,22 @@ static dma_cookie_t ep93xx_dma_tx_submit(struct dma_async_tx_descriptor *tx)
- static int ep93xx_dma_alloc_chan_resources(struct dma_chan *chan)
- {
- 	struct ep93xx_dma_chan *edmac = to_ep93xx_dma_chan(chan);
--	struct ep93xx_dma_data *data = chan->private;
- 	const char *name = dma_chan_name(chan);
- 	int ret, i;
- 
- 	/* Sanity check the channel parameters */
- 	if (!edmac->edma->m2m) {
--		if (!data)
-+		if (edmac->dma_cfg.port < EP93XX_DMA_I2S1 ||
-+		    edmac->dma_cfg.port > EP93XX_DMA_IRDA)
- 			return -EINVAL;
--		if (data->port < EP93XX_DMA_I2S1 ||
--		    data->port > EP93XX_DMA_IRDA)
--			return -EINVAL;
--		if (data->direction != ep93xx_dma_chan_direction(chan))
-+		if (edmac->dma_cfg.dir != ep93xx_dma_chan_direction(chan))
- 			return -EINVAL;
- 	} else {
--		if (data) {
--			switch (data->port) {
-+		if (edmac->dma_cfg.dir != DMA_MEM_TO_MEM) {
-+			switch (edmac->dma_cfg.port) {
- 			case EP93XX_DMA_SSP:
- 			case EP93XX_DMA_IDE:
--				if (!is_slave_direction(data->direction))
-+				if (!is_slave_direction(edmac->dma_cfg.dir))
- 					return -EINVAL;
- 				break;
- 			default:
-@@ -894,9 +904,6 @@ static int ep93xx_dma_alloc_chan_resources(struct dma_chan *chan)
- 		}
- 	}
- 
--	if (data && data->name)
--		name = data->name;
--
- 	ret = clk_prepare_enable(edmac->clk);
- 	if (ret)
- 		return ret;
-@@ -1315,35 +1322,51 @@ static void ep93xx_dma_issue_pending(struct dma_chan *chan)
- 	ep93xx_dma_advance_work(to_ep93xx_dma_chan(chan));
- }
- 
--static int __init ep93xx_dma_probe(struct platform_device *pdev)
-+static struct ep93xx_dma_engine *ep93xx_dma_of_probe(struct platform_device *pdev)
- {
--	struct ep93xx_dma_platform_data *pdata = dev_get_platdata(&pdev->dev);
-+	const struct ep93xx_edma_data *data;
-+	struct device *dev = &pdev->dev;
- 	struct ep93xx_dma_engine *edma;
- 	struct dma_device *dma_dev;
--	int ret, i;
-+	char dma_clk_name[5];
-+	int i;
- 
--	edma = kzalloc(struct_size(edma, channels, pdata->num_channels), GFP_KERNEL);
-+	data = device_get_match_data(dev);
-+	if (!data)
-+		return ERR_PTR(dev_err_probe(dev, -ENODEV, "No device match found\n"));
++allOf:
++  - $ref: watchdog.yaml#
 +
-+	edma = devm_kzalloc(dev, struct_size(edma, channels, data->num_channels),
-+			    GFP_KERNEL);
- 	if (!edma)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
-+	edma->m2m = data->id;
-+	edma->num_channels = data->num_channels;
- 	dma_dev = &edma->dma_dev;
--	edma->m2m = platform_get_device_id(pdev)->driver_data;
--	edma->num_channels = pdata->num_channels;
- 
- 	INIT_LIST_HEAD(&dma_dev->channels);
--	for (i = 0; i < pdata->num_channels; i++) {
--		const struct ep93xx_dma_chan_data *cdata = &pdata->channels[i];
-+	for (i = 0; i < edma->num_channels; i++) {
- 		struct ep93xx_dma_chan *edmac = &edma->channels[i];
- 
- 		edmac->chan.device = dma_dev;
--		edmac->regs = cdata->base;
--		edmac->irq = cdata->irq;
-+		edmac->regs = devm_platform_ioremap_resource(pdev, i);
-+		if (IS_ERR(edmac->regs))
-+			return edmac->regs;
++properties:
++  compatible:
++    oneOf:
++      - const: cirrus,ep9301-wdt
++      - items:
++          - enum:
++              - cirrus,ep9302-wdt
++              - cirrus,ep9307-wdt
++              - cirrus,ep9312-wdt
++              - cirrus,ep9315-wdt
++          - const: cirrus,ep9301-wdt
 +
-+		edmac->irq = fwnode_irq_get(dev_fwnode(dev), i);
-+		if (edmac->irq < 0)
-+			return ERR_PTR(edmac->irq);
++  reg:
++    maxItems: 1
 +
- 		edmac->edma = edma;
- 
--		edmac->clk = clk_get(NULL, cdata->name);
-+		if (edma->m2m)
-+			sprintf(dma_clk_name, "m2m%u", i);
-+		else
-+			sprintf(dma_clk_name, "m2p%u", i);
++required:
++  - compatible
++  - reg
 +
-+		edmac->clk = devm_clk_get(dev, dma_clk_name);
- 		if (IS_ERR(edmac->clk)) {
--			dev_warn(&pdev->dev, "failed to get clock for %s\n",
--				 cdata->name);
-+			dev_warn(dev, "failed to get clock\n");
- 			continue;
- 		}
- 
-@@ -1357,6 +1380,92 @@ static int __init ep93xx_dma_probe(struct platform_device *pdev)
- 			      &dma_dev->channels);
- 	}
- 
-+	return edma;
-+}
++unevaluatedProperties: false
 +
-+static bool ep93xx_m2p_dma_filter(struct dma_chan *chan, void *filter_param)
-+{
-+	struct ep93xx_dma_chan *echan = to_ep93xx_dma_chan(chan);
-+	struct ep93xx_dma_chan_cfg *cfg = filter_param;
-+
-+	if (cfg->dir == ep93xx_dma_chan_direction(chan)) {
-+		echan->dma_cfg = *cfg;
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static struct dma_chan *ep93xx_m2p_dma_of_xlate(struct of_phandle_args *dma_spec,
-+					    struct of_dma *ofdma)
-+{
-+	struct ep93xx_dma_engine *edma = ofdma->of_dma_data;
-+	dma_cap_mask_t mask = edma->dma_dev.cap_mask;
-+	struct ep93xx_dma_chan_cfg dma_cfg;
-+	u8 port = dma_spec->args[0];
-+	u8 direction = dma_spec->args[1];
-+
-+	if (port > EP93XX_DMA_IRDA)
-+		return NULL;
-+
-+	if (!is_slave_direction(direction))
-+		return NULL;
-+
-+
-+	dma_cfg.port = port;
-+	dma_cfg.dir = direction;
-+
-+	return __dma_request_channel(&mask, ep93xx_m2p_dma_filter, &dma_cfg, ofdma->of_node);
-+}
-+
-+static bool ep93xx_m2m_dma_filter(struct dma_chan *chan, void *filter_param)
-+{
-+	struct ep93xx_dma_chan *echan = to_ep93xx_dma_chan(chan);
-+	struct ep93xx_dma_chan_cfg *cfg = filter_param;
-+
-+	echan->dma_cfg = *cfg;
-+
-+	return true;
-+}
-+
-+static struct dma_chan *ep93xx_m2m_dma_of_xlate(struct of_phandle_args *dma_spec,
-+					    struct of_dma *ofdma)
-+{
-+	struct ep93xx_dma_engine *edma = ofdma->of_dma_data;
-+	dma_cap_mask_t mask = edma->dma_dev.cap_mask;
-+	struct ep93xx_dma_chan_cfg dma_cfg;
-+	u8 port = dma_spec->args[0];
-+	u8 direction = dma_spec->args[1];
-+
-+	switch (port) {
-+	case EP93XX_DMA_SSP:
-+	case EP93XX_DMA_IDE:
-+		break;
-+	default:
-+		return NULL;
-+	}
-+
-+	if (!is_slave_direction(direction))
-+		return NULL;
-+
-+	dma_cfg.port = port;
-+	dma_cfg.dir = direction;
-+
-+	return __dma_request_channel(&mask, ep93xx_m2m_dma_filter, &dma_cfg, ofdma->of_node);
-+}
-+
-+static int ep93xx_dma_probe(struct platform_device *pdev)
-+{
-+	struct ep93xx_dma_engine *edma;
-+	struct dma_device *dma_dev;
-+	int ret;
-+
-+	edma = ep93xx_dma_of_probe(pdev);
-+	if (!edma)
-+		return PTR_ERR(edma);
-+
-+	dma_dev = &edma->dma_dev;
-+
- 	dma_cap_zero(dma_dev->cap_mask);
- 	dma_cap_set(DMA_SLAVE, dma_dev->cap_mask);
- 	dma_cap_set(DMA_CYCLIC, dma_dev->cap_mask);
-@@ -1393,21 +1502,46 @@ static int __init ep93xx_dma_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = dma_async_device_register(dma_dev);
--	if (unlikely(ret)) {
--		for (i = 0; i < edma->num_channels; i++) {
--			struct ep93xx_dma_chan *edmac = &edma->channels[i];
--			if (!IS_ERR_OR_NULL(edmac->clk))
--				clk_put(edmac->clk);
--		}
--		kfree(edma);
-+	if (ret)
-+		return ret;
-+
-+	if (edma->m2m) {
-+		ret = of_dma_controller_register(pdev->dev.of_node, ep93xx_m2m_dma_of_xlate,
-+						 edma);
- 	} else {
--		dev_info(dma_dev->dev, "EP93xx M2%s DMA ready\n",
--			 edma->m2m ? "M" : "P");
-+		ret = of_dma_controller_register(pdev->dev.of_node, ep93xx_m2p_dma_of_xlate,
-+						 edma);
- 	}
-+	if (ret)
-+		goto err_dma_unregister;
-+
-+	dev_info(dma_dev->dev, "EP93xx M2%s DMA ready\n", edma->m2m ? "M" : "P");
-+
-+	return 0;
-+
-+err_dma_unregister:
-+	dma_async_device_unregister(dma_dev);
- 
- 	return ret;
- }
- 
-+static const struct ep93xx_edma_data edma_m2p = {
-+	.id = M2P_DMA,
-+	.num_channels = 10,
-+};
-+
-+static const struct ep93xx_edma_data edma_m2m = {
-+	.id = M2M_DMA,
-+	.num_channels = 2,
-+};
-+
-+static const struct of_device_id ep93xx_dma_of_ids[] = {
-+	{ .compatible = "cirrus,ep9301-dma-m2p", .data = &edma_m2p },
-+	{ .compatible = "cirrus,ep9301-dma-m2m", .data = &edma_m2m },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ep93xx_dma_of_ids);
-+
- static const struct platform_device_id ep93xx_dma_driver_ids[] = {
- 	{ "ep93xx-dma-m2p", 0 },
- 	{ "ep93xx-dma-m2m", 1 },
-@@ -1417,15 +1551,13 @@ static const struct platform_device_id ep93xx_dma_driver_ids[] = {
- static struct platform_driver ep93xx_dma_driver = {
- 	.driver		= {
- 		.name	= "ep93xx-dma",
-+		.of_match_table = ep93xx_dma_of_ids,
- 	},
- 	.id_table	= ep93xx_dma_driver_ids,
-+	.probe		= ep93xx_dma_probe,
- };
- 
--static int __init ep93xx_dma_module_init(void)
--{
--	return platform_driver_probe(&ep93xx_dma_driver, ep93xx_dma_probe);
--}
--subsys_initcall(ep93xx_dma_module_init);
-+module_platform_driver(ep93xx_dma_driver);
- 
- MODULE_AUTHOR("Mika Westerberg <mika.westerberg@iki.fi>");
- MODULE_DESCRIPTION("EP93xx DMA driver");
-diff --git a/include/linux/platform_data/dma-ep93xx.h b/include/linux/platform_data/dma-ep93xx.h
-index eb9805bb3fe8..67d65f1cb564 100644
---- a/include/linux/platform_data/dma-ep93xx.h
-+++ b/include/linux/platform_data/dma-ep93xx.h
-@@ -2,6 +2,9 @@
- #ifndef __ASM_ARCH_DMA_H
- #define __ASM_ARCH_DMA_H
- 
-+#include <linux/device.h>
-+#include <linux/property.h>
-+#include <linux/string.h>
- #include <linux/types.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-@@ -70,6 +73,9 @@ struct ep93xx_dma_platform_data {
- 
- static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
- {
-+	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
-+		return true;
-+
- 	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
- }
- 
++examples:
++  - |
++    watchdog@80940000 {
++        compatible = "cirrus,ep9301-wdt";
++        reg = <0x80940000 0x08>;
++    };
 
 -- 
 2.41.0
