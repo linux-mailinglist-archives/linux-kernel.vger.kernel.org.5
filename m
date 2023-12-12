@@ -2,149 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2981980FA68
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7143D80FA71
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377818AbjLLWV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 17:21:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
+        id S1377810AbjLLWVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 17:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377796AbjLLWVu (ORCPT
+        with ESMTP id S1377795AbjLLWVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 17:21:50 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2086.outbound.protection.outlook.com [40.107.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702EB9C;
-        Tue, 12 Dec 2023 14:21:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cOy5vat19HPpIbEIQuifG962KBaVtd7fZWQO7bltsMzaHwUoXoIXqEk/0VFwwNfkmorIWfV4jftijpEiH+zVWEf1cr8vq/pb0gGqjIMK0uTc02CsHnwac5GGTJuMlL8xgj5+oxwHKYc3b6pXVPXvPHADNjdqkk4CW4h7idj5dVSdSjBEdBMmwLKaf4g5gHBERyodYPUqnpoR1edHH4eOrq5kKvmCnzMu79O9JevB81eAWPvQXaLSNegBnnLnq/1So0XXdIsi6brikrhZ2T+JgWZ5QyHDhKi9H4IRDbkrC2+1VZBO2bcO8b31DkXhkSU/YEgAzzSMRkulLSEPVJrMZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mYh9q4EC0A9ngw+0Qhg16MN9XCnNUBXtlOdcmfCrdMg=;
- b=UXpBtvRwHjqsgeH9mcSe+PQd5bqj27J3wjHmn+fu+emxsO7g0+Dh50WFSClnXnecRCRax+lVQikC58MyBM/uZtlR6LXjtLoMNxfcx1RvD6Borsh18xDdWR2D4n3br/0j0wCETZF6UHEFuPpejj159J6CMFiq653MxZkkweqZX1pRgw4QiAhyKPkpySTBYtH5Z8lWR/qjgRBwoX3pQIVG9Ea+HfrG7/l9RsUgJYKnHAXVA+saak9UNsPdNr3PBKDIIiErba43wDekbnwXKqmuVD8me37Ep9JVuWOPjshBCDoBi/XbksufE8R4Q3zWLCGeOTJQhc/Q8vEqcxMC3TR7lg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mYh9q4EC0A9ngw+0Qhg16MN9XCnNUBXtlOdcmfCrdMg=;
- b=V/RCIPAtHQaqEkwF9gHFNX5LKfmVUyPkI7WVK51rrIoXyJl1j/rVH2Ia7797Dy2ezBQLybSUfyhEP7R1TUiYkDWU4lUoaCbr7ZaK3WRZLhQPTEBvauUlOf+QQFOlJDZLKhZg5pcC/rCQVtf10MYRyGF+dbDsnaHWOkGdc08XnB99g93fN6ZDCyjaQlb6DRK0Hn6tUwZhJlEHPtsdi4FCkQkKNvgprJyvMjrRSbuf8MLfI1BEO8iWsZMgh+swBSH0aveAcNE77yqA/gCJ3X1vOSEoNAa2GX7jpogE3KH2C86gv2C7WZiCUCQpZ3pyZnEKdQC2IbpIcAgC0ed0RQ3C/Q==
-Received: from BLAPR03CA0068.namprd03.prod.outlook.com (2603:10b6:208:329::13)
- by CY8PR12MB7729.namprd12.prod.outlook.com (2603:10b6:930:84::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
- 2023 22:21:52 +0000
-Received: from BL02EPF0001A0FF.namprd03.prod.outlook.com
- (2603:10b6:208:329:cafe::b2) by BLAPR03CA0068.outlook.office365.com
- (2603:10b6:208:329::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
- Transport; Tue, 12 Dec 2023 22:21:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BL02EPF0001A0FF.mail.protection.outlook.com (10.167.242.106) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.26 via Frontend Transport; Tue, 12 Dec 2023 22:21:51 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 12 Dec
- 2023 14:21:34 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Tue, 12 Dec 2023 14:21:33 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Tue, 12 Dec 2023 14:21:33 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.6 000/244] 6.6.7-rc1 review
-In-Reply-To: <20231211182045.784881756@linuxfoundation.org>
-References: <20231211182045.784881756@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Dec 2023 17:21:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C917ECF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702419712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8IvIEyGhLX3zR8XVMbk2xgzCAlPgW6m04dxsYOaRvxs=;
+        b=BLam4sxK+GA0X8zJpalJeC+MFgG0fJtXCkP8NZl5jHLkAOMdB1hhjCn9W7FdY91WV0PYlp
+        ONHrSdWyWgj4zwLP99zqPQpoOBsdZBoj/vqG8LhdB8B9KI3R9yN4L2PqTBO+GPjMt9Bnh9
+        7swptQA5JXmTzSrEj8TIfaptqKchEEc=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-252-KL9pq91fPiid1_y1sPN5TA-1; Tue, 12 Dec 2023 17:21:50 -0500
+X-MC-Unique: KL9pq91fPiid1_y1sPN5TA-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4257de8a5f4so79992071cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:21:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702419710; x=1703024510;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8IvIEyGhLX3zR8XVMbk2xgzCAlPgW6m04dxsYOaRvxs=;
+        b=Nsk8Ff60jCtH0LXJYg8KmMRq2db7DkgGNUo7H/uQeP0WUeqL1dJDLj34oqZMLHGQV1
+         eD1v73tNYw2cVPchR/By+jaBKKWcgyOf02JYVC/LxnkgPPpYAayJoe46j8HqdoV2sKMF
+         uCueF9Ylw6AuG5bnI8+IojGcJHo6tujrFf1vJiBLqr3/9vSlgk2w40ovp3ia9sf3SPgQ
+         Z3VSfU/e83h5swV0swuG0vWTGObgQa1qOOaKr/1yKu6O94ZOMhADXpv6eQVbncJLvEPx
+         5/jkeC+N90DXGMJUJQjAu3bup/9Djy7pRXweS4pldO49qe4ibhv0NR5QDvVVCFACEQlf
+         IZtQ==
+X-Gm-Message-State: AOJu0YydBvgIdphwgsjxAIwP9kKc/2sn64HTgq6BQaPGZIXDJry5TygH
+        qIUQiy+d7vVhf67gXkfcduFiD1Oll8wJ1DYcb4iguk2zSqLGvYrdYsGQdqgvPkc33pp0fZRc9W3
+        DShhGTM+Z9QkWEJmiq+6Jtugg
+X-Received: by 2002:a05:622a:1895:b0:425:a982:b5f5 with SMTP id v21-20020a05622a189500b00425a982b5f5mr10706476qtc.94.1702419710143;
+        Tue, 12 Dec 2023 14:21:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IECTJZMp8xy1O7K0wkag8Kqd2mbp3y/3RMkuyq4/BznjN3N6oXuue/c4cN/d7/GbsmXnoppzQ==
+X-Received: by 2002:a05:622a:1895:b0:425:a982:b5f5 with SMTP id v21-20020a05622a189500b00425a982b5f5mr10706468qtc.94.1702419709818;
+        Tue, 12 Dec 2023 14:21:49 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id t11-20020ac86a0b000000b00423b8a53641sm4400791qtr.29.2023.12.12.14.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 14:21:49 -0800 (PST)
+Date:   Tue, 12 Dec 2023 16:21:47 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] soc: qcom: pmic_pdcharger_ulog: Search current
+ directory for headers
+Message-ID: <qwp3lspu2k4awtn36jebslxqqstmtkoey2a2wnh5pstxbqhko5@i3ktuplsnkir>
+References: <20231205-pmicpdcharger-ulog-fixups-v1-0-71c95162cb84@redhat.com>
+ <20231205-pmicpdcharger-ulog-fixups-v1-1-71c95162cb84@redhat.com>
+ <320864f5-fdd2-4345-a0dd-b97bcf17f473@linaro.org>
+ <k77ayy4xwlnghjefvw3yl4aenwyq272pezjaazx65bvdle37et@5fnbae4fxnjz>
+ <zwzpbhcb4ggs3kdf72jvjlpe5cpa26vbjs6qw4nyedhcgwcrza@67in3h243yyx>
+ <139f9af0-ca6a-4a58-ae18-79ef6fac47e3@linaro.org>
+ <cea465e6-ff24-4552-b4f6-a0594ea9ea6c@linaro.org>
 MIME-Version: 1.0
-Message-ID: <80719b6d-1526-4792-a4f2-5e73f282b91a@drhqmail201.nvidia.com>
-Date:   Tue, 12 Dec 2023 14:21:33 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FF:EE_|CY8PR12MB7729:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2c12c18-6433-4277-d65d-08dbfb60bdb6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lZHR8aVG9zSvwKxr5XNbZoe377KWwwEQqc1UnDIFPcDRElJEd0HMsCZEEG3Jt+XW8m2CStWFtHQcSoXPjKYAlqtEDsB23Xr3kq4MP05Flk2aH1+GZjO3GMwt0EwZKG4Df4tT+wUuAF2hsgQpV6QaD4Beys+2Uu87vWUv0fS1tlyr3W8xphT4LmmKkKKMQSbXVWH+QBRQYBQy3aINyFYE0+xUUWq9LICMsPf6NEv1MeJyn6vVFaEY5ud+gTORyY2AwmGZPhKIyd25HIXV+eC4nezd5hxjcIxWI+ZJTi8Q/HMn0lHEOhaGVAo/rIEGIH0ojEuVic9OTl2J+6iRtDG3EO14oSqN4njYxZckRnAxUp721CNydbPrhROW2r9lSXkTzAqdJYSPTknYoxYpzYlsrQO4Y4GvJDw2GsGGTQV+FTz73bx93+WKqUzw4xEqMQSquhnZ0ZHM2MLhHMQ7FJY2XPuVW/3A6niZdN18gVi2NDta9VmpbuG4P4REi4nbOtzE2Dm5SCZNifT/BGT3kl5dmGwOnqyu7yBs/tkJy5amg6QS2NDWKLohtsIHqNQgGjjcfII499Vdx2yULByHhkgG8VXorKixUMXZJBBSIGXgxTjHw64dsrDy4/t4XLTU7ZjSr7iOXTJLBNdSjvmv/0WxsBuQSDYSqzVyXd0rBxGcHJaE0Cwc8yAPIZGcKCadqzcXg/0TQfFb1i/hhHNRTY82IwmAGve49uNPs/Q6SAQenH6MTU4fF56sHFKgRuDoCm+Itgvl/V1JPezrMGK0fj4NoI3sNql38zYVoiLfg6Xe8gw=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(376002)(39860400002)(346002)(230922051799003)(451199024)(186009)(82310400011)(64100799003)(1800799012)(46966006)(40470700004)(36840700001)(40460700003)(31696002)(426003)(47076005)(36860700001)(8676002)(4326008)(5660300002)(41300700001)(8936002)(7416002)(478600001)(2906002)(966005)(316002)(336012)(26005)(86362001)(54906003)(6916009)(70206006)(70586007)(7636003)(82740400003)(356005)(40480700001)(31686004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 22:21:51.9646
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2c12c18-6433-4277-d65d-08dbfb60bdb6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FF.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7729
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cea465e6-ff24-4552-b4f6-a0594ea9ea6c@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 19:18:13 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.7 release.
-> There are 244 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Dec 12, 2023 at 08:21:41PM +0100, Neil Armstrong wrote:
+> On 12/12/2023 17:52, Neil Armstrong wrote:
+> > On 12/12/2023 17:15, Andrew Halaney wrote:
+> > > On Tue, Dec 12, 2023 at 09:54:48AM -0600, Andrew Halaney wrote:
+> > > > On Tue, Dec 12, 2023 at 04:23:20PM +0100, Neil Armstrong wrote:
+> > > > > Hi Andrew,
+> > > > > 
+> > > > > On 06/12/2023 00:05, Andrew Halaney wrote:
+> > > > > > As specified in samples/trace_events/Makefile:
+> > > > > > 
+> > > > > >       If you include a trace header outside of include/trace/events
+> > > > > >       then the file that does the #define CREATE_TRACE_POINTS must
+> > > > > >       have that tracer file in its main search path. This is because
+> > > > > >       define_trace.h will include it, and must be able to find it from
+> > > > > >       the include/trace directory.
+> > > > > > 
+> > > > > > Without this the following compilation error is seen:
+> > > > > > 
+> > > > > >         CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+> > > > > >       In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+> > > > > >                        from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+> > > > > >       ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+> > > > > >          95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> > > > > >             |                                          ^
+> > > > > >       compilation terminated.
+> > > > > 
+> > > > > I never experienced such error, and no CI even reported it, can you explain how you got this ?
+> > > > 
+> > > > To be honest, I am unsure why I'm experiencing this (and until I saw
+> > > > another thread about it today I thought maybe I had screwed something
+> > > > up!).
+> > > > 
+> > > > I just took it as an opportunity to try and read up on the tracing
+> > > > infrastructure and sent this series. Definitely no expertise with the
+> > > > in's and out's of tracing :)
+> > > > 
+> > > > I'm able to reproduce this on next-20231211:
+> > > > 
+> > > >      ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make mrproper
+> > > >      <snip>
+> > > >      ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make defconfig
+> > > >      <snip>
+> > > >      *** Default configuration is based on 'defconfig'
+> > > >      #
+> > > >      # configuration written to .config
+> > > >      #
+> > > 
+> > > Realized I missed a step, actually enabling tracing and the driver at
+> > > play here... but the result is the same.
+> > > 
+> > > Attached is a config where I hit this.
+> > > 
+> > > >      130 ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make drivers/soc/qcom/pmic_pdcharger_ulog.o
+> > > >        HOSTCC  scripts/dtc/dtc.o
+> > > >      <snip>
+> > > >        CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+> > > >      In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+> > > >              from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+> > > >      ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+> > > >         95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> > > >      <snip>
+> > > >      2 ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] %
+> > > > 
+> > > > I even tried it in a fedora container with the above build commands and
+> > > > the following podman invocation (plus some package installs) and saw the error:
+> > > > 
+> > > >      podman run -it -v ~/git/linux-next:/linux-next:z quay.io/fedora/fedora:latest /bin/bash
+> > > > 
+> > > > So I'm unsure if it's a fedora package version thing (which I'm running on my host)
+> > > > or something else... Once I saw it was sort of spelled out in the
+> > > > examples I referenced here I just decided it was something needed
+> > > > fixing, regardless of why I'm hitting it while others seem ok.
+> > 
+> > Interesting, I don't get the problem with the same tag, same .config but with gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu
+> > 
+> > I'll try with gcc 13.
 > 
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
+> Ok tried with ARM's arm-gnu-toolchain-13.2.rel1-x86_64-aarch64-none-linux-gnu (https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads),
+> and no error, and I even tried with https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.2.0/ and same no error...
+
+Hmm. I'm unsure what's up. I tried with a debian container and a fresh
+clone and still saw it :/
+
+If you want, something like (swap docker for podman if that's your
+thing): podman run -it debian:latest /bin/bash
+should let you reproduce after cloning etc.
+
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.7-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Neil
 > 
-> thanks,
+> > 
+> > Neil
+> > 
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > Neil
+> > > > > 
+> > > > > > 
+> > > > > > Fixes: 086fdb48bc65 ("soc: qcom: add ADSP PDCharger ULOG driver")
+> > > > > > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> > > > > > ---
+> > > > > >    drivers/soc/qcom/Makefile | 1 +
+> > > > > >    1 file changed, 1 insertion(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> > > > > > index 110108e23669..05b3d54e8dc9 100644
+> > > > > > --- a/drivers/soc/qcom/Makefile
+> > > > > > +++ b/drivers/soc/qcom/Makefile
+> > > > > > @@ -10,6 +10,7 @@ obj-$(CONFIG_QCOM_PDR_HELPERS)    += pdr_interface.o
+> > > > > >    obj-$(CONFIG_QCOM_PMIC_GLINK)    += pmic_glink.o
+> > > > > >    obj-$(CONFIG_QCOM_PMIC_GLINK)    += pmic_glink_altmode.o
+> > > > > >    obj-$(CONFIG_QCOM_PMIC_PDCHARGER_ULOG)    += pmic_pdcharger_ulog.o
+> > > > > > +CFLAGS_pmic_pdcharger_ulog.o    :=  -I$(src)
+> > > > > >    obj-$(CONFIG_QCOM_QMI_HELPERS)    += qmi_helpers.o
+> > > > > >    qmi_helpers-y    += qmi_encdec.o qmi_interface.o
+> > > > > >    obj-$(CONFIG_QCOM_RAMP_CTRL)    += ramp_controller.o
+> > > > > > 
+> > > > > 
+> > 
 > 
-> greg k-h
 
-All tests passing for Tegra ...
-
-Test results for stable-v6.6:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    116 tests:	116 pass, 0 fail
-
-Linux version:	6.6.7-rc1-g4970875239e5
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
