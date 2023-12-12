@@ -2,135 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40A880E837
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DAB80E83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346114AbjLLJva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
+        id S1346080AbjLLJw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjLLJv2 (ORCPT
+        with ESMTP id S230211AbjLLJw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:51:28 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91AAD2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:51:34 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4b328087918so1149233e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:51:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702374694; x=1702979494; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ko5c0vwQVCFkqxt5MmDEPN+O3PpUovqfwlzC3CsXMJQ=;
-        b=uPD90YCXVz5exp9+Z2ehj6Ua2ncGLn+AXtor6zp0CgItEgQMlAO27YWxlwXdwaDBfq
-         SGyV66zrp3atzyH8GhaPxD7azUlbJqrnaACm+Xmz/O/VDWOegE1LDRW72H3NZV5GfExu
-         B2BU/o5InxGdLPGw+y2MJPYJDjmNFfpcaCnAcwvySk3Qge5xGYR00d1l7TN0ssTRwepU
-         4NfM4I2fpZak4b+wbIihuVODPvyehjZhBja2aGciEVeHFWx42GaAgVF1MYND68ugdPKn
-         SOKPZtt2YfgLls+LpsOFzhxlKUVcPzi0xB+AksdeBzcPTMQ2LS8SVDLg0HJ2LesO+Z+d
-         eBBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702374694; x=1702979494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ko5c0vwQVCFkqxt5MmDEPN+O3PpUovqfwlzC3CsXMJQ=;
-        b=mEX+5CrS87UYK9E8nBdNG5Y8Emeo9C7Yl/p6fhhDEpIeJW9hZFtuZnAnn1+V1Gxxod
-         u+R1LsQ7LgNW0tNISS4U1AHeZtnWH+J3Y3rLoKWgF4IPgOvATQFsWeguW8iBsa3Cvdkk
-         tTQ8hyc2BEnyLGAZhGY04jPbu1kXjqnziaQQfaVoUlwLtOFbVsf4sFbEoYwR1ZGQ+Kak
-         D3VgulbXkeDlWsg2M7ll0xS5te5R0WrC9s5TOZmzQOTTDqoUmRSwph6wIxw6cp+YpI+w
-         IoosbDnYD7+rvlZcW3XVXaz8dB0jvypmq/gYCAgnWGAtmJx6aY2vrBloPqRWdLb8fi8D
-         s7lA==
-X-Gm-Message-State: AOJu0YwJcyMyobwm5vqIOpRYhZqpYB7UXsWtdoEozm7UQuYlF0Mleuoh
-        RfeMXYYjmfaj/iEtPxlV9+euaig6kIDxsiZyg3iqPA==
-X-Google-Smtp-Source: AGHT+IGE5ZK3L8voecVZVOpEdeTnGnVvTrlGpwhyiCTJSHRmzpYl+U8K2pOtq4nbdphmjr3yd56t/MlKa+EmsxXKESM=
-X-Received: by 2002:a05:6122:a08:b0:4b2:deeb:d9c5 with SMTP id
- 8-20020a0561220a0800b004b2deebd9c5mr4247201vkn.15.1702374693492; Tue, 12 Dec
- 2023 01:51:33 -0800 (PST)
+        Tue, 12 Dec 2023 04:52:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DFCD9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:53:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FBBFC433CB;
+        Tue, 12 Dec 2023 09:53:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702374782;
+        bh=x5x2Vt28BNZ87A+YkQlGNkExkl+Op7LxWbonnGSkuOw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mxHmQ+4y+8NlyN53vheUW3IUNyqKgtqsUPFN8tyNlZadW9rRHkUULTte7thnSgDOG
+         tyUvI9un9MjfFQr6SEwXNdMvzRQXrj1PuyEaBZcz1kB+EsnerTaSsX095Zj2nib096
+         jd5Jyp/5EK+RXWSS90eBP45XW+J7u4iLCUIDkcRERD7H4IdrUiKbgH2iIyfxhMiu6U
+         y1UV45PRyyiTHBVtVdVoksnRo2De8NRo1fnoIFEYsBuCnlR/9fJDiHgW/ZQ+16wwNE
+         cnpa599TB8SDYPaTJcgFzCRmibniGQjFP12JGCDkLEMy+TyuERAjmRW6GEuYr0fT7R
+         gKbpFtWIYlmgg==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ca1e6a94a4so70571881fa.0;
+        Tue, 12 Dec 2023 01:53:02 -0800 (PST)
+X-Gm-Message-State: AOJu0Yzhids1hesGyOcEPsmMuXejaNVwE5BpRAHNWSX3Ks4mwthPGARH
+        YSoSXnJ4yUa2LV22oLesB/XI7YHJB8BvzPHEVm8=
+X-Google-Smtp-Source: AGHT+IFrQVmnOb7fDDBe24yV44ELYK4VOrlITkWMjSN/4x/YbEISe3Vo9O63r3t2vwCf1enEHPoe68o5AZgC/4ddJxc=
+X-Received: by 2002:a2e:a22b:0:b0:2cc:207f:4783 with SMTP id
+ i11-20020a2ea22b000000b002cc207f4783mr1292561ljm.18.1702374780611; Tue, 12
+ Dec 2023 01:53:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com> <nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me>
-In-Reply-To: <nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Tue, 12 Dec 2023 10:51:22 +0100
-Message-ID: <CAH5fLghkyk7yuLvt+pPfQnB2j=-ehQLb4rf4b50sOgm33t-YkA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231211-cxl-cper-v2-0-c116900ba658@intel.com> <20231211-cxl-cper-v2-6-c116900ba658@intel.com>
+In-Reply-To: <20231211-cxl-cper-v2-6-c116900ba658@intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 12 Dec 2023 10:52:49 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGogr2hc9Ofv1WTSvh3uTjuY8rHFbcVpigfd6D19qdbvw@mail.gmail.com>
+Message-ID: <CAMj1kXGogr2hc9Ofv1WTSvh3uTjuY8rHFbcVpigfd6D19qdbvw@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] firmware/efi: Process CXL Component Events
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cxl@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 8:04=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
-> wrote:
+On Mon, 11 Dec 2023 at 23:57, Ira Weiny <ira.weiny@intel.com> wrote:
 >
-> On 12/6/23 11:09, Alice Ryhl wrote:
-> > +    /// Atomically releases the given lock (whose ownership is proven =
-by the guard) and puts the
-> > +    /// thread to sleep. It wakes up when notified by [`CondVar::notif=
-y_one`] or
-> > +    /// [`CondVar::notify_all`], or when the thread receives a signal.
-> > +    ///
-> > +    /// Returns whether there is a signal pending.
-> > +    fn wait_internal_timeout<T, B>(
-> > +        &self,
-> > +        wait_state: u32,
-> > +        guard: &mut Guard<'_, T, B>,
-> > +        timeout: u64,
-> > +    ) -> u64
-> > +    where
-> > +        T: ?Sized,
-> > +        B: Backend,
-> > +    {
-> > +        let wait =3D Opaque::<bindings::wait_queue_entry>::uninit();
-> > +
-> > +        // SAFETY: `wait` points to valid memory.
-> > +        unsafe { bindings::init_wait(wait.get()) };
-> > +
-> > +        // SAFETY: Both `wait` and `wait_list` point to valid memory.
-> > +        unsafe {
-> > +            bindings::prepare_to_wait_exclusive(self.wait_list.get(), =
-wait.get(), wait_state as _)
+> BIOS can configure memory devices as firmware first.  This will send CXL
+> events to the firmware instead of the OS.  The firmware can then send
+> these events to the OS via UEFI.
 >
-> Does `.into()` work here? If for some reason the type here changes, we
-> probably want to know about it.
-
-I think we may be able to eliminate this cast by using c_int for the
-integer type.
-
-> > +        };
-> > +
-> > +        // SAFETY: Switches to another thread.
-> > +        let timeout =3D
-> > +            guard.do_unlocked(|| unsafe { bindings::schedule_timeout(t=
-imeout as _) as _ });
+> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
+> format for CXL Component Events.  The format is mostly the same as the
+> CXL Common Event Record Format.  The difference is a GUID is used in
+> the Section Type to identify the event type.
 >
-> Ditto.
+> Add EFI support to detect CXL CPER records and call a notifier chain
+> with the record data blobs to be processed by the CXL code.
+>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Here, we're casting u64->long and then long->u64. How about this?
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-u64->long - Use timeout.try_into().unwrap_or(MAX_SCHEDULE_TIMEOUT),
-since MAX_SCHEDULE_TIMEOUT is LONG_MAX.
-
-long->u64 - This value is guaranteed to be less than the argument
-passed to schedule_timeout. Use .into() for infallible cast.
-
-Alice
+>
+> ---
+> Changes from v1:
+> [djbw: convert to single notifier callback]
+> [djbw: append _GUID to guid defines]
+> [iweiny: clean up function names]
+> ---
+>  drivers/firmware/efi/cper.c     | 15 ++++++++++++
+>  drivers/firmware/efi/cper_cxl.c | 45 ++++++++++++++++++++++++++++++++++++
+>  drivers/firmware/efi/cper_cxl.h | 29 +++++++++++++++++++++++
+>  include/linux/cxl-event.h       | 51 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 140 insertions(+)
+>
+> diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+> index 35c37f667781..39c65733ae9b 100644
+> --- a/drivers/firmware/efi/cper.c
+> +++ b/drivers/firmware/efi/cper.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/aer.h>
+>  #include <linux/printk.h>
+>  #include <linux/bcd.h>
+> +#include <linux/cxl-event.h>
+>  #include <acpi/ghes.h>
+>  #include <ras/ras_event.h>
+>  #include "cper_cxl.h"
+> @@ -607,6 +608,20 @@ cper_estatus_print_section(const char *pfx, struct acpi_hest_generic_data *gdata
+>                         cper_print_prot_err(newpfx, prot_err);
+>                 else
+>                         goto err_section_too_small;
+> +       } else if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID) ||
+> +                  guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID) ||
+> +                  guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID)) {
+> +               struct cper_cxl_event_rec *rec = acpi_hest_get_payload(gdata);
+> +
+> +               if (rec->hdr.length <= sizeof(rec->hdr))
+> +                       goto err_section_too_small;
+> +
+> +               if (rec->hdr.length > sizeof(*rec)) {
+> +                       pr_err(FW_WARN "error section length is too big\n");
+> +                       return;
+> +               }
+> +
+> +               cxl_cper_post_event(newpfx, sec_type, rec);
+>         } else {
+>                 const void *err = acpi_hest_get_payload(gdata);
+>
+> diff --git a/drivers/firmware/efi/cper_cxl.c b/drivers/firmware/efi/cper_cxl.c
+> index a55771b99a97..669983f7956f 100644
+> --- a/drivers/firmware/efi/cper_cxl.c
+> +++ b/drivers/firmware/efi/cper_cxl.c
+> @@ -8,6 +8,7 @@
+>   */
+>
+>  #include <linux/cper.h>
+> +#include <linux/cxl-event.h>
+>  #include "cper_cxl.h"
+>
+>  #define PROT_ERR_VALID_AGENT_TYPE              BIT_ULL(0)
+> @@ -187,3 +188,47 @@ void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_e
+>                                sizeof(cxl_ras->header_log), 0);
+>         }
+>  }
+> +
+> +DECLARE_RWSEM(cxl_cper_rw_sem);
+> +static cxl_cper_notifier cper_notifier;
+> +
+> +void cxl_cper_post_event(const char *pfx, guid_t *sec_type,
+> +                        struct cper_cxl_event_rec *rec)
+> +{
+> +       struct cxl_cper_event_data data = {
+> +               .rec = rec,
+> +       };
+> +
+> +       if (!(rec->hdr.validation_bits & CPER_CXL_COMP_EVENT_LOG_VALID)) {
+> +               pr_err(FW_WARN "cxl event no Component Event Log present\n");
+> +               return;
+> +       }
+> +
+> +       if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID))
+> +               data.event_type = CXL_CPER_EVENT_GEN_MEDIA;
+> +       else if (guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID))
+> +               data.event_type = CXL_CPER_EVENT_DRAM;
+> +       else if (guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID))
+> +               data.event_type = CXL_CPER_EVENT_MEM_MODULE;
+> +
+> +       down_read(&cxl_cper_rw_sem);
+> +       if (cper_notifier)
+> +               cper_notifier(&data);
+> +       up_read(&cxl_cper_rw_sem);
+> +}
+> +
+> +void cxl_cper_register_notifier(cxl_cper_notifier notifier)
+> +{
+> +       down_write(&cxl_cper_rw_sem);
+> +       cper_notifier = notifier;
+> +       up_write(&cxl_cper_rw_sem);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_register_notifier, CXL);
+> +
+> +void cxl_cper_unregister_notifier(void)
+> +{
+> +       down_write(&cxl_cper_rw_sem);
+> +       cper_notifier = NULL;
+> +       up_write(&cxl_cper_rw_sem);
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_cper_unregister_notifier, CXL);
+> diff --git a/drivers/firmware/efi/cper_cxl.h b/drivers/firmware/efi/cper_cxl.h
+> index 86bfcf7909ec..b1b1b0514f6b 100644
+> --- a/drivers/firmware/efi/cper_cxl.h
+> +++ b/drivers/firmware/efi/cper_cxl.h
+> @@ -10,11 +10,38 @@
+>  #ifndef LINUX_CPER_CXL_H
+>  #define LINUX_CPER_CXL_H
+>
+> +#include <linux/cxl-event.h>
+> +
+>  /* CXL Protocol Error Section */
+>  #define CPER_SEC_CXL_PROT_ERR                                          \
+>         GUID_INIT(0x80B9EFB4, 0x52B5, 0x4DE3, 0xA7, 0x77, 0x68, 0x78,   \
+>                   0x4B, 0x77, 0x10, 0x48)
+>
+> +/* CXL Event record UUIDs are formated at GUIDs and reported in section type */
+> +/*
+> + * General Media Event Record
+> + * CXL rev 3.0 Section 8.2.9.2.1.1; Table 8-43
+> + */
+> +#define CPER_SEC_CXL_GEN_MEDIA_GUID                                    \
+> +       GUID_INIT(0xfbcd0a77, 0xc260, 0x417f,                           \
+> +                 0x85, 0xa9, 0x08, 0x8b, 0x16, 0x21, 0xeb, 0xa6)
+> +
+> +/*
+> + * DRAM Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.2; Table 8-44
+> + */
+> +#define CPER_SEC_CXL_DRAM_GUID                                         \
+> +       GUID_INIT(0x601dcbb3, 0x9c06, 0x4eab,                           \
+> +                 0xb8, 0xaf, 0x4e, 0x9b, 0xfb, 0x5c, 0x96, 0x24)
+> +
+> +/*
+> + * Memory Module Event Record
+> + * CXL rev 3.0 section 8.2.9.2.1.3; Table 8-45
+> + */
+> +#define CPER_SEC_CXL_MEM_MODULE_GUID                                   \
+> +       GUID_INIT(0xfe927475, 0xdd59, 0x4339,                           \
+> +                 0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74)
+> +
+>  #pragma pack(1)
+>
+>  /* Compute Express Link Protocol Error Section, UEFI v2.10 sec N.2.13 */
+> @@ -62,5 +89,7 @@ struct cper_sec_prot_err {
+>  #pragma pack()
+>
+>  void cper_print_prot_err(const char *pfx, const struct cper_sec_prot_err *prot_err);
+> +void cxl_cper_post_event(const char *pfx, guid_t *sec_type,
+> +                        struct cper_cxl_event_rec *rec);
+>
+>  #endif //__CPER_CXL_
+> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> index 18dab4d90dc8..c764ff877a6d 100644
+> --- a/include/linux/cxl-event.h
+> +++ b/include/linux/cxl-event.h
+> @@ -108,4 +108,55 @@ struct cxl_event_record_raw {
+>         union cxl_event event;
+>  } __packed;
+>
+> +enum cxl_event_type {
+> +       CXL_CPER_EVENT_GEN_MEDIA,
+> +       CXL_CPER_EVENT_DRAM,
+> +       CXL_CPER_EVENT_MEM_MODULE,
+> +};
+> +
+> +#pragma pack(1)
+> +
+> +#define CPER_CXL_DEVICE_ID_VALID               BIT(0)
+> +#define CPER_CXL_DEVICE_SN_VALID               BIT(1)
+> +#define CPER_CXL_COMP_EVENT_LOG_VALID          BIT(2)
+> +struct cper_cxl_event_rec {
+> +       struct {
+> +               u32 length;
+> +               u64 validation_bits;
+> +               struct cper_cxl_event_devid {
+> +                       u16 vendor_id;
+> +                       u16 device_id;
+> +                       u8 func_num;
+> +                       u8 device_num;
+> +                       u8 bus_num;
+> +                       u16 segment_num;
+> +                       u16 slot_num; /* bits 2:0 reserved */
+> +                       u8 reserved;
+> +               } device_id;
+> +               struct cper_cxl_event_sn {
+> +                       u32 lower_dw;
+> +                       u32 upper_dw;
+> +               } dev_serial_num;
+> +       } hdr;
+> +
+> +       union cxl_event event;
+> +};
+> +
+> +struct cxl_cper_event_data {
+> +       enum cxl_event_type event_type;
+> +       struct cper_cxl_event_rec *rec;
+> +};
+> +
+> +#pragma pack()
+> +
+> +typedef void (*cxl_cper_notifier)(struct cxl_cper_event_data *ev_data);
+> +
+> +#ifdef CONFIG_UEFI_CPER
+> +void cxl_cper_register_notifier(cxl_cper_notifier notifier);
+> +void cxl_cper_unregister_notifier(void);
+> +#else
+> +static inline void cxl_cper_register_notifier(cxl_cper_notifier notifier) { }
+> +static inline void cxl_cper_unregister_notifier(void) { }
+> +#endif
+> +
+>  #endif /* _LINUX_CXL_EVENT_H */
+>
+> --
+> 2.43.0
+>
