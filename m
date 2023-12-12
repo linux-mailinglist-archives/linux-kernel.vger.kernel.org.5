@@ -2,54 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B73480ECD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E210C80ECDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376526AbjLLNJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S1376528AbjLLNJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376504AbjLLNJE (ORCPT
+        with ESMTP id S1376522AbjLLNJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:09:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E06EA8;
-        Tue, 12 Dec 2023 05:09:10 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A9F3143D;
-        Tue, 12 Dec 2023 05:09:56 -0800 (PST)
-Received: from [10.1.29.53] (e133047.arm.com [10.1.29.53])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B277D3F762;
-        Tue, 12 Dec 2023 05:09:06 -0800 (PST)
-Message-ID: <63cf5c75-6bd3-41c9-ac5e-518750874f8e@arm.com>
-Date:   Tue, 12 Dec 2023 13:09:04 +0000
+        Tue, 12 Dec 2023 08:09:36 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89458B7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:09:41 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso8040116a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:09:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702386580; x=1702991380; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=MVQ1QiAH9noMTnvMzy3w7eDL19teJfVzrni9lRTAonw=;
+        b=sSdOF8gBIoo/gboAiGldMSNpYj5Oy8UKTnPWkzH3P/JXGe8bYP6NPqwc7FinYCEcXa
+         lq/sB+r95KZWJdyB/xUHsk2HIRw+1pNAdObmriAzJPPLcYs9KATmHHtgIb9tUVc+WfG2
+         GeY5qQ8it9zm6GFU0e/u2oIymnPPWoM3kbd3kGBx/R2hwfmoTdFmBHUX1Jihwqi3WHvp
+         ov6TNJNlPa/07rIIhaTDAiCj/KuKnkrHXLSavg/fMPinkpyjNdzOfufoUmIJWd1a2y/m
+         O5fHn4S1vnNiExCaZNGROLElMQR3i+LbSGJpBQCbFxL/+nsH+BC0PxSJaFrxM6TDP4Hm
+         S4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702386580; x=1702991380;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MVQ1QiAH9noMTnvMzy3w7eDL19teJfVzrni9lRTAonw=;
+        b=roR5eIX0NgxDZ7IN8QTFZdhaQ2cwZ594p5vq7jwUAAXdUKufq1mwRbNqwAhXcWYQ32
+         RFIWfyxjGDvGt0d6sQBe+AJcCRYW2vQAnZFPtPmp2IYxaCv/LnvwxMxJqP01AsC8gRqv
+         H54GVrKB0jU7QvT4A7HImuYQg1btHJcHAUxxRyMDD+1Alq+9t/2Vafp2nN2Xf/L2OlR/
+         ttk9e9K084E2qS/Zv16qKSh/KFZAV1QV2jBxp0lEopcoXPQ7UqFu4Zw/BofT7/97YhRZ
+         aGFNTarGelV7NUPO1+ENuW1sDHiqqTOu5p+IP8sFxyraXOx+NyPAY0OZiFUFPVTfbu5H
+         NwfQ==
+X-Gm-Message-State: AOJu0YwPsEmzqjdGuRTPAowPdo/lNJf8oanhHBIvfv5/WF7oh7j6yrbD
+        CEwptl8w6lHpoN/9ZTVOo6FTwQ==
+X-Google-Smtp-Source: AGHT+IE6s3vsfbwiwSmWtdBdPO4UGELx/sFr58c99SASaIL0LNaHFcrNuZM0tdoakK5qd2Eecy1JKA==
+X-Received: by 2002:a17:906:52ce:b0:a19:a19b:78a6 with SMTP id w14-20020a17090652ce00b00a19a19b78a6mr3003114ejn.105.1702386580037;
+        Tue, 12 Dec 2023 05:09:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id sa16-20020a1709076d1000b00a1da72b8752sm6226561ejc.212.2023.12.12.05.09.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 05:09:39 -0800 (PST)
+Message-ID: <436ed6a4-2ed9-47bc-bcc9-18a52b1a791b@linaro.org>
+Date:   Tue, 12 Dec 2023 14:09:37 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
- cpufreq_update_util()
+Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231204144429.45197-1-linux.amoon@gmail.com>
+ <20231204144429.45197-2-linux.amoon@gmail.com>
+ <20231206135311.GA2043711-robh@kernel.org>
+ <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
+ <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
+ <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+ <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org>
+ <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
+ <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org>
+ <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
+ <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org>
+ <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
+ <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org>
+ <CANAwSgRLORHb6qiHWRBR0tMbYB=O=gwatuGhk72SwZyhYMopCw@mail.gmail.com>
+ <d2962ffb-badd-44a6-bdcc-53e15d4a4379@linaro.org>
+ <CANAwSgSpuh-+HFYg2UTgX27SHFyCBddV46MgKakiSCOtFX4+aw@mail.gmail.com>
 Content-Language: en-US
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-        Rick Yiu <rickyiu@google.com>,
-        Chung-Kai Mei <chungkai@google.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>
-References: <20231208015242.385103-1-qyousef@layalina.io>
- <20231208015242.385103-2-qyousef@layalina.io>
- <739492e4-b9a3-4c55-82e6-60b02d489c5f@arm.com>
- <20231212123401.xmggng7dtxvdxqj6@airbuntu>
-From:   Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <20231212123401.xmggng7dtxvdxqj6@airbuntu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CANAwSgSpuh-+HFYg2UTgX27SHFyCBddV46MgKakiSCOtFX4+aw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,182 +143,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 12:34, Qais Yousef wrote:
-> On 12/11/23 18:47, Christian Loehle wrote:
->> On 08/12/2023 01:52, Qais Yousef wrote:
->>> Due to the way code is structured, it makes a lot of sense to trigger
->>> cpufreq_update_util() from update_load_avg(). But this is too aggressive
->>> as in most cases we are iterating through entities in a loop to
->>> update_load_avg() in the hierarchy. So we end up sending too many
->>> request in an loop as we're updating the hierarchy.
+On 12/12/2023 13:51, Anand Moon wrote:
+> Hi Krzysztof,
+> 
+> On Tue, 12 Dec 2023 at 17:22, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
 >>
->> If this is actually less aggressive heavily depends on the workload,
->> I can argue the patch is more aggressive, as you call cpufreq_update_util
->> at every enqueue and dequeue, instead of just at enqueue.
->> For an I/O workload it is definitely more aggressive, see below.
-> 
-> I could have unwittingly broken something. Thanks for the report!
-> 
-> [SNIP]
->>>  dequeue_throttle:
->>>  	util_est_update(&rq->cfs, p, task_sleep);
->>> +	cpufreq_update_util(rq, 0);
+>> On 12/12/2023 12:37, Anand Moon wrote:
+>>>
+>>> Here is the list of warnings I observed with this patch
+>>>
+>>>   DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra186-xusb.example.dtb
+>>> /home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+>>> hub@1: 'vdd-supply' is a required property
 >>
->> This is quite critical, instead of only calling the update
->> at enqueue (with SCHED_CPUFREQ_IOWAIT if applicable) it is
->> now called at every enqueue and dequeue. The only way for
-> 
-> I think it was called at enqueue/dequeue before, but now it is done
-> unconditionally as I don't check for decay like before. It shouldn't change the
-> behavior as if there's no frequency change, then the governor will do nothing
-
-Well the governor will update the fields by calling sugov_iowait_apply
-What exactly are you referring to when you say
-"I think it was called at dequeue before"?
-From what I can see this patch calls cpufreq_update_util much more
-on an enqueue/dequeue workload like fio.
-
-> including not update last_update_time IIRC.
-
-sched_avg maybe, but iowait boosts last_update is changed,
-I'll look into it, see below.
-
-> 
->> schedutil (intel_pstate too?) to build up a value of
->> iowait_boost > 128 is a large enough rate_limit_us, as even
->> for just a in_iowait task the enqueue increases the boost and
->> its own dequeue could reduce it already. For just a basic
->> benchmark workload and 2000 rate_limit_us this doesn't seem
->> to be that critical, anything below 200 rate_limit_us didn't
-> 
-> 200us is too low. Does rk3399 support this? My pine64 has this SoC and
-> I remember it doesn't support fastswitch and the time to wake up the sugov
-> thread will be comparable to this before even trying to talk tot he hardware.
-
-Unlikely it is actually supported, but I'm mostly concerned with the
-actual iowait_boost value, so this limitation here actually is besides
-my point. (The fact that tip:sched/core results are very different at 200us
-from this patch gives me some confidence here.)
-
-> 
-> Not necessarily means that I don't have a bug in my code of course! :)
-> 
->> show any iowait boosting > 128 anymore on my system.
->> Of course if the workload does more between enqueue and
->> dequeue (time until task issues next I/O) already larger
->> values of rate_limit_us will disable any significant
->> iowait boost benefit.
-> 
-> Hmm. It seems sugov_iowait_reset() is being called at the dequeue?
-
-Also yes, but I'm actually worried about the reduce / halving in
-iowait_boost_apply().
-With a one-to-one correspondence of enqueue (inc boost if in_iowait) and
-dequeue (dec boost regardless) with cpufreq_update_util() you would expect
-there to never be any boost apart from the minimal between the enqueue and
-the dequeue. It does build up anyway, but that is only because the reduce
-in iowait_boost_apply() is never hit if the last update time delta is < rate_limit_us.
-(and rate_limit_us=2000 gives us still some headroom for read->read userspace
-workloads, for read->think->read this could be more problematic, see also below.)
-
-(Now thinking about it the fact that last_update before determining if frequency
-should be changed, could be an issue, I'll look into it some more, anyway at worst
-it's an issue with larger impact with your patch.)
-
-> 
-> Tweaking the rate limit means short living tasks freq update at dequeue is
-> likely to be ignored by the governor.
-> 
-> The short value means it is likely to be taken into account.
-> 
-> Not sure if this is uncovering a bug somewhere else or I broke something> 
+>> You always require the property, but it is not valid for some devices.
+>> Just require it only where it is applicable (in if:then: clause).
 >>
->> Just to add some numbers to the story:
->> fio --time_based --name=fiotest --filename=/dev/nvme0n1 --runtime=30 --rw=randread --bs=4k --ioengine=psync --iodepth=1
->> fio --time_based --name=fiotest --filename=/dev/mmcblk2 --runtime=30 --rw=randread --bs=4k --ioengine=psync --iodepth=1
->>
->> All results are sorted:
->> With this patch and rate_limit_us=2000:
->> (Second line is without iowait boosting, results are sorted):
->> [3883, 3980, 3997, 4018, 4019]
->> [2732, 2745, 2782, 2837, 2841]
->> /dev/mmcblk2
->> [4136, 4144, 4198, 4275, 4329]
->> [2753, 2975, 2975, 2975, 2976]
->>
->> Without this patch and rate_limit_us=2000:
->> [3918, 4021, 4043, 4081, 4085]
->> [2850, 2859, 2863, 2873, 2887]
->> /dev/mmcblk2
->> [4277, 4358, 4380, 4421, 4425]
->> [2796, 3103, 3128, 3180, 3200]
->>
->> With this patch and rate_limit_us=200:
->> /dev/nvme0n1
->> [2470, 2480, 2481, 2484, 2520]
->> [2473, 2510, 2517, 2534, 2572]
->> /dev/mmcblk2
->> [2286, 2338, 2440, 2504, 2535]
->> [2360, 2462, 2484, 2503, 2707]
->>
->> Without this patch and rate_limit_us=200:
->> /dev/nvme0n1
->> [3880, 3956, 4010, 4013, 4016]
->> [2732, 2867, 2937, 2937, 2939]
->> /dev/mmcblk2
->> [4783, 4791, 4821, 4855, 4860]
->> [2653, 3091, 3095, 3166, 3202]
-> 
-> Was any other patch in this series or remove margin series applied or just this
-> one?
+> I had already done this check many times before.
 
-These specific numbers were just with this one.
-I did a couple of tests to get a feel for the entire series(both),
-but found no drastic change that would be uncovered by n=3 runs
-anyway.
+I don't ask you to check. I ask you to change the code.
 
->>
->> I'm currently working on iowait boosting and seeing where it's
->> actually needed and how it could be improved, so always interested
->> in anyone's thoughts.
-> 
-> One of the problems identified with iowait boost is that it is per-cpu; which
-> means tasks that are causing the iowait to happen will lose this boost when
-> migrated.
-> 
-> Arm was working on a way to help convert it to per-task. See Lukasz email.
+> my v6 original patch was doing the same and it passed all the tests
+> but since I updated the required field it not parsing correctly.
 
-I guess that would be me now :)
-Apart from considering per-task I'd like to get a reasonable scope for the
-feature designed anyway.
-Like in your patch, assuming rate_limit_us=2000, on my platform and scenarios
-the context-switches + the minimum stuff fio does until between read syscalls
-took around 200us (that's where the boost benefit disappears).
-If we're considering workloads that do just a little more in-between than what
-fio does (maybe actually looking at the data?) and therefore takes maybe >2000us
-in-between, you disabled iowait boost for that workload with this patch.
-My view right now is that this might not be critical, any attempts at recreating
-such workloads (realistically) lead basically to them contributing enough util to
-not need the iowait boost, but of course you can also create synthetic workloads
-where this is not true.
-If you want to play around with this too, I have recently added --thinkcycles
-parameter to fio, you will have to build it from source though as it hasn't seen
-a release since.
+Your original v6 patch was different. I don't understand what you are
+trying to achieve. Or rather: how is it different, that my simple advice
+above does not work for you  (as in the past you reply with some really
+unrelated sentence).
 
-> 
->>
->> (The second line here doesn't provide additional
->> information, I left it in to compare for reproducibility).
->> All with CONFIG_HZ=100 on an rk3399.
-> 
-> Your tick is 10ms?! sugov_iowait_reset() should return false then. I see now,
-> we undo the boost in sugov_iowait_apply().
-
-Again, just to emphasize, the disabling of iowait boost then does not come from
-sugov_iowait_reset, but sugov_iowait_apply, which will be called in dequeue regardless
-in your patch, plus you're lowering the rate_limit_us, which right now acts as
-a 'iowait boost protection' for your patch, if that makes sense.
-
-Best Regards,
-Christian
+Best regards,
+Krzysztof
 
