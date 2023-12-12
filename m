@@ -2,56 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2233480EEA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1551280EEAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376451AbjLLO0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:26:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S1376596AbjLLO1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjLLO0j (ORCPT
+        with ESMTP id S232746AbjLLO07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:26:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F395AD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:26:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D05C433CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:26:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702391204;
-        bh=+qJsvEnfvif5MXh/GMlXuF+eSOXDhh7AwIAYXsqp9Vo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MNFg3Oka802B/O3UYw4mb3SBj1uPaBDWBJITgUeGDjGxxF6Tm9lWgO6dEOWz/9rAk
-         95zPEDi4NL5m7RWyfiUrpWMtS+BNeF2Q9Dkl2eTVIiphqMWZdA/gLOK8Kx2F0kpLka
-         ksMKPsqZT6PA49+BQZKIAy4lzLI7kLnloDQJS/p3caGDFJqKPBkz8WZ8ZY+3i5nHrx
-         pzQAn0xF8JLX0Zyzb1rqlH0jr5JzOEfdHkEEK/YNj7t8pTDbDXfDnKFBU7ETpF48zN
-         69jR3oT9r/gB+NfJnOdoFYWhzzy2nXEfZTAitiOQhsWJxmhqwNTlMdSC1HtgWq6D0Y
-         eLWNCpErlrCAQ==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50c0f6b1015so6734699e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:26:44 -0800 (PST)
-X-Gm-Message-State: AOJu0YywES5Y/qVJcakZnP8kqinMfVfVnO/7aI60aXJ/aE4aLRmWJC4z
-        9M4PxqQAoy8M+adYF06FPptHAzHOq+EahVuAIg==
-X-Google-Smtp-Source: AGHT+IF/T5pQzrymJa7Oe578ltsoEfzzuSWBSOyxqt++BeSNPDZeqsctF7I4WdBT1IPIdQAlBu9FJTk31WETVif5++c=
-X-Received: by 2002:ac2:531b:0:b0:50b:ee1e:3380 with SMTP id
- c27-20020ac2531b000000b0050bee1e3380mr2423910lfh.34.1702391203128; Tue, 12
- Dec 2023 06:26:43 -0800 (PST)
+        Tue, 12 Dec 2023 09:26:59 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC4AFF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:27:05 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a1f8a1e9637so569938566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702391224; x=1702996024; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bCZPRFlYELlSqnd7f+LApbuWWSOTUwHuWf2lhre3cTY=;
+        b=UIduafO1DT3E/9yl00OWV+EjecVJ2FWvoAE4REaS2pOQdZ5ihOPnmfePL8xZYamHU+
+         0bXdkQaFPcH+FNZUpV7sZkEfd1gxLFPT7iafcK+X1tDXmEDEmcxRpFnLgOAi5rKjJSJE
+         kPh9hyCUmvQcO6XQlE9+02ZQ9DAaghh/c0BDDAnoU0hXa9ki1ZKwacHa16PIjHxqmaqU
+         wx1GQSmZ2SY8SXxd7oAzT5MhZ2IaE6sVCFpAlw4lA3vJU6CF9WDBKObpxNNV3XxiTls4
+         qYzMjNmnbxO2y0Fdcv2yT4IOj3kaBYFvTAcGYv5O4HzqMn0R7j8VITzuWnP+Jdg5UaMy
+         +51Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702391224; x=1702996024;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bCZPRFlYELlSqnd7f+LApbuWWSOTUwHuWf2lhre3cTY=;
+        b=l/1QRPUDK7IFdP+Le5es7tRWU9h4ggRXLYkWcgs+C150BKaCXLNPDgFDYxfFiinIsY
+         5XIcExU3+Vqe073QzYL/TSgIGxjnb2pLmJuOoXIf7Xmpxy9KMCb+ZnRBbEhzxYTnBUjz
+         aOsxK3pz13uigU6opI0UT2TlCd0bnuM6ihnwTwe4gOH0c/GboLtu2kXK/6fodeRC9pW8
+         edmORv6u+SE17dcOuIo6guKpZE7J6VLZl2JPcomyDaRxQ4e3ypGs6fvDqv0Bh/aRHSNP
+         NE20XevL2fOIwEuTSx68i4ZxKQ6kt9WKt3qQf0iLaD10t2BkWR2gavfuk8LOsWghyRbJ
+         Pg9w==
+X-Gm-Message-State: AOJu0YyarJlN4Bm7sNjrl32XB7JA8QDliyjoxjHAuZeOrvpdBXOioGCt
+        zfW1xalWdTmpsPO18vrtRRIc2Ka4UH2LTPo2bbdgXQ==
+X-Google-Smtp-Source: AGHT+IEOyCkF2DgwL7RBhVnTjCksBIhJaDTVsJX1VcMmek5dl3277Sns8cp70gbrdUy6r5MpVMdk0OJS5kwbSqhfdhU=
+X-Received: by 2002:a17:906:51de:b0:9f2:859f:713e with SMTP id
+ v30-20020a17090651de00b009f2859f713emr7079811ejk.3.1702391223630; Tue, 12 Dec
+ 2023 06:27:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20231207163128.2707993-1-robh@kernel.org> <BL1PR12MB5333564B386B8273120FD0109D8EA@BL1PR12MB5333.namprd12.prod.outlook.com>
-In-Reply-To: <BL1PR12MB5333564B386B8273120FD0109D8EA@BL1PR12MB5333.namprd12.prod.outlook.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 12 Dec 2023 08:26:29 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJMK7s+uNk+GpppmAcprc+21Ffa4X1YLvRPrYhAPZ-PbA@mail.gmail.com>
-Message-ID: <CAL_JsqJMK7s+uNk+GpppmAcprc+21Ffa4X1YLvRPrYhAPZ-PbA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cdx: Enable COMPILE_TEST
-To:     "Agarwal, Nikhil" <nikhil.agarwal@amd.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gupta, Nipun" <Nipun.Gupta@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com> <20231212122535.GA3029808@nvidia.com>
+In-Reply-To: <20231212122535.GA3029808@nvidia.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 12 Dec 2023 06:26:51 -0800
+Message-ID: <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,51 +95,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 10:40=E2=80=AFPM Agarwal, Nikhil <nikhil.agarwal@am=
-d.com> wrote:
+On Tue, Dec 12, 2023 at 4:25=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
 >
-> > -----Original Message-----
-> > From: Rob Herring <robh@kernel.org>
-> > Sent: Thursday, December 7, 2023 10:01 PM
-> > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Gupta, Nipun
-> > <Nipun.Gupta@amd.com>; Agarwal, Nikhil <nikhil.agarwal@amd.com>
-> > Cc: linux-kernel@vger.kernel.org
-> > Subject: [PATCH 1/2] cdx: Enable COMPILE_TEST
-> >
-> > There is no reason CDX needs to depend on ARM64 other than limiting
-> > visibility. So let's also enable building with COMPILE_TEST.
-> >
-> > The CONFIG_OF dependency is redundant as ARM64 always enables it and al=
-l
-> > the DT functions have empty stubs.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  drivers/cdx/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/cdx/Kconfig b/drivers/cdx/Kconfig index
-> > a08958485e31..7cdb7c414453 100644
-> > --- a/drivers/cdx/Kconfig
-> > +++ b/drivers/cdx/Kconfig
-> > @@ -7,7 +7,7 @@
-> >
-> >  config CDX_BUS
-> >       bool "CDX Bus driver"
-> > -     depends on OF && ARM64
-> > +     depends on ARM64 || COMPILE_TEST
-> Hi Rob,
+> On Thu, Dec 07, 2023 at 04:52:39PM -0800, Mina Almasry wrote:
 >
-> There is a CDX MSI support patch
-> https://lore.kernel.org/lkml/20231116125609.245206-1-nipun.gupta@amd.com/=
- which is in
-> review and is dependent on ARM64( msi_alloc_info_t definition differs on =
-x86). So, the
-> COMPILE_TEST would break once the MSI changes are added.
+> > +static inline struct page_pool_iov *page_to_page_pool_iov(struct page =
+*page)
+> > +{
+> > +     if (page_is_page_pool_iov(page))
+> > +             return (struct page_pool_iov *)((unsigned long)page & ~PP=
+_IOV);
+> > +
+> > +     DEBUG_NET_WARN_ON_ONCE(true);
+> > +     return NULL;
+> > +}
+>
+> We already asked not to do this, please do not allocate weird things
+> can call them 'struct page' when they are not. It undermines the
+> maintainability of the mm to have things mis-typed like
+> this. Introduce a new type for your thing so the compiler can check it
+> properly.
+>
 
-An ifdef around 'scratchpad' should fix that. It is worthwhile to get
-all this to build on x86 allyesconfig builds at least because that is
-frequently built by the various CI systems. arm64 is getting there,
-but x86 is first for many.
+There is a new type introduced, it's the page_pool_iov. We set the LSB
+on page_pool_iov* and cast it to page* only to avoid the churn of
+renaming page* to page_pool_iov* in the page_pool and all the net
+drivers using it. Is that not a reasonable compromise in your opinion?
+Since the LSB is set on the resulting page pointers, they are not
+actually usuable as pages, and are never passed to mm APIs per your
+requirement.
 
-Rob
+--=20
+Thanks,
+Mina
