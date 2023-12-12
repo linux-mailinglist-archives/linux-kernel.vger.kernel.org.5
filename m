@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A944580E04B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 01:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBF780E04E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 01:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbjLLAby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 19:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        id S1345522AbjLLAcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 19:32:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbjLLAbv (ORCPT
+        with ESMTP id S231131AbjLLAbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 19:31:51 -0500
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1FED5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:31:54 -0800 (PST)
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-35d74cf427cso20405355ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:31:54 -0800 (PST)
+        Mon, 11 Dec 2023 19:31:52 -0500
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3000FDB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:31:55 -0800 (PST)
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-35d4e557c4bso23274655ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 16:31:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702341113; x=1702945913;
+        d=1e100.net; s=20230601; t=1702341115; x=1702945915;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r7yqZVth6bKK2qa/zOSItkbz59H3fBeQuCjW6KsND1Y=;
-        b=tAzTNwHHk6Hpwdacfqv9Jj4HztcPrpcGpP8TVnWJWhywNLBdYclqClRM+FI7mLAUzQ
-         ek7HAZ9PRcHZSf0tfKnARvIEFxZzt9T3cksL0Co2eceXcluFADYxp5nmDunfy4DA+IyH
-         yUitL/AghVW7UwEfazmi3GO2jc44enQKz3MObpqXSnbbl1+szZ9/ObXvcQ8uDhU/PejS
-         nF2SjkSLKkX40PeNL1ppnr64tgJK93c/n27lTU6Y/e6aCgxd6XbZRTHkXPAn8IsOxo0y
-         OY+r+WvGmwy6v/4w0VzhGBKg8Y19Irjod3Gn5peGenL/aiX/AxAxAaMvFnO6s/mzkRDJ
-         PFTg==
-X-Gm-Message-State: AOJu0YymoeqhcZKI5a7BUUQCf+ElYfChDG/oi3JOtFSOWlXjWNEyv0Wa
-        L+nDh65JixrNUKbFLA3ouV4RmeXeLFDG8Oj4
-X-Google-Smtp-Source: AGHT+IGoPJ4tO3rq4Solwz4SbFr44ni4nzZTuO0WIC6AH6+rDLXd3PcjIbtRBQwpju8Nl16pgrf94g==
-X-Received: by 2002:a92:c564:0:b0:35d:7de6:c388 with SMTP id b4-20020a92c564000000b0035d7de6c388mr6289411ilj.30.1702341113434;
-        Mon, 11 Dec 2023 16:31:53 -0800 (PST)
+        bh=1ozM4BpN3Xt6MsBMcAeU5+sN7FM9jw+H7uMlVGcPsYU=;
+        b=M6fROFzYXqiUvfysdgYd9JyunX57Gbfjd9muWKBsFPOw9QisqV9jZQgPygmbevtprR
+         3MSiK6BlgahonWwHTRCE0VFkz/4IGNWF51swsD8HtuMMIriFL2+VlnpmBPqoBanxFv8U
+         iaRlVG6kI9fwKfZYy6vHWbP/VDcBIgu8TUNWjigyE172tLdjLlr/1um2TxIKKOI5VlqH
+         Z1kDoChgh8q/RjH+uqRDfc7ro0IOLTosAEDzxH0s7LCl9QoTkRsGYKZ5u20rcZMkDYLQ
+         qSqxPv7Fgj0HpI1feVlod7Iu+UjTglgFWkTKjKzsyx3VB6R9EQkKehpQcp1Fq/NyqRnD
+         oDiw==
+X-Gm-Message-State: AOJu0YwvYjG5KSZJYiKX2aRPNI22ltV8XhcRIGyvrvkQxStgx+Fc+aaz
+        XkW5JZxzZNpShrZ5Shvh33XBV2IErqVABBaP
+X-Google-Smtp-Source: AGHT+IGY6C9FW7edbpxzeexxFByWSS3gYTIQtq7pOV92sM4gqltpbhoxDAXZ3g8d271lmJEzVXZGVg==
+X-Received: by 2002:a05:6e02:1a4d:b0:35d:a4a9:7bb7 with SMTP id u13-20020a056e021a4d00b0035da4a97bb7mr8463770ilv.63.1702341114970;
+        Mon, 11 Dec 2023 16:31:54 -0800 (PST)
 Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id by4-20020a056e02260400b0035cb9b85123sm2616670ilb.46.2023.12.11.16.31.52
+        by smtp.gmail.com with ESMTPSA id u4-20020a056e021a4400b0035d714a68fbsm2619217ilv.78.2023.12.11.16.31.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 16:31:52 -0800 (PST)
+        Mon, 11 Dec 2023 16:31:54 -0800 (PST)
 From:   David Vernet <void@manifault.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
@@ -47,9 +47,9 @@ Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         kprateek.nayak@amd.com, gautham.shenoy@amd.com,
         aboorvad@linux.vnet.ibm.com, wuyun.abel@bytedance.com,
         tj@kernel.org, kernel-team@meta.com
-Subject: [PATCH v4 3/8] sched: Tighten unpinned rq lock window in newidle_balance()
-Date:   Mon, 11 Dec 2023 18:31:36 -0600
-Message-ID: <20231212003141.216236-4-void@manifault.com>
+Subject: [PATCH v4 4/8] sched: Check cpu_active() earlier in newidle_balance()
+Date:   Mon, 11 Dec 2023 18:31:37 -0600
+Message-ID: <20231212003141.216236-5-void@manifault.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231212003141.216236-1-void@manifault.com>
 References: <20231212003141.216236-1-void@manifault.com>
@@ -65,66 +65,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In newidle_balance(), we may drop and reacquire the rq lock in the
-load-balance phase of the function. We currently do this before we check
-rq->rd->overload or rq->avg_idle, which is unnecessary. Let's tighten
-the window where we call rq_unpin_lock().
+In newidle_balance(), we check if the current CPU is inactive, and then
+decline to pull any remote tasks to the core if so. Before this check,
+however, we're currently updating rq->idle_stamp. If a core is offline,
+setting its idle stamp is not useful. The core won't be chosen by any
+task in select_task_rq_fair(), and setting the rq->idle_stamp is
+misleading anyways given that the core being inactive should imply that
+it should be idle for a very long time.
 
-Suggested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+Let's set rq->idle_stamp in newidle_balance() only if the cpu is active.
+
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- kernel/sched/fair.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ kernel/sched/fair.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bcea3d55d95d..e1b676bb1fed 100644
+index e1b676bb1fed..49f047df5d9d 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -12296,14 +12296,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	if (!cpu_active(this_cpu))
+@@ -12284,18 +12284,18 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+ 	if (this_rq->ttwu_pending)
  		return 0;
  
 -	/*
--	 * This is OK, because current is on_cpu, which avoids it being picked
--	 * for load-balance and preemption/IRQs are still disabled avoiding
--	 * further scheduler activity on it and we're being very careful to
--	 * re-start the picking loop.
+-	 * We must set idle_stamp _before_ calling idle_balance(), such that we
+-	 * measure the duration of idle_balance() as idle time.
 -	 */
--	rq_unpin_lock(this_rq, rf);
+-	this_rq->idle_stamp = rq_clock(this_rq);
 -
- 	rcu_read_lock();
- 	sd = rcu_dereference_check_sched_domain(this_rq->sd);
- 
-@@ -12318,6 +12310,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	}
- 	rcu_read_unlock();
+ 	/*
+ 	 * Do not pull tasks towards !active CPUs...
+ 	 */
+ 	if (!cpu_active(this_cpu))
+ 		return 0;
  
 +	/*
-+	 * This is OK, because current is on_cpu, which avoids it being picked
-+	 * for load-balance and preemption/IRQs are still disabled avoiding
-+	 * further scheduler activity on it and we're being very careful to
-+	 * re-start the picking loop.
++	 * We must set idle_stamp _before_ calling idle_balance(), such that we
++	 * measure the duration of idle_balance() as idle time.
 +	 */
-+	rq_unpin_lock(this_rq, rf);
- 	raw_spin_rq_unlock(this_rq);
- 
- 	t0 = sched_clock_cpu(this_cpu);
-@@ -12358,6 +12357,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	rcu_read_unlock();
- 
- 	raw_spin_rq_lock(this_rq);
-+	rq_repin_lock(this_rq, rf);
- 
- 	if (curr_cost > this_rq->max_idle_balance_cost)
- 		this_rq->max_idle_balance_cost = curr_cost;
-@@ -12384,8 +12384,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	else
- 		nohz_newidle_balance(this_rq);
- 
--	rq_repin_lock(this_rq, rf);
--
- 	return pulled_task;
- }
++	this_rq->idle_stamp = rq_clock(this_rq);
++
+ 	rcu_read_lock();
+ 	sd = rcu_dereference_check_sched_domain(this_rq->sd);
  
 -- 
 2.42.1
