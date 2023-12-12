@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C8C80F00E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA2E80F010
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376660AbjLLPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
+        id S1376672AbjLLPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376637AbjLLPYX (ORCPT
+        with ESMTP id S1376664AbjLLPYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:24:23 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F9FD0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:29 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-33340c50af9so5807767f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:29 -0800 (PST)
+        Tue, 12 Dec 2023 10:24:32 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEC5EA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:38 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-336356d9092so324069f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:24:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702394668; x=1702999468; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702394677; x=1702999477; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7kJqu+bnuU5nR5DAckFzswh1FRnTgmkHhVyfgizfqp0=;
-        b=u2F61MQYGrf1m2mz0riVsRLpCO1pVKcXda2NtltxL5neu/hBdeqh7YSVlpFjSdFmNT
-         Ff7WiI8Mf23ASYqZp/QGRNta5S/2T2+yCnF2tjAsmyChDAGc+7bu8JbXsfnkgaLEVNZD
-         yfl19xRBC805MmEYuvctC+XllguVumRwSjIzFI4fXnD8mJO8py9MUzUsBaVVfFFAyRqG
-         pRVmT7EEOic11pN7CsOoxStwrRAX3fwfEiF/pKLfsNJTvSGaRRfxzcP/l7qLVVJcmiD9
-         EhDRfBCN4fmoQaMPVV8tHKMJly/I4O0SD1aOVFhJs7RyA3mhFkKKcSZNvj0l2BbQDcyH
-         zPTQ==
+        bh=LN7cfdgQAjkSsoxFqP1f5cDcD2uFywdfIaaBewRyeQk=;
+        b=GscDMUm5DcwxPRexhZ21fFVz9oFvHgCUDciKEqEDAMZZEztPVJ2lKxrgR6p2IZscy7
+         jWpZSrZHG4SbElx8SrHcNqGudH6ECCUomOm1tTSG6CTcE1To8vppAyUs0qCxbuLFxfry
+         GqI1bt7OYXbpq4vcVOSlL4PBmWXzQrwC2FcfR6TIQ5xJtuLlJ6q4OZ5g0LkN8dIvUJUK
+         MKzGUmTeV8yaOK5leZ3QAvgenmJz4YoCoFHSs7dT0uaW+O0Tr/KMpbxbnIz8uRjC2shm
+         z360MPz8J110bHv6Iwmc1Gd2RDe4BaxGwCChnA9OsmopOrBth1WAefUVxhKW+I2ZQB6W
+         j0og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702394668; x=1702999468;
+        d=1e100.net; s=20230601; t=1702394677; x=1702999477;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :references:cc:to:content-language:subject:reply-to:from:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=7kJqu+bnuU5nR5DAckFzswh1FRnTgmkHhVyfgizfqp0=;
-        b=R1y41XRQ8SX6VNZsVd1qMXVSQSnlbk/KOozavkh2bNLcSuHmlZqh/MVX+8zNLB1Yug
-         EKUrgNii0ultE2i82XGOr8Qpq9LV31QZZvZEr+AxH+z3ri2vFvMDxfr0KuMxmMXA7S56
-         3go5Z+ZgKti8QO2WDA5igClhOKu3ZG5uSZOdOQSBIiABFjCO0loRmYIYEGqwNyfp+4IN
-         pqh2srXIwiRlEy7RkuDOWKdgmpZdq+exUvYLQ75jXNB4w0gJaYwVPDiewQciw3InuKQO
-         ir1DHi5l4UJC3QOCTrYeyH8KUuVW7pkFA9/JeRHpYgUjr5Jv08pSMCUXBk7eO747X4mp
-         VNaw==
-X-Gm-Message-State: AOJu0Yw8EaOJ0pNqC2GK3JYXJizj1CKKsw7Gxhn/I889PBPA3xTbR0rX
-        Tqvoz9V2fo93SQlzFZPyE1WXPg==
-X-Google-Smtp-Source: AGHT+IGVUMU4MGNHLX2arXPoCoNvGtb6iFKt5mx3GnV2rGFLW3lAZYKfzlX61YbymRc9/kLhEpxWNg==
-X-Received: by 2002:a5d:61ce:0:b0:336:3651:62a3 with SMTP id q14-20020a5d61ce000000b00336365162a3mr122093wrv.9.1702394668020;
-        Tue, 12 Dec 2023 07:24:28 -0800 (PST)
+        bh=LN7cfdgQAjkSsoxFqP1f5cDcD2uFywdfIaaBewRyeQk=;
+        b=TxBvv/fBUd91FmoKvjjJ1hElYdABfEop0L4ICYlwrH6IVhPTkokQ2lw63SofGL331Q
+         J5jwJSAUG1NJaGt2oTzFK4Ab4jjeqA2QuH3H3bAHys8ue3v20eqL/XIpFoChXNhAljx4
+         UgOSdRDefNGPLWO2hawfOmpJMWJm80yvMQLzlHzxiQdvZxyVPD4yo/6HDlncTkjeFea+
+         8L4OkDwxSzs7W1lQ6B5Qij0RVvEQiuFBdvP4Ududl/R4AUeEJqRi2BW4opikiC+7pszw
+         jt6xMcmFIN53QOglOZS7M9DYjLhrVV/5sgX3oZ4UutDkYoS4Tb1N1kn7dk01OJ/4g4W3
+         ncpA==
+X-Gm-Message-State: AOJu0YxcMWHunn+xNJeLvADFxODujDEngjWtOwYCD8tC1x/BbO07d1vk
+        XuXvLNhxgoeVMMUweJk+3iasAQ==
+X-Google-Smtp-Source: AGHT+IHozVD4U0YiFbAu/YdcjR8DiKmGxIQYmCeg73PrL+XEUhQ0LgEDBk9rzgYB6UAAD4H/hUPNmA==
+X-Received: by 2002:a5d:4e01:0:b0:333:6338:f1af with SMTP id p1-20020a5d4e01000000b003336338f1afmr3511573wrt.98.1702394676959;
+        Tue, 12 Dec 2023 07:24:36 -0800 (PST)
 Received: from ?IPV6:2a01:e0a:982:cbb0:5894:fa62:26b4:bf82? ([2a01:e0a:982:cbb0:5894:fa62:26b4:bf82])
-        by smtp.gmail.com with ESMTPSA id x15-20020a5d54cf000000b0033635d121besm725476wrv.52.2023.12.12.07.24.27
+        by smtp.gmail.com with ESMTPSA id x15-20020a5d54cf000000b0033635d121besm725476wrv.52.2023.12.12.07.24.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 07:24:27 -0800 (PST)
-Message-ID: <44c2d671-a915-49ba-a584-83d48e6c808c@linaro.org>
-Date:   Tue, 12 Dec 2023 16:24:27 +0100
+        Tue, 12 Dec 2023 07:24:36 -0800 (PST)
+Message-ID: <29afe196-7b73-425c-8200-78ffbe17e8c0@linaro.org>
+Date:   Tue, 12 Dec 2023 16:24:36 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 From:   Neil Armstrong <neil.armstrong@linaro.org>
 Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/3] soc: qcom: pmic_pdcharger_ulog: Move TRACE_SYSTEM out
- of #if protection
+Subject: Re: [PATCH 3/3] soc: qcom: pmic_pdcharger_ulog: Fix hypothetical ulog
+ request message endianess
 Content-Language: en-US, fr
 To:     Andrew Halaney <ahalaney@redhat.com>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
 References: <20231205-pmicpdcharger-ulog-fixups-v1-0-71c95162cb84@redhat.com>
- <20231205-pmicpdcharger-ulog-fixups-v1-2-71c95162cb84@redhat.com>
+ <20231205-pmicpdcharger-ulog-fixups-v1-3-71c95162cb84@redhat.com>
 Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
  GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
@@ -94,12 +95,12 @@ Autocrypt: addr=neil.armstrong@linaro.org; keydata=
  4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
  QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
 Organization: Linaro Developer Services
-In-Reply-To: <20231205-pmicpdcharger-ulog-fixups-v1-2-71c95162cb84@redhat.com>
+In-Reply-To: <20231205-pmicpdcharger-ulog-fixups-v1-3-71c95162cb84@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,41 +109,50 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/12/2023 00:05, Andrew Halaney wrote:
-> As specified in samples/trace_events/trace-events-sample.h:
+> Sparse reports the following:
 > 
->      * Notice that TRACE_SYSTEM should be defined outside of #if
->      * protection, just like TRACE_INCLUDE_FILE.
+>      % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make C=2 W=1 drivers/soc/qcom/pmic_pdcharger_ulog.o
+>      ...
+>        CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+>        CHECK   drivers/soc/qcom/pmic_pdcharger_ulog.c
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34: warning: incorrect type in initializer (different base types)
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34:    expected restricted __le32 [usertype] owner
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:57:34:    got int
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33: warning: incorrect type in initializer (different base types)
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33:    expected restricted __le32 [usertype] type
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:58:33:    got int
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35: warning: incorrect type in initializer (different base types)
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35:    expected restricted __le32 [usertype] opcode
+>      drivers/soc/qcom/pmic_pdcharger_ulog.c:59:35:    got int
 > 
+> Let's deal with endianness conversion in the rare case this ever runs
+> on a big-endian machine (and to quiet down sparse for this file).
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312060355.M0eJtq4X-lkp@intel.com/
 > Fixes: 086fdb48bc65 ("soc: qcom: add ADSP PDCharger ULOG driver")
 > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
 > ---
->   drivers/soc/qcom/pmic_pdcharger_ulog.h | 6 +++---
+>   drivers/soc/qcom/pmic_pdcharger_ulog.c | 6 +++---
 >   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/soc/qcom/pmic_pdcharger_ulog.h b/drivers/soc/qcom/pmic_pdcharger_ulog.h
-> index 9d5d9af4fbe4..152e3a6b5480 100644
-> --- a/drivers/soc/qcom/pmic_pdcharger_ulog.h
-> +++ b/drivers/soc/qcom/pmic_pdcharger_ulog.h
-> @@ -3,14 +3,14 @@
->    * Copyright (c) 2023, Linaro Ltd
->    */
->   
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM pmic_pdcharger_ulog
-> +
->   #if !defined(_TRACE_PMIC_PDCHARGER_ULOG_H) || defined(TRACE_HEADER_MULTI_READ)
->   #define _TRACE_PMIC_PDCHARGER_ULOG_H
->   
->   #include <linux/tracepoint.h>
->   
-> -#undef TRACE_SYSTEM
-> -#define TRACE_SYSTEM pmic_pdcharger_ulog
-> -
->   TRACE_EVENT(pmic_pdcharger_ulog_msg,
->   	TP_PROTO(char *msg),
->   	TP_ARGS(msg),
+> diff --git a/drivers/soc/qcom/pmic_pdcharger_ulog.c b/drivers/soc/qcom/pmic_pdcharger_ulog.c
+> index f1aaacf05005..238cd38589dc 100644
+> --- a/drivers/soc/qcom/pmic_pdcharger_ulog.c
+> +++ b/drivers/soc/qcom/pmic_pdcharger_ulog.c
+> @@ -54,9 +54,9 @@ static int pmic_pdcharger_ulog_request(struct pmic_pdcharger_ulog *pg)
+>   {
+>   	struct get_ulog_req_msg req_msg = {
+>   		.hdr = {
+> -			.owner = MSG_OWNER_CHG_ULOG,
+> -			.type = MSG_TYPE_REQ_RESP,
+> -			.opcode = GET_CHG_ULOG_REQ
+> +			.owner = cpu_to_le32(MSG_OWNER_CHG_ULOG),
+> +			.type = cpu_to_le32(MSG_TYPE_REQ_RESP),
+> +			.opcode = cpu_to_le32(GET_CHG_ULOG_REQ)
+>   		},
+>   		.log_size = MAX_ULOG_SIZE
+>   	};
 > 
-
-Thanks for fix, it is incredibly hard to understand how to properly implement it...
 
 Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
