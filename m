@@ -2,344 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC64580EED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C003E80EEDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376815AbjLLObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S1376817AbjLLOcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376799AbjLLObT (ORCPT
+        with ESMTP id S1376799AbjLLOco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:31:19 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79298AD;
-        Tue, 12 Dec 2023 06:31:26 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCAq6g6005056;
-        Tue, 12 Dec 2023 06:31:24 -0800
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uxp52rqh2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 06:31:24 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JeL9B59xUTuZo3ddk5MIo6QcYZiivK2vuEP9HEPCdU6H9wDDs1SLciRpf2QHw1hTrKb8v9v/weKEiD7ny1g4ydKJagDOY/PnmDj8YIRcmYGGebA1+dtzk1lJzJXnyKFehO84Pu0jRh0KONcYworLO2X776Cf58iMzywieh8lTzK35TgyuP43spyLK4n80BAu32XodLNSpeOflWwRLqKwZBhPGI2RRAXikJOwnlWPCWLQrxwCvc3rYM0hfc0InE5YjadxN7cLKrwGiN/yL3S4+r5/UMnM0WTzoEQAG+lfCN5D6DsWvkBXTIokvvePJp/MmKMqdZsus2gyGMrogbBaqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a6Ou155dO3IrIYobCOQNiwaPJAXSJN5okv7ojAnldLA=;
- b=A7UzaNaXFaj6EgwM3hgkQ8eMifQWXnxa2TpdlEIGpTBgtN86oTvtdVm2DoEdmFm4NKTshPZgvcLYzrP3Rt2SBWTa7iHmV3tiNbGPc5O/PxAdeMetPMO+DJReh3Suu75ZBJ9247QoHX8pr9kwqzDfkITkicRKm+3wHM9eHK66X4C0jC85Dd+yxDL78C5VfP+H6Uk0Zhzv6dom8jgaPWfKkev6UD9VBvlbkXbH4AqJtejX41honUNdifFHETzxhGUaChwYy4Gf+jjIOAdouTC4Vn7IRN1remHoR1ANrjDm9EFWXVm6JO6s5e8Lg58XQAx3N3mJOWbzb07W3YnJbot6iQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a6Ou155dO3IrIYobCOQNiwaPJAXSJN5okv7ojAnldLA=;
- b=qAYsoMJ5N/2XvO3N0KRnYuxoLXHfOMC0k3jt/DFwKMoNQDyhW6R2Nc6F0eWBlD1MZhJlAKwYVkcf9LoimL9+T6C/rbcApznxR/4fum4Y3Eibsx3aj6KgEAOj4AQ0Zj4VgHWpi/o/UZ2Sn1I3hHQb6aZZciL2VJZqc9mI+senmkA=
-Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
- by PH0PR18MB3976.namprd18.prod.outlook.com (2603:10b6:510:29::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
- 2023 14:31:22 +0000
-Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
- ([fe80::6a4f:cb8d:70fd:ef2]) by SJ0PR18MB5216.namprd18.prod.outlook.com
- ([fe80::6a4f:cb8d:70fd:ef2%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 14:31:21 +0000
-From:   Suman Ghosh <sumang@marvell.com>
-To:     Andrii Staikov <andrii.staikov@intel.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marcin Szycik <marcin.szycik@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>
-Subject: RE: [EXT] [PATCH iwl-next  v6] ice: Add support for packet mirroring
- using hardware in switchdev mode
-Thread-Topic: [EXT] [PATCH iwl-next  v6] ice: Add support for packet mirroring
- using hardware in switchdev mode
-Thread-Index: AQHaLPn3QeZkgij0pkKWgVkPnFK85bCltLzQ
-Date:   Tue, 12 Dec 2023 14:31:21 +0000
-Message-ID: <SJ0PR18MB5216B580A66AD4243C50A40DDB8EA@SJ0PR18MB5216.namprd18.prod.outlook.com>
-References: <20231212125126.3297556-1-andrii.staikov@intel.com>
-In-Reply-To: <20231212125126.3297556-1-andrii.staikov@intel.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3VtYW5nXGFw?=
- =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
- =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctMWNhZDJkYjAtOThmYi0xMWVlLWI3MDAtODQxNDRk?=
- =?us-ascii?Q?ZWVhNTRjXGFtZS10ZXN0XDFjYWQyZGIyLTk4ZmItMTFlZS1iNzAwLTg0MTQ0?=
- =?us-ascii?Q?ZGVlYTU0Y2JvZHkudHh0IiBzej0iMjM3MCIgdD0iMTMzNDY4NjUwNzkwNTUx?=
- =?us-ascii?Q?MjM3IiBoPSJ4VmR3NEJ6YlpQSFh3d0pxQ0xPMEN1VTBUaGc9IiBpZD0iIiBi?=
- =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFCZ1dBQURG?=
- =?us-ascii?Q?ZmdYZkJ5M2FBUW0reExJNkFkVHFDYjdFc2pvQjFPb1pBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFCdUR3QUEzZzhBQURvR0FBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBUUVCQUFBQTlSZW5Md0NBQVFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
- =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
- =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
- =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
- =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
- =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
- =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
- =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
- =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
- =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
- =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
- =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
- =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
- =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFI?=
- =?us-ascii?Q?UUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFC?=
- =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
- =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJ?=
- =?us-ascii?Q?QVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
- =?us-ascii?Q?ZUFBQUFiUUJoQUhJQWRnQmxBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhB?=
- =?us-ascii?Q?YmdCaEFHMEFaUUJ6QUY4QVl3QnZBRzRBWmdCcEFHUUFaUUJ1QUhRQWFRQmhB?=
- =?us-ascii?Q?R3dBWHdCaEFHd0Fid0J1QUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0Iy?=
- =?us-ascii?Q?QUdVQWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFY?=
- =?us-ascii?Q?d0J5QUdVQWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QVlRQnNBRzhBYmdCbEFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
- =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlB?=
- =?us-ascii?Q?RzhBYWdCbEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNn?=
- =?us-ascii?Q?QnBBR01BZEFCbEFHUUFYd0JvQUdVQWVBQmpBRzhBWkFCbEFITUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
- =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUdFQWNnQnRBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-rorf: true
-x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlB?=
- =?us-ascii?Q?QUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFad0J2QUc4QVp3QnNB?=
- =?us-ascii?Q?R1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZ?=
- =?us-ascii?Q?UUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBWXdCdkFH?=
- =?us-ascii?Q?UUFaUUJ6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJB?=
- =?us-ascii?Q?QmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QmpBRzhBWkFCbEFITUFYd0JrQUdr?=
- =?us-ascii?Q?QVl3QjBBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
- =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
- =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
- =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
- =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0Jo?=
- =?us-ascii?Q?QUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FY?=
- =?us-ascii?Q?d0J0QUdFQWNnQjJBR1VBYkFCc0FGOEFid0J5QUY4QVlRQnlBRzBBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFB?=
- =?us-ascii?Q?QUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdC?=
- =?us-ascii?Q?dUFHRUFiUUJsQUhNQVh3QmpBRzhBYmdCbUFHa0FaQUJsQUc0QWRBQnBBR0VB?=
- =?us-ascii?Q?YkFCZkFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCdkFISUFYd0JuQUc4QWJ3Qm5B?=
- =?us-ascii?Q?R3dBWlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdV?=
- =?us-ascii?Q?QWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0Jm?=
- =?us-ascii?Q?QUhJQVpRQnpBSFFBY2dCcEFHTUFkQUJsQUdRQVh3QnRBR0VBY2dCMkFHVUFi?=
- =?us-ascii?Q?QUJzQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFB?=
- =?us-ascii?Q?QUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElB?=
- =?us-ascii?Q?YndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFjZ0JsQUhNQWRBQnlB?=
- =?us-ascii?Q?R2tBWXdCMEFHVUFaQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3?=
- =?us-ascii?Q?QmhBSElBYlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
- =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhRQVpRQnlBRzBBYVFCdUFIVUFj?=
- =?us-ascii?Q?d0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
- =?us-ascii?Q?R1VBYkFCc0FGOEFkd0J2QUhJQVpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
- =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBT2dZQUFBQUFBQUFJQUFBQUFBQUFBQWdBQUFBQUFB?=
- =?us-ascii?Q?QUFDQUFBQUFBQUFBQWFCZ0FBR1FBQUFCZ0FB?=
-x-dg-reffive: =?us-ascii?Q?QUFBQUFBQVlRQmtBR1FBY2dCbEFITUFjd0FBQUNRQUFBQUFBQUFBWXdCMUFI?=
- =?us-ascii?Q?TUFkQUJ2QUcwQVh3QndBR1VBY2dCekFHOEFiZ0FBQUM0QUFBQUFBQUFBWXdC?=
- =?us-ascii?Q?MUFITUFkQUJ2QUcwQVh3QndBR2dBYndCdUFHVUFiZ0IxQUcwQVlnQmxBSElB?=
- =?us-ascii?Q?QUFBd0FBQUFBQUFBQUdNQWRRQnpBSFFBYndCdEFGOEFjd0J6QUc0QVh3QmtB?=
- =?us-ascii?Q?R0VBY3dCb0FGOEFkZ0F3QURJQUFBQXdBQUFBQUFBQUFHTUFkUUJ6QUhRQWJ3?=
- =?us-ascii?Q?QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dCa0FITUFBQUErQUFB?=
- =?us-ascii?Q?QUFBQUFBR01BZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCdUFHOEFaQUJs?=
- =?us-ascii?Q?QUd3QWFRQnRBR2tBZEFCbEFISUFYd0IyQURBQU1nQUFBRElBQUFBQUFBQUFZ?=
- =?us-ascii?Q?d0IxQUhNQWRBQnZBRzBBWHdCekFITUFiZ0JmQUhNQWNBQmhBR01BWlFCZkFI?=
- =?us-ascii?Q?WUFNQUF5QUFBQVBnQUFBQUFBQUFCa0FHd0FjQUJmQUhNQWF3QjVBSEFBWlFC?=
- =?us-ascii?Q?ZkFHTUFhQUJoQUhRQVh3QnRBR1VBY3dCekFHRUFad0JsQUY4QWRnQXdBRElB?=
- =?us-ascii?Q?QUFBMkFBQUFBQUFBQUdRQWJBQndBRjhBY3dCc0FHRUFZd0JyQUY4QVl3Qm9B?=
- =?us-ascii?Q?R0VBZEFCZkFHMEFaUUJ6QUhNQVlRQm5BR1VBQUFBNEFBQUFBQUFBQUdRQWJB?=
- =?us-ascii?Q?QndBRjhBZEFCbEFHRUFiUUJ6QUY4QWJ3QnVBR1VBWkFCeUFHa0FkZ0JsQUY4?=
- =?us-ascii?Q?QVpnQnBBR3dBWlFBQUFDUUFBQUFBQUFBQVpRQnRBR0VBYVFCc0FGOEFZUUJr?=
- =?us-ascii?Q?QUdRQWNnQmxBSE1BY3dBQUFGZ0FBQUFBQUFBQWJRQmhBSElBZGdCbEFHd0FY?=
- =?us-ascii?Q?d0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFH?=
- =?us-ascii?Q?NEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFC?=
- =?us-ascii?Q?VUFBQUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FGOEFjQUJ5QUc4QWFnQmxBR01B?=
- =?us-ascii?Q?ZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxB?=
- =?us-ascii?Q?R1FBWHdCaEFHd0Fid0J1QUdVQUFBQmFBQUFBQUFBQUFHMEFZUUJ5QUhZQVpR?=
- =?us-ascii?Q?QnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJ?=
- =?us-ascii?Q?QVpRQnpBSFFBY2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJs?=
- =?us-ascii?Q?QUhNQUFBQWdBQUFBQUFBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCaEFISUFi?=
- =?us-ascii?Q?UUFBQUNZQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR2NBYndCdkFH?=
- =?us-ascii?Q?Y0FiQUJsQUFBQU5BQUFBQUFBQUFCdEFHRUFj?=
-x-dg-refsix: =?us-ascii?Q?Z0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBR01BYndCa0FH?=
- =?us-ascii?Q?VUFjd0FBQUQ0QUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dC?=
- =?us-ascii?Q?dkFHb0FaUUJqQUhRQVh3QmpBRzhBWkFCbEFITUFYd0JrQUdrQVl3QjBBQUFB?=
- =?us-ascii?Q?WGdBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxB?=
- =?us-ascii?Q?R01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBR01BYndCdUFHWUFhUUJrQUdVQWJn?=
- =?us-ascii?Q?QjBBR2tBWVFCc0FGOEFiUUJoQUhJQWRnQmxBR3dBYkFBQUFHd0FBQUFBQUFB?=
- =?us-ascii?Q?QWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1?=
- =?us-ascii?Q?QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFHRUFi?=
- =?us-ascii?Q?QUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3QmhBSElBYlFBQUFI?=
- =?us-ascii?Q?SUFBQUFBQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFC?=
- =?us-ascii?Q?akFIUUFYd0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRB?=
- =?us-ascii?Q?ZEFCcEFHRUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5B?=
- =?us-ascii?Q?RzhBYndCbkFHd0FaUUFBQUZvQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJB?=
- =?us-ascii?Q?QmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdV?=
- =?us-ascii?Q?QWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFB?=
- =?us-ascii?Q?QUdnQUFBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSEFBY2dCdkFHb0Fa?=
- =?us-ascii?Q?UUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0J5QUdVQWN3QjBBSElBYVFCakFI?=
- =?us-ascii?Q?UUFaUUJrQUY4QWJRQmhBSElBZGdCbEFHd0FiQUJmQUc4QWNnQmZBR0VBY2dC?=
- =?us-ascii?Q?dEFBQUFLZ0FBQUFBQUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWRBQmxBSElB?=
- =?us-ascii?Q?YlFCcEFHNEFkUUJ6QUFBQUlnQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNB?=
- =?us-ascii?Q?RjhBZHdCdkFISUFaQUFBQUE9PSIvPjwvbWV0YT4=3D?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|PH0PR18MB3976:EE_
-x-ms-office365-filtering-correlation-id: 0b9877ea-2bed-4256-8932-08dbfb1f0315
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X/hh6DkpTitCFJFbdHBXClBN+uTsgvoGdNlAcmoQqJ1oQERrjRQHXGNHSc8Tsn5A/HRReie3his5wux5YVUcJhhyWh6IfpLOkLmNUcrDRaqZaYYitckrjOY0BH/MsP2cQXCjuUV/cn30RAznXDfMq+UGN3JMvHnyQPYQZth831LEHx6aZPYlmsTNqJQ4WEWeKTSeQFc3RTbw4MeI5M5ugFUSKRTi/fcEO+dY0Q3w00P7gGs5vkoAII4TkHV35JLQTAkab4YYkKNC6P74AuLvYDlrGI+/Bp+eOsxIbNpYJmWBYcbxRJUEVuVj/xWx2EJld4JTDZq44KAToGYRiFalp2yiUvH2Kf7ya2DsQrz/4lSwXM3CvVMNYYIjqyqPa7MlPT4riORv2VBHneR/L3dpzPGmjV/MRTH7AyvYHEo2m7YjQlcx76bCeZ20fod1BzDVDi2fuTVg1BwhfXJT+pqKaeMalZ3jbK0r/yLKS+9UrSa05J8ggiqPk6akn5ZacHNYenfbQLG8Nm074UPu7CQXMz1RwCScOJYgfM+oLJiNMKFRQnFS/VtibIvF+6sW5+IOzo5gI/1lTDLfskbHXIzIcdTmmRB7SYVkl1O6mw4Tv66bTmyRB21K6IPTLawozJO0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(38070700009)(41300700001)(2906002)(4744005)(5660300002)(33656002)(76116006)(66946007)(66446008)(66556008)(66476007)(64756008)(7696005)(6506007)(71200400001)(478600001)(26005)(52536014)(9686003)(55016003)(54906003)(38100700002)(86362001)(8676002)(4326008)(8936002)(122000001)(316002)(6916009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?THrflCo2nCxMFNtm7eQWJ1gZbkkmr5OjfUYntR1/uL9OjaAtltYultipD48U?=
- =?us-ascii?Q?0aE9qaNV1NTEk/vdin3ODDN+GAlFL/yYptGTKlfshVTFBG+2lMbuFpW6V9Xb?=
- =?us-ascii?Q?81lmjvOnc2w2shSl6KFP9VFTuNE+kbEAK+YataJ+6JNBPu6ULmEuQmXkzL9i?=
- =?us-ascii?Q?UymUppIhcXQiCpqJJOJXQpcbrVbG5CoMZlD+38PGQsNoFyxOeL/MYWs1tnXO?=
- =?us-ascii?Q?WSomPbENyhDpqYgtyDVaoSgUI1Vtfz/f7fF8k3s95m54Z8GiEkux4y/qZkJy?=
- =?us-ascii?Q?etFI/2htK1Kn6/tq9U8xWcc+j78g468SIY6wzv6l+5mJHlIpKg6nDMjpA0dn?=
- =?us-ascii?Q?nkPL56PMHgVoD801R5/b1MtH2/M4zBusfaC4x0LDI1jH7aSrIvalMA+OGfbK?=
- =?us-ascii?Q?+dIGhgtktFhO3swSofvKIqlMnAj25kKEVTmIpdJM5Nd94H02wZTL2UzMd0BG?=
- =?us-ascii?Q?aoVqJ1p30zEQYojfQz5qYrDBt1xOW+MdYg+DB9RYagYQyFozpeuAo0NZ0S2H?=
- =?us-ascii?Q?wm/+yZjyB3UyzXA0wa3b9z9TPSAecQX5bBAbzpU0ZT3johg3+aK+rB9wQ71U?=
- =?us-ascii?Q?ij6qWrbpz3Da9kjiM10ruzx4TJ+V6yER+THfJUTWPlGHGHdXxdoTWJp3pY71?=
- =?us-ascii?Q?LX0argJyGK6Ove5c9WOy3IT3a2szuL05sieX6UUULLc/zoxdFwSwEuLAErmy?=
- =?us-ascii?Q?bSz+0VHGHpRS05nr6Q+X4yo3/cTuwVqVvv68FhgltCHMMYSs0Z3ut2NWlqS4?=
- =?us-ascii?Q?sZDYZWzgr48B/jMoZE07szcu950JiHYp/KFvvfvm8KRreH0HhRzcY2QOdCTt?=
- =?us-ascii?Q?vTdOnPh4P5WI945AXDHHemIgQjskJjy2s0V6kERjN6LOI2h85N++1KUKqGJO?=
- =?us-ascii?Q?g8DnWLzx0ZskacXP+cVzMCl2DaGOcgqZFIPkybcaOwRAVy11tH6e3pLZBGPB?=
- =?us-ascii?Q?YF83wBz3f+5C/Ab579lEWKIbxGvFSBgGztOha+HjHS58Qb/JQvYfjf8PXrFk?=
- =?us-ascii?Q?8lxWbwEq7bOUKKJQGUd7MRiZtCdFi12+wXgCVTNgD/HDkyL4lxRqAesl3yll?=
- =?us-ascii?Q?wb7z3M60Lnrgr+iGPyUbFRvjeuFs33fBxmAVJdW5/oPeXKdGBXomc6TVOgwj?=
- =?us-ascii?Q?5bSfE797UFV3SzYhqioSnJt8o1YmYY431otzSiAltMKq1dcYx9DLBUBVTYyc?=
- =?us-ascii?Q?hKFm3YnkEvrLZHhVlYkX5aAeufGLXR0GysQCCh0iuw/PMUHAMUdDO1csHx5+?=
- =?us-ascii?Q?wq7sQJf8QpxCzU9+uPpTvpo9q7JVOJss2h3c5weWN6u3JRXkMblBNQXuRhAA?=
- =?us-ascii?Q?5hCaxVWvBWFK7Raq3PDgdlWToGNdivtEsHdxW8CUp9oq3o7LNoPQStYAyI2W?=
- =?us-ascii?Q?95AzNztlwjtTwhxeVpXpV7pQMYzhqHfkkTdjHa0KYVOX+IvFc3R1q+H8Uft4?=
- =?us-ascii?Q?WWMuaUdjRNNrAw8NCQnUcuqHpkRKq2+xiffwijao5mj9iuKx+c7B//c2cQJa?=
- =?us-ascii?Q?wLbq8wKk+9Ea3pOuqm+74CUpxC0RrjD4u1YIpb43nTdc38oaQCAFL1cJA0e5?=
- =?us-ascii?Q?gUODxKQbNhq2pTbCfmq8ssnO6RylpsxY+/M5IxON?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b9877ea-2bed-4256-8932-08dbfb1f0315
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 14:31:21.7168
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: becllJ8hzykRq8lVEzyLqAbZZEVcftwkNT9yTxX+cdb1lla7fc2u3+Dp5t5LG8JU2vUVWPw2UqhpZkB6Iqmf8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR18MB3976
-X-Proofpoint-ORIG-GUID: 9W9HiPffxI5NTChveHavK7MJdKldcv19
-X-Proofpoint-GUID: 9W9HiPffxI5NTChveHavK7MJdKldcv19
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 12 Dec 2023 09:32:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810D78E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:32:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B542C433C7;
+        Tue, 12 Dec 2023 14:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702391570;
+        bh=oQeIY0/NbQ+/b83NZh3B7cSvnMbTCOaDgXBmhNQFe1U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a4YeL02O34nwnGWtxg6OaanurEIkQk93VEKFbsjHaCshzVwbg2Vs8DoRN+pM4ofNt
+         tLVgCDBBHDAPBXpq61SbK5AfmwDTSGFwVNmOL7BvP/WONF7RIh5D5q4jHVkcdpPaHJ
+         g0IElvW5JiIJbukRo6TYt8zRsLdR/aSdiQJzawLBv9retwMDk+VJkiqEs3XUbKGo9e
+         WGAc8d0VfcJNKUBWPe57i2k+6k/afMrEUd2F71DNvfND3Mn7XdxTH/vxJ+nYuBrDkd
+         QKi0ewEmsNA+ai5FQCGsTtSG/G/GcMyUWjKBDB9nM4PUuYJKgcUQSOjJooZG90TBYn
+         73bDC8RzEHqAQ==
+Date:   Tue, 12 Dec 2023 23:32:45 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>, suleiman@google.com,
+        briannorris@google.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v5] PM: sleep: Expose last succeeded resumed timestamp
+ in sysfs
+Message-Id: <20231212233245.14ae64258bdf07ae1d2f2ff9@kernel.org>
+In-Reply-To: <CAJZ5v0j8x_hzKg4RHx-xyd6Mye9=xj7MgACcWa7R1PcagFLzwQ@mail.gmail.com>
+References: <170108151076.780347.2482745314490930894.stgit@mhiramat.roam.corp.google.com>
+        <170108152012.780347.6355289232990337333.stgit@mhiramat.roam.corp.google.com>
+        <CAJZ5v0j8x_hzKg4RHx-xyd6Mye9=xj7MgACcWa7R1PcagFLzwQ@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 		break;
->
->+	case FLOW_ACTION_MIRRED:
-[Suman] Hi Andrei,
-I guess we have two flow_action_ids FLOW_ACTION_MIRRED (for egress) and FLO=
-W_ACTION_MIRRED_INGRESS (for ingress). The sample command used in above is =
-of type ingress
-and that is not handled here. My guess is, ingress command should show "not=
- supported" error from tc right? Please let me know if I am missing somethi=
-ng.
->+		err =3D ice_tc_setup_mirror_action(filter_dev, fltr, act->dev);
->+		if (err)
->+			return err;
->+		break;
->+
-> 	default:
-> 		NL_SET_ERR_MSG_MOD(fltr->extack, "Unsupported action in
->switchdev mode");
-> 		return -EINVAL;
->diff --git a/drivers/net/ethernet/intel/ice/ice_type.h
->b/drivers/net/ethernet/intel/ice/ice_type.h
->index 5a80158e49ed..20c014e9b6c0 100644
->--- a/drivers/net/ethernet/intel/ice/ice_type.h
->+++ b/drivers/net/ethernet/intel/ice/ice_type.h
->@@ -1055,6 +1055,7 @@ enum ice_sw_fwd_act_type {
-> 	ICE_FWD_TO_Q,
-> 	ICE_FWD_TO_QGRP,
-> 	ICE_DROP_PACKET,
->+	ICE_MIRROR_PACKET,
-> 	ICE_NOP,
-> 	ICE_INVAL_ACT
-> };
->--
->2.25.1
->
+Hi Rafael,
 
+On Tue, 12 Dec 2023 14:39:17 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+
+> On Mon, Nov 27, 2023 at 11:38 AM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> >
+> > From: Masami Hiramatsu <mhiramat@kernel.org>
+> >
+> > Expose last succeeded resumed timestamp as last_success_resume_time
+> > attribute of suspend_stats in sysfs.
+> >
+> > There are some printk()s for printing the similar resume timing to
+> > dmesg, but those are recorded with local_clock(), and user can not
+> > compare it with current time. We also have tracing events but it
+> > requires CAP_SYS_ADMIN to use it.
+> >
+> > This suspend_stats attribute is easy to access and only expose the
+> > timestamp in CLOCK_MONOTONIC.
+> 
+> Why CLOCK_MONOTONIC?
+
+CLOCK_MONOTONIC is the simplest clock which can be used in both user
+space and kernel space. If we use the CLOCK_LOCAL here, user can not
+know the actual time delta from the succeeded resume.
+
+> 
+> > So user can find the actual resumed
+> > time and measure the elapsed time from the time when the kernel
+> > finished the resume to the user-space action (e.g. display the UI).
+> 
+> Can you please say a bit more about why this is useful?
+
+This is a reference timestamp from the user space to measure their
+processing time for resuming. The kernel side is OK to just trace
+or printk the each component or subsystem internally. But the user
+space needs to know when the kernel resume has been done for measuring
+its component or processes done. Actually this is obscure because the
+end of resuming in userspace is defined by the user-space application
+or desktop systems. But anyway if there is a reference point, user
+process can calculate the delta at any point from that.
+
+> 
+> The time stamp is taken at the point when user space has been already
+> running for some time, so what's the exact benefit of it?
+
+Yes, but that timestamp can be scheduled afterwards so it may not
+be so accurate. This can provide the accurate time of the kernel
+resume.
+
+Thank you,
+
+> 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  Changes in v5:
+> >   - Just updated for v6.7-rc3.
+> >  Changes in v4.1:
+> >   - Fix document typo (again).
+> >  Changes in v4:
+> >   - Update description to add why.
+> >   - Fix document typo.
+> >  Changes in v3:
+> >   - Add (unsigned long long) casting for %llu.
+> >   - Add a line after last_success_resume_time_show().
+> >  Changes in v2:
+> >   - Use %llu instead of %lu for printing u64 value.
+> >   - Remove unneeded indent spaces from the last_success_resume_time
+> >     line in the debugfs suspend_stat file.
+> > ---
+> >  Documentation/ABI/testing/sysfs-power |   10 ++++++++++
+> >  include/linux/suspend.h               |    2 ++
+> >  kernel/power/main.c                   |   15 +++++++++++++++
+> >  kernel/power/suspend.c                |    1 +
+> >  4 files changed, 28 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-power b/Documentation/ABI/testing/sysfs-power
+> > index a3942b1036e2..e14975859766 100644
+> > --- a/Documentation/ABI/testing/sysfs-power
+> > +++ b/Documentation/ABI/testing/sysfs-power
+> > @@ -442,6 +442,16 @@ Description:
+> >                 'total_hw_sleep' and 'last_hw_sleep' may not be accurate.
+> >                 This number is measured in microseconds.
+> >
+> > +What:          /sys/power/suspend_stats/last_success_resume_time
+> > +Date:          Oct 2023
+> > +Contact:       Masami Hiramatsu <mhiramat@kernel.org>
+> > +Description:
+> > +               The /sys/power/suspend_stats/last_success_resume_time file
+> > +               contains the timestamp of when the kernel successfully
+> > +               resumed from suspend/hibernate.
+> > +               This floating point number is measured in seconds by monotonic
+> > +               clock.
+> > +
+> >  What:          /sys/power/sync_on_suspend
+> >  Date:          October 2019
+> >  Contact:       Jonas Meurer <jonas@freesources.org>
+> > diff --git a/include/linux/suspend.h b/include/linux/suspend.h
+> > index ef503088942d..ddd789044960 100644
+> > --- a/include/linux/suspend.h
+> > +++ b/include/linux/suspend.h
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/pm.h>
+> >  #include <linux/mm.h>
+> >  #include <linux/freezer.h>
+> > +#include <linux/timekeeping.h>
+> >  #include <asm/errno.h>
+> >
+> >  #ifdef CONFIG_VT
+> > @@ -71,6 +72,7 @@ struct suspend_stats {
+> >         u64     last_hw_sleep;
+> >         u64     total_hw_sleep;
+> >         u64     max_hw_sleep;
+> > +       struct timespec64 last_success_resume_time;
+> >         enum suspend_stat_step  failed_steps[REC_FAILED_NUM];
+> >  };
+> >
+> > diff --git a/kernel/power/main.c b/kernel/power/main.c
+> > index f6425ae3e8b0..2ab23fd3daac 100644
+> > --- a/kernel/power/main.c
+> > +++ b/kernel/power/main.c
+> > @@ -421,6 +421,17 @@ static ssize_t last_failed_step_show(struct kobject *kobj,
+> >  }
+> >  static struct kobj_attribute last_failed_step = __ATTR_RO(last_failed_step);
+> >
+> > +static ssize_t last_success_resume_time_show(struct kobject *kobj,
+> > +               struct kobj_attribute *attr, char *buf)
+> > +{
+> > +       return sprintf(buf, "%llu.%llu\n",
+> > +               (unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
+> > +               (unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
+> > +}
+> > +
+> > +static struct kobj_attribute last_success_resume_time =
+> > +                       __ATTR_RO(last_success_resume_time);
+> > +
+> >  static struct attribute *suspend_attrs[] = {
+> >         &success.attr,
+> >         &fail.attr,
+> > @@ -438,6 +449,7 @@ static struct attribute *suspend_attrs[] = {
+> >         &last_hw_sleep.attr,
+> >         &total_hw_sleep.attr,
+> >         &max_hw_sleep.attr,
+> > +       &last_success_resume_time.attr,
+> >         NULL,
+> >  };
+> >
+> > @@ -514,6 +526,9 @@ static int suspend_stats_show(struct seq_file *s, void *unused)
+> >                         suspend_step_name(
+> >                                 suspend_stats.failed_steps[index]));
+> >         }
+> > +       seq_printf(s,   "last_success_resume_time:\t%-llu.%llu\n",
+> > +                  (unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
+> > +                  (unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
+> >
+> >         return 0;
+> >  }
+> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> > index fa3bf161d13f..33334565d5a6 100644
+> > --- a/kernel/power/suspend.c
+> > +++ b/kernel/power/suspend.c
+> > @@ -622,6 +622,7 @@ int pm_suspend(suspend_state_t state)
+> >                 dpm_save_failed_errno(error);
+> >         } else {
+> >                 suspend_stats.success++;
+> > +               ktime_get_ts64(&suspend_stats.last_success_resume_time);
+> 
+> And so hibernation is not really covered.
+> 
+> >         }
+> >         pr_info("suspend exit\n");
+> >         return error;
+> >
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
