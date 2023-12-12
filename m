@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A3D80F9D4
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAFE80F9D3
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbjLLV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S1377671AbjLLV5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235183AbjLLVzu (ORCPT
+        with ESMTP id S235185AbjLLV5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:55:50 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABF3B3;
-        Tue, 12 Dec 2023 13:55:55 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c3f68b649so38636775e9.0;
-        Tue, 12 Dec 2023 13:55:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702418154; x=1703022954; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zy8FfFNpNs+NX51gAcRgfZF0RZVCxGvpcLqeDklhggA=;
-        b=F2YUche9VuF+Ei4sBTmAOiQr91telRKNJyCboEP07rYmJQTSSC3YicVd9T7lNo9g4n
-         PKuYU5TgzqB6sbg0zpCUycwbnPK1QJWi7rgHgQMS6bFfY1c8jJ+0Pw2yjnCWyWn7IBqW
-         14HUQZNCn9DiETUPWmyVKvOKf8zTWhtPeecnedHwTUZGKs77TkKnqL7X6MYSRiqS329o
-         pCc6oGjol+LEgocpjjPkQLq5JBH1aFK2M1WCqN4umBZdZ31Ck/r9L2QjJ6uiZKb/J1DJ
-         Pp+hsriCB1twStEhBy8kRVCfcGYzoE8dc/ty+wR3Ga5TCh2Rs+8xF6mnjsLbOQAlgjZh
-         8Ymg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702418154; x=1703022954;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zy8FfFNpNs+NX51gAcRgfZF0RZVCxGvpcLqeDklhggA=;
-        b=aRjYVInu7DcCDaFpe8ysXoWjKBtawswnM7r6dLYGLLFhMgv/RZqrvyoL+/SOuxwIhk
-         ka66UxUhV4UXR7HW2tJODhYgL2oXUnMmEdg1uAgk9OJK/Ky1fXBSuzRHw/ZdCCjkRu12
-         FcSuP16A8XQlqvPRlY3Jp0vZSXJBQI09sXa3oeqFKsiImhEaLx7YDFX6N7FdAEXujPvc
-         ZmekZGh2c8J+FxnbxMn86/y/4mTDCgU/U14Hx+nqNVQbG9rCt2o6Zyqa5h2/uIu6WYIZ
-         asyY+UXKc6F0KcTyj87K0/l3rwz7RcqqLnJho+BdZQtj/4esy3NARsKS7qNY/X2MMy3b
-         5yjQ==
-X-Gm-Message-State: AOJu0YxIT/eVeLf9VuK5pmoxQEhyUpk9MueTOV7inLQkamqT+zK1bvNv
-        0OsSlCb7VxblO6/vGmBgmgI=
-X-Google-Smtp-Source: AGHT+IFWa9taipty31yOr6nNvJiECuCxJgZFLbRfYP89EFnIEOzxUOphJnn6CKgmt57xRKS/PY6LEw==
-X-Received: by 2002:a05:600c:3ca3:b0:40c:4dc5:b308 with SMTP id bg35-20020a05600c3ca300b0040c4dc5b308mr1028228wmb.196.1702418153566;
-        Tue, 12 Dec 2023 13:55:53 -0800 (PST)
-Received: from [192.168.0.209] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id d13-20020a05600c34cd00b0040c496c64cfsm7615484wmq.12.2023.12.12.13.55.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 13:55:52 -0800 (PST)
-Message-ID: <b4f22a3b-3cab-4c0d-b4b9-700c58b62826@gmail.com>
-Date:   Tue, 12 Dec 2023 21:55:51 +0000
+        Tue, 12 Dec 2023 16:57:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8C5AB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702418229; x=1733954229;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=xdr5HKMuhE7W4JQItfhwG/Y0riRuwPZtFof6TIMWQVI=;
+  b=kL3azFvsYpjKN6XlKqteHKpKQV+sGYi1RqNemlMt/hnCVQGnme6gCs5S
+   UWgjH4RJoUA3N5yCRjsnpLMDLMhntRCOm4kazFdTjUBDrgMgF0oADkBvI
+   Ocf6bWNJuOSaJDEOAXhDDxpj9jq5UW08P0aoOk0Bpg4oALYYBQEufp51V
+   pLwJicy4xsL4+DI0Qh+RN0e7pZqGcxSXo90Mqavdl58qyHzOTnaOq4ntb
+   RxV6PDJ0e+puqLd54B+izjdyZS1z0j6MVzBdUXMvn/S2A7soNCR/E4VNW
+   fxzR9cjNfUFjJjD4Fmz0LXuKtboK1Cqgzgi7LYkN2085W3qBZEWwvvuqS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="461350441"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="461350441"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 13:57:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="15177907"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 12 Dec 2023 13:57:07 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDAkS-000Jll-1c;
+        Tue, 12 Dec 2023 21:57:04 +0000
+Date:   Wed, 13 Dec 2023 05:56:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: vmscan.c:(.text+0x40d2): relocation truncated to fit:
+ R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+Message-ID: <202312130533.oeTRauf8-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] mlx4: Fix spelling mistake: "mape" -> "map"
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231209225135.4055334-1-colin.i.king@gmail.com>
- <20231212203043.GF5817@kernel.org>
-From:   "Colin King (gmail)" <colin.i.king@gmail.com>
-In-Reply-To: <20231212203043.GF5817@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 20:30, Simon Horman wrote:
-> On Sat, Dec 09, 2023 at 10:51:35PM +0000, Colin Ian King wrote:
->> There is a spelling mistake in a mlx4_err error message. Fix it.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> Hi Colin,
-> 
-> I am guessing that you are focusing on error messages and other user-facing
-> spelling errors (perhaps you told me f2f in the hallway track at Kernel
-> Recipes).  But I do wonder if you have plans to address other spelling
-> errors in this driver. codespell flags many, including 'segements' in a
-> comment in the same file.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   cf52eed70e555e864120cfaf280e979e2a035c66
+commit: 90b41691b9881376fe784e13b5766ec3676fdb55 mm: add framework for PCP high auto-tuning
+date:   7 weeks ago
+config: csky-randconfig-001-20231213 (https://download.01.org/0day-ci/archive/20231213/202312130533.oeTRauf8-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312130533.oeTRauf8-lkp@intel.com/reproduce)
 
-Yes, there are so many trivial spelling mistakes and typos across the 
-kernel that I'm just focusing on user facing error messages for the moment.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312130533.oeTRauf8-lkp@intel.com/
 
-Colin
+All errors (new ones prefixed by >>):
 
-> 
-> In any case,
-> 
-> Reviewed-by: Simon Horman <horms@kernel.org>
+   mm/vmscan.o: in function `lru_gen_add_folio':
+>> vmscan.c:(.text+0x40d2): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x40e8): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x40f6): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x40fa): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x412e): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x4174): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x4180): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x418c): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   mm/vmscan.o: in function `move_folios_to_lru':
+   vmscan.c:(.text+0x419c): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x41a0): relocation truncated to fit: R_CKCORE_PCREL_IMM16BY4 against `__jump_table'
+   vmscan.c:(.text+0x41f8): additional relocation overflows omitted from the output
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
