@@ -2,348 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C67D80EF3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F330D80EF42
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377027AbjLLOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:47:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        id S1377063AbjLLOrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376983AbjLLOq6 (ORCPT
+        with ESMTP id S1377053AbjLLOrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:46:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE581BCD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702392386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y8Ls3k4OLqAXdAO2oDj775VG4CjskNZZKzFBZns4rfY=;
-        b=Kax2ps1bsmO1ZjPcqFmQK57fdzO/Yso2Qw/tS0tjxyRwfregOOxs30QY1mbfB3HwKoEM7o
-        JdbTchGCzLLlZ+7rVgu2Kcv+L2R561CunbXHqa9B/D42JkWTM6NK7rTwAimPBOZ+A6Wc1k
-        paJ4I9j8pFqetKm8yAFAzIOTTLu+pFk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-10-x3bcL5NYNR6aT9ys9ue44w-1; Tue,
- 12 Dec 2023 09:46:24 -0500
-X-MC-Unique: x3bcL5NYNR6aT9ys9ue44w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 361261E441D3;
-        Tue, 12 Dec 2023 14:46:22 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AFA6840C6EB9;
-        Tue, 12 Dec 2023 14:46:19 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Markus Suvanto <markus.suvanto@gmail.com>,
-        Marc Dionne <marc.dionne@auristor.com>
-Cc:     David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
-        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wang Lei <wang840925@gmail.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Steve French <sfrench@us.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
+        Tue, 12 Dec 2023 09:47:24 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E661BF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:47:29 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50c0f13ea11so6578701e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:47:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702392447; x=1702997247; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=svSGkfXxoPYjvETADo38bpUlqdTTk6pLGr40su5OtW8=;
+        b=nTnDX5dRv4zCBEDfRkfcYuVCl/vE25w3FMur5nsi8CgW510HrLDFELeAfyQEFsJtVp
+         3ChMDv1PAFvf0x/pKsJDEdfKvehLJSkYKZYfvdAXjOGqKoMbJqC/DDpeMZAQiWWtn68H
+         VfnJSDxNJUIRkRavSwmvQj5VzEhKT7lwoQjpWasjQKlaUS+NThK4El0OCiVZx+Hln7aL
+         NAlRdw0UPHaSav3/g9VAsA4UVxZFo1+pCIvJUP3nH6thQHC1I+8KCbZmD5uIEnyQDpzZ
+         GO9Q8qvXlYcfd0+RFoElVfIA6BAbmQj7SrYhyRp4zUTHs23cvIZ+uSFhXwwbp669zjxF
+         hsmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702392447; x=1702997247;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=svSGkfXxoPYjvETADo38bpUlqdTTk6pLGr40su5OtW8=;
+        b=UmtkzU9iYuGvA/YvNUoC86x5e4XXaF90oKZ04Vq+sVVOSwyA0aKO23CmXl/q/A6hoT
+         NBAuOiT9AgiDY3B1T2bY1GAW/GWguM4Uybo0Z6z4iqYbyjuGpY2ayWTaSLB5eNcnVM24
+         aC13eXDD1bP37l0X2gL8B+i7R0z576yzOd6aMeOw0MOQ47cK3DwQAq+m/bL3zhmwNa4u
+         eTwK9qOZLpwIUQJcrRqHOjN2JmvgbVSIYGZq94/T6EvnSzl8lTlBYo08UodDSVE9uJNh
+         1viw2Gn1CqupLISzGk3TUFuXks+i2mhFTfY+pOM506ATBDqyaYaaZna5MDIG7sZMQMQy
+         Wgiw==
+X-Gm-Message-State: AOJu0Yyp8WwlnwMo+8NlWeLllBXe0+y6rcDTjZR9Ph18evVR0S4NOH7W
+        KC7kW5Jjg3QymJj+nEPcJE2SJwSPcVBzyTcD9GXyjw==
+X-Google-Smtp-Source: AGHT+IED/VHAjdNhXHhxtPXZM7il0IVlK/nYNiYW3GnuP2eS4BonMypWtmsPI7HmlT4ntgc0d0NHzIrC3bW94tUsnXw=
+X-Received: by 2002:a05:6512:ac8:b0:50b:feb2:dac9 with SMTP id
+ n8-20020a0565120ac800b0050bfeb2dac9mr3712110lfu.2.1702392446733; Tue, 12 Dec
+ 2023 06:47:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-3-almasrymina@google.com> <CAC_iWjKikzwpjR0hBjYuRxgYjyqp_EYrrxoveB_2DgCxk6vWYw@mail.gmail.com>
+In-Reply-To: <CAC_iWjKikzwpjR0hBjYuRxgYjyqp_EYrrxoveB_2DgCxk6vWYw@mail.gmail.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 12 Dec 2023 06:47:14 -0800
+Message-ID: <CAHS8izOX5DmyT88tGJbbxoy1NScnscw3cXMFauhTfJ7m+Gb9wA@mail.gmail.com>
+Subject: Re: [net-next v1 02/16] net: page_pool: create hooks for custom page providers
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-cifs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v3 3/3] keys, dns: Allow key types (eg. DNS) to be reclaimed immediately on expiry
-Date:   Tue, 12 Dec 2023 14:46:11 +0000
-Message-ID: <20231212144611.3100234-4-dhowells@redhat.com>
-In-Reply-To: <20231212144611.3100234-1-dhowells@redhat.com>
-References: <20231212144611.3100234-1-dhowells@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a key has an expiration time, then when that time passes, the key is
-left around for a certain amount of time before being collected (5 mins by
-default) so that EKEYEXPIRED can be returned instead of ENOKEY.  This is a
-problem for DNS keys because we want to redo the DNS lookup immediately at
-that point.
+On Tue, Dec 12, 2023 at 12:07=E2=80=AFAM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi Mina,
+>
+> Apologies for not participating in the party earlier.
+>
 
-Fix this by allowing key types to be marked such that keys of that type
-don't have this extra period, but are reclaimed as soon as they expire and
-turn this on for dns_resolver-type keys.  To make this easier to handle,
-key->expiry is changed to be permanent if TIME64_MAX rather than 0.
+No worries, thanks for looking.
 
-Furthermore, give such new-style negative DNS results a 10s default expiry
-if no other expiry time is set rather than allowing it to stick around
-indefinitely.  This shouldn't be zero as ls will follow a failing stat call
-immediately with a second with AT_SYMLINK_NOFOLLOW added.
+> On Fri, 8 Dec 2023 at 02:52, Mina Almasry <almasrymina@google.com> wrote:
+> >
+> > From: Jakub Kicinski <kuba@kernel.org>
+> >
+> > The page providers which try to reuse the same pages will
+> > need to hold onto the ref, even if page gets released from
+> > the pool - as in releasing the page from the pp just transfers
+> > the "ownership" reference from pp to the provider, and provider
+> > will wait for other references to be gone before feeding this
+> > page back into the pool.
+> >
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > This is implemented by Jakub in his RFC:
+> > https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+> >
+> > I take no credit for the idea or implementation; I only added minor
+> > edits to make this workable with device memory TCP, and removed some
+> > hacky test code. This is a critical dependency of device memory TCP
+> > and thus I'm pulling it into this series to make it revewable and
+> > mergable.
+> >
+> > RFC v3 -> v1
+> > - Removed unusued mem_provider. (Yunsheng).
+> > - Replaced memory_provider & mp_priv with netdev_rx_queue (Jakub).
+> >
+> > ---
+> >  include/net/page_pool/types.h | 12 ++++++++++
+> >  net/core/page_pool.c          | 43 +++++++++++++++++++++++++++++++----
+> >  2 files changed, 50 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
+s.h
+> > index ac286ea8ce2d..0e9fa79a5ef1 100644
+> > --- a/include/net/page_pool/types.h
+> > +++ b/include/net/page_pool/types.h
+> > @@ -51,6 +51,7 @@ struct pp_alloc_cache {
+> >   * @dev:       device, for DMA pre-mapping purposes
+> >   * @netdev:    netdev this pool will serve (leave as NULL if none or m=
+ultiple)
+> >   * @napi:      NAPI which is the sole consumer of pages, otherwise NUL=
+L
+> > + * @queue:     struct netdev_rx_queue this page_pool is being created =
+for.
+> >   * @dma_dir:   DMA mapping direction
+> >   * @max_len:   max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
+> >   * @offset:    DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
+> > @@ -63,6 +64,7 @@ struct page_pool_params {
+> >                 int             nid;
+> >                 struct device   *dev;
+> >                 struct napi_struct *napi;
+> > +               struct netdev_rx_queue *queue;
+> >                 enum dma_data_direction dma_dir;
+> >                 unsigned int    max_len;
+> >                 unsigned int    offset;
+> > @@ -125,6 +127,13 @@ struct page_pool_stats {
+> >  };
+> >  #endif
+> >
+> > +struct memory_provider_ops {
+> > +       int (*init)(struct page_pool *pool);
+> > +       void (*destroy)(struct page_pool *pool);
+> > +       struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
+> > +       bool (*release_page)(struct page_pool *pool, struct page *page)=
+;
+> > +};
+> > +
+> >  struct page_pool {
+> >         struct page_pool_params_fast p;
+> >
+> > @@ -174,6 +183,9 @@ struct page_pool {
+> >          */
+> >         struct ptr_ring ring;
+> >
+> > +       void *mp_priv;
+> > +       const struct memory_provider_ops *mp_ops;
+> > +
+> >  #ifdef CONFIG_PAGE_POOL_STATS
+> >         /* recycle stats are per-cpu to avoid locking */
+> >         struct page_pool_recycle_stats __percpu *recycle_stats;
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index ca1b3b65c9b5..f5c84d2a4510 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -25,6 +25,8 @@
+> >
+> >  #include "page_pool_priv.h"
+> >
+> > +static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
+>
+> We could add the existing page pool mechanisms as another 'provider',
+> but I assume this is coded like this for performance reasons (IOW skip
+> the expensive ptr call for the default case?)
+>
 
-Fixes: 1a4240f4764a ("DNS: Separate out CIFS DNS Resolver code")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Wang Lei <wang840925@gmail.com>
-cc: Jeff Layton <jlayton@redhat.com>
-cc: Steve French <sfrench@us.ibm.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: Jarkko Sakkinen <jarkko@kernel.org>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cifs@vger.kernel.org
-cc: linux-nfs@vger.kernel.org
-cc: ceph-devel@vger.kernel.org
-cc: keyrings@vger.kernel.org
-cc: netdev@vger.kernel.org
----
+Correct, it's done like this for performance reasons.
 
-Notes:
-    Changes
-    =======
-    ver #3)
-     - Don't add to TIME64_MAX (ie. permanent) when checking expiry time.
+> > +
+> >  #define DEFER_TIME (msecs_to_jiffies(1000))
+> >  #define DEFER_WARN_INTERVAL (60 * HZ)
+> >
+> > @@ -174,6 +176,7 @@ static int page_pool_init(struct page_pool *pool,
+> >                           const struct page_pool_params *params)
+> >  {
+> >         unsigned int ring_qsize =3D 1024; /* Default */
+> > +       int err;
+> >
+> >         memcpy(&pool->p, &params->fast, sizeof(pool->p));
+> >         memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
+> > @@ -234,10 +237,25 @@ static int page_pool_init(struct page_pool *pool,
+> >         /* Driver calling page_pool_create() also call page_pool_destro=
+y() */
+> >         refcount_set(&pool->user_cnt, 1);
+> >
+> > +       if (pool->mp_ops) {
+> > +               err =3D pool->mp_ops->init(pool);
+> > +               if (err) {
+> > +                       pr_warn("%s() mem-provider init failed %d\n",
+> > +                               __func__, err);
+> > +                       goto free_ptr_ring;
+> > +               }
+> > +
+> > +               static_branch_inc(&page_pool_mem_providers);
+> > +       }
+> > +
+> >         if (pool->p.flags & PP_FLAG_DMA_MAP)
+> >                 get_device(pool->p.dev);
+> >
+> >         return 0;
+> > +
+> > +free_ptr_ring:
+> > +       ptr_ring_cleanup(&pool->ring, NULL);
+> > +       return err;
+> >  }
+> >
+> >  static void page_pool_uninit(struct page_pool *pool)
+> > @@ -519,7 +537,10 @@ struct page *page_pool_alloc_pages(struct page_poo=
+l *pool, gfp_t gfp)
+> >                 return page;
+> >
+> >         /* Slow-path: cache empty, do real allocation */
+> > -       page =3D __page_pool_alloc_pages_slow(pool, gfp);
+> > +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->m=
+p_ops)
+>
+> Why do we need && pool->mp_ops? On the init function, we only bump
+> page_pool_mem_providers if the ops are there
+>
 
- include/linux/key-type.h   |  1 +
- net/dns_resolver/dns_key.c | 10 +++++++++-
- security/keys/gc.c         | 31 +++++++++++++++++++++----------
- security/keys/internal.h   | 11 ++++++++++-
- security/keys/key.c        | 15 +++++----------
- security/keys/proc.c       |  2 +-
- 6 files changed, 47 insertions(+), 23 deletions(-)
+Note that page_pool_mem_providers is a static variable (not part of
+the page_pool struct), so if you have 2 page_pools on the system, one
+using devmem and one not, we need to check pool->mp_ops to make sure
+this page_pool is using a memory provider.
 
-diff --git a/include/linux/key-type.h b/include/linux/key-type.h
-index 7d985a1dfe4a..5caf3ce82373 100644
---- a/include/linux/key-type.h
-+++ b/include/linux/key-type.h
-@@ -73,6 +73,7 @@ struct key_type {
- 
- 	unsigned int flags;
- #define KEY_TYPE_NET_DOMAIN	0x00000001 /* Keys of this type have a net namespace domain */
-+#define KEY_TYPE_INSTANT_REAP	0x00000002 /* Keys of this type don't have a delay after expiring */
- 
- 	/* vet a description */
- 	int (*vet_description)(const char *description);
-diff --git a/net/dns_resolver/dns_key.c b/net/dns_resolver/dns_key.c
-index 01e54b46ae0b..3233f4f25fed 100644
---- a/net/dns_resolver/dns_key.c
-+++ b/net/dns_resolver/dns_key.c
-@@ -91,6 +91,7 @@ const struct cred *dns_resolver_cache;
- static int
- dns_resolver_preparse(struct key_preparsed_payload *prep)
- {
-+	const struct dns_server_list_v1_header *v1;
- 	const struct dns_payload_header *bin;
- 	struct user_key_payload *upayload;
- 	unsigned long derrno;
-@@ -122,6 +123,13 @@ dns_resolver_preparse(struct key_preparsed_payload *prep)
- 			return -EINVAL;
- 		}
- 
-+		v1 = (const struct dns_server_list_v1_header *)bin;
-+		if ((v1->status != DNS_LOOKUP_GOOD &&
-+		     v1->status != DNS_LOOKUP_GOOD_WITH_BAD)) {
-+			if (prep->expiry == TIME64_MAX)
-+				prep->expiry = ktime_get_real_seconds() + 10;
-+		}
-+
- 		result_len = datalen;
- 		goto store_result;
- 	}
-@@ -314,7 +322,7 @@ static long dns_resolver_read(const struct key *key,
- 
- struct key_type key_type_dns_resolver = {
- 	.name		= "dns_resolver",
--	.flags		= KEY_TYPE_NET_DOMAIN,
-+	.flags		= KEY_TYPE_NET_DOMAIN | KEY_TYPE_INSTANT_REAP,
- 	.preparse	= dns_resolver_preparse,
- 	.free_preparse	= dns_resolver_free_preparse,
- 	.instantiate	= generic_key_instantiate,
-diff --git a/security/keys/gc.c b/security/keys/gc.c
-index 3c90807476eb..eaddaceda14e 100644
---- a/security/keys/gc.c
-+++ b/security/keys/gc.c
-@@ -66,6 +66,19 @@ void key_schedule_gc(time64_t gc_at)
- 	}
- }
- 
-+/*
-+ * Set the expiration time on a key.
-+ */
-+void key_set_expiry(struct key *key, time64_t expiry)
-+{
-+	key->expiry = expiry;
-+	if (expiry != TIME64_MAX) {
-+		if (!(key->type->flags & KEY_TYPE_INSTANT_REAP))
-+			expiry += key_gc_delay;
-+		key_schedule_gc(expiry);
-+	}
-+}
-+
- /*
-  * Schedule a dead links collection run.
-  */
-@@ -176,7 +189,6 @@ static void key_garbage_collector(struct work_struct *work)
- 	static u8 gc_state;		/* Internal persistent state */
- #define KEY_GC_REAP_AGAIN	0x01	/* - Need another cycle */
- #define KEY_GC_REAPING_LINKS	0x02	/* - We need to reap links */
--#define KEY_GC_SET_TIMER	0x04	/* - We need to restart the timer */
- #define KEY_GC_REAPING_DEAD_1	0x10	/* - We need to mark dead keys */
- #define KEY_GC_REAPING_DEAD_2	0x20	/* - We need to reap dead key links */
- #define KEY_GC_REAPING_DEAD_3	0x40	/* - We need to reap dead keys */
-@@ -184,21 +196,17 @@ static void key_garbage_collector(struct work_struct *work)
- 
- 	struct rb_node *cursor;
- 	struct key *key;
--	time64_t new_timer, limit;
-+	time64_t new_timer, limit, expiry;
- 
- 	kenter("[%lx,%x]", key_gc_flags, gc_state);
- 
- 	limit = ktime_get_real_seconds();
--	if (limit > key_gc_delay)
--		limit -= key_gc_delay;
--	else
--		limit = key_gc_delay;
- 
- 	/* Work out what we're going to be doing in this pass */
- 	gc_state &= KEY_GC_REAPING_DEAD_1 | KEY_GC_REAPING_DEAD_2;
- 	gc_state <<= 1;
- 	if (test_and_clear_bit(KEY_GC_KEY_EXPIRED, &key_gc_flags))
--		gc_state |= KEY_GC_REAPING_LINKS | KEY_GC_SET_TIMER;
-+		gc_state |= KEY_GC_REAPING_LINKS;
- 
- 	if (test_and_clear_bit(KEY_GC_REAP_KEYTYPE, &key_gc_flags))
- 		gc_state |= KEY_GC_REAPING_DEAD_1;
-@@ -233,8 +241,11 @@ static void key_garbage_collector(struct work_struct *work)
- 			}
- 		}
- 
--		if (gc_state & KEY_GC_SET_TIMER) {
--			if (key->expiry > limit && key->expiry < new_timer) {
-+		expiry = key->expiry;
-+		if (expiry != TIME64_MAX) {
-+			if (!(key->type->flags & KEY_TYPE_INSTANT_REAP))
-+				expiry += key_gc_delay;
-+			if (expiry > limit && expiry < new_timer) {
- 				kdebug("will expire %x in %lld",
- 				       key_serial(key), key->expiry - limit);
- 				new_timer = key->expiry;
-@@ -276,7 +287,7 @@ static void key_garbage_collector(struct work_struct *work)
- 	 */
- 	kdebug("pass complete");
- 
--	if (gc_state & KEY_GC_SET_TIMER && new_timer != (time64_t)TIME64_MAX) {
-+	if (new_timer != TIME64_MAX) {
- 		new_timer += key_gc_delay;
- 		key_schedule_gc(new_timer);
- 	}
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 471cf36dedc0..2cffa6dc8255 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -167,6 +167,7 @@ extern unsigned key_gc_delay;
- extern void keyring_gc(struct key *keyring, time64_t limit);
- extern void keyring_restriction_gc(struct key *keyring,
- 				   struct key_type *dead_type);
-+void key_set_expiry(struct key *key, time64_t expiry);
- extern void key_schedule_gc(time64_t gc_at);
- extern void key_schedule_gc_links(void);
- extern void key_gc_keytype(struct key_type *ktype);
-@@ -215,10 +216,18 @@ extern struct key *key_get_instantiation_authkey(key_serial_t target_id);
-  */
- static inline bool key_is_dead(const struct key *key, time64_t limit)
- {
-+	time64_t expiry = key->expiry;
-+
-+	if (expiry != TIME64_MAX) {
-+		if (!(key->type->flags & KEY_TYPE_INSTANT_REAP))
-+			expiry += key_gc_delay;
-+		if (expiry <= limit)
-+			return true;
-+	}
-+
- 	return
- 		key->flags & ((1 << KEY_FLAG_DEAD) |
- 			      (1 << KEY_FLAG_INVALIDATED)) ||
--		(key->expiry > 0 && key->expiry <= limit) ||
- 		key->domain_tag->removed;
- }
- 
-diff --git a/security/keys/key.c b/security/keys/key.c
-index 0260a1902922..5b10641debd5 100644
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -294,6 +294,7 @@ struct key *key_alloc(struct key_type *type, const char *desc,
- 	key->uid = uid;
- 	key->gid = gid;
- 	key->perm = perm;
-+	key->expiry = TIME64_MAX;
- 	key->restrict_link = restrict_link;
- 	key->last_used_at = ktime_get_real_seconds();
- 
-@@ -463,10 +464,7 @@ static int __key_instantiate_and_link(struct key *key,
- 			if (authkey)
- 				key_invalidate(authkey);
- 
--			if (prep->expiry != TIME64_MAX) {
--				key->expiry = prep->expiry;
--				key_schedule_gc(prep->expiry + key_gc_delay);
--			}
-+			key_set_expiry(key, prep->expiry);
- 		}
- 	}
- 
-@@ -606,8 +604,7 @@ int key_reject_and_link(struct key *key,
- 		atomic_inc(&key->user->nikeys);
- 		mark_key_instantiated(key, -error);
- 		notify_key(key, NOTIFY_KEY_INSTANTIATED, -error);
--		key->expiry = ktime_get_real_seconds() + timeout;
--		key_schedule_gc(key->expiry + key_gc_delay);
-+		key_set_expiry(key, ktime_get_real_seconds() + timeout);
- 
- 		if (test_and_clear_bit(KEY_FLAG_USER_CONSTRUCT, &key->flags))
- 			awaken = 1;
-@@ -723,16 +720,14 @@ struct key_type *key_type_lookup(const char *type)
- 
- void key_set_timeout(struct key *key, unsigned timeout)
- {
--	time64_t expiry = 0;
-+	time64_t expiry = TIME64_MAX;
- 
- 	/* make the changes with the locks held to prevent races */
- 	down_write(&key->sem);
- 
- 	if (timeout > 0)
- 		expiry = ktime_get_real_seconds() + timeout;
--
--	key->expiry = expiry;
--	key_schedule_gc(key->expiry + key_gc_delay);
-+	key_set_expiry(key, expiry);
- 
- 	up_write(&key->sem);
- }
-diff --git a/security/keys/proc.c b/security/keys/proc.c
-index d0cde6685627..4f4e2c1824f1 100644
---- a/security/keys/proc.c
-+++ b/security/keys/proc.c
-@@ -198,7 +198,7 @@ static int proc_keys_show(struct seq_file *m, void *v)
- 
- 	/* come up with a suitable timeout value */
- 	expiry = READ_ONCE(key->expiry);
--	if (expiry == 0) {
-+	if (expiry == TIME64_MAX) {
- 		memcpy(xbuf, "perm", 5);
- 	} else if (now >= expiry) {
- 		memcpy(xbuf, "expd", 5);
+> > +               page =3D pool->mp_ops->alloc_pages(pool, gfp);
+> > +       else
+> > +               page =3D __page_pool_alloc_pages_slow(pool, gfp);
+> >         return page;
+> >  }
+> >  EXPORT_SYMBOL(page_pool_alloc_pages);
+> > @@ -576,10 +597,13 @@ void __page_pool_release_page_dma(struct page_poo=
+l *pool, struct page *page)
+> >  void page_pool_return_page(struct page_pool *pool, struct page *page)
+> >  {
+> >         int count;
+> > +       bool put;
+> >
+> > -       __page_pool_release_page_dma(pool, page);
+> > -
+> > -       page_pool_clear_pp_info(page);
+> > +       put =3D true;
+> > +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->m=
+p_ops)
+>
+> ditto
+>
+> > +               put =3D pool->mp_ops->release_page(pool, page);
+> > +       else
+> > +               __page_pool_release_page_dma(pool, page);
+> >
+> >         /* This may be the last page returned, releasing the pool, so
+> >          * it is not safe to reference pool afterwards.
+> > @@ -587,7 +611,10 @@ void page_pool_return_page(struct page_pool *pool,=
+ struct page *page)
+> >         count =3D atomic_inc_return_relaxed(&pool->pages_state_release_=
+cnt);
+> >         trace_page_pool_state_release(pool, page, count);
+> >
+> > -       put_page(page);
+> > +       if (put) {
+> > +               page_pool_clear_pp_info(page);
+> > +               put_page(page);
+> > +       }
+> >         /* An optimization would be to call __free_pages(page, pool->p.=
+order)
+> >          * knowing page is not part of page-cache (thus avoiding a
+> >          * __page_cache_release() call).
+> > @@ -857,6 +884,12 @@ static void __page_pool_destroy(struct page_pool *=
+pool)
+> >
+> >         page_pool_unlist(pool);
+> >         page_pool_uninit(pool);
+> > +
+> > +       if (pool->mp_ops) {
+>
+> Same here. Using a mix of pool->mp_ops and page_pool_mem_providers
+> will work, but since we always check the ptr on init, can't we simply
+> rely on page_pool_mem_providers for the rest of the code?
+>
+> Thanks
+> /Ilias
+> > +               pool->mp_ops->destroy(pool);
+> > +               static_branch_dec(&page_pool_mem_providers);
+> > +       }
+> > +
+> >         kfree(pool);
+> >  }
+> >
+> > --
+> > 2.43.0.472.g3155946c3a-goog
+> >
 
+
+
+--
+Thanks,
+Mina
