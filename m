@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755FB80ED48
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E5080EC9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346449AbjLLNVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        id S1376288AbjLLM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376596AbjLLM4N (ORCPT
+        with ESMTP id S232545AbjLLM4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:56:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADC395
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:56:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5104BC433C7;
-        Tue, 12 Dec 2023 12:56:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702385779;
-        bh=GrVkd+/b1LWKzr/NPA7li4EkjFJ8l71HN7z/zGWgdfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YBA7Fjo38oVBJPFu+VxEkbzqCSCmCRa5zjoNdjOWFup2xnx258eBVs8/rJLkRmPX8
-         x2HlZ7omY61gNW8/wcz/uVI2Xpqxph3eKEBYQMgFCcdZA769QcTthV53UUKqaezoj1
-         zrnZA5JNDYtCttLqUelCgtbH07jrFrVkHOLrsxosNmLwYG37ZjNzWkh/a05AIWC411
-         eKlC7OCTdMN+DwHHgds7iXM2oPDVuH8f1xZGjuVoSq6KtQ5myLOKet/LR86GcDnfpo
-         k0OFLpqlJOLUCuKh0HlIhwOChBb+a2PBhPPbLHM5rzMKdoi+7kSRvmw0Sw2UhUZHD1
-         PoknmYlVpi8dA==
-Date:   Tue, 12 Dec 2023 12:56:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/13] arm64/sysreg: Update ID_AA64ISAR2_EL1 defintion
- for DDI0601 2023-09
-Message-ID: <6fc35f94-176e-4ad3-ab5b-79b57c36750a@sirena.org.uk>
-References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org>
- <20231209-b4-arm64-sysreg-additions-v1-6-45284e538474@kernel.org>
- <CA+EHjTzdKS+ardXUofO+U1vnsOC3QjiJUBuKCHWw6z6zKdVGSA@mail.gmail.com>
- <20231212091047.GA28147@willie-the-truck>
- <CA+EHjTzswc6Qji6yaTcYu7uc57MFY-79KxY45wFT8tQ+9PEhPw@mail.gmail.com>
+        Tue, 12 Dec 2023 07:56:32 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B229CA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:56:38 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c4846847eso19915785e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:56:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702385797; x=1702990597; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/REoHRC8EpvIBFzSqK+riwD+PQlohKwOub1bzwmxD4g=;
+        b=ptNPZqnKnsJ5+gY/Z4ISW4ASlY5ML4F+bU8YImS2Yv8RVh7+FSQScQOfesoaTKl+BO
+         ZNSMHJfBLOwG/trU4K54lN53j05/cEclJ9Avnk/DKmonKu9EPdKdZeIqp8TTt0EdT2OX
+         MvBCkvmWw6gLyKHhIXz75y1QM6ymBw3LDM37q8jwmtsa8D6pvqkMpYXxEpqvKAjwC17j
+         cMyZMG9NXzYbZ+DMq/fslIkUUO32jAvfVwFFI+cMNBjG4G6QmeI4wDnS7zm44ZLMfjng
+         Mle0v219RhGUSNozxCzLca7RRof0sqditzQGpE7eFLh0fzUAQccwo8ZmVD6b0mD0lYWm
+         W4Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702385797; x=1702990597;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/REoHRC8EpvIBFzSqK+riwD+PQlohKwOub1bzwmxD4g=;
+        b=MfNvAWBdBmAdQaH/6E0tkJSZzzm3zD9u2c2yIHXdrpAx7KYM5MLK1CcqPtQFokKuIK
+         E1a0LzwGgMYnKctmv8aHLHFF5NqGkyi7L0RM37tB2tZt6280zVG3sEJvDFBn3XfqfkQS
+         Ij8Ncl4Hh9LZjgeu5BdtBlisYvlNWmDWPmZf/9Pg3KblgTw6Y5EiP8WfynqdYSUH4vw5
+         ZBZ1CfbwHPg6qOiCE+HAB0syFWtOOjhbtAC5DvIZxl0QU0Cio1C0NndE4UzAoD0WoaAd
+         ACqeHszya1aHzIbHnl9uSRT4BxJX4yH+sbSk4eQYtnTVwnLn/6Za6jg3OOmuKuxNF5lc
+         PX2A==
+X-Gm-Message-State: AOJu0YxM4rDGA/9WrLyEZEkwcoet1PX0QlxtJY2EX975Wd6NcjeBHw9Q
+        qSD78uWvXm1QSDdBxkigGaxqCA==
+X-Google-Smtp-Source: AGHT+IEX3/ysuozCRgiqNGdA66zA1f/uo2y1zcKGzyzZ3Bq8GOq9UOx1wFEjekqDrbKxtL9ycZEgDw==
+X-Received: by 2002:a05:600c:ac6:b0:40c:2d85:3a01 with SMTP id c6-20020a05600c0ac600b0040c2d853a01mr3273027wmr.161.1702385797071;
+        Tue, 12 Dec 2023 04:56:37 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id e12-20020a05600c4e4c00b0040b398f0585sm16820693wmq.9.2023.12.12.04.56.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 04:56:36 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/2] arm64: dts: qcom: x1e80100: add ADSP pieces
+Date:   Tue, 12 Dec 2023 13:56:30 +0100
+Message-Id: <20231212125632.54021-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DxzMBpxvvc/Bfpdv"
-Content-Disposition: inline
-In-Reply-To: <CA+EHjTzswc6Qji6yaTcYu7uc57MFY-79KxY45wFT8tQ+9PEhPw@mail.gmail.com>
-X-Cookie: If rash develops, discontinue use.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---DxzMBpxvvc/Bfpdv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Depends on:
+https://lore.kernel.org/all/20231212-x1e80100-dts-missing-nodes-v1-0-1472efec2b08@linaro.org/
 
-On Tue, Dec 12, 2023 at 10:24:46AM +0000, Fuad Tabba wrote:
+Bindings were already applied.
 
-> > I renamed it to PAuth_LR following your comment, but it looks like
-> > ID_AA64ISAR1_EL1 is still missing this field entirely for the API and
-> > APA fields.
+Best regards,
+Krzysztof
 
-> I noticed that, but thought it's more appropriate to have a separate
-> patch for that. I have one ready as part of my respin, unless we
-> accumulate a bunch of sysreg update patches first.
+Cc: Abel Vesa <abel.vesa@linaro.org>
 
-Yes, syncing each register individually should make life easier.  It's
-definitely painful when there's a multi-register update and one of the
-registers has a mistake.
+Krzysztof Kozlowski (2):
+  arm64: dts: qcom: x1e80100: add ADSP GPR
+  arm64: dts: qcom: x1e80100: add LPASS LPI pin controller
 
---DxzMBpxvvc/Bfpdv
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi | 56 ++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.34.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV4WG4ACgkQJNaLcl1U
-h9AJDwf+Ii1KFhAJiHYX4RETiJ/CC7UihFR2yvmyC0/nkHedaLEq9LKeZwj2vaNK
-NM8C0CZgc6vzlzKGg300bRFrB805o3OfkVrX5qxkFttAOFnfbaZMsX99oFlTULM+
-VhbZo6/vOjhebge/mYKRDRMa0njgwN3PKcO+GBa8PQ7pJl1W37K+KimorekNbRR1
-Xj2yYOu/21Kcc7nQbG5q7urm/Gql42TsjS8m+jr2B//fNwYsh35CqEiymqcrZc5+
-el49KOXceZC/HCXhc7SzS0TEnfXPebGUNjbIypOZ25jHePaewDT0UQmc99nkC9ZN
-cgOTrBnHHhQO4LrmJwN4zNU1DcK61A==
-=dCou
------END PGP SIGNATURE-----
-
---DxzMBpxvvc/Bfpdv--
