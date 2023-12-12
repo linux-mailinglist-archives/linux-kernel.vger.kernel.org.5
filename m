@@ -2,68 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47C880F27B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B8680F280
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbjLLQ3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S232655AbjLLQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:30:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjLLQ3v (ORCPT
+        with ESMTP id S232585AbjLLQaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:29:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84024EA;
-        Tue, 12 Dec 2023 08:29:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702398597; x=1733934597;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1KPdh+IHvxj61yHY90L5mpUKcg5ebFH71mmxLtM871E=;
-  b=ifybhCwYVdLDuvOn7VAspe8BDO/p87H+8nFgZPi0Z/pPqZ+kqj/XKjHz
-   XzrfNJxJsdu1BeQyt99gS+eZI5kdUIgx2bk8GFsWyoquA7LtWl6xEte7f
-   32wXmA83EkZJfubhA29zrRCvJKXexoje8GwrFPi6mQcSddRraMd7lpi7j
-   E6NdCdFv97lTgMOVREu9R0MEHzOPjzpeAecrXqfHCRoVCbc0U4CHyT6f6
-   fdyl7yHo1yXLFYV+U7cS3z0qkmr1nk2M/kT9eADWypWT7gkeBchae+SVF
-   gaaj7p3gMXRgNL3DtJ3DZP18oJ04XQbuFGIKyWyk+vYrShB5ZKgrkiD2Y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8195796"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="8195796"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 08:29:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777155040"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="777155040"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.48.253])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 08:29:52 -0800
-Message-ID: <6b6a238d-4b1c-452f-8061-6840d44120bc@intel.com>
-Date:   Tue, 12 Dec 2023 18:29:46 +0200
+        Tue, 12 Dec 2023 11:30:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23FF10A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:30:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7514CC433C8;
+        Tue, 12 Dec 2023 16:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702398623;
+        bh=lpmDF6zAIM5bqqgCYV8D+XdmoofBH2Wltv752FmDLoI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=sy3gH3l+8DjXccvUxS4znhpBWQ94TTMKOFifBdZgVso4EFwRWuf2bcJT3cDj82gk0
+         2ZCO2oPyoRWc1CLrCTQ+NsNxjeecNfylw5zoudcXvy5GkUUdQ/qLVBUqm9p/BpaF8v
+         oPOO+AuZXVFtmefNzqNWN0POiDSVDq3ve/bUSrpI3n28uVgAMxOFpnd5s+HcL5ICJX
+         Z5tio4/Ude3gVSe6inK0QrFzpfQ6/pPO4UcS+whRvo3+bolIxC8MkFM1ZWaxJs42vE
+         X6Uwaq78feQNu7FVe5UM+VZnRY5SpKZC/0lItngFwZkbHBv2SUmzcSf16e6NefRCgD
+         +MTFlx2a6u0qg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5B431C4314C;
+        Tue, 12 Dec 2023 16:30:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH linux-next] perf intel-pt: replace strlcpy() with
- strscpy()
-Content-Language: en-US
-To:     yang.guang5@zte.com.cn
-Cc:     jiang.xuexin@zte.com.cn, chen.haonan2@zte.com.cn,
-        cgel.zte@gmail.com, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        liam.howlett@oracle.com, ojeda@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org
-References: <202312121122562881958@zte.com.cn>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <202312121122562881958@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3] Bluetooth: Add more enc key size check
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <170239862337.27856.15531627573114071096.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Dec 2023 16:30:23 +0000
+References: <ZXfFyoEhCj_S70qp@alexlu>
+In-Reply-To: <ZXfFyoEhCj_S70qp@alexlu>
+To:     Alex Lu <alex_lu@realsil.com.cn>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        max.chou@realtek.com, karenhsu@realtek.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,39 +53,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 05:22, yang.guang5@zte.com.cn wrote:
-> From: Yang Guang <yang.guang5@zte.com.cn>
-> 
-> strlcpy() reads the entire source buffer first. This read may exceed
-> the destination size limit. This is both inefficient and can lead
-> to linear read overflows if a source string is not NUL-terminated.
-> No return values were used, so direct replacement is safe.
-> 
-> Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
-> ---
->  tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> index b450178e3420..5b14c6701ecb 100644
-> --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-> @@ -507,7 +507,7 @@ int intel_pt__strerror(int code, char *buf, size_t buflen)
->  {
->  	if (code < 1 || code >= INTEL_PT_ERR_MAX)
->  		code = INTEL_PT_ERR_UNK;
-> -	strlcpy(buf, intel_pt_err_msgs[code], buflen);
-> +	strscpy(buf, intel_pt_err_msgs[code], buflen);
->  	return 0;
->  }
-> 
+Hello:
 
-perf doesn't have strscpy():
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-util/intel-pt-decoder/intel-pt-decoder.c: In function ‘intel_pt__strerror’:
-util/intel-pt-decoder/intel-pt-decoder.c:510:9: error: implicit declaration of function ‘strscpy’; did you mean ‘strlcpy’? [-Werror=implicit-function-declaration]
-  510 |         strscpy(buf, intel_pt_err_msgs[code], buflen);
-      |         ^~~~~~~
-      |         strlcpy
-cc1: all warnings being treated as errors
+On Tue, 12 Dec 2023 10:30:34 +0800 you wrote:
+> From: Alex Lu <alex_lu@realsil.com.cn>
+> 
+> When we are slave role and receives l2cap conn req when encryption has
+> started, we should check the enc key size to avoid KNOB attack or BLUFFS
+> attack.
+> From SIG recommendation, implementations are advised to reject
+> service-level connections on an encrypted baseband link with key
+> strengths below 7 octets.
+> A simple and clear way to achieve this is to place the enc key size
+> check in hci_cc_read_enc_key_size()
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3] Bluetooth: Add more enc key size check
+    https://git.kernel.org/bluetooth/bluetooth-next/c/19921189d442
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
