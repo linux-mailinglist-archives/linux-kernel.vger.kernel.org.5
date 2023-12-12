@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FDD80F44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C380F453
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbjLLRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:21:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
+        id S1346604AbjLLRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLRVE (ORCPT
+        with ESMTP id S235108AbjLLRVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:21:04 -0500
+        Tue, 12 Dec 2023 12:21:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F738E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:21:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88ADCC433CA;
-        Tue, 12 Dec 2023 17:21:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32FCE9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:21:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 955A4C433C9;
+        Tue, 12 Dec 2023 17:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702401671;
-        bh=5E05OTck5q9FmBYGpl4V5F7c+f7l7TcBKvljuUu5T9g=;
+        s=k20201202; t=1702401677;
+        bh=NjEv9qEr/oYVM+wHeeNDWCRv65KfnIhhpX8bgvPrnAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GL7CxijelPXUYHUwP/G07d4Dv54xSud8+XusGtqMRaqTmf1mjVf1YCVuRe4SwOLwN
-         iWj2dJiNtim6C21vFsfi2V9oSxaRh1sDjfpoCVXOCwziQ9LckJ8q5QhH8u7YWq3d8+
-         49xdHxff+m1AT6Eay8YtakAR+yIO9NX/1Pz1gySrZ6hWN97V4gYziFqYHY3L5JpiKP
-         RftUgpkvGA7ngOcXTK6o2rAo9acMWx5Fbo/Ce2IZazsihWbBuQBsYd7/bZtpG+UEnP
-         OHfCKl7xk3zqPpmhrBXWNvP8CF5ovgkIEpsX6nD/cJDBIPYNERa6VhSP8uq7hN90c7
-         s7k1/GW+n0Oww==
+        b=quWq7NFAtXTBXufHjGAQPZuAXrlWxIJ4Rn3ITaI13bZesQeatjNFR7raywE3BfBn7
+         Pitan+DMqBcCL58QZwCgz3Lh/6jidDw46o+sSHdw2XNETPNFha4R9ntZwxgldpxfvd
+         ThUunTfPwVTXTNhOAsJ9W9/N6z4PG1M3beyPew54n2U5AZrjlyDMmXs2L7Toa+G5kj
+         jyTED6ks2sSuPvCG+6dEMiYHKakPG+EvMGSSnpSABMjq1R1ugTLDeB0n3JnFi9LuSS
+         cUuBfE0LIKezRTEQ8AUTFsdnAhfeVJygPdgHWAaZ27aCb30nqIqsyQPesJMXA3vzFc
+         vN+/g3oSMdIBg==
 From:   Will Deacon <will@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Fabio Estevam <festevam@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+To:     anshuman.khandual@arm.com, mark.rutland@arm.com,
         linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] drivers/perf: Remove usage of the deprecated ida_simple_xx() API
-Date:   Tue, 12 Dec 2023 17:20:52 +0000
-Message-Id: <170237283916.1645846.8049910363792099274.b4-ty@kernel.org>
+        James Clark <james.clark@arm.com>, suzuki.poulose@arm.com,
+        linux-perf-users@vger.kernel.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        linux-kselftest@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        namhyung@gmail.com, Jonathan Corbet <corbet@lwn.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Shuah Khan <shuah@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, kvmarm@lists.linux.dev,
+        linux-doc@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v7 00/11] arm64: perf: Add support for event counting threshold
+Date:   Tue, 12 Dec 2023 17:20:53 +0000
+Message-Id: <170237438420.1648654.4727808470285684911.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <85b0b73a1b2f743dd5db15d4765c7685100de27f.1702230488.git.christophe.jaillet@wanadoo.fr>
-References: <85b0b73a1b2f743dd5db15d4765c7685100de27f.1702230488.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231211161331.1277825-1-james.clark@arm.com>
+References: <20231211161331.1277825-1-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,18 +70,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023 18:48:18 +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
+On Mon, 11 Dec 2023 16:13:12 +0000, James Clark wrote:
+> Changes since v6:
 > 
-> This is less verbose.
+>   * Remove inlines from arm_pmuv3.c
+>   * Use format attribute mechanism from SPE
+>   * Re-arrange attributes so that threshold comes last and can
+>     potentially be extended
+>   * Emit an error if the max threshold is exceeded rather than clamping
+>   * Convert all register fields to GENMASK
 > 
-> 
+> [...]
+
+Thanks for respinning, James. This looks really good now.
 
 Applied to will (for-next/perf), thanks!
 
-[1/1] drivers/perf: Remove usage of the deprecated ida_simple_xx() API
-      https://git.kernel.org/will/c/79c03ed4b896
+[01/11] arm: perf: Remove inlines from arm_pmuv3.c
+        https://git.kernel.org/will/c/9343c790e6de
+[02/11] arm: perf/kvm: Use GENMASK for ARMV8_PMU_PMCR_N
+        https://git.kernel.org/will/c/62e1f212e5fe
+[03/11] arm: perf: Use GENMASK for PMMIR fields
+        https://git.kernel.org/will/c/2f6a00f30600
+[04/11] arm: perf: Convert remaining fields to use GENMASK
+        https://git.kernel.org/will/c/d30f09b6d7de
+[05/11] arm64: perf: Include threshold control fields in PMEVTYPER mask
+        https://git.kernel.org/will/c/3115ee021bfb
+[06/11] arm: pmu: Share user ABI format mechanism with SPE
+        https://git.kernel.org/will/c/f6da86969a3c
+[07/11] perf/arm_dmc620: Remove duplicate format attribute #defines
+        https://git.kernel.org/will/c/a5f4ca68f348
+[08/11] KVM: selftests: aarch64: Update tools copy of arm_pmuv3.h
+        https://git.kernel.org/will/c/c7b98bf0fc79
+[09/11] arm: pmu: Move error message and -EOPNOTSUPP to individual PMUs
+        https://git.kernel.org/will/c/186c91aaf549
+[10/11] arm64: perf: Add support for event counting threshold
+        https://git.kernel.org/will/c/816c26754447
+[11/11] Documentation: arm64: Document the PMU event counting threshold feature
+        https://git.kernel.org/will/c/bd690638e2c2
 
 Cheers,
 -- 
