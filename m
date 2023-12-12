@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5200F80F54B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F88880F54D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377064AbjLLSNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S1377083AbjLLSOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232546AbjLLSNm (ORCPT
+        with ESMTP id S230181AbjLLSOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:13:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2EB9B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:13:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702404828; x=1733940828;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=wQ6po8XR6kxc8kjalpM1O07dRhIZCPTjApcbxiK/KEU=;
-  b=ngxw6D8YFhfqCgohuXtGNwj7KiKlysW/U52RaZAkidFjhAdfnYL1xzfe
-   lh6pZFWXIrWsoH7NmUabH+9R3sgd7HZ7cXy91gBU/0hRA+5mTywhyFbMG
-   8VKHV+ekN8Jd3tUCd7XNwdViqtsddIdO5O446gJaALskpFkR18qsEHzTP
-   +BR+YINT5mKTbfHtj7MLfF9I0QzF0FEJSpw+b0fH4ip+QahtSaPiSIN2A
-   jnV8NHKcRD9+rX51qdMEx9c5LTWTkFgYMErNUB8s9eT2wXTbZOeY5X/z4
-   r9VRagJmZlHRJA+8K2DjVFuutcBp/mVCAIjL/aAaXuY5ZqIgfrdXD59dI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="16401684"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="16401684"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 10:13:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="807860390"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="807860390"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 12 Dec 2023 10:13:46 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rD7GJ-000JXb-2l;
-        Tue, 12 Dec 2023 18:13:43 +0000
-Date:   Wed, 13 Dec 2023 02:13:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Stafford Horne <shorne@gmail.com>
-Subject: drivers/irqchip/irq-ompic.c:83:1: sparse: sparse: symbol
- '__pcpu_scope_ops' was not declared. Should it be static?
-Message-ID: <202312130224.3JuJk7LB-lkp@intel.com>
+        Tue, 12 Dec 2023 13:14:48 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1DCA7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:14:54 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD7HK-00040L-KK; Tue, 12 Dec 2023 19:14:46 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD7HI-00FOxL-SC; Tue, 12 Dec 2023 19:14:44 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rD7HI-001p8f-I9; Tue, 12 Dec 2023 19:14:44 +0100
+Date:   Tue, 12 Dec 2023 19:14:44 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 5/6] pwm: bcm2835: Allow PWM driver to be used in
+ atomic context
+Message-ID: <20231212181444.mw5kxff5ijz676qh@pengutronix.de>
+References: <cover.1702369869.git.sean@mess.org>
+ <e9e32c9789da3c90b5a2aa7d5a093120b76421fb.1702369869.git.sean@mess.org>
+ <20231212160838.k4z4csy455a7qnje@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="llbhn5mnvxkhmahv"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231212160838.k4z4csy455a7qnje@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   26aff849438cebcd05f1a647390c4aa700d5c0f1
-commit: 8e6d08e0a15e7d4d4b608b56597350d4cdd77710 openrisc: initial SMP support
-date:   6 years ago
-config: openrisc-randconfig-r122-20231111 (https://download.01.org/0day-ci/archive/20231213/202312130224.3JuJk7LB-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231213/202312130224.3JuJk7LB-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312130224.3JuJk7LB-lkp@intel.com/
+--llbhn5mnvxkhmahv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/irqchip/irq-ompic.c:83:1: sparse: sparse: symbol '__pcpu_scope_ops' was not declared. Should it be static?
-   drivers/irqchip/irq-ompic.c:198:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *addr @@     got void [noderef] <asn:2> *static [assigned] [toplevel] ompic_base @@
-   drivers/irqchip/irq-ompic.c:198:17: sparse:     expected void *addr
-   drivers/irqchip/irq-ompic.c:198:17: sparse:     got void [noderef] <asn:2> *static [assigned] [toplevel] ompic_base
-   In file included from include/linux/workqueue.h:8,
-                    from include/linux/mm_types.h:15,
-                    from include/asm-generic/pgtable.h:9,
-                    from arch/openrisc/include/asm/pgtable.h:444,
-                    from arch/openrisc/include/asm/io.h:33,
-                    from include/linux/io.h:25,
-                    from drivers/irqchip/irq-ompic.c:61:
-   include/linux/timer.h: In function 'timer_setup':
-   include/linux/timer.h:178:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
-     178 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
-         |                              ^
-   include/linux/timer.h:143:39: note: in definition of macro '__setup_timer'
-     143 |                 (_timer)->function = (_fn);                             18-      |                                       ^~~
+Hello Sean,
 
-vim +/__pcpu_scope_ops +83 drivers/irqchip/irq-ompic.c
+On Tue, Dec 12, 2023 at 05:08:38PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Tue, Dec 12, 2023 at 08:34:04AM +0000, Sean Young wrote:
+> > @@ -169,6 +179,7 @@ static int bcm2835_pwm_suspend(struct device *dev)
+> >  {
+> >  	struct bcm2835_pwm *pc =3D dev_get_drvdata(dev);
+> > =20
+> > +	clk_rate_exclusive_put(pc->clk);
+> >  	clk_disable_unprepare(pc->clk);
+>=20
+> I thought this was the remove function, but that's suspend. Adding
+> clk_rate_exclusive_put() there is wrong.
 
-9b54470afd8362 Stafford Horne 2017-10-30  82  
-9b54470afd8362 Stafford Horne 2017-10-30 @83  DEFINE_PER_CPU(unsigned long, ops);
-9b54470afd8362 Stafford Horne 2017-10-30  84  
+https://lore.kernel.org/linux-clk/744a6371f94fe96f527eea6e52a600914e6fb6b5.=
+1702403904.git.u.kleine-koenig@pengutronix.de/
+might be useful to fix this.
 
-:::::: The code at line 83 was first introduced by commit
-:::::: 9b54470afd836278a7e6f0f08194e2e2dca4b6eb irqchip: add initial support for ompic
+Best regards
+Uwe
 
-:::::: TO: Stafford Horne <shorne@gmail.com>
-:::::: CC: Stafford Horne <shorne@gmail.com>
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--llbhn5mnvxkhmahv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV4oxMACgkQj4D7WH0S
+/k4mdAgAn2zEXY7AwmY1SR/n2nlH95E9ZMWuZsWEE5YGkmiMVuu3Vxndi5GvL9Dh
+dd1KzI3rvGRWEOh7sNhr8gdfyRFVBwFE8N0IMRWH5SOOL6uMiDV5qB8gcQF4cHJf
+sVZp1wxCIrv8QVmdNVhafSAIz7ojkYJpls9Hp18MfZWAJ40kwuUQSRqx3zu565rr
+fAujilnhb2J/JgM+SBmkERoG5p7RPdJ7Txck7nT2/poL7wwwhxBK5uBAHsIzLbiq
+iiM1wU/uYHSSEln0EYdz74u47W65H8hiKG6e/CdhThnLh6p29h+R9UtQpNSktAe6
+nfXqhhqc2AWJJk1y3kL2nDV/gkykzg==
+=ZifV
+-----END PGP SIGNATURE-----
+
+--llbhn5mnvxkhmahv--
