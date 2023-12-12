@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAF680E5DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FA680E5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346208AbjLLIWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:22:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
+        id S1346235AbjLLIXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:23:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346050AbjLLIWC (ORCPT
+        with ESMTP id S229455AbjLLIWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 03:22:02 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EACEB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C906EEE
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 43701C433D9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BC4EC116B3;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702369325;
-        bh=AkcpEhPlxoOxc0vqhKcuHKzbdjTpRUS7egHrzbO96pU=;
+        bh=VNwPggiAWASAvwqtJd7Wj3ItapLp0dhIgz2LnHUWvFk=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=XcCxWmrdLkigs6uQjfBq6O0oowB2oncVXEdC4JpiHMzawCERWPKkkA7XmI4y+KwZD
-         sBKw7m0a+kOFlqFXz1nBWrdyXWvlYmSLV2hO3EGiLxviQsuK+sz5Lp8/RLzMa8lgq5
-         XwUxZnbDjlMIwEaFLYpxNRgXINWftHpu0UyBd2FdnkTUlBNW7/02Sw0DqfkVXuLbwt
-         aDen9463fCH0v4VYtT8rgjRyTusrA4tQoT2eyPoS9ufLB99Hde/MnTQG3uKnah7B3r
-         tKP5qbatLEBAN3oX1o6sqeSiNhOdOuQAixrJqWtkpI2nWlsKc6nDPkXTYUubb7FeWp
-         tOqsQk/rzwuJA==
+        b=pA5J6IPVLRR0NA9SUqxNr+DL7rpwy2rVPnaJeMyYIgt9y9nMfa70PSPL6A6bTWGKJ
+         83qmLFbT4IcwuPnGBstDCYZeNGu8xRXUGtOTfsFbcBmztDA7rhvuIzYiNAz7VC1dML
+         hB9FWB5VDLZi1yIc4BrXiVXEyKBxE+w1D9c/12fUj4Qo7/PI8y5ezKY53BJL6VaQCe
+         ocegP+Vy5eU6w3cWp3B+iOMOUn4Ye1smcpVm45UO/q5AbRyY9KhA0XudKENPrpGGyI
+         e2ZuRINDbq8zwYaP4JUJ1YZVx8wwmlSf3ZLegJIEz3R6DA6MNye8fVuGtMl3M5CxdU
+         sWZcUeYxbBtaQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 33717C4167D;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 4CA2AC4167B;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Tue, 12 Dec 2023 11:20:31 +0300
-Subject: [PATCH v6 14/40] pwm: ep93xx: add DT support for Cirrus EP93xx
+Date:   Tue, 12 Dec 2023 11:20:32 +0300
+Subject: [PATCH v6 15/40] dt-bindings: spi: Add Cirrus EP93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231212-ep93xx-v6-14-c307b8ac9aa8@maquefel.me>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231212-ep93xx-v6-15-c307b8ac9aa8@maquefel.me>
 References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=1050;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=2297;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=0ShGpvSFf+bjybDV16t/6Z4F0QpifBcoOlR0O8wpExg=; =?utf-8?q?b=3DgrluBWepXcbY?=
- =?utf-8?q?qdApuYh5g6HwthFV7Zvx+EM/WLnkrNxPKC8gN2q/jI27B/DuQOn3ASHV9dko+PoR?=
- tI/nnnuvDYiKP+s0Ljlb689QPUHGYMnN6fqfu6PVBEAiq6S7G73x
+ bh=eohxXtWd+HuVJyaYSL1l5VkylPnLSM7yKMq6Kko41cI=; =?utf-8?q?b=3DlXF4u5RJQUO9?=
+ =?utf-8?q?k1c/73N9EGH3qHbYS2ClWcSCBcYU7oAMndw5RK/HH8R/BhXtcDLJjTOz8VB+VAU/?=
+ 2q6bP5LBDwc8p+UoqHwmMEOYdOFe4AawrqizlSt5eRp3r+vjs4XI
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -67,43 +71,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add OF ID match table.
+Add YAML bindings for ep93xx SoC SPI.
 
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/pwm/pwm-ep93xx.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../devicetree/bindings/spi/cirrus,ep9301-spi.yaml | 70 ++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/drivers/pwm/pwm-ep93xx.c b/drivers/pwm/pwm-ep93xx.c
-index 51e072572a87..7cf05d0b78fb 100644
---- a/drivers/pwm/pwm-ep93xx.c
-+++ b/drivers/pwm/pwm-ep93xx.c
-@@ -17,6 +17,7 @@
-  */
- 
- #include <linux/module.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
-@@ -189,9 +190,16 @@ static int ep93xx_pwm_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id ep93xx_pwm_of_ids[] = {
-+	{ .compatible = "cirrus,ep9301-pwm" },
-+	{ /* sentinel */}
-+};
-+MODULE_DEVICE_TABLE(of, ep93xx_pwm_of_ids);
+diff --git a/Documentation/devicetree/bindings/spi/cirrus,ep9301-spi.yaml b/Documentation/devicetree/bindings/spi/cirrus,ep9301-spi.yaml
+new file mode 100644
+index 000000000000..73980a27dc00
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/cirrus,ep9301-spi.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/cirrus,ep9301-spi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static struct platform_driver ep93xx_pwm_driver = {
- 	.driver = {
- 		.name = "ep93xx-pwm",
-+		.of_match_table = ep93xx_pwm_of_ids,
- 	},
- 	.probe = ep93xx_pwm_probe,
- };
++title: EP93xx SoC SPI controller
++
++maintainers:
++  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
++  - Nikita Shubin <nikita.shubin@maquefel.me>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: cirrus,ep9301-spi
++      - items:
++          - enum:
++              - cirrus,ep9302-spi
++              - cirrus,ep9307-spi
++              - cirrus,ep9312-spi
++              - cirrus,ep9315-spi
++          - const: cirrus,ep9301-spi
++
++  reg:
++    items:
++      - description: SPI registers region
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: SPI Controller reference clock source
++
++  dmas:
++    items:
++      - description: rx DMA channel
++      - description: tx DMA channel
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/clock/cirrus,ep9301-syscon.h>
++    spi@808a0000 {
++        compatible = "cirrus,ep9301-spi";
++        reg = <0x808a0000 0x18>;
++        interrupt-parent = <&vic1>;
++        interrupts = <21>;
++        clocks = <&syscon EP93XX_CLK_SPI>;
++        dmas = <&dma1 10 2>, <&dma1 10 1>;
++        dma-names = "rx", "tx";
++        cs-gpios = <&gpio5 2 GPIO_ACTIVE_HIGH>;
++    };
 
 -- 
 2.41.0
