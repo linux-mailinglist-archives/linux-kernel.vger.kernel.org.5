@@ -2,702 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0575F80E1D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9290680E1EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345827AbjLLCaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:30:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S231224AbjLLCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjLLC3z (ORCPT
+        with ESMTP id S234973AbjLLCeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:29:55 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B2B10E6;
-        Mon, 11 Dec 2023 18:29:15 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c2c5a8150so48136515e9.2;
-        Mon, 11 Dec 2023 18:29:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1702348153; x=1702952953; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=c3/O2bOCMvIPD26EPX7q58jz6Wb52iFUgUWfAqCj8EA=;
-        b=Rk3vCJacSrWx1t80H7eKJMwYkvlu4MGu0On1Vpv5IOMmFuIFiTl96qLZTzijp7SJGx
-         slyipDdu5MWpeQ6zvk5NVa8rmMU/HbPBjwqeDDzjvPiVI27OUDdkf/2NEgnXw2cWbX+n
-         MKdqdu7fTAc/NDNZXutDNVYvhKd6i6r976Rlw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702348153; x=1702952953;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c3/O2bOCMvIPD26EPX7q58jz6Wb52iFUgUWfAqCj8EA=;
-        b=SwwrIp8uUYO+KSZqquuS6rAgJLXVT9Ffi9w6lSB2ZAjTIyDSGeDToBuW3nVXaes8Xd
-         9RpRMhwvHIiG6o5YyeN7gP+Kii5EsVn1ybf34ONBDVaOlsdx24u/8saN7RUAPkTov3By
-         tA79Fcne4t/8A9+AX52ZpXZEUmjWMPnJSujfs7j/NUw9AN6YWT3AwaVO0DsEo2xGGtet
-         SSsCM1YPvHQMhqT3dccTVz25Xco17RvF/1PKLwQbqCnEIeeIE/e+MtlEPGzlvpsc/0qK
-         bpoPBaUBynGLKhi7l9Dk+2wa6EXx9tnOOMd5IKT/2ITF1/0cRKHs+9iqQE5qn4vD4p9q
-         lmTA==
-X-Gm-Message-State: AOJu0Yy/9mYQQasAYq0x/2osrj6gWL1wMQgIzKcnbrNwrpyRwQb1DO+q
-        mX3+yfLVF5vTqZ6hsRx0PPsgPbKO4T0qCsQkFx4=
-X-Google-Smtp-Source: AGHT+IG834/1rgSOMj78cSfVHFrNZusC7+eevaxEHUBQZ+3PySBubE1silX2hArWsVVW2sOqfsCkE/q9cSpyHzIvvWU=
-X-Received: by 2002:a05:600c:240d:b0:40b:5e59:ea01 with SMTP id
- 13-20020a05600c240d00b0040b5e59ea01mr2937341wmp.160.1702348153266; Mon, 11
- Dec 2023 18:29:13 -0800 (PST)
+        Mon, 11 Dec 2023 21:34:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DC71FC8;
+        Mon, 11 Dec 2023 18:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702348341; x=1733884341;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZOIG19UmSc6gfXd82Z1U5XFq8uTkjC99QBhZ5DKwrnc=;
+  b=Yps1jtBlDua0Bf7/+ekLIJydnjrBoFdsLMgY/jq3Uo882b7rMWlz7D/W
+   IOshdCYuCZ/8C4dRMWObhD/IGt7GO45zWSFLj9d+SFky1pwE5shpl3ksx
+   Nn5MdQCDYZc96Hu3J5mDrM5w87dXMnJ4GEsY4/QchcxHTrQSbRQFU0sRf
+   KRcV52BMO0dg2lGRMnBtuL1n2naY9i4V8arDstwkzk+c8Clz2+UIqGYfH
+   ZJnflv3GQB5JtUVSZOLt3qSHuyQCEBvLmh/AaXqZSbXsxF9AyEJdLFHZ/
+   /83icq92cFlXz/U6OGQ8o9htG9GWVuwKmyEVPWBYBUkp9UxP+QzShPanv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="461218658"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="461218658"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 18:30:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104722063"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="1104722063"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 18:30:31 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 18:30:31 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 18:30:31 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 18:30:30 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RNixnAkriOwsYHy8/zW+JhVN7i+QP/hIxCp5T4XbCfelRyK9Kmyod0hugjesouMO4/N73pEeaNFQXln7l2yErHiAshJuxFVCEl22kTkLTA6l3HnBG5o26wcK0A9FGDehMTMe1Ew7GhCY3jVBNDmPyLzfQZnX5m5wBWsLomsBSaKi3MPF+VD3rv8H6AkxMKK5bMB13D7XH/EjmMi3eVwMMqyFDWssDjZPFg91voLTR9pw3iG7m2MYLAfigr52LQHbyxKo3IXkSjdhIID3yuIZeqJR7rGaXML8l3QDEdjm7FjV827DguOBlp32Be4A4NjYvwk2f83Iukzrvbx7xxHaww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1W5YVxSaTSTMuwQGyxbabwyqttq0o6Wynyj019fA8L8=;
+ b=GD+xOWylYx/IW/W/K0DhgUJ5H1OChrBn4RI+3I9buCkW+y+wv8lnyqq45OzvQ2lHplbd7LDW3rOSWSwgskU4uXbAfIWzb6AE0DahgcK2U5Kxa+90rJrl0pE1LsOAR4032S91WYnNK76KEtjM2dHXyUDtFagJwx1VZszoK2mqrx5NOvV9HWaM9Sdo3LKdJI2A5bNRSUEtf9y1zOL+OY17dfLAc0Clf+sbgeV80EKSZMigaDV0EiuoUAy/B/HophiRFeXbqK/Y30dqlN4P/LfYuTFGmCd4J2XEBsRqGZ0syRN1DlSJRPTbshQyE5Kpz3cBH3wETEUpTmTOgEc3I2e8xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
+ by SA3PR11MB8021.namprd11.prod.outlook.com (2603:10b6:806:2fd::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
+ 2023 02:30:29 +0000
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::92ef:1d38:2ad6:5e29]) by IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::92ef:1d38:2ad6:5e29%6]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
+ 02:30:28 +0000
+Message-ID: <aef69154-d46c-5947-1ad9-58418dc3947c@intel.com>
+Date:   Mon, 11 Dec 2023 18:30:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v3 10/35] dmaengine: idxd: optimize perfmon_assign_event()
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
+        "Dave Jiang" <dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+        <dmaengine@vger.kernel.org>
+CC:     Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        "Bart Van Assche" <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+References: <20231212022749.625238-1-yury.norov@gmail.com>
+ <20231212022749.625238-11-yury.norov@gmail.com>
+From:   Fenghua Yu <fenghua.yu@intel.com>
+In-Reply-To: <20231212022749.625238-11-yury.norov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR05CA0043.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::18) To IA1PR11MB6097.namprd11.prod.outlook.com
+ (2603:10b6:208:3d7::17)
 MIME-Version: 1.0
-References: <20231211162656.2564267-1-peteryin.openbmc@gmail.com> <20231211162656.2564267-3-peteryin.openbmc@gmail.com>
-In-Reply-To: <20231211162656.2564267-3-peteryin.openbmc@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 12 Dec 2023 12:59:01 +1030
-Message-ID: <CACPK8XePx+PvDKzPMjPRn_g9z8yrtAmLvP8Qbepm1AVjuCbaKw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] ARM: dts: aspeed: Harma: Add Meta Harma (AST2600) BMC
-To:     Peter Yin <peteryin.openbmc@gmail.com>
-Cc:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,WEIRD_QUOTING autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|SA3PR11MB8021:EE_
+X-MS-Office365-Filtering-Correlation-Id: 02d90a64-5f83-454e-776b-08dbfaba4dd8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gs3lYcHW6qKJ/HwndQDjcsW19YIHLU9tdM8FPwtzlI5tee1ve2i6thUA5g9ZfIC7H5zGnAyv6soPZrmgVOxTbMo1f6MzZySQkiryOr7msxJU7jR2vIBmWOI+AKSdxuzsDV0H4wIfHMJelihGA7YSg8TEvXIdLmbTW7sPcEeHafVekrvcdycETex5W5PPAcFbSWn2VOusvKSPCxquxcFZiAT33QkY+TN4DJlm1kAGF6vhjt46JiYsCwUHcrxSuZRZ+Rq987Rup2BkkqHXxtcBKGWRw1IJ3nbIjXW2ERlZdaS8rkGLp7cdBQQlPlBZebtIOtWp4flgI7VVJf0JVhVE45UlM6ioHxwr+HTxuGgt6+gAxF2LNVrFNdTlWeJwCEm7RZ1VyRZVTM7zqIS+B0KVbtDeD8G8kfHBquSKBBsRrGZ+rPrRa/TzQtwb+hB2lHcxRj90+y2Zr1U14aCx5ExP3gLB0fIz+CASAkXeqYbpeIzljFWEiyiyC/GyHG57lH6tJeIU3ZTIthkoSwe+Jv5S13OXGEkBbHgKWABzbhs9BArVTQ2x8sg1gwfKV7e816kNvMr8FBD9Jyn0VQiC1c8tX+Cfmu9jduBmm1CJOwLh6kFXmFxF6CctBpfihFRj20KrWpcaWpx6IydgrbKEF14arQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(366004)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(53546011)(6512007)(26005)(2616005)(6666004)(6486002)(6506007)(478600001)(41300700001)(7416002)(4744005)(44832011)(5660300002)(54906003)(2906002)(66476007)(66556008)(66946007)(316002)(8676002)(8936002)(4326008)(110136005)(86362001)(38100700002)(31696002)(36756003)(82960400001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkZQc1U4Ym03TG1HTGYrT2hXVXJ3MHN2S1lycXczdCtyT1VSb2FQdkxHbkZl?=
+ =?utf-8?B?b0ZyVGNpL3ROQ3hqc2l3OE8vM09iK2pQRTVuVmNWV3ptWmxuZ3FtUXRoZG5B?=
+ =?utf-8?B?ZEkxVllGVkVCYnd6cjlDQ3ZzSThvZDU3R2liYitIQVZ6ZWIzaTFpdVFBd29H?=
+ =?utf-8?B?Z1dlVXR0bWdkMHM0WFFIRlExVU9QYitWVG5URTAxbkplTFFCUUNtOXRXTEx4?=
+ =?utf-8?B?V0IwUVF1c0IzZWNDN0cvbVYrTWt4VXY1K3dsdzJKSTNHUVVKeTJpRUNNS3JT?=
+ =?utf-8?B?U2JwTFdjR0F3VmhQVmNWNWRjKzA1eFMyaXgwNVBkaS91M3FHS1hyOHBOYmlL?=
+ =?utf-8?B?OEdtUWZ5N0VtNUFuOERQT0M0SmdsS2pTbVlHU0RCTzNITXU3clZIOHdVcEUv?=
+ =?utf-8?B?UGp6cCtnVmt2SlVXbmduV3YrblBOQmNtV082OFk0d1NlWlA2OFljNndLU1ZI?=
+ =?utf-8?B?UHlzYm8ya2J4eS9vamVPSG83Y2dwRnN5dkxKdWx0V3MxUVcrb1orbEpqNUJO?=
+ =?utf-8?B?ZzVaUDFkcjFQc1BDemY0aS8vWHN3b3RrNmE0SXF5alcwTVB0OCtoeDFjdnpu?=
+ =?utf-8?B?dHJXQk9NSitIa1EwQ0ErZlMrTFdiUk5qVFprNFgwbW5tL1Vad2Y1UXR1cmFW?=
+ =?utf-8?B?RmNQNTVyUnYzU0lQVTJ0bHZEeE1PMUpmdm5taklYWEp6eHc4S0Rjbm50dGJt?=
+ =?utf-8?B?eHNoVVA1S1NieC8vUmRrcmN6aXhhK2NnQ25EUUJXZlFYZHcwUnljUEhZWVl1?=
+ =?utf-8?B?SHVKMkg3b3g2Ukp3dk1yUnFkMGR1SHdoTGxKZ2JpZGVzYWZvSnZ3a0tSVXZS?=
+ =?utf-8?B?YmJ2YmxCRmcxTitYb0xLZUdTQTh0Z0p1Y25PNFJuek1GNnd1MlBZWVlXUnBT?=
+ =?utf-8?B?aXBkaFBVcEdyMkVFNXo3YTdxK1RhdVBUbG5uaXIvSUdWOU1kVmpCY21oR0dk?=
+ =?utf-8?B?a0dHMG02SkhZdmpDWUxGNThmSEtrK2xRUlFhUDQyeUZBTXYvdnhNZWQ0a3lr?=
+ =?utf-8?B?K3dNRWVZV2RaNFU0QzEvM3d6eEhaL09qckpYUXFEcFNoYkZKR2F5bDF5Ukti?=
+ =?utf-8?B?Q0QwbWlyT1dyMHo0YWZVUVhUVE02UXNJSlZpeEVKZTdxVGJSUisvRFp4bjhU?=
+ =?utf-8?B?azB6UHdOdEh5emFZbENhM1ZucGpxZ3RVcTZyd3drbFp4UjNKM1hvb1ppRUdp?=
+ =?utf-8?B?Skl3QmlUaGRMUzZCSEJvNXQrU1hXRlpMZWp6N0p3bHdrbW9PYXNaZlpKeTha?=
+ =?utf-8?B?LzdkVERmWjFxZ2FWdnpmVmY4emYzUDBxRkNtOHB5cGoxbDloWlBEc3loRThw?=
+ =?utf-8?B?a2ZJQ0FGc2poMkZMUDBYdTVtSm1jTmhCbXR0WjU2UzJhL0NrbUFFRTAyWGpL?=
+ =?utf-8?B?ZmRubW5IMWZIam1MeHA0QmhDcnBUK01lYy9ic1RNaXIreVV0UmU4eVZzSDhY?=
+ =?utf-8?B?czhWZzRwU0laeDAwMGpub01aSGRHREx3d2dvWjkwVFJ3Y3gvYUp5UUZsbldK?=
+ =?utf-8?B?RlJwTUp4MU5rQ0g0WTlzQk5uVXo3L3dvdnM2bXoxVkxKZHZtTTl5SEFJakhY?=
+ =?utf-8?B?bkV4N0hqZWc2cWxzWjJPM3MrRUo2UWxrZmNNQ1FscGMvcDZOVldNNFQ4b0Ru?=
+ =?utf-8?B?MHBWUCthZS85a2VSWFkweHMzaHlpWE5oUlp6aWVWeWgrcFdXbVhSN0FXd0VI?=
+ =?utf-8?B?OGdINUtFc1psTDZaZFNKclRUTFlJQWpXaUVsM1Z5ZU5jM0RxdzVmU0NFVW8z?=
+ =?utf-8?B?Z2ZNZlI3Um1UMGdMTWk0ZERsTkFIUkNQUGFLZlBxRWN0NE4wNkN1Sms4Z2Fy?=
+ =?utf-8?B?LzZ1Q0RySU5meFVnSFU1WjBrOGtNYVhDR0hIL1lrNkpNU2ppeWlOZXdlSVZE?=
+ =?utf-8?B?N1NpYVd6cFc0NlUxYWljd1VpRlVabUYvdkViWE5hRzVyRzBOTDRvUjQxWFda?=
+ =?utf-8?B?Yngwb3dyalJIZkdIbzA3TEhmbFFkRzFjRG1mQThXUDhXN3N4YVNZRUJLaUwy?=
+ =?utf-8?B?UnlISmp0ZFNjVm04ekdXRjBUSFZ5eGJ2endOVUJ2b1hqMC9WemxMUDJUeXRB?=
+ =?utf-8?B?QjZsS202MEVsNldKY1NzSHdLMWwxZkoxUEUvVVpsR1ZSajViL1RMdzN3WDZl?=
+ =?utf-8?Q?A6ItztxrtkB0eg2oJtO4XdEdg?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02d90a64-5f83-454e-776b-08dbfaba4dd8
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 02:30:28.1939
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yFFChlP9NHWJ+gN0IhHXpAE+6NqcGweh+UkMzJonphzDzprbxRU9EzD2oZjnNq4Ge3326OUS07smyi7tqCJ1UQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8021
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 02:59, Peter Yin <peteryin.openbmc@gmail.com> wrote:
->
-> Add linux device tree entry related to
-> the Meta(Facebook) computer-node system use an AT2600 BMC.
-> This node is named "Harma".
->
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-
-Looks good, thanks for your work. This will be submitted for the 6.8
-merge window.
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
 
 
-> ---
+On 12/11/23 18:27, Yury Norov wrote:
+> The function searches used_mask for a set bit in a for-loop bit by bit.
+> Simplify it by using atomic find_and_set_bit(), and make a nice
+> one-liner.
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Acked-by: Vinod Koul <vkoul@kernel.org>
 
-For next time: Please describe what you've changed between this
-version and the previous version just here, below the ---. This helps
-reviewers understand what has changed, and why it's changed, from the
-previous version.
+Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
 
->  arch/arm/boot/dts/aspeed/Makefile             |   1 +
->  .../dts/aspeed/aspeed-bmc-facebook-harma.dts  | 585 ++++++++++++++++++
->  2 files changed, 586 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
->
-> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-> index 23cbc7203a8e..92ba3208d2a2 100644
-> --- a/arch/arm/boot/dts/aspeed/Makefile
-> +++ b/arch/arm/boot/dts/aspeed/Makefile
-> @@ -19,6 +19,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->         aspeed-bmc-facebook-fuji.dtb \
->         aspeed-bmc-facebook-galaxy100.dtb \
->         aspeed-bmc-facebook-greatlakes.dtb \
-> +       aspeed-bmc-facebook-harma.dtb \
->         aspeed-bmc-facebook-minipack.dtb \
->         aspeed-bmc-facebook-tiogapass.dtb \
->         aspeed-bmc-facebook-wedge40.dtb \
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-> new file mode 100644
-> index 000000000000..7db3f9eb0016
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dts
-> @@ -0,0 +1,585 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +// Copyright 2023 Facebook Inc.
-> +
-> +/dts-v1/;
-> +#include "aspeed-g6.dtsi"
-> +#include <dt-bindings/gpio/aspeed-gpio.h>
-> +#include <dt-bindings/i2c/i2c.h>
-> +
-> +/ {
-> +       model = "Facebook Harma";
-> +       compatible = "facebook,harma-bmc", "aspeed,ast2600";
-> +
-> +       aliases {
-> +               serial0 = &uart1;
-> +               serial1 = &uart6;
-> +               serial2 = &uart2;
-> +               serial4 = &uart5;
-> +
-> +               i2c20 = &imux20;
-> +               i2c21 = &imux21;
-> +               i2c22 = &imux22;
-> +               i2c23 = &imux23;
-> +               i2c24 = &imux24;
-> +               i2c25 = &imux25;
-> +               i2c26 = &imux26;
-> +               i2c27 = &imux27;
-> +               i2c28 = &imux28;
-> +               i2c29 = &imux29;
-> +               i2c30 = &imux30;
-> +               i2c31 = &imux31;
-> +       };
-> +
-> +       chosen {
-> +               stdout-path = &uart5;
-> +       };
-> +
-> +       memory@80000000 {
-> +               device_type = "memory";
-> +               reg = <0x80000000 0x80000000>;
-> +       };
-> +
-> +       iio-hwmon {
-> +               compatible = "iio-hwmon";
-> +               io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
-> +                             <&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
-> +                             <&adc1 2>;
-> +       };
-> +
-> +       leds {
-> +               compatible = "gpio-leds";
-> +
-> +               led-0 {
-> +                       label = "bmc_heartbeat_amber";
-> +                       gpios = <&gpio0 ASPEED_GPIO(P, 7) GPIO_ACTIVE_LOW>;
-> +                       linux,default-trigger = "heartbeat";
-> +               };
-> +
-> +               led-1 {
-> +                       label = "fp_id_amber";
-> +                       default-state = "off";
-> +                       gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-> +               };
-> +
-> +               led-2 {
-> +                       label = "power_blue";
-> +                       default-state = "off";
-> +                       gpios = <&gpio0 124 GPIO_ACTIVE_HIGH>;
-> +               };
-> +       };
-> +};
-> +
-> +// HOST BIOS Debug
-> +&uart1 {
-> +       status = "okay";
-> +};
-> +
-> +// SOL Host Console
-> +&uart2 {
-> +       status = "okay";
-> +       pinctrl-0 = <>;
-> +};
-> +
-> +// SOL BMC Console
-> +&uart4 {
-> +       status = "okay";
-> +       pinctrl-0 = <>;
-> +};
-> +
-> +// BMC Debug Console
-> +&uart5 {
-> +       status = "okay";
-> +};
-> +
-> +// MTIA
-> +&uart6 {
-> +       status = "okay";
-> +};
-> +
-> +&uart_routing {
-> +       status = "okay";
-> +};
-> +
-> +&vuart1 {
-> +       status = "okay";
-> +};
-> +
-> +&wdt1 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_wdtrst1_default>;
-> +       aspeed,reset-type = "soc";
-> +       aspeed,external-signal;
-> +       aspeed,ext-push-pull;
-> +       aspeed,ext-active-high;
-> +       aspeed,ext-pulse-duration = <256>;
-> +};
-> +
-> +&mac3 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_rmii4_default>;
-> +       use-ncsi;
-> +       mlx,multi-host;
-> +};
-> +
-> +&rtc {
-> +       status = "okay";
-> +};
-> +
-> +&fmc {
-> +       status = "okay";
-> +
-> +       flash@0 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "bmc";
-> +               spi-max-frequency = <50000000>;
-> +#include "openbmc-flash-layout-128.dtsi"
-> +       };
-> +
-> +       flash@1 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "alt-bmc";
-> +               spi-max-frequency = <50000000>;
-> +       };
-> +};
-> +
-> +// BIOS Flash
-> +&spi2 {
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_spi2_default>;
-> +
-> +       flash@0 {
-> +               status = "okay";
-> +               m25p,fast-read;
-> +               label = "pnor";
-> +               spi-max-frequency = <12000000>;
-> +               spi-tx-bus-width = <2>;
-> +               spi-rx-bus-width = <2>;
-> +       };
-> +};
-> +
-> +&kcs2 {
-> +       status = "okay";
-> +       aspeed,lpc-io-reg = <0xca8>;
-> +};
-> +
-> +&kcs3 {
-> +       status = "okay";
-> +       aspeed,lpc-io-reg = <0xca2>;
-> +};
-> +
-> +&i2c0 {
-> +       status = "okay";
-> +
-> +       max31790@30{
-> +               compatible = "max31790";
-> +               reg = <0x30>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +       };
-> +};
-> +
-> +&i2c1 {
-> +       status = "okay";
-> +
-> +       tmp75@4b {
-> +               compatible = "ti,tmp75";
-> +               reg = <0x4b>;
-> +       };
-> +};
-> +
-> +&i2c2 {
-> +       status = "okay";
-> +
-> +       max31790@30{
-> +               compatible = "max31790";
-> +               reg = <0x30>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +       };
-> +};
-> +
-> +&i2c3 {
-> +       status = "okay";
-> +
-> +       i2c-mux@70 {
-> +               compatible = "nxp,pca9543";
-> +               reg = <0x70>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               imux20: i2c@0 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0>;
-> +                       //Retimer Flash
-> +                       eeprom@50 {
-> +                               compatible = "atmel,24c2048";
-> +                               reg = <0x50>;
-> +                               pagesize = <128>;
-> +                       };
-> +               };
-> +               imux21: i2c@1 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <1>;
-> +               };
-> +       };
-> +};
-> +
-> +&i2c4 {
-> +       status = "okay";
-> +       // PDB FRU
-> +       eeprom@52 {
-> +               compatible = "atmel,24c64";
-> +               reg = <0x52>;
-> +       };
-> +
-> +       delta_brick@69 {
-> +               compatible = "pmbus";
-> +               reg = <0x69>;
-> +       };
-> +};
-> +
-> +&i2c5 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c6 {
-> +       status = "okay";
-> +
-> +       i2c-mux@70 {
-> +               compatible = "nxp,pca9543";
-> +               reg = <0x70>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               imux22: i2c@0 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0>;
-> +               };
-> +               imux23: i2c@1 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <1>;
-> +               };
-> +       };
-> +};
-> +
-> +&i2c7 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c8 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c9 {
-> +       status = "okay";
-> +
-> +       gpio@30 {
-> +               compatible = "nxp,pca9555";
-> +               reg = <0x30>;
-> +               gpio-controller;
-> +               #gpio-cells = <2>;
-> +       };
-> +       gpio@31 {
-> +               compatible = "nxp,pca9555";
-> +               reg = <0x31>;
-> +               gpio-controller;
-> +               #gpio-cells = <2>;
-> +       };
-> +
-> +       i2c-mux@71 {
-> +               compatible = "nxp,pca9546";
-> +               reg = <0x71>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               imux24: i2c@0 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0>;
-> +               };
-> +               imux25: i2c@1 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <1>;
-> +               };
-> +               imux26: i2c@2 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <2>;
-> +               };
-> +               imux27: i2c@3 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <3>;
-> +               };
-> +       };
-> +       // PTTV FRU
-> +       eeprom@52 {
-> +               compatible = "atmel,24c64";
-> +               reg = <0x52>;
-> +       };
-> +};
-> +
-> +&i2c11 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c12 {
-> +       status = "okay";
-> +};
-> +
-> +&i2c13 {
-> +       status = "okay";
-> +
-> +       i2c-mux@70 {
-> +               compatible = "nxp,pca9545";
-> +               reg = <0x70>;
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
-> +
-> +               imux28: i2c@0 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0>;
-> +               };
-> +               imux29: i2c@1 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <1>;
-> +                       //MB FRU
-> +                       eeprom@54 {
-> +                               compatible = "atmel,24c64";
-> +                               reg = <0x54>;
-> +                       };
-> +               };
-> +               imux30: i2c@2 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <2>;
-> +               };
-> +               imux31: i2c@3 {
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <3>;
-> +               };
-> +       };
-> +};
-> +
-> +// To Debug card
-> +&i2c14 {
-> +       status = "okay";
-> +       multi-master;
-> +
-> +       ipmb@10 {
-> +               compatible = "ipmb-dev";
-> +               reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-> +               i2c-protocol;
-> +       };
-> +};
-> +
-> +&i2c15 {
-> +       status = "okay";
-> +
-> +       // SCM FRU
-> +       eeprom@50 {
-> +               compatible = "atmel,24c64";
-> +               reg = <0x50>;
-> +       };
-> +
-> +       // BSM FRU
-> +       eeprom@56 {
-> +               compatible = "atmel,24c64";
-> +               reg = <0x56>;
-> +       };
-> +};
-> +
-> +&adc0 {
-> +       aspeed,int-vref-microvolt = <2500000>;
-> +       status = "okay";
-> +       pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
-> +               &pinctrl_adc2_default &pinctrl_adc3_default
-> +               &pinctrl_adc4_default &pinctrl_adc5_default
-> +               &pinctrl_adc6_default &pinctrl_adc7_default>;
-> +};
-> +
-> +&adc1 {
-> +       aspeed,int-vref-microvolt = <2500000>;
-> +       status = "okay";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_adc10_default>;
-> +};
-> +
-> +&ehci0 {
-> +       status = "okay";
-> +};
-> +
-> +&gpio0 {
-> +       pinctrl-names = "default";
-> +       gpio-line-names =
-> +       /*A0-A7*/       "","","","","","","","",
-> +       /*B0-B7*/       "","","","",
-> +                       "bmc-spi-mux-select-0","led-identify","","",
-> +       /*C0-C7*/       "","","","","","","","",
-> +       /*D0-D7*/       "","","sol-uart-select","","","","","",
-> +       /*E0-E7*/       "","","","","","","","",
-> +       /*F0-F7*/       "","","","","","","","",
-> +       /*G0-G7*/       "","","","","","","","",
-> +       /*H0-H7*/       "","","","","","","","",
-> +       /*I0-I7*/       "","","","","","","","",
-> +       /*J0-J7*/       "","","","","","","","",
-> +       /*K0-K7*/       "","","","","","","","",
-> +       /*L0-L7*/       "","","","","","","","",
-> +       /*M0-M7*/       "","","","","","","","",
-> +       /*N0-N7*/       "led-postcode-0","led-postcode-1",
-> +                       "led-postcode-2","led-postcode-3",
-> +                       "led-postcode-4","led-postcode-5",
-> +                       "led-postcode-6","led-postcode-7",
-> +       /*O0-O7*/       "","","","","","","","",
-> +       /*P0-P7*/       "power-button","power-host-control",
-> +                       "reset-button","","led-power","","","",
-> +       /*Q0-Q7*/       "","","","","","","","",
-> +       /*R0-R7*/       "","","","","","","","",
-> +       /*S0-S7*/       "","","","","","","","",
-> +       /*T0-T7*/       "","","","","","","","",
-> +       /*U0-U7*/       "","","","","","","led-identify-gate","",
-> +       /*V0-V7*/       "","","","",
-> +                       "rtc-battery-voltage-read-enable","","","",
-> +       /*W0-W7*/       "","","","","","","","",
-> +       /*X0-X7*/       "","","","","","","","",
-> +       /*Y0-Y7*/       "","","","","","","","",
-> +       /*Z0-Z7*/       "","","","","","","","";
-> +};
-> +
-> +&sgpiom0 {
-> +       status = "okay";
-> +       max-ngpios = <128>;
-> +       ngpios = <128>;
-> +       bus-frequency = <2000000>;
-> +       gpio-line-names =
-> +       /*in - out - in - out */
-> +       /*A0-A3 line 0-7*/
-> +       "presence-scm-cable","power-config-disable-e1s-0",
-> +       "","",
-> +       "","power-config-disable-e1s-1",
-> +       "","",
-> +       /*A4-A7 line 8-15*/
-> +       "","power-config-asic-module-enable",
-> +       "","power-config-asic-power-good",
-> +       "","power-config-pdb-power-good",
-> +       "presence-cpu","smi-control-n",
-> +       /*B0-B3 line 16-23*/
-> +       "","nmi-control-n",
-> +       "","nmi-control-sync-flood-n",
-> +       "","",
-> +       "","",
-> +       /*B4-B7 line 24-31*/
-> +       "","FM_CPU_SP5R1",
-> +       "reset-cause-rsmrst","FM_CPU_SP5R2",
-> +       "","FM_CPU_SP5R3",
-> +       "","FM_CPU_SP5R4",
-> +       /*C0-C3 line 32-39*/
-> +       "","FM_CPU0_SA0",
-> +       "","FM_CPU0_SA1",
-> +       "","rt-cpu0-p0-enable",
-> +       "","rt-cpu0-p1-enable",
-> +       /*C4-C7 line 40-47*/
-> +       "","smb-rt-rom-p0-select",
-> +       "","smb-rt-rom-p1-select",
-> +       "","i3c-cpu-mux0-oe-n",
-> +       "","i3c-cpu-mux0-select",
-> +       /*D0-D3 line 48-55*/
-> +       "","i3c-cpu-mux1-oe-n",
-> +       "","i3c-cpu-mux1-select",
-> +       "","reset-control-bmc",
-> +       "","reset-control-cpu0-p0-mux",
-> +       /*D4-D7 line 56-63*/
-> +       "","reset-control-cpu0-p1-mux",
-> +       "","reset-control-e1s-mux",
-> +       "power-host-good","reset-control-mb-mux",
-> +       "","reset-control-smb-e1s",
-> +       /*E0-E3 line 64-71*/
-> +       "","reset-control-smb-e1s",
-> +       "host-ready-n","reset-control-srst",
-> +       "presence-e1s-0","reset-control-usb-hub",
-> +       "","reset-control",
-> +       /*E4-E7 line 72-79*/
-> +       "presence-e1s-1","reset-control-cpu-kbrst",
-> +       "","reset-control-platrst",
-> +       "","bmc-jtag-mux-select-0",
-> +       "","bmc-jtag-mux-select-1",
-> +       /*F0-F3 line 80-87*/
-> +       "","bmc-jtag-select",
-> +       "","bmc-ready-n",
-> +       "","bmc-ready-sgpio",
-> +       "","rt-cpu0-p0-force-enable",
-> +       /*F4-F7 line 88-95*/
-> +       "presence-asic-modules-0","rt-cpu0-p1-force-enable",
-> +       "presence-asic-modules-1","bios-debug-msg-disable",
-> +       "","uart-control-buffer-select",
-> +       "","ac-control-n",
-> +       /*G0-G3 line 96-103*/
-> +       "FM_CPU_CORETYPE2","",
-> +       "FM_CPU_CORETYPE1","",
-> +       "FM_CPU_CORETYPE0","",
-> +       "FM_BOARD_REV_ID5","",
-> +       /*G4-G7 line 104-111*/
-> +       "FM_BOARD_REV_ID4","",
-> +       "FM_BOARD_REV_ID3","",
-> +       "FM_BOARD_REV_ID2","",
-> +       "FM_BOARD_REV_ID1","",
-> +       /*H0-H3 line 112-119*/
-> +       "FM_BOARD_REV_ID0","",
-> +       "","","","","","",
-> +       /*H4-H7 line 120-127*/
-> +       "","",
-> +       "reset-control-pcie-expansion-3","",
-> +       "reset-control-pcie-expansion-2","",
-> +       "reset-control-pcie-expansion-1","",
-> +       /*I0-I3 line 128-135*/
-> +       "reset-control-pcie-expansion-0","",
-> +       "FM_EXP_SLOT_ID1","",
-> +       "FM_EXP_SLOT_ID0","",
-> +       "","",
-> +       /*I4-I7 line 136-143*/
-> +       "","","","","","","","",
-> +       /*J0-J3 line 144-151*/
-> +       "","","","","","","","",
-> +       /*J4-J7 line 152-159*/
-> +       "SLOT_ID_BCB_0","",
-> +       "SLOT_ID_BCB_1","",
-> +       "SLOT_ID_BCB_2","",
-> +       "SLOT_ID_BCB_3","",
-> +       /*K0-K3 line 160-167*/
-> +       "","","","","","","","",
-> +       /*K4-K7 line 168-175*/
-> +       "","","","","","","","",
-> +       /*L0-L3 line 176-183*/
-> +       "","","","","","","","",
-> +       /*L4-L7 line 184-191*/
-> +       "","","","","","","","",
-> +       /*M0-M3 line 192-199*/
-> +       "","","","","","","","",
-> +       /*M4-M7 line 200-207*/
-> +       "","","","","","","","",
-> +       /*N0-N3 line 208-215*/
-> +       "","","","","","","","",
-> +       /*N4-N7 line 216-223*/
-> +       "","","","","","","","",
-> +       /*O0-O3 line 224-231*/
-> +       "","","","","","","","",
-> +       /*O4-O7 line 232-239*/
-> +       "","","","","","","","",
-> +       /*P0-P3 line 240-247*/
-> +       "","","","","","","","",
-> +       /*P4-P7 line 248-255*/
-> +       "","","","","","","","";
-> +};
-> --
-> 2.25.1
->
+Thanks.
+
+-Fenghua
