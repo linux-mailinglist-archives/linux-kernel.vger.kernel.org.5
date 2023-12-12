@@ -2,279 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AF480EE5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F80680EE58
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376432AbjLLOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
+        id S1376443AbjLLOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376422AbjLLOFz (ORCPT
+        with ESMTP id S1376427AbjLLOFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:05:55 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA6B10D;
-        Tue, 12 Dec 2023 06:06:00 -0800 (PST)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCDijOZ020785;
-        Tue, 12 Dec 2023 14:05:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=1+juYWvyL7MNas3z0pfjsxUyCZ3f5nu9zcOSffVZhik=;
- b=SnSQ7xQaBtM57W2NEGDYH1vovQDakfiu8aKg48yf5vGnSOtXLHkKC3ZvoNMdzoJrN2H/
- uO6mVPA4Y/KJTaVtEhjYmwHYyisLiXlxISgOUGwQwMStA77+CFQCUwOHDWmV6Ly4ORzL
- 8UzSKV/ZKwGGQMxUdJZ3Y6+znhtBn4Ra8+9jCW0N7sFP4MmXrEnX9c1PHyiMIFjK1WQP
- y/cxMsLacAA6WXvHQ9RYqapJTmd5x47WtgJ70Yac1aasUJstt16yLAHBIz1IywVWr41h
- R0CopQ1tirhtt8A/8Knf0naTJqrkC24Ea1w/o1yjAuZv6HBn/jQXrw/PzPIO7g1sK0SO Vg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvf5c5p7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 14:05:49 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCDxgGY012806;
-        Tue, 12 Dec 2023 14:05:49 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep6mnm1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Dec 2023 14:05:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1qR7m85Sa3zpAEUtjHCvOFSAXCDGIFibdRrnObRBuL8IJnBXtoVjpZu0ExUvLQt49wQJqZVIE0Wrg1WSouMwnHyZE3osbs4F7iuVRq+RX7imi05NaF0HabBIcpm8hyBwfe8hPL9SPJYkSL92DdGA2XfAavpSr50BGNJoyT2B42C8obPUSmnP5gwZqJCC+zZBKKzstLrJRJDvcidqhgViUzHz23lCOZ4LCT7/92OVNMC4B2Q39Wldb1KavW5tlArBNAydnyjPxji05NunWBLO+BtG3dY3KDx7iYomCt5MUaXEQc9BPOX6MnFY/P9iWuG0wDSSGHV7tVsdmLOwbeeeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1+juYWvyL7MNas3z0pfjsxUyCZ3f5nu9zcOSffVZhik=;
- b=dwyVGKL2XHZMa0oUSfgsKtn7xcANXd7Nt8P37EsVtcMYPDw4N0CmBcyTElD74yRFCJ+QH8e8ufLTF8mO28pZPD9e6pakvlKBHWjhq0tOyAB3sjBlmaSc3uDify8MsVV1cNbQdU1xu2sHJsAqHf1ocHh6rgeMR9OL6+1LOdm7Am09og04+Zl5hSlj3uFXiYRFLBJxjH8wwG+aEP/O+gOIg1b9u1tibyWrCfAuKpVrHz8YyZrvD18mp13lGs9aYL2IFk3xeRBDuKpTIgOBikxfOY0n9kGHL4L89G4VSz5e5HSel0Ad8xQ02MWjzoFHXEuiDzjiUr6I8QdFDkjsPex4Jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1+juYWvyL7MNas3z0pfjsxUyCZ3f5nu9zcOSffVZhik=;
- b=PNW5PRbweOhPdGPT48Pb5aTVyuIabUlkhqnjTluWb70QFyfPEfER9jkCAkXmQhsFjgM62/C5hqXV3E50WPZ70GxesAdiS0qwungSF+GH6WyxV/XdMNogzU5ibPd6VnzwSE2tNuxXu8EIX6zbkgNiRYpuW1oYOxtGwKac0YDk/Cw=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by SA2PR10MB4444.namprd10.prod.outlook.com (2603:10b6:806:11f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
- 2023 14:05:46 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 14:05:46 +0000
-Date:   Tue, 12 Dec 2023 09:05:43 -0500
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Jeff Layton <jlayton@kernel.org>, NeilBrown <neilb@suse.de>
-Cc:     Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>,
-        Tom Talpey <tom@talpey.com>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhi Li <yieli@redhat.com>
-Subject: Re: [PATCH] nfsd: properly tear down server when write_ports fails
-Message-ID: <ZXhot6zUt6G1xaos@tissot.1015granger.net>
-References: <20231211-nfsd-fixes-v1-1-c87a802f4977@kernel.org>
- <170233558429.12910.17902271117186364002@noble.neil.brown.name>
- <a2b59634a697ae07a315d6f663afaff5cd5bf375.camel@kernel.org>
- <ZXhlNtQ9o+howGbH@tissot.1015granger.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXhlNtQ9o+howGbH@tissot.1015granger.net>
-X-ClientProxiedBy: CH0PR03CA0393.namprd03.prod.outlook.com
- (2603:10b6:610:11b::21) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+        Tue, 12 Dec 2023 09:05:48 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB02DFD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:05:53 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8BFF8E0002;
+        Tue, 12 Dec 2023 14:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702389952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8VgCEu9GpjqJrf+SumYZk2dGW/A3Nbxfr4XJ0APRxZs=;
+        b=BQnsfRN2Q+kLg7bzZvez/qL4QLdRn+pFSg8c1FZ/YF2OVoSyOJAj1R6rwt0uDPArfPQ3vV
+        6wdhNvf3KCjEprppYqoafwkNdoW9n8zC5mkOJ4TruaZba/r3rWnjcary3RAVnMeqrwGHf2
+        tfRDonIUwsxe0kJXcaeSsZjgLkEPIZ2/EcZ4THs/4O+YwD7pB0ouWUpBm7Bp+h0TN3teAq
+        xA6Ylq/MDwHbsgTawPYFosctRZgN0KQoQFMoRG1wloIzW/QPSq33RUetApKQRLloBfti8+
+        qiTksBELzNZlWb7dslWsuonqffvdoh05NNtouedFOAgHf3Q5fPTJQRZv1sDHlQ==
+Date:   Tue, 12 Dec 2023 15:05:45 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v6 20/40] mtd: rawnand: add support for ts72xx
+Message-ID: <20231212150545.61806147@xps-13>
+In-Reply-To: <29970d694d155dee0c76612f453eaa06a929e2c1.camel@maquefel.me>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+        <20231212-ep93xx-v6-20-c307b8ac9aa8@maquefel.me>
+        <2023121220-shine-caviar-68dc@gregkh>
+        <29970d694d155dee0c76612f453eaa06a929e2c1.camel@maquefel.me>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SA2PR10MB4444:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11e0b59d-6ad0-49f0-3da5-08dbfb1b6ff0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XIr41XMUqKORwoVz3B59Epb0xxNMzrIt42kuKXkrMfP5sih2q1OLFQM+v1whLhhr0zwXs3Tfn6n1XXnVShpxxIvBjj9Zhoo5wT4Jb9Ax0mL6B7pxB02sgn5nXCXrb8gHF/YjzzVmNfNPDDarnLMsadzgGDxtaK63vh0JX0naQobH76gYy8t9TLlsvGDbK/4G01T3truL02rx9im/1Wui/wFxPho0F0S1C0UEixlxXBg4vff5+dbs2Lkc4Z+WzyIwN+iVB9f0yJd3in4dRLsuqfaeuChcINCtyblEc5iapi5zkunNVod5rc7K8J6M7vAI+hdpntPnS0+t4CDzYx5ySxu9Pze67ZwddWvNvWIo0E2atOhIY3zyfaTseWaiNnGFoMky4mn7MPCh1vfgBXQwG3XSjwQUJ9aqIZfUSYoXIxm+JUCJVKNYWK6nCFeKYfbJ660j5kwzb61HAeotnmSlmRF6Oc2P04SJcVxtaPvIBYiJmc7CIZzPg3gyDjLt+s/mSekQbeEuq8OrpDTWZWfrcUSSD6d980QcP+zg70vs3nxsYhTFEfEgTjVSv+6zLSQhSVV2viQAMHHQyz7ojOK0bw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(6506007)(6512007)(9686003)(44832011)(8676002)(5660300002)(4326008)(8936002)(41300700001)(4001150100001)(2906002)(966005)(6486002)(478600001)(26005)(110136005)(38100700002)(316002)(6666004)(66946007)(54906003)(66476007)(66556008)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PUnwLMWZsESROWvtNnuoodxCOHPmkwzOnCWcGGm6sf0d3l/OqC9fRD4hX6sC?=
- =?us-ascii?Q?RSWtIqSw7JvsvX1feERxOcr1JFZBd+V+TFZaWnZtiUS2wg67+Fh/Y4V1TFj+?=
- =?us-ascii?Q?7e23NfCC0mC+EVo6XQx/KKph2C4JUR7+CQMTbP4vmfqnFsyWvsWy5mNKjkZp?=
- =?us-ascii?Q?Ocr12Vs9UZ9TncOlXFS71NuwbscQwKu/3nBvbArlKtRoLh9BOJ3ZDMyecVC4?=
- =?us-ascii?Q?2i+fGdgdp9C9GogDuK3UK9/JIcDH4/PMmvkETjJuxd8yKSSsWndeixcGHkhm?=
- =?us-ascii?Q?Ytej5QFUMz5UxsONl9AB5TVWuhfvJlqKRAOoz879frlqj5yc9ldKg1oxOF6p?=
- =?us-ascii?Q?8N/eEkWGDgf3lvQk3nYkmkzOa4uCM4tTHrExB4Xmj6k5mDVk6aReyLEaD1TG?=
- =?us-ascii?Q?RSAZJkeSdI+46UEMWXYUuaAxMn60OOMKbak5n35GqOdvp4RCzDran24aaGIy?=
- =?us-ascii?Q?Ulsszymh3RuG7xuaJC2O9Fr++yRjiORNZZTcYu5OrS0+bP2qQCRAoDjmPJBi?=
- =?us-ascii?Q?kFdOz7AhJz56oO6Hlvod/07+iVAFpUewF+kibrM4MJDl+5Y6ZH+HGSDd6gjx?=
- =?us-ascii?Q?BPN94DCHmNhCJTOFV0WXv3PXCQc4UkUoxw94i5gGNowLzUFqi9o5b6/uxkMT?=
- =?us-ascii?Q?XqNwEFxy8qbBkx/NEFXChG1s7l5pe5TDmb4IfkWPW+8Zqz0ydRs9o1tkoOTz?=
- =?us-ascii?Q?afGtQIOZ93lfW5p+oJLHKEAQ4Oxsbi1+VXSzF+P6egHZn/moxkq73zfjBUky?=
- =?us-ascii?Q?D7MoRxZr/V8OW9jlEwJWoogy/3X1/lc2ZcDN7FEFDQ4zJ5R5Pypy/L7ob1Em?=
- =?us-ascii?Q?qqrNyYKwbc4N9GyOpnKv6ZMOGiyhAZyNcbK32Yf2qUhNYRlAXX/NZIjKP9U7?=
- =?us-ascii?Q?Xbv8eb0/Wog7Ioc0EAIyqSifyefKb/Hascr6tjrnGZz3bAeKEk0AIOWWij7K?=
- =?us-ascii?Q?b64YNWTmz1QbQAiRxKx+8JgpoXcTgEf/BA5W8aheWc2rYDzguzobI49ugnlA?=
- =?us-ascii?Q?G87qI96vk2xt85rLCRQ3QBBOCobT8QIQoqepeCfsFxy56sGiytMavQTlGJ7R?=
- =?us-ascii?Q?rAogFfPFZA4pxNd/4kROd4+Eki+cpPWszMXpjs3rUXU2/TnjffsHa6cVu7I/?=
- =?us-ascii?Q?pOhyqErtHIxruvksdfJpnCqXr/u/BKVhmHIfLcyb9HwdJwtgz3bhuejNHXXO?=
- =?us-ascii?Q?EMRFze/l5M1i6vm088p7CpUBOcgQBUT+ygy5Q0bZ1QTY+02L30y7nCEeQUqD?=
- =?us-ascii?Q?15bN+mfu2XeIfjP18OTqVGF5ud+L0SzGZI4QQKzUjkUfIv87TS33jQWPgW8+?=
- =?us-ascii?Q?+hAnorLUuGroXdBxwxt/QZu59MCh7u/NCk6YslZdHhK6gMBgP9TDAxfqzeDi?=
- =?us-ascii?Q?ULCp7AHLilyrl4TTOR1ufMbt56kz3RC/jxQjmXSb9PKKs05LBcvKxx/jcKRO?=
- =?us-ascii?Q?UvUGZKdyh/4FNfcvX5lctKtwNKBztMYF4APa4G7/XZm6F2t/+l6v211wtfcK?=
- =?us-ascii?Q?YNSzxtbvTo+ZBzuLPtqEqwnj7ZBytaw+/bM9CiJfJlamQZuim/hOra0Kvkv8?=
- =?us-ascii?Q?GV7FSNENdOK2BnfUhZh1yfA2ZSq2d18HsxDuJUsYqI1GwG5nIdI8cDw7VIp3?=
- =?us-ascii?Q?hg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: QNjl+h8jbyeFbl+Z2juqNHNofirwBGO3qVEcjizWErTvUe5wcCYCWc6QW981DhGm25BC1B5h6uZlVnpzjqCEcfiiMiC+hd/5NvlswaPyOtDMZeBNbKtzz2RKqnq0rFOno9Za5BA/EY2PKI3QdvoImuTP0KzdI/flBEFcVYzQVg/iYerKCx22st2LXfj/qRpjgWgYSgfJTv9yTGb8S3Lud1gBKM6/z/qd+iSiCxN2LHTBp1787RZ/EF/wVc80lwyDEEwZx6h2wpcfVnhHZZ8+FHq/AX8cYI78+duTZEcKawMuYIr0KMCqYk9F2GUGurqAgQOfAfCUpGoq244/bnOEehD0ZmiIRMmcjgQIs1Icl5PXf63GqVDobsUb7Dyod90I9LIYDSLuWdaSSOd5TZeN5VjNNTls1Qq6lFlLB02Si7IYXpmlFnIpfOF4Zpzv5nt2/aMj4zZMyATYJFKGY7jQg+lGUg9Qvm7Hsl1z4Zpimn2lHuNEPpY4O5kRUPy4qxowWCz+bicHC+lrvRw3HU/2QDcwOsfRyC9DuuhMKszA4uFsIW7mkUDIS2VvggjWuFLAoZVxL7iO6vaJa1D2t8e2j3T9quZz76UiWAMWD6Rt6qJTlz49sn3IogZRftlO1idYiYyKm/TPLd2qgKEi1WyVPf7z8+ks6E5ut65u/zCih1v1QFVUB1Zn8vKzRrf61pc0iAeFxX3mRGYXFLBpKglqCxKhqFpXFIN0htSn8lcvx5XOdDbnadYBj3F7enw+05FBQypxzU8TZ3KxFh06b5x9TCR4o/CfibaOzkm3uSuyNMsSLPm8zRxbJ6Mop13MYl9EajjSCmCS13Obj0Gwr8+dvnXsG/fhiAKYXH/haGk5A5IkBh7fc7OdRQ65zcwli2syJlbsqJLs/EhUdr5Gx9tuXg==
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11e0b59d-6ad0-49f0-3da5-08dbfb1b6ff0
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 14:05:46.5176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zWFQ9qRAdRBsSC4G7tD/ECLMH9vB+IsHBesPNMbe+xntWLNhO+jH++5gcJYb4s2AbVa8ETQWrQpVC+NRVuscXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4444
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_07,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312120107
-X-Proofpoint-ORIG-GUID: tI4DgAjcx6FJQc_v511zv_-Mq0U1cGq-
-X-Proofpoint-GUID: tI4DgAjcx6FJQc_v511zv_-Mq0U1cGq-
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 08:50:46AM -0500, Chuck Lever wrote:
-> On Mon, Dec 11, 2023 at 06:11:04PM -0500, Jeff Layton wrote:
-> > On Tue, 2023-12-12 at 09:59 +1100, NeilBrown wrote:
-> > > On Tue, 12 Dec 2023, Jeff Layton wrote:
-> > > > When the initial write to the "portlist" file fails, we'll currently put
-> > > > the reference to the nn->nfsd_serv, but leave the pointer intact. This
-> > > > leads to a UAF if someone tries to write to "portlist" again.
-> > > > 
-> > > > Simple reproducer, from a host with nfsd shut down:
-> > > > 
-> > > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > > > 
-> > > > The kernel will oops on the second one when it trips over the dangling
-> > > > nn->nfsd_serv pointer. There is a similar bug in __write_ports_addfd.
-> > > > 
-> > > > This patch fixes it by adding some extra logic to nfsd_put to ensure
-> > > > that nfsd_last_thread is called prior to putting the reference when the
-> > > > conditions are right.
-> > > > 
-> > > > Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_put()")
-> > > > Closes: https://issues.redhat.com/browse/RHEL-19081
-> > > > Reported-by: Zhi Li <yieli@redhat.com>
-> > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > > ---
-> > > > This should probably go to stable, but we'll need to backport for v6.6
-> > > > since older kernels don't have nfsd_nl_rpc_status_get_done. We should
-> > > > just be able to drop that hunk though.
-> > > > ---
-> > > >  fs/nfsd/nfsctl.c | 32 ++++++++++++++++++++++++++++----
-> > > >  fs/nfsd/nfsd.h   |  8 +-------
-> > > >  fs/nfsd/nfssvc.c |  2 +-
-> > > >  3 files changed, 30 insertions(+), 12 deletions(-)
-> > > 
-> > > This is much the same as
-> > > 
-> > > https://lore.kernel.org/linux-nfs/20231030011247.9794-2-neilb@suse.de/
-> > > 
-> > > It seems that didn't land.  Maybe I dropped the ball...
-> > 
-> > Indeed it is. I thought the problem seemed familiar. Your set is
-> > considerably more comprehensive. Looks like I even sent some Reviewed-
-> > bys when you sent it.
-> > 
-> > Chuck, can we get these in or was there a problem with them?
-> 
-> Offhand, I'd say either I was waiting for some review comments
-> to be addressed or the mail got lost (vger or Exchange or I
-> accidentally deleted the series). I'll go take a look.
+Hello,
 
-I reviewed the thread:
+nikita.shubin@maquefel.me wrote on Tue, 12 Dec 2023 11:35:48 +0300:
 
-https://lore.kernel.org/linux-nfs/20231030011247.9794-1-neilb@suse.de/
+> Hello Greg!
+>=20
+> On Tue, 2023-12-12 at 09:30 +0100, Greg Kroah-Hartman wrote:
+> > On Tue, Dec 12, 2023 at 11:20:37AM +0300, Nikita Shubin via B4 Relay
+> > wrote: =20
+> > > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> > >=20
+> > > Technologic Systems has it's own nand controller implementation in
+> > > CPLD.
+> > >=20
+> > > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> > > ---
+> > > =C2=A0drivers/mtd/nand/raw/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 7 +
+> > > =C2=A0drivers/mtd/nand/raw/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
+> > > =C2=A0drivers/mtd/nand/raw/technologic-nand-controller.c | 220
+> > > +++++++++++++++++++++
+> > > =C2=A03 files changed, 228 insertions(+)
+> > >=20
+> > > diff --git a/drivers/mtd/nand/raw/Kconfig
+> > > b/drivers/mtd/nand/raw/Kconfig
+> > > index cbf8ae85e1ae..3937c10dea1c 100644
+> > > --- a/drivers/mtd/nand/raw/Kconfig
+> > > +++ b/drivers/mtd/nand/raw/Kconfig
+> > > @@ -449,6 +449,13 @@ config MTD_NAND_RENESAS
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Enables suppor=
+t for the NAND controller found on Renesas
+> > > R-Car
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Gen3 and RZ/N1=
+ SoC families.
+> > > =C2=A0
+> > > +config MTD_NAND_TS72XX
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tristate "ts72xx NAND cont=
+roller"
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0depends on ARCH_EP93XX && =
+HAS_IOMEM
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0help
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Enables support for=
+ NAND controller on ts72xx SBCs.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This is a legacy dr=
+iver based on gen_nand. =20
+> >=20
+> > Why is a new "legacy driver" being written these days?=C2=A0 Why not do=
+ it
+> > properly? =20
+>=20
+> Sorry, my bad, description is a leftover from older description (when i
+> was allowed to submit a legacy one).
+>=20
+> The driver is mostly new, shiny and approved by Miquel:
+>=20
+> https://lore.kernel.org/lkml/20231004103911.2aa65354@xps-13/
+>=20
+> The KConfig description should be fixed.
 
-From the looks of it, I was expecting Neil to address a couple of
-review comments and repost. These are the two comments that stand
-out to me now:
+Indeed, later submissions carried a brand new implementation which no
+longer leverages any legacy hook. The Kconfig description is wrong,
+good catch.
 
-On 1/5:
-
-> > Then let's add
-> > 
-> > Fixes: ec52361df99b ("SUNRPC: stop using ->sv_nrthreads as a refcount")
-> > 
-> > to this one, since it addresses a crasher seen in the wild.
-> 
-> Sounds good.
-> 
-> > > but it won't fix the hinky error cleanup in nfsd_svc. It looks like that
-> > > does get fixed in patch #4 though, so I'm not too concerned.
-> > 
-> > Does that fix also need to be backported?
-> 
-> I think so, but we might want to split that out into a more targeted
-> patch and apply it ahead of the rest of the series. Our QA folks seem to
-> be able to hit the problem somehow, so it's likely to be triggered by
-> people in the field too.
-
-This last paragraph requests a bit of reorganization to enable an
-easier backport.
-
-And on 2/5:
-
-> > > > +struct pool_private {
-> > > > +	struct svc_serv *(*get_serv)(struct seq_file *, bool);
-> > > 
-> > > This bool is pretty ugly. I think I'd rather see two operations here
-> > > (get_serv/put_serv). Also, this could use a kerneldoc comment.
-> > 
-> > I agree that bool is ugly, but two function pointers as function args
-> > seemed ugly, and stashing them in 'struct svc_serv' seemed ugly.
-> > So I picked one.  I'd be keen to find an approach that didn't require a
-> > function pointer.
-> > 
-> > Maybe sunrpc could declare
-> > 
-> >    struct svc_ref {
-> >          struct mutex mutex;
-> >          struct svc_serv *serv;
-> >    }
-> > 
-> > and nfsd could use one of those instead of nfsd_mutex and nfsd_serv, and
-> > pass a pointer to it to the open function.
-> > 
-> > But then the mutex would have to be in the per-net structure.  And maybe
-> > that isn't a bad idea, but it is a change...
-> > 
-> > I guess I could pass pointers to nfsd_mutex and nn->nfsd_serv to the
-> > open function....
-> > 
-> > Any other ideas?
-> 
-> I think just passing two function pointers to svc_pool_stats_open, and
-> storing them both in the serv is the best solution (for now). Like you
-> said, there are no clean options here. That function only has one caller
-> though, so at least the nastiness will be confined to that.
-> 
-> Moving the mutex to be per-net does make a lot of sense, but I think
-> that's a separate project. If you decide to do that and it allows you to
-> make a simpler interface for handling the get/put_serv pointers, then
-> the interface can be reworked at that point.
-
-The other requests I see in that thread have already been answered
-adequately.
-
-
--- 
-Chuck Lever
+Thanks,
+Miqu=C3=A8l
