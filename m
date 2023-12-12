@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D9980ED7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A1380ED80
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbjLLN0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
+        id S232514AbjLLN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:27:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjLLN0y (ORCPT
+        with ESMTP id S232253AbjLLN1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:26:54 -0500
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB3BA8;
-        Tue, 12 Dec 2023 05:26:59 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0VyMZ.ND_1702387614;
-Received: from 30.221.129.163(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VyMZ.ND_1702387614)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Dec 2023 21:26:55 +0800
-Message-ID: <6064a6d7-8790-cf15-2d2e-eddb04e4e668@linux.alibaba.com>
-Date:   Tue, 12 Dec 2023 21:26:53 +0800
+        Tue, 12 Dec 2023 08:27:12 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4C9EB;
+        Tue, 12 Dec 2023 05:27:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702387636;
+        bh=xDgSLNOEDoRbx3eokyLAR16GqDH2Uv/Z7DBLvAgMnGg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WwNIE1XK3CLrmcACMu8onN3StZKF02LFMGr5o8eV8qZKQ95qO1394/W7wFymVt/Gv
+         NkzR7gbMzj1tKHer8FN2c3/cXgLdj1kkoUv2/5tUIpTbm34fbyUSq0HftfnnNH3lJU
+         awuTCSDgv2y2LUGmmKRXrqxvBNR2hJFs/g7InuAA1IeqN2GhcAUpmIHivkjXJKIIqd
+         +Giz0c7dI2j3PZ61m/57b2R5OjTiKfqWfi9lUow0b8heqUaEOhJYk2B+UN9C0Vj9aV
+         r37GQLFxz1yYQ05ytLQVo1FmW5hhJkqe13aElSSMa5d6mMP/Wi0PQTDIvlY1epOqM5
+         +DBu82DsKRVPQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id DEE23378143B;
+        Tue, 12 Dec 2023 13:27:15 +0000 (UTC)
+Message-ID: <1e05cb3e-3ef2-45ca-9754-add6d0e185f0@collabora.com>
+Date:   Tue, 12 Dec 2023 14:27:15 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH v3 31/35] net: smc: optimize
- smc_wr_tx_get_free_slot_index()
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Alexandra Winter <wintera@linux.ibm.com>
-References: <20231212022749.625238-1-yury.norov@gmail.com>
- <20231212022749.625238-32-yury.norov@gmail.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <20231212022749.625238-32-yury.norov@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 17/17] drm/mediatek: Add comments for the structures
+Content-Language: en-US
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        CK Hu <ck.hu@mediatek.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chen-Yu Tsai <wenst@chromium.org>, Sean Paul <sean@poorly.run>,
+        Fei Shao <fshao@chromium.org>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231212121957.19231-1-shawn.sung@mediatek.com>
+ <20231212121957.19231-18-shawn.sung@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231212121957.19231-18-shawn.sung@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/12 10:27, Yury Norov wrote:
-
-> Simplify the function by using find_and_set_bit() and make it a simple
-> almost one-liner.
+Il 12/12/23 13:19, Hsiao Chien Sung ha scritto:
+> Add comments for the structures to improve readability.
 > 
-> While here, drop explicit initialization of *idx, because it's already
-> initialized by the caller in case of ENOLINK, or set properly with
-> ->wr_tx_mask, if nothing is found, in case of EBUSY.
-> 
-> CC: Tony Lu <tonylu@linux.alibaba.com>
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 > ---
->   net/smc/smc_wr.c | 10 +++-------
->   1 file changed, 3 insertions(+), 7 deletions(-)
+>   drivers/gpu/drm/mediatek/mtk_disp_ovl.c     | 21 +++++++++++++-
+>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 22 ++++++++++++--
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h | 32 +++++++++++++++++++++
+>   drivers/gpu/drm/mediatek/mtk_drm_drv.h      | 15 ++++++++++
+>   drivers/gpu/drm/mediatek/mtk_ethdr.c        | 11 +++++++
+>   5 files changed, 97 insertions(+), 4 deletions(-)
 > 
-> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
-> index 0021065a600a..b6f0cfc52788 100644
-> --- a/net/smc/smc_wr.c
-> +++ b/net/smc/smc_wr.c
-> @@ -170,15 +170,11 @@ void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
+
+..snip..
+
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> index 38d08796fae4..af80c9e50d36 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> @@ -46,6 +46,38 @@ enum mtk_ddp_comp_type {
 >   
->   static inline int smc_wr_tx_get_free_slot_index(struct smc_link *link, u32 *idx)
->   {
-> -	*idx = link->wr_tx_cnt;
->   	if (!smc_link_sendable(link))
->   		return -ENOLINK;
-> -	for_each_clear_bit(*idx, link->wr_tx_mask, link->wr_tx_cnt) {
-> -		if (!test_and_set_bit(*idx, link->wr_tx_mask))
-> -			return 0;
-> -	}
-> -	*idx = link->wr_tx_cnt;
-> -	return -EBUSY;
+>   struct mtk_ddp_comp;
+>   struct cmdq_pkt;
 > +
-> +	*idx = find_and_set_bit(link->wr_tx_mask, link->wr_tx_cnt);
-> +	return *idx < link->wr_tx_cnt ? 0 : -EBUSY;
->   }
->   
->   /**
+> +/* struct mtk_ddp_comp_funcs - function pointers of the ddp components
+> + * @clk_enable: enable the clocks of the component
+> + * @clk_disable: disable the clocks of the component
+> + * @config: configure the component
+> + * @start: start (enable) the component
+> + * @stop: stop (disable) the component
+> + * @register_vblank_cb: to register a callback function when vblank irq occurs
+> + * @unregister_vblank_cb: to unregister the callback function from the vblank irq
+> + * @enable_vblank: enable vblank irq
+> + * @disable_vblank: disable vblank irq
+> + * @supported_rotations: return rotation capability of the component
+> + * @layer_nr: how many layers the component supports
+> + * @layer_check: to check if the state of the layer is valid for the component
+> + * @layer_config: to configure the component according to the state of the layer
+> + * @gamma_set: to set gamma for the component
+> + * @bgclr_in_on: turn on background color
+> + * @bgclr_in_off: turn off background color
+> + * @ctm_set: set color transformation matrix
+> + * @dma_dev_get: return the device that uses direct memory access
+> + * @get_formats: get the format that is currently in use by the component
+> + * @get_num_formats: get number of the formats that the component supports
+> + * @connect: connect the sub modules of the component
+> + * @disconnect: disconnect the sub modules of the component
+> + * @add: add the device to the component (mount them in the mutex)
+> + * @remove: remove the device from the component (unmount them from the mutex)
+> + * @encoder_index: get the encoder index of the component
+> + * @crc: return the start of crc array
+> + * @crc_cnt: how many CRCs the component supports
+> + * @crc_entry: get the pointer to the crc entry
+> + * @crc_read: call this function to read crc from the hardware component
+> + */
+>   struct mtk_ddp_comp_funcs {
+>   	int (*power_on)(struct device *dev);
+>   	void (*power_off)(struct device *dev);
 
-Thank you! Yury.
+Please rebase over the latest upstream kernel, as it doesn't apply like this.
 
-Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
+After which:
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
