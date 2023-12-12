@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4743580E8F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FFE80E8F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346128AbjLLKSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57124 "EHLO
+        id S1346188AbjLLKVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjLLKSs (ORCPT
+        with ESMTP id S230509AbjLLKU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:18:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E02A6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:18:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70E53C433C7;
-        Tue, 12 Dec 2023 10:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702376335;
-        bh=BDA09IhOdJW1cajZlzV19+AKYjAHgvythLG7ITpYD98=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=opux/XgfjUHFZVdwwdF32fgT8kROdV23JLpSodnxXNW1p9Ts2iGOQvYSKzLcpvGvx
-         G2vB9h093GLyD1BSff6rqzZWok2ekTyi0z9QqE+vVFZJKI2erjVidH3ri/MrB9Qng+
-         ap6y2Vqm/q2f1W0q2y/Wyb2ML5IX83HpvAnb3TvjfTDTraqKCpjLIOxIzZYUK3tU4q
-         +AKtQnX/JfXUyBXgKJDThmSQZS+b18SqxrG2TfCLKxR0vidNMQTsz6mv89AZrWRXoO
-         k0ngUxsjIqqO+g/UkpsRmNY9dRd3gVH/TNyJ9r0KAwGjabnzjHFXwk4WWEmLdf98Eu
-         COTdTV31JHAKA==
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Frank Li <Frank.Li@nxp.com>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>, bhelgaas@google.com,
-        imx@lists.linux.dev, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
-        roy.zang@nxp.com
-Subject: Re: [PATCH v6 0/4] PCI: layerscape: Add suspend/resume support for ls1043 and ls1021
-Date:   Tue, 12 Dec 2023 11:18:47 +0100
-Message-Id: <170237631077.45230.13455897797263324456.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231204160829.2498703-1-Frank.Li@nxp.com>
-References: <20231204160829.2498703-1-Frank.Li@nxp.com>
+        Tue, 12 Dec 2023 05:20:59 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698A8A6;
+        Tue, 12 Dec 2023 02:21:02 -0800 (PST)
+X-UUID: 67f0c0c141af49b2b31f65256adb42e5-20231212
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:bb989384-f8f7-4514-935c-f823e8747b45,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.33,REQID:bb989384-f8f7-4514-935c-f823e8747b45,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:364b77b,CLOUDID:12441b61-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:2312121820440JAM3HPF,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|102,
+        TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: 67f0c0c141af49b2b31f65256adb42e5-20231212
+X-User: shitao@kylinos.cn
+Received: from kylin-pc.. [(112.64.161.44)] by mailgw
+        (envelope-from <shitao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 205230405; Tue, 12 Dec 2023 18:20:42 +0800
+From:   shitao <shitao@kylinos.cn>
+To:     gregkh@linuxfoundation.org
+Cc:     alcooperx@gmail.com, chunfeng.yun@mediatek.com,
+        justin.chen@broadcom.com, kernel-bot@kylinos.cn,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-usb@vger.kernel.org, shitao@kylinos.cn
+Subject: [PATCH] usb: gadget: udc: bdc: fix comment typo
+Date:   Tue, 12 Dec 2023 18:19:55 +0800
+Message-Id: <20231212101955.3115267-1-shitao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2023121236-earful-email-ea09@gregkh>
+References: <2023121236-earful-email-ea09@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Dec 2023 11:08:25 -0500, Frank Li wrote:
-> Add suspend/resume support for ls1043 and ls1021.
-> 
-> Change log see each patch
-> 
-> Frank Li (4):
->   PCI: layerscape: Add function pointer for exit_from_l2()
->   PCI: layerscape: Add suspend/resume for ls1021a
->   PCI: layerscape(ep): Rename pf_* as pf_lut_*
->   PCI: layerscape: Add suspend/resume for ls1043a
-> 
-> [...]
+Fix comment typo in bdc_core.c file.
+"dynamic" is misspelled as "dyanmic".
 
-Applied to controller/layerscape, thanks!
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: shitao <shitao@kylinos.cn>
+---
+ drivers/usb/gadget/udc/bdc/bdc_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1/4] PCI: layerscape: Add function pointer for exit_from_l2()
-      https://git.kernel.org/pci/pci/c/123971a193d9
-[2/4] PCI: layerscape: Add suspend/resume for ls1021a
-      https://git.kernel.org/pci/pci/c/6f8a41ba2623
-[3/4] PCI: layerscape(ep): Rename pf_* as pf_lut_*
-      https://git.kernel.org/pci/pci/c/762ef94b45d9
-[4/4] PCI: layerscape: Add suspend/resume for ls1043a
-      https://git.kernel.org/pci/pci/c/27b3bcbf8a79
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
+index 35a652807fca..874122f8baa3 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_core.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
+@@ -361,7 +361,7 @@ int bdc_reinit(struct bdc *bdc)
+ 	return ret;
+ }
+ 
+-/* Allocate all the dyanmic memory */
++/* Allocate all the dynamic memory */
+ static int bdc_mem_alloc(struct bdc *bdc)
+ {
+ 	u32 page_size;
+-- 
+2.34.1
 
-Thanks,
-Lorenzo
