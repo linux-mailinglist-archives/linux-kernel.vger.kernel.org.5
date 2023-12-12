@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA47480ECE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2DE80ED02
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376525AbjLLNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        id S1376533AbjLLNP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:15:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376524AbjLLNK3 (ORCPT
+        with ESMTP id S232626AbjLLNPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:10:29 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4FDF4;
-        Tue, 12 Dec 2023 05:10:31 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 031601C0007;
-        Tue, 12 Dec 2023 13:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702386629;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=atELFnnIPthqWoz2bHuN1bLUw36gajFDes0IJ/cmoaA=;
-        b=aW8gD0JRdbGr0NXlm1/llPif8XCoQDwRZP9mhQl30Bb1nhbVJ9YfMP6npegebx2FhmVNuG
-        cFg4LCrmzoeje3lshNHVDKmZf1t7Biz89foTOLpNkFOu5URuDBnXqAOnlyHnExKYETXjNc
-        6gyGq10FG130gPiUsJixdIYmMFH2V4BB/Nl3LhmsabozpPhSY0zlivgkaONO4sFxJMwpXV
-        qYDLYX6x6mQDv/xjZhsz2UwwzkGmbRLu9lNcEXBQKFsZHrg7kZvoEqhbyielS3ubVC5E8z
-        Fe+NxJa+T/WhdwwNnh1z2EWAC9Nj9Z2FVwER92sEp5heBmkwYlmjR9SSGd7MnQ==
-Date:   Tue, 12 Dec 2023 14:10:26 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Simon Horman <horms@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>
-Subject: Re: [RFC PATCH net-next v3 01/13] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <20231212141026.37e7af58@device.home>
-In-Reply-To: <67557c83-4318-4557-ac96-858053b5f89b@lunn.ch>
-References: <20231201163704.1306431-1-maxime.chevallier@bootlin.com>
-        <20231201163704.1306431-2-maxime.chevallier@bootlin.com>
-        <20231209170241.GA5817@kernel.org>
-        <20231211120623.03b1ced4@device.home>
-        <67557c83-4318-4557-ac96-858053b5f89b@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 12 Dec 2023 08:15:25 -0500
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09419A8;
+        Tue, 12 Dec 2023 05:15:32 -0800 (PST)
+Received: by mail-oo1-xc44.google.com with SMTP id 006d021491bc7-590a2a963baso2155443eaf.2;
+        Tue, 12 Dec 2023 05:15:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702386931; x=1702991731; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Tlr6Isxfo0VAkoIC5C/TmG4WBg0mKgqYVQoYoM3bP8=;
+        b=ApIsWLvVgaWZXoBBEEg1N/ai8y8vkK8J8oqkJ1jAGXK5u2WanGfPXzlXLwigzpCjHi
+         oa+5kSIAmbUxxcRRYxwJL/fsr3QblKePeAjBqjEa5zJkZc0CUMikElz6ZV3e1s9AyCPK
+         XfX9EExW8awH9G/UA9LMCfEu9XnUydzK0TVzw2daixHJNZN2ty2rmWJvW190mG9nZse9
+         7wYgi69uYhZuTYX7CtoledSdcYz8czlYPq1/EwR2DAcTll7MlwRc5nrekeSz27TXQI5F
+         lAfg50ZOmlctnS1KyqRkaUHiYLB5CE0/g0r7FdAEXtHOIBwEsSO1WgAKp079lhAC5k4v
+         2uXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702386931; x=1702991731;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Tlr6Isxfo0VAkoIC5C/TmG4WBg0mKgqYVQoYoM3bP8=;
+        b=vq0vfu2JYOWDB1Iq/FGA0YU9Ew6HEtsywxrJ+SEGVtPVMsssF1B6mM6Gz6geIR6HQ+
+         6y+rrQxFK4mC2+ShjAgHSq25+3gFLuQASCf4SppGrfEGjt6Jbbqp0Prwe4aBMzVqJ4T3
+         PzLy/IxMxUDfqevNpKCBhbmPOItlOFagpmre0bx+5khjekbaj9Dn2Rf6uNO9stdXUycO
+         kH30j7Ox10cyrl91pCHb2u9WuAWs97j7itDPpECSZ82KFOZ8RURT4wwaoSQh5wDKEjlj
+         Uo71wPf9os/Ga13K7bn1NM6PJyKBWIOfbCS2OPH+ldiIVv1DFs6sdt0L4p3bFjOE3hbt
+         FtXw==
+X-Gm-Message-State: AOJu0YxFAcMU+L/acQ3U1vgN8NrpDQl9DXHkYP9ONiTx3FKdfFYUhf1A
+        qfxJiSy00Q+mZqPwjtlPXO0=
+X-Google-Smtp-Source: AGHT+IF7PQtN+v6kqLCKt2uAXW/3k9UAzdlm/zMH+0rvmBCA/ikFfct6c1Mx8I7JdkL0dsQOaSFD/A==
+X-Received: by 2002:a05:6358:7e03:b0:170:ef25:aa5c with SMTP id o3-20020a0563587e0300b00170ef25aa5cmr670918rwm.17.1702386931118;
+        Tue, 12 Dec 2023 05:15:31 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id x20-20020aa793b4000000b006c4d2479bf8sm8095026pff.51.2023.12.12.05.15.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 05:15:30 -0800 (PST)
+From:   Menglong Dong <menglong8.dong@gmail.com>
+To:     andrii@kernel.org, yonghong.song@linux.dev
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <menglong8.dong@gmail.com>
+Subject: [PATCH net-next v2 0/2] bpf: support to trace BPF_JNE
+Date:   Tue, 12 Dec 2023 21:10:29 +0800
+Message-Id: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023 15:09:09 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+For now, the reg bounds is not handled for BPF_JNE case, which can cause
+the failure of following case:
 
-> > > > @@ -10832,6 +10833,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
-> > > >  #ifdef CONFIG_NET_SCHED
-> > > >  	hash_init(dev->qdisc_hash);
-> > > >  #endif
-> > > > +	phy_link_topo_init(&dev->link_topo);
-> > > > +    
-> > > 
-> > > I don't think this can work unless PHYLIB is compiled as a built-in.  
-> > 
-> > Inded, I need to better clarify and document the dependency with
-> > PHYLIB.  
-> 
-> It is getting harder and harder to make the phylib core a module :-(
-> 
-> How much work does phy_link_topo_init() do? Could it be an inline
-> function? Are there other dependencies?
+  /* The type of "a" is u16 */
+  if (a > 0 && a < 100) {
+    /* the range of the register for a is [0, 99], not [1, 99],
+     * and will cause the following error:
+     *
+     *   invalid zero-sized read
+     *
+     * as a can be 0.
+     */
+    bpf_skb_store_bytes(skb, xx, xx, a, 0);
+  }
 
-Sorry about that, I'll make sure it works with phylib entirely disabled
-for next version. I try to keep the integration with net_device minimal
-and avoid any dependency bloat, we don't need much besides xarray stuff
-(hence the fact there are 2 headers, the phy_link_topology_core.h
-containing the bare minimum), but I did miss that.
+In the code above, "a > 0" will be compiled to "jmp xxx if a == 0". In the
+TRUE branch, the dst_reg will be marked as known to 0. However, in the
+fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+the [min, max] for a is [0, 99], not [1, 99].
 
-> Also look at ethtool_phy_ops and e.g. how plca_get_cfg_prepare_data()
-> uses it.
+In the 1st patch, we reduce the range of the dst reg if the src reg is a
+const and is exactly the edge of the dst reg For BPF_JNE.
 
-Thanks, indeed that's a good example. I'll also address that in the
-netlink part as well.
+In the 2nd patch, we just activate the test case for this logic in
+range_cond(), which is committed by Andrii in the
+commit 8863238993e2 ("selftests/bpf: BPF register range bounds tester").
 
-Thanks,
+Changes since v1:
+- simplify the code in the 1st patch
+- introduce the 2nd patch for the testing
 
-Maxime
+Menglong Dong (2):
+  bpf: make the verifier trace the "not qeual" for regs
+  selftests/bpf: activate the OP_NE login in range_cond()
+
+ kernel/bpf/verifier.c                         | 29 ++++++++++++++++++-
+ .../selftests/bpf/prog_tests/reg_bounds.c     |  7 +----
+ 2 files changed, 29 insertions(+), 7 deletions(-)
+
+-- 
+2.39.2
+
