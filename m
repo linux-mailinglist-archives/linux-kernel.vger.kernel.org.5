@@ -2,202 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0325480F92A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB1880F92B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377584AbjLLVZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
+        id S1377598AbjLLVZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:25:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377566AbjLLVZT (ORCPT
+        with ESMTP id S1377590AbjLLVZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:25:19 -0500
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57E5BD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:25:23 -0800 (PST)
-Received: from pop-os.home ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id DAFkr5m2Q8sqPDAFkrjhwF; Tue, 12 Dec 2023 22:25:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702416321;
-        bh=xpWYbHV+Zc60bOBgrL8BoxkuvgOfsZpbRV1LTv1K99o=;
-        h=From:To:Cc:Subject:Date;
-        b=dOlEDMCfGy6oyhcN71SyY0UC1uniOSPcCj8dGJ3xvnA0SNrc23NXBqau4z3ZwJ1n+
-         NotE7DtXrPePRBNAKY+PCmSfSNX5yrMG9Y4rPERkwkKHJMeh3xUWXfxkmpXqknNwVQ
-         x4BBduVuQGFZPk90tdSEhuhEEshkPO6rFNn1IflOfHHu9IPTjB/Z5qmv+aOr/oXvri
-         9Paxfew/tW9h6zxZP2MnD+3aTCgqd8dXvHHhCbISNY1y5tYB/3ibjodhl5GHZggrXi
-         RTpLXvOgFV1RCjaqhmJhg0V01gfCZ08ZZsUOxsSfRobqf8WCSPqKZCGkLIKQ60xvNL
-         AwZX3yrbUgTDQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 12 Dec 2023 22:25:21 +0100
-X-ME-IP: 92.140.202.140
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Hannes Reinecke <hare@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH v2] scsi: myrb: Fix a potential string truncation in rebuild_show() and use sysfs_emit()
-Date:   Tue, 12 Dec 2023 22:25:09 +0100
-Message-Id: <d2b2a961aa599f509b0903f8dcd331f659a1b562.1702411083.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Dec 2023 16:25:23 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A91B9;
+        Tue, 12 Dec 2023 13:25:29 -0800 (PST)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCK2Tp1030525;
+        Tue, 12 Dec 2023 21:25:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=CEaMm5o6vNTyRxNK2pqMXNNjXA1BgQFDyA+wtWmQ9Rk=;
+ b=GBd1BqW8qTW7XX4yhod3BE8asiY75t1mD95R4t3Xk7SKm9961EFKM32dGIUFUio6m4zj
+ 9973V4W2VyjXhZy/fkhASbTTlU+pgNx+D8ORDNQXkM5hu6y/RUPkcqHD11X8SbeS/iv3
+ Alm9YHvtMAh38kjEnU6h0nlrdcrZsW7boV/elyJ/Vo3p/q/5sTnm35EvwOyjEJd2WfYA
+ VqcRV7C1BQVlt5BiNlbotoJVvTNhn0RAjs8hexixaerIxjB6EgaLg9kphAG9BMEuPwt6
+ gQMWfrblDnJuVsjCEKhtYaTCjNbvptAgYxdiP6+O9nTxXvjVMQu2Pm0wmtA/uv6f5kSM 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxx6usyn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 21:25:27 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BCLCZ8R016814;
+        Tue, 12 Dec 2023 21:25:27 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uxx6usymr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 21:25:27 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCJ37xe012599;
+        Tue, 12 Dec 2023 21:25:26 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jnv48p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 21:25:26 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BCLPOOK18219554
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 21:25:25 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8F0F658067;
+        Tue, 12 Dec 2023 21:25:24 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AFFFC5805D;
+        Tue, 12 Dec 2023 21:25:23 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.187.43])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Dec 2023 21:25:23 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, borntraeger@de.ibm.com, pasic@linux.ibm.com,
+        pbonzini@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: [PATCH v2 0/6] s390/vfio-ap: reset queues removed from guest's AP configuration
+Date:   Tue, 12 Dec 2023 16:25:11 -0500
+Message-ID: <20231212212522.307893-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: WglTkjzc_-8NoLq5n3wnfWMofzrG3NS_
+X-Proofpoint-ORIG-GUID: 5St5TEpbrv5nTB6NOmNWczhYowmjq_vf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_12,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 adultscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ mlxlogscore=999 lowpriorityscore=0 malwarescore=0 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312120165
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"physical device - not rebuilding\n" is 34 bytes long. When written in
-'buf' with a limit of 32 bytes, it is truncated.
+All queues removed from a guest's AP configuration must be reset so when
+they are subsequently made available again to a guest, they re-appear in a
+reset state. There are some scenarios where this is not the case. For 
+example, if a queue device that is passed through to a guest is unbound 
+from the vfio_ap device driver, the adapter to which the queue is attached
+will be removed from the guest's AP configuration. Doing so implicitly
+removes all queues associated with that adapter because the AP architecture
+precludes removing a single queue. Those queues also need to be reset.
 
-When building with W=1, it leads to:
-   drivers/scsi/myrb.c: In function 'rebuild_show':
-   drivers/scsi/myrb.c:1906:24: error: 'physical device - not rebuil...' directive output truncated writing 33 bytes into a region of size 32 [-Werror=format-truncation=]
-    1906 |                 return snprintf(buf, 32, "physical device - not rebuilding\n");
-         |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/scsi/myrb.c:1906:24: note: 'snprintf' output 34 bytes into a destination of size 32
+This patch series ensures that all queues removed from a guest's AP
+configuration are reset for all possible scenarios.
 
+Changelog v1=> v2:
+-----------------
+* Restored Halil's Acked-by and Reviewed-by tags (Halil)
 
-In order to fix it and to avoid hard-coded limits in all _show() functions, use
-the preferred sysfs_emit() that knows better about it.
+* Restored Halil's code refactor of reset_queues_for_apids function in 
+  patch 4
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Changes in v2:
-  - Merge patch 1/2 and 2/2
+Tony Krowiak (6):
+  s390/vfio-ap: always filter entire AP matrix
+  s390/vfio-ap: loop over the shadow APCB when filtering guest's AP
+    configuration
+  s390/vfio-ap: let 'on_scan_complete' callback filter matrix and update
+    guest's APCB
+  s390/vfio-ap: reset queues filtered from the guest's AP config
+  s390/vfio-ap: reset queues associated with adapter for queue unbound
+    from driver
+  s390/vfio-ap: do not reset queue removed from host config
 
-v1:
-  https://lore.kernel.org/all/cover.1702411083.git.christophe.jaillet@wanadoo.fr/
+ drivers/s390/crypto/vfio_ap_ops.c     | 268 +++++++++++++++++---------
+ drivers/s390/crypto/vfio_ap_private.h |  11 +-
+ 2 files changed, 184 insertions(+), 95 deletions(-)
 
-
-Note that there is another warning when building with W=1:
-    1051 |                 "%u.%02u-%c-%02u",
-         |                 ^~~~~~~~~~~~~~~~~
-   drivers/scsi/myrb.c:1050:9: note: 'snprintf' output between 10 and 14 bytes into a destination of size 12
-
-but I think that it is a false positive because snprintf() in Linux does not
-strickly folows the standard C behavior of sn
-
----
- drivers/scsi/myrb.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/scsi/myrb.c b/drivers/scsi/myrb.c
-index ca2380d2d6d3..06a5e6fb9f99 100644
---- a/drivers/scsi/myrb.c
-+++ b/drivers/scsi/myrb.c
-@@ -1767,7 +1767,7 @@ static ssize_t raid_state_show(struct device *dev,
- 	int ret;
- 
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sysfs_emit(buf, "Unknown\n");
- 
- 	if (sdev->channel == myrb_logical_channel(sdev->host)) {
- 		struct myrb_ldev_info *ldev_info = sdev->hostdata;
-@@ -1775,10 +1775,10 @@ static ssize_t raid_state_show(struct device *dev,
- 
- 		name = myrb_devstate_name(ldev_info->state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
--				       ldev_info->state);
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
-+					 ldev_info->state);
- 	} else {
- 		struct myrb_pdev_state *pdev_info = sdev->hostdata;
- 		unsigned short status;
-@@ -1796,10 +1796,10 @@ static ssize_t raid_state_show(struct device *dev,
- 		else
- 			name = myrb_devstate_name(pdev_info->state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
--				       pdev_info->state);
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
-+					 pdev_info->state);
- 	}
- 	return ret;
- }
-@@ -1886,11 +1886,11 @@ static ssize_t raid_level_show(struct device *dev,
- 
- 		name = myrb_raidlevel_name(ldev_info->raid_level);
- 		if (!name)
--			return snprintf(buf, 32, "Invalid (%02X)\n",
--					ldev_info->state);
--		return snprintf(buf, 32, "%s\n", name);
-+			return sysfs_emit(buf, "Invalid (%02X)\n",
-+					  ldev_info->state);
-+		return sysfs_emit(buf, "%s\n", name);
- 	}
--	return snprintf(buf, 32, "Physical Drive\n");
-+	return sysfs_emit(buf, "Physical Drive\n");
- }
- static DEVICE_ATTR_RO(raid_level);
- 
-@@ -1903,17 +1903,17 @@ static ssize_t rebuild_show(struct device *dev,
- 	unsigned char status;
- 
- 	if (sdev->channel < myrb_logical_channel(sdev->host))
--		return snprintf(buf, 32, "physical device - not rebuilding\n");
-+		return sysfs_emit(buf, "physical device - not rebuilding\n");
- 
- 	status = myrb_get_rbld_progress(cb, &rbld_buf);
- 
- 	if (rbld_buf.ldev_num != sdev->id ||
- 	    status != MYRB_STATUS_SUCCESS)
--		return snprintf(buf, 32, "not rebuilding\n");
-+		return sysfs_emit(buf, "not rebuilding\n");
- 
--	return snprintf(buf, 32, "rebuilding block %u of %u\n",
--			rbld_buf.ldev_size - rbld_buf.blocks_left,
--			rbld_buf.ldev_size);
-+	return sysfs_emit(buf, "rebuilding block %u of %u\n",
-+			  rbld_buf.ldev_size - rbld_buf.blocks_left,
-+			  rbld_buf.ldev_size);
- }
- 
- static ssize_t rebuild_store(struct device *dev,
-@@ -2140,7 +2140,7 @@ static ssize_t ctlr_num_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 20, "%u\n", cb->ctlr_num);
-+	return sysfs_emit(buf, "%u\n", cb->ctlr_num);
- }
- static DEVICE_ATTR_RO(ctlr_num);
- 
-@@ -2150,7 +2150,7 @@ static ssize_t firmware_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 16, "%s\n", cb->fw_version);
-+	return sysfs_emit(buf, "%s\n", cb->fw_version);
- }
- static DEVICE_ATTR_RO(firmware);
- 
-@@ -2160,7 +2160,7 @@ static ssize_t model_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 16, "%s\n", cb->model_name);
-+	return sysfs_emit(buf, "%s\n", cb->model_name);
- }
- static DEVICE_ATTR_RO(model);
- 
 -- 
-2.34.1
+2.43.0
 
