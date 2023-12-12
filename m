@@ -2,235 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4886A80F273
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B19880F278
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjLLQ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        id S232555AbjLLQ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjLLQ3K (ORCPT
+        with ESMTP id S229702AbjLLQ3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:29:10 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A58AD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:29:16 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7bb4b7eb808so1502534241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:29:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702398555; x=1703003355; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ySNEeZzkT5HeoVN/1lYVLQEQlZebmBvQl/23qCP/8ME=;
-        b=SItsHyYhjBCoW55TgqPllsCLAGuk8/pJbi8SxslH/mDirnrOxSdQXaP00I3p8NiCC+
-         q2aEbxM396UlYu9b4lnffZub34GxLa3KIqgzGmzOsdgAId/+/rzxrg+BKQwlLyG9r8Ox
-         RPHAPPsDH72PEHBT38/xFYt791RL+bNKLFOWmWKHbl4lrFOhkyd+JeJGVJnwSPcs63Kt
-         MsaO1R4t4tapICE0caA2ZBjz6YH159M9jehbzZ3gXnsVCT360Lfx8nGNddI7dkABtcY2
-         qnoNBxpSjIsXX6hmsCXBMI+yyYJP/ah0kcAkeypg34uq3f0g/1p19auHsA6AklTJ3MmD
-         s7Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702398555; x=1703003355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ySNEeZzkT5HeoVN/1lYVLQEQlZebmBvQl/23qCP/8ME=;
-        b=Z2WNnHDgF05s1joxl9HVnnFnVfO3tzIIeKV1TRRB0GDXls+6CuBUuObEFXmKKUMfT1
-         sgP3dLiwosZFiimMqXbTE9i4jvweCq6QeviBPzCSU4dN6xioIMuNKE6XBSKoC/HGIriM
-         vmyD584R+AXpRHEIucI7gh+Uoyoxe6Sc/dA/bjmApzVyeMOQdr7lDSZ6Np09zVqorn86
-         3f85NdPZ6gFJs58f+FND2UBQ6+KeiICRLFpJy9+ACgERHy69k4gReBaT5BdrfyQGxnak
-         ikT0+2kBTowPRXcUsJP3bQ/fM2XIbrkln5yr0Alu8tr8EIwsPDlPM+8C89jA5yAYi5KN
-         o+Pg==
-X-Gm-Message-State: AOJu0Yw1eYcLguyXlPgVEquboeXduA4BixD7ihOhxLcQZ0QEupaEZ0ia
-        hm1W1OnAtVYY1u8vq5bHaqf3ZwnTaPo6Kdc8SrJH+Q==
-X-Google-Smtp-Source: AGHT+IEeCdPmkS9YxQ3As9yyYKrZVxVAaQFrNJwqjtaPRa68f+SpKBnM0iLrZSbgFfbsfqiDcisLSTDDOCVZEegmouM=
-X-Received: by 2002:a67:b403:0:b0:464:7ce6:9ba5 with SMTP id
- x3-20020a67b403000000b004647ce69ba5mr4240246vsl.32.1702398555322; Tue, 12 Dec
- 2023 08:29:15 -0800 (PST)
+        Tue, 12 Dec 2023 11:29:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A061198
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:29:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 944BAC433C8;
+        Tue, 12 Dec 2023 16:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702398583;
+        bh=4JW2S8XtH2w0oEakH/oOgs84YyeslEKxjY8L2izjfDk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PUMX9KRLgK/+PuRSRYFVx98x9iA0mSlMupFig+yV0Uw5dFXtiUNE406wFDEwI22l9
+         iP+br3B9xrKSyP76l6Pff/jLfR+X4sMQjOrgUMiM0/GvjuG34XXlSGcEa+X+QG6THd
+         Uds+8/topXVekPryazuwUyuLpJk8bXXwibuyOKR+4W16ORWQyk3lv94goxS/eEOCeS
+         ynLhYh/YBWQQ5YaX98NbpRQzUGcyD3Nttu8a00ol+S2d61QwbpaaE/Wb5O7/S/mKV9
+         oK3+qT19TFPUAJEnKBz4mNLWouagrb35WTWBNUXWXpm2oYfDLn8yQ5zd7YdOFSMqwJ
+         KHZEI4f2RUZ9A==
+Date:   Tue, 12 Dec 2023 16:29:35 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH net-next v3 6/8] dt-bindings: net: mediatek: remove
+ wrongly added clocks and SerDes
+Message-ID: <20231212-operative-stubbly-2104c96bdee5@spud>
+References: <cover.1702352117.git.daniel@makrotopia.org>
+ <5859da6629b8b6c100eca4062dd193105bf829ba.1702352117.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-References: <20231211182019.802717483@linuxfoundation.org>
-In-Reply-To: <20231211182019.802717483@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Dec 2023 21:59:04 +0530
-Message-ID: <CA+G9fYv24ydc8gV9u7O24hQFKscFF1cnWvbAzaWWcM2DyLxGfA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/97] 5.10.204-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+o7guYCYluYJGIdc"
+Content-Disposition: inline
+In-Reply-To: <5859da6629b8b6c100eca4062dd193105bf829ba.1702352117.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 00:07, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.204 release.
-> There are 97 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.204-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
+--+o7guYCYluYJGIdc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Tue, Dec 12, 2023 at 03:48:10AM +0000, Daniel Golle wrote:
+> Several clocks as well as both sgmiisys phandles were added by mistake
+> to the Ethernet bindings for MT7988.
+>=20
+> This happened because the vendor driver which served as a reference
+> uses a high number of syscon phandles to access various parts of the
+> SoC which wasn't acceptable upstream. Hence several parts which have
+> never previously been supported (such SerDes PHY and USXGMII PCS) have
+> been moved to separate drivers which also result in a much more sane
+> device tree.
+>=20
+> Quickly align the bindings with the upcoming reality of the drivers
+> actually adding full support for this SoC.
+>=20
+> Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth bind=
+ing")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-## Build
-* kernel: 5.10.204-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 670205df0377e191c0a123ecce9257eba333bbc5
-* git describe: v5.10.203-98-g670205df0377
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.203-98-g670205df0377
+Cheers,
+Conor.
 
-## Test Regressions (compared to v5.10.203)
+--+o7guYCYluYJGIdc
+Content-Type: application/pgp-signature; name="signature.asc"
 
-## Metric Regressions (compared to v5.10.203)
+-----BEGIN PGP SIGNATURE-----
 
-## Test Fixes (compared to v5.10.203)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiKbwAKCRB4tDGHoIJi
+0i6mAP4xedv8lwi5+7mG3Qv7H3gtEeZ+DpqQpCRsutWbDn8KZwD7BsjQ2fZrh+hO
+LiWdVCZSG8Ibj8eKPbm5Qai3qluMGgA=
+=F1mi
+-----END PGP SIGNATURE-----
 
-## Metric Fixes (compared to v5.10.203)
-
-## Test result summary
-total: 89128, pass: 67943, fail: 3495, skip: 17631, xfail: 59
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 117 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 25 total, 25 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+--+o7guYCYluYJGIdc--
