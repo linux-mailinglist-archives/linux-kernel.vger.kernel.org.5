@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC5580F8D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F83680F8D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377462AbjLLVCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
+        id S1377483AbjLLVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377304AbjLLVCb (ORCPT
+        with ESMTP id S1377304AbjLLVEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:02:31 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20539B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:02:36 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3363880e9f3so48545f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:02:36 -0800 (PST)
+        Tue, 12 Dec 2023 16:04:38 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8C795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:04:44 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so4412702b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:04:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702414955; x=1703019755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fP3PBbkg+dGDRbq07rpkl3oLoeUyahhiYf75aZTkbF0=;
-        b=J0zWqfWHzdG+QeTl4U+QZKt5y8Efwcr4V31Lrl3e2GJf9dHb9GaTPdMyz9JWAq6VFf
-         qwjugv9cp6cXnOKMsJX4dkdYNwVtyK3ihlzxWykY+6lv6lX0XKlUcaoc4LQhxOk03BSE
-         Z2lq3HU73JzInRDo6yWRUEOzljFsx8PuopvbtC5DJL9L/BZNYSCx9zeMcOeWeHcIyCIJ
-         RUHOSlo9YUfIiee931XMpbikEp5vt0vESB+XgtxVNRJDmWW4G5rrBkErAcjZO2btQqE0
-         tm2DiZrPWCTb17j9l1YEpMknlNafOFe5rbY3r5fpnwEfqpC2oXfgwlyOUHI5NnQcZHSM
-         CliQ==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1702415083; x=1703019883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tXCOnbYbo1oDbYsUXOqGGj5UISArUKYnIPWgHEPvDjQ=;
+        b=P9H6W68KDxlcz4p4ZxU4IQVos/49qUzB4LIsstplfLuWcb+AyoExaxveaIwlACrBVs
+         CVaYFFxp7uVN6+e9EPnuZ+VT5qA99vClM3hjOQIuRkC9ofuanrMAyTcMfBJvN4StrmI4
+         EeAR/oDL/buz5xTTpiPXXY+ppckC77G5clP6QaUrWvJ6e9XUSiAkAUorU3jd6J0XXJ0p
+         vGsx7+HnLJXi6ZcRIG8fbegu9fiJAgBH4vWzskE0uEVbiExMQOCS7iciKn0yR2B2n5mc
+         9JaXDPv0yMBNWo+p5qKT0d4M59l82od3uiKYd9bIn73yTikweuTcoc5Gd/jGu1pz06bl
+         zviA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702414955; x=1703019755;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fP3PBbkg+dGDRbq07rpkl3oLoeUyahhiYf75aZTkbF0=;
-        b=qhFowRlE7ojdmY6ey5ejTG3KZQPwPV7wrRTMhtpzuzOk8AA31vDjmnwindc0MAf4Hx
-         Es3K1D8RkwnseIr6H+f2rKljmAOMNL0UAPXbPW0KywfyOYrPuk48wLQCWeOvE8r+Zn+q
-         Jgi8JvWuF8woFO3MDEJGkVQhUKZ6jTlPbm44Oy1B8clJoJmNpXjvjIMJ5dHy6U0cgjCZ
-         UR2HRre22VnnVVEqY02TqpTDvwGNr57+i1KojKIYqu02ilGWdDb/Gs1/4K+plp2gZBb4
-         Ri77Q7uNfebSWr8zvziP7YvMA/gxIKx/F3omFqnS4jxCx61L5ngFVkWsUDJfSngBgiLq
-         nbGA==
-X-Gm-Message-State: AOJu0YzPuepaFYp2dhjL+i/D8TN2yGx4MQxGBJduWnBaJdRLE2VAYD2D
-        YJVcqZwyYQzNBysEeBNgM50lCg==
-X-Google-Smtp-Source: AGHT+IGzx824ZUtMwg2ZMXI/wufgirctkBfjm6aqgGXizgPzjydfwsIPAaND7CNMU2RbzjzhH/Jlzw==
-X-Received: by 2002:adf:e34a:0:b0:332:de0f:d7be with SMTP id n10-20020adfe34a000000b00332de0fd7bemr3284238wrj.18.1702414955022;
-        Tue, 12 Dec 2023 13:02:35 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id n4-20020a5d6b84000000b0033634aef014sm1746153wrx.104.2023.12.12.13.02.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 13:02:34 -0800 (PST)
-Message-ID: <1e2b5100-f40d-47f2-880b-121704c0c8e2@linaro.org>
-Date:   Tue, 12 Dec 2023 22:02:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] thermal: trip: Send trip change notifications on all
- trip updates
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-References: <5737811.DvuYhMxLoT@kreacher>
- <cf055d45-8970-4657-ab86-d28636645c81@linaro.org>
- <CAJZ5v0ic_=2wvge1T7YmGe5icR5dPxrvKy2N4gXP+KMievobmA@mail.gmail.com>
- <CAJZ5v0gkBZh42obB-g95T2DBFntYrnidjAeUoFN+e-CqGrSQCw@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0gkBZh42obB-g95T2DBFntYrnidjAeUoFN+e-CqGrSQCw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        d=1e100.net; s=20230601; t=1702415083; x=1703019883;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tXCOnbYbo1oDbYsUXOqGGj5UISArUKYnIPWgHEPvDjQ=;
+        b=FNS8x/7/cJ/mOd8cXOjoVmx0r9JD0SbpskfsStQK6LMcHyDmvN3SBuhvHJMlX5SZa2
+         iNNxDrmLuz9yMoUDBzHA6+Xy/KgG/vhP+kalrSKRljvxcgswr8zJfFJq4B1qwP4C8YjP
+         l6OiIBQRkj7Y938YWuCbPemosRQgsU2nNncPmYwFWbA3ME07Q8h7agF//uFVoMn39wTd
+         +wfGhH/nUUbBVjr3xn6BYI/ZjXn8mmHOFagWOGeY0OEkxkKAf0sNT+FwDHENfK7bk7f/
+         VheKxdJfGnvyIBjagh3/uhEQKkgEN/PHkEv+bRmfrh0ZV1K8LDleNOMwXg1zWC+bpQQk
+         EcVw==
+X-Gm-Message-State: AOJu0Yxf6SNJWASRVfXe36UuXLGROn/Gi4BnXVporY2Zb6Ht6zOfqpUv
+        TbuT9nrh6a7fae6WRH3/CF0E1w==
+X-Google-Smtp-Source: AGHT+IE61QRANzgSPbOgmtPUskN2VwVdPNkZ7fInEOmKuM7txtCu/lMVHSlCuGpBOJ/y7lhzZvTlPA==
+X-Received: by 2002:a05:6a20:3946:b0:190:e59:f154 with SMTP id r6-20020a056a20394600b001900e59f154mr9530635pzg.18.1702415083565;
+        Tue, 12 Dec 2023 13:04:43 -0800 (PST)
+Received: from localhost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id o28-20020a634e5c000000b005c6bd30ea57sm8531769pgl.47.2023.12.12.13.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 13:04:42 -0800 (PST)
+Date:   Tue, 12 Dec 2023 13:04:42 -0800 (PST)
+X-Google-Original-Date: Tue, 12 Dec 2023 13:04:38 PST (-0800)
+Subject:     Re: [PATCH] drivers: perf: constify the ctl_table argument of the riscv user access handler
+In-Reply-To: <20231206-flanking-frill-fffeca740221@spud>
+CC:     m.szyprowski@samsung.com, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        atishp@atishpatra.org, anup@brainfault.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, keescook@chromium.org, linux@weissschuh.net
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Conor Dooley <conor@kernel.org>, mcgrof@kernel.org
+Message-ID: <mhng-8f7ddf72-8e2f-4dac-a67e-624eb5511a14@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 20:04, Rafael J. Wysocki wrote:
-> On Wed, Dec 6, 2023 at 5:01 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>
->> Hi Daniel,
->>
->> On Wed, Dec 6, 2023 at 3:38 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->>>
->>>
->>> Hi Rafael,
->>>
->>> On 05/12/2023 20:18, Rafael J. Wysocki wrote:
->>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>>
->>>> The _store callbacks of the trip point temperature and hysteresis sysfs
->>>> attributes invoke thermal_notify_tz_trip_change() to send a notification
->>>> regarding the trip point change, but when trip points are updated by the
->>>> platform firmware, trip point change notifications are not sent.
->>>>
->>>> To make the behavior after a trip point change more consistent,
->>>> modify all of the 3 places where trip point temperature is updated
->>>> to use a new function called thermal_zone_set_trip_temp() for this
->>>> purpose and make that function call thermal_notify_tz_trip_change().
->>>>
->>>> Note that trip point hysteresis can only be updated via sysfs and
->>>> trip_point_hyst_store() calls thermal_notify_tz_trip_change() already,
->>>> so this code path need not be changed.
->>>
->>> Why the ACPI driver is not calling thermal_zone_device_update() after
->>> changing the trip point like the other drivers?
->>
->> It calls that function, but because it may update multiple trips in
->> one go, it does that after all of the updates are done, via
->> acpi_thermal_check_fn().
->>
->>> It would make sense to have the thermal framework to be notified about
->>> this change and check if there is a trip violation, no ?
->>
->> It is notified as noted above, but not synchronously.
-> 
-> I believe that the question above has been answered, so are there any
-> other comments or concerns regarding this patch?
+On Wed, 06 Dec 2023 02:55:48 PST (-0800), Conor Dooley wrote:
+> On Wed, Dec 06, 2023 at 09:46:42AM +0100, Marek Szyprowski wrote:
+>> 
+>> Fix riscv build break after commit c8be9e66ca1e ("sysctl: treewide:
+>> constify the ctl_table argument of handlers").
+>> 
+>> Fixes: c8be9e66ca1e ("sysctl: treewide: constify the ctl_table argument of handlers")
+>> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>
+> This breaks the build when applied to the RISC-V tree. I'm going to mark
+> it "handled elsewhere" in patchwork since it needs to go into whatever
+> tree has the broken commit.
 
-No, it is fine. Thanks for the clarification
+Ya, thanks.  There's a second copy of the fix over at 
+https://lore.kernel.org/all/20231212-garage-pellet-c6a2bd34854c@spud/ .
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
+for this one too.  Just trying to merge that fixed hash into 6.7-rc1 is 
+giving me a conflict, so I don't really want to pull it in myself.  So I 
+think the best bet here is to have whomever took the patch take the fix, 
+but LMK if there's some shared tag thing I should grab to take this into 
+the RISC-V tree.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+>
+> Thanks,
+> Conor.
