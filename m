@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117C880F2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D35A380F2C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbjLLQct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
+        id S232494AbjLLQdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:33:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjLLQcs (ORCPT
+        with ESMTP id S232565AbjLLQdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:32:48 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723FBA8;
-        Tue, 12 Dec 2023 08:32:54 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C6ACA68C4E; Tue, 12 Dec 2023 17:32:46 +0100 (CET)
-Date:   Tue, 12 Dec 2023 17:32:46 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20231212163246.GA24594@lst.de>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
+        Tue, 12 Dec 2023 11:33:05 -0500
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862D7E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:33:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=3xHlem4pz0D1lBzgxJbJ/CLXkAkREGywHUDBpdVSaUo=;
+  b=TV2Pf/7RqkK1z9ROea0bDdumrKniOhv3zJK7ZtXBGkG0ouAuPqTRahdz
+   MCe1+XHjlSHYdeCApQEyoUTKZ/2slB0m1SR5/Ic1IDcWhlPFMEFeo2k+Z
+   cEFQ2oLpClwVomzWoqieE0FNxbU6hbwdp0X6UaCSx/07j8emZKANLXiKo
+   M=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,270,1695679200"; 
+   d="scan'208";a="74214030"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 17:33:09 +0100
+Date:   Tue, 12 Dec 2023 17:33:08 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+To:     Ivan Vecera <ivecera@redhat.com>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Failed to start Raise network interfaces error
+In-Reply-To: <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com>
+Message-ID: <4c707e3e-a324-a5e6-dc21-833b6d40324d@inria.fr>
+References: <alpine.DEB.2.22.394.2312102317350.3198@hadrien> <21977757-3a63-4586-ae03-e6630c1f009d@redhat.com> <d87c79b9-d0d2-2819-030-12c7df86eb38@inria.fr> <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212110844.19698-1-john.g.garry@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:08:28AM +0000, John Garry wrote:
-> Two new fields are added to struct statx - atomic_write_unit_min and
-> atomic_write_unit_max. For each atomic individual write, the total length
-> of a write must be a between atomic_write_unit_min and
-> atomic_write_unit_max, inclusive, and a power-of-2. The write must also be
-> at a natural offset in the file wrt the write length.
-> 
-> SCSI sd.c and scsi_debug and NVMe kernel support is added.
-> 
-> Some open questions:
-> - How to make API extensible for when we have no HW support? In that case,
->   we would prob not have to follow rule of power-of-2 length et al.
->   As a possible solution, maybe we can say that atomic writes are
->   supported for the file via statx, but not set unit_min and max values,
->   and this means that writes need to be just FS block aligned there.
-
-I don't think the power of two length is much of a problem to be
-honest, and if we every want to lift it we can still do that easily
-by adding a new flag or limit.
-
-What I'm a lot more worried about is how to tell the file system that
-allocations are done right for these requirement.  There is no way
-a user can know that allocations in an existing file are properly
-aligned, so atomic writes will just fail on existing files.
-
-I suspect we need an on-disk flag that forces allocations to be
-aligned to the atomic write limit, in some ways similar how the
-XFS rt flag works.  You'd need to set it on an empty file, and all
-allocations after that are guaranteed to be properly aligned.
-
-> - For block layer, should atomic_write_unit_max be limited by
->   max_sectors_kb? Currently it is not.
-
-Well.  It must be limited to max_hw_sectors to actually work.
-max_sectors is a software limit below that, which with modern hardware
-is actually pretty silly and a real performance issue with todays
-workloads when people don't tweak it..
-
-> - How to improve requirement that iovecs are PAGE-aligned.
->   There are 2x issues:
->   a. We impose this rule to not split BIOs due to virt boundary for
->      NVMe, but there virt boundary is 4K (and not PAGE size, so broken for
->      16K/64K pages). Easy solution is to impose requirement that iovecs
->      are 4K-aligned.
->   b. We don't enforce this rule for virt boundary == 0, i.e. SCSI
-
-.. we require any device that wants to support atomic writes to not
-have that silly limit.  For NVMe that would require SGL support
-(and some driver changes I've been wanting to make for long where
-we always use SGLs for transfers larger than a single PRP if supported)
 
 
-> - Since debugging torn-writes due to unwanted kernel BIO splitting/merging
->   would be horrible, should we add some kernel storage stack software
->   integrity checks?
+On Tue, 12 Dec 2023, Ivan Vecera wrote:
 
-Yes, I think we'll need asserts in the drivers.  At least for NVMe I
-will insist on them.  For SCSI I think the device actually checks
-because the atomic writes are a different command anyway, or am I
-misunderstanding how SCSI works here?
+> On 12. 12. 23 16:08, Julia Lawall wrote:
+> >
+> >
+> > On Tue, 12 Dec 2023, Ivan Vecera wrote:
+> >
+> > > On 10. 12. 23 23:28, Julia Lawall wrote:
+> > > > Hello,
+> > > >
+> > > > Starting with the commit:
+> > > >
+> > > > commit 9e479d64dc58f11792f638ea2e8eff3304edaabf
+> > > > Author: Ivan Vecera <ivecera@redhat.com>
+> > > > Date:   Fri Oct 13 19:07:51 2023 +0200
+> > > >
+> > > >       i40e: Add initial devlink support
+> > > >
+> > > > I am not able to boot normally.  The console shows the message
+> > > >
+> > > > Failed to start Raise network interfaces
+> > > >
+> > > > Searching for this message on th internet produces some old discussions
+> > > > that suggest to look at the file /etc/network/interfaces.  That file on
+> > > > my
+> > > > system contains:
+> > > >
+> > > > # This file describes the network interfaces available on your system
+> > > > # and how to activate them. For more information, see interfaces(5).
+> > > >
+> > > > source /etc/network/interfaces.d/*
+> > > >
+> > > > # The loopback network interface
+> > > > auto lo
+> > > > iface lo inet loopback
+> > > >
+> > > > auto enp24s0f0
+> > > > iface enp24s0f0 inet dhcp
+> > >
+> > > The problem is maybe with interface name... after this commit the
+> > > interface
+> > > should contain port_name suffix. In your case the name should be
+> > > `enp24s0f0np0`.
+> > >
+> > > Could you please check it?
+> >
+> > Thanks for the feedback.  But I'm not clear on how this would work.  Does
+> > there have to be one name for kernels before this patch and another name
+> > for kernels starting with this patch?  Or is the new name also acceptable
+> > for older kernels?
+>
+> The name of a network interface is configured by udev. And it takes network
+> interface attributes and compose a name for it. One of these attributes is
+> phys_port_name [1] and if it is provided then its value is appended to the
+> name.
+>
+> Prior this commit the i40e driver didn't provided this attribute so the name
+> is (in your case) enp24s0f0. After this commit the value is provided so it is
+> appended -> enp24s0f0np0
+>
+> Look at 'systemd.net-naming-scheme' man page for details how the interface
+> names are composed.
 
+After booting into 6.7.0-rc4, I have the following in
+/etc/network/interfaces:
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto enp24s0f0
+iface enp24s0f0 inet dhcp
+
+----------
+
+So I don't see enp24s0f0np0
+
+/sys/class/net/ contains:
+
+enp24s0f0np0  enp24s0f1np1  ibp94s0  lo
+
+/sys/class/net/enp24s0f0np0/phys_port_name does contain p0.
+
+thanks,
+julia
+
+
+>
+> Thanks,
+> Ivan
+>
+> [1] /sys/class/net/enp2s0f0np0/phys_port_name
+>
+>
