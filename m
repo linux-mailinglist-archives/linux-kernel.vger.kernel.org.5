@@ -2,246 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30AC80F762
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B9B80F760
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376792AbjLLUDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:03:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbjLLUDA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231175AbjLLUDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Dec 2023 15:03:00 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333ADB7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:03:06 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-551d5cd1c42so2441a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:03:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702411384; x=1703016184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bv1+Mtk2Gb5EiPRPIvE+IzzrHt4kY36IyFcki/03XAg=;
-        b=zMnWj8XhLMYtIWUzrVfUFw1V40ASR+nE/TEu1+mMnvXF6w0Tm3h0WG3Fu62WhqMLNn
-         AKcd4Bk2Z5Wontkn5TniSMfooYhR8b7s3z5FApYJX/ZyNg/am3lWmEtY8fY8xhtw1TPg
-         TjViyhOqjyAejoa2oZOkTi+8if4XWHBZ4nNRv/3gXvKV+r7OQW0tkqkj1t7DkfEDoRPv
-         R/mNPSHbdqfbH894ku7wqn/0jFpHkSm0iCb7NhbRbOb8KMseBZ4BiOrMyPuTbF5gLjWX
-         2m11eIrM90jtI+fZpqS2xzcyrlUqDKLzi+ufrktfk92qR+l9MiBCTlcbxOJG97BoZGlw
-         oizQ==
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbjLLUC7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Dec 2023 15:02:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668BD8E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702411382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nLTa2dYRrf09pJMNBsngii2VsJyLNKDZosllwS5YIfQ=;
+        b=LzvS8TuLRxUNpoX79j0z4hqn2bRJUhI/a1kyJkaOR8ADRvxOoV6iygk0Kc9hd6y5kPTQP+
+        +oYM3GJe8vx1L+6HJa7Epu46Me3RYtAadGSHHnsFaxls1z4ulswCLywd77AgwFaYxkxeRh
+        RSiENNEsinwZUswhwk+T/UEqxMQdEBo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-146-NHRPSU4JOI2iwRat8myV4w-1; Tue, 12 Dec 2023 15:03:01 -0500
+X-MC-Unique: NHRPSU4JOI2iwRat8myV4w-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9fd0a58549bso683497466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:03:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702411384; x=1703016184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702411380; x=1703016180;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Bv1+Mtk2Gb5EiPRPIvE+IzzrHt4kY36IyFcki/03XAg=;
-        b=ZstJWpldBbvNctm68GopcHySfU0VxAYqVWsMFHyi3YwFKSx/WaHxMDd79g6po9kvHR
-         b5wMSqEoU/h8MivSJqPKsxIRzznCX8PimhDdneB+YMz2POlu8+hHS2zBVhqQ4WsjCBHM
-         OfyudzZy+PH0zJNGXUiRj9xh6SWnftgWUwEps+uFJZvIn6rJLYu1hHfevR7zQr3Y9K9I
-         z6Y9AVyG6Cvl1fqd10VNVIbpN4V4MHhvUQyv4h+Qvmi+qOjenGgzw1WHAzboj/SuiBhh
-         wukT9Y6DaoGoP8/FSi4ueIDRvvv0d8J/s2n42rda2vF9IEG+jfTS5+xBt0nNLipGEUhO
-         4U8w==
-X-Gm-Message-State: AOJu0YzNF7FAWCPCbsxk/Xa/Jfk31WkUL24KuWQDfJE3vGwR8sxHWUmh
-        /9iQ6AQ1k0mDQ/7wbuAVH3TTtTek+s7hwC5c7EwUnQ==
-X-Google-Smtp-Source: AGHT+IFxty5Rwnq+BtDPrniM4NJu3mhBKPuQvOaZ2F5HMTUvDhuTrhmlfn2DE5f/6qdWo9MdtqjM8mJL+S15eFV00h4=
-X-Received: by 2002:a50:d7c3:0:b0:54a:ee8b:7a99 with SMTP id
- m3-20020a50d7c3000000b0054aee8b7a99mr392000edj.0.1702411384344; Tue, 12 Dec
- 2023 12:03:04 -0800 (PST)
+        bh=nLTa2dYRrf09pJMNBsngii2VsJyLNKDZosllwS5YIfQ=;
+        b=a5KVm+nWZoiZpylhOf81audcjGXH0IvokkJBaL50hiXMi9iE1eskfTEN2sRpn3KJeP
+         fHhjYDVaO/dq9xf401vR9iSBpN1r+/wWlUjEugqDBTsqDW6CDjgF9EWBBBrKYLieMGfC
+         HXUZAWmmrCGzSXUcsgpYHygKOzMN7eyn51mtRg+lycLjXKbkG6Eh5VTXIWEAmXWrLKVe
+         MLbYKyz0xUMdji4NPtg/51B3RgFZf4I4jZFp5JiMvpbtyDZ+OyBTeaqHJ2fqoGisVMRW
+         aoQwZXofIM9kERWCK9T218vM8QDJtpCBDmN3T272k87YiIaCV+ShQUH69OT6eLfg8Scw
+         2xJw==
+X-Gm-Message-State: AOJu0YxIg2PyjaJXHg5YbvsHyWsUtwbGw/CYuJ5G3FWPFKDXy0gVqM08
+        FxE6FoyMQXLgbcpnEnxWXTeWxxOopEUJcvp8chOyR6tnm5VIBQtOk3baQubIJdwJVCPsGtu/Qla
+        Brwa1xovh0kb6wd1yaraCEMKC
+X-Received: by 2002:a17:906:9588:b0:a1c:c2f9:980d with SMTP id r8-20020a170906958800b00a1cc2f9980dmr6331017ejx.27.1702411379998;
+        Tue, 12 Dec 2023 12:02:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHRYpIZTRZBTE4WcrlyktfS653hxvSiRGlBv7+Y1axU2HeESlSi0L3nguCi3mJ4p5t6evrUkA==
+X-Received: by 2002:a17:906:9588:b0:a1c:c2f9:980d with SMTP id r8-20020a170906958800b00a1cc2f9980dmr6331007ejx.27.1702411379730;
+        Tue, 12 Dec 2023 12:02:59 -0800 (PST)
+Received: from imammedo.users.ipa.redhat.com ([185.140.112.229])
+        by smtp.gmail.com with ESMTPSA id tl18-20020a170907c31200b00a1da2c9b06asm6698148ejc.42.2023.12.12.12.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 12:02:58 -0800 (PST)
+Date:   Tue, 12 Dec 2023 21:02:57 +0100
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Fiona Ebner <f.ebner@proxmox.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com, lenb@kernel.org, rafael@kernel.org,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>, mst@redhat.com,
+        Dongli Zhang <dongli.zhang@oracle.com>
+Subject: Re: SCSI hotplug issues with UEFI VM with guest kernel >= 6.5
+Message-ID: <20231212210257.5ddbff0d@imammedo.users.ipa.redhat.com>
+In-Reply-To: <20231212162529.09c27fdf@imammedo.users.ipa.redhat.com>
+References: <9eb669c0-d8f2-431d-a700-6da13053ae54@proxmox.com>
+        <20231207232815.GA771837@bhelgaas>
+        <20231208164723.12828a96@imammedo.users.ipa.redhat.com>
+        <20231211084604.25e209af@imammedo.users.ipa.redhat.com>
+        <c6233df5-01d8-498f-8235-ce4b102a2e91@proxmox.com>
+        <20231212122608.1b4f75ce@imammedo.users.ipa.redhat.com>
+        <62363899-d7aa-4f1c-abfa-1f87f0b6b43f@proxmox.com>
+        <20231212162529.09c27fdf@imammedo.users.ipa.redhat.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231129060211.1890454-1-irogers@google.com> <20231129060211.1890454-7-irogers@google.com>
- <63d7fe55-719e-43f8-531c-eb7fa30c473a@arm.com>
-In-Reply-To: <63d7fe55-719e-43f8-531c-eb7fa30c473a@arm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 12 Dec 2023 12:02:52 -0800
-Message-ID: <CAP-5=fXenjeSDcOiQPq0xUyZSpb9PiQ_W7=FVx5oYNYd--RqCA@mail.gmail.com>
-Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
-To:     James Clark <james.clark@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 6:01=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
->
->
-> On 29/11/2023 06:02, Ian Rogers wrote:
-> > Additional helpers to better replace
-> > perf_cpu_map__has_any_cpu_or_is_empty.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
-> >  tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
-> >  tools/lib/perf/libperf.map           |  4 ++++
-> >  3 files changed, 47 insertions(+)
-> >
-> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> > index 49fc98e16514..7403819da8fd 100644
-> > --- a/tools/lib/perf/cpumap.c
-> > +++ b/tools/lib/perf/cpumap.c
-> > @@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const s=
-truct perf_cpu_map *map)
-> >       return map ? __perf_cpu_map__cpu(map, 0).cpu =3D=3D -1 : true;
-> >  }
-> >
-> > +bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *m=
-ap)
-> > +{
-> > +     if (!map)
-> > +             return true;
-> > +
-> > +     return __perf_cpu_map__nr(map) =3D=3D 1 && __perf_cpu_map__cpu(ma=
-p, 0).cpu =3D=3D -1;
-> > +}
-> > +
-> > +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
-> > +{
-> > +     return map =3D=3D NULL;
-> > +}
-> > +
->
-> Maybe it doesn't currently happen, but it seems a bit weird that the
-> 'new' function can create a map of length 0 which would return empty =3D=
-=3D
-> false here.
->
-> Could we either make this check also return true for maps with length 0,
-> or prevent the new function from returning a map of 0 length?
+On Tue, 12 Dec 2023 16:25:29 +0100
+Igor Mammedov <imammedo@redhat.com> wrote:
 
-We can add an assert or return NULL for size 0 in alloc. I think I
-prefer the return NULL option. It should never happen but it feels the
-right defensive thing to do.
+> On Tue, 12 Dec 2023 13:50:20 +0100
+> Fiona Ebner <f.ebner@proxmox.com> wrote:
+> 
+> > Am 12.12.23 um 12:26 schrieb Igor Mammedov:  
+> > > 
+> > > it's not necessary, but it would help to find out what's going wrong faster.
+> > > Otherwise we would need to fallback to debugging over email.
+> > > Are you willing to help with testing/providing debug logs to track down
+> > > the cause?.
+> > >     
+> > 
+> > I submitted the dmesg logs in bugzilla:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=218255
+> >   
+> > > Though debug over email would be slow, so our best option is to revert
+> > > offending patches until the cause if found/fixed.
+> > >     
+> > >>>>> Do you have to revert both cc22522fd55e2 and 40613da52b13f to make it
+> > >>>>> work reliably?  If we have to revert something, reverting one would be
+> > >>>>> better than reverting both.        
+> > >>>>      
+> > >>
+> > >> Just reverting cc22522fd55e2 is not enough (and cc22522fd55e2 fixes
+> > >> 40613da52b13f so I can't revert just 40613da52b13f).    
+> > > 
+> > > With UEFI setup, it still works for me fine with current master.
+> > > 
+> > > Kernel 6.7.0-rc5-00014-g26aff849438c on an x86_64 (ttyS0)
+> > >     
+> > 
+> > I also built from current master (still 26aff849438c) to verify and it's
+> > still broken for me.
+> >   
+> > > 
+> > > it still doesn't work with Fedora's 6.7.0-0.rc2.20231125git0f5cc96c367f.26.fc40.x86_64 kernel.
+> > > However it's necessary to have -smp 4 for it to break,
+> > > with -smp 1 it works fine as well.
+> > >     
+> > 
+> > For me it's (always with build from current master):
+> > 
+> > -smp 1 -> it worked 5 times out of 5
+> > -smp 2 -> it worked 3 times out of 5
+> > -smp 4 -> it worked 0 times out of 5
+> > -smp 8 -> it worked 0 times out of 5  
+> 
+> 
+> I managed to reproduce it with upstream using fedora 40 config as is
+> (without converting it to mod2yesconfig).
+> So give me a couple of days to debug it before reverting.
 
-Thanks,
-Ian
+Actually here is another report + analysis explaining where the race is happening:
+https://www.spinics.net/lists/kernel/msg5033061.html
 
-> >  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu=
- cpu)
-> >  {
-> >       int low, high;
-> > @@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_c=
-pu_map *map)
-> >       return map && __perf_cpu_map__cpu(map, 0).cpu =3D=3D -1;
-> >  }
-> >
-> > +struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
-> > +{
-> > +     struct perf_cpu cpu, result =3D {
-> > +             .cpu =3D -1
-> > +     };
-> > +     int idx;
-> > +
-> > +     perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
-> > +             result =3D cpu;
-> > +             break;
-> > +     }
-> > +     return result;
-> > +}
-> > +
-> >  struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
-> >  {
-> >       struct perf_cpu result =3D {
-> > diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/incl=
-ude/perf/cpumap.h
-> > index dbe0a7352b64..523e4348fc96 100644
-> > --- a/tools/lib/perf/include/perf/cpumap.h
-> > +++ b/tools/lib/perf/include/perf/cpumap.h
-> > @@ -50,6 +50,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_c=
-pu_map *cpus);
-> >   * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has =
-the "any CPU"/dummy value.
-> >   */
-> >  LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct pe=
-rf_cpu_map *map);
-> > +/**
-> > + * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "=
-any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct per=
-f_cpu_map *map);
-> > +/**
-> > + * perf_cpu_map__is_empty - does the map contain no values and it does=
-n't
-> > + *                          contain the special "any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map=
-);
-> > +/**
-> > + * perf_cpu_map__min - the minimum CPU value or -1 if empty or just th=
-e "any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_ma=
-p *map);
-> > +/**
-> > + * perf_cpu_map__max - the maximum CPU value or -1 if empty or just th=
-e "any CPU"/dummy value.
-> > + */
-> >  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_ma=
-p *map);
-> >  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, str=
-uct perf_cpu cpu);
-> >  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
-> > diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> > index 10b3f3722642..2aa79b696032 100644
-> > --- a/tools/lib/perf/libperf.map
-> > +++ b/tools/lib/perf/libperf.map
-> > @@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
-> >               perf_cpu_map__nr;
-> >               perf_cpu_map__cpu;
-> >               perf_cpu_map__has_any_cpu_or_is_empty;
-> > +             perf_cpu_map__is_any_cpu_or_is_empty;
-> > +             perf_cpu_map__is_empty;
-> > +             perf_cpu_map__has_any_cpu;
-> > +             perf_cpu_map__min;
-> >               perf_cpu_map__max;
-> >               perf_cpu_map__has;
-> >               perf_thread_map__new_array;
+That's the reason why my minimal config worked
+(based on defconfig where CONFIG_SCSI_SCAN_ASYNC in not enabled by default for x86)
+
+While distros (at least some) do enable it.
+
+> 
+> > 
+> > Best Regards,
+> > Fiona
+> >   
+> 
+
