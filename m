@@ -2,47 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8135680EAD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C4980EA74
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjLLLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37772 "EHLO
+        id S230497AbjLLLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:35:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbjLLLwP (ORCPT
+        with ESMTP id S229775AbjLLLfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:52:15 -0500
-X-Greylist: delayed 1181 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Dec 2023 03:52:18 PST
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277F7109;
-        Tue, 12 Dec 2023 03:52:17 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SqGf74fmNz1kv72;
-        Tue, 12 Dec 2023 19:31:27 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
-        by mail.maildlp.com (Postfix) with ESMTPS id 1D5A81800C8;
-        Tue, 12 Dec 2023 19:32:34 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 19:32:33 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>,
-        <zhengyejian1@huawei.com>
-Subject: [PATCH] tracing: Fix uaf issue when open the hist or hist_debug file
-Date:   Tue, 12 Dec 2023 19:33:17 +0800
-Message-ID: <20231212113317.4159890-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Dec 2023 06:35:16 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5D5CD;
+        Tue, 12 Dec 2023 03:35:22 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCBWBxX023198;
+        Tue, 12 Dec 2023 11:35:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:from:to:cc:references
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=LDgvI07ObLh7qIhXltVCW2uzZOetks4/bakQTKmv6GA=; b=Fv
+        sonUF9q5yu2V8CiD3z154iNCKutFE2sN00TLIGMm5RR+cZyKRpEUFzWCDJQfSDiC
+        hFgflu7oUvNqOD61/4cKkvz7mE5fuCoSSQ10F/kHcUAtFSf4KTiol26Zg9i4rYGA
+        PQ6uJTrP9Uk3sFyGRqWjatsm1lqAfKJT/aujkCIDIiusfxqArrx9QVq46m5qkqCX
+        isuZHdUgVYRfnpbhXIJ+hUHhjSmwNLZ2gKTG0uBx0iGEs07IwcLEQ+7YDIfr3WOB
+        PBLWZqFoCCzCXwaNCeUO1UJ+piNZhviBWFTAGCJltVx3RC/LPTmU+KEBIGYVNBqY
+        ZaCmQ/MVymnRgM8rHChA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxkxfgexr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:35:19 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCBZI3U012093
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:35:18 GMT
+Received: from [10.218.35.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
+ 2023 03:35:16 -0800
+Message-ID: <605a4c59-6e7e-0ae8-a825-f364530216d5@quicinc.com>
+Date:   Tue, 12 Dec 2023 17:05:13 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] usb: dwc3: core: Add support for
+ XHCI_SG_TRB_CACHE_SIZE_QUIRK
+Content-Language: en-US
+From:   Prashanth K <quic_prashk@quicinc.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20231121135936.1669167-1-quic_prashk@quicinc.com>
+ <d4d25747-83d4-a8e7-7968-caf3b14a844c@quicinc.com>
+In-Reply-To: <d4d25747-83d4-a8e7-7968-caf3b14a844c@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4d8uLoFOQo-fs-xTJs7WbQWsdZozOVE9
+X-Proofpoint-ORIG-GUID: 4d8uLoFOQo-fs-xTJs7WbQWsdZozOVE9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ bulkscore=0 mlxlogscore=748 spamscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312120093
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,137 +84,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN report following issue. The root cause is when opening 'hist'
-file of an instance and accessing 'trace_event_file' in hist_show(),
-but 'trace_event_file' has been freed due to the instance being removed.
-'hist_debug' file has the same problem. To fix it, use
-tracing_{open, release}_file_tr() as instead when open these two files.
 
-  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
-  Read of size 8 at addr ffff242541e336b8 by task head/190
 
-  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
-  Hardware name: linux,dummy-virt (DT)
-  Call trace:
-   dump_backtrace+0x98/0xf8
-   show_stack+0x1c/0x30
-   dump_stack_lvl+0x44/0x58
-   print_report+0xf0/0x5a0
-   kasan_report+0x80/0xc0
-   __asan_report_load8_noabort+0x1c/0x28
-   hist_show+0x11e0/0x1278
-   seq_read_iter+0x344/0xd78
-   seq_read+0x128/0x1c0
-   vfs_read+0x198/0x6c8
-   ksys_read+0xf4/0x1e0
-   __arm64_sys_read+0x70/0xa8
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+On 27-11-23 02:28 pm, Prashanth K wrote:
 
-  Allocated by task 188:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_alloc_info+0x20/0x30
-   __kasan_slab_alloc+0x6c/0x80
-   kmem_cache_alloc+0x15c/0x4a8
-   trace_create_new_event+0x84/0x348
-   __trace_add_new_event+0x18/0x88
-   event_trace_add_tracer+0xc4/0x1a0
-   trace_array_create_dir+0x6c/0x100
-   trace_array_create+0x2e8/0x568
-   instance_mkdir+0x48/0x80
-   tracefs_syscall_mkdir+0x90/0xe8
-   vfs_mkdir+0x3c4/0x610
-   do_mkdirat+0x144/0x200
-   __arm64_sys_mkdirat+0x8c/0xc0
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+> --- a/drivers/usb/dwc3/host.c
+> +++ b/drivers/usb/dwc3/host.c
+> @@ -89,6 +89,8 @@ int dwc3_host_init(struct dwc3 *dwc)
+> 
+>          memset(props, 0, sizeof(struct property_entry) * 
+> ARRAY_SIZE(props));
+> 
+> +       props[prop_idx++] = 
+> PROPERTY_ENTRY_BOOL("xhci-sg-trb-cache-size-quirk");
+> +
+>          if (dwc->usb3_lpm_capable)
+>                  props[prop_idx++] = 
+> PROPERTY_ENTRY_BOOL("usb3-lpm-capable");
+> 
+> 
+> --- a/drivers/usb/host/xhci-plat.c
+> +++ b/drivers/usb/host/xhci-plat.c
+> @@ -323,6 +323,9 @@ static int xhci_plat_probe(struct platform_device 
+> *pdev)
+>                  if (device_property_read_bool(tmpdev, 
+> "quirk-broken-port-ped"))
+>                          xhci->quirks |= XHCI_BROKEN_PORT_PED;
+> 
+> +               if (device_property_read_bool(tmpdev, 
+> "xhci-sg-trb-cache-size-quirk"))
+> +                       xhci->quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
+> +
+>                  device_property_read_u32(tmpdev, "imod-interval-ns",
+>                                           &xhci->imod_interval);
+>          }
+> 
+> 
+> Regards,
+> Prashanth K
+> 
 
-  Freed by task 191:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_free_info+0x34/0x58
-   __kasan_slab_free+0xe4/0x158
-   kmem_cache_free+0x19c/0x508
-   event_file_put+0xa0/0x120
-   remove_event_file_dir+0x180/0x320
-   event_trace_del_tracer+0xb0/0x180
-   __remove_instance+0x224/0x508
-   instance_rmdir+0x44/0x78
-   tracefs_syscall_rmdir+0xbc/0x140
-   vfs_rmdir+0x1cc/0x4c8
-   do_rmdir+0x220/0x2b8
-   __arm64_sys_unlinkat+0xc0/0x100
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+Updated the patch by splitting it into a series of 2 patch-sets
+https://lore.kernel.org/all/20231212112521.3774610-1-quic_prashk@quicinc.com/
 
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- kernel/trace/trace_events_hist.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 1abc07fba1b9..00447ea7dabd 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5623,10 +5623,12 @@ static int event_hist_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open */
-+	file->private_data = NULL;
- 	return single_open(file, hist_show, file);
- }
- 
-@@ -5634,7 +5636,7 @@ const struct file_operations event_hist_fops = {
- 	.open = event_hist_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_release_file_tr,
- };
- 
- #ifdef CONFIG_HIST_TRIGGERS_DEBUG
-@@ -5900,10 +5902,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open */
-+	file->private_data = NULL;
- 	return single_open(file, hist_debug_show, file);
- }
- 
-@@ -5911,7 +5915,7 @@ const struct file_operations event_hist_debug_fops = {
- 	.open = event_hist_debug_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_release_file_tr,
- };
- #endif
- 
--- 
-2.25.1
-
+Thanks,
+Prashanth K
