@@ -2,423 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E6080EA85
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6D880EA87
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346201AbjLLLim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:38:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
+        id S1346220AbjLLLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLLik (ORCPT
+        with ESMTP id S231956AbjLLLir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:38:40 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10823CD;
-        Tue, 12 Dec 2023 03:38:46 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E482143D;
-        Tue, 12 Dec 2023 03:39:32 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C34173F762;
-        Tue, 12 Dec 2023 03:38:40 -0800 (PST)
-Message-ID: <c32bcf09-355a-54af-c136-861a3639f5cf@arm.com>
-Date:   Tue, 12 Dec 2023 11:38:36 +0000
+        Tue, 12 Dec 2023 06:38:47 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF71DCD;
+        Tue, 12 Dec 2023 03:38:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702381132; x=1733917132;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xq+1mQYTVGfv+QGVue4J7mfgzIK0WKvHLpOtJreygG8=;
+  b=Tre39UJv/eOs7UxknITNZSQU3aTX47bGCeaOS058tF1kk0OXrrzKoBNQ
+   TOBljpt61ssUfdsQv4L3z1EC73DZHovU7vAt/8pzsaNhGibUdhpyENk8D
+   KaD3zZoTTeQV3tnwgVxpDFttfcRTvRp6p0pxtASYez6yhiCoGfrwC800k
+   mJOIs23ogVHP0Ponu2HtTt1Fl+DVeGHljqeOG8XtIbYdt8Ey/md3pjqYi
+   U0FE5Sb7/MGaGH+SrOwa7HdyVaiKHH/9kA5zSZ2pxC7a6/LNY74wosD2N
+   G7D797ZQgSFAGN1/JZMQg0j+5gcgguGV5SG9swMA311XCx5tONlg5j8Pz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="394541866"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="394541866"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:38:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="864179518"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="864179518"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:38:45 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id B04BF11F7E4;
+        Tue, 12 Dec 2023 13:38:42 +0200 (EET)
+Date:   Tue, 12 Dec 2023 11:38:42 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
+        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v15 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZXhGQuqTZogWTJ42@kekkonen.localdomain>
+References: <20231204094719.190334-1-tomm.merciai@gmail.com>
+ <20231204094719.190334-4-tomm.merciai@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 03/14] libperf cpumap: Rename perf_cpu_map__empty
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-4-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231129060211.1890454-4-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204094719.190334-4-tomm.merciai@gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tommaso,
 
-
-On 29/11/2023 06:02, Ian Rogers wrote:
-> The name perf_cpu_map_empty is misleading as true is also returned
-> when the map contains an "any" CPU (aka dummy) map. Rename to
-> perf_cpu_map__has_any_cpu_or_is_empty, later changes will
-> (re)introduce perf_cpu_map__empty and perf_cpu_map__has_any_cpu.
+On Mon, Dec 04, 2023 at 10:47:16AM +0100, Tommaso Merciai wrote:
+> The Alvium camera is shipped with sensor + isp in the same housing.
+> The camera can be equipped with one out of various sensor and abstract
+> the user from this. Camera is connected via MIPI CSI-2.
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Reviewed-by: James Clark <james.clark@arm.com>
-> ---
->  tools/lib/perf/Documentation/libperf.txt |  2 +-
->  tools/lib/perf/cpumap.c                  |  2 +-
->  tools/lib/perf/evlist.c                  |  4 ++--
->  tools/lib/perf/include/perf/cpumap.h     |  4 ++--
->  tools/lib/perf/libperf.map               |  2 +-
->  tools/perf/arch/arm/util/cs-etm.c        | 10 +++++-----
->  tools/perf/arch/arm64/util/arm-spe.c     |  4 ++--
->  tools/perf/arch/x86/util/intel-bts.c     |  4 ++--
->  tools/perf/arch/x86/util/intel-pt.c      | 10 +++++-----
->  tools/perf/builtin-c2c.c                 |  2 +-
->  tools/perf/builtin-stat.c                |  6 +++---
->  tools/perf/util/auxtrace.c               |  4 ++--
->  tools/perf/util/record.c                 |  2 +-
->  tools/perf/util/stat.c                   |  2 +-
->  14 files changed, 29 insertions(+), 29 deletions(-)
+> Most of the camera module features are supported, with the main exception
+> being fw update.
 > 
-> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
-> index a256a26598b0..fcfb9499ef9c 100644
-> --- a/tools/lib/perf/Documentation/libperf.txt
-> +++ b/tools/lib/perf/Documentation/libperf.txt
-> @@ -46,7 +46,7 @@ SYNOPSIS
->    void perf_cpu_map__put(struct perf_cpu_map *map);
->    int perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
->    int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
-> -  bool perf_cpu_map__empty(const struct perf_cpu_map *map);
-> +  bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
->    int perf_cpu_map__max(struct perf_cpu_map *map);
->    bool perf_cpu_map__has(const struct perf_cpu_map *map, int cpu);
->  
-> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> index 463ca8b37d45..49fc98e16514 100644
-> --- a/tools/lib/perf/cpumap.c
-> +++ b/tools/lib/perf/cpumap.c
-> @@ -311,7 +311,7 @@ int perf_cpu_map__nr(const struct perf_cpu_map *cpus)
->  	return cpus ? __perf_cpu_map__nr(cpus) : 1;
->  }
->  
-> -bool perf_cpu_map__empty(const struct perf_cpu_map *map)
-> +bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
->  {
->  	return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
->  }
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index 3acbbccc1901..75f36218fdd9 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -619,7 +619,7 @@ static int perf_evlist__nr_mmaps(struct perf_evlist *evlist)
->  
->  	/* One for each CPU */
->  	nr_mmaps = perf_cpu_map__nr(evlist->all_cpus);
-> -	if (perf_cpu_map__empty(evlist->all_cpus)) {
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(evlist->all_cpus)) {
->  		/* Plus one for each thread */
->  		nr_mmaps += perf_thread_map__nr(evlist->threads);
->  		/* Minus the per-thread CPU (-1) */
-> @@ -653,7 +653,7 @@ int perf_evlist__mmap_ops(struct perf_evlist *evlist,
->  	if (evlist->pollfd.entries == NULL && perf_evlist__alloc_pollfd(evlist) < 0)
->  		return -ENOMEM;
->  
-> -	if (perf_cpu_map__empty(cpus))
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->  		return mmap_per_thread(evlist, ops, mp);
->  
->  	return mmap_per_cpu(evlist, ops, mp);
-> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
-> index b24bd8b8f34e..9cf361fc5edc 100644
-> --- a/tools/lib/perf/include/perf/cpumap.h
-> +++ b/tools/lib/perf/include/perf/cpumap.h
-> @@ -47,9 +47,9 @@ LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
->  LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
->  LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
->  /**
-> - * perf_cpu_map__empty - is map either empty or the "any CPU"/dummy value.
-> + * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
->   */
-> -LIBPERF_API bool perf_cpu_map__empty(const struct perf_cpu_map *map);
-> +LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
->  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
->  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
->  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
-> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> index 8a71f841498e..10b3f3722642 100644
-> --- a/tools/lib/perf/libperf.map
-> +++ b/tools/lib/perf/libperf.map
-> @@ -9,7 +9,7 @@ LIBPERF_0.0.1 {
->  		perf_cpu_map__read;
->  		perf_cpu_map__nr;
->  		perf_cpu_map__cpu;
-> -		perf_cpu_map__empty;
-> +		perf_cpu_map__has_any_cpu_or_is_empty;
->  		perf_cpu_map__max;
->  		perf_cpu_map__has;
->  		perf_thread_map__new_array;
-> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index 2cf873d71dff..c6b7b3066324 100644
-> --- a/tools/perf/arch/arm/util/cs-etm.c
-> +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -211,7 +211,7 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
->  		 * program can run on any CPUs in this case, thus don't skip
->  		 * validation.
->  		 */
-> -		if (!perf_cpu_map__empty(event_cpus) &&
-> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
->  		    !perf_cpu_map__has(event_cpus, cpu))
->  			continue;
->  
-> @@ -435,7 +435,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->  	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
->  	 * when a context switch happened.
->  	 */
-> -	if (!perf_cpu_map__empty(cpus)) {
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
->  					   "timestamp", 1);
->  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
-> @@ -461,7 +461,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->  	evsel->core.attr.sample_period = 1;
->  
->  	/* In per-cpu case, always need the time of mmap events etc */
-> -	if (!perf_cpu_map__empty(cpus))
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->  		evsel__set_sample_bit(evsel, TIME);
->  
->  	err = cs_etm_validate_config(itr, cs_etm_evsel);
-> @@ -539,7 +539,7 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
->  	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
->  
->  	/* cpu map is not empty, we have specific CPUs to work with */
-> -	if (!perf_cpu_map__empty(event_cpus)) {
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->  		for (i = 0; i < cpu__max_cpu().cpu; i++) {
->  			struct perf_cpu cpu = { .cpu = i, };
->  
-> @@ -814,7 +814,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
->  		return -EINVAL;
->  
->  	/* If the cpu_map is empty all online CPUs are involved */
-> -	if (perf_cpu_map__empty(event_cpus)) {
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->  		cpu_map = online_cpus;
->  	} else {
->  		/* Make sure all specified CPUs are online */
-> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-> index e3acc739bd00..51ccbfd3d246 100644
-> --- a/tools/perf/arch/arm64/util/arm-spe.c
-> +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	 * In the case of per-cpu mmaps, sample CPU for AUX event;
->  	 * also enable the timestamp tracing for samples correlation.
->  	 */
-> -	if (!perf_cpu_map__empty(cpus)) {
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->  		evsel__set_sample_bit(arm_spe_evsel, CPU);
->  		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
->  					   "ts_enable", 1);
-> @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	tracking_evsel->core.attr.sample_period = 1;
->  
->  	/* In per-cpu case, always need the time of mmap events etc */
-> -	if (!perf_cpu_map__empty(cpus)) {
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->  		evsel__set_sample_bit(tracking_evsel, TIME);
->  		evsel__set_sample_bit(tracking_evsel, CPU);
->  
-> diff --git a/tools/perf/arch/x86/util/intel-bts.c b/tools/perf/arch/x86/util/intel-bts.c
-> index d2c8cac11470..af8ae4647585 100644
-> --- a/tools/perf/arch/x86/util/intel-bts.c
-> +++ b/tools/perf/arch/x86/util/intel-bts.c
-> @@ -143,7 +143,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
->  	if (!opts->full_auxtrace)
->  		return 0;
->  
-> -	if (opts->full_auxtrace && !perf_cpu_map__empty(cpus)) {
-> +	if (opts->full_auxtrace && !perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->  		pr_err(INTEL_BTS_PMU_NAME " does not support per-cpu recording\n");
->  		return -EINVAL;
->  	}
-> @@ -224,7 +224,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
->  		 * In the case of per-cpu mmaps, we need the CPU on the
->  		 * AUX event.
->  		 */
-> -		if (!perf_cpu_map__empty(cpus))
-> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->  			evsel__set_sample_bit(intel_bts_evsel, CPU);
->  	}
->  
-> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-> index fa0c718b9e72..d199619df3ab 100644
-> --- a/tools/perf/arch/x86/util/intel-pt.c
-> +++ b/tools/perf/arch/x86/util/intel-pt.c
-> @@ -369,7 +369,7 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
->  			ui__warning("Intel Processor Trace: TSC not available\n");
->  	}
->  
-> -	per_cpu_mmaps = !perf_cpu_map__empty(session->evlist->core.user_requested_cpus);
-> +	per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(session->evlist->core.user_requested_cpus);
->  
->  	auxtrace_info->type = PERF_AUXTRACE_INTEL_PT;
->  	auxtrace_info->priv[INTEL_PT_PMU_TYPE] = intel_pt_pmu->type;
-> @@ -774,7 +774,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
->  	 * Per-cpu recording needs sched_switch events to distinguish different
->  	 * threads.
->  	 */
-> -	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
-> +	if (have_timing_info && !perf_cpu_map__has_any_cpu_or_is_empty(cpus) &&
->  	    !record_opts__no_switch_events(opts)) {
->  		if (perf_can_record_switch_events()) {
->  			bool cpu_wide = !target__none(&opts->target) &&
-> @@ -832,7 +832,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
->  		 * In the case of per-cpu mmaps, we need the CPU on the
->  		 * AUX event.
->  		 */
-> -		if (!perf_cpu_map__empty(cpus))
-> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->  			evsel__set_sample_bit(intel_pt_evsel, CPU);
->  	}
->  
-> @@ -858,7 +858,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
->  			tracking_evsel->immediate = true;
->  
->  		/* In per-cpu case, always need the time of mmap events etc */
-> -		if (!perf_cpu_map__empty(cpus)) {
-> +		if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->  			evsel__set_sample_bit(tracking_evsel, TIME);
->  			/* And the CPU for switch events */
->  			evsel__set_sample_bit(tracking_evsel, CPU);
-> @@ -870,7 +870,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
->  	 * Warn the user when we do not have enough information to decode i.e.
->  	 * per-cpu with no sched_switch (except workload-only).
->  	 */
-> -	if (!ptr->have_sched_switch && !perf_cpu_map__empty(cpus) &&
-> +	if (!ptr->have_sched_switch && !perf_cpu_map__has_any_cpu_or_is_empty(cpus) &&
->  	    !target__none(&opts->target) &&
->  	    !intel_pt_evsel->core.attr.exclude_user)
->  		ui__warning("Intel Processor Trace decoding will not be possible except for kernel tracing!\n");
-> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index a4cf9de7a7b5..f78eea9e2153 100644
-> --- a/tools/perf/builtin-c2c.c
-> +++ b/tools/perf/builtin-c2c.c
-> @@ -2320,7 +2320,7 @@ static int setup_nodes(struct perf_session *session)
->  		nodes[node] = set;
->  
->  		/* empty node, skip */
-> -		if (perf_cpu_map__empty(map))
-> +		if (perf_cpu_map__has_any_cpu_or_is_empty(map))
->  			continue;
->  
->  		perf_cpu_map__for_each_cpu(cpu, idx, map) {
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index a3af805a1d57..3303aa20f326 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1316,7 +1316,7 @@ static int cpu__get_cache_id_from_map(struct perf_cpu cpu, char *map)
->  	 * be the first online CPU in the cache domain else use the
->  	 * first online CPU of the cache domain as the ID.
->  	 */
-> -	if (perf_cpu_map__empty(cpu_map))
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpu_map))
->  		id = cpu.cpu;
->  	else
->  		id = perf_cpu_map__cpu(cpu_map, 0).cpu;
-> @@ -1622,7 +1622,7 @@ static int perf_stat_init_aggr_mode(void)
->  	 * taking the highest cpu number to be the size of
->  	 * the aggregation translate cpumap.
->  	 */
-> -	if (!perf_cpu_map__empty(evsel_list->core.user_requested_cpus))
-> +	if (!perf_cpu_map__has_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
->  		nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
->  	else
->  		nr = 0;
-> @@ -2289,7 +2289,7 @@ int process_stat_config_event(struct perf_session *session,
->  
->  	perf_event__read_stat_config(&stat_config, &event->stat_config);
->  
-> -	if (perf_cpu_map__empty(st->cpus)) {
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(st->cpus)) {
->  		if (st->aggr_mode != AGGR_UNSET)
->  			pr_warning("warning: processing task data, aggregation mode not set\n");
->  	} else if (st->aggr_mode != AGGR_UNSET) {
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index f528c4364d23..3684e6009b63 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -174,7 +174,7 @@ void auxtrace_mmap_params__set_idx(struct auxtrace_mmap_params *mp,
->  				   struct evlist *evlist,
->  				   struct evsel *evsel, int idx)
->  {
-> -	bool per_cpu = !perf_cpu_map__empty(evlist->core.user_requested_cpus);
-> +	bool per_cpu = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
->  
->  	mp->mmap_needed = evsel->needs_auxtrace_mmap;
->  
-> @@ -648,7 +648,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
->  
->  static int evlist__enable_event_idx(struct evlist *evlist, struct evsel *evsel, int idx)
->  {
-> -	bool per_cpu_mmaps = !perf_cpu_map__empty(evlist->core.user_requested_cpus);
-> +	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
->  
->  	if (per_cpu_mmaps) {
->  		struct perf_cpu evlist_cpu = perf_cpu_map__cpu(evlist->core.all_cpus, idx);
-> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-> index 9eb5c6a08999..40290382b2d7 100644
-> --- a/tools/perf/util/record.c
-> +++ b/tools/perf/util/record.c
-> @@ -237,7 +237,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
->  
->  	evsel = evlist__last(temp_evlist);
->  
-> -	if (!evlist || perf_cpu_map__empty(evlist->core.user_requested_cpus)) {
-> +	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
->  		struct perf_cpu_map *cpus = perf_cpu_map__new(NULL);
->  
->  		if (cpus)
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index ec3506042217..012c4946b9c4 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -315,7 +315,7 @@ static int check_per_pkg(struct evsel *counter, struct perf_counts_values *vals,
->  	if (!counter->per_pkg)
->  		return 0;
->  
-> -	if (perf_cpu_map__empty(cpus))
-> +	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->  		return 0;
->  
->  	if (!mask) {
+> The driver provides all mandatory, optional and recommended V4L2 controls
+> for maximum compatibility with libcamera
+> 
+> References:
+>  - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> 
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+
+Could you run
+
+	./scripts/checkpatch.pl --strict --max-line-length=80
+
+and address the issues in a patch on top of this set?
+
+Thanks.
+
+-- 
+Sakari Ailus
