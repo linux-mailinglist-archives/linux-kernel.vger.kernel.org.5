@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBD180E139
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A1680E12F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjLLCER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:04:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
+        id S1345585AbjLLCEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345624AbjLLCEI (ORCPT
+        with ESMTP id S1345531AbjLLCEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:04:08 -0500
+        Mon, 11 Dec 2023 21:04:02 -0500
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C606D1;
-        Mon, 11 Dec 2023 18:04:13 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC1JiMK028759;
-        Tue, 12 Dec 2023 02:03:21 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B2CD1;
+        Mon, 11 Dec 2023 18:04:07 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BBNeted027884;
+        Tue, 12 Dec 2023 02:03:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=5IT7FNfTqSiyt2zozt7nLvX5EmNMqqP9G99stVnThF4=; b=Co
-        as/Ex2OJW4dzcZKmSA6MpO1cOan813EshvDrwG1IJ/HZnu8MM7FHzvUzM49T2itQ
-        moPUiaL3Qsj30LSRw+r0fOFT2+i87gmhK4LYNcD5uw1sOEDcBN8/izWY82Zi0Svb
-        hBkSMw0aAXypTgPQ3leZzGa//IwOBDdi8Uom0eAJIGPfv+7p7gvW1wdBh+3NDv0Q
-        QXsI6qhH1u8GzFug6sMPaehxsQ+LjeRkkU3S8ADdo7Qi2jVIFzYwMkvxBoznIK8f
-        o2nUfPeg+BfakW/6x0AWLBHPAH8Bd132bCsbiAbPhFuwgY94rrGuxOxUCovM95FZ
-        9Cofxhjr1W9XxGU65DDA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uvnnsvvfx-1
+        qcppdkim1; bh=kHub05U0B+zmWdZnOUL04+cyD7bS/dheX96Vem6982Q=; b=Kv
+        B3QG5HkYGmUZWAck21FxO4icmrvhYSRFK6CoKl56ykTTa2nQ7ougp7S5/zl45gdE
+        SfoRj7m7WcHKhYOJjxIvZcjp2I0lBl38nTHvTUtFJQ8KVTGwbwsV6D3xUzutv851
+        8K2yrqMDn868l88Yxbxy/Tj7fhxg0DupAB9xdWTq34v6wd1w76UkKr1QvTgc5Qup
+        G9JCLAhazJSS7ZNy5eiro4QqRULB6+fnlW6Uw2aGFE20l2wUVioHBdlc6P/JObCF
+        nAkmBrVlId5RN7eYd9IFi0y4tmCOhPFqrHoaNgeEkk6+kh/v3npcc09nTuRkXG4o
+        VFO/uMBp1obqpHUoM9Gw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux653136b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:03:21 +0000 (GMT)
+        Tue, 12 Dec 2023 02:03:22 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC23JI2030031
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC23LxJ012477
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 02:03:19 GMT
+        Tue, 12 Dec 2023 02:03:21 GMT
 Received: from hu-johmoo-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 11 Dec 2023 18:03:16 -0800
+ 15.2.1118.40; Mon, 11 Dec 2023 18:03:17 -0800
 From:   John Moon <quic_johmoo@quicinc.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
@@ -64,9 +64,9 @@ CC:     John Moon <quic_johmoo@quicinc.com>,
         Trilok Soni <quic_tsoni@quicinc.com>,
         Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
         Jordan Crouse <jorcrous@amazon.com>
-Subject: [PATCH v7 2/3] docs: dev-tools: Add UAPI checker documentation
-Date:   Mon, 11 Dec 2023 18:02:58 -0800
-Message-ID: <20231212020259.2451253-3-quic_johmoo@quicinc.com>
+Subject: [PATCH v7 3/3] check-module-params: Introduce check-module-params.sh
+Date:   Mon, 11 Dec 2023 18:02:59 -0800
+Message-ID: <20231212020259.2451253-4-quic_johmoo@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
 References: <20231212020259.2451253-1-quic_johmoo@quicinc.com>
@@ -78,14 +78,14 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ANR5_z8iCMooYIVTvXbatXs2t2Y4QGX1
-X-Proofpoint-GUID: ANR5_z8iCMooYIVTvXbatXs2t2Y4QGX1
+X-Proofpoint-ORIG-GUID: p3ns36G_XC_4MnLHFgxIG4MlSACnGcuD
+X-Proofpoint-GUID: p3ns36G_XC_4MnLHFgxIG4MlSACnGcuD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- spamscore=0 priorityscore=1501 adultscore=0 malwarescore=0 mlxlogscore=999
- clxscore=1015 mlxscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
  definitions=main-2312120014
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -97,510 +97,418 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add detailed documentation for scripts/check-uapi.sh.
+One part of maintaining backwards compatibility with older
+userspace programs is avoiding changes to module parameters.
+
+To that end, add a script (check-module-params.sh) which
+performs a simple check of module parameter changes across
+git references.
+
+For example, if this module parameter:
+
+module_param(max_nullfunc_tries, int, 0644);
+
+...restricted its mode parameter:
+
+module_param(max_nullfunc_tries, int, 0600);
+
+The script would flag the change:
+
+Module parameter "max_nullfunc_tries" in net/mac80211/mlme.c changed!
+  Original args: int,0644
+       New args: int,0600
 
 Signed-off-by: John Moon <quic_johmoo@quicinc.com>
 ---
- Documentation/dev-tools/checkuapi.rst | 477 ++++++++++++++++++++++++++
- Documentation/dev-tools/index.rst     |   1 +
- 2 files changed, 478 insertions(+)
- create mode 100644 Documentation/dev-tools/checkuapi.rst
+    - Added ability to filter out equivalent permission changes
+      (e.g. S_IRUGO -> 0444 is now considered compatible).
+    - Added flag to avoid filtering out equivalent permission changes
+      in case user doesn't have/want a host compiler.
+    - Added flag to skip flagging module param removals as this may
+      be too noisy in some cases.
+    - Fixed typos in log naming.
 
-diff --git a/Documentation/dev-tools/checkuapi.rst b/Documentation/dev-tools/checkuapi.rst
-new file mode 100644
-index 000000000000..9072f21b50b0
+ scripts/check-module-params.sh | 371 +++++++++++++++++++++++++++++++++
+ 1 file changed, 371 insertions(+)
+ create mode 100755 scripts/check-module-params.sh
+
+diff --git a/scripts/check-module-params.sh b/scripts/check-module-params.sh
+new file mode 100755
+index 000000000000..990b271a8dbf
 --- /dev/null
-+++ b/Documentation/dev-tools/checkuapi.rst
-@@ -0,0 +1,477 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
++++ b/scripts/check-module-params.sh
+@@ -0,0 +1,371 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0-only
++# Script to check commits for UAPI backwards compatibility
 +
-+============
-+UAPI Checker
-+============
++set -o errexit
++set -o pipefail
 +
-+The UAPI checker (``scripts/check-uapi.sh``) is a shell script which
-+checks UAPI header files for userspace backwards-compatibility across
-+the git tree.
++print_usage() {
++	name=$(basename "$0")
++	cat << EOF
++$name - check for module parameter stability across git commits.
 +
-+Options
-+=======
++By default, the script will check to make sure the latest commit (or current
++dirty changes) did not introduce changes when compared to HEAD^1. You can
++check against additional commit ranges with the -b and -p options.
 +
-+This section will describe the options with which ``check-uapi.sh``
-+can be run.
++Usage: $name [-b BASE_REF] [-p PAST_REF] [-j N] [-l ERROR_LOG] [-P] [-R] [-q]
 +
-+Usage::
-+
-+    check-uapi.sh [-b BASE_REF] [-p PAST_REF] [-j N] [-l ERROR_LOG] [-i] [-q] [-v]
-+
-+Available options::
-+
++Options:
 +    -b BASE_REF    Base git reference to use for comparison. If unspecified or empty,
-+                   will use any dirty changes in tree to UAPI files. If there are no
-+                   dirty changes, HEAD will be used.
++                   will use any dirty changes in tree. If there are no dirty changes,
++                   HEAD will be used.
 +    -p PAST_REF    Compare BASE_REF to PAST_REF (e.g. -p v6.1). If unspecified or empty,
 +                   will use BASE_REF^1. Must be an ancestor of BASE_REF. Only headers
 +                   that exist on PAST_REF will be checked for compatibility.
 +    -j JOBS        Number of checks to run in parallel (default: number of CPU cores).
 +    -l ERROR_LOG   Write error log to file (default: no error log is generated).
-+    -i             Ignore ambiguous changes that may or may not break UAPI compatibility.
-+    -q             Quiet operation.
-+    -v             Verbose operation (print more information about each header being checked).
-+
-+Environmental args::
-+
-+    ABIDIFF  Custom path to abidiff binary
-+    CC       C compiler (default is "gcc")
-+    ARCH     Target architecture of C compiler (default is host arch)
-+
-+Exit codes::
-+
-+    0) Success
-+    1) ABI difference detected
-+    2) Prerequisite not met
-+
-+Examples
-+========
-+
-+Basic Usage
-+-----------
-+
-+First, let's try making a change to a UAPI header file that obviously
-+won't break userspace::
-+
-+    cat << 'EOF' | patch -l -p1
-+    --- a/include/uapi/linux/acct.h
-+    +++ b/include/uapi/linux/acct.h
-+    @@ -21,7 +21,9 @@
-+     #include <asm/param.h>
-+     #include <asm/byteorder.h>
-+
-+    -/*
-+    +#define FOO
-+    +
-+    +/*
-+      *  comp_t is a 16-bit "floating" point number with a 3-bit base 8
-+      *  exponent and a 13-bit fraction.
-+      *  comp2_t is 24-bit with 5-bit base 2 exponent and 20 bit fraction
-+    diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-+    EOF
-+
-+Now, let's use the script to validate::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    All 912 UAPI headers compatible with x86 appear to be backwards compatible
-+
-+Let's add another change that *might* break userspace::
-+
-+    cat << 'EOF' | patch -l -p1
-+    --- a/include/uapi/linux/bpf.h
-+    +++ b/include/uapi/linux/bpf.h
-+    @@ -74,7 +74,7 @@ struct bpf_insn {
-+            __u8    dst_reg:4;      /* dest register */
-+            __u8    src_reg:4;      /* source register */
-+            __s16   off;            /* signed offset */
-+    -       __s32   imm;            /* signed immediate constant */
-+    +       __u32   imm;            /* unsigned immediate constant */
-+     };
-+
-+     /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
-+    EOF
-+
-+The script will catch this::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    ==== ABI differences detected in include/linux/bpf.h from HEAD -> dirty tree ====
-+        [C] 'struct bpf_insn' changed:
-+          type size hasn't changed
-+          1 data member change:
-+            type of '__s32 imm' changed:
-+              typedef name changed from __s32 to __u32 at int-ll64.h:27:1
-+              underlying type 'int' changed:
-+                type name changed from 'int' to 'unsigned int'
-+                type size hasn't changed
-+    ==================================================================================
-+
-+    error - 1/912 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+In this case, the script is reporting the type change because it could
-+break a userspace program that passes in a negative number. Now, let's
-+say you know that no userspace program could possibly be using a negative
-+value in ``imm``, so changing to an unsigned type there shouldn't hurt
-+anything. You can pass the ``-i`` flag to the script to ignore changes
-+in which the userspace backwards compatibility is ambiguous::
-+
-+    % ./scripts/check-uapi.sh -i
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    All 912 UAPI headers compatible with x86 appear to be backwards compatible
-+
-+Now, let's make a similar change that *will* break userspace::
-+
-+    cat << 'EOF' | patch -l -p1
-+    --- a/include/uapi/linux/bpf.h
-+    +++ b/include/uapi/linux/bpf.h
-+    @@ -71,8 +71,8 @@ enum {
-+
-+     struct bpf_insn {
-+            __u8    code;           /* opcode */
-+    -       __u8    dst_reg:4;      /* dest register */
-+            __u8    src_reg:4;      /* source register */
-+    +       __u8    dst_reg:4;      /* dest register */
-+            __s16   off;            /* signed offset */
-+            __s32   imm;            /* signed immediate constant */
-+     };
-+    EOF
-+
-+Since we're re-ordering an existing struct member, there's no ambiguity,
-+and the script will report the breakage even if you pass ``-i``::
-+
-+    % ./scripts/check-uapi.sh -i
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    ==== ABI differences detected in include/linux/bpf.h from HEAD -> dirty tree ====
-+        [C] 'struct bpf_insn' changed:
-+          type size hasn't changed
-+          2 data member changes:
-+            '__u8 dst_reg' offset changed from 8 to 12 (in bits) (by +4 bits)
-+            '__u8 src_reg' offset changed from 12 to 8 (in bits) (by -4 bits)
-+    ==================================================================================
-+
-+    error - 1/912 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+Let's commit the breaking change, then commit the innocuous change::
-+
-+    % git commit -m 'Breaking UAPI change' include/uapi/linux/bpf.h
-+    [detached HEAD f758e574663a] Breaking UAPI change
-+     1 file changed, 1 insertion(+), 1 deletion(-)
-+    % git commit -m 'Innocuous UAPI change' include/uapi/linux/acct.h
-+    [detached HEAD 2e87df769081] Innocuous UAPI change
-+     1 file changed, 3 insertions(+), 1 deletion(-)
-+
-+Now, let's run the script again with no arguments::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Installing user-facing UAPI headers from HEAD^1... OK
-+    Checking changes to UAPI headers between HEAD^1 and HEAD...
-+    All 912 UAPI headers compatible with x86 appear to be backwards compatible
-+
-+It doesn't catch any breaking change because, by default, it only
-+compares ``HEAD`` to ``HEAD^1``. The breaking change was committed on
-+``HEAD~2``. If we wanted the search scope to go back further, we'd have to
-+use the ``-p`` option to pass a different past reference. In this case,
-+let's pass ``-p HEAD~2`` to the script so it checks UAPI changes between
-+``HEAD~2`` and ``HEAD``::
-+
-+    % ./scripts/check-uapi.sh -p HEAD~2
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Installing user-facing UAPI headers from HEAD~2... OK
-+    Checking changes to UAPI headers between HEAD~2 and HEAD...
-+    ==== ABI differences detected in include/linux/bpf.h from HEAD~2 -> HEAD ====
-+        [C] 'struct bpf_insn' changed:
-+          type size hasn't changed
-+          2 data member changes:
-+            '__u8 dst_reg' offset changed from 8 to 12 (in bits) (by +4 bits)
-+            '__u8 src_reg' offset changed from 12 to 8 (in bits) (by -4 bits)
-+    ==============================================================================
-+
-+    error - 1/912 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+Alternatively, we could have also run with ``-b HEAD~``. This would set the
-+base reference to ``HEAD~`` so then the script would compare it to ``HEAD~^1``.
-+
-+Architecture-specific Headers
-+-----------------------------
-+
-+Consider this change::
-+
-+    cat << 'EOF' | patch -l -p1
-+    --- a/arch/arm64/include/uapi/asm/sigcontext.h
-+    +++ b/arch/arm64/include/uapi/asm/sigcontext.h
-+    @@ -70,6 +70,7 @@ struct sigcontext {
-+     struct _aarch64_ctx {
-+            __u32 magic;
-+            __u32 size;
-+    +       __u32 new_var;
-+     };
-+
-+     #define FPSIMD_MAGIC   0x46508001
-+    EOF
-+
-+This is a change to an arm64-specific UAPI header file. In this example, I'm
-+running the script from an x86 machine with an x86 compiler, so, by default,
-+the script only checks x86-compatible UAPI header files::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    No changes to UAPI headers were applied between HEAD and dirty tree
-+
-+With an x86 compiler, we can't check header files in ``arch/arm64``, so the
-+script doesn't even try.
-+
-+If we want to check the header file, we'll have to use an arm64 compiler and
-+set ``ARCH`` accordingly::
-+
-+    % CC=aarch64-linux-gnu-gcc ARCH=arm64 ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    ==== ABI differences detected in include/asm/sigcontext.h from HEAD -> dirty tree ====
-+        [C] 'struct _aarch64_ctx' changed:
-+          type size changed from 64 to 96 (in bits)
-+          1 data member insertion:
-+            '__u32 new_var', at offset 64 (in bits) at sigcontext.h:73:1
-+        -- snip --
-+        [C] 'struct zt_context' changed:
-+          type size changed from 128 to 160 (in bits)
-+          2 data member changes (1 filtered):
-+            '__u16 nregs' offset changed from 64 to 96 (in bits) (by +32 bits)
-+            '__u16 __reserved[3]' offset changed from 80 to 112 (in bits) (by +32 bits)
-+    =======================================================================================
-+
-+    error - 1/884 UAPI headers compatible with arm64 appear _not_ to be backwards compatible
-+
-+We can see with ``ARCH`` and ``CC`` set properly for the file, the ABI
-+change is reported properly. Also notice that the total number of UAPI
-+header files checked by the script changes. This is because the number
-+of headers installed for arm64 platforms is different than x86.
-+
-+Cross-Dependency Breakages
-+--------------------------
-+
-+Consider this change::
-+
-+    cat << 'EOF' | patch -l -p1
-+    --- a/include/uapi/linux/types.h
-+    +++ b/include/uapi/linux/types.h
-+    @@ -52,7 +52,7 @@ typedef __u32 __bitwise __wsum;
-+     #define __aligned_be64 __be64 __attribute__((aligned(8)))
-+     #define __aligned_le64 __le64 __attribute__((aligned(8)))
-+
-+    -typedef unsigned __bitwise __poll_t;
-+    +typedef unsigned short __bitwise __poll_t;
-+
-+     #endif /*  __ASSEMBLY__ */
-+     #endif /* _UAPI_LINUX_TYPES_H */
-+    EOF
-+
-+Here, we're changing a ``typedef`` in ``types.h``. This doesn't break
-+a UAPI in ``types.h``, but other UAPIs in the tree may break due to
-+this change::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    ==== ABI differences detected in include/linux/eventpoll.h from HEAD -> dirty tree ====
-+        [C] 'struct epoll_event' changed:
-+          type size changed from 96 to 80 (in bits)
-+          2 data member changes:
-+            type of '__poll_t events' changed:
-+              underlying type 'unsigned int' changed:
-+                type name changed from 'unsigned int' to 'unsigned short int'
-+                type size changed from 32 to 16 (in bits)
-+            '__u64 data' offset changed from 32 to 16 (in bits) (by -16 bits)
-+    ========================================================================================
-+    include/linux/eventpoll.h did not change between HEAD and dirty tree...
-+    It's possible a change to one of the headers it includes caused this error:
-+    #include <linux/fcntl.h>
-+    #include <linux/types.h>
-+
-+Note that the script noticed the failing header file did not change,
-+so it assumes one of its includes must have caused the breakage. Indeed,
-+we can see ``linux/types.h`` is used from ``eventpoll.h``.
-+
-+UAPI Header Removals
-+--------------------
-+
-+Consider this change::
-+
-+    cat << 'EOF' | patch -l -p1
-+    diff --git a/include/uapi/asm-generic/Kbuild b/include/uapi/asm-generic/Kbuild
-+    index ebb180aac74e..a9c88b0a8b3b 100644
-+    --- a/include/uapi/asm-generic/Kbuild
-+    +++ b/include/uapi/asm-generic/Kbuild
-+    @@ -31,6 +31,6 @@ mandatory-y += stat.h
-+     mandatory-y += statfs.h
-+     mandatory-y += swab.h
-+     mandatory-y += termbits.h
-+    -mandatory-y += termios.h
-+    +#mandatory-y += termios.h
-+     mandatory-y += types.h
-+     mandatory-y += unistd.h
-+    EOF
-+
-+This script removes a UAPI header file from the install list. Let's run
-+the script::
-+
-+    % ./scripts/check-uapi.sh
-+    Installing user-facing UAPI headers from dirty tree... OK
-+    Installing user-facing UAPI headers from HEAD... OK
-+    Checking changes to UAPI headers between HEAD and dirty tree...
-+    ==== UAPI header include/asm/termios.h was removed between HEAD and dirty tree ====
-+
-+    error - 1/912 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+Removing a UAPI header is considered a breaking change, and the script
-+will flag it as such.
-+
-+Checking Historic UAPI Compatibility
-+------------------------------------
-+
-+You can use the ``-b`` and ``-p`` options to examine different chunks of your
-+git tree. For example, to check all changed UAPI header files between tags
-+v6.0 and v6.1, you'd run::
-+
-+    % ./scripts/check-uapi.sh -b v6.1 -p v6.0
-+    Installing user-facing UAPI headers from v6.1... OK
-+    Installing user-facing UAPI headers from v6.0... OK
-+    Checking changes to UAPI headers between v6.0 and v6.1...
-+
-+    --- snip ---
-+    error - 37/907 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+Note: Before v5.3, a header file needed by the script is not present,
-+so the script is unable to check changes before then.
-+
-+You'll notice that the script detected many UAPI changes that are not
-+backwards compatible. Knowing that kernel UAPIs are supposed to be stable
-+forever, this is an alarming result. This brings us to the next section:
-+caveats.
-+
-+Caveats
-+=======
-+
-+The UAPI checker makes no assumptions about the author's intention, so some
-+types of changes may be flagged even though they intentionally break UAPI.
-+
-+Removals For Refactoring or Deprecation
-+---------------------------------------
-+
-+Sometimes drivers for very old hardware are removed, such as in this example::
-+
-+    % ./scripts/check-uapi.sh -b ba47652ba655
-+    Installing user-facing UAPI headers from ba47652ba655... OK
-+    Installing user-facing UAPI headers from ba47652ba655^1... OK
-+    Checking changes to UAPI headers between ba47652ba655^1 and ba47652ba655...
-+    ==== UAPI header include/linux/meye.h was removed between ba47652ba655^1 and ba47652ba655 ====
-+
-+    error - 1/910 UAPI headers compatible with x86 appear _not_ to be backwards compatible
-+
-+The script will always flag removals (even if they're intentional).
-+
-+Struct Expansions
-+-----------------
-+
-+Depending on how a structure is handled in kernelspace, a change which
-+expands a struct could be non-breaking.
-+
-+If a struct is used as the argument to an ioctl, then the kernel driver
-+must be able to handle ioctl commands of any size. Beyond that, you need
-+to be careful when copying data from the user. Say, for example, that
-+``struct foo`` is changed like this::
-+
-+    struct foo {
-+        __u64 a; /* added in version 1 */
-+    +   __u32 b; /* added in version 2 */
-+    +   __u32 c; /* added in version 2 */
-+    }
-+
-+By default, the script will flag this kind of change for further review::
-+
-+    [C] 'struct foo' changed:
-+      type size changed from 64 to 128 (in bits)
-+      2 data member insertions:
-+        '__u32 b', at offset 64 (in bits)
-+        '__u32 c', at offset 96 (in bits)
-+
-+However, it is possible that this change was made safely.
-+
-+If a userspace program was built with version 1, it will think
-+``sizeof(struct foo)`` is 8. That size will be encoded in the
-+ioctl value that gets sent to the kernel. If the kernel is built
-+with version 2, it will think the ``sizeof(struct foo)`` is 16.
-+
-+The kernel can use the ``_IOC_SIZE`` macro to get the size encoded
-+in the ioctl code that the user passed in and then use
-+``copy_struct_from_user()`` to safely copy the value::
-+
-+    int handle_ioctl(unsigned long cmd, unsigned long arg)
-+    {
-+        switch _IOC_NR(cmd) {
-+        0x01: {
-+            struct foo my_cmd;  /* size 16 in the kernel */
-+
-+            ret = copy_struct_from_user(&my_cmd, arg, sizeof(struct foo), _IOC_SIZE(cmd));
-+            ...
-+
-+``copy_struct_from_user`` will zero the struct in the kernel and then copy
-+only the bytes passed in from the user (leaving new members zeroized).
-+If the user passed in a larger struct, the extra members are ignored.
-+
-+If you know this situation is accounted for in the kernel code, you can
-+pass ``-i`` to the script, and struct expansions like this will be ignored.
-+
-+Flex Array Migration
-+--------------------
-+
-+While the script handles expansion into an existing flex array, it does
-+still flag initial migration to flex arrays from 1-element fake flex
-+arrays. For example::
-+
-+    struct foo {
-+          __u32 x;
-+    -     __u32 flex[1]; /* fake flex */
-+    +     __u32 flex[];  /* real flex */
-+    };
-+
-+This change would be flagged by the script::
-+
-+    [C] 'struct foo' changed:
-+      type size changed from 64 to 32 (in bits)
-+      1 data member change:
-+        type of '__u32 flex[1]' changed:
-+          type name changed from '__u32[1]' to '__u32[]'
-+          array type size changed from 32 to 'unknown'
-+          array type subrange 1 changed length from 1 to 'unknown'
-+
-+At this time, there's no way to filter these types of changes, so be
-+aware of this possible false positive.
-+
-+Summary
-+-------
-+
-+While many types of false positives are filtered out by the script,
-+it's possible there are some cases where the script flags a change
-+which does not break UAPI. It's also possible a change which *does*
-+break userspace would not be flagged by this script. While the script
-+has been run on much of the kernel history, there could still be corner
-+cases that are not accounted for.
-+
-+The intention is for this script to be used as a quick check for
-+maintainers or automated tooling, not as the end-all authority on
-+patch compatibility. It's best to remember: use your best judgment
-+(and ideally a unit test in userspace) to make sure your UAPI changes
-+are backwards-compatible!
-diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
-index 6b0663075dc0..0876f5a2cf55 100644
---- a/Documentation/dev-tools/index.rst
-+++ b/Documentation/dev-tools/index.rst
-@@ -34,6 +34,7 @@ Documentation/dev-tools/testing-overview.rst
-    kselftest
-    kunit/index
-    ktap
-+   checkuapi
- 
- 
- .. only::  subproject and html
--- 
++    -P             Flag all changes to permissions (even if they're compatible). This
++                   option negates the need for a host C compiler.
++    -R             Skip flagging parameter removals.
++    -q             Quiet operation (suppress stdout, still print stderr).
++
++Environmental args:
++    HOSTCC   C compiler for permission conversion to octal (default is "gcc")
++
++Exit codes:
++    $SUCCESS) Success
++    $FAILURE) Module param differences detected
++EOF
++}
++
++readonly SUCCESS=0
++readonly FAILURE=1
++
++# Print to stderr
++eprintf() {
++	# shellcheck disable=SC2059
++	printf "$@" >&2
++}
++
++# Check if git tree is dirty
++tree_is_dirty() {
++	! git diff --quiet
++}
++
++file_module_params_unmodified() {
++	local file="$1"
++	local base_ref="$2"
++	local past_ref="$3"
++	local base_params_file="${TMP_DIR}/${file}.base"
++	local past_params_file="${TMP_DIR}/${file}.past"
++	local error_log="${TMP_DIR}/${file}.error"
++
++	local -r awk_cmd='/^ *module_param.*\(/,/.*\);/'
++
++	mkdir -p "$(dirname "$error_log")"
++	git show "${past_ref}:${file}" 2> /dev/null \
++		| awk "$awk_cmd" > "$past_params_file" || true
++
++	if [ -z "$base_ref" ]; then
++		awk "$awk_cmd" "${KERNEL_SRC}/${file}" \
++			> "$base_params_file" 2> /dev/null || true
++	else
++		git show "${base_ref}:${file}" 2> /dev/null \
++			| awk "$awk_cmd" > "$base_params_file" || true
++	fi
++
++	# Ignore files that don't exist at the past ref or don't have module params
++	if [ ! -s "$past_params_file" ]; then
++		return 255 # Special return code for "no-op"
++	fi
++
++	# Process the param data to come up with an associative array of param names to param data
++	# For example:
++	#   module_param_call(foo, set_result, get_result, NULL, 0600);
++	#
++	# is processed into:
++	#   pre_change_params[foo]="set_result,get_result,NULL,0600"
++	local -A pre_change_params
++	local param_name
++	local param_params
++
++	while read -r mod_param_args; do
++		param_name="$(echo "$mod_param_args" | cut -d ',' -f 1)"
++		param_params="$(echo "$mod_param_args" | cut -d ',' -f 2-)"
++
++		pre_change_params[$param_name]=$param_params
++	done < <(tr -d '\t\n ' < "$past_params_file" | tr ';' '\n' | perl -lne '/\((.*)\)/ && print $1')
++
++	local -A post_change_params
++	while read -r mod_param_args; do
++		param_name="$(echo "$mod_param_args" | cut -d ',' -f 1)"
++		param_params="$(echo "$mod_param_args" | cut -d ',' -f 2-)"
++
++		post_change_params[$param_name]=$param_params
++	done < <(tr -d '\t\n ' < "$base_params_file" | tr ';' '\n' | perl -lne '/\((.*)\)/ && print $1')
++
++	#for param in "${!pre_change_params[@]}"; do
++	#	echo "$param: ${pre_change_params[${param}]}"
++	#done
++
++	# Flag any module param changes that:
++	#  - Remove/rename a parameter
++	#  - Change the arguments of the parameter
++	local incompat_param_changes=0
++	local pre
++	local post
++	for param_name in "${!pre_change_params[@]}"; do
++		pre="${pre_change_params[$param_name]}"
++		if [ ! "${post_change_params[$param_name]+set}" ]; then
++			if [ "$SKIP_PARAM_REMOVALS" = "true" ]; then
++				continue
++			fi
++			{
++				printf "Module parameter \"%s\" in %s removed!\n" "$param_name" "$file"
++				printf "  Original args: %s\n" "$pre"
++			} > "$error_log"
++			incompat_param_changes=$((incompat_param_changes + 1))
++			continue
++		fi
++
++		post="${post_change_params[$param_name]}"
++		if [ "$pre" != "$post" ]; then
++			if [ "$SKIP_SAFE_PERM_CHANGES" = "true" ] && perm_change_is_safe "$pre" "$post"; then
++				continue
++			fi
++			{
++				printf "Module parameter \"%s\" in %s changed!\n" "$param_name" "$file"
++				printf "  Original args: %s\n" "$pre"
++				printf "       New args: %s\n" "$post"
++			} > "$error_log"
++			incompat_param_changes=$((incompat_param_changes + 1))
++			continue
++		fi
++	done
++
++	if [ "$incompat_param_changes" -gt 0 ]; then
++		return 1
++	fi
++}
++
++perm_change_is_safe() {
++	local -r pre="$1"
++	local -r post="$2"
++
++	# Assume that the permission arg is always the last one.
++	pre_perm_arg=$(echo "$pre" | grep -o '[^,]*$')
++	post_perm_arg=$(echo "$post" | grep -o '[^,]*$')
++
++	# If the non-permission arguments are different, then
++	# don't even bother checking the permission arg.
++	if [ "${pre/,${pre_perm_arg}/}" != "${post/,${post_perm_arg}/}" ]; then
++		return 1
++	fi
++
++	# Convert both to octal representation to compare
++	pre_perm_arg_octal=$(get_octal_val "$pre_perm_arg")
++	post_perm_arg_octal=$(get_octal_val "$post_perm_arg")
++
++	if [ "$pre_perm_arg_octal" = "$post_perm_arg_octal" ]; then
++		return 0
++	else
++		return 1
++	fi
++}
++
++get_octal_val() {
++	local -r input="$1"
++
++	# Save needing to recompile for input we've seen before
++	local -r input_hash="$(echo "$input" | md5sum | cut -d ' ' -f 1)"
++
++	local -r prog="${TMP_DIR}/get_octal_val_${input_hash}"
++	local -r stat="include/linux/stat.h"
++
++	if [ ! -x "$prog" ]; then
++		cat << EOF > "${prog}.c"
++#include <stdio.h>
++#include <sys/stat.h>
++
++$(grep '#define *S_IRWXUGO' "$stat")
++$(grep '#define *S_IALLUGO' "$stat")
++$(grep '#define *S_IRUGO' "$stat")
++$(grep '#define *S_IWUGO' "$stat")
++$(grep '#define *S_IXUGO' "$stat")
++
++int main(void) { printf("%04o\\n", $input); };
++EOF
++		"${HOSTCC:-gcc}" -o "$prog" "${prog}.c"
++	fi
++
++	"$prog"
++}
++run() {
++	local base_ref="$1"
++	local past_ref="$2"
++	local param_error_log="$3"
++
++	diff_args=("$past_ref")
++	if [ -n "$base_ref" ]; then
++		diff_args+=("$base_ref")
++	fi
++
++	local -a threads=()
++	local passed=0
++	local failed=0
++	printf "Checking files between %s and %s for module parameter compatibility...\n" \
++		"$past_ref" "$base_ref"
++	while read -r modified_file; do
++		if [ "${#threads[@]}" -ge "$MAX_THREADS" ]; then
++			wait "${threads[0]}" && ret="$?" || ret="$?"
++			if [ "$ret" -eq 0 ]; then
++				passed=$((passed + 1))
++			elif [ "$ret" -eq 1 ]; then
++				failed=$((failed + 1))
++			fi
++			threads=("${threads[@]:1}")
++		fi
++
++		file_module_params_unmodified "$modified_file" "$base_ref" "$past_ref" &
++		threads+=("$!")
++	done < <(git diff --diff-filter=MCD --name-only "${diff_args[@]}" -- '*.c' '*.h')
++
++	for t in "${threads[@]}"; do
++		wait "$t" && ret="$?" || ret="$?"
++		if [ "$ret" -eq 0 ]; then
++			passed=$((passed + 1))
++		elif [ "$ret" -eq 1 ]; then
++			failed=$((failed + 1))
++		fi
++	done
++
++	total=$((passed + failed))
++	if [ "$total" -eq 0 ]; then
++		printf "No files with module parameters modified between %s and %s\n" \
++			"$past_ref" "${base_ref:-dirty tree}"
++		exit "$SUCCESS"
++	fi
++
++	if [ -n "$param_error_log" ]; then
++		printf 'Generated by "%s %s" from git ref %s\n\n' \
++			"$0" "$*" "$(git rev-parse HEAD)" > "$param_error_log"
++	fi
++
++	while read -r error_file; do
++		{
++			cat "$error_file"
++			printf "\n\n"
++		} | tee -a "${param_error_log:-/dev/null}" >&2
++	done < <(find "$TMP_DIR" -type f -name '*.error' | sort)
++
++	if [ "$failed" -gt 0 ]; then
++		eprintf "error - %d/%d files with modules parameters appear _not_ to be backwards compatible\n" \
++			"$failed" "$total"
++		if [ -n "$param_error_log" ]; then
++			eprintf "Failure summary saved to %s\n" "$param_error_log"
++		fi
++	else
++		printf "All %d files with module_parameters checked appear to be backwards compatible\n" \
++			"$total"
++	fi
++
++	exit "$failed"
++}
++
++# Make sure the git refs we have make sense
++check_refs() {
++	if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
++		eprintf "error - this script requires the kernel tree to be initialized with Git\n"
++		return 1
++	fi
++
++	if ! git rev-parse --verify "$past_ref" > /dev/null 2>&1; then
++		printf 'error - invalid git reference "%s"\n' "$past_ref"
++		return 1
++	fi
++
++	if [ -n "$base_ref" ]; then
++		if ! git merge-base --is-ancestor "$past_ref" "$base_ref" > /dev/null 2>&1; then
++			printf 'error - "%s" is not an ancestor of base ref "%s"\n' "$past_ref" "$base_ref"
++			return 1
++		fi
++		if [ "$(git rev-parse "$base_ref")" = "$(git rev-parse "$past_ref")" ]; then
++			printf 'error - "%s" and "%s" are the same reference\n' "$past_ref" "$base_ref"
++			return 1
++		fi
++	fi
++}
++
++main() {
++	MAX_THREADS=$(nproc)
++	SKIP_SAFE_PERM_CHANGES="true"
++	SKIP_PARAM_REMOVALS="false"
++	quiet="false"
++	local base_ref=""
++	while getopts "hb:p:j:l:PRq" opt; do
++		case $opt in
++		h)
++			print_usage
++			exit "$SUCCESS"
++			;;
++		b)
++			base_ref="$OPTARG"
++			;;
++		p)
++			past_ref="$OPTARG"
++			;;
++		j)
++			MAX_THREADS="$OPTARG"
++			;;
++		l)
++			param_error_log="$OPTARG"
++			;;
++		P)
++			SKIP_SAFE_PERM_CHANGES="false"
++			;;
++		R)
++			SKIP_PARAM_REMOVALS="true"
++			;;
++		q)
++			quiet="true"
++			;;
++		*)
++			exit "$FAILURE"
++		esac
++	done
++
++	if [ "$quiet" = "true" ]; then
++		exec > /dev/null 2>&1
++	fi
++
++	if [ -z "$KERNEL_SRC" ]; then
++		KERNEL_SRC="$(realpath "$(dirname "$0")"/..)"
++	fi
++
++	cd "$KERNEL_SRC"
++
++	if [ -z "$base_ref" ] && ! tree_is_dirty; then
++		base_ref=HEAD
++	fi
++
++	if [ -z "$past_ref" ]; then
++		if [ -n "$base_ref" ]; then
++			past_ref="${base_ref}^1"
++		else
++			past_ref=HEAD
++		fi
++	fi
++
++	if ! check_refs; then
++		exit "$FAILURE"
++	fi
++
++	TMP_DIR=$(mktemp -d)
++	readonly TMP_DIR
++	trap 'rm -rf "$TMP_DIR"' EXIT
++
++	run "$base_ref" "$past_ref" "$param_error_log"
++}
++
++main "$@"
+--
 2.34.1
 
