@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F3480EFC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091DF80EFC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376472AbjLLPMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S1376496AbjLLPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbjLLPMQ (ORCPT
+        with ESMTP id S232844AbjLLPNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:12:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B20E9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:12:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F85CC433C7;
-        Tue, 12 Dec 2023 15:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702393942;
-        bh=QHxKdB968+9G1qW19Q0elFcukvl/07+msQ/9qSNOuWE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ToAop2WxsqPeCAWeT5j5Ot4c+vqe+c0c9/eBSPO/6+2vfYGiDTMmazBilH5Rk60X/
-         Se2AP63NyFeTgkt+MUH7URECE7Z9R8CUVY7Xx2IW9Q9G/PBW5jRMaDsHJXxguHUJIP
-         69ltjhDjxgv0yBVL2PA0dUkCPuHHUQLf0e6kByMBVlhfJl2flLgtLUycWU24mk+Qoj
-         KDpK1wMmhtJQ1T5pI4dzAyDKaNWYmRKiR/MlLi59aVemG9iK3Lon1jJl/jwuAueCHn
-         02K0wkVlI6LP5L4J36Mph5tR8WDWKK3bmwaS+hiwlz4rI3OFcVU9pVmwFjC7YxXpNR
-         ZI3rSbZvpBruQ==
-Date:   Tue, 12 Dec 2023 15:12:13 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, ryan.roberts@arm.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Message-ID: <0f97db9c-5b86-4f56-8463-2520fe79f709@sirena.org.uk>
-References: <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
- <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
- <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
- <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
- <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
- <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
- <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
- <3eadd79c-c02a-495f-92c0-0315046ef59f@nvidia.com>
- <3d22f342-280f-4a44-87f4-8cca291cfce7@sirena.org.uk>
- <e3048458-726e-4b98-b2bf-908ea9066959@nvidia.com>
+        Tue, 12 Dec 2023 10:13:19 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C200D3;
+        Tue, 12 Dec 2023 07:13:25 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B68BE143D;
+        Tue, 12 Dec 2023 07:14:11 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BE933F738;
+        Tue, 12 Dec 2023 07:13:20 -0800 (PST)
+Message-ID: <5e2e56cf-9177-cb83-f88b-bd6592260a05@arm.com>
+Date:   Tue, 12 Dec 2023 15:13:20 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rjhnOum+JKh0/0au"
-Content-Disposition: inline
-In-Reply-To: <e3048458-726e-4b98-b2bf-908ea9066959@nvidia.com>
-X-Cookie: If rash develops, discontinue use.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 11/14] perf arm64 header: Remove unnecessary CPU map
+ get and put
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-12-irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-12-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,49 +85,37 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rjhnOum+JKh0/0au
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Mon, Dec 11, 2023 at 12:29:58PM -0800, John Hubbard wrote:
-> On 12/11/23 12:21, Mark Brown wrote:
+On 29/11/2023 06:02, Ian Rogers wrote:
+> In both cases the CPU map is known owned by either the caller or a
+> PMU.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-> > additional variables that depend on the user's build environment, we
-> > already have enough build issues.  It ought to be mostly tedious rather
-> > than hard but it's still a pain, especially given the issues we have
-> > getting kselftest fixes merged promptly.
+Reviewed-by: James Clark <james.clark@arm.com>
 
-> What about David's option (3):
-
-> (3) Regularly archive the required headers in the selftest directory
->     like external projects like QEMU do.
-
-> , combined with something in the build system to connect it up for
-> building the selftests?
-
-> Or maybe there is an innovative way to do all of this, that we have
-> yet to think of.
-
-We do copy files into tools/include at random times which makes sense
-for things that aren't uapi, and we are putting bits of uapi there
-already so we could just expand the set of files copied there.  AFAICT
-the only reason we're copying the uapi files at all is that they're
-directly in the same include/ directories as everything else and are
-always referenced with their uapi/ prefix.
-
---rjhnOum+JKh0/0au
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV4eEwACgkQJNaLcl1U
-h9DNVwgAhjdvx5btBIs0XvROBoWhSCo0Vy3s4M5v2OhKz5hwpav0C1t6Y7u5+YQ1
-jonZ0ZQbbEew6o/zPQtcooNt6/HgrVqW1zrVGxzarxUWawcwk1lN8+cPZKNO287H
-fQzpXaQou3R5XHUmQzHAIcy9WKZJC8PfFZJ4aLx8BhSdd/hf8VJ+OB2A3JlCPBaJ
-XZ9wq6/ump80e8eRdwEX/LS3SBYj/KpKyHQ5lXeTCGTuZPDdstDcS+LVDgiBLsEx
-HWeHttr3zJfs5scL3HiDTwvwsO6JDN81C6tCp4WkoJG9YnSHEWHxdTW0ARNvB2Jz
-PtTLr7uHfBsiPFnLMkG6MqNPsmk4zg==
-=TB+2
------END PGP SIGNATURE-----
-
---rjhnOum+JKh0/0au--
+> ---
+>  tools/perf/arch/arm64/util/header.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
+> index 97037499152e..a9de0b5187dd 100644
+> --- a/tools/perf/arch/arm64/util/header.c
+> +++ b/tools/perf/arch/arm64/util/header.c
+> @@ -25,8 +25,6 @@ static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+>  	if (!sysfs || sz < MIDR_SIZE)
+>  		return EINVAL;
+>  
+> -	cpus = perf_cpu_map__get(cpus);
+> -
+>  	for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
+>  		char path[PATH_MAX];
+>  		FILE *file;
+> @@ -51,7 +49,6 @@ static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
+>  		break;
+>  	}
+>  
+> -	perf_cpu_map__put(cpus);
+>  	return ret;
+>  }
+>  
