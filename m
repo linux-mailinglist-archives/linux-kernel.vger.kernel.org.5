@@ -2,330 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C16B980EA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AE280EA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346299AbjLLLi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        id S231998AbjLLLjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjLLLix (ORCPT
+        with ESMTP id S231956AbjLLLjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:38:53 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 951AEEB;
-        Tue, 12 Dec 2023 03:38:57 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 02E4520B74C0; Tue, 12 Dec 2023 03:38:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02E4520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702381137;
-        bh=WS1f3+n5rqfny6SDXg/YEJWd+skx1iiQQljAUqp4vgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kpIwpmR9urFDwNBuUCLM7Oz6n6TwHSW4Oqin6l5yJ2dogdnxp4WAkc6UZTi0QQhvn
-         0tmvUxw7HhnRa1zW5D52hvSaLwEpQN/yn2KmRDCpmsCDbeSQHEqjda6WjU2JGwjKYI
-         sK8/SIYdtzBS+duibGfeVgFVLLg4vT8SpQcqsN74=
-Date:   Tue, 12 Dec 2023 03:38:56 -0800
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        paulros@microsoft.com
-Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
-Message-ID: <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
- <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
- <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
+        Tue, 12 Dec 2023 06:39:45 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FB8ED
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:39:51 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3334254cfa3so3113244f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:39:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1702381189; x=1702985989; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oNXBBRHD5qkWk2guSivg12tTPW3ePPSJ0V1IVaOxCk0=;
+        b=TlH9kV/thUos7xfVGowxaI/tqzjwmdMkkvPudxqhtwWrx4q37uVKEn6QNPiqttPR+a
+         oY0jAy8fiOfiEjpCwddmCivZuivJtwdziQmDcU89A3d0a0pY6/qjUfQRYhaY2+KHYqaE
+         sq7c8tTrCk6k3agN9EufMmrnVn+SxNc7gDvwA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702381189; x=1702985989;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oNXBBRHD5qkWk2guSivg12tTPW3ePPSJ0V1IVaOxCk0=;
+        b=ft9RWTusCtOQ7KFWMo7KA13SuRS5AymeeELh4mb652j0J0wygEOFM+xcsfi4X7hDj3
+         ztCj0K5ah3XUe/LSlSQGs34Bu0IdawPPTXcQpx1j707LeOsmMKuDVDY11mxHvKgwcJmm
+         LEZU849c/iwar0tObR3AXMMYNd7KFuyCMq0M2uZI5GCvH1u7irVhd6u26TQFMFopdY7r
+         p7G3uZ+2jrcFs4G8xdiNVedlgXg5aUCeYDU7gHRW7Kj3MY/d+dunVx9rkAzJs+mUBCAB
+         Sbfa7DXK+ATEq8qWzR6XlRxXDpGcYqwo3H3xadaHWBHpIKkwmoJOQqgsMN2MqsbY0RVA
+         Lfgg==
+X-Gm-Message-State: AOJu0Yw77ZJh2FhN25zxT4JsP7T4DAZkeLS7YIUNhwGBAjkUd8r5mTWY
+        o+4LwyrrCjj+3yF1h07A50W1mg==
+X-Google-Smtp-Source: AGHT+IGhA7h3bvd2Khr+klspvTTuqGP41GONtnscuZATYBUae1a++AwgwOBg9QTOWntJSlUfuSQ8yQ==
+X-Received: by 2002:a5d:5234:0:b0:333:2fd7:95f8 with SMTP id i20-20020a5d5234000000b003332fd795f8mr3438411wra.51.1702381189583;
+        Tue, 12 Dec 2023 03:39:49 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id f16-20020a5d6650000000b00336360467a8sm187075wrw.51.2023.12.12.03.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 03:39:49 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:39:48 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     "Chen, Jiqian" <Jiqian.Chen@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v2 2/3] xen/pvh: Unmask irq for passthrough
+ device in PVH dom0
+Message-ID: <ZXhGhKkcmlEZOpwZ@macbook>
+References: <alpine.DEB.2.22.394.2312041413000.110490@ubuntu-linux-20-04-desktop>
+ <ZW7rDjjC0gxEI1cq@macbook>
+ <15275706-5c31-4e29-aa29-9f5e90526219@suse.com>
+ <BL1PR12MB5849C871B0B9577D1E0BF576E784A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <ZXculMdLgwGaRC7i@macbook>
+ <BL1PR12MB584997DDE6839F2340022976E78EA@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <ZXgeieg4E8UN0KoN@macbook>
+ <50ca26a1-38e3-45fb-9c39-56e4d04de3e0@suse.com>
+ <ZXhBb0Vt6gDuprHa@macbook>
+ <c5d4e8a4-b286-4352-bf96-a67cb132b452@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c5d4e8a4-b286-4352-bf96-a67cb132b452@suse.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 07:30:46AM -0800, Yury Norov wrote:
-> On Sun, Dec 10, 2023 at 10:37:26PM -0800, Souradeep Chakrabarti wrote:
-> > On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
-> > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
-> > > > Existing MANA design assigns IRQ to every CPU, including sibling
-> > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
-> > > > in the same core and may reduce the network performance with RSS.
-> > > 
-> > > Can you add an IRQ distribution diagram to compare before/after
-> > > behavior, similarly to what I did in the other email?
-> > > 
-> > Let's consider this topology:
-> 
-> Not here - in commit message, please.
-Okay, will do that.
-> 
+On Tue, Dec 12, 2023 at 12:19:49PM +0100, Jan Beulich wrote:
+> On 12.12.2023 12:18, Roger Pau Monné wrote:
+> > On Tue, Dec 12, 2023 at 10:38:08AM +0100, Jan Beulich wrote:
+> >> (I think the Cc list is too long here, but then I don't know who to
+> >> keep and who to possibly drop.)
+> >>
+> >> On 12.12.2023 09:49, Roger Pau Monné wrote:
+> >>> On Tue, Dec 12, 2023 at 06:16:43AM +0000, Chen, Jiqian wrote:
+> >>>> On 2023/12/11 23:45, Roger Pau Monné wrote:
+> >>>>> On Wed, Dec 06, 2023 at 06:07:26AM +0000, Chen, Jiqian wrote:
+> >>>>>> +static int xen_pvh_setup_gsi(gsi_info_t *gsi_info)
+> >>>>>> +{
+> >>>>>> +       struct physdev_setup_gsi setup_gsi;
+> >>>>>> +
+> >>>>>> +       setup_gsi.gsi = gsi_info->gsi;
+> >>>>>> +       setup_gsi.triggering = (gsi_info->trigger == ACPI_EDGE_SENSITIVE ? 0 : 1);
+> >>>>>> +       setup_gsi.polarity = (gsi_info->polarity == ACPI_ACTIVE_HIGH ? 0 : 1);
+> >>>>>> +
+> >>>>>> +       return HYPERVISOR_physdev_op(PHYSDEVOP_setup_gsi, &setup_gsi);
+> >>>>>> +}
+> >>>>>
+> >>>>> Hm, why not simply call pcibios_enable_device() from pciback?  What
+> >>>> pcibios_enable_device had been called when using cmd "xl pci-assignable-add sbdf" from pciback. But it didn't do map_pirq and setup_gsi.
+> >>>> Because pcibios_enable_device-> pcibios_enable_irq-> __acpi_register_gsi(acpi_register_gsi_ioapic PVH specific)
+> >>>>> you are doing here using the hypercalls is a backdoor into what's done
+> >>>>> automatically by Xen on IO-APIC accesses by a PVH dom0.
+> >>>> But the gsi didn't be unmasked, and vioapic_hwdom_map_gsi is never called.
+> >>>> So, I think in pciback, if we can do what vioapic_hwdom_map_gsi does.
+> >>>>
+> >>>
+> >>> I see, it does setup the IO-APIC pin but doesn't unmask it, that's
+> >>> what I feared.
+> >>>
+> >>>>> It will be much more natural for the PVH dom0 model to simply use the
+> >>>>> native way to configure and unmask the IO-APIC pin, and that would
+> >>>>> correctly setup the triggering/polarity and bind it to dom0 without
+> >>>>> requiring the usage of any hypercalls.
+> >>>> Do you still prefer that I called unmask_irq in pcistub_init_device, as this v2 patch do?
+> >>>> But Thomas Gleixner think it is not suitable to export unmask_irq.
+> >>>
+> >>> Yeah, that wasn't good.
+> >>>
+> >>>>>
+> >>>>> Is that an issue since in that case the gsi will get mapped and bound
+> >>>>> to dom0?
+> >>>> Dom0 do map_pirq is to pass the check xc_domain_irq_permission()-> pirq_access_permitted(), 
+> >>>
+> >>> Can we see about finding another way to fix this check?
+> >>>
+> >>> One option would be granting permissions over the IRQ in
+> >>> PHYSDEVOP_setup_gsi?
+> >>
+> >> There's no domain available there, and imo it's also the wrong interface to
+> >> possibly grant any permissions.
 > > 
-> > Node            0               1
-> > Core        0       1       2       3
-> > CPU       0   1   2   3   4   5   6   7
-> > 
-> >  Before  
-> >  IRQ     Nodes   Cores   CPUs
-> >  0       1       0       0
-> >  1       1       1       2
-> >  2       1       0       1
-> >  3       1       1       3
-> >  4       2       2       4
-> >  5       2       3       6
-> >  6       2       2       5
-> >  7       2       3       7
-> >  
-> >  Now
-> >  IRQ     Nodes   Cores   CPUs
-> >  0       1       0       0-1
-> >  1       1       1       2-3
-> >  2       1       0       0-1
-> >  3       1       1       2-3
-> >  4       2       2       4-5
-> >  5       2       3       6-7
-> >  6       2       2       4-5
-> >  7       2       3       6-7
+> > Well, the domain is the caller.
 > 
-> If you decided to take my wording, please give credits.
-> 
-Will take care of that :).
-> > > > Improve the performance by assigning IRQ to non sibling CPUs in local
-> > > > NUMA node. The performance improvement we are getting using ntttcp with
-> > > > following patch is around 15 percent with existing design and approximately
-> > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
-> > > > if enough cores are present.
-> > > 
-> > > How did you measure it? In the other email you said you used perf, can
-> > > you show your procedure in details?
-> > I have used ntttcp for performance analysis, by perf I had meant performance
-> > analysis. I have used ntttcp with following parameters
-> > ntttcp -r -m 64 <receiver> 
-> > 
-> > ntttcp -s <receiver side ip address>  -m 64 <sender>
-> > Both the VMs are in same Azure subnet and private IP address is used.
-> > MTU and tcp buffer is set accordingly and number of channels are set using ethtool
-> > accordingly for best performance. Also irqbalance was disabled.
-> > https://github.com/microsoft/ntttcp-for-linux
-> > https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
-> 
-> OK. Can you also print the before/after outputs of ntttcp that demonstrate
-> +15%?
-> 
-With affinity spread like each core only 1 irq and spreading accross multiple NUMA node>
-8 ./ntttcp -r -m 16
-NTTTCP for Linux 1.4.0
----------------------------------------------------------
-08:05:20 INFO: 17 threads created
-08:05:28 INFO: Network activity progressing...
-08:06:28 INFO: Test run completed.
-08:06:28 INFO: Test cycle finished.
-08:06:28 INFO: #####  Totals:  #####
-08:06:28 INFO: test duration    :60.00 seconds
-08:06:28 INFO: total bytes      :630292053310
-08:06:28 INFO:   throughput     :84.04Gbps
-08:06:28 INFO:   retrans segs   :4
-08:06:28 INFO: cpu cores        :192
-08:06:28 INFO:   cpu speed      :3799.725MHz
-08:06:28 INFO:   user           :0.05%
-08:06:28 INFO:   system         :1.60%
-08:06:28 INFO:   idle           :96.41%
-08:06:28 INFO:   iowait         :0.00%
-08:06:28 INFO:   softirq        :1.94%
-08:06:28 INFO:   cycles/byte    :2.50
-08:06:28 INFO: cpu busy (all)   :534.41%
+> Granting permission to itself?
 
-With our new proposal
+See below in the previous email, the issue is not with the
+permissions, which are correctly assigned from
+dom0_setup_permissions(), but the usage of domain_pirq_to_irq() in
+pirq_access_permitted() as called by XEN_DOMCTL_irq_permission.
+There's no need to play with the permissions at all.
 
-./ntttcp -r -m 16
-NTTTCP for Linux 1.4.0
----------------------------------------------------------
-08:08:51 INFO: 17 threads created
-08:08:56 INFO: Network activity progressing...
-08:09:56 INFO: Test run completed.
-08:09:56 INFO: Test cycle finished.
-08:09:56 INFO: #####  Totals:  #####
-08:09:56 INFO: test duration    :60.00 seconds
-08:09:56 INFO: total bytes      :741966608384
-08:09:56 INFO:   throughput     :98.93Gbps
-08:09:56 INFO:   retrans segs   :6
-08:09:56 INFO: cpu cores        :192
-08:09:56 INFO:   cpu speed      :3799.791MHz
-08:09:56 INFO:   user           :0.06%
-08:09:56 INFO:   system         :1.81%
-08:09:56 INFO:   idle           :96.18%
-08:09:56 INFO:   iowait         :0.00%
-08:09:56 INFO:   softirq        :1.95%
-08:09:56 INFO:   cycles/byte    :2.25
-08:09:56 INFO: cpu busy (all)   :569.22%
----------------------------------------------------------
-
-> > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
-> > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-> > > > ---
-> > > 
-> > > [...]
-> > > 
-> > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
-> > > >  1 file changed, 83 insertions(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > index 6367de0c2c2e..18e8908c5d29 100644
-> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
-> > > >  	r->size = 0;
-> > > >  }
-> > > >  
-> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
-> 
-> Is it intentional that irqs and nvec are signed? If not, please make
-> them unsigned.
-Will do it in next version.
-> 
-> > > > +{
-> > > > +	int w, cnt, cpu, err = 0, i = 0;
-> > > > +	int next_node = start_numa_node;
-> > > 
-> > > What for this?
-> > This is the local numa node, from where to start hopping.
-> > Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
-> > number of irqs allocated, and the local numa node to the device.
-> 
-> I'll ask again: you copy parameter (start_numa_node) to a local
-> variable (next_node), and never use start_numa_node after that.
-> 
-> You can just use the parameter, and avoid creating local variable at
-> all, so what for the latter exist?
-> 
-> The naming is confusing. I think just 'node' is OK here.
-Thanks, I wll not use the extra variable next_node.
-> 
-> > > > +	const struct cpumask *next, *prev = cpu_none_mask;
-> > > > +	cpumask_var_t curr, cpus;
-> > > > +
-> > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
-> > > > +		err = -ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
-> > > 
-> > >                 free(curr);
-> > Will fix it in next version. Thanks for pointing.
-> 
-> And also drop 'err' - just 'return -ENOMEM'.
-> 
-Will fix it in next revision.
-> > > 
-> > > > +		err = -ENOMEM;
-> > > > +		return err;
-> > > > +	}
-> > > > +
-> > > > +	rcu_read_lock();
-> > > > +	for_each_numa_hop_mask(next, next_node) {
-> > > > +		cpumask_andnot(curr, next, prev);
-> > > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
-> > > > +			cpumask_copy(cpus, curr);
-> > > > +			for_each_cpu(cpu, cpus) {
-> > > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
-> > > > +				if (++i == nvec)
-> > > > +					goto done;
-> > > 
-> > > Think what if you're passed with irq_setup(NULL, 0, 0).
-> > > That's why I suggested to place this check at the beginning.
-> > > 
-> > irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
-> > care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
-> > 
-> > nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> > if (nvec < 0)
-> > 	return nvec;
-> 
-> I know that. But still it's a bug. The common convention is that if a
-> 0-length array is passed to a function, it should not dereference the
-> pointer.
-> 
-I will add one if check in the begining of irq_setup() to verify the pointer
-and the nvec number.
-> ...
-> 
-> > > > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> > > >  			goto free_irq;
-> > > >  		}
-> > > >  
-> > > > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > > > -		if (err)
-> > > > -			goto free_irq;
-> > > > -
-> > > > -		cpu = cpumask_local_spread(i, gc->numa_node);
-> > > > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-> > > > +		if (!i) {
-> > > > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> > > > +			if (err)
-> > > > +				goto free_irq;
-> > > > +
-> > > > +			/* If number of IRQ is one extra than number of online CPUs,
-> > > > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-> > > > +			 * same CPU.
-> > > > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
-> > > > +			 * Also we are using cpumask_local_spread instead of
-> > > > +			 * cpumask_first for the node, because the node can be
-> > > > +			 * mem only.
-> > > > +			 */
-> > > > +			if (start_irq_index) {
-> > > > +				cpu = cpumask_local_spread(i, gc->numa_node);
-> > > 
-> > > I already mentioned that: if i == 0, you don't need to spread, just
-> > > pick 1st cpu from node.
-> > The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
-> > can be a memory only node, in that case we need to jump to next node to get the CPU.
-> > Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
-> 
-> OK, makes sense.
-> 
-> What if you need to distribute more IRQs than the number of CPUs? In
-> that case you'd call the function many times. But because you return
-> 0, user has no chance catch that. I think you should handle it inside
-> the helper, or do like this:
-> 
->         while (nvec) {
->                 distributed = irq_setup(irqs, nvec, node);
->                 if (distributed < 0)
->                         break;
-> 
->                 irq += distributed;
->                 nvec -= distributed;
->         }
-We can not have irqs more greater than 1 of num of online CPUs, as we are
-setting it inside cpu_read_lock() with num_online_cpus().
-We can have minimum 2 IRQs and max number_online_cpus() +1 or 64, which is
-maximum supported IRQs per port.
-
-1295         cpus_read_lock();
-1296         max_queues_per_port = num_online_cpus();
-1297         if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-1298                 max_queues_per_port = MANA_MAX_NUM_QUEUES;
-1299
-1300         /* Need 1 interrupt for the Hardware communication Channel (HWC) */
-1301         max_irqs = max_queues_per_port + 1;
-1302
-1303         nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-1304         if (nvec < 0)
-1305                 return nvec;
-> 
-> Thanks,
-> Yury
+Regards, Roger.
