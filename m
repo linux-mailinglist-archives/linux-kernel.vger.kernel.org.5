@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 190B280E8D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A420480E8D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235053AbjLLKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:12:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        id S234994AbjLLKNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:13:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235041AbjLLKMn (ORCPT
+        with ESMTP id S235081AbjLLKMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:12:43 -0500
+        Tue, 12 Dec 2023 05:12:48 -0500
 Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FF7AB;
-        Tue, 12 Dec 2023 02:12:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40871A6;
+        Tue, 12 Dec 2023 02:12:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1702375968;
-        bh=096hm9ZbRaIMymoQ+0IpHZlm7YvNfwIQuC+ov8MZpxI=;
+        s=202305; t=1702375970;
+        bh=2AjQrGaQE2NFW95434lGTrYs+KkaIhT6LEOqbOxH2XE=;
         h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=pcF+kuj6twjNBVCUPQGeJb7my9K+1VvzXPI0J25y/Gn90LiGBj+vWoJl83uX6lb1c
-         drs17TVTFCzPFW61iLjrHsYql3GXgVOGa4GS59KD5CTSYTil8N04Ji6qfiBkifNl95
-         WVcAqudZmxTivJ/eyROH+eHu7ayTS9fiWEN5RTS7VzNdVfNC35s7HvYaUvPSEW6IMo
-         +HHE69xVjML13mdXERyD1TWOOO692oiH7EH/R7AB/nR5ZuNbnFeSHkgPH+E35j5e2D
-         TWjapYdDV//LfS0lZyRU53O3zVjVDdfJc9a6ooJK4P4coQCGrLVRr03uNRRkH8fjHV
-         Uz+qHlhE3q4Cg==
+        b=FP/x56VaAun1w5xQh4Hbyto20YJcWvMPD8ZHJrjx09XvBZpzreHcprde2BPPiSh7f
+         SQuMPVWIkB/XlJlmO/ZMy9/NkqwPeBkxhBOgq/Os2QPd76qII1d85tKFxrzZo6P5Kw
+         mEDW8Q1Awmc2bnP1OriY1L3lCYWjiYq+OMzr39ZsDheSA03CkQttrMXVht5YxZlfOT
+         YMfM6YJeCVMog+IDXMi9842zVLG/4+MIvnXjeCH6SCpyRcKIFGcmBZagddZ6tVPNDA
+         UmSuSbr4RGo703hrZ0pwHZIE+F3Opsci4hPL0LmlwNCVbKlKBI+n/xdo2U+EFw1TKZ
+         r/jmVHoz08amA==
 Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 0A9AA12BEC;
-        Tue, 12 Dec 2023 11:12:48 +0100 (CET)
-Date:   Tue, 12 Dec 2023 11:12:47 +0100
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 6961712F70;
+        Tue, 12 Dec 2023 11:12:50 +0100 (CET)
+Date:   Tue, 12 Dec 2023 11:12:50 +0100
 From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
         <nabijaczleweli@nabijaczleweli.xyz>
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 06/11] net/smc: smc_splice_read: always request
+        Paolo Abeni <pabeni@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND 07/11] kcm: kcm_splice_read: always request
  MSG_DONTWAIT
-Message-ID: <145da5ab094bcc7d3331385e8813074922c2a13c6.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+Message-ID: <1b5a634f5fe1a89d42a7a4f91316f888b02ca576f.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 User-Agent: NeoMutt/20231103
 References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="suvmg3e3tuoppov4"
+        protocol="application/pgp-signature"; boundary="o6m7vcrodirufcvf"
 Content-Disposition: inline
 In-Reply-To: <1cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -63,7 +61,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---suvmg3e3tuoppov4
+--o6m7vcrodirufcvf
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
@@ -71,53 +69,52 @@ Content-Transfer-Encoding: quoted-printable
 Otherwise we risk sleeping with the pipe locked for indeterminate
 lengths of time.
 
+Also: don't pass the SPLICE_F_*-style flags argument to
+skb_recv_datagram(), which expects MSG_*-style flags.
+This fixes SPLICE_F_NONBLOCK not having worked.
+
 Link: https://lore.kernel.org/linux-fsdevel/qk6hjuam54khlaikf2ssom6custxf5i=
 s2ekkaequf4hvode3ls@zgf7j5j4ubvw/t/#u
 Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
- net/smc/af_smc.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ net/kcm/kcmsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index bacdd971615e..89473305f629 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -3243,12 +3243,8 @@ static ssize_t smc_splice_read(struct socket *sock, =
-loff_t *ppos,
- 			rc =3D -ESPIPE;
- 			goto out;
- 		}
--		if (flags & SPLICE_F_NONBLOCK)
--			flags =3D MSG_DONTWAIT;
--		else
--			flags =3D 0;
- 		SMC_STAT_INC(smc, splice_cnt);
--		rc =3D smc_rx_recvmsg(smc, NULL, pipe, len, flags);
-+		rc =3D smc_rx_recvmsg(smc, NULL, pipe, len, MSG_DONTWAIT);
- 	}
- out:
- 	release_sock(sk);
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index dd1d8ffd5f59..de70156869e6 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -1028,7 +1028,7 @@ static ssize_t kcm_splice_read(struct socket *sock, l=
+off_t *ppos,
+=20
+ 	/* Only support splice for SOCKSEQPACKET */
+=20
+-	skb =3D skb_recv_datagram(sk, flags, &err);
++	skb =3D skb_recv_datagram(sk, MSG_DONTWAIT, &err);
+ 	if (!skb)
+ 		goto err_out;
+=20
 --=20
 2.39.2
 
---suvmg3e3tuoppov4
+--o6m7vcrodirufcvf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV4Mh8ACgkQvP0LAY0m
-WPEQiQ//dJd64ifmFYk4J0yAhFO+b2YgYYJagGNw6cO4Vvw9R2UjEuuQ/iGnT63B
-wTWs58hM8XQjOPjioddYrd8J01pUQQr+L02G7dNKPQErsuCb25aczKMQvZFRCr8c
-7ibhOBBZgCpzPMR7bVa8fcvRHDQTLKjMXMJ+HUtNZKT7Kw5g0aaCm6Lh+i/pEk6q
-v9nVojhxqOL0OSu+6HQA4Fdn4jfb/vfIXMAnoPb+u3J5Bs7qOM3dUNAPvlbBzYBe
-lHtk6rfIbmfSl+X/Knlo3y8CQegd/Tn5zJAMFBeyeBJPRk4cqcZWhz1d3w5acJ7+
-1RBznOQ7c7OKAaNJfJtXFT1mln6wjGubsjJ0ATJslr3w1LbDxvAQ7XJwK8QUuNZ0
-hRNAxHwXVPOPY41kUU9kxKFmPDjohv+esstreKuYtBaL8EwkKtdhem4wFi4f3dWe
-vUpz0lep0VmBjadC44/i2mr79JMNUIQvSHdinBPTB8I/GRjtQeFDNEMn4EEoJQpA
-EaMhI9dzoMTc9ofQ2R1L2LPfjO3f5vw/pVtAp6QdAJFX62OlGv/k8z3EhmbPe77A
-BQ9WFoq7bYE5Vs61rNeNGaYz/68IWM0VLp0NJ29aaVcLGzUUxBG4eVeDzUZGyizw
-1SoMkPuma/i8C8YhuYERKyIpv/K/AU00p/GgctM4uYZwCs8dIDg=
-=Q2lp
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV4MiIACgkQvP0LAY0m
+WPF88A/8Cwu5xFnT8lzogF+KQQJWPL/NZUg1v4R0N/+/Rxeod3dWRDlUTLVZuADF
+YdsrcnQSFXwYgneyxpPXdNnFmFeXfQCk45srdVOH2IfDd98TH0p+kaDgsXim/4Hh
+kWx2uMbLD+UMlHpXnDgNWS27pYPznsW8VcaloTpR2tbO5cUhyilSPrcWkF/M/jPi
+sD3OEgsJEUwthaScjDXqRYgZdd4NW91SZMEb/YLNVEbrNX4/Q/ziI1WV99TafgHA
+Qf41y1icGsF8hkUS+SbYUJLrUxZPh+LoQDy5B7cjEtJQNDNqsZEW5eEoDQGplwHE
+XZBklW6FkMEtI1tDobp0PAvtn2IF7reCpH7rt7Adin5FxWHjqDfFsRyIOLxSTH1q
+5nJVk/2YS2RBIJiHRZgREER82tmQxkO/a/TNgWEo1xuXWbPTyuNjI+Ae4maY8ncN
+S4zaDzo01JCsEs3loyCIN3a9plKhVdweLyux+k3zTKjjLOdCDV7JTt4p40Qg7ALh
+a+uwVd7B6eb9ozpDp9F/xK6/0osROu6pIZwhjsI20ECT3vzJeDmGR05n2+FWE7tN
+UUaPG5bimmzif6TueAjUUivT/DRCuWVG6/sBd18S7QrLWZtodTsHtDGws2y+L/O4
+jujfUWJZMGqa27xUWSPQZNz2NRZ+eyBO5BzUB5iYV4msFLi8HeQ=
+=766a
 -----END PGP SIGNATURE-----
 
---suvmg3e3tuoppov4--
+--o6m7vcrodirufcvf--
