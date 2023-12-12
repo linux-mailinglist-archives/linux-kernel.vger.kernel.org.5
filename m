@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 360A280E809
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BBC80E80A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjLLJpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        id S231484AbjLLJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjLLJpr (ORCPT
+        with ESMTP id S231144AbjLLJqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:45:47 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FECD2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:45:53 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-4649e4e6fbfso1184946137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:45:53 -0800 (PST)
+        Tue, 12 Dec 2023 04:46:00 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A1AE8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:46:04 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso68498835e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:46:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702374352; x=1702979152; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kDJfKvrg0IZT8RtTcsIPiv+6i6KEEJtTvRyYtSZWV3Y=;
-        b=Y5LVhpZPNqHDEoEg3Rc/HE3Ti4N2gEKxUuiXm1gIveu69J6pTcKD74TmybLBCaDFnH
-         jyWXuh/zKMDVINNzq05sh1uYlb3pCtMwJA6UeiwJg3IRukbP2yb/K/WLTDTmHlVwN8Yq
-         jVr4gq4cvJjI8EkEh964aQxlckZ6xZqdpuv4kDI1ZyI0NkP5wPY4Bq3qPFf2SOuywriX
-         j9QRdUlYihfSfJM0i3uVvIttrkLX69wsNwfk0BlzrjBp2QRuM7vp/Qf+s/yMWvMCyzQi
-         TsdhLYqTGAx0J3dUheXnjPtA3fnpzEi5MODY/8OcvialziFWl8jK0OzckuFE8f/YJxhZ
-         uYow==
+        d=linaro.org; s=google; t=1702374363; x=1702979163; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zl35uXONIGohPVjgQCY2G3AnXFc9V+5wS8tiMPVdlNY=;
+        b=nq8nxfEQf9aqQPGSG8GFRAhN3u9jHsUoPTWsfywotNvjQcFY9gf1FWFQfKSqDdqZLf
+         G7kJBAxbSh9oxypW0HHA3zFbJNU2HWtZteOOE3GT+DBzZyFQFMm+DvqdDmwmNKbK3Z3f
+         Qny04ZyxhZM1fGpWkfW5iRhOYia2kfYA4bYw8Ral42QWiI/6IBudY93/bSA1znNLnI+J
+         4jI4mk8Dnk7bAjit6diunQBlghNgrI6lqMHPimhnNyg1e5QKCEifv/+zHPVZid87lGU4
+         pnNtvZRge+JjyRpiFuhwtxy3qFpybxB962t+cje2po7Enc0IRKdP/80qh4nmdqdUBoee
+         yV7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702374352; x=1702979152;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kDJfKvrg0IZT8RtTcsIPiv+6i6KEEJtTvRyYtSZWV3Y=;
-        b=cvMpuzG9XBH8/46oXiN9s69OiTaqh/4yB5Qthl3qvlz4QaL6AL90VAi9z/4HyJRwMB
-         cuBR3gwycnQh+kJjik41J+dJGDeeGU5mJ2kM3q5cW4SpThlq7f7wZU/od1Mu+YTBft/p
-         3UwJz3Fi50dxmYQ+sN1/WrhYM98O6VPJ4uXTWtVYG+iy9MJ3SuDh71h0RsIXkpEmipwb
-         g28M3u4XuhP5hwCrtp9OXBXPFPTo26Hh2B3qi9vSWmu0b8+969sZAJL6Yw/WqPL0lOsS
-         2iN4RZJQre3KJPRu0UeK2i1qsT20rslAuctXdk49R2d+QoGQdh3w7cht3tRnW3z64a8Z
-         UeJw==
-X-Gm-Message-State: AOJu0Yzg8qECBVi0Va4B3mw1TFyKakg77cSemFzIyWCY6S8EOhyXKbln
-        qQOStnAusdfFdp4DnJ2VFE8Ob7jXKMawkPfJooiDgA==
-X-Google-Smtp-Source: AGHT+IHiKuijr8iqBN16VsK9zHqoh6460srecd+j4cqTS+gkJWAR3e2/4Y0uK11x73YJv0iQFDsxK/FGEG9VkLJQiKg=
-X-Received: by 2002:a05:6102:32c9:b0:464:4eef:b9a9 with SMTP id
- o9-20020a05610232c900b004644eefb9a9mr4066516vss.0.1702374352425; Tue, 12 Dec
- 2023 01:45:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702374363; x=1702979163;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zl35uXONIGohPVjgQCY2G3AnXFc9V+5wS8tiMPVdlNY=;
+        b=DybOBdVllMQPwiicfaivDen8eZ4gQy1Nj2At2ppX5GqZ5srnqlxnDZsfmouW3jerIz
+         WXiENSn3EMNEZmD3EmURW13Kdxgkpg6G78A3Wpc3WWMFSMrr4GmjhXD1T7AtNRDRdmDQ
+         J7mmelVPOlPly1KcwERzHhJGtPtAkcCIeZhsuQV4ms1WwWvh9x1UApZeYOm0Qp+tRum8
+         ltxcTQd/Ihebd9p33TdRYusPsBArnMjppzsSqU4DqUDYORB0UQarmqyGe1/0UhPUc5Eu
+         Z7+AbopoIal5lnUmavpkxsPz65JIVn8FDRD99guooLLHReQpBcIe4z49tlFOctSou7y3
+         z22A==
+X-Gm-Message-State: AOJu0Yw0J5SGousseIWtsELNtv86DgY5ctUttLFalzqX/CqpDoHDA768
+        u119rQGAdiu/Mqj37f0spdlWAg==
+X-Google-Smtp-Source: AGHT+IFU0Dc+XgVsT6T2fffv3wGJs4mDWrRyGEWO6XuvCVz1oFCzg5A/z1iBG6FaAt9b1FH8zun2DA==
+X-Received: by 2002:a05:600c:1c16:b0:40c:2b5f:7166 with SMTP id j22-20020a05600c1c1600b0040c2b5f7166mr3011646wms.122.1702374362739;
+        Tue, 12 Dec 2023 01:46:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id fa17-20020a05600c519100b0040c46719966sm7240683wmb.25.2023.12.12.01.46.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 01:46:02 -0800 (PST)
+Message-ID: <9845b85a-c4bb-4ef3-a9d2-8b61e0dd652d@linaro.org>
+Date:   Tue, 12 Dec 2023 10:46:00 +0100
 MIME-Version: 1.0
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
- <1dd1a3e8-ef9a-4e89-891f-b49d82acc5f8@gmail.com> <CAH5fLgijsRK3funsGuG6nbK26C+s6m0nO0i83RYD2cO3z7L22Q@mail.gmail.com>
- <F8K3EZWwaRdB3qwYwk7P9GGQUc83MNW4XLeqRHj6QsA6WtCtpweykXLuM5sj2RbpRu3y3OoFy6gmCtaV2tBA1sxGFeieUnTdaY2yGVSCXQ4=@proton.me>
-In-Reply-To: <F8K3EZWwaRdB3qwYwk7P9GGQUc83MNW4XLeqRHj6QsA6WtCtpweykXLuM5sj2RbpRu3y3OoFy6gmCtaV2tBA1sxGFeieUnTdaY2yGVSCXQ4=@proton.me>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Tue, 12 Dec 2023 10:45:41 +0100
-Message-ID: <CAH5fLghuRjZHg3BgowvDiAez3ukhm7PEegRB5G9ZbwSCXfAHVw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Tiago Lam <tiagolam@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: crypto: qcom-qce: document the SM8650 crypto
+ engine
+Content-Language: en-US
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     neil.armstrong@linaro.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marijn.suijten@somainline.org,
+        vkoul@kernel.org, cros-qcom-dts-watchers@chromium.org,
+        Rob Herring <robh@kernel.org>
+References: <20231212085454.1238896-1-quic_omprsing@quicinc.com>
+ <20231025-topic-sm8650-upstream-bindings-qce-v1-1-7e30dba20dbf@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025-topic-sm8650-upstream-bindings-qce-v1-1-7e30dba20dbf@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 10:27=E2=80=AFAM Benno Lossin <benno.lossin@proton.m=
-e> wrote:
->
-> On 12/8/23 08:37, Alice Ryhl wrote:
-> > On Wed, Dec 6, 2023 at 6:05=E2=80=AFPM Tiago Lam <tiagolam@gmail.com> w=
-rote:
-> >> On 06/12/2023 10:09, Alice Ryhl wrote:
-> >>> +/// The return type of `wait_timeout`.
-> >>> +pub enum CondVarTimeoutResult {
-> >>> +    /// The timeout was reached.
-> >>> +    Timeout,
-> >>> +    /// Somebody woke us up.
-> >>> +    Woken {
-> >>> +        /// Remaining sleep duration.
-> >>> +        jiffies: u64,
-> >>> +    },
-> >>> +    /// A signal occurred.
-> >>> +    Signal {
-> >>> +        /// Remaining sleep duration.
-> >>> +        jiffies: u64,
-> >>> +    },
-> >>> +}
-> >>
-> >> Is `Signal` and `Woken` only going to hold a single value? Would it be
-> >> best represented as a tuple struct instead, like so?
-> >>
-> >>      pub enum CondVarTimeoutResult {
-> >>          /// The timeout was reached.
-> >>          Timeout,
-> >>          /// Somebody woke us up.
-> >>          Woken (u64),
-> >>          /// A signal occurred.
-> >>          Signal (u64),
-> >>      }
-> >
-> > I could do that, but I like the explicitly named version as it makes
-> > it clear that the unit is jiffies.
->
-> Why not use `type Jiffies =3D u64;` until we have proper bindings for
-> them? That way we can have both.
+On 12/12/2023 09:54, Om Prakash Singh wrote:
+> From: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> Document the crypto engine on the SM8650 Platform.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
 
-I do not mind adding and using a type alias, but I still think the
-named fields are better.
+This patch can be ignored. It was already applied.
 
-Alice
+Best regards,
+Krzysztof
+
