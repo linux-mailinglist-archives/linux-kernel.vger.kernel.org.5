@@ -2,123 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EABCF80E43D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B6380E435
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbjLLGZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 01:25:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        id S230085AbjLLGXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:23:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjLLGZc (ORCPT
+        with ESMTP id S229455AbjLLGW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 01:25:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E16BF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 22:25:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702362339; x=1733898339;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=kACYgNP4fFKqMuvf/CAgyapT7zWGWBcU7fPSLJDh5J0=;
-  b=mojpuUH6D8O5DyDyn11mph6ctrKVSxOsqUUpOGnDmWV7AxiF76RPiwKz
-   tCA3w1FQDnxDwrarKeP29tmF+7z+KgxuGjb7FcrBobWF17r6+yaCWYC6m
-   ClSVKDcJybI49XFXQeimwYqv2UmtqetdoRmqanT9pGc1js+kc11whyWWr
-   vZBp8BBvtQq9oajbKbcMqB11ABG9DrkxhzOFsfCFLzI/VK+AgXCZdhgzB
-   YLOoZ1wSXPX9Nie0ZaGJcO6v5OJ20UBMjXiiy4sskPz0SRSuPkUkZ6494
-   /wHs81gmTMK/y0aGz/j9tQRxl/CQEjSEjb2Y46l52d3+RcoZVMKrP0RUg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1622586"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="1622586"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 22:25:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="802347749"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="802347749"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga008.jf.intel.com with ESMTP; 11 Dec 2023 22:25:35 -0800
-Message-ID: <bef0f903-3665-492f-8999-fe759be5fed4@linux.intel.com>
-Date:   Tue, 12 Dec 2023 14:20:56 +0800
+        Tue, 12 Dec 2023 01:22:59 -0500
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78361C3;
+        Mon, 11 Dec 2023 22:23:05 -0800 (PST)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1fab887fab8so4026973fac.0;
+        Mon, 11 Dec 2023 22:23:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702362185; x=1702966985; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=trvLPWdMf9ONBuz1cwMATx3gpPUiFzy4m+MU7IJ3tNw=;
+        b=GeMJuoqaSXmh1ZQcy0Stc32bnyJK3eQoMQwldFaC+OQU2kmeiQfapaKxsyjVYTKNjG
+         1Uv3p0JbVyKNXzD/2JyjylVM1l0AqWKD8JxtP1vFYaIM4HcwiaOtu90jnD9PYKxcWxNh
+         +sDg/gDWxd3KpiveNOnYQDXwrhTggdSt6gI3uncqWXOH+lXRayZVOhiJowBuDdymwa2D
+         OGeVIXtVbi3MgULtrxK5ZtTQfIBq39i/D1dyhHyICQSBoozfpMAnHmkXupn/4Q87/09g
+         0+PwGoKob+g7aqsFjVoVS/XkFmXLYUucDDyfndcANmX2oiFZY8T1OISxNlTuRxKNwP1Q
+         znmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702362185; x=1702966985;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=trvLPWdMf9ONBuz1cwMATx3gpPUiFzy4m+MU7IJ3tNw=;
+        b=G23yMl1XOO/ExhjHCPxc+PKXqui9FuvsiTllnPdvyW8YWeGXy5nEoT/CiMfx8hoiCT
+         tZ4UYVrcx8ScRzfL3qD3AQnxDK392ni1wQ+k36ufnWCJ4RItX5kr/AsLo0sZf/86lAmF
+         tjbSeLSF6s/+OdnL+Hsu04f72jU2mVvqhVLYI4Y3wV4+6ClgSu7Q+PWfKtrkzgE151dX
+         I8YRGK29HjRdHfEB0uKqVwWc0fhWAHZieW4+tXLxMS/SQI+/LfhcklL/SME0Y3CFphSD
+         29lZaJk30Kwf1OVqDJnLWtez8YLxeWl77gF40sQcBX0914ozJQcmkRC+wEQT7mxqiaVn
+         NAJQ==
+X-Gm-Message-State: AOJu0Yzrk5tNpqptHyrIjD7K0gkTnu9Iigxv4qftDDNM5LutOVO+cV6M
+        p1WhqMcpPnSpbaho4iim+B07MRUwp4iHzctGHTI=
+X-Google-Smtp-Source: AGHT+IHH9MpYlWrKCKBE94gDOEjFql0vjoN8nxr8qktyfZX3jatGWzYfF+weG7CtlS8kQc0ez1Mfxc+PNaJXJpMHBSg=
+X-Received: by 2002:a05:6870:70a4:b0:1fb:75c:4016 with SMTP id
+ v36-20020a05687070a400b001fb075c4016mr7403693oae.118.1702362184693; Mon, 11
+ Dec 2023 22:23:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/6] iommu/vt-d: Remove 1:1 mappings from identity
- domain
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231205012203.244584-1-baolu.lu@linux.intel.com>
- <20231205012203.244584-5-baolu.lu@linux.intel.com>
- <BN9PR11MB52761FF9AB496B422596DDDF8C8AA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <1161d8aa-9fcc-4e9e-a7d3-c461fee19a54@linux.intel.com>
- <BN9PR11MB5276AC40C423A0BAAE9F40A98C8FA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276AC40C423A0BAAE9F40A98C8FA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231204144429.45197-1-linux.amoon@gmail.com> <20231204144429.45197-2-linux.amoon@gmail.com>
+ <20231206135311.GA2043711-robh@kernel.org> <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
+ <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org> <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+ <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org> <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
+ <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org> <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
+ <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org>
+In-Reply-To: <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Tue, 12 Dec 2023 11:52:48 +0530
+Message-ID: <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 11:58 AM, Tian, Kevin wrote:
->>> there are two cases above which mandates IDENTITY. Have you confirmed
->>> that those platforms support hardware passthrough? otherwise this
->> change
->>> is broken.
->> Those two cases should be hardware quirks for SoC-integrated devices. It
->> makes no reason that a quirk requires IOMMU passthrough translation, but
->> the hardware doesn't support it.
->>
->> If, unfortunately, those quirks turn out to be workarounds for a poorly
->> designed device driver, we should remove those quirks and request the
->> device driver to utilize the DMA ownership framework to achieve the same
->> functionality within the driver itself.
->>
-> if that is the case you should fix the drivers first before breaking them.
-> 
-> But at a glance looks those two quirks are just fine.
-> 
-> For Azalia sound device the problem is that BIOS enables a dedicated
-> DMAR for it but allocates zero TLB entries to cause deadlock. This
-> implies a hw passthrough mode otherwise it's still broken.
+Hi Krzysztof,
 
-Yes. It's safe for Azalia sound device.
+On Fri, 8 Dec 2023 at 17:47, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 08/12/2023 12:19, Anand Moon wrote:
+> > Hi Krzysztof,
+> >
+> > On Fri, 8 Dec 2023 at 13:14, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 08/12/2023 01:24, Anand Moon wrote:
+> >>>>>>>
+> >>>>>>> If I move reset-gpios to required, I observe the below warning.
+> >>>>>>>
+> >>>>>>>   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
+> >>>>>>> /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+> >>>>>>> hub@1: 'reset-gpio' is a required property
+> >>>>>>>         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+> >>>>>>
+> >>>>>> Where are the properties defined? If you open the binding you see:
+> >>>>>> nowhere. You cannot define properties in some variant with "true".
+> >>>>>> Please define all of them in top-level and only narrow/constrain when
+> >>>>>> applicable.
+> >>>>>>
+> >>>>> What I meant is the example below, required meant applicable for both
+> >>>>> the binding
+> >>>>> But it shows me the above warning.
+> >>>>
+> >>>> My explanation stands... So again:
+> >>>>
+> >>>>>> Please define all of them in top-level and only narrow/constrain when
+> >>>>>> applicable.
+> >>>>
+> >>> Apologies, But I have tried this multiple times but have not been able
+> >>> to fix the device tree warning
+> >>
+> >> Did you document all properties in top-level "properties:" block?
+> >>
+> > Yes, I have,
+> >
+> > Can you suggest a couple of examples to follow?
+> > I looked at some of the YAML files but could not fix my issue.
+>
+> 99% of bindings. Look also at example-schema.
+>
+> You can also attach here complete patch for fast look / short review.
+>
 
-> 
-> For GFX it's a workaround added since day one. there is even still
-> an option CONFIG_INTEL_IOMMU_BROKEN_GFX_WA available. But
-> now its meaning is really disabling IOMMU instead of using identity.
-> 
-> sounds like IDENTMAP_GFX can be fully removed now:
-> 
-> #ifdef CONFIG_INTEL_IOMMU_BROKEN_GFX_WA
-> 	dmar_map_gfx = 0;
-> #endif
+Please find the modified patch, I have tried a few things but none
+resolve the binding warning.
+I am not able to debug this.
 
-We should already remove the workaround for the 2.6 kernel. :-)
+-Thanks
+Anand
+-----8<----------8<----------8<----------8<----------8<----------8<-----
+diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+index ee08b9c3721f..7f75fa3c1945 100644
+--- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
++++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+@@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+ maintainers:
+   - Icenowy Zheng <uwu@icenowy.me>
 
-It's default "n". Therefore, if any gfx driver still needs this
-workaround, there should already be a bug report.
+-allOf:
+-  - $ref: usb-device.yaml#
+-
+ properties:
+   compatible:
+     enum:
+@@ -27,11 +24,47 @@ properties:
 
-> 
-> 	if (!dmar_map_gfx)
-> 		iommu_identity_mapping |= IDENTMAP_GFX;
+   vdd-supply:
+     description:
+-      the regulator that provides 3.3V core power to the hub.
++      The regulator that provides 3.3V or 5.0V core power to the hub.
++
++  peer-hub:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      For onboard hub controllers that support USB 3.x and USB 2.0 hubs with
++      shared resets and power supplies, this property is used to identify the
++      hubs with which these are shared.
 
-So with above cleaned up, we have no need to worry about drivers that
-are not capable of handling remapped dma address any more.
+ required:
+   - compatible
+   - reg
++  - vdd-supply
++  - reset-gpios
++  - peer-hub
++
++allOf:
++  - $ref: usb-device.yaml#
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - usb5e3,608
++    then:
++      properties:
++        peer-hub: false
++        vdd-supply: false
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - usb5e3,610
++              - usb5e3,620
++    then:
++      properties:
++        peer-hub: true
++        vdd-supply: true
 
-Did I miss anything?
+ additionalProperties: false
 
-Best regards,
-baolu
+@@ -49,3 +82,29 @@ examples:
+             reset-gpios = <&pio 7 2 GPIO_ACTIVE_LOW>;
+         };
+     };
++
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    usb {
++        dr_mode = "host";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* 2.0 hub on port 1 */
++        hub_2_0: hub@1 {
++            compatible = "usb5e3,610";
++            reg = <1>;
++            peer-hub = <&hub_3_0>;
++            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&vcc_5v>;
++        };
++
++        /* 3.1 hub on port 4 */
++        hub_3_0: hub@2 {
++            compatible = "usb5e3,620";
++            reg = <2>;
++            peer-hub = <&hub_2_0>;
++            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&vcc_5v>;
++        };
++    };
