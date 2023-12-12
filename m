@@ -2,49 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A63780E780
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDCF80E787
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346283AbjLLJZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
+        id S230217AbjLLJ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbjLLJZX (ORCPT
+        with ESMTP id S1346324AbjLLJZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:25:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A885CF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:25:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DAE7C433C8;
-        Tue, 12 Dec 2023 09:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702373129;
-        bh=ZasmtT7TxADK9iKWNQUX4f/H8ytsR1Wy0D+0pd2020k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OPqZu26ngIhYAQXLvflLS7BxjC/5LWpSacX2uAK0MXS4GkVZE8VhgAtf/Usm3LtBF
-         piG+WAXZhXkni2D22yDexjWcqtk2bsoGLqd5Mn84QLtFsI1ystxZf6fxDOEaBGhGX+
-         TSapg9F+J0kXAG2CDs0D9TY/I4ByKq1pjrgXt7g4p3Feu3IUO/7r9Jfp0SUam3D2DG
-         3UGRs9ZVyRIePQ5+EjeueXPbbugxyAQk46sGvB+SPC49TLyFTo4y9WMyq8E9eAbHqp
-         7ZyDc0pqwR/n7YQoAavaraO3HLm88w+P3iBXX61LIQDnOPBceJLuMJbO70LLjCDKKq
-         WPHNl2DkKRDZw==
-Date:   Tue, 12 Dec 2023 09:25:24 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Kunwu Chan <chentao@kylinos.cn>
-Cc:     mark.rutland@arm.com, Ganapatrao.Kulkarni@cavium.com,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <kunwu.chan@hotmail.com>
-Subject: Re: [PATCH] drivers/perf: Fix some null pointer dereference issues
- in thunderx2_pmu.c
-Message-ID: <20231212092523.GC28174@willie-the-truck>
-References: <20231211090347.265240-1-chentao@kylinos.cn>
+        Tue, 12 Dec 2023 04:25:47 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82939EA;
+        Tue, 12 Dec 2023 01:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702373153; x=1733909153;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=J7oOLumnJZHBFS2dqddnZ8wo64mptqlvLB8nSpsJYv4=;
+  b=jsm7tUKQb/17tVcTfBJUGHMxhyHTV/1s5erm7YNYBAe3bUZT2SmMQRBf
+   RjMnzH5ma+IgxltPs8935aK2X2T5lOfEFJ+wW1w/v1gYq6QfxsPSXVyG3
+   u5GOPI/JKeNet5zinQ9PP1dmwIReMm4e+I8B3eLhbXcHwnKYU9T2AN1yz
+   9fo+D8wK+HXgzd57YNGH0/35XtMTCzBEclFyAkeAKYK2L6lWKSl1sYvp7
+   CEshtN69QtTnRi2VX5JWU3uQC+IQQeDr3gCKFHHYAgkFFnevgPhBxsWqX
+   m8e0qRT3dM+rcjxjYD1ms//8Pn3ubgG7xxp4M7PWKE8tdAeD9rfYjLkeO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1930671"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="1930671"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:25:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="843847927"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="843847927"
+Received: from tdietric-mobl.ger.corp.intel.com ([10.252.32.93])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:25:46 -0800
+Date:   Tue, 12 Dec 2023 11:25:44 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     Johan Hovold <johan@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 1/6] PCI/ASPM: Add locked helper for enabling link
+ state
+In-Reply-To: <20231208173932.GA798089@bhelgaas>
+Message-ID: <f0beb640-5c87-7c8e-64ba-908324347613@linux.intel.com>
+References: <20231208173932.GA798089@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211090347.265240-1-chentao@kylinos.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,46 +77,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 05:03:47PM +0800, Kunwu Chan wrote:
-> devm_kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure.
+On Fri, 8 Dec 2023, Bjorn Helgaas wrote:
+
+> On Fri, Dec 08, 2023 at 09:00:56AM +0100, Johan Hovold wrote:
+> > On Thu, Dec 07, 2023 at 02:47:16PM -0600, Bjorn Helgaas wrote:
+> > > On Tue, Nov 28, 2023 at 09:15:07AM +0100, Johan Hovold wrote:
+> > > > Add a helper for enabling link states that can be used in contexts where
+> > > > a pci_bus_sem read lock is already held (e.g. from pci_walk_bus()).
+> > > > 
+> > > > This helper will be used to fix a couple of potential deadlocks where
+> > > > the current helper is called with the lock already held, hence the CC
+> > > > stable tag.
+> > 
+> > > As far as I can see, we end up with pci_enable_link_state() defined
+> > > but never called and pci_enable_link_state_locked() being called only
+> > > by pcie-qcom.c and vmd.c.
+> > 
+> > Correct, I mentioned this in the cover letter.
 > 
-> Fixes: 69c32972d593 ("drivers/perf: Add Cavium ThunderX2 SoC UNCORE PMU driver")
-> Cc: Kunwu Chan <kunwu.chan@hotmail.com>
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> ---
->  drivers/perf/thunderx2_pmu.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> Ah, right.  I really don't like these exported locked/unlocked
+> interfaces because pci_bus_sem is internal to the PCI core, and the
+> caller shouldn't need to know or be able to specify whether it is held
+> or not.  They exist for now, but I think we should try to get rid of
+> them.
 > 
-> diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
-> index 1edb9c03704f..07edb174a0d7 100644
-> --- a/drivers/perf/thunderx2_pmu.c
-> +++ b/drivers/perf/thunderx2_pmu.c
-> @@ -742,6 +742,8 @@ static int tx2_uncore_pmu_register(
->  
->  	tx2_pmu->pmu.name = devm_kasprintf(dev, GFP_KERNEL,
->  			"%s", name);
-> +	if (!tx2_pmu->pmu.name)
-> +		return -ENOMEM;
->  
->  	return perf_pmu_register(&tx2_pmu->pmu, tx2_pmu->pmu.name, -1);
+> > > Can we just rename pci_enable_link_state() to
+> > > pci_enable_link_state_locked() and assert that pci_bus_sem is held, so
+> > > we don't end up with a function that's never used?
+> > 
+> > That would work too. I went with adding a new helper to facilitate
+> > stable backports and to mirror pci_disable_link_state(). The variants
+> > are simple wrappers around the implementation so there's no real cost to
+> > having the unused one.
+> 
+> Makes good sense.  There's no real machine cost to the unused one; I'm
+> more concerned about the human cost here.
 
-AFAICT, perf_pmu_register() will WARN and return NULL, so I'm not sure what
-we gain from the additional check.
+I know these were already applied but I want to correct one small 
+misconcept that seems to be floating around thanks the misleading name...
 
->  }
-> @@ -881,6 +883,11 @@ static struct tx2_uncore_pmu *tx2_uncore_pmu_init_dev(struct device *dev,
->  		return NULL;
->  	}
->  
-> +	if (!tx2_pmu->name) {
-> +		dev_err(dev, "PMU type %d: Fail to allocate memory\n", type);
-> +		devm_kfree(dev, tx2_pmu);
-> +		return NULL;
-> +	}
+pci_enable_link_state() is not really a pair/mirror of 
+pci_disable_link_state() despite its name. It would be better called
+pci_set_default_link_state() to better match what it does.
 
-In the _highly_ unlikely even that devm_kasprintf() failed to allocate,
-shouldn't we get a splat from the allocator? I don't think it's useful
-to print another message.
+-- 
+ i.
 
-Will
