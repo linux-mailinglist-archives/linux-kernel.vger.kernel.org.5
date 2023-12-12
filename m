@@ -2,150 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5943D80E0F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD0C80E117
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjLLBpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 20:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S231163AbjLLBvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 20:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLBpk (ORCPT
+        with ESMTP id S229625AbjLLBvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 20:45:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B522ACF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:45:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5593DC433D9;
-        Tue, 12 Dec 2023 01:45:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702345546;
-        bh=56wbxeUhJYgDd2ytNEZT3Gt0S++vWDl2GvwKVQMXKFI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PltCFNS/TgjuGa3bMyHlJxEbAN7+YF5rP7cO7n3jMXbZqNmXURtAx3mwQ5Ww6YgHs
-         mPRXNyDF4+zikSpybneacnUDGemxf31whe2ePlwk6W25RUZOrPM3OXE9C0S/WbiMqG
-         A0K02+gXWIFCoTJhGoqU5YuyzoBNSSr5EoHl2m20uPsYGc34bn06kfYT7kX7yC9yTv
-         9/FN87t+tom4eMXSui5jMnTcdo+HsuFqux9xdF86nSD/1hPGo+SKQv1bOsh5eiDjHS
-         E0MC23K7lnGiPEuMcOZBE0rMcm/8JLbMVuzQRmZaYu9vWe38/+qYl/vpt6ZzjubR6p
-         vNxhoKO1HJ7QA==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-54f4b31494fso7588441a12.1;
-        Mon, 11 Dec 2023 17:45:46 -0800 (PST)
-X-Gm-Message-State: AOJu0YxsawPmUZ4Y3M+JXWWESdvxapxDTe00ix+6jhsY5K5wRyxwq0MN
-        xmmGqc7KPxNahiXupgGh5tnT7V4zxm5G0Ul5U9Q=
-X-Google-Smtp-Source: AGHT+IE+myz1y+imUhih1WAbnotnpY7CT1VGSHXmSN82YiQ0JQNEnXZmKCzUD0Cmy82QNQ/UQ0/QTex1BuF3l9mUCK0=
-X-Received: by 2002:a50:9357:0:b0:54c:553e:67f5 with SMTP id
- n23-20020a509357000000b0054c553e67f5mr5579304eda.8.1702345544702; Mon, 11 Dec
- 2023 17:45:44 -0800 (PST)
+        Mon, 11 Dec 2023 20:51:04 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03C6D2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:51:09 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7b459364167so195044239f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:51:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702345869; x=1702950669; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZX2WLxx5Rcq4VaM/IYqMbN57BjVsaN794DZZVcGhbe0=;
+        b=Q2udXtbuAh9U7GTYaAewsWbSvtCAWlCvmGDwCAXrG9NRnadhRnCbkzAPN5qtCTUvFI
+         NpTW7fEJ2wui8WduLl5SDl5Xzqmn7/k23xkZic0VedyfHKRc5ZzmZSyw2py8nc/u1W9L
+         yZzlOdvw52LHutLp1F7tn/FSEeuFjruCIdUaGLwy2voyk3NeKrdpgMIN0is3aGu7GNzO
+         6jHXG1eaI+7b9mmIvZayhO9PURZD7MUkJ99d1lGLguv8rC8KdJuL1HJNz2vlIqdtW5uC
+         NZmjUvAYj0g4sl2/uaeF2N3YOBuB/46z8UEn4G78mmdgo/Of3aGWxH5upAjvfbd5VObK
+         /6tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702345869; x=1702950669;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZX2WLxx5Rcq4VaM/IYqMbN57BjVsaN794DZZVcGhbe0=;
+        b=HPpwGNpyCKrvKXB3jHiC8l8xhIilbT+8h55nZlN43BiyqwYebx/jE4yIWivDPBQJAL
+         gkmJpoieCdnWvOujDQ/u+RAyIaFg/me5Fbxj1d0GBWxTmwbDEQypBDuuvM29tn+KlCjA
+         1q3hgfQB2mSw4RdMHOrggLhYA/WBYT21x6s7ww6K8eXCbNpAU9Wpwprp7Ul1W+eBQVJe
+         qzVh/aQ9uf+N8W4TB85vlfJGk32yOvuS7tM1cUzKehIJGic2hLvqEEYfU1uhbHLXeICY
+         2c7tO1+z7nnf9Uuxim3OT4w953ilQgdhjDIyNkt9p/6uSgYMQl1DhUdQUjpikOsdLgm4
+         EB7A==
+X-Gm-Message-State: AOJu0Yx73JPu4P0HfkZdvASUasAu30ApLOI6vXkbski8k+NasgvjifW3
+        6kdtG2Zq33Hg1oJj4bnHFVR+OOzAsSgkZM7zufs=
+X-Google-Smtp-Source: AGHT+IGnyMrJXzmjvP+GzSeN8xEYOBCyBBOu71OLX4nlpJx0A1/qebH4GVwEO5MPcOyQmk0ZvFgk2Q==
+X-Received: by 2002:a05:6e02:1aa5:b0:35d:a3ce:4e50 with SMTP id l5-20020a056e021aa500b0035da3ce4e50mr4700952ilv.37.1702345869214;
+        Mon, 11 Dec 2023 17:51:09 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id jg7-20020a17090326c700b001d0d312bc2asm7296320plb.193.2023.12.11.17.51.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 17:51:08 -0800 (PST)
+Date:   Mon, 11 Dec 2023 17:51:06 -0800
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     linux-riscv@lists.infradead.org, bigunclemax@gmail.com,
+        Amma Lee <lixiaoyun@binary-semi.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] riscv: optimize ELF relocation function in riscv
+Message-ID: <ZXe8imHSg20nKagf@ghost>
+References: <20230913130501.287250-1-fido_max@inbox.ru>
+ <ZXJrGLwxtjf6cK42@ghost>
 MIME-Version: 1.0
-References: <20231211135147.380223-1-sashal@kernel.org> <20231211135147.380223-36-sashal@kernel.org>
-In-Reply-To: <20231211135147.380223-36-sashal@kernel.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 12 Dec 2023 09:45:32 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5iwcSA7ASNknQZL3ozoMA=zPOWnEbZk9Ha1tT4io4-+A@mail.gmail.com>
-Message-ID: <CAAhV-H5iwcSA7ASNknQZL3ozoMA=zPOWnEbZk9Ha1tT4io4-+A@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.6 36/47] mips/smp: Call rcutree_report_cpu_starting()
- earlier
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Stefan Wiehler <stefan.wiehler@nokia.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        peterz@infradead.org, jiaxun.yang@flygoat.com, tglx@linutronix.de,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXJrGLwxtjf6cK42@ghost>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Sasha,
+On Thu, Dec 07, 2023 at 05:02:16PM -0800, Charlie Jenkins wrote:
+> On Wed, Sep 13, 2023 at 04:05:00PM +0300, Maxim Kochetkov wrote:
+> > The patch can optimize the running times of insmod command by modify ELF
+> > relocation function.
+> > In the 5.10 and latest kernel, when install the riscv ELF drivers which
+> > contains multiple symbol table items to be relocated, kernel takes a lot
+> > of time to execute the relocation. For example, we install a 3+MB driver
+> > need 180+s.
+> > We focus on the riscv architecture handle R_RISCV_HI20 and R_RISCV_LO20
+> > type items relocation function in the arch\riscv\kernel\module.c and
+> > find that there are two-loops in the function. If we modify the begin
+> > number in the second for-loops iteration, we could save significant time
+> > for installation. We install the same 3+MB driver could just need 2s.
+> > 
+> > Signed-off-by: Amma Lee <lixiaoyun@binary-semi.com>
+> > Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
+> > ---
+> > Changes in v4:
+> > - use 'while' loop instead of 'for' loop to avoid code duplicate
+> > ---
+> >  arch/riscv/kernel/module.c | 20 ++++++++++++++++----
+> >  1 file changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > index 7c651d55fcbd..8c9b644ebfdb 100644
+> > --- a/arch/riscv/kernel/module.c
+> > +++ b/arch/riscv/kernel/module.c
+> > @@ -346,6 +346,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  	Elf_Sym *sym;
+> >  	u32 *location;
+> >  	unsigned int i, type;
+> > +	unsigned int j_idx = 0;
+> >  	Elf_Addr v;
+> >  	int res;
+> >  
+> > @@ -384,9 +385,10 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  		v = sym->st_value + rel[i].r_addend;
+> >  
+> >  		if (type == R_RISCV_PCREL_LO12_I || type == R_RISCV_PCREL_LO12_S) {
+> > -			unsigned int j;
+> > +			unsigned int j = j_idx;
+> > +			bool found = false;
+> >  
+> > -			for (j = 0; j < sechdrs[relsec].sh_size / sizeof(*rel); j++) {
+> > +			do {
+> >  				unsigned long hi20_loc =
+> >  					sechdrs[sechdrs[relsec].sh_info].sh_addr
+> >  					+ rel[j].r_offset;
+> > @@ -415,16 +417,26 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  					hi20 = (offset + 0x800) & 0xfffff000;
+> >  					lo12 = offset - hi20;
+> >  					v = lo12;
+> > +					found = true;
+> >  
+> >  					break;
+> >  				}
+> > -			}
+> > -			if (j == sechdrs[relsec].sh_size / sizeof(*rel)) {
+> > +
+> > +				j++;
+> > +				if (j > sechdrs[relsec].sh_size / sizeof(*rel))
+> > +					j = 0;
+> Very interesting algorithm here. Assuming the hi relocation is after the
+> previous one seems to be a good heuristic. However I think we can do
+> better. In GNU ld, a hashmap of all of the hi relocations is stored and
+> a list of all of the lo relocations. After all of the other relocations
+> have been parsed, it iterates through all of the lo relocations and
+> looks up the associated hi relocation in the hashmap.
+> 
+> There is more memory overhead here but I suspect it will be faster. I
+> had started to mock up a hashmap implementation to see if it was faster
+> but decided I should mention it here first in case somebody had some
+> additional insight. 
 
-The same with the LoongArch version, rcutree_report_cpu_starting()
-only exists since 6.7.
+Turns out this is a fantastic heuristic. Using a hashmap is
+significantly faster than the default implementation but this algorithm
+above is significantly faster than the hashmap. Using the amdgpu driver
+(which is actually a collection of drivers) and is a size of about 469M
+I found that the hashmap implementation is about 30% faster than the
+current implementation, but this patch is 50% faster than the current
+implementation. It is probably possible to write an ELF header with the
+relocations sufficiently scrambled to make the hashmap faster, but I
+suspect that for all "normal" programs this algorithm is faster.
 
-Huacai
+I also tried a couple other smaller modules and it was faster or around
+the same as the hashmap in all of them.
 
-On Mon, Dec 11, 2023 at 9:53=E2=80=AFPM Sasha Levin <sashal@kernel.org> wro=
-te:
->
-> From: Stefan Wiehler <stefan.wiehler@nokia.com>
->
-> [ Upstream commit 55702ec9603ebeffb15e6f7b113623fe1d8872f4 ]
->
-> rcutree_report_cpu_starting() must be called before
-> clockevents_register_device() to avoid the following lockdep splat trigge=
-red by
-> calling list_add() when CONFIG_PROVE_RCU_LIST=3Dy:
->
->   WARNING: suspicious RCU usage
->   ...
->   -----------------------------
->   kernel/locking/lockdep.c:3680 RCU-list traversed in non-reader section!=
-!
->
->   other info that might help us debug this:
->
->   RCU used illegally from offline CPU!
->   rcu_scheduler_active =3D 1, debug_locks =3D 1
->   no locks held by swapper/1/0.
->   ...
->   Call Trace:
->   [<ffffffff8012a434>] show_stack+0x64/0x158
->   [<ffffffff80a93d98>] dump_stack_lvl+0x90/0xc4
->   [<ffffffff801c9e9c>] __lock_acquire+0x1404/0x2940
->   [<ffffffff801cbf3c>] lock_acquire+0x14c/0x448
->   [<ffffffff80aa4260>] _raw_spin_lock_irqsave+0x50/0x88
->   [<ffffffff8021e0c8>] clockevents_register_device+0x60/0x1e8
->   [<ffffffff80130ff0>] r4k_clockevent_init+0x220/0x3a0
->   [<ffffffff801339d0>] start_secondary+0x50/0x3b8
->
-> raw_smp_processor_id() is required in order to avoid calling into lockdep
-> before RCU has declared the CPU to be watched for readers.
->
-> See also commit 29368e093921 ("x86/smpboot:  Move rcu_cpu_starting() earl=
-ier"),
-> commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and com=
-mit
-> 99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
->
-> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
-> Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/mips/kernel/smp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> index 8fbef537fb885..82e2e051b4161 100644
-> --- a/arch/mips/kernel/smp.c
-> +++ b/arch/mips/kernel/smp.c
-> @@ -351,10 +351,11 @@ early_initcall(mips_smp_ipi_init);
->   */
->  asmlinkage void start_secondary(void)
->  {
-> -       unsigned int cpu;
-> +       unsigned int cpu =3D raw_smp_processor_id();
->
->         cpu_probe();
->         per_cpu_trap_init(false);
-> +       rcutree_report_cpu_starting(cpu);
->         mips_clockevent_init();
->         mp_ops->init_secondary();
->         cpu_report();
-> @@ -366,7 +367,6 @@ asmlinkage void start_secondary(void)
->          */
->
->         calibrate_delay();
-> -       cpu =3D smp_processor_id();
->         cpu_data[cpu].udelay_val =3D loops_per_jiffy;
->
->         set_cpu_sibling_map(cpu);
-> --
-> 2.42.0
->
+A lot of code has changed in this file since this patch was submitted,
+can you rebase onto 6.7-rc1? Otherwise this patch is great.
+
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+
+> 
+> - Charlie
+> 
+> > +
+> > +			} while (j_idx != j);
+> > +
+> > +			if (!found) {
+> >  				pr_err(
+> >  				  "%s: Can not find HI20 relocation information\n",
+> >  				  me->name);
+> >  				return -EINVAL;
+> >  			}
+> > +
+> > +			/* Record the previous j-loop end index */
+> > +			j_idx = j;
+> >  		}
+> >  
+> >  		res = handler(me, location, v);
+> > -- 
+> > 2.40.1
+> > 
+> > 
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
