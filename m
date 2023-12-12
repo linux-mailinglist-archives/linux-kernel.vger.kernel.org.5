@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3B180E273
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D35B80E26C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345744AbjLLCvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S1345762AbjLLCvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjLLCvL (ORCPT
+        with ESMTP id S231131AbjLLCvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:51:11 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1243EB0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:51:18 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6d9f7b3de20so2381154a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702349477; x=1702954277; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T0aqDUuu9aenJJR4Np5l50Pkm6dm94+30/fi4cOM9ww=;
-        b=S8ZNLwmmAeZGyiuxfCljoX3qsgkSFf6OYkLFEMTfdiV3aaWAYtm99ThIdl61obAnuN
-         xAL4taOQmrMmUCG3UCmvgzaIOnB8JKjQ3lRr3m4b6JoSVOLTLAMswbiwnaI5w6KEzQOJ
-         DZ6lbZV9eGz571YexPJtkMNWo+N9eDzfVouEuekOqx2IeNBhn9sapKuDjQVufojFO0d3
-         nltl55ZuEu3+AYr0CqBySUVp01qNA58D/m25PzYWuqRjnxmoatzvedq7+vXb9vRfR9XI
-         mnkutmEnqFuIwiCcfJ2K/FYQbFk3XXs3FFvmtSAWZxxPIebXZZ7URJi91kwd4qnD+wGE
-         6Vrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702349477; x=1702954277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T0aqDUuu9aenJJR4Np5l50Pkm6dm94+30/fi4cOM9ww=;
-        b=ogvWYOMbuwCQsvjan5DQIZ06gSHVN2950GBx9x74UP7pgbsgAnewODdADL5XrBkP/o
-         2Wi+3FIlpGBRysP85JV4LUZVvrVlH9wWBic8VEvOVsS4g87LjR6HlK49ZC2ba+gYpuT1
-         va7CpUH4tmgfYNF2HLrot9Pfs+EVYqlrNALPRqvTX/sBtfu9VxwhzsrlefQz7J/rxB2f
-         nLEi/ZLP+80lFDQIR7ijNIVwg4EB1LIzbvzqH6iy+mDAM2+2DflPFEA1wAs6mOQbW+vb
-         V/lG9L5vKWMwU0b/TIC4HcVdJ6FGqQVS+CmgYcd2ILkm4e5B3TUnOcFYYtAgSCRFR/Vi
-         PBZg==
-X-Gm-Message-State: AOJu0Yxjln0kzdVBBPAy8/qglt8RK/bX+m7eIpPPno+vCmV9cPUDeNvI
-        TEF7fevbuArUdEk4RdFIhwSWUYOukAq2w0DvWDw=
-X-Google-Smtp-Source: AGHT+IFgpzLthij4rpf+ngrmQ6+YXdGpHyiX/IJmFbP8yOEti1iOwk1gCRKUsHkaRJXcrC8irvl9qFQpXXSrMy6fDUc=
-X-Received: by 2002:a05:6870:799:b0:1fb:75b:99c7 with SMTP id
- en25-20020a056870079900b001fb075b99c7mr7298636oab.118.1702349477378; Mon, 11
- Dec 2023 18:51:17 -0800 (PST)
+        Mon, 11 Dec 2023 21:51:18 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FB9C7;
+        Mon, 11 Dec 2023 18:51:24 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 3B9C78080;
+        Tue, 12 Dec 2023 10:51:16 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
+ 2023 10:51:16 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
+ 2023 10:51:15 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Tue, 12 Dec 2023 10:51:15 +0800
+From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "conor@kernel.org" <conor@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>
+CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: RE: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
+ resets nodes
+Thread-Topic: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
+ resets nodes
+Thread-Index: AQHaKDqra6wATad1nUKrJTE2u0DzTrCfE7aAgAAV1gCABdHvcA==
+Date:   Tue, 12 Dec 2023 02:51:15 +0000
+Message-ID: <d852894e10cb49e0ba4f991bf3378191@EXMBX066.cuchost.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-17-jeeheng.sia@starfivetech.com>
+ <CAJM55Z9bik1QttBeFUCfM3N98HWURge7mgV7ohFBq+AsuvtROg@mail.gmail.com>
+ <9880fbbf-c311-4b6b-a570-aafd61729446@linaro.org>
+In-Reply-To: <9880fbbf-c311-4b6b-a570-aafd61729446@linaro.org>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [202.188.176.82]
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231120073821.1304-1-xuewen.yan@unisoc.com> <7c223b0c-d39a-4d53-8f00-7fbec6b49b6e@bytedance.com>
-In-Reply-To: <7c223b0c-d39a-4d53-8f00-7fbec6b49b6e@bytedance.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 12 Dec 2023 10:51:05 +0800
-Message-ID: <CAB8ipk9WBNE8Yk9T9SXovnpyUtGu=ps8_i=3hbb4PS9PXovR+w@mail.gmail.com>
-Subject: Re: [PATCH] sched/eevdf: Avoid NULL in pick_eevdf
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, ke.wang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abel
-
-On Mon, Nov 20, 2023 at 4:49=E2=80=AFPM Abel Wu <wuyun.abel@bytedance.com> =
-wrote:
->
-> Hi Xuewen, the pick part has been re-worked, would you please re-test
-> with the newest branch?
->
-> Thanks,
->         Abel
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/?h=3Dsched%2F=
-core
-
-These patches would be merged into 6.6? If not, the pr_err also has a deadl=
-ock.
-And should be changed to printk_deferred.
-
-
-954 static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-  955 {
-  956         struct sched_entity *se =3D __pick_eevdf(cfs_rq);
-  957
-  958         if (!se) {
-  959                 struct sched_entity *left =3D __pick_first_entity(cfs=
-_rq);
-  960                 if (left) {
-  961                         pr_err("EEVDF scheduling fail, picking
-leftmost\n"); <<<<
-  962                         return left;
-  963                 }
-  964         }
-  965
-  966         return se;
-  967 }
-
-
->
-> On 11/20/23 3:38 PM, Xuewen Yan Wrote:
-> > Now in pick_eevdf function, add the pick_first_entity to prevent
-> > picking null when using eevdf, however, the leftmost may be null.
-> > As a result, it would cause oops because the se is NULL.
-> >
-> > Fix this by compare the curr and left, if the left is null, set
-> > the se be curr.
-> >
-> > Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling po=
-licy")
-> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > ---
-> >   kernel/sched/fair.c | 18 +++++++++++++++++-
-> >   1 file changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index d7a3c63a2171..10916f6778ac 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -951,12 +951,28 @@ static struct sched_entity *__pick_eevdf(struct c=
-fs_rq *cfs_rq)
-> >       return NULL;
-> >   }
-> >
-> > +/* Just simply choose the se with the smallest vruntime */
-> > +static struct sched_entity *__pick_cfs(struct cfs_rq *cfs_rq)
-> > +{
-> > +     struct sched_entity *curr =3D cfs_rq->curr;
-> > +     struct sched_entity *left =3D __pick_first_entity(cfs_rq);
-> > +
-> > +     /*
-> > +      * If curr is set we have to see if its left of the leftmost enti=
-ty
-> > +      * still in the tree, provided there was anything in the tree at =
-all.
-> > +      */
-> > +     if (!left || (curr && entity_before(curr, left)))
-> > +             left =3D curr;
-> > +
-> > +     return left;
-> > +}
-> > +
-> >   static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-> >   {
-> >       struct sched_entity *se =3D __pick_eevdf(cfs_rq);
-> >
-> >       if (!se) {
-> > -             struct sched_entity *left =3D __pick_first_entity(cfs_rq)=
-;
-> > +             struct sched_entity *left =3D __pick_cfs(cfs_rq);
-> >               if (left) {
-> >                       pr_err("EEVDF scheduling fail, picking leftmost\n=
-");
-> >                       return left;
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBTYXR1cmRheSwg
+RGVjZW1iZXIgOSwgMjAyMyAxOjU4IEFNDQo+IFRvOiBFbWlsIFJlbm5lciBCZXJ0aGluZyA8ZW1p
+bC5yZW5uZXIuYmVydGhpbmdAY2Fub25pY2FsLmNvbT47IEplZUhlbmcgU2lhIDxqZWVoZW5nLnNp
+YUBzdGFyZml2ZXRlY2guY29tPjsga2VybmVsQGVzbWlsLmRrOw0KPiBjb25vckBrZXJuZWwub3Jn
+OyByb2JoK2R0QGtlcm5lbC5vcmc7IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsg
+cGF1bC53YWxtc2xleUBzaWZpdmUuY29tOyBwYWxtZXJAZGFiYmVsdC5jb207DQo+IGFvdUBlZWNz
+LmJlcmtlbGV5LmVkdTsgbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb207IHNib3lkQGtlcm5lbC5vcmc7
+IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7IEhhbCBGZW5nDQo+IDxoYWwuZmVuZ0BzdGFyZml2ZXRl
+Y2guY29tPjsgWGluZ3l1IFd1IDx4aW5neXUud3VAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gQ2M6IGxp
+bnV4LXJpc2N2QGxpc3RzLmluZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3Jn
+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1jbGtAdmdlci5rZXJuZWwub3Jn
+OyBMZXlmb29uIFRhbg0KPiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNvbT4NCj4gU3ViamVj
+dDogUmU6IFtQQVRDSCB2MSAxNi8xNl0gcmlzY3Y6IGR0czogc3RhcmZpdmU6IGpoODEwMDogQWRk
+IGNsb2NrcyBhbmQgcmVzZXRzIG5vZGVzDQo+IA0KPiBPbiAwOC8xMi8yMDIzIDE3OjM5LCBFbWls
+IFJlbm5lciBCZXJ0aGluZyB3cm90ZToNCj4gPiBTaWEgSmVlIEhlbmcgd3JvdGU6DQo+ID4+IEFk
+ZCBTWVNDUkcvU1lTQ1JHLU5FL1NZU0NSRy1OVy9TWVNDUkctU1cvQU9OQ1JHIGNsb2NrIGFuZCBy
+ZXNldA0KPiA+PiBub2RlcyBmb3IgSkg4MTAwIFJJU0MtViBTb0MuDQo+ID4+DQo+ID4+IFNpZ25l
+ZC1vZmYtYnk6IFNpYSBKZWUgSGVuZyA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT4NCj4g
+Pj4gUmV2aWV3ZWQtYnk6IExleSBGb29uIFRhbiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNv
+bT4NCj4gPj4gLS0tDQo+ID4+ICBhcmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJmaXZlL2poODEwMC1j
+bGsuZHRzaSB8IDE4MCArKysrKysrKysrKysrKysrKysrDQo+ID4+ICBhcmNoL3Jpc2N2L2Jvb3Qv
+ZHRzL3N0YXJmaXZlL2poODEwMC5kdHNpICAgICB8IDExNSArKysrKysrKysrKysNCj4gPg0KPiA+
+IFdoeSB0aGUgc3BsaXQgaGVyZT8gSSBtZWFuIHdoeSBjYW4ndCB0aGUgY2xvY2tzIGp1c3QgYmUg
+aW4gdGhlIGpoODEwMC5kdHNpPw0KPiANCj4gVGhlcmUgc2hvdWxkIGJlLiBXaGF0J3MgdGhlIHBv
+aW50PyBDbG9ja3MgYXJlIGludGVybmFsIHBhcnQgb2YgU29DIGFuZA0KPiBub3QgcmVhbGx5IHJl
+LXVzYWJsZSBwaWVjZSBvZiBoYXJkd2FyZS4NCkNhbiBtb3ZlIGl0IGJhY2sgdG8gdGhlIFNvQy5k
+dHNpDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQo=
