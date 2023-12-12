@@ -2,74 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9BF80F5D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D64980F5D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376685AbjLLSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:53:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39234 "EHLO
+        id S1376720AbjLLSyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbjLLSxh (ORCPT
+        with ESMTP id S1376703AbjLLSyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:53:37 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6868E98
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:53:43 -0800 (PST)
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E44043F183
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:53:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1702407221;
-        bh=oy3yei2rg4WxuRtRv9nehp5lTXGEBe4zj8pVFHRLyyM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=vBd3EWs1CmWh4ZXGDH2SdR+81/tP5s/2lFeeXPc8DZUbCrM3lLpzXLe8AtlZobjgU
-         Xc4L8KPfVI/iglzRS5YmTe9kleN0VeVMnDfdC+hDpL1luZwSsglg1Gar3M+cYr8fV/
-         OyWTEmM6Uv2Vi6+1mQBwJoEQl1cpTLhUw6oVPdHY4fdSuObkSy+voXprQoxFW7RP6Y
-         6Kr9A5QQr+lhsUfzdos3xwi+Ustt/jBvXGRnIVL5GoxQhpwETGmNJl6YMx2ZXo1GhI
-         S/Jh5Q+7eQl8/AFiOVDu6Nwn3rHNb29eg83ATG7KERHAB7N+6GwjOZrLT91PxqYQwy
-         k3GXcLBy8RYRw==
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-333501e22caso4896876f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:53:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702407221; x=1703012021;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oy3yei2rg4WxuRtRv9nehp5lTXGEBe4zj8pVFHRLyyM=;
-        b=i7MC7pw3KZHw/p4QBFmevSnokHKYmz4ZTc++gfiMvVM/0pcgkmBNaUhuT/OM3YyfT4
-         tqXGfrZ71o7+mLFOeUAQjw7Ur85kg7wxgtXgGKlrmjxGwJhkOXSDeGNm5Aux+nikMEIy
-         ++lCd4yRxvuVbvSY5FXFiFdfWmAWSZCfAwZ9svOuZBE4+7f9TArRx3K+0PhehVYA3TCz
-         Gq3fFGHjshiZ+y5woDTLfJdg7qW+AqiRSuAjA0GfvisnVAlWUH5lgAdk1QjhMcgsjjSS
-         92AYO3pqMZ4qIlkMFBjqKQHWYHepA04/qffh77qlP75b16ADiXZUnDYiCA0dRJs4AxtT
-         CMJA==
-X-Gm-Message-State: AOJu0Yxt/FkAWeeEcGtrsK9oFATs9T4cckfdVfMLZLZ1QyuzAnSNVxtl
-        TkwBnEcat122/T8JRzlXWC1nqL8WLSpNr0/h5uMsuQufi4q8JUbZbmMm+trRxu4/8GnxpYhYLyw
-        TNyGlZWMLrD+OnxGHZ15TauMsko9DKNkMruFpYbjUw8QLaer6DQ==
-X-Received: by 2002:a05:600c:1ca9:b0:408:3696:3d51 with SMTP id k41-20020a05600c1ca900b0040836963d51mr3050485wms.4.1702407221000;
-        Tue, 12 Dec 2023 10:53:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEY8RaVRxGkcwHbCxP7MnxLEzZhzdesazz+/W/UPY/1JFlhJvYYb81ZQG7QD6lP8CGFiYuj/A==
-X-Received: by 2002:a05:600c:1ca9:b0:408:3696:3d51 with SMTP id k41-20020a05600c1ca900b0040836963d51mr3050477wms.4.1702407220640;
-        Tue, 12 Dec 2023 10:53:40 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c15c])
-        by smtp.gmail.com with ESMTPSA id w7-20020a05600c474700b0040c41846919sm11369638wmo.41.2023.12.12.10.53.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 10:53:40 -0800 (PST)
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] objtool: Make objtool check actually fatal upon fatal errors
-Date:   Tue, 12 Dec 2023 18:53:38 +0000
-Message-Id: <20231212185339.1562967-1-dimitri.ledkov@canonical.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Dec 2023 13:54:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454AFD0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:54:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702407290; x=1733943290;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0hVYkWzitVyH556SnbRUqJ/JGtITbvnw7xXOLEJ/QRs=;
+  b=Teuq4hUogtsOE6aIVWhBDI0voTamnc4u3qcHQiWKnZlmeVgY5V62rT3K
+   bVG8JAR6HpWMNH42XzcXHPOUiybFdW4dgXJNv6ZcXQvRobgFhBwX9B2ID
+   n9HBF196k8YNRxCVbj7UrJhwikoGD0HtqDJdY5vuSruLcvLFCFJbTNVnR
+   Vl2kR+AXon433S1+cDpdTBzbGUfkBUEZQPOmm2QmqxwQPf6mfy18jmvbB
+   I6v2ApktT3OVmNolZG2Gzstd7fLJX6LkfGVsbsUOstgzV6saA0Oz+ksVv
+   N9ewPreS5M2/1tEF92y2v/Kdl6sMwnIOjfHrNI+ifhDCOBrV8KvnXogCe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="385263217"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="385263217"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 10:54:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="749814653"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="749814653"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 12 Dec 2023 10:54:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rD7u1-000Ja3-1P;
+        Tue, 12 Dec 2023 18:54:45 +0000
+Date:   Wed, 13 Dec 2023 02:53:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Will Deacon <will.deacon@arm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: drivers/watchdog/ath79_wdt.c:165:37: sparse: sparse: incorrect type
+ in initializer (different address spaces)
+Message-ID: <202312130257.RgeLtCBh-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,203 +64,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently function calls within check() are sensitive to fatal errors
-(negative return codes) and abort execution prematurely. However, in
-all such cases the check() function still returns 0, and thus
-resulting in a successful kernel build.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   26aff849438cebcd05f1a647390c4aa700d5c0f1
+commit: d15155824c5014803d91b829736d249c500bdda6 linux/compiler.h: Split into compiler.h and compiler_types.h
+date:   6 years ago
+config: arm-randconfig-r131-20231117 (https://download.01.org/0day-ci/archive/20231213/202312130257.RgeLtCBh-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231213/202312130257.RgeLtCBh-lkp@intel.com/reproduce)
 
-The only correct code paths were the ones that escpae the control flow
-with `return ret`.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312130257.RgeLtCBh-lkp@intel.com/
 
-Make the check() function return `ret` status code, and make all
-negative return codes goto that instruction. This makes fatal errors
-(not warnings) from various function calls actually fail the
-build. E.g. if create_retpoline_sites_sections() fails to create elf
-section pair retpoline_sites the tool now exits with an error code.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/watchdog/ath79_wdt.c:165:37: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *register __p @@     got char const * @@
+   drivers/watchdog/ath79_wdt.c:165:37: sparse:     expected char const [noderef] __user *register __p
+   drivers/watchdog/ath79_wdt.c:165:37: sparse:     got char const *
+   drivers/watchdog/ath79_wdt.c:239:27: sparse: sparse: incorrect type in initializer (incompatible argument 2 (different address spaces)) @@     expected int ( *write )( ... ) @@     got int ( * )( ... ) @@
+   drivers/watchdog/ath79_wdt.c:239:27: sparse:     expected int ( *write )( ... )
+   drivers/watchdog/ath79_wdt.c:239:27: sparse:     got int ( * )( ... )
+   In file included from include/linux/workqueue.h:8,
+                    from include/linux/mm_types.h:15,
+                    from include/linux/fs.h:21,
+                    from drivers/watchdog/ath79_wdt.c:25:
+   include/linux/timer.h: In function 'timer_setup':
+   include/linux/timer.h:178:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
+     178 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
+         |                              ^
+   include/linux/timer.h:143:39: note: in definition of macro '__setup_timer'
+     143 |                 (_timer)->function = (_fn);                             17-      |                                       ^~~
+--
+   kernel/futex.c: note: in included file:
+>> arch/arm/include/asm/futex.h:57:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:57:9: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:57:9: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   kernel/futex.c:1480:9: sparse: sparse: context imbalance in 'wake_futex_pi' - unexpected unlock
+   arch/arm/include/asm/futex.h:142:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:142:17: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:142:17: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   arch/arm/include/asm/futex.h:145:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:145:17: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:145:17: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   arch/arm/include/asm/futex.h:148:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:148:17: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:148:17: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   arch/arm/include/asm/futex.h:151:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:151:17: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:151:17: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   arch/arm/include/asm/futex.h:154:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned int [noderef] [usertype] __user *uaddr @@
+   arch/arm/include/asm/futex.h:154:17: sparse:     expected void const *
+   arch/arm/include/asm/futex.h:154:17: sparse:     got unsigned int [noderef] [usertype] __user *uaddr
+   kernel/futex.c:1633:33: sparse: sparse: context imbalance in 'futex_wake_op' - different lock contexts for basic block
+   kernel/futex.c:1924:41: sparse: sparse: context imbalance in 'futex_requeue' - different lock contexts for basic block
+   kernel/futex.c:2442:13: sparse: sparse: context imbalance in 'futex_wait_queue_me' - unexpected unlock
+   kernel/futex.c:2545:9: sparse: sparse: context imbalance in 'futex_wait_setup' - different lock contexts for basic block
+   kernel/futex.c:2834:12: sparse: sparse: context imbalance in 'futex_unlock_pi' - different lock contexts for basic block
+   kernel/futex.c:3102:29: sparse: sparse: context imbalance in 'futex_wait_requeue_pi' - unexpected unlock
+   In file included from include/linux/workqueue.h:8,
+                    from include/linux/srcu.h:34,
+                    from include/linux/notifier.h:15,
+                    from include/linux/memory_hotplug.h:6,
+                    from include/linux/mmzone.h:779,
+                    from include/linux/gfp.h:5,
+                    from include/linux/slab.h:14,
+                    from kernel/futex.c:47:
+   include/linux/timer.h: In function 'timer_setup':
+   include/linux/timer.h:178:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
+     178 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
+         |                              ^
+   include/linux/timer.h:143:39: note: in definition of macro '__setup_timer'
+     143 |                 (_timer)->function = (_fn);                             41-      |                                       ^~~
+   In file included from kernel/futex.c:56:
+   kernel/futex.c: At top level:
+   include/linux/syscalls.h:211:25: warning: 'sys_set_robust_list' alias between functions of incompatible types 'long int(struct robust_list_head *, size_t)' {aka 'long int(struct robust_list_head *, unsigned int)'} and 'long int(long int,  long int)' [-Wattribute-alias=]
+     211 |         asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))       46-      |                         ^~~
+   include/linux/syscalls.h:207:9: note: in expansion of macro '__SYSCALL_DEFINEx'
+     207 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/syscalls.h:197:36: note: in expansion of macro 'SYSCALL_DEFINEx'
+     197 | #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
+         |                                    ^~~~~~~~~~~~~~~
+   kernel/futex.c:3237:1: note: in expansion of macro 'SYSCALL_DEFINE2'
+    3237 | SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
+         | ^~~~~~~~~~~~~~~
+   include/linux/syscalls.h:215:25: note: aliased declaration here
+     215 |         asmlinkage long SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__))       58-      |                         ^~~
+   include/linux/syscalls.h:207:9: note: in expansion of macro '__SYSCALL_DEFINEx'
+     207 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/syscalls.h:197:36: note: in expansion of macro 'SYSCALL_DEFINEx'
+     197 | #define SYSCALL_DEFINE2(name, ...) SYSCALL_DEFINEx(2, _##name, __VA_ARGS__)
+         |                                    ^~~~~~~~~~~~~~~
+   kernel/futex.c:3237:1: note: in expansion of macro 'SYSCALL_DEFINE2'
+    3237 | SYSCALL_DEFINE2(set_robust_list, struct robust_list_head __user *, head,
+         | ^~~~~~~~~~~~~~~
+   include/linux/syscalls.h:211:25: warning: 'sys_futex' alias between functions of incompatible types 'long int(u32 *, int,  u32,  struct timespec *, u32 *, u32)' {aka 'long int(unsigned int *, int,  unsigned int,  struct timespec *, unsigned int *, unsigned int)'} and 'long int(long int,  long int,  long int,  long int,  long int,  long int)' [-Wattribute-alias=]
+     211 |         asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))       70-      |                         ^~~
+   include/linux/syscalls.h:207:9: note: in expansion of macro '__SYSCALL_DEFINEx'
+     207 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/syscalls.h:201:36: note: in expansion of macro 'SYSCALL_DEFINEx'
+     201 | #define SYSCALL_DEFINE6(name, ...) SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
+         |                                    ^~~~~~~~~~~~~~~
+   kernel/futex.c:3494:1: note: in expansion of macro 'SYSCALL_DEFINE6'
+    3494 | SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+         | ^~~~~~~~~~~~~~~
+   include/linux/syscalls.h:215:25: note: aliased declaration here
+     215 |         asmlinkage long SyS##name(__MAP(x,__SC_LONG,__VA_ARGS__))       82-      |                         ^~~
+   include/linux/syscalls.h:207:9: note: in expansion of macro '__SYSCALL_DEFINEx'
+     207 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/syscalls.h:201:36: note: in expansion of macro 'SYSCALL_DEFINEx'
+     201 | #define SYSCALL_DEFINE6(name, ...) SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
+         |                                    ^~~~~~~~~~~~~~~
+   kernel/futex.c:3494:1: note: in expansion of macro 'SYSCALL_DEFINE6'
+    3494 | SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+         | ^~~~~~~~~~~~~~~
+   include/linux/syscalls.h:211:25: warning: 'sys_get_robust_list' alias between functions of incompatible types 'long int(int,  struct robust_list_head **, size_t *)' {aka 'long int(int,  struct robust_list_head **, unsigned int *)'} and 'long int(long int,  long int,  long int)' [-Wattribute-alias=]
+     211 |         asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))       94-      |                         ^~~
+   include/linux/syscalls.h:207:9: note: in expansion of macro '__SYSCALL_DEFINEx'
+     207 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/syscalls.h:198:36: note: in expansion of macro 'SYSCALL_DEFINEx'
+     198 | #define SYSCALL_DEFINE3(name, ...) SYSCALL_DEFINEx(3, _##name, __VA_ARGS__)
+         |                                    ^~~~~~~~~~~~~~~
+   kernel/futex.c:3259:1: note: in expansion of macro 'SYSCALL_DEFINE3'
+    3259 | SYSCALL_DEFINE3(get_robust_list, int, pid,
 
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
----
- tools/objtool/check.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+vim +165 drivers/watchdog/ath79_wdt.c
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e94756e09c..9146177fc9 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -4669,166 +4669,168 @@ static void free_insns(struct objtool_file *file)
- int check(struct objtool_file *file)
- {
- 	int ret, warnings = 0;
- 
- 	arch_initial_func_cfi_state(&initial_func_cfi);
- 	init_cfi_state(&init_cfi);
- 	init_cfi_state(&func_cfi);
- 	set_func_state(&func_cfi);
- 	init_cfi_state(&force_undefined_cfi);
- 	force_undefined_cfi.force_undefined = true;
- 
--	if (!cfi_hash_alloc(1UL << (file->elf->symbol_bits - 3)))
-+	if (!cfi_hash_alloc(1UL << (file->elf->symbol_bits - 3))) {
-+		ret = -1;
- 		goto out;
-+	}
- 
- 	cfi_hash_add(&init_cfi);
- 	cfi_hash_add(&func_cfi);
- 
- 	ret = decode_sections(file);
- 	if (ret < 0)
- 		goto out;
- 
- 	warnings += ret;
- 
- 	if (!nr_insns)
- 		goto out;
- 
- 	if (opts.retpoline) {
- 		ret = validate_retpoline(file);
- 		if (ret < 0)
--			return ret;
-+			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.stackval || opts.orc || opts.uaccess) {
- 		ret = validate_functions(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 
- 		ret = validate_unwind_hints(file, NULL);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 
- 		if (!warnings) {
- 			ret = validate_reachable_instructions(file);
- 			if (ret < 0)
- 				goto out;
- 			warnings += ret;
- 		}
- 
- 	} else if (opts.noinstr) {
- 		ret = validate_noinstr_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.unret) {
- 		/*
- 		 * Must be after validate_branch() and friends, it plays
- 		 * further games with insn->visited.
- 		 */
- 		ret = validate_unrets(file);
- 		if (ret < 0)
--			return ret;
-+			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.ibt) {
- 		ret = validate_ibt(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.sls) {
- 		ret = validate_sls(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.static_call) {
- 		ret = create_static_call_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.retpoline) {
- 		ret = create_retpoline_sites_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.cfi) {
- 		ret = create_cfi_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.rethunk) {
- 		ret = create_return_sites_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 
- 		if (opts.hack_skylake) {
- 			ret = create_direct_call_sections(file);
- 			if (ret < 0)
- 				goto out;
- 			warnings += ret;
- 		}
- 	}
- 
- 	if (opts.mcount) {
- 		ret = create_mcount_loc_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.prefix) {
- 		ret = add_prefix_symbols(file);
- 		if (ret < 0)
--			return ret;
-+			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.ibt) {
- 		ret = create_ibt_endbr_seal_sections(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	if (opts.orc && nr_insns) {
- 		ret = orc_create(file);
- 		if (ret < 0)
- 			goto out;
- 		warnings += ret;
- 	}
- 
- 	free_insns(file);
- 
- 	if (opts.verbose)
- 		disas_warned_funcs(file);
- 
- 	if (opts.stats) {
- 		printf("nr_insns_visited: %ld\n", nr_insns_visited);
- 		printf("nr_cfi: %ld\n", nr_cfi);
- 		printf("nr_cfi_reused: %ld\n", nr_cfi_reused);
- 		printf("nr_cfi_cache: %ld\n", nr_cfi_cache);
- 	}
- 
- out:
- 	/*
- 	 *  For now, don't fail the kernel build on fatal warnings.  These
- 	 *  errors are still fairly common due to the growing matrix of
- 	 *  supported toolchains and their recent pace of change.
- 	 */
--	return 0;
-+	return ret;
- }
+f8394f61c66f48 Gabor Juhos 2011-01-04  152  
+f8394f61c66f48 Gabor Juhos 2011-01-04  153  static ssize_t ath79_wdt_write(struct file *file, const char *data,
+f8394f61c66f48 Gabor Juhos 2011-01-04  154  				size_t len, loff_t *ppos)
+f8394f61c66f48 Gabor Juhos 2011-01-04  155  {
+f8394f61c66f48 Gabor Juhos 2011-01-04  156  	if (len) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  157  		if (!nowayout) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  158  			size_t i;
+f8394f61c66f48 Gabor Juhos 2011-01-04  159  
+f8394f61c66f48 Gabor Juhos 2011-01-04  160  			clear_bit(WDT_FLAGS_EXPECT_CLOSE, &wdt_flags);
+f8394f61c66f48 Gabor Juhos 2011-01-04  161  
+f8394f61c66f48 Gabor Juhos 2011-01-04  162  			for (i = 0; i != len; i++) {
+f8394f61c66f48 Gabor Juhos 2011-01-04  163  				char c;
+f8394f61c66f48 Gabor Juhos 2011-01-04  164  
+f8394f61c66f48 Gabor Juhos 2011-01-04 @165  				if (get_user(c, data + i))
+f8394f61c66f48 Gabor Juhos 2011-01-04  166  					return -EFAULT;
+f8394f61c66f48 Gabor Juhos 2011-01-04  167  
+f8394f61c66f48 Gabor Juhos 2011-01-04  168  				if (c == 'V')
+f8394f61c66f48 Gabor Juhos 2011-01-04  169  					set_bit(WDT_FLAGS_EXPECT_CLOSE,
+f8394f61c66f48 Gabor Juhos 2011-01-04  170  						&wdt_flags);
+f8394f61c66f48 Gabor Juhos 2011-01-04  171  			}
+f8394f61c66f48 Gabor Juhos 2011-01-04  172  		}
+f8394f61c66f48 Gabor Juhos 2011-01-04  173  
+f8394f61c66f48 Gabor Juhos 2011-01-04  174  		ath79_wdt_keepalive();
+f8394f61c66f48 Gabor Juhos 2011-01-04  175  	}
+f8394f61c66f48 Gabor Juhos 2011-01-04  176  
+f8394f61c66f48 Gabor Juhos 2011-01-04  177  	return len;
+f8394f61c66f48 Gabor Juhos 2011-01-04  178  }
+f8394f61c66f48 Gabor Juhos 2011-01-04  179  
+
+:::::: The code at line 165 was first introduced by commit
+:::::: f8394f61c66f48b1fe9d6964ddce492d7f9a4cd9 watchdog: add driver for the Atheros AR71XX/AR724X/AR913X SoCs
+
+:::::: TO: Gabor Juhos <juhosg@openwrt.org>
+:::::: CC: Wim Van Sebroeck <wim@iguana.be>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
