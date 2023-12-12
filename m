@@ -2,289 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8342580E9F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A3180EA0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbjLLLMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S1346204AbjLLLND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbjLLLLz (ORCPT
+        with ESMTP id S235144AbjLLLMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:11:55 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E861136;
-        Tue, 12 Dec 2023 03:10:44 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BCBAO3k031728;
-        Tue, 12 Dec 2023 05:10:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702379424;
-        bh=PvkANg04A2utzuZAggw+6HPpsozwSzDkEwa7BpI7mhM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ym91uVEHlmGoLgfFRoymYYV8JwoBCkTjoSt/EI8c1RgQbl45K32fRnzC4Wt0RbzDY
-         KKI0drNj4qBwG608Ifbcbsyu4NAiO7htNe7dbc4hncl7ZtRXu9GC36TivlHOAPNVG2
-         LAN2iXgLKFvn82rgj0y024NW87VUluaSf8xc9f54=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BCBAOHW043985
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Dec 2023 05:10:24 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 12
- Dec 2023 05:10:24 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 12 Dec 2023 05:10:24 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BCBABA1088764;
-        Tue, 12 Dec 2023 05:10:22 -0600
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <peter.ujfalusi@gmail.com>, <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <vigneshr@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v2 4/4] dmaengine: ti: k3-udma-glue: Add function to request RX channel by ID
-Date:   Tue, 12 Dec 2023 16:40:11 +0530
-Message-ID: <20231212111011.1401641-5-s-vadapalli@ti.com>
+        Tue, 12 Dec 2023 06:12:45 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B330D65;
+        Tue, 12 Dec 2023 03:12:12 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d32c5ce32eso10335515ad.0;
+        Tue, 12 Dec 2023 03:12:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702379531; x=1702984331; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T/h+WfEQxtNqWLD65fthYDEoIBJTS6GEtAIchnOXQlY=;
+        b=Kk6cqHccBtTNpTtrsT5ogjg8MSsaXvkbTZPE968lafYfy+te+WKs++cx/wlcbag8aB
+         tnKktDO1kuu/muZHKpdVCkDmbrDP2uZza1Vezsl4S5/6jTt4IlduGOTfk60ox+O6TU6V
+         pxSeS0Nnbe9JoZLFzlKgfrTQ3akwr11FSDufisi1WqgWxGMVuhrdn+/sm6YJ5PzUvhZY
+         bCYP7Pu6fJ1ClpQwg9d8zHMB+7PZnzNVWBLzSwoHAf6eP0AF7msUWecHkqwnDUfyF5sD
+         1B/Xhpr30ynRZ3tBRwP4e26wPLi+CK20uZKrWpVJatFy7+BZlw4nuS/mqb34p/duNPMJ
+         Z3gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702379531; x=1702984331;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T/h+WfEQxtNqWLD65fthYDEoIBJTS6GEtAIchnOXQlY=;
+        b=UTEIOnyXHIKxqlzCtYAStawMSUTKVXfgluGxUkxsz2w5oWdeuJ3Nyl7t0sCMqGDDv1
+         8doHDp2rRLBLMW+tbG9QzFCBzLFxr3wL2r1VN7h5qbQcxaJeD47E/awT3FSvKL6E0Kxx
+         Itz39bSQVvWVveMLW7S1c5F/224yPenQDhlb/YzOX+8Y6hJxsliEGqeCLZh9er3IDVCm
+         EbYhr43EclkfAM5SRvwsz5Lq+CX9S2ERQB8538Iqp8jRvYF32A96l37j2MoZPaV7np1f
+         VE+X0IcXCjXzIVqsmQ68Ut6XWROZj0wOM2thv3zvGYqA1RMlvN/ImwBBNYZOG7t29lto
+         BoDg==
+X-Gm-Message-State: AOJu0YxnZznCZSd7c2Ptcp8mxsgcE7o5QnrAXe43sniLQKAW3H27uKTp
+        nBTjuiYPQaWkhN6lBxhMlag=
+X-Google-Smtp-Source: AGHT+IGBiBDfitZYDKoB131GyaEEkPbtMG+AiK4V16DRcHToH+3lCj+wV3YCBPG1lcsUeZotqWYcAw==
+X-Received: by 2002:a17:902:ea0b:b0:1cf:b4bb:9bdc with SMTP id s11-20020a170902ea0b00b001cfb4bb9bdcmr7289304plg.9.1702379531377;
+        Tue, 12 Dec 2023 03:12:11 -0800 (PST)
+Received: from ubuntu.. ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902ee5500b001d0511c990csm8345453plo.237.2023.12.12.03.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 03:12:10 -0800 (PST)
+From:   Hongyu Jin <hongyu.jin.cn@gmail.com>
+To:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+        axboe@kernel.dk, ebiggers@kernel.org
+Cc:     zhiguo.niu@unisoc.com, ke.wang@unisoc.com, yibin.ding@unisoc.com,
+        hongyu.jin@unisoc.com, linux-kernel@vger.kernel.org,
+        dm-devel@lists.linux.dev, linux-block@vger.kernel.org
+Subject: [PATCH v4 0/5] Fix I/O priority lost in device-mapper
+Date:   Tue, 12 Dec 2023 19:11:45 +0800
+Message-Id: <20231212111150.18155-1-hongyu.jin.cn@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212111011.1401641-1-s-vadapalli@ti.com>
-References: <20231212111011.1401641-1-s-vadapalli@ti.com>
+In-Reply-To: <ZXeJ9jAKEQ31OXLP@redhat.com>
+References: <ZXeJ9jAKEQ31OXLP@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing function k3_udma_glue_request_remote_rx_chn() supports
-requesting an RX DMA channel and flow by the name of the RX DMA channel.
-Add support to request RX channel by ID in the form of a new function
-k3_udma_glue_request_remote_rx_chn_by_id() and export it for use by drivers
-which are probed by alternate methods (non device-tree) but still wish to
-make use of the existing DMA APIs. Such drivers could be informed about the
-RX channel to use by RPMsg for example.
+From: Hongyu Jin <hongyu.jin@unisoc.com>
 
-Since the implementation of k3_udma_glue_request_remote_rx_chn_by_id()
-reuses most of the code in k3_udma_glue_request_remote_rx_chn(), create
-a new function k3_udma_glue_request_remote_rx_chn_common() for the
-common code.
+A high-priority task obtains data from the dm-verity device using the
+RT IO priority, during the verification, the IO reading FEC and hash
+by kworker loses the RT priority and is blocked by the low-priority IO.
+dm-crypt has the same problem in the process of writing data.
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
-Changes since v1:
-- Updated commit message indicating the use-case for which the patch is
-  being added.
+This is because io_context and blkcg are missing.
 
- drivers/dma/ti/k3-udma-glue.c    | 136 ++++++++++++++++++++++---------
- include/linux/dma/k3-udma-glue.h |   4 +
- 2 files changed, 101 insertions(+), 39 deletions(-)
+Move bio_set_ioprio() into submit_bio():
+1. Only call bio_set_ioprio() once to set the priority of original bio,
+   the bio that cloned and splited from original bio will auto inherit
+   the priority of original bio in clone process.
 
-diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
-index ea5119a5e8eb..996614b60675 100644
---- a/drivers/dma/ti/k3-udma-glue.c
-+++ b/drivers/dma/ti/k3-udma-glue.c
-@@ -1072,52 +1072,21 @@ k3_udma_glue_request_rx_chn_priv(struct device *dev, const char *name,
- 	return ERR_PTR(ret);
- }
- 
--static struct k3_udma_glue_rx_channel *
--k3_udma_glue_request_remote_rx_chn(struct device *dev, const char *name,
--				   struct k3_udma_glue_rx_channel_cfg *cfg)
-+static int
-+k3_udma_glue_request_remote_rx_chn_common(struct k3_udma_glue_rx_channel *rx_chn,
-+					  struct k3_udma_glue_rx_channel_cfg *cfg,
-+					  struct device *dev)
- {
--	struct k3_udma_glue_rx_channel *rx_chn;
- 	int ret, i;
- 
--	if (cfg->flow_id_num <= 0 ||
--	    cfg->flow_id_use_rxchan_id ||
--	    cfg->def_flow_cfg ||
--	    cfg->flow_id_base < 0)
--		return ERR_PTR(-EINVAL);
--
--	/*
--	 * Remote RX channel is under control of Remote CPU core, so
--	 * Linux can only request and manipulate by dedicated RX flows
--	 */
--
--	rx_chn = devm_kzalloc(dev, sizeof(*rx_chn), GFP_KERNEL);
--	if (!rx_chn)
--		return ERR_PTR(-ENOMEM);
--
--	rx_chn->common.dev = dev;
--	rx_chn->common.swdata_size = cfg->swdata_size;
--	rx_chn->remote = true;
--	rx_chn->udma_rchan_id = -1;
--	rx_chn->flow_num = cfg->flow_id_num;
--	rx_chn->flow_id_base = cfg->flow_id_base;
--	rx_chn->psil_paired = false;
--
--	/* parse of udmap channel */
--	ret = of_k3_udma_glue_parse_chn(dev->of_node, name,
--					&rx_chn->common, false);
--	if (ret)
--		goto err;
--
- 	rx_chn->common.hdesc_size = cppi5_hdesc_calc_size(rx_chn->common.epib,
- 						rx_chn->common.psdata_size,
- 						rx_chn->common.swdata_size);
- 
- 	rx_chn->flows = devm_kcalloc(dev, rx_chn->flow_num,
- 				     sizeof(*rx_chn->flows), GFP_KERNEL);
--	if (!rx_chn->flows) {
--		ret = -ENOMEM;
--		goto err;
--	}
-+	if (!rx_chn->flows)
-+		return -ENOMEM;
- 
- 	rx_chn->common.chan_dev.class = &k3_udma_glue_devclass;
- 	rx_chn->common.chan_dev.parent = xudma_get_device(rx_chn->common.udmax);
-@@ -1128,7 +1097,7 @@ k3_udma_glue_request_remote_rx_chn(struct device *dev, const char *name,
- 		dev_err(dev, "Channel Device registration failed %d\n", ret);
- 		put_device(&rx_chn->common.chan_dev);
- 		rx_chn->common.chan_dev.parent = NULL;
--		goto err;
-+		return ret;
- 	}
- 
- 	if (xudma_is_pktdma(rx_chn->common.udmax)) {
-@@ -1140,19 +1109,108 @@ k3_udma_glue_request_remote_rx_chn(struct device *dev, const char *name,
- 
- 	ret = k3_udma_glue_allocate_rx_flows(rx_chn, cfg);
- 	if (ret)
--		goto err;
-+		return ret;
- 
- 	for (i = 0; i < rx_chn->flow_num; i++)
- 		rx_chn->flows[i].udma_rflow_id = rx_chn->flow_id_base + i;
- 
- 	k3_udma_glue_dump_rx_chn(rx_chn);
- 
-+	return 0;
-+}
-+
-+static struct k3_udma_glue_rx_channel *
-+k3_udma_glue_request_remote_rx_chn(struct device *dev, const char *name,
-+				   struct k3_udma_glue_rx_channel_cfg *cfg)
-+{
-+	struct k3_udma_glue_rx_channel *rx_chn;
-+	int ret;
-+
-+	if (cfg->flow_id_num <= 0 ||
-+	    cfg->flow_id_use_rxchan_id ||
-+	    cfg->def_flow_cfg ||
-+	    cfg->flow_id_base < 0)
-+		return ERR_PTR(-EINVAL);
-+
-+	/*
-+	 * Remote RX channel is under control of Remote CPU core, so
-+	 * Linux can only request and manipulate by dedicated RX flows
-+	 */
-+
-+	rx_chn = devm_kzalloc(dev, sizeof(*rx_chn), GFP_KERNEL);
-+	if (!rx_chn)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rx_chn->common.dev = dev;
-+	rx_chn->common.swdata_size = cfg->swdata_size;
-+	rx_chn->remote = true;
-+	rx_chn->udma_rchan_id = -1;
-+	rx_chn->flow_num = cfg->flow_id_num;
-+	rx_chn->flow_id_base = cfg->flow_id_base;
-+	rx_chn->psil_paired = false;
-+
-+	/* parse of udmap channel */
-+	ret = of_k3_udma_glue_parse_chn(dev->of_node, name,
-+					&rx_chn->common, false);
-+	if (ret)
-+		goto err;
-+
-+	ret = k3_udma_glue_request_remote_rx_chn_common(rx_chn, cfg, dev);
-+	if (ret)
-+		goto err;
-+
-+	return rx_chn;
-+
-+err:
-+	k3_udma_glue_release_rx_chn(rx_chn);
-+	return ERR_PTR(ret);
-+}
-+
-+struct k3_udma_glue_rx_channel *
-+k3_udma_glue_request_remote_rx_chn_by_id(struct device *dev, struct device_node *udmax_np,
-+					 struct k3_udma_glue_rx_channel_cfg *cfg, u32 thread_id)
-+{
-+	struct k3_udma_glue_rx_channel *rx_chn;
-+	int ret;
-+
-+	if (cfg->flow_id_num <= 0 ||
-+	    cfg->flow_id_use_rxchan_id ||
-+	    cfg->def_flow_cfg ||
-+	    cfg->flow_id_base < 0)
-+		return ERR_PTR(-EINVAL);
-+
-+	/*
-+	 * Remote RX channel is under control of Remote CPU core, so
-+	 * Linux can only request and manipulate by dedicated RX flows
-+	 */
-+
-+	rx_chn = devm_kzalloc(dev, sizeof(*rx_chn), GFP_KERNEL);
-+	if (!rx_chn)
-+		return ERR_PTR(-ENOMEM);
-+
-+	rx_chn->common.dev = dev;
-+	rx_chn->common.swdata_size = cfg->swdata_size;
-+	rx_chn->remote = true;
-+	rx_chn->udma_rchan_id = -1;
-+	rx_chn->flow_num = cfg->flow_id_num;
-+	rx_chn->flow_id_base = cfg->flow_id_base;
-+	rx_chn->psil_paired = false;
-+
-+	ret = of_k3_udma_glue_parse_chn_by_id(udmax_np, &rx_chn->common, false, thread_id);
-+	if (ret)
-+		goto err;
-+
-+	ret = k3_udma_glue_request_remote_rx_chn_common(rx_chn, cfg, dev);
-+	if (ret)
-+		goto err;
-+
- 	return rx_chn;
- 
- err:
- 	k3_udma_glue_release_rx_chn(rx_chn);
- 	return ERR_PTR(ret);
- }
-+EXPORT_SYMBOL_GPL(k3_udma_glue_request_remote_rx_chn_by_id);
- 
- struct k3_udma_glue_rx_channel *
- k3_udma_glue_request_rx_chn(struct device *dev, const char *name,
-diff --git a/include/linux/dma/k3-udma-glue.h b/include/linux/dma/k3-udma-glue.h
-index 6205d84430ca..89dc59d7c5e2 100644
---- a/include/linux/dma/k3-udma-glue.h
-+++ b/include/linux/dma/k3-udma-glue.h
-@@ -113,6 +113,10 @@ struct k3_udma_glue_rx_channel *k3_udma_glue_request_rx_chn(
- 		const char *name,
- 		struct k3_udma_glue_rx_channel_cfg *cfg);
- 
-+struct k3_udma_glue_rx_channel *
-+k3_udma_glue_request_remote_rx_chn_by_id(struct device *dev, struct device_node *udmax_np,
-+					 struct k3_udma_glue_rx_channel_cfg *cfg, u32 thread_id);
-+
- void k3_udma_glue_release_rx_chn(struct k3_udma_glue_rx_channel *rx_chn);
- int k3_udma_glue_enable_rx_chn(struct k3_udma_glue_rx_channel *rx_chn);
- void k3_udma_glue_disable_rx_chn(struct k3_udma_glue_rx_channel *rx_chn);
+2. Make the IO priority of the original bio to be passed to dm,
+   and the dm target inherits the IO priority as needed.
+
+Changes in v4:
+  - Modify commit message by Suggestion
+  - Modify patch for dm-crypt
+Changes in v3:
+  - Split patch for device-mapper
+  - Add patch to fix dm-crypy I/O priority question
+  - Add block patch to review together
+  - Fix some error in v2 patch
+
+Changes in v2:
+  - Add ioprio field in struct dm_io_region
+  - Initial struct dm_io_region::ioprio to IOPRIO_DEFAULT
+  - Add two interface
+**
+
+Hongyu Jin (5):
+  block: Fix bio IO priority setting
+  dm: Support I/O priority for dm_io()
+  dm-bufio: Support I/O priority
+  dm verity: Fix I/O priority lost when read FEC and hash
+  dm-crypt: Fix lost ioprio when queuing write bios
+
+ block/blk-core.c                              | 10 ++++++
+ block/blk-mq.c                                | 11 ------
+ drivers/md/dm-bufio.c                         | 36 ++++++++++---------
+ drivers/md/dm-crypt.c                         |  1 +
+ drivers/md/dm-ebs-target.c                    |  8 ++---
+ drivers/md/dm-integrity.c                     |  7 +++-
+ drivers/md/dm-io.c                            |  1 +
+ drivers/md/dm-log.c                           |  1 +
+ drivers/md/dm-raid1.c                         |  2 ++
+ drivers/md/dm-snap-persistent.c               |  5 +--
+ drivers/md/dm-verity-fec.c                    |  5 +--
+ drivers/md/dm-verity-target.c                 |  8 +++--
+ drivers/md/dm-writecache.c                    |  4 +++
+ drivers/md/persistent-data/dm-block-manager.c |  6 ++--
+ include/linux/dm-bufio.h                      |  6 ++--
+ include/linux/dm-io.h                         |  2 ++
+ 16 files changed, 69 insertions(+), 44 deletions(-)
+
 -- 
 2.34.1
 
