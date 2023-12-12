@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EEE80F798
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1490180F797
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377236AbjLLULr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        id S1377225AbjLLULj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377231AbjLLULq (ORCPT
+        with ESMTP id S235047AbjLLULh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:11:46 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18145CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:11:51 -0800 (PST)
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com [209.85.221.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 083593F15B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 20:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1702411910;
-        bh=XCa0E1lAm2n9GmItdGOx9YyxXLG2EmQaxBESWwE/rt4=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=A3DENhALaSHjG3+ns+t3Jeg2d4JveqSt9KKxZE2KWPp9c6nZ5KZ3uq2ohJHGgdgRz
-         AuquBg3ihjtE54p8OgvBjNL++2s3NzUey8X0fE2IToc5GQo9Qb9iZQ28ZdqXxg0jyc
-         J11phO7V0XjJ8SYWqO5oCYv6i62lwWwnAnUaTvKOaUyYm6TqFc0UJZzwVKkGEhsmgd
-         OuyZle5xK9QLDPLAFqZG94cuo3MlN4P49QW9HaIr/j1fgqYjvuVxan669SF/ytj1Lg
-         0ZTWT+QDIKI+58JBAX4+k1uDhWHB50z/CyT/EM0STYG9Mw+4vQ++DIMujLkEC843uM
-         +TGP3849tMIcw==
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3335df64539so5093108f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:11:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702411909; x=1703016709;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        Tue, 12 Dec 2023 15:11:37 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B1CB9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:11:44 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d8029dae41so4650767a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:11:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1702411903; x=1703016703; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XCa0E1lAm2n9GmItdGOx9YyxXLG2EmQaxBESWwE/rt4=;
-        b=Kb96KjCL+9zeDiWyeKk0Xq2iE/YsDeJMnvRRBLDX7cIi8CzWRuwJZ6DwHYE22EsjEu
-         c9ZkS321qnD7678ieTalcl0uMs7D23OhWNfI57CoicTSULnoWHHbDR1Vx78KaK9M1vZI
-         fv71g2oPMdCZQbVNVJ25/nF78Jt2oNmdYCWAHUcxhmxo0d7xr5zYvs50tSrvxsL+2dRt
-         FgsN0X8kJeOlEDWyUgBzij4iuXzBpMYmDu/9yeu1LJjGjt7MnHdxnbnxZtKZvhsNhWsx
-         piNOSr4GMtQAuv/VGieR9hoHZMfmjke2Yj9rZWs2xRgcHBzU6QCWaK0SWsQmMYO/o//b
-         g2Jg==
-X-Gm-Message-State: AOJu0Yxn617iXXjvGW7LTCIv1lIleA+YoqRo7TeVeZjBl9cyUSQIEfr6
-        2ALvHdskCTc0zyqYCrW2n29M8n0yZHFLigmXX+AHMZNqxEwr9D3W1W3NsYvBWII7H78bMcSw3gO
-        p6DN6LbsCB5KJJu3BmQevwIh0rSSwmZL0EaYdIB18Eb520kS44CLbGHD6oC0qUZGgis7k
-X-Received: by 2002:adf:a187:0:b0:333:5eea:9217 with SMTP id u7-20020adfa187000000b003335eea9217mr2212527wru.15.1702411909530;
-        Tue, 12 Dec 2023 12:11:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGhmKIpLxUdgrrQ7WvAqj9XuAH88VskEZ2vXPeTEaBOCGCHJeypSS9MRtj/seSY7yK88LhhXhmDW9DzgkLYMMQ=
-X-Received: by 2002:adf:a187:0:b0:333:5eea:9217 with SMTP id
- u7-20020adfa187000000b003335eea9217mr2212524wru.15.1702411909255; Tue, 12 Dec
- 2023 12:11:49 -0800 (PST)
-MIME-Version: 1.0
-References: <20231022180928.180437-1-dimitri.ledkov@canonical.com> <ltdfl4l32ht2oimlppyml22q7dst35i6m4foklamapoykkl3ql@u7qmh2aa4abh>
-In-Reply-To: <ltdfl4l32ht2oimlppyml22q7dst35i6m4foklamapoykkl3ql@u7qmh2aa4abh>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Date:   Tue, 12 Dec 2023 20:11:13 +0000
-Message-ID: <CADWks+b+wVxjE4XL750V9qFWN7PPn0pE_1-sex-ZSHYdcUQJ2Q@mail.gmail.com>
-Subject: Re: [PATCH] kmod: Add FIPS 202 SHA-3 support
-To:     Lucas De Marchi <lucas.demarchi@intel.com>
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        bh=gSpKT6X5vMJAjLjsDkyxKCkmYJugXH+FCSpfLk33Dag=;
+        b=w3+nC2sTKUpst0pdzpvnIoV5kGTc2uRE4Vuucg0vS69vjlRpsXz0aJGS24K3QieTcZ
+         AX9R6d64JHIu8S1PcneYvxO6oFzpINvvOXRAhJ/+171kDih5Refpp1etlZjPuvzsJwff
+         1rlXMJT+PwFDzGn7/pbnWluAuBNGCXHc9VDVE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702411903; x=1703016703;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gSpKT6X5vMJAjLjsDkyxKCkmYJugXH+FCSpfLk33Dag=;
+        b=c3Ht/U/mQ+JYvnkvahF+o2ZaaLHZM2aJ5PYltdxkocPRC3xOzNX/WfxfMsCOfnxA8G
+         lOISfJBzgtfiVPvNVIWQzXiFX7C3OO3jThWqjEMlte2pQodf1HhxgQm7NYu87Mk80O0S
+         gKZ9LlhcZawEUHPgtFFuCgplorYiZEBstFQOXWsigr2hORD9rENWC0o/RiFfQ49Cog53
+         sD1q4mbkIIwlX5AVfM50oxrtKBOBjmj773f1pGpMHi8moD8ZA2m29ovymFYUmLBDZGUg
+         VgpQ3gPmWubw14BG8FXJl7ns0T3pjaXdZ7nkot83O3KYb1PbWGbMKLJJHysEYTRtuuHC
+         UHrg==
+X-Gm-Message-State: AOJu0YxiEH4I4uiryv6Jx2sm9Led8kwqAuno26PjGlaObGAU6RefOOcQ
+        PA4kWGDOvJzHH90UFcmJnjSVTw==
+X-Google-Smtp-Source: AGHT+IE5S1fvGPn9EKUZ+1JtyTMNdFA2PaNO7RccXcSqXTbQmBN/G2PQajwXlMyvPoZxXyZvUGQNfw==
+X-Received: by 2002:a9d:7384:0:b0:6d8:567d:ed18 with SMTP id j4-20020a9d7384000000b006d8567ded18mr6200200otk.7.1702411903442;
+        Tue, 12 Dec 2023 12:11:43 -0800 (PST)
+Received: from smtpclient.apple ([185.189.25.71])
+        by smtp.gmail.com with ESMTPSA id da15-20020a0568306a8f00b006ce28044207sm118360otb.58.2023.12.12.12.11.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 12:11:43 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] srcu: Improve comments about acceleration leak
+Date:   Tue, 12 Dec 2023 15:11:30 -0500
+Message-Id: <48B36383-8849-4F52-8882-3B98AD0B9AF7@joelfernandes.org>
+References: <20231211015717.1067822-1-joel@joelfernandes.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraj.iitr10@gmail.com>, rcu@vger.kernel.org
+In-Reply-To: <20231211015717.1067822-1-joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+X-Mailer: iPhone Mail (20B101)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,82 +75,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Dec 2023 at 15:26, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
->
-> On Sun, Oct 22, 2023 at 07:09:28PM +0100, Dimitri John Ledkov wrote:
-> >Add support for parsing FIPS 202 SHA-3 signature hashes. Separately,
-> >it is not clear why explicit hashes are re-encoded here, instead of
-> >trying to generically show any digest openssl supports.
-> >
-> >Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
 
-NACK
 
-> >---
-> > libkmod/libkmod-signature.c | 12 ++++++++++++
-> > 1 file changed, 12 insertions(+)
-> >
-> >diff --git a/libkmod/libkmod-signature.c b/libkmod/libkmod-signature.c
-> >index b749a818f9..a39059cd7c 100644
-> >--- a/libkmod/libkmod-signature.c
-> >+++ b/libkmod/libkmod-signature.c
-> >@@ -57,6 +57,9 @@ enum pkey_hash_algo {
-> >       PKEY_HASH_SHA512,
-> >       PKEY_HASH_SHA224,
-> >       PKEY_HASH_SM3,
-> >+      PKEY_HASH_SHA3_256,
-> >+      PKEY_HASH_SHA3_384,
-> >+      PKEY_HASH_SHA3_512,
-> >       PKEY_HASH__LAST
-> > };
-> >
-> >@@ -70,6 +73,9 @@ const char *const pkey_hash_algo[PKEY_HASH__LAST] = {
-> >       [PKEY_HASH_SHA512]      = "sha512",
-> >       [PKEY_HASH_SHA224]      = "sha224",
-> >       [PKEY_HASH_SM3]         = "sm3",
-> >+      [PKEY_HASH_SHA3_256]    = "sha3-256",
-> >+      [PKEY_HASH_SHA3_384]    = "sha3-384",
-> >+      [PKEY_HASH_SHA3_512]    = "sha3-512",
-> > };
-> >
-> > enum pkey_id_type {
-> >@@ -167,6 +173,12 @@ static int obj_to_hash_algo(const ASN1_OBJECT *o)
-> >       case NID_sm3:
-> >               return PKEY_HASH_SM3;
-> > # endif
-> >+      case NID_sha3_256:
-> >+              return PKEY_HASH_SHA3_256;
-> >+      case NID_sha3_384:
-> >+              return PKEY_HASH_SHA3_384;
-> >+      case NID_sha3_512:
-> >+              return PKEY_HASH_SHA3_512;
->
->
-> with your other patch, libkmod: remove pkcs7 obj_to_hash_algo(), this
-> hunk is not needed anymore. Do you want to send a new version of this
-> patch?
+> On Dec 10, 2023, at 8:57 PM, Joel Fernandes (Google) <joel@joelfernandes.o=
+rg> wrote:
+>=20
+> =EF=BB=BFThe comments added in commit 1ef990c4b36b ("srcu: No need to
+> advance/accelerate if no callback enqueued") are a bit confusing to me.
+> The comments are describing a scenario for code that was moved and is
+> no longer the way it was (snapshot after advancing). Improve the code
+> comments to reflect this and also document by acceleration can never
+> fail.
+>=20
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <neeraj.iitr10@gmail.com>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-This patch is no longer required, given that
-https://lore.kernel.org/all/20231029010319.157390-1-dimitri.ledkov@canonical.com/
-is applied. Upgrade kmod to the one that has at least that patch
-applied, and then pkcs7 signatures are parsed correctly with
-everything that a runtime OpenSSL supports. Thus if you want to see
-SHA3 signatures, ensure your runtime libssl has SHA3 support.
+Do we want to quick review and put it in Neeraj PR?
 
->
-> thanks
-> Lucas De Marchi
->
-> >       default:
-> >               return -1;
-> >       }
-> >--
-> >2.34.1
-> >
-> >
+Or next merge window ok with me. Just that then I have to keep track of it ;=
+-)
 
--- 
-Dimitri
+Thanks,
 
-Sent from Ubuntu Pro
-https://ubuntu.com/pro
+- Joel=20
+
+
+
+> ---
+> v1->v2: Fix typo in change log.
+>=20
+> kernel/rcu/srcutree.c | 24 ++++++++++++++++++++----
+> 1 file changed, 20 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 0351a4e83529..051e149490d1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -1234,11 +1234,20 @@ static unsigned long srcu_gp_start_if_needed(struc=
+t srcu_struct *ssp,
+>    if (rhp)
+>        rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+>    /*
+> -     * The snapshot for acceleration must be taken _before_ the read of t=
+he
+> -     * current gp sequence used for advancing, otherwise advancing may fa=
+il
+> -     * and acceleration may then fail too.
+> +     * It's crucial to capture the snapshot 's' for acceleration before
+> +     * reading the current gp_seq that is used for advancing. This is
+> +     * essential because if the acceleration snapshot is taken after a
+> +     * failed advancement attempt, there's a risk that a grace period may=
+
+> +     * conclude and a new one may start in the interim. If the snapshot i=
+s
+> +     * captured after this sequence of events, the acceleration snapshot '=
+s'
+> +     * could be excessively advanced, leading to acceleration failure.
+> +     * In such a scenario, an 'acceleration leak' can occur, where new
+> +     * callbacks become indefinitely stuck in the RCU_NEXT_TAIL segment.
+> +     * Also note that encountering advancing failures is a normal
+> +     * occurrence when the grace period for RCU_WAIT_TAIL is in progress.=
+
+>     *
+> -     * This could happen if:
+> +     * To see this, consider the following events which occur if
+> +     * rcu_seq_snap() were to be called after advance:
+>     *
+>     *  1) The RCU_WAIT_TAIL segment has callbacks (gp_num =3D X + 4) and t=
+he
+>     *     RCU_NEXT_READY_TAIL also has callbacks (gp_num =3D X + 8).
+> @@ -1264,6 +1273,13 @@ static unsigned long srcu_gp_start_if_needed(struct=
+ srcu_struct *ssp,
+>    if (rhp) {
+>        rcu_segcblist_advance(&sdp->srcu_cblist,
+>                      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> +        /*
+> +         * Acceleration can never fail because the state of gp_seq used
+> +         * for advancing is <=3D the state of gp_seq used for
+> +         * acceleration. This means that RCU_NEXT_TAIL segment will
+> +         * always be able to be emptied by the acceleration into the
+> +         * RCU_NEXT_READY_TAIL or RCU_WAIT_TAIL segments.
+> +         */
+>        WARN_ON_ONCE(!rcu_segcblist_accelerate(&sdp->srcu_cblist, s));
+>    }
+>    if (ULONG_CMP_LT(sdp->srcu_gp_seq_needed, s)) {
+> --=20
+> 2.43.0.472.g3155946c3a-goog
+>=20
