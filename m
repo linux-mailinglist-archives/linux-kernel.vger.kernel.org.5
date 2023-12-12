@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB6A80E834
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40A880E837
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346301AbjLLJu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:50:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
+        id S1346114AbjLLJva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjLLJuS (ORCPT
+        with ESMTP id S229583AbjLLJv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:50:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FB612C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:50:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702374620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v0YruFUcs7CpWDgdQcyd2R9bRZBZj+vBSAemz/y0HZ4=;
-        b=Rd71J2g+3EQKThxDViRCD3zf/YI5uuuaHu4FcQ7xJdeUaQBl5vDwlcPy0QukzR8P8eDXoc
-        yf23fydjZE3YACKMqnvT3Areanxo2dUFkJp+5MIbsI5NasF5gA1Z7CS2un8mMT8mo27mZi
-        Hn0ALAGDVPxOxuMkihliCuURnXoEPPo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-626-2RbOY2DAPlqYvVM5NNv1bQ-1; Tue, 12 Dec 2023 04:50:14 -0500
-X-MC-Unique: 2RbOY2DAPlqYvVM5NNv1bQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78EC4185A78E;
-        Tue, 12 Dec 2023 09:50:14 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F4160492BC6;
-        Tue, 12 Dec 2023 09:50:09 +0000 (UTC)
-Date:   Tue, 12 Dec 2023 17:50:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 3/7] lib/group_cpus: relax atomicity requirement in
- grp_spread_init_one()
-Message-ID: <ZXgszD9tIKY1tC9r@fedora>
-References: <20231212042108.682072-1-yury.norov@gmail.com>
- <20231212042108.682072-4-yury.norov@gmail.com>
+        Tue, 12 Dec 2023 04:51:28 -0500
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91AAD2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:51:34 -0800 (PST)
+Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4b328087918so1149233e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:51:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702374694; x=1702979494; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ko5c0vwQVCFkqxt5MmDEPN+O3PpUovqfwlzC3CsXMJQ=;
+        b=uPD90YCXVz5exp9+Z2ehj6Ua2ncGLn+AXtor6zp0CgItEgQMlAO27YWxlwXdwaDBfq
+         SGyV66zrp3atzyH8GhaPxD7azUlbJqrnaACm+Xmz/O/VDWOegE1LDRW72H3NZV5GfExu
+         B2BU/o5InxGdLPGw+y2MJPYJDjmNFfpcaCnAcwvySk3Qge5xGYR00d1l7TN0ssTRwepU
+         4NfM4I2fpZak4b+wbIihuVODPvyehjZhBja2aGciEVeHFWx42GaAgVF1MYND68ugdPKn
+         SOKPZtt2YfgLls+LpsOFzhxlKUVcPzi0xB+AksdeBzcPTMQ2LS8SVDLg0HJ2LesO+Z+d
+         eBBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702374694; x=1702979494;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ko5c0vwQVCFkqxt5MmDEPN+O3PpUovqfwlzC3CsXMJQ=;
+        b=mEX+5CrS87UYK9E8nBdNG5Y8Emeo9C7Yl/p6fhhDEpIeJW9hZFtuZnAnn1+V1Gxxod
+         u+R1LsQ7LgNW0tNISS4U1AHeZtnWH+J3Y3rLoKWgF4IPgOvATQFsWeguW8iBsa3Cvdkk
+         tTQ8hyc2BEnyLGAZhGY04jPbu1kXjqnziaQQfaVoUlwLtOFbVsf4sFbEoYwR1ZGQ+Kak
+         D3VgulbXkeDlWsg2M7ll0xS5te5R0WrC9s5TOZmzQOTTDqoUmRSwph6wIxw6cp+YpI+w
+         IoosbDnYD7+rvlZcW3XVXaz8dB0jvypmq/gYCAgnWGAtmJx6aY2vrBloPqRWdLb8fi8D
+         s7lA==
+X-Gm-Message-State: AOJu0YwJcyMyobwm5vqIOpRYhZqpYB7UXsWtdoEozm7UQuYlF0Mleuoh
+        RfeMXYYjmfaj/iEtPxlV9+euaig6kIDxsiZyg3iqPA==
+X-Google-Smtp-Source: AGHT+IGE5ZK3L8voecVZVOpEdeTnGnVvTrlGpwhyiCTJSHRmzpYl+U8K2pOtq4nbdphmjr3yd56t/MlKa+EmsxXKESM=
+X-Received: by 2002:a05:6122:a08:b0:4b2:deeb:d9c5 with SMTP id
+ 8-20020a0561220a0800b004b2deebd9c5mr4247201vkn.15.1702374693492; Tue, 12 Dec
+ 2023 01:51:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212042108.682072-4-yury.norov@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
+ <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com> <nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me>
+In-Reply-To: <nAEg-6vbtX72ZY3oirDhrSEf06TBWmMiTt73EklMzEAzN4FD4mF3TPEyAOxBZgZtjzoiaBYtYr3s8sa9wp1uYH9vEWRf2M-Lf4I0BY9rAgk=@proton.me>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Tue, 12 Dec 2023 10:51:22 +0100
+Message-ID: <CAH5fLghkyk7yuLvt+pPfQnB2j=-ehQLb4rf4b50sOgm33t-YkA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 08:21:03PM -0800, Yury Norov wrote:
-> Because nmsk and irqmsk are stable, extra atomicity is not required.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  lib/group_cpus.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-> index 10dead3ab0e0..7ac94664230f 100644
-> --- a/lib/group_cpus.c
-> +++ b/lib/group_cpus.c
-> @@ -24,8 +24,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  		if (cpu >= nr_cpu_ids)
->  			return;
->  
-> -		cpumask_clear_cpu(cpu, nmsk);
-> -		cpumask_set_cpu(cpu, irqmsk);
-> +		__cpumask_clear_cpu(cpu, nmsk);
-> +		__cpumask_set_cpu(cpu, irqmsk);
->  		cpus_per_grp--;
->  
->  		/* If the cpu has siblings, use them first */
-> @@ -33,8 +33,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
->  		sibl = cpu + 1;
->  
->  		for_each_cpu_and_from(sibl, siblmsk, nmsk) {
-> -			cpumask_clear_cpu(sibl, nmsk);
-> -			cpumask_set_cpu(sibl, irqmsk);
-> +			__cpumask_clear_cpu(sibl, nmsk);
-> +			__cpumask_set_cpu(sibl, irqmsk);
+On Fri, Dec 8, 2023 at 8:04=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>
+> On 12/6/23 11:09, Alice Ryhl wrote:
+> > +    /// Atomically releases the given lock (whose ownership is proven =
+by the guard) and puts the
+> > +    /// thread to sleep. It wakes up when notified by [`CondVar::notif=
+y_one`] or
+> > +    /// [`CondVar::notify_all`], or when the thread receives a signal.
+> > +    ///
+> > +    /// Returns whether there is a signal pending.
+> > +    fn wait_internal_timeout<T, B>(
+> > +        &self,
+> > +        wait_state: u32,
+> > +        guard: &mut Guard<'_, T, B>,
+> > +        timeout: u64,
+> > +    ) -> u64
+> > +    where
+> > +        T: ?Sized,
+> > +        B: Backend,
+> > +    {
+> > +        let wait =3D Opaque::<bindings::wait_queue_entry>::uninit();
+> > +
+> > +        // SAFETY: `wait` points to valid memory.
+> > +        unsafe { bindings::init_wait(wait.get()) };
+> > +
+> > +        // SAFETY: Both `wait` and `wait_list` point to valid memory.
+> > +        unsafe {
+> > +            bindings::prepare_to_wait_exclusive(self.wait_list.get(), =
+wait.get(), wait_state as _)
+>
+> Does `.into()` work here? If for some reason the type here changes, we
+> probably want to know about it.
 
-I think this kind of change should be avoided, here the code is
-absolutely in slow path, and we care code cleanness and readability
-much more than the saved cycle from non atomicity.
+I think we may be able to eliminate this cast by using c_int for the
+integer type.
 
+> > +        };
+> > +
+> > +        // SAFETY: Switches to another thread.
+> > +        let timeout =3D
+> > +            guard.do_unlocked(|| unsafe { bindings::schedule_timeout(t=
+imeout as _) as _ });
+>
+> Ditto.
 
-Thanks,
-Ming
+Here, we're casting u64->long and then long->u64. How about this?
 
+u64->long - Use timeout.try_into().unwrap_or(MAX_SCHEDULE_TIMEOUT),
+since MAX_SCHEDULE_TIMEOUT is LONG_MAX.
+
+long->u64 - This value is guaranteed to be less than the argument
+passed to schedule_timeout. Use .into() for infallible cast.
+
+Alice
