@@ -2,110 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B2A80EE7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CEF80EE82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376550AbjLLOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S1376556AbjLLOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbjLLOPW (ORCPT
+        with ESMTP id S232741AbjLLOR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:15:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007C6AC;
-        Tue, 12 Dec 2023 06:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702390529; x=1733926529;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+CyqDkty4gAG4dffVL639tJHtioITjzlgMZMq9sVuE8=;
-  b=Xf5jImnRTqabHtGef0ftPMQKhN0T6DwfeGW61tbFD3uHlbfQ8E8oTXkD
-   xEdcN7evttzKBs7yllOIZz/HUTi7XwWx6RsSzfmzkzUU8CQob38go+Ipk
-   pOWiWhnrVOFW+eOVQX37+ywtJ0AZH4oHhTj1n9HmeW4mkuwr8WoG1QMMF
-   331kdOOhViLGT23GgSXFkaEDuQYYWaGvckbnHiFrJonDCDtI4fJJ2iOGO
-   9uuLyCHYmgaCCid6hloZqeADhEnUR//9Qxz7kVXXdvesWgmJXMmw5whqf
-   d2zNUezd/4aWloUTQUsES8CIU5Sw7QPlY/80wwzRM3XLmO6zOf1mJilUV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="16364166"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="16364166"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 06:15:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="802484555"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="802484555"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga008.jf.intel.com with SMTP; 12 Dec 2023 06:15:25 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Dec 2023 16:15:24 +0200
-Date:   Tue, 12 Dec 2023 16:15:24 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] usb: typec: tipd: add function to request firmware
-Message-ID: <ZXhq/IJp9KVCkQYb@kuha.fi.intel.com>
-References: <20231207-tps6598x_update-v1-0-dc21b5301d91@wolfvision.net>
- <20231207-tps6598x_update-v1-2-dc21b5301d91@wolfvision.net>
- <ZXMudF++A9/y4TNk@kuha.fi.intel.com>
- <196acb44-fb0d-45b6-a9c3-b5a289a41917@wolfvision.net>
+        Tue, 12 Dec 2023 09:17:26 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5BFC100;
+        Tue, 12 Dec 2023 06:17:30 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A67B4143D;
+        Tue, 12 Dec 2023 06:18:16 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DF073F738;
+        Tue, 12 Dec 2023 06:17:25 -0800 (PST)
+Message-ID: <e3a01313-ed03-bc54-0260-5445fb2c15ee@arm.com>
+Date:   Tue, 12 Dec 2023 14:17:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <196acb44-fb0d-45b6-a9c3-b5a289a41917@wolfvision.net>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 07/14] perf arm-spe/cs-etm: Directly iterate CPU maps
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>, Leo Yan <leo.yan@linaro.org>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-8-irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-8-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Fri, Dec 08, 2023 at 07:58:52PM +0100, Javier Carrasco wrote:
-> Hi Heikki,
+
+On 29/11/2023 06:02, Ian Rogers wrote:
+> Rather than iterate all CPUs and see if they are in CPU maps, directly
+> iterate the CPU map. Similarly make use of the intersect
+> function. Switch perf_cpu_map__has_any_cpu_or_is_empty to more
+> appropriate alternatives.
 > 
-> On 08.12.23 15:55, Heikki Krogerus wrote:
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/arch/arm/util/cs-etm.c    | 77 ++++++++++++----------------
+>  tools/perf/arch/arm64/util/arm-spe.c |  4 +-
+>  2 files changed, 34 insertions(+), 47 deletions(-)
 > 
-> >> +	ret = request_firmware(fw, firmware_name, tps->dev);
-> >> +	if (ret) {
-> >> +		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
-> >> +		/* probe deferring in case the file system is not ready */
-> >> +		return (ret == -ENOENT) ? -EPROBE_DEFER : ret;
-> > 
-> > It's more likely that the firmware really isn't available, and it will
-> > never be available in this case. I think there is only one place in
-> > kernel where failing request_firmware() can lead to deferred probe
-> > (drivers/tee/optee/smc_abi.c) and there the code can actually see the
-> > system state - that's actually the condition.
-> > 
-> > So just return dev_err_probe() here:
-> > 
-> > 	ret = request_firmware(fw, firmware_name, tps->dev);
-> > 	if (ret)
-> >                 return dev_err_probe(tps->dev, ret, "failed to retrieve \"%s\"", firmware_name);
-> > 
-> Thank you for your feedback.
-> 
-> This solution arose from a real use case: in the system I am using to
-> test the tps65987d, the filesystem is not ready when the probe function
-> is called. If I just return on -ENOENT, the device will never get the
-> update.
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index 77e6663c1703..a68a72f2f668 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -197,38 +197,32 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
+>  static int cs_etm_validate_config(struct auxtrace_record *itr,
+>  				  struct evsel *evsel)
+>  {
+> -	int i, err = -EINVAL;
+> +	int idx, err = -EINVAL;
+>  	struct perf_cpu_map *event_cpus = evsel->evlist->core.user_requested_cpus;
+>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
+> +	struct perf_cpu_map *intersect_cpus = perf_cpu_map__intersect(event_cpus, online_cpus);
+> +	struct perf_cpu cpu;
+>  
+> -	/* Set option of each CPU we have */
+> -	for (i = 0; i < cpu__max_cpu().cpu; i++) {
+> -		struct perf_cpu cpu = { .cpu = i, };
+> -
+> -		/*
+> -		 * In per-cpu case, do the validation for CPUs to work with.
+> -		 * In per-thread case, the CPU map is empty.  Since the traced
+> -		 * program can run on any CPUs in this case, thus don't skip
+> -		 * validation.
+> -		 */
+> -		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
+> -		    !perf_cpu_map__has(event_cpus, cpu))
+> -			continue;
 
-Just like all the other devices that require firmware. This driver is
-no different from the others, and it is also not the only one that
-needs the firmware only in special cases. Just make the firmware part
-of your ramdisk, or build the driver as a module.
+This has broken validation for per-thread sessions.
+perf_cpu_map__intersect() doesn't seem to be able to handle the case
+where an 'any' map intersected with an online map should return the
+online map. Or at least it should for this to work, and it seems to make
+sense for it to work that way.
 
-Are these firmwares available linux-firmware (or are the going to be)?
-https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git
+At least that was my initial impression, but I only debugged it and saw
+that the loop is now skipped entirely.
 
-thanks,
-
--- 
-heikki
+> -
+> -		if (!perf_cpu_map__has(online_cpus, cpu))
+> -			continue;
+> +	perf_cpu_map__put(online_cpus);
+>  
+> -		err = cs_etm_validate_context_id(itr, evsel, i);
+> +	/*
+> +	 * Set option of each CPU we have. In per-cpu case, do the validation
+> +	 * for CPUs to work with.  In per-thread case, the CPU map is empty.
+> +	 * Since the traced program can run on any CPUs in this case, thus don't
+> +	 * skip validation.
+> +	 */
+> +	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
+> +		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
+>  		if (err)
+>  			goto out;
+> -		err = cs_etm_validate_timestamp(itr, evsel, i);
+> +		err = cs_etm_validate_timestamp(itr, evsel, idx);
+>  		if (err)
+>  			goto out;
+>  	}
+>  
+>  	err = 0;
+>  out:
+> -	perf_cpu_map__put(online_cpus);
+> +	perf_cpu_map__put(intersect_cpus);
+>  	return err;
+>  }
+>  
+> @@ -435,7 +429,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+>  	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
+>  	 * when a context switch happened.
+>  	 */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+>  					   "timestamp", 1);
+>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+> @@ -461,7 +455,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+>  	evsel->core.attr.sample_period = 1;
+>  
+>  	/* In per-cpu case, always need the time of mmap events etc */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
+> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
+>  		evsel__set_sample_bit(evsel, TIME);
+>  
+>  	err = cs_etm_validate_config(itr, cs_etm_evsel);
+> @@ -533,38 +527,32 @@ static size_t
+>  cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  		      struct evlist *evlist __maybe_unused)
+>  {
+> -	int i;
+> +	int idx;
+>  	int etmv3 = 0, etmv4 = 0, ete = 0;
+>  	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
+>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
+> +	struct perf_cpu cpu;
+>  
+>  	/* cpu map is not empty, we have specific CPUs to work with */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
+> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
+> -			struct perf_cpu cpu = { .cpu = i, };
+> -
+> -			if (!perf_cpu_map__has(event_cpus, cpu) ||
+> -			    !perf_cpu_map__has(online_cpus, cpu))
+> -				continue;
+> +	if (!perf_cpu_map__is_empty(event_cpus)) {
+> +		struct perf_cpu_map *intersect_cpus =
+> +			perf_cpu_map__intersect(event_cpus, online_cpus);
+>  
+> -			if (cs_etm_is_ete(itr, i))
+> +		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
+> +			if (cs_etm_is_ete(itr, cpu.cpu))
+>  				ete++;
+> -			else if (cs_etm_is_etmv4(itr, i))
+> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
+>  				etmv4++;
+>  			else
+>  				etmv3++;
+>  		}
+> +		perf_cpu_map__put(intersect_cpus);
+>  	} else {
+>  		/* get configuration for all CPUs in the system */
+> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
+> -			struct perf_cpu cpu = { .cpu = i, };
+> -
+> -			if (!perf_cpu_map__has(online_cpus, cpu))
+> -				continue;
+> -
+> -			if (cs_etm_is_ete(itr, i))
+> +		perf_cpu_map__for_each_cpu(cpu, idx, online_cpus) {
+> +			if (cs_etm_is_ete(itr, cpu.cpu))
+>  				ete++;
+> -			else if (cs_etm_is_etmv4(itr, i))
+> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
+>  				etmv4++;
+>  			else
+>  				etmv3++;
+> @@ -814,15 +802,14 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
+>  		return -EINVAL;
+>  
+>  	/* If the cpu_map is empty all online CPUs are involved */
+> -	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
+> +	if (perf_cpu_map__is_empty(event_cpus)) {
+>  		cpu_map = online_cpus;
+>  	} else {
+>  		/* Make sure all specified CPUs are online */
+> -		for (i = 0; i < perf_cpu_map__nr(event_cpus); i++) {
+> -			struct perf_cpu cpu = { .cpu = i, };
+> +		struct perf_cpu cpu;
+>  
+> -			if (perf_cpu_map__has(event_cpus, cpu) &&
+> -			    !perf_cpu_map__has(online_cpus, cpu))
+> +		perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
+> +			if (!perf_cpu_map__has(online_cpus, cpu))
+>  				return -EINVAL;
+>  		}
+>  
+> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> index 51ccbfd3d246..0b52e67edb3b 100644
+> --- a/tools/perf/arch/arm64/util/arm-spe.c
+> +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  	 * In the case of per-cpu mmaps, sample CPU for AUX event;
+>  	 * also enable the timestamp tracing for samples correlation.
+>  	 */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_sample_bit(arm_spe_evsel, CPU);
+>  		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
+>  					   "ts_enable", 1);
+> @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  	tracking_evsel->core.attr.sample_period = 1;
+>  
+>  	/* In per-cpu case, always need the time of mmap events etc */
+> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
+> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
+>  		evsel__set_sample_bit(tracking_evsel, TIME);
+>  		evsel__set_sample_bit(tracking_evsel, CPU);
+>  
