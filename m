@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE9C80F5EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41ABE80F5F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376971AbjLLTAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        id S1377055AbjLLTAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376918AbjLLTAK (ORCPT
+        with ESMTP id S1376984AbjLLTAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:00:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A79107
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:00:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702407614; x=1733943614;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8WiabT7U+tyC9B3McQ8kHvXHtwObdF6HaWclyYRQSSk=;
-  b=MhMe/QLXDRRmIJ4yMJzlnbAWIV1IQptpgZUBFt7O6mrYo+0QDQ1OFG0N
-   Sahu5TkdqGkex1mvO6y+BIOSNJOkw+hqzVfVnR66iXnx37FGIgtpz5exC
-   bGTfiNSO8p8Zc1KsT+YloHMJ4VQhDfd7/Gvcz8RMkXsZsO+n14iiOlH+i
-   UcAtztQePFL0IsrU7lDUkkVzPlkVfCVl72vJADhoNZCuuCTfvRy3WTDR4
-   LEZZj0iK0gFyS+PL10ne8Lhwt8fsM/HGPRbA5xjEQMhEkyhyS6tcPrCZ2
-   nGPgvoxB2EZ8siI6VrQP8W/Xsbtsy02m3c0qGKTdPE/WE3Ns3PONVhgL1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="1669093"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="1669093"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 11:00:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839552896"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="839552896"
-Received: from rlsparks-mobl.amr.corp.intel.com (HELO [10.209.59.101]) ([10.209.59.101])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 11:00:00 -0800
-Message-ID: <2370f65e-86ce-4fdf-a82e-c39e5513ff64@intel.com>
-Date:   Tue, 12 Dec 2023 10:59:58 -0800
+        Tue, 12 Dec 2023 14:00:16 -0500
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA647F5;
+        Tue, 12 Dec 2023 11:00:19 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id DC7D12B00324;
+        Tue, 12 Dec 2023 14:00:16 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 12 Dec 2023 14:00:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=fm3; t=1702407616;
+         x=1702414816; bh=mkQgKltTP5G+DPU34il+RvyvNIX4AiTMdSuv1wgyTCs=; b=
+        fJWcEKimbASXhvV2Y/u0MJ78svo+WEkATOLi4dOjMTJl34I+28RO6i2vxF8vBxXh
+        jsbmdZ4CZZ3oJ0xuCFVmtmz0iN6NZN490VBweoWK0dziivbpcE0EtUMAeEIciL/R
+        +D+IlrTyEMR032DiKExWbeQLGl0EHepFzcM9oN/2/ylsF8jJc6Pev2gO1ky9dcWu
+        ECeZJ1ERoohvZvfHjllChUutXddvQlzoGvGUGkTHZPhpBQNlMVNxiVb9F51l4EVl
+        xpmyxS4Ve70UewVgveHc5z95UkFMU7l7BXAxJXvH2MkCGbWlYVI423oPKYmwb5MW
+        3ojHrD+5mip5w6kwCQ4FOA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702407616; x=
+        1702414816; bh=mkQgKltTP5G+DPU34il+RvyvNIX4AiTMdSuv1wgyTCs=; b=c
+        bVgQ2bDrismRt/s9rEJ7L8njdhlUd9ehE9q2nUNlkqM5tU0Zdb28XirF+GNNFJgK
+        QGD6CAdH4+xkV+I2dGTf6x1mnzvFqB8eCvv3nw30VMPppuU1SlTqvzcpBpWQC+RV
+        rtN+rqLwlhFtmAF69aVziglCNyeSmhNjq8w8jPiHu7c6a0zwJSymjnxekk97tOd5
+        1ry6hUEkPvJ6//Fxbvjl9ne61C4CL6pzlahAnbAGJ6k/rvR/HP4/YJvN+TgMwGN0
+        XU2PeD7N46LosjFryxWsg4qkwDIfnxMGZbGttHLHA2wuRmHBqAf561NeXE5z3LLD
+        jTX/JrIU85031qi8sBtQA==
+X-ME-Sender: <xms:v614ZdNfI9-uA0PK0QDYer2BsPagbyWLZCLz-v2dCoFjaA2F_-kHYA>
+    <xme:v614Zf96oWJysoaTeYx3VOho0uu_GXGvTdUiKCg6hUg1c_NRjRx60kKgG3xKXVuor
+    B7vXwkNK1NZnJUhKQ>
+X-ME-Received: <xmr:v614ZcTQto9pOgbB7OCKQqX68JRxvTP1wQAkxjjEZgeN09Sj-U_PjPe-QiTlTq83lRqWQ4mNryKm7on5Y-FsdtiWsuAOygvqn5Cd>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelgedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:v614ZZtn-iEtijrnnfd_gIrwezZGZLhKx2rX_xMDQZJme2y_5j0sxQ>
+    <xmx:v614ZVcj25nt5Bc0ewmlh-SqrlLvJuSRuPVIXROMiUuMHGU_J-2evg>
+    <xmx:v614ZV3SKOsS48sIkeGi0PTU1DkrmTd1ab3KcGdPw9tOTPey6q-TOA>
+    <xmx:wK14Zetkyeho1ahXdowo8kPL8mJXZyr8HfYclHZYOVWMJv1dO0NaKiku2s0>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Dec 2023 14:00:13 -0500 (EST)
+Date:   Tue, 12 Dec 2023 12:00:12 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Eyal Birger <eyal.birger@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Yonghong Song <yonghong.song@linux.dev>,
+        Eddy Z <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <kj5zxyxf3edmz3uyjanxukdiysagu5f6mkneq64yyqgfzp4lsd@7glieqovplgd>
+References: <cover.1702325874.git.dxu@dxuuu.xyz>
+ <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
+ <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+ <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
+ <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <CAADnVQKpXpqMr9jmc8RKLcL822ir0wA7bEN2h6dEo=6Y60qgWQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] x86/virt/tdx: Remove duplicated include in tdx.c
-Content-Language: en-US
-To:     Yang Li <yang.lee@linux.alibaba.com>, mingo@redhat.com,
-        tglx@linutronix.de, x86@kernel.org
-Cc:     hpa@zytor.com, kirill.shutemov@linux.intel.com,
-        dave.hansen@linux.intel.com, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20231212003825.70297-1-yang.lee@linux.alibaba.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20231212003825.70297-1-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKpXpqMr9jmc8RKLcL822ir0wA7bEN2h6dEo=6Y60qgWQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 16:38, Yang Li wrote:
-> The header files linux/acpi.h and asm/cpufeature.h are both
-> included twice in C, so one inclusion of each can be removed.
+On Tue, Dec 12, 2023 at 08:44:42AM -0800, Alexei Starovoitov wrote:
+> On Tue, Dec 12, 2023 at 8:17 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> >
+> > If you don't mind (and there no more comments), I would prefer to send a
+> > follow up fixing the nits in this revision. So that I stop blasting the
+> > list (as well as people who may not be as concerned with these details).
+> 
+> Resending patches is little effort while follow up patches
+> double the commits, more code churn, increase in code reviews, etc.
+> Always address feedback by resending.
 
-Thanks for the report.  I've just squashed this back into the culprit patch.
+Got it; will keep that in mind.
+
+Thanks,
+Daniel
