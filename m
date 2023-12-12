@@ -2,185 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7714680EB00
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0959C80EAF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjLLL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
+        id S1346392AbjLLLzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjLLL4K (ORCPT
+        with ESMTP id S232388AbjLLLzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:56:10 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB59D3;
-        Tue, 12 Dec 2023 03:56:16 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC7erv6019065;
-        Tue, 12 Dec 2023 11:55:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type; s=qcppdkim1; bh=FMgWXnILq2a0EzORWYwo
-        s3k1dovqenJDgzuHog06xUA=; b=VW26hZjlKmzsSBL6iQYmtnNENGHz8wMZ212r
-        UPmD1NA/oSR0bKdnVY9IENuzyv/4iP///YSrLMASNdd6ycnefIhPkXwhphmg65CR
-        gWnjtMOXFAsj+zzvT1cJ663rn0s/kuCk4pv1IfDkFBvMxXlNiummSMLa+R8ipusr
-        YqSBBR/TcFWKiN03+sdj0SaIDa/X5kWRHYcG9UWwZoZnp4Da/06+5jshDFZfQ2nr
-        VYeeuJM5BkN3e1JLDDpU/nnTc1V7tZxlOiqTwoO/+ydEM7j5oPkVNPDzXlw4bxMS
-        CASuxPAI55/tWZiOvPANcxTOGXZo9b1KKE8zuEbVv7EWVs23PQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxepkh5j3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 11:55:52 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCBtptP009807
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 11:55:51 GMT
-Received: from hu-mnaresh-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Dec 2023 03:55:46 -0800
-From:   Maramaina Naresh <quic_mnaresh@quicinc.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Peter Wang <peter.wang@mediatek.com>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <stanley.chu@mediatek.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Stanley Jhu <chu.stanley@gmail.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
-        <quic_nguyenb@quicinc.com>
-Subject: [PATCH V3 2/2] ufs: ufs-mediatek: Enable CPU latency PM QoS support for MEDIATEK SoC
-Date:   Tue, 12 Dec 2023 17:25:10 +0530
-Message-ID: <20231212115510.30935-3-quic_mnaresh@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231212115510.30935-1-quic_mnaresh@quicinc.com>
-References: <20231212115510.30935-1-quic_mnaresh@quicinc.com>
+        Tue, 12 Dec 2023 06:55:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF587C3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:55:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F08B9C433C7;
+        Tue, 12 Dec 2023 11:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702382123;
+        bh=ELkMM3xL8H6CR/+VuM2URI6u+FZWIT3tz2dGjfDVmtY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yEkZ70v4HQPvJ4mjAZ2LGFeiDgGbm/hcMWhps260aLGNJzoQJmGybkqfTvclnskK2
+         w8yV9r7Ng4eJ4odjOqFyv1lOIcDeWcB/V8X0TfTh43OT/BFPEM+p5kUgdRB/aYP0Sw
+         HW/atx8BAYSue1yklfCTmGE6eRGENF2vB3itO1No=
+Date:   Tue, 12 Dec 2023 12:55:21 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com, arnd@arndb.de
+Subject: Re: [PATCH 5.15 000/141] 5.15.143-rc1 review
+Message-ID: <2023121254-reoccur-shorty-cfb2@gregkh>
+References: <20231211182026.503492284@linuxfoundation.org>
+ <a2fbbaa2-51d2-4a8c-b032-5331e72cd116@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6qTqvBmZpd56bFsjl0wu537RnGkGyamv
-X-Proofpoint-ORIG-GUID: 6qTqvBmZpd56bFsjl0wu537RnGkGyamv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- malwarescore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120096
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a2fbbaa2-51d2-4a8c-b032-5331e72cd116@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert the existing PM QoS feature from MEDIATEK UFS driver as similar
-PM QoS feature implementation is moved to core ufshcd and also enable
-CPU latency PM QoS capability for MEDIATEK SoC.
+On Mon, Dec 11, 2023 at 09:38:39PM -0600, Daniel Díaz wrote:
+> Hello!
+> 
+> On 11/12/23 12:20 p. m., Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.143 release.
+> > There are 141 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.143-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> We're seeing new warnings with GCC-8 and failures with GCC-12 on x86/i386:
+> 
+> -----8<-----
+>   In file included from /builds/linux/drivers/gpu/drm/i915/gem/i915_gem_context.c:2291:
+>   /builds/linux/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c: In function '__igt_ctx_sseu':
+>   /builds/linux/drivers/gpu/drm/i915/gem/selftests/i915_gem_context.c:1284:9: error: left shift of negative value [-Werror=shift-negative-value]
+>       ~(~0 << (hweight32(engine->sseu.subslice_mask) / 2));
+>            ^~
+>   cc1: all warnings being treated as errors
+>   make[5]: *** [/builds/linux/scripts/Makefile.build:289: drivers/gpu/drm/i915/gem/i915_gem_context.o] Error 1
+>   /builds/linux/drivers/gpu/drm/i915/i915_perf.c: In function 'get_default_sseu_config':
+>   /builds/linux/drivers/gpu/drm/i915/i915_perf.c:2817:9: error: left shift of negative value [-Werror=shift-negative-value]
+>       ~(~0 << (hweight8(out_sseu->subslice_mask) / 2));
+>            ^~
+>   cc1: all warnings being treated as errors
+>   make[5]: *** [/builds/linux/scripts/Makefile.build:289: drivers/gpu/drm/i915/i915_perf.o] Error 1
+> ----->8-----
+> 
+> Bisection points to:
+> 
+>   commit 09ebdc1b3dfacc275d5eec3f1dcf632f18bbf5a8
+>   Author: Arnd Bergmann <arnd@arndb.de>
+>   Date:   Tue Mar 8 22:56:14 2022 +0100
+> 
+>       Kbuild: move to -std=gnu11
+>       [ Upstream commit e8c07082a810fbb9db303a2b66b66b8d7e588b53 ]
+> 
+> 
+> For GCC-12 it's allmodconfig failing, for GCC-8 it's defconfig (i386_defconfig, x86_64_defconfig) just reporting new warnings.
+> 
+> Some reproducers:
+> 
+>   tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-8 --kconfig x86_64_defconfig
+> 
+>   tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-12 --kconfig allmodconfig
+> 
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: Maramaina Naresh <quic_mnaresh@quicinc.com>
----
- drivers/ufs/host/ufs-mediatek.c | 20 +++-----------------
- drivers/ufs/host/ufs-mediatek.h |  3 ---
- 2 files changed, 3 insertions(+), 20 deletions(-)
+Ok, let me go drop this change and fix up the original commit that
+required this language change to happen as we aren't quite ready for it
+yet...
 
-diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-index fc61790d289b..d8ece88103b9 100644
---- a/drivers/ufs/host/ufs-mediatek.c
-+++ b/drivers/ufs/host/ufs-mediatek.c
-@@ -17,7 +17,6 @@
- #include <linux/of_platform.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
--#include <linux/pm_qos.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- #include <linux/soc/mediatek/mtk_sip_svc.h>
-@@ -626,21 +625,9 @@ static void ufs_mtk_init_host_caps(struct ufs_hba *hba)
- 	dev_info(hba->dev, "caps: 0x%x", host->caps);
- }
- 
--static void ufs_mtk_boost_pm_qos(struct ufs_hba *hba, bool boost)
--{
--	struct ufs_mtk_host *host = ufshcd_get_variant(hba);
--
--	if (!host || !host->pm_qos_init)
--		return;
--
--	cpu_latency_qos_update_request(&host->pm_qos_req,
--				       boost ? 0 : PM_QOS_DEFAULT_VALUE);
--}
--
- static void ufs_mtk_scale_perf(struct ufs_hba *hba, bool scale_up)
- {
- 	ufs_mtk_boost_crypt(hba, scale_up);
--	ufs_mtk_boost_pm_qos(hba, scale_up);
- }
- 
- static void ufs_mtk_pwr_ctrl(struct ufs_hba *hba, bool on)
-@@ -937,6 +924,9 @@ static int ufs_mtk_init(struct ufs_hba *hba)
- 	/* Enable clk scaling*/
- 	hba->caps |= UFSHCD_CAP_CLK_SCALING;
- 
-+	/* Enable PM QoS */
-+	hba->caps |= UFSHCD_CAP_PM_QOS;
-+
- 	hba->quirks |= UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL;
- 	hba->quirks |= UFSHCD_QUIRK_MCQ_BROKEN_INTR;
- 	hba->quirks |= UFSHCD_QUIRK_MCQ_BROKEN_RTC;
-@@ -959,10 +949,6 @@ static int ufs_mtk_init(struct ufs_hba *hba)
- 
- 	host->ip_ver = ufshcd_readl(hba, REG_UFS_MTK_IP_VER);
- 
--	/* Initialize pm-qos request */
--	cpu_latency_qos_add_request(&host->pm_qos_req, PM_QOS_DEFAULT_VALUE);
--	host->pm_qos_init = true;
--
- 	goto out;
- 
- out_variant_clear:
-diff --git a/drivers/ufs/host/ufs-mediatek.h b/drivers/ufs/host/ufs-mediatek.h
-index f76e80d91729..38eab95b0f79 100644
---- a/drivers/ufs/host/ufs-mediatek.h
-+++ b/drivers/ufs/host/ufs-mediatek.h
-@@ -7,7 +7,6 @@
- #define _UFS_MEDIATEK_H
- 
- #include <linux/bitops.h>
--#include <linux/pm_qos.h>
- #include <linux/soc/mediatek/mtk_sip_svc.h>
- 
- /*
-@@ -167,7 +166,6 @@ struct ufs_mtk_mcq_intr_info {
- 
- struct ufs_mtk_host {
- 	struct phy *mphy;
--	struct pm_qos_request pm_qos_req;
- 	struct regulator *reg_va09;
- 	struct reset_control *hci_reset;
- 	struct reset_control *unipro_reset;
-@@ -178,7 +176,6 @@ struct ufs_mtk_host {
- 	struct ufs_mtk_hw_ver hw_ver;
- 	enum ufs_mtk_host_caps caps;
- 	bool mphy_powered_on;
--	bool pm_qos_init;
- 	bool unipro_lpm;
- 	bool ref_clk_enabled;
- 	u16 ref_clk_ungating_wait_us;
--- 
-2.17.1
+thanks,
 
+greg k-h
