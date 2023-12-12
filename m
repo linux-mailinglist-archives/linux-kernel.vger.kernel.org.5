@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8144A80F792
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D296E80F790
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377190AbjLLUJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:09:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
+        id S233102AbjLLUJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:09:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbjLLUJe (ORCPT
+        with ESMTP id S230181AbjLLUJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:09:34 -0500
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC53D2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:09:38 -0800 (PST)
-Received: from pop-os.home ([92.140.202.140])
-        by smtp.orange.fr with ESMTPA
-        id D94JrCWy533VXD94UrOSjX; Tue, 12 Dec 2023 21:09:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1702411778;
-        bh=aQv1R2UteayjqvKDNKiDv03fz9TZ0ZNa1LFJYmxEkvQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=D3EWyeHkIvr5Rxwxb54c75yc3CvncyLDgz++8kEZWr//jY9N/UAmbOvFVlLtLSFQR
-         AJMlbZbo8qdAPtZqMd3nwc+CDY5XEOrF6w/btHMHktfCwZbS6U6vIIW5crRiPSZVqM
-         NQQyj1SPnjbVoMQnZEyIRrHWNy+2Ch/d3Eli1lbsdYI4mvFZRJlqhaQnYEN2M+RiRw
-         WvwbbjadlRlILxPXcisn1DXDKvtf2WSCxsAcWljSPps0ya62BGuBQxhhojLAgn6mkx
-         cWsF74oAkGMK7opdhx8GuIX6EVxbj8d515FxHYKDb7tWxFXlXzK0aaSChqii0XPtRC
-         l6tTDRvQHUXcQ==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 12 Dec 2023 21:09:38 +0100
-X-ME-IP: 92.140.202.140
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     hare@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     hare@suse.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/2] scsi: myrb: Use sysfs_emit()
-Date:   Tue, 12 Dec 2023 21:09:11 +0100
-Message-Id: <d2b2a961ac595f509b09c3f88cd33cf659a8b562.1702411083.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1702411083.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1702411083.git.christophe.jaillet@wanadoo.fr>
+        Tue, 12 Dec 2023 15:09:33 -0500
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BBCCA;
+        Tue, 12 Dec 2023 12:09:38 -0800 (PST)
+Received: from newone.lan (unknown [10.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 727A516074E;
+        Tue, 12 Dec 2023 21:09:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1702411775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YR5tv31E3PULKwDD6cdd9ZvzFe890y7GDGcNtPGOHXs=;
+        b=XEHbhaUPUOqSI1feA5yJXFXHVAxPSMX6n3JA1rJVomrooXonUuUWcAucm+0woS4YlpcXvy
+        DXiehrUkg88bnRZsOL7fEoi8GWm/HTlAr0OsVj8d8j5jhUwZ2S00FBvvwol8VBJCKFcCho
+        lz/0OxthKSjJ4Cf4ZbbtdY2kwF3JR80=
+From:   David Heidelberg <david@ixit.cz>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Brian Masney <masneyb@onstation.org>
+Cc:     David Heidelberg <david@ixit.cz>, Rob Herring <robh@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: panel-simple-dsi: move LG 5" HD TFT LCD panel into DSI yaml
+Date:   Tue, 12 Dec 2023 21:09:17 +0100
+Message-ID: <20231212200934.99262-1-david@ixit.cz>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
+        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,121 +63,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid hard-coded limits in _show() function, use the preferred
-sysfs_emit() that knows better about it.
+Originally was in the panel-simple, but belongs to panel-simple-dsi.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+See arch/arm/boot/dts/nvidia/tegra114-roth.dts for more details.
+
+Resolves the following warning:
+```
+arch/arm/boot/dts/tegra114-roth.dt.yaml: panel@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+```
+
+Fixes: 310abcea76e9 ("dt-bindings: display: convert simple lg panels to DT Schema")
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- drivers/scsi/myrb.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+v2: added Fixes tag (thx to Jessica)
 
-diff --git a/drivers/scsi/myrb.c b/drivers/scsi/myrb.c
-index ca2380d2d6d3..06a5e6fb9f99 100644
---- a/drivers/scsi/myrb.c
-+++ b/drivers/scsi/myrb.c
-@@ -1767,7 +1767,7 @@ static ssize_t raid_state_show(struct device *dev,
- 	int ret;
- 
- 	if (!sdev->hostdata)
--		return snprintf(buf, 16, "Unknown\n");
-+		return sysfs_emit(buf, "Unknown\n");
- 
- 	if (sdev->channel == myrb_logical_channel(sdev->host)) {
- 		struct myrb_ldev_info *ldev_info = sdev->hostdata;
-@@ -1775,10 +1775,10 @@ static ssize_t raid_state_show(struct device *dev,
- 
- 		name = myrb_devstate_name(ldev_info->state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
--				       ldev_info->state);
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
-+					 ldev_info->state);
- 	} else {
- 		struct myrb_pdev_state *pdev_info = sdev->hostdata;
- 		unsigned short status;
-@@ -1796,10 +1796,10 @@ static ssize_t raid_state_show(struct device *dev,
- 		else
- 			name = myrb_devstate_name(pdev_info->state);
- 		if (name)
--			ret = snprintf(buf, 32, "%s\n", name);
-+			ret = sysfs_emit(buf, "%s\n", name);
- 		else
--			ret = snprintf(buf, 32, "Invalid (%02X)\n",
--				       pdev_info->state);
-+			ret = sysfs_emit(buf, "Invalid (%02X)\n",
-+					 pdev_info->state);
- 	}
- 	return ret;
- }
-@@ -1886,11 +1886,11 @@ static ssize_t raid_level_show(struct device *dev,
- 
- 		name = myrb_raidlevel_name(ldev_info->raid_level);
- 		if (!name)
--			return snprintf(buf, 32, "Invalid (%02X)\n",
--					ldev_info->state);
--		return snprintf(buf, 32, "%s\n", name);
-+			return sysfs_emit(buf, "Invalid (%02X)\n",
-+					  ldev_info->state);
-+		return sysfs_emit(buf, "%s\n", name);
- 	}
--	return snprintf(buf, 32, "Physical Drive\n");
-+	return sysfs_emit(buf, "Physical Drive\n");
- }
- static DEVICE_ATTR_RO(raid_level);
- 
-@@ -1903,17 +1903,17 @@ static ssize_t rebuild_show(struct device *dev,
- 	unsigned char status;
- 
- 	if (sdev->channel < myrb_logical_channel(sdev->host))
--		return snprintf(buf, 64, "physical device - not rebuilding\n");
-+		return sysfs_emit(buf, "physical device - not rebuilding\n");
- 
- 	status = myrb_get_rbld_progress(cb, &rbld_buf);
- 
- 	if (rbld_buf.ldev_num != sdev->id ||
- 	    status != MYRB_STATUS_SUCCESS)
--		return snprintf(buf, 64, "not rebuilding\n");
-+		return sysfs_emit(buf, "not rebuilding\n");
- 
--	return snprintf(buf, 64, "rebuilding block %u of %u\n",
--			rbld_buf.ldev_size - rbld_buf.blocks_left,
--			rbld_buf.ldev_size);
-+	return sysfs_emit(buf, "rebuilding block %u of %u\n",
-+			  rbld_buf.ldev_size - rbld_buf.blocks_left,
-+			  rbld_buf.ldev_size);
- }
- 
- static ssize_t rebuild_store(struct device *dev,
-@@ -2140,7 +2140,7 @@ static ssize_t ctlr_num_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 20, "%u\n", cb->ctlr_num);
-+	return sysfs_emit(buf, "%u\n", cb->ctlr_num);
- }
- static DEVICE_ATTR_RO(ctlr_num);
- 
-@@ -2150,7 +2150,7 @@ static ssize_t firmware_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 16, "%s\n", cb->fw_version);
-+	return sysfs_emit(buf, "%s\n", cb->fw_version);
- }
- static DEVICE_ATTR_RO(firmware);
- 
-@@ -2160,7 +2160,7 @@ static ssize_t model_show(struct device *dev,
- 	struct Scsi_Host *shost = class_to_shost(dev);
- 	struct myrb_hba *cb = shost_priv(shost);
- 
--	return snprintf(buf, 16, "%s\n", cb->model_name);
-+	return sysfs_emit(buf, "%s\n", cb->model_name);
- }
- static DEVICE_ATTR_RO(model);
- 
+ .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
+ .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+index 73674baea75d..f9160d7bac3c 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+@@ -42,6 +42,8 @@ properties:
+       - lg,acx467akm-7
+         # LG Corporation 7" WXGA TFT LCD panel
+       - lg,ld070wx3-sl01
++        # LG Corporation 5" HD TFT LCD panel
++      - lg,lh500wx1-sd03
+         # One Stop Displays OSD101T2587-53TS 10.1" 1920x1200 panel
+       - osddisplays,osd101t2587-53ts
+         # Panasonic 10" WUXGA TFT LCD panel
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index 2021aa82871a..634a10c6f2dd 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -212,8 +212,6 @@ properties:
+       - lemaker,bl035-rgb-002
+         # LG 7" (800x480 pixels) TFT LCD panel
+       - lg,lb070wv8
+-        # LG Corporation 5" HD TFT LCD panel
+-      - lg,lh500wx1-sd03
+         # LG LP079QX1-SP0V 7.9" (1536x2048 pixels) TFT LCD panel
+       - lg,lp079qx1-sp0v
+         # LG 9.7" (2048x1536 pixels) TFT LCD panel
 -- 
-2.34.1
+2.43.0
 
