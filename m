@@ -2,104 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C16B80F74D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A361780F754
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbjLLT6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S233125AbjLLT6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjLLT6D (ORCPT
+        with ESMTP id S231178AbjLLT6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:58:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B02A6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:58:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702411089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=vio5W2CXh8VIVVnye0VQz+L8cj+HSZDsPzluUFJanUo=;
-        b=fcgYBaeqslA3shJwUhFFBerekSGvpCwQ6tMtt3maXBTVAy+XvCGu8upRc3B0jQxu+CfRAH
-        jrk/kzQC5o9ufIk2Hc0YZAZ3UISdyva/4TKAML57KWTweyYMrueRZco1rgJc7CZHhttXvA
-        T2XXg1+0thaEgkPrunYptEn8tAFWPVU=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-9yEnUYiBPA-5aC5W5-1WEQ-1; Tue, 12 Dec 2023 14:58:06 -0500
-X-MC-Unique: 9yEnUYiBPA-5aC5W5-1WEQ-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5ce16bc121aso72108407b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:58:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702411085; x=1703015885;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vio5W2CXh8VIVVnye0VQz+L8cj+HSZDsPzluUFJanUo=;
-        b=ddqIeqHlN7l1rJwJqf2/FvhyhtDkM9p53jYv3rWaWriv5PLmCwc0w3xBmfeYce0h/v
-         XLFcwBRSe90lk7oCJ/I1kOhuTRd9sbqGED4wKE7EL5g7YwkrXf0dQL6JULXMvHZ57Iwi
-         FKWcMfiH4Qm8WKCm/7srbggtDC4urPRcjpORq/UvAihVvWlFmxSpONOL1Rz/nq89gvCT
-         k+51BsP97K1FkONaE4Wax8OKWX0OHC6pId9kA1ohaFv547y6T/ATL9VOVSoB8jOC2APa
-         wwyBAGuzjusRj2axUX2gjt033OADXvUjVhUmQUNRWB4bQef3WG2w9LE4RCW7lexMrCgP
-         2rDA==
-X-Gm-Message-State: AOJu0Yy39T134GcQFuHmJrqrk2bgobCO4m3P/YsEYJhoQRFzhIzFLgnx
-        QM1FAbGoMm84wmPpfau9uSHWYEolLzUeLkuHGEewbJyZNLGQenHMQ5zwKvLU0pSTx6++Z0mqWaP
-        iKUkxPsp1bNIAtX2otxZkoTTe
-X-Received: by 2002:a05:690c:3185:b0:5e1:e50b:ab5c with SMTP id fd5-20020a05690c318500b005e1e50bab5cmr1351519ywb.1.1702411085548;
-        Tue, 12 Dec 2023 11:58:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzll/KfEEeFGXHCYWsZvQiNpoKwD81UlefsjiQ4B9Q//3lL6+1EqEwS9Dic0uVUQCzigLnuQ==
-X-Received: by 2002:a05:690c:3185:b0:5e1:e50b:ab5c with SMTP id fd5-20020a05690c318500b005e1e50bab5cmr1351514ywb.1.1702411085342;
-        Tue, 12 Dec 2023 11:58:05 -0800 (PST)
-Received: from x1.redhat.com (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
-        by smtp.gmail.com with ESMTPSA id g184-20020a0dc4c1000000b005a7d46770f2sm3985306ywd.83.2023.12.12.11.58.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 11:58:04 -0800 (PST)
-From:   Brian Masney <bmasney@redhat.com>
-To:     hdegoede@redhat.com, deller@gmx.de
-Cc:     treding@nvidia.com, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fbdev/simplefb: change loglevel when the power domains cannot be parsed
-Date:   Tue, 12 Dec 2023 14:57:54 -0500
-Message-ID: <20231212195754.232303-1-bmasney@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        Tue, 12 Dec 2023 14:58:50 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AC68E;
+        Tue, 12 Dec 2023 11:58:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tzSIob+ZloljYLW+tLDyKC/69ft7pcQwsMOiIXpJIok=; b=vw1L6XLYMrjE3sFENIwANCt1v3
+        7cAzma3wPHfPcHoG9wwkMxGWUzWDApvWXx2iDNH1wm+zJnUto1Pm0srAC0ESTdJFqRhA5HgZkecv8
+        6ZxXy2SdOV32NspEw3waqQJesyFiNyElMKU1mfQ7hGyutNpt8Eu8Cl0dTo9npe2YUMHIcFLtUzR2U
+        r0CtlsCPasqY8qOEIs+t339Sv6zjT1PVHzSLP70GRefywlApYbHkmdsoRLcx9nXuUlWRQTuyIkVQH
+        vfIu2gbTC4MCO7Zmq8ZOWgZZVe6GhwFIl7d/pw5GgsMAFTOUidPZyLz8lj/YwebHDzhG7lGYuwBiP
+        2nXhXZXA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33796)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rD8u0-0007MS-0Z;
+        Tue, 12 Dec 2023 19:58:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rD8ty-0000ih-JG; Tue, 12 Dec 2023 19:58:46 +0000
+Date:   Tue, 12 Dec 2023 19:58:46 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH v3 00/39] ACPI/arm64: add support for virtual
+ cpuhotplug
+Message-ID: <ZXi7do4mVfdsz/k0@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
+ <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the power domains cannot be parsed, the message is incorrectly
-logged as an info message. Let's change this to an error since an error
-is returned.
+On Mon, Dec 04, 2023 at 06:23:02PM +0000, Russell King (Oracle) wrote:
+> On Tue, Oct 24, 2023 at 08:26:58PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Oct 24, 2023 at 5:15 PM Russell King (Oracle)
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I'm posting James' patch set updated with most of the review comments
+> > > from his RFC v2 series back in September. Individual patches have a
+> > > changelog attached at the bottom of the commit message. Those which
+> > > I have finished updating have my S-o-b on them, those which still have
+> > > outstanding review comments from RFC v2 do not. In some of these cases
+> > > I've asked questions and am waiting for responses.
+> > >
+> > > I'm posting this as RFC v3 because there's still some unaddressed
+> > > comments and it's clearly not ready for merging. Even if it was ready
+> > > to be merged, it is too late in this development cycle to be taking
+> > > this change in, so there would be little point posting it non-RFC.
+> > > Also James stated that he's waiting for confirmation from the
+> > > Kubernetes/Kata folk - I have no idea what the status is there.
+> > >
+> > > I will be sending each patch individually to a wider audience
+> > > appropriate for that patch - apologies to those missing out on this
+> > > cover message. I have added more mailing lists to the series with the
+> > > exception of the acpica list in a hope of this cover message also
+> > > reaching those folk.
+> > >
+> > > The changes that aren't included are:
+> > >
+> > > 1. Updates for my patch that was merged via Thomas (thanks!):
+> > >    c4dd854f740c cpu-hotplug: Provide prototypes for arch CPU registration
+> > >    rather than having this change spread through James' patches.
+> > >
+> > > 2. New patch - simplification of PA-RISC's smp_prepare_boot_cpu()
+> > >
+> > > 3. Moved "ACPI: Use the acpi_device_is_present() helper in more places"
+> > >    and "ACPI: Rename acpi_scan_device_not_present() to be about
+> > >    enumeration" to the beginning of the series - these two patches are
+> > >    already queued up for merging into 6.7.
+> > >
+> > > 4. Moved "arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into
+> > >    a helper" to the beginning of the series, which has been submitted,
+> > >    but as yet the fate of that posting isn't known.
+> > >
+> > > The first four patches in this series are provided for completness only.
+> > >
+> > > There is an additional patch in James' git tree that isn't in the set
+> > > of patches that James posted: "ACPI: processor: Only call
+> > > arch_unregister_cpu() if HOTPLUG_CPU is selected" which looks to me to
+> > > be a workaround for arch_unregister_cpu() being under the ifdef. I've
+> > > commented on this on the RFC v2 posting making a suggestion, but as yet
+> > > haven't had any response.
+> > >
+> > > I've included almost all of James' original covering body below the
+> > > diffstat.
+> > >
+> > > The reason that I'm doing this is to help move this code forward so
+> > > hopefully it can be merged - which is why I have been keen to dig out
+> > > from James' patches anything that can be merged and submit it
+> > > separately, since this is a feature for which some users have a
+> > > definite need for.
+> > 
+> > I've gone through the series and there is at least one thing in it
+> > that concerns me a lot and some others that at least appear to be
+> > really questionable.
+> > 
+> > I need more time to send comments which I'm not going to do before the
+> > 6.7 merge window (sorry), but from what I can say right now, this is
+> > not looking good.
+> 
+> Hi Rafael,
+> 
+> Will you be able to send your comments, so that we can find out what
+> your other concerns are please? I'm getting questions from interested
+> parties who want to know what your concerns are.
+> 
+> Nothing much has changed to the ACPI changes, so I think it's still
+> valid to have the comments back for this.
 
-Fixes: 92a511a568e4 ("fbdev/simplefb: Add support for generic power-domains")
-Signed-off-by: Brian Masney <bmasney@redhat.com>
----
- drivers/video/fbdev/simplefb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Rafael,
 
-diff --git a/drivers/video/fbdev/simplefb.c b/drivers/video/fbdev/simplefb.c
-index 6f58ee276ad1..028a56525047 100644
---- a/drivers/video/fbdev/simplefb.c
-+++ b/drivers/video/fbdev/simplefb.c
-@@ -470,7 +470,7 @@ static int simplefb_attach_genpds(struct simplefb_par *par,
- 		if (err == -ENOENT)
- 			return 0;
- 
--		dev_info(dev, "failed to parse power-domains: %d\n", err);
-+		dev_err(dev, "failed to parse power-domains: %d\n", err);
- 		return err;
- 	}
- 
+Another gentle prod on this...
+
 -- 
-2.43.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
