@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C6680F50A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7112280F510
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377040AbjLLR6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:58:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S1377042AbjLLR7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLR6Y (ORCPT
+        with ESMTP id S230181AbjLLR7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:58:24 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C715C83;
-        Tue, 12 Dec 2023 09:58:27 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702403865; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=F6p0FZSmO3EPxe8eSMnSkLkPotWa5bJdXUpGCYImizd58LE7U0JvtdvmRCryFYIzV72K3KO7k0CuwRli8yxwpLOdMtWv7qH+FpIsl4ani+mlow/fcetjbrh6lDvTW83hyz894rYbcBznxGKz6PHPdvUj46vG/wtKhH4LCcQKV6E=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1702403865; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=Aq+2S0RyfU4rvqFhfAFdSWPubgqSUgNh4Ar82DhKIVk=; 
-        b=CKyJsCwxNqONYDQxXd9wp/YqfPRZcLNIs6gShKZU9YsRVFi9kOAUuru3PRgLB+C4lWO4O5SL8GgZL01MU0VqyTJ3b7TSlJXHuk9K9UfzrlWhjcsVV8lA521NDK7NbLDzG6cDfs2OcPMFU8si/k7OC41PLror440JIbng62KLW7Q=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702403865;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=Aq+2S0RyfU4rvqFhfAFdSWPubgqSUgNh4Ar82DhKIVk=;
-        b=pQcV1sAqzD6UV6AYyTKWqQW8rJiVd3HygEozpcdTUbdOaeMjtzZ1HF6iVrqCMP/3
-        AhnNTV4kwrRGw27GbkKRhUjYVxp/rbltJFzhV0hFGMq+IjvK4TFIFljCVZuW3i21Jel
-        +BGHvIM/2JWY+yQbO6AK1FvDDMmn8GBPcra00ouQ=
-Received: from mail.zoho.in by mx.zoho.in
-        with SMTP id 1702403834003397.8584939259025; Tue, 12 Dec 2023 23:27:14 +0530 (IST)
-Date:   Tue, 12 Dec 2023 23:27:13 +0530
-From:   Siddh Raman Pant <code@siddh.me>
-To:     "Paolo Abeni" <pabeni@redhat.com>
-Cc:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Suman Ghosh" <sumang@marvell.com>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "syzbot+bbe84a4010eeea00982d" 
-        <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-Message-ID: <18c5f2d0084.7d5adcbf247555.1144954964908922966@siddh.me>
-In-Reply-To: <94d394d2833754a0a3f7d2cb8c595f44a2b23e43.camel@redhat.com>
-References: <cover.1702118242.git.code@siddh.me>
-         <4233248c0ca219693c6e6476aa6e59c799241ac8.1702118242.git.code@siddh.me> <94d394d2833754a0a3f7d2cb8c595f44a2b23e43.camel@redhat.com>
-Subject: Re: [PATCH net-next v4 1/2] nfc: llcp_core: Hold a ref to
- llcp_local->dev when holding a ref to llcp_local
+        Tue, 12 Dec 2023 12:59:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1642C94
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:59:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73489C433C7;
+        Tue, 12 Dec 2023 17:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702403980;
+        bh=tz+1sOWttKcl3a8KlUuaREBKUL4WYsTUmoJCIWI8J2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=om/wqvN1PT76jVx/CfKav0nLkaf4CK4kqAC9r5+o/YFTFqzJLHV9AFhmuzmz4coDn
+         fWzG57/kj9GpAm+RcsJS48A/3bH+zV98QatK9AWvebFMDP44ueRKvJkj4zBo87pv7B
+         fFrEaCF70kW33lgPk7dL0BxUfuaG7uAvH/PK3mXtiUrg55cUSjJw2r6nV1ZHyyJ7kL
+         zeLYMo0lW/ZaUtXclPRnko4YHMrqeIMR/n83FFlKHKDTycU9LDKXmnDSeXz+AcXTT0
+         Zelv8DCmuwKtE2ScA3Ogd/zM/KTKdvJ2jXprmgB2wLgTJ83ABdtQ7TNhrrvgqJ/l+I
+         vnPkYllRSx33Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 945A9403EF; Tue, 12 Dec 2023 14:59:37 -0300 (-03)
+Date:   Tue, 12 Dec 2023 14:59:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v1 00/14] Clean up libperf cpumap's empty function
+Message-ID: <ZXifiVytVbebYE3U@kernel.org>
+References: <20231129060211.1890454-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129060211.1890454-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 18:31:57 +0530, Paolo Abeni wrote:
-> On Sat, 2023-12-09 at 16:34 +0530, Siddh Raman Pant wrote:
-> >  static struct nfc_llcp_sock *nfc_llcp_sock_get(struct nfc_llcp_local *local,
-> > @@ -930,9 +945,7 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
-> >  
-> >  	if (sk_acceptq_is_full(parent)) {
-> >  		reason = LLCP_DM_REJ;
+Em Tue, Nov 28, 2023 at 10:01:57PM -0800, Ian Rogers escreveu:
+> Rename and clean up the use of libperf CPU map functions particularly
+> focussing on perf_cpu_map__empty that may return true for maps
+> containing CPUs but also with an "any CPU"/dummy value.
 > 
-> 'reason' is set to 'LLCP_DM_REJ' every time you jump to the
-> 'fail_put_sock' or 'fail_free_new_sock' labels, you can as well move
-> the assignment after 'fail_put_sock:'
+> perf_cpu_map__nr is also troubling in that iterating an empty CPU map
+> will yield the "any CPU"/dummy value. Reduce the appearance of some
+> calls to this by using the perf_cpu_map__for_each_cpu macro.
+> 
+> Ian Rogers (14):
+>   libperf cpumap: Rename perf_cpu_map__dummy_new
+>   libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
+>   libperf cpumap: Rename perf_cpu_map__empty
+>   libperf cpumap: Replace usage of perf_cpu_map__new(NULL)
+>   libperf cpumap: Add for_each_cpu that skips the "any CPU" case
 
-Sure, I'll send a patch with that.
+Applied 1-6, with James Reviewed-by tags, would be good to have Adrian
+check the PT and BTS parts, testing the end result if he things its all
+ok.
 
-Thanks,
-Siddh
+- Arnaldo
