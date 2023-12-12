@@ -2,219 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 209C480F2E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B4780F2D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233034AbjLLQfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
+        id S232658AbjLLQef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjLLQfW (ORCPT
+        with ESMTP id S229963AbjLLQee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:35:22 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB679126;
-        Tue, 12 Dec 2023 08:35:25 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 37411240003;
-        Tue, 12 Dec 2023 16:35:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702398923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RfVo3Eb7PyOCWr+dqACdc0CSxpF97Mq3VObJyFRYc7s=;
-        b=oVsQxEp3T+Zmt1QxKnN54GJTwaDPmchb7PGyqaL5Mw87GggaCbd4gPS73bm4izyFpyBmt0
-        I1S5zhihB6tk0ldov0K5Xjsu48Zq2WYahHag4Y63jvYb1R8buxjc69mjSl3rU5Cu6VgtWN
-        hB81I4oeNxlHocnpJBVDzChpySUwMeiqvM+QayRV/dXYB/WUt5/i4x7B0hkp15SqDKtHHj
-        ocoG6WCeAH/5xxiea5AhyTcy1wHa2L8CsXqeg5f/i9+uVrb8nUdXVi6rsOfaIM8eVlGi0l
-        zbG9fRNJ5TaJol9ckls+Eej3DAkqO50OxVOq9yPqCFdZeyw9brHQxmncTmBVaA==
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tue, 12 Dec 2023 11:34:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F273B0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:34:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D525C433C7;
+        Tue, 12 Dec 2023 16:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702398880;
+        bh=g2a56e62f1QR0Jl7KNZYJTND0ori66RuqZzkYc6oMlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gFmCRVTwPW/8FgmP7cYdIf0PGDjGM/re2ld590en2DBn4UYcNh9iw+22jKNVRcor5
+         Gi3+cL050zhrp1mi8HCTQInUcrUxLfAyzfpZRv415+TskrRtNde+gl/hcLQcg+HPdi
+         XP+nb8XkQXpBYFuOnOL0W/cXWAcZeGwXXDRhoN0X9OobPo5KfgNJg24e3Zel/bEQtl
+         qiUR6tove+QGmVFyNZnD3BSzZLZH+ZiP1fCI/WdDxhRWb/HkJtcexsuQoiYORedSF9
+         eYJOOcmkr4+ZecZpvzJj0VFuDb2JMN+JfeNak80+B9zCnQq0keO2FmJoqeq/pERblV
+         MRhzIu+jZaxZw==
+Date:   Tue, 12 Dec 2023 16:34:32 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v5 00/22] Add support for the Mobileye EyeQ5 SoC
-Date:   Tue, 12 Dec 2023 17:34:32 +0100
-Message-ID: <20231212163459.1923041-1-gregory.clement@bootlin.com>
-X-Mailer: git-send-email 2.42.0
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH net-next v3 7/8] dt-bindings: net: mediatek,net: fix
+ and complete mt7988-eth binding
+Message-ID: <20231212-unlinked-audio-94132ec03663@spud>
+References: <cover.1702352117.git.daniel@makrotopia.org>
+ <ac6a7277fc534f610386bc51b2ff87beade03be8.1702352117.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: gregory.clement@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8FGijifStTHJdg+0"
+Content-Disposition: inline
+In-Reply-To: <ac6a7277fc534f610386bc51b2ff87beade03be8.1702352117.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
-and features multiple controllers such as the classic UART, I2C, SPI,
-as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
-Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
-Security Module, Functional Safety Hardware, and MJPEG encoder.
+--8FGijifStTHJdg+0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-One peculiarity of this SoC is that the physical address of the DDDR
-exceeds 32 bits. Given that the architecture is 64 bits, this is not
-an issue, but it requires some changes in how the mips64 is currently
-managed during boot.
+On Tue, Dec 12, 2023 at 03:51:01AM +0000, Daniel Golle wrote:
+> Complete support for MT7988 which comes with 3 MACs, SRAM for DMA
+> descriptors and uses a dedicated PCS for the SerDes units.
 
-In this fifth version, there aren't many changes, mostly just tweaking
-commit messages based on Sergey's feedback and fixing up the code
-style. But, the real reason for this series is a bit of a whoopsie on
-my end. It turns out, despite what I confidently claimed in the last
-round, some configuration tweaks were missing. All sorted now, though!
+The commit message here seems a bit incomplete, mostly a lack of an
+explanation for why the model was initially incorrect.
 
-To build and test the kernel, we need to run the following commands:
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-make 64r6el_defconfig BOARDS=eyeq5
-make vmlinuz.itb
+Cheers,
+Conor.
 
-Changelog:
+>=20
+> Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth bind=
+ing")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../devicetree/bindings/net/mediatek,net.yaml | 148 +++++++++++++++++-
+>  1 file changed, 146 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Do=
+cumentation/devicetree/bindings/net/mediatek,net.yaml
+> index 030d106bc7d3f..ca0667c51c1c2 100644
+> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> @@ -28,7 +28,10 @@ properties:
+>        - ralink,rt5350-eth
+> =20
+>    reg:
+> -    maxItems: 1
+> +    minItems: 1
+> +    items:
+> +      - description: Base of registers used to program the ethernet cont=
+roller
+> +      - description: SRAM region used for DMA descriptors
+> =20
+>    clocks: true
+>    clock-names: true
+> @@ -115,6 +118,9 @@ allOf:
+>                - mediatek,mt7623-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+> =20
+> @@ -149,6 +155,9 @@ allOf:
+>                - mediatek,mt7621-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 1
+> =20
+> @@ -174,6 +183,9 @@ allOf:
+>              const: mediatek,mt7622-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+> =20
+> @@ -215,6 +227,9 @@ allOf:
+>              const: mediatek,mt7629-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            maxItems: 3
+> =20
+> @@ -257,6 +272,9 @@ allOf:
+>              const: mediatek,mt7981-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            minItems: 4
+> =20
+> @@ -295,6 +313,9 @@ allOf:
+>              const: mediatek,mt7986-eth
+>      then:
+>        properties:
+> +        reg:
+> +          maxItems: 1
+> +
+>          interrupts:
+>            minItems: 4
+> =20
+> @@ -333,8 +354,12 @@ allOf:
+>              const: mediatek,mt7988-eth
+>      then:
+>        properties:
+> +        reg:
+> +          minItems: 2
+> +
+>          interrupts:
+>            minItems: 4
+> +          maxItems: 4
+> =20
+>          clocks:
+>            minItems: 24
+> @@ -368,7 +393,7 @@ allOf:
+>              - const: top_netsys_warp_sel
+> =20
+>  patternProperties:
+> -  "^mac@[0-1]$":
+> +  "^mac@[0-2]$":
+>      type: object
+>      unevaluatedProperties: false
+>      allOf:
+> @@ -382,6 +407,9 @@ patternProperties:
+>        reg:
+>          maxItems: 1
+> =20
+> +      phys:
+> +        maxItems: 1
+> +
+>      required:
+>        - reg
+>        - compatible
+> @@ -559,3 +587,118 @@ examples:
+>          };
+>        };
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> +
+> +    soc {
+> +      #address-cells =3D <2>;
+> +      #size-cells =3D <2>;
+> +
+> +      ethernet@15100000 {
+> +        compatible =3D "mediatek,mt7988-eth";
+> +        reg =3D <0 0x15100000 0 0x80000>, <0 0x15400000 0 0x380000>;
+> +        interrupts =3D <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        clocks =3D <&ethsys CLK_ETHDMA_XGP1_EN>,
+> +                 <&ethsys CLK_ETHDMA_XGP2_EN>,
+> +                 <&ethsys CLK_ETHDMA_XGP3_EN>,
+> +                 <&ethsys CLK_ETHDMA_FE_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP2_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP1_EN>,
+> +                 <&ethsys CLK_ETHDMA_GP3_EN>,
+> +                 <&ethsys CLK_ETHDMA_ESW_EN>,
+> +                 <&ethsys CLK_ETHDMA_CRYPT0_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU2_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU1_EN>,
+> +                 <&ethwarp CLK_ETHWARP_WOCPU0_EN>,
+> +                 <&topckgen CLK_TOP_ETH_GMII_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_REFCK_50M_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_SYS_200M_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_SYS_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_XGMII_SEL>,
+> +                 <&topckgen CLK_TOP_ETH_MII_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_500M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_PAO_2X_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_SYNC_250M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_PPEFB_250M_SEL>,
+> +                 <&topckgen CLK_TOP_NETSYS_WARP_SEL>;
+> +
+> +        clock-names =3D "xgp1", "xgp2", "xgp3", "fe", "gp2", "gp1",
+> +                      "gp3", "esw", "crypto",
+> +                      "ethwarp_wocpu2", "ethwarp_wocpu1",
+> +                      "ethwarp_wocpu0", "top_eth_gmii_sel",
+> +                      "top_eth_refck_50m_sel", "top_eth_sys_200m_sel",
+> +                      "top_eth_sys_sel", "top_eth_xgmii_sel",
+> +                      "top_eth_mii_sel", "top_netsys_sel",
+> +                      "top_netsys_500m_sel", "top_netsys_pao_2x_sel",
+> +                      "top_netsys_sync_250m_sel",
+> +                      "top_netsys_ppefb_250m_sel",
+> +                      "top_netsys_warp_sel";
+> +        assigned-clocks =3D <&topckgen CLK_TOP_NETSYS_2X_SEL>,
+> +                          <&topckgen CLK_TOP_NETSYS_GSW_SEL>,
+> +                          <&topckgen CLK_TOP_USXGMII_SBUS_0_SEL>,
+> +                          <&topckgen CLK_TOP_USXGMII_SBUS_1_SEL>,
+> +                          <&topckgen CLK_TOP_SGM_0_SEL>,
+> +                          <&topckgen CLK_TOP_SGM_1_SEL>;
+> +        assigned-clock-parents =3D <&apmixedsys CLK_APMIXED_NET2PLL>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D4>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>,
+> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>;
+> +        mediatek,ethsys =3D <&ethsys>;
+> +        mediatek,infracfg =3D <&topmisc>;
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        mac@0 {
+> +          compatible =3D "mediatek,eth-mac";
+> +          reg =3D <0>;
+> +          phy-mode =3D "internal"; /* CPU port of built-in 1GE switch */
+> +
+> +          fixed-link {
+> +            speed =3D <10000>;
+> +            full-duplex;
+> +            pause;
+> +          };
+> +        };
+> +
+> +        mac@1 {
+> +          compatible =3D "mediatek,eth-mac";
+> +          reg =3D <1>;
+> +          phy-handle =3D <&int_2p5g_phy>;
+> +        };
+> +
+> +        mac@2 {
+> +          compatible =3D "mediatek,eth-mac";
+> +          reg =3D <2>;
+> +          pcs-handle =3D <&usxgmiisys0>, <&sgmii0>;
+> +          phys =3D <&pextp0>;
+> +        };
+> +
+> +        mdio_bus: mdio-bus {
+> +          #address-cells =3D <1>;
+> +          #size-cells =3D <0>;
+> +
+> +          /* external PHY */
+> +          phy0: ethernet-phy@0 {
+> +            reg =3D <0>;
+> +            compatible =3D "ethernet-phy-ieee802.3-c45";
+> +          };
+> +
+> +          /* internal 2.5G PHY */
+> +          int_2p5g_phy: ethernet-phy@15 {
+> +            reg =3D <15>;
+> +            compatible =3D "ethernet-phy-ieee802.3-c45";
+> +            phy-mode =3D "internal";
+> +          };
+> +        };
+> +      };
+> +    };
+> --=20
+> 2.43.0
 
- v4 -> v5:
+--8FGijifStTHJdg+0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-   - Improve commit messages for patch 3, 5, 12 and 13.
+-----BEGIN PGP SIGNATURE-----
 
-   - Fix style in patch 9
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXiLmAAKCRB4tDGHoIJi
+0gKhAP0cowuWKOEDUrNq/7GVx1mPlrZE+DmnToliFSL5YQENwQEAmjtvITQ66Vld
++gvLnpUy+BZwmvAFqpcz9Ugxp9jGVQ8=
+=M8e+
+-----END PGP SIGNATURE-----
 
-   - Really enable SPARSMEM and use correct address in
-     board-eyeq5.config in patch 21
-
- v3 -> v4:
-
- - Fix build warning in "MIPS: Get rid of CONFIG_NO_EXCEPT_FILL":
-   check that we are in 64bit mode before using KSEG0 that exist only
-   in this mode.
-
- - Modify "MIPS: spaces: Define a couple of handy macros" to be
-   buildable in 32bit mode.
-
- - Use correct format specifier to print address in "MIPS: traps: Give
-   more explanations if ebase doesn't belong to KSEG0"
-
- - In "MIPS: generic: Add support for Mobileye EyeQ5",remove
-   CONFIG_ZBOOT_LOAD_ADDRESS from board-eyeq5.config, (as well as
-   CONFIG_USE_XKPHYS that does not exist anymore) and add
-   CONFIG_SPARSEMEM_MANUAL to enable SPARSMEM.
-
-v2 -> v3
-
- - Added more reviewed-by and acked-by tags
-
- - Fix sorting for cpus entries in
-
- - Fix indentation issue in Documentation/devicetree/bindings/mips/mobileye.yaml
-
- v1 -> v2
-
- - Added reviewed-by and acked-by tags
-
- - Fix typos reported
-
- - In patch 15 use 'img' vendor string instead of mti
-
- - In patch 16 modify licence
-
- - In patch 17 give more explanations about the block usage.
-
- - In patch 18, remove _ in node names, don't use anymore
-   CONFIG_BUILTIN_DTB in Makefile, remove macro, modify licence.
-
- - In patch 19 remove most of the bootargs and only keeps earlycon. I
-   also split the memory in 2 part in the device tree.
-
- - Integrate the series from Jiaxun Yang
-   https://lore.kernel.org/linux-mips/20231027221106.405666-1-jiaxun.yang@flygoat.com/
-
-  They are patches 2 to 6 and 8 to 12
-
-  Then I added patch 7 to fix the cache issue visible on the Mobileye
-  platform, I also add patch 13 to improve warning message when ebase
-  doesn't belong to KSEG0
-
-Regards,
-
-Gregory
-
-Gregory CLEMENT (13):
-  MIPS: compressed: Use correct instruction for 64 bit code
-  MIPS: spaces: Define a couple of handy macros
-  MIPS: Fix cache issue with mips_cps_core_entry
-  MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
-  dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
-  dt-bindings: mips: cpus: Sort the entries
-  dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
-  dt-bindings: mips: Add bindings for Mobileye SoCs
-  dt-bindings: mfd: syscon: Document EyeQ5 OLB
-  MIPS: mobileye: Add EyeQ5 dtsi
-  MIPS: mobileye: Add EPM5 device tree
-  MIPS: generic: Add support for Mobileye EyeQ5
-  MAINTAINERS: Add entry for Mobileye MIPS SoCs
-
-Jiaxun Yang (9):
-  MIPS: Export higher/highest relocation functions in uasm
-  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
-  MIPS: Fix set_uncached_handler for ebase in XKPHYS
-  MIPS: Refactor mips_cps_core_entry implementation
-  MIPS: Allow kernel base to be set from Kconfig for all platforms
-  MIPS: traps: Handle CPU with non standard vint offset
-  MIPS: Avoid unnecessary reservation of exception space
-  MIPS: traps: Enhance memblock ebase allocation process
-  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-
- .../devicetree/bindings/mfd/syscon.yaml       |   1 +
- .../devicetree/bindings/mips/cpus.yaml        |  13 +-
- .../devicetree/bindings/mips/mobileye.yaml    |  32 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- MAINTAINERS                                   |  12 +
- arch/mips/Kconfig                             |  26 +-
- arch/mips/boot/compressed/head.S              |   4 +-
- arch/mips/boot/dts/Makefile                   |   1 +
- arch/mips/boot/dts/mobileye/Makefile          |   4 +
- arch/mips/boot/dts/mobileye/eyeq5-epm5.dts    |  24 ++
- .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
- arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 134 ++++++++
- arch/mips/configs/generic/board-eyeq5.config  |  42 +++
- arch/mips/generic/Kconfig                     |  15 +
- arch/mips/generic/Platform                    |   2 +
- arch/mips/generic/board-epm5.its.S            |  24 ++
- arch/mips/include/asm/addrspace.h             |   5 +
- arch/mips/include/asm/mach-generic/spaces.h   |   2 +
- arch/mips/include/asm/mips-cm.h               |   1 +
- arch/mips/include/asm/smp-cps.h               |   4 +-
- arch/mips/include/asm/traps.h                 |   1 -
- arch/mips/include/asm/uasm.h                  |   2 +
- arch/mips/kernel/cps-vec.S                    | 110 +++----
- arch/mips/kernel/cpu-probe.c                  |   5 -
- arch/mips/kernel/cpu-r3k-probe.c              |   2 -
- arch/mips/kernel/genex.S                      |  19 +-
- arch/mips/kernel/head.S                       |   7 +-
- arch/mips/kernel/smp-cps.c                    | 171 ++++++++--
- arch/mips/kernel/traps.c                      |  90 ++++--
- arch/mips/mm/uasm.c                           |   6 +-
- 30 files changed, 894 insertions(+), 159 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
- create mode 100644 arch/mips/boot/dts/mobileye/Makefile
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
- create mode 100644 arch/mips/configs/generic/board-eyeq5.config
- create mode 100644 arch/mips/generic/board-epm5.its.S
-
--- 
-2.42.0
-
+--8FGijifStTHJdg+0--
