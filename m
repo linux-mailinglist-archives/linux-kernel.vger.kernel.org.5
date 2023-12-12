@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E2980E5FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4919A80E5F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346312AbjLLIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S1346170AbjLLIX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:23:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346058AbjLLIWD (ORCPT
+        with ESMTP id S1346059AbjLLIWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 03:22:03 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB09F7
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBF1FD
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EE9BDC32776;
-        Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 02861C4AF75;
+        Tue, 12 Dec 2023 08:22:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702369326;
-        bh=XRF+V2sXxESLFZ4PXmdnkTRjQnltJI55wSg9W1jq2SY=;
+        bh=54Nt44uzjzCFnj+OxusuOrTsRFxaxwM69uLh7J3UaoM=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=Z2FC4CYaw3T2lcN2nesmk92c0sqmUCDXPzkmQAWaScztYgLbasNG5ve5Y5Y4k9UTX
-         LccdLpF/YApYQGntNfeA8tOhevAGIDEqjbnf73tDPS4KHX4yY7+sZwy+1bowwgutt9
-         SPg7VdSJKMPTQTKRxBjqgZhX1tQY9pK3M/yUOV/5eS8zqWIGRhqkyw1buyeDlzmM7W
-         27xRizsVakPMfp0lNCKWCFX+rVqowF3+JA5eSBz2LugBMuvWk28UjNRmshiOXIUV+5
-         eOAGUTVa4NKlCbUHk+kW1aODmmHnujn0wTepSP32dVkPj2svA+4xZqaxGRIKPBVtaL
-         2Hch/Y6wDfdOA==
+        b=lm4XxIUHRha3rFudofWPR0QIj2udZ2bJwR80PjpMgD6njNeQUzvfUrDAbHMzDB1SQ
+         ZTDVJoHPtDVwZhzeVC9S7+wTm9ls/ub1m1WCK5LFMby4J64m9N4FgCfthzVnoJLMj1
+         0l5uJf/sIzehw7hyKyLROOYpJA1FdV3DbkLimcYeTeG31BWFTdqeVziq+kUm/iwTZR
+         mp39/hrRuqUklVuEMqXqDBsp4J4khM8/CcOGKOG0e66X9CeRn7K7vfsXrJEyNNPDW1
+         vN1gQmUFWc+cI/A3hXcO9zTsnfxUAXSfBn2pbYIdFy7i/Pqv4jJN8/uD5TpOYVwdq5
+         M5tOn4F0PLemA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id DC5FBC3A59D;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id E7295C3A59F;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Tue, 12 Dec 2023 11:20:45 +0300
-Subject: [PATCH v6 28/40] ASoC: dt-bindings: ep93xx: Document DMA support
+Date:   Tue, 12 Dec 2023 11:20:46 +0300
+Subject: [PATCH v6 29/40] ASoC: dt-bindings: ep93xx: Document Audio Port
+ support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-ep93xx-v6-28-c307b8ac9aa8@maquefel.me>
+Message-Id: <20231212-ep93xx-v6-29-c307b8ac9aa8@maquefel.me>
 References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 To:     Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -52,11 +53,11 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-sound@vger.kernel.org,
         Arnd Bergmann <arnd@arndb.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=1224;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=848;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=wr/vd6cvCnFly70ysS4iWWMOpIK2XGwrRTm9djXX73Y=; =?utf-8?q?b=3DUXHhCSelOwcc?=
- =?utf-8?q?CW9guUbIarmLLdee05zBLhIk7BK1GQqsUa7lJ9Uz0Ul87VBcnsQUcySI0LyRUCHy?=
- dF3+8IZ0DOGfEsEqWSlloNsJZ/hs6I0Igl7H/0OXRqmh9kVkSxpV
+ bh=0LgX6xJfVzU1kIBxobRUjsHWxEbHLzVzD6pHlBy8Ioo=; =?utf-8?q?b=3D0WX119n4EGO3?=
+ =?utf-8?q?9SVY1MsUIVNKW64qTmEzzpV83iQDTkxhHTSnifmZm7xsVPcvJ5UQj4DYvdtEg0MI?=
+ 6I1cEjQoAx2twgJCS1jp3k2CZjswDEQObAfPh7s/ecej2rdKNxpS
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -74,45 +75,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Document DMA support in binding document.
+Document Audio Graph Port support in binding document.
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- .../devicetree/bindings/sound/cirrus,ep9301-i2s.yaml         | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml b/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
-index 453d493c941f..36a320ddf534 100644
+index 36a320ddf534..4693e85aed37 100644
 --- a/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
 +++ b/Documentation/devicetree/bindings/sound/cirrus,ep9301-i2s.yaml
-@@ -40,6 +40,16 @@ properties:
-       - const: sclk
-       - const: lrclk
+@@ -50,6 +50,10 @@ properties:
+       - const: tx
+       - const: rx
  
-+  dmas:
-+    items:
-+      - description: out DMA channel
-+      - description: in DMA channel
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
++  port:
++    $ref: audio-graph-port.yaml#
++    unevaluatedProperties: false
 +
  required:
    - compatible
    - '#sound-dai-cells'
-@@ -61,6 +71,8 @@ examples:
-                  <&syscon 30>,
-                  <&syscon 31>;
-         clock-names = "mclk", "sclk", "lrclk";
-+        dmas = <&dma0 0 1>, <&dma0 0 2>;
-+        dma-names = "tx", "rx";
-     };
- 
- ...
 
 -- 
 2.41.0
