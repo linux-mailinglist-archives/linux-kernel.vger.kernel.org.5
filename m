@@ -2,125 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A3680E581
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF8E80E586
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346054AbjLLIId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:08:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1345957AbjLLIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbjLLIIY (ORCPT
+        with ESMTP id S235059AbjLLIIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:08:24 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B212ACE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:28 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3333074512bso3366400f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:28 -0800 (PST)
+        Tue, 12 Dec 2023 03:08:54 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B71EB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:09:00 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c39e936b4so30776055e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702368507; x=1702973307; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cZhyn0SzD0LcNzzKrk+BOSL06IGkQV09rjNYI+C4fE8=;
-        b=cjQ0rCFnJc0NqcPXJgwVOctlVsrUCNurASfPbfGhfyGmqZIUDOWScYn8HrYWNSiDAo
-         oTMuDPfqxMwzbZ/PiW3hzWsOeuELlBr6JiGoNTvgIP9d87JZlzZ3UpFpF1QIuctlS1RO
-         C/L2AdNM3beVbq01fRB1Hti3PNECQ8mMyAOHTwYPs6t5v4w5PiM65LH/PUqQPgCAMXPy
-         EcpaoFqSq/CMZvhXy9rN+Q4rGc8VbQNngKjjAubCNUQEqDS5IIdTMpo070kRNu4zczEB
-         fjTQYyDGePWKoZGapRjiMUCLUD6SGpESQa8p7jQovGe/sFc3lCsWVX8x9y3ZDc2j6xOk
-         6BFw==
+        d=citrix.com; s=google; t=1702368538; x=1702973338; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZ9ea9ok6ZP/daUsmJ5Nh5VRT1Vhh0QOAkcU3YgmvrE=;
+        b=FtT1NeLIlgYig+jqCcb4c0GjeuBJQU0XdUUsgHK7SGUmoY/fzr6Y/qUfPhLbn/lJY9
+         3eEWFlS4EmyNMBpm2zGPal1sX0b5LVDFTwjzEEATxYCucL9vW4lH54I/FL4WJJV9423C
+         +HHlBgSM18/lJZ0XKsV07jUcKMUdIESxVfdQ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702368507; x=1702973307;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cZhyn0SzD0LcNzzKrk+BOSL06IGkQV09rjNYI+C4fE8=;
-        b=JssQyNqGVOtUgwQMTpA4Xcwv5UyFw91Y7+rO82Qf4/OzxIchtKBTcyzTM0AnlgC3Jr
-         lxMFMcEq1DuEnNoHMUtIy24e69UgVdVd4A2sEpy3IsPliJQqT2OHY0c1tBQ3w/asVJ7l
-         B4k2ODk5R/0DRjTzmcvHbPCDgsDUeNdW7Ztv0etVbx9QxzsoqDutGq2kAOEQ7+1ZUgkB
-         N5mpnA3d1eTtLULRnBI1ZxJKuob8cfJoMV97yIPudYJfe9VgQSRem5XwV27Gbwoe+oVN
-         h+adcrCH3V6ZoYhTXYSZ0JqIWMvZN+I8OokjNgSxtTOqrgEkuA5u9zlSZ9Jaryl9cSXN
-         T1BA==
-X-Gm-Message-State: AOJu0YyXfKgSnvkmW16ryeTn2Eq8+CGXYGFfiwmu6YI5x5HGE5rrYaFJ
-        +JZ29JQUj0QXuGpl73fn7yp6PA==
-X-Google-Smtp-Source: AGHT+IGz12J2/2+iCyl2jRF/v/VIA+qJML+76a5pagXs43wcMh0WbIU9hT456iIyx3bddFwB0UyUxQ==
-X-Received: by 2002:a05:600c:22ce:b0:40b:5e4a:235e with SMTP id 14-20020a05600c22ce00b0040b5e4a235emr2833546wmg.96.1702368506789;
-        Tue, 12 Dec 2023 00:08:26 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id n10-20020a05600c500a00b004094e565e71sm15609355wmr.23.2023.12.12.00.08.25
+        d=1e100.net; s=20230601; t=1702368538; x=1702973338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZZ9ea9ok6ZP/daUsmJ5Nh5VRT1Vhh0QOAkcU3YgmvrE=;
+        b=aLY9lM9hcpjozu9LY76ZD/SQDc50oAFdWDrGgCyv8/SXNa2srTGSDmUROC/afbtqxl
+         wtnVZXDNO7rX56b3WP3Hk6xrkqvkiOGt4Bsc1AU1Dt2JamkYCPVUB5aRywbMKWRQATni
+         WWv9krvOyNh4YoPnlU7GmBSC1BycmUMLwwL3vnBnvRoVZ0tksvD9UKEjTNr+1e5wNGT1
+         0qVNDpkGtQliCf2DlqJ2wMQxd3L/kI2225hPQE6+aoj4iwh82pqQZbfmSnnKtf7YVuv6
+         Ev7/9Dw6y7HAwGeWO+ZajacfKglo0L21XfFghiTD6DF3itEZ+BNJWG8q2D/CpAkLgW2D
+         3EeA==
+X-Gm-Message-State: AOJu0Yx0R8vjKCvtrq7eO3n6WfV5ljGWHy2H9RcdglqZjYSwgFifA8wg
+        W7/LWCSSxYRzxdbD62swGRzFzg==
+X-Google-Smtp-Source: AGHT+IFiLEbU7MXeHb/3JUtaP7dLoEfB9T02V0TbySRKV6sYpsT8WjQ7hIYcImSy3eOwCQDp6dIJng==
+X-Received: by 2002:a05:600c:28e:b0:40c:53d4:391 with SMTP id 14-20020a05600c028e00b0040c53d40391mr34795wmk.24.1702368538240;
+        Tue, 12 Dec 2023 00:08:58 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c500a00b004094e565e71sm15611143wmr.23.2023.12.12.00.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 00:08:26 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Tue, 12 Dec 2023 09:08:20 +0100
-Subject: [PATCH 2/2] ASoC: qcom: sc8280xp: Add support for SM8650
+        Tue, 12 Dec 2023 00:08:58 -0800 (PST)
+Date:   Tue, 12 Dec 2023 09:08:57 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Jiqian Chen <Jiqian.Chen@amd.com>
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <xenia.ragiadakou@amd.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v3 1/3] xen/pci: Add xen_reset_device_state
+ function
+Message-ID: <ZXgVGWLZEnLt0Pqn@macbook>
+References: <20231210161519.1550860-1-Jiqian.Chen@amd.com>
+ <20231210161519.1550860-2-Jiqian.Chen@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-topic-sm8650-upstream-snd-card-v1-2-fbfc38471204@linaro.org>
-References: <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
-In-Reply-To: <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=692;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=l7XyXt1fVLon65HN4wKj5YMCqYBmKvyCyW+bCEtblb0=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleBT3ET/ZnxriBIRSuvP6q36fZX+QOaiXY0dLH3wf
- U9meb3iJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXgU9wAKCRB33NvayMhJ0Z78D/
- 9ox3qcrRO0/cavRBNM1SPlK1ldKE6CflPnmNaO7iYNBtjmYea+3SmSA8oAzgL+jeWa55DvPM3Xknhx
- wcDT6XaGPv6FPHk68s4uibKINVsNbw3vejyudOlG2PRWgRRXRgtirEIiUCjmG5KEFwLHnGDG2ogzOj
- b4wsgIe+U+GfMyieOn9cWVHgQocuRmAaW171eJO6prYbJk4FkwNdS94ZFCxQ+OhjobkxIZMYVOynmZ
- +8Pc2hgtIZsfJdUHO2EWmxXpwoegsf0sc5x5MeGo06jF45LUIm8LWVaLWjUwhxqwA2T8A/NOlVhIWv
- W8W5bVW/f+0s1mjh1K4wnvbP80LoTbrwPZmM6CkEbPeD7Tb+YdSXRL8bVFXNCO9/umB1MIRBYGCpUV
- ISPSdrparuPJw3cLVrErFuwx4BwTA5zxkypBAnmQpKyrOv+Yp1vb1ZiOwT1bltmAuTtiCrFpJjL/RW
- FCX2bd9EdQ7Ca66gy5ys5MYmbqj3eogNutZnKJXkn+gg6bxi8PGy8o6aOcQr9a2vLPEe53jQ04KKTp
- Jog5Z0XIAL+mC+A4s4dpD96IM8F/kDJDHYojbP9CuLSLLEdEyEl9WNfseM+2uP6+FlCA6r6THzxix7
- yd0zI1a0yci7dheMpsgEZojCFOz/+HgI5fZmxqHKC7XhwWX7TJZ2XdnQ4Aew==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231210161519.1550860-2-Jiqian.Chen@amd.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatibles for sound card on Qualcomm SM8650 boards.
+On Mon, Dec 11, 2023 at 12:15:17AM +0800, Jiqian Chen wrote:
+> When device on dom0 side has been reset, the vpci on Xen side
+> won't get notification, so that the cached state in vpci is
+> all out of date with the real device state.
+> To solve that problem, add a new function to clear all vpci
+> device state when device is reset on dom0 side.
+> 
+> And call that function in pcistub_init_device. Because when
+> using "pci-assignable-add" to assign a passthrough device in
+> Xen, it will reset passthrough device and the vpci state will
+> out of date, and then device will fail to restore bar state.
+> 
+> Co-developed-by: Huang Rui <ray.huang@amd.com>
+> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
+> ---
+>  drivers/xen/pci.c                  | 12 ++++++++++++
+>  drivers/xen/xen-pciback/pci_stub.c |  4 ++++
+>  include/xen/interface/physdev.h    |  8 ++++++++
+>  include/xen/pci.h                  |  6 ++++++
+>  4 files changed, 30 insertions(+)
+> 
+> diff --git a/drivers/xen/pci.c b/drivers/xen/pci.c
+> index 72d4e3f193af..e9b30bc09139 100644
+> --- a/drivers/xen/pci.c
+> +++ b/drivers/xen/pci.c
+> @@ -177,6 +177,18 @@ static int xen_remove_device(struct device *dev)
+>  	return r;
+>  }
+>  
+> +int xen_reset_device_state(const struct pci_dev *dev)
+> +{
+> +	struct physdev_pci_device device = {
+> +		.seg = pci_domain_nr(dev->bus),
+> +		.bus = dev->bus->number,
+> +		.devfn = dev->devfn
+> +	};
+> +
+> +	return HYPERVISOR_physdev_op(PHYSDEVOP_pci_device_state_reset, &device);
+> +}
+> +EXPORT_SYMBOL_GPL(xen_reset_device_state);
+> +
+>  static int xen_pci_notifier(struct notifier_block *nb,
+>  			    unsigned long action, void *data)
+>  {
+> diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
+> index e34b623e4b41..24f599eaec14 100644
+> --- a/drivers/xen/xen-pciback/pci_stub.c
+> +++ b/drivers/xen/xen-pciback/pci_stub.c
+> @@ -421,6 +421,10 @@ static int pcistub_init_device(struct pci_dev *dev)
+>  	else {
+>  		dev_dbg(&dev->dev, "resetting (FLR, D3, etc) the device\n");
+>  		__pci_reset_function_locked(dev);
+> +		if (!xen_pv_domain())
+> +			err = xen_reset_device_state(dev);
+> +		if (err)
+> +			goto config_release;
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- sound/soc/qcom/sc8280xp.c | 1 +
- 1 file changed, 1 insertion(+)
+I think you are missing other instances where
+__pci_reset_function_locked() is called in pci_stub.c?  See
+pcistub_device_release() and pcistub_put_pci_dev().
 
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-index 1e8f9452cd28..494f284875d2 100644
---- a/sound/soc/qcom/sc8280xp.c
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -170,6 +170,7 @@ static const struct of_device_id snd_sc8280xp_dt_match[] = {
- 	{.compatible = "qcom,sc8280xp-sndcard", "sc8280xp"},
- 	{.compatible = "qcom,sm8450-sndcard", "sm8450"},
- 	{.compatible = "qcom,sm8550-sndcard", "sm8550"},
-+	{.compatible = "qcom,sm8650-sndcard", "sm8650"},
- 	{}
- };
- 
+Overall I'm not sure why the hypercall wrapper needs to live in
+xen/pci.c.  I think it would be better if you could create a static
+wrapper in pci_stub.c that does the call to
+__pci_reset_function_locked() plus PHYSDEVOP_pci_device_state_reset.
+That would make it less likely that new callers of
+__pci_reset_function_locked() are introduced without noticing the need
+to also call PHYSDEVOP_pci_device_state_reset.
 
--- 
-2.34.1
-
+Thanks, Roger.
