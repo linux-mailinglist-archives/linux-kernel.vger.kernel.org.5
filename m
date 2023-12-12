@@ -2,114 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F47380F5DC
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAE180F5DD
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376757AbjLLSzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
+        id S1376872AbjLLSz4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 13:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376880AbjLLSzq (ORCPT
+        with ESMTP id S1376873AbjLLSzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 13:55:46 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4D791;
-        Tue, 12 Dec 2023 10:55:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1702407328; x=1703012128; i=rwahl@gmx.de;
-        bh=IHz6BQHqma+jxYrd5WICx4pHCK4/jGS4y2B8Mb5NueA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=iJMGTlirtY6EwqRCUDDUytisGkGaTEkGc2xIs92K+4mHLlzpSn9JR8M29/9B0Fu8
-         nJqik5TOJWK29NxrtBEJ0DMNxZVvpzQQbGMD0GYubuVKCh87mYKxbLAzsPhJDcw6r
-         o4gMCRl8EthKiJR+swscGVmzPgOAidF01AS6h9lcPu50Oehz1MyUFugPhq2EWcEph
-         2puqjToyhWwIRPGJGOY/qJQbP/gkkJ2jFk/9AmiTOWouEMQMkHmqsDcSyjlqSlz6W
-         a9s6cpGyejjrLzp74HfL2Ck6PBACAeGnWnXWFVN31k8jIkHyIb/A07jjPWjd46Fs6
-         CKg6b956VwqCw/nh5A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from rohan.localdomain ([84.156.159.24]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtOKi-1rU5zt44zO-00upKL; Tue, 12
- Dec 2023 19:55:28 +0100
-From:   Ronald Wahl <rwahl@gmx.de>
-To:     rwahl@gmx.de
-Cc:     linux-kernel@vger.kernel.org,
-        Ronald Wahl <ronald.wahl@raritan.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2] stacktrace: check whether task has a stack before saving it
-Date:   Tue, 12 Dec 2023 19:55:18 +0100
-Message-ID: <20231212185518.196361-1-rwahl@gmx.de>
-X-Mailer: git-send-email 2.43.0
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B75CCF;
+        Tue, 12 Dec 2023 10:55:52 -0800 (PST)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5908b15f43eso473991eaf.1;
+        Tue, 12 Dec 2023 10:55:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702407352; x=1703012152;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QxfzJxjkTeD8WaF9ShGyfeclA3COTWzjO/BbalNXvb4=;
+        b=ZBvpWD+lemY2LwUgXoujjRiiGQEIYZ7EpxXcUnWc6rWx/hL7H0xVnNjx/bvWq+Tfsa
+         T9U9eRvjXKvKasR9Gr4MFHDVsiwmCJ9i2AGkO8y9C/g4ZnUzF3oPjXHUS9FhZTxYZwJc
+         OstDPwNd2rYa6Z81mtRkGvrXSlh9p4U4URiWcMIQDxbNrB3kCoZnxscsNTCeLgUlc9Sz
+         VPlBezJhIg8gUHY5M2yUCefqW4y1eb+ulIugFGcOmyC/zNmzwlqJb0FsSE30j5k/POMU
+         kfkRI5Bk3OW59Bfr9ExWQahA6pfhv79ACZcsnXbO8Gt8ekutikwlwtsJUqyYyJieh8rE
+         NPFg==
+X-Gm-Message-State: AOJu0YxIKZca3APfmxVuPlsL10XuXaFdtHjWUA7dmFVrdNmMNISxCD0k
+        YJg8FmmNPTaYPEOtB96hLILqpwR8QgVWM6ipL9I=
+X-Google-Smtp-Source: AGHT+IGxfJfy8DOs+omvTf/HfWKIvqkSL4STYgIRle/KjpC/ZqSTLmrF9pw+hIbuAj+YQKKqeyE0joxkxni883OEL7M=
+X-Received: by 2002:a05:6820:220d:b0:58d:5302:5b18 with SMTP id
+ cj13-20020a056820220d00b0058d53025b18mr13750358oob.1.1702407351786; Tue, 12
+ Dec 2023 10:55:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MB/WDCtYiYHNxM9BLr5WR3PDMxWmJZB7ojtx/agcyB0R7JgX+36
- TyBUlgGdSmWvf72RA9oPw7pZ9gI7tbVV9jCASAEJVTDm6jDhs4S8DDu+2n5WxwNY7ZIR0cs
- mdE6NAOHRlRPRPGEcBmDcEURfiRhn+wp0a5H+JD+7NTVXHJk1ATi/NB3pACNVUiSgMuXibY
- l2ZUECZ5nlNjhFY21tLxA==
-UI-OutboundReport: notjunk:1;M01:P0:LPoQ8YsJ1rU=;e6aNZPDKFhUy4iTcSDun21tg8hd
- eN20FW/T7vWbC0Q5r6QOK9gvpQfDwuxOwJsEdEwho53DqQXI43/u3pf0kxoxPauJqV1AN4QxH
- gnrvYSTN3Ppx58pfvYnSXq77e1gLdcWc8yuXmMVUxRdg5ILIALg0mu+TlpMUpdEH8iSVAAVtT
- ORMahscVtRWMi+V1s+HryrwZDtNRRWD/mjVgwoGhAFPsLRJ7QFtNxOlPobbXJHovUcGO/GJjI
- t3Ql2AWjUtgWiOqIasKzEYPzvsk0JjQyLepWwOM5Wffw79/W8OxZfd0Q1gHwAC5ZGT2oSCth/
- 1GcH44Z8omHyxpGNlHbLAYUGZmIrCYjGG/4IiMw3JjptdSyRgaFKhU+xBkFJdsfByiX1PuodS
- HSjKCFUCF/CXeujtB76Y63hbxaD8KcsUFUobAjJwo7DYt8osFM67X+4pC0fdSWwPjHEK5uBBD
- a0bYsrsCcK62TWmb6p859t1UZF6G2OQnOXD+keNxRbmLJarj2sSe9G1hc8qLQc20BfFNr9Cbl
- 5WvE87Ga5aBxSbdqi8f991N0X2FRWz7DgEInsV5U76Gi3cHqXUtEJWRGKQhcQJp5NrgPzxurr
- nwmLmW4MCJSucWvlAj1jXKlSEfV/LoGHxWbegbbbS+u8TGdkHz1x80t2wOboq8+Y6hLRku6ou
- EqbQSrasGzD8X0uxejnexEo6Tgfuk2gUWYEsiwmBFdaQx2ODli8nNzFslaycJSrifqLN98+ds
- QeJLerrQ1b4ZSvySTn7MwWgiGk15waGixyZwoCKq0LLplqai8j1joJYrFbirTQrrVuMV4Oq5n
- EZRwoiF1CO3CEIunGMokhs9Bg4OKPnovioXQUzP9QQiE+xt5Iai9JntisfUY5zo2T6ODcjhVA
- rs6X8JGjmYaXw2D/rc7ga4F+2CwX9RtcQ4KTQ/Rfs20JKtdROpIwR+FZ17T7E605FJUudhU9/
- FinXk93y28m9gzKvY68WxQ0Zo/Q=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231204021155.10434-1-chris.feng@mediatek.com>
+In-Reply-To: <20231204021155.10434-1-chris.feng@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Dec 2023 19:55:41 +0100
+Message-ID: <CAJZ5v0iJcTp+G4zmc6sq1wLf+TFs_uJFcYrimth+a5a9-B=Wmw@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3] PM: hibernate: Avoid missing wakeup events
+ during hibernation
+To:     Chris Feng <chris.feng@mediatek.com>
+Cc:     rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@kernel.org, hua.yang@mediatek.com, ting.wang@mediatek.com,
+        liang.lu@mediatek.com, chetan.kumar@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+On Mon, Dec 4, 2023 at 3:12 AM Chris Feng <chris.feng@mediatek.com> wrote:
+>
+> Wakeup events that occur in the hibernation process's
+> hibernation_platform_enter() cannot wake up the system. Although the
+> current hibernation framework will execute part of the recovery process
+> after a wakeup event occurs, it ultimately performs a shutdown operation
+> because the system does not check the return value of
+> hibernation_platform_enter(). In short, if a wakeup event occurs before
+> putting the system into the final low-power state, it will be missed.
+>
+> To solve this problem, check the return value of
+> hibernation_platform_enter(). When it returns -EAGAIN or -EBUSY (indicate
+> the occurrence of a wakeup event), execute the hibernation recovery
+> process, discard the previously saved image, and ultimately return to the
+> working state.
+>
+> Signed-off-by: Chris Feng <chris.feng@mediatek.com>
+> ---
+> [PATCH v2]:
+>  - Optimize the "if" condition logic.
+>  - Link to v1: https://lore.kernel.org/all/20231024091447.108072-1-chris.feng@mediatek.com
+> [PATCH v3]:
+>  - Use pr_info instead of pr_err.
+>  - Fix undeclared function 'swsusp_unmark' build error.
+>  - Refine commit and printing message.
+>  - Change the subject.
+>  - Link to v2: https://lore.kernel.org/all/20231120081516.55172-1-chris.feng@mediatek.com
+> ---
+>  kernel/power/hibernate.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> index 8d35b9f9aaa3..fb3b63e178b0 100644
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -642,9 +642,9 @@ int hibernation_platform_enter(void)
+>   */
+>  static void power_down(void)
+>  {
+> -#ifdef CONFIG_SUSPEND
+>         int error;
+>
+> +#ifdef CONFIG_SUSPEND
+>         if (hibernation_mode == HIBERNATION_SUSPEND) {
+>                 error = suspend_devices_and_enter(mem_sleep_current);
+>                 if (error) {
+> @@ -667,7 +667,15 @@ static void power_down(void)
+>                 kernel_restart(NULL);
+>                 break;
+>         case HIBERNATION_PLATFORM:
+> -               hibernation_platform_enter();
+> +               error = hibernation_platform_enter();
+> +               if (error == -EAGAIN || error == -EBUSY) {
+> +#ifdef CONFIG_SUSPEND
+> +                       swsusp_unmark();
+> +#endif
 
-I encountered a crash on ARM32 when trying to dump the stack of some
-zombie process. This is caused by a missing check whether the task
-actually has a valid stack. This commit adds this check.
+It would be somewhat cleaner to define an empty stub of
+swsusp_unmark() for the CONFIG_SUSPEND undefined case in the header
+file.
 
-Commit 214d8ca6ee85 ("stacktrace: Provide common infrastructure")
-introduced this check for platforms that define CONFIG_ARCH_STACKWALK
-but ARM32 is not one of them.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-arch@vger.kernel.org
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-=2D--
-V2: - added missing put_task_stack(task) to avoid memory leak
-
- kernel/stacktrace.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index 9ed5ce989415..0bb67bd633c6 100644
-=2D-- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -298,7 +298,11 @@ unsigned int stack_trace_save_tsk(struct task_struct =
-*task,
- 		.skip	=3D skipnr + (current =3D=3D task),
- 	};
-
-+	if (!try_get_task_stack(task))
-+		return 0;
-+
- 	save_stack_trace_tsk(task, &trace);
-+	put_task_stack(task);
- 	return trace.nr_entries;
- }
-
-=2D-
-2.43.0
-
+> +                       events_check_enabled = false;
+> +                       pr_info("Hibernation process aborted due to detected wakeup event.\n");
+> +                       return;
+> +               }
+>                 fallthrough;
+>         case HIBERNATION_SHUTDOWN:
+>                 if (kernel_can_power_off())
+> --
