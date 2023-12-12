@@ -2,206 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930B180E5B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DED80E61D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbjLLIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:21:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S229565AbjLLI07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232338AbjLLIVP (ORCPT
+        with ESMTP id S1346407AbjLLIZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:21:15 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCF5CF;
-        Tue, 12 Dec 2023 00:21:21 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1127)
-        id C18D420B74C0; Tue, 12 Dec 2023 00:21:20 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C18D420B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1702369280;
-        bh=vEgT5Vx3QJOmfVLsCktFuAcxLJotqUz7j9rpr/6mWpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oWJe1wAr2HexS2fWMEHskBZ6wg0mSzobc7mbn3A2E7/cZKKQjzm4d7MYJXKrArVvI
-         SQ5RqW0LE0hGav+GU13PSFOursQHzDrzEHxOMw75qjmY1FGVyLapxCjUi0CLcllrR7
-         Dhr/XhRPymethVcdzGBky3VFQiVYhkavRBaZjQ4E=
-Date:   Tue, 12 Dec 2023 00:21:20 -0800
-From:   Saurabh Singh Sengar <ssengar@linux.microsoft.com>
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, decui@microsoft.com
-Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
-Message-ID: <20231212082120.GA2800@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
- <5736414.DvuYhMxLoT@steina-w>
+        Tue, 12 Dec 2023 03:25:52 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D3D1BE7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:41 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso7630288a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702369359; x=1702974159; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=eHeIY9hu9qrP31NHtwAZ/zKZXqF7a3OFLF8DkOLrs4o=;
+        b=KnBaAR5tYuS4KzIn2OtIxejFGJvYeb2axDIoMKxZiwZeeHi+QF0Rvp4rSuH4Lyv1oB
+         ZHLPNwt5GqYWlAWWVyzNUzkSWNwP+urV+srr1zh6Jo7u1jSBjbovfSZcB028ZRV7okPd
+         n/bXOFuyVYkjJhSERd6xG3AtrZbVDg63UD0tANPBDBpsXxZZSqtVGLMqPpida65JrFFT
+         MmVh6fUxMxtDPce5wxaWlK1kDhLJ0wdG6Ht8UDDINi0WbS8InbCzisLOkHWkAgLkur+o
+         VNdKaathtfSS2nTDNBBMKDIxTNLOu9oH+3VJHj55VbsQIVEDGPaDZqQs+a1isRApeKno
+         EiEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702369359; x=1702974159;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eHeIY9hu9qrP31NHtwAZ/zKZXqF7a3OFLF8DkOLrs4o=;
+        b=Rzkm7TFN4AyhPUSehA/HfH7OpzY3Xf4UdSXGs1YjnoTUWN5n4Ieo96/5snAKVw5NM2
+         qZ2SGluAUC2WOOer8LjrQuZypuyvrgmMNS4T8xkRdOKZFVcSJ/A+Ne9UAroFlbnKty74
+         04NF05+IMhORcoP1dNnAatDDi+L2cYZjfriHaFNY3J95zX8mE8Xnf8/3nyUmHaqaVWAG
+         743fAZBCPXFzA8+r4iwUGGowOOjQAi3nkyVMXIlpci5YPXSW/eFgxD0ZqrbHdpRNJdX+
+         MREgUaYb+nPpMLmhss3ixaLyvOBN6mnppBRcskrzQCzH8o4OOeDHh+WP/fwifpLcYFCe
+         KaCw==
+X-Gm-Message-State: AOJu0Yx6ofl16Lj9/obAj043om0ph4JtF7dYoGU1S2NzVEr3Iv9OIeLB
+        ZaWY82bxhM9g66JuxAFqRDWikQ==
+X-Google-Smtp-Source: AGHT+IHO7ATLzLT+wGns8Y/8WbVpDg0Jin4FC5z0TFykDC4ceJaED6HrqLsROGR/jPeWDM3yJ75pYA==
+X-Received: by 2002:a50:c94a:0:b0:54c:4837:8b84 with SMTP id p10-20020a50c94a000000b0054c48378b84mr2839586edh.82.1702369359356;
+        Tue, 12 Dec 2023 00:22:39 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id n2-20020a05640205c200b0055122551f98sm2047011edx.6.2023.12.12.00.22.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 00:22:39 -0800 (PST)
+Message-ID: <84c4c331-54b6-4539-a8f2-880fd47ad97b@linaro.org>
+Date:   Tue, 12 Dec 2023 09:22:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5736414.DvuYhMxLoT@steina-w>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ASoC: tas2562: remove tas2563 into driver
+To:     Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org,
+        conor+dt@kernel.org
+Cc:     robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de,
+        peeyush@ti.com, navada@ti.com
+References: <20231212050831.982-1-shenghao-ding@ti.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231212050831.982-1-shenghao-ding@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 08:19:11AM +0100, Alexander Stein wrote:
-> Hi Saurabh,
+On 12/12/2023 06:08, Shenghao Ding wrote:
+> Remove tas2563 from tas2562, it will be supported in separated driver code.
 > 
-> thanks for the patch.
-> 
-> Am Samstag, 9. Dezember 2023, 04:46:16 CET schrieb Saurabh Sengar:
-> > Currently there is a race in calling pci_create_resource_files function
-> > from two different therads, first therad is triggered by pci_sysfs_init
-> > from the late initcall where as the second thread is initiated by
-> > pci_bus_add_devices from the respective PCI drivers probe.
-> > 
-> > The synchronization between these threads relies on the sysfs_initialized
-> > flag. However, in pci_sysfs_init, sysfs_initialized is set right before
-> > calling pci_create_resource_files which is wrong as it can create race
-> > condition with pci_bus_add_devices threads. Fix this by setting
-> > sysfs_initialized flag at the end of pci_sysfs_init and direecly call the
-> 
-> Small typo here: direecly -> directly
 
-thanks
+Why? I was not aware that you duplicate tas2563 in your other patch, so
+that part need explanation. This part as well - why do we want to remove
+its support from the Linux? What about users? After applying this code
+they don't have support for their device!
 
-> 
-> > pci_create_resource_files function from it.
-> > 
-> > There can be an additional case where driver probe is so delayed that
-> > pci_bus_add_devices is called after the sysfs is created by pci_sysfs_init.
-> > In such cases, attempting to access already existing sysfs resources is
-> > unnecessary. Fix this by adding a check for sysfs attributes and return
-> > if they are already allocated.
-> > 
-> > In both cases, the consequence will be the removal of sysfs resources that
-> > were appropriately allocated by pci_sysfs_init following the warning below.
-> 
-> I'm not sure if this is the way to go. Unfortunately I can't trigger this 
-> error on my imx6 platform at the moment (apparently timing is off).
+Best regards,
+Krzysztof
 
-The first case in the commit message is the issue which motivated me to write
-this patch. The additional case I am explaining in the commit message is not
-happening for me as well, I have hacked my driver to add a big sleep (10 second)
-before pci_bus_add_devices to create this scenario. Probably you can try the
-same as well.
-
-The check added for "resource already allocated" is for this additional case only.
-
-> But reading [1] again, the most expressive way is that pci_bus_add_devices() 
-> needs to wait until pci_sysfs_init() has passed.
-
-For the first case I agree with you. This patch is doing exactly the same by moving
-sysfs_initialized flag setting at the end of pci_sysfs_init function.
-Is there anything I might be ovelooking ?
-
-- Saurabh
-
-
-> 
-> Best regards,
-> Alexander
-> 
-> [1] https://lore.kernel.org/lkml/a1cca367-52b6-a6b1-fb01-890cad39fd29@suse.com/
-> 
-> > 
-> > [    3.376688] sysfs: cannot create duplicate filename
-> > '/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A03:00/device:07/VMBUS:01/47505500-00
-> > 01-0000-3130-444531454238/pci0001:00/0001:00:00.0/resource0' [    3.385103]
-> > CPU: 3 PID: 9 Comm: kworker/u8:0 Not tainted 5.15.0-1046-azure
-> > #53~20.04.1-Ubuntu [    3.389585] Hardware name: Microsoft Corporation
-> > Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018 [    3.394663]
-> > Workqueue: events_unbound async_run_entry_fn
-> > [    3.397687] Call Trace:
-> > [    3.399312]  <TASK>
-> > [    3.400780]  dump_stack_lvl+0x38/0x4d
-> > [    3.402998]  dump_stack+0x10/0x16
-> > [    3.406050]  sysfs_warn_dup.cold+0x17/0x2b
-> > [    3.408476]  sysfs_add_file_mode_ns+0x17b/0x190
-> > [    3.411072]  sysfs_create_bin_file+0x64/0x90
-> > [    3.413514]  pci_create_attr+0xc7/0x260
-> > [    3.415827]  pci_create_resource_files+0x6f/0x150
-> > [    3.418455]  pci_create_sysfs_dev_files+0x18/0x30
-> > [    3.421136]  pci_bus_add_device+0x30/0x70
-> > [    3.423512]  pci_bus_add_devices+0x31/0x70
-> > [    3.425958]  hv_pci_probe+0x4ce/0x640
-> > [    3.428106]  vmbus_probe+0x67/0x90
-> > [    3.430121]  really_probe.part.0+0xcb/0x380
-> > [    3.432516]  really_probe+0x40/0x80
-> > [    3.434581]  __driver_probe_device+0xe8/0x140
-> > [    3.437119]  driver_probe_device+0x23/0xb0
-> > [    3.439504]  __driver_attach_async_helper+0x31/0x90
-> > [    3.442296]  async_run_entry_fn+0x33/0x120
-> > [    3.444666]  process_one_work+0x225/0x3d0
-> > [    3.447043]  worker_thread+0x4d/0x3e0
-> > [    3.449233]  ? process_one_work+0x3d0/0x3d0
-> > [    3.451632]  kthread+0x12a/0x150
-> > [    3.453583]  ? set_kthread_struct+0x50/0x50
-> > [    3.456103]  ret_from_fork+0x22/0x30
-> > 
-> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> > ---
-> > There has been earlier attempts to fix this problem, below are the patches
-> > for reference of these attempts.
-> > 1.
-> > https://lore.kernel.org/linux-pci/20230316103036.1837869-1-alexander.stein@
-> > ew.tq-group.com/T/#u 2.
-> > https://lwn.net/ml/linux-kernel/20230316091540.494366-1-alexander.stein@ew.
-> > tq-group.com/
-> > 
-> > Bug details: https://bugzilla.kernel.org/show_bug.cgi?id=215515
-> > 
-> >  drivers/pci/pci-sysfs.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > index f2909ae93f2f..a31f6f2cf309 100644
-> > --- a/drivers/pci/pci-sysfs.c
-> > +++ b/drivers/pci/pci-sysfs.c
-> > @@ -1230,6 +1230,10 @@ static int pci_create_resource_files(struct pci_dev
-> > *pdev) if (!pci_resource_len(pdev, i))
-> >  			continue;
-> > 
-> > +		/* Check if resource already allocated and proceed no 
-> further */
-> > +		if (pdev->res_attr[i] || pdev->res_attr_wc[i])
-> > +			return 0;
-> > +
-> >  		retval = pci_create_attr(pdev, i, 0);
-> >  		/* for prefetchable resources, create a WC mappable file 
-> */
-> >  		if (!retval && arch_can_pci_mmap_wc() &&
-> > @@ -1411,9 +1415,8 @@ static int __init pci_sysfs_init(void)
-> >  	struct pci_bus *pbus = NULL;
-> >  	int retval;
-> > 
-> > -	sysfs_initialized = 1;
-> >  	for_each_pci_dev(pdev) {
-> > -		retval = pci_create_sysfs_dev_files(pdev);
-> > +		retval = pci_create_resource_files(pdev);
-> >  		if (retval) {
-> >  			pci_dev_put(pdev);
-> >  			return retval;
-> > @@ -1423,6 +1426,8 @@ static int __init pci_sysfs_init(void)
-> >  	while ((pbus = pci_find_next_bus(pbus)))
-> >  		pci_create_legacy_files(pbus);
-> > 
-> > +	sysfs_initialized = 1;
-> > +
-> >  	return 0;
-> >  }
-> >  late_initcall(pci_sysfs_init);
-> 
-> 
-> -- 
-> TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-> Amtsgericht München, HRB 105018
-> Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-> http://www.tq-group.com/
-> 
