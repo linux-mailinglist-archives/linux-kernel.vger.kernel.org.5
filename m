@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F19680E974
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC1E80E977
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346178AbjLLKrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:47:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        id S231310AbjLLKuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLLKrR (ORCPT
+        with ESMTP id S229379AbjLLKui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:47:17 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABB869F;
-        Tue, 12 Dec 2023 02:47:23 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5EFC143D;
-        Tue, 12 Dec 2023 02:48:09 -0800 (PST)
-Received: from [10.1.35.59] (e133649.arm.com [10.1.35.59])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 187593F762;
-        Tue, 12 Dec 2023 02:47:20 -0800 (PST)
-Message-ID: <d73ea0ed-ecd8-4c70-b02e-f6fcd2cd7538@arm.com>
-Date:   Tue, 12 Dec 2023 10:47:19 +0000
+        Tue, 12 Dec 2023 05:50:38 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E325CA0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:50:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702378242;
+        bh=GwlfCoB8qgkK+r0YjK69x+ZVW2EkVeHBb5aLyX5erjM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=C5z8owUBMiqzaNdwjauPcZOD7zbMOQhAo3J1o6nLVkBIk1frEUfyRo34ih/Dcief9
+         lMlT4EMBw7hpDb/vrHBD39VxStgMQ0vhJLaNo8AotTjgm9kcWZlbwSJ10+G2bWPAm+
+         xn+k2TTuPZFtuvUMgFkZv29vCEnjGSFbGs6SwIGdufYLRKO5Uo3d74rVlAB7jY6Bgr
+         kR0ldla6MY2G2qoSNNuKGOZZq6bv9OeKNJkAIv5RuG3qhQaMCv1/gp0JsJjRb6N1E3
+         aTUOkemwjFLV2kCifutRDo3yxGSsF7v0lZp33epgDShD3zaUedfWA1LMpYW/lKONFl
+         xFdTXq7pg8ddg==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 309A93781453;
+        Tue, 12 Dec 2023 10:50:41 +0000 (UTC)
+Message-ID: <af322faf-a44a-462e-9ac8-0532cdf5824b@collabora.com>
+Date:   Tue, 12 Dec 2023 11:50:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
- cpufreq_update_util()
+Subject: Re: [PATCH v2] arm64: defconfig: Enable configs for
+ MT8195-Cherry-Tomato Chromebook
 Content-Language: en-US
-To:     Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
-        Rick Yiu <rickyiu@google.com>,
-        Chung-Kai Mei <chungkai@google.com>
-References: <20231208015242.385103-1-qyousef@layalina.io>
- <20231208015242.385103-2-qyousef@layalina.io>
-From:   Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20231208015242.385103-2-qyousef@layalina.io>
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     kernel@collabora.com, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231122181335.535498-1-nfraprado@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231122181335.535498-1-nfraprado@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/12/2023 01:52, Qais Yousef wrote:
-> Due to the way code is structured, it makes a lot of sense to trigger
-> cpufreq_update_util() from update_load_avg(). But this is too aggressive
-> as in most cases we are iterating through entities in a loop to
-> update_load_avg() in the hierarchy. So we end up sending too many
-> request in an loop as we're updating the hierarchy.
+Il 22/11/23 19:13, Nícolas F. R. A. Prado ha scritto:
+> Enable missing configs needed to boot the MT8195-Cherry-Tomato
+> Chromebook with full support on the defconfig.
+> 
+> The configs enabled bring in support for the DSP and sound card,
+> display, thermal sensor and keyboard backlight.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> 
 
-Do you mean the for_each_sched_entity(se) loop? I think we update CPU 
-frequency only once at the root CFS?
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-> Combine this with the rate limit in schedutil, we could end up
-> prematurely send up a wrong frequency update before we have actually
-> updated all entities appropriately.
-> 
-> Be smarter about it by limiting the trigger to perform frequency updates
-> after all accounting logic has done. This ended up being in the
-> following points:
-> 
-> 1. enqueue/dequeue_task_fair()
-> 2. throttle/unthrottle_cfs_rq()
-> 3. attach/detach_task_cfs_rq()
-> 4. task_tick_fair()
-> 5. __sched_group_set_shares()
-> 
-> This is not 100% ideal still due to other limitations that might be
-> a bit harder to handle. Namely we can end up with premature update
-> request in the following situations:
-> 
-> a. Simultaneous task enqueue on the CPU where 2nd task is bigger and
->     requires higher freq. The trigger to cpufreq_update_util() by the
->     first task will lead to dropping the 2nd request until tick. Or
->     another CPU in the same policy trigger a freq update.
-> 
-> b. CPUs sharing a policy can end up with the same race in a but the
->     simultaneous enqueue happens on different CPUs in the same policy.
-> 
-> The above though are limitations in the governor/hardware, and from
-> scheduler point of view at least that's the best we can do. The
-> governor might consider smarter logic to aggregate near simultaneous
-> request and honour the higher one.
-> 
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
->   kernel/sched/fair.c | 55 ++++++++++++---------------------------------
->   1 file changed, 14 insertions(+), 41 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index b83448be3f79..f99910fc6705 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3997,29 +3997,6 @@ static inline void update_cfs_group(struct sched_entity *se)
->   }
->   #endif /* CONFIG_FAIR_GROUP_SCHED */
->   
-> -static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
-> -{
-> -	struct rq *rq = rq_of(cfs_rq);
-> -
-> -	if (&rq->cfs == cfs_rq) {
 
-Here. I think this restricts frequency updates to the root CFS?
-
-> -		/*
-> -		 * There are a few boundary cases this might miss but it should
-> -		 * get called often enough that that should (hopefully) not be
-> -		 * a real problem.
-> -		 *
-> -		 * It will not get called when we go idle, because the idle
-> -		 * thread is a different class (!fair), nor will the utilization
-> -		 * number include things like RT tasks.
-> -		 *
-> -		 * As is, the util number is not freq-invariant (we'd have to
-> -		 * implement arch_scale_freq_capacity() for that).
-> -		 *
-> -		 * See cpu_util_cfs().
-> -		 */
-> -		cpufreq_update_util(rq, flags);
-> -	}
-> -}
-> -
->   #ifdef CONFIG_SMP
->   static inline bool load_avg_is_decayed(struct sched_avg *sa)
->   {
-> [...]
