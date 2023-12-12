@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA5780ED64
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B411580ED6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjLLNYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S232424AbjLLNZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:25:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbjLLNYk (ORCPT
+        with ESMTP id S1346445AbjLLNZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:24:40 -0500
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF59DA8;
-        Tue, 12 Dec 2023 05:24:46 -0800 (PST)
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b9dc3215d2so2266201b6e.0;
-        Tue, 12 Dec 2023 05:24:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702387486; x=1702992286;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9Mu5OY9EeNLblapjoWxLOc/anyMYCIRnO6QV3zIN6QQ=;
-        b=DbpTmSJGFpsOzJiMJO2GW4f+5j94U2Y0x7LBBm7JT15TRdvCMByv2+yJEz6QTmCVD9
-         1zev64wxP1KTEpJ/UfwTBKQgroinloLxYkpZmV6b+jc9ZvsqamZ1+A/LMQSfzIG9+fOa
-         S2wBnBrCr+Ho3mLeQYIP3PGLxqYhBCKcOLjFAjNiRoUhniFCsvwfdPyU0u4RI4Oe3b3Z
-         q9wiYR9nrNzkxW46JNBHhZCe0n9ZqoQyUMcH9goi+/fow/M0Dj8GzmRwHrUMEu8EHE0m
-         /0xqWCyaMnOP7SObecri/rYcFSLNiFy/F78kIzaQa8t7B/EdDU0Xffkv8x8/+boi6vfQ
-         uT/w==
-X-Gm-Message-State: AOJu0Yx7f5nPbqDab8gGEI7gS2CvpkZI+mjX79rGoD4SvJE9uHDVYaD4
-        H9n5j1f40UK5jWXKdyu0oA==
-X-Google-Smtp-Source: AGHT+IHm4cit1iUJK2zyIomx0aOxL5d+CrlgYwTDHHMA+JPNbzxp/5Z+Pdq6jI0cZxMer6lTL0wcJw==
-X-Received: by 2002:a05:6808:152a:b0:3b8:b063:8945 with SMTP id u42-20020a056808152a00b003b8b0638945mr3910939oiw.83.1702387485688;
-        Tue, 12 Dec 2023 05:24:45 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id dj13-20020a056808418d00b003ac9e775706sm2369521oib.1.2023.12.12.05.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 05:24:45 -0800 (PST)
-Received: (nullmailer pid 1554265 invoked by uid 1000);
-        Tue, 12 Dec 2023 13:24:44 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 12 Dec 2023 08:25:52 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CCB3;
+        Tue, 12 Dec 2023 05:25:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=b0EJSjGbwEr2b4Ml7A+chJ8+pEiLc4/B8ooSTDiYxzk=; b=picipgXFbvzoUhEoBG/zPnQX1q
+        HE6smIRBy5a89R9akhr+qXOZgV2ZWsX5XPLxtAEgCavvFg2RD1Nd4bY6y3UtqlfS5bvjWd1FYs03a
+        CEKxQcI96bW9kVZcHP+cYaV8hEgMc7fElg/c9Fc75ryish62M2PDTmzUmPs5fvjFZ8ka06osdMRpf
+        ASMKxc6mHhCj37Uwwthec0X8EOQOG/hGGGWoR9QRV2Bnh4w97sL+F2xaXO4b3Qr1y31RDun14/d27
+        LpamT9Qvnaapt6jca0mzWu9EovPM8+74IynFRKTN08S2sDe2pXO4Td8t8oHiM29FNbbe9flIcdz3n
+        3xcYUrag==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rD2lJ-00BnAr-2I;
+        Tue, 12 Dec 2023 13:25:25 +0000
+Date:   Tue, 12 Dec 2023 05:25:25 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, willy@infradead.org,
+        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
+ read sb block
+Message-ID: <ZXhfRdocHfrViOos@infradead.org>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140753.975297-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     andrew@lunn.ch, netdev@vger.kernel.org, hkallweit1@gmail.com,
-        quic_srichara@quicinc.com, kuba@kernel.org,
-        konrad.dybcio@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        davem@davemloft.net, robert.marko@sartura.hr,
-        linux@armlinux.org.uk, pabeni@redhat.com, robh+dt@kernel.org,
-        edumazet@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, andersson@kernel.org,
-        linux-arm-msm@vger.kernel.org
-In-Reply-To: <20231212115151.20016-6-quic_luoj@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
- <20231212115151.20016-6-quic_luoj@quicinc.com>
-Message-Id: <170238748395.1554206.8758426127604170355.robh@kernel.org>
-Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document
- ipq5332 platform
-Date:   Tue, 12 Dec 2023 07:24:43 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,43 +70,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 11, 2023 at 10:07:53PM +0800, Yu Kuai wrote:
+> +static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
+> +{
+> +	/*
+> +	 * If the buffer has the write error flag, data was failed to write
+> +	 * out in the block. In this case, set buffer uptodate to prevent
+> +	 * reading old data.
+> +	 */
+> +	if (buffer_write_io_error(bh))
+> +		set_buffer_uptodate(bh);
+> +	return buffer_uptodate(bh);
+> +}
 
-On Tue, 12 Dec 2023 19:51:50 +0800, Luo Jie wrote:
-> Update the yaml file for the new DTS properties.
-> 
-> 1. cmn-reference-clock for the CMN PLL source clock select.
-> 2. clock-frequency for MDIO clock frequency config.
-> 3. add uniphy AHB & SYS GCC clocks.
-> 4. add reset-gpios for MDIO bus level reset.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
->  .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++++++++++-
->  1 file changed, 153 insertions(+), 4 deletions(-)
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml: cmn-reference-clock: missing type definition
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231212115151.20016-6-quic_luoj@quicinc.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+So - risking this blows up into a lot of nasty work: Why do we even
+clear the uptodate flag on write errors?  Doing so makes not sense to
+me as the data isn't any less uptodate just because we failed to write
+it..
 
