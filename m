@@ -2,58 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E14EA80EC8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA5A80EC8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376320AbjLLMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S1376325AbjLLMwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376286AbjLLMvZ (ORCPT
+        with ESMTP id S1376275AbjLLMwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:51:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D0BEE;
-        Tue, 12 Dec 2023 04:51:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702385491; x=1733921491;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=nwvoHK4/BbCYWnpznMUtYzcmsh8RzsAvso4cJ/Fvmtk=;
-  b=nuL3nDtgrQHT+0e+as+GcLlS98kBhURYWpRACpWwYUETNOPsncfnQuHA
-   jTHBc6CimgDAYxHy6jYEHQWMGhJtUMZHcsarS1WcBRvgVRJvzBCW3kKl9
-   6NFE4gIpp5hoEReN0R6VpGcIEYN0jXF5BpiLGDeQpXzOHcoaVSWZ8183b
-   qjX2dxpijcaOJyzLNEoSK3u2HKD9+sPsr4ApbXDSdUM17isKcebQSi30a
-   FvUuepWtQUvh/CmW4M9yWP6EkUFn+6bCf1AoN6ZT8tGv2ETGrbruvRRVG
-   kENaInJ3WctlUN9TDw3Oct6nem8zKvqO7WP0yEdQb7p7dQ0g8NdBoS+mo
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="16351912"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="16351912"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 04:51:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="891580629"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="891580629"
-Received: from unknown (HELO amlin-019-225.igk.intel.com) ([10.102.19.225])
-  by fmsmga002.fm.intel.com with ESMTP; 12 Dec 2023 04:51:29 -0800
-From:   Andrii Staikov <andrii.staikov@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrii Staikov <andrii.staikov@intel.com>,
-        Marcin Szycik <marcin.szycik@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>
-Subject: [PATCH iwl-next  v6] ice: Add support for packet mirroring using hardware in switchdev mode
-Date:   Tue, 12 Dec 2023 13:51:26 +0100
-Message-Id: <20231212125126.3297556-1-andrii.staikov@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Dec 2023 07:52:05 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B42AC;
+        Tue, 12 Dec 2023 04:52:11 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d9dbe224bbso4144293a34.2;
+        Tue, 12 Dec 2023 04:52:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702385531; x=1702990331; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OiQLT1KyS2c/6FByDfn019uWStgZcMlHLm0iys4Bj8I=;
+        b=SiYFIbidN6gWbF2HZKrl3Z836W08qISpmsT4CNrXhzdBwT0S8ZhWcEqXucDGjDDPPN
+         F9mDfV/XdvHwIcaoJAl0HatcgzHVAR1P+qoTa1HZlx0EvdOo7YWvN3VIggS9BUGLIj75
+         VvwTKFDh5UJAWrx16A3W3ldyhtyImhOQ5bCuFf42kl2wFMyyWVrIXayc5n4kt5EXWV9Y
+         AeDbvlQtk5SrOQgFGeXZrG7h7zTqGsHO23vjGAFaCVH6Iva8+2RRavKfh+t6JxoryIzo
+         GfCVw6HdT7qw5vD22MaNXahdiG915RSR0J+JUusoHCa+aLiEqZ3FTeKwPaARs0CrnH80
+         p+Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702385531; x=1702990331;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OiQLT1KyS2c/6FByDfn019uWStgZcMlHLm0iys4Bj8I=;
+        b=LfR9ThmVN6S76nQTC67UDTg1lPLeUodstXwqESEih5GTyWuxPIAnpwQz2yAc3LZvla
+         urU5boa4v++VOj2A50peGEwe4iYHxLdkvBemfx/CAqE2suhQZL/sgBfukuNPoFzyANwH
+         C6Vy8XXw1lFJTT1+OY7ubKZd7/WYzUlG9XSo7nk0pvA/B3kasIOfzcYyDaxYE5849KFZ
+         MYna2Rxwd0wGTTwzE+D90nMJg/UnGDEMFvitr3gYPE5qQW0QgbbY2jufzDei3nRfd78W
+         6aEoUGjh36crXDZFTJ2AxCIb22L4RSC8huy73Z3wzfjZv3rJq182Kg1I4FHzEOc/HVyJ
+         IPkQ==
+X-Gm-Message-State: AOJu0YxnZGbuKrLLT0urZDSRiDMDcTtA03uz73i5iY3FX41c/n45XsLX
+        d+Q/uuINwcq3WuU1V9v7nW6lVthdzQt/L5S8t0c=
+X-Google-Smtp-Source: AGHT+IHKWrsXy01ldugdSTL8sfEzcukqIIBEOBmZkVoJSFLBDXhY2XL4cl7TiAlUdAuH1cYperFkv+OqfPifykaYFLM=
+X-Received: by 2002:a05:6871:d102:b0:1fb:75a:de63 with SMTP id
+ pi2-20020a056871d10200b001fb075ade63mr6447333oac.81.1702385531019; Tue, 12
+ Dec 2023 04:52:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231204144429.45197-1-linux.amoon@gmail.com> <20231204144429.45197-2-linux.amoon@gmail.com>
+ <20231206135311.GA2043711-robh@kernel.org> <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
+ <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org> <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+ <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org> <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
+ <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org> <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
+ <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org> <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
+ <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org> <CANAwSgRLORHb6qiHWRBR0tMbYB=O=gwatuGhk72SwZyhYMopCw@mail.gmail.com>
+ <d2962ffb-badd-44a6-bdcc-53e15d4a4379@linaro.org>
+In-Reply-To: <d2962ffb-badd-44a6-bdcc-53e15d4a4379@linaro.org>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Tue, 12 Dec 2023 18:21:55 +0530
+Message-ID: <CANAwSgSpuh-+HFYg2UTgX27SHFyCBddV46MgKakiSCOtFX4+aw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,173 +83,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switchdev mode allows to add mirroring rules to mirror incoming and
-outgoing packets to the interface's port representor. Previously, this was
-available only using software functionality. Add possibility to offload
-this functionality to the NIC hardware.
+Hi Krzysztof,
 
-Introduce ICE_MIRROR_PACKET filter action to the ice_sw_fwd_act_type enum
-to identify the desired action and pass it to the hardware as well as the
-VSI to mirror.
+On Tue, 12 Dec 2023 at 17:22, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 12/12/2023 12:37, Anand Moon wrote:
+> >
+> > Here is the list of warnings I observed with this patch
+> >
+> >   DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra186-xusb.example.dtb
+> > /home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+> > hub@1: 'vdd-supply' is a required property
+>
+> You always require the property, but it is not valid for some devices.
+> Just require it only where it is applicable (in if:then: clause).
+>
+I had already done this check many times before.
+my v6 original patch was doing the same and it passed all the tests
+but since I updated the required field it not parsing correctly.
 
-Example of tc mirror command using hardware:
-  tc filter add dev ens1f0np0 ingress protocol ip prio 1 flower src_mac
-  b4:96:91:a5:c7:a7 skip_sw action mirred egress mirror dev eth1
+required:
+  - compatible
+  - reg
+  - vdd-supply
+  - reset-gpios
+  - peer-hub
 
-ens1f0np0 - PF
-b4:96:91:a5:c7:a7 - source MAC address
-eth1 - PR of a VF to mirror to
+>
+> >         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+> > /home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+> > hub@1: 'reset-gpios' is a required property
+> >         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+> > /home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+> > hub@1: 'peer-hub' is a required property
+>
+> ...
+>
+> >>> +  - if:
+> >>> +      properties:
+> >>> +        compatible:
+> >>> +          contains:
+> >>> +            enum:
+> >>> +              - usb5e3,610
+> >>> +              - usb5e3,620
+> >>> +    then:
+> >>> +      properties:
+> >>> +        peer-hub: true
+> >>> +        vdd-supply: true
+> >>
+> >> Drop this if:, redundant.
+> >>
+> > No, this does not resolve the above issue.
+>
+> It shouldn't resolve it, not related.
+>
+ok
+>
+> Best regards,
+> Krzysztof
 
-Co-developed-by: Marcin Szycik <marcin.szycik@intel.com>
-Signed-off-by: Marcin Szycik <marcin.szycik@intel.com>
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Signed-off-by: Andrii Staikov <andrii.staikov@intel.com>
----
-v1 -> v2: no need for changes in ice_add_tc_flower_adv_fltr()
-v2 -> v3: add another if branch for netif_is_ice(act->dev) || 
-ice_is_tunnel_supported(act->dev) for FLOW_ACTION_MIRRED action and 
-add direction rules for filters
-v3 -> v4: move setting mirroring into dedicated function
-ice_tc_setup_mirror_action()
-v4 -> v5: Fix packets not mirroring from VF to VF by changing
-ICE_ESWITCH_FLTR_INGRESS to ICE_ESWITCH_FLTR_EGRESS where needed
-v5 -> v6: Additionally fix some tags 
----
- drivers/net/ethernet/intel/ice/ice_switch.c | 25 +++++++++----
- drivers/net/ethernet/intel/ice/ice_tc_lib.c | 41 +++++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_type.h   |  1 +
- 3 files changed, 60 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_switch.c b/drivers/net/ethernet/intel/ice/ice_switch.c
-index ee19f3aa3d19..4af1ce2657ad 100644
---- a/drivers/net/ethernet/intel/ice/ice_switch.c
-+++ b/drivers/net/ethernet/intel/ice/ice_switch.c
-@@ -6065,6 +6065,7 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 	      rinfo->sw_act.fltr_act == ICE_FWD_TO_Q ||
- 	      rinfo->sw_act.fltr_act == ICE_FWD_TO_QGRP ||
- 	      rinfo->sw_act.fltr_act == ICE_DROP_PACKET ||
-+	      rinfo->sw_act.fltr_act == ICE_MIRROR_PACKET ||
- 	      rinfo->sw_act.fltr_act == ICE_NOP)) {
- 		status = -EIO;
- 		goto free_pkt_profile;
-@@ -6077,9 +6078,11 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 	}
- 
- 	if (rinfo->sw_act.fltr_act == ICE_FWD_TO_VSI ||
--	    rinfo->sw_act.fltr_act == ICE_NOP)
-+	    rinfo->sw_act.fltr_act == ICE_MIRROR_PACKET ||
-+	    rinfo->sw_act.fltr_act == ICE_NOP) {
- 		rinfo->sw_act.fwd_id.hw_vsi_id =
- 			ice_get_hw_vsi_num(hw, vsi_handle);
-+	}
- 
- 	if (rinfo->src_vsi)
- 		rinfo->sw_act.src = ice_get_hw_vsi_num(hw, rinfo->src_vsi);
-@@ -6115,12 +6118,15 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 		status = -ENOMEM;
- 		goto free_pkt_profile;
- 	}
--	if (!rinfo->flags_info.act_valid) {
--		act |= ICE_SINGLE_ACT_LAN_ENABLE;
--		act |= ICE_SINGLE_ACT_LB_ENABLE;
--	} else {
--		act |= rinfo->flags_info.act & (ICE_SINGLE_ACT_LAN_ENABLE |
--						ICE_SINGLE_ACT_LB_ENABLE);
-+
-+	if (rinfo->sw_act.fltr_act != ICE_MIRROR_PACKET) {
-+		if (!rinfo->flags_info.act_valid) {
-+			act |= ICE_SINGLE_ACT_LAN_ENABLE;
-+			act |= ICE_SINGLE_ACT_LB_ENABLE;
-+		} else {
-+			act |= rinfo->flags_info.act & (ICE_SINGLE_ACT_LAN_ENABLE |
-+							ICE_SINGLE_ACT_LB_ENABLE);
-+		}
- 	}
- 
- 	switch (rinfo->sw_act.fltr_act) {
-@@ -6147,6 +6153,11 @@ ice_add_adv_rule(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups,
- 		act |= ICE_SINGLE_ACT_VSI_FORWARDING | ICE_SINGLE_ACT_DROP |
- 		       ICE_SINGLE_ACT_VALID_BIT;
- 		break;
-+	case ICE_MIRROR_PACKET:
-+		act |= ICE_SINGLE_ACT_OTHER_ACTS;
-+		act |= FIELD_PREP(ICE_SINGLE_ACT_VSI_ID_M,
-+				  rinfo->sw_act.fwd_id.hw_vsi_id);
-+		break;
- 	case ICE_NOP:
- 		act |= FIELD_PREP(ICE_SINGLE_ACT_VSI_ID_M,
- 				  rinfo->sw_act.fwd_id.hw_vsi_id);
-diff --git a/drivers/net/ethernet/intel/ice/ice_tc_lib.c b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-index 08d3bbf4b44c..b890410a2bc0 100644
---- a/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_tc_lib.c
-@@ -689,6 +689,41 @@ ice_tc_setup_drop_action(struct net_device *filter_dev,
- 	return 0;
- }
- 
-+static int ice_tc_setup_mirror_action(struct net_device *filter_dev,
-+				      struct ice_tc_flower_fltr *fltr,
-+				      struct net_device *target_dev)
-+{
-+	struct ice_repr *repr;
-+
-+	fltr->action.fltr_act = ICE_MIRROR_PACKET;
-+
-+	if (ice_is_port_repr_netdev(filter_dev) &&
-+	    ice_is_port_repr_netdev(target_dev)) {
-+		repr = ice_netdev_to_repr(target_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_EGRESS;
-+	} else if (ice_is_port_repr_netdev(filter_dev) &&
-+		   ice_tc_is_dev_uplink(target_dev)) {
-+		repr = ice_netdev_to_repr(filter_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi->back->eswitch.uplink_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_EGRESS;
-+	} else if (ice_tc_is_dev_uplink(filter_dev) &&
-+		   ice_is_port_repr_netdev(target_dev)) {
-+		repr = ice_netdev_to_repr(target_dev);
-+
-+		fltr->dest_vsi = repr->src_vsi;
-+		fltr->direction = ICE_ESWITCH_FLTR_INGRESS;
-+	} else {
-+		NL_SET_ERR_MSG_MOD(fltr->extack,
-+				   "Unsupported netdevice in switchdev mode");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int ice_eswitch_tc_parse_action(struct net_device *filter_dev,
- 				       struct ice_tc_flower_fltr *fltr,
- 				       struct flow_action_entry *act)
-@@ -710,6 +745,12 @@ static int ice_eswitch_tc_parse_action(struct net_device *filter_dev,
- 
- 		break;
- 
-+	case FLOW_ACTION_MIRRED:
-+		err = ice_tc_setup_mirror_action(filter_dev, fltr, act->dev);
-+		if (err)
-+			return err;
-+		break;
-+
- 	default:
- 		NL_SET_ERR_MSG_MOD(fltr->extack, "Unsupported action in switchdev mode");
- 		return -EINVAL;
-diff --git a/drivers/net/ethernet/intel/ice/ice_type.h b/drivers/net/ethernet/intel/ice/ice_type.h
-index 5a80158e49ed..20c014e9b6c0 100644
---- a/drivers/net/ethernet/intel/ice/ice_type.h
-+++ b/drivers/net/ethernet/intel/ice/ice_type.h
-@@ -1055,6 +1055,7 @@ enum ice_sw_fwd_act_type {
- 	ICE_FWD_TO_Q,
- 	ICE_FWD_TO_QGRP,
- 	ICE_DROP_PACKET,
-+	ICE_MIRROR_PACKET,
- 	ICE_NOP,
- 	ICE_INVAL_ACT
- };
--- 
-2.25.1
-
+Thanks
+-Anand
