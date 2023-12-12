@@ -2,80 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8FB80E789
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E371B80E704
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbjLLI4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S231272AbjLLJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346082AbjLLIzg (ORCPT
+        with ESMTP id S229449AbjLLJD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:55:36 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9103FDB;
-        Tue, 12 Dec 2023 00:55:42 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC4rwvS020478;
-        Tue, 12 Dec 2023 08:55:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=0+aSQB4y9lrRPlWL2Rgesic27y0Sb8FdnkQsRUodTSY=; b=fF
-        KzsnRvOGNt4htBIyPRnPooyMAPunIVF4UNQaNzWNLcXY4gAkL0McK47vfM/wdeSG
-        1rvmHy+BFbBMvnYCPhgWA7FsNFTWbPkT8FZ0ZTic0j7vr5rOJHAUIlhfEYyoxI+F
-        UedlkzvQluMLFObiZwbF1kj+RbbCMFo2WlJpMQ+r2CGaxaK/o+xopqnr8FNLX70b
-        JXNLBL5ePGIujy8XqskDYaNzysz+ED0zV+FRiDpbxpT3GaXif/PCClMwbIV7gWSO
-        CDfDsxb0jp45Gli08OX+5tIBnGSGwouZllHAS1Zk3mkjdTRJsO7wswNj1FXWDuL9
-        +U+bzkZDNCI/xApEsxuQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxctary24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 08:55:33 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BC8tWLv008268
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 08:55:32 GMT
-Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 12 Dec 2023 00:55:27 -0800
-From:   Om Prakash Singh <quic_omprsing@quicinc.com>
-To:     <quic_omprsing@quicinc.com>
-CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-Subject: [PATCH V1 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
-Date:   Tue, 12 Dec 2023 14:24:53 +0530
-Message-ID: <20231212085454.1238896-3-quic_omprsing@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231212085454.1238896-1-quic_omprsing@quicinc.com>
-References: <20231212085454.1238896-1-quic_omprsing@quicinc.com>
+        Tue, 12 Dec 2023 04:03:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E167C7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:04:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647BEC433C9;
+        Tue, 12 Dec 2023 09:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702371842;
+        bh=gpWxqrQqtPBdeOZQDVvCLZQiG6hUIYYXSz5LWak22Mc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lDHj8OvOCxDjQ3VWmnU9FUBbW2KpaOgm5edsWgEbA/U2BV//dLI9wch27rQ+ZAjaT
+         JJoELrQvE1VZkWAdCgqr07fLM04izHCjldTPmuoWoke1JiZYefkTvkb1OIG8EExrXV
+         uw9FT4JYykeuZcZ6HS+QOCgSruWTbFSRit1/1bN+a5EqlxaH49P4BX1EQT+/tYl7Qs
+         5rogMk424jJBZyh6b603CztXPjHfU8KBppPAV1OgschXpKg912g7bp+OzUNq5sODqh
+         GuTErg4iG2JeCdJ6bv2VnMUidiu+g90G/iOXxtELqtjLPVoB8aAs1dO7dIXp9YSK7o
+         GtRflju1Eq1JQ==
+From:   Naveen N Rao <naveen@kernel.org>
+To:     <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH] selftests/ftrace: Add test to exercize function tracer across cpu hotplug
+Date:   Tue, 12 Dec 2023 14:26:07 +0530
+Message-ID: <20231212085607.1213210-1-naveen@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: cfgmsTnu2Ir3xJDSzZw873Q3dUxbX3k2
-X-Proofpoint-ORIG-GUID: cfgmsTnu2Ir3xJDSzZw873Q3dUxbX3k2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=727 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312120070
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,46 +49,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the QCE and Crypto BAM DMA nodes.
+Add a test to exercize cpu hotplug with the function tracer active to
+ensure that sensitive functions in idle path are excluded from being
+traced. This helps catch issues such as the one fixed by commit
+4b3338aaa74d ("powerpc/ftrace: Fix stack teardown in ftrace_no_trace").
 
-Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+Signed-off-by: Naveen N Rao <naveen@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ .../ftrace/test.d/ftrace/func_hotplug.tc      | 30 +++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 66f1eb83cca7..7b705df21f4e 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2272,6 +2272,28 @@ ipa: ipa@1e40000 {
- 			status = "disabled";
- 		};
- 
-+		cryptobam: dma-controller@1dc4000 {
-+			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
-+			reg = <0x0 0x01dc4000 0x0 0x28000>;
-+			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			qcom,controlled-remotely;
-+			iommus = <&apps_smmu 0x4E4 0x0011>,
-+				 <&apps_smmu 0x4E6 0x0011>;
-+		};
+diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
+new file mode 100644
+index 000000000000..49731a2b5c23
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
+@@ -0,0 +1,30 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: ftrace - function trace across cpu hotplug
++# requires: function:tracer
 +
-+		crypto: crypto@1dfa000 {
-+			compatible = "qcom,sc7280-qce", "qcom,sm8150-qce", "qcom,qce";
-+			reg = <0x0 0x01dfa000 0x0 0x6000>;
-+			dmas = <&cryptobam 4>, <&cryptobam 5>;
-+			dma-names = "rx", "tx";
-+			iommus = <&apps_smmu 0x4E4 0x0011>,
-+				 <&apps_smmu 0x4E4 0x0011>;
-+			interconnects = <&aggre2_noc MASTER_CRYPTO 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "memory";
-+		};
++if ! which nproc ; then
++  nproc() {
++    ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l
++  }
++fi
 +
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex";
- 			reg = <0 0x01f40000 0 0x20000>;
++NP=`nproc`
++
++if [ $NP -eq 1 ] ;then
++  echo "We can not test cpu hotplug in UP environment"
++  exit_unresolved
++fi
++
++echo 0 > tracing_on
++echo > trace
++: "Set CPU1 offline/online with function tracer enabled"
++echo function > current_tracer
++echo 1 > tracing_on
++(echo 0 > /sys/devices/system/cpu/cpu1/online)
++(echo "forked"; sleep 1)
++(echo 1 > /sys/devices/system/cpu/cpu1/online)
++echo 0 > tracing_on
++
++: "Check CPU1 events are recorded"
++grep -q -e "\[001\]" trace
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-2.25.1
+2.43.0
 
