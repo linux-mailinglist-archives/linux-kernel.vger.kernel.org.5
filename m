@@ -2,206 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62C480EFBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C233180EFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376489AbjLLPKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S1376706AbjLLPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbjLLPKf (ORCPT
+        with ESMTP id S1376681AbjLLPK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:10:35 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61D64EB;
-        Tue, 12 Dec 2023 07:10:41 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DFBB143D;
-        Tue, 12 Dec 2023 07:11:27 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB6293F738;
-        Tue, 12 Dec 2023 07:10:35 -0800 (PST)
-Message-ID: <b9165c97-1097-6bc8-751a-2bc2ac464edb@arm.com>
-Date:   Tue, 12 Dec 2023 15:10:31 +0000
+        Tue, 12 Dec 2023 10:10:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC67D3;
+        Tue, 12 Dec 2023 07:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702393861; x=1733929861;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dLwFIlq58MNhpi4UGL1OxPkTqyvcNKLBZUifmxhXGb0=;
+  b=Ik1JLdq8z6jd/uAJuSEFVQT3LXhgeUDZ/BMhbxKf93ejHMCf9gZdohK6
+   fn6g6/aIpXRdDxc0hiSrqCBT0hzV+V7OlQP1KaxqdqSplY5zAYrBYYm9D
+   96c1w4FrEfgEsBk5u3U+QErvIhLIGTpobSCwZSrIOEhsZwTqqcxnozOnM
+   c7Y3YNRG8SucHm/n2Ho7PveI9yJGzaqndTeuJcmEZpctkEYuygTaQdePa
+   /A0CqlUN29B0bXmhPxC0iO41NZiJ7olbgUiZkgk8OFWHo85gFBiAUlgF9
+   I9HPLwlZKhTvXU11pNP4AO+6nZf2769QrasqwTMZXhsoBY/zpEtck39y5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="374325642"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="374325642"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 07:10:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="896952942"
+X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
+   d="scan'208";a="896952942"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 12 Dec 2023 07:10:47 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 52C193D2; Tue, 12 Dec 2023 17:10:46 +0200 (EET)
+Date:   Tue, 12 Dec 2023 17:10:46 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Sanath S <Sanath.S@amd.com>
+Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
+        michael.jamet@intel.com, YehezkelShB@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] thunderbolt: Teardown tunnels and reset downstream
+ ports created by boot firmware
+Message-ID: <20231212151046.GF1074920@black.fi.intel.com>
+References: <20231212140047.2021496-1-Sanath.S@amd.com>
+ <20231212140047.2021496-3-Sanath.S@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 09/14] perf cpumap: Clean up use of
- perf_cpu_map__has_any_cpu_or_is_empty
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-10-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231129060211.1890454-10-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231212140047.2021496-3-Sanath.S@amd.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 29/11/2023 06:02, Ian Rogers wrote:
-> Most uses of what was perf_cpu_map__empty but is now
-> perf_cpu_map__has_any_cpu_or_is_empty want to do something with the
-> CPU map if it contains CPUs. Replace uses of
-> perf_cpu_map__has_any_cpu_or_is_empty with other helpers so that CPUs
-> within the map can be handled.
+On Tue, Dec 12, 2023 at 07:30:47PM +0530, Sanath S wrote:
+> Boot firmware might have created tunnels of its own. Since we cannot
+> be sure they are usable for us. Tear them down and reset the ports
+> to handle it as a new hotplug.
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> Since we teardown the tunnels, Discovering of tunnels is not needed.
 
-Reviewed-by: James Clark <james.clark@arm.com>
-
-> ---
->  tools/perf/builtin-c2c.c   | 6 +-----
->  tools/perf/builtin-stat.c  | 9 ++++-----
->  tools/perf/util/auxtrace.c | 4 ++--
->  tools/perf/util/record.c   | 2 +-
->  tools/perf/util/stat.c     | 2 +-
->  5 files changed, 9 insertions(+), 14 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index f78eea9e2153..ef7ed53a4b4e 100644
-> --- a/tools/perf/builtin-c2c.c
-> +++ b/tools/perf/builtin-c2c.c
-> @@ -2319,11 +2319,7 @@ static int setup_nodes(struct perf_session *session)
->  
->  		nodes[node] = set;
->  
-> -		/* empty node, skip */
-> -		if (perf_cpu_map__has_any_cpu_or_is_empty(map))
-> -			continue;
-> -
-> -		perf_cpu_map__for_each_cpu(cpu, idx, map) {
-> +		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
->  			__set_bit(cpu.cpu, set);
->  
->  			if (WARN_ONCE(cpu2node[cpu.cpu] != -1, "node/cpu topology bug"))
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 3303aa20f326..f583027a0639 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1316,10 +1316,9 @@ static int cpu__get_cache_id_from_map(struct perf_cpu cpu, char *map)
->  	 * be the first online CPU in the cache domain else use the
->  	 * first online CPU of the cache domain as the ID.
->  	 */
-> -	if (perf_cpu_map__has_any_cpu_or_is_empty(cpu_map))
-> +	id = perf_cpu_map__min(cpu_map).cpu;
-> +	if (id == -1)
->  		id = cpu.cpu;
-> -	else
-> -		id = perf_cpu_map__cpu(cpu_map, 0).cpu;
->  
->  	/* Free the perf_cpu_map used to find the cache ID */
->  	perf_cpu_map__put(cpu_map);
-> @@ -1622,7 +1621,7 @@ static int perf_stat_init_aggr_mode(void)
->  	 * taking the highest cpu number to be the size of
->  	 * the aggregation translate cpumap.
->  	 */
-> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
-> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(evsel_list->core.user_requested_cpus))
->  		nr = perf_cpu_map__max(evsel_list->core.user_requested_cpus).cpu;
->  	else
->  		nr = 0;
-> @@ -2289,7 +2288,7 @@ int process_stat_config_event(struct perf_session *session,
->  
->  	perf_event__read_stat_config(&stat_config, &event->stat_config);
->  
-> -	if (perf_cpu_map__has_any_cpu_or_is_empty(st->cpus)) {
-> +	if (perf_cpu_map__is_empty(st->cpus)) {
->  		if (st->aggr_mode != AGGR_UNSET)
->  			pr_warning("warning: processing task data, aggregation mode not set\n");
->  	} else if (st->aggr_mode != AGGR_UNSET) {
-> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> index 3684e6009b63..6b1d4bafad59 100644
-> --- a/tools/perf/util/auxtrace.c
-> +++ b/tools/perf/util/auxtrace.c
-> @@ -174,7 +174,7 @@ void auxtrace_mmap_params__set_idx(struct auxtrace_mmap_params *mp,
->  				   struct evlist *evlist,
->  				   struct evsel *evsel, int idx)
->  {
-> -	bool per_cpu = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
-> +	bool per_cpu = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
->  
->  	mp->mmap_needed = evsel->needs_auxtrace_mmap;
->  
-> @@ -648,7 +648,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
->  
->  static int evlist__enable_event_idx(struct evlist *evlist, struct evsel *evsel, int idx)
->  {
-> -	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus);
-> +	bool per_cpu_mmaps = !perf_cpu_map__has_any_cpu(evlist->core.user_requested_cpus);
->  
->  	if (per_cpu_mmaps) {
->  		struct perf_cpu evlist_cpu = perf_cpu_map__cpu(evlist->core.all_cpus, idx);
-> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-> index 87e817b3cf7e..e867de8ddaaa 100644
-> --- a/tools/perf/util/record.c
-> +++ b/tools/perf/util/record.c
-> @@ -237,7 +237,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
->  
->  	evsel = evlist__last(temp_evlist);
->  
-> -	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
-> +	if (!evlist || perf_cpu_map__is_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
->  		struct perf_cpu_map *cpus = perf_cpu_map__new_online_cpus();
->  
->  		if (cpus)
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index 012c4946b9c4..915808a6211a 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -315,7 +315,7 @@ static int check_per_pkg(struct evsel *counter, struct perf_counts_values *vals,
->  	if (!counter->per_pkg)
->  		return 0;
->  
-> -	if (perf_cpu_map__has_any_cpu_or_is_empty(cpus))
-> +	if (perf_cpu_map__is_any_cpu_or_is_empty(cpus))
->  		return 0;
->  
->  	if (!mask) {
+Let's leave this for non-USB4 (That's TBT1-3) as we agreed.
