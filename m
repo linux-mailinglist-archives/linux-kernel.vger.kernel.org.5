@@ -2,38 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 493EE80F981
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A406F80F989
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377235AbjLLVg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        id S1377608AbjLLVhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235148AbjLLVgZ (ORCPT
+        with ESMTP id S1377563AbjLLVhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:36:25 -0500
+        Tue, 12 Dec 2023 16:37:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644B3CE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:36:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDC7C433C8;
-        Tue, 12 Dec 2023 21:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702416990;
-        bh=/mZFMmbWaIm5/HG4UoTy7RZb9sTq66KkdKm/68yp9Og=;
-        h=Date:From:To:Subject:From;
-        b=CjFGQhrCbPsNMvZF5qKzcDci+RusrCauNZcUWHaVs8F00AiDVoxg4HjtYjzwVU6zz
-         UUI5F0unIw13sOPkQUd+N2D3E6ofS1pYpoL/oogcM5P3KI3k/p9G8bkqeXRXoSSKr+
-         CaGnv+HS7noN4m4YGY1xJx4OsJy2hGYADLlPwX6c=
-Date:   Tue, 12 Dec 2023 16:36:28 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     users@linux.kernel.org, linux-kernel@vger.kernel.org
-Subject: PSA: final vger mailing list migration: Thu, Dec 14, 11AM PST (1900
- UTC)
-Message-ID: <20231212-unselfish-real-myna-67e444@lemur>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15E4AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:37:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D06C433C9;
+        Tue, 12 Dec 2023 21:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702417027;
+        bh=YG9YY9iEszGGckGfEsHdcd7GRr37WZ5+YKaXd/4SyBA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oBWPCFgld2/BjYDNaG8jaEnt7Cx9tpnd7KcYCtbnA5rD52Cy82NwBE9XJAGFsqCM3
+         U6utTvXQcKjl6EnuRdn5XM+B2DZOrua3ymFoTqGqxoCjxOrqurFzf5It6UbOfaXIUZ
+         KkNa23uvx7WyLkk7RRt02tVKDrnAW7xXwbcQ48gvRps2teHFuNi8A3f9D0mjUvm6Je
+         0S2d4DZjkdycE2IpzxEdbrn5vVRnZlG14rsmR30Qgp7JjcyARWj3zyuoiVvnG8FYGA
+         oEs1GshsyyENWFrnzZO+IC6VpHwflKZVK9pwKzW66VYsqqrAQkujmqJA3zZ4wjts5m
+         yGrB/+QUyHozQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Yuan Yao <yuan.yao@intel.com>, Kai Huang <kai.huang@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: tdx: hide unused tdx_dump_mce_info()
+Date:   Tue, 12 Dec 2023 22:36:50 +0100
+Message-Id: <20231212213701.4174806-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rdsprqjph6ynk4ba"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -44,63 +53,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---rdsprqjph6ynk4ba
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+When TDX is enabled but MCE is not, the tdx_dump_mce_info() function
+fails to link:
 
-Hello, all:
+ld.lld: error: undefined symbol: mce_is_memory_error
+ld.lld: error: undefined symbol: mce_usable_address
+>>> referenced by usercopy_64.c
+>>>               vmlinux.o:(tdx_dump_mce_info)
 
-Over the past few months we've migrated all of the vger.kernel.org mailing
-lists, with the exception of the Big One (linux-kernel, aka LKML). This list
-alone is responsible for about 80% of all vger mailing list traffic, so we
-left it for the last.
+In this configuration, there is also no caller for the function, so
+avoid the problem by enclosing it in an #ifdef block.
 
-This Thursday, December 14, at 11AM Pacific (19:00 UTC), we will switch the MX
-record for vger to point to the new location (subspace.kernel.org), which will
-complete the mailing list migration from the legacy vger server to the new
-infrastructure.
+Fixes: 45f31973967d ("x86/mce: Differentiate real hardware #MCs from TDX erratum ones")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/virt/vmx/tdx/tdx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-# What to expect on the migration day
+diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+index 13df68ef40b5..3af7a7e2d8d0 100644
+--- a/arch/x86/virt/vmx/tdx/tdx.c
++++ b/arch/x86/virt/vmx/tdx/tdx.c
+@@ -1245,6 +1245,7 @@ int tdx_enable(void)
+ }
+ EXPORT_SYMBOL_GPL(tdx_enable);
+ 
++#ifdef CONFIG_X86_MCE
+ static bool is_pamt_page(unsigned long phys)
+ {
+ 	struct tdmr_info_list *tdmr_list = &tdx_tdmr_list;
+@@ -1344,6 +1345,7 @@ const char *tdx_dump_mce_info(struct mce *m)
+ 
+ 	return "TDX private memory error. Possible kernel bug.";
+ }
++#endif
+ 
+ static __init int record_keyid_partitioning(u32 *tdx_keyid_start,
+ 					    u32 *nr_tdx_keyids)
+-- 
+2.39.2
 
-This is a non-disruptive process and there should be no interruption in
-message delivery. However, there will be a period of about an hour when the
-archives on lore.kernel.org/linux-kernel will not be updated due to the
-backend archive being moved to the new location. Any messages received during
-this period will be added to the archive after the move is completed.
-
-# Saying goodbye to majordomo
-
-The most notable change will be the switch away from majordomo to mlmmj's
-native subscription mechanism, described here:
-
-https://subspace.kernel.org/subscribing.html
-
-Any messages sent to majordomo@vger.kernel.org after the migration on Thursday
-will generate an automatic bounce explaining what the new process is for
-subscribing and unsubscribing.
-
-# What is subspace running?
-
-If you are curious what software is running on subspace, please see this page:
-
-https://subspace.kernel.org/software.html
-
-# Questions, comments?
-
-If you have any questions or concerns, please reply to this message.
-
--K
-
---rdsprqjph6ynk4ba
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQR2vl2yUnHhSB5njDW2xBzjVmSZbAUCZXjSXAAKCRC2xBzjVmSZ
-bNyGAP4jwwPUr98yI9ZLc38FdkpIdYmEhk9oSsGqVCXlGJDZtAD8DI1QGF1JUrBf
-FgyJ8LKD67Y9+k+X8DPHmuOlezcCQg4=
-=k9ie
------END PGP SIGNATURE-----
-
---rdsprqjph6ynk4ba--
