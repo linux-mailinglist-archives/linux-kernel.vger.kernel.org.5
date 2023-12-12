@@ -2,98 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FC580F3EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F29380F3EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbjLLRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
+        id S232834AbjLLRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:03:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbjLLRCP (ORCPT
+        with ESMTP id S232572AbjLLRDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:02:15 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E559599;
-        Tue, 12 Dec 2023 09:02:20 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-333536432e0so5476996f8f.3;
-        Tue, 12 Dec 2023 09:02:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702400539; x=1703005339; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fLwDZxq0b8I+zmZeUBO2n0BALERT5UHyciRjG8Wc1G4=;
-        b=MPKJNBHUhORZVs9VtsJZYWjfk9JQAHQNntf0KcWFo35llIeoAN5PkouI6JqvNE5ooY
-         9eQ+Xo9HKHWW617+XdMo2sqr2m4Av2W+gwCwwPZBFpYwt9ojWkvTcmH1ygaOfytj0Zjj
-         S9qKaMAppzYIjyGDoF0+jyWHHt9wNeh9YzFQ7++XSFNzAKLyHwx92qVP1CC1u7khO8Np
-         H1j23qtdjMBXphbOoyYhYld8KhyQqsM2QYXSTy++WGUtBS1/+/ZvqttBYiJQmWgagvRH
-         09jG1cgJN6XiLS8A+xKLdWUFP2q14JPlK/Pcq0mN9PBP2WGRUqFjsNuV6ruzkX/STmLM
-         FSaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702400539; x=1703005339;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fLwDZxq0b8I+zmZeUBO2n0BALERT5UHyciRjG8Wc1G4=;
-        b=QWlZdzNiD7Pa80x2OxzRKEHqG1aLaEkXQOEz987zJ6JlXxJ0SbHaacG02wIPUOeSUg
-         KKbras/I4AOfz0yjNOgfxtesIZACcGBrBygSuCS2HFnekptmc3bzUIgcLJugdRRkpoja
-         B8XLFm1tg6CTl7PI1e7I8/OqMFzpEZmq5XHmQticTmYwrn+O3puQuXtcxdkTKc8hPMSs
-         EpYowAij8SidXzBV+KcEiud8SYr5+548hOifNZNJnPGJFV5dKWDJH4vufCvJDxVT4TJ5
-         P2cVTTgvRZP7yjWiCuoHuaBRcKlG9+I9bMnucCrjx3LKpL1MbFjzSPr2u1Dun6xLnH2h
-         iojg==
-X-Gm-Message-State: AOJu0YyLNrLT4R8M2AxMG+OmkC9c4S4EMJhxBDVZHZTcHidnJxNJlPWh
-        XN+vshDrEU7DdVi8rbYjBeI=
-X-Google-Smtp-Source: AGHT+IF8g49RZYC1R9EkmOTpw+UgB0GKNMPuPgMa2aCGz1foTtKtOI31Rt229eeqIpcoodz/8LKq3w==
-X-Received: by 2002:a05:600c:2a41:b0:40c:236f:612 with SMTP id x1-20020a05600c2a4100b0040c236f0612mr3369839wme.124.1702400539077;
-        Tue, 12 Dec 2023 09:02:19 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05600c450d00b00405c7591b09sm17238125wmo.35.2023.12.12.09.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:02:18 -0800 (PST)
-Message-ID: <478ebb094a7f306f49db334bcece2e0d87524f77.camel@gmail.com>
-Subject: Re: [PATCH -next] bpf: remove unused function
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev
-Cc:     kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Date:   Tue, 12 Dec 2023 19:02:17 +0200
-In-Reply-To: <20231212005436.103829-1-yang.lee@linux.alibaba.com>
-References: <20231212005436.103829-1-yang.lee@linux.alibaba.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Tue, 12 Dec 2023 12:03:35 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046FF8F;
+        Tue, 12 Dec 2023 09:03:41 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2BBAE40E00CC;
+        Tue, 12 Dec 2023 17:03:38 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Vm7FEEs-_cWK; Tue, 12 Dec 2023 17:03:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702400615; bh=bhGdrNYqkE3/Qchjg60u36U+e6yzbXIMev4JIq22et0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qz/TWsr2SuS+rR9NHM8oG8oRO23j/1hP7zP0koAIDJ8cigbTGJMi1m2CVlCkSg4O7
+         yzfpnlyeeZ4H0zEiF5UExO4iH0hG7goOGgN0i6auEOOoyxNkK1OqppS7wFb17OKFi4
+         vxPvuCMRmQQLluK4kCOzAvdBN1+RZPb3UIsmOJ+u3UlWTU5zft5kq7FSVZQ181fyTm
+         dMurleDtkvRTuEI8Wc23PX6fhhFNYeATvmmFVPqQs3qHIwKyDD1qctfjZ6UNWjUNEi
+         7MeotyBqeUjkbG8v9HYIqkhxiLCtW0lj6/KG5M0AHfpzCWtDDWJOottvj0mv24ONy5
+         4cm7wGcpwo8MRycvT5RPIxvCCVBVVKD/6W22hOJJ+sFG7YYv4Q2olyDETSiAtk/ssQ
+         J+mMzfxEMzYEpksruaro5BpV1nKHL3x2RV5obNWklibXo4HwKS8wmZUePV/0mjm/qn
+         BA3nRWgth3HfEbXYxOKXhe9M6b77u4d43t+/gaiZECI9hDG7KOylcSuj4MVSbz06LR
+         0p2UMW6G2egnJOxYYy+0rvltabYNwkVYQ777nM3XFaiuA77EWx/mWNFfNQTLUsOW8d
+         nBGxEQ+vRuR/Mj4/bR7FtS9PN1bNV7SYzYExdUV0d3aHAJiWEGs4a+M+j6qaGAmoda
+         /SKfuf7xGSNRMf7dTWdEI6YY=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B914040E00CB;
+        Tue, 12 Dec 2023 17:02:54 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 18:02:53 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 21/50] KVM: SEV: Add support to handle AP reset MSR
+ protocol
+Message-ID: <20231212170253.GLZXiSPfJWXfuXzuM9@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-22-michael.roth@amd.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-22-michael.roth@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-12 at 08:54 +0800, Yang Li wrote:
-> The function are defined in the verifier.c file, but not called
-> elsewhere, so delete the unused function.
->=20
-> kernel/bpf/verifier.c:3448:20: warning: unused function 'bt_set_slot'
-> kernel/bpf/verifier.c:3453:20: warning: unused function 'bt_clear_slot'
-> kernel/bpf/verifier.c:3488:20: warning: unused function 'bt_is_slot_set'
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D7714
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+On Mon, Oct 16, 2023 at 08:27:50AM -0500, Michael Roth wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> Add support for AP Reset Hold being invoked using the GHCB MSR protocol,
+> available in version 2 of the GHCB specification.
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/include/asm/sev-common.h |  2 ++
+>  arch/x86/kvm/svm/sev.c            | 56 ++++++++++++++++++++++++++-----
+>  arch/x86/kvm/svm/svm.h            |  1 +
+>  3 files changed, 51 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 93ec8c12c91d..57ced29264ce 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -56,6 +56,8 @@
+>  /* AP Reset Hold */
+>  #define GHCB_MSR_AP_RESET_HOLD_REQ	0x006
+>  #define GHCB_MSR_AP_RESET_HOLD_RESP	0x007
+> +#define GHCB_MSR_AP_RESET_HOLD_RESULT_POS	12
+> +#define GHCB_MSR_AP_RESET_HOLD_RESULT_MASK	GENMASK_ULL(51, 0)
 
-These are unused indeed.
-Looks like calls to these functions were removed in commit:
-41f6f64e6999 ("bpf: support non-r10 register spill/fill to/from stack in pr=
-ecision tracking")
+Align vertically pls.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>  /* GHCB GPA Register */
+>  #define GHCB_MSR_REG_GPA_REQ		0x012
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 6ee925d66648..4f895a7201ed 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -65,6 +65,10 @@ module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
+>  #define sev_es_debug_swap_enabled false
+>  #endif /* CONFIG_KVM_AMD_SEV */
+>  
+> +#define AP_RESET_HOLD_NONE		0
+> +#define AP_RESET_HOLD_NAE_EVENT		1
+> +#define AP_RESET_HOLD_MSR_PROTO		2
+> +
+>  static u8 sev_enc_bit;
+>  static DECLARE_RWSEM(sev_deactivate_lock);
+>  static DEFINE_MUTEX(sev_bitmap_lock);
+> @@ -2594,6 +2598,9 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
+>  
+>  void sev_es_unmap_ghcb(struct vcpu_svm *svm)
+>  {
+> +	/* Clear any indication that the vCPU is in a type of AP Reset Hold */
+> +	svm->sev_es.ap_reset_hold_type = AP_RESET_HOLD_NONE;
+> +
+>  	if (!svm->sev_es.ghcb)
+>  		return;
+>  
+> @@ -2805,6 +2812,22 @@ static int sev_handle_vmgexit_msr_protocol(struct vcpu_svm *svm)
+>  				  GHCB_MSR_INFO_POS);
+>  		break;
+>  	}
+> +	case GHCB_MSR_AP_RESET_HOLD_REQ:
+> +		svm->sev_es.ap_reset_hold_type = AP_RESET_HOLD_MSR_PROTO;
+> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
+> +
+> +		/*
+> +		 * Preset the result to a non-SIPI return and then only set
+> +		 * the result to non-zero when delivering a SIPI.
+> +		 */
+> +		set_ghcb_msr_bits(svm, 0,
+> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_MASK,
+> +				  GHCB_MSR_AP_RESET_HOLD_RESULT_POS);
 
+Yikes, those defines are a mouthful.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
