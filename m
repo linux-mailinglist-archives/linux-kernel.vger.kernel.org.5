@@ -2,117 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4FD80E4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525E080E4E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 08:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjLLHRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 02:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        id S230414AbjLLHTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 02:19:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLHRg (ORCPT
+        with ESMTP id S229449AbjLLHTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 02:17:36 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A98FA1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 23:17:43 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d6b9143782so47545457b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 23:17:43 -0800 (PST)
+        Tue, 12 Dec 2023 02:19:08 -0500
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CAFAB;
+        Mon, 11 Dec 2023 23:19:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702365462; x=1702970262; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TVT/VN6qzSaiQZWjp2ufbT3HoEBo3Ldac4YHEG+4eFk=;
-        b=C8oFOrkrnQig3UG2RTHHrbOkAwi+6+Z0OAGFzr1UBzIyt0jeyZKw1VUoKi8A2dTcko
-         1JTP3x5vAjhP02Y7V9D1L5LNgcIW1I5gJ/AAvhnQm25zR4G7QoaTfVDb0v1qVG58hVYk
-         JthjdyUxtNER8/oAngxbACB7ynYfx3eArKamoJnJ9z4vBR894r4zkhCMqIYZRgkq7Q30
-         jyS1Ay3f6R/ArmHYHlF61x64oycLGVG9KY2MKMM0OObi9bwSHBsIJwbsVdAwwOiwiEoP
-         qKYxWo22qRLZqu/4PK+IJCMkuTSMgPa5nXRJQkJoUqh0qOzuIYTIaS2XkLSASu0HTU9l
-         bhmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702365462; x=1702970262;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TVT/VN6qzSaiQZWjp2ufbT3HoEBo3Ldac4YHEG+4eFk=;
-        b=faCYg7Jqq8jJPqgh57qJ/530MLjtb8TLycXdLLnEtfj14nZoDDmTKnfU3VKyTpCPEh
-         zODjQx8iby1GZU8bsLeW+17byEsDPa9LJq0WsTiO0aG7l+Uis+7SANHjDbzm0uEVpU9Q
-         O9iPIAPmu0/ciZ3dH4AT1HzkR7CdXLfUBSROtvt6J6irQls6vNNcXOeUiDJVMdgkYMly
-         y8HmH5GJCQzjjZcVhoKZVrFFqcLtzWP+hSF12e1VqxYy0PhMuTvf+0k//+FOBZjaMBrE
-         7XXQwQ/eAmR/L80DEXvRSHgF9CJKt+A8pO3zAsHzKRmk2eWuwK0l0kzG3+NzDnG73n80
-         ZTfQ==
-X-Gm-Message-State: AOJu0Yy0etDLemFgIxO49t8ao0cTMomXj4djc5T7J57jha9xctg9ovAu
-        mYxQqcrPjPZSv4AdNnYuB5hiCXhFf0W08/Wzb51rOQ==
-X-Google-Smtp-Source: AGHT+IGdY+48fFdjXN2QvKpKjOQibG0qDG90jwUmBOaZ1dBjjCo4WU08VY6Au/aVmWsNr2/iTZ+jXH8kXiKlsPNtwjc=
-X-Received: by 2002:a81:5fc5:0:b0:5de:a315:b72c with SMTP id
- t188-20020a815fc5000000b005dea315b72cmr4968084ywb.95.1702365462403; Mon, 11
- Dec 2023 23:17:42 -0800 (PST)
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1702365553; x=1733901553;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FwL1bjl3La/z2hdLOLQSFIeckgQy3cBdqrBM5hz0Dlk=;
+  b=fvdwpOB0tylEptlygvqcuJHQs/p7WCpHfuyadl662U6qFXiCsGWRdk9T
+   rTbWZBMLYAjnmWNhqFkN9xnbuze9FUt1Fdb0z/CDjhvnStYI7MgQElqcD
+   aPBaAReoK56C54qv4Fa4MfRltW8G2rCf1Cvb4IFj0pi5z1r/IkQqIqiP8
+   Gy+llRuTefHGYzq89kdyxK3B1s77wVd/IMV5kNVHg/B6xsJB+UdRATRQb
+   ZIyPZFtT3PKK82aeaHZ5ZpLTm7PXp1loosKMAIKTkcUpRQWNJqr3ayfRQ
+   GlxUgh/hepf/PAxtc9Z0fPOHJLKZYQcee8+rVKJwJb+JGLgHYrth4fnja
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.04,269,1695679200"; 
+   d="scan'208";a="34447107"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 12 Dec 2023 08:19:10 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 55326280075;
+        Tue, 12 Dec 2023 08:19:10 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc:     ssengar@linux.microsoft.com, decui@microsoft.com
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Date:   Tue, 12 Dec 2023 08:19:11 +0100
+Message-ID: <5736414.DvuYhMxLoT@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
+References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20231212002245.23715-1-quic_abhinavk@quicinc.com> <20231212002245.23715-12-quic_abhinavk@quicinc.com>
-In-Reply-To: <20231212002245.23715-12-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Dec 2023 09:17:31 +0200
-Message-ID: <CAA8EJpqOFMoWd8OEBMVoJVe619+HVjq2w+uwTJG25PT7mrJ2jQ@mail.gmail.com>
-Subject: Re: [PATCH v3 11/15] drm/msm/dpu: add an API to setup the CDM block
- for writeback
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, seanpaul@chromium.org,
-        quic_jesszhan@quicinc.com, linux-arm-msm@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 02:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> Add an API dpu_encoder_helper_phys_setup_cdm() which can be used by
-> the writeback encoder to setup the CDM block.
->
-> Currently, this is defined and used within the writeback's physical
-> encoder layer however, the function can be modified to be used to setup
-> the CDM block even for non-writeback interfaces.
->
-> Until those modifications are planned and made, keep it local to
-> writeback.
->
-> changes in v3:
->         - call bind_pingpong_blk() directly as disable() is dropped
->         - add dpu_csc10_rgb2yuv_601l to dpu_hw_util.h and use it
->         - fix kbot error on the function doc
->         - document that dpu_encoder_helper_phys_setup_cdm() doesn't handle
->           DPU_CHROMA_H1V2
->
-> changes in v2:
->         - add the RGB2YUV CSC matrix to dpu util as needed by CDM
->         - use dpu_hw_get_csc_cfg() to get and program CSC
->         - drop usage of setup_csc_data() and setup_cdwn() cdm ops
->           as they both have been merged into enable()
->         - drop reduntant hw_cdm and hw_pp checks
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202312102149.qmbCdsg2-lkp@intel.com/
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Hi Saurabh,
+
+thanks for the patch.
+
+Am Samstag, 9. Dezember 2023, 04:46:16 CET schrieb Saurabh Sengar:
+> Currently there is a race in calling pci_create_resource_files function
+> from two different therads, first therad is triggered by pci_sysfs_init
+> from the late initcall where as the second thread is initiated by
+> pci_bus_add_devices from the respective PCI drivers probe.
+>=20
+> The synchronization between these threads relies on the sysfs_initialized
+> flag. However, in pci_sysfs_init, sysfs_initialized is set right before
+> calling pci_create_resource_files which is wrong as it can create race
+> condition with pci_bus_add_devices threads. Fix this by setting
+> sysfs_initialized flag at the end of pci_sysfs_init and direecly call the
+
+Small typo here: direecly -> directly
+
+> pci_create_resource_files function from it.
+>=20
+> There can be an additional case where driver probe is so delayed that
+> pci_bus_add_devices is called after the sysfs is created by pci_sysfs_ini=
+t.
+> In such cases, attempting to access already existing sysfs resources is
+> unnecessary. Fix this by adding a check for sysfs attributes and return
+> if they are already allocated.
+>=20
+> In both cases, the consequence will be the removal of sysfs resources that
+> were appropriately allocated by pci_sysfs_init following the warning belo=
+w.
+
+I'm not sure if this is the way to go. Unfortunately I can't trigger this=20
+error on my imx6 platform at the moment (apparently timing is off).
+But reading [1] again, the most expressive way is that pci_bus_add_devices(=
+)=20
+needs to wait until pci_sysfs_init() has passed.
+
+Best regards,
+Alexander
+
+[1] https://lore.kernel.org/lkml/a1cca367-52b6-a6b1-fb01-890cad39fd29@suse.=
+com/
+
+>=20
+> [    3.376688] sysfs: cannot create duplicate filename
+> '/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A03:00/device:07/VMBUS:01/47505500-=
+00
+> 01-0000-3130-444531454238/pci0001:00/0001:00:00.0/resource0' [    3.38510=
+3]
+> CPU: 3 PID: 9 Comm: kworker/u8:0 Not tainted 5.15.0-1046-azure
+> #53~20.04.1-Ubuntu [    3.389585] Hardware name: Microsoft Corporation
+> Virtual Machine/Virtual Machine, BIOS 090008  12/07/2018 [    3.394663]
+> Workqueue: events_unbound async_run_entry_fn
+> [    3.397687] Call Trace:
+> [    3.399312]  <TASK>
+> [    3.400780]  dump_stack_lvl+0x38/0x4d
+> [    3.402998]  dump_stack+0x10/0x16
+> [    3.406050]  sysfs_warn_dup.cold+0x17/0x2b
+> [    3.408476]  sysfs_add_file_mode_ns+0x17b/0x190
+> [    3.411072]  sysfs_create_bin_file+0x64/0x90
+> [    3.413514]  pci_create_attr+0xc7/0x260
+> [    3.415827]  pci_create_resource_files+0x6f/0x150
+> [    3.418455]  pci_create_sysfs_dev_files+0x18/0x30
+> [    3.421136]  pci_bus_add_device+0x30/0x70
+> [    3.423512]  pci_bus_add_devices+0x31/0x70
+> [    3.425958]  hv_pci_probe+0x4ce/0x640
+> [    3.428106]  vmbus_probe+0x67/0x90
+> [    3.430121]  really_probe.part.0+0xcb/0x380
+> [    3.432516]  really_probe+0x40/0x80
+> [    3.434581]  __driver_probe_device+0xe8/0x140
+> [    3.437119]  driver_probe_device+0x23/0xb0
+> [    3.439504]  __driver_attach_async_helper+0x31/0x90
+> [    3.442296]  async_run_entry_fn+0x33/0x120
+> [    3.444666]  process_one_work+0x225/0x3d0
+> [    3.447043]  worker_thread+0x4d/0x3e0
+> [    3.449233]  ? process_one_work+0x3d0/0x3d0
+> [    3.451632]  kthread+0x12a/0x150
+> [    3.453583]  ? set_kthread_struct+0x50/0x50
+> [    3.456103]  ret_from_fork+0x22/0x30
+>=20
+> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 > ---
->  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  6 ++
->  .../drm/msm/disp/dpu1/dpu_encoder_phys_wb.c   | 93 ++++++++++++++++++-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h   | 14 +++
->  3 files changed, 112 insertions(+), 1 deletion(-)
+> There has been earlier attempts to fix this problem, below are the patches
+> for reference of these attempts.
+> 1.
+> https://lore.kernel.org/linux-pci/20230316103036.1837869-1-alexander.stei=
+n@
+> ew.tq-group.com/T/#u 2.
+> https://lwn.net/ml/linux-kernel/20230316091540.494366-1-alexander.stein@e=
+w.
+> tq-group.com/
+>=20
+> Bug details: https://bugzilla.kernel.org/show_bug.cgi?id=3D215515
+>=20
+>  drivers/pci/pci-sysfs.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index f2909ae93f2f..a31f6f2cf309 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1230,6 +1230,10 @@ static int pci_create_resource_files(struct pci_dev
+> *pdev) if (!pci_resource_len(pdev, i))
+>  			continue;
+>=20
+> +		/* Check if resource already allocated and proceed no=20
+further */
+> +		if (pdev->res_attr[i] || pdev->res_attr_wc[i])
+> +			return 0;
+> +
+>  		retval =3D pci_create_attr(pdev, i, 0);
+>  		/* for prefetchable resources, create a WC mappable file=20
+*/
+>  		if (!retval && arch_can_pci_mmap_wc() &&
+> @@ -1411,9 +1415,8 @@ static int __init pci_sysfs_init(void)
+>  	struct pci_bus *pbus =3D NULL;
+>  	int retval;
+>=20
+> -	sysfs_initialized =3D 1;
+>  	for_each_pci_dev(pdev) {
+> -		retval =3D pci_create_sysfs_dev_files(pdev);
+> +		retval =3D pci_create_resource_files(pdev);
+>  		if (retval) {
+>  			pci_dev_put(pdev);
+>  			return retval;
+> @@ -1423,6 +1426,8 @@ static int __init pci_sysfs_init(void)
+>  	while ((pbus =3D pci_find_next_bus(pbus)))
+>  		pci_create_legacy_files(pbus);
+>=20
+> +	sysfs_initialized =3D 1;
+> +
+>  	return 0;
+>  }
+>  late_initcall(pci_sysfs_init);
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
 
---
-With best wishes
-Dmitry
