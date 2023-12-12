@@ -2,137 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DED80E61D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBA580E64F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjLLI07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S235019AbjLLIfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:35:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346407AbjLLIZw (ORCPT
+        with ESMTP id S231205AbjLLIfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:25:52 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D3D1BE7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:41 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso7630288a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702369359; x=1702974159; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=eHeIY9hu9qrP31NHtwAZ/zKZXqF7a3OFLF8DkOLrs4o=;
-        b=KnBaAR5tYuS4KzIn2OtIxejFGJvYeb2axDIoMKxZiwZeeHi+QF0Rvp4rSuH4Lyv1oB
-         ZHLPNwt5GqYWlAWWVyzNUzkSWNwP+urV+srr1zh6Jo7u1jSBjbovfSZcB028ZRV7okPd
-         n/bXOFuyVYkjJhSERd6xG3AtrZbVDg63UD0tANPBDBpsXxZZSqtVGLMqPpida65JrFFT
-         MmVh6fUxMxtDPce5wxaWlK1kDhLJ0wdG6Ht8UDDINi0WbS8InbCzisLOkHWkAgLkur+o
-         VNdKaathtfSS2nTDNBBMKDIxTNLOu9oH+3VJHj55VbsQIVEDGPaDZqQs+a1isRApeKno
-         EiEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702369359; x=1702974159;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eHeIY9hu9qrP31NHtwAZ/zKZXqF7a3OFLF8DkOLrs4o=;
-        b=Rzkm7TFN4AyhPUSehA/HfH7OpzY3Xf4UdSXGs1YjnoTUWN5n4Ieo96/5snAKVw5NM2
-         qZ2SGluAUC2WOOer8LjrQuZypuyvrgmMNS4T8xkRdOKZFVcSJ/A+Ne9UAroFlbnKty74
-         04NF05+IMhORcoP1dNnAatDDi+L2cYZjfriHaFNY3J95zX8mE8Xnf8/3nyUmHaqaVWAG
-         743fAZBCPXFzA8+r4iwUGGowOOjQAi3nkyVMXIlpci5YPXSW/eFgxD0ZqrbHdpRNJdX+
-         MREgUaYb+nPpMLmhss3ixaLyvOBN6mnppBRcskrzQCzH8o4OOeDHh+WP/fwifpLcYFCe
-         KaCw==
-X-Gm-Message-State: AOJu0Yx6ofl16Lj9/obAj043om0ph4JtF7dYoGU1S2NzVEr3Iv9OIeLB
-        ZaWY82bxhM9g66JuxAFqRDWikQ==
-X-Google-Smtp-Source: AGHT+IHO7ATLzLT+wGns8Y/8WbVpDg0Jin4FC5z0TFykDC4ceJaED6HrqLsROGR/jPeWDM3yJ75pYA==
-X-Received: by 2002:a50:c94a:0:b0:54c:4837:8b84 with SMTP id p10-20020a50c94a000000b0054c48378b84mr2839586edh.82.1702369359356;
-        Tue, 12 Dec 2023 00:22:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05640205c200b0055122551f98sm2047011edx.6.2023.12.12.00.22.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 00:22:39 -0800 (PST)
-Message-ID: <84c4c331-54b6-4539-a8f2-880fd47ad97b@linaro.org>
-Date:   Tue, 12 Dec 2023 09:22:37 +0100
-MIME-Version: 1.0
+        Tue, 12 Dec 2023 03:35:39 -0500
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2092.outbound.protection.outlook.com [40.107.6.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0591724
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:25:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L8Z/Yiv9ub12VN6Uu4a6UctbsL5kZqppjvExLLcBGJugrmCkNBSlJAH9jhKyLIgwuDWMm0iKfXacNyOI9UB0PRHBXGS2frL+Xp7EpHOt5M4fm4nes2phChlAdA+Yy8cy7a8NaeixnCqpybTELfdNFZ5eMxrpZwZP2ahhYKQsCiDVWl2caqnvzGxtunhkF3KZAczJ/qVb+JDrqQ8OnAhTluZzYZBJQKAIIzeNCodc9og24PAG54kL1228oAhBJC/WRTfzYJFNG6NjYOioJ8T+pvgFuv/7H+g7uKgAhBUp9763iqUdpxrXVFSRPGxEF9OTnT5+yk+mTz6OoKkHlPidmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C1uyOxX90WGmYq6yRBwUvozwLWqXaBIci+It6jRXfvM=;
+ b=KhRQ0csHIcz61x4kVijnn53ntI/Vi14cDe3Xc9iiNPn8rEsWTABPKY/hDZVendb0eKSVtUbR0bDyx1JoTvbI07pD5rHMbINgfWsu9uA1+SKL2XZXGFid9JDCGw+iPcyclscNdM/liYUSWBsfVQIJzmcPo7OOGc9zgYFnvfG2tAUo9ujLmoMUKAQVdj7dojiCWsvqBIOil3SYg1npFzpEf1a8+o/WooNJR8JtWGKiQJF5piykwgC3OwSa40qak1Flagbhw+V3vN178+dz8dxtzGdwYtDONRV6XpQYbQT3KIo0BlA+dvrbrWHT4ur0umTKX74gEOi9mQSCI2RYseFRxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C1uyOxX90WGmYq6yRBwUvozwLWqXaBIci+It6jRXfvM=;
+ b=gGkLtjxH9mlddDVEBh7JrIc3+ATLz1/Wq7ZvhDlz1PmE1wYWeuFz+HezwGG54YOWJMILLupyffq3CQXmx/KBFJ/QMC6lOm6g5ZrCl3+fl09eC9LyGGMmG997xrqIKa926cGdkmFJ+geql9Xjbdu7D6QfOYUNXzDydjydjWQxFBM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by AS2PR10MB7763.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:64a::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
+ 2023 08:25:17 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 08:25:17 +0000
+Message-ID: <6bdf9e39-e938-4644-b0ce-37191e1c00d2@kontron.de>
+Date:   Tue, 12 Dec 2023 09:25:12 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ASoC: tas2562: remove tas2563 into driver
-To:     Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org,
-        conor+dt@kernel.org
-Cc:     robh+dt@kernel.org, andriy.shevchenko@linux.intel.com,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        pierre-louis.bossart@linux.intel.com, 13916275206@139.com,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liam.r.girdwood@intel.com, soyer@irl.hu, tiwai@suse.de,
-        peeyush@ti.com, navada@ti.com
-References: <20231212050831.982-1-shenghao-ding@ti.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231212050831.982-1-shenghao-ding@ti.com>
+Subject: Re: [PATCH 1/2] drm/bridge: samsung-dsim: Set P divider based on
+ min/max of fin pll
+Content-Language: en-US, de-DE
+To:     Adam Ford <aford173@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        aford@beaconembedded.com,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20231212033259.189718-1-aford173@gmail.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20231212033259.189718-1-aford173@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR0P281CA0127.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:97::8) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|AS2PR10MB7763:EE_
+X-MS-Office365-Filtering-Correlation-Id: ae2ed0ac-2f76-4250-3f3a-08dbfaebdef7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bBNAWjbkjgSdOB07pz3m1yRp7KLeZ1ojAVfDfbgSMnptLLisWTobOoykrbI2DdGjUtkWhPJoB5YiWjV2XG3BTs/2Fv9fKrMh5SD3bNX2uzE4D11Ergms4duKyZ0+5FEcm2qQPY9xW9Hsw4eMpa5i3/hmjN46A56MhLT+00BVWgT3pLo2t2l7UWXyPfu+RGGfIVIXMxAReUW/MHt9LzTFNGtWZZl+rEU5+Imv9gMqpEjWjlU3ZdNXvsbY7UAtSI/e9kDJ7zhqWHPpHvmER2W4SWdV+U64laIWCvdMo2hTbyqVnjYg7iYHz7RlBUngMxTAI8pKyGPUxkzkkmBIUSFgFa3j3AtymT3yjTg/DVGismfJvwNRCCUQV7B/M1/eVipGgctmQ7Bwd/X8dSiPLZo4McJEh+AeKRkv5OhTMOyYs7OfAnJhyr/uEhkJMo5CRkyeyS4DsKAJrKIxxe4FUGLpJF41r27z/V/K3jGNirNKJ0hNerfVK306Sn1Lf1DeOU+ULzPhNliVqorTMqBpzcTnN7qSFmrgjPOZjvoBFXPKFt8zD2hb8Jan4ilxtSJP8jiYUJzNgXclrHNMPgOqSNUxQYaL/kQA6b4b8DC5ERED/jMDqQZeZ6hfr/vOmqI1FFW8xn+ZLrQd3av6XiCRh7wsgQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(136003)(366004)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(7416002)(2906002)(41300700001)(38100700002)(31696002)(36756003)(86362001)(2616005)(83380400001)(478600001)(6486002)(53546011)(6506007)(6666004)(6512007)(4326008)(5660300002)(44832011)(316002)(8936002)(66556008)(66476007)(54906003)(66946007)(8676002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXd2VVdYTVVZWG95RVZ6REJ1UjhkUWxjUW5nTjlKa0FrMC9BTC9MVUdQampU?=
+ =?utf-8?B?WXlmRTliSGhRbkpjUVpEb0R1aW5TSURNbXZiUS9Jb3UweGpYay8vS2lhSWRa?=
+ =?utf-8?B?VE1NQjRRTk5TRGRINVJoMHNBeTJtYnFVT3FSM3FFUGZmbStGMzhqMFJVQlJp?=
+ =?utf-8?B?UjJxdlZ5NlI2cWZ5bzlaaEY5YklmaXhwcTkwQWRCSGl1ZTJvOVBuRDl4YlV1?=
+ =?utf-8?B?TFNrZGg1V25XOG1NRHhBY0E0ZGZkRGNPbGgzcmUyMjcwVS9NTWdvM3AyNlVP?=
+ =?utf-8?B?RlAxUi9sc2cwNVpFMjN4WXFRcndNT3kzb0g5QVFLT3BXb3lRaUJDS0dHdDBU?=
+ =?utf-8?B?R0NnTTRRSjArTVVUSW4wK0tDUnlHT00wT1NrNW92R0dZd1d6U1JQTmp1N1ps?=
+ =?utf-8?B?dmtZMk9URzJKU0Y2dk5tckxMazJDZ2h4RXh0Mmc2Zzk3ZXpaMnQreEZmdmQx?=
+ =?utf-8?B?U3lIWTdvVWVqM00yNU9MdmFTSUJHL0t1M2dZejcrWmxOQXNYZFRsUEJabkE3?=
+ =?utf-8?B?a2N5S1AwSWlrOExpMUxoT0tDNWZRaVZ5emJLdjNqWXZTNjZZNmxUL3JDVG4x?=
+ =?utf-8?B?WUlaUlJSbGJNT0RhNGtRNi9kdDhJMUw5TkJNbnczVS9WVk40WnJ5RVFVNjAx?=
+ =?utf-8?B?WldnL2NYYUxCZ0tsQytaR2ZDK3lOVC80TWdOUDFHZHQ5MEI3RHNaUFNTbmxG?=
+ =?utf-8?B?dVRUTkFlby9OY3VKUGdiUlBDS0RqeGlNZHduR0ZuazZ2aFVjdDJoT1NCVDY0?=
+ =?utf-8?B?bUJZeHhhUGNyMXAvUVZEUHZKamtJSjArcExTd0pxc0t6QXh2VWlta3E2K1N3?=
+ =?utf-8?B?YTYvcmVIbW9ZWVJjdE55ZzBYTFk1OEZkbDR5eUc1V2Zud2hXOHRVUnQxMkk3?=
+ =?utf-8?B?R0VnYVhwSVBCNEdhWnZBQjlvNjJjZDA4dTRCalY0dXpaNm90d1JLMnBNcjRi?=
+ =?utf-8?B?ZXdwRGZFbVVUUzhQSlVSOFhzNUxtR3JSMXlVWFpPdEJYbWYweFhkR1oxL2ZC?=
+ =?utf-8?B?NEk4dEZ5ZmI5Nlh6VGFjNjNvdnFYSFpQeTlHclZJVWgzVGZnMFVXS2pjaFRE?=
+ =?utf-8?B?SFlUTTJQRjY4Q0JXVkI0SERBVFZpQVZvQVVhNHRYOFdFTnQ2Z25BbDhmdmJC?=
+ =?utf-8?B?dGcyYTBXcnZFSHA0Y3AyclFLSGErTDMzQmlSZnpsTFRDMDN5RG9FaC9jUnRm?=
+ =?utf-8?B?b3AwM3NrUXRhalVzSTB5UFowd2Y2b3Y3TVFFSnJKMmdRWk9tMnlMUGFRbnlT?=
+ =?utf-8?B?QWtQNjEydmV2ZkUvdVZIVjNuUHl1MUhyN2h5eUtlZXZNVkM3c2FiSWRoWkl3?=
+ =?utf-8?B?Q3UwSmVqdnc1cnN2UmgwU1lwaDIrQ1FpSmhvT2RPZlpNaVJBWUFrSHp3M3BR?=
+ =?utf-8?B?eXhHbzI1WWtnYi91SWJuTlFndDJFa1Q4SGZwRmRCM2JSZ2FqeHRJTnByajAx?=
+ =?utf-8?B?dFN6WWZJbGhPbWZNVFBSMHhTRkU2NjB6enJEOXMvMjMvSEV1ekVVZzBzU3dk?=
+ =?utf-8?B?QkY3VUEvR01lT2xRZ29YSzMreGFyWWE2eVlCNnNlMHZ0Q3pYU0FYU3VaeU5L?=
+ =?utf-8?B?cDA5UVREVlhaYXVSUDNaOWh0S0ZsaW1TL2ppa1oxdEdmbVlzZHNodDN4MVkr?=
+ =?utf-8?B?d0tseS91cWRyOGpBWXY2NGdNT0xEMFd4SzgxZ25jdlRmVmsrSmdhV0dZTW51?=
+ =?utf-8?B?ZnFMVFM0d21Vb1BVK25jVHVYRUU4WFlwTW41QVBiVnM5cmptVmViTHV0M1Aw?=
+ =?utf-8?B?OSt3RzhTaGw4VHVRemJFamFmaGFGemF2MjhRaHhmS0IrbjI0eXEzWnA4a3BR?=
+ =?utf-8?B?aGdkeTFKazROalk3ODBSU2YycVFLc0FpeTgxSTBPTWM1T1V0cW01aHhSd0RM?=
+ =?utf-8?B?dlp0cEpBeGZRQVpOcm5zYkhnZGQxbnpUUkVMc0l3Qkk3ajk4S2k3YTJySHF3?=
+ =?utf-8?B?R3BiN3RxRitodmJOMkxkUkdaTnUwWnViUWduV1VLZ3hjVFJRN2FtTkFEMDFt?=
+ =?utf-8?B?a0hmdkJDQk1COU9rbkFaUkRsMGpicHZKR3hmb1dKUnBzakp3RlFuMEkxMGpn?=
+ =?utf-8?B?NmYvdWdMK04zMk1iWlNzTzV2cGNKVFd1dlZRUFl1SlM1OVlBOFJ5ZXZLdUYz?=
+ =?utf-8?B?VG1uVUVUR2VWcFJza1MzTjc3Zm10UnJweXdTMEdoMmFEWmxNWkNXUEVpaVRW?=
+ =?utf-8?Q?x7QovrlsmJ7VzypY1IgJrkOg1zR4I0lxP/9JcOGhM48M?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae2ed0ac-2f76-4250-3f3a-08dbfaebdef7
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 08:25:16.9330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PWQ23BwlmW+e0hZfOKb6YMNR2T1KWh+fpZiQNwtRSNbd1j4mKIUcu1aJDMpiMdbp0qeO5KfYHD1fpqPtVKd+ratAQdz5ASfPJbIsq1GjP/Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7763
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 06:08, Shenghao Ding wrote:
-> Remove tas2563 from tas2562, it will be supported in separated driver code.
+Hi Adam,
+
+On 12.12.23 04:32, Adam Ford wrote:
+> The P divider should be set based on the min and max values of
+> the fin pll which may vary between different platforms.
+> These ranges are defined per platform, but hard-coded values
+> were used instead which resulted in a smaller range available
+> on the i.MX8M[MNP] than what was possible.
 > 
+> Fixes: 846307185f0f ("drm/bridge: samsung-dsim: update PLL reference clock")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> index be5914caa17d..239d253a7d71 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -573,8 +573,8 @@ static unsigned long samsung_dsim_pll_find_pms(struct samsung_dsim *dsi,
+>  	u16 _m, best_m;
+>  	u8 _s, best_s;
+>  
+> -	p_min = DIV_ROUND_UP(fin, (12 * MHZ));
+> -	p_max = fin / (6 * MHZ);
+> +	p_min = DIV_ROUND_UP(fin, (driver_data->pll_fin_max * MHZ));
+> +	p_max = fin / (driver_data->pll_fin_min * MHZ);
 
-Why? I was not aware that you duplicate tas2563 in your other patch, so
-that part need explanation. This part as well - why do we want to remove
-its support from the Linux? What about users? After applying this code
-they don't have support for their device!
+I did some tinkering with the PLL settings the other day and this is
+literally one of the things I came up with.
 
-Best regards,
-Krzysztof
+So I'm happy to provide:
+
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+
+Regarding the P divider, I'm also wondering if there is an upper limit
+for the p-value (not for the resulting fin_pll) that we should take into
+account, too. The problem is that we have conflicts in the documentation
+(again) so we don't really know what the correct limit would be.
+
+There are the following ranges given in the RMs:
+
+* 1..63 (i.MX8MM RM 13.7.8.18.4)
+* 1..33 (i.MX8MM RM 13.7.10.1)
+* 1..63 (i.MX8MP RM 13.2.3.1.5.2)
+* 1..63 (i.MX8MP RM 13.7.2.4)
+
+Unfortunately there are similar discrepancies for the other parameters
+and limits.
+
+Thanks
+Frieder
+
+>  
+>  	for (_p = p_min; _p <= p_max; ++_p) {
+>  		for (_s = 0; _s <= 5; ++_s) {
 
