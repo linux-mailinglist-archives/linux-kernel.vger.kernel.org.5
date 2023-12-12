@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282D280EDAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6555880EDB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346523AbjLLNca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        id S1346457AbjLLNdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346513AbjLLNc2 (ORCPT
+        with ESMTP id S232498AbjLLNdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:32:28 -0500
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E20AF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:32:34 -0800 (PST)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1fb36840642so9969651fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:32:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702387954; x=1702992754;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KGYX1JcahWQVmmbjS2b0eMoTc8GaaY/bTCt82bEmxHs=;
-        b=fWMOMmt1XL+HqNY6V1QUsHR6icf8CwYKvDU7SFZOGsNDoV/tG7SHqZ9ete05D0ihwv
-         y23GEOBPERmHq47hV2azV3PvG30Cc7Com2r9dU9jEcOaibC2rlTDPlMtqD5feDVT7SiH
-         H9lvsV8W2i8Z5c+tsRXtl1kUo6qLgUTWAPOnToRJubQPPC21xWSTuHytmwWBUG0kXGzQ
-         VLVh0kiteP8qkotK4u4fW0GyhGV0br3lz57ED3d2ENUwIvzharfEld5t4uEqdgqNzp16
-         eJQPoGOGViphYPfPCbxG891jvTEJTYU/nAribA1bjeICLIO8EZiJXH5JFfc6PKv4mvbi
-         re5g==
-X-Gm-Message-State: AOJu0YzW2H9E7RpQXd+U50rXFkukPPgDMl8FBduDSsY08lOSlQ0aqj0H
-        +TisWmDKt3kHcOK5lsFjps9wi5x1GqCXiFEUEOGB5cIuRT4r
-X-Google-Smtp-Source: AGHT+IHV473fRfDVaXq62bjejr4Dhd4YONJaik+XJVoq0djyWs4yOJdc9z6wKrwtRtBu2oXqoV7pGtWIpm6/RDBP30auXzpRshae
+        Tue, 12 Dec 2023 08:33:18 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DBF83;
+        Tue, 12 Dec 2023 05:33:25 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCA6YHg019610;
+        Tue, 12 Dec 2023 13:33:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=WiwISKr
+        ta03GsjC7RA50OM5yZACKJsWKrxM3ona5Oqo=; b=YHG8C1o9z9QzS30YH4o3NhJ
+        8QzkTr+VTKhvjjF1wP1YMU4F1D/xiuagXgoABDqeL1QIdXCFEcnTt9vRmB8pIIXG
+        /DpcyrbeDwezBuikUKOMHCpjGP090rO7KnwpAlPdWfVuLYCEXGp3+H6vBYEMa5I4
+        Pi9q4YeGin14I/1c7u19kfxDVPPcYF+DG8eRbybai0W11+3iPghjb7CU3eKq+qKj
+        9f6xRBYjypHZxzIDnGv/s1kqtoCQes4bOKFiPF2yHP02oY/2qL/TSoFuRrOcxAhC
+        QKTnNnmHIF6Pa5Gej28HDNvTMOb8IPQWwK2bQdhxv8y1dIXlx8oR/968E5c/5VA=
+        =
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxnf70dp7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 13:33:14 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCDXDaZ022462
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 13:33:13 GMT
+Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 12 Dec 2023 05:33:08 -0800
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: [PATCH V2 0/2] Add QCrypto support for SC7280
+Date:   Tue, 12 Dec 2023 19:02:45 +0530
+Message-ID: <20231212133247.1366698-1-quic_omprsing@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:6393:b0:1fb:483:a1d5 with SMTP id
- t19-20020a056870639300b001fb0483a1d5mr6941506oap.10.1702387953977; Tue, 12
- Dec 2023 05:32:33 -0800 (PST)
-Date:   Tue, 12 Dec 2023 05:32:33 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000444fa8060c501557@google.com>
-Subject: [syzbot] [btrfs?] WARNING in fiemap_process_hole
-From:   syzbot <syzbot+35281eae12e6fa221f16@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FEFgNBZzeDXqK1HL075dB4Nmd7QOKr93
+X-Proofpoint-GUID: FEFgNBZzeDXqK1HL075dB4Nmd7QOKr93
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ spamscore=0 phishscore=0 clxscore=1015 adultscore=0 mlxlogscore=661
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120104
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Document SC7280 support for QCrypto driver and add QCE and Crypto BAM DMA nodes
 
-syzbot found the following issue on:
+Om Prakash Singh (2):
+  dt-bindings: crypto: qcom-qce: document the SC7280 crypto engine
+  arm64: dts: qcom: sc7280: add QCrypto nodes
 
-HEAD commit:    815fb87b7530 Merge tag 'pm-6.7-rc4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16865c18e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1f341086b9b65f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=35281eae12e6fa221f16
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+ .../devicetree/bindings/crypto/qcom-qce.yaml  |  1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          | 22 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+-- 
+2.25.1
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5207d4e5f747/disk-815fb87b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5255f6dfc8c3/vmlinux-815fb87b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/876a2e66fa94/bzImage-815fb87b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35281eae12e6fa221f16@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 31576 at fs/btrfs/extent_io.c:2454 emit_fiemap_extent fs/btrfs/extent_io.c:2454 [inline]
-WARNING: CPU: 1 PID: 31576 at fs/btrfs/extent_io.c:2454 fiemap_process_hole+0x9e0/0xaf0 fs/btrfs/extent_io.c:2695
-Modules linked in:
-CPU: 1 PID: 31576 Comm: syz-executor.4 Not tainted 6.7.0-rc3-syzkaller-00284-g815fb87b7530 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:emit_fiemap_extent fs/btrfs/extent_io.c:2454 [inline]
-RIP: 0010:fiemap_process_hole+0x9e0/0xaf0 fs/btrfs/extent_io.c:2695
-Code: 85 ed 0f 45 c8 89 4c 24 14 4c 8b 7c 24 18 49 89 dd eb 39 e8 82 d2 f0 fd eb 32 e8 7b d2 f0 fd e9 a5 00 00 00 e8 71 d2 f0 fd 90 <0f> 0b 90 41 bd ea ff ff ff 49 bc 00 00 00 00 00 fc ff df e9 87 00
-RSP: 0018:ffffc90003897520 EFLAGS: 00010287
-RAX: ffffffff839da7cf RBX: 0000000000027000 RCX: 0000000000040000
-RDX: ffffc9000c740000 RSI: 00000000000057d1 RDI: 00000000000057d2
-RBP: ffffc90003897690 R08: ffffffff839da273 R09: 1ffffffff21bae90
-R10: dffffc0000000000 R11: fffffbfff21bae91 R12: 1ffff92000712f1e
-R13: 00000000000d9000 R14: 0000000000101000 R15: 1ffff92000712f1f
-FS:  00007f73188496c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f39fba05000 CR3: 000000005143e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- extent_fiemap+0xeae/0x1fe0
- btrfs_fiemap+0x178/0x1e0 fs/btrfs/inode.c:7830
- ioctl_fiemap fs/ioctl.c:220 [inline]
- do_vfs_ioctl+0x19ea/0x2b40 fs/ioctl.c:811
- __do_sys_ioctl fs/ioctl.c:869 [inline]
- __se_sys_ioctl+0x81/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f7317a7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f73188490c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f7317b9c120 RCX: 00007f7317a7cae9
-RDX: 00000000200000c0 RSI: 00000000c020660b RDI: 0000000000000005
-RBP: 00007f7317ac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f7317b9c120 R15: 00007fff6ffca378
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
