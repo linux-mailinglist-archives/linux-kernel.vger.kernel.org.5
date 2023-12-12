@@ -2,199 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A41B80EBEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E03C80EBEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346565AbjLLMf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:35:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S1346561AbjLLMfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346525AbjLLMfZ (ORCPT
+        with ESMTP id S1346586AbjLLMfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:35:25 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E84F7;
-        Tue, 12 Dec 2023 04:35:31 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50be24167efso6450391e87.3;
-        Tue, 12 Dec 2023 04:35:31 -0800 (PST)
+        Tue, 12 Dec 2023 07:35:32 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA782106
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:35:38 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c48d7a7a7so17128915e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:35:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702384529; x=1702989329; darn=vger.kernel.org;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702384537; x=1702989337; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zDRySjMo+qwZzH47WU4ammVZHFSL1x17ewXgp1HGpg=;
-        b=Qa+QruYnUXd9H2UyG/tHPsw7iCxgP9XO1gc1BMrK0STiRdib/BkpaKXGjeMt8HeqhZ
-         fvcLFJh38CRwYBsbRCXxmW7CYZqwbe5hZWke8CfHwDHP78nnULSZBGhpSbaHoKw+kWi1
-         buCNJeluq85a2gcpQTzLpDQjvy1CUwvhKSnCqZy/+oRvvviPovvWaeTs/3aKxnfbf2ED
-         wjrgs3s4qxU20Be0jR4DL9HG2dCd9vSPnY/5+R9SB20hh2++aSzgqSZs6f4BAgfx0WXS
-         /R5BprmWSuEkZOJ8Cm55KKeyV5UXF0iovAGSucxKiDT1nMU262cTsy9gtyYF3mQt0PAH
-         sg6Q==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=owJV1DmeJ4fzQxz4ZVEVTw4U+j7bkU+2Yl4dUuHEfQE=;
+        b=I2c3ikbJ/2wJqLwAGrQdYeTsFwHl1s9Fe9+ErGqMcrp2x4nu/ikTUZ0M92N9v3iEZA
+         6d8ZBaC3SbeKD6zhpYvzLYXQedgU2VF3SKH4l12xLkai804XtMErYfSPro6uCUIZMMwz
+         BNQpbIuhwQLBbjw2GyYzEnIem7yNDgW7rsueakS6XYxQ3M1LjBZSvbRWVqJKBL8FCK5F
+         ql6gbEpRNPupSsn6cCvPmD9KkXw6DdutmeI4l8SyY3SMgDSWJ2lxM08BZv6R0LS+0bFf
+         gYGgZtaYzIYk33D9TfyydYVoUFKeZ3Zmrk5KAl+jUrrcXs3RjJ+3ssEiKxELHGCfaFlE
+         a4qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702384529; x=1702989329;
+        d=1e100.net; s=20230601; t=1702384537; x=1702989337;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0zDRySjMo+qwZzH47WU4ammVZHFSL1x17ewXgp1HGpg=;
-        b=VqYUw6ZAAKg8yAU+viyw16u6ln56a7W6cExgo0xGHNDlZukmDEx1qfz1UuiHjSkyYA
-         Giu9u1w/ffD7tC30AF1/NK39ssJ9Zd1jyA1PCld++MKvQfSNLwX6BCdfaArK5eMQIYNC
-         haa0BFfZ45qfhnMaFmvR9ehkgIY+aRNQXIbqOeScQ2D+SRimigLuJxiwIhOAf3T7dF3M
-         ifGip/w9mZaBrNWepKJGLOF4kVGqk/p/DAnEBwkVolofA72T//6mexSDTw4Zi1Qnsc75
-         +OAJBWYFqKLeeAQV7BkzL3ACsvNsytjCzkcY7r6S4N8bPPqdpKOWkJvKu+iqtR8lKlXU
-         QWew==
-X-Gm-Message-State: AOJu0YwHzV08r0Ku0PguKTeDzW8VNw5HzcypD0of0pu1jAMsDiu98j7e
-        5rf2+TRzSfnp38W9bIS8pOc=
-X-Google-Smtp-Source: AGHT+IHLrEi3DaNMIaL5gZeds6oRN3w6A2KUNE0rU52JiCdw7VpcF/sGrrOu8+74lqV96H44z92WRg==
-X-Received: by 2002:a05:6512:48d3:b0:50b:fada:dac3 with SMTP id er19-20020a05651248d300b0050bfadadac3mr1186619lfb.108.1702384529258;
-        Tue, 12 Dec 2023 04:35:29 -0800 (PST)
-Received: from pc636 (host-90-235-2-229.mobileonline.telia.com. [90.235.2.229])
-        by smtp.gmail.com with ESMTPSA id c16-20020a197610000000b0050bf30083b2sm1328567lff.142.2023.12.12.04.35.27
+        bh=owJV1DmeJ4fzQxz4ZVEVTw4U+j7bkU+2Yl4dUuHEfQE=;
+        b=T7mMQ+BnqVvE52YDBCWQXieKkNHTmxRmNBBAm63Q9VuKzZ9kQE4E9FdBfF4ZtfYT9D
+         PDiqlbN2qjvJCY1U1oc+4t6qmZcmHc1dkdphsJF8mHp1/NVOS+OtgVzgMTD+rmmtbz70
+         UE1PRbi6BzvEipHBrGieD39YsvK6IPIGgsfbY4Lr/GPyCKLr2MatJN7oK8mrNHIFK2U/
+         QccnVS6sF4ea6HiAOiouOnNmJwefgnUUxSRHy50Usho1dzPYWyFwjvhJpZJo3vwca0in
+         p2Bf8xEwLFZAa62C+KAfGI6xZ2JKF+huObTR5cc8wlu0YnlPHUzMYxAPl6nkp91/gf/I
+         x44w==
+X-Gm-Message-State: AOJu0Yx0WC2k2giDfpGTBJ3BklGZYIwrHTNHwXEed/PWV+/oiBhQuUCL
+        hnQ0q03E3Epb426DIdHvplYfgQ==
+X-Google-Smtp-Source: AGHT+IHtJYYjSMLbQrW4WDwReSNA1pV0Ue24MB0zI+yINbXbwA+e9B9ECiPS7v9iybTpc4FYHC7brQ==
+X-Received: by 2002:a05:600c:c1b:b0:40c:27af:2ac8 with SMTP id fm27-20020a05600c0c1b00b0040c27af2ac8mr3100333wmb.6.1702384537191;
+        Tue, 12 Dec 2023 04:35:37 -0800 (PST)
+Received: from airbuntu ([104.132.45.98])
+        by smtp.gmail.com with ESMTPSA id bi8-20020a05600c3d8800b0040c43be2e52sm8959699wmb.40.2023.12.12.04.35.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 04:35:28 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 12 Dec 2023 13:35:26 +0100
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrea Righi <andrea.righi@canonical.com>,
-        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-Message-ID: <ZXhTjrTqZvMTXKtK@pc636>
-References: <20231203011252.233748-1-qyousef@layalina.io>
+        Tue, 12 Dec 2023 04:35:36 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:35:35 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>, Wei Wang <wvw@google.com>,
+        Rick Yiu <rickyiu@google.com>,
+        Chung-Kai Mei <chungkai@google.com>,
+        Hongyan Xia <hongyan.xia2@arm.com>
+Subject: Re: [PATCH 1/4] sched/fair: Be less aggressive in calling
+ cpufreq_update_util()
+Message-ID: <20231212123535.3yns5f4b6awiuesk@airbuntu>
+References: <20231208015242.385103-1-qyousef@layalina.io>
+ <20231208015242.385103-2-qyousef@layalina.io>
+ <47ef274b-d9cc-4f4f-8134-2dced46005fa@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231203011252.233748-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <47ef274b-d9cc-4f4f-8134-2dced46005fa@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
-> To allow more flexible arrangements while still provide a single kernel
-> for distros, provide a boot time parameter to enable/disable lazy RCU.
+On 12/12/23 11:46, Dietmar Eggemann wrote:
+> On 08/12/2023 02:52, Qais Yousef wrote:
+> > Due to the way code is structured, it makes a lot of sense to trigger
+> > cpufreq_update_util() from update_load_avg(). But this is too aggressive
+> > as in most cases we are iterating through entities in a loop to
+> > update_load_avg() in the hierarchy. So we end up sending too many
+> > request in an loop as we're updating the hierarchy.
 > 
-> Specify:
-> 
-> 	rcutree.enable_rcu_lazy=[y|1|n|0]
-> 
-> Which also requires
-> 
-> 	rcu_nocbs=all
-> 
-> at boot time to enable/disable lazy RCU.
-> 
-> To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
-> CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
-> 
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
-> 
-> Changes since v1:
-> 
-> 	* Use module_param() instead of module_param_cb()
-> 	* Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
-> 	* Remove unnecessary READ_ONCE()
-> 
-> Tested on qemu only this time with various config/boot configuration to ensure
-> expected values are in sysfs.
-> 
-> Did a bunch of build tests against various configs/archs.
-> 
->  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
->  kernel/rcu/Kconfig                              | 13 +++++++++++++
->  kernel/rcu/tree.c                               |  7 ++++++-
->  3 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 65731b060e3f..2f0386a12aa7 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5021,6 +5021,11 @@
->  			this kernel boot parameter, forcibly setting it
->  			to zero.
->  
-> +	rcutree.enable_rcu_lazy= [KNL]
-> +			To save power, batch RCU callbacks and flush after
-> +			delay, memory pressure or callback list growing too
-> +			big.
-> +
->  	rcuscale.gp_async= [KNL]
->  			Measure performance of asynchronous
->  			grace-period primitives such as call_rcu().
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index bdd7eadb33d8..e7d2dd267593 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -314,6 +314,19 @@ config RCU_LAZY
->  	  To save power, batch RCU callbacks and flush after delay, memory
->  	  pressure, or callback list growing too big.
->  
-> +	  Requires rcu_nocbs=all to be set.
-> +
-> +	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
-> +
-> +config RCU_LAZY_DEFAULT_OFF
-> +	bool "Turn RCU lazy invocation off by default"
-> +	depends on RCU_LAZY
-> +	default n
-> +	help
-> +	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
-> +	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
-> +	  it back on.
-> +
->  config RCU_DOUBLE_CHECK_CB_TIME
->  	bool "RCU callback-batch backup time check"
->  	depends on RCU_EXPERT
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 3ac3c846105f..8b7675624815 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
->  }
->  
->  #ifdef CONFIG_RCU_LAZY
-> +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
-> +module_param(enable_rcu_lazy, bool, 0444);
-> +
->  /**
->   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
->   * flush all lazy callbacks (including the new one) to the main ->cblist while
-> @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
->  	__call_rcu_common(head, func, false);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> +#else
-> +#define enable_rcu_lazy		false
->  #endif
->  
->  /**
-> @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
->   */
->  void call_rcu(struct rcu_head *head, rcu_callback_t func)
->  {
-> -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
-> +	__call_rcu_common(head, func, enable_rcu_lazy);
->  }
->  EXPORT_SYMBOL_GPL(call_rcu);
->  
-I think, it makes sense. Especially for devices/systems where it is hard
-to recompile the kernel and deploy it. For example, Google and GKI approach.
+> But update_load_avg() calls cfs_rq_util_change() which only issues a
+> cpufreq_update_util() call for the root cfs_rq?
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Yes I've noticed that and wondered. Maybe my analysis was flawed and I was just
+hitting the issue of iowait boost request conflicting with update_load_avg()
+request.
+
+Let me have another look. I think we'll still end up needing to take the update
+out of util_avg to be able to combine the two calls.
+
+
+Cheers
 
 --
-Uladzislau Rezki
+Qais Yousef
+
+> 
+> So the 'iterating through entities' should be for a task in a non-root
+> taskgroup which the condition (1) takes care of.
+> 
+> cfs_rq_util_change()
+> 
+>     ...
+>     if (&rq->cfs == cfs_rq) (1)
+> 
+>         cpufreq_update_util()
+> 
+> [...]
