@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C133180EC97
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755FB80ED48
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376316AbjLLMyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S1346449AbjLLNVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:21:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376342AbjLLMyQ (ORCPT
+        with ESMTP id S1376596AbjLLM4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:54:16 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931FDEE;
-        Tue, 12 Dec 2023 04:54:21 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BDDDBE0005;
-        Tue, 12 Dec 2023 12:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702385660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SUAQ6qv2aDc1m39TxOBaleeDpMHPGrbRMQ0hbDXfaoc=;
-        b=MQuO2Peu2llqSqRR1/YYvEdJdNUf+iPUYijiG0G0ljrK6Kxmy5nmYPEfdiPlRgp5Nl+aGn
-        DkK6lPCLNdX4jgZZZQH50s1pYP0QCtcZXZCdaT5siIkf+oEH8r/YkowVTv+RUjUITj6llU
-        xFKF0rdyfMxCs4Af+4k8/onZDL3nntonTknSTqNyVw45zj09tGmXemDqw1P5mF+f/joSte
-        i7wXbG9l8DMdGVMqvstAh0uHspm9hJ7LiNmEEHGMceFCiQHRomZobD25BIJsFxVwhibl7w
-        NWtyT4VPqO/OLs7Yp7GNfTPGYT08lOiNCAMtiPrJ30UMjr3CyzR2lepTxaeEzQ==
-Date:   Tue, 12 Dec 2023 13:54:17 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-Subject: Re: [PATCH v2 3/5] net: mdio: ipq4019: configure CMN PLL clock for
- ipq5332
-Message-ID: <20231212135417.67ece4d0@device.home>
-In-Reply-To: <20231212115151.20016-4-quic_luoj@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
-        <20231212115151.20016-4-quic_luoj@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 12 Dec 2023 07:56:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADC395
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:56:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5104BC433C7;
+        Tue, 12 Dec 2023 12:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702385779;
+        bh=GrVkd+/b1LWKzr/NPA7li4EkjFJ8l71HN7z/zGWgdfw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YBA7Fjo38oVBJPFu+VxEkbzqCSCmCRa5zjoNdjOWFup2xnx258eBVs8/rJLkRmPX8
+         x2HlZ7omY61gNW8/wcz/uVI2Xpqxph3eKEBYQMgFCcdZA769QcTthV53UUKqaezoj1
+         zrnZA5JNDYtCttLqUelCgtbH07jrFrVkHOLrsxosNmLwYG37ZjNzWkh/a05AIWC411
+         eKlC7OCTdMN+DwHHgds7iXM2oPDVuH8f1xZGjuVoSq6KtQ5myLOKet/LR86GcDnfpo
+         k0OFLpqlJOLUCuKh0HlIhwOChBb+a2PBhPPbLHM5rzMKdoi+7kSRvmw0Sw2UhUZHD1
+         PoknmYlVpi8dA==
+Date:   Tue, 12 Dec 2023 12:56:15 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/13] arm64/sysreg: Update ID_AA64ISAR2_EL1 defintion
+ for DDI0601 2023-09
+Message-ID: <6fc35f94-176e-4ad3-ab5b-79b57c36750a@sirena.org.uk>
+References: <20231209-b4-arm64-sysreg-additions-v1-0-45284e538474@kernel.org>
+ <20231209-b4-arm64-sysreg-additions-v1-6-45284e538474@kernel.org>
+ <CA+EHjTzdKS+ardXUofO+U1vnsOC3QjiJUBuKCHWw6z6zKdVGSA@mail.gmail.com>
+ <20231212091047.GA28147@willie-the-truck>
+ <CA+EHjTzswc6Qji6yaTcYu7uc57MFY-79KxY45wFT8tQ+9PEhPw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DxzMBpxvvc/Bfpdv"
+Content-Disposition: inline
+In-Reply-To: <CA+EHjTzswc6Qji6yaTcYu7uc57MFY-79KxY45wFT8tQ+9PEhPw@mail.gmail.com>
+X-Cookie: If rash develops, discontinue use.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-I have some more minor comments for yoi :)
+--DxzMBpxvvc/Bfpdv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, 12 Dec 2023 19:51:48 +0800
-Luo Jie <quic_luoj@quicinc.com> wrote:
+On Tue, Dec 12, 2023 at 10:24:46AM +0000, Fuad Tabba wrote:
 
-> The reference clock of CMN PLL block is selectable, the internal
-> 48MHZ is used by default.
-> 
-> The output clock of CMN PLL block is for providing the clock
-> source of ethernet device(such as qca8084), there are 1 * 25MHZ
-> and 3 * 50MHZ output clocks available for the ethernet devices.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> ---
+> > I renamed it to PAuth_LR following your comment, but it looks like
+> > ID_AA64ISAR1_EL1 is still missing this field entirely for the API and
+> > APA fields.
 
-[...]
+> I noticed that, but thought it's more appropriate to have a separate
+> patch for that. I have one ready as part of my respin, unless we
+> accumulate a bunch of sysreg update patches first.
 
-> +/* For the CMN PLL block, the reference clock can be configured according to
-> + * the device tree property "cmn-reference-clock", the internal 48MHZ is used
-> + * by default on the ipq533 platform.
-> + *
-> + * The output clock of CMN PLL block is provided to the ethernet devices,
-> + * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by default.
-> + *
-> + * Such as the output 50M clock for the qca8084 ethernet PHY.
-> + */
-> +static int ipq_cmn_clock_config(struct mii_bus *bus)
-> +{
-> +	int ret;
-> +	u32 reg_val, src_sel, ref_clk;
-> +	struct ipq4019_mdio_data *priv;
+Yes, syncing each register individually should make life easier.  It's
+definitely painful when there's a multi-register update and one of the
+registers has a mistake.
 
-Here you should also use reverse christmas-tree notation
+--DxzMBpxvvc/Bfpdv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[...]
+-----BEGIN PGP SIGNATURE-----
 
-> @@ -317,6 +441,17 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	/* The CMN block resource is for providing clock source to ethernet,
-> +	 * which can be optionally configured on the platform ipq9574 and
-> +	 * ipq5332.
-> +	 */
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cmn_blk");
-> +	if (res) {
-> +		priv->cmn_membase = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(priv->cmn_membase))
-> +			return PTR_ERR(priv->cmn_membase);
-> +	}
-> +
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV4WG4ACgkQJNaLcl1U
+h9AJDwf+Ii1KFhAJiHYX4RETiJ/CC7UihFR2yvmyC0/nkHedaLEq9LKeZwj2vaNK
+NM8C0CZgc6vzlzKGg300bRFrB805o3OfkVrX5qxkFttAOFnfbaZMsX99oFlTULM+
+VhbZo6/vOjhebge/mYKRDRMa0njgwN3PKcO+GBa8PQ7pJl1W37K+KimorekNbRR1
+Xj2yYOu/21Kcc7nQbG5q7urm/Gql42TsjS8m+jr2B//fNwYsh35CqEiymqcrZc5+
+el49KOXceZC/HCXhc7SzS0TEnfXPebGUNjbIypOZ25jHePaewDT0UQmc99nkC9ZN
+cgOTrBnHHhQO4LrmJwN4zNU1DcK61A==
+=dCou
+-----END PGP SIGNATURE-----
 
-And here you can simplify a bit by using
-devm_platform_ioremap_resource_byname()
-
-Thanks,
-
-Maxime
-
+--DxzMBpxvvc/Bfpdv--
