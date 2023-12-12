@@ -2,60 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539BA80E575
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB17F80E57C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345972AbjLLIIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
+        id S229728AbjLLII0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLLIHy (ORCPT
+        with ESMTP id S231214AbjLLIIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:07:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EE8DB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702368479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WXqf2vh/WJNQMCP9P3WEFWf2Hyjzd2SEqm/uvxIkz6Y=;
-        b=combx/CsHrh+k8BWFHkVZa/4UotYcSkmjJ/gw0Fwp7Y8x8TTXPUX1MvlfLK6l7gP1bt8eF
-        42d74sbcCM131OyuEO1oSP+UpIgWKg9xOS4wkEbefV/J0uvwUfQAskec6J9xCXp97n2U+m
-        t2VnmRvp4hLLkknq1lsR15eFd7L06zg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-0rMprEnIO2CiBXKl6z94Hg-1; Tue, 12 Dec 2023 03:07:56 -0500
-X-MC-Unique: 0rMprEnIO2CiBXKl6z94Hg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B41AA85A588;
-        Tue, 12 Dec 2023 08:07:55 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 17ECD492BE6;
-        Tue, 12 Dec 2023 08:07:53 +0000 (UTC)
-From:   Daniel Vacek <neelx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Vacek <neelx@redhat.com>,
-        Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Subject: [PATCH v2] IB/ipoib: Fix mcast list locking
-Date:   Tue, 12 Dec 2023 09:07:45 +0100
-Message-ID: <20231212080746.1528802-1-neelx@redhat.com>
-In-Reply-To: <20231211130426.1500427-1-neelx@redhat.com>
-References: <20231211130426.1500427-1-neelx@redhat.com>
+        Tue, 12 Dec 2023 03:08:22 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D55112
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:26 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c1e3ea2f2so55144275e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:08:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702368505; x=1702973305; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j7Vc7WfA6zO/nZVypNJ5ZSKRNw4vlGrxvFfZBsf6PZE=;
+        b=ypR8TEwi15vwvn3g/orot97Fje5Tu/eDiE672QuyLOJC/zyA/t8BoQfaWZNI1cTKcX
+         G0QY5dxFRxawWLO/uT4YaaVGiO8UiYdGIg5aoxu9PRRAR1EQNs19fcaGpldWwTGLM91w
+         cOEeEs4++AoJeCartG5mpjYHpPLjLToQEYKok3KI5p/ToztrrLq+vlwvGZhFAu/Cep0v
+         w1Gw7Skd+Q3zGb6yitFOHaV77C99gWt6Of7mxPEkmWczlPDWfTsD0GHbjipQ2034MvTz
+         ThT4++/J4RkBpb8U75kcxnZU7lwVy8WNiSdAfe7irgP24wZJhoTLQSqwtwPWrWKMJijD
+         1DyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702368505; x=1702973305;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j7Vc7WfA6zO/nZVypNJ5ZSKRNw4vlGrxvFfZBsf6PZE=;
+        b=lfqq4emvdqdI+YDiSY3si3WSmdNViRWOE5rlYml0ieALpjyESfXSuafvY8oITfR3/6
+         6kJekogHbngkzqcwnNLWULzwqaFP+75wKtw4rtQZkCzf/rVba7Pcu8wqht5v2nJahibG
+         aWBf3w0ukOkS9K/6d2gymnJIRlOFMuga/LI8RuBs0h9zGF8mckYVPu6Uoi18wIXhEZ45
+         6q2v7XaLxJILK6V8O6815DHnCdT49Cxy1VzN1vR0JeVFANvf+ImehLamTJCtbET/ed23
+         E0EVsTCFLDT5lsRE/7aYM6YP8pqngnVtoivNcceFR1JBeZHBfrByT4LJnx/Uo5z44Krn
+         19vA==
+X-Gm-Message-State: AOJu0Yw+S7DYEa0wBxVX2Z/HMHNZkeW4RX5MZKjnkqeQQPj3iP0gmoDa
+        sNO/6Hl8F7CvQe/N24osTwppKg==
+X-Google-Smtp-Source: AGHT+IFpC7/sT0VIDkEJ9Oag1ij5lW+BcSQjyEaC79Eoj7mJ9V5d7dc5CmiB4lNlsj8FfFfc2beOKw==
+X-Received: by 2002:a1c:4c07:0:b0:40b:5e1b:54ae with SMTP id z7-20020a1c4c07000000b0040b5e1b54aemr3470007wmf.58.1702368504657;
+        Tue, 12 Dec 2023 00:08:24 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c500a00b004094e565e71sm15609355wmr.23.2023.12.12.00.08.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 00:08:24 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/2] ASoC: qcom: add sound card support for SM8650
+Date:   Tue, 12 Dec 2023 09:08:18 +0100
+Message-Id: <20231212-topic-sm8650-upstream-snd-card-v1-0-fbfc38471204@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPIUeGUC/x3NMQ7CMAxA0atUnrHUGJUCV0EMJnHAQ9PILgip6
+ t0bdXzL/yu4mIrDvVvB5Keuc2kIpw7ih8tbUFMzUE/nQIFwmatG9Ol6GXr8Vl9MeEIvCSNbwjD
+ Ia+TMNOYbtEg1yfo/Bo/ntu1u7ASicAAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=744;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=OrzPyzSnlQ4w2hZz/Baas4f3W1LzsV2V/lHEDAWTjGs=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleBT2CPZAHiWYnl772ED0TNHbAgYjtuRnkahPbmGn
+ 3VyDLO+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXgU9gAKCRB33NvayMhJ0UBCD/
+ 9aS6SDPueYXQWfGRWKZB57ZqiqxFUMnfUecohs0K3A9LsjgvoT4R7lH6F34NLx6LH+WvzRW6pk1TUx
+ 3UoDBwn8tSItLhAVVeMl2CVJASIf/WjJ4yfBJ/h1lSbcrK0w6BbudEgoa8IrWHbvs2hkG4RJKWxyRl
+ wKw6QHOrLYa8tkL+R2KNBq1ncJrCvClS4BKKEuWE1fE/1++ETTHrFA5N83pK/aOmyTgLhxSZVI/e4A
+ jpkOIe6EZ832SoOZqB1R8p9HE92d73wgl6jkTSIY9wGdlvtyGuzwiIoDQvJLrmIdbWXKm2M5dWEoZ3
+ wqQ34Q1SEXvdQRdOXxNh1RvMvNFm2vM4Ustviq0Tq0vDzA7ipLgB/J4PpPK7w66xhchhKCYEqQN2F8
+ GFLAFbRPO4EWOCMNGHL0lDHrma6kQxN0NzNRuys1ZVCgj4iLwWk+y/8Usf2pABq4lZQB3dY+BiuKkb
+ c6BlS2j1VD9GlzdWVVgWRgW9/AC1byA/lpMtuvC7UdbHBwPijaSd9iMPzXvAm8+o+pmY1u6DpphYNU
+ 8p0cQKWqjzRHhWwwhiDRQV2OZPoq+HBSTYWSL6E3C+ufMgyPh+hfynBBUDUplSGC3gt2yeIU6wLgrh
+ qOxB2BpJRdk/+JUqbesJAv1m9D6tXx14XEFPbdEBR3szRjrFgz2NzdQvBUGw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,124 +101,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Releasing the `priv->lock` while iterating the `priv->multicast_list` in
-`ipoib_mcast_join_task()` opens a window for `ipoib_mcast_dev_flush()` to
-remove the items while in the middle of iteration. If the mcast is removed
-while the lock was dropped, the for loop spins forever resulting in a hard
-lockup (as was reported on RHEL 4.18.0-372.75.1.el8_6 kernel):
+Document the SM8650 sound card using the SM8450 fallback
+and add the SM8650 compatible to the sc8280xp sound card
+driver to use the sm8650 card driver_name like SM8450 & SM8550.
 
-    Task A (kworker/u72:2 below)       | Task B (kworker/u72:0 below)
-    -----------------------------------+-----------------------------------
-    ipoib_mcast_join_task(work)        | ipoib_ib_dev_flush_light(work)
-      spin_lock_irq(&priv->lock)       | __ipoib_ib_dev_flush(priv, ...)
-      list_for_each_entry(mcast,       | ipoib_mcast_dev_flush(dev = priv->dev)
-          &priv->multicast_list, list) |
-        ipoib_mcast_join(dev, mcast)   |
-          spin_unlock_irq(&priv->lock) |
-                                       |   spin_lock_irqsave(&priv->lock, flags)
-                                       |   list_for_each_entry_safe(mcast, tmcast,
-                                       |                  &priv->multicast_list, list)
-                                       |     list_del(&mcast->list);
-                                       |     list_add_tail(&mcast->list, &remove_list)
-                                       |   spin_unlock_irqrestore(&priv->lock, flags)
-          spin_lock_irq(&priv->lock)   |
-                                       |   ipoib_mcast_remove_list(&remove_list)
-   (Here, `mcast` is no longer on the  |     list_for_each_entry_safe(mcast, tmcast,
-    `priv->multicast_list` and we keep |                            remove_list, list)
-    spinning on the `remove_list` of   |  >>>  wait_for_completion(&mcast->done)
-    the other thread which is blocked  |
-    and the list is still valid on     |
-    it's stack.)
-
-Fix this by keeping the lock held and changing to GFP_ATOMIC to prevent
-eventual sleeps.
-Unfortunately we could not reproduce the lockup and confirm this fix but
-based on the code review I think this fix should address such lockups.
-
-crash> bc 31
-PID: 747      TASK: ff1c6a1a007e8000  CPU: 31   COMMAND: "kworker/u72:2"
---
-    [exception RIP: ipoib_mcast_join_task+0x1b1]
-    RIP: ffffffffc0944ac1  RSP: ff646f199a8c7e00  RFLAGS: 00000002
-    RAX: 0000000000000000  RBX: ff1c6a1a04dc82f8  RCX: 0000000000000000
-                                  work (&priv->mcast_task{,.work})
-    RDX: ff1c6a192d60ac68  RSI: 0000000000000286  RDI: ff1c6a1a04dc8000
-           &mcast->list
-    RBP: ff646f199a8c7e90   R8: ff1c699980019420   R9: ff1c6a1920c9a000
-    R10: ff646f199a8c7e00  R11: ff1c6a191a7d9800  R12: ff1c6a192d60ac00
-                                                         mcast
-    R13: ff1c6a1d82200000  R14: ff1c6a1a04dc8000  R15: ff1c6a1a04dc82d8
-           dev                    priv (&priv->lock)     &priv->multicast_list (aka head)
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
---- <NMI exception stack> ---
- #5 [ff646f199a8c7e00] ipoib_mcast_join_task+0x1b1 at ffffffffc0944ac1 [ib_ipoib]
- #6 [ff646f199a8c7e98] process_one_work+0x1a7 at ffffffff9bf10967
-
-crash> rx ff646f199a8c7e68
-ff646f199a8c7e68:  ff1c6a1a04dc82f8 <<< work = &priv->mcast_task.work
-
-crash> list -hO ipoib_dev_priv.multicast_list ff1c6a1a04dc8000
-(empty)
-
-crash> ipoib_dev_priv.mcast_task.work.func,mcast_mutex.owner.counter ff1c6a1a04dc8000
-  mcast_task.work.func = 0xffffffffc0944910 <ipoib_mcast_join_task>,
-  mcast_mutex.owner.counter = 0xff1c69998efec000
-
-crash> b 8
-PID: 8        TASK: ff1c69998efec000  CPU: 33   COMMAND: "kworker/u72:0"
---
- #3 [ff646f1980153d50] wait_for_completion+0x96 at ffffffff9c7d7646
- #4 [ff646f1980153d90] ipoib_mcast_remove_list+0x56 at ffffffffc0944dc6 [ib_ipoib]
- #5 [ff646f1980153de8] ipoib_mcast_dev_flush+0x1a7 at ffffffffc09455a7 [ib_ipoib]
- #6 [ff646f1980153e58] __ipoib_ib_dev_flush+0x1a4 at ffffffffc09431a4 [ib_ipoib]
- #7 [ff646f1980153e98] process_one_work+0x1a7 at ffffffff9bf10967
-
-crash> rx ff646f1980153e68
-ff646f1980153e68:  ff1c6a1a04dc83f0 <<< work = &priv->flush_light
-
-crash> ipoib_dev_priv.flush_light.func,broadcast ff1c6a1a04dc8000
-  flush_light.func = 0xffffffffc0943820 <ipoib_ib_dev_flush_light>,
-  broadcast = 0x0,
-
-The mcast(s) on the `remove_list` (the remaining part of the ex `priv->multicast_list`):
-
-crash> list -s ipoib_mcast.done.done ipoib_mcast.list -H ff646f1980153e10 | paste - -
-ff1c6a192bd0c200	  done.done = 0x0,
-ff1c6a192d60ac00	  done.done = 0x0,
-
-Reported-by: Yuya Fujita-bishamonten <fj-lsoft-rh-driver@dl.jp.fujitsu.com>
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/infiniband/ulp/ipoib/ipoib_multicast.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Neil Armstrong (2):
+      ASoC: dt-bindings: qcom,sm8250: document SM8650 sound card
+      ASoC: qcom: sc8280xp: Add support for SM8650
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-index 5b3154503bf4..bca80fe07584 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
-@@ -531,21 +531,17 @@ static int ipoib_mcast_join(struct net_device *dev, struct ipoib_mcast *mcast)
- 		if (test_bit(IPOIB_MCAST_FLAG_SENDONLY, &mcast->flags))
- 			rec.join_state = SENDONLY_FULLMEMBER_JOIN;
- 	}
--	spin_unlock_irq(&priv->lock);
- 
- 	multicast = ib_sa_join_multicast(&ipoib_sa_client, priv->ca, priv->port,
--					 &rec, comp_mask, GFP_KERNEL,
-+					 &rec, comp_mask, GFP_ATOMIC,
- 					 ipoib_mcast_join_complete, mcast);
--	spin_lock_irq(&priv->lock);
- 	if (IS_ERR(multicast)) {
- 		ret = PTR_ERR(multicast);
- 		ipoib_warn(priv, "ib_sa_join_multicast failed, status %d\n", ret);
- 		/* Requeue this join task with a backoff delay */
- 		__ipoib_mcast_schedule_join_thread(priv, mcast, 1);
- 		clear_bit(IPOIB_MCAST_FLAG_BUSY, &mcast->flags);
--		spin_unlock_irq(&priv->lock);
- 		complete(&mcast->done);
--		spin_lock_irq(&priv->lock);
- 	}
- 	return 0;
- }
+ Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
+ sound/soc/qcom/sc8280xp.c                                | 1 +
+ 2 files changed, 2 insertions(+)
+---
+base-commit: bbd220ce4e29ed55ab079007cff0b550895258eb
+change-id: 20231212-topic-sm8650-upstream-snd-card-15eb7afa27f9
+
+Best regards,
 -- 
-2.43.0
+Neil Armstrong <neil.armstrong@linaro.org>
 
