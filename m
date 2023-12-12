@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1577380E7A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE53D80E737
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjLLJbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41886 "EHLO
+        id S1346187AbjLLJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:19:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjLLJbH (ORCPT
+        with ESMTP id S231384AbjLLJTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:31:07 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E15E3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:31:13 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso56355835e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:31:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702373472; x=1702978272; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RT1JrNd7Xh9affKUYGufSKLnRgO9NCJPK/+u/p2YNSU=;
-        b=Vfa2gim7NK2B2H3TZJyCk5KWH92vMvX4xcgvtduEVvE3t9oAOHga556PMvT1GqmQ0K
-         HLbYS1ExJEtDLIgNYq6tmonIbzwbmCIUK1hSlUxDO0GOn/0vh0313XqBltuTfsVkPYLa
-         oJrmoPmTQn0TKF0/vQiff7OOKQW8lWy3bQYqCE5GYuZophdffj0qR09t9mNzPTnZuoGZ
-         g8iZ5cwP6MyuP9a2y/t6DH0YfpmAzhlquo9AncSBanvRqqzHkI3nFdWYWLDLTsDcermr
-         QNwnluNpGZiB3B0Vk9WJPdRA6KMDI6l+6JXBeYyvPHE5xY1X1hXOxF9lzREcZgv03rKw
-         c4hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702373472; x=1702978272;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RT1JrNd7Xh9affKUYGufSKLnRgO9NCJPK/+u/p2YNSU=;
-        b=l8j4GUro95TB3ZJshT7nuShBTMOlxPoqNlaDm4w+xksMZuDDKh7HdlMpOAYIKfqMfJ
-         ub3VoGOsWpWfAfPKBM8l4GNCWSJo9XbEqyCRq8W2prEzo8FmI4gz9EnRzXOz2RWgfwW4
-         dZUzSTpLJhjzPGUGpMNDCtPK2B9RY0iHyoLfv/nDvSC5whMOtEBQyvzs1scpYx5ExCeP
-         IX5+oDAVl5pcYHLZbnsDVKJepknDNPM3gSiYU6pxo79stHADz4/RyXEneMwsn7BKleaG
-         OCS8aAfnhPVX/cg2DyOnR3jOGX6TDLzWtyc15gHQJELer+qx4I9bdLf+bY/T4K9fZ2xU
-         XOVQ==
-X-Gm-Message-State: AOJu0YyPmMYHzOyqkbtwWGqNlBT3n3T6kHXqpSTTmhrgCgOkP4AteTNy
-        doOt6hM0hTTbFr7eEr3Xe/Whhw==
-X-Google-Smtp-Source: AGHT+IE+ZwU5DBKg6w3fcvGqVzKaj0LTIv+2OhyE+F2zWYVgLYYHgVdm+n1fqLqXnuQ5cuFqTfN99g==
-X-Received: by 2002:a05:600c:2d52:b0:40c:2ba7:ee30 with SMTP id a18-20020a05600c2d5200b0040c2ba7ee30mr3122570wmg.165.1702373471932;
-        Tue, 12 Dec 2023 01:31:11 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id q12-20020a05600c46cc00b0040b4c59f133sm15799711wmo.1.2023.12.12.01.31.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 01:31:11 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        arm@kernel.org, soc@kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL 2/2] ARM: dts: samsung: Samsung for v6.8
-Date:   Tue, 12 Dec 2023 10:31:05 +0100
-Message-Id: <20231212093105.13938-2-krzysztof.kozlowski@linaro.org>
+        Tue, 12 Dec 2023 04:19:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB03C7;
+        Tue, 12 Dec 2023 01:19:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702372750; x=1733908750;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r1px4BsQs/X7Xgfx+BYJsYmJ0wM7HnTCh77HJxhuwZg=;
+  b=Kq9A51q9SyoffKynEIkyZdQK5BnPL/L/qaxH80gLkSO3Q5CcdT4PweX5
+   vmrs6uPxhvn0J7Lc/OiUbnyXpszN8nQsRCebgWZ3Vr/rLy2qCcHvwPJCo
+   1g0J0uycHJYOhZy6P3wyJooNJRQ5OQ7RIwK8x490PFJ28yxGjcuSWNgqJ
+   x2nw6KAPqt0kGCBQonM1wQVMTyGiS6inGxH9nIVwO4V/SfC35t/LVX7dQ
+   2DjibEZg90pnoKY4NVUO+sz6UrKSQOd8jCGaVz6nI2PAvDlA8pTK4DdYa
+   Ruzr8zgNrtujr5uswJPFzuxacSe8VYBWUbhB1FbJA+vDm9HJ101Jhawdm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480974125"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="480974125"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:19:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="917212797"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="917212797"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 01:19:00 -0800
+From:   Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        wchen <waylingii@gmail.com>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Minda Chen <minda.chen@starfivetech.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: [PATCH v4 00/11] RISCV: Add kvm Sstc timer selftests
+Date:   Tue, 12 Dec 2023 17:31:09 +0800
+Message-Id: <cover.1702371136.git.haibo1.xu@intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212093105.13938-1-krzysztof.kozlowski@linaro.org>
-References: <20231212093105.13938-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+The RISC-V arch_timer selftests is used to validate Sstc timer
+functionality in a guest, which sets up periodic timer interrupts
+and check the basic interrupt status upon its receipt.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+This KVM selftests was ported from aarch64 arch_timer and tested
+with Linux v6.7-rc4 on a Qemu riscv64 virt machine.
 
-are available in the Git repository at:
+---
+Changed since v4:
+  * Rebased to Linux 6.7-rc4
+  * Included Paolo's patch(01/11) to fix issues with SPLIT_TESTS
+  * Droped the patch(KVM: selftests: Unify the makefile rule for split targets) 
+    since Paolo's patch had included the fix
+  * Added new patch(05/11) to include header file vdso/processor.h from linux
+    source tree to leverage the cpu_relax() definition - Conor/Andrew
+  * Added new patch(11/11) to enable user configuration of timer error margin
+    parameter which alleviate the intermitent failure in stress test - Andrew
+  * Other minor fixes per Andrew's comments
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt-6.8
+Haibo Xu (10):
+  KVM: arm64: selftests: Split arch_timer test code
+  KVM: selftests: Add CONFIG_64BIT definition for the build
+  tools: riscv: Add header file csr.h
+  tools: riscv: Add header file vdso/processor.h
+  KVM: riscv: selftests: Switch to use macro from csr.h
+  KVM: riscv: selftests: Add exception handling support
+  KVM: riscv: selftests: Add guest helper to get vcpu id
+  KVM: riscv: selftests: Change vcpu_has_ext to a common function
+  KVM: riscv: selftests: Add sstc timer test
+  KVM: selftests: Enable tunning of err_margin_us in arch timer test
 
-for you to fetch changes up to 50c7cdc9a4d2d21373c1ab52c131109ab30c53f5:
+Paolo Bonzini (1):
+  selftests/kvm: Fix issues with $(SPLIT_TESTS)
 
-  ARM: dts: samsung: exynos4210-i9100: Add accelerometer node (2023-12-08 20:42:17 +0100)
+ tools/arch/riscv/include/asm/csr.h            | 521 ++++++++++++++++++
+ tools/arch/riscv/include/asm/vdso/processor.h |  32 ++
+ tools/testing/selftests/kvm/Makefile          |  27 +-
+ .../selftests/kvm/aarch64/arch_timer.c        | 295 +---------
+ tools/testing/selftests/kvm/arch_timer.c      | 259 +++++++++
+ .../selftests/kvm/include/aarch64/processor.h |   4 -
+ .../selftests/kvm/include/kvm_util_base.h     |   9 +
+ .../selftests/kvm/include/riscv/arch_timer.h  |  71 +++
+ .../selftests/kvm/include/riscv/processor.h   |  65 ++-
+ .../testing/selftests/kvm/include/test_util.h |   2 +
+ .../selftests/kvm/include/timer_test.h        |  45 ++
+ .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++
+ .../selftests/kvm/lib/riscv/processor.c       |  87 +++
+ .../testing/selftests/kvm/riscv/arch_timer.c  | 111 ++++
+ .../selftests/kvm/riscv/get-reg-list.c        |  11 +-
+ 15 files changed, 1333 insertions(+), 307 deletions(-)
+ create mode 100644 tools/arch/riscv/include/asm/csr.h
+ create mode 100644 tools/arch/riscv/include/asm/vdso/processor.h
+ create mode 100644 tools/testing/selftests/kvm/arch_timer.c
+ create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.h
+ create mode 100644 tools/testing/selftests/kvm/include/timer_test.h
+ create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
+ create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
 
-----------------------------------------------------------------
-Samsung DTS ARM changes for v6.8
+-- 
+2.34.1
 
-1. Exynos4212 and Exynos4412: Final fixes for dtbs_check warnings.
-   Replace duplicate PMU node in FIMC IS node with syscon phandle.  The
-   old solution of duplicated PMU node was not a correct representation of
-   the hardware and could have concurrent access issues.
-
-   The DTS change depends on media FIMC IS drivers changes already
-   merged in previous cycle, thus it is not fully
-   backwards-compatible.  It is a necessary trade-off in fixing wrong
-   description in DTS.
-
-   With this fix, `make dtbs_check` status looks like:
-   S3C6410: no warnings
-   Exynos: no warnings, one undocumented compatible
-   S5PV210: one warning, one undocumented compatible
-
-2. Exynos4210, Exynos4212, Exynos4412, S5PV210:
-   Correct FIMC IS camera ranges and IO addresses to silence dtc W=1
-   warnings.  No functional impact expected.
-   After this fix, there are no dtc W=1 warnings on all ARMv7 platforms.
-
-3. Galaxy I9100: Fix 12-second hang during boot by enabling regulator
-   (real cause not really known), add touch keys and accelerometer.
-
-----------------------------------------------------------------
-Krzysztof Kozlowski (3):
-      ARM: dts: samsung: exynos4x12: replace duplicate pmu node with phandle
-      ARM: dts: samsung: exynos4: fix camera unit addresses/ranges
-      ARM: dts: samsung: s5pv210: fix camera unit addresses/ranges
-
-Paul Cercueil (3):
-      ARM: dts: samsung: exynos4210-i9100: Unconditionally enable LDO12
-      ARM: dts: samsung: exynos4210-i9100: Add node for touch keys
-      ARM: dts: samsung: exynos4210-i9100: Add accelerometer node
-
- arch/arm/boot/dts/samsung/exynos4.dtsi         | 26 +++++++-------
- arch/arm/boot/dts/samsung/exynos4210-i9100.dts | 48 +++++++++++++++++++++++++-
- arch/arm/boot/dts/samsung/exynos4x12.dtsi      | 22 ++++++------
- arch/arm/boot/dts/samsung/s5pv210.dtsi         | 18 +++++-----
- 4 files changed, 79 insertions(+), 35 deletions(-)
