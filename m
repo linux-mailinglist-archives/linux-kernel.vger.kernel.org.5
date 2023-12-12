@@ -2,58 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9A180FB5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD7880FB5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbjLLX1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:27:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S232490AbjLLX11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232301AbjLLX1B (ORCPT
+        with ESMTP id S231664AbjLLX1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:27:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E92F2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:27:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702423624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZwFQ3GQCbPFAax8NUohZK89OPMuLW9MEl5mvS51Lzts=;
-        b=Qb6rEPepNg/r1A/4ycL+MxCwfAeoRRx9JRESXZNnMHwx51B0+PdWmNQ1gs11C6mIFP/YGl
-        6OaZ3/ufSM9dfytM3RZLMTH6JCADT5ye200VAi0CO0gnL5HTa5zF4pDoDh31uN4xNCUmVE
-        aJYaLugb7REp/xMQ9Z/JoT9Z/r82mBQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-6YG-K_zxMJKQP8zTqBW2aQ-1; Tue, 12 Dec 2023 18:27:03 -0500
-X-MC-Unique: 6YG-K_zxMJKQP8zTqBW2aQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4552A80BEC1;
-        Tue, 12 Dec 2023 23:27:02 +0000 (UTC)
-Received: from localhost.localdomain.com (unknown [10.22.34.149])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 800551121306;
-        Tue, 12 Dec 2023 23:27:01 +0000 (UTC)
-From:   Nico Pache <npache@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com
-Cc:     akpm@linux-foundation.org, vincenzo.frascino@arm.com,
-        dvyukov@google.com, andreyknvl@gmail.com, glider@google.com,
-        ryabinin.a.a@gmail.com
-Subject: [PATCH] kunit: kasan_test: disable fortify string checker on kmalloc_oob_memset
-Date:   Tue, 12 Dec 2023 16:26:59 -0700
-Message-ID: <20231212232659.18839-1-npache@redhat.com>
+        Tue, 12 Dec 2023 18:27:23 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFF9FD;
+        Tue, 12 Dec 2023 15:27:27 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCH5n9c013622;
+        Tue, 12 Dec 2023 23:27:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:from:to:cc:references
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=SWhMvNaoYsP+58utWELVB8tF6xTUlOKZmRPgNdYB/MM=; b=Cd
+        w8Bx7J27a3PIgZ4Ea88ItRJ5WCvxIj5nSccJKHeTsVu4XmD3MOPJ2LjaZriSb7yV
+        iQ6ryUW/I4N+6jBRCzS5IX9hGhh5+IeJJ9WVsMsEKrJwOt8/sn8QB/v4T8Kpggqx
+        fwIrYC9fWCmdTCMvryB2DbEsdj32GN4aOy5L4b6UZJmsXlvgocCcANbP2pvfuxNR
+        9EY/5yCH6msj43h9w9RlrfRpWSnn0D8NUwCpRrKunzPa+x87wU3/09sk66XfEDM8
+        iAHpQ3LmiDMRyIc2siukc+zOfCuFAUf0J7Tby33lSgbBJUOSKggOID8TORraEC4J
+        FUI+epEv7MhrcDQCOqsw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxctatx5g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 23:27:02 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCNR1VO024896
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 23:27:01 GMT
+Received: from [10.110.106.103] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
+ 2023 15:27:00 -0800
+Message-ID: <ada88ef1-d290-441a-b6f1-97d7f478cccc@quicinc.com>
+Date:   Tue, 12 Dec 2023 15:26:59 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC - is this a bug?] wifi: ath10k: Asking for some light on
+ this, please :)
+Content-Language: en-US
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@kernel.org>
+CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
+ <26b15f4702cef17fe70b496a62f03735874bd16a.camel@sipsolutions.net>
+ <07e9bb04-f9fc-46d5-bfb9-a00a63a707c0@embeddedor.com>
+ <f8daa53ee8a8019e4fd2b823c1fcb85a6cc4d806.camel@sipsolutions.net>
+ <8219c79e-0359-4136-afa4-fba76fde191a@embeddedor.com>
+ <afaadf5e-556c-4fd6-bfd3-9c486a35a08f@quicinc.com>
+In-Reply-To: <afaadf5e-556c-4fd6-bfd3-9c486a35a08f@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5ea7PuvC2gPKd5hS6zoaxzmbgueU3cQu
+X-Proofpoint-ORIG-GUID: 5ea7PuvC2gPKd5hS6zoaxzmbgueU3cQu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=789 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120183
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,107 +89,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-similar to commit 09c6304e38e4 ("kasan: test: fix compatibility with
-FORTIFY_SOURCE") the kernel is panicing in kmalloc_oob_memset_*.
+On 10/25/2023 8:52 AM, Jeff Johnson wrote:
+> On 10/24/2023 7:37 PM, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 10/24/23 14:49, Johannes Berg wrote:
+>>> On Tue, 2023-10-24 at 14:41 -0600, Gustavo A. R. Silva wrote:
+>>>>
+>>>> It seems we run into the same issue in the function below, even in the
+>>>> case this `memset()` is unnecessary (which it seems it's not):
+>>>>
+>>>>     8920         memset(skb->data, 0, sizeof(*cmd));
+>>>>
+>>>> Notice that if `cap->peer_chan_len == 0` or `cap->peer_chan_len == 1`,
+>>>> in the original code, we have `len == sizeof(*cmd) == 128`:
+>>>
+>>> Right.
+>>>
+>>>> -       /* tdls peer update cmd has place holder for one channel*/
+>>>> -       chan_len = cap->peer_chan_len ? (cap->peer_chan_len - 1) : 0;
+>>>> -
+>>>> -       len = sizeof(*cmd) + chan_len * sizeof(*chan);
+>>>> +       len = struct_size(cmd, peer_capab.peer_chan_list, 
+>>>> cap->peer_chan_len);
+>>>>
+>>>>           skb = ath10k_wmi_alloc_skb(ar, len);
+>>>>           if (!skb)
+>>>>
+>>>> which makes `round_len == roundup(len, 4) == struct_size(cmd,...,...) 
+>>>> == 104`
+>>>> when `cap->peer_chan_len == 0`
+>>>
+>>> And yeah, that's really the issue, it only matters for ==0. For a moment
+>>> there I thought that doesn't even make sense, but it looks like it never
+>>> even becomes non-zero.
+>>>
+>>> No idea then, sorry. You'd hope firmware doesn't care about the actual
+>>> message size if the inner data says "0 entries", but who knows? And how
+>>> many firmware versions are there? :)
+>>>
+>>> So I guess you'd want to stay compatible, even if it means having a
+>>>
+>>>     chan_len = min(cap->peer_chan_len, 1);
+>>>
+>>> for the struct_size()?
+>>
+>> Yeah, that's an alternative.
+>>
+>> I'll wait for the maintainers to chime in and see if they have a different
+>> opinion.
+> 
+> I'm seeing clarification from the development team.
+> 
+> /jeff
+> 
 
-This is due to the `ptr` not being hidden from the optimizer which would
-disable the runtime fortify string checker.
+I was not able to get a response from the firmware team.
 
-kernel BUG at lib/string_helpers.c:1048!
-Call Trace:
-[<00000000272502e2>] fortify_panic+0x2a/0x30
-([<00000000272502de>] fortify_panic+0x26/0x30)
-[<001bffff817045c4>] kmalloc_oob_memset_2+0x22c/0x230 [kasan_test]
+I have gone ahead and created a series of patches to fix the remaining
+flexible array issues in ath10k including the one discussed here. I
+should be able to post those sometime this week.
 
-Hide the `ptr` variable from the optimizer to fix the kernel panic.
-Also define a size2 variable and hide that as well. This cleans up
-the code and follows the same convention as other tests.
-
-Signed-off-by: Nico Pache <npache@redhat.com>
----
- mm/kasan/kasan_test.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-index 8281eb42464b..5aeba810ba70 100644
---- a/mm/kasan/kasan_test.c
-+++ b/mm/kasan/kasan_test.c
-@@ -493,14 +493,17 @@ static void kmalloc_oob_memset_2(struct kunit *test)
- {
- 	char *ptr;
- 	size_t size = 128 - KASAN_GRANULE_SIZE;
-+	size_t size2 = 2;
- 
- 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(ptr);
- 	OPTIMIZER_HIDE_VAR(size);
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, 2));
-+	OPTIMIZER_HIDE_VAR(size2);
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, size2));
- 	kfree(ptr);
- }
- 
-@@ -508,14 +511,17 @@ static void kmalloc_oob_memset_4(struct kunit *test)
- {
- 	char *ptr;
- 	size_t size = 128 - KASAN_GRANULE_SIZE;
-+	size_t size2 = 4;
- 
- 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(ptr);
- 	OPTIMIZER_HIDE_VAR(size);
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, 4));
-+	OPTIMIZER_HIDE_VAR(size2);
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, size2));
- 	kfree(ptr);
- }
- 
-@@ -523,14 +529,17 @@ static void kmalloc_oob_memset_8(struct kunit *test)
- {
- 	char *ptr;
- 	size_t size = 128 - KASAN_GRANULE_SIZE;
-+	size_t size2 = 8;
- 
- 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(ptr);
- 	OPTIMIZER_HIDE_VAR(size);
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, 8));
-+	OPTIMIZER_HIDE_VAR(size2);
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, size2));
- 	kfree(ptr);
- }
- 
-@@ -538,14 +547,17 @@ static void kmalloc_oob_memset_16(struct kunit *test)
- {
- 	char *ptr;
- 	size_t size = 128 - KASAN_GRANULE_SIZE;
-+	size_t size2 = 16;
- 
- 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-+	OPTIMIZER_HIDE_VAR(ptr);
- 	OPTIMIZER_HIDE_VAR(size);
--	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, 16));
-+	OPTIMIZER_HIDE_VAR(size2);
-+	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, size2));
- 	kfree(ptr);
- }
- 
--- 
-2.43.0
-
+/jeff
