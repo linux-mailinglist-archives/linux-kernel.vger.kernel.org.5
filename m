@@ -2,156 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96C380EEBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB4D80EEC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376687AbjLLO2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
+        id S1376800AbjLLO3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376605AbjLLO2h (ORCPT
+        with ESMTP id S1376579AbjLLO3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:28:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75714E9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702391320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sic7JgTbCqXENzuaXidvmcJDkf8Pxtwv2IpV4/8llXA=;
-        b=hrXg1Qz2qMriIzzDLT0EsESX/OqA3/o0ZhbZiH+ntnvNebIQpWuf+gcjg2eJqbBBcMFl9H
-        QXPoWaF1XEncqvDNQfo6GZ9wlfwTrsERE8O3LQVgkSYZr1rj/VtkCc21Z6bT7TIDnmHGrE
-        Z0O1H4aPEs4cgbupVw2TpWYf/XH0j+0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-QJACo1pDP0GLWdWP7oQvOg-1; Tue, 12 Dec 2023 09:28:39 -0500
-X-MC-Unique: QJACo1pDP0GLWdWP7oQvOg-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67a940dcd1aso78706986d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:28:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702391319; x=1702996119;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 12 Dec 2023 09:29:11 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4ECAD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:29:12 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so609754366b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702391351; x=1702996151; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sic7JgTbCqXENzuaXidvmcJDkf8Pxtwv2IpV4/8llXA=;
-        b=hZX2oOYxxVsSehrkgr0FchC+PN0vShkpOnWfsmrQXsyMYsPQhRMkpLeH/CMwYrmd1Z
-         G5D51pqeWlcu76OPhANJuKfEHsbgSTisAh0rCO6Gz5chQbZeJhJ7nzCuitTzPZytUfHx
-         wKZBhDx+k/cS+LO7lJQfBtKDi9ufXm0Bnwvmq3V2DjSAU8W21cXydd7bEQKJhyNEhqeL
-         CHNgYq9gWwhkwSo5ldh3v3slm8nfsnJT1wDjhKxwjKnwl4ajgKkn7LdX6nkYYNtwQ/zH
-         TxP2MA4Dc/ROVGcZdQsWqXlfkREWXtEcze27OekUgjgLA06oBQAWkBtbJ0u70dmfXEPk
-         D3PA==
-X-Gm-Message-State: AOJu0YxXbABLJcNQdngWXsCpqRZuY7MErv/YyjPoWCRGhdXwScjqdwdk
-        yu7ai/P5qHiDsZltkNe8SdL8uDfdN94tA70WBYDdVuyIyitkWx/lmJhpDkqCdgCFG7khKnE2R1N
-        i5a56kl9ZqinfZMpH5FlXyEfZ
-X-Received: by 2002:a05:6214:c25:b0:67a:a721:830b with SMTP id a5-20020a0562140c2500b0067aa721830bmr7837479qvd.101.1702391318784;
-        Tue, 12 Dec 2023 06:28:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFHOEPNqyZdk9QNuyLbwX1ImY1txSg6BBuVoLWOx94ej3ijMZxTQS0qC/sSDGxEP2PvMWaFUg==
-X-Received: by 2002:a05:6214:c25:b0:67a:a721:830b with SMTP id a5-20020a0562140c2500b0067aa721830bmr7837469qvd.101.1702391318451;
-        Tue, 12 Dec 2023 06:28:38 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id jr12-20020a0562142a8c00b0067a14d996e9sm4231045qvb.1.2023.12.12.06.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 06:28:37 -0800 (PST)
-Date:   Tue, 12 Dec 2023 08:28:35 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
+        bh=HvAfEdNnHNunYaoKLrlK4WhMdfvO73bGHd2FtWgeUYg=;
+        b=akY5MonYgndnmv7rJhhLD8XVdx+ToH7Utth/KzwXWr/lhhAv8XY4vNQCoDAwl2+/vN
+         Y9uKJHVhOtXW+KC4c3eusfbWSXQkPvJ9g4FWD1WyN+JFa+jn92zlGhaT8P071noV160G
+         dt2gw0FoMEpPMx1+i2DnUUGiMogGyCQI7Y5gQXh9bbf35JWRdBhcwHsf12sUTqABNhjl
+         mM4c4JNglhY0yQ82Ll5shFkhgg8y4b7HNZWjwVI6E11vYjlap7G3qkWr5541nCVq5B3q
+         m9OPeYpbAk2v3B8AUIBZ0TnkpO82I20r445Eob0OTwA1gLfXwD9gZGXd3RUKnP+yE89+
+         Qnzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702391351; x=1702996151;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HvAfEdNnHNunYaoKLrlK4WhMdfvO73bGHd2FtWgeUYg=;
+        b=wtZmeFg3rtN1UUkfhRpxUJC2j3CcKxZbu+AAmo225hZzcncgM6Ejxvz3XMIRq4OLy0
+         7vDM0QxZ9QylWIAs+kZ9aXeiLCpR50cwWzecC/xg5V5anuSYnxkIOUVdUz3HBtZgG3MC
+         N4MzcjthmxEVvLqlOiUf5q7j6hcNCYcomIRrVUQPnkFcXzge5CjDJ1rBJekRU0txpHuc
+         t0LhFTSeTbmzax3jtpxjVoZVHLjb+7a9m2cdC4I/yOOZ4/nkaUeC1f0iVtRMXobMlnsH
+         gMen5ZMSTOUXae7MmQsKyIY6p0yuaiKMZLPQCcFlB4EGkDdsf61D/v3ZTZqOTeIJdELX
+         47kg==
+X-Gm-Message-State: AOJu0YzlGH+SX2aPuZ7aS1VV4u9Wah2YUcEsVJO7eqqggJGVIEvdVhUs
+        4kbXKJsW94gb8h2ECjzI1POhAtovJqAT57xb3pQ6q+HsGdwEfk7b+Mc5JQ==
+X-Google-Smtp-Source: AGHT+IHSSUddnH7vqmzYJHu7RfzxRhATVPO/EOnWlyPQFn5qUGh1DJZKHNEoTOcGQjr2tdWtG+uz+GEsaHrcS6BiK4g=
+X-Received: by 2002:a17:907:7e94:b0:a18:c553:21cb with SMTP id
+ qb20-20020a1709077e9400b00a18c55321cbmr3011891ejc.19.1702391350542; Tue, 12
+ Dec 2023 06:29:10 -0800 (PST)
+MIME-Version: 1.0
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com> <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+ <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com> <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
+ <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+ <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com> <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
+ <2cdf173c-95e4-2141-56f7-0761705cd737@huawei.com>
+In-Reply-To: <2cdf173c-95e4-2141-56f7-0761705cd737@huawei.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 12 Dec 2023 06:28:58 -0800
+Message-ID: <CAHS8izOTdqqbS6ajAo+c646UwXkK-aB8ET9uJRS6Auszfi0nfA@mail.gmail.com>
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: stmmac: Handle disabled MDIO busses from
- devicetree
-Message-ID: <d7vwj7p55ig7fjste3ctqwpccuoowh2ryqnmcxq3qqrn6exzjd@z5mbsitxbupk>
-References: <20231211-b4-stmmac-handle-mdio-enodev-v1-1-73c20c44f8d6@redhat.com>
- <ggbqvhdhgl6wmuewqtwtgud7ubx2ypmnb3p6p6w7cy37mnnyxn@2eqd63s2t5ii>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ggbqvhdhgl6wmuewqtwtgud7ubx2ypmnb3p6p6w7cy37mnnyxn@2eqd63s2t5ii>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 01:59:25PM +0300, Serge Semin wrote:
-> On Mon, Dec 11, 2023 at 03:31:17PM -0600, Andrew Halaney wrote:
-> > Many hardware configurations have the MDIO bus disabled, and are instead
-> > using some other MDIO bus to talk to the MAC's phy.
-> > 
-> > of_mdiobus_register() returns -ENODEV in this case. Let's handle it
-> > gracefully instead of failing to probe the MAC.
-> > 
-> > Fixes: 47dd7a540b8a (net: add support for STMicroelectronics Ethernet controllers.")
-> > Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> > ---
-> >  drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> > index fa9e7e7040b9..a39be15d41a8 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-> > @@ -591,7 +591,13 @@ int stmmac_mdio_register(struct net_device *ndev)
-> >  	new_bus->parent = priv->device;
-> >  
-> >  	err = of_mdiobus_register(new_bus, mdio_node);
-> > -	if (err != 0) {
-> > +	if (err) {
-> > +		if (err == -ENODEV) {
-> > +			/* The bus is disabled in the devicetree, that's ok */
-> > +			mdiobus_free(new_bus);
-> > +			return 0;
-> > +		}
-> > +
-> >  		dev_err_probe(dev, err, "Cannot register the MDIO bus\n");
-> >  		goto bus_register_fail;
-> >  	}
-> 
-> This can be implemented a bit simpler, more maintainable and saving
-> one indentations level:
-> 
-> 	err = of_mdiobus_register(new_bus, mdio_node);
-> 	if (err == -ENODEV) {
-> 		err = 0;
-> 		dev_warn(dev, "MDIO bus is disabled\n");
+On Tue, Dec 12, 2023 at 3:17=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
+m> wrote:
+>
+> On 2023/12/12 2:14, Mina Almasry wrote:
+> > On Mon, Dec 11, 2023 at 3:51=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
+i.com> wrote:
+> >>
+> >> On 2023/12/11 12:04, Mina Almasry wrote:
+> >>> On Sun, Dec 10, 2023 at 6:26=E2=80=AFPM Mina Almasry <almasrymina@goo=
+gle.com> wrote:
+> >>>>
+> >>>> On Sun, Dec 10, 2023 at 6:04=E2=80=AFPM Yunsheng Lin <linyunsheng@hu=
+awei.com> wrote:
+> >>>>>
+> >>>>> On 2023/12/9 0:05, Mina Almasry wrote:
+> >>>>>> On Fri, Dec 8, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@h=
+uawei.com> wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> As mentioned before, it seems we need to have the above checking =
+every
+> >>>>>>> time we need to do some per-page handling in page_pool core, is t=
+here
+> >>>>>>> a plan in your mind how to remove those kind of checking in the f=
+uture?
+> >>>>>>>
+> >>>>>>
+> >>>>>> I see 2 ways to remove the checking, both infeasible:
+> >>>>>>
+> >>>>>> 1. Allocate a wrapper struct that pulls out all the fields the pag=
+e pool needs:
+> >>>>>>
+> >>>>>> struct netmem {
+> >>>>>>         /* common fields */
+> >>>>>>         refcount_t refcount;
+> >>>>>>         bool is_pfmemalloc;
+> >>>>>>         int nid;
+> >>>>>>         ...
+> >>>>>>         union {
+> >>>>>>                 struct dmabuf_genpool_chunk_owner *owner;
+> >>>>>>                 struct page * page;
+> >>>>>>         };
+> >>>>>> };
+> >>>>>>
+> >>>>>> The page pool can then not care if the underlying memory is iov or
+> >>>>>> page. However this introduces significant memory bloat as this str=
+uct
+> >>>>>> needs to be allocated for each page or ppiov, which I imagine is n=
+ot
+> >>>>>> acceptable for the upside of removing a few static_branch'd if
+> >>>>>> statements with no performance cost.
+> >>>>>>
+> >>>>>> 2. Create a unified struct for page and dmabuf memory, which the m=
+m
+> >>>>>> folks have repeatedly nacked, and I imagine will repeatedly nack i=
+n
+> >>>>>> the future.
+> >>>>>>
+> >>>>>> So I imagine the special handling of ppiov in some form is critica=
+l
+> >>>>>> and the checking may not be removable.
+> >>>>>
+> >>>>> If the above is true, perhaps devmem is not really supposed to be i=
+ntergated
+> >>>>> into page_pool.
+> >>>>>
+> >>>>> Adding a checking for every per-page handling in page_pool core is =
+just too
+> >>>>> hacky to be really considerred a longterm solution.
+> >>>>>
+> >>>>
+> >>>> The only other option is to implement another page_pool for ppiov an=
+d
+> >>>> have the driver create page_pool or ppiov_pool depending on the stat=
+e
+> >>>> of the netdev_rx_queue (or some helper in the net stack to do that f=
+or
+> >>>> the driver). This introduces some code duplication. The ppiov_pool &
+> >>>> page_pool would look similar in implementation.
+> >>
+> >> I think there is a design pattern already to deal with this kind of pr=
+oblem,
+> >> refactoring common code used by both page_pool and ppiov into a librar=
+y to
+> >> aovid code duplication if most of them have similar implementation.
+> >>
+> >
+> > Code can be refactored if it's identical, not if it is similar. I
+>
+> Similarity indicates an opportunity to the refactor out the common
+> code, like the page_frag case below:
+> https://patchwork.kernel.org/project/netdevbpf/cover/20231205113444.63015=
+-1-linyunsheng@huawei.com/
+>
+> But untill we do a proof of concept implemention, it is hard to tell if
+> it is feasiable or not.
+>
+> > suspect the page_pools will be only similar, and if you're not willing
+> > to take devmem handling into the page pool then refactoring page_pool
+> > code into helpers that do devmem handling may also not be an option.
+> >
+> >>>>
+> >>>> But this was all discussed in detail in RFC v2 and the last response=
+ I
+> >>>> heard from Jesper was in favor if this approach, if I understand
+> >>>> correctly:
+> >>>>
+> >>>> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@=
+redhat.com/
+> >>>>
+> >>>> Would love to have the maintainer weigh in here.
+> >>>>
+> >>>
+> >>> I should note we may be able to remove some of the checking, but mayb=
+e not all.
+> >>>
+> >>> - Checks that disable page fragging for ppiov can be removed once
+> >>> ppiov has frag support (in this series or follow up).
+> >>>
+> >>> - If we use page->pp_frag_count (or page->pp_ref_count) for
+> >>> refcounting ppiov, we can remove the if checking in the refcounting.
+> >>>
+> >
+> > I'm not sure this is actually possible in the short term. The
+> > page_pool uses both page->_refcount and page->pp_frag_count for
+> > refcounting, and I will not be able to remove the special handling
+> > around page->_refcount as i'm not allowed to call page_ref_*() APIs on
+> > a non-struct page.
+>
+> the page_ref_*() API may be avoided using the below patch:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20231113130041.58124=
+-7-linyunsheng@huawei.com/
+>
 
-Thanks for all your reviews, I agree this is cleaner!
+Even after the patch above, you're still calling page_ref_count() in
+the page_pool to check for recycling, so after that patch you're still
+using page->_refcount.
 
-I'm going to opt to use dev_info() here as this isn't something that's
-wrong, just worth noting.
+> But I am not sure how to do that for tx part if devmem for tx is not
+> intergating into page_pool, that is why I suggest having a tx implementat=
+ion
+> for the next version, so that we can have a whole picture of devmem.
+>
 
-> 		goto bus_register_fail;
-> 	} else if (err) {
->   		dev_err_probe(dev, err, "Cannot register the MDIO bus\n");
->   		goto bus_register_fail;
-> 	}
-> 
-> -Serge(y)
-> 
-> > 
-> > ---
-> > base-commit: bbd220ce4e29ed55ab079007cff0b550895258eb
-> > change-id: 20231211-b4-stmmac-handle-mdio-enodev-82168de68c6a
-> > 
-> > Best regards,
-> > -- 
-> > Andrew Halaney <ahalaney@redhat.com>
-> > 
-> 
+I strongly prefer to keep the TX implementation in a separate series.
+This series is complicated to implement and review as it is, and is
+hitting the 15 patch limit anyway.
 
+> >
+> >>> - We may be able to store the dma_addr of the ppiov in page->dma_addr=
+,
+> >>> but I'm unsure if that actually works, because the dma_buf dmaddr is
+> >>> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
+> >>> I think). But if it works for pages I may be able to make it work for
+> >>> ppiov as well.
+> >>>
+> >>> - Checks that obtain the page->pp can work with ppiov if we align the
+> >>> offset of page->pp and ppiov->pp.
+> >>>
+> >>> - Checks around page->pp_magic can be removed if we also have offset
+> >>> aligned ppiov->pp_magic.
+> >>>
+> >>> Sadly I don't see us removing the checking for these other cases:
+> >>>
+> >>> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page int=
+o
+> >>> that helper.
+> >>
+> >> We can do similar trick like above as bit 1 of page->pp_magic is used =
+to
+> >> indicate that if it is a pfmemalloc page.
+> >>
+> >
+> > Likely yes.
+> >
+> >>>
+> >>> - page_to_nid(): I'm not allowed to pass a non-struct page into that =
+helper.
+> >>
+> >> Yes, this one need special case.
+> >>
+> >>>
+> >>> - page_pool_free_va(): ppiov have no va.
+> >>
+> >> Doesn't the skb_frags_readable() checking will protect the page_pool_f=
+ree_va()
+> >> from being called on devmem?
+> >>
+> >
+> > This function seems to be only called from veth which doesn't support
+> > devmem. I can remove the handling there.
+> >
+> >>>
+> >>> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
+> >>> fundamentally can't get mapped again.
+> >>
+> >> Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
+> >> DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
+> >>
+> >
+> > Jakub says PP_FLAG_DMA_MAP must be enabled for devmem, such that the
+> > page_pool handles the dma mapping of the devmem and the driver doesn't
+> > use it on its own.
+>
+> I am not sure what benefit does it bring by enabling the DMA_MAP for devm=
+em,
+> as devmem seems to call dma_buf_map_attachment() in netdev_bind_dmabuf(),=
+ it
+> does not really need enabling PP_FLAG_DMA_MAP to get the dma addr for the
+> devmem chunk.
+
+--=20
+Thanks,
+Mina
