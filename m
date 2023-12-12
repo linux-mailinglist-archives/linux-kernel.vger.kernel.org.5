@@ -2,49 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AE480ECF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8233F80ECF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376540AbjLLNNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S1376538AbjLLNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235221AbjLLNNU (ORCPT
+        with ESMTP id S232626AbjLLNO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:13:20 -0500
+        Tue, 12 Dec 2023 08:14:59 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1061DCA;
-        Tue, 12 Dec 2023 05:13:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A045A7;
+        Tue, 12 Dec 2023 05:15:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0Dfuz2M62ropeVCnMi+DeMixqMy40tI6fG5R+q0UR1c=; b=uD68zqhAUEPOL3jg0OQPdz1c+n
-        Q+zPotfLguZ/NzMpo87/5NFm/wD5z4gHcd+3w3XF7WjFldowFP6/vwwYEwysRc+1hrV7iI8E2kUPz
-        bHBgU36QPKuLWG+GbHkUERm1OmYXtOYu6/FkJVLY455exS6mJXiFjhrh8NsKuXRBFB1LFqjKhlOLe
-        OTC05wvqgbEEN30DGz7T1QodEcJ24RHKmqkFsiRtjfyrgU00EMb5yVYOJADNihSuxNUKbSLUfJ6QB
-        kSuG2/6RpslfdLtXD76LW4vImZgkrmftXI4LfMiXjQqUiAWc2DUkA2nhlEYcxxZ4Ujz0fq5aBBOXP
-        0rK++uig==;
+        bh=d9GOM1CReQqHO2Eq5TSJ+QFrtD+BDx0i0I5iG3RHOkc=; b=dT7hUcTdggq68z9eTLTpZvkowz
+        o0hzxFtGP/1A5CdpXLfKR7IAabXtd6tscvW4EWJ7bqf73me/qP/EdG2B4FI3typytMvICOqncBaZB
+        juLPQegmxMqcDjRUgDWRxj7eyVDzzLp60SQCJEDdgc0OscK42Z3kENibYVgGF0I1l4mcAYgv7Nega
+        dtBKSq2W5Eht1hqZUznEkZjKNtAWvDjb82DMtqFruzGL7aQEKgH38NdlFfSSWk5+OxXcyVtpRNqmc
+        NPwFb5zSyEEcKZJQSk14/2oMDYGzCgMBHQVgCHGvkAUHl3vAl4PoAud1hrwXpknFsKsviOKDCWU7T
+        JzSMOq4g==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rD2ZV-00BlUt-0Y;
-        Tue, 12 Dec 2023 13:13:13 +0000
-Date:   Tue, 12 Dec 2023 05:13:13 -0800
+        id 1rD2ae-00BldE-0K;
+        Tue, 12 Dec 2023 13:14:24 +0000
+Date:   Tue, 12 Dec 2023 05:14:24 -0800
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Hongyu Jin <hongyu.jin.cn@gmail.com>
-Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-        axboe@kernel.dk, ebiggers@kernel.org, zhiguo.niu@unisoc.com,
-        ke.wang@unisoc.com, yibin.ding@unisoc.com, hongyu.jin@unisoc.com,
-        linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] block: Fix bio IO priority setting
-Message-ID: <ZXhcaQh3UFZmyFmQ@infradead.org>
-References: <ZXeJ9jAKEQ31OXLP@redhat.com>
- <20231212111150.18155-1-hongyu.jin.cn@gmail.com>
- <20231212111150.18155-2-hongyu.jin.cn@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
+        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
+        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+        willy@infradead.org, akpm@linux-foundation.org,
+        p.raghav@samsung.com, hare@suse.de, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
+Message-ID: <ZXhcsNbvzbArtBUj@infradead.org>
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140552.973290-2-yukuai1@huaweicloud.com>
+ <20231211165217.fil437byq7w2vcp7@quack3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212111150.18155-2-hongyu.jin.cn@gmail.com>
+In-Reply-To: <20231211165217.fil437byq7w2vcp7@quack3>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -56,29 +71,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 07:11:46PM +0800, Hongyu Jin wrote:
-> From: Hongyu Jin <hongyu.jin@unisoc.com>
+On Mon, Dec 11, 2023 at 05:52:17PM +0100, Jan Kara wrote:
+> > +void bdev_associated_mapping(struct block_device *bdev,
+> > +			     struct address_space *mapping)
+> > +{
+> > +	mapping->host = bdev->bd_inode;
+> > +}
 > 
-> Move bio_set_ioprio() into submit_bio():
-> 1. Only call bio_set_ioprio() once to set the priority of original bio,
->    the bio that cloned and splited from original bio will auto inherit
->    the priority of original bio in clone process.
-> 
-> 2. The IO priority can be passed to module that implement
->    struct gendisk::fops::submit_bio, help resolve some
->    of the IO priority loss issues.
+> Here I'm not sure - is the helper really a win? It seems a bit obscure to
+> me. This initialization of another mapping for a bdev looks really special.
 
-Can we reword this a bit.  AFAICS what this primarily does it to ensure
-the priority is set before dispatching to submit_bio based drivers or
-blk-mq instead of just blk-mq, and the rest follows from that.
+If we want to hide bd_inode we'll something like this helper even if
+I don't particularly like it either.
 
-> +static void bio_set_ioprio(struct bio *bio)
-> +{
-> +	/* Nobody set ioprio so far? Initialize it based on task's nice value */
-> +	if (IOPRIO_PRIO_CLASS(bio->bi_ioprio) == IOPRIO_CLASS_NONE)
-> +		bio->bi_ioprio = get_current_ioprio();
-> +	blkcg_set_ioprio(bio);
-> +}
-
-I don't think we need the check here as anyone resubmitting a bio should
-be using submit_bio_noact.
+But it might be a good idea to move out of this series and into the
+follow on removing bd_inode, as it's rather pointless without that
+context.
