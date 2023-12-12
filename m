@@ -2,187 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0D680EF81
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DBE80EF83
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbjLLPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S1376370AbjLLPB3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 10:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232691AbjLLPAr (ORCPT
+        with ESMTP id S232658AbjLLPB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:00:47 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D382D3;
-        Tue, 12 Dec 2023 07:00:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eRe4Wzd8odD7fb0xUk2e4EWlCZ7RE8tgycEcWeX4Zx0ec4VRMFJjuC3GgtHHBB6JunurBnzm+RTlP7RuPaoiYl2r2HRWoi24W/xnGC04w4H2L6ztYAJtUUJ7t/8GltatMznzCh5AJyvbgofAJPDZ4t/v4UkDN8/hD+58rK177neqOD3iGQkQJNTabnBaLINd4Vh3FKBxvkkwP04C8GSdgliLyAUtoKtuqtfn+vYPyU5o0YrnNa3mcVxH0SzZu+bCXHEr7uOT843mQU+6fpnm/E/CnC3VkAHDLRMykHybE1a6f6z4S2AxRpzrbLRLEnnDC5+Ys/dIoN7ZCF41ai42TA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oSQWM4PbzO8YJUdRvXOLVowWREJ9xntmXkqznjus2eo=;
- b=XxWscK7Vk1Ctc4NOQcx5kVUfGCfIERHhCBIsCdEBYR3lsY1lO3edIp0yigjzHux4V5o9UynfUJS1GVYc4xNVxi3oERNvVBPKdiUthF1BkgKBIhUPgLqWDNmW8BHPrHE0ayoSKRLMHUDo7dFwpLjUPycpxdll6j5ExpI31+M/tNxLn81ZwUb52Rbdhk432CHYiMpskU4Z194GoLDylVLHCBoCYlY/i+ATwZqZTYfiJ+EwlGtPeIrHXs+hvQq9h7Hus2Bmd4ZfNiiJE+kqK7cGZ76O952CEloBi02u8jDkplBWyQJkrmwZqwaPmw5ZsTPu+TFC+LcUWMATqWlZ8JRLMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oSQWM4PbzO8YJUdRvXOLVowWREJ9xntmXkqznjus2eo=;
- b=P9M+yYTk0eBfv2fcXz5Gr9hBAoAOOcaxP/EvzyIisEEwTxK1SL1KFqGs2HchkVF1Ua9lI/BjjIZx5F1DDBRMhrQ+5p/ud1rCxGEbHXk/yyNJqKx7W1AIzu4z81hKkWAoilDF7SBaTMW7Vy4912JeJjFdFMqdgCDBWqJbktbGr1s=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6390.namprd12.prod.outlook.com (2603:10b6:8:ce::7) by
- SJ0PR12MB5440.namprd12.prod.outlook.com (2603:10b6:a03:3ac::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
- 2023 15:00:51 +0000
-Received: from DS0PR12MB6390.namprd12.prod.outlook.com
- ([fe80::eb9d:982c:4c9d:8522]) by DS0PR12MB6390.namprd12.prod.outlook.com
- ([fe80::eb9d:982c:4c9d:8522%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 15:00:51 +0000
-Message-ID: <448c843e-b212-4b21-9c9a-1651a456f4bb@amd.com>
-Date:   Tue, 12 Dec 2023 09:00:51 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] PCI/AER: Decode Requester ID when no error info found
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc:     Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Robert Richter <rrichter@amd.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20231206224231.732765-1-helgaas@kernel.org>
- <20231206224231.732765-3-helgaas@kernel.org>
-From:   Terry Bowman <Terry.Bowman@amd.com>
-In-Reply-To: <20231206224231.732765-3-helgaas@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR06CA0037.namprd06.prod.outlook.com
- (2603:10b6:8:54::12) To DS0PR12MB6390.namprd12.prod.outlook.com
- (2603:10b6:8:ce::7)
+        Tue, 12 Dec 2023 10:01:28 -0500
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92650D3;
+        Tue, 12 Dec 2023 07:01:34 -0800 (PST)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-590b52645d3so50974eaf.0;
+        Tue, 12 Dec 2023 07:01:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702393294; x=1702998094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EGu92SUJ9J01LWRjxiuDNZ6kwGOV4bXKbE++KcfIYPI=;
+        b=lRThk79ee60x/Pw+aSoTOikWXJ9ey43Mt4YSCDloaYGiLssMADm49ad69KNy4+dIVz
+         uBGZaAhQ/yLX8GxzUDUGKL9JNrAHEBPKx1xCSvXgQfeUaIcmnokOybi0fxMq+LSAbzkH
+         kd53CmYgS1Dm4U+3i8hURgb2AgEE5kH68RJBj9ya09rqMIIj5+YRQN5WDqxMhrsL6/t6
+         a6FIfHMO/xQZnMBa4Syef9hsKkv8g3Sj6LmnUdfYd/XdbyCkN8G1VnD3qJnNtQWY07PE
+         mLXuX0/xdcsO0B6CCI/x/acUoq/O1Dg9uX8Gt7nirEMlLGbSo3QVDU/AujoBZRIUD3iZ
+         2RRQ==
+X-Gm-Message-State: AOJu0YxUbyS7xBNqeKJ9VYf/xnQlPBVI6Z6tDLnMQJ9NPGXRFX6vnrp4
+        azN49kvIktlz60W68qXMzsFufmokf+IkBVHrv5A=
+X-Google-Smtp-Source: AGHT+IEK9mFOYuIlQR0ZF+LZaAGnMACZ1Zxp6SUgMMbIxZ+hs8/dzveeTAGg6RvzfCXvs6aLuIivTmNxAuPSwBqrLDQ=
+X-Received: by 2002:a05:6820:2a18:b0:590:9027:7ab0 with SMTP id
+ dr24-20020a0568202a1800b0059090277ab0mr9351530oob.0.1702393293843; Tue, 12
+ Dec 2023 07:01:33 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6390:EE_|SJ0PR12MB5440:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3d39cdef-5fd8-4b2d-07bb-08dbfb232200
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HMGnCjHSscWTosmaVOVD6H+3pmC+qP48GIQYovYAqRfenhS+SBXcuqZPtB/HMkxHr7b1DJsJEKkd0OI2R+yZuQm9KohwI0m90t9oFWzTBeixr7uQ3c7RAeHYweuRh8atVx06DG2K4ESz3A+mbClygH+P+txF+2SCuf7v1aD6uNLgPzWe+FkMF1S9jy0i2Nx3qr5NywFzUVjiCj5q1vnebdJ86049VmxTH5I3mmolWcHgvX1GPP3r4pNP1p1rdP3Ver+hFwP73gyrhDTPxUwiqjQqYmQYa36VDhhqweXzks07D4FYx9SPQCSvFe5GrsY/D88ehOugzLH5I53gEibVYZ2h/JLG9RtuKMNramzyF/GXCeFXIAfymPsfDASPKfAKOTgSHqvV2X+lqiR/KU2fdqlpnKK5EYdK2CWUDs2vd/0Z2sgUaSRWObc3C2qrXeW8C0UoovMTcY6R8RMaAiPgQOUaqH+SObqfrkQQ7elmznN9jMSoWIPG4kjR0sE7Wso8bJhQaQU4WFWddaOFiJFXrKuhmIpFvIqlwbNL3QnqvO+EUm5R7grD74N6LQVQ8bexVF+I7sEAuZsetYoZ66o30jo/YJAiuK8r5vz0HuoeszXDNpmVaNSmgzrhO/gBkitapKSG87y6mEDJNFwOEeOL2g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6390.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(346002)(396003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(66946007)(66476007)(66556008)(54906003)(31696002)(36756003)(86362001)(83380400001)(26005)(2616005)(6512007)(6506007)(53546011)(6486002)(2906002)(316002)(38100700002)(478600001)(4326008)(5660300002)(8936002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z1FiMlB1YUlzWndqWFdXUDM4ZzdnSVgreThzaTFuRitMbWo4bjBRNURuWTRY?=
- =?utf-8?B?SDVNODdscVNWUm9jK1ZRTFArcmdvV29sNzJFNkF4TnJLVENlaUhycUlsQ0xY?=
- =?utf-8?B?anYvRHE1c0IrdlZhZXg5YytqanVKNEk3RldENk04QUtneWZvTU1Ra1NxQUF2?=
- =?utf-8?B?ZmZuTlFqK2VMRlVhRnV0clZLNVBFOVg2eWEyREE2R2FNZDVHdGRmcVAwNnlL?=
- =?utf-8?B?ejRXYi9UNTlDaVF5WGtYZVB0ZUtqZUcyL21FVGR4ZUxFVnNvczR4K0FiN1pS?=
- =?utf-8?B?cGJURlViR1ZRSkI4UmNMaDAwUFFWUVBYdlR3REZnTFUyUTV4RTRVRy8vOFR1?=
- =?utf-8?B?aXYwMExRbWxTSHUzUWt0cGZuWFl5dlRpSzZMMUE0WUJpbHFrWkxoZFdNMVZr?=
- =?utf-8?B?bzVIc0x6emdhNkRBVnY3YVpaYjliL0tpMUR1MSs3RGQxbVBMOTVXZ1BjMjVK?=
- =?utf-8?B?QSs3Nzh0QVM1Z2szbGJmcE9vbWFFTzRUSmpaQ1JQaHNNd1p1cW1FRDBSQStp?=
- =?utf-8?B?K3R5MFpJOFlveEpUYnFHMnZ6dnZJTEYrQ2JIT2k0VTVrZGZnd21HdkNCVGRC?=
- =?utf-8?B?TTNsNWs4WldhWUtSVitVZnIrOXRsZ3VlS1BSTjB3S0wyNWpxbFpJN2p0eFJ6?=
- =?utf-8?B?dUxORW5DYThtNE5GdUtLdDhaa1k4QVJrUnlucEFYS3RNNHVXOVJFUUFzbnU1?=
- =?utf-8?B?MDc0YWwwekErQ0hxcFVZV0c0Z0R1bjFsOTVzT0RtMExCU0lIYUc0b0ZSK09U?=
- =?utf-8?B?blZNbmdVcktROW5IWk9jem8wT3ZrMVRVQWV2T0lENkhiQmg2bVI5QmRiVFZY?=
- =?utf-8?B?YjRIY0FzVmxGSEJKejF2UENuc3JrODI3L1JNZ2Q2NlI2QURsUnF3ejF0SCs1?=
- =?utf-8?B?SS9ZVHZzem1NN3NqeGx5YWlSWmRnaENxMkFWeEdGLzJjQUUyT3BhUEVDQnR1?=
- =?utf-8?B?alVJTUNkRU1EK2c4K2llcnM5YmQ1T251Q2lHYUtiZ1Ftc3JPeTBHdEh2UzdM?=
- =?utf-8?B?bVJubFZBSWc3MnZZQjBYclZKUC8vUEFtQ0JaVU9WNHpkL1Z2RWF5amN0T0Q3?=
- =?utf-8?B?ZzRuVlJSaFRxNHJSLzJ0bUl4Yy9WSDRRb0hhVHhSRW5TMEYvVVpqR0NjdjdB?=
- =?utf-8?B?MlBaZXpKWlVmT3JxR2JiZDlGSnE3Z1FISUlHYW1scUNhVWFWNmN3L1oyd3Br?=
- =?utf-8?B?bEJ6eXJtOXlUVFFxbW8zZzhkUGVCTEFjZWkzVzhONEhPWG05dFVRNnEzMWFG?=
- =?utf-8?B?MnNYWVNaSDVmSWRiNFpDb1VIZmNmaUhVRFA0dHJRQ252ejk5QkR4QUdKSUlE?=
- =?utf-8?B?YmMxbmZMR1h3SUFiZm5aMFRvbGt6RVJKRW1hWFM3R1FsRFdPSTc3NjRMZFNx?=
- =?utf-8?B?Y1BHRlJGOTc0WXNJZmdSMU9TdmpvRmR1VmN2MFlPSmhzOUpqNnRVNXVqd3A3?=
- =?utf-8?B?dkUzdW9vcVMrR0QwTnZDdGpFL1JPNktOK0NzZUVNVzlQOHZhSmtGLzRJeXNL?=
- =?utf-8?B?eU92UVNNbFd3L2VkaDN4bHNNaFZpUjJBVy9DZFpQaTR4dTdBUWRjaWkrUmo5?=
- =?utf-8?B?eG5vRTQ1bkkxRHhyYXJoZUdkV2x4eEJNa1BLZS8xQ0hXZHlxZU83UjJBVTNz?=
- =?utf-8?B?Wm9xZlhVRHlHYXJ4QUd4cS9XNGpPeG5xZTJQMlFvZkpqRW4rMTV1ZGxvUDFr?=
- =?utf-8?B?bEd1OEUvRzk1ak12b1ROTFpka0h0dWFhR0Irak9aNWVRM0Y2Zk9jR1lNMFQ2?=
- =?utf-8?B?RGpCTTMzVi8wZjlOQWc2cUN6Qkt1bFVXZ0trZDNTNnA5dzNLSTNsUjFMV1hF?=
- =?utf-8?B?UkpTbktGQ09WZHpUcE1GbVNBU3lPbFlqVWxVSUYwS3ZkVjZGTlFlaHFPek1W?=
- =?utf-8?B?TCs2aERKOHpybmNkZXdOTEFiWXIvb01RQUwwVnlYT1FFUWRwSnNMb0lWaGps?=
- =?utf-8?B?eS9BbTNRWmZuR0liWWpSd0pxRExTdVFjVWh0eGxnK0V2dzZXZ1l2TFBkY3FM?=
- =?utf-8?B?RXRRTVZ6VU54eEEvVC8rWmtGZnRWejg4RC9kV1ZxdzV2OFMxbGl5OVZwdnBY?=
- =?utf-8?B?UDByV0xSREgxUVpuUUNWaUtPUGN5UEtiaUZ4RVo0ZXFqNlFHWXRFZW13MDFj?=
- =?utf-8?Q?TjmVznRfk0eyWmezmrSjTQISD?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d39cdef-5fd8-4b2d-07bb-08dbfb232200
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6390.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:00:51.7648
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ayrfQCMep1zMuvz0A3NI3Fbadf8wWiZ2yMWiRIur5B1gD0Obu1fpxgFsHOzfMuBkont881OZzMOiBHwjuOtFBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5440
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <CAJZ5v0jZAOmnccbEUsBNw3f-Uh6TmO-6JGgU+PJazmjFASczHQ@mail.gmail.com>
+ <20231212143804.3887-1-chenguanxi11234@163.com>
+In-Reply-To: <20231212143804.3887-1-chenguanxi11234@163.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Dec 2023 16:01:22 +0100
+Message-ID: <CAJZ5v0gLswRMBR1-b_TQTau7KMpuBbR5hYJyat6pMOD5zYSi7Q@mail.gmail.com>
+Subject: Re: [PATCH linux-next] kernel/power: Use kmap_local_page() in snapshot.c
+To:     chenguanxi11234@163.com
+Cc:     rafael@kernel.org, chen.haonan2@zte.com.cn, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pavel@ucw.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LGTM
+On Tue, Dec 12, 2023 at 3:38 PM <chenguanxi11234@163.com> wrote:
+>
+> What I've learned is that kmap_atomic() disables page-faults and
+> preemption (the latter only for !PREEMPT_RT kernels).In my opinion,
+> the code between the mapping and un-mapping in this patch does not
+> depend on the above-mentioned side effects.So I simply replaced
+> kmap_atomic() with kmap_local_page(). If I'm wrong, please explain it to me.
 
-On 12/6/23 16:42, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> When a device with AER detects an error, it logs error information in its
-> own AER Error Status registers.  It may send an Error Message to the Root
-> Port (RCEC in the case of an RCiEP), which logs the fact that an Error
-> Message was received (Root Error Status) and the Requester ID of the
-> message source (Error Source Identification).
-> 
-> aer_print_port_info() prints the Requester ID from the Root Port Error
-> Source in the usual Linux "bb:dd.f" format, but when find_source_device()
-> finds no error details in the hierarchy below the Root Port, it printed the
-> raw Requester ID without decoding it.
-> 
-> Decode the Requester ID in the usual Linux format so it matches other
-> messages.
-> 
-> Sample message changes:
-> 
->   - pcieport 0000:00:1c.5: AER: Correctable error received: 0000:00:1c.5
->   - pcieport 0000:00:1c.5: AER: can't find device of ID00e5
->   + pcieport 0000:00:1c.5: AER: Correctable error message received from 0000:00:1c.5
->   + pcieport 0000:00:1c.5: AER: found no error details for 0000:00:1c.5
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
->  drivers/pci/pcie/aer.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 20db80018b5d..2ff6bac9979f 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -740,7 +740,7 @@ static void aer_print_port_info(struct pci_dev *dev, struct aer_err_info *info)
->  	u8 bus = info->id >> 8;
->  	u8 devfn = info->id & 0xff;
->  
-> -	pci_info(dev, "%s%s error received: %04x:%02x:%02x.%d\n",
-> +	pci_info(dev, "%s%s error message received from %04x:%02x:%02x.%d\n",
->  		 info->multi_error_valid ? "Multiple " : "",
->  		 aer_error_severity_string[info->severity],
->  		 pci_domain_nr(dev->bus), bus, PCI_SLOT(devfn),
-> @@ -929,7 +929,12 @@ static bool find_source_device(struct pci_dev *parent,
->  		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
->  
->  	if (!e_info->error_dev_num) {
-> -		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
-> +		u8 bus = e_info->id >> 8;
-> +		u8 devfn = e_info->id & 0xff;
-> +
-> +		pci_info(parent, "found no error details for %04x:%02x:%02x.%d\n",
-> +			 pci_domain_nr(parent->bus), bus, PCI_SLOT(devfn),
-> +			 PCI_FUNC(devfn));
->  		return false;
->  	}
->  	return true;
+You are right, but why don't you say the above in the patch changelog
+instead of the irrelevant information that is there now?
