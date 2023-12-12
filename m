@@ -2,164 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F25FA80F218
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9C880F21C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjLLQNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S232770AbjLLQOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbjLLQNt (ORCPT
+        with ESMTP id S232963AbjLLQOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:13:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F49F101
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702397633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uuy6fJEq9VcrZk+5OcRbC+0CsDirfz4cGt+s4ZDOS6A=;
-        b=etb+LAKhqTdwR/9AOqnAJgvDKNDPF62JkyPosYFage8YsBigtQGbuUZeXHWeT1QuEprRTo
-        khPTG7mSx1Qw4SfsTbmAW2bnUbpd8JSrQTmRg5vFokgox6YOG4pLx/vM6iLY06vZOJLGRQ
-        bjGd7NOVqKeQ8/tnwL+NdH1xfY6H76Y=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-363-vaLCDbmaNVm1LOD8wBR_yw-1; Tue, 12 Dec 2023 11:13:51 -0500
-X-MC-Unique: vaLCDbmaNVm1LOD8wBR_yw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40c1d2b1559so42173845e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:13:51 -0800 (PST)
+        Tue, 12 Dec 2023 11:14:01 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396CB12E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:14:06 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7b720eb0ba3so34151639f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702397646; x=1703002446; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5bmlfvvZM9RQjnrj4u41EYEYF+Fr4h87K1fw5d/6M30=;
+        b=NwE3Nbyh84NfEYDx4tKDsCVuJC27TBov7Bg4QMNgFGtgkB0WSNVTWuKXue/AbEysGh
+         8Ruro0Fw6guB8dwRKld9FScg+BEXl2lpmg11YG7/6UyGYSjbSYYW/HGZTH+CpHF3hpB5
+         +NZwJBaDpsLGTHcMVctyzmbePTlqJxlZ/Hp/4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702397630; x=1703002430;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1702397646; x=1703002446;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uuy6fJEq9VcrZk+5OcRbC+0CsDirfz4cGt+s4ZDOS6A=;
-        b=Zbn2XvdPyrycY/pl7PT7JLygEAy/Umcfy1vMtP+EzntVx4Ys8z6UwnMfmmsXVdkeOv
-         deqGMOXbgKgYnZYCwp7pjMPWqRArET/1nVxABfk1ZJui1Tn6Lgh41vEw9gAYJPQik4HF
-         SIMZxjMJbPbE4KSbfszkLNdNX67wDyDe1iEOazy4HVFA/tvkUJWcI1NOLy7DXwuLOtMy
-         v8AN73H2eZBH8hwJSh0/QHILyuElCDz6w1kXi/pulblmX7HB+DeDhV0mfDOHTcTTsVuI
-         1aWZEEmxi6s6YQdsLjwMv7PSR5lNuHiuEmmfKD3M+gRseIk4UypEgi3aKxBI1T+2/o5I
-         QIFQ==
-X-Gm-Message-State: AOJu0Yw65eCL7GObF/SefyXKhhOdtt6zPf728UlnyYt0lMWi8PXtGxHf
-        s7UaGCSuXLy4SaBtD7VS0HlWcTtaSTwzeiuilOB0tD3OjnfuHgOUvAfAMe+ijf91+UpPtwkY5dk
-        tKLkel/j0TXb2npHUrRGE7Vt5gP0BY2fC
-X-Received: by 2002:a05:600c:861b:b0:40b:5e59:c557 with SMTP id ha27-20020a05600c861b00b0040b5e59c557mr3364972wmb.129.1702397630189;
-        Tue, 12 Dec 2023 08:13:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFfUc4xfhTLTS5rbpUv86c4E0o2kWCp80gyTVZYIY86ryUM/Xq1XffDjqEM45VPyAYPelpzqg==
-X-Received: by 2002:a05:600c:861b:b0:40b:5e59:c557 with SMTP id ha27-20020a05600c861b00b0040b5e59c557mr3364962wmb.129.1702397629813;
-        Tue, 12 Dec 2023 08:13:49 -0800 (PST)
-Received: from redhat.com ([2.52.23.105])
-        by smtp.gmail.com with ESMTPSA id t4-20020adff044000000b0033340937da6sm11036564wro.95.2023.12.12.08.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 08:13:49 -0800 (PST)
-Date:   Tue, 12 Dec 2023 11:13:46 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     David Stevens <stevensd@chromium.org>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] virtio: Add support for no-reset virtio PCI PM
-Message-ID: <20231212111323-mutt-send-email-mst@kernel.org>
-References: <20231208070754.3132339-1-stevensd@chromium.org>
- <20231211113710-mutt-send-email-mst@kernel.org>
- <CACGkMEs_MajTFxGVcK5R8oqQzTxuL4Pm=uUnOonDczWzqaucsw@mail.gmail.com>
+        bh=5bmlfvvZM9RQjnrj4u41EYEYF+Fr4h87K1fw5d/6M30=;
+        b=dAUI1e4tGjQ7OQmaOpK7y2eX9LLJgdx0eb7M1mWl4jUJz4tLDh+S3iY6YVdy7TsXF9
+         B6fGJW/nNqxtc/jbb/HSOLJLO2UIFWBv8qfeEsOT8s6VHBPpCio2qSpV+wdb9QMp48bM
+         0bFb+tVxKTTZy8mkaLnL5ZUYvQyooYW9OpdYt+yNUc0fGxyij0SGlXtyjdPHcv00Cfuz
+         XHi55cOLKUOtIEQlA9KQtxBmVaZWhCjiDkXOlI+48qfCzSkFAbmbAqbXmADKtZRRJ8Y4
+         0eZjX5pJbN+94aAeTZCJS4WWoHP/h7Jg8fErs6YS1suuGYUMZ1My71qVbOqLj5y6tXae
+         ZgtQ==
+X-Gm-Message-State: AOJu0Yz//kGklQeHxjATBaoQ41Zx16r9WYO593IrJHZP7+wnOAf2Xn+/
+        6VknjIBJN41YQclty/O1PDYM8QFz1x2x0tQKeJE=
+X-Google-Smtp-Source: AGHT+IHaG0x3XF1wweqZpO03xiSwEpRTZvLSUofRfC9gC3CFjErlqRHWOrCssJBqgyeHMnjz9O0VLg==
+X-Received: by 2002:a05:6602:254e:b0:7b7:3ba4:8949 with SMTP id cg14-20020a056602254e00b007b73ba48949mr7121414iob.2.1702397646086;
+        Tue, 12 Dec 2023 08:14:06 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id t1-20020a6b5f01000000b007a6816de789sm3012606iob.48.2023.12.12.08.14.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 08:14:05 -0800 (PST)
+Message-ID: <734382b8-9858-4c56-8c66-25d140807dc7@linuxfoundation.org>
+Date:   Tue, 12 Dec 2023 09:14:05 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEs_MajTFxGVcK5R8oqQzTxuL4Pm=uUnOonDczWzqaucsw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.19 00/55] 4.19.302-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, Shuah Khan <skhan@linuxfoundation.org>
+References: <20231211182012.263036284@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231211182012.263036284@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:01:53AM +0800, Jason Wang wrote:
-> On Tue, Dec 12, 2023 at 12:37 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Fri, Dec 08, 2023 at 04:07:54PM +0900, David Stevens wrote:
-> > > If a virtio_pci_device supports native PCI power management and has the
-> > > No_Soft_Reset bit set, then skip resetting and reinitializing the device
-> > > when suspending and restoring the device. This allows system-wide low
-> > > power states like s2idle to be used in systems with stateful virtio
-> > > devices that can't simply be re-initialized (e.g. virtio-fs).
-> > >
-> > > Signed-off-by: David Stevens <stevensd@chromium.org>
-> >
-> > tagged, thanks!
-> > I'm still debating with myself whether we can classify this
-> > as a bugfix ... better not risk it I guess.
+On 12/11/23 11:21, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.302 release.
+> There are 55 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> It might be suitable if there's a hypervisor that advertises
-> no_soft_reset (but it seems Qemu doesn't).
+> Responses should be made by Wed, 13 Dec 2023 18:19:59 +0000.
+> Anything received after that time might be too late.
 > 
-> Thanks
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.302-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Yea... so a bugfix but no rush to merge it I think.
+Compiled and booted on my test system. No dmesg regressions.
 
-> >
-> > > ---
-> > > v1 -> v2:
-> > >  - Check the No_Soft_Reset bit
-> > >
-> > >  drivers/virtio/virtio_pci_common.c | 34 +++++++++++++++++++++++++++++-
-> > >  1 file changed, 33 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > > index c2524a7207cf..3a95ecaf12dc 100644
-> > > --- a/drivers/virtio/virtio_pci_common.c
-> > > +++ b/drivers/virtio/virtio_pci_common.c
-> > > @@ -492,8 +492,40 @@ static int virtio_pci_restore(struct device *dev)
-> > >       return virtio_device_restore(&vp_dev->vdev);
-> > >  }
-> > >
-> > > +static bool vp_supports_pm_no_reset(struct device *dev)
-> > > +{
-> > > +     struct pci_dev *pci_dev = to_pci_dev(dev);
-> > > +     u16 pmcsr;
-> > > +
-> > > +     if (!pci_dev->pm_cap)
-> > > +             return false;
-> > > +
-> > > +     pci_read_config_word(pci_dev, pci_dev->pm_cap + PCI_PM_CTRL, &pmcsr);
-> > > +     if (PCI_POSSIBLE_ERROR(pmcsr)) {
-> > > +             dev_err(dev, "Unable to query pmcsr");
-> > > +             return false;
-> > > +     }
-> > > +
-> > > +     return pmcsr & PCI_PM_CTRL_NO_SOFT_RESET;
-> > > +}
-> > > +
-> > > +static int virtio_pci_suspend(struct device *dev)
-> > > +{
-> > > +     return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_freeze(dev);
-> > > +}
-> > > +
-> > > +static int virtio_pci_resume(struct device *dev)
-> > > +{
-> > > +     return vp_supports_pm_no_reset(dev) ? 0 : virtio_pci_restore(dev);
-> > > +}
-> > > +
-> > >  static const struct dev_pm_ops virtio_pci_pm_ops = {
-> > > -     SET_SYSTEM_SLEEP_PM_OPS(virtio_pci_freeze, virtio_pci_restore)
-> > > +     .suspend = virtio_pci_suspend,
-> > > +     .resume = virtio_pci_resume,
-> > > +     .freeze = virtio_pci_freeze,
-> > > +     .thaw = virtio_pci_restore,
-> > > +     .poweroff = virtio_pci_freeze,
-> > > +     .restore = virtio_pci_restore,
-> > >  };
-> > >  #endif
-> > >
-> > > --
-> > > 2.43.0.472.g3155946c3a-goog
-> >
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
