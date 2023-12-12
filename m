@@ -2,258 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C0F80F863
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B1680F861
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377449AbjLLUuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:50:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S235181AbjLLUtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377428AbjLLUto (ORCPT
+        with ESMTP id S235217AbjLLUtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:49:44 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751BD2120
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:52 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5e19414f714so21999057b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:47:52 -0800 (PST)
+        Tue, 12 Dec 2023 15:49:19 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3E5D4D;
+        Tue, 12 Dec 2023 12:48:16 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d319a7a35bso24108185ad.1;
+        Tue, 12 Dec 2023 12:48:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702414071; x=1703018871; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9b8Rem1AmPjfYzBNcLPCGf0Ya+tJ/F2me7CGYJ1U7yY=;
-        b=yUA+G3z7D9ewA7kk8Dj883hsjAJfjykoePzI01xOmdxe4tCxT4x+wG4cCLW2kAsBP6
-         mNEKqhK1Ue5tt0sd2wrRQKvJGkJ+3XtIKdjNYmZERe9abuyCyWR2K7cpPRYP1EwdbXYI
-         YZYczvg49rClwUzXxVXCWSHBqPzngwYLDaneTyuaVgAGKCZdaqzPbQKAD2XKTCpoZv4l
-         VzODXpZUGHDDPmgurdSJUrbOJuzvPDVl2yUaDGhm9+T8lFnK7+RwUQLdfQi5motCyXBQ
-         KFk1WB/o1hsOHQBaCRYeYosPA8cImlfQCVUtykOzQxYEvrUNlBJbOx2EHdgABigCU9et
-         cdcQ==
+        d=gmail.com; s=20230601; t=1702414095; x=1703018895; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=c3UB6NPM8uJWf0yt1AkDFK1KvBcW6hVLav7kTbQVHuI=;
+        b=ihyT6PATE9cmnsR/05zseOgvD0tmRVj8mJh6vwAmnCdN3FKPAtUzlEg2secYXA9qzA
+         jn7QTZLtMhMkb3OOcz0VrTpzokDP0a8nRkJ8iKh7JJVSQ0RRma+A/8jOsqY434Heq0QG
+         tNv5fKXw00y61ihSdvssHvIA1Lf/A/4heDEMQA/hpUrTRDiCHXx0eRm7+lE1JjtveuH2
+         nKJfKyZzAaH2EufD5cPne9L4T9K0F0LehUKuaFD9MLmw0sUwy5jNKxZOUgzGCVGq8S59
+         d+z1TIdhw/mK/UXo5xfEgtcXLf4C1vkXGbKPWJRc95eCQSXLCPdvqU2zT2K2U0c3/vn3
+         yphA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702414071; x=1703018871;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9b8Rem1AmPjfYzBNcLPCGf0Ya+tJ/F2me7CGYJ1U7yY=;
-        b=rK7na27k4mZ6X2l5L4HwYDfrORkzMSEKjEFjKCLJ4o+2+FMUqu2NSE/p8RLzWuTGQp
-         CkjJcAOncAx07VSemI6SxtA8oTXtDBfRQvB8KatbYvoBn2QcvJ78/732vhot1wKCF0g8
-         sCUzQBLY7zFtdXyS2rMFrvWfd9rMVhmuBHrBrcHBmJ9Yz0wAd2RhSiUmW6IQP/tVDnEU
-         0/CTaFmIxszXOiNU7MeTKggamDGzYyprgCqrxovTzAUZp7xHU3yKtAePj5jhnM7yuyzG
-         8BCoq+1CbICR+e0esH5/DyP2hy/4AEpmm28SUe/9Kmts/M9FMcATbO+Sbkkx11vqGzN8
-         Z9mQ==
-X-Gm-Message-State: AOJu0YwBjgJeOY1M4mDx9nyRNtPxH3wh8rK9pwU57mnMPWaBuZtaITca
-        7HEwMjoHCyZjKjt5Ct8Tyk5TuaZUvQ==
-X-Google-Smtp-Source: AGHT+IFxV+KrDYmcwmn1PDxvzNdlpDP4pWeOD1xeuiQDvWiuL5pZVy4R12KnOvAQ3fLYUpwzgPkXIIMt+Q==
-X-Received: from sagi.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:241b])
- (user=sagis job=sendgmr) by 2002:a05:690c:891:b0:5d8:eec5:f57c with SMTP id
- cd17-20020a05690c089100b005d8eec5f57cmr64746ywb.4.1702414070805; Tue, 12 Dec
- 2023 12:47:50 -0800 (PST)
-Date:   Tue, 12 Dec 2023 12:46:44 -0800
-In-Reply-To: <20231212204647.2170650-1-sagis@google.com>
-Mime-Version: 1.0
-References: <20231212204647.2170650-1-sagis@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231212204647.2170650-30-sagis@google.com>
-Subject: [RFC PATCH v5 29/29] KVM: selftests: TDX: Add TDX UPM selftests for
- implicit conversion
-From:   Sagi Shahar <sagis@google.com>
-To:     linux-kselftest@vger.kernel.org,
-        Ackerley Tng <ackerleytng@google.com>,
-        Ryan Afranji <afranji@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Peter Gonda <pgonda@google.com>,
-        Haibo Xu <haibo1.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Roger Wang <runanwang@google.com>,
-        Vipin Sharma <vipinsh@google.com>, jmattson@google.com,
-        dmatlack@google.com, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1702414095; x=1703018895;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c3UB6NPM8uJWf0yt1AkDFK1KvBcW6hVLav7kTbQVHuI=;
+        b=g06FkBH4snNE6qQuS1t+J/evNkYsoAzZ64ruvgeZJ9CmdXRFw9fB5TTYa4fjd0T9o0
+         /UCRHIcoBNNm2Z/wvs48f3ShgoD4Zz04EzeXXOl49a9YQ5k7yosiWUlNJ3JeJf0gBGjQ
+         ku/NOrAucVaL0pI/DV0gmyfoTWYfVP+cwuG6pxXPvviig5Frl1E8Uj9MLFBGR4Jafu04
+         6c8H1Oj8tsMMyVVA1Prw1QPl0g7HnkFv2DYIEhWw/5WxBBsWR0KbaLJx5gIur//u9DEs
+         HhyZ1KKgf+nkOyn+bUDJcolO4Eta6CLvY28O44aA68DvV5i5UDq0gyoIbywYrqnqnGPo
+         KA7A==
+X-Gm-Message-State: AOJu0YzRGWKxXzHTkbLZmQDvA32lrIzhtSRGywzfZpCNVNCWhVD6KDF3
+        7JI006wGPfXGM929F3gapYMplhfWn28=
+X-Google-Smtp-Source: AGHT+IGerKImsoibndC3ru39ngIREW15z4Pq3podn9EgBS9hxPRcxFjpW0scu2xlhavtjIR379wwiQ==
+X-Received: by 2002:a17:902:da89:b0:1d0:7844:5055 with SMTP id j9-20020a170902da8900b001d078445055mr7542365plx.62.1702414095242;
+        Tue, 12 Dec 2023 12:48:15 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p12-20020a170902e74c00b001d0b32ec81esm9004795plf.79.2023.12.12.12.48.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 12:48:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a6af01bf-7785-4531-8514-8e5eb09e207e@roeck-us.net>
+Date:   Tue, 12 Dec 2023 12:48:12 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: RTL8152_INACCESSIBLE was Re: [PATCH 6.1 000/194] 6.1.68-rc1
+ review
+Content-Language: en-US
+To:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dianders@chromium.org, grundler@chromium.org, davem@davemloft.net
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+References: <20231211182036.606660304@linuxfoundation.org>
+ <ZXi9wyS7vjGyUWU8@duo.ucw.cz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <ZXi9wyS7vjGyUWU8@duo.ucw.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ackerley Tng <ackerleytng@google.com>
+On 12/12/23 12:08, Pavel Machek wrote:
+> Hi!
+> 
+>> This is the start of the stable review cycle for the 6.1.68 release.
+>> There are 194 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+> 
+> 
+>> Douglas Anderson <dianders@chromium.org>
+>>      r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
+>>
+>> Douglas Anderson <dianders@chromium.org>
+>>      r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
+>>
+>> Douglas Anderson <dianders@chromium.org>
+>>      r8152: Add RTL8152_INACCESSIBLE to r8156b_wait_loading_flash()
+>>
+>> Douglas Anderson <dianders@chromium.org>
+>>      r8152: Add RTL8152_INACCESSIBLE checks to more loops
+>>
+>> Douglas Anderson <dianders@chromium.org>
+>>      r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
+> 
+> Central patch that actually fixes something is:
+> 
+> commit d9962b0d42029bcb40fe3c38bce06d1870fa4df4
+> Author: Douglas Anderson <dianders@chromium.org>
+> Date:   Fri Oct 20 14:06:59 2023 -0700
+> 
+>      r8152: Block future register access if register access fails
+> 
+> ...but we don't have that in 6.1. So we should not need the rest,
+> either.
+> 
 
-This tests the use of guest memory without explicit MapGPA calls.
+Also, the missing patch is fixed subsequently by another patch, so it can not
+be added on its own.
 
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Signed-off-by: Ryan Afranji <afranji@google.com>
-Signed-off-by: Sagi Shahar <sagis@google.com>
----
- .../selftests/kvm/x86_64/tdx_upm_test.c       | 86 +++++++++++++++++--
- 1 file changed, 77 insertions(+), 9 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c b/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-index 44671874a4f1..bfa921f125a0 100644
---- a/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/tdx_upm_test.c
-@@ -149,7 +149,7 @@ enum {
-  * Does vcpu_run, and also manages memory conversions if requested by the TD.
-  */
- void vcpu_run_and_manage_memory_conversions(struct kvm_vm *vm,
--					    struct kvm_vcpu *vcpu)
-+					    struct kvm_vcpu *vcpu, bool handle_conversions)
- {
- 	for (;;) {
- 		vcpu_run(vcpu);
-@@ -163,6 +163,13 @@ void vcpu_run_and_manage_memory_conversions(struct kvm_vm *vm,
- 				!(vm->arch.s_bit & vmcall_info->in_r12));
- 			vmcall_info->status_code = 0;
- 			continue;
-+		} else if (handle_conversions &&
-+			vcpu->run->exit_reason == KVM_EXIT_MEMORY_FAULT) {
-+			handle_memory_conversion(
-+				vm, vcpu->run->memory_fault.gpa,
-+				vcpu->run->memory_fault.size,
-+				vcpu->run->memory_fault.flags == KVM_MEMORY_EXIT_FLAG_PRIVATE);
-+			continue;
- 		} else if (
- 			vcpu->run->exit_reason == KVM_EXIT_IO &&
- 			vcpu->run->io.port == TDX_UPM_TEST_ACCEPT_PRINT_PORT) {
-@@ -243,8 +250,53 @@ static void guest_upm_explicit(void)
- 	tdx_test_success();
- }
- 
-+static void guest_upm_implicit(void)
-+{
-+	struct tdx_upm_test_area *test_area_gva_private =
-+		(struct tdx_upm_test_area *)TDX_UPM_TEST_AREA_GVA_PRIVATE;
-+	struct tdx_upm_test_area *test_area_gva_shared =
-+		(struct tdx_upm_test_area *)TDX_UPM_TEST_AREA_GVA_SHARED;
-+
-+	/* Check: host reading private memory does not modify guest's view */
-+	fill_test_area(test_area_gva_private, PATTERN_GUEST_GENERAL);
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_PRIVATE_MEMORY_FROM_HOST);
-+
-+	TDX_UPM_TEST_ASSERT(
-+		check_test_area(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	/* Use focus area as shared */
-+	fill_focus_area(test_area_gva_shared, PATTERN_GUEST_FOCUS);
-+
-+	/* General areas should not be affected */
-+	TDX_UPM_TEST_ASSERT(
-+		check_general_areas(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_SHARED_MEMORY_FROM_HOST);
-+
-+	/* Check that guest has the same view of shared memory */
-+	TDX_UPM_TEST_ASSERT(
-+		check_focus_area(test_area_gva_shared, PATTERN_HOST_FOCUS));
-+
-+	/* Use focus area as private */
-+	fill_focus_area(test_area_gva_private, PATTERN_GUEST_FOCUS);
-+
-+	/* General areas should be unaffected by remapping */
-+	TDX_UPM_TEST_ASSERT(
-+		check_general_areas(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_report_to_user_space(SYNC_CHECK_READ_PRIVATE_MEMORY_FROM_HOST_AGAIN);
-+
-+	/* Check that guest can use private memory after focus area is remapped as private */
-+	TDX_UPM_TEST_ASSERT(
-+		fill_and_check(test_area_gva_private, PATTERN_GUEST_GENERAL));
-+
-+	tdx_test_success();
-+}
-+
- static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
--			 struct tdx_upm_test_area *test_area_base_hva)
-+			 struct tdx_upm_test_area *test_area_base_hva,
-+			 bool implicit)
- {
- 	vcpu_run(vcpu);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
-@@ -263,7 +315,7 @@ static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
- 	TEST_ASSERT(check_test_area(test_area_base_hva, PATTERN_CONFIDENCE_CHECK),
- 		"Host should read PATTERN_CONFIDENCE_CHECK from guest's private memory.");
- 
--	vcpu_run_and_manage_memory_conversions(vm, vcpu);
-+	vcpu_run_and_manage_memory_conversions(vm, vcpu, implicit);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
- 	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, TDX_TEST_REPORT_SIZE,
- 		 TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
-@@ -280,7 +332,7 @@ static void run_selftest(struct kvm_vm *vm, struct kvm_vcpu *vcpu,
- 	TEST_ASSERT(check_focus_area(test_area_base_hva, PATTERN_HOST_FOCUS),
- 		    "Host should be able to use shared memory.");
- 
--	vcpu_run_and_manage_memory_conversions(vm, vcpu);
-+	vcpu_run_and_manage_memory_conversions(vm, vcpu, implicit);
- 	TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
- 	TDX_TEST_ASSERT_IO(vcpu, TDX_TEST_REPORT_PORT, TDX_TEST_REPORT_SIZE,
- 		 TDG_VP_VMCALL_INSTRUCTION_IO_WRITE);
-@@ -329,18 +381,20 @@ static void guest_ve_handler(struct ex_regs *regs)
- 	TDX_UPM_TEST_ASSERT(!ret);
- }
- 
--static void verify_upm_test(void)
-+static void verify_upm_test(bool implicit)
- {
- 	struct kvm_vm *vm;
- 	struct kvm_vcpu *vcpu;
- 
-+	void *guest_code;
- 	vm_vaddr_t test_area_gva_private;
- 	struct tdx_upm_test_area *test_area_base_hva;
- 	uint64_t test_area_npages;
- 
- 	vm = td_create();
- 	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
--	vcpu = td_vcpu_add(vm, 0, guest_upm_explicit);
-+	guest_code = implicit ? guest_upm_implicit : guest_upm_explicit;
-+	vcpu = td_vcpu_add(vm, 0, guest_code);
- 
- 	vm_install_exception_handler(vm, VE_VECTOR, guest_ve_handler);
- 
-@@ -379,13 +433,26 @@ static void verify_upm_test(void)
- 
- 	td_finalize(vm);
- 
--	printf("Verifying UPM functionality: explicit MapGPA\n");
-+	if (implicit)
-+		printf("Verifying UPM functionality: implicit conversion\n");
-+	else
-+		printf("Verifying UPM functionality: explicit MapGPA\n");
- 
--	run_selftest(vm, vcpu, test_area_base_hva);
-+	run_selftest(vm, vcpu, test_area_base_hva, implicit);
- 
- 	kvm_vm_free(vm);
- }
- 
-+void verify_upm_test_explicit(void)
-+{
-+	verify_upm_test(false);
-+}
-+
-+void verify_upm_test_implicit(void)
-+{
-+	verify_upm_test(true);
-+}
-+
- int main(int argc, char **argv)
- {
- 	/* Disable stdout buffering */
-@@ -397,5 +464,6 @@ int main(int argc, char **argv)
- 		return 0;
- 	}
- 
--	run_in_new_process(&verify_upm_test);
-+	run_in_new_process(&verify_upm_test_explicit);
-+	run_in_new_process(&verify_upm_test_implicit);
- }
--- 
-2.43.0.472.g3155946c3a-goog
+Guenter
 
