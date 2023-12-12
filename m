@@ -2,267 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C623780E89A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ED880E850
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346171AbjLLJz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        id S231237AbjLLJ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbjLLJzk (ORCPT
+        with ESMTP id S231440AbjLLJ4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:55:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44A8E8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:55:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F21D0C433C9;
-        Tue, 12 Dec 2023 09:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702374946;
-        bh=BQ3BLgzy5Ip8VA406gPgErfyBqjO7GKw1h33a58SXak=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GaIWa+5HO/3tpLiJqVwkGHTCi5qex7zNQtWyU4PNsBQHsBUXpZiC58dM58/LuVX9M
-         3KYhJvHlIErYbprY2t/ZIQdSN24vOxlX96Gu3j5Vsob+RNTV7HvBd/GqXzWBO1rbHS
-         +fptPBUY/B659L07EdnvJZlKKaWEPZKzyflncHVy9B0yV3Mga6SkgQCm6mkbPCKuTj
-         yHvq/q+Z6JJ5SUPZ7eWqris9Lr2tgx05rXVcX1JI+U71pywzW5La2G3JbS3Mh4BaP6
-         CAfNzwoKJnlNgxSPhhLU4BIAhIsvivVpvYv7gfpL33fkNXxFl+0ggMkNW944Q7639c
-         1ukJgDrhcSQOw==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2c9f7fe6623so68549541fa.3;
-        Tue, 12 Dec 2023 01:55:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YyVmvG/JvkMoiAs2cLVq6+oLnmG/LqcL8JcIMZpzSy+GPYZiFuA
-        MSWYzvqpuOK6DCVOoEdM7c6KqVdizVKRI1PXmGs=
-X-Google-Smtp-Source: AGHT+IF6xU8aIgiKF9gxcOAyuJr/WgEi/ofYZrwF8M6mAYkjtZwvKk19QO6Cotxux4vrHGvx9k66hgiW+JaSJMbjxMc=
-X-Received: by 2002:a2e:a99a:0:b0:2cb:30c8:2c09 with SMTP id
- x26-20020a2ea99a000000b002cb30c82c09mr1515293ljq.54.1702374944140; Tue, 12
- Dec 2023 01:55:44 -0800 (PST)
+        Tue, 12 Dec 2023 04:56:17 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16C8E9;
+        Tue, 12 Dec 2023 01:56:20 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BC9txpV73439509, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BC9txpV73439509
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 17:55:59 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.17; Tue, 12 Dec 2023 17:56:00 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 12 Dec 2023 17:55:59 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Tue, 12 Dec 2023 17:55:59 +0800
+From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
+To:     Andy Shevchenko <andy@kernel.org>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
+Thread-Topic: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home
+ Center) RTD SoCs.
+Thread-Index: AQHaKPU79lITdFvfw06smVDh+ZvZWbCdTzKAgAeXZrA=
+Date:   Tue, 12 Dec 2023 09:55:59 +0000
+Message-ID: <989146448858478b975c66899b8f3fed@realtek.com>
+References: <20231207100723.15015-1-tychang@realtek.com>
+ <20231207100723.15015-3-tychang@realtek.com>
+ <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
+In-Reply-To: <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231110013817.2378507-1-danielwa@cisco.com> <20231110013817.2378507-6-danielwa@cisco.com>
-In-Reply-To: <20231110013817.2378507-6-danielwa@cisco.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 12 Dec 2023 10:55:33 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFK-4mbNd_4La7Jhr_+ygBVyHdJm72vh7S41TGf2FYDdQ@mail.gmail.com>
-Message-ID: <CAMj1kXFK-4mbNd_4La7Jhr_+ygBVyHdJm72vh7S41TGf2FYDdQ@mail.gmail.com>
-Subject: Re: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic commandline
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pratyush Brahma <quic_pbrahma@quicinc.com>,
-        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-        Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 at 02:39, Daniel Walker <danielwa@cisco.com> wrote:
->
-> This adds code to handle the generic command line changes.
-> The efi code appears that it doesn't benefit as much from this design
-> as it could.
->
-> For example, if you had a prepend command line with "nokaslr" then
-> you might be helpful to re-enable it in the boot loader or dts,
-> but there appears to be no way to re-enable kaslr or some of the
-> other options.
->
-> The efi command line handling is incorrect. x86 and arm have an append
-> system however the efi code prepends the command line.
->
-> For example, you could have a non-upgradable bios which sends
->
-> efi=disable_early_pci_dma
->
-> This hypothetically could have been set because early pci dma caused
-> issues on early versions of the product.
->
-> Then later the early pci dma was made to work and the company desired
-> to start using it. To override the bios you could set the CONFIG_CMDLINE
-> to,
->
-> efi=no_disable_early_pci_dma
->
-> then parsing would normally start with the bios command line, then move
-> to the CONFIG_CMDLINE and you would end up with early pci dma turned on.
->
-> however, current efi code keeps early pci dma off because the bios
-> arguments always override the built in.
->
-> Per my reading this is different from the main body of x86, arm, and
-> arm64.
->
-> The generic command line provides both append and prepend, so it
-> alleviates this issue if it's used. However not all architectures use
-> it.
->
-> It would be desirable to allow the efi stub to have it's builtin command
-> line to be modified after compile, but I don't see a feasible way to do
-> that currently.
->
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-
-There are quite some 'might be's and 'hypothetical's in this commit log.
-
-Is there an actual use case that you are addressing here? Without
-that, this looks like unnecessary churn to me, tbh.
-
-Note that this code executes in the context of platform firmware,
-which may be old and buggy so we should be cautious about making
-unnecessary changes here.
-
-
-> ---
->  .../firmware/efi/libstub/efi-stub-helper.c    | 29 +++++++++++++++++++
->  drivers/firmware/efi/libstub/efi-stub.c       |  9 ++++++
->  drivers/firmware/efi/libstub/efistub.h        |  1 +
->  drivers/firmware/efi/libstub/x86-stub.c       | 14 +++++++--
->  4 files changed, 51 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> index bfa30625f5d0..952fa2cdff51 100644
-> --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-> +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> @@ -11,6 +11,7 @@
->
->  #include <linux/efi.h>
->  #include <linux/kernel.h>
-> +#include <linux/cmdline.h>
->  #include <asm/efi.h>
->  #include <asm/setup.h>
->
-> @@ -29,6 +30,34 @@ bool __pure __efi_soft_reserve_enabled(void)
->         return !efi_nosoftreserve;
->  }
->
-> +/**
-> + * efi_handle_cmdline() - handle adding in built-in parts of the command line
-> + * @cmdline:   kernel command line
-> + *
-> + * Add in the generic parts of the commandline and start the parsing of the
-> + * command line.
-> + *
-> + * Return:     status code
-> + */
-> +efi_status_t efi_handle_builtin_cmdline(char const *cmdline)
-> +{
-> +       efi_status_t status = EFI_SUCCESS;
-> +
-> +       if (sizeof(CMDLINE_STATIC_PREPEND) > 1)
-> +               status |= efi_parse_options(CMDLINE_STATIC_PREPEND);
-> +
-> +       if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE))
-> +               status |= efi_parse_options(cmdline);
-> +
-> +       if (sizeof(CMDLINE_STATIC_APPEND) > 1)
-> +               status |= efi_parse_options(CMDLINE_STATIC_APPEND);
-> +
-> +       if (status != EFI_SUCCESS)
-> +               efi_err("Failed to parse options\n");
-> +
-> +       return status;
-> +}
-> +
->  /**
->   * efi_parse_options() - Parse EFI command line options
->   * @cmdline:   kernel command line
-> diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
-> index f9c1e8a2bd1d..770abe95c0ee 100644
-> --- a/drivers/firmware/efi/libstub/efi-stub.c
-> +++ b/drivers/firmware/efi/libstub/efi-stub.c
-> @@ -127,6 +127,14 @@ efi_status_t efi_handle_cmdline(efi_loaded_image_t *image, char **cmdline_ptr)
->                 return EFI_OUT_OF_RESOURCES;
->         }
->
-> +#ifdef CONFIG_GENERIC_CMDLINE
-> +       status = efi_handle_builtin_cmdline(cmdline);
-> +       if (status != EFI_SUCCESS) {
-> +               goto fail_free_cmdline;
-> +       }
-> +#endif
-> +
-> +#ifdef CONFIG_CMDLINE
->         if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
->             IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
->             cmdline_size == 0) {
-> @@ -144,6 +152,7 @@ efi_status_t efi_handle_cmdline(efi_loaded_image_t *image, char **cmdline_ptr)
->                         goto fail_free_cmdline;
->                 }
->         }
-> +#endif
->
->         *cmdline_ptr = cmdline;
->         return EFI_SUCCESS;
-> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-> index 212687c30d79..1ac6631905c5 100644
-> --- a/drivers/firmware/efi/libstub/efistub.h
-> +++ b/drivers/firmware/efi/libstub/efistub.h
-> @@ -996,6 +996,7 @@ efi_status_t efi_relocate_kernel(unsigned long *image_addr,
->                                  unsigned long alignment,
->                                  unsigned long min_addr);
->
-> +efi_status_t efi_handle_builtin_cmdline(char const *cmdline);
->  efi_status_t efi_parse_options(char const *cmdline);
->
->  void efi_parse_option_graphics(char *option);
-> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-> index 9d5df683f882..273a8a9c8bbb 100644
-> --- a/drivers/firmware/efi/libstub/x86-stub.c
-> +++ b/drivers/firmware/efi/libstub/x86-stub.c
-> @@ -847,6 +847,8 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
->         struct setup_header *hdr = &boot_params->hdr;
->         const struct linux_efi_initrd *initrd = NULL;
->         unsigned long kernel_entry;
-> +       unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
-> +                                      ((u64)boot_params->ext_cmd_line_ptr << 32));
->         efi_status_t status;
->
->         boot_params_pointer = boot_params;
-> @@ -877,6 +879,14 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
->                 goto fail;
->         }
->
-> +#ifdef CONFIG_GENERIC_CMDLINE
-> +       status = efi_handle_builtin_cmdline((char *)cmdline_paddr);
-> +       if (status != EFI_SUCCESS) {
-> +               efi_err("Failed to parse options\n");
-> +               goto fail;
-> +       }
-> +#else /* CONFIG_GENERIC_CMDLINE */
-> +
->  #ifdef CONFIG_CMDLINE_BOOL
->         status = efi_parse_options(CONFIG_CMDLINE);
->         if (status != EFI_SUCCESS) {
-> @@ -885,8 +895,6 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
->         }
->  #endif
->         if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
-> -               unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
-> -                                              ((u64)boot_params->ext_cmd_line_ptr << 32));
->                 status = efi_parse_options((char *)cmdline_paddr);
->                 if (status != EFI_SUCCESS) {
->                         efi_err("Failed to parse options\n");
-> @@ -894,6 +902,8 @@ void __noreturn efi_stub_entry(efi_handle_t handle,
->                 }
->         }
->
-> +#endif
-> +
->         status = efi_decompress_kernel(&kernel_entry);
->         if (status != EFI_SUCCESS) {
->                 efi_err("Failed to decompress kernel\n");
-> --
-> 2.39.2
->
->
+SGkgQW5keSwNCg0KVGhhbmsgeW91IGZvciB0aGUgcmV2aWV3Lg0KDQo+T24gVGh1LCBEZWMgMDcs
+IDIwMjMgYXQgMDY6MDc6MjNQTSArMDgwMCwgVFkgQ2hhbmcgd3JvdGU6DQo+PiBGcm9tOiBUenV5
+aSBDaGFuZyA8dHljaGFuZ0ByZWFsdGVrLmNvbT4NCj4+DQo+PiBUaGlzIGRyaXZlciBlbmFibGVz
+IGNvbmZpZ3VyYXRpb24gb2YgR1BJTyBkaXJlY3Rpb24sIEdQSU8gdmFsdWVzLCBHUElPDQo+PiBk
+ZWJvdW5jZSBzZXR0aW5ncyBhbmQgaGFuZGxlcyBHUElPIGludGVycnVwdHMuDQo+DQo+V2h5IGdw
+aW8tcmVnbWFwIGNhbid0IGJlIHVzZWQ/DQo+DQoNCkkgd2lsbCB0cnkgdG8gdXNlIGdwaW8tcmVt
+YXAgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KPi4uLg0KPg0KPj4gK3N0cnVjdCBydGRfZ3Bpb19p
+bmZvIHsNCj4NCj4+ICsgICAgIHU4ICAgICAgICAgICAgICAgICAgICAgICpkaXJfb2Zmc2V0Ow0K
+Pj4gKyAgICAgdTggICAgICAgICAgICAgICAgICAgICAgbnVtX2RpcjsNCj4+ICsgICAgIHU4ICAg
+ICAgICAgICAgICAgICAgICAgICpkYXRvX29mZnNldDsNCj4+ICsgICAgIHU4ICAgICAgICAgICAg
+ICAgICAgICAgIG51bV9kYXRvOw0KPj4gKyAgICAgdTggICAgICAgICAgICAgICAgICAgICAgKmRh
+dGlfb2Zmc2V0Ow0KPj4gKyAgICAgdTggICAgICAgICAgICAgICAgICAgICAgbnVtX2RhdGk7DQo+
+PiArICAgICB1OCAgICAgICAgICAgICAgICAgICAgICAqaWVfb2Zmc2V0Ow0KPj4gKyAgICAgdTgg
+ICAgICAgICAgICAgICAgICAgICAgbnVtX2llOw0KPj4gKyAgICAgdTggICAgICAgICAgICAgICAg
+ICAgICAgKmRwX29mZnNldDsNCj4+ICsgICAgIHU4ICAgICAgICAgICAgICAgICAgICAgIG51bV9k
+cDsNCj4+ICsgICAgIHU4ICAgICAgICAgICAgICAgICAgICAgICpncGFfb2Zmc2V0Ow0KPj4gKyAg
+ICAgdTggICAgICAgICAgICAgICAgICAgICAgbnVtX2dwYTsNCj4+ICsgICAgIHU4ICAgICAgICAg
+ICAgICAgICAgICAgICpncGRhX29mZnNldDsNCj4+ICsgICAgIHU4ICAgICAgICAgICAgICAgICAg
+ICAgIG51bV9ncGRhOw0KPj4gKyAgICAgdTggICAgICAgICAgICAgICAgICAgICAgKmRlYl9vZmZz
+ZXQ7DQo+PiArICAgICB1OCAgICAgICAgICAgICAgICAgICAgICBudW1fZGViOw0KPg0KPkEgbG90
+IG9mIHdhc3RlZCBzcGFjZS4gQ2FuIHlvdSBncm91cCBwb2ludGVycyBmb2xsb3dlZCBieSB1OCBt
+ZW1iZXJzPw0KPk5vdGUsIHVzZSBgcGFob2xlYCB0b29sIHRvIGNoZWNrIHRoZSBzdHJ1Y3QgbGF5
+b3V0IGluIEMuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0K
+Pj4gK307DQo+DQo+Li4uDQo+DQo+PiArc3RydWN0IHJ0ZF9ncGlvIHsNCj4+ICsgICAgIHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgICAgICAgICAgKnBkZXY7DQo+DQo+V2h5DQo+DQo+ICAgICAgICBz
+dHJ1Y3QgZGV2aWNlICpkZXY7DQo+DQo+aXMgbm90IHN1ZmZpY2U/DQo+DQoNCkkgd2lsbCByZW1v
+dmUgdGhlIHBkZXYuDQoNCj4+ICsgICAgIGNvbnN0IHN0cnVjdCBydGRfZ3Bpb19pbmZvICAgICAg
+KmluZm87DQo+PiArICAgICB2b2lkIF9faW9tZW0gICAgICAgICAgICAgICAgICAgICpiYXNlOw0K
+Pj4gKyAgICAgdm9pZCBfX2lvbWVtICAgICAgICAgICAgICAgICAgICAqaXJxX2Jhc2U7DQo+DQo+
+PiArICAgICBzdHJ1Y3QgZ3Bpb19jaGlwICAgICAgICAgICAgICAgIGdwaW9fY2hpcDsNCj4NCj5N
+YWtlIHRoaXMgdG8gYmUgdGhlIGZpcnN0IG1lbWJlciwgaXQgbWlnaHQgcmVkdWNlIHNvbWUgY29k
+ZSAoZHVlIHRvIHBvaW50ZXINCj5hcml0aG1ldGljcykuDQo+DQoNCkkgd2lsbCBtb3ZlIHRoZSBn
+cGlvX2NoaXAgdG8gdGhlIGZpcnN0IG1lbWJlci4NCg0KPj4gKyAgICAgdW5zaWduZWQgaW50ICAg
+ICAgICAgICAgICAgICAgICBpcnFzWzJdOw0KPj4gKyAgICAgc3BpbmxvY2tfdCAgICAgICAgICAg
+ICAgICAgICAgICBsb2NrOw0KPj4gK307DQo+PiArDQo+PiArDQo+DQo+T25lIGJsYW5rIGxpbmUg
+aXMgZW5vdWdoLg0KPg0KDQpJIHdpbGwgcmVtb3ZlIGl0Lg0KDQo+Li4uDQo+DQo+PiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCBydGRfZ3Bpb19pbmZvIHJ0ZF9pc29fZ3Bpb19pbmZvID0gew0KPj4gKyAg
+ICAgLm5hbWUgICAgICAgICAgID0gInJ0ZF9pc29fZ3BpbyIsDQo+PiArICAgICAudHlwZSAgICAg
+ICAgICAgPSBSVERfSVNPX0dQSU8sDQo+PiArICAgICAuZ3Bpb19iYXNlICAgICAgPSAwLA0KPj4g
+KyAgICAgLm51bV9ncGlvcyAgICAgID0gODIsDQo+PiArICAgICAuZGlyX29mZnNldCAgICAgPSAo
+dTggW10peyAweDAsIDB4MTgsIDB4MmMgfSwNCj4+ICsgICAgIC5udW1fZGlyICAgICAgICA9IDMs
+DQo+PiArICAgICAuZGF0b19vZmZzZXQgICAgPSAodTggW10peyAweDQsIDB4MWMsIDB4MzAgfSwN
+Cj4+ICsgICAgIC5udW1fZGF0byAgICAgICA9IDMsDQo+PiArICAgICAuZGF0aV9vZmZzZXQgICAg
+PSAodTggW10peyAweDgsIDB4MjAsIDB4MzQgfSwNCj4+ICsgICAgIC5udW1fZGF0aSAgICAgICA9
+IDMsDQo+PiArICAgICAuaWVfb2Zmc2V0ICAgICAgPSAodTggW10peyAweGMsIDB4MjQsIDB4Mzgg
+fSwNCj4+ICsgICAgIC5udW1faWUgICAgICAgICA9IDMsDQo+PiArICAgICAuZHBfb2Zmc2V0ICAg
+ICAgPSAodTggW10peyAweDEwLCAweDI4LCAweDNjIH0sDQo+PiArICAgICAubnVtX2RwICAgICAg
+ICAgPSAzLA0KPj4gKyAgICAgLmdwYV9vZmZzZXQgICAgID0gKHU4IFtdKXsgMHg4LCAweGUwLCAw
+eDkwIH0sDQo+PiArICAgICAubnVtX2dwYSAgICAgICAgPSAzLA0KPj4gKyAgICAgLmdwZGFfb2Zm
+c2V0ICAgID0gKHU4IFtdKXsgMHhjLCAweGU0LCAweDk0IH0sDQo+PiArICAgICAubnVtX2dwZGEg
+ICAgICAgPSAzLA0KPj4gKyAgICAgLmRlYl9vZmZzZXQgICAgID0gKHU4IFtdKXsgMHg0NCwgMHg0
+OCwgMHg0YywgMHg1MCwgMHg1NCwgMHg1OCwgMHg1YywNCj4+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIDB4NjAsIDB4NjQsIDB4NjgsIDB4NmMgfSwNCj4+ICsgICAgIC5udW1fZGVi
+ICAgICAgICA9IDExLA0KPg0KPlVzZSBBUlJBWV9TSVpFKCkgZnJvbSBhcnJheV9zaXplLmggZm9y
+IGFsbCBudW1fKiBhc3NpZ25tZW50cy4NCj4NCg0KSSB3aWxsIHJldmlzZSBpdC4NCg0KPj4gK307
+DQo+DQo+Li4uDQo+DQo+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBydGRfZ3Bpb19pbmZvIHJ0ZDE2
+MTlfaXNvX2dwaW9faW5mbyA9IHsNCj4NCj5EaXR0by4NCj4NCj4+ICt9Ow0KPg0KPi4uLg0KPg0K
+Pj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcnRkX2dwaW9faW5mbyBydGQxMzk1X2lzb19ncGlvX2lu
+Zm8gPSB7DQo+DQo+RGl0dG8uDQo+DQo+PiArfTsNCj4+ICsNCj4+ICtzdGF0aWMgY29uc3Qgc3Ry
+dWN0IHJ0ZF9ncGlvX2luZm8gcnRkMTI5NV9taXNjX2dwaW9faW5mbyA9IHsNCj4NCj5EaXR0by4N
+Cj4NCj4+ICt9Ow0KPj4gKw0KPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgcnRkX2dwaW9faW5mbyBy
+dGQxMjk1X2lzb19ncGlvX2luZm8gPSB7DQo+DQo+RGl0dG8uDQo+DQo+PiArfTsNCj4NCj4uLi4N
+Cj4NCj4+ICtzdGF0aWMgaW50IHJ0ZF9ncGlvX2Rpcl9vZmZzZXQoc3RydWN0IHJ0ZF9ncGlvICpk
+YXRhLCB1bnNpZ25lZCBpbnQNCj4+ICtvZmZzZXQpIHsNCj4+ICsgICAgIGludCBpbmRleCA9IG9m
+ZnNldCAvIDMyOw0KPg0KPj4gKyAgICAgaWYgKGluZGV4ID4gZGF0YS0+aW5mby0+bnVtX2RpcikN
+Cj4+ICsgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+DQo+V2hlbiB0aGlzIGNvbmRpdGlv
+bmFsIGNhbiBiZSB0cnVlPw0KPlNhbWUgUSB0byB0aGUgc2ltaWxhciBjaGVja3Mgb3ZlciB0aGUg
+Y29kZS4NCj4NCg0KSXQgaXMgb25seSB0byBjaGVjayBpZiB0aGUgb2Zmc2V0IHZhbHVlIGlzIG1p
+c3NpbmcgaW4gdGhlIHJ0ZF9ncGlvX2luZm8uIEknbSB1bmNlcnRhaW4NCmFib3V0IHRoZSBuZWNl
+c3NpdHkgb2YgdGhlc2UgY2hlY2tzLiBJZiB0aGV5IGFyZSBub3QgbmVjZXNzYXJ5LCBJIHdpbGwg
+cmVtb3ZlDQp0aGUgbnVtXyogbWVtYmVycyBpbiB0aGUgcnRkX2dwaW9faW5mbyBzdHJ1Y3R1cmUg
+YWxvbmcgd2l0aCB0aGVzZSBjaGVja3MuIA0KDQo+PiArICAgICByZXR1cm4gZGF0YS0+aW5mby0+
+ZGlyX29mZnNldFtpbmRleF07IH0NCj4NCj4uLi4NCj4NCj4+ICsgICAgIGlmIChkYXRhLT5pbmZv
+LT50eXBlID09IFJURDEyOTVfSVNPX0dQSU8pIHsNCj4+ICsgICAgICAgICAgICAgcmVnX29mZnNl
+dCA9IHJ0ZF9ncGlvX2RlYl9vZmZzZXQoZGF0YSwgMCk7DQo+PiArICAgICAgICAgICAgIGlmIChy
+ZWdfb2Zmc2V0IDwgMCkNCj4+ICsgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmVnX29mZnNl
+dDsNCj4+ICsgICAgICAgICAgICAgc2hpZnQgPSAwOw0KPj4gKyAgICAgICAgICAgICBkZWJfdmFs
+ICs9IDE7DQo+PiArICAgICAgICAgICAgIHdyaXRlX2VuID0gQklUKHNoaWZ0ICsgMyk7DQo+PiAr
+ICAgICB9IGVsc2UgaWYgKGRhdGEtPmluZm8tPnR5cGUgPT0gUlREMTI5NV9NSVNDX0dQSU8pIHsN
+Cj4+ICsgICAgICAgICAgICAgcmVnX29mZnNldCA9IHJ0ZF9ncGlvX2RlYl9vZmZzZXQoZGF0YSwg
+MCk7DQo+PiArICAgICAgICAgICAgIGlmIChyZWdfb2Zmc2V0IDwgMCkNCj4+ICsgICAgICAgICAg
+ICAgICAgICAgICByZXR1cm4gcmVnX29mZnNldDsNCj4+ICsgICAgICAgICAgICAgc2hpZnQgPSAo
+b2Zmc2V0ID4+IDQpICogNDsNCj4+ICsgICAgICAgICAgICAgZGViX3ZhbCArPSAxOw0KPj4gKyAg
+ICAgICAgICAgICB3cml0ZV9lbiA9IEJJVChzaGlmdCArIDMpOw0KPj4gKyAgICAgfSBlbHNlIHsN
+Cj4+ICsgICAgICAgICAgICAgcmVnX29mZnNldCA9IHJ0ZF9ncGlvX2RlYl9vZmZzZXQoZGF0YSwg
+b2Zmc2V0KTsNCj4+ICsgICAgICAgICAgICAgaWYgKHJlZ19vZmZzZXQgPCAwKQ0KPj4gKyAgICAg
+ICAgICAgICAgICAgICAgIHJldHVybiByZWdfb2Zmc2V0Ow0KPj4gKyAgICAgICAgICAgICBzaGlm
+dCA9IChvZmZzZXQgJSA4KSAqIDQ7DQo+PiArICAgICAgICAgICAgIHdyaXRlX2VuID0gQklUKHNo
+aWZ0ICsgMyk7DQo+PiArICAgICB9DQo+DQo+WW91IHNob3VsZCBwcm9iYWJseSBoYXZlIGtpbmQg
+b2YgY2hpcF9pbmZvIGNvbnN0YW50IHN0cnVjdHVyZSB0aGF0IGdvZXMgdmlhDQo+ZHJpdmVyX2Rh
+dGEgYW5kIHdpbGwgaGF2ZSBhIGNhbGxiYWNrLCBzbywgaGVyZSB5b3Ugd2lsbCBjYWxsIG9uZSBh
+bmQgZ2V0IGFsbCB0aHJlZQ0KPmF0IG9uY2U6DQo+IC0gcmVnaXN0ZXIgb2Zmc2V0Ow0KPiAtIHNo
+aWZ0DQo+IC0gdXBkYXRlZCBkZWJvdW5jZSB2YWx1ZQ0KPg0KDQpJIHdpbGwgYWRkIGEgY2FsbGJh
+Y2sgaW4gdGhlIHN0cnVjdCBydGRfZ3Bpb19pbmZvIHRvIGdldCB0aGVzZSB2YWx1ZXMuDQoNCj4u
+Li4NCj4NCj4+ICtzdGF0aWMgaW50IHJ0ZF9ncGlvX2dldF9kaXJlY3Rpb24oc3RydWN0IGdwaW9f
+Y2hpcCAqY2hpcCwgdW5zaWduZWQNCj4+ICtpbnQgb2Zmc2V0KSB7DQo+PiArICAgICBzdHJ1Y3Qg
+cnRkX2dwaW8gKmRhdGEgPSBncGlvY2hpcF9nZXRfZGF0YShjaGlwKTsNCj4+ICsgICAgIHVuc2ln
+bmVkIGxvbmcgZmxhZ3M7DQo+PiArICAgICBpbnQgcmVnX29mZnNldDsNCj4+ICsgICAgIHUzMiB2
+YWw7DQo+PiArDQo+PiArICAgICByZWdfb2Zmc2V0ID0gcnRkX2dwaW9fZGlyX29mZnNldChkYXRh
+LCBvZmZzZXQpOw0KPj4gKyAgICAgaWYgKHJlZ19vZmZzZXQgPCAwKQ0KPj4gKyAgICAgICAgICAg
+ICByZXR1cm4gcmVnX29mZnNldDsNCj4NCj4+ICsgICAgIHNwaW5fbG9ja19pcnFzYXZlKCZkYXRh
+LT5sb2NrLCBmbGFncyk7DQo+DQo+U28sIGlzIHlvdXIgSVJRIGNoaXAgZ29pbmcgdG8gd29yayB3
+aXRoIENPTkZJR19QUkVFTVRfUlQ/DQo+DQoNCk5vLCB3ZSBkbyBub3QgZW5hYmxlIENPTkZJR19Q
+UkVFTVRfUlQuIEhvd2V2ZXIsIGEgY3VzdG9tIGRyaXZlciBtaWdodCBjaGFuZ2UNCnRoZSBHUElP
+IHN0YXR1cyBpbiB0aGUgSVNSLiBJIHdpbGwgdXRpbGl6ZSByYXdfc3BpbmxvY2sgaW5zdGVhZCBh
+bmQgb25seSBsb2NrDQp0aGUgd3JpdGUgb3BlcmF0aW9ucy4NCg0KPj4gKyAgICAgdmFsID0gcmVh
+ZGxfcmVsYXhlZChkYXRhLT5iYXNlICsgcmVnX29mZnNldCk7DQo+DQo+PiArICAgICB2YWwgJj0g
+QklUKG9mZnNldCAlIDMyKTsNCj4NCj5XaHkgdGhpcyBpcyBpcyB1bmRlciBsb2NrPw0KPg0KDQpJ
+J2xsIG1vdmUgaXQgb3V0c2lkZSBvZiB0aGUgbG9jay4NCg0KPj4gKyAgICAgc3Bpbl91bmxvY2tf
+aXJxcmVzdG9yZSgmZGF0YS0+bG9jaywgZmxhZ3MpOw0KPj4gKw0KPj4gKyAgICAgcmV0dXJuIHZh
+bCA/IEdQSU9fTElORV9ESVJFQ1RJT05fT1VUIDoNCj5HUElPX0xJTkVfRElSRUNUSU9OX0lOOyB9
+DQo+DQo+Li4uDQo+DQo+PiArc3RhdGljIGludCBydGRfZ3Bpb19zZXRfZGlyZWN0aW9uKHN0cnVj
+dCBncGlvX2NoaXAgKmNoaXAsIHVuc2lnbmVkDQo+PiAraW50IG9mZnNldCwgYm9vbCBvdXQpIHsN
+Cj4NCj4+ICsgICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+DQo+DQo+PiArICAgICBzcGluX2xv
+Y2tfaXJxc2F2ZSgmZGF0YS0+bG9jaywgZmxhZ3MpOw0KPg0KPg0KPj4gKyAgICAgc3Bpbl91bmxv
+Y2tfaXJxcmVzdG9yZSgmZGF0YS0+bG9jaywgZmxhZ3MpOw0KPg0KPkNvbnNpZGVyIHRvIHV0aWxp
+c2UgZ3VhcmQoKSAvIHNjb3BlZF9ndWFyZCgpIGZyb20gY2xlYW51cC5oLg0KPg0KDQpJIHdpbGwg
+dHJ5IHRvIHVzZSB0aGVzZSBtYWNyb3MuDQoNCj4+ICt9DQo+DQo+Li4uDQo+DQo+PiArc3RhdGlj
+IGludCBydGRfZ3Bpb19kaXJlY3Rpb25fb3V0cHV0KHN0cnVjdCBncGlvX2NoaXAgKmNoaXAsIHVu
+c2lnbmVkDQo+PiAraW50IG9mZnNldCwgaW50IHZhbHVlKSB7DQo+DQo+PiArICAgICBjaGlwLT5z
+ZXQoY2hpcCwgb2Zmc2V0LCB2YWx1ZSk7DQo+DQo+V2h5PyBDYW4ndCB5b3UgY2FsbCB0aGUgZnVu
+Y3Rpb24gYnkgaXRzIG5hbWUgZGlyZWN0bHk/DQo+DQoNCkkgd2lsbCByZXZpc2UgaXQuDQoNCj4+
+ICsNCj4+ICsgICAgIHJldHVybiBydGRfZ3Bpb19zZXRfZGlyZWN0aW9uKGNoaXAsIG9mZnNldCwg
+dHJ1ZSk7IH0NCj4NCj4uLi4NCj4NCj4+ICtzdGF0aWMgaW50IHJ0ZF9ncGlvX2dldChzdHJ1Y3Qg
+Z3Bpb19jaGlwICpjaGlwLCB1bnNpZ25lZCBpbnQgb2Zmc2V0KQ0KPj4gK3sNCj4+ICsgICAgIHN0
+cnVjdCBydGRfZ3BpbyAqZGF0YSA9IGdwaW9jaGlwX2dldF9kYXRhKGNoaXApOw0KPj4gKyAgICAg
+aW50IGRpcl9yZWdfb2Zmc2V0LCBkYXRfcmVnX29mZnNldDsNCj4+ICsgICAgIHVuc2lnbmVkIGxv
+bmcgZmxhZ3M7DQo+PiArICAgICB1MzIgdmFsOw0KPj4gKw0KPj4gKyAgICAgZGlyX3JlZ19vZmZz
+ZXQgPSBydGRfZ3Bpb19kaXJfb2Zmc2V0KGRhdGEsIG9mZnNldCk7DQo+PiArICAgICBpZiAoZGly
+X3JlZ19vZmZzZXQgPCAwKQ0KPj4gKyAgICAgICAgICAgICByZXR1cm4gZGlyX3JlZ19vZmZzZXQ7
+DQo+PiArDQo+PiArICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmZGF0YS0+bG9jaywgZmxhZ3MpOw0K
+Pj4gKw0KPj4gKyAgICAgdmFsID0gcmVhZGxfcmVsYXhlZChkYXRhLT5iYXNlICsgZGlyX3JlZ19v
+ZmZzZXQpOw0KPj4gKyAgICAgdmFsICY9IEJJVChvZmZzZXQgJSAzMik7DQo+DQo+PiArICAgICBk
+YXRfcmVnX29mZnNldCA9IHZhbCA/DQo+PiArICAgICAgICAgICAgICAgICAgICAgIHJ0ZF9ncGlv
+X2RhdG9fb2Zmc2V0KGRhdGEsIG9mZnNldCkgOg0KPj4gKyBydGRfZ3Bpb19kYXRpX29mZnNldChk
+YXRhLCBvZmZzZXQpOw0KPg0KPkNhbid0IHlvdSBoYXZlIHRoZSBkaXJlY3Rpb24gYmUgY2FjaGVk
+IGFuZCBhbHJlYWR5IGtub3cgd2hpY2ggb2Zmc2V0IHRvIHVzZQ0KPmV2ZW4gYmVmb3JlIHRoZSBs
+b2NrPw0KPg0KDQpJIHdpbGwgbW92ZSB0aGVzZSBjb2RlcyBvdXRzaWRlIG9mIHRoZSBsb2NrLg0K
+DQo+PiArICAgICB2YWwgPSByZWFkbF9yZWxheGVkKGRhdGEtPmJhc2UgKyBkYXRfcmVnX29mZnNl
+dCk7DQo+DQo+PiArICAgICB2YWwgPj49IG9mZnNldCAlIDMyOw0KPj4gKyAgICAgdmFsICY9IDB4
+MTsNCj4NCj5XaHkgd2VyZSB0aGVzZSBvcGVyYXRpb25zIGRvbmUgdW5kZXIgdGhlIGxvY2s/DQo+
+DQoNCkkgd2lsbCBtb3ZlIHRoZXNlIGNvZGVzIG91dHNpZGUgb2YgdGhlIGxvY2suDQoNCj4+ICsg
+ICAgIHNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRhdGEtPmxvY2ssIGZsYWdzKTsNCj4+ICsNCj4+
+ICsgICAgIHJldHVybiB2YWw7DQo+PiArfQ0KPg0KPi4uLg0KPg0KPj4gK3N0YXRpYyB2b2lkIHJ0
+ZF9ncGlvX2lycV9oYW5kbGUoc3RydWN0IGlycV9kZXNjICpkZXNjKSB7DQo+PiArICAgICBpbnQg
+KCpnZXRfcmVnX29mZnNldCkoc3RydWN0IHJ0ZF9ncGlvICpncGlvLCB1bnNpZ25lZCBpbnQgb2Zm
+c2V0KTsNCj4+ICsgICAgIHN0cnVjdCBydGRfZ3BpbyAqZGF0YSA9IGlycV9kZXNjX2dldF9oYW5k
+bGVyX2RhdGEoZGVzYyk7DQo+PiArICAgICBzdHJ1Y3QgaXJxX2RvbWFpbiAqZG9tYWluID0gZGF0
+YS0+Z3Bpb19jaGlwLmlycS5kb21haW47DQo+PiArICAgICBzdHJ1Y3QgaXJxX2NoaXAgKmNoaXAg
+PSBpcnFfZGVzY19nZXRfY2hpcChkZXNjKTsNCj4+ICsgICAgIHVuc2lnbmVkIGludCBpcnEgPSBp
+cnFfZGVzY19nZXRfaXJxKGRlc2MpOw0KPj4gKyAgICAgaW50IHJlZ19vZmZzZXQ7DQo+PiArICAg
+ICB1MzIgc3RhdHVzOw0KPg0KPj4gKyAgICAgaW50IGh3aXJxOw0KPg0KPldoeSBzaWduZWQ/DQo+
+DQoNCkkgd2lsbCByZXZpc2VkIGl0IHRvIHVuc2lnbmVkIGludC4NCg0KPj4gKyAgICAgaW50IGk7
+DQo+PiArICAgICBpbnQgajsNCj4+ICsNCj4+ICsgICAgIGNoYWluZWRfaXJxX2VudGVyKGNoaXAs
+IGRlc2MpOw0KPg0KPj4gKyAgICAgaWYgKGlycSA9PSBkYXRhLT5pcnFzWzBdKQ0KPj4gKyAgICAg
+ICAgICAgICBnZXRfcmVnX29mZnNldCA9ICZydGRfZ3Bpb19ncGFfb2Zmc2V0Ow0KPj4gKyAgICAg
+ZWxzZSBpZiAoaXJxID09IGRhdGEtPmlycXNbMV0pDQo+PiArICAgICAgICAgICAgIGdldF9yZWdf
+b2Zmc2V0ID0gJnJ0ZF9ncGlvX2dwZGFfb2Zmc2V0Ow0KPg0KPkNhbid0IGl0IGJlIGRvbmUgYmVm
+b3JlIGVudGVyaW5nIGludG8gY2hhaW5lZCBJUlEgaGFuZGxlcj8NCj4NCg0KSSB3aWxsIHJldmlz
+ZSBpdC4NCg0KPj4gKyAgICAgZm9yIChpID0gMDsgaSA8IGRhdGEtPmluZm8tPm51bV9ncGlvczsg
+aSA9IGkgKyAzMSkgew0KPg0KPjMxID8hICBJbiBhbnkgY2FzZSBpICs9IDMxIGlzIHNpbXBseSBz
+aG9ydGVyLg0KPg0KDQpJIHdpbGwgcmV2aXNlIGl0Lg0KDQo+PiArICAgICAgICAgICAgIHJlZ19v
+ZmZzZXQgPSBnZXRfcmVnX29mZnNldChkYXRhLCBpKTsNCj4+ICsgICAgICAgICAgICAgaWYgKHJl
+Z19vZmZzZXQgPCAwKQ0KPj4gKyAgICAgICAgICAgICAgICAgICAgIHJldHVybjsNCj4+ICsNCj4+
+ICsgICAgICAgICAgICAgc3RhdHVzID0gcmVhZGxfcmVsYXhlZChkYXRhLT5pcnFfYmFzZSArIHJl
+Z19vZmZzZXQpID4+IDE7DQo+PiArICAgICAgICAgICAgIHdyaXRlbF9yZWxheGVkKHN0YXR1cyA8
+PCAxLCBkYXRhLT5pcnFfYmFzZSArDQo+PiArIHJlZ19vZmZzZXQpOw0KPg0KPj4gKyAgICAgICAg
+ICAgICB3aGlsZSAoc3RhdHVzKSB7DQo+PiArICAgICAgICAgICAgICAgICAgICAgaiA9IF9fZmZz
+KHN0YXR1cyk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgc3RhdHVzICY9IH5CSVQoaik7DQo+
+DQo+TklIIGZvcl9lYWNoX3NldF9iaXQoKQ0KPg0KDQpJIHdpbGwgcmV2aXNlIGl0Lg0KDQo+PiAr
+ICAgICAgICAgICAgICAgICAgICAgaHdpcnEgPSBpICsgajsNCj4+ICsgICAgICAgICAgICAgICAg
+ICAgICBpZiAocnRkX2dwaW9fY2hlY2tfaWUoZGF0YSwgaHdpcnEpKSB7DQo+PiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBpbnQgZ2lycSA9IGlycV9maW5kX21hcHBpbmcoZG9tYWluLA0K
+Pmh3aXJxKTsNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHUzMiBpcnFfdHlwZSA9
+DQo+PiArIGlycV9nZXRfdHJpZ2dlcl90eXBlKGdpcnEpOw0KPj4gKw0KPj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKChpcnEgPT0gZGF0YS0+aXJxc1sxXSkgJiYgKChpcnFfdHlw
+ZSAmDQo+SVJRX1RZUEVfU0VOU0VfTUFTSykgIT0NCj4+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgSVJRX1RZUEVfRURHRV9CT1RIKSkNCj4+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+DQo+PiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBnZW5lcmljX2hhbmRsZV9pcnEoZ2lycSk7DQo+DQo+V2h5IHlvdSBjYW4ndCB1c2Ug
+Z2VuZXJpY19oYW5kbGVfZG9tYWluX2lycSgpPw0KPg0KDQpJIHdpbGwgcmV2aXNlIGl0Lg0KDQo+
+PiArICAgICAgICAgICAgICAgICAgICAgfQ0KPj4gKyAgICAgICAgICAgICB9DQo+PiArICAgICB9
+DQo+PiArDQo+PiArICAgICBjaGFpbmVkX2lycV9leGl0KGNoaXAsIGRlc2MpOw0KPj4gK30NCj4N
+Cj4uLi4NCj4NCj4+ICsgICAgIHUzMiBtYXNrID0gQklUKGQtPmh3aXJxICUgMzIpOw0KPg0KPlVz
+ZSBwcm9wZXIgdHlwZSBhbmQgZ2V0dGVyIGZvciBod2lycS4gSXQncyBtZW50aW9uZWQgaW4gdGhl
+IERvY3VtZW50YXRpb24uDQo+DQoNCkkgd2lsbCB1c2UgaXJxZF90b19od2lycShkKSB0byBnZXQg
+aHdpcnEuDQoNCj4uLi4NCj4NCj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGlycV9jaGlwIHJ0ZF9n
+cGlvX2lycV9jaGlwID0gew0KPj4gKyAgICAgLm5hbWUgPSAicnRkLWdwaW8iLA0KPj4gKyAgICAg
+LmlycV9lbmFibGUgPSBydGRfZ3Bpb19lbmFibGVfaXJxLA0KPj4gKyAgICAgLmlycV9kaXNhYmxl
+ID0gcnRkX2dwaW9fZGlzYWJsZV9pcnEsDQo+PiArICAgICAuaXJxX3NldF90eXBlID0gcnRkX2dw
+aW9faXJxX3NldF90eXBlLA0KPg0KPj4gKyAgICAgLmZsYWdzID0gSVJRQ0hJUF9JTU1VVEFCTEUs
+DQo+DQo+SXMgaXQ/IFlvdSBzZWVtcyBtaXNzZWQgc29tZXRoaW5nIHRvIGZ1bGZpbGwgdGhlIGlt
+bXV0YWJpbGl0eSByZXF1aXJlbWVudHMuDQo+UGxlYXNlIGNvbnN1bHQgd2l0aCB0aGUgRG9jdW1l
+bnRhdGlvbiwgaXQncyBhbGwgd3JpdHRlbiB0aGVyZS4NCj4NCg0KSSB0aGluayBJIG1pc3NlZCB0
+byBjYWxsIHRoZSBncGlvY2hpcF9kaXNhYmxlX2lycS9ncGlvY2hpcF9lbmFibGVfaXJxIGluIHRo
+ZQ0KLmlycV9kaXNhYmxlLy5pcnFfZW5hYmxlIGNhbGxiYWNrIGZ1bmN0aW9uIHRvIGluZm9ybSB0
+aGUgZ3Bpb2xpYi4NCkkgd2lsbCByZXZpc2UgaXQuDQoNCj4+ICt9Ow0KPg0KPi4uLg0KPg0KPj4g
+K3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHJ0ZF9ncGlvX29mX21hdGNoZXNbXSA9
+IHsNCj4+ICsgICAgIHsgLmNvbXBhdGlibGUgPSAicmVhbHRlayxydGQxMjk1LW1pc2MtZ3BpbyIs
+IC5kYXRhID0NCj4mcnRkMTI5NV9taXNjX2dwaW9faW5mbyB9LA0KPj4gKyAgICAgeyAuY29tcGF0
+aWJsZSA9ICJyZWFsdGVrLHJ0ZDEyOTUtaXNvLWdwaW8iLCAuZGF0YSA9DQo+JnJ0ZDEyOTVfaXNv
+X2dwaW9faW5mbyB9LA0KPj4gKyAgICAgeyAuY29tcGF0aWJsZSA9ICJyZWFsdGVrLHJ0ZDEzOTUt
+aXNvLWdwaW8iLCAuZGF0YSA9DQo+JnJ0ZDEzOTVfaXNvX2dwaW9faW5mbyB9LA0KPj4gKyAgICAg
+eyAuY29tcGF0aWJsZSA9ICJyZWFsdGVrLHJ0ZDE2MTktaXNvLWdwaW8iLCAuZGF0YSA9DQo+JnJ0
+ZDE2MTlfaXNvX2dwaW9faW5mbyB9LA0KPj4gKyAgICAgeyAuY29tcGF0aWJsZSA9ICJyZWFsdGVr
+LHJ0ZDEzMTktaXNvLWdwaW8iLCAuZGF0YSA9DQo+JnJ0ZF9pc29fZ3Bpb19pbmZvIH0sDQo+PiAr
+ICAgICB7IC5jb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTYxOWItaXNvLWdwaW8iLCAuZGF0YSA9
+DQo+JnJ0ZF9pc29fZ3Bpb19pbmZvIH0sDQo+PiArICAgICB7IC5jb21wYXRpYmxlID0gInJlYWx0
+ZWsscnRkMTMxOWQtaXNvLWdwaW8iLCAuZGF0YSA9DQo+JnJ0ZF9pc29fZ3Bpb19pbmZvIH0sDQo+
+PiArICAgICB7IC5jb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTMxNWUtaXNvLWdwaW8iLCAuZGF0
+YSA9DQo+PiArJnJ0ZF9pc29fZ3Bpb19pbmZvIH0sDQo+DQo+PiArICAgICB7IH0sDQo+DQo+Tm8g
+Y29tbWEgaW4gdGhlIHRlcm1pbmF0b3IgZW50cnkuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQuDQoN
+Cj4+ICt9Ow0KPj4gK01PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIHJ0ZF9ncGlvX29mX21hdGNoZXMp
+Ow0KPg0KPk1vdmUgYWxsIHRoZXNlIGNsb3NlciB0byBpdHMgdXNlciAoc3RydWN0IHBsYXRmb3Jt
+X2RldmljZSBiZWxvdykuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQuDQoNCj4uLi4NCj4NCj4+ICsg
+ICAgIGRhdGEtPmdwaW9fY2hpcC5sYWJlbCA9IGRldl9uYW1lKCZwZGV2LT5kZXYpOw0KPg0KPmRl
+dg0KPg0KPi4uLg0KPg0KPj4gKyAgICAgZGF0YS0+Z3Bpb19jaGlwLmZ3bm9kZSA9IGRldl9md25v
+ZGUoJnBkZXYtPmRldik7DQo+DQo+ZGV2DQo+DQo+QnV0IHdoeSBzZXR0aW5nIHBhcmVudCBkZXZp
+Y2UgaXMgbm90IHN1ZmZpY2U/DQo+DQoNCkkgd2lsbCByZXZpc2UgaXQgdG8gZGF0YS0+Z3Bpb19j
+aGlwLnBhcmVudCA9IGRldjsuDQoNCj4uLi4NCj4NCj4+ICtzdGF0aWMgaW50IHJ0ZF9ncGlvX2lu
+aXQodm9pZCkNCj4+ICt7DQo+PiArICAgICByZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVy
+KCZydGRfZ3Bpb19wbGF0Zm9ybV9kcml2ZXIpOw0KPj4gK30NCj4NCj4+ICsNCj4NCj5Vbm5lZWRl
+ZCBibGFuayBsaW5lLg0KPg0KDQpJIHdpbGwgcmVtb3ZlIGl0Lg0KDQo+PiArc3Vic3lzX2luaXRj
+YWxsKHJ0ZF9ncGlvX2luaXQpOw0KPg0KPldoeT8gQW55dGhpbmcgdGhhdCBpcyBub3Qgb24gc3Rh
+bmRhcmQgaW5pdGNhbGwgbXVzdCBiZSBqdXN0aWZpZWQuDQo+DQoNCkkgd2lsbCByZXZpc2UgaXQg
+dG8gbW9kdWxlX2luaXQuDQoNCj4tLQ0KPldpdGggQmVzdCBSZWdhcmRzLA0KPkFuZHkgU2hldmNo
+ZW5rbw0KDQoNClRoYW5rcywNClR6dXlpIENoYW5nDQo=
