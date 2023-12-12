@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DE580F9AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123EB80F9AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377579AbjLLVqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S1377434AbjLLVrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377571AbjLLVqc (ORCPT
+        with ESMTP id S235162AbjLLVq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:46:32 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C10B0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:46:39 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 41E6E40E00CC;
-        Tue, 12 Dec 2023 21:46:36 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 5OLpYQ0Fegld; Tue, 12 Dec 2023 21:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702417593; bh=kID6XEZVJ5WdI6iDkAqV9iTzJ5DB/DCJdjzBL4bp4HY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e97tb7KH9xOJRQoMoYbJqsC4BwJRZ0d/od08zGTCQGqcp2TgWL/ydg20O6KT5lix8
-         USva3x1RWRaXCgQbHJwoO/WOmtpcQ6YzwVSjP/99hB+iJ0cxSDWG+Hcj+gX2/oWDNq
-         J7bwGRv0kpFl36rC38EsZzGdM7qejeRbx34J2B47kOzpY9LIVFvbJMpPFpj8OBtzkG
-         G1L/XNqWB5Ue9C4GPjeCDvWn1yqqkfzWF4WX9a2XuYm5EGvPmg22VgOVw0mi+2czZc
-         Uq2m/4y18WRQphdFYYds79c5hwgl/Q0tWcFl0CBEeKEzfRMPZZ/86vUOnx/Ra3cjjW
-         a5w+dUaRsEVnjNTIwD5du7h71dGxlIsk9+BBnW7qDhYzXA4r+pPHEs8ohAkFOnIakN
-         ZBknbnoJ5BsWJZL5EFP6Ob6KSVuhzCqO/booYPxEILFt2YXEI3Hp0ovD3/k1nAXFm3
-         vxPvXuhERZACVYt8h/EV2rNbbvwBweILIljG0ZVzCFqwknGo9l9B/Ych/lO9OnDiWY
-         ZE/c70ALbk6U+wf4CSXfzP/mbnBfiArdnDh3k1CxM2zAbupY22PgXN31ShJcqsEtHN
-         SjehOVBFUtppW2clrLZ7h8uW12RckK8cmzuxXC0rNiSfcONeJMxFsbg3I0XmKjq/MQ
-         Yczic+wbHuk6NNA+MHa1dh/g=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 26F4640E0140;
-        Tue, 12 Dec 2023 21:46:18 +0000 (UTC)
-Date:   Tue, 12 Dec 2023 22:46:12 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Yuan Yao <yuan.yao@intel.com>, Kai Huang <kai.huang@intel.com>,
-        Tony Luck <tony.luck@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86: tdx: hide unused tdx_dump_mce_info()
-Message-ID: <20231212214612.GHZXjUpBFa1IwVMTI7@fat_crate.local>
-References: <20231212213701.4174806-1-arnd@kernel.org>
- <39cf0ad5-bbef-4fb9-81a3-9d2891cc7450@intel.com>
+        Tue, 12 Dec 2023 16:46:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450EAB9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:47:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C01C433C7;
+        Tue, 12 Dec 2023 21:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702417624;
+        bh=GEbphLNtH08LYd0Afzr3nGiRgbiKfgbz66e9KqMpUhU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=raybKYX8pD28eWvS9kJTUl17VqcRAmZWstq0aEf1C5YsyMLoc/U6BK4UMr4to8xgu
+         Py/EVmYq86jMuQpfTSQrmFfU0X10fGjEVGaklTTf4buECe/CUdzkkYlAJAjNdoyNrt
+         amBFsljgtiA0eQQQKmFzf/W+n+ILhvvBUUBTNazhzkjSnnxCHnGTXqnuUXaf+M+znV
+         y0Z39pyNU1P+BdG9XIzmUUjYufwwvnAaT8yYxL5Vtps3Omv25TLyRfLvuEr2OE9gNS
+         R+eOyk6olNvcyMhMsioZHrRdYAhvLmPEeGTMhc2vGQ3HSjPkaVbWeztI2suV8rejIY
+         ITWUOrZ8Vc+aA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Yangtao Li <frank.li@vivo.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] power: reset: at91: mark at91_wakeup_status non-__init
+Date:   Tue, 12 Dec 2023 22:46:49 +0100
+Message-Id: <20231212214658.213510-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <39cf0ad5-bbef-4fb9-81a3-9d2891cc7450@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 01:42:09PM -0800, Dave Hansen wrote:
-> On 12/12/23 13:36, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > When TDX is enabled but MCE is not, the tdx_dump_mce_info() function
-> > fails to link:
-> 
-> Thanks for the report, Arnd.
-> 
-> The only way that TDX has to report integrity errors is an MCE.  I'm not
-> sure it even makes sense to have TDX support but not MCE support.  Maybe
-> we should just make TDX host support depend on MCE.
+From: Arnd Bergmann <arnd@arndb.de>
 
-... or provide an empty stub of tdx_dump_mce_info() for the !CONFIG_X86_MCE
-case.
+Two copies of the at91_wakeup_status() function are called by the
+respective probe() callbacks and are marked __init, but the probe
+functions are no longer annotated that way. This works with gcc because
+the functions always get inlined, but clang keeps them separate, which
+can lead to executing freed memory:
 
+WARNING: modpost: vmlinux: section mismatch in reference: at91_poweroff_probe+0x80 (section: .text) -> at91_wakeup_status (section: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: at91_shdwc_probe+0xcc (section: .text) -> at91_wakeup_status (section: .init.text)
+
+Drop the incorrect annotation on these.
+
+Fixes: 099806de68b7 ("power: reset: at91-poweroff: Stop using module_platform_driver_probe()")
+Fixes: dde74a5de817 ("power: reset: at91-sama5d2_shdwc: Stop using module_platform_driver_probe()")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/power/reset/at91-poweroff.c      | 2 +-
+ drivers/power/reset/at91-sama5d2_shdwc.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/reset/at91-poweroff.c b/drivers/power/reset/at91-poweroff.c
+index 126e774e210c..93eece027865 100644
+--- a/drivers/power/reset/at91-poweroff.c
++++ b/drivers/power/reset/at91-poweroff.c
+@@ -57,7 +57,7 @@ static struct shdwc {
+ 	void __iomem *mpddrc_base;
+ } at91_shdwc;
+ 
+-static void __init at91_wakeup_status(struct platform_device *pdev)
++static void at91_wakeup_status(struct platform_device *pdev)
+ {
+ 	const char *reason;
+ 	u32 reg = readl(at91_shdwc.shdwc_base + AT91_SHDW_SR);
+diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
+index af95c7b39cb3..959ce0dbe91d 100644
+--- a/drivers/power/reset/at91-sama5d2_shdwc.c
++++ b/drivers/power/reset/at91-sama5d2_shdwc.c
+@@ -107,7 +107,7 @@ static const unsigned long long sdwc_dbc_period[] = {
+ 	0, 3, 32, 512, 4096, 32768,
+ };
+ 
+-static void __init at91_wakeup_status(struct platform_device *pdev)
++static void at91_wakeup_status(struct platform_device *pdev)
+ {
+ 	struct shdwc *shdw = platform_get_drvdata(pdev);
+ 	const struct reg_config *rcfg = shdw->rcfg;
 -- 
-Regards/Gruss,
-    Boris.
+2.39.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
