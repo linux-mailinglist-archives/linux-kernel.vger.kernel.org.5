@@ -2,144 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB49580E450
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5096980E45F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjLLGf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 01:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        id S230207AbjLLGkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLGfz (ORCPT
+        with ESMTP id S229455AbjLLGkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 01:35:55 -0500
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF8BC7;
-        Mon, 11 Dec 2023 22:35:59 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=50;SR=0;TI=SMTPD_---0VyLR3Ee_1702362952;
-Received: from 30.97.49.22(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VyLR3Ee_1702362952)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Dec 2023 14:35:54 +0800
-Message-ID: <1812c1bf-08b5-46a5-a633-12470e2c8f18@linux.alibaba.com>
-Date:   Tue, 12 Dec 2023 14:35:51 +0800
+        Tue, 12 Dec 2023 01:40:33 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADDBCB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 22:40:40 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5c85e8fdd2dso51929937b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 22:40:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702363239; x=1702968039; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lcEihlupVu268DH+1hoAuEO92XmVKwEZxV6GmYSg0is=;
+        b=E0gFxP/51ysGH1haapRzeez/0OhW6DggLsPy7QbZ8jf3jlJPzsANmA3DLdgRh+KAIw
+         2cBRv41tqJoujo1VfJWLyycexCVNQtkQvZxVPOkG1H7aC1mFhE/RZ35EDRN0pDUT6L/b
+         NBW1JgeRPpNHSi5Xsxc+WAyvZfN8I34NN3jIs2OFJjNmZbeRIGYuxtps02+N/4Z9csrD
+         tK5HGarcHrvmxSCrks8kW4tv6Fy2KujbmgCuTDImFPEtiKtbPqcMIoYQjjwavKM6rEcW
+         WFwb7e1VBOJrxeyKc09lSst3RZxLH1mGYx5/PN0b3ZRWY6L5MShUBtz+nzvdmK1vTamd
+         PV/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702363239; x=1702968039;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lcEihlupVu268DH+1hoAuEO92XmVKwEZxV6GmYSg0is=;
+        b=toJA+RpE+EgeRV6NW/Xlp/emHLRmGiryIZZvDHUo1GseC0kAWfxaPNv6Dl+CAK4kCT
+         VBfTFRuXkDpQ+kg0+4Cy0SnPuwPvGBS+s3I+WgAe7fUDq6V4gWKjZrSDZb1Pz2g8ccPK
+         GcoCorcOyW2nX5A/0GqFhZDOvpvUE33Sxl/8Jy3XHh1AmgNIxyy7x2vfCJqPpBci4X+B
+         woA8fTDHgUNtxbjb1j8Qtf46DBrgqqhhN3SDMLPvfEWrm0qNJoC2L/m2cQHOHRLYun20
+         qh4I9+VLw0Lm+quODC9hoe3IYF1ryR3sVcT4OyB5epyy3GqPcGrCEHWfIeiDSU8B661q
+         iDVg==
+X-Gm-Message-State: AOJu0Yz6hbAP8GNs5uuHxMRt/Lu2xxVHQ0gZWWW1sxAVS6rLntharLFT
+        7mN8r44INyEMCcEZny29euF6Ov5JUrmvsq/fhtr0Yg==
+X-Google-Smtp-Source: AGHT+IGvdM5RN8xlu8UqMlYeZbm9dcOMR2ckPy/eZiaBukMGeBzh2gvRdEC6oHdspw1yXZaOd4HQflJN0ZoVqg9U260=
+X-Received: by 2002:a0d:f943:0:b0:5d7:1940:dd69 with SMTP id
+ j64-20020a0df943000000b005d71940dd69mr4160485ywf.63.1702363239266; Mon, 11
+ Dec 2023 22:40:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 for-6.8/block 11/18] erofs: use bdev api
-To:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org,
-        p.raghav@samsung.com, hare@suse.de
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140722.974745-1-yukuai1@huaweicloud.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20231211140722.974745-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231212002245.23715-1-quic_abhinavk@quicinc.com> <20231212002245.23715-2-quic_abhinavk@quicinc.com>
+In-Reply-To: <20231212002245.23715-2-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 12 Dec 2023 08:40:28 +0200
+Message-ID: <CAA8EJpqJOh0R1X3i1UGe9hHoezV4uBNDCWPFSdeuXyC6Ju4eHA@mail.gmail.com>
+Subject: Re: [PATCH v3 01/15] drm/msm/dpu: add formats check for writeback encoder
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, seanpaul@chromium.org,
+        quic_jesszhan@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/12/11 22:07, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Avoid to access bd_inode directly, prepare to remove bd_inode from
-> block_devcie.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Tue, 12 Dec 2023 at 02:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> In preparation for adding more formats to dpu writeback add
+> format validation to it to fail any unsupported formats.
+>
+> changes in v3:
+>         - rebase on top of msm-next
+>         - replace drm_atomic_helper_check_wb_encoder_state() with
+>           drm_atomic_helper_check_wb_connector_state() due to the
+>           rebase
+>
+> changes in v2:
+>         - correct some grammar in the commit text
+>
+> Fixes: d7d0e73f7de3 ("drm/msm/dpu: introduce the dpu_encoder_phys_* for writeback")
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 > ---
->   fs/erofs/data.c     | 18 ++++++++++++------
->   fs/erofs/internal.h |  2 ++
->   2 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> index c98aeda8abb2..8cf3618190ab 100644
-> --- a/fs/erofs/data.c
-> +++ b/fs/erofs/data.c
-> @@ -32,8 +32,7 @@ void erofs_put_metabuf(struct erofs_buf *buf)
->   void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->   		  enum erofs_kmap_type type)
->   {
-> -	struct inode *inode = buf->inode;
-> -	erofs_off_t offset = (erofs_off_t)blkaddr << inode->i_blkbits;
-> +	erofs_off_t offset = (erofs_off_t)blkaddr << buf->blkszbits;
-I'd suggest that use `buf->blkszbits` only for bdev_read_folio() since
-erofs_init_metabuf() is not always called before erofs_bread() is used.
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+> index bb94909caa25..425415d45ec1 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
+> @@ -272,6 +272,7 @@ static int dpu_encoder_phys_wb_atomic_check(
+>  {
+>         struct drm_framebuffer *fb;
+>         const struct drm_display_mode *mode = &crtc_state->mode;
+> +       int ret;
+>
+>         DPU_DEBUG("[atomic_check:%d, \"%s\",%d,%d]\n",
+>                         phys_enc->hw_wb->idx, mode->name, mode->hdisplay, mode->vdisplay);
+> @@ -308,6 +309,12 @@ static int dpu_encoder_phys_wb_atomic_check(
+>                 return -EINVAL;
+>         }
+>
+> +       ret = drm_atomic_helper_check_wb_connector_state(conn_state->connector, conn_state->state);
+> +       if (ret < 0) {
+> +               DPU_ERROR("invalid pixel format %p4cc\n", &fb->format->format);
+> +               return ret;
+> +       }
 
-For example, buf->inode can be one of directory inodes other than
-initialized by erofs_init_metabuf().
+There is no guarantee that there will be no other checks added to this
+helper. So, I think this message is incorrect. If you wish, you can
+promote the level of the message in the helper itself.
+On the other hand, we rarely print such messages by default. Most of
+the checks use drm_dbg.
 
-Thanks,
-Gao Xiang
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.40.1
+>
 
 
->   	pgoff_t index = offset >> PAGE_SHIFT;
->   	struct page *page = buf->page;
->   	struct folio *folio;
-> @@ -43,7 +42,9 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->   		erofs_put_metabuf(buf);
->   
->   		nofs_flag = memalloc_nofs_save();
-> -		folio = read_cache_folio(inode->i_mapping, index, NULL, NULL);
-> +		folio = buf->inode ?
-> +			read_mapping_folio(buf->inode->i_mapping, index, NULL) :
-> +			bdev_read_folio(buf->bdev, offset);
->   		memalloc_nofs_restore(nofs_flag);
->   		if (IS_ERR(folio))
->   			return folio;
-> @@ -67,10 +68,15 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
->   
->   void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
->   {
-> -	if (erofs_is_fscache_mode(sb))
-> +	if (erofs_is_fscache_mode(sb)) {
->   		buf->inode = EROFS_SB(sb)->s_fscache->inode;
-> -	else
-> -		buf->inode = sb->s_bdev->bd_inode;
-> +		buf->bdev = NULL;
-> +		buf->blkszbits = buf->inode->i_blkbits;
-> +	} else {
-> +		buf->inode = NULL;
-> +		buf->bdev = sb->s_bdev;
-> +		buf->blkszbits = EROFS_SB(sb)->blkszbits;
-> +	}
->   }
->   
->   void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index b0409badb017..c9206351b485 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -224,8 +224,10 @@ enum erofs_kmap_type {
->   
->   struct erofs_buf {
->   	struct inode *inode;
-> +	struct block_device *bdev;
->   	struct page *page;
->   	void *base;
-> +	u8 blkszbits;
->   	enum erofs_kmap_type kmap_type;
->   };
->   #define __EROFS_BUF_INITIALIZER	((struct erofs_buf){ .page = NULL })
+-- 
+With best wishes
+Dmitry
