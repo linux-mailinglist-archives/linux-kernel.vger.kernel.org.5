@@ -2,73 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9919A80E0A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ACE80E0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345654AbjLLBEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 20:04:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S1345649AbjLLBFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 20:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345645AbjLLBEA (ORCPT
+        with ESMTP id S1345638AbjLLBFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 20:04:00 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1CDBE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:04:05 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b9fe44d7daso4325857b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:04:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702343045; x=1702947845;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y6Uo537yi42lGKUzhjT6KApry/dN/nRJBXPwcU4D/f4=;
-        b=pUrM0c/DXGwgv3PegOTbexxFd8G3Ga8Vo6lyLjkIFSiQPh9JVzPLBDzv5hORCFiafe
-         PTE3OA4suA21MfKeLx3aHqNl49TacqQhKMwLWaXc+/8mw7mEsXlIGlk3tCWcJdjRQeDH
-         nTVv/JlY2nVNf90Ev9hhGgMwqpvMX4JDD4T/mypPd0JtSyYB/tvj7t2LVstqnkZ/NlLa
-         TvFWjIMMzAMJx00t/ItozkFm3hO0eJz9XM+J8SxyOS3Qu356ZKAahJzV3dumIlcH9vqk
-         H9D8IsC3Md/GHWMfVoMx67eZ1gaFDFyNxoX8xdxkMkb9lnzNOGb/V5d1w46yI7Rl0aFO
-         /hAQ==
-X-Gm-Message-State: AOJu0YxfBX3qZdArAtuDN1yfjukBWJc+lPicL4RPhlEawpPzTGv/SUwL
-        GQMjBk6h5hGuq7tqtcJzry3NugMUc7sFVHFvKDKa5JCWo5Y4
-X-Google-Smtp-Source: AGHT+IE0bQapw9Sh3D9y1YyilvTjP8WEXh6XOQiEy0mKYQ+nLY8NsQhE9GT0uxeX+RwchUc0jSJeWeKEwvrOnXqwYL+zvdP/+pP4
+        Mon, 11 Dec 2023 20:05:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D12AB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:05:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 148FEC433C8;
+        Tue, 12 Dec 2023 01:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702343117;
+        bh=gdeYmzLGW6q5hnej08l9tQkVl0oulGvc8W5Uv0V0XJ8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=S8nkUR+eJnFc4803EYqwm1jnlA4pKdl+goIF7OpuC/PzMZpNlElrOu6B5a8nSHAuU
+         g96ltQKNBehLQlDsesGAaTn+vxLfhhRrQcmXBi67Ggd+D4BrNnM4tdMr0ejRskWPyb
+         VeI/LsDc4hwOS3QGi32Ul1F8kjbb4/EhrnlNLkT3rhot5/3ovNLPgj5/PM+MBIHSSx
+         xrF+yE6qqZNLUVxX3yublQapAxkv9aztESZmnOtsNCOFuRyEWVXsJOGEEByiA/snF5
+         kZ72AETixuOiR9pOmZ1Z5iZfeeR7VgxYu4QUGiXTlYWnW0iHh+YPDRqgoxU8cJbbde
+         +3L1bv95hg13g==
+Message-ID: <5884e300-5384-4a49-9f8d-8cced50f4e6d@kernel.org>
+Date:   Tue, 12 Dec 2023 09:05:13 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1786:b0:3b9:db5a:cfee with SMTP id
- bg6-20020a056808178600b003b9db5acfeemr5053516oib.2.1702343044965; Mon, 11 Dec
- 2023 17:04:04 -0800 (PST)
-Date:   Mon, 11 Dec 2023 17:04:04 -0800
-In-Reply-To: <tencent_5FBE6E042F496EB89494EB7AED4ECD84780A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b2ab5060c45a0ca@google.com>
-Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diNewExt
-From:   syzbot <syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] f2fs: fix to restrict condition of compress inode
+ conversion
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20231210113547.3412782-1-chao@kernel.org>
+ <20231210113547.3412782-5-chao@kernel.org> <ZXeJKCNrxcit0eTC@google.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <ZXeJKCNrxcit0eTC@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023/12/12 6:11, Jaegeuk Kim wrote:
+> On 12/10, Chao Yu wrote:
+>> This patch adds i_size check during compress inode conversion in order
+>> to avoid .page_mkwrite races w/ conversion.
+> 
+> Which race condition do you see?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Something like:
 
-Reported-and-tested-by: syzbot+553d90297e6d2f50dbc7@syzkaller.appspotmail.com
+- f2fs_setflags_common
+  - check S_ISREG && F2FS_HAS_BLOCKS
+					- mkwrite
+					 - f2fs_get_block_locked
+					  : update metadata in old inode's disk layout
+  - set_compress_context
 
-Tested on:
+Thanks,
 
-commit:         bee0e776 Merge tag 'for-linus-iommufd' of git://git.ke..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fd0182e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b45dfd882e46ec91
-dashboard link: https://syzkaller.appspot.com/bug?extid=553d90297e6d2f50dbc7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15cf16fae80000
-
-Note: testing is done by a robot and is best-effort only.
+> 
+>>
+>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/f2fs.h | 8 +++++++-
+>>   fs/f2fs/file.c | 5 ++---
+>>   2 files changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 65294e3b0bef..c9b8a1953913 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -4397,13 +4397,19 @@ static inline int set_compress_context(struct inode *inode)
+>>   #endif
+>>   }
+>>   
+>> +static inline bool inode_has_data(struct inode *inode)
+>> +{
+>> +	return (S_ISREG(inode->i_mode) &&
+>> +		(F2FS_HAS_BLOCKS(inode) || i_size_read(inode)));
+>> +}
+>> +
+>>   static inline bool f2fs_disable_compressed_file(struct inode *inode)
+>>   {
+>>   	struct f2fs_inode_info *fi = F2FS_I(inode);
+>>   
+>>   	if (!f2fs_compressed_file(inode))
+>>   		return true;
+>> -	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
+>> +	if (inode_has_data(inode))
+>>   		return false;
+>>   
+>>   	fi->i_flags &= ~F2FS_COMPR_FL;
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 1a3c29a9a6a0..8af4b29c3e1a 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -1922,8 +1922,7 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
+>>   
+>>   			f2fs_down_write(&F2FS_I(inode)->i_sem);
+>>   			if (!f2fs_may_compress(inode) ||
+>> -					(S_ISREG(inode->i_mode) &&
+>> -					F2FS_HAS_BLOCKS(inode))) {
+>> +					inode_has_data(inode)) {
+>>   				f2fs_up_write(&F2FS_I(inode)->i_sem);
+>>   				return -EINVAL;
+>>   			}
+>> @@ -3996,7 +3995,7 @@ static int f2fs_ioc_set_compress_option(struct file *filp, unsigned long arg)
+>>   		goto out;
+>>   	}
+>>   
+>> -	if (F2FS_HAS_BLOCKS(inode)) {
+>> +	if (inode_has_data(inode)) {
+>>   		ret = -EFBIG;
+>>   		goto out;
+>>   	}
+>> -- 
+>> 2.40.1
