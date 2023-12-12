@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF880F58F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E8480F590
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376568AbjLLSc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        id S232745AbjLLSdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjLLScy (ORCPT
+        with ESMTP id S232541AbjLLSdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:32:54 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93622BD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:33:00 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0A1DF5C01A5;
-        Tue, 12 Dec 2023 13:33:00 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 12 Dec 2023 13:33:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:subject
-        :subject:to:to; s=fm2; t=1702405980; x=1702492380; bh=tuYDtz0rZ+
-        euf9UCS0pvvRidqHgRQ+VyODOTAYv7ja8=; b=OjznXwIljkD5vbMezWdOwRssOg
-        x9/W71pB9uK1jpoBQnl3JKbr73M2t+4eMFrYPnFYBXvivVED7aMTJ55uf6Qw1lRY
-        XVF/7fomrwZKGvLgN7RQ0RMeil8znUBwYCUhpuOtux7W3fRs0xIM9Jh9515g1zFV
-        9P4lgW3uFeJ+fIEqaj08BRnJtfUsD8iZcTl6YdYEsY/KGMGGQXGDiyaSzJS+gZ/V
-        KmsSmWdoIQCMsBHSFCtn3fMMCjdxrcwQ3JAiKBe6X/+Rhd4vCj0oyYPIHivLYD+/
-        hWxMc6nVjQ46Subx65Q29fGa6QYiFstY6HC756WJll/WbysD+08jEyEjFgsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:subject:subject:to
-        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1702405980; x=1702492380; bh=tuYDtz0rZ+euf9UCS0pvvRidqHgR
-        Q+VyODOTAYv7ja8=; b=3h22ptbbEq75fuK0Z6nfn+NXsIIF0aDChRlorH8dYI2H
-        Dx1K9MN7JBD/PRVQRHofVyf3Q+DFDL0exrddaCiv8nrM0tdSPJaZiHOEMhpQhl6y
-        J1SM3yMoxI67AduB2a1h0oLld8OAsCGuujMDoSQhsXVPR70AwdEoEkcf4dGdWjjM
-        2nqH/ZfGLLGRQfBXUrdfPTXFF1NVu8BT3Q9j0JT/x0/cayb4Oun0LKAq8OOk7ozT
-        aaaqQC8h7yLdwyNBPoybeque5/qvjxZPKSKwjq6J3ASJvY5YasgCa8HDr1cc2bTM
-        9RZvAlYXdCbsMD8eoijTmjbfewsMuN+PNq/RxIvOBA==
-X-ME-Sender: <xms:W6d4ZY9dCj4GDJvoLNNfvsiajKmYnL5S_-_KufwDk6yV_ISGRopswA>
-    <xme:W6d4ZQtsQkQDaKP7oq8fcFB2XrEfTbS9Jey6JhtQZ4PdswHK3Inlwam_yK3fCDVjf
-    3FtZFnvz8fydxOOyVo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelgedgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdfu
-    thgvfhgrnhcutfhovghstghhfdcuoehshhhrseguvghvkhgvrhhnvghlrdhioheqnecugg
-    ftrfgrthhtvghrnheplefgteffgfejtdelfeekgfetjefftdejgfdvudffiedtueevvdej
-    gfevvdfgleetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepshhhrhesuggvvhhkvghrnhgvlhdrihho
-X-ME-Proxy: <xmx:W6d4ZeA63thYYiB67rUhPiSAp7_-LPr_WeWa9_82UV3eR91BqePJ2w>
-    <xmx:W6d4ZYe958rdZAiPi7mZWLBanvn9MXy86FdPesgBMyta2qSwhjuskA>
-    <xmx:W6d4ZdPAqp-0_iX3tH6yfYYP0XlQ85QgnlWZrt8yBIeV2U0ftNTP7g>
-    <xmx:XKd4ZSq0YctyZSuVEXJuIrJ5d-LyiibVpyTH0Tm9nrv_7eS2MuWDGA>
-Feedback-ID: i84614614:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id BD680B6008D; Tue, 12 Dec 2023 13:32:59 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+        Tue, 12 Dec 2023 13:33:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3704101
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:33:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702406015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DY4Ho2xtxV0ldC2dQ8P0wLgCZVZkQ1qv4NfOBypcZ+I=;
+        b=Hq3D0jGberA1WPOBvVenxRaIT9HQzsYQUn7D7ZJMKTP/fBdVHRWS2pROUx2k08eg2tww0Q
+        tB1XMbc2BCkC6qA/GJNiF/jnnTTmBNHKXPyv6vbqpW9aMaiyCgB8lo51FXZWxr1bmpghD8
+        wCezzXmtj+A5nKHzAuiQiVJOvsMNnDk=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-213-bqFvRLJONnqhwlFz4KMqhQ-1; Tue, 12 Dec 2023 13:33:34 -0500
+X-MC-Unique: bqFvRLJONnqhwlFz4KMqhQ-1
+Received: by mail-yb1-f197.google.com with SMTP id 3f1490d57ef6-db542ec49d9so6190844276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:33:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702406014; x=1703010814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DY4Ho2xtxV0ldC2dQ8P0wLgCZVZkQ1qv4NfOBypcZ+I=;
+        b=ntnqh2k8FxOkCorU8JbdipJgg2G6h+IsQ/yUNZYOEr+P4PPMb6yxyy2rK2tZucPWw2
+         /gnaAp45oh1YCq6AKjnxaSybYJDlr/iYkBrvo8G+tda22igL2UxaAOZLQ2wiRIph43xr
+         RovxVw4kO/toQiTzOMMvQWLLK2XfrwdC2ASJlBoJnOgwaERd5VZKaoEuNUz9DDCk0UUp
+         73Dav//BP1AOyftMcxqbaYpT3YgGkoTkKhDI6s8ESWI3n6zv5vzMJ7KeMjOo4KIA2YbB
+         Y24bUaoPag4wApfEMBznmuQBBaprTEHlY2QAccDKmcJKM8Bq4HIymDRdbii/7pHP8SrV
+         +/LA==
+X-Gm-Message-State: AOJu0YzImN0fNK8t5EpigavcbOo9Z6MoTwZehQqnAW2tUYsjT8ijF7Yf
+        DlwLNm9sYJdomPmh8ZR8fXeoqLnIyNvJeNAalKAtrsDBFEm0Cl7fpXOmu4SkP3HdGuAGw6UTdTW
+        rg8VxB7T7r9bENQ991Jm0E7kQJx+qgBhwDW+6xLDs
+X-Received: by 2002:a25:694e:0:b0:db7:dad0:76d4 with SMTP id e75-20020a25694e000000b00db7dad076d4mr4083020ybc.112.1702406013892;
+        Tue, 12 Dec 2023 10:33:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGgHGmEdl6YUM2TV851wK+4D25Di/15UW9oEJOx2YbjevvT2YLhlXlylB0hU41DH45mMWlAUyKq8X2SP6Z8qeI=
+X-Received: by 2002:a25:694e:0:b0:db7:dad0:76d4 with SMTP id
+ e75-20020a25694e000000b00db7dad076d4mr4083010ybc.112.1702406013590; Tue, 12
+ Dec 2023 10:33:33 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <b26fe1a4-1689-4640-a277-b1363453e0aa@app.fastmail.com>
-In-Reply-To: <9f81f89f-c3ad-4cef-a619-ad36348c8ef5@redhat.com>
-References: <20231204234906.1237478-1-shr@devkernel.io>
- <20231204234906.1237478-2-shr@devkernel.io>
- <9f81f89f-c3ad-4cef-a619-ad36348c8ef5@redhat.com>
-Date:   Tue, 12 Dec 2023 10:32:39 -0800
-From:   "Stefan Roesch" <shr@devkernel.io>
-To:     "David Hildenbrand" <david@redhat.com>, kernel-team@fb.com
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 1/4] mm/ksm: add ksm advisor
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+References: <20231205104609.876194-1-dtatulea@nvidia.com> <20231205104609.876194-9-dtatulea@nvidia.com>
+In-Reply-To: <20231205104609.876194-9-dtatulea@nvidia.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 12 Dec 2023 19:32:57 +0100
+Message-ID: <CAJaqyWcZou64q2VBgVdJMK3KbJVx9eduRiju8vjXnKa8gv52ng@mail.gmail.com>
+Subject: Re: [PATCH vhost v2 8/8] vdpa/mlx5: Add mkey leak detection
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Gal Pressman <gal@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,132 +82,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 5, 2023 at 11:47=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
+> wrote:
+>
+> Track allocated mrs in a list and show warning when leaks are detected
+> on device free or reset.
+>
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Gal Pressman <gal@nvidia.com>
 
+Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
 
-On Tue, Dec 12, 2023, at 5:44 AM, David Hildenbrand wrote:
-> [...]
+> ---
+>  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 ++
+>  drivers/vdpa/mlx5/core/mr.c        | 23 +++++++++++++++++++++++
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c  |  2 ++
+>  3 files changed, 27 insertions(+)
 >
->> +
->> +/**
->> + * struct advisor_ctx - metadata for KSM advisor
->> + * @start_scan: start time of the current scan
->> + * @scan_time: scan time of previous scan
->> + * @change: change in percent to pages_to_scan parameter
->> + * @cpu_time: cpu time consumed by the ksmd thread in the previous scan
->> + */
->> +struct advisor_ctx {
->> +	ktime_t start_scan;
->> +	unsigned long scan_time;
->> +	unsigned long change;
->> +	unsigned long long cpu_time;
->> +};
->> +static struct advisor_ctx advisor_ctx;
->> +
->> +/* Define different advisor's */
->> +enum ksm_advisor_type {
->> +	KSM_ADVISOR_NONE,
->> +	KSM_ADVISOR_SCAN_TIME,
->> +};
->> +static enum ksm_advisor_type ksm_advisor;
->> +
->> +static void init_advisor(void)
->> +{
->> +	advisor_ctx = (const struct advisor_ctx){ 0 };
->> +}
+> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/=
+mlx5_vdpa.h
+> index 1a0d27b6e09a..50aac8fe57ef 100644
+> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+> @@ -37,6 +37,7 @@ struct mlx5_vdpa_mr {
+>         bool user_mr;
 >
-> Again, you can drop this completely. The static values are already 
-> initialized to 0.
+>         refcount_t refcount;
+> +       struct list_head mr_list;
+>  };
+>
+>  struct mlx5_vdpa_resources {
+> @@ -95,6 +96,7 @@ struct mlx5_vdpa_dev {
+>         u32 generation;
+>
+>         struct mlx5_vdpa_mr *mr[MLX5_VDPA_NUM_AS];
+> +       struct list_head mr_list_head;
+>         /* serialize mr access */
+>         struct mutex mr_mtx;
+>         struct mlx5_control_vq cvq;
+> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> index c7dc8914354a..4758914ccf86 100644
+> --- a/drivers/vdpa/mlx5/core/mr.c
+> +++ b/drivers/vdpa/mlx5/core/mr.c
+> @@ -508,6 +508,8 @@ static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_de=
+v *mvdev, struct mlx5_vdpa_
+>
+>         vhost_iotlb_free(mr->iotlb);
+>
+> +       list_del(&mr->mr_list);
+> +
+>         kfree(mr);
+>  }
+>
+> @@ -560,12 +562,31 @@ void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvde=
+v,
+>         mutex_unlock(&mvdev->mr_mtx);
+>  }
+>
+> +static void mlx5_vdpa_show_mr_leaks(struct mlx5_vdpa_dev *mvdev)
+> +{
+> +       struct mlx5_vdpa_mr *mr;
+> +
+> +       mutex_lock(&mvdev->mr_mtx);
+> +
+> +       list_for_each_entry(mr, &mvdev->mr_list_head, mr_list) {
+> +
+> +               mlx5_vdpa_warn(mvdev, "mkey still alive after resource de=
+lete: "
+> +                                     "mr: %p, mkey: 0x%x, refcount: %u\n=
+",
+> +                                      mr, mr->mkey, refcount_read(&mr->r=
+efcount));
+> +       }
+> +
+> +       mutex_unlock(&mvdev->mr_mtx);
+> +
+> +}
+> +
+>  void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
+>  {
+>         for (int i =3D 0; i < MLX5_VDPA_NUM_AS; i++)
+>                 mlx5_vdpa_update_mr(mvdev, NULL, i);
+>
+>         prune_iotlb(mvdev->cvq.iotlb);
+> +
+> +       mlx5_vdpa_show_mr_leaks(mvdev);
+>  }
+>
+>  static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
+> @@ -592,6 +613,8 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev =
+*mvdev,
+>         if (err)
+>                 goto err_iotlb;
+>
+> +       list_add_tail(&mr->mr_list, &mvdev->mr_list_head);
+> +
+>         return 0;
+>
+>  err_iotlb:
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 133cbb66dcfe..778821bab7d9 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -3722,6 +3722,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *=
+v_mdev, const char *name,
+>         if (err)
+>                 goto err_mpfs;
+>
+> +       INIT_LIST_HEAD(&mvdev->mr_list_head);
+> +
+>         if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
+>                 err =3D mlx5_vdpa_create_dma_mr(mvdev);
+>                 if (err)
+> --
+> 2.42.0
 >
 
-It is needed for patch 2, I folded it into set_advisor_defaults
-
-> Or is there any reason to initialize to 0 explicitly?
->
->> +
->> +static void set_advisor_defaults(void)
->> +{
->> +	if (ksm_advisor == KSM_ADVISOR_NONE)
->> +		ksm_thread_pages_to_scan = DEFAULT_PAGES_TO_SCAN;
->> +	else if (ksm_advisor == KSM_ADVISOR_SCAN_TIME)
->> +		ksm_thread_pages_to_scan = ksm_advisor_min_pages;
->> +}
->
-> That function is unused?
->
-
-I think you already saw it, it is used in patch 2, moving the function to patch 2.
-
->> +
->> +static inline void advisor_start_scan(void)
->> +{
->> +	if (ksm_advisor == KSM_ADVISOR_SCAN_TIME)
->> +		advisor_ctx.start_scan = ktime_get();
->> +}
->> +
->> +static inline s64 advisor_stop_scan(void)
->> +{
->> +	return ktime_ms_delta(ktime_get(), advisor_ctx.start_scan);
->> +}
->
-> Just inline that into the caller. Then rename run_advisor() into 
-> advisor_stop_scan(). So in scan_get_next_rmap_item)( you have paired 
-> start+stop hooks.
->
-
-The next version has this change.
-
->> +
->> +/*
->> + * Use previous scan time if available, otherwise use current scan time as an
->> + * approximation for the previous scan time.
->> + */
->> +static inline unsigned long prev_scan_time(struct advisor_ctx *ctx,
->> +					   unsigned long scan_time)
->> +{
->> +	return ctx->scan_time ? ctx->scan_time : scan_time;
->> +}
->> +
->> +/* Calculate exponential weighted moving average */
->> +static unsigned long ewma(unsigned long prev, unsigned long curr)
->> +{
->> +	return ((100 - EWMA_WEIGHT) * prev + EWMA_WEIGHT * curr) / 100;
->> +}
->> +
->> +/*
->> + * The scan time advisor is based on the current scan rate and the target
->> + * scan rate.
->> + *
->> + *      new_pages_to_scan = pages_to_scan * (scan_time / target_scan_time)
->> + *
->> + * To avoid pertubations it calculates a change factor of previous changes.
->
-> s/pertubations/perturbations/
-
-Fixed.
-
->
-> Do you also want to describe how min/max CPU comes into play?
->
-
-I added additional documentation for it in the next version of the patch.
-
->> + * A new change factor is calculated for each iteration and it uses an
->> + * exponentially weighted moving average. The new pages_to_scan value is
->> + * multiplied with that change factor:
->> + *
->> + *      new_pages_to_scan *= change facor
->> + *
->> + * In addition the new pages_to_scan value is capped by the max and min
->> + * limits.
->> + */
->
->
->
-> With that, LGTM
->
-> Acked-by: David Hildenbrand <david@redhat.com>
->
-> -- 
-> Cheers,
->
-> David / dhildenb
