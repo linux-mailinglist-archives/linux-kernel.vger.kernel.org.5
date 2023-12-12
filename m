@@ -2,333 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F330D80EF42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82D480EF4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377063AbjLLOrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:47:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
+        id S1376922AbjLLOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377053AbjLLOrY (ORCPT
+        with ESMTP id S1376901AbjLLOuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:47:24 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E661BF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:47:29 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50c0f13ea11so6578701e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:47:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702392447; x=1702997247; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=svSGkfXxoPYjvETADo38bpUlqdTTk6pLGr40su5OtW8=;
-        b=nTnDX5dRv4zCBEDfRkfcYuVCl/vE25w3FMur5nsi8CgW510HrLDFELeAfyQEFsJtVp
-         3ChMDv1PAFvf0x/pKsJDEdfKvehLJSkYKZYfvdAXjOGqKoMbJqC/DDpeMZAQiWWtn68H
-         VfnJSDxNJUIRkRavSwmvQj5VzEhKT7lwoQjpWasjQKlaUS+NThK4El0OCiVZx+Hln7aL
-         NAlRdw0UPHaSav3/g9VAsA4UVxZFo1+pCIvJUP3nH6thQHC1I+8KCbZmD5uIEnyQDpzZ
-         GO9Q8qvXlYcfd0+RFoElVfIA6BAbmQj7SrYhyRp4zUTHs23cvIZ+uSFhXwwbp669zjxF
-         hsmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702392447; x=1702997247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=svSGkfXxoPYjvETADo38bpUlqdTTk6pLGr40su5OtW8=;
-        b=UmtkzU9iYuGvA/YvNUoC86x5e4XXaF90oKZ04Vq+sVVOSwyA0aKO23CmXl/q/A6hoT
-         NBAuOiT9AgiDY3B1T2bY1GAW/GWguM4Uybo0Z6z4iqYbyjuGpY2ayWTaSLB5eNcnVM24
-         aC13eXDD1bP37l0X2gL8B+i7R0z576yzOd6aMeOw0MOQ47cK3DwQAq+m/bL3zhmwNa4u
-         eTwK9qOZLpwIUQJcrRqHOjN2JmvgbVSIYGZq94/T6EvnSzl8lTlBYo08UodDSVE9uJNh
-         1viw2Gn1CqupLISzGk3TUFuXks+i2mhFTfY+pOM506ATBDqyaYaaZna5MDIG7sZMQMQy
-         Wgiw==
-X-Gm-Message-State: AOJu0Yyp8WwlnwMo+8NlWeLllBXe0+y6rcDTjZR9Ph18evVR0S4NOH7W
-        KC7kW5Jjg3QymJj+nEPcJE2SJwSPcVBzyTcD9GXyjw==
-X-Google-Smtp-Source: AGHT+IED/VHAjdNhXHhxtPXZM7il0IVlK/nYNiYW3GnuP2eS4BonMypWtmsPI7HmlT4ntgc0d0NHzIrC3bW94tUsnXw=
-X-Received: by 2002:a05:6512:ac8:b0:50b:feb2:dac9 with SMTP id
- n8-20020a0565120ac800b0050bfeb2dac9mr3712110lfu.2.1702392446733; Tue, 12 Dec
- 2023 06:47:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-3-almasrymina@google.com> <CAC_iWjKikzwpjR0hBjYuRxgYjyqp_EYrrxoveB_2DgCxk6vWYw@mail.gmail.com>
-In-Reply-To: <CAC_iWjKikzwpjR0hBjYuRxgYjyqp_EYrrxoveB_2DgCxk6vWYw@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 12 Dec 2023 06:47:14 -0800
-Message-ID: <CAHS8izOX5DmyT88tGJbbxoy1NScnscw3cXMFauhTfJ7m+Gb9wA@mail.gmail.com>
-Subject: Re: [net-next v1 02/16] net: page_pool: create hooks for custom page providers
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 12 Dec 2023 09:50:32 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D162D5;
+        Tue, 12 Dec 2023 06:50:38 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCE0CZC011528;
+        Tue, 12 Dec 2023 14:50:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id; s=qcppdkim1; bh=kuGSrclxLs/R
+        fD+R4Gphj3d9E+Ib0FPGIH/RFehqR9U=; b=cd6a9YqGyvd+VLC0cZeRpgskozvT
+        q5tOp+MnNGug4JM/J86s+8A1w00PqmgDuGEJNBqd8KtnrbSGZWPIgetCW9rDrhB8
+        Ph6ZgBj5ndf05a80tm5dZAa+z1lXYw09R0FNWj0pGwlAXH7tRS7Xm+yhjfCSjn/a
+        gOKVYx2+ebYhIgF049dAZ3rrB4s/rDxFJWQ2Kz65V2oE1ABkWKX/8kMuS2k56lPu
+        YxCUUUC/DHFZK+hkUuHiwhW+phhl6BHvY5pN8KxNV8mOAKcOjIChY/1GBjNo6UzF
+        aly8ad2K9rOSRrCvb0yphMsGQSi8EwxKsEUvf6nWcoa33UFfXn8FODxb1w==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxru2g4da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 14:50:34 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3BCEoVpr027241;
+        Tue, 12 Dec 2023 14:50:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3uvhakjjpm-1;
+        Tue, 12 Dec 2023 14:50:31 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BCEoVo0027236;
+        Tue, 12 Dec 2023 14:50:31 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3BCEoV80027235;
+        Tue, 12 Dec 2023 14:50:31 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
+        id D63175001C6; Tue, 12 Dec 2023 20:20:29 +0530 (+0530)
+From:   Viken Dadhaniya <quic_vdadhani@quicinc.com>
+To:     andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-sm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_vnivarth@quicinc.com, quic_msavaliy@quicinc.com,
+        quic_vtanuku@quicinc.com, quic_cchiluve@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Subject: [V2 RESEND] arm64: dts: qcom: sc7280: add slimbus DT node
+Date:   Tue, 12 Dec 2023 20:20:26 +0530
+Message-Id: <20231212145026.20828-1-quic_vdadhani@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jnJCdadaVPyuPpQJPng8rJ0JLxUgBKbL
+X-Proofpoint-ORIG-GUID: jnJCdadaVPyuPpQJPng8rJ0JLxUgBKbL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 suspectscore=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=394 adultscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120113
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 12:07=E2=80=AFAM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> Hi Mina,
->
-> Apologies for not participating in the party earlier.
->
+Populate the DTSI node for slimbus instance to be
+used by BT FM client.
 
-No worries, thanks for looking.
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+---
+v1 -> v2:
+- change 0x0 -> 0 to reg property.
+- reorder the DT property.
+- change node tag slim_msm to slim.
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-> On Fri, 8 Dec 2023 at 02:52, Mina Almasry <almasrymina@google.com> wrote:
-> >
-> > From: Jakub Kicinski <kuba@kernel.org>
-> >
-> > The page providers which try to reuse the same pages will
-> > need to hold onto the ref, even if page gets released from
-> > the pool - as in releasing the page from the pp just transfers
-> > the "ownership" reference from pp to the provider, and provider
-> > will wait for other references to be gone before feeding this
-> > page back into the pool.
-> >
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >
-> > ---
-> >
-> > This is implemented by Jakub in his RFC:
-> > https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
-hat.com/T/
-> >
-> > I take no credit for the idea or implementation; I only added minor
-> > edits to make this workable with device memory TCP, and removed some
-> > hacky test code. This is a critical dependency of device memory TCP
-> > and thus I'm pulling it into this series to make it revewable and
-> > mergable.
-> >
-> > RFC v3 -> v1
-> > - Removed unusued mem_provider. (Yunsheng).
-> > - Replaced memory_provider & mp_priv with netdev_rx_queue (Jakub).
-> >
-> > ---
-> >  include/net/page_pool/types.h | 12 ++++++++++
-> >  net/core/page_pool.c          | 43 +++++++++++++++++++++++++++++++----
-> >  2 files changed, 50 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
-s.h
-> > index ac286ea8ce2d..0e9fa79a5ef1 100644
-> > --- a/include/net/page_pool/types.h
-> > +++ b/include/net/page_pool/types.h
-> > @@ -51,6 +51,7 @@ struct pp_alloc_cache {
-> >   * @dev:       device, for DMA pre-mapping purposes
-> >   * @netdev:    netdev this pool will serve (leave as NULL if none or m=
-ultiple)
-> >   * @napi:      NAPI which is the sole consumer of pages, otherwise NUL=
-L
-> > + * @queue:     struct netdev_rx_queue this page_pool is being created =
-for.
-> >   * @dma_dir:   DMA mapping direction
-> >   * @max_len:   max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
-> >   * @offset:    DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
-> > @@ -63,6 +64,7 @@ struct page_pool_params {
-> >                 int             nid;
-> >                 struct device   *dev;
-> >                 struct napi_struct *napi;
-> > +               struct netdev_rx_queue *queue;
-> >                 enum dma_data_direction dma_dir;
-> >                 unsigned int    max_len;
-> >                 unsigned int    offset;
-> > @@ -125,6 +127,13 @@ struct page_pool_stats {
-> >  };
-> >  #endif
-> >
-> > +struct memory_provider_ops {
-> > +       int (*init)(struct page_pool *pool);
-> > +       void (*destroy)(struct page_pool *pool);
-> > +       struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
-> > +       bool (*release_page)(struct page_pool *pool, struct page *page)=
-;
-> > +};
-> > +
-> >  struct page_pool {
-> >         struct page_pool_params_fast p;
-> >
-> > @@ -174,6 +183,9 @@ struct page_pool {
-> >          */
-> >         struct ptr_ring ring;
-> >
-> > +       void *mp_priv;
-> > +       const struct memory_provider_ops *mp_ops;
-> > +
-> >  #ifdef CONFIG_PAGE_POOL_STATS
-> >         /* recycle stats are per-cpu to avoid locking */
-> >         struct page_pool_recycle_stats __percpu *recycle_stats;
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index ca1b3b65c9b5..f5c84d2a4510 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -25,6 +25,8 @@
-> >
-> >  #include "page_pool_priv.h"
-> >
-> > +static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
->
-> We could add the existing page pool mechanisms as another 'provider',
-> but I assume this is coded like this for performance reasons (IOW skip
-> the expensive ptr call for the default case?)
->
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 04bf85b0399a..9fec8743e19a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -2528,6 +2528,31 @@
+ 			status = "disabled";
+ 		};
+ 
++		slimbam: dma-controller@3a84000 {
++			compatible = "qcom,bam-v1.7.0";
++			reg = <0 0x03a84000 0 0x20000>;
++			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
++			#dma-cells = <1>;
++			qcom,controlled-remotely;
++			num-channels  = <31>;
++			qcom,ee = <1>;
++			qcom,num-ees = <2>;
++			iommus = <&apps_smmu 0x1826 0x0>;
++			status = "disabled";
++		};
++
++		slim: slim-ngd@3ac0000 {
++			compatible = "qcom,slim-ngd-v1.5.0";
++			reg = <0 0x03ac0000 0 0x2c000>;
++			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
++			dmas = <&slimbam 3>, <&slimbam 4>;
++			dma-names = "rx", "tx";
++			iommus = <&apps_smmu 0x1826 0x0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
+ 		lpass_hm: clock-controller@3c00000 {
+ 			compatible = "qcom,sc7280-lpasshm";
+ 			reg = <0 0x03c00000 0 0x28>;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-Correct, it's done like this for performance reasons.
-
-> > +
-> >  #define DEFER_TIME (msecs_to_jiffies(1000))
-> >  #define DEFER_WARN_INTERVAL (60 * HZ)
-> >
-> > @@ -174,6 +176,7 @@ static int page_pool_init(struct page_pool *pool,
-> >                           const struct page_pool_params *params)
-> >  {
-> >         unsigned int ring_qsize =3D 1024; /* Default */
-> > +       int err;
-> >
-> >         memcpy(&pool->p, &params->fast, sizeof(pool->p));
-> >         memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
-> > @@ -234,10 +237,25 @@ static int page_pool_init(struct page_pool *pool,
-> >         /* Driver calling page_pool_create() also call page_pool_destro=
-y() */
-> >         refcount_set(&pool->user_cnt, 1);
-> >
-> > +       if (pool->mp_ops) {
-> > +               err =3D pool->mp_ops->init(pool);
-> > +               if (err) {
-> > +                       pr_warn("%s() mem-provider init failed %d\n",
-> > +                               __func__, err);
-> > +                       goto free_ptr_ring;
-> > +               }
-> > +
-> > +               static_branch_inc(&page_pool_mem_providers);
-> > +       }
-> > +
-> >         if (pool->p.flags & PP_FLAG_DMA_MAP)
-> >                 get_device(pool->p.dev);
-> >
-> >         return 0;
-> > +
-> > +free_ptr_ring:
-> > +       ptr_ring_cleanup(&pool->ring, NULL);
-> > +       return err;
-> >  }
-> >
-> >  static void page_pool_uninit(struct page_pool *pool)
-> > @@ -519,7 +537,10 @@ struct page *page_pool_alloc_pages(struct page_poo=
-l *pool, gfp_t gfp)
-> >                 return page;
-> >
-> >         /* Slow-path: cache empty, do real allocation */
-> > -       page =3D __page_pool_alloc_pages_slow(pool, gfp);
-> > +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->m=
-p_ops)
->
-> Why do we need && pool->mp_ops? On the init function, we only bump
-> page_pool_mem_providers if the ops are there
->
-
-Note that page_pool_mem_providers is a static variable (not part of
-the page_pool struct), so if you have 2 page_pools on the system, one
-using devmem and one not, we need to check pool->mp_ops to make sure
-this page_pool is using a memory provider.
-
-> > +               page =3D pool->mp_ops->alloc_pages(pool, gfp);
-> > +       else
-> > +               page =3D __page_pool_alloc_pages_slow(pool, gfp);
-> >         return page;
-> >  }
-> >  EXPORT_SYMBOL(page_pool_alloc_pages);
-> > @@ -576,10 +597,13 @@ void __page_pool_release_page_dma(struct page_poo=
-l *pool, struct page *page)
-> >  void page_pool_return_page(struct page_pool *pool, struct page *page)
-> >  {
-> >         int count;
-> > +       bool put;
-> >
-> > -       __page_pool_release_page_dma(pool, page);
-> > -
-> > -       page_pool_clear_pp_info(page);
-> > +       put =3D true;
-> > +       if (static_branch_unlikely(&page_pool_mem_providers) && pool->m=
-p_ops)
->
-> ditto
->
-> > +               put =3D pool->mp_ops->release_page(pool, page);
-> > +       else
-> > +               __page_pool_release_page_dma(pool, page);
-> >
-> >         /* This may be the last page returned, releasing the pool, so
-> >          * it is not safe to reference pool afterwards.
-> > @@ -587,7 +611,10 @@ void page_pool_return_page(struct page_pool *pool,=
- struct page *page)
-> >         count =3D atomic_inc_return_relaxed(&pool->pages_state_release_=
-cnt);
-> >         trace_page_pool_state_release(pool, page, count);
-> >
-> > -       put_page(page);
-> > +       if (put) {
-> > +               page_pool_clear_pp_info(page);
-> > +               put_page(page);
-> > +       }
-> >         /* An optimization would be to call __free_pages(page, pool->p.=
-order)
-> >          * knowing page is not part of page-cache (thus avoiding a
-> >          * __page_cache_release() call).
-> > @@ -857,6 +884,12 @@ static void __page_pool_destroy(struct page_pool *=
-pool)
-> >
-> >         page_pool_unlist(pool);
-> >         page_pool_uninit(pool);
-> > +
-> > +       if (pool->mp_ops) {
->
-> Same here. Using a mix of pool->mp_ops and page_pool_mem_providers
-> will work, but since we always check the ptr on init, can't we simply
-> rely on page_pool_mem_providers for the rest of the code?
->
-> Thanks
-> /Ilias
-> > +               pool->mp_ops->destroy(pool);
-> > +               static_branch_dec(&page_pool_mem_providers);
-> > +       }
-> > +
-> >         kfree(pool);
-> >  }
-> >
-> > --
-> > 2.43.0.472.g3155946c3a-goog
-> >
-
-
-
---
-Thanks,
-Mina
