@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1C880ED08
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4360F80ED4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376586AbjLLNPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:15:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        id S1346454AbjLLNVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376583AbjLLNPd (ORCPT
+        with ESMTP id S1376557AbjLLNKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:15:33 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E97107;
-        Tue, 12 Dec 2023 05:15:38 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id d2e1a72fcca58-6cea0fd9b53so3359457b3a.1;
-        Tue, 12 Dec 2023 05:15:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702386938; x=1702991738; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0QcCXCm4DPHUOC/Ldcn3syRLAjzqmkGV7uvetVmifyw=;
-        b=H6/RmvsCHZVQeCoEnugvkOoaz2lU65BOr88iitTj6qAasc+1CN0cBXYH9Qi+ktYqxU
-         JVJ0nDtCaiarBEFgZrCQiGcJiJkNON7NhPcIBeZ2pa1H0LCy/eFj6JErjR79cbLrdE4Z
-         UlsuCcbiVgpKFM430uUL+Gx1faJg1DMhFxTyoTVFbsYLiqRDruXR7+LchMl8naBZGCwt
-         y3rEWvu567omz817ZC63YPGkAkeeyIkwvMgW5DqMv9Sp9jw9rPp9thdiL6z9Rf7luYSK
-         zUiEdUzmbljQMclLrrOOTHUxmnVOU8Pz7mauBMygTMRSvaPMFiCuXch0qiL1zRVfqNh+
-         Bkfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702386938; x=1702991738;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0QcCXCm4DPHUOC/Ldcn3syRLAjzqmkGV7uvetVmifyw=;
-        b=JoCWRy0wVDnTW1NHNxbAjaWiEMvBTsXeh9VOXVwUWomWAVnZIClQ6JNeBub8egjJLO
-         ort42PwDYW2QJL3+8MXpf9zTn010GwFrAAfl6Dar3+v75me8leHeFdaTdMy/C/Sy9y+x
-         Y6rWijYUyMVoEABfZ4Ey9Gh4WLM5hYVLaTsq805RqOZCbh95JsQ4FClHyRjT2lFVZxAE
-         qhrrVAiuQQmvDsM+vGWLCktNBagTeLFqD3hUzR0TpA/HyshP248c5tkysU6ooAgL4v99
-         VQMmVfRVhm6hMHXYR0ZGg3DzaxUwvDE40LeAIqYYehg7FU4rWnyfw9bD0gYggOp5t/XW
-         CcfQ==
-X-Gm-Message-State: AOJu0Yy0jGtGaIzZldkwt83rC7wZf4OQJBtcnD8JnXDT+WxjRrOVKVEq
-        0VYASB05Z4S4zcZkaQzaOwU=
-X-Google-Smtp-Source: AGHT+IHZ1rPA8bbXHF5K+fD0vtYa+UCVTZys6KqO/2Q8XqQUtl1NXzNnQTcsYwJJYZKy4YMOHkHqXg==
-X-Received: by 2002:a62:be11:0:b0:6ce:6407:2264 with SMTP id l17-20020a62be11000000b006ce64072264mr2500987pff.56.1702386938219;
-        Tue, 12 Dec 2023 05:15:38 -0800 (PST)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa793b4000000b006c4d2479bf8sm8095026pff.51.2023.12.12.05.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 05:15:37 -0800 (PST)
-From:   Menglong Dong <menglong8.dong@gmail.com>
-To:     andrii@kernel.org, yonghong.song@linux.dev
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <menglong8.dong@gmail.com>
-Subject: [PATCH net-next v2 2/2] selftests/bpf: activate the OP_NE login in range_cond()
-Date:   Tue, 12 Dec 2023 21:10:31 +0800
-Message-Id: <20231212131031.3088661-3-menglong8.dong@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231212131031.3088661-1-menglong8.dong@gmail.com>
-References: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+        Tue, 12 Dec 2023 08:10:39 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4BD116;
+        Tue, 12 Dec 2023 05:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ahu4/U/soh/dA2Q7HSesGB7diJShIHO31XJcJ7WvGa8=; b=FtF77hqKG+5XA3T32JPw3/a4U5
+        5OvUv+ihcFuSlPlYbDcAJN4l/kk8He7gPEnLATDEXa94mGS7Hg6HsAKEH2bJHeKsi19Q43/BIpQgc
+        FwLRjTaHAkQXDmrZsJzmJkoB/lLM0rK7ouD6cdn1xn85GlqoFCYew1QokfjDkr7AwU6QCj2Pyfcqz
+        uDujeYaNmJCfAiKS2TZsN6TqB3Po2wtDOzznyMBwTiwNuATrv5LKcS8wdUDfXZKNf2UcwDsw0D7gb
+        5kdg8EavFa+GSus987vBL5vuklPWFxFp6ChjB2MfY+rQvbvrl5AJdsIlokYV4sFSh1VZ/Spcb4+Zb
+        sRrIYS6Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rD2X4-00BlAA-2C;
+        Tue, 12 Dec 2023 13:10:42 +0000
+Date:   Tue, 12 Dec 2023 05:10:42 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Message-ID: <ZXhb0tKFvAge/GWf@infradead.org>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The edge range checking for the registers is supported by the verifier
-now, so we can activate the extended login in
-tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
-such logic.
+On Tue, Dec 12, 2023 at 07:46:51AM +0000, John Garry wrote:
+> It is assumed that the user will fallocate/dd the complete file before
+> issuing atomic writes, and we will have extent alignment and length as
+> required.
 
-Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/reg_bounds.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-index 0c9abd279e18..49d8d4bafe99 100644
---- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-@@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x, struct range y,
- 		*newy = range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b));
- 		break;
- 	case OP_NE:
--		/* generic case, can't derive more information */
--		*newx = range(t, x.a, x.b);
--		*newy = range(t, y.a, y.b);
--		break;
--
--		/* below extended logic is not supported by verifier just yet */
-+		/* below logic is supported by the verifier now */
- 		if (x.a == x.b && x.a == y.a) {
- 			/* X is a constant matching left side of Y */
- 			*newx = range(t, x.a, x.b);
--- 
-2.39.2
-
+I don't think that's a long time maintainable usage model.
