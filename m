@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367F180EBE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F9D80EBE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346548AbjLLMey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        id S230234AbjLLMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346538AbjLLMew (ORCPT
+        with ESMTP id S232539AbjLLMet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:34:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA46394;
-        Tue, 12 Dec 2023 04:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702384499; x=1733920499;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1t4WPBB2iV6mGz2IjxnelPLPuKPitQiGr3DtbVpwRDE=;
-  b=MFtjG3Rz4EdHyJ0cuYXccAnB/E9yqRaZ2D0IxWnhlcFv7XCPcm3UO/1M
-   VVzKiP7urUBvHAV8FjNLMtSuTaW+hUZPt7F2hT3JCTM5Ny1/zpDc0moK+
-   i0r/ses+hj3nbAflDTLdWlspLWFq4j4Wt12g7kQsYW6iKF1m6BW6+WdzC
-   C0XhYd4elvl0j9pVLN5Aa4vItLZRayv7g/tJd0Guoqr8r4tfuUyUr9IbH
-   Sm3eiq/D8nLv2WrtLtlJb+yRGAnOI5iWQwYFa2ZxIs3x0iu2X+FalohPB
-   r1yy0HueLrLL0Oqwx5NoYZTYet/fNh8Jtgfa99EeVWrtvngS91fs7zr6N
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1951097"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="1951097"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 04:34:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="896909252"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="896909252"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 04:34:52 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id BA8FD11F7E4;
-        Tue, 12 Dec 2023 14:34:49 +0200 (EET)
-Date:   Tue, 12 Dec 2023 12:34:49 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
-        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v15 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZXhTaaXZf2WMkAgr@kekkonen.localdomain>
-References: <20231204094719.190334-1-tomm.merciai@gmail.com>
- <20231204094719.190334-4-tomm.merciai@gmail.com>
- <ZXhGQuqTZogWTJ42@kekkonen.localdomain>
- <ZXhHrhNQfn0uJMjk@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZXhIaB_NTDtSJmj5@kekkonen.localdomain>
- <ZXhPabGpUDJNSgiZ@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+        Tue, 12 Dec 2023 07:34:49 -0500
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5100EB7;
+        Tue, 12 Dec 2023 04:34:54 -0800 (PST)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id BC3E071;
+        Tue, 12 Dec 2023 13:34:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1702384491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cVsH9JrMU+kTllg4YnT8PH24+guNEqb5IZwuUj2+thc=;
+        b=asEntrfsJUlVGUOuVaMNcSEyWMez6f94TkJxrdnYBhrPGNP6VFg/a3sxhqR0hd1IkQZIWX
+        EqnahLwu8JFqlCzFkksUj3ny6AojzvDwmyknQs29Xh7cB7yHi+iJ89NEu1LhvV8Llb1+zd
+        wSkrrDAcq6FjbYIDRFEwzQOgl5BHZOONLlYylIO0zjx2ZQP9D+c5+gKcVTG3kvhZpLXqNY
+        mKCdx5SMagAm+jyjxpETjDt5y/h48F5k1qY6TYvDLz163Po8UJjJYyzZiLbu8MikXffurA
+        7uVidvriQgkThLix3x5o1jZgUWuOoCZEU7OqZpUBVmiPBx3sNZmbF6Bg9ag2TA==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXhPabGpUDJNSgiZ@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Date:   Tue, 12 Dec 2023 13:34:51 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc:     broonie@kernel.org, tudor.ambarus@linaro.org, pratyush@kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sbinding@opensource.cirrus.com, lee@kernel.org,
+        james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+        michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-sound@vger.kernel.org, git@amd.com, amitrkcian2002@gmail.com
+Subject: Re: [PATCH v11 00/10] spi: Add support for stacked/parallel memories
+In-Reply-To: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+References: <20231125092137.2948-1-amit.kumar-mahapatra@amd.com>
+Message-ID: <30ffd8378d3ef1c4fa6dfe4324b18345@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,50 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
+> This patch series updated the spi-nor, spi core and the AMD-Xilinx 
+> GQSPI
+> driver to add stacked and parallel memories support.
 
-On Tue, Dec 12, 2023 at 01:17:45PM +0100, Tommaso Merciai wrote:
-> Hi Sakari,
-> Just a clarification about the following warnings:
-> 
-> Fixed on my side with:
-> 
-> CHECK: Assignment operator '=' should be on the previous line
-> 
-> -       alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG]
-> -                                 = avail_fmt->yuv420_8_leg;
-> +       alvium->is_mipi_fmt_avail[ALVIUM_BIT_YUV420_8_LEG] =
-> +                                 avail_fmt->yuv420_8_leg;
+Honestly, I'm not thrilled about how this is implemented in the core
+and what the restrictions are.
+First, the pattern "if (n==1) then { old behavior } else { copy old
+code modify for n==2 }" is hard to maintain. There should be no copy
+and the old code shall be adapted to work for both n=1 and n>1.
 
-This one seems good.
+But I agree with Tudor, some kind of abstraction (layer) would be nice.
 
-> 
-> CHECK: line length of 81 exceeds 80 columns
-> #1085: FILE: drivers/media/i2c/alvium-csi2.c:1085:
-> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> 
-> CHECK: line length of 81 exceeds 80 columns
-> #1102: FILE: drivers/media/i2c/alvium-csi2.c:1102:
-> +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> 
-> 
-> Fixed on my side with:
-> 
->         /* Create the alvium_csi2 fmt array from formats available */
->         for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
-> -               if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> +               if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt]
-> +                               .fmt_av_bit])
+Also, you hardcode n=2 everywhere. Please generalize that one.
 
-I wouldn't introduce a line break in these two cases.
+Are you aware of any other controller supporting such a feature? I've
+seen you also need to modify the spi controller and intercept some
+commands. Can everything be moved there?
 
->                         continue;
-> 
-> Can be ok for you?
-> If yes I'm going to prepare the patch on top of your media_tree/master
-> branch.
+I'm not sure we are implementing controller specific things in the
+core. Hard to judge without seeing other controllers doing a similar
+thing. I'd like to avoid that.
 
-Ack.
+If we had some kind of abstraction here, that might be easier to adapt
+in the future, but just putting everything into the core will make it
+really hard to maintain. So if everything related to stacked and
+parallel memory would be in drivers/mtd/spi-nor/stacked.c, we'd have
+at least everything in one place with a proper interface between
+that and the core.
 
--- 
-Sakari Ailus
+-michael
