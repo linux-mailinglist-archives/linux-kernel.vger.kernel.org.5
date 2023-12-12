@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1577A80EDE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE8E80EDE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346629AbjLLNov convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 08:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S1346636AbjLLNoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 08:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346604AbjLLNot (ORCPT
+        with ESMTP id S1346630AbjLLNn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 08:44:49 -0500
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E237ED;
-        Tue, 12 Dec 2023 05:44:56 -0800 (PST)
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso768771a34.0;
-        Tue, 12 Dec 2023 05:44:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702388695; x=1702993495;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0FHgQG76vAAELXoJjrX/NTMafjPLo+txhiRxr9Qp8Mo=;
-        b=auhaQSOmRO15IqW30H7nLcbtcNzirH7c7LM9JZWZbNOIdBLSvE8GAWFh/FqwUOnFB9
-         342Uy9vG3KAL0PnE7JTTj0cdHurd1S6Cs9SZ4mUWA+AwFE7H2cWYeGcs1feVip8UR5ZV
-         qCfzFUoSeK/C9AXBTq8ItriCkswolLVyx3BYzb72hoO68ZFyS1INq/IFchzrGZ1gAINJ
-         Gh5k2z6pYEVueosbPQxVqUoN6MzVjCqj/3iJoV6DPwsoHqw9cclrvDCXX1dLANTVHGYj
-         WQzqmZEXuLNgZmUcy9SDpzRr1Rw32yd5emKKKzulfwSHJlMLnoKjftF3CqM4NLu1JBc2
-         wfqw==
-X-Gm-Message-State: AOJu0YxMJ+Ls/1W5H3xs9cFefrJ36Ny/SoXs/rruCRXMqVRuALmPRQY4
-        U4o0ypEmYV0g1Zbj+fuapSpWBxjpnsICxtY5P2I=
-X-Google-Smtp-Source: AGHT+IEzBbu/99tixq8ymUICcMSaSMKmg0Twe94v+HrxDZ2VEwW2ix33qAtmHtCK1VxE9WDQ5bojxqSgFWZLD/UZGWY=
-X-Received: by 2002:a05:6820:220d:b0:58d:5302:5b18 with SMTP id
- cj13-20020a056820220d00b0058d53025b18mr12613201oob.1.1702388695286; Tue, 12
- Dec 2023 05:44:55 -0800 (PST)
+        Tue, 12 Dec 2023 08:43:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6AAF3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 05:44:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD325C433C7;
+        Tue, 12 Dec 2023 13:44:02 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 08:44:44 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH] tracing: Add size check when printing trace_marker output
+Message-ID: <20231212084444.4619b8ce@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231205063537.872834-1-li.meng@amd.com> <20231205063537.872834-2-li.meng@amd.com>
-In-Reply-To: <20231205063537.872834-2-li.meng@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Dec 2023 14:44:44 +0100
-Message-ID: <CAJZ5v0gz4HKPFjKRaP_2aiCLrx8BDqOa_6W_B3PmU8x7ejsZhg@mail.gmail.com>
-Subject: Re: [PATCH V12 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
- the expansion.
-To:     Meng Li <li.meng@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 7:38 AM Meng Li <li.meng@amd.com> wrote:
->
-> amd-pstate driver also uses SCHED_MC_PRIO, so decouple the requirement
-> of CPU_SUP_INTEL from the dependencies to allow compilation in kernels
-> without Intel CPU support.
->
-> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Reviewed-by: Huang Rui <ray.huang@amd.com>
-> Reviewed-by: Perry Yuan <perry.yuan@amd.com>
-> Signed-off-by: Meng Li <li.meng@amd.com>
-> ---
->  arch/x86/Kconfig | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3762f41bb092..3e57773f946a 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1054,8 +1054,9 @@ config SCHED_MC
->
->  config SCHED_MC_PRIO
->         bool "CPU core priorities scheduler support"
-> -       depends on SCHED_MC && CPU_SUP_INTEL
-> -       select X86_INTEL_PSTATE
-> +       depends on SCHED_MC
-> +       select X86_INTEL_PSTATE if CPU_SUP_INTEL
-> +       select X86_AMD_PSTATE if CPU_SUP_AMD && ACPI
->         select CPU_FREQ
->         default y
->         help
-> --
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-This needs an ACK from the x86 maintainers.
+If for some reason the trace_marker write does not have a nul byte for the
+string, it will overflow the print:
+
+  trace_seq_printf(s, ": %s", field->buf);
+
+The field->buf could be missing the nul byte. To prevent overflow, add the
+max size that the buf can be by using the event size and the field
+location.
+
+  int max = iter->ent_size - offsetof(struct print_entry, buf);
+
+  trace_seq_printf(s, ": %*s", max, field->buf);
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_output.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index d8b302d01083..e11fb8996286 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1587,11 +1587,12 @@ static enum print_line_t trace_print_print(struct trace_iterator *iter,
+ {
+ 	struct print_entry *field;
+ 	struct trace_seq *s = &iter->seq;
++	int max = iter->ent_size - offsetof(struct print_entry, buf);
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+ 	seq_print_ip_sym(s, field->ip, flags);
+-	trace_seq_printf(s, ": %s", field->buf);
++	trace_seq_printf(s, ": %*s", max, field->buf);
+ 
+ 	return trace_handle_return(s);
+ }
+@@ -1600,10 +1601,11 @@ static enum print_line_t trace_print_raw(struct trace_iterator *iter, int flags,
+ 					 struct trace_event *event)
+ {
+ 	struct print_entry *field;
++	int max = iter->ent_size - offsetof(struct print_entry, buf);
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+-	trace_seq_printf(&iter->seq, "# %lx %s", field->ip, field->buf);
++	trace_seq_printf(&iter->seq, "# %lx %*s", field->ip, max, field->buf);
+ 
+ 	return trace_handle_return(&iter->seq);
+ }
+-- 
+2.42.0
+
