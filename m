@@ -2,280 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E277D80F7E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF06D80F7E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377347AbjLLU1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S235118AbjLLU1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:27:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjLLU1V (ORCPT
+        with ESMTP id S235113AbjLLU1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:27:21 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702ECD5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:27:25 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bf1de91c6so770e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:27:25 -0800 (PST)
+        Tue, 12 Dec 2023 15:27:49 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77352CA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:27:54 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCJaZV5008514;
+        Tue, 12 Dec 2023 20:27:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=3lolOOrsBLNrtcqjnfI8/hoDcGoH44mXA91pxhqWb6s=;
+ b=EPnP/Y3Q4H8bS/k8dt1CxJACJQpjys+8WYpd5bprivWsZvtCCVUIXcR9I9bBM1LSQajy
+ YOifsBqng5gBnI6QX9Ku0ItVckljL1HbICZ79au06aTECJ7vKTBbog7GMUKX5pyFO+r/
+ 2wn42UxFrABurOPAYal6/Jb2FBeVjajAwOZwIVIBajiohzmq/GMZjnFGbCIyBn4kK62u
+ mRIVoUkWQ1d4+SYcr9l77BRD7BN1wbSYJ8P8hOENt0mS6ZsvlB0r36Vpu/HVkoA+JkMt
+ CG7e96rPqQNYzh+L+pWkW5zgZuFP1nUiozFfU4drokl75mjIbR0erCKmJ2LXdOFemEmp Ow== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ux5df3b9v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 20:27:24 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCJreOU010087;
+        Tue, 12 Dec 2023 20:27:23 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep759b4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Dec 2023 20:27:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=STuJF4OQPcGAoY9AF/RZiiG92A31DEx2k/4wbLF/17wkdzzo6AELe1OG9yrMXq3mFR4StTFlfQOJ6UOmsi4t/SO2bgqskiwYutic0vATDRtB2TEllcLFG3G4qQ5gHv+ln2fxFgYS2nRY4iWUHFoxkDwyK3VT2vzn6F3DEkb+Od8El+RsogKDDXoLovR+ENH6iR+9bkarXlTdqS4iAy7zHKWyfpxMEa9Mwq6hU7GBHRkQTIPyFhyZ4xhp8ZPglJ0XUVZ3WPaxsJ5D0mokNkruRjp075seKQ3tP9o+f7J2rYo3NDuX2ip1702NZHH+QmxHDmuzuII8gEwl0LvQW4zYmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3lolOOrsBLNrtcqjnfI8/hoDcGoH44mXA91pxhqWb6s=;
+ b=KdI9ptD3+FXyMifqboPudQozD3u8BiOEv6VTVNqSyn8K16h8UI405wiNDsy9CWzCKAz6oCCam+yalmbNeeP0ISct9wvPo4kPEh3NTdewayO8D9oXzAjgHXSz8lvwYt4u62j0RRCqp9TH7iE0tO+d1YLhruAVAkr+/Jx+01YRReBURlL/Y5+U1YLhGbqGe7/PlIC6+hTjerxYm67D/arerDGujGQ+uRHUU/D2Y72H+tBK8raFlJ40FeURLnZHHx/IsJ1fpufRrZhYw3IpDyjC6HqlsFep2JEF5Mj/6iy1Pg642dvdsp7Ch2qBaSE7LaQD7PmdoSwjWiT/Eg2DIYXm3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702412843; x=1703017643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1r0l9UDH82X/QRijiq/v0dYWas+IVhPxoge2Q6dptEs=;
-        b=XeI+ATa+LdAkHqn1BjFTeJsitxU1zxpjBgkEu8WDKbZNjPhNQtcp57vQoaVKy0kVg8
-         EkFa9fjlHwGU3mvHzRftpGIcAG1ucOaUu6a3rukDYzYIQzBotRmViaGf5Dh2UmLcxSKZ
-         HS38soueUWtlavoqmdkkl+Zm1h8x7D5LwKO5GCgp18xmtIBK7BtJxvYb0oxLzkLYQNXb
-         ZdpeUxBGOA2uS6BrvctKMJKTMR9RVgx5qGmoZ/cN/9yEc3RjxC4KCSqyF2E6Q6z7tmKT
-         ntSzFy0YlgAvbTSZ9SYl8Qqf5cyC1AzJGURXdWDOPnA0JP6FywFNJ4JWkdJ7MQtUU9LH
-         dncg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702412843; x=1703017643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1r0l9UDH82X/QRijiq/v0dYWas+IVhPxoge2Q6dptEs=;
-        b=ihTKTblzU/kEzsL7Gq9h989IsdaVZD3MyacyJ1a6E7s3Bp749fv+dxLkj5sB6LypoR
-         7J7AO5a82GBu1CTHAyJXkx+Uwo7zrjOXH8y8ZWSWs7IVOKj8Mh4F/XqTuAyBY2EX/rKR
-         zbOZPimYep/b7Y9muXjGBzqj6POdgNfotzHIgGQ7xEezhsI75SXvciTsRl0ExBzM0Lbw
-         tGkmp8KBOuYTjHkLvCKf1xb6fQrsMsjPH/cjrOFvWnuYqC9zcvTQfm4ZN2dCZl7TYeIs
-         BMm4fSHyRS4M5xaR0/gA5J1vCMjx42RTFbGsbQnMNrDjO6f3+4/X8tXKjlQjbd0QU2zb
-         EKtQ==
-X-Gm-Message-State: AOJu0YxMHC3oPPqldlTaV5tS2JldKgiyQ23SCrLsoSOsjsk/t6inFAMR
-        uIZFC+KbfMz6y8Dx42Jpc6RUDsqAuiOuajl66F7DuA==
-X-Google-Smtp-Source: AGHT+IFoY3ALLkdAR2gE36RzhwyUHqDnvxbMLYh3kdlzIKhmBLpUUVJzQp4hNvBUkf9+POe7DeKZkWl1v5OD3OMGjW0=
-X-Received: by 2002:a19:4f07:0:b0:50b:fcb7:15af with SMTP id
- d7-20020a194f07000000b0050bfcb715afmr233274lfb.3.1702412843308; Tue, 12 Dec
- 2023 12:27:23 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3lolOOrsBLNrtcqjnfI8/hoDcGoH44mXA91pxhqWb6s=;
+ b=gQOaHjtKPR2pzwzFF4RaABSC+dunOERNtVgfM0RUnpkNEF12kfyuc8mfkuu5NnQ6Ncn+cfDyJfDSoMQoGSEeBHRnQ0R0xgbDTqqZ+yG2tIZWUFOR2hPzc113aFkbWMQLfKAhsh1bGiKr78zSCkNnXe6oR6ncIta4ozwrnJEMrlE=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by CH2PR10MB4214.namprd10.prod.outlook.com (2603:10b6:610:a6::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
+ 2023 20:27:20 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::a5de:b1cb:9ae1:d0cc]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::a5de:b1cb:9ae1:d0cc%7]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 20:27:20 +0000
+Date:   Tue, 12 Dec 2023 15:27:18 -0500
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        maple-tree@lists.infradead.org, akpm@linux-foundation.org,
+        willy@infradead.org, zhangpeng.00@bytedance.com
+Subject: Re: [PATCH] maple_tree: do not preallocate nodes for slot stores
+Message-ID: <20231212202718.mbv5tk5i3lmmc4ar@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        maple-tree@lists.infradead.org, akpm@linux-foundation.org,
+        willy@infradead.org, zhangpeng.00@bytedance.com
+References: <20231212194640.217966-1-sidhartha.kumar@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212194640.217966-1-sidhartha.kumar@oracle.com>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT4PR01CA0176.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:110::6) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
 MIME-Version: 1.0
-References: <20231129060211.1890454-1-irogers@google.com> <20231129060211.1890454-7-irogers@google.com>
- <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
-In-Reply-To: <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 12 Dec 2023 12:27:11 -0800
-Message-ID: <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
-Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
-To:     James Clark <james.clark@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|CH2PR10MB4214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ef211a1-ec3c-4335-8114-08dbfb50be08
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nx+upfv2Xf/bGcnuCzJfQEaohvAHz2+xNpYu92CwinDGXSSi+1xerK3aEICuDx3uLvF1v5+RtchWe0HmUsQ/6wOhxA9zdG1lUG160t+pqJic9ElNyn7g5DICcujOm/LcFgx0AII/w6Oi9vWV8lcxgRNgBRBo/ZgoXT2cHQKvWMLdC/xtD/0yYyAObgCBBhb+9RZULTwjuLQFHWIu8pFakVJsV31i+2iY+mHjPwHp9viqHWe5Kw8BSOxKmMrSf3szDoydXgDR0ASHdsN5eLY/STQwURMmcuggjVcnJ8uTtOWmhC7AwirEthBSXnYAP6ZsXmDAAo+cP38+GM4P+UNXluZB2NkGxIuQ3ysOzSwfxE91GmZrEOEdEkWy4n8k0lpWqqimenZwcMznB5tjbjGjhIKw/Sg4D0BLG+eQgXaYuxpLxJCzQll9WX1W40/tJKg+wL1BaY4TOiw3ZOqKoC+mZhY6WeBIEDpv+SjfnSGVRFOtmlCBsCVFS9B9E70GGbrDbe2pW0GN+FqbtYmoXKtTU5ZaOMSFxa+RB7yUPwnnQCRNMfb+oseBnWfwHJkzMM29
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(346002)(376002)(39860400002)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(38100700002)(5660300002)(2906002)(41300700001)(86362001)(1076003)(478600001)(33716001)(6636002)(6486002)(316002)(66476007)(66556008)(66946007)(26005)(6506007)(9686003)(6512007)(6862004)(4326008)(8676002)(8936002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BN6iGzFYWKcJqcUMvJVOvbB5zX8rFTFC2q/z56H5LA6zJzmG+8lOKfU1HEjJ?=
+ =?us-ascii?Q?O8YiOS9UsmNDOp4kvfy5P9ZHSjKbeoLF36JrGpZtjhXTKr5L4HK51dCcxMD0?=
+ =?us-ascii?Q?UKOQ4ylNJgHJ1QZhteJlYVHFjfRyNaH6jf/+T98LTmPnAMwurAda+E3NHdGG?=
+ =?us-ascii?Q?GXZewgHfX4lkSqdNfc0IzQLOWMJlDDYJRQB6uN+sI4ytj46AV/CMHWLKL+UU?=
+ =?us-ascii?Q?3NtvMDDOGuQngxDJyLAg9LcJmbgAV8hdph3Fe9y/lI6F6urtBD/9/cHW5Gbh?=
+ =?us-ascii?Q?nS11RdZN7PAyPtQaccP2r1bxq02OwzNNbeXpemcacAaVlliXEGgWV5CAYfJg?=
+ =?us-ascii?Q?n3w2lXCLCo9aJGY5FtSSNfvJNVhucX/sExyAxDOizkEz5TlkfYYchHLuBPIw?=
+ =?us-ascii?Q?HsQoFWQYkSPmKQsDe+psFvKvdLPkCP79vgI+ExjRaPXxrwyu0htUfT7e7c0k?=
+ =?us-ascii?Q?j498XirKcx4mffPKXqzjzwH6Nau103Mr83cVWrB4TelfSl51Ha1D1mph8G/d?=
+ =?us-ascii?Q?mpOY1Ww9iLRhDcRwSlVBu/8aPRzZ3OYEAEmoIilWbQ2EldpP4QgSgQRxhx5o?=
+ =?us-ascii?Q?DESiqjqOsiU4zb9j/iz+uOeVw66mXYk6ActHjTl/lq5liQdoWarACiMbbMMv?=
+ =?us-ascii?Q?as4GywBML73/UKf9OBGsL0hkLpM4za7e8SlrWO3uGPzs/xjojYuYFXnLvGL4?=
+ =?us-ascii?Q?r9tpqMw9QmqL+gkkGFnuyfQ+GbFmUs5ztYCgkTUpv13cYekYF1YAi9DapyH+?=
+ =?us-ascii?Q?3Ir2fAvJ1RtBwZA3EBvmlde2obGc3GamVKlIdmxI1pst8hG39++A47UJU2Zb?=
+ =?us-ascii?Q?QY2myqiN6JWpnB0kl3oFZCYUeGQdQPkSkUIffxhjBjsrujbbSrDSwoKAozCn?=
+ =?us-ascii?Q?wofCKMB4oGASahaF/s59nxCrHGeIjoEixKhY71KvjwQyqSBHssMziqIBxVmc?=
+ =?us-ascii?Q?3Ysa0OR5jekBJdHFtJSq+nOK18xx7hlSG8WnjwGSZL43W2IVu8mEln4CoA00?=
+ =?us-ascii?Q?hejZrzsqXQDPzGDxmwxpz0uytxArdKpCked7D/XWdMXS4IlkNoq+YuyUJ0vL?=
+ =?us-ascii?Q?gSX8OizdMIO30h8WMWLbLs/x1WD/JpRjIrfG4ZITNBbBeVTE4+FvYkBSMl5R?=
+ =?us-ascii?Q?fzkO2Ds43FBjEnimSyxf3kiJ+mqqijQxw6Nxz4fIR5YJhStAKMgRxKOnWzPn?=
+ =?us-ascii?Q?ZThzksaTtWkg15v4dojrcrwqXL0ooMBEZ97uFrlqUQCSEptiekzeNmVDVnEt?=
+ =?us-ascii?Q?QFEjf75JEov6nBQwYqGbmGtEODtPcOwizTk2thnxzP+3sJ9jaDj0DtvNYpcr?=
+ =?us-ascii?Q?xRoSwsms2diUtw5LNJp1QetfmENYa3DpZT5M1MB9bKzdfyddIVXpZ9D6ynAE?=
+ =?us-ascii?Q?5NGJdG19H7eFGF0906ZDzy9edehXyXYWrKSa70iitBwnDwqzmNKOzKSlpsvK?=
+ =?us-ascii?Q?Go0wu8vWGu3vLu4WH526HzY0tQwKiy+dJMEHSEmcl0ZuxstsINnob0AxKejM?=
+ =?us-ascii?Q?y9jDURgqu+4/0go+fStI8o6s4nq5/ZDJywVRwqTSc2tx8n7IUoZ2JndPepq0?=
+ =?us-ascii?Q?11dL2NVtmOUd+mzfcYneIbRIb3emBjyG+c+6xwfe?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: hn5bw+pAZ+vYOVzUIJJxFV2sy2UCHKlH/K/TWRqVaOm5NB4HcxfX+kSlzareaSPqDDssJNpRT24UVM1a16bKxQ361lUppk8yldXQ0fKJHb2cD98Fq1Nr/mZLBMJHn6qn9XqXMXYbdqr64NvP7IebxgxDVIBHI95F502EluB6G/BhFpizTKTIE4S98WZJrqRAFgxSf/hVzTr5V7Homm7ZDx9K5/CMDg3zfZCiNfQb6bQRKctnS8VkOGLeJmBWLWxo4sAyJBC3s0IA0TVHa7Ba64yaWvWWnQG46wO88i6P51kZT2cBwgOGeiW99pQLWLUqwjJUwocmzq7Yc1ArsUO6jaR4Vs7Nnk0a6J1xiobIZogfnm6q9RZ2WdbZle3Cu4CSCJKwjuoIV2QiJx43sVZb51vLAK9NIMe4BAdBJjbZTqHGHbhyPo7bK3GdDWthsbkSSE+c65uKI/XwZIKNdc/750EZ6XH+MkFKpLNRE9BuIFEf7+a6lamRcoo2vzb+ZLjsnkWKl+alweO91YCDE945hAbkJf6e2n6lY7mz/pjAJGJGSsBaHVbSdCVpCxCvzkrvxDW7jWsq5mql9fj8EzDP0vMING9Mn6Ar3AuvAifjGp8=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ef211a1-ec3c-4335-8114-08dbfb50be08
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 20:27:20.8642
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GdRDATQj3tQDeGWzUurC559xOa0l07Y9CDIlJOIu8oxGhIQ69//VKfNPREOizh7TTdIWrO0fziId3vcxxRPTJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4214
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_12,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312120157
+X-Proofpoint-GUID: M0bPcXah1p-jSPACS1F5HjdcBXCZBa-8
+X-Proofpoint-ORIG-GUID: M0bPcXah1p-jSPACS1F5HjdcBXCZBa-8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 7:06=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
->
->
-> On 29/11/2023 06:02, Ian Rogers wrote:
-> > Additional helpers to better replace
-> > perf_cpu_map__has_any_cpu_or_is_empty.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
-> >  tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
-> >  tools/lib/perf/libperf.map           |  4 ++++
-> >  3 files changed, 47 insertions(+)
-> >
-> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> > index 49fc98e16514..7403819da8fd 100644
-> > --- a/tools/lib/perf/cpumap.c
-> > +++ b/tools/lib/perf/cpumap.c
-> > @@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const s=
-truct perf_cpu_map *map)
-> >       return map ? __perf_cpu_map__cpu(map, 0).cpu =3D=3D -1 : true;
-> >  }
-> >
-> > +bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *m=
-ap)
-> > +{
-> > +     if (!map)
-> > +             return true;
-> > +
-> > +     return __perf_cpu_map__nr(map) =3D=3D 1 && __perf_cpu_map__cpu(ma=
-p, 0).cpu =3D=3D -1;
-> > +}
->
-> I'm struggling to understand the relevance of the difference between
-> has_any and is_any I see that there is a slight difference, but could it
-> not be refactored out so we only need one?
+* Sidhartha Kumar <sidhartha.kumar@oracle.com> [231212 14:46]:
+> mas_preallocate() defaults to requesting 1 node for preallocation and then
+> ,depending on the type of store, will update the request variable. There
+> isn't a check for a slot store type, so slot stores are preallocating the
+> default 1 node. Slot stores do not require any additional nodes, so add a
+> check for the slot store case that will bypass node_count_gfp(). Update
+> the tests to reflect that slot stores do not require allocations.
+> 
+> User visible effects of this bug include increased memory usage from the
+> unneeded node that was allocated.
+> 
+> Fixes: 0b8bb544b1a7 ("maple_tree: update mas_preallocate() testing")
+> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 
-Yep, that's what these changes are working toward. For has any the set
-{-1, 0, 1} would return true while is any will return false.
-Previously the has any behavior was called "empty" which I think is
-actively misleading.
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 
-> Do you ever get an 'any' map that has more than 1 entry? It's quite a
-> subtle difference that is_any returns false if the first one is 'any'
-> but then there are subsequent entries. Whereas has_any would return
-> true. I'm not sure if future readers would be able to appreciate that.
->
-> I see has_any is only used twice, both on evlist->all_cpus. Is there
-> something about that member that means it could have a map that has an
-> 'any' mixed with CPUs? Wouldn't that have the same result as a normal
-> 'any' anyway?
-
-The dummy event may be opened on any CPU but then a particular event
-may be opened on certain CPUs. We merge CPU maps in places like evlist
-so that we can iterate the appropriate CPUs for events and
-open/enable/disable/close all events on a certain CPU at the same time
-(we also set the affinity to that CPU to avoid IPIs). What I'm hoping
-to do in these changes is reduce the ambiguity, the corner cases are
-by their nature unusual.
-
-An example of a corner case is, uncore events often get opened just on
-CPU 0 but on a multi-socket system you may have a CPU 32 that also
-needs to open the event. Previous code treated the CPU map index and
-value it contained pretty interchangeably. This is often fine for the
-core PMU but is clearly wrong in this uncore case, {0, 32} has indexes
-0 and 1 but those indexes don't match the CPU numbers. The case of -1
-has often previously been called dummy but I'm trying to call it the
-"any CPU" case to match the perf_event_open man page (I'm hoping it
-also makes it less ambiguous with any CPU being used with a particular
-event like cycles, calling it dummy makes the event sound like it may
-have sideband data). The difference between "all CPUs" and "any CPU"
-is that an evsel for all CPUs would need the event opening
-individually on each CPU, while any CPU events are a single open call.
-Any CPU is only valid to perf_event_open if a PID is specified.
-Depending on the set up there could be overlaps in what they count but
-hopefully it is clearer what the distinction is. I believe the case of
-"any CPU" and specific CPU numbers is more common with aux buffers and
-Adrian has mentioned needing it for intel-pt.
-
-Thanks,
-Ian
-
-> > +
-> > +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
-> > +{
-> > +     return map =3D=3D NULL;
-> > +}
-> > +
-> >  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu=
- cpu)
-> >  {
-> >       int low, high;
-> > @@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_c=
-pu_map *map)
-> >       return map && __perf_cpu_map__cpu(map, 0).cpu =3D=3D -1;
-> >  }
-> >
-> > +struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
-> > +{
-> > +     struct perf_cpu cpu, result =3D {
-> > +             .cpu =3D -1
-> > +     };
-> > +     int idx;
-> > +
-> > +     perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
-> > +             result =3D cpu;
-> > +             break;
-> > +     }
-> > +     return result;
-> > +}
-> > +
-> >  struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
-> >  {
-> >       struct perf_cpu result =3D {
-> > diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/incl=
-ude/perf/cpumap.h
-> > index dbe0a7352b64..523e4348fc96 100644
-> > --- a/tools/lib/perf/include/perf/cpumap.h
-> > +++ b/tools/lib/perf/include/perf/cpumap.h
-> > @@ -50,6 +50,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_c=
-pu_map *cpus);
-> >   * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has =
-the "any CPU"/dummy value.
-> >   */
-> >  LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct pe=
-rf_cpu_map *map);
-> > +/**
-> > + * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "=
-any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct per=
-f_cpu_map *map);
-> > +/**
-> > + * perf_cpu_map__is_empty - does the map contain no values and it does=
-n't
-> > + *                          contain the special "any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map=
-);
-> > +/**
-> > + * perf_cpu_map__min - the minimum CPU value or -1 if empty or just th=
-e "any CPU"/dummy value.
-> > + */
-> > +LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_ma=
-p *map);
-> > +/**
-> > + * perf_cpu_map__max - the maximum CPU value or -1 if empty or just th=
-e "any CPU"/dummy value.
-> > + */
-> >  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_ma=
-p *map);
-> >  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, str=
-uct perf_cpu cpu);
-> >  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
-> > diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
-> > index 10b3f3722642..2aa79b696032 100644
-> > --- a/tools/lib/perf/libperf.map
-> > +++ b/tools/lib/perf/libperf.map
-> > @@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
-> >               perf_cpu_map__nr;
-> >               perf_cpu_map__cpu;
-> >               perf_cpu_map__has_any_cpu_or_is_empty;
-> > +             perf_cpu_map__is_any_cpu_or_is_empty;
-> > +             perf_cpu_map__is_empty;
-> > +             perf_cpu_map__has_any_cpu;
-> > +             perf_cpu_map__min;
-> >               perf_cpu_map__max;
-> >               perf_cpu_map__has;
-> >               perf_thread_map__new_array;
+> ---
+> This patch passes the maple tree test suite. A seperate patch will be sent
+> for a 6.6 stable backport as the node_end field was moved from the
+> ma_wr_state to the ma_state in a recent patch which is not in 6.6.
+> 
+> 
+>  lib/maple_tree.c                 | 6 ++++++
+>  tools/testing/radix-tree/maple.c | 2 +-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+> index e6954fa75eb5..e4a39beb1018 100644
+> --- a/lib/maple_tree.c
+> +++ b/lib/maple_tree.c
+> @@ -5475,6 +5475,12 @@ int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp)
+>  
+>  	mas_wr_end_piv(&wr_mas);
+>  	node_size = mas_wr_new_end(&wr_mas);
+> +
+> +	/* Slot store, does not require additional nodes */
+> +	if ((node_size == mas->end) && ((!mt_in_rcu(mas->tree))
+> +		|| (wr_mas.offset_end - mas->offset == 1)))
+> +		return 0;
+> +
+>  	if (node_size >= mt_slots[wr_mas.type]) {
+>  		/* Split, worst case for now. */
+>  		request = 1 + mas_mt_height(mas) * 2;
+> diff --git a/tools/testing/radix-tree/maple.c b/tools/testing/radix-tree/maple.c
+> index 687886cebd9d..f1caf4bcf937 100644
+> --- a/tools/testing/radix-tree/maple.c
+> +++ b/tools/testing/radix-tree/maple.c
+> @@ -35545,7 +35545,7 @@ static noinline void __init check_prealloc(struct maple_tree *mt)
+>  	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
+>  	allocated = mas_allocated(&mas);
+>  	height = mas_mt_height(&mas);
+> -	MT_BUG_ON(mt, allocated != 1);
+> +	MT_BUG_ON(mt, allocated != 0);
+>  	mas_store_prealloc(&mas, ptr);
+>  	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
+>  
+> -- 
+> 2.42.0
+> 
