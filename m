@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DAA80F367
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2010980F36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346432AbjLLQnK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 11:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
+        id S1346538AbjLLQoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbjLLQnI (ORCPT
+        with ESMTP id S232222AbjLLQoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:43:08 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F39E3;
-        Tue, 12 Dec 2023 08:43:14 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1rD5qP-0006en-2c;
-        Tue, 12 Dec 2023 16:42:55 +0000
-Date:   Tue, 12 Dec 2023 16:42:45 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH net-next v3 1/8] dt-bindings: phy:
- mediatek,xfi-pextp: add new bindings
-Message-ID: <ZXiNhSYDbowUiNvy@makrotopia.org>
-References: <cover.1702352117.git.daniel@makrotopia.org>
- <b875f693f6d4367a610a12ef324584f3bf3a1c1c.1702352117.git.daniel@makrotopia.org>
- <20231212-renderer-strobe-2b46652cd6e7@spud>
+        Tue, 12 Dec 2023 11:44:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA30A8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:44:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702399446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ySoNw8vEdXTg7E8ZJq7ueigpTixV3dy0V72vf7J6xk8=;
+        b=gPHGrZfyguAYB5QtARssbHMAJTfZTCeAkDDBGx0xmX6A1XoQjg5n6PV+ge7zRyBokoiABg
+        w4FK2Qt3aU4Gy4XH0KsCnnO3cjzPy7SeoVZU81Cb0zx/NPgboBgt02r021vPswsegkoxNv
+        iBBG6mQaNzVFiaXtZgUtPdlvQyonp6U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-232-Snvm0x-rPr-_QG5-pJQSXA-1; Tue,
+ 12 Dec 2023 11:44:02 -0500
+X-MC-Unique: Snvm0x-rPr-_QG5-pJQSXA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 63B1D1C0BA4E;
+        Tue, 12 Dec 2023 16:44:02 +0000 (UTC)
+Received: from [10.45.225.77] (unknown [10.45.225.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BBABB492BE6;
+        Tue, 12 Dec 2023 16:44:01 +0000 (UTC)
+Message-ID: <88a7a623-ad80-406c-a63b-3136df963888@redhat.com>
+Date:   Tue, 12 Dec 2023 17:44:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20231212-renderer-strobe-2b46652cd6e7@spud>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Failed to start Raise network interfaces error
+Content-Language: en-US
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.22.394.2312102317350.3198@hadrien>
+ <21977757-3a63-4586-ae03-e6630c1f009d@redhat.com>
+ <d87c79b9-d0d2-2819-030-12c7df86eb38@inria.fr>
+ <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com>
+ <4c707e3e-a324-a5e6-dc21-833b6d40324d@inria.fr>
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <4c707e3e-a324-a5e6-dc21-833b6d40324d@inria.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 04:21:38PM +0000, Conor Dooley wrote:
-> On Tue, Dec 12, 2023 at 03:46:26AM +0000, Daniel Golle wrote:
+
+
+On 12. 12. 23 17:33, Julia Lawall wrote:
+>> Look at 'systemd.net-naming-scheme' man page for details how the interface
+>> names are composed.
+> After booting into 6.7.0-rc4, I have the following in
+> /etc/network/interfaces:
 > 
-> > +  mediatek,usxgmii-performance-errata:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description:
-> > +      USXGMII0 on MT7988 suffers from a performance problem in 10GBase-R
-> > +      mode which needs a work-around in the driver. The work-around is
-> > +      enabled using this flag.
+> # This file describes the network interfaces available on your system
+> # and how to activate them. For more information, see interfaces(5).
 > 
-> Why do you need a property for this if you know that it is present on
-> the MT7988?
+> source/etc/network/interfaces.d/*
+> 
+> # The loopback network interface
+> auto lo
+> iface lo inet loopback
+> 
+> auto enp24s0f0
+> iface enp24s0f0 inet dhcp
 
-Because it is only present in one of the two SerDes channels.
-Channel 0 needs the work-around, Channel 1 doesn't.
+Just change 'enp24s0f0' in /etc/network/interfaces to 'enp24s0f0np0'
 
-See also this commit in the vendor driver for reference[1].
+Ivan
 
-We previously discussed that[2] and it was decided that a property
-would be the prefered way to represent this as there aren't any other
-per-instance differences which would justify another compatible.
-
-
-[1]: https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/a500d94cd47e279015ce22947e1ce396a7516598%5E%21/#F0
-
-[2]: https://patchwork.kernel.org/comment/25592845/
