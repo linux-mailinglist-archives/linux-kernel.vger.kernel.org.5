@@ -2,48 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD45180E287
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5633A80E28D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345792AbjLLDMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 22:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
+        id S1345802AbjLLDOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 22:14:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjLLDME (ORCPT
+        with ESMTP id S229562AbjLLDOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 22:12:04 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8496CA0;
-        Mon, 11 Dec 2023 19:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702350730;
-        bh=gp6e0CjpYzTfweZHrhPCpFYj23TVC2Kc6wxzQsjXuUA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TnvYOyi2W9RR7HEFHILNlbS4EMMJm6/0pd1bHDODwGe3Phy4BoJbA8e9bCUVUwrxg
-         iqZBAcMMv1uMFQfk7lJspKCKv2fdsrpdYo+M0YbVEQirHWe9gKtFS/Pj5QhiBpfPTN
-         IR2UMYO82IAvrghqiQghG2NJ7QuAoeG/qgPVNjOYdRZB/FtCqcv1ZR8ir3F0J3Iqm9
-         0S1qqizj5f/1zS4LFbHhQV88rjL/e7sBIPpN/JQSwVzMx4AKPOh11wo4PpaQC6tJFJ
-         f6Ec8jnhWdLC9o88CP52D7ePcP41KL8B8EUszSUpmfgudGoJsnhnX5bWANmW88xc8l
-         2u4g/4mv/e+DQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sq3Z174hCz4wc1;
-        Tue, 12 Dec 2023 14:12:09 +1100 (AEDT)
-Date:   Tue, 12 Dec 2023 14:12:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the hwmon-staging tree
-Message-ID: <20231212141208.42ece7fd@canb.auug.org.au>
+        Mon, 11 Dec 2023 22:14:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41267BA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 19:14:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5684CC433C8;
+        Tue, 12 Dec 2023 03:14:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702350889;
+        bh=STg08q9IfAR0tNeI5v/tHfkB1R036nNdGe+t8ciundo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mGGI4j1KtWPXG5XGxthX++rr+bHOo5M5KapVd0sqkY+j1yldnfhLfC4aaACy1aWI2
+         ud0jdHjYUeKrctIRwt2fGHY9fRzK5bwfSYJ1KmR9YncddGbA++5VzbVI2pvgtJqbAh
+         yYw+fBJxNluQopj+4tE4bB2UFGzhvbfup8GwOhnz9qe/gfII8lLoJobSRIyKsnzAif
+         49FFgsq4s72rZtT3vv0H+HOlgZH0Y7Sbmx9caRGP3B5Px3bbJEqSUbHf0swUY/tPJq
+         kMmhT82qgp3Bm5cewmGktHqixr54eFUb27YsauJjURm38BnJUVlEUlaAqoWBTvuQSj
+         JqU+tbzbPG3/Q==
+Date:   Mon, 11 Dec 2023 19:14:47 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zhipeng Lu <alexious@zju.edu.cn>
+Cc:     Chris Snook <chris.snook@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@kernel.org>,
+        Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Jie Yang <jie.yang@atheros.com>,
+        Jeff Garzik <jgarzik@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] ethernet: atheros: fix a memleak in
+ atl1e_setup_ring_resources
+Message-ID: <20231211191447.0408689d@kernel.org>
+In-Reply-To: <20231208082316.3384650-1-alexious@zju.edu.cn>
+References: <20231208082316.3384650-1-alexious@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RQ_/sx5xwmKjlfvedWg=mgj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,40 +57,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RQ_/sx5xwmKjlfvedWg=mgj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri,  8 Dec 2023 16:23:14 +0800 Zhipeng Lu wrote:
+> v2: Setting tx_ring->tx_buffer to NULL after free.
 
-Hi all,
+Having closer look at this driver  - it tries to free both on close and
+remove, so seems like we do indeed have to NULL-out the pointer, sigh.
 
-After merging the hwmon-staging tree, today's linux-next build (htmldocs)
-produced this warning:
+> diff --git a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> index 5935be190b9e..1bffe77439ac 100644
+> --- a/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> +++ b/drivers/net/ethernet/atheros/atl1e/atl1e_main.c
+> @@ -866,6 +866,8 @@ static int atl1e_setup_ring_resources(struct atl1e_adapter *adapter)
+>  		netdev_err(adapter->netdev, "offset(%d) > ring size(%d) !!\n",
+>  			   offset, adapter->ring_size);
+>  		err = -1;
+> +		kfree(tx_ring->tx_buffer);
+> +		tx_ring->tx_buffer = NULL;
+>  		goto failed;
 
-MAINTAINERS:27997: WARNING: unknown document: '../devicetree/bindings/hwmon=
-/ltc4286'
-
-Introduced by commit
-
-  892a1aa5d051 ("dt-bindings: hwmon: Add lltc ltc4286 driver bindings")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/RQ_/sx5xwmKjlfvedWg=mgj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV3z4gACgkQAVBC80lX
-0GwDgwf9GlNJ+bj/bA41hLvjhSxo0zswbqfs5eAkPqOQ/PJsmngkqSZTreY+Ou/5
-yiVKXy5TZlz2sulcWuOFKTQIj8ZhGAlbYVhJ7xhdNuYd6YEUJcInpFuVs8b8HlGQ
-WzdQ8/ZWdOynbCO/KXDMNHtcHUCMRbLzYcHuShzU5BJD6JDiRJ85pajp6lN6dXFm
-6KKe8mLtdv2g+/hpcKNRFhHtp8tiiffDs+Tbg7Lg512p5aSfPCk0cWx1h++VeM1F
-o7VphXlCzBZc5Sn44xGtvxicllcy/FTYHnaPyiYShRIgEmOac/RYkUaewTB0TRpr
-kYwR7h9B7LK+gCl2FygmccO6qBLmAg==
-=O9FF
------END PGP SIGNATURE-----
-
---Sig_/RQ_/sx5xwmKjlfvedWg=mgj--
+Please add a new jump target, tho, and move the freeing there.
+There's a small chance someone will add more code to this function
+and it will need to copy / paste this unwind.
+-- 
+pw-bot: cr
