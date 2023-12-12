@@ -2,779 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4028F80E488
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E575980E485
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbjLLGwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 01:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S232156AbjLLGw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232286AbjLLGwX (ORCPT
+        with ESMTP id S232266AbjLLGwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 01:52:23 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9554AED;
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AF4EB;
         Mon, 11 Dec 2023 22:52:28 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5ca119bb5ceso844512a12.1;
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9f62fca3bso68237391fa.0;
         Mon, 11 Dec 2023 22:52:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702363948; x=1702968748; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702363946; x=1702968746; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HyeLkMaO7nBv1M9w/ozn8TiJp06XqApqegP2UQ6N/8U=;
-        b=U8LSsV7iWj7itMEbPQPdyejJbna9AKYcUPR1aQUnKcOkQFPSBwTBCmoOthS2wBoThK
-         znereJ0UGlEZzwHvzWOUuS5gpMGz020AGi7WPiyeupMF3Vb2TMjOusU5WFvcWDc+dwt1
-         cGnljwBIeirV96YteUzwUagZlUUTFxIT63A9jzqzOlsYb0HArJ26kqtYjy78SFQel+xW
-         5s/HmpAS47AZHrs3QJXt1c7IY3Pz4xFwdYYyaaJiBut1O6dGxTASrKrWL3BgkxLRfmzH
-         bfkMdcxCyXmL9BUHhVC/9TOd9CedsqHmRyudkqvUt7vxaYz3jkbG3zSkf0yTc95BHs6o
-         0Ikw==
+        bh=KZo4NVf3AF8ZGR5m2uxx660ix6ln6qBZxuQ/HFN1wu4=;
+        b=go3FEHfwVzBXMoHpXV2jW0ygF+sPerDz4tSDrePz0dKZeCbxfyZs/AqznJy58CYOIB
+         MoPxqoxMRI4VdYNNU6cqj+EkWMdfdS/Lvol/hUhU5RUUx8nIGcDLUWAv/ZVN3Xz2nMWA
+         SD3E6gTEwn7p4PR7fZNcSw+zmlucQUb3d2zztPE3tv2mejhr75xTH9R+WIFCdBaKUaEP
+         oWDLxw96aiq9CGQSsL4+rSkPXi1IEfcj4vQDs4eQtYAY2ptAwYnBvVTL8toqFjw6f24c
+         lt8sSZOyOHkEAxrPvY446HBxya58cMSpgJ7aU06IVlwR0YmKI6BSfCKo/jTvGTIt5L6i
+         F1FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702363948; x=1702968748;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702363946; x=1702968746;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HyeLkMaO7nBv1M9w/ozn8TiJp06XqApqegP2UQ6N/8U=;
-        b=tMhoYR4PLORrW6sCbbbnhdbP58p6DwpLM83XhCLMa5nyHu/sLtbFYvOMcu5m8/rrVu
-         bQCVu1qhxrFZl+1uQ7B7VHbIE/B5p/WfNGqipKSAk/wZgqUPWBUIpja4kvZB7wqmky/k
-         aAPij0Nqr83swVsjQ3fiToh2FztAKn62DvdBDXYf9i11/XUxysxsXWWNF69u5llRtv9F
-         jIAPKHsCfWxetbx7ZQyA+SERixlI7IL23yZ/6VjicTyNFCmgprk7w5jsUhT68kV6kpKi
-         YzmUZNh0AKUExAWzJvWoGQrkrG+WTPowl50M8M0xMjwcZjl+jLFrHuhgcrffD0m9yktb
-         ujvg==
-X-Gm-Message-State: AOJu0YxjS68DxAUTNLIammhFjwsdXhNRac+vqvaIV8LiXdylILWWaL9o
-        46gxLENPSfkxq78utEO1+z4=
-X-Google-Smtp-Source: AGHT+IGPrN/s502pOxV2Lhd8+j5f/kkLzyrOw9gVog2ax8ouLKunGyQyX5Td2iEeDwdeM1RHcWdN+g==
-X-Received: by 2002:a17:902:c943:b0:1d0:6ffe:1e68 with SMTP id i3-20020a170902c94300b001d06ffe1e68mr3528257pla.75.1702363947855;
-        Mon, 11 Dec 2023 22:52:27 -0800 (PST)
-Received: from localhost.localdomain ([1.200.151.130])
-        by smtp.gmail.com with ESMTPSA id z3-20020a170903018300b001d0c4869725sm7855221plg.97.2023.12.11.22.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 22:52:27 -0800 (PST)
-From:   Jim Liu <jim.t90615@gmail.com>
-To:     jim.t90615@gmail.com, JJLIU0@nuvoton.com, KWLIU@nuvoton.com,
-        linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: [PATCH v9 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
-Date:   Tue, 12 Dec 2023 14:51:47 +0800
-Message-Id: <20231212065147.3475413-4-jim.t90615@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231212065147.3475413-1-jim.t90615@gmail.com>
-References: <20231212065147.3475413-1-jim.t90615@gmail.com>
+        bh=KZo4NVf3AF8ZGR5m2uxx660ix6ln6qBZxuQ/HFN1wu4=;
+        b=sOVTA31ua1nBWBWxygWHOTlEFkuwuI28RUp7lMADePNwH+uEg5/rUl6Qo0LdtJkVFN
+         gG/u0BydOg9xUt81Uay1OfllgA4SuU6zRLyL6U/TH9y/H8qnaB72WaaF3kIFWWZjL+J+
+         ABI9+wi7aqgHXB2UfRmVfHGUWVu+1cFpArthEfOSyAlGW4B8R9XIulSnTysZUH0AmlAR
+         HuFuFt6xuQtybOc8pAAQTdbA7neS3GkxjsqQyTM9leAp046svHSWiteIINn2jcT2O1xe
+         UZT2aXQxQYjWb2TuEwdaXkhAcNgj0J6AqvgXC0XqoT5FsYqlCw0C1rtlHxDU9xAWxyK6
+         7KOw==
+X-Gm-Message-State: AOJu0Yy1z4cnAcz7i2UGnws/lGdQZmOeZEqnUSHijSed8Lw7ksfOSMLH
+        o7cuLJ2tmc6apmtTeb6vYzNUfNR0AkpBR2Fgtyg=
+X-Google-Smtp-Source: AGHT+IEgznlicpRXzIo7QVmC4FLAv0DjsNVfS/JO4zV5pX1iElneh0jEkEQOXzst71I9Sb2gALJ/tz4LSshn5I2XDiA=
+X-Received: by 2002:a2e:bd03:0:b0:2cc:20bd:e3a8 with SMTP id
+ n3-20020a2ebd03000000b002cc20bde3a8mr2673486ljq.59.1702363946191; Mon, 11 Dec
+ 2023 22:52:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
+ <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
+In-Reply-To: <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Tue, 12 Dec 2023 14:52:08 +0800
+Message-ID: <CAMgjq7AtceR-CXnKFfQHM3qi0y4oGyJ4_sw_uh5EkpXCBzkCXg@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Charan Teja Kalla <quic_charante@quicinc.com>,
+        Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Nuvoton BMC NPCM7xx/NPCM8xx sgpio driver support.
-Nuvoton NPCM SGPIO module is combine serial to parallel IC (HC595)
-and parallel to serial IC (HC165), and use APB3 clock to control it.
-This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
-BMC can use this driver to increase 64 GPI pins and 64 GPO pins to use.
+Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=97=A5=E5=
+=91=A8=E4=BA=8C 06:07=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Dec 8, 2023 at 1:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
+te:
+> >
+> > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=888=E6=97=A5=
+=E5=91=A8=E4=BA=94 14:14=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > Unmapped folios accessed through file descriptors can be
+> > > underprotected. Those folios are added to the oldest generation based
+> > > on:
+> > > 1. The fact that they are less costly to reclaim (no need to walk the
+> > >    rmap and flush the TLB) and have less impact on performance (don't
+> > >    cause major PFs and can be non-blocking if needed again).
+> > > 2. The observation that they are likely to be single-use. E.g., for
+> > >    client use cases like Android, its apps parse configuration files
+> > >    and store the data in heap (anon); for server use cases like MySQL=
+,
+> > >    it reads from InnoDB files and holds the cached data for tables in
+> > >    buffer pools (anon).
+> > >
+> > > However, the oldest generation can be very short lived, and if so, it
+> > > doesn't provide the PID controller with enough time to respond to a
+> > > surge of refaults. (Note that the PID controller uses weighted
+> > > refaults and those from evicted generations only take a half of the
+> > > whole weight.) In other words, for a short lived generation, the
+> > > moving average smooths out the spike quickly.
+> > >
+> > > To fix the problem:
+> > > 1. For folios that are already on LRU, if they can be beyond the
+> > >    tracking range of tiers, i.e., five accesses through file
+> > >    descriptors, move them to the second oldest generation to give the=
+m
+> > >    more time to age. (Note that tiers are used by the PID controller
+> > >    to statistically determine whether folios accessed multiple times
+> > >    through file descriptors are worth protecting.)
+> > > 2. When adding unmapped folios to LRU, adjust the placement of them s=
+o
+> > >    that they are not too close to the tail. The effect of this is
+> > >    similar to the above.
+> > >
+> > > On Android, launching 55 apps sequentially:
+> > >                            Before     After      Change
+> > >   workingset_refault_anon  25641024   25598972   0%
+> > >   workingset_refault_file  115016834  106178438  -8%
+> >
+> > Hi Yu,
+> >
+> > Thanks you for your amazing works on MGLRU.
+> >
+> > I believe this is the similar issue I was trying to resolve previously:
+> > https://lwn.net/Articles/945266/
+> > The idea is to use refault distance to decide if the page should be
+> > place in oldest generation or some other gen, which per my test,
+> > worked very well, and we have been using refault distance for MGLRU in
+> > multiple workloads.
+> >
+> > There are a few issues left in my previous RFC series, like anon pages
+> > in MGLRU shouldn't be considered, I wanted to collect feedback or test
+> > cases, but unfortunately it seems didn't get too much attention
+> > upstream.
+> >
+> > I think both this patch and my previous series are for solving the
+> > file pages underpertected issue, and I did a quick test using this
+> > series, for mongodb test, refault distance seems still a better
+> > solution (I'm not saying these two optimization are mutually exclusive
+> > though, just they do have some conflicts in implementation and solving
+> > similar problem):
+> >
+> > Previous result:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Execution Results after 905 seconds
+> > ------------------------------------------------------------------
+> >                   Executed        Time (=C2=B5s)       Rate
+> >   STOCK_LEVEL     2542            27121571486.2   0.09 txn/s
+> > ------------------------------------------------------------------
+> >   TOTAL           2542            27121571486.2   0.09 txn/s
+> >
+> > This patch:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Execution Results after 900 seconds
+> > ------------------------------------------------------------------
+> >                   Executed        Time (=C2=B5s)       Rate
+> >   STOCK_LEVEL     1594            27061522574.4   0.06 txn/s
+> > ------------------------------------------------------------------
+> >   TOTAL           1594            27061522574.4   0.06 txn/s
+> >
+> > Unpatched version is always around ~500.
+>
+> Thanks for the test results!
+>
+> > I think there are a few points here:
+> > - Refault distance make use of page shadow so it can better
+> > distinguish evicted pages of different access pattern (re-access
+> > distance).
+> > - Throttled refault distance can help hold part of workingset when
+> > memory is too small to hold the whole workingset.
+> >
+> > So maybe part of this patch and the bits of previous series can be
+> > combined to work better on this issue, how do you think?
+>
+> I'll try to find some time this week to look at your RFC. It'd be a
 
-Signed-off-by: Jim Liu <jim.t90615@gmail.com>
----
-Changes for v9:
-   - fix kernel rebot test warning
-Changes for v8:
-   - Remove OF_GPIO/GPIO_GENERIC and redundant assignments
-   - Use GENMASK() and BIT()
-   - Use dev_WARN and dev_err_probe
-   - Check indentation issue
-   - Use raw_spinlock_t
-Changes for v7:
-   - Remove unused variable
-   - Remove return in bank_reg function
-   - Fix warning for const issue
----
- drivers/gpio/Kconfig           |   7 +
- drivers/gpio/Makefile          |   1 +
- drivers/gpio/gpio-npcm-sgpio.c | 635 +++++++++++++++++++++++++++++++++
- 3 files changed, 643 insertions(+)
- create mode 100644 drivers/gpio/gpio-npcm-sgpio.c
+Thanks!
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index b3a133ed31ee..efbdc93819d4 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -478,6 +478,13 @@ config GPIO_MXS
- 	select GPIO_GENERIC
- 	select GENERIC_IRQ_CHIP
- 
-+config GPIO_NPCM_SGPIO
-+	bool "Nuvoton SGPIO support"
-+	depends on ARCH_NPCM || COMPILE_TEST
-+	select GPIOLIB_IRQCHIP
-+	help
-+	  Say Y here to support Nuvoton NPCM7XX/NPCM8XX SGPIO functionality.
-+
- config GPIO_OCTEON
- 	tristate "Cavium OCTEON GPIO"
- 	depends on CAVIUM_OCTEON_SOC
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index eb73b5d633eb..373aa2943de5 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -116,6 +116,7 @@ obj-$(CONFIG_GPIO_MT7621)		+= gpio-mt7621.o
- obj-$(CONFIG_GPIO_MVEBU)		+= gpio-mvebu.o
- obj-$(CONFIG_GPIO_MXC)			+= gpio-mxc.o
- obj-$(CONFIG_GPIO_MXS)			+= gpio-mxs.o
-+obj-$(CONFIG_GPIO_NPCM_SGPIO)		+= gpio-npcm-sgpio.o
- obj-$(CONFIG_GPIO_OCTEON)		+= gpio-octeon.o
- obj-$(CONFIG_GPIO_OMAP)			+= gpio-omap.o
- obj-$(CONFIG_GPIO_PALMAS)		+= gpio-palmas.o
-diff --git a/drivers/gpio/gpio-npcm-sgpio.c b/drivers/gpio/gpio-npcm-sgpio.c
-new file mode 100644
-index 000000000000..1fb9750cb70e
---- /dev/null
-+++ b/drivers/gpio/gpio-npcm-sgpio.c
-@@ -0,0 +1,635 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Nuvoton NPCM Serial GPIO Driver
-+ *
-+ * Copyright (C) 2021 Nuvoton Technologies
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/hashtable.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/spinlock.h>
-+#include <linux/string.h>
-+
-+#define MAX_NR_HW_SGPIO		64
-+
-+#define  NPCM_IOXCFG1		0x2A
-+#define  NPCM_IOXCFG1_SFT_CLK	GENMASK(3, 0)
-+#define  NPCM_IOXCFG1_SCLK_POL	BIT(4)
-+#define  NPCM_IOXCFG1_LDSH_POL	BIT(5)
-+
-+#define  NPCM_IOXCTS			0x28
-+#define  NPCM_IOXCTS_IOXIF_EN		BIT(7)
-+#define  NPCM_IOXCTS_RD_MODE		GENMASK(2, 1)
-+#define  NPCM_IOXCTS_RD_MODE_PERIODIC	BIT(2)
-+
-+#define  NPCM_IOXCFG2		0x2B
-+#define  NPCM_IOXCFG2_PORT	GENMASK(3, 0)
-+
-+#define  NPCM_IXOEVCFG_MASK	GENMASK(1, 0)
-+#define  NPCM_IXOEVCFG_FALLING	BIT(1)
-+#define  NPCM_IXOEVCFG_RISING	BIT(0)
-+#define  NPCM_IXOEVCFG_BOTH	(NPCM_IXOEVCFG_FALLING | NPCM_IXOEVCFG_RISING)
-+
-+#define NPCM_CLK_MHZ	8000000
-+
-+#define GPIO_BANK(x)    ((x) / 8)
-+#define GPIO_BIT(x)     ((x) % 8)
-+
-+/*
-+ * Select the frequency of shift clock.
-+ * The shift clock is a division of the APB clock.
-+ */
-+struct npcm_clk_cfg {
-+	unsigned int	*sft_clk;
-+	unsigned int	*clk_sel;
-+	unsigned int	cfg_opt;
-+};
-+
-+struct npcm_sgpio {
-+	struct gpio_chip chip;
-+	struct clk *pclk;
-+	struct irq_chip intc;
-+	raw_spinlock_t lock;	/*protect event config*/
-+	void __iomem *base;
-+	int irq;
-+	u8 nin_sgpio;
-+	u8 nout_sgpio;
-+	u8 in_port;
-+	u8 out_port;
-+	u8 int_type[MAX_NR_HW_SGPIO];
-+};
-+
-+struct npcm_sgpio_bank {
-+	u8 rdata_reg;
-+	u8 wdata_reg;
-+	u8 event_config;
-+	u8 event_status;
-+};
-+
-+enum npcm_sgpio_reg {
-+	READ_DATA,
-+	WRITE_DATA,
-+	EVENT_CFG,
-+	EVENT_STS,
-+};
-+
-+static const struct npcm_sgpio_bank npcm_sgpio_banks[] = {
-+	{
-+		.wdata_reg = 0x00,
-+		.rdata_reg = 0x08,
-+		.event_config = 0x10,
-+		.event_status = 0x20,
-+	},
-+	{
-+		.wdata_reg = 0x01,
-+		.rdata_reg = 0x09,
-+		.event_config = 0x12,
-+		.event_status = 0x21,
-+	},
-+	{
-+		.wdata_reg = 0x02,
-+		.rdata_reg = 0x0a,
-+		.event_config = 0x14,
-+		.event_status = 0x22,
-+	},
-+	{
-+		.wdata_reg = 0x03,
-+		.rdata_reg = 0x0b,
-+		.event_config = 0x16,
-+		.event_status = 0x23,
-+	},
-+	{
-+		.wdata_reg = 0x04,
-+		.rdata_reg = 0x0c,
-+		.event_config = 0x18,
-+		.event_status = 0x24,
-+	},
-+	{
-+		.wdata_reg = 0x05,
-+		.rdata_reg = 0x0d,
-+		.event_config = 0x1a,
-+		.event_status = 0x25,
-+	},
-+	{
-+		.wdata_reg = 0x06,
-+		.rdata_reg = 0x0e,
-+		.event_config = 0x1c,
-+		.event_status = 0x26,
-+	},
-+	{
-+		.wdata_reg = 0x07,
-+		.rdata_reg = 0x0f,
-+		.event_config = 0x1e,
-+		.event_status = 0x27,
-+	},
-+
-+};
-+
-+static void __iomem *bank_reg(struct npcm_sgpio *gpio,
-+			      const struct npcm_sgpio_bank *bank,
-+			      const enum npcm_sgpio_reg reg)
-+{
-+	switch (reg) {
-+	case READ_DATA:
-+		return gpio->base + bank->rdata_reg;
-+	case WRITE_DATA:
-+		return gpio->base + bank->wdata_reg;
-+	case EVENT_CFG:
-+		return gpio->base + bank->event_config;
-+	case EVENT_STS:
-+		return gpio->base + bank->event_status;
-+	default:
-+		/* actually if code runs to here, it's an error case */
-+		dev_WARN(gpio->chip.parent, "Getting here is an error condition");
-+	}
-+	return 0;
-+}
-+
-+static const struct npcm_sgpio_bank *offset_to_bank(unsigned int offset)
-+{
-+	unsigned int bank = GPIO_BANK(offset);
-+
-+	return &npcm_sgpio_banks[bank];
-+}
-+
-+static void irqd_to_npcm_sgpio_data(struct irq_data *d,
-+				    struct npcm_sgpio **gpio,
-+				    const struct npcm_sgpio_bank **bank,
-+				    u8 *bit, unsigned int *offset)
-+{
-+	struct npcm_sgpio *internal;
-+
-+	*offset = irqd_to_hwirq(d);
-+	internal = irq_data_get_irq_chip_data(d);
-+
-+	*gpio = internal;
-+	*offset -= internal->nout_sgpio;
-+	*bank = offset_to_bank(*offset);
-+	*bit = GPIO_BIT(*offset);
-+}
-+
-+static int npcm_sgpio_init_port(struct npcm_sgpio *gpio)
-+{
-+	u8 in_port, out_port, set_port, reg;
-+
-+	in_port = GPIO_BANK(gpio->nin_sgpio);
-+	if (GPIO_BIT(gpio->nin_sgpio) > 0)
-+		in_port += 1;
-+
-+	out_port = GPIO_BANK(gpio->nout_sgpio);
-+	if (GPIO_BIT(gpio->nout_sgpio) > 0)
-+		out_port += 1;
-+
-+	gpio->in_port = in_port;
-+	gpio->out_port = out_port;
-+	set_port = ((out_port & NPCM_IOXCFG2_PORT) << 4) | (in_port & NPCM_IOXCFG2_PORT);
-+	iowrite8(set_port, gpio->base + NPCM_IOXCFG2);
-+
-+	reg = ioread8(gpio->base + NPCM_IOXCFG2);
-+
-+	return reg == set_port ? 0 : -EINVAL;
-+
-+}
-+
-+static int npcm_sgpio_dir_in(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	return offset <	gpio->nout_sgpio ? -EINVAL : 0;
-+
-+}
-+
-+static int npcm_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int val)
-+{
-+	gc->set(gc, offset, val);
-+
-+	return 0;
-+
-+}
-+
-+static int npcm_sgpio_get_direction(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+
-+	if (offset > gpio->chip.ngpio)
-+		return -EINVAL;
-+
-+	if (offset < gpio->nout_sgpio)
-+		return GPIO_LINE_DIRECTION_OUT;
-+
-+	return GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static void npcm_sgpio_set(struct gpio_chip *gc, unsigned int offset, int val)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	const struct  npcm_sgpio_bank *bank = offset_to_bank(offset);
-+	void __iomem *addr;
-+	u8 reg = 0;
-+
-+	addr = bank_reg(gpio, bank, WRITE_DATA);
-+	reg = ioread8(addr);
-+
-+	if (val)
-+		reg |= (val << GPIO_BIT(offset));
-+	else
-+		reg &= ~(1 << GPIO_BIT(offset));
-+
-+	iowrite8(reg, addr);
-+}
-+
-+static int npcm_sgpio_get(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	const struct  npcm_sgpio_bank *bank;
-+	void __iomem *addr;
-+	u8 reg;
-+	int dir;
-+
-+	dir = npcm_sgpio_get_direction(gc, offset);
-+	if (dir == 0) {
-+		bank = offset_to_bank(offset);
-+
-+		addr = bank_reg(gpio, bank, WRITE_DATA);
-+		reg = ioread8(addr);
-+		reg = !!(reg & GPIO_BIT(offset));
-+	} else {
-+		offset -= gpio->nout_sgpio;
-+		bank = offset_to_bank(offset);
-+
-+		addr = bank_reg(gpio, bank, READ_DATA);
-+		reg = ioread8(addr);
-+		reg = !!(reg & GPIO_BIT(offset));
-+	}
-+
-+	return reg;
-+}
-+
-+static void npcm_sgpio_setup_enable(struct npcm_sgpio *gpio, bool enable)
-+{
-+	u8 reg = 0;
-+
-+	reg = ioread8(gpio->base + NPCM_IOXCTS);
-+	reg = reg & ~NPCM_IOXCTS_RD_MODE;
-+	reg = reg | NPCM_IOXCTS_RD_MODE_PERIODIC;
-+
-+	if (enable) {
-+		reg |= NPCM_IOXCTS_IOXIF_EN;
-+		iowrite8(reg, gpio->base + NPCM_IOXCTS);
-+	} else {
-+		reg &= ~NPCM_IOXCTS_IOXIF_EN;
-+		iowrite8(reg, gpio->base + NPCM_IOXCTS);
-+	}
-+}
-+
-+static int npcm_sgpio_setup_clk(struct npcm_sgpio *gpio,
-+				const struct npcm_clk_cfg *clk_cfg)
-+{
-+	unsigned long apb_freq;
-+	u32 val;
-+	u8 tmp;
-+	int i;
-+
-+	apb_freq = clk_get_rate(gpio->pclk);
-+	tmp = ioread8(gpio->base + NPCM_IOXCFG1) & ~NPCM_IOXCFG1_SFT_CLK;
-+
-+	for (i = 0; i < clk_cfg->cfg_opt; i++) {
-+		val = apb_freq / clk_cfg->sft_clk[i];
-+		if ((NPCM_CLK_MHZ < val) && (i != 0) ) {
-+			iowrite8(clk_cfg->clk_sel[i-1] | tmp, gpio->base + NPCM_IOXCFG1);
-+			return 0;
-+		} else if (i == (clk_cfg->cfg_opt-1) && (NPCM_CLK_MHZ > val)) {
-+			iowrite8(clk_cfg->clk_sel[i] | tmp, gpio->base + NPCM_IOXCFG1);
-+			return 0;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static void npcm_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
-+					   unsigned long *valid_mask, unsigned int ngpios)
-+{
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	int n = gpio->nin_sgpio;
-+
-+	/* input GPIOs in the high range */
-+	bitmap_set(valid_mask, gpio->nout_sgpio, n);
-+	bitmap_clear(valid_mask, 0, gpio->nout_sgpio);
-+}
-+
-+static void npcm_sgpio_irq_set_mask(struct irq_data *d, bool set)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *addr;
-+	unsigned int offset;
-+	u16 reg, type;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+	addr = bank_reg(gpio, bank, EVENT_CFG);
-+
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+
-+	npcm_sgpio_setup_enable(gpio, false);
-+
-+	reg = ioread16(addr);
-+	if (set) {
-+		reg &= ~(NPCM_IXOEVCFG_MASK << (bit * 2));
-+	} else {
-+		type = gpio->int_type[offset];
-+		reg |= (type << (bit * 2));
-+	}
-+
-+	iowrite16(reg, addr);
-+
-+	npcm_sgpio_setup_enable(gpio, true);
-+
-+	addr = bank_reg(gpio, bank, EVENT_STS);
-+	reg = ioread8(addr);
-+	reg |= BIT(bit);
-+	iowrite8(reg, addr);
-+
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+}
-+
-+static void npcm_sgpio_irq_ack(struct irq_data *d)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *status_addr;
-+	unsigned int offset;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+	status_addr = bank_reg(gpio, bank, EVENT_STS);
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+	iowrite8(BIT(bit), status_addr);
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+}
-+
-+static void npcm_sgpio_irq_mask(struct irq_data *d)
-+{
-+	npcm_sgpio_irq_set_mask(d, true);
-+}
-+
-+static void npcm_sgpio_irq_unmask(struct irq_data *d)
-+{
-+	npcm_sgpio_irq_set_mask(d, false);
-+}
-+
-+static int npcm_sgpio_set_type(struct irq_data *d, unsigned int type)
-+{
-+	const struct npcm_sgpio_bank *bank;
-+	irq_flow_handler_t handler;
-+	struct npcm_sgpio *gpio;
-+	unsigned long flags;
-+	void __iomem *addr;
-+	unsigned int offset;
-+	u16 reg, val;
-+	u8 bit;
-+
-+	irqd_to_npcm_sgpio_data(d, &gpio, &bank, &bit, &offset);
-+
-+	switch (type & IRQ_TYPE_SENSE_MASK) {
-+	case IRQ_TYPE_EDGE_BOTH:
-+		val = NPCM_IXOEVCFG_BOTH;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_EDGE_RISING:
-+		val = NPCM_IXOEVCFG_RISING;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		val = NPCM_IXOEVCFG_FALLING;
-+		handler = handle_edge_irq;
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		val = NPCM_IXOEVCFG_RISING;
-+		handler = handle_level_irq;
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		val = NPCM_IXOEVCFG_FALLING;
-+		handler = handle_level_irq;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	gpio->int_type[offset] = val;
-+
-+	raw_spin_lock_irqsave(&gpio->lock, flags);
-+	npcm_sgpio_setup_enable(gpio, false);
-+	addr = bank_reg(gpio, bank, EVENT_CFG);
-+	reg = ioread16(addr);
-+
-+	reg |= (val << (bit * 2));
-+
-+	iowrite16(reg, addr);
-+	npcm_sgpio_setup_enable(gpio, true);
-+	raw_spin_unlock_irqrestore(&gpio->lock, flags);
-+
-+	irq_set_handler_locked(d, handler);
-+
-+	return 0;
-+}
-+
-+static void npcm_sgpio_irq_handler(struct irq_desc *desc)
-+{
-+	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
-+	struct irq_chip *ic = irq_desc_get_chip(desc);
-+	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
-+	unsigned int i, j, girq;
-+	unsigned long reg;
-+
-+	chained_irq_enter(ic, desc);
-+
-+	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
-+		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
-+
-+		reg = ioread8(bank_reg(gpio, bank, EVENT_STS));
-+		for_each_set_bit(j, &reg, 8) {
-+			girq = irq_find_mapping(gc->irq.domain, i * 8 + gpio->nout_sgpio + j);
-+			generic_handle_irq(girq);
-+		}
-+	}
-+
-+	chained_irq_exit(ic, desc);
-+}
-+
-+static const struct irq_chip sgpio_irq_chip = {
-+	.name = "sgpio-irq",
-+	.irq_ack = npcm_sgpio_irq_ack,
-+	.irq_mask = npcm_sgpio_irq_mask,
-+	.irq_unmask = npcm_sgpio_irq_unmask,
-+	.irq_set_type = npcm_sgpio_set_type,
-+	.flags	= IRQCHIP_IMMUTABLE | IRQCHIP_MASK_ON_SUSPEND,
-+	GPIOCHIP_IRQ_RESOURCE_HELPERS,
-+};
-+
-+static int npcm_sgpio_setup_irqs(struct npcm_sgpio *gpio,
-+				 struct platform_device *pdev)
-+{
-+	int rc, i;
-+	struct gpio_irq_chip *irq;
-+
-+	rc = platform_get_irq(pdev, 0);
-+	if (rc < 0)
-+		return rc;
-+
-+	gpio->irq = rc;
-+
-+	npcm_sgpio_setup_enable(gpio, false);
-+
-+	/* Disable IRQ and clear Interrupt status registers for all SGPIO Pins. */
-+	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
-+		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
-+
-+		iowrite16(0x0000, bank_reg(gpio, bank, EVENT_CFG));
-+		iowrite8(0xff, bank_reg(gpio, bank, EVENT_STS));
-+	}
-+
-+	irq = &gpio->chip.irq;
-+	gpio_irq_chip_set_chip(irq, &sgpio_irq_chip);
-+	irq->init_valid_mask = npcm_sgpio_irq_init_valid_mask;
-+	irq->handler = handle_bad_irq;
-+	irq->default_type = IRQ_TYPE_NONE;
-+	irq->parent_handler = npcm_sgpio_irq_handler;
-+	irq->parent_handler_data = gpio;
-+	irq->parents = &gpio->irq;
-+	irq->num_parents = 1;
-+
-+	return 0;
-+}
-+
-+static unsigned int npcm750_SFT_CLK[] = {
-+	1024, 32, 8, 4, 3, 2,
-+};
-+
-+static unsigned int npcm750_CLK_SEL[] = {
-+	0x00, 0x05, 0x07, 0x0C, 0x0D, 0x0E,
-+};
-+
-+static unsigned int npcm845_SFT_CLK[] = {
-+	1024, 32, 16, 8, 4,
-+};
-+
-+static unsigned int npcm845_CLK_SEL[] = {
-+	0x00, 0x05, 0x06, 0x07, 0x0C,
-+};
-+
-+static struct npcm_clk_cfg npcm750_sgpio_pdata = {
-+	.sft_clk = npcm750_SFT_CLK,
-+	.clk_sel = npcm750_CLK_SEL,
-+	.cfg_opt = 6,
-+};
-+
-+static const struct npcm_clk_cfg npcm845_sgpio_pdata = {
-+	.sft_clk = npcm845_SFT_CLK,
-+	.clk_sel = npcm845_CLK_SEL,
-+	.cfg_opt = 5,
-+};
-+
-+static const struct of_device_id npcm_sgpio_of_table[] = {
-+	{ .compatible = "nuvoton,npcm750-sgpio", .data = &npcm750_sgpio_pdata, },
-+	{ .compatible = "nuvoton,npcm845-sgpio", .data = &npcm845_sgpio_pdata, },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, npcm_sgpio_of_table);
-+
-+static int npcm_sgpio_probe(struct platform_device *pdev)
-+{
-+	struct npcm_sgpio *gpio;
-+	const struct npcm_clk_cfg *clk_cfg;
-+	int rc;
-+	u32 nin_gpios, nout_gpios;
-+
-+	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
-+	if (!gpio)
-+		return -ENOMEM;
-+
-+	gpio->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(gpio->base))
-+		return PTR_ERR(gpio->base);
-+
-+	clk_cfg = device_get_match_data(&pdev->dev);
-+	if (!clk_cfg)
-+		return -EINVAL;
-+
-+	rc = device_property_read_u32(&pdev->dev, "nuvoton,input-ngpios", &nin_gpios);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Could not read ngpios property\n");
-+
-+	rc = device_property_read_u32(&pdev->dev, "nuvoton,output-ngpios", &nout_gpios);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Could not read ngpios property\n");
-+
-+	gpio->nin_sgpio = nin_gpios;
-+	gpio->nout_sgpio = nout_gpios;
-+	if (gpio->nin_sgpio > MAX_NR_HW_SGPIO || gpio->nout_sgpio > MAX_NR_HW_SGPIO) {
-+		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: input: %d output: %d\n",
-+			MAX_NR_HW_SGPIO, nin_gpios, nout_gpios);
-+		return -EINVAL;
-+	}
-+
-+	gpio->pclk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(gpio->pclk)) {
-+		dev_err(&pdev->dev, "Could not get pclk\n");
-+		return PTR_ERR(gpio->pclk);
-+	}
-+
-+	rc = npcm_sgpio_setup_clk(gpio, clk_cfg);
-+	if (rc < 0)
-+		return dev_err_probe(&pdev->dev, rc, "Failed to setup clock\n");
-+
-+	raw_spin_lock_init(&gpio->lock);
-+	gpio->chip.parent = &pdev->dev;
-+	gpio->chip.ngpio = gpio->nin_sgpio + gpio->nout_sgpio;
-+	gpio->chip.direction_input = npcm_sgpio_dir_in;
-+	gpio->chip.direction_output = npcm_sgpio_dir_out;
-+	gpio->chip.get_direction = npcm_sgpio_get_direction;
-+	gpio->chip.get = npcm_sgpio_get;
-+	gpio->chip.set = npcm_sgpio_set;
-+	gpio->chip.label = dev_name(&pdev->dev);
-+	gpio->chip.base = -1;
-+
-+	rc = npcm_sgpio_init_port(gpio);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = npcm_sgpio_setup_irqs(gpio, pdev);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
-+	if (rc < 0)
-+		return rc;
-+
-+	npcm_sgpio_setup_enable(gpio, true);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver npcm_sgpio_driver = {
-+	.driver = {
-+		.name = KBUILD_MODNAME,
-+		.of_match_table = npcm_sgpio_of_table,
-+	},
-+	.probe	= npcm_sgpio_probe,
-+};
-+module_platform_driver(npcm_sgpio_driver);
-+
-+MODULE_AUTHOR("Jim Liu <jjliu0@nuvoton.com>");
-+MODULE_AUTHOR("Joseph Liu <kwliu@nuvoton.com>");
-+MODULE_DESCRIPTION("Nuvoton NPCM Serial GPIO Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+> lot easier for me if you could share
+> 1. your latest tree, preferably based on the mainline, and
+> 2. your VM image containing the above test.
 
+Sure, I'll update the RFC and try to provide an easier test reproducer.
