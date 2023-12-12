@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C4580F7C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B2680F7CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377335AbjLLUV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S1377339AbjLLUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377223AbjLLUV0 (ORCPT
+        with ESMTP id S1377293AbjLLUWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:21:26 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E908CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:21:32 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c3984f0cdso46161895e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:21:32 -0800 (PST)
+        Tue, 12 Dec 2023 15:22:36 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE01D5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:22:40 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bffb64178so7253004e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:22:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702412490; x=1703017290; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702412559; x=1703017359; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wZErAioQf1LZERsxfMR3lKDsZegEE6G271TmDjbBTrk=;
-        b=hNjSeSwUm9XHQEEc+Vh8If8Y9r3RWQhNkArqgHbBCFTOKgC6oj8V4s+VziIhaR5eQR
-         PyeslvWnx55vcDOBZyfWKs0uCfREFrAn1dN3OLxDayuKATP5LikS9zl2Ss4vxTm12bql
-         tzKh6eZwF3B5HRq9Nn5o3NWnvpZfvWB4sTBogU01g7R1i50oHIIrpFMaMDV1pIOpi4ph
-         hikTPGAniZXk0HIY8qZhjDwEWmOJ+ZoF70JvjepY1+teAWRpPTe1BOA0EC6ZHaDRIMBY
-         iOn+d6NPbo/pmiabnqOwfX33ME7fhSVOrIdRuLk51oqlYZdAq8zcUSfcsnt8aJqzAhrp
-         Hrlg==
+        bh=xuNzKiLraPrIuS1goHgIt7bHljtI9RX7C3sKU6VhhOE=;
+        b=L+dBl+2H2ZUw3Soz6331AxpB0xCSEilJb+1EJu6T5pUiUxEz/oZNsbbWQBKUM+93kx
+         X46sJAjeSBBTfVHX+eCjjWoYctBID2BQ1RYjjaCe9cpn6EoDR99YdjlMsZr0Vn3QjtKz
+         oOOn8RtlM6cOMle/8JHnwyOFC754U00RZWopj+ylyMOvUW7lkvscr7l7C9t9Xfuw6OkG
+         8SZzcCL+r4mHioUzwmMqZmW5ny+tZYC1YGIQQYn0avblhLXYCNi4ZISiZH8x1NXFTuH4
+         3XcjioR7hG5GZ9Wl1GEPrePuSDMtI6H2TjOutppd72P1/qBrfEZVKn8b73W0umibF0s+
+         HjOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702412490; x=1703017290;
+        d=1e100.net; s=20230601; t=1702412559; x=1703017359;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZErAioQf1LZERsxfMR3lKDsZegEE6G271TmDjbBTrk=;
-        b=sdCPwNwneSNzRtEv8TxOKZFf+1EQ5FHCPfYhboZEvvHLNSiMg2k9ke5ycLTXqrzOhy
-         akbxdMKypAPu7zntfbNoDa9AKLJyzU9Nvh/9Jw7on+Nrep2GSLruUUXpTBgz7Hm71jzm
-         sxG3Q75e6CEdwr0gZTpH6is4O93WaAh6W8E9TmOVkhbjQoZrI1kyz8Hwa/Qc27mJmBUd
-         Iqk1pkFCn6XJwwgWUh3NCo77pigY93ir8x09l2QrVcCtu9vDHyQGSlUnuwBWOIEdDdx/
-         8Ozl151rw2btOWwx35EsF+vL4yr1ApfP8ciDyu2UivfGy4Z7STAN3BwjIyI//0zAf0mY
-         4k/A==
-X-Gm-Message-State: AOJu0YypHT1RZWOCGfLLA+oEtslBpsusGHoaEC+7o6KhodTEGvEYJASE
-        E+QF7ZsnlYgtOUIGvH51Id4OlA==
-X-Google-Smtp-Source: AGHT+IHCvjjcxkTZ8tLlmQz/LBPpAEuUcszYII3Aol0l37yJ2R7Y+P0aPz+zLd00EpkfPVJplPfJ2g==
-X-Received: by 2002:a7b:cd15:0:b0:40c:29a7:643f with SMTP id f21-20020a7bcd15000000b0040c29a7643fmr3983987wmj.131.1702412490596;
-        Tue, 12 Dec 2023 12:21:30 -0800 (PST)
+        bh=xuNzKiLraPrIuS1goHgIt7bHljtI9RX7C3sKU6VhhOE=;
+        b=WDndxVRvGMAm8g5nhLFiKjn64lmAcWVc4CFUyRy+89k/JJ2y88wwtkI8BJKbklbZ9+
+         1JpFgnXW5e4DVOLf59OjHjZpSJiKIVFfBJ6SnhjYQPPm4MiMtPZ9klF1814Ix7jBnvt2
+         4P47n025JzIQSNlHEMwIc7FIwbOnMzuxEcrduJhF61Y1rU7ckt6zlAiBkjHbCemWCQVG
+         eyF+P3bv3+sTEC9uMnAU+M04bFFgzSqrJms7704HKVJXw6ykZ+n0N8w9dPlqH08KIGYp
+         YIwH1QWlz43uFp/0zqThpvv6xmWmR+JUzSfm21G1CS25OTJVYJXHHq/FPzsmd7oLh3Pk
+         z9Kw==
+X-Gm-Message-State: AOJu0Yy3zqNkd8LIRNTWfD5EnDwr1Q8EFYfZrBfvMj6EydwImIpVXqS2
+        9l/IbZ+JpzAsAPLnw1W6irbtqw==
+X-Google-Smtp-Source: AGHT+IES0k6YYyk2hoPP+SRjXnjQtNDkCUnv5imzN76RfFL40qTM72hPddzSkHxtjlR8lxL7KVD9yA==
+X-Received: by 2002:a05:6512:3146:b0:50b:fadc:dddb with SMTP id s6-20020a056512314600b0050bfadcdddbmr2979783lfi.93.1702412558918;
+        Tue, 12 Dec 2023 12:22:38 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a1f738318a5sm6178368ejc.155.2023.12.12.12.21.28
+        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a1f738318a5sm6178368ejc.155.2023.12.12.12.22.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 12:21:30 -0800 (PST)
-Message-ID: <72a749b9-b9be-4496-9bcc-37519044c109@linaro.org>
-Date:   Tue, 12 Dec 2023 21:21:27 +0100
+        Tue, 12 Dec 2023 12:22:38 -0800 (PST)
+Message-ID: <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
+Date:   Tue, 12 Dec 2023 21:22:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 4/8] ARM: dts: aspeed: System1: Add i2c and muxes
+Subject: Re: [PATCH v1 5/8] ARM: dts: aspeed: System1: Voltage regulators
 Content-Language: en-US
 To:     Ninad Palsule <ninad@linux.ibm.com>, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -72,7 +72,7 @@ Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
         linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
         geissonator@yahoo.com
 References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-5-ninad@linux.ibm.com>
+ <20231212164004.1683589-6-ninad@linux.ibm.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,11 +118,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231212164004.1683589-5-ninad@linux.ibm.com>
+In-Reply-To: <20231212164004.1683589-6-ninad@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -132,214 +132,50 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 12/12/2023 17:40, Ninad Palsule wrote:
-> This commit adds i2c devices and muxes.
+> This commit adds different voltage regulators.
 > 
 > Tested:
 >     This board is tested using the simics simulator.
 > 
 > Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
 > ---
->  .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 577 ++++++++++++++++++
->  1 file changed, 577 insertions(+)
+>  .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 266 ++++++++++++++++++
+
+Squash it.
+
+>  1 file changed, 266 insertions(+)
 > 
-
-Why do you split new submission into multiple chunks? The logical
-feature here is new board, so all your DTS patches adding new board
-should be in one patch.
-
 > diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
-> index 01291b407f59..0557bff9f36a 100644
+> index 0557bff9f36a..b8e7e52d4600 100644
 > --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
 > +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
-> @@ -11,6 +11,65 @@ / {
->  	model = "System1";
->  	compatible = "ibm,system1-bmc", "aspeed,ast2600";
->  
-> +	aliases {
-> +		i2c16 = &i2c8mux1chn0;
-> +		i2c17 = &i2c8mux1chn1;
-> +		i2c18 = &i2c8mux1chn2;
-> +		i2c19 = &i2c8mux1chn3;
-> +		i2c20 = &i2c8mux1chn4;
-> +		i2c21 = &i2c8mux1chn5;
-> +		i2c22 = &i2c8mux1chn6;
-> +		i2c23 = &i2c8mux1chn7;
-> +		i2c24 = &i2c3mux0chn0;
-> +		i2c25 = &i2c3mux0chn1;
-> +		i2c26 = &i2c3mux0chn2;
-> +		i2c27 = &i2c3mux0chn3;
-> +		i2c28 = &i2c3mux0chn4;
-> +		i2c29 = &i2c3mux0chn5;
-> +		i2c30 = &i2c3mux0chn6;
-> +		i2c31 = &i2c3mux0chn7;
-> +		i2c32 = &i2c6mux0chn0;
-> +		i2c33 = &i2c6mux0chn1;
-> +		i2c34 = &i2c6mux0chn2;
-> +		i2c35 = &i2c6mux0chn3;
-> +		i2c36 = &i2c6mux0chn4;
-> +		i2c37 = &i2c6mux0chn5;
-> +		i2c38 = &i2c6mux0chn6;
-> +		i2c39 = &i2c6mux0chn7;
-> +		i2c40 = &i2c7mux0chn0;
-> +		i2c41 = &i2c7mux0chn1;
-> +		i2c42 = &i2c7mux0chn2;
-> +		i2c43 = &i2c7mux0chn3;
-> +		i2c44 = &i2c7mux0chn4;
-> +		i2c45 = &i2c7mux0chn5;
-> +		i2c46 = &i2c7mux0chn6;
-> +		i2c47 = &i2c7mux0chn7;
-> +		i2c48 = &i2c8mux0chn0;
-> +		i2c49 = &i2c8mux0chn1;
-> +		i2c50 = &i2c8mux0chn2;
-> +		i2c51 = &i2c8mux0chn3;
-> +		i2c52 = &i2c8mux0chn4;
-> +		i2c53 = &i2c8mux0chn5;
-> +		i2c54 = &i2c8mux0chn6;
-> +		i2c55 = &i2c8mux0chn7;
-> +		i2c56 = &i2c14mux0chn0;
-> +		i2c57 = &i2c14mux0chn1;
-> +		i2c58 = &i2c14mux0chn2;
-> +		i2c59 = &i2c14mux0chn3;
-> +		i2c60 = &i2c14mux0chn4;
-> +		i2c61 = &i2c14mux0chn5;
-> +		i2c62 = &i2c14mux0chn6;
-> +		i2c63 = &i2c14mux0chn7;
-> +		i2c64 = &i2c15mux0chn0;
-> +		i2c65 = &i2c15mux0chn1;
-> +		i2c66 = &i2c15mux0chn2;
-> +		i2c67 = &i2c15mux0chn3;
-> +		i2c68 = &i2c15mux0chn4;
-> +		i2c69 = &i2c15mux0chn5;
-> +		i2c70 = &i2c15mux0chn6;
-> +		i2c71 = &i2c15mux0chn7;
-> +	};
-> +
->  	chosen {
->  		stdout-path = &uart5;
->  		bootargs = "console=ttyS4,115200n8 earlycon";
-> @@ -54,10 +113,12 @@ vga_memory: region@bf000000 {
->  			reg = <0xbf000000 0x01000000>;  /* 16M */
+> @@ -114,10 +114,127 @@ vga_memory: region@bf000000 {
 >  		};
 >  	};
-> +
-
-You need to clean your patchset...
-
-
->  };
 >  
->  &adc1 {
->  	status = "okay";
-> +
-
-Really.
-
->  	aspeed,int-vref-microvolt = <2500000>;
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&pinctrl_adc8_default
-> @@ -186,3 +247,519 @@ &kcs3 {
->  	aspeed,lpc-io-reg = <0xca2>;
->  	aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
->  };
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c1 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c2 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c3 {
-> +	status = "okay";
-> +
-> +	i2c-mux@70 {
-> +		compatible = "nxp,pca9548";
-> +		reg = <0x70>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		status = "okay";
-
-Drop
-
-> +		i2c-mux-idle-disconnect;
-> +
-> +		i2c3mux0chn0: i2c@0 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <0>;
-> +		};
-> +
-> +		i2c3mux0chn1: i2c@1 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <1>;
-> +		};
-> +
-> +		i2c3mux0chn2: i2c@2 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <2>;
-> +		};
-> +
-> +		i2c3mux0chn3: i2c@3 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <3>;
-> +		};
-> +
-> +		i2c3mux0chn4: i2c@4 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <4>;
-> +		};
-> +
-> +		i2c3mux0chn5: i2c@5 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <5>;
-> +		};
-> +
-> +		i2c3mux0chn6: i2c@6 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <6>;
-> +		};
-> +
-> +		i2c3mux0chn7: i2c@7 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			reg = <7>;
-> +		};
+> +	iio-hwmon {
+> +		compatible = "iio-hwmon";
+> +		io-channels = <&p12v_vd 0>, <&p5v_aux_vd 0>,
+> +			<&p5v_bmc_aux_vd 0>, <&p3v3_aux_vd 0>,
+> +			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>,
+> +			<&adc1 4>, <&adc0 2>, <&adc1 0>,
+> +			<&p2V5_aux_vd 0>, <&adc1 7>;
 > +	};
-> +};
 > +
-> +&i2c4 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c5 {
-> +	status = "okay";
-> +};
-> +
-> +&i2c6 {
-> +	status = "okay";
-> +
-> +	i2c-mux@70 {
-> +		compatible = "nxp,pca9548";
-> +		reg = <0x70>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		status = "okay";
+> +	p12v_vd: voltage_divider1 {
 
-Drop
+Same comments as in other patches.
 
-Other places as well.
+> +		compatible = "voltage-divider";
+> +		io-channels = <&adc1 3>;
+> +		#io-channel-cells = <1>;
+> +
+> +		/* Scale the system voltage by 1127/127 to fit the ADC range.
 
+Use Linux coding style comments. /* and blank line
+
+
+....
 
 Best regards,
 Krzysztof
