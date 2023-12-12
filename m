@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE2180F6D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C764B80F6D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377135AbjLLTjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        id S1377147AbjLLTj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjLLTjL (ORCPT
+        with ESMTP id S230370AbjLLTjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:39:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61606A1;
-        Tue, 12 Dec 2023 11:39:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702409958; x=1733945958;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=OP8Kh8R/PGKsbqJgH2vyY1FjTdW43FE57dbTsxnKgHc=;
-  b=BGncVD4Hf77lLw2iBYcWwJTEvYUouDAzBn2LmZjSKcMkVmj9mjRkacfr
-   98OX/xO+Fdk8FOSthevX5Pm5E3dhScEGbN+feg9U4fRQshqVAl1CMTS5u
-   hLNx/CWVZ85Y8jjCr7aJyziWC6O0zmM+/7JlYwNJzBSL9juR2RIY2m+fx
-   U/ryWSEFlv+6WLOMxjMYFZNwYeQC5XAwq31wPp7d4PNyjegdXI8w3TeLi
-   uNU0C+dGnmjuqxQ3BHLnv/gp++qH8WAJKGCPYGo0CktUdj908d5LAC7Co
-   8ak3v+iNNqObLKRPV3LBMrLSvs2O9ynyEe6mPA9zYa6qmUSUbZUv9oegu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8223342"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="8223342"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 11:39:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="807889787"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="807889787"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orsmga001.jf.intel.com with ESMTP; 12 Dec 2023 11:39:17 -0800
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, irogers@google.com
-Cc:     namhyung@kernel.org, mark.rutland@arm.com, maz@kernel.org,
-        marcan@marcan.st, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2] perf top: Use evsel's cpus to replace user_requested_cpus
-Date:   Tue, 12 Dec 2023 11:38:33 -0800
-Message-Id: <20231212193833.415110-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+        Tue, 12 Dec 2023 14:39:24 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EECCE;
+        Tue, 12 Dec 2023 11:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1702409969;
+        bh=NcnbNTopFnVXj6ayAjrFagAgkOJOw+5lSqAYTa5IGNM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hNGpYvN44nzEB5dOOxATG/fKvpkH7T4beuh0KCrhCVxLX02ZQZhAsY7s/FWvk27ZY
+         1gVcXIBNC5usisuxr3bgKQFD2BQ7GWBMgbqNaykbKxdf5FtfGbVDtxFdCoAnoZsdHc
+         tNoLL3o3phK8B2Zb1V/TAboyvDmu4n5Z+D3mSTG4RJ+cItZDZmKJfw3S5/fOqFHiQu
+         S2F8rpHQiL99JEU8EifaSoxZQIx+rF0BNhqr5ZwuVLCM6Ts3B3STc18hw82QzZY/Km
+         HQkNoqXKtYi2IxLf88/tLLqpLjEnjAB0c9L0jGuqBFg+aBuM5uzjJjjyHoUDNg22Ol
+         7rdpVxk/xWf/w==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SqTTF3S4wzGKL;
+        Tue, 12 Dec 2023 14:39:29 -0500 (EST)
+Message-ID: <572ab085-ce40-4110-9296-99b136582eba@efficios.com>
+Date:   Tue, 12 Dec 2023 14:39:29 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ring-buffer: Fix a race in rb_time_cmpxchg() for 32 bit
+ archs
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20231212115301.7a9c9a64@gandalf.local.home>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231212115301.7a9c9a64@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On 2023-12-12 11:53, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Mathieu Desnoyers pointed out an issue in the rb_time_cmpxchg() for 32 bit
+> architectures. That is:
+> 
+>   static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+>   {
+> 	unsigned long cnt, top, bottom, msb;
+> 	unsigned long cnt2, top2, bottom2, msb2;
+> 	u64 val;
+> 
+> 	/* The cmpxchg always fails if it interrupted an update */
+> 	 if (!__rb_time_read(t, &val, &cnt2))
+> 		 return false;
+> 
+> 	 if (val != expect)
+> 		 return false;
+> 
+> <<<< interrupted here!
+> 
+> 	 cnt = local_read(&t->cnt);
+> 
+> The problem is that the synchronization counter in the rb_time_t is read
+> *after* the value of the timestamp is read. That means if an interrupt
+> were to come in between the value being read and the counter being read,
+> it can change the value and the counter and the interrupted process would
+> be clueless about it!
+> 
+> The counter needs to be read first and then the value. That way it is easy
+> to tell if the value is stale or not. If the counter hasn't been updated,
+> then the value is still good.
+> 
+> Link: https://lore.kernel.org/linux-trace-kernel/20231211201324.652870-1-mathieu.desnoyers@efficios.com/
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 10464b4aa605e ("ring-buffer: Add rb_time_t 64 bit operations for speeding up 32 bit")
+> Reported-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-perf top errors out on a hybrid machine
- $perf top
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
- Error:
- The cycles:P event is not supported.
+> ---
+>   kernel/trace/ring_buffer.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 1d9caee7f542..e110cde685ea 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -706,6 +706,9 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+>   	unsigned long cnt2, top2, bottom2, msb2;
+>   	u64 val;
+>   
+> +	/* Any interruptions in this function should cause a failure */
+> +	cnt = local_read(&t->cnt);
+> +
+>   	/* The cmpxchg always fails if it interrupted an update */
+>   	 if (!__rb_time_read(t, &val, &cnt2))
+>   		 return false;
+> @@ -713,7 +716,6 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+>   	 if (val != expect)
+>   		 return false;
+>   
+> -	 cnt = local_read(&t->cnt);
+>   	 if ((cnt & 3) != cnt2)
+>   		 return false;
+>   
 
-The perf top expects that the "cycles" is collected on all CPUs in the
-system. But for hybrid there is no single "cycles" event which can cover
-all CPUs. Perf has to split it into two cycles events, e.g.,
-cpu_core/cycles/ and cpu_atom/cycles/. Each event has its own CPU mask.
-If a event is opened on the unsupported CPU. The open fails. That's the
-reason of the above error out.
-
-Perf should only open the cycles event on the corresponding CPU. The
-commit ef91871c960e ("perf evlist: Propagate user CPU maps intersecting
-core PMU maps") intersect the requested CPU map with the CPU map of the
-PMU. Use the evsel's cpus to replace user_requested_cpus.
-
-The evlist's threads are also propagated to the evsel's threads in
-__perf_evlist__propagate_maps(). For a system-wide event, perf appends
-a dummy event and assign it to the evsel's threads. For a per-thread
-event, the evlist's thread_map is assigned to the evsel's threads. The
-same as the other tools, e.g., perf record, using the evsel's threads
-when opening an event.
-
-Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-Closes: https://lore.kernel.org/linux-perf-users/ZXNnDrGKXbEELMXV@kernel.org/
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
-
-Changes since V1:
-- Update the description
-- Add Reviewed-by from Ian
-
- tools/perf/builtin-top.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index ea8c7eca5eee..cce9350177e2 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1027,8 +1027,8 @@ static int perf_top__start_counters(struct perf_top *top)
- 
- 	evlist__for_each_entry(evlist, counter) {
- try_again:
--		if (evsel__open(counter, top->evlist->core.user_requested_cpus,
--				     top->evlist->core.threads) < 0) {
-+		if (evsel__open(counter, counter->core.cpus,
-+				counter->core.threads) < 0) {
- 
- 			/*
- 			 * Specially handle overwrite fall back.
 -- 
-2.35.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
