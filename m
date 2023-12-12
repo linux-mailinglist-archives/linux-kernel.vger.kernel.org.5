@@ -2,80 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D7380E414
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 800BA80E426
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 07:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjLLF6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 00:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        id S229771AbjLLGDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 01:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLF6F (ORCPT
+        with ESMTP id S229449AbjLLGDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 00:58:05 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2451DA1;
-        Mon, 11 Dec 2023 21:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lgLwTEhQVr7SeOkAbXZIpqhiCYecdKkb92XRhk3Nnto=; b=YhOHsMUxRMFey39Ub+BOoHUSpN
-        6MD2YvGw42vNtElnYki1NxJH9KlY8dt3Xm1HkV2P6cve8n0OT2lWYfK3Du2qGpAm+OR+Cys5wPkIf
-        LE4znGLFwFzfwfuhB6/ZRcFvqHR3KNSaEVVBM4sFec7GGKvkoEBEVIp1GDKF6IeHVHVxytGCrpZCx
-        1faM9v6zX2g+69mh7wf3OyXFWKq/ZNrIB+bGXJyrwEC02dodJ4tmwi4CT68czYOjwgp+Y+4GW16Am
-        Y55OjcCnUTKf5hamO76diNt+t88idSnTc+d8igc/Ad7wSE/4sh15ZHLMvQYX/GREDrEwnDJrL70OT
-        pMrg2+hQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rCvmR-00ApZl-36;
-        Tue, 12 Dec 2023 05:58:07 +0000
-Date:   Mon, 11 Dec 2023 21:58:07 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [net-next v1 00/16] Device Memory TCP
-Message-ID: <ZXf2b/Bmupwm9LaD@infradead.org>
-References: <20231208005250.2910004-1-almasrymina@google.com>
+        Tue, 12 Dec 2023 01:03:36 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE40EA1;
+        Mon, 11 Dec 2023 22:03:42 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 1FA7A20B74C0; Mon, 11 Dec 2023 22:03:42 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1FA7A20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702361022;
+        bh=hx1+thlCTOb6QRHlrdBHJnO7+AxZwUlT544NfeaPGRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iqJE/uNxjAsQMBeeD90Q8CIovDZz74GDXWCDdkLHKi3KwsbFvb+6O8FQO6nyF8tJa
+         kjJrDlFG4Mo3ycLQCcf4Z24dxY1Abhklo40uGZwia8y7/oMKR6Si4ruaOYjZBlIjKi
+         YYVAfZf3gbUPqqgN+wtbcyqo8i1THT19WPzPFoeY=
+Date:   Mon, 11 Dec 2023 22:03:42 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <20231212060342.GA16802@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <ZXOQb+3R0YAT/rAm@yury-ThinkPad>
+ <20231211065323.GB4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZXcV9pXmg+GE2BCF@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231208005250.2910004-1-almasrymina@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZXcV9pXmg+GE2BCF@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please don't spread scatterlists further.  They are a bad data structure
-that mix input data (page, offset, len) and output data (phys_addr,
-dma_offset, dma_len), and do in a horrible way for iommmu mappings that
-can coalesce.  Jason and coworkers have been looking into the long
-overdue API to better support batch mapping of better data structures,
-and this is a prime example of new code that should be using.
+On Mon, Dec 11, 2023 at 06:00:22AM -0800, Yury Norov wrote:
+> On Sun, Dec 10, 2023 at 10:53:23PM -0800, Souradeep Chakrabarti wrote:
+> > On Fri, Dec 08, 2023 at 01:53:51PM -0800, Yury Norov wrote:
+> > > Few more nits
+> > > 
+> > > On Fri, Dec 08, 2023 at 06:03:40AM -0800, Yury Norov wrote:
+> > > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > > > > Existing MANA design assigns IRQ to every CPU, including sibling
+> > > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > > > > in the same core and may reduce the network performance with RSS.
+> > > > 
+> > > > Can you add an IRQ distribution diagram to compare before/after
+> > > > behavior, similarly to what I did in the other email?
+> > > > 
+> > > > > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > > > > NUMA node. The performance improvement we are getting using ntttcp with
+> > > > > following patch is around 15 percent with existing design and approximately
+> > > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > > > > if enough cores are present.
+> > > > 
+> > > > How did you measure it? In the other email you said you used perf, can
+> > > > you show your procedure in details?
+> > > > 
+> > > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > > > > ---
+> > > > 
+> > > > [...]
+> > > > 
+> > > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> > > > >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > > index 6367de0c2c2e..18e8908c5d29 100644
+> > > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> > > > >  	r->size = 0;
+> > > > >  }
+> > > > >  
+> > > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> > > > > +{
+> > > > > +	int w, cnt, cpu, err = 0, i = 0;
+> > > > > +	int next_node = start_numa_node;
+> > > > 
+> > > > What for this?
+> > > > 
+> > > > > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > > > > +	cpumask_var_t curr, cpus;
+> > > > > +
+> > > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> > > 
+> > > alloc_cpumask_var() here and below, because you initialize them by
+> > > copying
+> > I have used zalloc here as prev gets initialized after the first hop, before that
+> > it may contain unwanted values, which may impact cpumask_andnot(curr, next, prev).
+> > Regarding curr I will change it to alloc_cpumask_var().
+> > Please let me know if that sounds right.
+> 
+> What? prev is initialized at declaration:
+Yes, I will remove the zalloc and will change it to alloc in V6.
+Thanks for pointing.
+>         
+>         const struct cpumask *next, *prev = cpu_none_mask;
