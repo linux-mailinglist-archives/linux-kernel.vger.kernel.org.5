@@ -2,93 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C52580E73D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB7A80E749
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346234AbjLLJT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        id S1346224AbjLLJTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346233AbjLLJTW (ORCPT
+        with ESMTP id S1346253AbjLLJTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:19:22 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9D1D5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:19:27 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4649daf0dd4so1483825137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:19:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702372767; x=1702977567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S1+sprVV2T7W4J6YbeGw0M4DLw9yLV+04VHxcEgbiHE=;
-        b=VF6MStIi4ne9C5OIscvkHbVrlu2pO8w22M+lO9Whw+alY9qC+AvpQb1GV5w0ETBfLO
-         zvBJlC+7uDFdiwv2QHZ6pDztMu+OEJhUIOP3+C5CcIVMhjPOXJByhtM+wFTYmIAVzXWe
-         AnqOfhNr0vxPUa4csT5LoUDIqZjbwWs4yBWWA+rRyN1wEgxVn6pcJFS7wt4GkT3ORaRO
-         bcV1cxlcQxCgF0Ywk83fIB0ZZ+zanmWesREVqrITIx9j8CWhGNdJjDoyVXzP0DOLR1j1
-         RhsOSb6RiP/TU7VUD8hYva/b4FC1Vy4YOxOlPl7TPgl9m0vU6WK397MuGFWkY1ANptn9
-         pG4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702372767; x=1702977567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S1+sprVV2T7W4J6YbeGw0M4DLw9yLV+04VHxcEgbiHE=;
-        b=WsGFgx/4TjZ/g7U8T3oM+E5RLga9EUIuAnh3f8TB7+fBKB2q6ObfpUAb3qnoFt85vB
-         tt0uMKE6B/o1ntvUHFGrTEBuDsUEQOqmVVZYPK+RbicymvUGigIkc4kbexqNzd33F5eU
-         EmgoPU7qPBz+KGLH3K80Y7tQhTtvLFZoM/afXYGweNKpbQiRKndyGP/dLRj0KNtFNxl0
-         2e7KUPiN5IVHRF68Twdq2kR0DpMsL5K8Lpc9EnVQNwC8q/42CEHbgcreDhDEQzXJdOgE
-         Ow0UDPwm6A9y2LJKXZvqeBV6R2A0Jpr97pz/CBadD+fu5E9m5Tpbvpst/QrAGIEkpXU+
-         nQyQ==
-X-Gm-Message-State: AOJu0YxX5AEfDEYIiDvmb8agecQllC6eTJHZZeElN0wrYh9pixfDh9Pn
-        4gaWtSAMiKguNbM0ONvTyF4sKqUYuntjI1z2usjjW4YUQn2DHTutxMJG5Q==
-X-Google-Smtp-Source: AGHT+IFqJB+r/gsMDbV2/WNS19JFr7F48BtZl+nyDy6AprTKQgrh4j3tEOIOJLL8ULgjzuUOsYiiDE0CKLWUr5C+7vQ=
-X-Received: by 2002:a05:6102:4429:b0:462:e85b:b812 with SMTP id
- df41-20020a056102442900b00462e85bb812mr3950134vsb.24.1702372765514; Tue, 12
- Dec 2023 01:19:25 -0800 (PST)
+        Tue, 12 Dec 2023 04:19:44 -0500
+Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [129.187.255.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B50FE;
+        Tue, 12 Dec 2023 01:19:49 -0800 (PST)
+Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
+        by postout2.mail.lrz.de (Postfix) with ESMTP id 4SqCkB4ZNdzyTl;
+        Tue, 12 Dec 2023 10:19:46 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        in-reply-to:content-transfer-encoding:content-disposition
+        :content-type:content-type:mime-version:references:message-id
+        :subject:subject:from:from:date:date:received:received; s=
+        tu-postout21; t=1702372786; bh=WVqZLzbRiMUVOMOUzl6GSebSesNYA4TdD
+        tY3d47tqa4=; b=icWpRiDQ+Dkbt+mbfo6bx1CaHVlYa5iIVdt+nEteVMvyk5htn
+        ORZz4sgz+cJyVTstEOFDiKVgqoXEOZYjVsGNY1btar+2KLWGtlmxULK/NPPYZ8cf
+        6NeuW01lhF9UQ7/Zusoo+1ahqV6ePZjLUNWb5kyJbZXAwkPvOmu+AjXUAZn+N99O
+        eDlzA2ZQzcRM5NgucQA1PGPUXlL7OfbfWQ71C7vKH7w0pNuNilSOmGh8IPtS+Ne4
+        SxSeNqMQA8EPgqiMUX+NvuVH6zZkjheMDThKsRCh15KZUGgOWGsUdpfPzWIUu+rk
+        csqLkCQQb8xXf0kc3YCiAzWN7zLjAZF/sT/Hg==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
+X-Spam-Score: -2.881
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from postout2.mail.lrz.de ([127.0.0.1])
+        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id U88J6q2Jd8Lb; Tue, 12 Dec 2023 10:19:46 +0100 (CET)
+Received: from cerulean.fritz.box (unknown [IPv6:2001:a61:245c:a01:443b:cc34:8ae7:6ede])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4SqCk90XN5zyTm;
+        Tue, 12 Dec 2023 10:19:45 +0100 (CET)
+Date:   Tue, 12 Dec 2023 10:19:41 +0100
+From:   Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Marco Elver <elver@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Collingbourne <pcc@google.com>,
+        andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
+Message-ID: <rgndtm3sawyzdh76oofoqp22jyqdb25sd4326k2heevjmxum7f@wfgwvdf4iuyi>
+References: <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
+ <20230505095805.759153de@gandalf.local.home>
+ <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
+ <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
+ <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
+ <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
+ <osqmp2j6gsmgbkle6mwhoaf65mjn4a4w3e5hsfbyob6f44wcg6@7rihb5otzl2z>
+ <CANpmjNMw3N09x06Q+0mFCEeTKfUsDdXwXM2hdgAQ+wwbZGpB9w@mail.gmail.com>
+ <rbcdbilhh67fvjdgnstu25v4jnfeesthoxstnzzglynbngu5bk@5ozwgzaulbsx>
+ <CA+fCnZf5kxWUWCzK8EKgUuq_E2rYv5aw=SqZMDb93+=7vSUp+w@mail.gmail.com>
 MIME-Version: 1.0
-References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-In-Reply-To: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Tue, 12 Dec 2023 10:19:14 +0100
-Message-ID: <CAH5fLggpyxJfPFvtYuShKnT0mjcHViv7NQcBS7M--EK4jJHHRQ@mail.gmail.com>
-Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to
- build directory
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+fCnZf5kxWUWCzK8EKgUuq_E2rYv5aw=SqZMDb93+=7vSUp+w@mail.gmail.com>
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 8:43=E2=80=AFAM Viresh Kumar <viresh.kumar@linaro.o=
-rg> wrote:
->
-> Rustup override is required to be set for the build directory and not
-> necessarily the kernel source tree (unless the build directory is its
-> subdir).
->
-> Clarify the same in quick-start guide.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On 12.12.2023 00:37, Andrey Konovalov wrote:
+> On Tue, Dec 12, 2023 at 12:35 AM Paul Heidekrüger
+> <paul.heidekrueger@tum.de> wrote:
+> >
+> > Using CONFIG_FTRACE=y instead of CONFIG_TRACEPOINTS=y produces the same error
+> > for me.
+> >
+> > So
+> >
+> >         CONFIG_KUNIT=y
+> >         CONFIG_KUNIT_ALL_TESTS=n
+> >         CONFIG_FTRACE=y
+> >         CONFIG_KASAN=y
+> >         CONFIG_KASAN_GENERIC=y
+> >         CONFIG_KASAN_KUNIT_TEST=y
+> >
+> > produces
+> >
+> >         ➜   ./tools/testing/kunit/kunit.py run --kunitconfig=mm/kasan/.kunitconfig --arch=arm64
+> >         Configuring KUnit Kernel ...
+> >         Regenerating .config ...
+> >         Populating config with:
+> >         $ make ARCH=arm64 O=.kunit olddefconfig CC=clang
+> >         ERROR:root:Not all Kconfig options selected in kunitconfig were in the generated .config.
+> >         This is probably due to unsatisfied dependencies.
+> >         Missing: CONFIG_KASAN_KUNIT_TEST=y
+> >
+> > By that error message, CONFIG_FTRACE appears to be present in the generated
+> > config, but CONFIG_KASAN_KUNIT_TEST still isn't. Presumably,
+> > CONFIG_KASAN_KUNIT_TEST is missing because of an unsatisfied dependency, which
+> > must be CONFIG_TRACEPOINTS, unless I'm missing something ...
+> >
+> > If I just generate an arm64 defconfig and select CONFIG_FTRACE=y,
+> > CONFIG_TRACEPOINTS=y shows up in my .config. So, maybe this is kunit.py-related
+> > then?
+> >
+> > Andrey, you said that the tests have been working for you; are you running them
+> > with kunit.py?
+> 
+> No, I just run the kernel built with a config file that I put together
+> based on defconfig.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Ah. I believe I've figured it out.
+
+When I add CONFIG_STACK_TRACER=y in addition to CONFIG_FTRACE=y, it works.
+
+CONFIG_STACK_TRACER selects CONFIG_FUNCTION_TRACER, CONFIG_FUNCTION_TRACER 
+selects CONFIG_GENERIC_TRACER, CONFIG_GENERIC_TRACER selects CONFIG_TRACING, and 
+CONFIG_TRACING selects CONFIG_TRACEPOINTS. 
+
+CONFIG_BLK_DEV_IO_TRACE=y also works instead of CONFIG_STACK_TRACER=y, as it 
+directly selects CONFIG_TRACEPOINTS. 
+
+CONFIG_FTRACE=y on its own does not appear suffice for kunit.py on arm64.
+
+I believe the reason my .kunitconfig as well as the existing 
+mm/kfence/.kunitconfig work on X86 is because CONFIG_TRACEPOINTS=y is present in 
+an X86 defconfig.
+
+Does this make sense?
+
+Would you welcome a patch addressing this for the existing 
+mm/kfence/.kunitconfig?
+
+I would also like to submit a patch for an mm/kasan/.kunitconfig. Do you think 
+that would be helpful too?
+
+FWICT, kernel/kcsan/.kunitconfig might also be affected since 
+CONFIG_KCSAN_KUNIT_TEST also depends on CONFIG_TRACEPOITNS, but I would have to 
+test that. That could be a third patch.
+
+What do you think?
+
+Many thanks,
+Paul
+
