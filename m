@@ -2,71 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EC280E409
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0B380E410
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbjLLFqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 00:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        id S229786AbjLLFvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 00:51:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLLFqN (ORCPT
+        with ESMTP id S229449AbjLLFvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 00:46:13 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAE999;
-        Mon, 11 Dec 2023 21:46:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rswgQXutE23EE2adeFRVlY8v1PLpQypzn/gMfnKSSok=; b=rVXrIHDIzJhF4HMqm4VfVY00IB
-        sIqfR/Cd+JP6Xs2v0k2Eme38qoI8mUEYTXbnrhQSzfO379TtdKtZbTYHUM9Ca6gRyKluTOeJ1hmNS
-        iCkRmLgFdJ8Gej8fBoQ1FJ7AzpJ43A25+Ns42U7EORWN+pNex0CrBQj4nFY1kaZqc6P6xODVp29DO
-        f8Zt/9N7UrsGkzSpo65wBeqSJBlQdYaElxXLwr5vnUvV206qfmR3HLnS5cYiMSVJmZvZfsWmdgzwn
-        A1Q9PxnlbZd/s2wbROi+Vu7dyQdsfq/oc0XvSh6udsVR+XHC4pT1Che7NVCQHGx2mePothYZ/St6i
-        42qTB2rg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rCvb0-00Ap6A-0r;
-        Tue, 12 Dec 2023 05:46:18 +0000
-Date:   Mon, 11 Dec 2023 21:46:18 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] md/md-multipath: Convert "struct mpconf" to flexible
- array
-Message-ID: <ZXfzqsstA6tTPpF8@infradead.org>
-References: <03dd7de1cecdb7084814f2fab300c9bc716aff3e.1701632867.git.christophe.jaillet@wanadoo.fr>
- <202312041419.81EF03F7B7@keescook>
- <CAPhsuW43g-M+xvzD0N1JsJ_zGnvZQOw2Bi1TEqoHKanPnvMHLQ@mail.gmail.com>
- <202312080926.FBF7A2DDD2@keescook>
- <CAPhsuW5F1aRrCRW-ad5Sq=cgxHX+QgXgYZyMX17Zj4Mj=Jnhjw@mail.gmail.com>
+        Tue, 12 Dec 2023 00:51:37 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81862A1;
+        Mon, 11 Dec 2023 21:51:43 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67ad891ff36so35436906d6.1;
+        Mon, 11 Dec 2023 21:51:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702360302; x=1702965102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=12FoZrTM1qA1q6lNZED2M9R8Q7mbLhB+NwEb5K3ODV0=;
+        b=CcIicYjH6PnbCsikTU98WRXT1KN5weE42GRdGcVdhL5+XaLe5rvb7f1hJpVJAN9/mv
+         9Vsxx0OZ2VWI2YJnGyy0Xoz/xrhbQ5PEjzYcpiMrT45JjkSFBsHS++mP9LobnUNrgtTh
+         IUxfeYwGmaFXIh6YLQ6XzjUgeS4kblM5wnlwBuuaNOgjo8bRfJ9f9jVYiJxCTibdYjyH
+         XZkuZd5uzqyFy72GzmJufyweZm4L5DYiLtaWWsl09S8djzedx4Kmic3oyeeeyKFRjku3
+         34XyzEv91L6P2UIU0PoP/Nln4TlOijNV/WEJKr3PfYwmE73piFHHG0/w3y7hE+DPuS7M
+         TFVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702360302; x=1702965102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=12FoZrTM1qA1q6lNZED2M9R8Q7mbLhB+NwEb5K3ODV0=;
+        b=foIjhvnWQYkLfvCyP4YdfpupKEiKqM12JbKf3DOf0RAfyVVeJqdTUHi8TtH8sJAckU
+         EIhDD9NMTCT0y9SomI4qwt/AIdifPrgeJTTnogtesJg43uHXl290znhqXxAgXA3wp797
+         EW/J3TWdbdQgx7H/60MYlqEBLZEjAhQISPik5wUBcMDDmwT6NjrReZFEOvwLzlSB497a
+         Bwasu2jJ4WditXOkOSP+mQJjPZhFj3cv3WRZ1s5Wc3OaB0sIFjXLbfjKrReBIRl4Phui
+         iL0Jd+DQBAv7nOlgF37YQ8oW1ZiZzzzvhInbFzzwdoaoW1St26cz1y23f5ZxESrv33vQ
+         x6Ow==
+X-Gm-Message-State: AOJu0YwJAnShmKFj3R7U89634h8Qrg4zo1JmXnM/Ghh4Q7xMEVlspyki
+        QGQ3Vhv3vFLOWcXdJ8JPUfz+Fu8CffuAzJChhzw=
+X-Google-Smtp-Source: AGHT+IEiBuQfFvnHdsHHCz9keYLFCQiREqBvBr3kSzui3aXGaRKF378COCxIlVwpG93n1BjmgFqb7WcmxMOMQ/ydxI4=
+X-Received: by 2002:a05:6214:1022:b0:67a:38f3:10d9 with SMTP id
+ k2-20020a056214102200b0067a38f310d9mr5973531qvr.7.1702360302581; Mon, 11 Dec
+ 2023 21:51:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW5F1aRrCRW-ad5Sq=cgxHX+QgXgYZyMX17Zj4Mj=Jnhjw@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20231211193048.580691-1-avagin@google.com>
+In-Reply-To: <20231211193048.580691-1-avagin@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 12 Dec 2023 07:51:31 +0200
+Message-ID: <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] fs/proc: show correct device and inode numbers in /proc/pid/maps
+To:     Andrei Vagin <avagin@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 10:11:10AM -0800, Song Liu wrote:
-> We marked it as deprecated about 2.5 years ago. But to be honest,
-> I currently don't have a plan to remove it. I guess I should start thinking
-> about it.
++fsdevel, +overlayfs, +brauner, +miklos
 
-Let's just kill it off ASAP.  It never had a large user base and based
-by dm-multipath not long after it has been added.  It also doesn't
-support any uniqueue hardware and has no on-disk format.
+On Mon, Dec 11, 2023 at 9:30=E2=80=AFPM Andrei Vagin <avagin@google.com> wr=
+ote:
+>
+> Device and inode numbers in /proc/pid/maps have to match numbers returned=
+ by
+> statx for the same files.
 
-If you want any blame deflected from you I'd be happy to send the patch
-to remove it.
+That statement may be true for regular files.
+It is not true for block/char as far as I know.
+
+I think that your fix will break that by displaying the ino/dev
+of the block/char reference inode and not their backing rdev inode.
+
+>
+> /proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here is
+> an issue. If a mapped file is on a stackable file system (e.g.,
+> overlayfs), vma->vm_file is a backing file whose f_inode is on the
+> underlying filesystem. To show correct numbers, we need to get a user
+> file and shows its numbers. The same trick is used to show file paths in
+> /proc/pid/maps.
+
+For the *same* trick, see my patch below.
+
+>
+> But it isn't the end of this story. A file system can manipulate inode nu=
+mbers
+> within the getattr callback (e.g., ovl_getattr), so vfs_getattr must be u=
+sed to
+> get correct numbers.
+
+This explanation is inaccurate, because it mixes two different overlayfs
+traits which are unrelated.
+It is true that a filesystem *can* manipulate st_dev in a way that will not
+match i_ino and it is true that overlayfs may do that in some non-default
+configurations (see [1]), but this is not the reason that you are seeing
+mismatches ino/dev in /proc/<pid>/maps.
+
+[1] https://docs.kernel.org/filesystems/overlayfs.html#inode-properties
+
+The reason is that the vma->vm_file is a special internal backing file
+which is not otherwise exposed to userspace.
+Please see my suggested fix below.
+
+>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+> Signed-off-by: Andrei Vagin <avagin@google.com>
+> ---
+>  fs/proc/task_mmu.c | 20 +++++++++++++++++---
+>  1 file changed, 17 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 435b61054b5b..abbf96c091ad 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -273,9 +273,23 @@ show_map_vma(struct seq_file *m, struct vm_area_stru=
+ct *vma)
+>         const char *name =3D NULL;
+>
+>         if (file) {
+> -               struct inode *inode =3D file_inode(vma->vm_file);
+> -               dev =3D inode->i_sb->s_dev;
+> -               ino =3D inode->i_ino;
+> +               const struct path *path;
+> +               struct kstat stat;
+> +
+> +               path =3D file_user_path(file);
+> +               /*
+> +                * A file system can manipulate inode numbers within the
+> +                * getattr callback (e.g. ovl_getattr).
+> +                */
+> +               if (!vfs_getattr_nosec(path, &stat, STATX_INO, AT_STATX_D=
+ONT_SYNC)) {
+
+Should you prefer to keep this solution it should be constrained to
+regular files.
+
+> +                       dev =3D stat.dev;
+> +                       ino =3D stat.ino;
+> +               } else {
+> +                       struct inode *inode =3D d_backing_inode(path->den=
+try);
+
+d_inode() please.
+d_backing_inode()/d_backing_dentry() are relics of an era that never existe=
+d
+(i.e. union mounts).
+
+> +
+> +                       dev =3D inode->i_sb->s_dev;
+> +                       ino =3D inode->i_ino;
+> +               }
+>                 pgoff =3D ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+>         }
+>
+
+Would you mind trying this alternative (untested) patch?
+I think it is preferred, because it is simpler.
+
+Thanks,
+Amir.
+
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ef2eb12906da..5328266be6b5 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -273,7 +273,8 @@ show_map_vma(struct seq_file *m, struct vm_area_struct =
+*vma)
+        const char *name =3D NULL;
+
+        if (file) {
+-               struct inode *inode =3D file_inode(vma->vm_file);
++               struct inode *inode =3D file_user_inode(vma->vm_file);
++
+                dev =3D inode->i_sb->s_dev;
+                ino =3D inode->i_ino;
+                pgoff =3D ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 900d0cd55b50..d78412c6fd47 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2581,20 +2581,28 @@ struct file *backing_file_open(const struct
+path *user_path, int flags,
+ struct path *backing_file_user_path(struct file *f);
+
+ /*
+- * file_user_path - get the path to display for memory mapped file
+- *
+  * When mmapping a file on a stackable filesystem (e.g., overlayfs), the f=
+ile
+  * stored in ->vm_file is a backing file whose f_inode is on the underlyin=
+g
+- * filesystem.  When the mapped file path is displayed to user (e.g. via
+- * /proc/<pid>/maps), this helper should be used to get the path to displa=
+y
+- * to the user, which is the path of the fd that user has requested to map=
+.
++ * filesystem.  When the mapped file path and inode number are displayed t=
+o
++ * user (e.g. via /proc/<pid>/maps), these helper should be used to get th=
+e
++ * path and inode number to display to the user, which is the path of the =
+fd
++ * that user has requested to map and the inode number that would be retur=
+ned
++ * by fstat() on that same fd.
+  */
++/* Get the path to display in /proc/<pid>/maps */
+ static inline const struct path *file_user_path(struct file *f)
+ {
+        if (unlikely(f->f_mode & FMODE_BACKING))
+                return backing_file_user_path(f);
+        return &f->f_path;
+ }
++/* Get the inode whose inode number to display in /proc/<pid>/maps */
++static inline const struct path *file_user_inode(struct file *f)
++{
++       if (unlikely(f->f_mode & FMODE_BACKING))
++               return d_inode(backing_file_user_path(f)->dentry);
++       return file_inode(f);
++}
