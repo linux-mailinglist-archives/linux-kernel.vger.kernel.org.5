@@ -2,127 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB7580F5D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA4780F5D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376736AbjLLSyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S1376680AbjLLSxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376612AbjLLSyP (ORCPT
+        with ESMTP id S1376703AbjLLSxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:54:15 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E9BE4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:54:20 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bf69afa99so7752650e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702407259; x=1703012059; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YC/WVH3u8zE3lqMQy1sW6oW6rbaFlnYLpBOstsLNgoU=;
-        b=t1ON+Pat9orIqzYCsosWKdEkD3iSFnVmjSeqkERgXpJplFDOkhI/xWOYrmIFwGejW+
-         n7dYEwjBHC3cHe2Uz/9z/JBbQm+/IVQJ/9wHDNg73w8s5yXK5jVOEMvfhfHGatx89SxQ
-         d8j4/P970tggiPEt+301/30oqFY0IJMYR8SzHZ99D0Xn6GvL6fPovwoRlHvpxVbkYhyR
-         Fp/FGV7l6nNV2VFk8iSmn4BUKHtGUHsUumIzqcTw7/yzYLMo3qyoPVEJhU4nkjgkZtan
-         ZlSJblWfeNYrPzeyzRHu0AI1fh36GvJLmwgqAUL9kqLRs9pBcRNgNmPaT1ldyS04TMCV
-         Ds2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702407259; x=1703012059;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YC/WVH3u8zE3lqMQy1sW6oW6rbaFlnYLpBOstsLNgoU=;
-        b=CT5DmxJms0K6VyzafKylUG1TRpKiUApiIU0ml8M8U/v+IfMEoe5DBSm1k024kcmiRm
-         WTRxmWzMbjVLzdDStiECMbjmFPNqgiRhBLFvlEEFQ7A1jw4bJ58XeJQ/exop0VHX6+1t
-         HU8d/DacJxKs2UpWxlZ8wKLx1yNzBNCL9lAngbsPNY/erP/tSxsDQZHrcAhjlXVsjysb
-         hNldTBjSM9wA2zD3vlxRw4Qe9g05Ju9k0wzVBKgta06x5lK8FS3qWokI9FE9CqDGCRuJ
-         QxZM76p/ElUxs0kAtABHf1SdT+H9zmkCYvI8KHI6a/IhGnch+cPiRoxi3SDU88rf2oNW
-         4/ww==
-X-Gm-Message-State: AOJu0YzgDFJcSze6uHfKi3Lx8aT1ZFwT3KBw/tciYg92dnD/AJ3MB2pi
-        xdUOQivPT9TZLwkqCXQWaXngpQ==
-X-Google-Smtp-Source: AGHT+IEnn7PgxM33KM5RP1Ci6mhXnj/c2aTqDDpc6C2q6ZUyTtIv2RFBjSuVzvHvDI603NJQeDoz6A==
-X-Received: by 2002:a05:6512:2316:b0:50b:f30b:5499 with SMTP id o22-20020a056512231600b0050bf30b5499mr4430231lfu.80.1702407259047;
-        Tue, 12 Dec 2023 10:54:19 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id v20-20020a170906489400b00a1de512fa24sm6617766ejq.191.2023.12.12.10.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 10:54:18 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sm8550: add missing two RX Soundwire ports in configuration
-Date:   Tue, 12 Dec 2023 19:54:15 +0100
-Message-Id: <20231212185415.228003-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Dec 2023 13:53:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32117CF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:54:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1DDBC433C8;
+        Tue, 12 Dec 2023 18:53:58 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 13:54:41 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: [PATCH] tracing/selftests: Add test to test max subbuf size with
+ trace_marker
+Message-ID: <20231212135441.0337c3e9@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm SM8550 RX Soundwire port configuration was taken from
-downstream sources ("rx_frame_params_default"), but without two ports.
-Correct the DTS, even though no practical impact was observed.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Now that the trace_marker can write up to the max size of the sub buffer.
+Add a test to see if it actually can happen.
 
+The README is updated to state that the trace_marker writes can be broken
+up, and the test checks the README for that statement so that it does not
+fail on older kernels that does not support this.
+
+If the README does not have the specified update, the test will still test
+if all the string is written (although it would be broken up), as that
+should work with older kernels.
+
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
+ kernel/trace/trace.c                          |   1 +
+ .../ftrace/test.d/00basic/trace_marker.tc     | 112 ++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
 
-Not adding fixes table, as I am not able to identify whether this was
-actually a bug.
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index 17c4f0a7638a..1f06fd33d1ce 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -2109,18 +2109,18 @@ swr1: soundwire-controller@6ad0000 {
- 			clock-names = "iface";
- 			label = "RX";
- 
--			qcom,din-ports = <0>;
--			qcom,dout-ports = <10>;
-+			qcom,din-ports = <1>;
-+			qcom,dout-ports = <11>;
- 
--			qcom,ports-sinterval =		/bits/ 16 <0x03 0x3f 0x1f 0x07 0x00 0x18f 0xff 0xff 0xff 0xff>;
--			qcom,ports-offset1 =		/bits/ 8 <0x00 0x00 0x0b 0x01 0x00 0x00 0xff 0xff 0xff 0xff>;
--			qcom,ports-offset2 =		/bits/ 8 <0x00 0x00 0x0b 0x00 0x00 0x00 0xff 0xff 0xff 0xff>;
--			qcom,ports-hstart =		/bits/ 8 <0xff 0x03 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff>;
--			qcom,ports-hstop =		/bits/ 8 <0xff 0x06 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff>;
--			qcom,ports-word-length =	/bits/ 8 <0x01 0x07 0x04 0xff 0xff 0x0f 0xff 0xff 0xff 0xff>;
--			qcom,ports-block-pack-mode =	/bits/ 8 <0xff 0x00 0x01 0xff 0xff 0x00 0xff 0xff 0xff 0xff>;
--			qcom,ports-block-group-count =	/bits/ 8 <0xff 0xff 0xff 0xff 0x00 0x00 0xff 0xff 0xff 0xff>;
--			qcom,ports-lane-control =	/bits/ 8 <0x01 0x00 0x00 0x00 0x00 0x00 0xff 0xff 0xff 0xff>;
-+			qcom,ports-sinterval =		/bits/ 16 <0x03 0x3f 0x1f 0x07 0x00 0x18f 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-offset1 =		/bits/ 8 <0x00 0x00 0x0b 0x01 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-offset2 =		/bits/ 8 <0x00 0x00 0x0b 0x00 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-hstart =		/bits/ 8 <0xff 0x03 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-hstop =		/bits/ 8 <0xff 0x06 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-word-length =	/bits/ 8 <0x01 0x07 0x04 0xff 0xff 0x0f 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-block-pack-mode =	/bits/ 8 <0xff 0x00 0x01 0xff 0xff 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-block-group-count =	/bits/ 8 <0xff 0xff 0xff 0xff 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
-+			qcom,ports-lane-control =	/bits/ 8 <0x01 0x00 0x00 0x00 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
- 
- 			#address-cells = <2>;
- 			#size-cells = <0>;
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2f8d59834c00..cbfcdd882590 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -5595,6 +5595,7 @@ static const char readme_msg[] =
+ 	"       delta:   Delta difference against a buffer-wide timestamp\n"
+ 	"    absolute:   Absolute (standalone) timestamp\n"
+ 	"\n  trace_marker\t\t- Writes into this file writes into the kernel buffer\n"
++	"\n           May be broken into multiple events based on sub-buffer size.\n"
+ 	"\n  trace_marker_raw\t\t- Writes into this file writes binary data into the kernel buffer\n"
+ 	"  tracing_cpumask\t- Limit which CPUs to trace\n"
+ 	"  instances\t\t- Make sub-buffers with: mkdir instances/foo\n"
+diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+new file mode 100755
+index 000000000000..bcb2dc6b8a66
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+@@ -0,0 +1,112 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Change the ringbuffer sub-buffer size
++# requires: trace_marker
++# flags: instance
++
++get_buffer_data_size() {
++	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
++}
++
++get_buffer_data_offset() {
++	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
++}
++
++get_event_header_size() {
++	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	total_bits=$((type_len+time_len+array_len))
++	total_bits=$((total_bits+7))
++	echo $((total_bits/8))
++}
++
++get_print_event_buf_offset() {
++	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
++}
++
++event_header_size=`get_event_header_size`
++print_header_size=`get_print_event_buf_offset`
++
++# Find the README
++README=""
++if [ -f README ]; then
++	README="README"
++# instance?
++elif [ -f ../../README ]; then
++	README="../../README"
++fi
++
++testone=0
++if [ ! -z "$README" ]; then
++	if grep -q  "May be broken into multiple events based on sub-buffer size" $README; then
++		testone=1
++	fi
++fi
++
++data_offset=`get_buffer_data_offset`
++
++marker_meta=$((event_header_size+print_header_size))
++
++make_str() {
++        cnt=$1
++	# subtract two for \n\0 as marker adds these
++	cnt=$((cnt-2))
++	printf -- 'X%.0s' $(seq $cnt)
++}
++
++write_buffer() {
++	size=$1
++
++	str=`make_str $size`
++
++	# clear the buffer
++	echo > trace
++
++	# write the string into the marker
++	echo -n $str > trace_marker
++
++	echo $str
++}
++
++test_buffer() {
++
++	size=`get_buffer_data_size`
++	oneline_size=$((size-marker_meta))
++	echo size = $size
++	echo meta size = $marker_meta
++
++	if [ $testone -eq 1 ]; then
++		echo oneline size = $oneline_size
++
++		str=`write_buffer $oneline_size`
++
++		# Should be in one single event
++		new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; exit}' trace`
++
++		if [ "$new_str" != "$str" ]; then
++			exit fail;
++		fi
++	fi
++
++	# Now add a little more the meta data overhead will overflow
++
++	str=`write_buffer $size`
++
++	# Make sure the line was broken
++	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
++
++	if [ "$new_str" = "$str" ]; then
++		exit fail;
++	fi
++
++	# Make sure the entire line can be found
++	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
++
++	if [ "$new_str" != "$str" ]; then
++		exit fail;
++	fi
++}
++
++test_buffer
++
 -- 
-2.34.1
+2.42.0
 
