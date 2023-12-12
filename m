@@ -2,44 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C63580F72A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDB680F72C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377316AbjLLTsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
+        id S1377275AbjLLTt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377284AbjLLTsZ (ORCPT
+        with ESMTP id S230181AbjLLTt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:48:25 -0500
+        Tue, 12 Dec 2023 14:49:26 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF91FD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:48:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE7AC433CB;
-        Tue, 12 Dec 2023 19:48:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084879A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:49:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A901CC433C8;
+        Tue, 12 Dec 2023 19:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702410510;
-        bh=oqY4K6jG5BE7MOa8w7xZ5OE+AG4WMHalMWId0VgXocY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tnzxvu7BVIdvv9Ic+qurUQy08ciyvLKjizQmFRbi04fR8a3sqd6LqpKeq6mcwP8Zv
-         eY8cV+zJH2kwV7qi4LahoFIcN6NrYshFn3VFzeTRsSaFBX1dabyreTm1nT1+HBv1GC
-         ZnNAHfBSfmGfvpivfX7vkQPeAH/oaxqWKKV8I3s0HzfGGxwSQPV/XYGGYkCmjERBzT
-         5KPrWUvNUwetqb/syAj2X7gA6u/ovpEZvvE+CbPXzeHzsPZxyuFCPIkubXJ67Wh2sT
-         9/6duqy8LuyB7t1zMc27sMWSH0zgFXE3L196jMplrgOlGxLivrxPKOBgWnMkbQULsF
-         nlhSNbD+4hbWg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] selftests/damon: add a test for update_schemes_tried_regions hang bug
-Date:   Tue, 12 Dec 2023 19:48:10 +0000
-Message-Id: <20231212194810.54457-6-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212194810.54457-1-sj@kernel.org>
-References: <20231212194810.54457-1-sj@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1702410572;
+        bh=iRox8wBzt74waqIhkUBhPBSuffNObnSpo3yDqzOx3pE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=LWgVw7VHq0Z3qmvqGZ6T9VLRTKZr9Ss9CLlXCjjnRYvfD0CdOB29ltGskVveASe4G
+         /grgx7mbx7FJeKwu8H6zpqhpkEhvinEtszX2qntUqeB5y78bUpNRvL3d7J8KF9ekXJ
+         /AiTo8rdN+Hp6YAmUNqB5GJ1DtmBUc6DZgEN5BsyQlqH3nlaqRK6kb4NO95/NXpjtr
+         4Npdg8wMA1mIq2QRNPXYPKHdWplF5ymarBtN36w3c2kHNyM8fO02OjmYGgrESVtNPd
+         tKc6qkDYImKBNuzz7yPOn2BZpIMu0gFzq0t6l0AQzhfuHa1kVg6l7w+NBav4Tz2Pc/
+         IP12CBqP3440A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 97DADDFC906;
+        Tue, 12 Dec 2023 19:49:32 +0000 (UTC)
+Subject: Re: [GIT PULL] ext4 bug fixes for 6.7-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231212193303.GA154795@mit.edu>
+References: <20231212193303.GA154795@mit.edu>
+X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231212193303.GA154795@mit.edu>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.7-rc6
+X-PR-Tracked-Commit-Id: 6c02757c936063f0631b4e43fe156f8c8f1f351f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cf52eed70e555e864120cfaf280e979e2a035c66
+Message-Id: <170241057261.17345.424030301237809121.pr-tracker-bot@kernel.org>
+Date:   Tue, 12 Dec 2023 19:49:32 +0000
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -50,70 +57,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test for reproducing the update_schemes_tried_{regions,bytes}
-command-causing indefinite hang bug that fixed by commit 7d6fa31a2fd7
-("mm/damon/sysfs-schemes: add timeout for
-update_schemes_tried_regions"), to avoid mistakenly re-introducing the
-bug.  Refer to the fix commit for more details of the bug.
+The pull request you sent on Tue, 12 Dec 2023 14:33:03 -0500:
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- tools/testing/selftests/damon/Makefile        |  1 +
- ...sysfs_update_schemes_tried_regions_hang.py | 33 +++++++++++++++++++
- 2 files changed, 34 insertions(+)
- create mode 100755 tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
+> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.7-rc6
 
-diff --git a/tools/testing/selftests/damon/Makefile b/tools/testing/selftests/damon/Makefile
-index 90ffafc42c5e..8a1cc2bf1864 100644
---- a/tools/testing/selftests/damon/Makefile
-+++ b/tools/testing/selftests/damon/Makefile
-@@ -10,6 +10,7 @@ TEST_PROGS += debugfs_empty_targets.sh debugfs_huge_count_read_write.sh
- TEST_PROGS += debugfs_duplicate_context_creation.sh
- TEST_PROGS += debugfs_rm_non_contexts.sh
- TEST_PROGS += sysfs.sh sysfs_update_removed_scheme_dir.sh
-+TEST_PROGS += sysfs_update_schemes_tried_regions_hang.py
- TEST_PROGS += sysfs_update_schemes_tried_regions_wss_estimation.py
- TEST_PROGS += reclaim.sh lru_sort.sh
- 
-diff --git a/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
-new file mode 100755
-index 000000000000..8c690ba1a573
---- /dev/null
-+++ b/tools/testing/selftests/damon/sysfs_update_schemes_tried_regions_hang.py
-@@ -0,0 +1,33 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0
-+
-+import subprocess
-+import time
-+
-+import _damon_sysfs
-+
-+def main():
-+    proc = subprocess.Popen(['sleep', '2'])
-+    kdamonds = _damon_sysfs.Kdamonds([_damon_sysfs.Kdamond(
-+            contexts=[_damon_sysfs.DamonCtx(
-+                ops='vaddr',
-+                targets=[_damon_sysfs.DamonTarget(pid=proc.pid)],
-+                schemes=[_damon_sysfs.Damos(
-+                    access_pattern=_damon_sysfs.DamosAccessPattern(
-+                        nr_accesses=[200, 200]))] # schemes
-+                )] # contexts
-+            )]) # kdamonds
-+
-+    err = kdamonds.start()
-+    if err != None:
-+        print('kdmaond start failed: %s' % err)
-+        exit(1)
-+
-+    while proc.poll() == None:
-+        err = kdamonds.kdamonds[0].update_schemes_tried_bytes()
-+        if err != None:
-+            print('tried bytes update failed: %s' % err)
-+            exit(1)
-+
-+if __name__ == '__main__':
-+    main()
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cf52eed70e555e864120cfaf280e979e2a035c66
+
+Thank you!
+
 -- 
-2.34.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
