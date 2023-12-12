@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3629080EE77
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093FE80EE7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376457AbjLLOMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40758 "EHLO
+        id S1376452AbjLLOOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376452AbjLLOMG (ORCPT
+        with ESMTP id S232555AbjLLOOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:12:06 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897D410A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:12:11 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4259c7dfb63so28477971cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1702390330; x=1702995130; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mQ2TiLoD9Gaq6xkoyUSluJ0KHWLQt9mZyTQyaXIVvpI=;
-        b=Ma6EWX39Bj1+T9k0jBia+zrZupD7uZ+MvPqsdYZzuIIsCDzoZlisglAN5yH5/oEK9g
-         a1AAT63J2/G5xRWwi2oo1rppz6IWnTX3OZoTyKWZt++m1ECcRYhwSzlN5MvnZXiLi/rJ
-         l/E7r9Fan781Jhhyr9OVRLLCSF1oORTqZ/bw5C0bAmUzamQdXNNvfwmQHXn63uZr52n8
-         2UobjmltDa40DJ/hOqZTPFxpzzmrugA/7QL5aXuWv9AzO6nJ9M5sRc1i8jnP1ydUQSKR
-         JLaxJ8nyPCqhEe8Of6xlQdlg5KeLG/wfT3+naYeO9P+eC7SxHLMnnstTnJ8iOTbr1c9D
-         U+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702390330; x=1702995130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mQ2TiLoD9Gaq6xkoyUSluJ0KHWLQt9mZyTQyaXIVvpI=;
-        b=gHszmwcl5dPNOe2XPlvoVykZ/L/hJke6la7sKShGbNACfJkjXrgX18Q7enXhc1tJHW
-         qyrWtWBOBLCu6e2Lfz9Y3tRUqPFzHcYvBcdUrdeC+at+4yFe53DGeU5/N+9ERYonvgP/
-         Pdo4xpAPuDIdgY87jE9V0wT8ZpZYU7Y3PYvzwkIK5xc3V5cqPVuxkaN4gAXzI88N+bif
-         V7DUke6AgPrrpSmgqinej0juo3+R84V8Hno+unNo4ZAWBrkr/KF2l94+6Wr4+W/50h5Y
-         w40+PUgPZkpZSI1pSx19MV6KuiBQghgiagw8090nbHXrYHj1GUx/jXtyt7Ghpt9oHrMA
-         9K5Q==
-X-Gm-Message-State: AOJu0YxxKhevtWOjpIle9Gt3CxF9tqAe3fKAYzS5IW4ilb3A3/xP/PRq
-        iMsoZvuQlclzNBzxoOuZiFqGww==
-X-Google-Smtp-Source: AGHT+IGRkRQVaTR68B5qveU70mgfrGlXmlTMF+z308FUs0i5H1yAdurOHwLdhvMF64yVQEAU8ICGfg==
-X-Received: by 2002:ac8:7dc6:0:b0:425:4043:29ff with SMTP id c6-20020ac87dc6000000b00425404329ffmr7750741qte.122.1702390330535;
-        Tue, 12 Dec 2023 06:12:10 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id t22-20020ac85316000000b0041cb787ff41sm4082934qtn.67.2023.12.12.06.12.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 06:12:09 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1rD3UW-00CjJP-VZ;
-        Tue, 12 Dec 2023 10:12:08 -0400
-Date:   Tue, 12 Dec 2023 10:12:08 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] iommufd: Initializing and releasing IO page fault
- data
-Message-ID: <20231212141208.GA3013885@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231026024930.382898-4-baolu.lu@linux.intel.com>
- <CGME20231212131010eucas1p104d069ac6d6c97fce4987caa62c996ee@eucas1p1.samsung.com>
- <20231212131008.k6s5xwjgolp6geps@localhost>
+        Tue, 12 Dec 2023 09:14:16 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586DE8F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:14:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1702390460;
+        bh=CZlz57rWloWiitqrkGaj9Jzas8iR7il2LGCiEK9NI+8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=x9AEh33aS1IU8cNjHWimEjSV5FcdC96JJV/XVb5wmeu3LQLZP2PwLg4DVxgMQQUlY
+         7ATz53jDx/pinW8gD/upRkKXS6ADlepm7Hil/wUkw3wk2+aaGZPE5DVeI7yn+t46pd
+         qDHwujasnlHU0ZZj5KN3v+kJMLxV3Pf0YigY2zPnqCEcMwNvTApRhZ39M4M0vVxDPF
+         KiY0lmcNc6WioBwjzqoo0vb2QCR22HiNkgrhuqC32gmOeYsqPaQoAj/Dcgx8NmIeg0
+         l94z3gkfOkt+cUgqO3N2j25W8eU7x328+xppya1yY37kx9UrAY+6MV5wjGVAniSzAu
+         VMiJ9hcOfWusQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SqLG36XGTzGKC;
+        Tue, 12 Dec 2023 09:14:19 -0500 (EST)
+Message-ID: <ceff5706-e396-498a-95bf-b749ece952af@efficios.com>
+Date:   Tue, 12 Dec 2023 09:14:19 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212131008.k6s5xwjgolp6geps@localhost>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/35] sched: add cpumask_find_and_set() and use it in
+ __mm_cid_get()
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+References: <20231212022749.625238-1-yury.norov@gmail.com>
+ <20231212022749.625238-6-yury.norov@gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231212022749.625238-6-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,45 +70,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 02:10:08PM +0100, Joel Granados wrote:
-
-> > diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-> > index 645ab5d290fe..0a8e03d5e7c5 100644
-> > --- a/drivers/iommu/iommufd/device.c
-> > +++ b/drivers/iommu/iommufd/device.c
-> > @@ -456,6 +456,16 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
-> >  	if (rc)
-> >  		goto err_unlock;
-> >  
-> > +	if (hwpt->fault) {
-> > +		void *curr;
-> > +
-> > +		curr = iopf_pasid_cookie_set(idev->dev, IOMMU_NO_PASID, idev);
-> I'm hitting an error here when I try to attach to a hwpt that I created
-> previously with the `IOMMU_HWPT_ALLOC_IOPF_CAPABLE` flag.
+On 2023-12-11 21:27, Yury Norov wrote:
+> __mm_cid_get() uses __mm_cid_try_get() helper to atomically acquire a
+> bit in mm cid mask. Now that we have atomic find_and_set_bit(), we can
+> easily extend it to cpumasks and use in the scheduler code.
 > 
-> I get an -ENODEV from iopf_pasid_cookie_set which is triggered by
-> dev->iommu->fault_param being 0x0.
+> cpumask_find_and_set() considers cid mask as a volatile region of memory,
+> as it actually is in this case. So, if it's changed while search is in
+> progress, KCSAN wouldn't fire warning on it.
 > 
-> I looked around and I see that the fault param gets set in
-> iopf_queue_add_device which is called from iommu_dev_enable_feature
-> only. Furthermore iommu_dev_enable_feature is only called in idxd and
-> uacce drivers.
+> CC: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> CC: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+
+> ---
+>   include/linux/cpumask.h | 12 ++++++++++++
+>   kernel/sched/sched.h    | 14 +++++---------
+>   2 files changed, 17 insertions(+), 9 deletions(-)
 > 
-> Questions:
-> 1. Should iopf_queue_add_device get called from the
->    IOMMU_HWPT_ALLOC_IOPF_CAPABLE ioctl call? This make sense to me as
->    this is where the device and the IOPF are related from user space.
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index cfb545841a2c..c2acced8be4e 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -271,6 +271,18 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
+>   		small_cpumask_bits, n + 1);
+>   }
+>   
+> +/**
+> + * cpumask_find_and_set - find the first unset cpu in a cpumask and
+> + *			  set it atomically
+> + * @srcp: the cpumask pointer
+> + *
+> + * Return: >= nr_cpu_ids if nothing is found.
+> + */
+> +static inline unsigned int cpumask_find_and_set(volatile struct cpumask *srcp)
+> +{
+> +	return find_and_set_bit(cpumask_bits(srcp), small_cpumask_bits);
+> +}
+> +
+>   /**
+>    * for_each_cpu - iterate over every cpu in a mask
+>    * @cpu: the (optionally unsigned) integer iterator
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 2e5a95486a42..2ce9112de89b 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -3347,23 +3347,19 @@ static inline void mm_cid_put(struct mm_struct *mm)
+>   
+>   static inline int __mm_cid_try_get(struct mm_struct *mm)
+>   {
+> -	struct cpumask *cpumask;
+> -	int cid;
+> +	struct cpumask *cpumask = mm_cidmask(mm);
+> +	int cid = nr_cpu_ids;
+>   
+> -	cpumask = mm_cidmask(mm);
+>   	/*
+>   	 * Retry finding first zero bit if the mask is temporarily
+>   	 * filled. This only happens during concurrent remote-clear
+>   	 * which owns a cid without holding a rq lock.
+>   	 */
+> -	for (;;) {
+> -		cid = cpumask_first_zero(cpumask);
+> -		if (cid < nr_cpu_ids)
+> -			break;
+> +	while (cid >= nr_cpu_ids) {
+> +		cid = cpumask_find_and_set(cpumask);
+>   		cpu_relax();
+>   	}
+> -	if (cpumask_test_and_set_cpu(cid, cpumask))
+> -		return -1;
+> +
+>   	return cid;
+>   }
+>   
 
-It probably needs to call the set feature thing in the short term.
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
-In the medium term I would like the drivers to manage the iopf based
-on domain attachment not explicit feature asks
-
-> 2. This is not intended to work only with idxd and uacce. right?
-
-It should work everywhere, I suspect Intel Team didn't hit this
-because they are testing IDXD SIOV? Can you guys also test it as a PF
-assignment?
-
-Jason
