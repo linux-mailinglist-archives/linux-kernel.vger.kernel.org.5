@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8815380F1CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3963B80F1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbjLLQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S1346621AbjLLQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbjLLQEW (ORCPT
+        with ESMTP id S232079AbjLLQEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:04:22 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72976B4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:27 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso13117a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702397066; x=1703001866; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EySWR5HSLbEbAwQsmlzOeqMwViU2YPMZzWbEWm+2Kgo=;
-        b=CyFnmGD2rNk5SCz1aAqC1E7TtP9XCZ33skehfnNwi+ZaWcFr86n/Zd5eOrmUn+VJus
-         1LycG+H33eTazpAKP/mUcshd1rKFOJZDLl7qdH/6FYPYmIFETEtSk9vJNqWh8mWinaxx
-         s65ZzTqop1r2pojI49Npz0UdXno/8d6SGi20g5kgcbzMfStQOLmpq8xCBiENB496iDZc
-         HyP4xbQ92y6K8c5oNn2+1oKDMLv64D+yQNo/zE1quy+/xxqvZdHxJNwc5WU+BufmLc6k
-         VXTXnn83/jW3niInfbENmoy3iivoYHIITKVkxCwtbcSDOgSD1dD9uf50pUabpY33xa3i
-         UdBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702397066; x=1703001866;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EySWR5HSLbEbAwQsmlzOeqMwViU2YPMZzWbEWm+2Kgo=;
-        b=GqIvIMafCILx/OhDqaMBcd6WJ8sIpX2VJ9jkYswQS3qRtvYkWYsTAGt21KuuM+Tqzu
-         AVlYDQGUJcqhrthkavsjzLXDWmlCRtyLMy3rNvigIY8j3kmb2BjDE39WtQ51Rq7iwzd9
-         jBaW0QQKM3zlDcSO03ge2Ues9fWYHg6gVFqaZk1HWqlk1/zoZdqgCip63HUs1O2FtXNy
-         T+Pf7u+SfaDzU57z0W+bklW5Z9d5gflGLw7pT0yPNzbL1/gkSj5r119UK8P3YH5xqbXS
-         3dOenDtnI8it7xAowySHlcIOpU3WNXvLLD4Y4QSS2i95/DC4ybWgWR4CN1F4Fdh0TEkh
-         dA4w==
-X-Gm-Message-State: AOJu0YyMB2qlpsUvUXHcjzf9bVgPjpKdfMh4usjoVyYZr60cuQQj9Ynd
-        jpj2HBf5kfT3adr6PZaCx9hm9mdrvJB/2hOkLkg3Yw==
-X-Google-Smtp-Source: AGHT+IF6ELk9g2qcWWxJGDlTRcFmjUjaR5fvEaQA2WmaGK9QRAgfMLfPXv+AWfS1Jd1b6KSiMglq9KaODFhNn+IyQcI=
-X-Received: by 2002:a50:9fc6:0:b0:551:de83:557 with SMTP id
- c64-20020a509fc6000000b00551de830557mr18211edf.2.1702397065602; Tue, 12 Dec
- 2023 08:04:25 -0800 (PST)
+        Tue, 12 Dec 2023 11:04:54 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0026F9A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702397099;
+        bh=/2FOHkCJ8Ki2qju6NW0aAz/iSZkx9bbOhEmMI/iFVMI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=syPccCa5coUFY8UGzG9/lcjqqZMDN40JfB1AwIC7M7JqqqSkyvchAaUyn80GmaxvJ
+         VDV/gFdRNnqS34Sz5PfmvxUkV/xDc3Wx7Whw0GUlyQI7bJeQuFXr+2mFXHWQvJjRzZ
+         6FH8GfsxVaxxVdGDqcJ2IS+umueAnMZhb2gRh7ad3kfCKx2l9+XmUkEBBe9FYRdEyQ
+         FQ+gH1zxWCe6Y95QFnpGELeVnwnGXKIxShq6VA1+V2WgfKgY+764Q4e5nkhy6iIjQu
+         /C2QNjQ4D2NU+Y+62rBHhYhC0BHpeGdlP5ErKkaxe0n93Hs5pkpJ5Sg23a69El67pP
+         nBi5XqFeRMqZA==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: vignesh)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 65C6C3781462;
+        Tue, 12 Dec 2023 16:04:56 +0000 (UTC)
+From:   Vignesh Raman <vignesh.raman@collabora.com>
+To:     helen.koike@collabora.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
+        guilherme.gallo@collabora.com, daniels@collabora.com,
+        emma@anholt.net, robdclark@gmail.com, dmitry.baryshkov@linaro.org,
+        quic_abhinavk@quicinc.com, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/ci: uprev mesa version: fix kdl commit fetch
+Date:   Tue, 12 Dec 2023 21:34:48 +0530
+Message-Id: <20231212160448.883358-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20231208220545.7452-1-frederic@kernel.org> <20231208220545.7452-4-frederic@kernel.org>
-In-Reply-To: <20231208220545.7452-4-frederic@kernel.org>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Tue, 12 Dec 2023 11:04:13 -0500
-Message-ID: <CAC_TJvcODXd71icqTLs5fkCKswML5huK-2V2=R2-D9-Fc0R1MA@mail.gmail.com>
-Subject: Re: [PATCH 3/8] rcu/exp: Fix RCU expedited parallel grace period
- kworker allocation failure recovery
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria.behnsen@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 8, 2023 at 5:06=E2=80=AFPM Frederic Weisbecker <frederic@kernel=
-.org> wrote:
->
-> Under CONFIG_RCU_EXP_KTHREAD=3Dy, the nodes initialization for expedited
-> grace periods is queued to a kworker. However if the allocation of that
-> kworker failed, the nodes initialization is performed synchronously by
-> the caller instead.
->
-> Now the check for kworker initialization failure relies on the kworker
-> pointer to be NULL while its value might actually encapsulate an
-> allocation failure error.
->
-> Make sure to handle this case.
->
-> Fixes: 9621fbee44df ("rcu: Move expedited grace period (GP) work to RT kt=
-hread_worker")
-> Cc: Kalesh Singh <kaleshsingh@google.com>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  kernel/rcu/tree.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 82f8130d3fe3..055f4817bc70 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4723,6 +4723,7 @@ static void __init rcu_start_exp_gp_kworkers(void)
->         rcu_exp_par_gp_kworker =3D kthread_create_worker(0, par_gp_kworke=
-r_name);
->         if (IS_ERR_OR_NULL(rcu_exp_par_gp_kworker)) {
->                 pr_err("Failed to create %s!\n", par_gp_kworker_name);
-> +               rcu_exp_par_gp_kworker =3D NULL;
->                 kthread_destroy_worker(rcu_exp_gp_kworker);
+build-kdl.sh was doing a `clone --depth 1` of the default branch,
+then checking out a commit that might not be the latest of that
+branch, resulting in container build error.
 
-Hi Frederic,
+https://gitlab.freedesktop.org/mesa/mesa/-/commit/5efa4d56 fixes
+kdl commit fetch issue. Uprev mesa in drm-ci to fix this.
 
-Thanks for catching this. I think we need to remove the
-kthread_destroy_worker() in this case too.
+This commit also updates the kernel tag and adds .never-post-merge-rules
+due to the mesa uprev.
 
-Otherwise,
+Tested-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+---
+ drivers/gpu/drm/ci/gitlab-ci.yml | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+index aeb9bab1b069..b215d7b3d6ca 100644
+--- a/drivers/gpu/drm/ci/gitlab-ci.yml
++++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+@@ -1,6 +1,6 @@
+ variables:
+   DRM_CI_PROJECT_PATH: &drm-ci-project-path mesa/mesa
+-  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha edfbf74df1d4d6ce54ffe24566108be0e1a98c3d
++  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 9d162de9a05155e1c4041857a5848842749164cf
+ 
+   UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+   TARGET_BRANCH: drm-next
+@@ -25,7 +25,9 @@ variables:
+   # per-job artifact storage on MinIO
+   JOB_ARTIFACTS_BASE: ${PIPELINE_ARTIFACTS_BASE}/${CI_JOB_ID}
+   # default kernel for rootfs before injecting the current kernel tree
+-  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/gfx-ci/linux/v6.4.12-for-mesa-ci-f6b4ad45f48d
++  KERNEL_REPO: "gfx-ci/linux"
++  KERNEL_TAG: "v6.6.4-for-mesa-ci-e4f4c500f7fb"
++  KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/${KERNEL_REPO}/${KERNEL_TAG}
+   LAVA_TAGS: subset-1-gfx
+   LAVA_JOB_PRIORITY: 30
+ 
+@@ -133,6 +135,11 @@ stages:
+     - if: &is-pre-merge-for-marge '$GITLAB_USER_LOGIN == "marge-bot" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+       when: on_success
+ 
++.never-post-merge-rules:
++  rules:
++    - if: *is-post-merge
++      when: never
++
+ # Rule to filter for only scheduled pipelines.
+ .scheduled_pipeline-rules:
+   rules:
+@@ -150,6 +157,7 @@ stages:
+ .build-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     # Run automatically once all dependency jobs have passed
+     - when: on_success
+ 
+@@ -157,6 +165,7 @@ stages:
+ .container+build-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     - when: manual
+ 
+ .ci-deqp-artifacts:
+@@ -175,6 +184,7 @@ stages:
+ .container-rules:
+   rules:
+     - !reference [.no_scheduled_pipelines-rules, rules]
++    - !reference [.never-post-merge-rules, rules]
+     # Run pipeline by default in the main project if any CI pipeline
+     # configuration files were changed, to ensure docker images are up to date
+     - if: *is-post-merge
+-- 
+2.40.1
 
---Kalesh
-
->                 return;
->         }
-> --
-> 2.42.1
->
