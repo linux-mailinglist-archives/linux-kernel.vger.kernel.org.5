@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4DC80F4DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189B680F4DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376831AbjLLRqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S1376901AbjLLRrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:47:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLRqf (ORCPT
+        with ESMTP id S230181AbjLLRrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:46:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909F494
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:46:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60BECC433C8;
-        Tue, 12 Dec 2023 17:46:36 +0000 (UTC)
-Date:   Tue, 12 Dec 2023 17:46:34 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     ankita@nvidia.com
-Cc:     jgg@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
-        gshan@redhat.com, linux-mm@kvack.org, lpieralisi@kernel.org,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci devices
-Message-ID: <ZXicemDzXm8NShs1@arm.com>
-References: <20231208164709.23101-1-ankita@nvidia.com>
- <20231208164709.23101-3-ankita@nvidia.com>
+        Tue, 12 Dec 2023 12:47:45 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D1E83;
+        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d053c45897so52043225ad.2;
+        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702403270; x=1703008070; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uyRFYn/2E3bBEASN5RSINhi7V604PFIKYA1eHnIvDBQ=;
+        b=mnHWsR4BCYswM6xdbTV5EvY8KDDnhaukc0DESRYUXvW46dRFSEYwbmIVFlLibZq1YW
+         GJwddn0m8PrNviUMcby16CXqNWLAWF+Ow8o9QtdA/pvZuLWitCsLdVZnxDbOWZ+7TK+D
+         b4pGWSYQunQwFa48BLAL29/JdqjAZ9RmuRHGq1fCLmLP0IE0xUojr1bIlrQ9b56iQ78Z
+         wpfgzFWNiXQ7JAq12Cjp5oJYhSWpWd/wDlKq8tDS5/lmXwQOKNE4QzAA6+KFWMY/1Ogu
+         iMieLJF01ndrt9M6oPJZAul7SvaOWzKf4qrC9PF34XgYd3EQVgXLu7mvtwehjHvMWAyc
+         npwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702403270; x=1703008070;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uyRFYn/2E3bBEASN5RSINhi7V604PFIKYA1eHnIvDBQ=;
+        b=vizF2ycog+H/lywuvfeXmlo6MOxvJspfE8Z/BALAUkQEcRNFvaXPKATm4WbasDKoxy
+         1OvONQ+A3/5Vw4Kti94N7PEwkBotjBTp0jtvJSF9/wC9rZzA65WQcrwQVxuo2RgINF7L
+         KZsF6hSzdx7jJCQnId2CW+8Tj71kf4rgDXCN2QQEet8Xk5jDvEVnXpfHTBcdcYnu3vOk
+         9hxwz5I8yommpbzG1Jw+pLLMSCJnTgLwJONkf9bRtvZKvT7zANCKPp2m6g8L6fCjD5UH
+         OFsAgTjqu4Aw5CbZ6Ow8yroEd+S7zLLCYWbtfn8t2aJihlFiYL4VdOFaoV+wDgq58NWF
+         d6lw==
+X-Gm-Message-State: AOJu0YzEQXpNSNNAodNX+3NOa1noOOnHHl1H4yyMOC97pstLvRyHvBsv
+        hAfGkccHacTt4fgUNnBJSv0=
+X-Google-Smtp-Source: AGHT+IGmnTAI20jP+s0/IaukLJr8Qhfet/RF5DkK9h1IsC8L8kkioQiHzhGMiqZw4lxucT59b+eQPA==
+X-Received: by 2002:a17:903:11c5:b0:1d0:6ffd:9e21 with SMTP id q5-20020a17090311c500b001d06ffd9e21mr7008997plh.115.1702403270014;
+        Tue, 12 Dec 2023 09:47:50 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id p17-20020a170903249100b001cfde4c84bcsm8905985plw.141.2023.12.12.09.47.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 09:47:49 -0800 (PST)
+Message-ID: <37a418c9-06ee-4bf4-a26d-b7ac3cd2d666@gmail.com>
+Date:   Tue, 12 Dec 2023 09:47:43 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208164709.23101-3-ankita@nvidia.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.15 000/139] 5.15.143-rc2 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231212120210.556388977@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231212120210.556388977@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 10:17:09PM +0530, ankita@nvidia.com wrote:
->  arch/arm64/kvm/hyp/pgtable.c     |  3 +++
->  arch/arm64/kvm/mmu.c             | 16 +++++++++++++---
->  drivers/vfio/pci/vfio_pci_core.c |  3 ++-
->  include/linux/mm.h               |  7 +++++++
->  4 files changed, 25 insertions(+), 4 deletions(-)
+On 12/12/23 04:04, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.143 release.
+> There are 139 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 14 Dec 2023 12:01:32 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.143-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-It might be worth factoring out the vfio bits into a separate patch
-together with a bit of documentation around this new vma flag (up to
-Alex really).
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index d4835d553c61..c8696c9e7a60 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -722,6 +722,9 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
->  	kvm_pte_t attr;
->  	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
->  
-> +	if (device && normal_nc)
-> +		return -EINVAL;
-
-Ah, the comment Will and I made on patch 1 is handled here. Add a
-WARN_ON_ONCE() and please move this hunk to the first patch, it makes
-more sense there.
-
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index d14504821b79..1ce1b6d89bf9 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -1381,7 +1381,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	int ret = 0;
->  	bool write_fault, writable, force_pte = false;
->  	bool exec_fault, mte_allowed;
-> -	bool device = false;
-> +	bool device = false, vfio_pci_device = false;
-
-I don't think the variable here should be named vfio_pci_device, the
-VM_* flag doesn't mention PCI. So just something like "vfio_allow_wc".
-
->  	unsigned long mmu_seq;
->  	struct kvm *kvm = vcpu->kvm;
->  	struct kvm_mmu_memory_cache *memcache = &vcpu->arch.mmu_page_cache;
-> @@ -1472,6 +1472,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	gfn = fault_ipa >> PAGE_SHIFT;
->  	mte_allowed = kvm_vma_mte_allowed(vma);
->  
-> +	vfio_pci_device = !!(vma->vm_flags & VM_VFIO_ALLOW_WC);
-
-Nitpick: no need for !!, you are assigning to a bool variable already.
-
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 1cbc990d42e0..c3f95ec7fc3a 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -1863,7 +1863,8 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
->  	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
->  	 * change vm_flags within the fault handler.  Set them now.
->  	 */
-> -	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
-> +	vm_flags_set(vma, VM_VFIO_ALLOW_WC | VM_IO | VM_PFNMAP |
-> +			VM_DONTEXPAND | VM_DONTDUMP);
-
-Please add a comment here that write-combining is allowed to be enabled
-by the arch (KVM) code but the default user mmap() will still use
-pgprot_noncached().
-
->  	vma->vm_ops = &vfio_pci_mmap_ops;
->  
->  	return 0;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index a422cc123a2d..8d3c4820c492 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -391,6 +391,13 @@ extern unsigned int kobjsize(const void *objp);
->  # define VM_UFFD_MINOR		VM_NONE
->  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
->  
-> +#ifdef CONFIG_64BIT
-> +#define VM_VFIO_ALLOW_WC_BIT	39	/* Convey KVM to map S2 NORMAL_NC */
-
-This comment shouldn't be in the core header file. It knows nothing
-about S2 and Normal-NC, that's arm64 terminology. You can mention
-something like VFIO can use this flag hint that write-combining is
-allowed.
-
-> +#define VM_VFIO_ALLOW_WC	BIT(VM_VFIO_ALLOW_WC_BIT)
-> +#else
-> +#define VM_VFIO_ALLOW_WC	VM_NONE
-> +#endif
-
-And I think we need to add some documentation (is there any
-VFIO-specific doc) that describes what this flag actually means, what is
-permitted. For example, arm64 doesn't have write-combining without
-speculative fetches. So if one adds this flag to a new driver, they
-should know the implications. There's also an expectation that the
-actual driver (KVM guests) or maybe later DPDK can choose the safe
-non-cacheable or write-combine (Linux terminology) attributes for the
-BAR.
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-Catalin
+Florian
+
