@@ -2,284 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 854EF80FB35
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A82680FB3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378108AbjLLXRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
+        id S1377978AbjLLXTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378038AbjLLXRU (ORCPT
+        with ESMTP id S235286AbjLLXTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:17:20 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927CCAF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:17:23 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-202d6823844so1516368fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702423042; x=1703027842; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uU36FjOIbdJKQPRiJg4nrZQU0fb/SKB6wgyMQ4t+i44=;
-        b=Q6rto8wfztnbMECUp7AIeqx0uu86PE9aG6ZHMHfsjUoqaLNMUDRhZk/SE9OjXCUtFl
-         tyNx8suTCa8z103x5Vnhmo1qX9D6NaCaZE+t4uFYEu19z4tSFEZdam0z9d4iVNwCSfCg
-         LwwbGS3JrdK+T+sSR4ad7VVWE1Nq2hRlTCaGo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702423042; x=1703027842;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uU36FjOIbdJKQPRiJg4nrZQU0fb/SKB6wgyMQ4t+i44=;
-        b=ZEtd7Giog3a7IfK+Vopz8mg+Vqv5ck6GDd6fhV5+ajOkOy3agOcPrQkzfLvXS6q4sd
-         e1kQetglxfpkqp2xdeYnhL6aQoBpgPS+NoYoajtHhk9mWzFZrg/hwA0ZaSy1l2kzuAVk
-         Y1d8QxcObsHfjoz0oHKjpTTqIz+WVhaRWUwY8cOKlCAevmN4ipHLivOfU48Z4up1nzfT
-         PNNB9JPx1GIi/LaSs7tLTE8iZ0wGTnzUkiVxpwKgy4OLJXxW+TtQ1aYPVs4gsBcyMVx8
-         UY39bc8IP8Ulj09zdyVujoiuolRyPywbUI/lo8Yks9W+VNjbG5r+IDXW1UA5sd/d/hkM
-         w/Xw==
-X-Gm-Message-State: AOJu0YwQnBfqB/kRf1j9k5M8gyhs7bcOuLdiMNBzysK9ExCd918wa3Tb
-        7WOU37KdXg5r6582RUL3ncFzFQ==
-X-Google-Smtp-Source: AGHT+IESnkqDjGhkYEemYfFxmrgB/rWYhFKb6e57jqVPg8rTGimOrJk6IlvAbIgCglInHK6pIykjCw==
-X-Received: by 2002:a05:6870:ec8b:b0:1fb:75c:400e with SMTP id eo11-20020a056870ec8b00b001fb075c400emr8193744oab.110.1702423042075;
-        Tue, 12 Dec 2023 15:17:22 -0800 (PST)
-Received: from localhost (34.133.83.34.bc.googleusercontent.com. [34.83.133.34])
-        by smtp.gmail.com with UTF8SMTPSA id v29-20020a63481d000000b005c19c586cb7sm8685104pga.33.2023.12.12.15.17.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 15:17:21 -0800 (PST)
-From:   jeffxu@chromium.org
-To:     akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-        sroettger@google.com, willy@infradead.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org
-Cc:     jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org,
-        Jeff Xu <jeffxu@chromium.org>
-Subject: [RFC PATCH v3 11/11] mseal:add documentation
-Date:   Tue, 12 Dec 2023 23:17:05 +0000
-Message-ID: <20231212231706.2680890-12-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-In-Reply-To: <20231212231706.2680890-1-jeffxu@chromium.org>
-References: <20231212231706.2680890-1-jeffxu@chromium.org>
+        Tue, 12 Dec 2023 18:19:25 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2045.outbound.protection.outlook.com [40.107.22.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C328100;
+        Tue, 12 Dec 2023 15:19:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C0hbhnA+OS061LRs8TYwyans5XxPOelIiCFfzphTh/+Pn4Yt9fUov6Xdvjw3DBKbveKDhTkw06IZtGgoN4++vaijGa1Yn0TfX3Sq3z0patwm4J1lmObwuXKruHJXd4W4HqgJWgXsgJd9uu8UJ99japh7L954aNO6W1m1pEPRZ6idlQx0a6IZlcndqIbCWwBqd1PpiF1Dgnlt194L+o9Xmiqm8Gz/yepsLAvc6Hu3NY1P1aGXTOQMiyQN+MnUh+otLCXbDViiKruk8DESR9E+BvGqLafSLFLWsdhIaSTEbZBat1vmIFdOMHh0A4IZHivGZrcFsaTM/g1ImOPWw7b5ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+vveGhXRNWPtOaY59hn0FvvQqThq02pyK6m9coM5IQk=;
+ b=DctFh1G16tkogL+QC6FJXng38HH50AcpjHGT8K4G9hRFPSd33oTyzjRkQYT45+mvfPmYf2zXHsJUZX49lIXexjsuxvT4LKAMjA6qhiDnQ4ZFGgcvYLGoryC3hEeLvFJfNjgokK9gkrI17tTccNEFLpIXBDqQChylJOGlwad6Os4kwnWUCAIh27oAa69tUJ6w5RkrFp8J6b7ueS17i/4/4xJDu4oGnP/yGdfTKmkkg0ZpGhLf5QHJ1yq3NDNfmHyAglj2ZrO5ZSMs0oKL3/L17N2omsaGAyd7ukpd7So8nWXDZAs3GbWpEuPS34yyLMk+0Tvmcxv28/yOXrWqIhlPsA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+vveGhXRNWPtOaY59hn0FvvQqThq02pyK6m9coM5IQk=;
+ b=ClhlQg0SAuSgjlFIa4Im//WtzTNg87Ase5I0cJ4vetysymLAScbREPafU9iglRLUsO3KDyZln0TZJwB2RxWuJWwGUZQRZ45YPWdiOP82n9UuysGB5ezX3D20Kk3iPW01Nk10eOIvVTWBjymT+xwtK/tcJyA7bemtz10k9MNbI58=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB8359.eurprd04.prod.outlook.com (2603:10a6:20b:3b3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
+ 2023 23:19:05 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 23:19:05 +0000
+Date:   Tue, 12 Dec 2023 18:18:55 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        bhelgaas@google.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, festevam@gmail.com, helgaas@kernel.org,
+        hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+        krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+        l.stach@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v3 01/13] PCI: imx6: Simplify clock handling by using
+ HAS_CLK_* bitmask
+Message-ID: <ZXjqX7uYm3TGFdzE@lizhi-Precision-Tower-5810>
+References: <20231211215842.134823-1-Frank.Li@nxp.com>
+ <20231211215842.134823-2-Frank.Li@nxp.com>
+ <20231212164913.GA21240@thinkpad>
+ <20231212225426.GB2948988-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212225426.GB2948988-robh@kernel.org>
+X-ClientProxiedBy: BY5PR03CA0008.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::18) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB8359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ffae849-a1f7-45c7-c8c7-08dbfb68bbb2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /vWmq2/0QYHH/bYyV453kkityHf1J9eOQ75r6jCZ+TCD3nMRFMPR6OhWN5bzzzmxKZI+VlPp1wwouiG7Hi4NV7b0JhM3b/TE0Jr6JyyYJCZPz1xTNKjQ3aMRsyCYCs9sVl3COoLQ0GdR6+0XHd4JgxqwSAGQmpmqSO/aK2BDmlNiUGiyRw94+b34fLAkYxdyr9Id9KIGEC1D5l4KWvwkf8kw726j3UR2mp98RqrI0N+lnzUf5Y7pBPoeeUWyMy3mWT+i90/VBRT5cjOoY+b4fRDan64ImCD+Vj9mebMSD34Syk++evvXx3yFSp8N5y0lEL8xTeFupUkhdJFHkg4VbSj6CKIuVCSkcyCwUaob2pHOVi0GW+zpo1YzwXc8l44biEEZcIcVztYg3I3HYYXblAvgCFx42jrLen9g8h/wwy4R9S42R9/kzNgSI687skHN1LTyDOwrbPYEYLk47avWteQLhUAZhuS3Qt9ZUPq9kzhEuki3j94LC5pABZJj+VBYS2xvj3Z4nu01OgIUOiRY3MCQt2dXKiTQBYUHlrMSr/9Hhln/BjL/O8tAld6MMdKfFHBjK+4ne/XBVM9/pjMQCkpMhzSiMA2vbsjnCV2FvonHoiLMEiz/jeSoaTXBDgmo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(396003)(346002)(136003)(366004)(376002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(52116002)(6506007)(6512007)(9686003)(38100700002)(5660300002)(4326008)(8676002)(8936002)(41300700001)(7416002)(2906002)(6486002)(33716001)(6666004)(478600001)(316002)(6916009)(66476007)(66556008)(66946007)(86362001)(38350700005)(66899024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mTkA3Z1JRD7r7XRjQpt0jI3IbmLPY/q4do/NoCfHoZREmYCNc8x/+WQL9LhG?=
+ =?us-ascii?Q?FagMTIu/gdXz3sCxTR6b2a4HhocpG+//8RT87YsLcbvGccZD8ItOX8GxBgcF?=
+ =?us-ascii?Q?a1Xfdrz75ic/8u4W1oFLpRYj4D2Pd0qwrknxawpnlqX4RAK04DWAsHqQIUJm?=
+ =?us-ascii?Q?PaGH24rLJ5WzSLu0m2wIxT0r3eVNJLFVorhaRmkrAEPmzBcEcBVJblbSzGrr?=
+ =?us-ascii?Q?UX3rUR16bQjZOhX4g3avKCWyl0V2XCiEL67EjRFEpAVSTjnLxydiZVRqv14n?=
+ =?us-ascii?Q?kaOZLakrNj2dzG5mOAsN/rhom2vCMvhb3CqNLMV5K+BxEqtz3cOm0VtB+Ft2?=
+ =?us-ascii?Q?ubZoR7j78n8g4IRAIWo9s0zMnUuGmPG1jJhmGWzdCGpxwOqvSkbRjY61nkEa?=
+ =?us-ascii?Q?RMTvQznx4Z6n/Rff0DXvd6+i1fj3Sw7Ek4vQUsJlenzMMs0oC/9Ik4o6Ofqp?=
+ =?us-ascii?Q?sySXVquAoy3s+VPShklh8RHUuJh9l77iLNw+0dtul/JdWSiLOmfC0gkAQog6?=
+ =?us-ascii?Q?DupVUN+iyMp68Sx0jem0VF3oYXR7zbi3Yk5amTtGJA3Rcn1Ghx2AyxVE81MO?=
+ =?us-ascii?Q?JU4wYR5zmqlJR2cb8ceLcjiaoYT5yTsagGa7xura0dKhri1yF12p3MAZ/mAs?=
+ =?us-ascii?Q?RdQgnbVeA7cXvrI3aWCv/Mnq0246G87k3Bp/BVFjukR/DLRAuKkijFzanxdu?=
+ =?us-ascii?Q?hc7DdGpE1hXQSPWqx4Vc+9WoZVbQb9W6s3RIX64nA+d7J+DTomsOdG/Ci8rg?=
+ =?us-ascii?Q?MmWe9WKHrF5uOwZoae7Ew2YqmGORW+pBEIqb0++NYOf8wOb0V1ytaRIWLUmc?=
+ =?us-ascii?Q?JA03qaDNVMMho6TSxwXei2L8QldYTsg7JZtlY3Pea2SeQJYrGLS44168vuLf?=
+ =?us-ascii?Q?Bnm8JpZVyb4PEhOZnIJx5F3kXYAY6f0dYVhd2Jii/ctp6WnCFhelNLzZ3BWZ?=
+ =?us-ascii?Q?qM4DY+fucVqgbcjmAe+D/S45zFj7HB1nQe/mw2qTPEmMB18BAnmKNFtKr7C9?=
+ =?us-ascii?Q?ZF7MNHy9USmnJbovYU8sSUYOE9cff8xc559p04OgRpwZavg9RAN7MUCtXuqB?=
+ =?us-ascii?Q?8flnePv60nqGjkN8QLBOYK1MYSj8Zl+YGIHmR3DUYtuhJ8MyNFpC2x0l/PTj?=
+ =?us-ascii?Q?X4a13xqa5Ni3mbguJgX8M281j6HMqA6SupGvQt4po8gJzHpJpfpMJUz3AZAy?=
+ =?us-ascii?Q?DDCbLxPVN6kGhwt+IOZ9K5tB9NrG/CXM6UsgoJS6bc+SQlVLSVXnnwNhmMmL?=
+ =?us-ascii?Q?FP4laPsY3nUj0uf9uqi52Udqh/3yKt3axNZ1x0NPfO52IIc0vOuCZFx3hX4b?=
+ =?us-ascii?Q?Rh48FkGnm/pQhpKylLHP2ABLS9rLH9Vaprf5I1QFDAQ/qSGocL9CPuEbulDx?=
+ =?us-ascii?Q?zjQdep2SxeldBc1B37raL2lo75y9EXggN27tYllP90OCb62mXw+JvAZFmBoU?=
+ =?us-ascii?Q?cfXsgU5VGA0zZNj7Bs7tWEQNH5UiFXvivkchCrSDFxBb5vIed9c4wvPXWMD0?=
+ =?us-ascii?Q?NvjXTH4L5HH8fNjnAE/Kv4FgT/GPvEAkUdezyzrv5kvil6JyQrGfaHom+3uP?=
+ =?us-ascii?Q?iQaGJuFTl6Ie3lqFGWc=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ffae849-a1f7-45c7-c8c7-08dbfb68bbb2
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 23:19:05.5735
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fU4FgG9kP0h7cpa7Tux7RiI2LgmgpRZkMhppCgE9dd9wU7hIzQ9ilJ8cF/LmNyrj609+k9A9Hcso8GnDz/dcfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8359
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Xu <jeffxu@chromium.org>
+On Tue, Dec 12, 2023 at 04:54:26PM -0600, Rob Herring wrote:
+> On Tue, Dec 12, 2023 at 10:19:13PM +0530, Manivannan Sadhasivam wrote:
+> > On Mon, Dec 11, 2023 at 04:58:30PM -0500, Frank Li wrote:
+> > > Refactors the clock handling logic in the imx6 PCI driver by adding
+> > > HAS_CLK_* bitmask define for drvdata::flags . Simplifies the code and makes
+> > > it more maintainable, as future additions of SOC support will only require
+> > > straightforward changes. The drvdata::flags and a bitmask ensures a cleaner
+> > > and more scalable switch-case structure for handling clocks.
+> > > 
+> > 
+> > Is there any necessity to validate each clock in the driver? I mean, can't you
+> > just rely on devicetree to provide enough clocks for the functioning of the PCIe
+> > controller?
+> > 
+> > If you can rely on devicetree (everyone should in an ideal world), then you can
+> > just use devm_clk_bulk_get_all() to get all available clocks for the SoC and
+> > just enable/disable whatever is available.
+> 
+> Or just use the *_get_optional() variants of functions. They return NULL 
+> such that subsequent calls are just NOPs if the resource is not present. 
+> Of course, they aren't really optional on any given platform in this 
+> case, but does that really matter.
 
-Add documentation for mseal().
+I think it'd better use devm_clk_bulk_get() by passed down a clk name list
+.clk_names = {"pcie_aux", ...},
 
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
----
- Documentation/userspace-api/mseal.rst | 189 ++++++++++++++++++++++++++
- 1 file changed, 189 insertions(+)
- create mode 100644 Documentation/userspace-api/mseal.rst
+So it will not silient when dts are not matched requirement. It is not
+complex because only check once at probe.
 
-diff --git a/Documentation/userspace-api/mseal.rst b/Documentation/userspace-api/mseal.rst
-new file mode 100644
-index 000000000000..651c618d0664
---- /dev/null
-+++ b/Documentation/userspace-api/mseal.rst
-@@ -0,0 +1,189 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Introduction of mseal
-+=====================
-+
-+:Author: Jeff Xu <jeffxu@chromium.org>
-+
-+Modern CPUs support memory permissions such as RW and NX bits. The memory
-+permission feature improves security stance on memory corruption bugs, i.e.
-+the attacker can’t just write to arbitrary memory and point the code to it,
-+the memory has to be marked with X bit, or else an exception will happen.
-+
-+Memory sealing additionally protects the mapping itself against
-+modifications. This is useful to mitigate memory corruption issues where a
-+corrupted pointer is passed to a memory management system. For example,
-+such an attacker primitive can break control-flow integrity guarantees
-+since read-only memory that is supposed to be trusted can become writable
-+or .text pages can get remapped. Memory sealing can automatically be
-+applied by the runtime loader to seal .text and .rodata pages and
-+applications can additionally seal security critical data at runtime.
-+
-+A similar feature already exists in the XNU kernel with the
-+VM_FLAGS_PERMANENT flag [1] and on OpenBSD with the mimmutable syscall [2].
-+
-+User API
-+========
-+Two system calls are involved in virtual memory sealing, ``mseal()`` and ``mmap()``.
-+
-+``mseal()``
-+-----------
-+
-+The ``mseal()`` is an architecture independent syscall, and with following
-+signature:
-+
-+``int mseal(void addr, size_t len, unsigned long types, unsigned long flags)``
-+
-+**addr/len**: virtual memory address range.
-+
-+The address range set by ``addr``/``len`` must meet:
-+   - start (addr) must be in a valid VMA.
-+   - end (addr + len) must be in a valid VMA.
-+   - no gap (unallocated memory) between start and end.
-+   - start (addr) must be page aligned.
-+
-+The ``len`` will be paged aligned implicitly by kernel.
-+
-+**types**: bit mask to specify the sealing types, they are:
-+
-+- The ``MM_SEAL_BASE``: Prevent VMA from:
-+
-+    Unmapping, moving to another location, and shrinking the size,
-+    via munmap() and mremap(), can leave an empty space, therefore
-+    can be replaced with a VMA with a new set of attributes.
-+
-+    Move or expand a different vma into the current location,
-+    via mremap().
-+
-+    Modifying sealed VMA via mmap(MAP_FIXED).
-+
-+    Size expansion, via mremap(), does not appear to pose any
-+    specific risks to sealed VMAs. It is included anyway because
-+    the use case is unclear. In any case, users can rely on
-+    merging to expand a sealed VMA.
-+
-+    We consider the MM_SEAL_BASE feature, on which other sealing
-+    features will depend. For instance, it probably does not make sense
-+    to seal PROT_PKEY without sealing the BASE, and the kernel will
-+    implicitly add SEAL_BASE for SEAL_PROT_PKEY. (If the application
-+    wants to relax this in future, we could use the “flags” field in
-+    mseal() to overwrite this the behavior.)
-+
-+- The ``MM_SEAL_PROT_PKEY``:
-+
-+    Seal PROT and PKEY of the address range, in other words,
-+    mprotect() and pkey_mprotect() will be denied if the memory is
-+    sealed with MM_SEAL_PROT_PKEY.
-+
-+- The ``MM_SEAL_DISCARD_RO_ANON``:
-+
-+    Certain types of madvise() operations are destructive [3], such
-+    as MADV_DONTNEED, which can effectively alter region contents by
-+    discarding pages, especially when memory is anonymous. This blocks
-+    such operations for anonymous memory which is not writable to the
-+    user.
-+
-+- The ``MM_SEAL_SEAL``
-+    Denies adding a new seal.
-+
-+**flags**: reserved for future use.
-+
-+**return values**:
-+
-+- ``0``:
-+    - Success.
-+
-+- ``-EINVAL``:
-+    - Invalid seal type.
-+    - Invalid input flags.
-+    - Start address is not page aligned.
-+    - Address range (``addr`` + ``len``) overflow.
-+
-+- ``-ENOMEM``:
-+    - ``addr`` is not a valid address (not allocated).
-+    - End address (``addr`` + ``len``) is not a valid address.
-+    - A gap (unallocated memory) between start and end.
-+
-+- ``-EACCES``:
-+    - ``MM_SEAL_SEAL`` is set, adding a new seal is not allowed.
-+    - Address range is not sealable, e.g. ``MAP_SEALABLE`` is not
-+      set during ``mmap()``.
-+
-+**Note**:
-+
-+- User can call mseal(2) multiple times to add new seal types.
-+- Adding an already added seal type is a no-action (no error).
-+- unseal() or removing a seal type is not supported.
-+- In case of error return, one can expect the memory range is unchanged.
-+
-+``mmap()``
-+----------
-+``void *mmap(void* addr, size_t length, int prot, int flags, int fd,
-+off_t offset);``
-+
-+We made two changes (``prot`` and ``flags``) to ``mmap()`` related to
-+memory sealing.
-+
-+**prot**:
-+
-+- ``PROT_SEAL_SEAL``
-+- ``PROT_SEAL_BASE``
-+- ``PROT_SEAL_PROT_PKEY``
-+- ``PROT_SEAL_DISCARD_RO_ANON``
-+
-+Allow ``mmap()`` to set the sealing type when creating a mapping. This is
-+useful for optimization because it avoids having to make two system
-+calls: one for ``mmap()`` and one for ``mseal()``.
-+
-+It's worth noting that even though the sealing type is set via the
-+``prot`` field in ``mmap()``, we don't require it to be set in the ``prot``
-+field in later ``mprotect()`` call. This is unlike the ``PROT_READ``,
-+``PROT_WRITE``, ``PROT_EXEC`` bits, e.g. if ``PROT_WRITE`` is not set in
-+``mprotect()``, it means that the region is not writable.
-+
-+**flags**
-+The ``MAP_SEALABLE`` flag is added to the ``flags`` field of ``mmap()``.
-+When present, it marks the map as sealable. A map created
-+without ``MAP_SEALABLE`` will not support sealing; In other words,
-+``mseal()`` will fail for such a map.
-+
-+Applications that don't care about sealing will expect their
-+behavior unchanged. For those that need sealing support, opt-in
-+by adding ``MAP_SEALABLE`` when creating the map.
-+
-+Use Case:
-+=========
-+- glibc:
-+  The dymamic linker, during loading ELF executables, can apply sealing to
-+  to non-writeable memory segments.
-+
-+- Chrome browser: protect some security sensitive data-structures.
-+
-+Additional notes:
-+=================
-+As Jann Horn pointed out in [3], there are still a few ways to write
-+to RO memory, which is, in a way, by design. Those are not covered by
-+``mseal()``. If applications want to block such cases, sandboxer
-+(such as seccomp, LSM, etc) might be considered.
-+
-+Those cases are:
-+
-+- Write to read-only memory through ``/proc/self/mem`` interface.
-+
-+- Write to read-only memory through ``ptrace`` (such as ``PTRACE_POKETEXT``).
-+
-+- ``userfaultfd()``.
-+
-+The idea that inspired this patch comes from Stephen Röttger’s work in V8
-+CFI [4].Chrome browser in ChromeOS will be the first user of this API.
-+
-+Reference:
-+==========
-+[1] https://github.com/apple-oss-distributions/xnu/blob/1031c584a5e37aff177559b9f69dbd3c8c3fd30a/osfmk/mach/vm_statistics.h#L274
-+
-+[2] https://man.openbsd.org/mimmutable.2
-+
-+[3] https://lore.kernel.org/lkml/CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gmail.com
-+
-+[4] https://docs.google.com/document/d/1O2jwK4dxI3nRcOJuPYkonhTkNQfbmwdvxQMyXgeaRHo/edit#heading=h.bvaojj9fu6hc
--- 
-2.43.0.472.g3155946c3a-goog
+Frank
 
+> 
+> There isn't an optional variant for phys, but it can be added.
+> 
+> > 
+> > This will greatly simplify the code.
+> > 
+> > Only downside of this approach is, if the devicetree is not supplying enough
+> > clocks, then it will be difficult to find why PCIe is not working. But this also
+> > means that the devicetree is screwed.
+> 
+> A sufficient schema should prevent that... That's what they're for, not 
+> just torturing people to learn json-schema. :)
+> 
+> Rob
