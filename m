@@ -2,449 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C7280E0AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102F080E0AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345656AbjLLBHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 20:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
+        id S1345660AbjLLBID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 20:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345638AbjLLBHC (ORCPT
+        with ESMTP id S1345638AbjLLBIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 20:07:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4395FAB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:07:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5245C43395
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:07:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702343227;
-        bh=MDets05mPCDoqLxyZIXukdeciXvfqDz5mf6mMUdN2sM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EP1BbKtWWaBQvGIDk2Hvi9L+UYeZNhtroplbMAv4+6AOEMlK9FiFAJu3sLFOtrRmp
-         rCm3llUhRUAm1nytlNBhtwfWBccJSw6d8IXmR0eL+JmSmtvwk4o4Gmij8s1wCglQV4
-         9vgx8+yHxEk2+VLCs5cgT5IYk3GhA6ci0ezuKIOUpEzUpE+skYvIaqOmuXr3ypnnUn
-         n58VZNGX97+59IlwUSj5TonA5d0jTtWG2xDRA3dysBuYNy7PzpxWEdb0gBoG60+8R7
-         mUkQb1FfCcFa8FV4E/I9e6TVTGpjWYpj0SRveBKPqwdkfkja7BJItoB51Ae1PP0Cjl
-         Al12d+wQu0OpQ==
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1fb33059466so3509750fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:07:07 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw+LWiF+E1LCbvs2xsXZIzka3Xvj/TsmcjUyrVlY5O7vbnMvCOv
-        In7kMLdJXvQb1SBtuf7+k7bHjBxpqkMHocfI4qePUw==
-X-Google-Smtp-Source: AGHT+IFnU6Zg6gtbcKGpVVyMUgGn/eZhHtC+eRX3XCuRhFv0V1qwZo+7UWlo2LwQsjS0Um0ppKxvMMc5FhFchTfzT50=
-X-Received: by 2002:a05:6358:d598:b0:170:2abc:6e34 with SMTP id
- ms24-20020a056358d59800b001702abc6e34mr5702692rwb.19.1702343226888; Mon, 11
- Dec 2023 17:07:06 -0800 (PST)
+        Mon, 11 Dec 2023 20:08:01 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F9CC2;
+        Mon, 11 Dec 2023 17:08:06 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id EE98024E269;
+        Tue, 12 Dec 2023 09:07:59 +0800 (CST)
+Received: from EXMBX167.cuchost.com (172.16.6.77) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
+ 2023 09:07:59 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX167.cuchost.com
+ (172.16.6.77) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
+ 2023 09:07:59 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Tue, 12 Dec 2023 09:07:59 +0800
+From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "conor@kernel.org" <conor@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "Hal Feng" <hal.feng@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>
+CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: RE: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
+ resets nodes
+Thread-Topic: [PATCH v1 16/16] riscv: dts: starfive: jh8100: Add clocks and
+ resets nodes
+Thread-Index: AQHaKDqra6wATad1nUKrJTE2u0DzTrCfE7aAgAXJTyA=
+Date:   Tue, 12 Dec 2023 01:07:59 +0000
+Message-ID: <38f6f61b9928460abd5d426a84adbb06@EXMBX066.cuchost.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-17-jeeheng.sia@starfivetech.com>
+ <CAJM55Z9bik1QttBeFUCfM3N98HWURge7mgV7ohFBq+AsuvtROg@mail.gmail.com>
+In-Reply-To: <CAJM55Z9bik1QttBeFUCfM3N98HWURge7mgV7ohFBq+AsuvtROg@mail.gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [202.188.176.82]
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231211140419.1298178-1-schatzberg.dan@gmail.com> <20231211140419.1298178-2-schatzberg.dan@gmail.com>
-In-Reply-To: <20231211140419.1298178-2-schatzberg.dan@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Mon, 11 Dec 2023 17:06:54 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
-Message-ID: <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
-Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
-
-Thank you for the patch.
-
-On Mon, Dec 11, 2023 at 6:04=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
->
-> Allow proactive reclaimers to submit an additional swappiness=3D<val>
-> argument to memory.reclaim. This overrides the global or per-memcg
-> swappiness setting for that reclaim attempt.
-
-I am curious what prompted you to develop this patch. I understand
-what this patch does, just want to know more of your background story
-why this is needed.
-
->
-> For example:
->
-> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
->
-> will perform reclaim on the rootcg with a swappiness setting of 0 (no
-> swap) regardless of the vm.swappiness sysctl setting.
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 15 ++++++-
->  include/linux/swap.h                    |  3 +-
->  mm/memcontrol.c                         | 55 ++++++++++++++++++++-----
->  mm/vmscan.c                             | 13 +++++-
->  4 files changed, 70 insertions(+), 16 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 3f85254f3cef..fc2b379dbd0f 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1282,8 +1282,8 @@ PAGE_SIZE multiple when read back.
->         This is a simple interface to trigger memory reclaim in the
->         target cgroup.
->
-> -       This file accepts a single key, the number of bytes to reclaim.
-> -       No nested keys are currently supported.
-> +       This file accepts a string which containers thhe number of bytes
-Just as Yosry points out, there is some typo here.
-
-"contains the"
-
-> +       to reclaim.
->
->         Example::
->
-> @@ -1304,6 +1304,17 @@ PAGE_SIZE multiple when read back.
->         This means that the networking layer will not adapt based on
->         reclaim induced by memory.reclaim.
->
-> +       This file also allows the user to specify the swappiness value
-> +       to be used for the reclaim. For example:
-> +
-> +         echo "1G swappiness=3D60" > memory.reclaim
-> +
-> +       The above instructs the kernel to perform the reclaim with
-> +       a swappiness value of 60. Note that this has the same semantics
-> +       as the vm.swappiness sysctl - it sets the relative IO cost of
-> +       reclaiming anon vs file memory but does not allow for reclaiming
-> +       specific amounts of anon or file memory.
-> +
->    memory.peak
->         A read-only single value file which exists on non-root
->         cgroups.
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..ebc20d094609 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -410,7 +410,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
-t *zonelist, int order,
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
-cg,
->                                                   unsigned long nr_pages,
->                                                   gfp_t gfp_mask,
-> -                                                 unsigned int reclaim_op=
-tions);
-> +                                                 unsigned int reclaim_op=
-tions,
-> +                                                 int swappiness);
->  extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
->                                                 gfp_t gfp_mask, bool nosw=
-ap,
->                                                 pg_data_t *pgdat,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1c1061df9cd1..74598c17d3cc 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -63,6 +63,7 @@
->  #include <linux/resume_user_mode.h>
->  #include <linux/psi.h>
->  #include <linux/seq_buf.h>
-> +#include <linux/parser.h>
->  #include <linux/sched/isolation.h>
->  #include "internal.h"
->  #include <net/sock.h>
-> @@ -2449,7 +2450,7 @@ static unsigned long reclaim_high(struct mem_cgroup=
- *memcg,
->                 psi_memstall_enter(&pflags);
->                 nr_reclaimed +=3D try_to_free_mem_cgroup_pages(memcg, nr_=
-pages,
->                                                         gfp_mask,
-> -                                                       MEMCG_RECLAIM_MAY=
-_SWAP);
-> +                                                       MEMCG_RECLAIM_MAY=
-_SWAP, -1);
-
-Instead of passing -1, maybe we can use mem_cgroup_swappiness(memcg);
-
-And maybe remove the -1 test from the get_scan_count().
-
-""
-static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
-   unsigned long *nr)
-{
-struct pglist_data *pgdat =3D lruvec_pgdat(lruvec);
-struct mem_cgroup *memcg =3D lruvec_memcg(lruvec);
-unsigned long anon_cost, file_cost, total_cost;
-int swappiness =3D sc->swappiness !=3D -1 ?
-sc->swappiness : mem_cgroup_swappiness(memcg);
-""
-
-In other words, I feel it is cleaner if try_to_free_mem_cgroup_pages
-accept the swappiness as it is. There is no second guessing the value
-if it is -1, then the internal function gets the swappiness from
-mem_cgroup_swappiness().
-Maybe we can completely remove the -1 special default value?
-
->                 psi_memstall_leave(&pflags);
->         } while ((memcg =3D parent_mem_cgroup(memcg)) &&
->                  !mem_cgroup_is_root(memcg));
-> @@ -2740,7 +2741,7 @@ static int try_charge_memcg(struct mem_cgroup *memc=
-g, gfp_t gfp_mask,
->
->         psi_memstall_enter(&pflags);
->         nr_reclaimed =3D try_to_free_mem_cgroup_pages(mem_over_limit, nr_=
-pages,
-> -                                                   gfp_mask, reclaim_opt=
-ions);
-> +                                                   gfp_mask, reclaim_opt=
-ions, -1);
-
-Same here.
-
->         psi_memstall_leave(&pflags);
->
->         if (mem_cgroup_margin(mem_over_limit) >=3D nr_pages)
-> @@ -3660,7 +3661,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup =
-*memcg,
->                 }
->
->                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> -                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
-P)) {
-> +                                       memsw ? 0 : MEMCG_RECLAIM_MAY_SWA=
-P, -1)) {
-
-Same here.
-
->                         ret =3D -EBUSY;
->                         break;
->                 }
-> @@ -3774,7 +3775,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup=
- *memcg)
->                         return -EINTR;
->
->                 if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
-> -                                                 MEMCG_RECLAIM_MAY_SWAP)=
-)
-> +                                                 MEMCG_RECLAIM_MAY_SWAP,=
- -1))
-
-Here too.
-
->                         nr_retries--;
->         }
->
-> @@ -6720,7 +6721,7 @@ static ssize_t memory_high_write(struct kernfs_open=
-_file *of,
->                 }
->
->                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_page=
-s - high,
-> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P);
-> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P, -1);
-
-Here too.
-
->
->                 if (!reclaimed && !nr_retries--)
->                         break;
-> @@ -6769,7 +6770,7 @@ static ssize_t memory_max_write(struct kernfs_open_=
-file *of,
->
->                 if (nr_reclaims) {
->                         if (!try_to_free_mem_cgroup_pages(memcg, nr_pages=
- - max,
-> -                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P))
-> +                                       GFP_KERNEL, MEMCG_RECLAIM_MAY_SWA=
-P, -1))
-
-Here too.
-
->                                 nr_reclaims--;
->                         continue;
->                 }
-> @@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernf=
-s_open_file *of,
->         return nbytes;
->  }
->
-> +enum {
-> +       MEMORY_RECLAIM_SWAPPINESS =3D 0,
-> +       MEMORY_RECLAIM_NULL,
-> +};
-> +
-> +static const match_table_t if_tokens =3D {
-
-What this is called "if_tokens"? I am trying to figure out what "if" refers=
- to.
-
-> +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=3D%d"},
-> +       { MEMORY_RECLAIM_NULL, NULL },
-> +};
-> +
-
-Do we foresee a lot of tunable for the try to free page? I see. You
-want to use match_token() to do the keyword parsing.
-
->  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->                               size_t nbytes, loff_t off)
->  {
-> @@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_=
-file *of, char *buf,
->         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
->         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
->         unsigned int reclaim_options;
-> -       int err;
-> +       char *old_buf, *start;
-> +       substring_t args[MAX_OPT_ARGS];
-> +       int swappiness =3D -1;
->
->         buf =3D strstrip(buf);
-> -       err =3D page_counter_memparse(buf, "", &nr_to_reclaim);
-> -       if (err)
-> -               return err;
-> +
-> +       old_buf =3D buf;
-> +       nr_to_reclaim =3D memparse(buf, &buf) / PAGE_SIZE;
-> +       if (buf =3D=3D old_buf)
-> +               return -EINVAL;
-> +
-> +       buf =3D strstrip(buf);
-> +
-> +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
-> +               if (!strlen(start))
-> +                       continue;
-> +               switch (match_token(start, if_tokens, args)) {
-> +               case MEMORY_RECLAIM_SWAPPINESS:
-> +                       if (match_int(&args[0], &swappiness))
-> +                               return -EINVAL;
-> +                       if (swappiness < 0 || swappiness > 200)
-
-Agree with Yosry on the 200 magic value.
-
-I am also wondering if there is an easier way to just parse one
-keyword. Will using strcmp("swappiness=3D") be a bad idea? I haven't
-tried it myself though.
-
-> +                               return -EINVAL;
-> +                       break;
-> +               default:
-> +                       return -EINVAL;
-> +               }
-> +       }
->
->         reclaim_options =3D MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACT=
-IVE;
->         while (nr_reclaimed < nr_to_reclaim) {
-> @@ -6926,7 +6958,8 @@ static ssize_t memory_reclaim(struct kernfs_open_fi=
-le *of, char *buf,
->
->                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
->                                         min(nr_to_reclaim - nr_reclaimed,=
- SWAP_CLUSTER_MAX),
-> -                                       GFP_KERNEL, reclaim_options);
-> +                                       GFP_KERNEL, reclaim_options,
-> +                                       swappiness);
->
->                 if (!reclaimed && !nr_retries--)
->                         return -EAGAIN;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 506f8220c5fe..a20965b20177 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -136,6 +136,9 @@ struct scan_control {
->         /* Always discard instead of demoting to lower tier memory */
->         unsigned int no_demotion:1;
->
-> +       /* Swappiness value for reclaim, if -1 use memcg/global value */
-> +       int swappiness;
-> +
-
-It would be great if we can get rid of the -1 case.
-
->         /* Allocation order */
->         s8 order;
->
-> @@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, s=
-truct scan_control *sc,
->         struct pglist_data *pgdat =3D lruvec_pgdat(lruvec);
->         struct mem_cgroup *memcg =3D lruvec_memcg(lruvec);
->         unsigned long anon_cost, file_cost, total_cost;
-> -       int swappiness =3D mem_cgroup_swappiness(memcg);
-> +       int swappiness =3D sc->swappiness !=3D -1 ?
-> +               sc->swappiness : mem_cgroup_swappiness(memcg);
-
-Let's see if we can get rid of the -1. Now I see the -1 is actually
-introduced by this patch, should be doable.
-
->         u64 fraction[ANON_AND_FILE];
->         u64 denominator =3D 0;    /* gcc */
->         enum scan_balance scan_balance;
-> @@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, st=
-ruct scan_control *sc)
->             mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
->                 return 0;
->
-> +       if (sc->swappiness !=3D -1)
-> +               return sc->swappiness;
-> +
-
-Get rid of that too.
-
-Thank you.
-
-Chris
-
-
->         return mem_cgroup_swappiness(memcg);
->  }
->
-> @@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgr=
-oup *memcg,
->  unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->                                            unsigned long nr_pages,
->                                            gfp_t gfp_mask,
-> -                                          unsigned int reclaim_options)
-> +                                          unsigned int reclaim_options,
-> +                                          int swappiness)
->  {
->         unsigned long nr_reclaimed;
->         unsigned int noreclaim_flag;
-> @@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct m=
-em_cgroup *memcg,
->                 .may_unmap =3D 1,
->                 .may_swap =3D !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP=
-),
->                 .proactive =3D !!(reclaim_options & MEMCG_RECLAIM_PROACTI=
-VE),
-> +               .swappiness =3D swappiness,
->         };
->         /*
->          * Traverse the ZONELIST_FALLBACK zonelist of the current node to=
- put
-> --
-> 2.34.1
->
->
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW1pbCBSZW5uZXIgQmVy
+dGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IFNhdHVy
+ZGF5LCBEZWNlbWJlciA5LCAyMDIzIDEyOjQwIEFNDQo+IFRvOiBKZWVIZW5nIFNpYSA8amVlaGVu
+Zy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5lbEBlc21pbC5kazsgY29ub3JAa2VybmVsLm9y
+Zzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5v
+cmc7IHBhdWwud2FsbXNsZXlAc2lmaXZlLmNvbTsgcGFsbWVyQGRhYmJlbHQuY29tOyBhb3VAZWVj
+cy5iZXJrZWxleS5lZHU7DQo+IG10dXJxdWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJuZWwu
+b3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlOyBlbWlsLnJlbm5lci5iZXJ0aGluZ0BjYW5vbmlj
+YWwuY29tOyBIYWwgRmVuZw0KPiA8aGFsLmZlbmdAc3RhcmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBX
+dSA8eGluZ3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+IENjOiBsaW51eC1yaXNjdkBsaXN0cy5p
+bmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4g
+PGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEg
+MTYvMTZdIHJpc2N2OiBkdHM6IHN0YXJmaXZlOiBqaDgxMDA6IEFkZCBjbG9ja3MgYW5kIHJlc2V0
+cyBub2Rlcw0KPiANCj4gU2lhIEplZSBIZW5nIHdyb3RlOg0KPiA+IEFkZCBTWVNDUkcvU1lTQ1JH
+LU5FL1NZU0NSRy1OVy9TWVNDUkctU1cvQU9OQ1JHIGNsb2NrIGFuZCByZXNldA0KPiA+IG5vZGVz
+IGZvciBKSDgxMDAgUklTQy1WIFNvQy4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNpYSBKZWUg
+SGVuZyA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiBSZXZpZXdlZC1ieTogTGV5
+IEZvb24gVGFuIDxsZXlmb29uLnRhbkBzdGFyZml2ZXRlY2guY29tPg0KPiA+IC0tLQ0KPiA+ICBh
+cmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJmaXZlL2poODEwMC1jbGsuZHRzaSB8IDE4MCArKysrKysr
+KysrKysrKysrKysrDQo+ID4gIGFyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLmR0
+c2kgICAgIHwgMTE1ICsrKysrKysrKysrKw0KPiANCj4gV2h5IHRoZSBzcGxpdCBoZXJlPyBJIG1l
+YW4gd2h5IGNhbid0IHRoZSBjbG9ja3MganVzdCBiZSBpbiB0aGUgamg4MTAwLmR0c2k/DQpUaGUg
+cmVhc29uIGlzIHRoYXQgdGhlIG51bWJlciBvZiBmaXhlZCBjbG9ja3MgaW5jcmVhc2VzIHdoZW4g
+bW9yZSBhbmQgbW9yZQ0KZG9tYWluIGNsb2NrcyBhcmUgYWRkZWQuIFNvLCB0aGF0IGlzIHdoeSB3
+ZSBzcGxpdCBvdXQgdGhlIGNsb2NrIGZpbGUuDQo+IA0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDI5
+NSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3Jpc2N2L2Jvb3Qv
+ZHRzL3N0YXJmaXZlL2poODEwMC1jbGsuZHRzaQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gv
+cmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLWNsay5kdHNpIGIvYXJjaC9yaXNjdi9ib290
+L2R0cy9zdGFyZml2ZS9qaDgxMDAtY2xrLmR0c2kNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0K
+PiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uMjdiYTI0OWY1MjNlDQo+ID4gLS0tIC9kZXYvbnVsbA0K
+PiA+ICsrKyBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLWNsay5kdHNpDQo+
+ID4gQEAgLTAsMCArMSwxODAgQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQ
+TC0yLjAgT1IgTUlUDQo+ID4gKy8qDQo+ID4gKyAqIENvcHlyaWdodCAoQykgMjAyMyBTdGFyRml2
+ZSBUZWNobm9sb2d5IENvLiwgTHRkLg0KPiA+ICsgKi8NCj4gPiArDQo+ID4gKy8gew0KPiA+ICsJ
+Y2xrX29zYzogY2xrX29zYyB7DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7DQo+
+ID4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDwyNDAw
+MDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNsa19pMnNyeF9iY2xrX2V4dDogY2xrX2ky
+c3J4X2JjbGtfZXh0IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiAr
+CQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDEyMjg4MDAw
+PjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX2kyc3J4X2xyY2tfZXh0OiBjbGtfaTJzcnhf
+bHJja19leHQgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+ICsJCSNj
+bG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1mcmVxdWVuY3kgPSA8MTkyMDAwPjsNCj4g
+PiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX21jbGtfZXh0OiBjbGtfbWNsa19leHQgew0KPiA+ICsJ
+CWNvbXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsN
+Cj4gPiArCQljbG9jay1mcmVxdWVuY3kgPSA8NDkxNTIwMDA+Ow0KPiA+ICsJfTsNCj4gPiArCS8q
+IHN5cy1uZSAqLw0KPiA+ICsJY2xrX3VzYjNfdGFwX3Rja19leHQ6IGNsa191c2IzX3RhcF90Y2tf
+ZXh0IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2st
+Y2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDEwMDAwMDAwMD47DQo+ID4g
+Kwl9Ow0KPiA+ICsNCj4gPiArCWNsa19nbGJfZXh0X2NsazogY2xrX2dsYl9leHRfY2xrIHsNCj4g
+PiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8
+MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDMwMDAwMDAwPjsNCj4gPiArCX07DQo+ID4g
+Kw0KPiA+ICsJY2xrX3VzYjFfdGFwX3Rja19leHQ6IGNsa191c2IxX3RhcF90Y2tfZXh0IHsNCj4g
+PiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8
+MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDEwMDAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+
+ICsNCj4gPiArCWNsa191c2IyX3RhcF90Y2tfZXh0OiBjbGtfdXNiMl90YXBfdGNrX2V4dCB7DQo+
+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7DQo+ID4gKwkJI2Nsb2NrLWNlbGxzID0g
+PDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDwxMDAwMDAwMDA+Ow0KPiA+ICsJfTsNCj4g
+PiArDQo+ID4gKwljbGtfaTJzX3RzY2tvOiBjbGtfaTJzX3RzY2tvIHsNCj4gPiArCQljb21wYXRp
+YmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJ
+Y2xvY2stZnJlcXVlbmN5ID0gPDEyODAwMDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xr
+X3R5cGVjX3RhcF90Y2tfZXh0OiBjbGtfdHlwZWNfdGFwX3Rja19leHQgew0KPiA+ICsJCWNvbXBh
+dGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiAr
+CQljbG9jay1mcmVxdWVuY3kgPSA8MTAwMDAwMDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJ
+Y2xrX3NwaV9pbjBfZXh0OiBjbGtfc3BpX2luMF9leHQgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAi
+Zml4ZWQtY2xvY2siOw0KPiA+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1m
+cmVxdWVuY3kgPSA8MTAwMDAwMDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX3NwaV9p
+bjFfZXh0OiBjbGtfc3BpX2luMV9leHQgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAiZml4ZWQtY2xv
+Y2siOw0KPiA+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1mcmVxdWVuY3kg
+PSA8MTAwMDAwMDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX3NwaV9pbjJfZXh0OiBj
+bGtfc3BpX2luMl9leHQgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+
+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1mcmVxdWVuY3kgPSA8MTAwMDAw
+MDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX2kyc3R4X2JjbGtfZXh0OiBjbGtfaTJz
+dHhfYmNsa19leHQgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+ICsJ
+CSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1mcmVxdWVuY3kgPSA8MTIyODgwMDA+
+Ow0KPiA+ICsJfTsNCj4gPiArDQo+ID4gKwljbGtfaTJzdHhfbHJja19leHQ6IGNsa19pMnN0eF9s
+cmNrX2V4dCB7DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7DQo+ID4gKwkJI2Ns
+b2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDwxOTIwMDA+Ow0KPiA+
+ICsJfTsNCj4gPiArCS8qIHN5cy1udyAqLw0KPiA+ICsJY2xrX2R2cF9leHQ6IGNsa19kdnBfZXh0
+IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2Vs
+bHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDE1MDAwMDAwMD47DQo+ID4gKwl9
+Ow0KPiA+ICsNCj4gPiArCWNsa19pc3BfZHBoeV90YXBfdGNrX2V4dDogY2xrX2lzcF9kcGh5X3Rh
+cF90Y2tfZXh0IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkj
+Y2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDEwMDAwMDAwMD47
+DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNsa192b3V0X21pcGlfZHBoeV90YXBfdGNrX2V4dDog
+Y2xrX3ZvdXRfbWlwaV9kcGh5X3RhcF90Y2tfZXh0IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZp
+eGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJl
+cXVlbmN5ID0gPDEwMDAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNsa192b3V0X2Vk
+cF90YXBfdGNrX2V4dDogY2xrX3ZvdXRfZWRwX3RhcF90Y2tfZXh0IHsNCj4gPiArCQljb21wYXRp
+YmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJ
+Y2xvY2stZnJlcXVlbmN5ID0gPDEwMDAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNs
+a19ydGM6IGNsa19ydGMgew0KPiA+ICsJCWNvbXBhdGlibGUgPSAiZml4ZWQtY2xvY2siOw0KPiA+
+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9jay1mcmVxdWVuY3kgPSA8MzI3Njg+
+Ow0KPiA+ICsJfTsNCj4gPiArCS8qIGFvbiAqLw0KPiA+ICsJY2xrX2dtYWMwX3JtaWlfZnVuYzog
+Y2xrX2dtYWMwX3JtaWlfZnVuYyB7DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7
+DQo+ID4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDw1
+MDAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNsa19nbWFjMF9yZ21paV9mdW5jOiBj
+bGtfZ21hYzBfcmdtaWlfZnVuYyB7DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7
+DQo+ID4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDwx
+MjUwMDAwMDA+Ow0KPiA+ICsJfTsNCj4gPiArDQo+ID4gKwljbGtfYW9uNTA6IGNsa19hb241MCB7
+DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1jbG9jayI7DQo+ID4gKwkJI2Nsb2NrLWNlbGxz
+ID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5jeSA9IDw1MDAwMDAwMD47DQo+ID4gKwl9Ow0K
+PiA+ICsNCj4gPiArCWNsa19hb24xMjU6IGNsa19hb24xMjUgew0KPiA+ICsJCWNvbXBhdGlibGUg
+PSAiZml4ZWQtY2xvY2siOw0KPiA+ICsJCSNjbG9jay1jZWxscyA9IDwwPjsNCj4gPiArCQljbG9j
+ay1mcmVxdWVuY3kgPSA8MTI1MDAwMDAwPjsNCj4gPiArCX07DQo+ID4gKw0KPiA+ICsJY2xrX2Fv
+bjIwMDA6IGNsa19hb24yMDAwIHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsN
+Cj4gPiArCQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDIw
+MDAwMDAwMDA+Ow0KPiA+ICsJfTsNCj4gPiArDQo+ID4gKwljbGtfYW9uMjAwOiBjbGtfYW9uMjAw
+IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2Vs
+bHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDIwMDAwMDAwMD47DQo+ID4gKwl9
+Ow0KPiA+ICsNCj4gPiArCWNsa19hb242Njc6IGNsa19pc3BfYW9uNjY3IHsNCj4gPiArCQljb21w
+YXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkjY2xvY2stY2VsbHMgPSA8MD47DQo+ID4g
+KwkJY2xvY2stZnJlcXVlbmN5ID0gPDY2NzAwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiAr
+CWNsa19pM2NfZXh0OiBjbGtfaTNjX2V4dCB7DQo+ID4gKwkJY29tcGF0aWJsZSA9ICJmaXhlZC1j
+bG9jayI7DQo+ID4gKwkJI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiA+ICsJCWNsb2NrLWZyZXF1ZW5j
+eSA9IDwxMjUwMDAwMD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArCWNsa19lc3BpX2V4dDogY2xr
+X2VzcGlfZXh0IHsNCj4gPiArCQljb21wYXRpYmxlID0gImZpeGVkLWNsb2NrIjsNCj4gPiArCQkj
+Y2xvY2stY2VsbHMgPSA8MD47DQo+ID4gKwkJY2xvY2stZnJlcXVlbmN5ID0gPDYwMDAwMDAwPjsN
+Cj4gPiArCX07DQo+ID4gK307DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3YvYm9vdC9kdHMv
+c3RhcmZpdmUvamg4MTAwLmR0c2kgYi9hcmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJmaXZlL2poODEw
+MC5kdHNpDQo+ID4gaW5kZXggZjI2YWZmNWMxZGRmLi45ODYzYzYxMzI0YTAgMTAwNjQ0DQo+ID4g
+LS0tIGEvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgxMDAuZHRzaQ0KPiA+ICsrKyBi
+L2FyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg4MTAwLmR0c2kNCj4gPiBAQCAtNCw2ICs0
+LDkgQEANCj4gPiAgICovDQo+ID4NCj4gPiAgL2R0cy12MS87DQo+ID4gKyNpbmNsdWRlIDxkdC1i
+aW5kaW5ncy9jbG9jay9zdGFyZml2ZSxqaDgxMDAtY3JnLmg+DQo+ID4gKyNpbmNsdWRlIDxkdC1i
+aW5kaW5ncy9yZXNldC9zdGFyZml2ZSxqaDgxMDAtY3JnLmg+DQo+ID4gKyNpbmNsdWRlICJqaDgx
+MDAtY2xrLmR0c2kiDQo+ID4NCj4gPiAgLyB7DQo+ID4gIAljb21wYXRpYmxlID0gInN0YXJmaXZl
+LGpoODEwMCI7DQo+ID4gQEAgLTM1Nyw2ICszNjAsMTA0IEBAIHVhcnQ0OiBzZXJpYWxAMTIxYTAw
+MDAgIHsNCj4gPiAgCQkJc3RhdHVzID0gImRpc2FibGVkIjsNCj4gPiAgCQl9Ow0KPiA+DQo+ID4g
+KwkJc3lzY3JnX25lOiBzeXNjcmdfbmVAMTIzMjAwMDAgew0KPiA+ICsJCQljb21wYXRpYmxlID0g
+InN0YXJmaXZlLGpoODEwMC1zeXNjcmctbmUiOw0KPiA+ICsJCQlyZWcgPSA8MHgwIDB4MTIzMjAw
+MDAgMHgwIDB4MTAwMDA+Ow0KPiA+ICsJCQljbG9ja3MgPSA8JmNsa19vc2M+LCA8JnN5c2NyZyBT
+WVNDUkdfQ0xLX0FYSV80MDA+LA0KPiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19DTEtfVk9VVF9S
+T09UMD4sDQo+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19WT1VUX1JPT1QxPiwNCj4gPiAr
+CQkJCSA8JnN5c2NyZyBTWVNDUkdfQ0xLX1VTQl9XUkFQXzQ4MD4sDQo+ID4gKwkJCQkgPCZzeXNj
+cmcgU1lTQ1JHX0NMS19VU0JfV1JBUF82MjU+LA0KPiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19D
+TEtfVVNCX1dSQVBfMjQwPiwNCj4gPiArCQkJCSA8JnN5c2NyZyBTWVNDUkdfQ0xLX1VTQl9XUkFQ
+XzYwPiwNCj4gPiArCQkJCSA8JnN5c2NyZyBTWVNDUkdfQ0xLX1VTQl9XUkFQXzE1NlAyNT4sDQo+
+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19VU0JfV1JBUF8zMTJQNT4sDQo+ID4gKwkJCQkg
+PCZzeXNjcmcgU1lTQ1JHX0NMS19VU0JfMTI1TT4sDQo+ID4gKwkJCQkgPCZzeXNjcmdfbncgU1lT
+Q1JHX05XX0NMS19HUElPXzEwMD4sDQo+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19QRVJI
+X1JPT1Q+LCA8JnN5c2NyZyBTWVNDUkdfQ0xLX01DTEs+LA0KPiA+ICsJCQkJIDwmc3lzY3JnIFNZ
+U0NSR19DTEtfUEVSSF9ST09UX1BSRU9TQz4sDQo+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NM
+S19BSEIwPiwNCj4gPiArCQkJCSA8JnN5c2NyZyBTWVNDUkdfQ0xLX0FQQl9CVVNfUEVSMT4sDQo+
+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19BUEJfQlVTX1BFUjI+LA0KPiA+ICsJCQkJIDwm
+c3lzY3JnIFNZU0NSR19DTEtfQVBCX0JVU19QRVIzPiwNCj4gPiArCQkJCSA8JnN5c2NyZyBTWVND
+UkdfQ0xLX0FQQl9CVVNfUEVSNT4sDQo+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19WRU5D
+X1JPT1Q+LA0KPiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19DTEtfU1BJX0NPUkVfMTAwPiwNCj4g
+PiArCQkJCSA8JmNsa19nbGJfZXh0X2Nsaz4sIDwmY2xrX3VzYjNfdGFwX3Rja19leHQ+LA0KPiA+
+ICsJCQkJIDwmY2xrX3VzYjFfdGFwX3Rja19leHQ+LCA8JmNsa191c2IyX3RhcF90Y2tfZXh0PiwN
+Cj4gPiArCQkJCSA8JmNsa190eXBlY190YXBfdGNrX2V4dD4sIDwmY2xrX3NwaV9pbjBfZXh0PiwN
+Cj4gPiArCQkJCSA8JmNsa19zcGlfaW4xX2V4dD4sIDwmY2xrX2kyc3R4X2JjbGtfZXh0PiwgPCZj
+bGtfaTJzdHhfbHJja19leHQ+Ow0KPiA+ICsJCQljbG9jay1uYW1lcyA9ICJjbGtfb3NjIiwgInN5
+c19jbGtfYXhpXzQwMCIsDQo+ID4gKwkJCQkgICAgICAic3lzX2Nsa192b3V0X3Jvb3QwIiwgInN5
+c19jbGtfdm91dF9yb290MSIsDQo+ID4gKwkJCQkgICAgICAic3lzX2Nsa191c2Jfd3JhcF80ODAi
+LCAic3lzX2Nsa191c2Jfd3JhcF82MjUiLA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtfdXNiX3dy
+YXBfMjQwIiwgInN5c19jbGtfdXNiX3dyYXBfNjAiLA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtf
+dXNiX3dyYXBfMTU2cDI1IiwgInN5c19jbGtfdXNiX3dyYXBfMzEycDUiLA0KPiA+ICsJCQkJICAg
+ICAgInN5c19jbGtfdXNiXzEyNW0iLCAic3lzX253X2Nsa19ncGlvXzEwMCIsDQo+ID4gKwkJCQkg
+ICAgICAic3lzX2Nsa19wZXJoX3Jvb3QiLCAic3lzX2Nsa19tY2xrIiwNCj4gPiArCQkJCSAgICAg
+ICJzeXNfY2xrX3Blcmhfcm9vdF9wcmVvc2MiLCAic3lzX2Nsa19haGIwIiwNCj4gPiArCQkJCSAg
+ICAgICJzeXNfY2xrX2FwYl9idXNfcGVyMSIsICJzeXNfY2xrX2FwYl9idXNfcGVyMiIsDQo+ID4g
+KwkJCQkgICAgICAic3lzX2Nsa19hcGJfYnVzX3BlcjMiLCAic3lzX2Nsa19hcGJfYnVzX3BlcjUi
+LA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtfdmVuY19yb290IiwgInN5c19jbGtfc3BpX2NvcmVf
+MTAwIiwNCj4gPiArCQkJCSAgICAgICJjbGtfZ2xiX2V4dF9jbGsiLCAiY2xrX3VzYjNfdGFwX3Rj
+a19leHQiLA0KPiA+ICsJCQkJICAgICAgImNsa191c2IxX3RhcF90Y2tfZXh0IiwgImNsa191c2Iy
+X3RhcF90Y2tfZXh0IiwNCj4gPiArCQkJCSAgICAgICJjbGtfdHlwZWNfdGFwX3Rja19leHQiLCAi
+Y2xrX3NwaV9pbjBfZXh0IiwNCj4gPiArCQkJCSAgICAgICJjbGtfc3BpX2luMV9leHQiLCAiY2xr
+X2kyc3R4X2JjbGtfZXh0IiwNCj4gPiArCQkJCSAgICAgICJjbGtfaTJzdHhfbHJja19leHQiOw0K
+PiA+ICsJCQkjY2xvY2stY2VsbHMgPSA8MT47DQo+ID4gKwkJCSNyZXNldC1jZWxscyA9IDwxPjsN
+Cj4gPiArCQl9Ow0KPiA+ICsNCj4gPiArCQlzeXNjcmdfbnc6IHN5c2NyZ19ud0AxMjNjMDAwMCB7
+DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAic3RhcmZpdmUsamg4MTAwLXN5c2NyZy1udyI7DQo+ID4g
+KwkJCXJlZyA9IDwweDAgMHgxMjNjMDAwMCAweDAgMHgxMDAwMD47DQo+ID4gKwkJCWNsb2NrcyA9
+IDwmY2xrX29zYz4sIDwmc3lzY3JnIFNZU0NSR19DTEtfQVBCX0JVUz4sDQo+ID4gKwkJCQkgPCZz
+eXNjcmcgU1lTQ1JHX0NMS19JU1BfMlg+LCA8JnN5c2NyZyBTWVNDUkdfQ0xLX0lTUF9BWEk+LA0K
+PiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19DTEtfVk9VVF9ST09UMD4sIDwmc3lzY3JnIFNZU0NS
+R19DTEtfVk9VVF9ST09UMT4sDQo+ID4gKwkJCQkgPCZzeXNjcmcgU1lTQ1JHX0NMS19WT1VUX1ND
+QU5fQVRTPiwNCj4gPiArCQkJCSA8JnN5c2NyZyBTWVNDUkdfQ0xLX1ZPVVRfRENfQ09SRT4sIDwm
+c3lzY3JnIFNZU0NSR19DTEtfVk9VVF9BWEk+LA0KPiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19D
+TEtfQVhJXzQwMD4sIDwmc3lzY3JnIFNZU0NSR19DTEtfQVhJXzIwMD4sDQo+ID4gKwkJCQkgPCZz
+eXNjcmcgU1lTQ1JHX0NMS19QRVJIX1JPT1RfUFJFT1NDPiwNCj4gPiArCQkJCSA8JmNsa19kdnBf
+ZXh0PiwgPCZjbGtfaXNwX2RwaHlfdGFwX3Rja19leHQ+LA0KPiA+ICsJCQkJIDwmY2xrX2dsYl9l
+eHRfY2xrPiwgPCZjbGtfaTJzX3RzY2tvPiwNCj4gPiArCQkJCSA8JmNsa192b3V0X21pcGlfZHBo
+eV90YXBfdGNrX2V4dD4sIDwmY2xrX3ZvdXRfZWRwX3RhcF90Y2tfZXh0PiwNCj4gPiArCQkJCSA8
+JmNsa19zcGlfaW4yX2V4dD47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gImNsa19vc2MiLCAic3lz
+X2Nsa19hcGJfYnVzIiwNCj4gPiArCQkJCSAgICAgICJzeXNfY2xrX2lzcF8yeCIsICJzeXNfY2xr
+X2lzcF9heGkiLA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtfdm91dF9yb290MCIsICJzeXNfY2xr
+X3ZvdXRfcm9vdDEiLA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtfdm91dF9zY2FuX2F0cyIsICJz
+eXNfY2xrX3ZvdXRfZGNfY29yZSIsDQo+ID4gKwkJCQkgICAgICAic3lzX2Nsa192b3V0X2F4aSIs
+ICJzeXNfY2xrX2F4aV80MDAiLA0KPiA+ICsJCQkJICAgICAgInN5c19jbGtfYXhpXzIwMCIsICJz
+eXNfY2xrX3Blcmhfcm9vdF9wcmVvc2MiLCAiY2xrX2R2cF9leHQiLA0KPiA+ICsJCQkJICAgICAg
+ImNsa19pc3BfZHBoeV90YXBfdGNrX2V4dCIsICJjbGtfZ2xiX2V4dF9jbGsiLA0KPiA+ICsJCQkJ
+ICAgICAgImNsa19pMnNfdHNja28iLCAiY2xrX3ZvdXRfbWlwaV9kcGh5X3RhcF90Y2tfZXh0IiwN
+Cj4gPiArCQkJCSAgICAgICJjbGtfdm91dF9lZHBfdGFwX3Rja19leHQiLCAiY2xrX3NwaV9pbjJf
+ZXh0IjsNCj4gPiArCQkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KPiA+ICsJCQkjcmVzZXQtY2VsbHMg
+PSA8MT47DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3lzY3JnOiBzeXNjcmdAMTI2ZDAwMDAg
+ew0KPiA+ICsJCQljb21wYXRpYmxlID0gInN0YXJmaXZlLGpoODEwMC1zeXNjcmciOw0KPiA+ICsJ
+CQlyZWcgPSA8MHgwIDB4MTI2ZDAwMDAgMHgwIDB4MTAwMDA+Ow0KPiA+ICsJCQljbG9ja3MgPSA8
+JmNsa19vc2M+LCA8JmNsa19pMnNyeF9iY2xrX2V4dD4sDQo+ID4gKwkJCQkgPCZjbGtfaTJzcnhf
+bHJja19leHQ+LCA8JmNsa19tY2xrX2V4dD47DQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gImNsa19v
+c2MiLCAiY2xrX2kyc3J4X2JjbGtfZXh0IiwNCj4gPiArCQkJCSAgICAgICJjbGtfaTJzcnhfbHJj
+a19leHQiLCAiY2xrX21jbGtfZXh0IjsNCj4gPiArCQkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KPiA+
+ICsJCQkjcmVzZXQtY2VsbHMgPSA8MT47DQo+ID4gKwkJfTsNCj4gPiArDQo+ID4gKwkJc3lzY3Jn
+X3N3OiBzeXNjcmdfc3dAMTI3MjAwMDAgew0KPiA+ICsJCQljb21wYXRpYmxlID0gInN0YXJmaXZl
+LGpoODEwMC1zeXNjcmctc3ciOw0KPiA+ICsJCQlyZWcgPSA8MHgwIDB4MTI3MjAwMDAgMHgwIDB4
+MTAwMDA+Ow0KPiA+ICsJCQljbG9ja3MgPSA8JnN5c2NyZyBTWVNDUkdfQ0xLX0FQQl9CVVM+LA0K
+PiA+ICsJCQkJIDwmc3lzY3JnIFNZU0NSR19DTEtfVkRFQ19ST09UPiwNCj4gPiArCQkJCSA8JnN5
+c2NyZyBTWVNDUkdfQ0xLX0ZMRVhOT0MxPjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAic3lzX2Ns
+a19hcGJfYnVzIiwNCj4gPiArCQkJCSAgICAgICJzeXNfY2xrX3ZkZWNfcm9vdCIsDQo+ID4gKwkJ
+CQkgICAgICAic3lzX2Nsa19mbGV4bm9jMSI7DQo+ID4gKwkJCSNjbG9jay1jZWxscyA9IDwxPjsN
+Cj4gPiArCQkJI3Jlc2V0LWNlbGxzID0gPDE+Ow0KPiA+ICsJCX07DQo+ID4gKw0KPiA+ICAJCXVh
+cnQ1OiBzZXJpYWxAMTI3ZDAwMDAgIHsNCj4gPiAgCQkJY29tcGF0aWJsZSA9ICJzdGFyZml2ZSxq
+aDgxMDAtdWFydCIsICJjZG5zLHVhcnQtcjFwOCI7DQo+ID4gIAkJCXJlZyA9IDwweDAgMHgxMjdk
+MDAwMCAweDAgMHgxMDAwMD47DQo+ID4gQEAgLTM3NCw1ICs0NzUsMTkgQEAgdWFydDY6IHNlcmlh
+bEAxMjdlMDAwMCAgew0KPiA+ICAJCQlpbnRlcnJ1cHRzID0gPDczPjsNCj4gPiAgCQkJc3RhdHVz
+ID0gImRpc2FibGVkIjsNCj4gPiAgCQl9Ow0KPiA+ICsNCj4gPiArCQlhb25jcmc6IGFvbmNyZ0Ax
+ZjMxMDAwMCB7DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAic3RhcmZpdmUsamg4MTAwLWFvbmNyZyI7
+DQo+ID4gKwkJCXJlZyA9IDwweDAgMHgxZjMxMDAwMCAweDAgMHgxMDAwMD47DQo+ID4gKwkJCWNs
+b2NrcyA9IDwmY2xrX29zYz4sIDwmY2xrX2dtYWMwX3JtaWlfZnVuYz4sDQo+ID4gKwkJCQkgPCZj
+bGtfZ21hYzBfcmdtaWlfZnVuYz4sIDwmY2xrX2FvbjEyNT4sDQo+ID4gKwkJCQkgPCZjbGtfYW9u
+MjAwMD4sIDwmY2xrX2FvbjIwMD4sDQo+ID4gKwkJCQkgPCZjbGtfYW9uNjY3PiwgPCZjbGtfcnRj
+PjsNCj4gPiArCQkJY2xvY2stbmFtZXMgPSAiY2xrX29zYyIsICJjbGtfZ21hYzBfcm1paV9mdW5j
+IiwgImNsa19nbWFjMF9yZ21paV9mdW5jIiwNCj4gPiArCQkJCSAgICAgICJjbGtfYW9uMTI1Iiwg
+ImNsa19hb24yMDAwIiwgImNsa19hb24yMDAiLA0KPiA+ICsJCQkJICAgICAgImNsa19hb242Njci
+LCAiY2xrX3J0YyI7DQo+ID4gKwkJCSNjbG9jay1jZWxscyA9IDwxPjsNCj4gPiArCQkJI3Jlc2V0
+LWNlbGxzID0gPDE+Ow0KPiA+ICsJCX07DQo+ID4gIAl9Ow0KPiA+ICB9Ow0KPiA+IC0tDQo+ID4g
+Mi4zNC4xDQo+ID4NCg==
