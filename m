@@ -2,109 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6D880EA87
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16B980EA89
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346220AbjLLLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        id S1346299AbjLLLi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjLLLir (ORCPT
+        with ESMTP id S232314AbjLLLix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:38:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF71DCD;
-        Tue, 12 Dec 2023 03:38:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702381132; x=1733917132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xq+1mQYTVGfv+QGVue4J7mfgzIK0WKvHLpOtJreygG8=;
-  b=Tre39UJv/eOs7UxknITNZSQU3aTX47bGCeaOS058tF1kk0OXrrzKoBNQ
-   TOBljpt61ssUfdsQv4L3z1EC73DZHovU7vAt/8pzsaNhGibUdhpyENk8D
-   KaD3zZoTTeQV3tnwgVxpDFttfcRTvRp6p0pxtASYez6yhiCoGfrwC800k
-   mJOIs23ogVHP0Ponu2HtTt1Fl+DVeGHljqeOG8XtIbYdt8Ey/md3pjqYi
-   U0FE5Sb7/MGaGH+SrOwa7HdyVaiKHH/9kA5zSZ2pxC7a6/LNY74wosD2N
-   G7D797ZQgSFAGN1/JZMQg0j+5gcgguGV5SG9swMA311XCx5tONlg5j8Pz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="394541866"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="394541866"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:38:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="864179518"
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="864179518"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 03:38:45 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id B04BF11F7E4;
-        Tue, 12 Dec 2023 13:38:42 +0200 (EET)
-Date:   Tue, 12 Dec 2023 11:38:42 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
-        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v15 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZXhGQuqTZogWTJ42@kekkonen.localdomain>
-References: <20231204094719.190334-1-tomm.merciai@gmail.com>
- <20231204094719.190334-4-tomm.merciai@gmail.com>
+        Tue, 12 Dec 2023 06:38:53 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 951AEEB;
+        Tue, 12 Dec 2023 03:38:57 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 02E4520B74C0; Tue, 12 Dec 2023 03:38:57 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 02E4520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702381137;
+        bh=WS1f3+n5rqfny6SDXg/YEJWd+skx1iiQQljAUqp4vgk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kpIwpmR9urFDwNBuUCLM7Oz6n6TwHSW4Oqin6l5yJ2dogdnxp4WAkc6UZTi0QQhvn
+         0tmvUxw7HhnRa1zW5D52hvSaLwEpQN/yn2KmRDCpmsCDbeSQHEqjda6WjU2JGwjKYI
+         sK8/SIYdtzBS+duibGfeVgFVLLg4vT8SpQcqsN74=
+Date:   Tue, 12 Dec 2023 03:38:56 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V5 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204094719.190334-4-tomm.merciai@gmail.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
-
-On Mon, Dec 04, 2023 at 10:47:16AM +0100, Tommaso Merciai wrote:
-> The Alvium camera is shipped with sensor + isp in the same housing.
-> The camera can be equipped with one out of various sensor and abstract
-> the user from this. Camera is connected via MIPI CSI-2.
+On Mon, Dec 11, 2023 at 07:30:46AM -0800, Yury Norov wrote:
+> On Sun, Dec 10, 2023 at 10:37:26PM -0800, Souradeep Chakrabarti wrote:
+> > On Fri, Dec 08, 2023 at 06:03:39AM -0800, Yury Norov wrote:
+> > > On Fri, Dec 08, 2023 at 02:02:34AM -0800, Souradeep Chakrabarti wrote:
+> > > > Existing MANA design assigns IRQ to every CPU, including sibling
+> > > > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > > > in the same core and may reduce the network performance with RSS.
+> > > 
+> > > Can you add an IRQ distribution diagram to compare before/after
+> > > behavior, similarly to what I did in the other email?
+> > > 
+> > Let's consider this topology:
 > 
-> Most of the camera module features are supported, with the main exception
-> being fw update.
+> Not here - in commit message, please.
+Okay, will do that.
 > 
-> The driver provides all mandatory, optional and recommended V4L2 controls
-> for maximum compatibility with libcamera
+> > 
+> > Node            0               1
+> > Core        0       1       2       3
+> > CPU       0   1   2   3   4   5   6   7
+> > 
+> >  Before  
+> >  IRQ     Nodes   Cores   CPUs
+> >  0       1       0       0
+> >  1       1       1       2
+> >  2       1       0       1
+> >  3       1       1       3
+> >  4       2       2       4
+> >  5       2       3       6
+> >  6       2       2       5
+> >  7       2       3       7
+> >  
+> >  Now
+> >  IRQ     Nodes   Cores   CPUs
+> >  0       1       0       0-1
+> >  1       1       1       2-3
+> >  2       1       0       0-1
+> >  3       1       1       2-3
+> >  4       2       2       4-5
+> >  5       2       3       6-7
+> >  6       2       2       4-5
+> >  7       2       3       6-7
 > 
-> References:
->  - https://www.alliedvision.com/en/products/embedded-vision-solutions
+> If you decided to take my wording, please give credits.
 > 
-> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+Will take care of that :).
+> > > > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > > > NUMA node. The performance improvement we are getting using ntttcp with
+> > > > following patch is around 15 percent with existing design and approximately
+> > > > 11 percent, when trying to assign one IRQ in each core across NUMA nodes,
+> > > > if enough cores are present.
+> > > 
+> > > How did you measure it? In the other email you said you used perf, can
+> > > you show your procedure in details?
+> > I have used ntttcp for performance analysis, by perf I had meant performance
+> > analysis. I have used ntttcp with following parameters
+> > ntttcp -r -m 64 <receiver> 
+> > 
+> > ntttcp -s <receiver side ip address>  -m 64 <sender>
+> > Both the VMs are in same Azure subnet and private IP address is used.
+> > MTU and tcp buffer is set accordingly and number of channels are set using ethtool
+> > accordingly for best performance. Also irqbalance was disabled.
+> > https://github.com/microsoft/ntttcp-for-linux
+> > https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-bandwidth-testing?tabs=linux
+> 
+> OK. Can you also print the before/after outputs of ntttcp that demonstrate
+> +15%?
+> 
+With affinity spread like each core only 1 irq and spreading accross multiple NUMA node>
+8 ./ntttcp -r -m 16
+NTTTCP for Linux 1.4.0
+---------------------------------------------------------
+08:05:20 INFO: 17 threads created
+08:05:28 INFO: Network activity progressing...
+08:06:28 INFO: Test run completed.
+08:06:28 INFO: Test cycle finished.
+08:06:28 INFO: #####  Totals:  #####
+08:06:28 INFO: test duration    :60.00 seconds
+08:06:28 INFO: total bytes      :630292053310
+08:06:28 INFO:   throughput     :84.04Gbps
+08:06:28 INFO:   retrans segs   :4
+08:06:28 INFO: cpu cores        :192
+08:06:28 INFO:   cpu speed      :3799.725MHz
+08:06:28 INFO:   user           :0.05%
+08:06:28 INFO:   system         :1.60%
+08:06:28 INFO:   idle           :96.41%
+08:06:28 INFO:   iowait         :0.00%
+08:06:28 INFO:   softirq        :1.94%
+08:06:28 INFO:   cycles/byte    :2.50
+08:06:28 INFO: cpu busy (all)   :534.41%
 
-Could you run
+With our new proposal
 
-	./scripts/checkpatch.pl --strict --max-line-length=80
+./ntttcp -r -m 16
+NTTTCP for Linux 1.4.0
+---------------------------------------------------------
+08:08:51 INFO: 17 threads created
+08:08:56 INFO: Network activity progressing...
+08:09:56 INFO: Test run completed.
+08:09:56 INFO: Test cycle finished.
+08:09:56 INFO: #####  Totals:  #####
+08:09:56 INFO: test duration    :60.00 seconds
+08:09:56 INFO: total bytes      :741966608384
+08:09:56 INFO:   throughput     :98.93Gbps
+08:09:56 INFO:   retrans segs   :6
+08:09:56 INFO: cpu cores        :192
+08:09:56 INFO:   cpu speed      :3799.791MHz
+08:09:56 INFO:   user           :0.06%
+08:09:56 INFO:   system         :1.81%
+08:09:56 INFO:   idle           :96.18%
+08:09:56 INFO:   iowait         :0.00%
+08:09:56 INFO:   softirq        :1.95%
+08:09:56 INFO:   cycles/byte    :2.25
+08:09:56 INFO: cpu busy (all)   :569.22%
+---------------------------------------------------------
 
-and address the issues in a patch on top of this set?
+> > > > Suggested-by: Yury Norov <yury.norov@gmali.com>
+> > > > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > > > ---
+> > > 
+> > > [...]
+> > > 
+> > > >  .../net/ethernet/microsoft/mana/gdma_main.c   | 92 +++++++++++++++++--
+> > > >  1 file changed, 83 insertions(+), 9 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > index 6367de0c2c2e..18e8908c5d29 100644
+> > > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > > > @@ -1243,15 +1243,56 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> > > >  	r->size = 0;
+> > > >  }
+> > > >  
+> > > > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> 
+> Is it intentional that irqs and nvec are signed? If not, please make
+> them unsigned.
+Will do it in next version.
+> 
+> > > > +{
+> > > > +	int w, cnt, cpu, err = 0, i = 0;
+> > > > +	int next_node = start_numa_node;
+> > > 
+> > > What for this?
+> > This is the local numa node, from where to start hopping.
+> > Please see how we are calling irq_setup(). We are passing the array of allocated irqs, total
+> > number of irqs allocated, and the local numa node to the device.
+> 
+> I'll ask again: you copy parameter (start_numa_node) to a local
+> variable (next_node), and never use start_numa_node after that.
+> 
+> You can just use the parameter, and avoid creating local variable at
+> all, so what for the latter exist?
+> 
+> The naming is confusing. I think just 'node' is OK here.
+Thanks, I wll not use the extra variable next_node.
+> 
+> > > > +	const struct cpumask *next, *prev = cpu_none_mask;
+> > > > +	cpumask_var_t curr, cpus;
+> > > > +
+> > > > +	if (!zalloc_cpumask_var(&curr, GFP_KERNEL)) {
+> > > > +		err = -ENOMEM;
+> > > > +		return err;
+> > > > +	}
+> > > > +	if (!zalloc_cpumask_var(&cpus, GFP_KERNEL)) {
+> > > 
+> > >                 free(curr);
+> > Will fix it in next version. Thanks for pointing.
+> 
+> And also drop 'err' - just 'return -ENOMEM'.
+> 
+Will fix it in next revision.
+> > > 
+> > > > +		err = -ENOMEM;
+> > > > +		return err;
+> > > > +	}
+> > > > +
+> > > > +	rcu_read_lock();
+> > > > +	for_each_numa_hop_mask(next, next_node) {
+> > > > +		cpumask_andnot(curr, next, prev);
+> > > > +		for (w = cpumask_weight(curr), cnt = 0; cnt < w; ) {
+> > > > +			cpumask_copy(cpus, curr);
+> > > > +			for_each_cpu(cpu, cpus) {
+> > > > +				irq_set_affinity_and_hint(irqs[i], topology_sibling_cpumask(cpu));
+> > > > +				if (++i == nvec)
+> > > > +					goto done;
+> > > 
+> > > Think what if you're passed with irq_setup(NULL, 0, 0).
+> > > That's why I suggested to place this check at the beginning.
+> > > 
+> > irq_setup() is a helper function for mana_gd_setup_irqs(), which already takes
+> > care of no NULL pointer for irqs, and 0 number of interrupts can not be passed.
+> > 
+> > nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+> > if (nvec < 0)
+> > 	return nvec;
+> 
+> I know that. But still it's a bug. The common convention is that if a
+> 0-length array is passed to a function, it should not dereference the
+> pointer.
+> 
+I will add one if check in the begining of irq_setup() to verify the pointer
+and the nvec number.
+> ...
+> 
+> > > > @@ -1287,21 +1336,44 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> > > >  			goto free_irq;
+> > > >  		}
+> > > >  
+> > > > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > > -		if (err)
+> > > > -			goto free_irq;
+> > > > -
+> > > > -		cpu = cpumask_local_spread(i, gc->numa_node);
+> > > > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > > > +		if (!i) {
+> > > > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > > > +			if (err)
+> > > > +				goto free_irq;
+> > > > +
+> > > > +			/* If number of IRQ is one extra than number of online CPUs,
+> > > > +			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
+> > > > +			 * same CPU.
+> > > > +			 * Else we will use different CPUs for IRQ0 and IRQ1.
+> > > > +			 * Also we are using cpumask_local_spread instead of
+> > > > +			 * cpumask_first for the node, because the node can be
+> > > > +			 * mem only.
+> > > > +			 */
+> > > > +			if (start_irq_index) {
+> > > > +				cpu = cpumask_local_spread(i, gc->numa_node);
+> > > 
+> > > I already mentioned that: if i == 0, you don't need to spread, just
+> > > pick 1st cpu from node.
+> > The reason I have picked cpumask_local_spread here, is that, the gc->numa_node 
+> > can be a memory only node, in that case we need to jump to next node to get the CPU.
+> > Which cpumask_local_spread() using sched_numa_find_nth_cpu() takes care off.
+> 
+> OK, makes sense.
+> 
+> What if you need to distribute more IRQs than the number of CPUs? In
+> that case you'd call the function many times. But because you return
+> 0, user has no chance catch that. I think you should handle it inside
+> the helper, or do like this:
+> 
+>         while (nvec) {
+>                 distributed = irq_setup(irqs, nvec, node);
+>                 if (distributed < 0)
+>                         break;
+> 
+>                 irq += distributed;
+>                 nvec -= distributed;
+>         }
+We can not have irqs more greater than 1 of num of online CPUs, as we are
+setting it inside cpu_read_lock() with num_online_cpus().
+We can have minimum 2 IRQs and max number_online_cpus() +1 or 64, which is
+maximum supported IRQs per port.
 
-Thanks.
-
--- 
-Sakari Ailus
+1295         cpus_read_lock();
+1296         max_queues_per_port = num_online_cpus();
+1297         if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+1298                 max_queues_per_port = MANA_MAX_NUM_QUEUES;
+1299
+1300         /* Need 1 interrupt for the Hardware communication Channel (HWC) */
+1301         max_irqs = max_queues_per_port + 1;
+1302
+1303         nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+1304         if (nvec < 0)
+1305                 return nvec;
+> 
+> Thanks,
+> Yury
