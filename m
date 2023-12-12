@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE9B80F982
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD28780F90C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377574AbjLLVgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
+        id S1377550AbjLLVTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:19:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377564AbjLLVg2 (ORCPT
+        with ESMTP id S231239AbjLLVTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:36:28 -0500
+        Tue, 12 Dec 2023 16:19:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A364CE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:36:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A13DFC433C7;
-        Tue, 12 Dec 2023 21:36:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A260B3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:19:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EFDEC433C7;
+        Tue, 12 Dec 2023 21:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702416993;
-        bh=7eLZmT4c+fhFsyeFMw0JfCmjrU8I9lIkdJtLdS55xkI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jogJziO6KMjsDBdgTJ3ForpAxZ2uFB69WZGXd3/IfFyg5tI+o5RHURJQ5VRTxE6Fr
-         C7Zbo3zE8fb2bRohJVE808bYOONGZLkZg+KBkwOZb/yHfUpsimO4JHhTJed8xjn6Od
-         F2HFZr0skIQJQRqzTV/DbxXbxZG6TLjbK3B3fG+kEHSmDbz7rMlQSFjus3J1wPqEko
-         RqOhl9hRq8kXc/4jUEJunbPBlWk+qDiAjxoZ9XlsuqqVrTkeEcADCMv/QhZvgLqX1e
-         zZ85U+5FZbgw/vVOC6RlquCAdfIJMGzs6J0yNJuKc0qayPp5USq1o1vZsSITFzKmYm
-         c8mZD3flToCpw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH] media: i2c: mt9m114: add CONFIG_COMMON_CLK dependency
-Date:   Tue, 12 Dec 2023 22:18:04 +0100
-Message-Id: <20231212213625.3653558-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        s=k20201202; t=1702415954;
+        bh=UE+yk/wIEl5wqTBJpUbWv1HkRygo21oZdxRRyi/EhrI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=H/K47aIfEEuRNHrLpUMSyNEnAGQYxLJnM1AMgiIGdbC6hqsgIeVFHeyUXQNw5Wuwh
+         5nuZP64+NqcK2CJa/ZC1io3MoXFKJEVVLH22VGqiwImc+Y1NYvL/YIOJd6ih7Hxg8a
+         is6tQy4YM0ar068Fqr3zkEzQ9QRijEiR2TbzuSYjREwH+SPYE6aJfl2Z0J8GfaTP3r
+         1OfchR4GTjE5wPyWxh49c5+OPajoKOVc3kFH1sWrKfM7MyO0SELHN3ijgk5mBd7glt
+         nxCdht3kK2opR3r/d7zRNdCDhG69ccYPBplKxGR2P28lwBCCT092vYjVhnEcucayir
+         w93GXlJ6Ag2Yw==
+Date:   Tue, 12 Dec 2023 13:19:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Colin Ian King <colin.i.king@gmail.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mlx4: Fix spelling mistake: "mape" -> "map"
+Message-ID: <20231212131913.4195bc38@kernel.org>
+In-Reply-To: <20231212203043.GF5817@kernel.org>
+References: <20231209225135.4055334-1-colin.i.king@gmail.com>
+        <20231212203043.GF5817@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,35 +55,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, 12 Dec 2023 20:30:43 +0000 Simon Horman wrote:
+> On Sat, Dec 09, 2023 at 10:51:35PM +0000, Colin Ian King wrote:
+> > There is a spelling mistake in a mlx4_err error message. Fix it.
+> > 
+> > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>  
+> 
+> Hi Colin,
+> 
+> I am guessing that you are focusing on error messages and other user-facing
+> spelling errors (perhaps you told me f2f in the hallway track at Kernel
+> Recipes).  But I do wonder if you have plans to address other spelling
+> errors in this driver. codespell flags many, including 'segements' in a
+> comment in the same file.
 
-With clang-16, building without COMMON_CLK triggers a range check on
-udelay() because of a constant division-by-zero calculation:
-
-ld.lld: error: undefined symbol: __bad_udelay
->>> referenced by mt9m114.c
->>>               drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
-
-Avoid this by adding a Kconfig dependency that avoids the broken build.
-
-Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/media/i2c/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index aae05142e191..b224c37bfd77 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -228,6 +228,7 @@ config VIDEO_MT9M111
- 
- config VIDEO_MT9M114
- 	tristate "onsemi MT9M114 sensor support"
-+	depends on COMMON_CLK
- 	select V4L2_CCI_I2C
- 	help
- 	  This is a Video4Linux2 sensor-level driver for the onsemi MT9M114
+It'd be great to fix all the codespell issues with one path, IMO.
 -- 
-2.39.2
-
+pw-bot: cr
