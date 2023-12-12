@@ -2,213 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8A080F1AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2A280F1B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376745AbjLLP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S1376740AbjLLP7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376701AbjLLP7L (ORCPT
+        with ESMTP id S1376763AbjLLP7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:59:11 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA72AA;
-        Tue, 12 Dec 2023 07:59:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FxC/426LU/wtHKA+BnlH3NB7hO1iwyF4nQ11RL1D2cKXKBN00wwB8JCxP8fN+SwUZF9mbDgMXZfdw6IKdDxllZXmDhs2g4okKj/Kb8AURiuAIbzZLOjRHn7iGLRYVmZ94aUBHEImGfMJqTyK6SRcPoQEFrQyqF7qC8bfp0voVK3oRCx8iskhQUilfCLCtIj8erDciYz3Zs1fX43F0vCtoT6shrwWYDtnpQo5aE4X+OmyFAfjFniC0wV78ackQT4AWTbutFBmtRy5V6URAj5oQoAO1F0QJzgqdFL+k8BeeJjUketfrnIiwnAcweKUVpeB1NNdL+NrlqAx4kQu10yFqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ETVv9IVOPuZwFuu1RONN+q9OvrA1tFu1scKt0AjuDm4=;
- b=BriY6R5iQOzxIQIWaMZnzAVfthRkRRQjhY9vZrw9TXnD87bpJABh8zHbqx0EU0CnAF2CPYnLqDkiTo3yTqQ/USzLJ/Gg+4pj2tHYB4NPAxZ23uyk6MtVO44I5beFxejSSyieIY0vGuOduF20jKTd1jgPgkCuc9CSh+b9FhV0z4SVj2fHAwC1Xlnh68tg88ItmvsUarB4HuIzq5uNjP30BTVssRTkFaccV99NlivJcv9I4r5HVLIAZN8RV9Z/KGSqLZoJOEyrHODYxV5deTgBtyGd8ihA+PrhFh9BZXCKKV7ycQlXv2ckoUVd066JvRxh1yd7L4BkKT8QIdBjfhXPOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ETVv9IVOPuZwFuu1RONN+q9OvrA1tFu1scKt0AjuDm4=;
- b=ZT/wc2Jsrzp9aKGwp8LEsn/rkSTmhEAx3kyg8ZXn7b1s9JsY6O+whZOuUQlU/E1VIlwamItyWyFH+1JXNI/DXf35PpRVs4PtKIUDLq3X9mY5QSFpnU/x967XbCjPibIjyc4aGxv9F2RbXskDLT8kLgy8pMcPpxHGDyx7IpGyemk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by SN7PR17MB6483.namprd17.prod.outlook.com (2603:10b6:806:359::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
- 2023 15:59:12 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
- 15:59:12 +0000
-Date:   Tue, 12 Dec 2023 10:59:06 -0500
-From:   Gregory Price <gregory.price@memverge.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
-        corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
-        honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
-        jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com,
-        seungjun.ha@samsung.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Hasan Al Maruf <hasanalmaruf@fb.com>,
-        Hao Wang <haowang3@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>,
-        Frank van der Linden <fvdl@google.com>,
-        John Groves <john@jagalactic.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 00/11] mempolicy2, mbind2, and weighted interleave
-Message-ID: <ZXiDSrdNfbv8/Ple@memverge.com>
-References: <20231209065931.3458-1-gregory.price@memverge.com>
- <87r0jtxp23.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZXc74yJzXDkCm+BA@memverge.com>
- <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: SJ0PR03CA0249.namprd03.prod.outlook.com
- (2603:10b6:a03:3a0::14) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+        Tue, 12 Dec 2023 10:59:38 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA3CF2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:59:43 -0800 (PST)
+Date:   Tue, 12 Dec 2023 16:59:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702396781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZYUGGhGIcq4pE6W68er3NNyNlAUozlYglpukm412Vs=;
+        b=KnPTuFe2hjj3bt5IFJKNFhFoExaBxz+/BsbAHWxGFsoomXhhaDtRrC5+FfvASby/ocJpsK
+        c8dDvKfu1DWBDSuJuISf2XBJ3KwTszByLPMQQvCpp+D+KMFLASG58WlMW/eLuq5fwubYCy
+        h8kXONN+9AiYMSyDLuMYA2meHpvzde9uqeZVlWHJyLaUOMIFFkl8FNJN6ukBCc24JqH5Vt
+        bKlXXvef195wKXZuPIQcf/yI826WZnZU3FYNoC64ioZunWiJpIKvDFFAjjVEXks/HGfZQd
+        FWzK+jip4rnPPP4f7QYPwHPU1U1Orqykqfk5pt0hklmFIs46PHWcF/ZEK9Jo5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702396781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CZYUGGhGIcq4pE6W68er3NNyNlAUozlYglpukm412Vs=;
+        b=pU6km5Og1ShqVbKq4usrIy3bV33YC05BrFhVOLFDGXe7hWN27pwxTcAZfp4mpT87/Q2otK
+        NouffezMEhhViMAw==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 30/32] timers: Implement the hierarchical pull model
+Message-ID: <20231212155939.Z_YQl91J@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-31-anna-maria@linutronix.de>
+ <20231211180417.XG9G3ryS@linutronix.de>
+ <87h6knmzco.fsf@somnus>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SN7PR17MB6483:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d1ef72c-d893-4ee3-ae00-08dbfb2b4893
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7BrZyukzSsN0SEnD74MbsJKesD3ver2YH0NAi2ZwsILjdIgnTqkiYOk7GFnmd6UoVvlKAUHhyX5zNTelH3qU3CXNEQ//k0+04q0/s/3+doUE2+52rxDsAtMfYPhfBO+YWBSGLmfY7jYWeSNQJ97/sBDXbc9tkt875JSkB1RjcgLK/5JfBcns3UAzXz1iCrIB/FMJVKwK4p/fO40N3dyshFEXdDqxHOx75mgJWttprOreowwDGOr03Mzu+e8QVUUQN73QjoNtfZCXsikc6uI3ExUVSvi8qVviFGV0KmRNLB/osx6TbPyF2WTrHNhW//xY9tgp2+919jvicIu1arWFNyuXJVnH+kM7VYoD690HWkR7ioeWDhFdx9dkCpRdoYWJCAsKpvz/xEMpMaTqIfKgeTZ8O+qQfkp8oCW/2HziPwzUoW750DfcFMTykbI5+j2Ufn5Eph1VZJOn0BftsZnLMCbOdn8D2j4w8lnAnh+P4UzQXD9AqED6s6/7BIBjwpwguI6FH4B6Azisbd0q/UHLxwDoIgqph5V6KXhd4VOL5u+xoxR1EjlDLgmi7iN3151FYYwZa2U0nGjOU+sflsu+EBtai85mwOV12wIEmOvljibKWkKhH5DitBWw24n42CBw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(39840400004)(346002)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2906002)(5660300002)(7416002)(44832011)(7406005)(8676002)(8936002)(4326008)(41300700001)(316002)(66946007)(66476007)(54906003)(6916009)(66556008)(478600001)(6486002)(2616005)(6512007)(6666004)(26005)(6506007)(36756003)(38100700002)(86362001)(16393002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cUDIT1RUMW1buLYnH0XADOIO6FV/AKX1ug/NlUIDaCs/INPodrn08CfIpqN/?=
- =?us-ascii?Q?3vMyXJ0OpgD7XoETEmnZEJe+bLTICB2A8ouKS6uRH/4viI8pEUW/feNzQzpv?=
- =?us-ascii?Q?BpHTj74Zc3ZFUl/UE33BieMr8CFYj+4y2XfojIzi3+4pU/ACOuMafOHd5eJu?=
- =?us-ascii?Q?BlfqhKupowILip5CjGKJ6ANPdMRJrKPPisegUUEqzo7BOSdmm5WhLlXHFrII?=
- =?us-ascii?Q?pAN37nELkvn739Ve3jOs8Px5i2iRQHwO47czLR2rqSigGiXoa58836Ui+QrA?=
- =?us-ascii?Q?XHdV0oUMCvvcTzYsFVSDOhK9nxm1PBtfIqIG9Z2yIroWcgedvtv+rrqnHKV7?=
- =?us-ascii?Q?RaWtjBmIrTZhHH7+zokkzqT0zq2yeI+UK+XYzaW3XRyr5bp0Inr5wDsHwVri?=
- =?us-ascii?Q?41pU/Me7PwK1DjZjkOWGu0ip2/f9uRd+vcuDafZb6cmtCrQgmAylgZGG06CV?=
- =?us-ascii?Q?DKrMPBBTm7jO+4kLNIls0GBLKtl8si7oMqVsGlvKHsFBRFKkIsJlFyzLP1up?=
- =?us-ascii?Q?N2OYVq35FLC42CgG5IvTYv5cPANsAR0LOFggCrwyZ0Z0+66s3NZashCe9FNG?=
- =?us-ascii?Q?nEpxu24wWrn49e2/mRjpmcf5A0GIcE4rnZ0aDd1SeEsyHb5b8IOS1sP/1+/x?=
- =?us-ascii?Q?YiLz99dJgl04ug+WRExNRbaE5qXBQLD0MQFrs2ldaAS69AV31vfPVfM7i6PZ?=
- =?us-ascii?Q?+mli+v1GBmY7ycgGcrUrAlE3TNW7+nSctx54bLzp7TOuT6A9/nR7mUsETYir?=
- =?us-ascii?Q?plvz3CcXz4gNdgf6EVX5QHrO5GCo+mXsVqjETDEG31yjW3qgsELZ856tRb75?=
- =?us-ascii?Q?rxu8xe5iKZQNmzEyKlLscNttcuXgQoYJYKWrc4hK+IDB7rJgEdKlXqNoiA/a?=
- =?us-ascii?Q?zSDW8LxE8lCVXLoJW8kbMwf/DjV8efzcdLQf/0ET0s1kHxyI61FHauZrEHfZ?=
- =?us-ascii?Q?egg22267zNhUnUtVv1QK+noBlMptkrsp8pgZw2lkeFR8S1W8KAH05DoEN9IV?=
- =?us-ascii?Q?E6dID4MM2TCWFyl54TwdGn17MP4Ot2Drei9Lbpqy5kt0WE48KRw4A+oHiROk?=
- =?us-ascii?Q?v1FU1+XYAif5nlee+xIZQxJmNhgdz94WeM85wyPQQ2ER5ccX4CzIVhLcCvf0?=
- =?us-ascii?Q?tbptXXENv9TB7KfIJ0LvTcCGTAcpxegqJl9B0l/6xwPxoiX2ZkTI+fHSjibF?=
- =?us-ascii?Q?jRP72260uCUNIC/3/Alovg6S4LRpxNg8ZKLqAKENljVjqMVyadb/DVyN/4WR?=
- =?us-ascii?Q?PvglkuK2CvPZhN0oN8qEcEvExeSmEG4djD7J/4JmdOoPR7fvClQwidHGtgLC?=
- =?us-ascii?Q?EaQI7DZYeQFiHle4SwGu6jE9VsxHvq4WMTU2YVO/u0dPKnNA9fCQUkhSGJFQ?=
- =?us-ascii?Q?e/KGPQI4ELeYydf0FuPEWNlEOcbxkKWVxp2Teq60eXTiP0Jdn/SCyXqtNomc?=
- =?us-ascii?Q?R6vewHwULw0wWW3gSltsjdE32Li8BUwmRgWSQfGI9Ry+NHJH1Y2doc8U+Z2Q?=
- =?us-ascii?Q?9unNHlEs3dnnRVrXBcnYg8bS692L8zVyKPEfX1fuF2S43uBrLFKnIcdP76Z0?=
- =?us-ascii?Q?HPPHPEByHVDRPERgOZ53+v3af5yJozQXCGGOvZHnekmFJVd2f8WSNg28He1E?=
- =?us-ascii?Q?vw=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d1ef72c-d893-4ee3-ae00-08dbfb2b4893
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:59:12.4440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IuYZw9TscuJYleWasYe1kJc6odmkEC5HgoUzZgeXEjfMKc/V/cP8OxIBEkko9arlobNSH1WNtLSKv4FHgUBgY7OOxZHV1jxTv79kFeoaaK8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR17MB6483
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87h6knmzco.fsf@somnus>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 03:08:24PM +0800, Huang, Ying wrote:
-> Gregory Price <gregory.price@memverge.com> writes:
-> 
-> >> For example, can we use something as below?
-> >> 
-> >>   long set_mempolicy2(int mode, const unsigned long *nodemask, unsigned int *il_weights,
-> >>                           unsigned long maxnode, unsigned long home_node,
-> >>                           unsigned long flags);
-> >> 
-> >>   long mbind2(unsigned long start, unsigned long len,
-> >>                           int mode, const unsigned long *nodemask, unsigned int *il_weights,
-> >>                           unsigned long maxnode, unsigned long home_node,
-> >>                           unsigned long flags);
-> >> 
+On 2023-12-12 12:31:19 [+0100], Anna-Maria Behnsen wrote:
+> Sebastian Siewior <bigeasy@linutronix.de> writes:
+>=20
+> > On 2023-12-01 10:26:52 [+0100], Anna-Maria Behnsen wrote:
+> >> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migrati=
+on.c
+> >> new file mode 100644
+> >> index 000000000000..05cd8f1bc45d
+> >> --- /dev/null
+> >> +++ b/kernel/time/timer_migration.c
+> >> @@ -0,0 +1,1636 @@
+> > =E2=80=A6
+> >> +static bool tmigr_active_up(struct tmigr_group *group,
+> >> +			    struct tmigr_group *child,
+> >> +			    void *ptr)
+> >> +{
+> >> +	union tmigr_state curstate, newstate;
+> >> +	struct tmigr_walk *data =3D ptr;
+> >> +	bool walk_done;
+> >> +	u8 childmask;
+> >> +
+> >> +	childmask =3D data->childmask;
+> >> +	newstate =3D curstate =3D data->groupstate;
+> >> +
+> >> +retry:
+> >> +	walk_done =3D true;
+> >> +
+> >> +	if (newstate.migrator =3D=3D TMIGR_NONE) {
+> >> +		newstate.migrator =3D childmask;
+> >> +
+> >> +		/* Changes need to be propagated */
+> >> +		walk_done =3D false;
+> >> +	}
+> >> +
+> >> +	newstate.active |=3D childmask;
+> >> +
+> >> +	newstate.seq++;
+> >> +
+> >> +	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstat=
+e.state)) {
+> >> +		newstate.state =3D curstate.state;
 > >
-> > Your definition of mbind2 is impossible.
+> > This does not look right. If
+> > 	group->migr_state !=3D curstate.state
+> > then
+> > 	curstate.state =3D newstate.state
 > >
-> > Neither of these interfaces solve the extensibility issue.  If a new
-> > policy which requires a new format of data arrives, we can look forward
-> > to set_mempolicy3 and mbind3.
-> 
-> IIUC, we will not over-engineering too much.  It's hard to predict the
-> requirements in the future.
-> 
-
-Sure, but having the mempolicy struct at least gives us more flexibility
-than the original interface.
-
-> >> A struct may be defined to hold mempolicy iteself.
-> >> 
-> >> struct mpol {
-> >>         int mode;
-> >>         unsigned int home_node;
-> >>         const unsigned long *nodemask;
-> >>         unsigned int *il_weights;
-> >>         unsigned int maxnode;
-> >> };
-> >> 
+> > does not make a difference since curstate is on stack. So this should
+> > become
 > >
-> > addr could be pulled out for get_mempolicy2, so i will do that
+> > |	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstate=
+=2Estate)) {
+> > |		curstate.state =3D newstate.state =3D atomic_read(&group->parent->mi=
+gr_state);
 > >
-> > 'addr_node' and 'policy_node' are warts that came from the original
-> > get_mempolicy.  Removing them increases the complexity of handling
-> > arguments in the common get_mempolicy code.
+> > and now I question the existence of tmigr_walk::groupstate. It does not
+> > match the comment for the struct saying it will be re-read if the
+> > cmpxchg() fails because it does not happen (at least here). Also why do
+> > we have it? Is it avoid atomic_read() and have it "cached"?
+>=20
+> atomic_try_cmpxchg() updates curstate.state with the actual
+> group->migr_state when those values do not match. So it is reread by
+> atomic_try_cmpxchg() and still matches the description. (This at least
+> tells the function description of atomic_try_cmpxchg()).
+
+Ach. Indeed. That part slipped my mind. Could still replace it with:
+	newstate =3D curstate
+
+to match the assignment at the top of the function? Or do something
+like:
+
+|         childmask =3D data->childmask;
+|         curstate =3D data->groupstate;
+| retry:
+|         newstate =3D curstate;
+|
+|         walk_done =3D true;
+=E2=80=A6
+|         if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, news=
+tate.state))
+|                 goto retry;
+
+So gcc can save a branch and recycle the upper the cooking the code.
+gcc-13 does not recognise this, clang-16 does.
+
+> But beside of this, why do I want to update curstate.state with
+> group->parent->migr_state when cmpxchg of this group wasn't successful
+> yet or was it a copy paste error?
+
+It was an error.
+
+> >> +		data->groupstate.state =3D atomic_read(&group->parent->migr_state);
+> >> +		data->childmask =3D group->childmask;
 > >
-> > I could probably just drop support for retrieving the addr_node from
-> > get_mempolicy2, since it's already possible with get_mempolicy.  So I
-> > will do that.
-> 
-> If it's necessary, we can add another struct for get_mempolicy2().  But
-> I don't think that it's necessary to add get_mempolicy2() specific
-> parameters for set_mempolicy2() or mbind2().
+> > We don't re-read in case the cmpxchg failed assuming someone else is
+> > updating the state. Wouldn't it make sense to read the childmask at top
+> > of the function from the child pointer. There is no need to keep around
+> > in the data pointer, right?
+>=20
+> When we are in lvl0, then @child is NULL as the child is a tmigr_cpu and
+> not a tmigr_group. This is the reason why I decided to store it inside
+> the tmigr_walk struct.
 
-After edits, the only parameter that doesn't have parity between
-interfaces is `addr_node` and `policy_node`.  This was an unfortunate
-wart on the original get_mempolicy() that multiplexed the output of
-(*mode) based on whether MPOL_F_NODE was set.
+But it supposed to be group->migr_state for the cmpxchg. So considering
+the previous bit, why not:
 
-Example:
-if (MPOL_F_ADDR | MPOL_F_NODE), then get_mempolicy() would return
-details about a VMA mempolicy + the node of that address in (*mode).
+|         childmask =3D data->childmask;
+|         curstate =3D atomic_read(&group->migr_state);
+|=20
+| 	  do {
+|         	newstate =3D curstate;
+|         	walk_done =3D true;
+|=20
+|         	if (newstate.migrator =3D=3D TMIGR_NONE) {
+|         	        newstate.migrator =3D childmask;
+|=20
+|         	        /* Changes need to be propagated */
+|         	        walk_done =3D false;
+|         	}
+|=20
+|         	newstate.active |=3D childmask;
+|=20
+|         	newstate.seq++;
+|=20
+|         } while (!atomic_try_cmpxchg(&group->migr_state, &curstate.state,=
+ newstate.state));
 
-Right now in get_mempolicy2() I fetch this unconditionally instead of
-requiring MPOL_F_NODE.  I did not want to multiplexing (*mode) output.
+this seems nice.
 
-I see two options:
-1) Get rid of MPOL_F_NODE functionality in get_mempolicy2()
-   If a user wants that information, they can still use get_mempolicy()
+> >> +	}
+> >> +
+> >> +	/*
+> >> +	 * The group is active and the event will be ignored - the ignore fl=
+ag is
+> >> +	 * updated without holding the lock. In case the bit is set while
+> >> +	 * another CPU already handles remote events, nothing happens, becau=
+se
+> >> +	 * it is clear that the CPU became active just in this moment, or in
+> >> +	 * worst case the event is handled remote. Nothing to worry about.
+> >> +	 */
+> >
+> >    The CPU is becoming active, so is the group. The ignore flag for the
+> >    group is updated lock less to reflect this. Another CPU might also
+> >    set it true while becoming active. In worst case the migrator
+> >    observes it too late and expires remotely timer belonging to this
+> >    group. The lock is held while going idle (and setting ignore to
+> >    false) so the state is not lost.
+> >
+>=20
+> This is what I wanted to explain:
+>=20
+> /*
+>  * The group is active (again). The group event might be still queued
+>  * into the parent group's timerqueue but can now be handled by the the
 
-2) Keep MPOL_F_NODE and mpol_args->addr_node/policy_node, but don't allow
-   any future extensions that create this kind of situation.
+s/the$@@
 
-I'm fine with either.  I originally aimed for get_mempolicy2() to be
-all of get_mempolicy() features + new data, but that obviously isn't
-required.
+>  * migrator of this group. Therefore the ignore flag for the group event
+>  * is updated to reflect this.
+>  *
+>  * The update of the ignore flag in the active path is done lock
+lockless
 
-~Gregory
+>  * less. In worst case the migrator of the parent group observes the
+>  * change too late and expires remotely timer belonging to this
+a timer?
+
+>  * group. The lock is held while updating the ignore flag in idle
+>  * path. So this state change will not be lost.
+>  */
+>=20
+> >> +	group->groupevt.ignore =3D true;
+> >> +
+> >> +	return walk_done;
+> >> +}
+=E2=80=A6
+> >> +	if (!tmc->online || tmc->remote || tmc->cpuevt.ignore ||
+> >> +	    now < tmc->cpuevt.nextevt.expires) {
+> >> +		raw_spin_unlock_irq(&tmc->lock);
+> >> +		return next;
+> >
+> > Looking at the last condition where the timerqueue has been forwarded by
+> > a jiffy+, shouldn't we return _that_ values next instead of KTIME_MAX?
+>=20
+> No. Because the event is already queued into the hierarchy and the
+> migrator takes care. If hiererachy is completely idle, the CPU which
+> updated the event takes care. I'll add this to the comment above.
+
+So another CPU took care of it and we set tmc->wakeup to KTIME_MAX=E2=80=A6
+
+One confusing part is that this return value (if not aborted early but
+after completing this function) is used to set tmc->wakeup based on the
+next pending timer for the CPU that was expired remotely.
+We could have expired four CPUs and the next timer of the last CPU may
+not be the earliest timer for the fist CPU in the group.
+And this fine because it can be stale and only valid if the CPU goes
+idle?
+
+> >> +	/*
+> >> +	 * When the CPU is idle, check whether the recalculation of @tmc->wa=
+keup
+> >> +	 * is required. @tmc->wakeup_recalc is set by a remote CPU which is
+> >> +	 * about to go offline, was the last active CPU in the whole timer
+> >> +	 * migration hierarchy and now delegates handling of the hierarchy to
+> >> +	 * this CPU.
+> >
+> > I'm failing here=E2=80=A6
+>=20
+> If the CPU is idle, check whether the recalculation of @tmc->wakeup
+> is required. @tmc->wakeup_recalc is set, when the last active CPU
+> went offline. The last active CPU delegated the handling of the timer
+> migration hierarchy to another (this) CPU by updating this flag and
+> sending a reschedule.
+>=20
+> Better?
+
+So the last CPU going offline had to be the migrator because otherwise
+it wouldn't matter?
+
+=E2=80=A6
+> >> +
+> >> +	if (!atomic_try_cmpxchg(&group->migr_state, &curstate.state, newstat=
+e.state)) {
+> >
+> > This one appears wrong, too. The curstate is not getting updated during
+> > retry.
+>=20
+> See the answer above.
+
+Yes, and I think the do { } while should work here, too.
+
+> >> +	 * data->nextexp was set by tmigr_update_events() and contains the
+> >> +	 * expiry of the first global event which needs to be handled
+> >> +	 */
+> >> +	if (data->nextexp !=3D KTIME_MAX) {
+> >> +		WARN_ON_ONCE(group->parent);
+> >> +		/*
+> >> +		 * Top level path - If this CPU is about going offline, wake
+> >> +		 * up some random other CPU so it will take over the
+> >> +		 * migrator duty and program its timer properly. Ideally
+> >> +		 * wake the CPU with the closest expiry time, but that's
+> >> +		 * overkill to figure out.
+> >> +		 *
+> >> +		 * Set wakeup_recalc of remote CPU, to make sure the complete
+> >> +		 * idle hierarchy with enqueued timers is reevaluated.
+> >> +		 */
+> >> +		if (!(this_cpu_ptr(&tmigr_cpu)->online)) {
+> >> +			struct tmigr_cpu *tmc =3D this_cpu_ptr(&tmigr_cpu);
+> >> +			unsigned int cpu =3D smp_processor_id();
+> >> +			struct tmigr_cpu *tmc_resched;
+> >> +
+> >> +			cpu =3D cpumask_any_but(cpu_online_mask, cpu);
+> >> +			tmc_resched =3D per_cpu_ptr(&tmigr_cpu, cpu);
+> >> +
+> >> +			raw_spin_unlock(&tmc->lock);
+> >> +
+> >> +			raw_spin_lock(&tmc_resched->lock);
+> >> +			tmc_resched->wakeup_recalc =3D true;
+> >> +			raw_spin_unlock(&tmc_resched->lock);
+> >> +
+> >> +			raw_spin_lock(&tmc->lock);
+> >> +			smp_send_reschedule(cpu);
+> >
+> > This whole thing confuses me.
+> > If the CPU goes offline, it needs to get removed from the migration
+> > hierarchy and this is it. Everything else is handled by the migrator. If
+> > the migrator is going offline then it needs wake a random CPU and make
+> > sure it takes the migrator role. I am confused by the whole ::wakeup and
+> > ::wakeup_recalc thingy.
+> >
+>=20
+> wakeup_recalc is required to indicate, that the CPU was chosen as the
+> new migrator CPU when the last active CPU in timer migration hierarchy
+> went offline.
+
+Aha! I suspected this. So this is more like need_new_migrator.
+
+=E2=80=A6
+> Hopefully this is now clear?
+
+yes.
+
+> Thanks,
+>=20
+> 	Anna-Maria
+
+Sebastian
