@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901FA80E344
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 05:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD41380E33F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 05:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjLLEVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 23:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
+        id S231131AbjLLEVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 23:21:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjLLEVK (ORCPT
+        with ESMTP id S229562AbjLLEVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 23:21:10 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640CBBF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 20:21:17 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-59067ccb090so3240739eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 20:21:17 -0800 (PST)
+        Mon, 11 Dec 2023 23:21:12 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D09BE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 20:21:19 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5e1e656d019so2479317b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 20:21:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702354876; x=1702959676; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702354878; x=1702959678; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UfvFAKot0bp3HfeoPJ3dMZk7rFg3lsuy8X5EAYhpV4g=;
-        b=nGV5ZDxr70D91ac+T6LqL8u3ojak+2fWxoTFlSoCTx3A9EXgpYNgjkIMN+wEHM30jH
-         IkL5aDwYTG1BsCF0/VG/DWrr9JULuYCxT1R+/4IA8CxftbJrTVt5V8m0ydaJGKWcty9a
-         TGpec6p6evfw+K801vNqDNlTLaMzFKCeigNUY5O85fW675gVFe38VV32mIFmiqzAeKoM
-         o/buveCT4PxWa7yGqy+oNSVWj1Fu3RW1dbQMoRRDxJTBNgG7NwXQ0X2nIq2mA1VKqekc
-         qYxFk+8X2OxG5h0VjhnbqdVvGZmfKkwY0Df5dzvicy5vggb5v6rvulsl9DOA1y+t6K+b
-         a8sg==
+        bh=pqzdM1JWQlsu7k/N7xBtV+SLaOrDoqGHT+SByeHgWqU=;
+        b=UC6d6PO3w2NZb5d9tH0UdWas3rs/ZjAl8v6ylZ9E3ARFTOUXyTe0/WRsugYKxN1PUC
+         yGXhWx7auSab/uE99Hw5eOfSCWAVKKzvcV0/95TYjOreSlSip1IZgfQmDbkFy90dl+DR
+         wVdWg/xq26ELYqUJ4WGF0K7DY75R+WzgUO9oUM2Pf3K+zfNbTwnRSvgMP0VloIoy720t
+         27drinVXkFUosKN4/8P7IpS9hqEQgbml8ginjsHnVL3MREfq3i3AYRie8UJ6gpypaUrQ
+         A4ALxWCt3MQYm6P7A+MzDEPpx3r1loiwRaH8G34hs7Ylghw5GdXrlRoH4z4aXMxj0qY3
+         MVig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702354876; x=1702959676;
+        d=1e100.net; s=20230601; t=1702354878; x=1702959678;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UfvFAKot0bp3HfeoPJ3dMZk7rFg3lsuy8X5EAYhpV4g=;
-        b=wI+6EWXHVdVeuqL3bYdM/Qtg2BaG9EF7HLytX3T7/nm5VxQ9/93o+CrLvUSWH58KrD
-         b9gizSb7T3O9AhnlW7AGTxKLT7a+WRL7HqTJqdhmwJcILtEUpF12k0AxXuRgPoPXoUpU
-         m8aCT5eZrauGnFgAkMIFJu+luQlxWsLKk7sHqthyYRQRaPCjWb477X9TAddKzKqUvRq5
-         Qvg5WlaEvBTwKpUAlgjRFYYWkYFz0CCMHsnKnxGH4cagKDyB0M64E42EvgbLZ5sEK/Yp
-         2Ra5siquBDNcuyZOKPUrwh5QTM5et0ApWzWgmY+Ab+gBIHQEf6gVCjIwsVLM8806l9PO
-         trrQ==
-X-Gm-Message-State: AOJu0YzQoitEZ92VwebKKkyr7KtckFyJ2+wMkGkEefDTZtG9mh1ifmeo
-        GyvOO3LO3urg/yp7U6DrZOs=
-X-Google-Smtp-Source: AGHT+IHtPBBe0oc/SwS4zRYwzLNnU7oeIKh41ypn77HlaZZ4UfICRn76rQMWuKxSuSM02lrwwpsltA==
-X-Received: by 2002:a05:6870:4590:b0:1fa:26b7:af18 with SMTP id y16-20020a056870459000b001fa26b7af18mr5327160oao.17.1702354876515;
-        Mon, 11 Dec 2023 20:21:16 -0800 (PST)
+        bh=pqzdM1JWQlsu7k/N7xBtV+SLaOrDoqGHT+SByeHgWqU=;
+        b=r9fYSdaN/bzt1lYXPDRBvo9yzD5/3ZC92Vkb6RCoikEKyUpQI/d0xl19HaW6z0ep1m
+         K9eGhRkJVdHMM+qHs7AEVrCAmelUYbQ1Vpz81s8fv7RtvhwVAuwUlqxUAP8kLO8epAXH
+         3rZj7R+5JNV2OEgoAWZ+c544KbZj58D/uw9Kb2UyCEWlV2+GRayDwvVuBmCyRFggGGkH
+         FDXQqacw+cT4NebawJureaKvKFoARG24nV/LiQpGqX2zYhUKwgO/YJ8sbXrEdx+Bzyq1
+         vafXlqgxqdnEHdlsiHNLAS7FgQzISUzunfcBgRwuPL/9pGM43N/M9dEoYEF6uRvOh+Oy
+         PXSQ==
+X-Gm-Message-State: AOJu0YzcV/tKw98sNaV3IUes5c85siBq4K1K7DI7BRqNqhOMolHy91jC
+        BRKEnljsLW7D21lHH+02VIY=
+X-Google-Smtp-Source: AGHT+IEpOxgjKzCRWRfaNbZ9gq8uVyIb3GxyH8tmiruZoPiABPHG5lIqbyLddNf9/MgHO/C8v1nIlg==
+X-Received: by 2002:a81:7188:0:b0:5d7:1941:2c23 with SMTP id m130-20020a817188000000b005d719412c23mr4611909ywc.80.1702354878116;
+        Mon, 11 Dec 2023 20:21:18 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:38aa:1c88:df05:9b73])
-        by smtp.gmail.com with ESMTPSA id d201-20020a814fd2000000b005cc5f5aa533sm3499620ywb.43.2023.12.11.20.21.15
+        by smtp.gmail.com with ESMTPSA id en9-20020a05690c2b8900b005de84505114sm3311734ywb.58.2023.12.11.20.21.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 20:21:16 -0800 (PST)
+        Mon, 11 Dec 2023 20:21:17 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -57,9 +57,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
 Cc:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH v3 4/7] lib/group_cpus: optimize outer loop in grp_spread_init_one()
-Date:   Mon, 11 Dec 2023 20:21:04 -0800
-Message-Id: <20231212042108.682072-5-yury.norov@gmail.com>
+Subject: [PATCH v3 5/7] lib/cgroup_cpus: don't zero cpumasks in group_cpus_evenly() on allocation
+Date:   Mon, 11 Dec 2023 20:21:05 -0800
+Message-Id: <20231212042108.682072-6-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231212042108.682072-1-yury.norov@gmail.com>
 References: <20231212042108.682072-1-yury.norov@gmail.com>
@@ -75,49 +75,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to the inner loop, in the outer loop we can use for_each_cpu()
-macro, and skip CPUs that have been copied.
-
-With this patch, the function becomes O(1), despite that it's a
-double-loop.
+nmsk and npresmsk are both allocated with zalloc_cpumask_var(), but they
+are initialized by copying later in the code, and so may be allocated
+uninitialized.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- lib/group_cpus.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ lib/group_cpus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index 7ac94664230f..cded3c8ea63b 100644
+index cded3c8ea63b..c7fcd04c87bf 100644
 --- a/lib/group_cpus.c
 +++ b/lib/group_cpus.c
-@@ -17,16 +17,11 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
- 	const struct cpumask *siblmsk;
- 	int cpu, sibl;
+@@ -347,10 +347,10 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	int ret = -ENOMEM;
+ 	struct cpumask *masks = NULL;
  
--	for ( ; cpus_per_grp > 0; ) {
--		cpu = cpumask_first(nmsk);
--
--		/* Should not happen, but I'm too lazy to think about it */
--		if (cpu >= nr_cpu_ids)
--			return;
--
-+	for_each_cpu(cpu, nmsk) {
- 		__cpumask_clear_cpu(cpu, nmsk);
- 		__cpumask_set_cpu(cpu, irqmsk);
--		cpus_per_grp--;
-+		if (cpus_per_grp-- == 0)
-+			return;
+-	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
++	if (!alloc_cpumask_var(&nmsk, GFP_KERNEL))
+ 		return NULL;
  
- 		/* If the cpu has siblings, use them first */
- 		siblmsk = topology_sibling_cpumask(cpu);
-@@ -37,6 +32,7 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
- 			__cpumask_set_cpu(sibl, irqmsk);
- 			if (cpus_per_grp-- == 0)
- 				return;
-+			cpu = sibl + 1;
- 		}
- 	}
- }
+-	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
++	if (!alloc_cpumask_var(&npresmsk, GFP_KERNEL))
+ 		goto fail_nmsk;
+ 
+ 	node_to_cpumask = alloc_node_to_cpumask();
 -- 
 2.40.1
 
