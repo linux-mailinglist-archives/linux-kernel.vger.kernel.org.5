@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D7A80F11E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8424980F123
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376887AbjLLPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        id S1377009AbjLLPfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376793AbjLLPdm (ORCPT
+        with ESMTP id S1376877AbjLLPfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:33:42 -0500
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2EF95
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:33:49 -0800 (PST)
-Received: by mail-lj1-x243.google.com with SMTP id 38308e7fff4ca-2c9fdf53abcso56323571fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 07:33:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702395227; x=1703000027; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eaUgBVDv8XJC9KwT1nYw3VO0329gUyssPKGDQaCxM90=;
-        b=iAekqNpf33lCUueSaUNZxByAx24Xwr2A+GzzW8elM93GkVRbFUMCGe1H7na/6TLvtB
-         oIYYtlNer61nPrGZAhekyRqv2pLNmdqwQaz9p6hbTWTM9v1HF7FM3fwBukYH4i056dLt
-         KWDRT60zfgbG/pbiCMmcytthCKLW/tOlV8x2SUvVs3ekoyKUXXh8CHafCnwXl5m40FS+
-         PYkijUSnrXfPeLchtwcr5/QzZp7p2/G54EKfwwdtAp96QYZ9/ve8QZ2vgM2ke62OoEak
-         llfav7J4NxoM1HouJyFK4+EabCBymlD51akPEgJ/BTYTKCA60EOgXemiZ73TCWfyzA3v
-         +G8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702395227; x=1703000027;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eaUgBVDv8XJC9KwT1nYw3VO0329gUyssPKGDQaCxM90=;
-        b=TJzfaqNogjaK8oq0twX1O23tItAJv35EShdZp1e1IIeULVIrUF6p/0OMmasbLDvXI+
-         ssGLrQ9YI3LEGxBhukl8gZCuQbsnINwT0MOSJWx+Uy2SApCCyhUGTXccdnn9hP2U+pIt
-         h+2uMkhhz8vtVUT6CJjlcRar2abS6ceYu9Kr3roBn56hxzpCScTcd3+vKGSu73ql5pGt
-         lGl+Z/4F622Pixjey+Lh5teIxdZcuKU1lC0ocwRWS+tBp2kQmp2SO9qgdUPRKX+B1L0o
-         igcBcUvRpPda98QUa+fu5c4qxmAvaahj9NLcOB65GyEX04GTILdX6Kqc+5+QD6OcZbxS
-         70Aw==
-X-Gm-Message-State: AOJu0YxlYVffXrD8BjulNBHAN1TA4GXsG4VwOLKzKlBUURe+aVyFRlBD
-        f4m5lQhDD3VBK1PAHSMGurV+sypIcS2NdgXoYKQ=
-X-Google-Smtp-Source: AGHT+IHqSjr2kv2STrkl5BDddq2zRKONNEgmKOqxuueoGQd4o+visyIdqeUUyHc9OGWxdLkpT59lYnpJo7Nil8D30b4=
-X-Received: by 2002:a2e:888c:0:b0:2c9:f4af:fb9c with SMTP id
- k12-20020a2e888c000000b002c9f4affb9cmr3042224lji.22.1702395227004; Tue, 12
- Dec 2023 07:33:47 -0800 (PST)
+        Tue, 12 Dec 2023 10:35:03 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9140499;
+        Tue, 12 Dec 2023 07:35:09 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9EAC640E0140;
+        Tue, 12 Dec 2023 15:35:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 74Dc3dqhTvcG; Tue, 12 Dec 2023 15:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702395305; bh=9QGhZY9+7O9YTsSYlvi3ocDvFlyATMCASTBnz/vsMVs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hdupUiRGq12eZfmgRPqkqa3/deZCHK268zcWoDrTagkD5eIO9AaO6l/BV+n6r9oZM
+         bl8MTuNipcr6pF2BDw5m2S51z+YASJNvjCNlalaB1sO3b3UKeCW/gU4iBqHtxVO6Ws
+         eSCXLR3ntDvAsvQtQV8nhfyCZs/O9wIW47Yq4Jg4wfvO5uevUzw1asZBwjCKiEvy/B
+         5HYxpRcpgOnbgSiEY6KwFgVD3l3QI7i8x35fodln0AuH4H2Ug+XR7DzGub+M3Q/fOd
+         B21+04LIJsqyhfvD3V8zUzq7NKJJmVeU7XSLmLcaL6hn4ZCQep+K0O1XgUuKl6tfTE
+         X+eSXbi2BMvfHEdp5rApRg4LNE33ZaXzR4yW0gS4SbY8F19dhhQZh/EUc8rgQ5wYsS
+         TYCwQ4saJQXTv60E+8oGxpggMSEInI1s63o/dgUJ9SfWe+kUX30kODET7WZblZvmXG
+         dOXRgx0ZwvFl1tnJFJ/4deR0Z3bWWNxMq1QSunhpS6NkC5J966msnz/8rE+dwnA8eI
+         y8ProDrvkrBN7bb9xDST0CNwi76gRJ0m+8UUfCnxdTd8p3rQe/sN0nsbDON7h0N8Ho
+         RfiiI2X0W7hihoRyP4e8ofsOqgw+QIM2pw/zKq06oufzUiCE4SLOMcwl3XWRTCijfq
+         cNJue1SuZpod1I564fyiWFjU=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5243E40E00CC;
+        Tue, 12 Dec 2023 15:34:56 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 16:34:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org, avadhut.naik@amd.com,
+        john.allen@amd.com, william.roche@oracle.com,
+        muralidhara.mk@amd.com
+Subject: Re: [PATCH v3 1/3] RAS: Introduce AMD Address Translation Library
+Message-ID: <20231212153449.GEZXh9mSJ5epD13Dp7@fat_crate.local>
+References: <20231210194932.43992-1-yazen.ghannam@amd.com>
+ <20231210194932.43992-2-yazen.ghannam@amd.com>
+ <20231211195739.GIZXdps9DNvOgCR5Xs@fat_crate.local>
+ <295f3cc9-6140-4813-b107-8c8b60f8aaa1@amd.com>
 MIME-Version: 1.0
-Received: by 2002:ab3:6f17:0:b0:24e:383c:d95c with HTTP; Tue, 12 Dec 2023
- 07:33:46 -0800 (PST)
-Reply-To: zongokatyh@gmail.com
-From:   kathryn zongo <aishagaddafi519@gmail.com>
-Date:   Tue, 12 Dec 2023 15:33:46 +0000
-Message-ID: <CANJ_fLECdxtzpwKAc1k+1TDfDqSocrht1xp7K6xDSqd9Uv6_kQ@mail.gmail.com>
-Subject: Compliment of the day!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <295f3cc9-6140-4813-b107-8c8b60f8aaa1@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2a00:1450:4864:20:0:0:0:243 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5011]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aishagaddafi519[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [aishagaddafi519[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+On Tue, Dec 12, 2023 at 09:23:44AM -0500, Yazen Ghannam wrote:
+> I'm thinking that the warning only happens if the "assert" condition above
+> is hit.
 
-Nice to meet you, i am miss katyh zongo, very sorry for the informal
-manner in which this letter is reaching you as it was necessitated by
-my urgent need to get your response. I came across your email from my
-personal search and I decided to contact you and I've something very
-important which I would like to discuss with you and I would
-appreciate if you respond back to me through this my email address as
-to tell you more about me with my photos, my private email is as
-follows (zongokatyh@gmail.com)
+assert usually means "assert - abort the program if assertion is false"
+- from assert(3).
 
-Thanks
-Miss katyh zongo
+> In older revisions, I had all these messages as "debug" loglevel. I don't
+> think there's anything a user can do to fix these issues. They're either
+> coding bugs in the library or system configuration.
+> 
+> I'd rather go back to the debug messages if you don't mind. It's not
+> difficult to enable dynamic debug messages compared to DEBUG Kconfig
+> options. So I think it'd be okay to work with users on this if they
+> encounter an issue.
+
+Makes sense.
+
+> > > +static const struct x86_cpu_id amd_atl_cpuids[] = {
+> > > +	X86_MATCH_FEATURE(X86_FEATURE_SMCA, NULL),
+> > 
+> > I'd expect for only this one to be needed, but not those below.
+> > 
+> 
+> Me too. Those below are to workaround a current module loading issue. I'll
+> add a code comment for that.
+
+You mean the systemdoofus crap?
+
+Fget it - we don't fix the kernel because luserspace is nuts.
+
+> 
+> > > +	X86_MATCH_FEATURE(X86_FEATURE_ZEN, NULL),
+
+...and those are influx - this is called X86_FEATURE_ZEN1 now and
+X86_FEATURE_ZEN is set on all Zens. So you might as well match on
+X86_FEATURE_ZEN only.
+
+But you should not need it - if SMCA doesn't match then we have another
+problem. ATL should load on SMCA systems only.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
