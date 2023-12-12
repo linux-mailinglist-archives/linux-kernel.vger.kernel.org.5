@@ -2,220 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACA480F501
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC45E80F4FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377030AbjLLRyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45604 "EHLO
+        id S235127AbjLLRxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377046AbjLLRx5 (ORCPT
+        with ESMTP id S233103AbjLLRxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:53:57 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F1AE8;
-        Tue, 12 Dec 2023 09:54:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702403641; x=1733939641;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=zrV+hpWyajGxDmkxPYyw+aJYLmqYAnkBP2JZP9Mr4ac=;
-  b=A/iF1f8YbqDg5AWUpDMhTwKzhFXuM63l2f7lNks2iTRWUBDVMLRUye0w
-   KcEb6tTNpwqKXZLWTEaN/9jhlquEiPTRYHVArKc6ODqo9LZmCPe3KqS1j
-   Da/ascrV9sJonNOeLaV8FjGJX/ZKM7hVdedin2GkN/W0JfKk2zlUkU3Vp
-   z1nQy4i7UiuHBaDZ0qtcwgp5dNUYqeAYs24qeBn9pQznl7TWKLDd2tCwH
-   bK+KsAb3kSv0vkRwF9NK4nl3+/mM3EvflEvMaE9C2NMDJsT1G2vBn0FRJ
-   D0t6jJSKO3mCxq5ZLpQARFvtMMu9prLd8t3jaT3Ud9k5qHS2dZ95pQN1m
-   A==;
-X-CSE-ConnectionGUID: KRk6ptVZSqyF64gGvGzKSw==
-X-CSE-MsgGUID: HY5YCPZsRKC2R10/6bWqaA==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,270,1695711600"; 
-   d="scan'208";a="14095370"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Dec 2023 10:54:01 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 10:53:45 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 12 Dec 2023 10:53:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Al0OpqkDdseUazUeBFRErin78Xsgzs5Vr/0NuKRyOmXbJ2isUIoOjkGcztrXbn08wNi0nqAhRJZO41gtVc4xYy55qPepfzM5TMNyD9+9I9ev4G31FjyTUykexEUBKx5P3ZYhXq0M95vXnQC8V25Si/ePIt4dyop8rFJJu+IMGFvFkUSil0ILORusEdZL6uRMBXBZUelGpQ14afZTlXvbHNeoD2QAWzmSruAntNXYrClBsnIuros7dxLjwVMmAZDsWnriK2fbQo+tX9m6oJFanS9jLNWfWoc1qYNgatC8Bj4lHQpiOD6C5UUcCk6KzwOrodAHK1XGb9ZsKOWVnR93KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zrV+hpWyajGxDmkxPYyw+aJYLmqYAnkBP2JZP9Mr4ac=;
- b=bxyioDhxk4pctT6wUkph7a6boJoBfINHiW6h488p30t6pOR7XQk1D+yOXAdAKxnzmg3Ok4pkDxfjwLqWosXGOWhvo30N3/OyE04A/j52cSBgbAZo2Ex8Y+v4S2Fq/BxZTral3KOiqo9CzMcL7o22lxlBbq+LvWBEuWlJtUPRImmTFJTDFXCZP0M+JLn5wL8P5kbqGGjjVyFQnFzsH68sKGwfJ9Z5hrCczz6gMiHojzgz5abr3BCh90nSzcPCfCAUeJqpEqjmF8ifXMpj3cX6t+i3zaUwhWqrP31vaHhETx1tUg9EIGFZJh9nK8KewYRDmlb5Gsk6FejX5N7+dnWmPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zrV+hpWyajGxDmkxPYyw+aJYLmqYAnkBP2JZP9Mr4ac=;
- b=Pocjsxzix9uGNmgmI/PCYQMNxgIRtoGfQ04bNgpmrRumcYP1ZwwxtT2sonGOBdfxY2Nb7loANNxo+VRJtdad7Z4uqqTwOBukOijHDL1z988u9xyDmbQEqs40IXZEBk0V5B/aLTYMhD0NDW8RDkHyobYFG90aFUfdd07DEh0Jw8Y7aWR+5FE+8x7Sd0u+wz7/okaz0SoKviMceyUNqwkLMccWI7aFQTRR6WxZrkentpm8duZgUWXjrEJyv+B/YxOQ1lMwWxbubCShg/ArMPwo0ZGYCMjE6Dj0amYdqqLZL80Ao500BxdDCYJayQW3uOmcXaGsH0sBiiO+hqyOTWJ3iw==
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
- by IA1PR11MB7173.namprd11.prod.outlook.com (2603:10b6:208:41b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
- 2023 17:53:43 +0000
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::4585:18c7:f74d:a076]) by CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::4585:18c7:f74d:a076%3]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
- 17:53:42 +0000
-From:   <Kelvin.Cao@microchip.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <George.Ge@microchip.com>,
-        <logang@deltatee.com>, <christophe.jaillet@wanadoo.fr>,
-        <hch@infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Thread-Topic: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Thread-Index: AQHZwZllP9AErauFFUmKz13YRSBKD6/VzMKAgAIhf4CAZAP1gIABCsYAgADKTQCAA5sdgIACmkmAgADx6oCAAFB+gIAS5mwAgE6fkoA=
-Date:   Tue, 12 Dec 2023 17:53:42 +0000
-Message-ID: <b4a1a955cf4bbab695d364b6d4da4d16167c3959.camel@microchip.com>
-References: <20230728200327.96496-1-kelvin.cao@microchip.com>
-         <20230728200327.96496-2-kelvin.cao@microchip.com> <ZMlSLXaYaMry7ioA@matsya>
-         <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
-         <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
-         <ZR/htuZSKGJP1wgU@matsya>
-         <f72b924b8c51a7768b0748848555e395ecbb32eb.camel@microchip.com>
-         <ZSORx0SwTerzlasY@matsya>
-         <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
-         <ZSaLoaenhsEG4/IP@matsya>
-         <f6beb06cc707329923cc460545afd6cfe9fa065d.camel@microchip.com>
-         <b5158f652d71790209626811eb0df2108384020b.camel@microchip.com>
-In-Reply-To: <b5158f652d71790209626811eb0df2108384020b.camel@microchip.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR11MB5618:EE_|IA1PR11MB7173:EE_
-x-ms-office365-filtering-correlation-id: 68bdb874-eeab-45ba-a0f7-08dbfb3b47cc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Z1WW/JM4elAgSpWQiqPkXc9CSq/ppRABupD9x5USD/1lCh9/9LArB3XBOD4PtVcpi/fsrE+VOhnVdbDcbHLUgglAnM81HEr/+tg0SWPZa1Rli46l4PjeCwohmAXL1/a5ok1FzLq/HC+bd4ucx5UZoiK0myr/+1wcxIlLU1pKV8wte0QXUO2PrNUeVdwpD98mRZdlQ3HP1NcupHW6C97W03r3nrFjKYEb3ve/5xe2RTi3HIXwOt/vtizWUC6nmFGPtVt/Z1Avow0Y9BBge6WZcXqQDBCv8Odv1lBubPUgBMBjB9PYVgympC00jjjF6YwnQLUpBdcTm8Ptb5zt0C+7RQT72b4uOBcHLerZ6waZ/oHRvCz80LjZzu0EOaDL6wt0flBQ370emXPFlIddFATrOzLr+HazyvkBTmIu2zjEDT+9W4k9/phOmwBB41mzHudYqrWnLY8JT4vtB/TrV1tAwY429hkSLiNZGFcb5Is29J0j5NRm9cma8WepTf/Tptqfz35R9Dtj0SfaUJY1whpbJKK5QX/FkdND1cmcfnbWJa725Ctnjq5G646EO5Do5YNXKKYo4j4jGOl4ETQFHcdLRhFkAk6CKqWmO5PAbXJuGDiDDnYGqXvDB3VT4TzNEsHJH4ULw+wH0GpaxM7HvaYq2H8Lx5BhB95s3uic2so/1xs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(396003)(376002)(136003)(230173577357003)(230273577357003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(6506007)(6512007)(5660300002)(26005)(2616005)(36756003)(53546011)(64756008)(38070700009)(4001150100001)(6486002)(66946007)(66476007)(66556008)(76116006)(54906003)(6916009)(66446008)(2906002)(83380400001)(86362001)(478600001)(41300700001)(4326008)(8936002)(8676002)(122000001)(316002)(38100700002)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R1EzTlNBMUJDcFR1REt2ZFNObGIzd1hRUmFIb3lMZGhqQXFtVTdmdmlxN0JR?=
- =?utf-8?B?RmpIeXJwVEtGTng3VHFLREYyWkRjQkpGakg0bjZNcmpqL3RHTjZNT1FsUm1v?=
- =?utf-8?B?VGVXVmlUaE5OVnVKL2tKNXQ5b1FKcXFWTWtNUEF6cmNnOFgwaFlvUk0wTlFa?=
- =?utf-8?B?Rno0VjJkTk5Ra3JneHFWNXRYN2RpT1o3T0pDbGlodmxFb0VFWncybGZuRisy?=
- =?utf-8?B?Q1YvanF4YlB6SjIxTCtzcXZRQjhWaVUvYkMwSk9mMHVkdnZ5dU9lN29qaHZa?=
- =?utf-8?B?dE9jNnFOZDY1aDJvZHlCRStPVVlRakVDdkZzYXdmVEFpR3ZhRUNiVHcvNXlS?=
- =?utf-8?B?RVB6QzJ0TjFyTzJ5QTAvRzk2aW9abFVIQlE5ZzdxVnZJSmdJbGlvWmJ6eCtz?=
- =?utf-8?B?NGZ1K1dPeUdUbHYvYWp5QkNmaGVGdzlZU2tUMkk2WnkwcjFqU0h0OStPRGF5?=
- =?utf-8?B?QTdsckczSzJkeGJBT24zN2s2VnF5UHNIKzU1aDJBblVhSU5rZ2JkYzRxNWdh?=
- =?utf-8?B?eDllSHRrRm1VWSt4L1RrL3ZqSnlUbjI1Nm5oa1ZjNlQ4UjIwNVZib3FjSlk0?=
- =?utf-8?B?ZFFreWplRjMvUVBEMTcwNktaUW1LZ0tCeENoR3k3Q2M4eFVSWW03aVlIWVdm?=
- =?utf-8?B?NXl5aGxRUTNOQWRaVmQ3VjVGV25mTnh3UkJtOXFPS3BHWlptWjRZVDcrQkFl?=
- =?utf-8?B?ZWl4azE5dEZKaGZabkc2QkFjYmxuazRUUTd0c2lEUWtrN2lXTFlCN0hiTjFM?=
- =?utf-8?B?Rm5CVng1U0JxY1hTSlY1NnFYRUw2enB5T1VpN2w0QTZhWHQ5N3FkQmxLY2Rw?=
- =?utf-8?B?ZE5Lc2JZRDhJNW1DMFlzTnZnSTlTUUd1THh6aWp1cnVvMGpxU2Zob3d3ck9h?=
- =?utf-8?B?bytuMnc0L1cxWElhbXRRZC93QzA2ZUZrMVpHd2o1SW4yWS91QVRDYU5zd2pz?=
- =?utf-8?B?ZmhVMUJhTEpKMW5oVFU0bnJBeXBHRzh0eUFZck5LWVQwY0hmVUdXeGYwL3dC?=
- =?utf-8?B?RGtBeEtLOFRXZTVDRkVUVnBndFVpdWxzVk5tanlLN1A0b25jaUpnSnR5bEdz?=
- =?utf-8?B?YWFRSXYyZ0lGRnJHQ1llTS9GQlpDelJkTGF0YUFtcEF5dFN3dkNLbDE5S2I2?=
- =?utf-8?B?REpwbmFRVnlvUDNkZjcvMS9CSGhVS3h0VjJwYUdXbnlTMUd4SlZsTDZlNmNC?=
- =?utf-8?B?VTlOMEM2ZE91d0dCd0VtdUh3bUxVaDdBRS9lemFib0JaMGs0cGNSeldIME5z?=
- =?utf-8?B?Zm5XaTBpaDhYYlpvT1FIUERZbDdBZEhjR1JzTUNjeFFLYlpGeDNWWWJoYjE4?=
- =?utf-8?B?Ym1qeEJHNmh6SXVvVm1uMjlPL0MzdkQ1dHdSbndXb0k4TDlpSUZ0bU1peW41?=
- =?utf-8?B?NnQxQklsZitTRzNGbzZZN3oxRWRuWUlQNncwaTBCb2IyMXhyRzJhUklPTkNV?=
- =?utf-8?B?RTZJNEdab2xpYzExUWhqZEdxQnlic3RLdEQwRkYzSkhqOTNrMXpCMC9NTUFp?=
- =?utf-8?B?V3M3dTdrSE1jZW8xcnpOOVNIbWs4bGdlTSt4ZmsxeXYwNm5uUTBCSXVTcGdn?=
- =?utf-8?B?K21kdzBYN2R2LzRFVys2UWhkK1F2a25POGRFV2V3dUE0VG1kRlBmeXQxaUZI?=
- =?utf-8?B?R3AxNlRNMC9USzZ6SFlHUkthSXgyYjk5UTVZSzVVWmY3RGpkdEgvOEY4eWdw?=
- =?utf-8?B?SzBwbWgwWW4zZGMzN3ZkZFpNdWpoK05adTJ2OGRxWXI3OHNGcGlOVSt2UzFk?=
- =?utf-8?B?TTJPTGhjeXFoaDhya09ZcTRINHJNLzhvYmFveE11K3cxYjJmRm1CaEdRcVk0?=
- =?utf-8?B?dlRVcXVnR2NRQzJmUGJLOVpmZEU4aWZhZUxsdFVPTDNKWERKNTdMOTQvdGZ6?=
- =?utf-8?B?b01saGVXUm9lN0RYY0RST3laaEEwTDFWN0lRbC9Ed3RsV05kd0dyc0RJelN3?=
- =?utf-8?B?MGhOc2hDUTRVMFVxUURiN3dmT3JPMzBZbXExVEh4b2ppY3oxT1k3MTdyUFVq?=
- =?utf-8?B?andLWnduWU1QSjVzeEZNTnBpcm8wVlNLcDlPMFZHQlpKWTlBRkFub0N5b2E1?=
- =?utf-8?B?WUt6amN2QjBxeTZGdWp3UWtpKzhBUjBFUEZFSjJ4Q1E4a3UvNWNPNHhsaVRN?=
- =?utf-8?B?SlRHT0VxNTFzQnR3M0hkZ2R0RXdGVVVrcm83MnQ3aFUzQW03eWlTV2orL2dl?=
- =?utf-8?B?NVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <28873F50D2882B48A4150F3927BF1DE5@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 12 Dec 2023 12:53:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F081CE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:53:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702403630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DdlHDXKia7dZsATDkFa8oWY9uFwh0XkWCfO7wMb7BdI=;
+        b=U5FghooLuAhUJi56mePBhn+Fa93DWlYRYaDepYRFoDs0N9b2uztwK2gMq7qMr1IfNT/L3y
+        PwdhnpB3cKVnABEaAqTaHGYx8AFnK5P2SacYI++cZY81/GtyEhsnpMfeGxl6FwrECZTZtd
+        2gno94LYbVX/lfKJz1zntV4F5cX5trc=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-418-vqCK4lN7Pkq83FcrxA9X2w-1; Tue, 12 Dec 2023 12:53:49 -0500
+X-MC-Unique: vqCK4lN7Pkq83FcrxA9X2w-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77f54424077so577463785a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:53:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702403628; x=1703008428;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DdlHDXKia7dZsATDkFa8oWY9uFwh0XkWCfO7wMb7BdI=;
+        b=JvBEpNihR4mqc3sueK2v5OW6Sy45NrASJuTKIEonVoS0X81uJOy3saRSz8AbY7skPC
+         P55E74VUegdA7fB2DznPvTEGAp/uc3Y7Waoj7NTCfRsrUqotPskeOoOwDrC+ef0Dkxp2
+         S/mdM9jEl4XZ0gR55HMQ0P6sjCnYN1V6mQx9hfu7VgmjMKtSgFU2yO+HaAdaKuGveSgp
+         ohjnW6FHC4cizveSfBUdylMqIf/q6wUepVzd3vo0Qtm/1UkRZH1WbuVULSZA+nJ84jHc
+         X5PtlPd+g1RNZDsDS+70mpXsPmVV114B8Y6sztGg1YSYePFho3GUGLf1ZHPEaBl2ZgCi
+         Yy5w==
+X-Gm-Message-State: AOJu0YxZ/zFE2q0gbzF5MzqANiK6+N1cgb+Bjxu6utAePFxT6RtFdLUk
+        JRY0/WW9iyQPQFj3Mv6nAnpHhhe1I6IKqlqdodTN1GY+2Js5z966XcHpSWWbXDtijC46EnXbKEv
+        k01YK2CMH8JPsTfFbuVBgqqi1
+X-Received: by 2002:a05:620a:1787:b0:77f:3d4a:6dcc with SMTP id ay7-20020a05620a178700b0077f3d4a6dccmr9193573qkb.8.1702403628495;
+        Tue, 12 Dec 2023 09:53:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHo+zoJmze0Y/kUaT4ct5ONqWmBVqq2jGqNbXv6BFGF3NJSoybXPW+YABIfoKfhOnFfXTSh+g==
+X-Received: by 2002:a05:620a:1787:b0:77f:3d4a:6dcc with SMTP id ay7-20020a05620a178700b0077f3d4a6dccmr9193564qkb.8.1702403628126;
+        Tue, 12 Dec 2023 09:53:48 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id bl10-20020a05620a1a8a00b0077d8fdc7e84sm3890632qkb.5.2023.12.12.09.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:53:47 -0800 (PST)
+Date:   Tue, 12 Dec 2023 11:53:45 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH net-next v3] net: stmmac: don't create a MDIO bus if
+ unnecessary
+Message-ID: <726fd37c4ayubzzdyfh2cd3dkqdqzzkjcak4po7iudb73nnmp3@rq5j63ik2tvv>
+References: <20231207-stmmac-no-mdio-node-v3-1-34b870f2bafb@redhat.com>
+ <jz6ot44fjkbmwcezi3fkgqd54nurglblbemrchfgxgq6udlhqz@ntepnnzzelta>
+ <hxds75erxqcfkufxnfbyo2up4b4jeicmi3f5xr6qlb3yf7fe76@4byeq62jhu4o>
+ <hgz3pt625kggix6kzincohw7kr2okcumrwfkmjgiauw2yvhrzt@ekeygo4b7k3b>
+ <h5ucipgjtsesrz3jyul5xohu4pqom56v6ayx7aonnfesret3ht@wmblmndj6zir>
+ <hpqssnt7odmuuyhsljuqovmwatdjz4s6kix6abq7lrvyciawy5@5ypscmmivnmh>
+ <slq3uvpe424lxksgc2ho4q5apon6yqyvmq3ubpmx3z5ln5yhqf@klnkglqb6o6r>
+ <4e42erte4zvx77vgj77kcal2ss4nma3ggm3wa6wssleuubtzit@gbkbbudjfwhz>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68bdb874-eeab-45ba-a0f7-08dbfb3b47cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 17:53:42.8958
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rUvt366Eya6gPu4q4DR+ouCde9eXvdytCfhTgYi2EDs9jFFaIiD1OIpSi5dYb2fqGuC6ngemSg6pvw6nnSTUqvH60SYciScJSmT9PWYFUNY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7173
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e42erte4zvx77vgj77kcal2ss4nma3ggm3wa6wssleuubtzit@gbkbbudjfwhz>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEwLTIzIGF0IDE3OjE0ICswMDAwLCBLZWx2aW4uQ2FvQG1pY3JvY2hpcC5j
-b20gd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBh
-dHRhY2htZW50cyB1bmxlc3MgeW91DQo+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4g
-T24gV2VkLCAyMDIzLTEwLTExIGF0IDE2OjM2ICswMDAwLCBLZWx2aW4uQ2FvQG1pY3JvY2hpcC5j
-b23CoHdyb3RlOg0KPiA+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3Bl
-biBhdHRhY2htZW50cyB1bmxlc3MgeW91DQo+ID4ga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+
-ID4gDQo+ID4gT24gV2VkLCAyMDIzLTEwLTExIGF0IDE3OjE4ICswNTMwLCBWaW5vZCBLb3VsIHdy
-b3RlOg0KPiA+ID4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0
-dGFjaG1lbnRzIHVubGVzcyB5b3UNCj4gPiA+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiA+
-ID4gDQo+ID4gPiBPbiAxMC0xMC0yMywgMjE6MjMsIEtlbHZpbi5DYW9AbWljcm9jaGlwLmNvbcKg
-d3JvdGU6DQo+ID4gPiA+IE9uIE1vbiwgMjAyMy0xMC0wOSBhdCAxMTowOCArMDUzMCwgVmlub2Qg
-S291bCB3cm90ZToNCj4gPiA+IA0KPiA+ID4gPiA+ID4gdTY0IHNpemVfdG9fdHJhbnNmZXI7DQo+
-ID4gPiA+ID4gDQo+ID4gPiA+ID4gV2h5IGNhbnQgdGhlIGNsaWVudCBkcml2ZXIgd3JpdGUgdG8g
-ZG9vcmJlbGwsIGlzIHRoZXJlDQo+ID4gPiA+ID4gYW55dGhpbmcNCj4gPiA+ID4gPiB3aGljaA0K
-PiA+ID4gPiA+IHByZXZlbnRzIHVzIGZyb20gZG9pbmcgc28/DQo+ID4gPiA+IA0KPiA+ID4gPiBJ
-IHRoaW5rIHRoZSBwb3RlbnRpYWwgY2hhbGxlbmdlIGhlcmUgZm9yIHRoZSBjbGllbnQgZHJpdmVy
-IHRvDQo+ID4gPiA+IHJpbmcNCj4gPiA+ID4gZGINCj4gPiA+ID4gaXMgdGhhdCB0aGUgY2xpZW50
-IGRyaXZlciAoaG9zdCBSQykgaXMgYSBkaWZmZXJlbnQgcmVxdWVzdGVyIGluDQo+ID4gPiA+IHRo
-ZQ0KPiA+ID4gPiBQQ0llIGhpZXJhcmNoeSBjb21wYXJlZCB0byBETUEgRVAsIGluIHdoaWNoIGNh
-c2UgUENJZSBvcmRlcmluZw0KPiA+ID4gPiBuZWVkDQo+ID4gPiA+IHRvDQo+ID4gPiA+IGJlIGNv
-bnNpZGVyZWQuDQo+ID4gPiA+IA0KPiA+ID4gPiBBcyBQQ0llIGVuc3VyZXMgdGhhdCByZWFkcyBk
-b24ndCBwYXNzIHdyaXRlcywgd2UgY2FuIGluc2VydCBhDQo+ID4gPiA+IHJlYWQNCj4gPiA+ID4g
-RE1BDQo+ID4gPiA+IG9wZXJhdGlvbiB3aXRoIERNQV9QUkVQX0ZFTlNFIGZsYWcgaW4gYmV0d2Vl
-biB0aGUgdHdvIERNQQ0KPiA+ID4gPiB3cml0ZXMNCj4gPiA+ID4gKG9uZQ0KPiA+ID4gPiBmb3Ig
-ZGF0YSB0cmFuc2ZlciBhbmQgb25lIGZvciBub3RpZmljYXRpb24pIHRvIGVuc3VyZSB0aGUNCj4g
-PiA+ID4gb3JkZXJpbmcNCj4gPiA+ID4gZm9yDQo+ID4gPiA+IHRoZSBzYW1lIHJlcXVlc3RlciBE
-TUEgRVAuIEknbSBub3Qgc3VyZSBpZiB0aGUgUkMgY291bGQgZW5zdXJlDQo+ID4gPiA+IHRoZQ0K
-PiA+ID4gPiBzYW1lDQo+ID4gPiA+IG9yZGVyaW5nIGlmIHRoZSBjbGllbnQgZHJpdmVyIGlzc3Vl
-IE1NSU8gd3JpdGUgdG8gZGIgYWZ0ZXIgdGhlDQo+ID4gPiA+IGRhdGENCj4gPiA+ID4gRE1BDQo+
-ID4gPiA+IGFuZCByZWFkIERNQSBjb21wbGV0aW9uLCBzbyB0aGF0IHRoZSBjb25zdW1lciBpcyBn
-dWFyYW50ZWVkIHRoZQ0KPiA+ID4gPiB0cmFuc2ZlcnJlZCBkYXRhIGlzIHJlYWR5IGluIG1lbW9y
-eSB3aGVuIHRoZSBkYiBpcyB0cmlnZ2VyZWQgYnkNCj4gPiA+ID4gdGhlDQo+ID4gPiA+IGNsaWVu
-dCBNTUlPIHdyaXRlLiBJIGd1ZXNzIGl0J3Mgc3RpbGwgZG9hYmxlIHdpdGggTU1JTyB3cml0ZQ0K
-PiA+ID4gPiBidXQNCj4gPiA+ID4ganVzdA0KPiA+ID4gPiBzb21lIHNwZWNpYWwgY29uc2lkZXJh
-dGlvbiBuZWVkZWQuDQo+ID4gPiANCj4gPiA+IEdpdmVuIHRoYXQgaXQgaXMgYSBzaW5nbGUgdmFs
-dWUsIG92ZXJoZWFkIG9mIGRvaW5nIGEgbmV3IHR4bg0KPiA+ID4gd291bGQNCj4gPiA+IGJlDQo+
-ID4gPiBoaWdoZXIgdGhhbiBhIG1taW8gd3JpdGUhIEkgdGhpbmsgdGhhdCBzaG91bGQgYmUgcHJl
-ZmVycmVkDQo+ID4gPiANCj4gPiA+IC0tDQo+ID4gDQo+ID4gT2suIEknbGwgcmVtb3ZlIHRoZSBj
-YWxsYmFjayBhbmQgY29tZSB1cCB3aXRoIHY3LiBUaGFuayB5b3UgVmlub2QNCj4gPiBmb3INCj4g
-PiB5b3VyIGNvbW1lbnRzLg0KPiA+IA0KPiANCj4gSGkgVmlub2QsDQo+IA0KPiBJJ3ZlIHN1Ym1p
-dHRlZCB2NyAodGl0bGU6IFtQQVRDSCB2NyAwLzFdIFN3aXRjaHRlYyBTd2l0Y2ggRE1BIEVuZ2lu
-ZQ0KPiBEcml2ZXIpIHdoaWNoIHJlbW92ZWQgdGhlIGNhbGxiYWNrIHN1cHBvcnQgZm9yIHdpbW0g
-YXMgeW91IHN1Z2dlc3RlZC4NCj4gUGxlYXNlIGxldCBtZSBrbm93IGlmIHRoYXQgbG9va3MgZ29v
-ZCB0byB5b3UuDQo+IA0KPiBUaGFua3MsDQo+IEtlbHZpbg0KDQpIaSBWaW5vZCwNCg0KQ291bGQg
-eW91IHBsZWFzZSB0YWtlIGEgbG9vayBhdCB2NyBvZiB0aGUgcGF0Y2hzZXQgd2hpY2ggcmVtb3Zl
-ZCB0aGUNCndpbW0gaW1wbGVtZW50YXRpb24gcGVyIHlvdXIgY29tbWVudD8gVGhlIHBhdGNoc2V0
-IGhhZCBnb3QgYXBwcm92YWwNCmZyb20gb3RoZXIgcmV2aWV3ZXJzLiBMZXQgbWUga25vdyBpZiB5
-b3UgaGF2ZSBhbnkgb3RoZXIgY29uY2Vybi4gDQoNClRoYW5rcywNCktlbHZpbg0KDQo=
+On Tue, Dec 12, 2023 at 01:42:35PM +0300, Serge Semin wrote:
+> On Mon, Dec 11, 2023 at 01:48:47PM -0600, Andrew Halaney wrote:
+> > On Mon, Dec 11, 2023 at 08:27:46PM +0300, Serge Semin wrote:
+> > > On Fri, Dec 08, 2023 at 10:50:29AM -0600, Andrew Halaney wrote:
+> > > > On Fri, Dec 08, 2023 at 06:07:06PM +0300, Serge Semin wrote:
+> > > > > On Thu, Dec 07, 2023 at 05:07:24PM -0600, Andrew Halaney wrote:
+> > > > > > On Fri, Dec 08, 2023 at 01:16:12AM +0300, Serge Semin wrote:
+> > > > > > > On Thu, Dec 07, 2023 at 03:12:40PM -0600, Andrew Halaney wrote:
+> > > > > > > > The stmmac_dt_phy() function, which parses the devicetree node of the
+> > > > > > > > MAC and ultimately causes MDIO bus allocation, misinterprets what
+> > > > > > > > fixed-link means in relation to the MAC's MDIO bus. This results in
+> > > > > > > > a MDIO bus being created in situations it need not be.
+> > > > > > > > 
+> > > > > > > > Currently a MDIO bus is created if the description is either:
+> > > > > > > > 
+> > > > > > > >     1. Not fixed-link
+> > > > > > > >     2. fixed-link but contains a MDIO bus as well
+> > > > > > > > 
+> > > > > > > > The "1" case above isn't always accurate. If there's a phy-handle,
+> > > > > > > > it could be referencing a phy on another MDIO controller's bus[1]. In
+> > > > > > > > this case currently the MAC will make a MDIO bus and scan it all
+> > > > > > > > anyways unnecessarily.
+> > > > > > > > 
+> > > > > > > > There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
+> > > > > > > > be created and scanned for a phy. This case can also be inferred from
+> > > > > > > > the platform description by not having a phy-handle && not being
+> > > > > > > > fixed-link. This hits case "1" in the current driver's logic.
+> > > > > > > > 
+> > > > > > > > Let's improve the logic to create a MDIO bus if either:
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > >     - Devicetree contains a MDIO bus
+> > > > > > > >     - !fixed-link && !phy-handle (legacy handling)
+> > > > > > > 
+> > > > > > > If what you suggest here is a free from regressions semantics change
+> > > > > > > (really hope it is) I will be with both my hands for it. This will
+> > > > > > > solve the problem we have with one of our device which doesn't have
+> > > > > > > SMA interface (hardware designers decided to save ~4K gates of the
+> > > > > > > chip area) but has a PHY externally attached to the DW XGMAC<->XPCS
+> > > > > > > interface. PHY is accessible via a GPIO-based MDIO bus. BTW having no
+> > > > > > > SMA interface available on a DW *MAC device but creating the MDIO-bus
+> > > > > > > on top of the non-existent SMA CSRs anyway causes having _32_ dummy
+> > > > > > > PHYs created with zero IDs.
+> > > > > > 
+> > > > > 
+> > > > > > I hope it is regression free! I have tested both the [1] and [2] cases
+> > > > > > (I hacked up the devicetree for [1] to make it look like [2]) without
+> > > > > > any issue.
+> > > > > > 
+> > > > > 
+> > > > > I doubt you could have tested it on all the possible hardware the
+> > > > > STMMAC driver supports. The problem is that the DT-bindings thing is a
+> > > > > kind of contract which can't be changed that easily. It's like ABI but
+> > > > > for the hardware description so the kernel would bootup correctly on
+> > > > > the platforms with the old DT blobs. But if the change isn't that
+> > > > > critical, if the device-tree sources in the kernel fit to the updated
+> > > > > semantics, if the networking subsystem maintainers aren't against it
+> > > > > and I guess with the Rob, Krzysztof or Conor blessing (at least it
+> > > > > won't hurt to add them to the Cc-list together with the devicetree
+> > > > > mailing-list), then it will likely be accepted.
+> > > > 
+> > > 
+> > > > To be clear, I don't think we're violating the dt-binding ABI contract
+> > > > here. My intention is that all the existing use cases continue to work,
+> > > > and this just improves one use case. I did a write up
+> > > > over on v2 about the use cases I see and the current logic vs what
+> > > > changes with this patch series:
+> > > > 
+> > > >     https://lore.kernel.org/netdev/plvbqgi2bwlv5quvpiwplq7cxx6m5rl3ghnfhuxfx4bpuhyihl@zmydwrtwdeg6/
+> > > > 
+> > > > Please comment if you think I have broken some backwards
+> > > > compatibility.
+> > > 
+> > > To shortly sum up so I didn't miss something. Current semantics of the
+> > > MDIO-bus registration is:
+> > > if !fixed-link || mdio_node_present
+> > >     create MDIO-bus
+> > > and the semantics of the PHY auto-probe (legacy) is:
+> > > if !(fixed-link || mdio_node_present || phy_node_present)
+> > >     auto-probe PHY
+> > 
+> 
+> > I think phy_node_present doesn't belong in the current view of the
+> > semantics for PHY auto-probe (legacy). This devicetree would trigger a
+> > PHY auto-probe/scan on ethernet0's MAC's MDIO bus:
+> > 
+> > 	random-mdio-bus {
+> > 		rgmii_phy: phy@0 {
+> > 		};
+> > 	};
+> > 
+> > 	ethernet0 {
+> > 		phy-handle = <&rgmii_phy>;
+> > 	};
+> 
+> Em, unless I miss something, but on STMMAC it wont due to the next
+> statement: stmmac_mdio_register():
+> 	if (priv->plat->phy_node || mdio_node)
+> 		goto bus_register_done;
+> 
+> Note by the "PHY auto-probe (legacy)" semantics I meant the algo
+> implemented at the bottom of the stmmac_mdio_register() method. If no
+> PHY-node or MDIO-node specified it tries to find any PHY on the
+> DW MAC SMA MDIO bus and use it in the driver.
+> 
+> If what you meant was the PHY auto-probe/scan executed in the
+> __mdiobus_register() method, then I guess it's relevant only _if_ the
+> stmmac_mdio_register() method performs the legacy auto-probing too.
+> Yes, the MDIO/PHY subsystem _will_ scan the MDIO-bus for PHYs, but
+> they won't be utilized in the STMMAC driver due to the conditional
+> statement above. In other words I guess the scanning performed in
+> __mdiobus_register() will be pointless anyway in that case, since no
+> detected PHY-devices will be actually used afterwards.
+> 
+
+Yes, I was referring to the __mdiobus_register() bit, and I now see what
+you mean. So in the example I painted above the stmmac_mdio_register()
+auto-probing would not happen since the phy-handle exists (and therefore
+phy_node).
+
+So the only change here is that the __mdiobus_register() scan wouldn't
+happen, but since stmmac is the only MAC that would attach to a phy on
+that bus it doesn't matter (the phy is already acquired by the
+phy-handle).
+
+> > 
+> > The assumption I make in this patch is that nothing useful could be on
+> > ethernet0's MDIO bus, it certainly at least is not the phy the MAC uses.
+> > 
+> > > 
+> > > You are changing the MDIO-bus creation semantics to:
+> > > if !(fixed-link || phy_node_present) || mdio_node_present
+> > >     create MDIO-bus
+> > > with no change in the PHY auto-probe semantics:
+> > > if !(fixed-link || mdio_node_present || phy_node_present)
+> > >     auto-probe PHY
+> > 
+> > Unfortunately as I highlighted above this logic (while accurate to the
+> > patch under review) is a change from the prior logic for the "auto-probe
+> > PHY" case.
+> > 
+> > > 
+> > > So the change is that if a PHY-handle is specified the MDIO-bus won't
+> > > be created with the rest conditions being the same.
+> > > 
+> > > The only concern I had was the so called legacy case and a possibility
+> > > to have MDIO-bus with other than PHY devices. Based on the pseudo-code
+> > > above the former case won't be affected since having PHY-node
+> > > specified didn't triggered MDIO-bus auto-probe even before your
+> > > change. The later case concerns for instance the DW XPCS devices which
+> > 
+> > As I've realized in your response here, there is the possibility that
+> > something is on the MDIO bus in the ethernet0 exmpale bus above, and would
+> > probe, in the before handling. So I guess this isn't totally backwards
+> > compatible. Gah, thanks for highlighting.
+> 
+> AFAICS what you suggest won't break currently supported by the STMMAC
+> driver _platforms_. This is what actually matters. The legacy PHY
+> auto-probing will work as before. None of the OF-based platforms
+> currently expect having non-PHY devices on the bus.
+
+I agree, you've talked me off the edge of the cliff. Thanks so much for
+your help in all this.
+
+> 
+> > 
+> > I'm not sure in practice if anyone out there is really relying on that
+> > or not. I can get away with the "no auto-probe/scan of bus" optimization I
+> > really desire by describing my MDIO bus as disabled in the devicetree
+> > (need to send patches to do that in the dts and handle it gracefully in
+> > stmmac). I'm wondering if I should keep forth with this patch as is, or
+> > if I should keep the same logic but clean it up a bit as is done in the
+> > current patch... I guess probably the latter.
+> 
+> It's better to limit some complicated logic before somebody tries to
+> use it to bypass a harder but correct way of directly defining all
+> devices (including non-PHY ones) in dts. Seeing presumably no
+> currently supported platform will be broken I think you should keep
+> the patch as is.
+
+Agreed. I'll send a new version this evening with your tags, Andrew
+Lunn's requested motivation in commit message, etc. Thanks!
+
+> 
+> -Serge(y)
+> 
+> > 
+> > > on some platforms could be found on the DW MAC MDIO bus with not
+> > > having PHY living on that bus. But DW XPCS auto-probing currently is
+> > > only supported by the non-OF platforms (it's Intel). Thus your change
+> > > is supposed to be safe here too.
+> > > 
+> > > So to speak AFAICS from the STMMAC MDIO OF stuff your solution isn't
+> > > supposed to cause regressions and break the current DTs backward
+> > > compatibility indeed.
+> > > 
+> > > Regarding the ideal implementation. What could be much better is to
+> > > implement the next semantics:
+> > > if SMA-capability-detected &&
+> > >    (!mdio_node_present || (mdio_node_present && mdio_node_enabled))
+> > >     create MDIO-bus
+> > > and preserve the PHY auto-probe semantics for backwards compatibility.
+> > > Regarding the SMA-capability flag, it has been presented since DW GMAC
+> > > v3.50, so since very much early DW MAC releases. But even for the
+> > > early devices I think it could be auto-detected by checking the SMA
+> > > CSRs writability. At least DW XGMAC AFAICS has the command CSR not
+> > > writable if SMA is unavailable.
+> > > 
+> > > But I guess it's a matter of another patch.
+> > > 
+> > 
+> > I like that logic for what it is worth, although would be unsure of
+> > verifying the SMA-capability-detected part of it. But I wouldn't mind
+> > seeing that patch :)
+> > 
+> 
+
