@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401FE80F539
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBC580F544
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377081AbjLLSI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:08:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S1377162AbjLLSK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377064AbjLLSIZ (ORCPT
+        with ESMTP id S235100AbjLLSKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:08:25 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3939394
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:08:31 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bf09be81bso156e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:08:31 -0800 (PST)
+        Tue, 12 Dec 2023 13:10:43 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51353A1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:10:50 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50d11bd3144so242e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:10:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702404509; x=1703009309; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702404648; x=1703009448; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hpk0I1KigXVxBpZ4grAzm0OjYz4EHzBeGwLl/SIDW/0=;
-        b=Bg0uoCzhmDOfY4WXX8qTnG0J4MgrFdB3BcGqN+/g3BFV0NjyDVu2S/Ydgd6LBnd9lq
-         kvA5aP3dTmpzYTeqCnfxYg+mIu7PjVu08xaDrJ5/R81oYnCc8tetGncToZ5RwewGQr2G
-         hIecZ2B2EMZYkRKdmq03/fMawLyp/Clra4R0jz3OKl7KUpOOMjdBFLRnmbGmHR7TzLhG
-         JfSvGMUkLEY78y7akqdkGKPahCkM8lkJwdqYDducb5bZJWBPXUnn3bOeXNUNsvG5OgNJ
-         hKMXlT3rRstYo9Fy0znuGJmewbX3slm++9r9N4O3itJ2FRJSij5zm2n8e5Fnasuz2P78
-         IQmQ==
+        bh=z7WErAa1svouJ5RTcfagEeGuPrLYcmmXJIIkL6H2OPU=;
+        b=V1WQxxcuz17BnLaK4YJEOjJtw9DQ/Ivzswz5cBSt6e7iOjUvDsuWq/DFOYpyWV8SFd
+         TzvTRzGieUzWCPjRIZum9Z8zNaD8MrfLMTOQ+RoiqLCFN2BtJElqcV6qWCwnZSGeNM9B
+         l4/NSMAZQtIfzST4//xDq8fR4EKcGcXSrq5LWEUOM/wA9g58nERZKChz0ERK/YpGNY46
+         920j9YpQ7GGADgpDC58b0Rzq2EiE/IQk3wkbYkShKafgj5HvuNixWHbT3jU5Ge4C2gga
+         1Eyrg6ZpHMRE5lui5wIsXFifXmcB+5HK7Burz0TpmlCQ3Vtgw3jrGAFxCkPEsXbFBZnE
+         MHgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702404509; x=1703009309;
+        d=1e100.net; s=20230601; t=1702404648; x=1703009448;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hpk0I1KigXVxBpZ4grAzm0OjYz4EHzBeGwLl/SIDW/0=;
-        b=ehDdyTBK7H/IjYsFDRk95ejnqoZWQ4v9Ovn0bTFg5HOGopVmuWAPL5hGFiUmAJthlc
-         Q7ptr38KhaSeramz3qQiEzoW0Syw/Kdye/UDznxcIKs/2YTag/95VBezWje41AYkb3zl
-         IKsPaCvuO+nQXY9bTXP/QfhmoOIZ3gKkkOGZZBxKgrBPRKVn5YyGtTI7Cy+emZEzOmaZ
-         jLbCr3X81W/YZs7el8oyR6hglGAcnw58qwWem8S8vEAMWQGokh3a7J4P+srRx1alLzdt
-         hfChnqwqpDSdS4SFCOPI6nMK9EJEQQLjebbmTaHNQ3ljqMZK1YfAKoXoIVbmZvFbeupJ
-         Riiw==
-X-Gm-Message-State: AOJu0YyuiTMlSzF9E5ELrci11zp0MgAPJaYV3ZCAs1Re7Oqv4Ac1UdWa
-        1yZGltLMFN1hslBDaN2MTonR/bu+v/1ithnHWrphIA==
-X-Google-Smtp-Source: AGHT+IFBZ05n9XhR5PQ15KNzGWQ5iv+YNiqgeDMnt5FCveq3o4RVTN+QwviBU+wV1z4qSILlNCDFINKGAnaqCb98Wzk=
-X-Received: by 2002:a05:6512:539:b0:50c:e19:b658 with SMTP id
- o25-20020a056512053900b0050c0e19b658mr267201lfc.1.1702404509283; Tue, 12 Dec
- 2023 10:08:29 -0800 (PST)
+        bh=z7WErAa1svouJ5RTcfagEeGuPrLYcmmXJIIkL6H2OPU=;
+        b=YoeElVW9PadJkuudJMuEmhAqvG55aEdylxtsHkTMk2QVAo1PQjW9KBOo+YQXlEwRNG
+         XM65F+LorSYo4fMdkbHEXzdu40yOxdbr/UtGV1NC2WyDtDORScRoX6+1ZqGsnrZXvxIw
+         hsd7yEydU14STDc44zYFo22SyGNqA17ZYuo1jZOTDMHM1wwZp+MyXXtUqqoEikAbRc1A
+         qUuJOkVFWCfQPXZDhuUF9HlYOXbRXbAXhSBOaUMvQWrV2b1afqj01/183sumAb/CdZ78
+         OpLiPrfQ6V6FziPB4Z36hwMIB4KqF7xiYxS1lv4udBaQn1NdBlGNJGcbU5XsT8lxi65t
+         tRaQ==
+X-Gm-Message-State: AOJu0YxEDZnn9bvbhlzkCDa7W/yd2QQmk9EK592xtiTfXUd+AfFWV5Ah
+        FD+BRCBgkQajzo+Pmkvr1nFEOIUhe3D7WyJ495e0lQ==
+X-Google-Smtp-Source: AGHT+IHzkQIK4cpQrOTv6o/7Dyk15G788Co/V3rqIA3FMQmcUowvHpCwakRVH5BeQ+agq+GfZTS6yVmJFBoT5Ci01fM=
+X-Received: by 2002:a19:5e41:0:b0:50a:519d:5a8a with SMTP id
+ z1-20020a195e41000000b0050a519d5a8amr278722lfi.5.1702404648263; Tue, 12 Dec
+ 2023 10:10:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20231212070547.612536-1-namhyung@kernel.org> <20231212070547.612536-4-namhyung@kernel.org>
-In-Reply-To: <20231212070547.612536-4-namhyung@kernel.org>
+References: <20231212070547.612536-1-namhyung@kernel.org>
+In-Reply-To: <20231212070547.612536-1-namhyung@kernel.org>
 From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 12 Dec 2023 10:08:18 -0800
-Message-ID: <CAP-5=fW+iS8J=DVW3qmQK9n0y1vLkZxn62JX8D8ETTWBtuq09A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] perf unwind-libunwind: Fix base address for .eh_frame
+Date:   Tue, 12 Dec 2023 10:10:37 -0800
+Message-ID: <CAP-5=fV5sA1ga5UfvHW_=Ep25b-TzsLJ8Atqk3KePKOx-fk9TQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] perf tools: Random fixes for DWARF unwind
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
@@ -81,40 +81,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Dec 11, 2023 at 11:05=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
  wrote:
 >
-> The base address of a DSO mapping should start at the start of the file.
-> Usually DSOs are mapped from the pgoff 0 so it doesn't matter when it
-> uses the start of the map address.  But generated DSOs for JIT codes
-> doesn't start from the 0 so it should subtract the offset to calculate
-> the .eh_frame table offsets correctly.
+> Hello,
 >
-> Fixes: dc2cf4ca866f ("perf unwind: Fix segbase for ld.lld linked objects"=
-)
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> I've found a couple of issues on the unwind code while I'm playing with
+> the JIT-dump code for the CPython.  The code assumes normal DSOs mapped
+> from the beginning of the file and aligned to the page size.  But it's
+> not true for the JIT-dumped DSOs which are generated for each function.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+We have a JIT test in:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/tests/shell/test_java_symbol.sh?h=3Dperf-tools-next
+
+It'd be great if we could do similar for CPython.
 
 Thanks,
 Ian
 
-> ---
->  tools/perf/util/unwind-libunwind-local.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+> Depending on the JIT implementation, the code address and accompanied
+> ELF info (like ELF file headers and unwind info) can be overlapped to
+> adjacent (JIT-dumped) DSOs.  So it should take more care when it
+> calculates the mapping address for the DSO.
 >
-> diff --git a/tools/perf/util/unwind-libunwind-local.c b/tools/perf/util/u=
-nwind-libunwind-local.c
-> index c0641882fd2f..5e5c3395a499 100644
-> --- a/tools/perf/util/unwind-libunwind-local.c
-> +++ b/tools/perf/util/unwind-libunwind-local.c
-> @@ -327,7 +327,7 @@ static int read_unwind_spec_eh_frame(struct dso *dso,=
- struct unwind_info *ui,
+> It seems these changes need to go to the stable trees but they are
+> changed a lot since then so I'm not sure.
 >
->         maps__for_each_entry(thread__maps(ui->thread), map_node) {
->                 struct map *map =3D map_node->map;
-> -               u64 start =3D map__start(map);
-> +               u64 start =3D map__start(map) - map__pgoff(map);
+> Thanks,
+> Namhyung
 >
->                 if (map__dso(map) =3D=3D dso && start < base_addr)
->                         base_addr =3D start;
+>
+> Namhyung Kim (3):
+>   perf genelf: Set ELF program header addresses properly
+>   perf unwind-libdw: Handle JIT-generated DSOs properly
+>   perf unwind-libunwind: Fix base address for .eh_frame
+>
+>  tools/perf/util/genelf.c                 |  6 +++---
+>  tools/perf/util/unwind-libdw.c           | 21 +++++++++++++++++----
+>  tools/perf/util/unwind-libunwind-local.c |  2 +-
+>  3 files changed, 21 insertions(+), 8 deletions(-)
+>
 > --
 > 2.43.0.472.g3155946c3a-goog
 >
