@@ -2,164 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB7A80E749
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 801D180E753
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346224AbjLLJTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:19:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
+        id S1346285AbjLLJUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346253AbjLLJTo (ORCPT
+        with ESMTP id S1346304AbjLLJUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:19:44 -0500
-Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [129.187.255.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B50FE;
-        Tue, 12 Dec 2023 01:19:49 -0800 (PST)
-Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
-        by postout2.mail.lrz.de (Postfix) with ESMTP id 4SqCkB4ZNdzyTl;
-        Tue, 12 Dec 2023 10:19:46 +0100 (CET)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-        reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-        in-reply-to:content-transfer-encoding:content-disposition
-        :content-type:content-type:mime-version:references:message-id
-        :subject:subject:from:from:date:date:received:received; s=
-        tu-postout21; t=1702372786; bh=WVqZLzbRiMUVOMOUzl6GSebSesNYA4TdD
-        tY3d47tqa4=; b=icWpRiDQ+Dkbt+mbfo6bx1CaHVlYa5iIVdt+nEteVMvyk5htn
-        ORZz4sgz+cJyVTstEOFDiKVgqoXEOZYjVsGNY1btar+2KLWGtlmxULK/NPPYZ8cf
-        6NeuW01lhF9UQ7/Zusoo+1ahqV6ePZjLUNWb5kyJbZXAwkPvOmu+AjXUAZn+N99O
-        eDlzA2ZQzcRM5NgucQA1PGPUXlL7OfbfWQ71C7vKH7w0pNuNilSOmGh8IPtS+Ne4
-        SxSeNqMQA8EPgqiMUX+NvuVH6zZkjheMDThKsRCh15KZUGgOWGsUdpfPzWIUu+rk
-        csqLkCQQb8xXf0kc3YCiAzWN7zLjAZF/sT/Hg==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
-X-Spam-Score: -2.881
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-Received: from postout2.mail.lrz.de ([127.0.0.1])
-        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id U88J6q2Jd8Lb; Tue, 12 Dec 2023 10:19:46 +0100 (CET)
-Received: from cerulean.fritz.box (unknown [IPv6:2001:a61:245c:a01:443b:cc34:8ae7:6ede])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4SqCk90XN5zyTm;
-        Tue, 12 Dec 2023 10:19:45 +0100 (CET)
-Date:   Tue, 12 Dec 2023 10:19:41 +0100
-From:   Paul =?utf-8?Q?Heidekr=C3=BCger?= <paul.heidekrueger@tum.de>
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     Marco Elver <elver@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Collingbourne <pcc@google.com>,
-        andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH v3 1/3] kasan: switch kunit tests to console tracepoints
-Message-ID: <rgndtm3sawyzdh76oofoqp22jyqdb25sd4326k2heevjmxum7f@wfgwvdf4iuyi>
-References: <CAMn1gO6heXaovFy6jvpWS8TFLBhTomqNuxJmt_chrd5sYtskvw@mail.gmail.com>
- <20230505095805.759153de@gandalf.local.home>
- <n37j6cbsogluma25crzruaiq7qcslnjeoroyybsy3vw2cokpcm@mh7r3ocp24cb>
- <CA+fCnZebmy-fZdNonrgLofepTPL5hU6P8R37==sygTLBSRoa+w@mail.gmail.com>
- <fv7fn3jivqcgw7mum6zadfcy2fbn73lygtxyy5p3zqpelfiken@5bmhbdufxgez>
- <CA+fCnZfQEueCifc-8d5NVWEUtAiOG1eRW-LFKbOhab_Y7jqU0Q@mail.gmail.com>
- <osqmp2j6gsmgbkle6mwhoaf65mjn4a4w3e5hsfbyob6f44wcg6@7rihb5otzl2z>
- <CANpmjNMw3N09x06Q+0mFCEeTKfUsDdXwXM2hdgAQ+wwbZGpB9w@mail.gmail.com>
- <rbcdbilhh67fvjdgnstu25v4jnfeesthoxstnzzglynbngu5bk@5ozwgzaulbsx>
- <CA+fCnZf5kxWUWCzK8EKgUuq_E2rYv5aw=SqZMDb93+=7vSUp+w@mail.gmail.com>
+        Tue, 12 Dec 2023 04:20:14 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE03DB;
+        Tue, 12 Dec 2023 01:20:20 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso75163131fa.0;
+        Tue, 12 Dec 2023 01:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702372818; x=1702977618; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rksCD0YvwRVPdr9cALicJG1jtcdwoAy/N1wXuToJ/sU=;
+        b=JxT400n6Ifdf+AWxMyE2fNIf0sFC3S0juv/30GItoXMujRL7pnYm4cDdxAUesZVbl2
+         hw4j9f/6kl9jBUmaOZE9grImZ1G7Eb8HJ54U0q0w1c58sjqUPOJ7pTFToeQT2EUO279A
+         S1caps9sVMdkFBykM0usmt8MxrHjOyYXdHEffNle9p9KjTw6uJP2EqIFR8I2+m8bX1nP
+         e6TJarUqrDbc5tv0+3HsisfuVoyF5c7hZwwX4tghlMSRXJcKmL4cwlp3II/UlfI25nOo
+         uiIt8s/kWDEJZfuS9YMnUHRZEkh0ASyK6kq4ZTDcVHW9ZzUZMn5H9KZKg1yy9I3kMk1i
+         Jkxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702372818; x=1702977618;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rksCD0YvwRVPdr9cALicJG1jtcdwoAy/N1wXuToJ/sU=;
+        b=SFyuneQOKeycOFV3BqrXz5DeklizPaDf20zikgRcqULlHllEBACsuk2aEl4zN7Q9oG
+         RITroujbCZXYRiyh0sU7bQrGwkxoqSuuI2kvpHuWJBdWuHHjtikbyPYSm4f2Z43CEqmE
+         US7DQqZ3NyBie0uzgL8N40/ennXDOzOXcen+5HUd91CGTSOl2B0VHXEoCj8Mh5a9Q5lt
+         zOO+QSwyABSW2e9oVRYXVDfO/isPUTCxJpN4PcqXskHWZxGK5uRRQ74VBMWEoN5xaMLF
+         eDfJquyBcERx9nKIdhfsUv5dJ82gO/dDZCJYIn+s0/BNqKfR0XhG0LLohFq/EPfjOdwx
+         /ZNg==
+X-Gm-Message-State: AOJu0Yxm3oMEEPr4T6bpvoIFFtmQRlaGP9hFfHpi1b+12Rq1OPHhAv+K
+        aIJWg2K/F/heqmatImZZClQ=
+X-Google-Smtp-Source: AGHT+IFBfXFN9YMbampOxy4UlOpmDcj+w/s3WuIJrPWhqFQHlOAYZA7vdH0HKg760a+7o1+41h3Taw==
+X-Received: by 2002:a2e:711:0:b0:2cc:1dc8:af0b with SMTP id 17-20020a2e0711000000b002cc1dc8af0bmr1600707ljh.36.1702372818014;
+        Tue, 12 Dec 2023 01:20:18 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id ce26-20020a2eab1a000000b002ca00b027ccsm1447690ljb.123.2023.12.12.01.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 01:20:17 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:20:15 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "open list:STMMAC ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "moderated list:ARM/STM32 ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        James Li <James.Li1@synopsys.com>,
+        Martin McKenny <Martin.McKenny@synopsys.com>
+Subject: Re: [PATCH net-next] net: stmmac: xgmac3+: add FPE handshaking
+ support
+Message-ID: <edfg5hbcysvah5lnxoeygjn3qz2243c6o5ilt4uyeggegu5wzd@t2ngy4xikpio>
+References: <CY5PR12MB63726FED738099761A9B81E7BF8FA@CY5PR12MB6372.namprd12.prod.outlook.com>
+ <zx7tfojtnzuhcpglkeiwg6ep265xpcb5lmz6fgjjugc2tue6qe@cmuqtneujsvb>
+ <20231211145944.0be51404@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+fCnZf5kxWUWCzK8EKgUuq_E2rYv5aw=SqZMDb93+=7vSUp+w@mail.gmail.com>
+In-Reply-To: <20231211145944.0be51404@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.12.2023 00:37, Andrey Konovalov wrote:
-> On Tue, Dec 12, 2023 at 12:35 AM Paul Heidekrüger
-> <paul.heidekrueger@tum.de> wrote:
-> >
-> > Using CONFIG_FTRACE=y instead of CONFIG_TRACEPOINTS=y produces the same error
-> > for me.
-> >
-> > So
-> >
-> >         CONFIG_KUNIT=y
-> >         CONFIG_KUNIT_ALL_TESTS=n
-> >         CONFIG_FTRACE=y
-> >         CONFIG_KASAN=y
-> >         CONFIG_KASAN_GENERIC=y
-> >         CONFIG_KASAN_KUNIT_TEST=y
-> >
-> > produces
-> >
-> >         ➜   ./tools/testing/kunit/kunit.py run --kunitconfig=mm/kasan/.kunitconfig --arch=arm64
-> >         Configuring KUnit Kernel ...
-> >         Regenerating .config ...
-> >         Populating config with:
-> >         $ make ARCH=arm64 O=.kunit olddefconfig CC=clang
-> >         ERROR:root:Not all Kconfig options selected in kunitconfig were in the generated .config.
-> >         This is probably due to unsatisfied dependencies.
-> >         Missing: CONFIG_KASAN_KUNIT_TEST=y
-> >
-> > By that error message, CONFIG_FTRACE appears to be present in the generated
-> > config, but CONFIG_KASAN_KUNIT_TEST still isn't. Presumably,
-> > CONFIG_KASAN_KUNIT_TEST is missing because of an unsatisfied dependency, which
-> > must be CONFIG_TRACEPOINTS, unless I'm missing something ...
-> >
-> > If I just generate an arm64 defconfig and select CONFIG_FTRACE=y,
-> > CONFIG_TRACEPOINTS=y shows up in my .config. So, maybe this is kunit.py-related
-> > then?
-> >
-> > Andrey, you said that the tests have been working for you; are you running them
-> > with kunit.py?
+On Mon, Dec 11, 2023 at 02:59:44PM -0800, Jakub Kicinski wrote:
+> On Mon, 11 Dec 2023 14:14:00 +0300 Serge Semin wrote:
+> > Although in this case AFAICS the implementation is simpler and the
+> > only difference is in the CSR offset and the frame preemption residue
+> > queue ID setting. All of that can be easily solved in the same way as
+> > it was done for EST (see the link above).
+> > 
+> > Jakub, what do you think?
 > 
-> No, I just run the kernel built with a config file that I put together
-> based on defconfig.
+> Yup, less code duplication would be great. Highest prio, tho, is to
+> focus on Vladimir's comment around this driver seemingly implementing
+> FPE but not using the common ethtool APIs to configure it, yet :(
 
-Ah. I believe I've figured it out.
+Fully agree. If that required to refactor the currently implemented
+handshaking algo (looking not that safe and clumsy a bit), it would
+have been even better. Although I guess refactoring the code
+duplication could be done as a preparation patch anyway or as a patch
+which would convert the feature-specific callbacks to be suitable for
+the 802.3 MAC Merge layer.
 
-When I add CONFIG_STACK_TRACER=y in addition to CONFIG_FTRACE=y, it works.
-
-CONFIG_STACK_TRACER selects CONFIG_FUNCTION_TRACER, CONFIG_FUNCTION_TRACER 
-selects CONFIG_GENERIC_TRACER, CONFIG_GENERIC_TRACER selects CONFIG_TRACING, and 
-CONFIG_TRACING selects CONFIG_TRACEPOINTS. 
-
-CONFIG_BLK_DEV_IO_TRACE=y also works instead of CONFIG_STACK_TRACER=y, as it 
-directly selects CONFIG_TRACEPOINTS. 
-
-CONFIG_FTRACE=y on its own does not appear suffice for kunit.py on arm64.
-
-I believe the reason my .kunitconfig as well as the existing 
-mm/kfence/.kunitconfig work on X86 is because CONFIG_TRACEPOINTS=y is present in 
-an X86 defconfig.
-
-Does this make sense?
-
-Would you welcome a patch addressing this for the existing 
-mm/kfence/.kunitconfig?
-
-I would also like to submit a patch for an mm/kasan/.kunitconfig. Do you think 
-that would be helpful too?
-
-FWICT, kernel/kcsan/.kunitconfig might also be affected since 
-CONFIG_KCSAN_KUNIT_TEST also depends on CONFIG_TRACEPOITNS, but I would have to 
-test that. That could be a third patch.
-
-What do you think?
-
-Many thanks,
-Paul
-
+-Serge(y)
