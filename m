@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD80780EF6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2233480EEA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346587AbjLLO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:56:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S1376451AbjLLO0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376627AbjLLOZk (ORCPT
+        with ESMTP id S229702AbjLLO0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:25:40 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76492CD;
-        Tue, 12 Dec 2023 06:25:46 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 860B422512;
-        Tue, 12 Dec 2023 14:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702391144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4adbCx1T16ZMiU9KQhuQLFju1f4y3eDfGaolsH/mGo=;
-        b=dKuOqzEhOjI7MDLjj4Y/D876HjvNd2he8j3TqZH0dq0CwIl+IM47kp6tM8rn1x9oiGjXrV
-        Xx83VxBaW9GetBZUB94594CQq+HgFvYWth7Kp6pIt1/JbJXQhvQeI5QlXebQvzPskrgJKL
-        5v7CJiEQMQhv6QNpV3lQ5pxqoW9BXcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702391144;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4adbCx1T16ZMiU9KQhuQLFju1f4y3eDfGaolsH/mGo=;
-        b=I4/1Pp2gm/l3VmYZcn3x9yF8Mlb+76enmviSxE2vsM294FaEuhcpch1BL4Yr+dGzmXfEaE
-        y5VP42v9EB0OcIAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702391144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4adbCx1T16ZMiU9KQhuQLFju1f4y3eDfGaolsH/mGo=;
-        b=dKuOqzEhOjI7MDLjj4Y/D876HjvNd2he8j3TqZH0dq0CwIl+IM47kp6tM8rn1x9oiGjXrV
-        Xx83VxBaW9GetBZUB94594CQq+HgFvYWth7Kp6pIt1/JbJXQhvQeI5QlXebQvzPskrgJKL
-        5v7CJiEQMQhv6QNpV3lQ5pxqoW9BXcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702391144;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4adbCx1T16ZMiU9KQhuQLFju1f4y3eDfGaolsH/mGo=;
-        b=I4/1Pp2gm/l3VmYZcn3x9yF8Mlb+76enmviSxE2vsM294FaEuhcpch1BL4Yr+dGzmXfEaE
-        y5VP42v9EB0OcIAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 63C53139E9;
-        Tue, 12 Dec 2023 14:25:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id +WBXGGhteGUqUwAAn2gu4w
-        (envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:25:44 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D983AA06E5; Tue, 12 Dec 2023 15:25:43 +0100 (CET)
-Date:   Tue, 12 Dec 2023 15:25:43 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, Baokun Li <libaokun1@huawei.com>,
-        linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, akpm@linux-foundation.org,
-        ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Message-ID: <20231212142543.jrortgje22traesa@quack3>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231204144106.fk4yxc422gppifsz@quack3>
- <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
- <20231206193757.k5cppxqew6zjmbx3@quack3>
- <ZXfjXZWK4HlJi6pg@casper.infradead.org>
+        Tue, 12 Dec 2023 09:26:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F395AD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:26:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D05C433CA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:26:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702391204;
+        bh=+qJsvEnfvif5MXh/GMlXuF+eSOXDhh7AwIAYXsqp9Vo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MNFg3Oka802B/O3UYw4mb3SBj1uPaBDWBJITgUeGDjGxxF6Tm9lWgO6dEOWz/9rAk
+         95zPEDi4NL5m7RWyfiUrpWMtS+BNeF2Q9Dkl2eTVIiphqMWZdA/gLOK8Kx2F0kpLka
+         ksMKPsqZT6PA49+BQZKIAy4lzLI7kLnloDQJS/p3caGDFJqKPBkz8WZ8ZY+3i5nHrx
+         pzQAn0xF8JLX0Zyzb1rqlH0jr5JzOEfdHkEEK/YNj7t8pTDbDXfDnKFBU7ETpF48zN
+         69jR3oT9r/gB+NfJnOdoFYWhzzy2nXEfZTAitiOQhsWJxmhqwNTlMdSC1HtgWq6D0Y
+         eLWNCpErlrCAQ==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50c0f6b1015so6734699e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:26:44 -0800 (PST)
+X-Gm-Message-State: AOJu0YywES5Y/qVJcakZnP8kqinMfVfVnO/7aI60aXJ/aE4aLRmWJC4z
+        9M4PxqQAoy8M+adYF06FPptHAzHOq+EahVuAIg==
+X-Google-Smtp-Source: AGHT+IF/T5pQzrymJa7Oe578ltsoEfzzuSWBSOyxqt++BeSNPDZeqsctF7I4WdBT1IPIdQAlBu9FJTk31WETVif5++c=
+X-Received: by 2002:ac2:531b:0:b0:50b:ee1e:3380 with SMTP id
+ c27-20020ac2531b000000b0050bee1e3380mr2423910lfh.34.1702391203128; Tue, 12
+ Dec 2023 06:26:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXfjXZWK4HlJi6pg@casper.infradead.org>
-X-Spam-Score: 1.89
-X-Rspamd-Server: rspamd1
-X-Spamd-Result: default: False [1.69 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[suse.cz];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         DKIM_TRACE(0.00)[suse.cz:+];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[suse.cz,huawei.com,kvack.org,vger.kernel.org,mit.edu,dilger.ca,linux-foundation.org,gmail.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Queue-Id: 860B422512
-X-Spam-Flag: NO
-Authentication-Results: smtp-out1.suse.de;
-        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dKuOqzEh;
-        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="I4/1Pp2g";
-        dmarc=none;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Spamd-Bar: +
-X-Spam-Score: 1.69
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231207163128.2707993-1-robh@kernel.org> <BL1PR12MB5333564B386B8273120FD0109D8EA@BL1PR12MB5333.namprd12.prod.outlook.com>
+In-Reply-To: <BL1PR12MB5333564B386B8273120FD0109D8EA@BL1PR12MB5333.namprd12.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 12 Dec 2023 08:26:29 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJMK7s+uNk+GpppmAcprc+21Ffa4X1YLvRPrYhAPZ-PbA@mail.gmail.com>
+Message-ID: <CAL_JsqJMK7s+uNk+GpppmAcprc+21Ffa4X1YLvRPrYhAPZ-PbA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] cdx: Enable COMPILE_TEST
+To:     "Agarwal, Nikhil" <nikhil.agarwal@amd.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gupta, Nipun" <Nipun.Gupta@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-12-23 04:36:45, Matthew Wilcox wrote:
-> On Wed, Dec 06, 2023 at 08:37:57PM +0100, Jan Kara wrote:
-> > Within the same page buffered reads and writes should be consistent because
-> > they are synchronized by the page lock. However once reads and writes
-> > involve multiple pages, there is no serialization so you can get contents
-> > of some pages before write and some pages after being written. However this
-> > doesn't seem to be your particular case here. I just wanted to point out
-> > that in general even buffered reads vs writes are not fully consistent.
-> 
-> Buffered reads don't take the page/folio lock.  We only use the folio
-> lock to avoid reading stale data from the page cache while we're
-> fetching the data from storage.  Once the uptodate flag is set on the
-> folio, we never take the folio lock for reads.
+On Mon, Dec 11, 2023 at 10:40=E2=80=AFPM Agarwal, Nikhil <nikhil.agarwal@am=
+d.com> wrote:
+>
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Thursday, December 7, 2023 10:01 PM
+> > To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; Gupta, Nipun
+> > <Nipun.Gupta@amd.com>; Agarwal, Nikhil <nikhil.agarwal@amd.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > Subject: [PATCH 1/2] cdx: Enable COMPILE_TEST
+> >
+> > There is no reason CDX needs to depend on ARM64 other than limiting
+> > visibility. So let's also enable building with COMPILE_TEST.
+> >
+> > The CONFIG_OF dependency is redundant as ARM64 always enables it and al=
+l
+> > the DT functions have empty stubs.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  drivers/cdx/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/cdx/Kconfig b/drivers/cdx/Kconfig index
+> > a08958485e31..7cdb7c414453 100644
+> > --- a/drivers/cdx/Kconfig
+> > +++ b/drivers/cdx/Kconfig
+> > @@ -7,7 +7,7 @@
+> >
+> >  config CDX_BUS
+> >       bool "CDX Bus driver"
+> > -     depends on OF && ARM64
+> > +     depends on ARM64 || COMPILE_TEST
+> Hi Rob,
+>
+> There is a CDX MSI support patch
+> https://lore.kernel.org/lkml/20231116125609.245206-1-nipun.gupta@amd.com/=
+ which is in
+> review and is dependent on ARM64( msi_alloc_info_t definition differs on =
+x86). So, the
+> COMPILE_TEST would break once the MSI changes are added.
 
-Right, I've noticed once I've reread the code but thanks for correction
-anyway. :)
+An ifdef around 'scratchpad' should fix that. It is worthwhile to get
+all this to build on x86 allyesconfig builds at least because that is
+frequently built by the various CI systems. arm64 is getting there,
+but x86 is first for many.
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Rob
