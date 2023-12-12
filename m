@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B3880F5BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A342780F5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376691AbjLLStx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:49:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S233061AbjLLSt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376623AbjLLStu (ORCPT
+        with ESMTP id S1376685AbjLLStZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:49:50 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C31CF;
-        Tue, 12 Dec 2023 10:49:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702406967; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=XpzMMmouJS+8v/yHAlGE+Vj0dS7q19omTsyt9qq81XP91R//5rD+1t86xedine7cqif/Nq0aOuXshoneQ9G7tgDrHYqmK9+DsX3pV8+dYuAodaA/wJA6geCRnPBYTu/2Fc2xdIZBrf3DFXPD8TPCxRLgOBzRYO8BN482GlestYI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1702406967; h=Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=Scp3IrJnE67ltgIhAprfULm6HsQ/s5KxrhhmK7w7AQs=; 
-        b=YlEi3Tx5nLg4cA0rF76WQsConbJT/jLXHHC0VjA4KY45oHiqQXyM5SRuQMJc0UK8+FwF4VFyHB8sUZ7Z3QqK7Tx+CdQkkSOck2jiW2FoJ29EB7rpZmL2Iw/oA7tmoa3woKo67DHNGLXWT7S5oFn5nxNxToqjh2zy1Qi5JvvlUxE=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702406967;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=Scp3IrJnE67ltgIhAprfULm6HsQ/s5KxrhhmK7w7AQs=;
-        b=k0wHo+mshJJqA16AI3bcFJ/7cbLuMAXKkpgdSDg5+800Pq4Dqtac8nanoCvjXxoa
-        bTyb6S6oc0RmxKM4qHgU0UyhJRY/bYQ/zL6N49CZ3L2J3Xg7jHHUd3J8mOLsA9fQSsk
-        SCRBvYdf3vgFvgEtvAZLj5bgT3/YYrKuhlnY4g5c=
-Received: from kampyooter.. (182.69.31.144 [182.69.31.144]) by mx.zoho.in
-        with SMTPS id 1702406966251239.8701045805791; Wed, 13 Dec 2023 00:19:26 +0530 (IST)
-From:   Siddh Raman Pant <code@siddh.me>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Suman Ghosh <sumang@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5 2/2] nfc: Do not send datagram if socket state isn't LLCP_BOUND
-Date:   Wed, 13 Dec 2023 00:19:20 +0530
-Message-ID: <8a44ed2afb2f02be34d57d56c6836a5b911bffb0.1702404519.git.code@siddh.me>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1702404519.git.code@siddh.me>
-References: <cover.1702404519.git.code@siddh.me>
+        Tue, 12 Dec 2023 13:49:25 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1749CF4;
+        Tue, 12 Dec 2023 10:49:31 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F5451FB;
+        Tue, 12 Dec 2023 10:50:17 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D4D43F762;
+        Tue, 12 Dec 2023 10:49:28 -0800 (PST)
+Message-ID: <985618de-73cf-4b54-aef4-6e7bbfe86b17@arm.com>
+Date:   Tue, 12 Dec 2023 19:49:28 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/23] PM: EM: Refactor em_pd_get_efficient_state() to
+ be more flexible
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <20231129110853.94344-5-lukasz.luba@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20231129110853.94344-5-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we know we cannot send the datagram (state can be set to LLCP_CLOSED
-by nfc_llcp_socket_release()), there is no need to proceed further.
+On 29/11/2023 12:08, Lukasz Luba wrote:
+> The Energy Model (EM) is going to support runtime modification. There
+> are going to be 2 EM tables which store information. This patch aims
+> to prepare the code to be generic and use one of the tables. The function
+> will no longer get a pointer to 'struct em_perf_domain' (the EM) but
+> instead a pointer to 'struct em_perf_state' (which is one of the EM's
+> tables).
+I thought the 2 EM tables design is gone?
 
-Thus, bail out early from llcp_sock_sendmsg().
+IMHO it would be less code changes and hence a more enjoyable review
+experience if you would add the 'modifiable' feature to the existing EM
+(1) and not add (2) and then remove (1) in [21/23].
 
-Signed-off-by: Siddh Raman Pant <code@siddh.me>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Suman Ghosh <sumang@marvell.com>
----
- net/nfc/llcp_sock.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
-index 645677f84dba..819157bbb5a2 100644
---- a/net/nfc/llcp_sock.c
-+++ b/net/nfc/llcp_sock.c
-@@ -796,6 +796,11 @@ static int llcp_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 	}
- 
- 	if (sk->sk_type == SOCK_DGRAM) {
-+		if (sk->sk_state != LLCP_BOUND) {
-+			release_sock(sk);
-+			return -ENOTCONN;
-+		}
-+
- 		DECLARE_SOCKADDR(struct sockaddr_nfc_llcp *, addr,
- 				 msg->msg_name);
- 
--- 
-2.42.0
+ struct em_perf_domain {
+-	struct em_perf_state *table;                <-- (1)
+ 	struct em_perf_table __rcu *runtime_table;  <-- (2)
 
+> Prepare em_pd_get_efficient_state() for the upcoming changes and
+> make it possible to re-use. Return an index for the best performance
+
+s/make it possible to re-use/make it possible to be re-used ?
+
+> state for a given EM table. The function arguments that are introduced
+> should allow to work on different performance state arrays. The caller of
+> em_pd_get_efficient_state() should be able to use the index either
+> on the default or the modifiable EM table.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  include/linux/energy_model.h | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index b9caa01dfac4..8069f526c9d8 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -175,33 +175,35 @@ void em_dev_unregister_perf_domain(struct device *dev);
+>  
+>  /**
+>   * em_pd_get_efficient_state() - Get an efficient performance state from the EM
+> - * @pd   : Performance domain for which we want an efficient frequency
+> - * @freq : Frequency to map with the EM
+> + * @state:		List of performance states, in ascending order
+
+(3)
+
+> + * @nr_perf_states:	Number of performance states
+> + * @freq:		Frequency to map with the EM
+> + * @pd_flags:		Performance Domain flags
+>   *
+>   * It is called from the scheduler code quite frequently and as a consequence
+>   * doesn't implement any check.
+>   *
+> - * Return: An efficient performance state, high enough to meet @freq
+> + * Return: An efficient performance state id, high enough to meet @freq
+>   * requirement.
+>   */
+> -static inline
+> -struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
+> -						unsigned long freq)
+> +static inline int
+> +em_pd_get_efficient_state(struct em_perf_state *table, int nr_perf_states,
+> +			  unsigned long freq, unsigned long pd_flags)
+
+(3) but em_pd_get_efficient_state(struct em_perf_state *table
+                                                        ^^^^^
+[...]
