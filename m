@@ -2,137 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0621E80FA5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6740780FA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 23:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377770AbjLLWSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 17:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        id S1377754AbjLLWSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 17:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377760AbjLLWSo (ORCPT
+        with ESMTP id S231980AbjLLWSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 17:18:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09714BD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702419526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=niWso/AgTSlNDKs+hLJfqSanWTgF91oEfLP5s9hKVlo=;
-        b=ZgtQM8mSySScnanpslZXhtJJ3hfJKVfFEAz7Chqirh4BAWsx0TneYgUVA6I8f7HgX8BIPs
-        /f9P0Iz/viliQb9vDlp/XvYcUTCcaWQ0B25kB20iF+vvZdQ3XKMA88TmsDCAGpGxFnTaXx
-        IZx0uEkuVfayf66KCfucdJaGWqzclVs=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-528-PGNFMIjaNoaFWeR6KP790w-1; Tue, 12 Dec 2023 17:18:44 -0500
-X-MC-Unique: PGNFMIjaNoaFWeR6KP790w-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67ab0fa577fso83888196d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 14:18:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702419524; x=1703024324;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=niWso/AgTSlNDKs+hLJfqSanWTgF91oEfLP5s9hKVlo=;
-        b=M7BqvIJEnkFy7/FGdNbpqV/seYVoRt4tAPdNca2HNThywtZEoFaK5CTay/X9LU8qxB
-         /Ca/1K31FDI+0CkHYch8wN/9jV+J7zd1kZlrjCoMlpXDrXTXWAz4baa9Yzg3q/EyWJ6Q
-         gvGRL1HljuNLSgyqoRRQvHRXNEkNvZsJf8cSq2Lc4c9g7Id/oHUpcbU2L2ed5dvF7EPA
-         gWpK+ct4v8Ap9cPlIDKExSJNPjf+7HDLDsgwzRuMU6mmvZ0g0zY+FQb4fdH5hbCqyTRf
-         9ocrJDJGx0pXlUWbNLoJjHOf5X54kL3OTRvXe9IDljyQHcPuwg0eiEXYXG6k6Q8XpNmS
-         x1mg==
-X-Gm-Message-State: AOJu0YxxRIyaJFvxOysCQRTcVftA9aIi7YkU5xZO9l5okBjRmYOKFEzh
-        OgPtQpVwLbL7+1z36Jys8bITvLe5PGRA58jXD6zL/VpEccPTo6Ou5H52Lk2nRtUNUBfRq4S97bT
-        usZI0iAYt4j14plwTo2HYKR7D
-X-Received: by 2002:a0c:c210:0:b0:67e:f58a:d6b0 with SMTP id l16-20020a0cc210000000b0067ef58ad6b0mr226803qvh.27.1702419524251;
-        Tue, 12 Dec 2023 14:18:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHXwgdCMDLzfi+fVcHm7+1qcErjuVF1ZgVVAksnjigHixsYAtg0Q68ahZCHFpj/G+kad1CZTA==
-X-Received: by 2002:a0c:c210:0:b0:67e:f58a:d6b0 with SMTP id l16-20020a0cc210000000b0067ef58ad6b0mr226790qvh.27.1702419524008;
-        Tue, 12 Dec 2023 14:18:44 -0800 (PST)
-Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id uw2-20020a05620a4d8200b0077f103c8ad6sm4050578qkn.82.2023.12.12.14.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 17:18:37 -0500
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E149C;
         Tue, 12 Dec 2023 14:18:43 -0800 (PST)
-From:   Andrew Halaney <ahalaney@redhat.com>
-Date:   Tue, 12 Dec 2023 16:18:33 -0600
-Subject: [PATCH net v2] net: stmmac: Handle disabled MDIO busses from
- devicetree
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d319a7a35bso25037715ad.1;
+        Tue, 12 Dec 2023 14:18:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702419523; x=1703024323;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PvY1eWl3lKFXHEN46vG5hFlccI2oevea3+BmMQLJsrc=;
+        b=Sil14H59nmgOl1bCG252KjNzigSfW5HNV0fmWcIm1fdr0pfoe+ssjvZWzDY56aokdc
+         4ciAbTXioTPbczo8+Ha4ONDrjeDUSsa6r35hcz6c6YSQ7K0pVvcev5zEazWMoLTObfPm
+         C/fhW35RLdW8JhdPygc4z0ijvW85gKt8hFxYH2IfQK424Cxcv3NPjBaMq9gfkeecXldk
+         8gA9JnquK07whHThUhX9QIBnv8OSbQ2bVNnKDDeKi6469aLKf3dLOOqGSx3rnRBVKIgC
+         gWGiQHBt7SHkaS74ZS2y6MkhI81prVVwJ6r0c74vFt4BUsmPETD2sDZDctAGRxNuo0p5
+         20BQ==
+X-Gm-Message-State: AOJu0YxICo21o/x4xL6+wZ8gxFHqE1gwV6kcdgdFDZRG+OOCIThaTwI5
+        Fo8z78cW16DO76fUiDR+Zoc=
+X-Google-Smtp-Source: AGHT+IGauSeo8T0m4lPBuVMy5qhZ3L6G9zLsDODSHevJyslBAa9OfC/TfMPkPD2KsM2lLP2jOkCLNQ==
+X-Received: by 2002:a17:902:e54b:b0:1d0:796c:b06d with SMTP id n11-20020a170902e54b00b001d0796cb06dmr8010754plf.7.1702419523173;
+        Tue, 12 Dec 2023 14:18:43 -0800 (PST)
+Received: from sultan-box.localdomain ([142.147.89.200])
+        by smtp.gmail.com with ESMTPSA id h8-20020a170902704800b001d0c09cc6ebsm9127532plt.92.2023.12.12.14.18.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 14:18:42 -0800 (PST)
+Date:   Tue, 12 Dec 2023 14:18:39 -0800
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Deren Wu <deren.wu@mediatek.com>,
+        Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
+        Ben Greear <greearb@candelatech.com>,
+        "open list:MEDIATEK MT76 WIRELESS LAN DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH 1/2] wifi: mt76: mt7921: Disable powersaving by default
+Message-ID: <ZXjcPyIgWzKWyBQ8@sultan-box.localdomain>
+References: <20231212090852.162787-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-b4-stmmac-handle-mdio-enodev-v2-1-600171acf79f@redhat.com>
-X-B4-Tracking: v=1; b=H4sIADjceGUC/42NQQrDIBBFrxJm3SnRBCtd9R4lC+tMGqFqUZGW4
- N0rOUGX7z94f4fMyXGG67BD4uqyi6GDPA1gNxOejI46gxzlJKQQ+JgxF++Nxa7pxejJReQQiSt
- qKZQmVtoqAz3xTry6z5G/Q+ACSx83l0tM3+OyikP9V68CBV4mK0c7z6smdUtMmylnGz0srbUfm
- X3voM4AAAA=
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Simon Horman <horms@kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212090852.162787-1-mario.limonciello@amd.com>
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many hardware configurations have the MDIO bus disabled, and are instead
-using some other MDIO bus to talk to the MAC's phy.
+On Tue, Dec 12, 2023 at 03:08:51AM -0600, Mario Limonciello wrote:
+> Several users have reported awful latency when powersaving is enabled
+> with certain access point combinations. It's also reported that the
+> powersaving feature doesn't provide an ample enough savings to justify
+> being enabled by default with these issues.
+> 
+> Introduce a module parameter that would control the power saving
+> behavior.  Set it to default as disabled. This mirrors what some other
+> WLAN drivers like iwlwifi do.
+> 
+> Suggested-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> Link: https://codeberg.org/Hybrid-Project-Developers/linux-tkg/blame/branch/master/mt76:-mt7921:-Disable-powersave-features-by-default.mypatch
+> Link: https://aur.archlinux.org/cgit/aur.git/tree/0027-mt76_-mt7921_-Disable-powersave-features-by-default.patch?h=linux-g14
+> Link: https://community.frame.work/t/responded-strange-wlan-problems-with-kernel-branch-6-2/41868/4
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  drivers/net/wireless/mediatek/mt76/mt7921/init.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/init.c b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+> index 7d6a9d746011..78d4197988c8 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+> +++ b/drivers/net/wireless/mediatek/mt76/mt7921/init.c
+> @@ -10,6 +10,11 @@
+>  #include "../mt76_connac2_mac.h"
+>  #include "mcu.h"
+>  
+> +static bool mt7921_powersave;
+> +module_param_named(power_save, mt7921_powersave, bool, 0444);
+> +MODULE_PARM_DESC(power_save,
+> +		 "enable WiFi power management (default: disable)");
+> +
+>  static ssize_t mt7921_thermal_temp_show(struct device *dev,
+>  					struct device_attribute *attr,
+>  					char *buf)
+> @@ -271,11 +276,13 @@ int mt7921_register_device(struct mt792x_dev *dev)
+>  	dev->pm.idle_timeout = MT792x_PM_TIMEOUT;
+>  	dev->pm.stats.last_wake_event = jiffies;
+>  	dev->pm.stats.last_doze_event = jiffies;
+> -	if (!mt76_is_usb(&dev->mt76)) {
+> +	if (mt7921_powersave && !mt76_is_usb(&dev->mt76)) {
+>  		dev->pm.enable_user = true;
+>  		dev->pm.enable = true;
+>  		dev->pm.ds_enable_user = true;
+>  		dev->pm.ds_enable = true;
+> +	} else {
+> +		hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
+>  	}
+>  
+>  	if (!mt76_is_mmio(&dev->mt76))
+> -- 
+> 2.34.1
+> 
 
-of_mdiobus_register() returns -ENODEV in this case. Let's handle it
-gracefully instead of failing to probe the MAC.
+A few things to note:
 
-Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet controllers.")
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
-Changes in v2:
-- Improve error handling code (Serge)
-- Fix malformed Fixes tag (Simon)
-- Link to v1: https://lore.kernel.org/r/20231211-b4-stmmac-handle-mdio-enodev-v1-1-73c20c44f8d6@redhat.com
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+1. Power savings can be significant on some systems where keeping the PCIe link
+   active consumes significant energy (e.g., Intel HX chipsets in laptops and
+   probably desktops in general). On desktops this isn't a big deal, but on
+   desktop-class laptops the battery impact will be noticeable.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-index fa9e7e7040b9..0542cfd1817e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
-@@ -591,7 +591,11 @@ int stmmac_mdio_register(struct net_device *ndev)
- 	new_bus->parent = priv->device;
- 
- 	err = of_mdiobus_register(new_bus, mdio_node);
--	if (err != 0) {
-+	if (err == -ENODEV) {
-+		err = 0;
-+		dev_info(dev, "MDIO bus is disabled\n");
-+		goto bus_register_fail;
-+	} else if (err) {
- 		dev_err_probe(dev, err, "Cannot register the MDIO bus\n");
- 		goto bus_register_fail;
- 	}
+2. This doesn't mirror iwlwifi, which has powersave enabled by default.
 
----
-base-commit: bbd220ce4e29ed55ab079007cff0b550895258eb
-change-id: 20231211-b4-stmmac-handle-mdio-enodev-82168de68c6a
+   Beacon filtering is tied to powersave in mt76, whereas it isn't in iwlwifi.
+   Thus, disabling powersave on mt76 results in the loss of beacon filtering.
+   This means you'll get a constant stream of interrupts from beacon frames
+   transmitted by the AP, which can also have power implications.
 
-Best regards,
--- 
-Andrew Halaney <ahalaney@redhat.com>
+   And iwlwifi handles powersave transitions in firmware, which allows it
+   enter/exit powersave with very low latency. This isn't the case on mt76,
+   which enters/exits powersave in software.
+   
+3. For insignificant/low-bandwidth traffic like ICMP to the AP, high latency is
+   expected since the amount of traffic doesn't warrant kicking the chipset out
+   of powersave. So although it's not pretty to look at, bad ping times to the
+   AP aren't representative of the full user experience.
 
+That being said, given that my patch to disable powersave from over a year ago
+has apparently become a commonplace addition to mt76, it seems like users
+generally aren't happy with the current powersave UX. I agree that it should be
+better, though I'm not certain disabling powersave outright is the best move.
+Maybe the powersave behavior can be tweaked instead?
+
+The reason I disabled powersave on my mt76 hardware was because I wanted the
+lowest latency + highest throughput possible.
+
+I know that on smartphones, QCA chipsets exhibit the same latency issue when
+pinging the AP, due to powersave. But no one seems to be upset about that on
+their phone, so I think there's probably a way to make powersave work well for
+all parties.
+
+Regarding the patch itself, I think a better idea would be to tie the wiphy
+powersave flag to the deep sleep flag (`dev->pm.ds_enable_user`), so that users
+can really disable powersave through `iw` at runtime without needing to use
+debugfs. This would eliminate the need for a module parameter too.
+
+Also, I find it quite sad that my patch from over a year ago [1] was blatantly
+reauthored in that frame.work link. The commit message is even the same, word
+for word. :-(
+
+[1] https://github.com/kerneltoast/kernel_x86_laptop/commit/ca89780690f7492c2d357e0ed2213a1d027341ae
+
+Sultan
