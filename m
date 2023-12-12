@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F111880E8E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2963580E8F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 11:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjLLKQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 05:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S1346116AbjLLKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 05:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjLLKQ2 (ORCPT
+        with ESMTP id S230509AbjLLKUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 05:16:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B09A6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 02:16:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14397C433C8;
-        Tue, 12 Dec 2023 10:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702376193;
-        bh=QNcLcqvo2jYrSjQ/cTdC3kektegzfqa7FvSTeFHo/l4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BEopNWgCWiBewoT41V5fXjtJugYtBLvX1JVPMStxjPpXbBsNZ88/6rgT+f6UaxNTN
-         pNmbw3i13OgeeqS0tSa1nB3HnUw37tpaQFVyoPsvAwhhUfZ0LSDZLWKngcuVsf9Xzh
-         vgCVmIHOyd2gGNhjLFxdi9IJY8fojNMmzfYcmbng=
-Date:   Tue, 12 Dec 2023 11:16:30 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Gan, Yi Fang" <yi.fang.gan@intel.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        John Stultz <jstultz@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Andrew Halaney <ahalaney@redhat.com>, Lobakin@kroah.com,
-        Aleksander <aleksander.lobakin@intel.com>, Gan@kroah.com,
-        linux-kernel@vger.kernel.org,
-        Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>, Lai@kroah.com,
-        Peter Jun Ann <peter.jun.ann.lai@intel.com>
-Subject: Re: [PATCH net-next 1/1] driver.h: add helper macro for
- module_exit() boilerplate
-Message-ID: <2023121245-unspoiled-aging-214d@gregkh>
-References: <20231212094352.2263283-1-yi.fang.gan@intel.com>
+        Tue, 12 Dec 2023 05:20:10 -0500
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD49A6;
+        Tue, 12 Dec 2023 02:20:15 -0800 (PST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 3BCAHkwA089046;
+        Tue, 12 Dec 2023 18:17:46 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Tue, 12 Dec 2023 18:17:45 +0800
+Date:   Tue, 12 Dec 2023 18:17:41 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     <acme@kernel.org>, <adrian.hunter@intel.com>,
+        <ajones@ventanamicro.com>, <alexander.shishkin@linux.intel.com>,
+        <andre.przywara@arm.com>, <anup@brainfault.org>,
+        <aou@eecs.berkeley.edu>, <atishp@atishpatra.org>,
+        <conor+dt@kernel.org>, <conor.dooley@microchip.com>,
+        <conor@kernel.org>, <devicetree@vger.kernel.org>,
+        <dminus@andestech.com>, <evan@rivosinc.com>,
+        <geert+renesas@glider.be>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <irogers@google.com>, <jernej.skrabec@gmail.com>,
+        <jolsa@kernel.org>, <jszhang@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
+        <locus84@andestech.com>, <magnus.damm@gmail.com>,
+        <mark.rutland@arm.com>, <mingo@redhat.com>, <n.shubin@yadro.com>,
+        <namhyung@kernel.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <peterz@infradead.org>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <rdunlap@infradead.org>,
+        <robh+dt@kernel.org>, <samuel@sholland.org>,
+        <sunilvl@ventanamicro.com>, <tim609@andestech.com>,
+        <uwu@icenowy.me>, <wens@csie.org>, <will@kernel.org>,
+        <ycliang@andestech.com>, <inochiama@outlook.com>
+Subject: Re: [PATCH v4 02/13] irqchip/riscv-intc: Allow large non-standard
+ interrupt number
+Message-ID: <ZXgzRZK8uqgmY84L@APC323>
+References: <20231122121235.827122-1-peterlin@andestech.com>
+ <20231122121235.827122-3-peterlin@andestech.com>
+ <871qbwsn9h.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231212094352.2263283-1-yi.fang.gan@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <871qbwsn9h.ffs@tglx>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 3BCAHkwA089046
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 05:43:52PM +0800, Gan, Yi Fang wrote:
-> For the modules need a module_init() but don't need to do
-> anything special in module_exit() might need to have an empty
-> module_exit(). This patch add a new macro module_exit_stub() to
-> replace the empty module_exit(). The macro is useful to remove
-> the module_exit() boilerplate.
+Hi Thomas,
+
+On Fri, Dec 08, 2023 at 04:54:34PM +0100, Thomas Gleixner wrote:
+> On Wed, Nov 22 2023 at 20:12, Yu Chien Peter Lin wrote:
+> > Currently, the implementation of the RISC-V INTC driver uses the
+> > interrupt cause as hwirq and has a limitation of supporting a
 > 
-> Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
-> ---
->  include/linux/device/driver.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> s/hwirq/hardware interrupt/
+> 
+> Please spell things out. We are not on Xitter here.
+> 
+> > maximum of 64 hwirqs. However, according to the privileged spec,
+> > interrupt causes >= 16 are defined for platform use.
+> >
+> > This limitation prevents us from fully utilizing the available
+> 
+> This limitation prevents to fully utilize the ... 
 
-Why would we take a macro that no one actually uses?
+Okay, will fix.
 
-Please submit this with a user, you all know that this is the case, how
-did it pass your internal reviews (hint, I don't think it did...)
-
-thanks,
-
-greg k-h
+Thanks,
+Peter Lin
