@@ -2,164 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0183C80EA79
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDE880EA7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbjLLLhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
+        id S231964AbjLLLiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLLhj (ORCPT
+        with ESMTP id S229963AbjLLLiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:37:39 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2081.outbound.protection.outlook.com [40.107.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9F6DB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:37:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ikk+4qgHnSE5NFeIRBKWtSA2F3SPqC3DCO4YfQ/RugE+w98RgX98p3zNcglOi0wkIkWGYH7EGxHrFfXOiGbiBIZ0wF8K3MoJJrenf1+aXyHwMQr213dio9tYQDYQ8Dgw5Mu189bJ61sJGN/842Irdm+BxS48k60uGdZYyDIGkAPPFzwJ773I+fKv1TY1mok6PMyeG0DY7uORQsF8CyenIw+FR2btzEZRQDVzJj+J2qme1cDqVFCjukTJeMuYYcKiFjJ5+YDHHgxJNF8uzwdZccaXqHd7VmPiGKvfzJSuaNkmCp5n4yC1/9FNHqIlLqdpQIBxVJHAWT2zYkopI/4Bbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eQbPR4++yZ7P9seKiQYz3XRL8Gl8T+wn4M88VUATaMY=;
- b=NloUatD3LbJjULnpph+yKDVo5Mmn+HvZ0TmQaSbrxYq+a/ifmTuEtfUD+tO4/BOJ1VDGVEiPtvDeiwSz9CycaUG3+Yd0czQBI0hZynmpMZCDpwJ0ribCFTmzAjZqjtFKDbkc8R+/6HKjKwoFSQiFPeumn9LUWiOMouaztZndBxEpTp2Aso3BROzCtGS1TVRvDEvv1mDsrRad49AF4YlQqY14tm/7deyZl/ECiDF53bp+dk0sP4UyrwyLuGjIQ7rPyDxhgC6Dfe7haR+x9jnov0EYiFifUDl8uuQsU21mRRjwDYwzJZObSvUx/SO6DwQUXdBroHPOhBNog5rFdm31sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
- header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eQbPR4++yZ7P9seKiQYz3XRL8Gl8T+wn4M88VUATaMY=;
- b=P4LJliPrmfIyU/O9bWGxlUl6AdETglTD7LsLvOXLfIReoD2RIhs1Jtk9fWPviVi4WJXogN3CFiE4jlPl8TfHFyHGFRF05o4qWHn2XcCtuRhiON0QGoT0zvZTopvJZx+gC02KMeWPZEfJsz+1hX6eVc4SDcrQxWLi18j9Wt843vUe6+gVCIzA1KOIIGhEt8lnx0ENgq6IjPcnUkuKhoBylMKTPt/1QxDRJc2iQpg9brznlbCgPi79FvtSjMqqEurBh+FaLMW369zXx6J7mEny5uQw1ZJMIRj9u5P5EC0G7PnJuT3fvSu9P0cP+Enc74izTCknil84IM5dm7WPVS+M4Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
-Received: from PS2PR06MB3432.apcprd06.prod.outlook.com (2603:1096:300:62::16)
- by SG2PR06MB5153.apcprd06.prod.outlook.com (2603:1096:4:1cc::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
- 2023 11:37:39 +0000
-Received: from PS2PR06MB3432.apcprd06.prod.outlook.com
- ([fe80::4cfd:404c:53bd:16ad]) by PS2PR06MB3432.apcprd06.prod.outlook.com
- ([fe80::4cfd:404c:53bd:16ad%3]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
- 11:37:39 +0000
-From:   "xiaowu.ding" <xiaowu.ding@jaguarmicro.com>
-To:     viresh.kumar@linaro.org, Tushar.Khandelwal@arm.com,
-        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org
-Cc:     xiaowu.ding@jaguarmicro.com
-Subject: [PATCH v2] mailbox: arm_mhuv2: Fix a bug for mhuv2_sender_interrupt
-Date:   Tue, 12 Dec 2023 19:37:22 +0800
-Message-Id: <20231212113722.863-1-xiaowu.ding@jaguarmicro.com>
-X-Mailer: git-send-email 2.34.1.windows.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0120.apcprd03.prod.outlook.com
- (2603:1096:4:91::24) To PS2PR06MB3432.apcprd06.prod.outlook.com
- (2603:1096:300:62::16)
+        Tue, 12 Dec 2023 06:38:05 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FDCD;
+        Tue, 12 Dec 2023 03:38:10 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3ba084395d9so1503959b6e.0;
+        Tue, 12 Dec 2023 03:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702381090; x=1702985890; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+L2kxEHCu62/EVSOcD5zqPnIMCZrQemKF2WuvkQ2BF4=;
+        b=Bjn7Fr1/g4Rg38kquG3stvn1yHLCv0gMNYP/hoN0xro7e0kC7SyU+/PxLfE3QMXnPd
+         CojxjjECgy63G5EE10/0CTr7Rs3MBVerZkJIbaN6QKcVuiGqiNuk7gnK91GpaV/mLFL/
+         0hHwrEjRMHnpP7J1HHkPs+KBm1yE3KDkjizb2bIGyapbvsSf6tuJQKs0AQYafmGke5gK
+         iJPTHxYDkhZGnfOfVIeL9HzhNd1N4IiLIJ1MA7aM8idbuSBLgENDMZ50d8WgU5ThqxLa
+         ZmsVjh+D2YbijuY80Y9BxlL8ynWWpmgHq/5FWOJ6mVCgZX598aLT0NB/WuuV5cV88/HX
+         3LUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702381090; x=1702985890;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+L2kxEHCu62/EVSOcD5zqPnIMCZrQemKF2WuvkQ2BF4=;
+        b=hV3fNGm5uc/W1pd6JqflFhU+k504+vnvpfVm7f5M2ZHEL2tKaiezei03pko6K8ARWz
+         rs5rgqVU0ZI48vOcdGLh6N7xcqVeoGRyoZx7i4AGUlwAxgZE5FPfj6EkFBV9tM5nlqCg
+         GjwcVZa3MCY5M1V5b7a4OfGp0P9Y1n3Mwz4Nt8Z2zF9yTWkY8VhUqIQ8vOtJkMgEpgMR
+         dp8IMaNIxRWnLz5AW2972tIw2afLK1zGOdFeXpoZICevTwka0PIkb5vamDm+JhEiZ+l5
+         FJ3QvFLY7zFAx8rtLGA2FGu1DX99qpgHIpVaJA3BRB9x5ydN5sWb867Os89VBP4JNGLk
+         aGeg==
+X-Gm-Message-State: AOJu0YzLQFEb4PZWEz8kJW4b45OlJVIbs11iGV6FRlx38ModB+rIQRXs
+        VosWB+S4/UYBHRQLXOxpk3jjJ99iA6Eyu4ChnTk=
+X-Google-Smtp-Source: AGHT+IF+mLItRlwncGPLaOBSbWrzSF4zO2CcLPzv42Do4B8u1Slt2WF4wMUjE3qjHmiGNMT7cW9QlrmRlFHAq5rq+7I=
+X-Received: by 2002:a05:6870:aa97:b0:1fb:75b:99a0 with SMTP id
+ gr23-20020a056870aa9700b001fb075b99a0mr7675745oab.79.1702381089856; Tue, 12
+ Dec 2023 03:38:09 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PS2PR06MB3432:EE_|SG2PR06MB5153:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae2b3a92-2365-4820-0caf-08dbfb06beaf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FHP6+tNdRu9gykyzUl0jF3PCAY7hcYDjn6Mz9z9Cq1CYfuzrcTTl/AsG4MUxBNCMwk/uWIJ7PetSytxRrIjH8DpX3RjuG7sfj+vERcOHBabduabu060+N/w56xrJfMDUJ/R7GkzstPkEcqwbnnLlH5Auns+tFvx8GKZWVr9fG+uyS2zWbfwsHmRkORfQJMnN3nxK+3GQ0eIpC1wkQny7siXWMrGjph1QPOuUVCyIsl3e/3qomM9Ds3LHjs92wXqbR/TGr1b98WiMTn9IYr32DuWueLlP6OLmcifTs2kPRugJlJsqhdK9S14zrJjBmFXVzTlciS1Za6cgF7p2IZuwepBniyQyhd+HIVtJltWvmwo3D9CQUT0cJTc2iQjXfpJ0a3b3dZCNSzJJpw+qNdk5evYaKXKEgPyOieUrmEi+5TEVJDYPJEg2nAx1QfvdrT52dFAPnj3a6dyLz3/dLCKDXJXlYYY35w3ErjcfaSMfbifGTJxQSwFBGWrDBJWLX1xzYk8gmr8SfFgnixC407pv+6uy2LIvzUquaXJf0W5wfKZbrsk5QQqdZwVySi5LtLJIQAwg04pIv1cUpc85lLl8sfXCC24Xqj6m8VRX1x4oEPgQl7IpsGkqgwhuhrPyRgS0HE30bcLP57c0RlMOGmkDyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR06MB3432.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(376002)(346002)(136003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(1076003)(2616005)(26005)(107886003)(6506007)(6512007)(6666004)(52116002)(83380400001)(5660300002)(15650500001)(8676002)(66556008)(41300700001)(4326008)(478600001)(2906002)(6486002)(316002)(8936002)(66946007)(66476007)(86362001)(38100700002)(36756003)(38350700005)(449214003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8pLpRB68CdR/iZRphyEoFpj1IehlY+ZTXZkkphfmFiBx11kLCLkTpsnA9uio?=
- =?us-ascii?Q?PiCqY0kGjkztqR7MOtTa6712Wmu1NWb58xUUMoQxEkXOqs0MbYy+QdiXFowB?=
- =?us-ascii?Q?0Be6gM0wq/1bB/Mc4mV1EP6fyfgh4LaLDUfffdGrA4L+oxqsyaSqtOI0Nytd?=
- =?us-ascii?Q?pkr3ZekK58cnG6R6HJs33rR1phLbnt2SnXquXtcg61qUnREAmpfnG3NRYfF9?=
- =?us-ascii?Q?9gjMRODChNvItOdrADUk1xBIE8722I62Pp6I6tnQ2ws3XZjYwO1WNbBjFORc?=
- =?us-ascii?Q?eyPP3HhFbl4aMFeH5xN8aBgKmOVW+dRq6nHYPdC2mEjfW8ozJ6YJMIDOWt+V?=
- =?us-ascii?Q?oq6R0AXCVn70tVATbxrilAovfta3t+UlzN/tQ4x4YItUdS8Ib4jqddRlbKQA?=
- =?us-ascii?Q?/Aa/IE1Ehwgn427gNMOnQBslwbM2tyFq1fki9zmiRHi4IPVRZjmADwM7WrtJ?=
- =?us-ascii?Q?M1ECKRTpHs0Lvh6iI7/iVL/Sfi/kkq4zMThz72XDhjP0orcVQJQvByVNtMJV?=
- =?us-ascii?Q?g85A/jMs/lbiC/XFX0YxgDIEWaja9ftfaAP5VvXgOTuFgVC1BBiM/T2ITEgO?=
- =?us-ascii?Q?KVlRlfNHKBwPYyNIFiIp/vCNJ/yXIp/qcupwBWw9HZSHuE9I89zY+LScoEep?=
- =?us-ascii?Q?d0nBc1PPX0lcFxLS6dkIYfUQ5LKgViC8akqZ4ZJWyERI1UAtumJK9DFs3Sp5?=
- =?us-ascii?Q?Wvx/cjjL/+fTxtYgKY2oIgaC6u2mWT+IiPbETUhsAYwU36KGzZsI9DNSu96p?=
- =?us-ascii?Q?du47TyYRk1FDNSZf6lpyA1tNDZkT0l5xS5iVa5ug1Pxgl1t1lrZ9hPwcstK6?=
- =?us-ascii?Q?QxSeEezobT52hFXaisJSqj/rgXULdpz0ICABW3AqePKGLBpacdpAezC7q+vs?=
- =?us-ascii?Q?BBHQewieyXlOc6UUB+Hbn+24IsT0rT/mrexgqBbZOWUeyQ2n3PKKYgOCELYA?=
- =?us-ascii?Q?ywLEzntiCoxfGmyBrncfF4gUpWeIuFv9TjQih3/gnwn7Zl+lFUYbG1Paneao?=
- =?us-ascii?Q?avgjdDCdMRgi2yUPTrW/amLuGQxVPr4MahqmzTrAQGL4Th8NnUE7hTRV/5Ze?=
- =?us-ascii?Q?2ycs0XR5cdDY+ye6DjeLgfX6fQ7UhuG/7si3pXh4sZ1r0AWcUdnuXW3Y+Ob4?=
- =?us-ascii?Q?I/MT1thuVyagWRDYB+58+d0o/0IZhWtrW/Szyh5gaZS7NI9EAGrWLrc4k9NV?=
- =?us-ascii?Q?rxqb2XOpONgqAzVYc3YVNM584Hv3DgsSrfGsDnddBdVgr1Sqq42dQ23OLXOP?=
- =?us-ascii?Q?ln98GfPYwTh2u1cQdlTkdONaJ7wommv+LQ8CLSPhX1h8/vpRJDJKmbHgHLKR?=
- =?us-ascii?Q?qYbZrpm7+aZNk2o/J21wRfgP9qZluPGtdWUv8LIx06otkNRw9dFOq1T5iRxL?=
- =?us-ascii?Q?Mo1wrvomc2B7w7tzW3BbG0yR2sYNwzA3MzFAcIiCledZ302frbnIGEjAWZR4?=
- =?us-ascii?Q?zA8kVoMe0ms/TZcXTNMqxgE/q0J5BHboKTtvPXdVo6dshIVVqLvrHZMT4O/0?=
- =?us-ascii?Q?/+SJkbRW8GWYR8bZSDma07Fq+i5ArikSQFlzxagqgf4k3VietL9TWiFU0jxQ?=
- =?us-ascii?Q?wnzZm5+AGDnD6508CSjxT9emQOA1APO9UCH9LNZZ+rurgpSQYn927nRMBpdP?=
- =?us-ascii?Q?hQ=3D=3D?=
-X-OriginatorOrg: jaguarmicro.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae2b3a92-2365-4820-0caf-08dbfb06beaf
-X-MS-Exchange-CrossTenant-AuthSource: PS2PR06MB3432.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 11:37:39.2420
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q9oYlI9Doz8Ov75tb9ZMQLHAPWHxv6HGTaZL3aWsFiAMAvMGasctP14hnq/qy6oUQ42OXd9+ddKngX7W8AcYjBPcpj8oWHJjMnTksVqCT+I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB5153
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
+References: <20231204144429.45197-1-linux.amoon@gmail.com> <20231204144429.45197-2-linux.amoon@gmail.com>
+ <20231206135311.GA2043711-robh@kernel.org> <CANAwSgTS0ZSFPv4x803pCLEpjH5imh8vEoWpbiJRH14Sy3GZww@mail.gmail.com>
+ <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org> <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
+ <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org> <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
+ <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org> <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
+ <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org> <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
+ <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org>
+In-Reply-To: <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Tue, 12 Dec 2023 17:07:54 +0530
+Message-ID: <CANAwSgRLORHb6qiHWRBR0tMbYB=O=gwatuGhk72SwZyhYMopCw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-amlogic@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Xiaowu.ding" <xiaowu.ding@jaguarmicro.com>
+Hi Krzysztof,
 
-Message Handling Unit version is v2.1.
+On Tue, 12 Dec 2023 at 14:10, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 12/12/2023 07:22, Anand Moon wrote:
+> > Hi Krzysztof,
+> >
+> > On Fri, 8 Dec 2023 at 17:47, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 08/12/2023 12:19, Anand Moon wrote:
+> >>> Hi Krzysztof,
+> >>>
+> >>> On Fri, 8 Dec 2023 at 13:14, Krzysztof Kozlowski
+> >>> <krzysztof.kozlowski@linaro.org> wrote:
+> >>>>
+> >>>> On 08/12/2023 01:24, Anand Moon wrote:
+> >>>>>>>>>
+> >>>>>>>>> If I move reset-gpios to required, I observe the below warning.
+> >>>>>>>>>
+> >>>>>>>>>   DTC_CHK Documentation/devicetree/bindings/usb/maxim,max33359.example.dtb
+> >>>>>>>>> /home/alarm/linux-amlogic-5.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+> >>>>>>>>> hub@1: 'reset-gpio' is a required property
+> >>>>>>>>>         from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+> >>>>>>>>
+> >>>>>>>> Where are the properties defined? If you open the binding you see:
+> >>>>>>>> nowhere. You cannot define properties in some variant with "true".
+> >>>>>>>> Please define all of them in top-level and only narrow/constrain when
+> >>>>>>>> applicable.
+> >>>>>>>>
+> >>>>>>> What I meant is the example below, required meant applicable for both
+> >>>>>>> the binding
+> >>>>>>> But it shows me the above warning.
+> >>>>>>
+> >>>>>> My explanation stands... So again:
+> >>>>>>
+> >>>>>>>> Please define all of them in top-level and only narrow/constrain when
+> >>>>>>>> applicable.
+> >>>>>>
+> >>>>> Apologies, But I have tried this multiple times but have not been able
+> >>>>> to fix the device tree warning
+> >>>>
+> >>>> Did you document all properties in top-level "properties:" block?
+> >>>>
+> >>> Yes, I have,
+> >>>
+> >>> Can you suggest a couple of examples to follow?
+> >>> I looked at some of the YAML files but could not fix my issue.
+> >>
+> >> 99% of bindings. Look also at example-schema.
+> >>
+> >> You can also attach here complete patch for fast look / short review.
+> >>
+> >
+> > Please find the modified patch, I have tried a few things but none
+> > resolve the binding warning.
+> > I am not able to debug this.
+>
+> And where is the warning or the issue? Can you describe what problem do
+> you have?
 
-When arm_mhuv2 working with the data protocol transfer mode.
-We have split one mhu into two channels, and every channel
-include four channel windows, the two channels share
-one gic spi interrupt.
+Here is the list of warnings I observed with this patch
 
-There is a problem with the sending scenario.
+  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra186-xusb.example.dtb
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+hub@1: 'vdd-supply' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+hub@1: 'reset-gpios' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
+hub@1: 'peer-hub' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+  DTC_CHK Documentation/devicetree/bindings/usb/ti,tps6598x.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/xlnx,usb2.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usb-xhci.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usbhs.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/cypress,cypd4226.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/cdns,usb3.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/renesas,rzn1-usbf.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra124-xusb.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/ci-hdrc-usb2.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/brcm,usb-pinmap.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/renesas,usb3-peri.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/qcom,pmic-typec.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/microchip,usb5744.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/smsc,usb3503.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/mediatek,musb.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/vialab,vl817.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/marvell,pxau2o-ehci.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/richtek,rt1711h.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/usb.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/realtek,rts5411.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra210-xusb.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/usb-drd.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/ti,j721e-usb.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/ti,am62-usb.example.dtb
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb:
+hub@1: 'vdd-supply' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/genesys,gl850g.example.dtb:
+hub@1: 'peer-hub' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+  DTC_CHK Documentation/devicetree/bindings/usb/renesas,rzv2m-usb3drd.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/usb-hcd.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/fsl,imx8mq-dwc3.example.dtb
+  DTC_CHK Documentation/devicetree/bindings/usb/mediatek,mtu3.example.dtb
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
+hub@1: 'vdd-supply' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
+hub@1: 'reset-gpios' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+/home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-hcd.example.dtb:
+hub@1: 'peer-hub' is a required property
+        from schema $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
+  DTC_CHK Documentation/devicetree/bindings/usb/nxp,isp1760.example.dtb
 
-The first channel will take up 0-3 channel windows, and the second
-channel take up 4-7 channel windows. When the first channel send the
-data, and the receiver will clear all the four channels status.
-Although we only enabled the interrupt on the last channel window with
-register CH_INT_EN,the register CHCOMB_INT_ST0 will be 0xf, not be 0x8.
-Currently we just clear the last channel windows int status with the
-data proctol mode.So after that,the CHCOMB_INT_ST0 status will be 0x7,
-not be the 0x0.
+>
+> >
+> > -Thanks
+> > Anand
+> > -----8<----------8<----------8<----------8<----------8<----------8<-----
+> > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > index ee08b9c3721f..7f75fa3c1945 100644
+> > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+> >  maintainers:
+> >    - Icenowy Zheng <uwu@icenowy.me>
+> >
+> > -allOf:
+> > -  - $ref: usb-device.yaml#
+> > -
+> >  properties:
+> >    compatible:
+> >      enum:
+> > @@ -27,11 +24,47 @@ properties:
+> >
+> >    vdd-supply:
+> >      description:
+> > -      the regulator that provides 3.3V core power to the hub.
+> > +      The regulator that provides 3.3V or 5.0V core power to the hub.
+> > +
+> > +  peer-hub:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      For onboard hub controllers that support USB 3.x and USB 2.0 hubs with
+> > +      shared resets and power supplies, this property is used to identify the
+> > +      hubs with which these are shared.
+> >
+> >  required:
+> >    - compatible
+> >    - reg
+> > +  - vdd-supply
+> > +  - reset-gpios
+> > +  - peer-hub
+> > +
+> > +allOf:
+> > +  - $ref: usb-device.yaml#
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - usb5e3,608
+> > +    then:
+> > +      properties:
+> > +        peer-hub: false
+> > +        vdd-supply: false
+> > +
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - usb5e3,610
+> > +              - usb5e3,620
+> > +    then:
+> > +      properties:
+> > +        peer-hub: true
+> > +        vdd-supply: true
+>
+> Drop this if:, redundant.
+>
+No, this does not resolve the above issue.
+>
 
-Then the second channel send the data, the receiver read the
-data, clear all the four channel windows status, trigger the sender
-interrupt. But currently the CHCOMB_INT_ST0 register will be 0xf7,
-get_irq_chan_comb function will always return the first channel.
-
-So this patch clear all channel windows int status to avoid this interrupt
-confusion.
-
-Signed-off-by: Xiaowu.ding <xiaowu.ding@jaguarmicro.com>
----
- drivers/mailbox/arm_mhuv2.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mailbox/arm_mhuv2.c b/drivers/mailbox/arm_mhuv2.c
-index c1ef5016f..15021c90c 100644
---- a/drivers/mailbox/arm_mhuv2.c
-+++ b/drivers/mailbox/arm_mhuv2.c
-@@ -553,7 +553,8 @@ static irqreturn_t mhuv2_sender_interrupt(int irq, void *data)
- 	priv = chan->con_priv;
- 
- 	if (!IS_PROTOCOL_DOORBELL(priv)) {
--		writel_relaxed(1, &mhu->send->ch_wn[priv->ch_wn_idx + priv->windows - 1].int_clr);
-+		for (i = 0; i < priv->windows; i++)
-+			writel_relaxed(1, &mhu->send->ch_wn[priv->ch_wn_idx + i].int_clr);
- 
- 		if (chan->cl) {
- 			mbox_chan_txdone(chan, 0);
--- 
-2.34.1
-
+Thanks
+-Anand
