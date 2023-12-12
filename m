@@ -2,275 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D078E80E274
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B2080E271
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 04:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345757AbjLLCvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+        id S1345781AbjLLCyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbjLLCvs (ORCPT
+        with ESMTP id S231131AbjLLCye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:51:48 -0500
-Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11023024.outbound.protection.outlook.com [52.101.49.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E29BC;
-        Mon, 11 Dec 2023 18:51:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G+BaWTcmtkE+rsBEKMNUUeESplLvOUVhsKZCDXpgHw5mM0i/9JztC7cAVsn7zd+dzca6ArDVHNdKcn7du4u3iTmOzRTK9pd/4TBEfwnkz8lUyAI4H9mBQx7Qjlyn2DCetN5zzmQImOxTofwBeJ3C3C/I9R0xV5eQtB4SGPlPmiJqepprREw/DYtTGM9uId+sXLdlxHavFNE/FRKyWbn4JvTDgktb3+ccBLBei+IveqXxBkehPJr6yAnvhQrIVqRVWKPG9fwZT1K0Xq8tdTddMRzNeAqdnKm04qgb7GlZuwXbUtMj5s8VxxvftLO9QMSXcnsmobXvSjG81Sg0H2x9Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vAESQqfJjCCsMW+egipmd/FsawbANen4roQpbbqUUdQ=;
- b=n/k46yRXcQl9I/x9xVUZaJGsVXPbgLnBlJJNwToW1L9PHpqG5eZQYonotOzr0QqEeGkaxpxcpOimT3DiUwYUOiB4d05GwQd1khlyNqIvojTqyoyLBKwNUlSb9FSI1oh91v2UIeR1pdAw/JNfMj6zroBJuK6JeKtjvfSwG8Os7L1oV5IfhqUiY/bpACIdE/+mtKY+cXorNttXCkvWYhLdmbBm1LI+LzPQ70zxKdVW0sINM+Mgh6/0MSBEA1LMlmQJ0R2I6nYTRO5DGUcTTI/JazL0oCordPCeQ+zYWEoWSaVPytCZ9WWdxImy9UAYJbXArhLN8MHwl/WePaAcPD0b2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vAESQqfJjCCsMW+egipmd/FsawbANen4roQpbbqUUdQ=;
- b=BUi5cO8aGZiGW4YPa3H3PBS6YY556ErlbumWiupgDssApD/IfXBLFrKXHqF4g11cvyh50MbBHwdXQvJjuInzJvENb9uS3jr7qzRISUmX4EJeKbtge52Xk+t+xw1Ej8HnkJipXDSiVREc4VnOcXTV+L+LFwGVbuLKcZVsK8bCwL8=
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
- by SJ0PR21MB1917.namprd21.prod.outlook.com (2603:10b6:a03:292::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.3; Tue, 12 Dec
- 2023 02:51:51 +0000
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::3c1:f565:8d:2954]) by PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::3c1:f565:8d:2954%7]) with mapi id 15.20.7113.001; Tue, 12 Dec 2023
- 02:51:50 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Konstantin Taranov <kotaranov@linux.microsoft.com>,
-        Konstantin Taranov <kotaranov@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH] net: mana: add msix index sharing between EQs
-Thread-Topic: [PATCH] net: mana: add msix index sharing between EQs
-Thread-Index: AQHaKdMCOrqcIf7dokSaSgd+6ugcILCk+ExQ
-Date:   Tue, 12 Dec 2023 02:51:50 +0000
-Message-ID: <PH7PR21MB326385C45F555E92BD9170FDCE8EA@PH7PR21MB3263.namprd21.prod.outlook.com>
-References: <1702038905-29520-1-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1702038905-29520-1-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=88f687c9-fa55-4e7f-96be-c953f0270b34;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-12T02:50:32Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|SJ0PR21MB1917:EE_
-x-ms-office365-filtering-correlation-id: 2ddfd894-7deb-4246-5628-08dbfabd4a3c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /Gb4pn9FqJ9GiJyJcmBDtJfd1kEFuGeNGWo+4PhbbZvg84sl02SneSMNdsoBbYbzYcFgfOiUsA4xNTIjVosfvJGil3WzRL7AidZ3YOXGsy0gsHQCJbn2t4LbYhSDqkLDezqYv3pNL2S6ysSiOMiXyDwTrd+ULbvjlRz2qup5rR4UQMExczUIOJb2qwEoimGs2kA6viRHp8HIeA/wAPpVVOp8yUmLTYhYhs2HTg6ZVsBMdPIhe7W67p7xC6AJjABc36WjRV/n+pb8cjdq1FHJe5SMmQSWCFN5prDNbMLi6G8RnAO8dLZDTVHw1egtD6Ap2GaT5gYF5p5blMZrqp2nJt3QYIfXM42HBWaBy/vY/m2BXNYGQ8ag/Uxs6bqGEbPaU8zKFfoZkhwBdCFL4FDlct/C4VXplqxA2b3Du8CQ83RGKoMeLMsEoLy5zkdK3oMZpmJHJRn4o1gZ4wsaH9Gdh97TdsYfW04dq+lKg1rVOvQgdUqvhQB3ZGV1bjmMf2P4EZsmc/S96e24N9Cmm5ZrDBUS5H2rpqbFReA7dwotXQX8FSpRQmsW2COjAVlJHj7qcrl/qRdgyM3P5mW82NBPTVZHTWpzImBOwhsZl/AdWqhE6MukteCpfUymsoaARFQ3tZRtpBUP6DcPF4Ta7Ye5KApMXNnFwnnpylF7E7AU+UTabLjBO7AQmDwghgx2Dqqw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(136003)(376002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(33656002)(41300700001)(38100700002)(122000001)(71200400001)(7416002)(82950400001)(10290500003)(2906002)(82960400001)(6506007)(478600001)(9686003)(5660300002)(38070700009)(7696005)(55016003)(26005)(110136005)(4326008)(86362001)(8676002)(8936002)(66556008)(66476007)(8990500004)(52536014)(64756008)(54906003)(76116006)(316002)(66446008)(921008)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4ts9+Nmkzjsl/dLplFjNYnxNafbL+FPdH47BZ1GgsNCp87vHVeSuCTftcAbw?=
- =?us-ascii?Q?vVflaTINvxG68ZFI2Vr149fXpPFv5goiT4iKDhlCAFH6tsRKPlIaGkbynVmp?=
- =?us-ascii?Q?0L+nV7PRoq2soI+tkYf61SYWTBTIh6XEb9DWQeRpK9Nyy1z7+Lg8dKv039pE?=
- =?us-ascii?Q?KrVojMiVvWNzcjS7pxtyRJFI2XRGZo3sjqkm+Kf0wyAzZXZsEMAFgne5otbT?=
- =?us-ascii?Q?e68aUXPinHtNbvJohRzc2SAZy4Bw0lN+KN8eB3wvmo3OhFixrdcYv8bXsX9n?=
- =?us-ascii?Q?Sk7PyRj6z0tvy1OMPprX8VbYAoypQ/MVHXa9Ch1uhuAYmjsXyNRwJEtBAwfz?=
- =?us-ascii?Q?29fMqDK5U2SXCcykZ73FXjEv1qLv9/+Rt8gUodKhjGf3VRHg9rqytMi12YMs?=
- =?us-ascii?Q?zUXlz6RB78vav+bNYx/1nIGgVC+kRw2wPHM6kCnOgILyfkLZtc+g+Y+UNsgP?=
- =?us-ascii?Q?nOzCJGcFVjK+RPM9+4qBUNMCouYO5HXobdSXfYswVD3JVb16MBhneHaP/RJB?=
- =?us-ascii?Q?0kNtpT5RILZxa0KNLNphF9JlrXbIxDgKdIR0dcGtr0n9RdgIVA8Xqf9VEMTS?=
- =?us-ascii?Q?ptl4h8JmfMkMo8oruMHLQ5Nxo1rn5M17Iw1JlHPHQ8vkiMqbUReRiu2MtUnx?=
- =?us-ascii?Q?3Nhkzwdo+J7bVVcU2Rne2MXqkUFR5CitZvGSqcqpmYxKuc54iV1g75/W/frH?=
- =?us-ascii?Q?VNond9+ZqrJZILTcuA4r2CMZfBWg+N1pvYPKdKIVonuwUpFVPEYFRHpbMYyy?=
- =?us-ascii?Q?CGYw3iZDQvX/El/VTMnTAuTiGRpZvLVnRw+34+qqEiMkqjRzXioaRXGuKetP?=
- =?us-ascii?Q?Ea5dV5pX2URMWZCMrvGpO/y0LGd8+RTVgKgjQVFUXhnK62v0SxL1dZXw+ofm?=
- =?us-ascii?Q?8jy26y2ihbFUEDFziiUGM8LscerCG1QRh+HXi0jzL92lv9TBv3hqsINwmheC?=
- =?us-ascii?Q?AqASsbXANbOYIt02m05hKqP4FVSTSJ/nOPw332cwy0XmnGM7aaLGPWt37nD0?=
- =?us-ascii?Q?oKRBT2Heda0n5lNP1eLo/jGA7QjL345YNs47yXuFSZf9Q4n9mEQxOsNM8Z2G?=
- =?us-ascii?Q?t80zn674mvoEdenrJDkpo5w8Qv4mB0x3PfoiZg8os7kGPS7Je8nkEolJcp46?=
- =?us-ascii?Q?0oJuKk1bTgvgu330Wl8L05KdNVtqDfYdZyVcPmtcRv9rs9xZ5jkx5xWcpRaI?=
- =?us-ascii?Q?cdSg1j2c0UVoLp7891Oxn53tAxHnvYjDwsf1jGPdCmtyTp3yOs1jwztJgixt?=
- =?us-ascii?Q?9xYCldJK1JWeNBugxCYJfyXgji/EohqlFjLVtNBcIXmQagXjxi4XNDDZce0S?=
- =?us-ascii?Q?kOY1wnqyBpM4ptkHYulKC69yRIaRlgnPlZWnvnyMG8r1oEwoI9qmh8Q4sK2J?=
- =?us-ascii?Q?iP4foVtETmPk4AojcT3guyKMgGWTfxhgUQb9UDB+V78GwsP/DP6j7C9yhYzk?=
- =?us-ascii?Q?x0FjMmDTeA1jq2H8bS/O5vcro2cPubkeu9rg4k2ZsF5u6mgNqhFBwIDRvB4N?=
- =?us-ascii?Q?5s4iWbSOI/38Iaa/A6ZSLOM4NeohjfT+F6b0vit4ZvTFsEqW/xIkKxsJxFhn?=
- =?us-ascii?Q?+vcjhAgEBmKcuUbITxJE0c7iixDfZ0b8QitO0k6h?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Dec 2023 21:54:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BAD83
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 18:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702349681; x=1733885681;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zUKj8Dv3nYUnivYpIvNzpVYesGQluYd+Cha+w0N3lsE=;
+  b=MyEVbRLYqsH8122IJmQajXgatRuw4WGVCpAc6gC9bZKt8AJ5vkCbzoDw
+   bT4dG5wPJKYPAl1PXt7lpSBhkV9xETY92lVk4W8iDFHeIANG3lJ01A7ZC
+   Ysn75QT3j9PKE12aHO8s6ExvHAhxhptVn/iGcsqjAJQqr3qpzs8fBv44t
+   xXoi8NI36jzBAkcuUyOfWw+gQUDLjTJ6b0TWkXrBCOlhx18WjfeAUaFa5
+   /5oJ5CyYr+ehvft3pP9jFeng6q8c+pIEPrShq7Swb7kGuT4F8MyBXHnBC
+   +6WZRB9vuZkAd7bG1xRYDdGtM/xJefSa77uqxBWBIhve597FT0h3oOVBW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="425869279"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="425869279"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 18:54:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="946595926"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="946595926"
+Received: from tgl-lenovo-03.sh.intel.com ([10.239.87.93])
+  by orsmga005.jf.intel.com with ESMTP; 11 Dec 2023 18:52:38 -0800
+From:   wangxiaoming321 <xiaoming.wang@intel.com>
+To:     tglx@linutronix.de, peterz@infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     wangxiaoming321 <xiaoming.wang@intel.com>
+Subject: [PATCH] kernel/cpu: The number of CPUHP_AP_ONLINE_DYN (30) is too small that stops the new dynamic states hotplug.
+Date:   Tue, 12 Dec 2023 10:52:35 +0800
+Message-Id: <20231212025235.775986-1-xiaoming.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ddfd894-7deb-4246-5628-08dbfabd4a3c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 02:51:50.4174
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: V3bfxmYpWM6gRCJyX8MPIAEjHUx6SUwUnushPPQD6TkrQd6ZH2AaNuVpTe7Yif3uJUZUx8GEUFw+QXTg5oogvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB1917
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> @@ -502,12 +512,19 @@ static void mana_gd_deregiser_irq(struct gdma_queue
-> *queue)
->  	if (WARN_ON(msix_index >=3D gc->num_msix_usable))
->  		return;
->=20
-> -	gic =3D &gc->irq_contexts[msix_index];
-> -	gic->handler =3D NULL;
-> -	gic->arg =3D NULL;
-> -
->  	spin_lock_irqsave(&r->lock, flags);
-> -	bitmap_clear(r->map, msix_index, 1);
-> +	gic =3D &gc->irq_contexts[msix_index];
-> +	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
-> +		if (queue =3D=3D eq) {
-> +			list_del_rcu(&eq->entry);
-> +			synchronize_rcu();
+144: perf/x86/cstate:online
+159: workqueue:online
+160: RCU/tree:online
+161: mm/writeback:online
+162: mm/vmstat:online
+163: padata:online
+164: x86/intel/epb:online
+165: mm/compaction:online
+166: block/mq:online
+167: umwait:online
+168: x86/msr:online
+169: x86/cpuid:online
+170: lib/percpu_cnt:online
+171: idle/intel:online
+172: acpi/cpu-drv:online
+173: base/cacheinfo:online
+174: x86/therm:online
+175: cpufreq:online
+176: x86/mce:online
+177: x86/microcode:online
+178: x86/resctrl/cat:online:
+179: printk:online
+180: trace/hwlat:online
+181: trace/osnoise:online
+182: perf/x86/intel/i915:online
+184: driver/dma/idxd/perf:online
+185: platform/x86/isst-if:online
+186: hwmon/coretemp:online
+187: thermal/intel_powerclamp:online
+188: thermal/x86_pkg:online
+189: platform/x86/uncore-freq:online
+190: powercap/rapl:online
+191: ia64/sep5:online
+193: x86/kvm/clk:online
+195: online
 
-The usage of RCU is questionable in an atomic context. This code needs to b=
-e tested with multiple EQs.
+It needs to enlarge the number of dynamic states.
 
-Long
+Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
+---
+ include/linux/cpuhotplug.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +			break;
-> +		}
-> +	}
-> +	if (list_empty(&gic->eq_list)) {
-> +		gic->handler =3D NULL;
-> +		bitmap_clear(r->map, msix_index, 1);
-> +	}
->  	spin_unlock_irqrestore(&r->lock, flags);
->=20
->  	queue->eq.msix_index =3D INVALID_PCI_MSIX_INDEX; @@ -587,7 +604,8
-> @@ static int mana_gd_create_eq(struct gdma_dev *gd,
->  	u32 log2_num_entries;
->  	int err;
->=20
-> -	queue->eq.msix_index =3D INVALID_PCI_MSIX_INDEX;
-> +	queue->eq.msix_index =3D spec->eq.msix_index;
-> +	queue->id =3D INVALID_QUEUE_ID;
->=20
->  	log2_num_entries =3D ilog2(queue->queue_size / GDMA_EQE_SIZE);
->=20
-> @@ -819,6 +837,7 @@ free_q:
->  	kfree(queue);
->  	return err;
->  }
-> +EXPORT_SYMBOL_NS(mana_gd_create_mana_eq, NET_MANA);
->=20
->  int mana_gd_create_mana_wq_cq(struct gdma_dev *gd,
->  			      const struct gdma_queue_spec *spec, @@ -895,6
-> +914,7 @@ void mana_gd_destroy_queue(struct gdma_context *gc, struct
-> gdma_queue *queue)
->  	mana_gd_free_memory(gmi);
->  	kfree(queue);
->  }
-> +EXPORT_SYMBOL_NS(mana_gd_destroy_queue, NET_MANA);
->=20
->  int mana_gd_verify_vf_version(struct pci_dev *pdev)  { @@ -1217,9 +1237,=
-14
-> @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int
-> num_cqe)  static irqreturn_t mana_gd_intr(int irq, void *arg)  {
->  	struct gdma_irq_context *gic =3D arg;
-> +	struct list_head *eq_list =3D &gic->eq_list;
-> +	struct gdma_queue *eq;
->=20
-> -	if (gic->handler)
-> -		gic->handler(gic->arg);
-> +	if (gic->handler) {
-> +		list_for_each_entry_rcu(eq, eq_list, entry) {
-> +			gic->handler(eq);
-> +		}
-> +	}
->=20
->  	return IRQ_HANDLED;
->  }
-> @@ -1272,7 +1297,7 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
->  	for (i =3D 0; i < nvec; i++) {
->  		gic =3D &gc->irq_contexts[i];
->  		gic->handler =3D NULL;
-> -		gic->arg =3D NULL;
-> +		INIT_LIST_HEAD(&gic->eq_list);
->=20
->  		if (!i)
->  			snprintf(gic->name, MANA_IRQ_NAME_SZ,
-> "mana_hwc@pci:%s", diff --git
-> a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> index 9d1cd3b..0a5fc39 100644
-> --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> @@ -300,6 +300,7 @@ static int mana_hwc_create_gdma_eq(struct
-> hw_channel_context *hwc,
->  	spec.eq.context =3D ctx;
->  	spec.eq.callback =3D cb;
->  	spec.eq.log2_throttle_limit =3D
-> DEFAULT_LOG2_THROTTLING_FOR_ERROR_EQ;
-> +	spec.eq.msix_index =3D INVALID_PCI_MSIX_INDEX;
->=20
->  	return mana_gd_create_hwc_queue(hwc->gdma_dev, &spec, queue);  }
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index fc3d290..8718c04 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -1242,6 +1242,7 @@ static int mana_create_eq(struct mana_context *ac)
->  	spec.eq.callback =3D NULL;
->  	spec.eq.context =3D ac->eqs;
->  	spec.eq.log2_throttle_limit =3D LOG2_EQ_THROTTLE;
-> +	spec.eq.msix_index =3D INVALID_PCI_MSIX_INDEX;
->=20
->  	for (i =3D 0; i < gc->max_num_queues; i++) {
->  		err =3D mana_gd_create_mana_eq(gd, &spec, &ac->eqs[i].eq); diff
-> --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h index
-> 88b6ef7..8d6569d 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -293,6 +293,7 @@ struct gdma_queue {
->=20
->  	u32 head;
->  	u32 tail;
-> +	struct list_head entry;
->=20
->  	/* Extra fields specific to EQ/CQ. */
->  	union {
-> @@ -328,6 +329,7 @@ struct gdma_queue_spec {
->  			void *context;
->=20
->  			unsigned long log2_throttle_limit;
-> +			unsigned int msix_index;
->  		} eq;
->=20
->  		struct {
-> @@ -344,7 +346,7 @@ struct gdma_queue_spec {
->=20
->  struct gdma_irq_context {
->  	void (*handler)(void *arg);
-> -	void *arg;
-> +	struct list_head eq_list;
->  	char name[MANA_IRQ_NAME_SZ];
->  };
->=20
-> --
-> 2.43.0
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index efc0c0b07efb..c88a58c363f1 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -251,7 +251,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_RCUTREE_ONLINE,
+ 	CPUHP_AP_BASE_CACHEINFO_ONLINE,
+ 	CPUHP_AP_ONLINE_DYN,
+-	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
++	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 40,
+ 	/* Must be after CPUHP_AP_ONLINE_DYN for node_states[N_CPU] update */
+ 	CPUHP_AP_MM_DEMOTION_ONLINE,
+ 	CPUHP_AP_X86_HPET_ONLINE,
+-- 
+2.25.1
 
