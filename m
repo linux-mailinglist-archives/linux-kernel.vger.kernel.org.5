@@ -2,186 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2457F80EF0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7284380EF12
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376896AbjLLOn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:43:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S1376905AbjLLOoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376832AbjLLOn6 (ORCPT
+        with ESMTP id S1376853AbjLLOoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:43:58 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F1DE9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:44:03 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c2db2ee28so60552185e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 06:44:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702392241; x=1702997041; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kWo777MN0DncSazKE0nHt1+1eF9bduFbpo2jm9olN20=;
-        b=QLJlD/u4kNstLRMM1Yq7BbcbNfwFlOU12w5CpnvMUjkaw8V+BnaL3va7gISpdXDNr9
-         BVh8WVuGwUvVrCFK9WcnwFqoZplucDWhuir1iJauRJraD1kyOkc1y88ZRjsQPygJdCbf
-         VU7kfrbBVWo87Y9pq5V2RG8mfzoBMur+wLyGlcLPp1+Al2Qc6yCql/bf2jvLhlD2uDy/
-         4F01uO8xp6ecHjQcDIGX05/w4wkmNau3X45q9snvNh4+97ZS+9qkY976bYUR9HHK29Ux
-         /xH/K9sMgK3K4vhu2laAqYP+5NzSKcS74gvIvT72k9VgSbDbwBor7GK+vwNV0qYRyyYd
-         qMOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702392241; x=1702997041;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kWo777MN0DncSazKE0nHt1+1eF9bduFbpo2jm9olN20=;
-        b=I6I7mJkbz3OBguBt84QrOg2VMbkijVBXTTKW9a7g0vnimQ/bcBrs0yWFkF4zNhymz6
-         yc6BlBqHjyHwej2lw3+p5Rh2qt78a789lHBrFmLSE9TIT7Z2tv/i6RJrz5p3NdOfiJhJ
-         oJG27vIoJ9ibA3JnEvIGRPXkCQTWsHGIvBIP4FtcyB711pRiwxL/S80eNhzsQLXQZZP5
-         yRMTlUiGBvhK/Xc59S2bAaCW6xYYVMRt2477EwwO458gjKNmICNnsX53eUx6XU9hPFQ3
-         HZHSkeHfWGlJ1AFdDvrILpKZ1f1PD6tPNP8MnhW5COefOww/4w+h8Vlj2+006a55fv+I
-         Y7Ig==
-X-Gm-Message-State: AOJu0YzkNZ4X99XRN6pqSpUEbsM09YB68w7Oh5+NtlW4qDNAjIgVX9ag
-        1Ew2eeD17HBa+JXeEzeup2iq7Q==
-X-Google-Smtp-Source: AGHT+IHgst7o6eFwexZsyUHa+goT+CnzGuTjMsefbGfNNLLVXdOwdtf39J65EYjCP/XeXKI778GUgw==
-X-Received: by 2002:a05:600c:3b9f:b0:40b:5e59:ccac with SMTP id n31-20020a05600c3b9f00b0040b5e59ccacmr3244021wms.141.1702392241514;
-        Tue, 12 Dec 2023 06:44:01 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:5894:fa62:26b4:bf82? ([2a01:e0a:982:cbb0:5894:fa62:26b4:bf82])
-        by smtp.gmail.com with ESMTPSA id bh15-20020a05600c3d0f00b0040b4ccdcffbsm17159922wmb.2.2023.12.12.06.44.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 06:44:01 -0800 (PST)
-Message-ID: <be39f74b-e04f-48c8-acc9-cc818adfc4db@linaro.org>
-Date:   Tue, 12 Dec 2023 15:43:59 +0100
+        Tue, 12 Dec 2023 09:44:16 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECC7F2;
+        Tue, 12 Dec 2023 06:44:22 -0800 (PST)
+Date:   Tue, 12 Dec 2023 14:44:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702392260;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPE1TxfztaCUJ8c67Q6iVKgI7+m5XFqGsRpjgNaFBhA=;
+        b=xDbofv7U9/y5e8vJo4YOLZCjgvvbFtG7caAFnqU75p5RKA5mF+PwCU1MDEDuM7fscadzzj
+        9+/DZxnDIShhPLRnsBrrVrn5oNlDb/aq9Uv3xEMzid/i+QbV3rRR4HW/ezVFmZB2zgvmrh
+        E/6ZulsnB6Aa7hNS+P3gbjbD4cq33bHnAtW3Ik5Lb01sq80gCodYuw0Shl8zOnm2FpVpiJ
+        DGlVBeD1JgpsmQ/r05rQ3kPsy9240XVre3K2zgUvNkUnLemzvnhVyvFFF2EhHPIpyuEB5D
+        nkHqmOBgdNyElLcmPFLKSxnFB7kxGMY9Tndr3ehGv8ECGXBbVIB1JAJ2kiNM5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702392260;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CPE1TxfztaCUJ8c67Q6iVKgI7+m5XFqGsRpjgNaFBhA=;
+        b=2Rd3tXeUE92TOmpW1kpuroJHZnX0y+X76NRkhS3g76aSIYvXIS2fm7AEX3xaEbmcwDVRTZ
+        hjILWrI8Ez/5JEBA==
+From:   "tip-bot2 for Konrad Dybcio" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irqchip/qcom-mpm: Support passing a slice of SRAM as
+ reg space
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20230328-topic-msgram_mpm-v7-2-6ee2bfeaac2c@linaro.org>
+References: <20230328-topic-msgram_mpm-v7-2-6ee2bfeaac2c@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v12 2/4] Input: add core support for Goodix Berlin
- Touchscreen IC
-Content-Language: en-US, fr
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231209-topic-goodix-berlin-upstream-initial-v12-0-eaffaeb53fb5@linaro.org>
- <20231209-topic-goodix-berlin-upstream-initial-v12-2-eaffaeb53fb5@linaro.org>
- <ZXVgYuzE6jPPSfnZ@google.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <ZXVgYuzE6jPPSfnZ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <170239225978.398.6776352456083979765.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+The following commit has been merged into the irq/core branch of tip:
 
-On 10/12/2023 07:53, Dmitry Torokhov wrote:
-> Hi Neil,
-> 
-> On Sat, Dec 09, 2023 at 08:33:40AM +0100, Neil Armstrong wrote:
->> Add initial support for the new Goodix "Berlin" touchscreen ICs.
->>
->> These touchscreen ICs support SPI, I2C and I3C interface, up to
->> 10 finger touch, stylus and gestures events.
->>
->> This initial driver is derived from the Goodix goodix_ts_berlin
->> available at [1] and [2] and only supports the GT9916 IC
->> present on the Qualcomm SM8550 MTP & QRD touch panel.
->>
->> The current implementation only supports BerlinD, aka GT9916.
->>
->> Support for advanced features like:
->> - Firmware & config update
->> - Stylus events
->> - Gestures events
->> - Previous revisions support (BerlinA or BerlinB)
->> is not included in current version.
->>
->> The current support will work with currently flashed firmware
->> and config, and bail out if firmware or config aren't flashed yet.
->>
->> [1] https://github.com/goodix/goodix_ts_berlin
->> [2] https://git.codelinaro.org/clo/la/platform/vendor/opensource/touch-drivers
->>
->> Reviewed-by: Jeff LaBundy <jeff@labundy.com>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> Thank you for resending the patch. I think there is an issue in how you
-> read and parse the data in case of more than 2 fingers. It looks like in
-> that case you are overwriting the checksum form the first 2 and then not
-> reading the new checksum but use some garbage past the touch data. I
-> might be mistaken though...
+Commit-ID:     221b110d87c2d3ea113ad784b2c6505726a3e157
+Gitweb:        https://git.kernel.org/tip/221b110d87c2d3ea113ad784b2c6505726a3e157
+Author:        Konrad Dybcio <konrad.dybcio@linaro.org>
+AuthorDate:    Mon, 27 Nov 2023 16:52:13 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 12 Dec 2023 15:40:42 +01:00
 
-I carefully inspected the code again, and it's correct, otherwise I would have experimented
-checksum errors, which isn't the case.
+irqchip/qcom-mpm: Support passing a slice of SRAM as reg space
 
-First read from goodix_berlin_irq() is GOODIX_BERLIN_IRQ_READ_LEN(2) length in memory:
+The MPM hardware is accessible from the ARM CPUs through a shared memory
+region (RPM MSG RAM) which is also concurrently accessed by other kinds of
+cores on the system like modem, ADSP etc.
 
-[GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN][GOODIX_BERLIN_COOR_DATA_CHECKSUM_SIZE][GOODIX_BERLIN_BYTES_PER_POINT * x]
+Modeling this relation in a (somewhat) sane manner in the device tree
+requires to
 
-the pre_buf_len goodix_berlin_touch_handler() get is GOODIX_BERLIN_IRQ_READ_LEN(2), the we complete the
-read after the first read, but since the touch checksum is before the touch data, it works because
-we complete the data.
+  - either present the MPM as a child of said memory region, which
+    makes little sense, as a mapped memory carveout is not a bus.
 
-I added some comments to clarify the memory layout and re-ordered the items
-in the GOODIX_BERLIN_IRQ_READ_LEN() macro to show GOODIX_BERLIN_COOR_DATA_CHECKSUM
-is before the GOODIX_BERLIN_BYTES_PER_POINT data.
+  - define nodes which bleed their register spaces into one another
 
-> 
-> I also believe you are leaking afe_data in case of success. We have the
-> newfangled __free(kfree) from cleanup.h that should help there.
+  - or passing their slice of the MSG RAM through a property
 
-Indeed it was leaking.
+Go with the third option and add a way to map a region passed through the
+"qcom,rpm-msg-ram" property as register space for the MPM interrupt
+controller.
 
-> 
-> Another request - we should not have anything in goodix_berlin.h that is
-> not used by the I2C and SPI sub-drivers, so the only thing it should
-> contain is goodix_berlin_probe() declaration and dev_pm_ops. All other
-> defines and definitions should go to goodix_berlin_core.h.
-> 
-> I made a few more cosmetic changes in the attached patch, please
-> consider applying it.
-> 
-> Thanks.
+The current way of using 'reg' is preserved for backwards compatibility
+reasons.
 
-Thanks,
-Neil
+[ tglx: Massaged changelog ]
 
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Link: https://lore.kernel.org/r/20230328-topic-msgram_mpm-v7-2-6ee2bfeaac2c@linaro.org
+
+---
+ drivers/irqchip/irq-qcom-mpm.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/irqchip/irq-qcom-mpm.c b/drivers/irqchip/irq-qcom-mpm.c
+index 7124565..cda5838 100644
+--- a/drivers/irqchip/irq-qcom-mpm.c
++++ b/drivers/irqchip/irq-qcom-mpm.c
+@@ -14,6 +14,7 @@
+ #include <linux/mailbox_client.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_domain.h>
+@@ -322,8 +323,10 @@ static int qcom_mpm_init(struct device_node *np, struct device_node *parent)
+ 	struct device *dev = &pdev->dev;
+ 	struct irq_domain *parent_domain;
+ 	struct generic_pm_domain *genpd;
++	struct device_node *msgram_np;
+ 	struct qcom_mpm_priv *priv;
+ 	unsigned int pin_cnt;
++	struct resource res;
+ 	int i, irq;
+ 	int ret;
+ 
+@@ -374,9 +377,26 @@ static int qcom_mpm_init(struct device_node *np, struct device_node *parent)
+ 
+ 	raw_spin_lock_init(&priv->lock);
+ 
+-	priv->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(priv->base))
+-		return PTR_ERR(priv->base);
++	/* If we have a handle to an RPM message ram partition, use it. */
++	msgram_np = of_parse_phandle(np, "qcom,rpm-msg-ram", 0);
++	if (msgram_np) {
++		ret = of_address_to_resource(msgram_np, 0, &res);
++		if (ret) {
++			of_node_put(msgram_np);
++			return ret;
++		}
++
++		/* Don't use devm_ioremap_resource, as we're accessing a shared region. */
++		priv->base = devm_ioremap(dev, res.start, resource_size(&res));
++		of_node_put(msgram_np);
++		if (IS_ERR(priv->base))
++			return PTR_ERR(priv->base);
++	} else {
++		/* Otherwise, fall back to simple MMIO. */
++		priv->base = devm_platform_ioremap_resource(pdev, 0);
++		if (IS_ERR(priv->base))
++			return PTR_ERR(priv->base);
++	}
+ 
+ 	for (i = 0; i < priv->reg_stride; i++) {
+ 		qcom_mpm_write(priv, MPM_REG_ENABLE, i, 0);
