@@ -2,134 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F64080F447
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4780E80F44A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235093AbjLLRSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
+        id S235002AbjLLRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:18:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232817AbjLLRSU (ORCPT
+        with ESMTP id S235066AbjLLRSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:18:20 -0500
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BEDB7;
-        Tue, 12 Dec 2023 09:18:26 -0800 (PST)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-590711b416fso3370999eaf.2;
-        Tue, 12 Dec 2023 09:18:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702401505; x=1703006305;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=48KM5C81ULvMHSLTn8udFz6tGE21YI180mYUHTStYAM=;
-        b=qa7mmL3V4rxM4u60yK20idQQaOQ8uI3cJclUzvDcDWcCBfjJxhJaNdHz3kcTz7n+45
-         Ez+4REnBOdq+rDSpgchhILslQcwelwYyhoyfzPPTf0ucjjSGgfFVQvUvZECbn67CBPOG
-         DHKXNBMcRMv6LXuT5+DM+wpHlFR0M1R8YSfzZVv8dtLbw4FgPQVHI0ngtczgzCtW+XwY
-         zy3CJEUOL0a79ke9tC334tlMubUy+hQ7o3+5UmEQuGL/erd/ScXSXQb0e70wBhlqugAQ
-         J3zlhp3pOR3HGu3FkiD2YczgNCBZ0Rz8ljb/1kMZUguCjvRENc/nkwIWoHR7h+nVWPaY
-         2V0Q==
-X-Gm-Message-State: AOJu0YzVosuVo5e8vvC1vETui3t3VVgh0BydtF7g/BhiLPoR/Gw+cjfq
-        /bD57nUlkPGNjB4UzDQGaQ==
-X-Google-Smtp-Source: AGHT+IHD8gCXBNfy+Vh8iNigMzwrmwHoW1c/3coGS1gxubPbH4uqznefr+QqzOtaLxsW1jHytFDPFg==
-X-Received: by 2002:a05:6820:162c:b0:58a:128:8ff0 with SMTP id bb44-20020a056820162c00b0058a01288ff0mr5873923oob.5.1702401505245;
-        Tue, 12 Dec 2023 09:18:25 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id l26-20020a4a855a000000b0058d1f2e1c8csm2549264ooh.40.2023.12.12.09.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 09:18:24 -0800 (PST)
-Received: (nullmailer pid 2286788 invoked by uid 1000);
-        Tue, 12 Dec 2023 17:18:22 -0000
-Date:   Tue, 12 Dec 2023 11:18:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [net-next RFC PATCH v2 3/4] dt-bindings: net: Document QCA808x
- PHYs
-Message-ID: <20231212171822.GA2209593-robh@kernel.org>
-References: <20231211192318.16450-1-ansuelsmth@gmail.com>
- <20231211192318.16450-3-ansuelsmth@gmail.com>
- <170232732808.2870894.17994101779465776370.robh@kernel.org>
- <657775d5.5d0a0220.20552.2a2d@mx.google.com>
+        Tue, 12 Dec 2023 12:18:31 -0500
+Received: from HK2P15301CU002.outbound.protection.outlook.com (unknown [52.101.128.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B010E3;
+        Tue, 12 Dec 2023 09:18:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ark1b/irkqKMz75lJ0OT1HFbvLdPkJunQ47u4H11yagNDNIonzYhY2dsoBTYNlNwySGvgIvoHUGMEX0Tk5N3M60Xy9tEBxPTYsN6vv5udbbiJo720+GemkkUGhNwzcaDcBEf1plB/K2OIrrbfkAAKIRm55kv/VaXo1IEKh0j5PJmmriOI9mBgiyhmRxjKLWv5Z3VKM27mcrj4Rwjl5gs5IWybev9dcI19oYFqxqlvmdLcvLzB6X24TawWkhXvsoN4pnnIJ9BZizu0WzStZrZGvNrR8wRge6Z4SMq8N1TnRUC80yIjWoOg42IgJCPg3MYsTPOrbArOEQVCAMGRgXeJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AmMUPoDrlHbFCFhvRhw7/azpHV3GvanZ8BAo8wVY+IA=;
+ b=iXiRPjLXblA3XUJoDW7aGiSanpSLLWA0xRBywUSDadnW3MgLxt8EtMRKypEQGhAgAnRp7TGEipWouNwZ8/UvwA5tnZXDToyRYZ784XmcaBBt7KVd9Vsyr6QcCzbtZwUyPtartJDpXFz7voyi5GXLH6yIuCTPyh/bGk+2c+zE/13CGsVNPQtVeKmJd9VYvLz616PL5uRlZk3N81zMpE8Of33AxvaiEWvQAavtQOqpRv6XgNliDYHyfiRkzYISrPy3iidnipSWeBDDTMGuggKriI6Zfg8Uj3raIhurhWmv3qcQaEplO/m3Q8+wBmsb4vnO3RBJR19IeiOZidNxkwoDJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AmMUPoDrlHbFCFhvRhw7/azpHV3GvanZ8BAo8wVY+IA=;
+ b=Nm4erwdMUcj2vMEpya91WFdHubhtstNTSxB4VHw00BwojwCzl74QdoPvKymqPqN6x8c6CwkVwhUckYRcEWl4JCMh4xb2YFMbmSuS2AdOUZa9f/9n+90HTYMXM9iQ19uw/GhF885Q7dj5i0K+mAMX2NqYyE8zGelW7aHJ4TQsPps=
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
+ by SI2P153MB0444.APCP153.PROD.OUTLOOK.COM (2603:1096:4:e9::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7113.7; Tue, 12 Dec 2023 17:18:31 +0000
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7113.001; Tue, 12 Dec 2023
+ 17:18:31 +0000
+From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [PATCH V5 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Topic: [EXTERNAL] Re: [PATCH V5 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Index: AQHaLO/QR3tf0roc2kSw9A6kOF+FyrCl2CcAgAAJA9A=
+Date:   Tue, 12 Dec 2023 17:18:31 +0000
+Message-ID: <PUZP153MB07885B197469B61D8907B1E3CC8EA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+References: <1702029754-6520-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZXMiOwK3sOJNXHxd@yury-ThinkPad>
+ <20231211063726.GA4977@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZXcrHc5QGPTZtXKf@yury-ThinkPad>
+ <20231212113856.GA17123@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZXiLetPnY5TlAQGY@yury-ThinkPad>
+In-Reply-To: <ZXiLetPnY5TlAQGY@yury-ThinkPad>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0e7e8a57-51b3-47c4-96e2-b50e522ec308;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-12T17:06:17Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PUZP153MB0788:EE_|SI2P153MB0444:EE_
+x-ms-office365-filtering-correlation-id: 5c9c0f7f-4db8-43e2-fab7-08dbfb365d1c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: X8XGRopp97LLKlMiCexzDy6e2laDytV2cmrQyh2El6g2psFD62dvGeLAO1VHRf81VbHmikdX9SWRg+I3OAXWxWehlShAUaWtPF9PXm+6im4y7z8fvmskm7BgVTo1V0Xrsx7WjDWbJfqmiNPHPQmhpq1NHzyoWJLZlsp1VzP/mRb5ITNkBBaT8lqw512NJKw3YyFMq6miiOtfB2mBfYJuAuCDs5CMQQpEnVoSnSIQQxGc00rledkmveNnxwLHDRBIWAobBzawRngSFkvufguoH4OshLbMiHPVHeYW8xTzeMq3YopIlLpdiJcC2NdpvrFLsYbQu4aDJtMJA5NttX6Tk+567M5CT+n+BV3ibu/PC4QXOGJ+acETdann1qqHRhSBCZGNG0Kj5kH9XuBbEPRlFYr6xJo82cain8nyQvsZTb6OhfUkxCjVap1+P+ubSxXb5oHVu6mLnctbL6tFfcTRX3hcqw9A+9X8KyC90yHE9uW6Lwmx3t5kU8jnF1Mnf0pv2cEUMX/XpUZamEFucx7lVhhVnjYbBUlvkSWbx9JLcNi61RtU4PhrD3mgmQTjODeZlTrOHHiM4diK1/EC1nFfswI7NpgLoOXwGcP6ZFdB/hljl3r5baoMy69GkKZ5q9c/mprYGiRGN3D1n722lMNJIlG6zX1uhUmV93CLxjdcEGZCPsi3nxT2K6ye62FHLwPXmjQ7a/u5wAIYxQIRa5En1Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(346002)(396003)(230273577357003)(230173577357003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(107886003)(83380400001)(38070700009)(86362001)(33656002)(82950400001)(82960400001)(122000001)(38100700002)(316002)(54906003)(64756008)(52536014)(8936002)(66446008)(8676002)(110136005)(66556008)(66946007)(76116006)(66476007)(55016003)(5660300002)(7416002)(4326008)(2906002)(71200400001)(41300700001)(26005)(478600001)(10290500003)(8990500004)(9686003)(7696005)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?yIKDYkhypvGUYjjc4ma8jyX7NeSTOESSu1Q6S4S7y0fpN73bMKMje8JJzGhQ?=
+ =?us-ascii?Q?u+8GB2SApltw7nySJLRr2MZyapoBVyor37t/aHls288bOyskltoc39TYzNc7?=
+ =?us-ascii?Q?rtDpC7gf//WFKDXHSG8jxb3lTzJtWNiw5ot7FGDhDPIk5NDZ5OegwQr7ghgS?=
+ =?us-ascii?Q?jHSuiU1kjTYdKqIQG20JQvW4bDrhTMY/iSbHxWODeD3WDUKzK+psyXdcZLiD?=
+ =?us-ascii?Q?IBoqExQw1/Bl0JKOoyeRrWtXVCPslgLTlKJbyyDRGt2AE/LWUptTKBjDa9xQ?=
+ =?us-ascii?Q?pso4su7fY3YttlZ4G+XUpiAxfKakgPQldyIGtkVX+GGZdCN610s/woZD7q23?=
+ =?us-ascii?Q?35QDfZ/OS305R6SM6hss5tk2QvExsKgWvrI1124edBWorNixLvOzmZTBu8xB?=
+ =?us-ascii?Q?ism+yPAvMKJ8c4hMPHvBPD3ULsbILyPORgPTds8oJYipCsySSQ/eQPJVH4W1?=
+ =?us-ascii?Q?eoWI3pbgw9i+4AR5sj2fjH8p4siM6132axr5V0ebK3BIiiXSqrPCNtrPEvSX?=
+ =?us-ascii?Q?r9CEIUzGdhS1StdkE1LdpTs/pqFIprEeP6fGlO+kqoxqglQAriQP/yXiUVp/?=
+ =?us-ascii?Q?FndS/gRnfaTPH07sQs0ejIVImVYQKdiRsTjQUN9RHEnr7WYiqMKcTX0jVU1l?=
+ =?us-ascii?Q?Q7O2UihYFyVJI06OAt/L2jVM+sj3njubDQSZ5scqnO7kh7kn3SrLmgIPBWt1?=
+ =?us-ascii?Q?e7JWztvPh/wNAysJD4RNjNE7Baft1KI9xadQ5P8nFiDeyYq3mVGfAjC1m//n?=
+ =?us-ascii?Q?16bL7Rn31oECum2uVEct0ABbDeDsxvEZAXGP0AlOhbXI0IwHyv0fgb2u1BFR?=
+ =?us-ascii?Q?h3C9DNr7TysPmIpJdgO/T1tDHuRvd7rRDl8Q/FakZLya4DH+HnDiqx18cMl9?=
+ =?us-ascii?Q?9DxNKx3bEIRgRpZE+ivY13VOMwpbz2h6RmD8VpKvQ8rz0WJPS+QSg/jKjSSx?=
+ =?us-ascii?Q?g/lPEr4MoPOg0c2LndCV6Y6Do7hCQ4mdmMHuOaTsLj89GJHXnee5F1X5uZix?=
+ =?us-ascii?Q?OhwxY3Mb1mkMslNThL8pAedHn0Y2A32phLXIcsQhDw3Y5htqTKwBsr3cIRK0?=
+ =?us-ascii?Q?4Rxn+xKWMPVBf4r3nWwWoTH4E+Ak7Ts0bpq3xmQR2k0WefS/xawgxwYZ5a5G?=
+ =?us-ascii?Q?vPPzXehGFLzujk3uPEPrMHj3kd65SUEuK/2Ufzkof2N6dp06zfCgVed26rwd?=
+ =?us-ascii?Q?6Qsu+s9dN+BYDXs9txaBT9H7aiIIIMs0G794P3A2T4xUORSNg6hkSXFCQ1OW?=
+ =?us-ascii?Q?Zyfrauh6vwv6UDDwtciSUQhLvt4Ys1GnTFkuExiCcWEdtDGdVwxhNQV56d+b?=
+ =?us-ascii?Q?tTJXFUtfpjad7rTlXiaS+C7k9jwHyrw8HexjWOKRUje/Mqr7qNxBGv+Y10zy?=
+ =?us-ascii?Q?KP6vWkgpz9T1Lg14iMf1v5cpTJgGMOtuWwTrLkH7WpcDzilP+SS4HE5R/gL7?=
+ =?us-ascii?Q?39oi6Zhr5DBeg8608yC6I/cXRybZsrIfA+PJIGehlYr9TQ6nsBF7yQrG87jL?=
+ =?us-ascii?Q?Ohnf8kTJfqSeB7hhhFzfRRdn/X0v8yHulcXa?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <657775d5.5d0a0220.20552.2a2d@mx.google.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c9c0f7f-4db8-43e2-fab7-08dbfb365d1c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 17:18:31.1910
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8l5ElsoCt/TA/hRWhIZQUeVZy1szfoWMxYpxZKVRwumFuK0QNUlLVSPSSUNJjkd3mc8OgoAbpnUIyHFYExS66AM083YvCB6CohD9AygGp70=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0444
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_HP_HELO_NORDNS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RDNS_NONE,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 09:49:22PM +0100, Christian Marangi wrote:
-> On Mon, Dec 11, 2023 at 02:42:08PM -0600, Rob Herring wrote:
-> > 
-> > On Mon, 11 Dec 2023 20:23:17 +0100, Christian Marangi wrote:
-> > > Add Documentation for QCA808x PHYs for the additional LED configuration
-> > > for this PHY.
-> > > 
-> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > > ---
-> > > Changes v2:
-> > > - Fix License warning from checkpatch
-> > > - Drop redundant Description phrase
-> > > - Improve commit tile
-> > > - Drop special property (generalized)
-> > > 
-> > >  .../devicetree/bindings/net/qca,qca808x.yaml  | 58 +++++++++++++++++++
-> > >  1 file changed, 58 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
-> > > 
-> > 
-> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > 
-> > yamllint warnings/errors:
-> > 
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/qca,qca808x.yaml: 'anyOf' conditional failed, one must be fixed:
-> > 	'properties' is a required property
-> > 	'patternProperties' is a required property
-> > 	hint: Metaschema for devicetree binding documentation
-> > 	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
-> > 
-> > doc reference errors (make refcheckdocs):
-> > 
-> > See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231211192318.16450-3-ansuelsmth@gmail.com
-> > 
-> > The base for the series is generally the latest rc1. A different dependency
-> > should be noted in *this* patch.
-> > 
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> > date:
-> > 
-> > pip3 install dtschema --upgrade
-> > 
-> > Please check and re-submit after running the above command yourself. Note
-> > that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> > your schema. However, it must be unset to test all examples with your schema.
-> >
-> 
-> Erm sorry for the bot error... But How to handle this? 
 
-You should define what the compatible must be under properties and drop 
-'select' (it will get generated). 'contains' in the select is generally 
-not sufficient constraint though since ethernet-phy.yaml happens to 
-limit compatible to 1 entry, it is in this case.
 
-Rob
+>-----Original Message-----
+>From: Yury Norov <yury.norov@gmail.com>
+>Sent: Tuesday, December 12, 2023 10:04 PM
+>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+>kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>leon@kernel.org; cai.huoqing@linux.dev; ssengar@linux.microsoft.com;
+>vkuznets@redhat.com; tglx@linutronix.de; linux-hyperv@vger.kernel.org;
+>netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+>rdma@vger.kernel.org; Souradeep Chakrabarti <schakrabarti@microsoft.com>;
+>Paul Rosswurm <paulros@microsoft.com>
+>Subject: [EXTERNAL] Re: [PATCH V5 net-next] net: mana: Assigning IRQ affin=
+ity on
+>HT cores
+>
+>[Some people who received this message don't often get email from
+>yury.norov@gmail.com. Learn why this is important at
+>https://aka.ms/LearnAboutSenderIdentification ]
+>
+>> > > > > +     rcu_read_lock();
+>> > > > > +     for_each_numa_hop_mask(next, next_node) {
+>> > > > > +             cpumask_andnot(curr, next, prev);
+>> > > > > +             for (w =3D cpumask_weight(curr), cnt =3D 0; cnt < =
+w; ) {
+>> > > > > +                     cpumask_copy(cpus, curr);
+>> > > > > +                     for_each_cpu(cpu, cpus) {
+>> > > > > +                             irq_set_affinity_and_hint(irqs[i],
+>topology_sibling_cpumask(cpu));
+>> > > > > +                             if (++i =3D=3D nvec)
+>> > > > > +                                     goto done;
+>> > > >
+>> > > > Think what if you're passed with irq_setup(NULL, 0, 0).
+>> > > > That's why I suggested to place this check at the beginning.
+>> > > >
+>> > > irq_setup() is a helper function for mana_gd_setup_irqs(), which
+>> > > already takes care of no NULL pointer for irqs, and 0 number of inte=
+rrupts can
+>not be passed.
+>> > >
+>> > > nvec =3D pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX); if
+>> > > (nvec < 0)
+>> > >   return nvec;
+>> >
+>> > I know that. But still it's a bug. The common convention is that if
+>> > a 0-length array is passed to a function, it should not dereference
+>> > the pointer.
+>> >
+>> I will add one if check in the begining of irq_setup() to verify the
+>> pointer and the nvec number.
+>
+>Yes you can, but what for? This is an error anyways, and you don't care ab=
+out early
+>return. So instead of adding and bearing extra logic, I'd just swap 2 line=
+s of existing
+>code.
+Problem with the code you had proposed is shown below:
+
+> ./a.out
+ i is 1
+ i is 2
+ i is 3
+ i is 4
+ i is 5
+ i is 6
+ i is 7
+ i is 8
+ i is 9
+ i is 10
+in done
+lisatest ~
+> cat test3.c
+#include<stdio.h>
+
+main() {
+        int i =3D 0, cur, nvec =3D 10;
+        for (cur =3D 0; cur < 20; cur++) {
+                if (i++ =3D=3D nvec)
+                        goto done;
+                printf(" i is %d\n", i);
+        }
+done:                                                                      =
+                                                                           =
+                                                                           =
+                                                     =20
+printf("in done\n");
+}
+
+So now it is because post increment operator in i++,
+For that reason in the posposed code we will hit irqs[nvec], which may caus=
+e crash, as size of
+irqs is nvec.
+
+Now if we preincrement, then we will loop correctly, but nvec =3D=3D 0 chec=
+k will not happen.
+
+Like here with preincrement in above code we are not hitting (i =3D=3D nvec=
+) .
+> ./a.out
+ i is 1
+ i is 2
+ i is 3
+ i is 4
+ i is 5
+ i is 6
+ i is 7
+ i is 8
+ i is 9
+in done
+
+So with preincrement if we want the check for nvec =3D=3D 0, we will need t=
+he check with extra if condition
+before the loop.
