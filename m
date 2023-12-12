@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D296E80F790
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2324C80F786
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjLLUJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:09:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        id S1377175AbjLLUJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjLLUJd (ORCPT
+        with ESMTP id S229975AbjLLUJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:09:33 -0500
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BBCCA;
-        Tue, 12 Dec 2023 12:09:38 -0800 (PST)
-Received: from newone.lan (unknown [10.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 727A516074E;
-        Tue, 12 Dec 2023 21:09:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1702411775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=YR5tv31E3PULKwDD6cdd9ZvzFe890y7GDGcNtPGOHXs=;
-        b=XEHbhaUPUOqSI1feA5yJXFXHVAxPSMX6n3JA1rJVomrooXonUuUWcAucm+0woS4YlpcXvy
-        DXiehrUkg88bnRZsOL7fEoi8GWm/HTlAr0OsVj8d8j5jhUwZ2S00FBvvwol8VBJCKFcCho
-        lz/0OxthKSjJ4Cf4ZbbtdY2kwF3JR80=
-From:   David Heidelberg <david@ixit.cz>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Brian Masney <masneyb@onstation.org>
-Cc:     David Heidelberg <david@ixit.cz>, Rob Herring <robh@kernel.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: panel-simple-dsi: move LG 5" HD TFT LCD panel into DSI yaml
-Date:   Tue, 12 Dec 2023 21:09:17 +0100
-Message-ID: <20231212200934.99262-1-david@ixit.cz>
-X-Mailer: git-send-email 2.43.0
+        Tue, 12 Dec 2023 15:09:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25B6AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:09:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E340AC433C7;
+        Tue, 12 Dec 2023 20:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702411770;
+        bh=0eVTZkHlIsk4aS6bhAk3MNH78cknRO/FG2cL4SHw4nI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DD6xBI3fMi8m8hMqyxAqM36NRBTMjYg931z25Qts7t2uYQAK00GDdDBiyoi/FZU58
+         T9SoUwMxKnA0cz46BjKba5m4VqYqOTygLmVIs3sEdYuPg2P2ASocvDEPXR3wC/uJE9
+         qEe24c7y5ScQsZx/2ONaVEeGAFcO9ftV+ckdevj9JrD3fis2cq6fShopa8V0O95wZM
+         aKFwUfAe3+3iMj5KxNCUAELeS6V6diijN3EkX7+vLAMkWsBKXOBP6/RP7mcSg+1E8/
+         VE8WRBkUH64YHcc3gYeYdaT8WvphmfQCBlKozwafOyXWENgvyoVL1JmNRxKlQWJxPt
+         PjGzwsL/bIOtg==
+Date:   Tue, 12 Dec 2023 12:09:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v5 3/3] net: phy: add support for PHY package
+ MMD read/write
+Message-ID: <20231212120928.4b558d68@kernel.org>
+In-Reply-To: <20231212123743.29829-3-ansuelsmth@gmail.com>
+References: <20231212123743.29829-1-ansuelsmth@gmail.com>
+        <20231212123743.29829-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally was in the panel-simple, but belongs to panel-simple-dsi.
+On Tue, 12 Dec 2023 13:37:43 +0100 Christian Marangi wrote:
+> + * __phy_package_write_mmd - write MMD reg relative to PHY package base addr
 
-See arch/arm/boot/dts/nvidia/tegra114-roth.dts for more details.
+kdoc test says phy_package_write_mmd
 
-Resolves the following warning:
-```
-arch/arm/boot/dts/tegra114-roth.dt.yaml: panel@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
-        From schema: Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-```
-
-Fixes: 310abcea76e9 ("dt-bindings: display: convert simple lg panels to DT Schema")
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2: added Fixes tag (thx to Jessica)
-
- .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-index 73674baea75d..f9160d7bac3c 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-@@ -42,6 +42,8 @@ properties:
-       - lg,acx467akm-7
-         # LG Corporation 7" WXGA TFT LCD panel
-       - lg,ld070wx3-sl01
-+        # LG Corporation 5" HD TFT LCD panel
-+      - lg,lh500wx1-sd03
-         # One Stop Displays OSD101T2587-53TS 10.1" 1920x1200 panel
-       - osddisplays,osd101t2587-53ts
-         # Panasonic 10" WUXGA TFT LCD panel
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index 2021aa82871a..634a10c6f2dd 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -212,8 +212,6 @@ properties:
-       - lemaker,bl035-rgb-002
-         # LG 7" (800x480 pixels) TFT LCD panel
-       - lg,lb070wv8
--        # LG Corporation 5" HD TFT LCD panel
--      - lg,lh500wx1-sd03
-         # LG LP079QX1-SP0V 7.9" (1536x2048 pixels) TFT LCD panel
-       - lg,lp079qx1-sp0v
-         # LG 9.7" (2048x1536 pixels) TFT LCD panel
+> + * @phydev: The phy_device struct
+> + * @addr_offset: The offset to be added to PHY package base_addr
+> + * @devad: The MMD to write to
+> + * @regnum: The register on the MMD to write
+> + * @val: value to write to @regnum
+> + *
+> + * Convenience helper for writing a register of an MMD on a given PHY
+> + * using the PHY package base address. The base address is added to
+> + * the addr_offset value.
+> + *
+> + * Same calling rules as for phy_write();
+> + *
+> + * NOTE: It's assumed that the entire PHY package is either C22 or C45.
+> + */
+> +int phy_package_write_mmd(struct phy_device *phydev,
 -- 
-2.43.0
-
+pw-bot: cr
