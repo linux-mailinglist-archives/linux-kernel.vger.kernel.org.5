@@ -2,205 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA3380F3BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF82280F3C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376455AbjLLQz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
+        id S232950AbjLLQ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:57:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376582AbjLLQzV (ORCPT
+        with ESMTP id S235148AbjLLQ4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:55:21 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75045110;
-        Tue, 12 Dec 2023 08:55:26 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6d9d4193d94so4450925a34.3;
-        Tue, 12 Dec 2023 08:55:26 -0800 (PST)
+        Tue, 12 Dec 2023 11:56:15 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C159F95
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:56:21 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c2d50bfbfso29213715e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:56:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702400126; x=1703004926; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eUQUAdU8s5rttqBM7PCWLU90rveY3HOOI2yZDd455NM=;
-        b=i0Y2c4WKe6eG0lYScakwo2QsJueNnB1KW67leh3d+nh3Jpi/cnMrilbP6qQkpBYGcU
-         f4/3DdabnXSGPZ1Fq3zxmg4F6wxNGF8i+S/IcGVYYwZhu/2jN5Zhm5Q9z/4mQMDVq5wn
-         ALOjDHzVlvy3bJrWYtPcO+mwwJxT46aUMTejKELwXxwMUByC/89lJrOCkzPAxuYP4ULT
-         hWSV1d4axiSDSM9WEo8QpFAwfxdOBvnVxnRppLJSU2PYdBSLX1MLd6Z4vCiV/K2Tt0WW
-         x5nJxjN2WYWocR9+ZRDUEBoXkhK/L90Mp8LtL+6VzzAVyqyASUQOgcPthidbmxklxlKd
-         8usQ==
+        d=google.com; s=20230601; t=1702400180; x=1703004980; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+OpS8QvLmhoSAmNbzXuy9RYCtH6wkVeGub04kf2dZCE=;
+        b=s2MaVV81eRkFFVSv+CEMDgYOGfK5RjAOq+uRUIVUlQQD8Y2UFunRUi/sDNTno9UQFm
+         r0uA7das8So/k8J/lK7RNqoETh6UsXi+NvhMco65BeQImTiOri5giNZaRcoSu6ryA/Qo
+         q9Rn6dw/ZJRaj+O2jY6+631owvuAb04h86dHPynbHZuviiglROPxOwgDzx+M8p1qybLo
+         D4LFNvlzbyezHTLy0eBBgbaDvo/5OhvE9256UA2ycMqkm3rRKmRzU0VX7zjHIxt0JVSN
+         YqvUh/KiU2qWNh7b4bRYJfWw5vtOzLh1IcejDHTmwwestEgm/6vZm/O1cNOh8hZV+MYO
+         UYFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702400126; x=1703004926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702400180; x=1703004980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eUQUAdU8s5rttqBM7PCWLU90rveY3HOOI2yZDd455NM=;
-        b=cN0KBQyLnH3Uk8wLmgFAqOsWDlegjqevII9UwD0cLT7Te8eNEBLBk4wbgnhdTefI/2
-         hUp0LQ+Aodc/mxREUexsKQU+Z1kHXy4CkB+vNczUKaN0y33bN8N1XM+vDeF6Ra9WCqRu
-         EFxmwVBR/S1hVp9H8Dwsxu22tgP/DEY1EvYKx2hWlIBQWx/rqt1VQp+XbhIBtYYl6P7T
-         lohB5haIHdGaR+CxLf8D5lr2FYsn5HjLCD+nE9BE3DIH36PqwT2IQcQRUgBRvCcwhP/B
-         hPDBrRyJdIRZxQtLA+oy3ZXiOW5qUyKSfk26Kd+i+b9IaG2S1dlptmXOdE9dEwrh3woj
-         1LLQ==
-X-Gm-Message-State: AOJu0Yykz/Zw7mLG6WoD0Ejo/LgcwP72qrIBUzr2w27rF0ytHNKNV0wX
-        Ncokx+vkvio6rd0E76EGmr8=
-X-Google-Smtp-Source: AGHT+IEygqoSnVmCrbpWnvz3FkfAJ5cZgdkB0GF6zDdFZ9rKyksX2qGzIhBOSSpCSaIJib3YEuQMxg==
-X-Received: by 2002:a05:6870:ef0e:b0:1ea:2e2c:e9e7 with SMTP id qq14-20020a056870ef0e00b001ea2e2ce9e7mr7608515oab.59.1702400125615;
-        Tue, 12 Dec 2023 08:55:25 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x5-20020a056830244500b006d9ac5f6606sm2286155otr.11.2023.12.12.08.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 08:55:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 12 Dec 2023 08:55:24 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] watchdog: mediatek: mt7988: add wdt support
-Message-ID: <c39a109b-a42d-4a86-a580-a3edc7d51e9a@roeck-us.net>
-References: <e26a98fd0b7b7b431922405732275bac01eaf220.1699890006.git.daniel@makrotopia.org>
- <fc1c022551edc9ee2dfaa4c1dcf6b146b5b2aae5.1699890006.git.daniel@makrotopia.org>
+        bh=+OpS8QvLmhoSAmNbzXuy9RYCtH6wkVeGub04kf2dZCE=;
+        b=U6PBd90+cUt76YFofQj4kTf8bXQa6pE0jV2q07P8cxTHhWWFujWg4m18imvRCfu99a
+         z/qbM4Buj726iYDjP0+Ku+z6w2v40eulVjLTm8HQReoBfOBK7F39xInAfNqjbCDpvOCh
+         x5UxHM1IrSbmzBM0yCbKoM8x8B9P7Pj1V8bnAGIk+dxu5+216UcbSUdwCG49cgq75YLY
+         lfSOKzeqMZtXnocZmWDHUftcSz7hOC8lExuw2BRFZT5Mnn3U4iFxwMYl6mNP7DT8hKcR
+         FaOmbUd+vkesodB6sGxOcuZXj6yyr9fLFoPMh6Zlzk+6AbVZcDAUrpZR9KM4PeVjwLnS
+         YNJA==
+X-Gm-Message-State: AOJu0YyMAPYzcbqa2OcLrjJgtpkZ10JOb4Yx0/GL3z5z2tMtqmwclxPi
+        ijnipj+gIAv0T8HdQdi73/Bj45wRSoO7u43L1sSEeEMa+ow0r1nrQUI9sQ==
+X-Google-Smtp-Source: AGHT+IF57G5xzFkVfzhQ6L4Jp050TnfWYKoW0vXKBEg5qX6/XT790iWuyYeR8u21h8EBH9G8WN6kIULlKe+iGLmGesE=
+X-Received: by 2002:a05:600c:4e4f:b0:40c:23e0:7dad with SMTP id
+ e15-20020a05600c4e4f00b0040c23e07dadmr3396524wmq.168.1702400180143; Tue, 12
+ Dec 2023 08:56:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc1c022551edc9ee2dfaa4c1dcf6b146b5b2aae5.1699890006.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231212-removeasmgeneric-v2-1-a0e6d7df34a7@google.com>
+In-Reply-To: <20231212-removeasmgeneric-v2-1-a0e6d7df34a7@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 12 Dec 2023 08:56:05 -0800
+Message-ID: <CAKwvOdnTH+SgiLDkq4KmjVifF-bkxKfBNxE2o+XHjuRa6ZCSRA@mail.gmail.com>
+Subject: Re: [PATCH v2] riscv: remove unused header
+To:     tanzirh@google.com
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <nnn@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 03:43:47PM +0000, Daniel Golle wrote:
-> Add support for watchdog and reset generator unit of the MediaTek
-> MT7988 SoC.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+On Mon, Dec 11, 2023 at 4:20=E2=80=AFPM <tanzirh@google.com> wrote:
+>
+> arch/riscv/kernel/sys_riscv.c builds without using anything
+> from asm-generic/mman-common.h. There seems to be no reason
+> to include this file.
+>
+> Signed-off-by: Tanzir Hasan <tanzirh@google.com>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Thanks for the patch!
+
+Fixes: 9e2e6042a7ec ("riscv: Allow PROT_WRITE-only mmap()")
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
 > ---
-> v2: call new toprgu_reset_sw_en_unlocked from toprgu_reset_update while
->     holding lock.
-> 
->  drivers/watchdog/mtk_wdt.c | 40 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
-> 
-> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-> index b2330b16b497a..5a31a8746e954 100644
-> --- a/drivers/watchdog/mtk_wdt.c
-> +++ b/drivers/watchdog/mtk_wdt.c
-> @@ -58,6 +58,8 @@
->  #define WDT_SWSYSRST		0x18U
->  #define WDT_SWSYS_RST_KEY	0x88000000
->  
-> +#define WDT_SWSYSRST_EN		0xfc
-> +
->  #define DRV_NAME		"mtk-wdt"
->  #define DRV_VERSION		"1.0"
->  
-> @@ -71,10 +73,12 @@ struct mtk_wdt_dev {
->  	struct reset_controller_dev rcdev;
->  	bool disable_wdt_extrst;
->  	bool reset_by_toprgu;
-> +	bool has_swsysrst_en;
->  };
->  
->  struct mtk_wdt_data {
->  	int toprgu_sw_rst_num;
-> +	bool has_swsysrst_en;
->  };
->  
->  static const struct mtk_wdt_data mt2712_data = {
-> @@ -89,6 +93,11 @@ static const struct mtk_wdt_data mt7986_data = {
->  	.toprgu_sw_rst_num = MT7986_TOPRGU_SW_RST_NUM,
->  };
->  
-> +static const struct mtk_wdt_data mt7988_data = {
-> +	.toprgu_sw_rst_num = 24,
-> +	.has_swsysrst_en = true,
-> +};
-> +
->  static const struct mtk_wdt_data mt8183_data = {
->  	.toprgu_sw_rst_num = MT8183_TOPRGU_SW_RST_NUM,
->  };
-> @@ -109,6 +118,28 @@ static const struct mtk_wdt_data mt8195_data = {
->  	.toprgu_sw_rst_num = MT8195_TOPRGU_SW_RST_NUM,
->  };
->  
-> +/**
-> + * toprgu_reset_sw_en_unlocked() - enable/disable software control for reset bit
-> + * @mtk_wdt: Pointer to instance of struct mtk_wdt_dev.
-> + * @id: Bit number identifying the reset to be enabled or disabled.
-> + * @enable: If true, enable software control for that bit, disable otherwise.
-> + *
-> + * Context: The caller must hold lock of struct mtk_wdt_dev.
-> + */
-> +static void toprgu_reset_sw_en_unlocked(struct mtk_wdt_dev *data,
-> +					unsigned long id, bool enable)
-> +{
-> +	u32 tmp;
-> +
-> +	tmp = readl(data->wdt_base + WDT_SWSYSRST_EN);
-> +	if (enable)
-> +		tmp |= BIT(id);
-> +	else
-> +		tmp &= ~BIT(id);
-> +
-> +	writel(tmp, data->wdt_base + WDT_SWSYSRST_EN);
-> +}
-> +
->  static int toprgu_reset_update(struct reset_controller_dev *rcdev,
->  			       unsigned long id, bool assert)
->  {
-> @@ -119,6 +150,9 @@ static int toprgu_reset_update(struct reset_controller_dev *rcdev,
->  
->  	spin_lock_irqsave(&data->lock, flags);
->  
-> +	if (assert && data->has_swsysrst_en)
-> +		toprgu_reset_sw_en_unlocked(data, id, true);
-> +
->  	tmp = readl(data->wdt_base + WDT_SWSYSRST);
->  	if (assert)
->  		tmp |= BIT(id);
-> @@ -127,6 +161,9 @@ static int toprgu_reset_update(struct reset_controller_dev *rcdev,
->  	tmp |= WDT_SWSYS_RST_KEY;
->  	writel(tmp, data->wdt_base + WDT_SWSYSRST);
->  
-> +	if (!assert && data->has_swsysrst_en)
-> +		toprgu_reset_sw_en_unlocked(data, id, false);
-> +
->  	spin_unlock_irqrestore(&data->lock, flags);
->  
->  	return 0;
-> @@ -406,6 +443,8 @@ static int mtk_wdt_probe(struct platform_device *pdev)
->  						       wdt_data->toprgu_sw_rst_num);
->  		if (err)
->  			return err;
-> +
-> +		mtk_wdt->has_swsysrst_en = wdt_data->has_swsysrst_en;
->  	}
->  
->  	mtk_wdt->disable_wdt_extrst =
-> @@ -444,6 +483,7 @@ static const struct of_device_id mtk_wdt_dt_ids[] = {
->  	{ .compatible = "mediatek,mt6589-wdt" },
->  	{ .compatible = "mediatek,mt6795-wdt", .data = &mt6795_data },
->  	{ .compatible = "mediatek,mt7986-wdt", .data = &mt7986_data },
-> +	{ .compatible = "mediatek,mt7988-wdt", .data = &mt7988_data },
->  	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
->  	{ .compatible = "mediatek,mt8186-wdt", .data = &mt8186_data },
->  	{ .compatible = "mediatek,mt8188-wdt", .data = &mt8188_data },
-> -- 
-> 2.42.1
+>
+> ---
+
+You're still getting funky extra `---`; let's take a look later at how
+you're using `b4` together offline.  It's not a problem for me to
+apply the patch, but something still isn't quite right. (Do not send a
+v3 over this)
+
+> Changes in v2:
+> - Changed name to riscv: remove unused header
+> - Link to v1: https://lore.kernel.org/r/20231211-removeasmgeneric-v1-1-a0=
+274e802789@google.com
+> ---
+>  arch/riscv/kernel/sys_riscv.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.=
+c
+> index a2ca5b7756a5..ebcaf386ea62 100644
+> --- a/arch/riscv/kernel/sys_riscv.c
+> +++ b/arch/riscv/kernel/sys_riscv.c
+> @@ -14,7 +14,6 @@
+>  #include <asm/switch_to.h>
+>  #include <asm/uaccess.h>
+>  #include <asm/unistd.h>
+> -#include <asm-generic/mman-common.h>
+>  #include <vdso/vsyscall.h>
+>
+>  static long riscv_sys_mmap(unsigned long addr, unsigned long len,
+>
+> ---
+> base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+> change-id: 20231211-removeasmgeneric-f6be13a42b6b
+>
+> Best regards,
+> --
+> Tanzir Hasan <tanzirh@google.com>
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
