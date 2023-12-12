@@ -2,305 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BBD80EE45
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3800780EE38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 15:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376401AbjLLOCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 09:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
+        id S1376374AbjLLOA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 09:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376404AbjLLOCB (ORCPT
+        with ESMTP id S1376341AbjLLOA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 09:02:01 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2073.outbound.protection.outlook.com [40.107.102.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E262F100;
-        Tue, 12 Dec 2023 06:02:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ah/6KNcZbGspPWn0qliB5588N4uSukzTW/f1wS3xiIYD0c8DAQm3BtBzmgBdy5WGFaRk9sNsD47tHdGPi/M6VwSCxLDrjORpmSqM8AhugFVVWIiXCT+lN/6djqfTfDXD2mYRjWKF5mCUFL4HhAmKBgcbzIBSvl9i3M6KMuAKzokIeV81OB7XqhgPwGej+INBugTx4E2U2ec6Lzij6ADxWywVsEtjeZa9m1sMVB7yDBgxfma58NEFhRvrKz8ZLbePGNwNizLVTrNIVhwk7getjyFuXSyUmsgUHZs8mCEgOtcm8nZz5qr1zFc/4iqmtzIil7L1cL2uXQIa9InvJAK/jQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1bFfMCuV86jnR/ilSFLrF6DfQazlBQvcxV1L9vTV3pI=;
- b=FjbNM2/IjKmccKHiPMsoCbe9d7aZCiqQ0LV1RlvjWIp15HaHO5/kzXTVPR6mZ06IUI69lB7smm/V5tQPAmPfLlnXcQ033/+VKAZEnY134agjlzhgBupcVzaI8ADE/JrPmmina5fMiTXcjmHDfNG5p9/OZ5WjfCBDhc/bJ3kurqhqeXfvuO+7BUCHNwQFzSCj3ChISUlgzUKjJZvvsNtLFjkFgXg28ZWo9KPOWgPQVAm41/6iXXeXbBkrPlJmHYGm2sH2tXKGoKZbAthr2nS6AdJIEI2rdqpHZ3ok1JLd1kqolBCv6CQmn1OygtBPE7c6YgI3Spb2pRjEOVn4NPG6hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1bFfMCuV86jnR/ilSFLrF6DfQazlBQvcxV1L9vTV3pI=;
- b=GfOHH/K+kWH6MdB18VkO9BsDDjfTTqUAiTZyzIaNyLnyd6+IFG3Jg/F+D/DEvXNF+UVlU/670gCAdzZ4RiqYrZboYuhWYLjGfthKJKQYoFE1pc0X37IwGJOYwQTXE7RE/15b6lsLh8p+oyf0IDgleIIEFD3eYkSITFS2xIAYRts=
-Received: from BN1PR13CA0010.namprd13.prod.outlook.com (2603:10b6:408:e2::15)
- by MN6PR12MB8514.namprd12.prod.outlook.com (2603:10b6:208:474::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
- 2023 14:02:00 +0000
-Received: from SN1PEPF0002636A.namprd02.prod.outlook.com
- (2603:10b6:408:e2:cafe::c0) by BN1PR13CA0010.outlook.office365.com
- (2603:10b6:408:e2::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.25 via Frontend
- Transport; Tue, 12 Dec 2023 14:02:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002636A.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7091.26 via Frontend Transport; Tue, 12 Dec 2023 14:01:59 +0000
-Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 12 Dec
- 2023 08:01:23 -0600
-From:   Sanath S <Sanath.S@amd.com>
-To:     <mario.limonciello@amd.com>, <andreas.noever@gmail.com>,
-        <michael.jamet@intel.com>, <mika.westerberg@linux.intel.com>,
-        <YehezkelShB@gmail.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Sanath S <Sanath.S@amd.com>
-Subject: [PATCH 2/2] thunderbolt: Teardown tunnels and reset downstream ports created by boot firmware
-Date:   Tue, 12 Dec 2023 19:30:47 +0530
-Message-ID: <20231212140047.2021496-3-Sanath.S@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231212140047.2021496-1-Sanath.S@amd.com>
-References: <20231212140047.2021496-1-Sanath.S@amd.com>
+        Tue, 12 Dec 2023 09:00:58 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C620B3;
+        Tue, 12 Dec 2023 06:01:04 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9232D143D;
+        Tue, 12 Dec 2023 06:01:50 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39A933F738;
+        Tue, 12 Dec 2023 06:00:59 -0800 (PST)
+Message-ID: <63d7fe55-719e-43f8-531c-eb7fa30c473a@arm.com>
+Date:   Tue, 12 Dec 2023 14:00:55 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636A:EE_|MN6PR12MB8514:EE_
-X-MS-Office365-Filtering-Correlation-Id: a54a373c-418e-43a4-2a5f-08dbfb1ae91b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EVIzvQ6AjlvQ9XcA9N3QqnOH+uMHTVkN79hUm1RkVNW5YDf7lzNI3LOQ4lNK4NNiMElYylfcjdO1uJulM8iYbwdpiwVDeFnv/7TAnboelO0h1qYX5e16NT/TZ8KXVy6ZqCDiPBKTW+jgqRLnt3CgGsPgfc0fg1n+czGhupcawMe0BCFq+ki1HRxnhmE0c/1SKK/kd9x4kxUi4g2zerSHPxDCdmZB0GwRFN/4YyBcQTbcFtltuPKkAnlGxnwHwNqHZXpHPfb2cG0GzHHcZG7Ypz3G8H9aVqJLLLIeuZQD6c74PGa4EkxmvRWBhWDweyPFHbPTgCHUbbEnmXx7GAagzt3inysLvhmB404AsMXzSHsX59RfHr4UqKubN9oc87cVFCUBNVLiGcRauRtydT6BBghjOZ5HnEohpc1jAZO/lfUL03L1Bplzc5BUte9J8i7T1eKqrdfgNa0MM6BkRSF/cWDtpOfiajXpjhCXjKS1nsQOTKGFR3QqDyzCGTN866oUc8GRGTSw1slCtMwPXt2J3vwCeT4srLmdCzZzQM4wL/HaijV3mP7LHEcg0tmrVR2uJXnmOKsmegky7U/81oUFQSG4pDdpnzsvskgpZHt55sa03fFTAL9s4HcpFX71nqtYDDXn+QUeS3Bky0KSIF1nOnf+gBvI5yF4nf73lmnMGW4egAUXaMjrLvBU02/aHp+PF3egZr6llJhj/q7oFIBO1hRJi5T5SUoEmG/LcXhCF3Uy8EexblzWxbJcznF46aU278pvGwJhj+NRhVcD67sjzqn/durophf2dBcAuVYCe0s=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(39860400002)(376002)(396003)(230922051799003)(64100799003)(82310400011)(451199024)(186009)(1800799012)(36840700001)(40470700004)(46966006)(40480700001)(41300700001)(40460700003)(2906002)(5660300002)(316002)(4326008)(8936002)(70586007)(8676002)(70206006)(356005)(82740400003)(81166007)(2616005)(36860700001)(110136005)(36756003)(86362001)(66574015)(47076005)(83380400001)(426003)(26005)(6666004)(478600001)(1076003)(336012)(16526019)(7696005)(2101003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 14:01:59.7900
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a54a373c-418e-43a4-2a5f-08dbfb1ae91b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636A.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR12MB8514
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-7-irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-7-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Boot firmware might have created tunnels of its own. Since we cannot
-be sure they are usable for us. Tear them down and reset the ports
-to handle it as a new hotplug.
 
-Since we teardown the tunnels, Discovering of tunnels is not needed.
-Removing helper functions tb_discover_tunnels(),
-tb_discover_dp_resources(), tb_create_usb3_tunnels(),
-tb_add_dp_resources() and device_for_each_child().
 
-Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Sanath S <Sanath.S@amd.com>
----
- drivers/thunderbolt/tb.c | 137 ++-------------------------------------
- 1 file changed, 7 insertions(+), 130 deletions(-)
+On 29/11/2023 06:02, Ian Rogers wrote:
+> Additional helpers to better replace
+> perf_cpu_map__has_any_cpu_or_is_empty.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
+>  tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
+>  tools/lib/perf/libperf.map           |  4 ++++
+>  3 files changed, 47 insertions(+)
+> 
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index 49fc98e16514..7403819da8fd 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+>  	return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
+>  }
+>  
+> +bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+> +{
+> +	if (!map)
+> +		return true;
+> +
+> +	return __perf_cpu_map__nr(map) == 1 && __perf_cpu_map__cpu(map, 0).cpu == -1;
+> +}
+> +
+> +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
+> +{
+> +	return map == NULL;
+> +}
+> +
 
-diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
-index fd49f86e0353..bfad14846514 100644
---- a/drivers/thunderbolt/tb.c
-+++ b/drivers/thunderbolt/tb.c
-@@ -151,24 +151,6 @@ tb_attach_bandwidth_group(struct tb_cm *tcm, struct tb_port *in,
- 	return group;
- }
- 
--static void tb_discover_bandwidth_group(struct tb_cm *tcm, struct tb_port *in,
--					struct tb_port *out)
--{
--	if (usb4_dp_port_bandwidth_mode_enabled(in)) {
--		int index, i;
--
--		index = usb4_dp_port_group_id(in);
--		for (i = 0; i < ARRAY_SIZE(tcm->groups); i++) {
--			if (tcm->groups[i].index == index) {
--				tb_bandwidth_group_attach_port(&tcm->groups[i], in);
--				return;
--			}
--		}
--	}
--
--	tb_attach_bandwidth_group(tcm, in, out);
--}
--
- static void tb_detach_bandwidth_group(struct tb_port *in)
- {
- 	struct tb_bandwidth_group *group = in->group;
-@@ -247,32 +229,6 @@ static void tb_remove_dp_resources(struct tb_switch *sw)
- 	}
- }
- 
--static void tb_discover_dp_resource(struct tb *tb, struct tb_port *port)
--{
--	struct tb_cm *tcm = tb_priv(tb);
--	struct tb_port *p;
--
--	list_for_each_entry(p, &tcm->dp_resources, list) {
--		if (p == port)
--			return;
--	}
--
--	tb_port_dbg(port, "DP %s resource available discovered\n",
--		    tb_port_is_dpin(port) ? "IN" : "OUT");
--	list_add_tail(&port->list, &tcm->dp_resources);
--}
--
--static void tb_discover_dp_resources(struct tb *tb)
--{
--	struct tb_cm *tcm = tb_priv(tb);
--	struct tb_tunnel *tunnel;
--
--	list_for_each_entry(tunnel, &tcm->tunnel_list, list) {
--		if (tb_tunnel_is_dp(tunnel))
--			tb_discover_dp_resource(tb, tunnel->dst_port);
--	}
--}
--
- /* Enables CL states up to host router */
- static int tb_enable_clx(struct tb_switch *sw)
- {
-@@ -472,34 +428,6 @@ static void tb_switch_discover_tunnels(struct tb_switch *sw,
- 	}
- }
- 
--static void tb_discover_tunnels(struct tb *tb)
--{
--	struct tb_cm *tcm = tb_priv(tb);
--	struct tb_tunnel *tunnel;
--
--	tb_switch_discover_tunnels(tb->root_switch, &tcm->tunnel_list, true);
--
--	list_for_each_entry(tunnel, &tcm->tunnel_list, list) {
--		if (tb_tunnel_is_pci(tunnel)) {
--			struct tb_switch *parent = tunnel->dst_port->sw;
--
--			while (parent != tunnel->src_port->sw) {
--				parent->boot = true;
--				parent = tb_switch_parent(parent);
--			}
--		} else if (tb_tunnel_is_dp(tunnel)) {
--			struct tb_port *in = tunnel->src_port;
--			struct tb_port *out = tunnel->dst_port;
--
--			/* Keep the domain from powering down */
--			pm_runtime_get_sync(&in->sw->dev);
--			pm_runtime_get_sync(&out->sw->dev);
--
--			tb_discover_bandwidth_group(tcm, in, out);
--		}
--	}
--}
--
- static int tb_port_configure_xdomain(struct tb_port *port, struct tb_xdomain *xd)
- {
- 	if (tb_switch_is_usb4(port->sw))
-@@ -1043,31 +971,6 @@ static int tb_tunnel_usb3(struct tb *tb, struct tb_switch *sw)
- 	return ret;
- }
- 
--static int tb_create_usb3_tunnels(struct tb_switch *sw)
--{
--	struct tb_port *port;
--	int ret;
--
--	if (!tb_acpi_may_tunnel_usb3())
--		return 0;
--
--	if (tb_route(sw)) {
--		ret = tb_tunnel_usb3(sw->tb, sw);
--		if (ret)
--			return ret;
--	}
--
--	tb_switch_for_each_port(sw, port) {
--		if (!tb_port_has_remote(port))
--			continue;
--		ret = tb_create_usb3_tunnels(port->remote->sw);
--		if (ret)
--			return ret;
--	}
--
--	return 0;
--}
--
- /**
-  * tb_configure_asym() - Transition links to asymmetric if needed
-  * @tb: Domain structure
-@@ -2534,27 +2437,6 @@ static void tb_stop(struct tb *tb)
- 	tcm->hotplug_active = false; /* signal tb_handle_hotplug to quit */
- }
- 
--static int tb_scan_finalize_switch(struct device *dev, void *data)
--{
--	if (tb_is_switch(dev)) {
--		struct tb_switch *sw = tb_to_switch(dev);
--
--		/*
--		 * If we found that the switch was already setup by the
--		 * boot firmware, mark it as authorized now before we
--		 * send uevent to userspace.
--		 */
--		if (sw->boot)
--			sw->authorized = 1;
--
--		dev_set_uevent_suppress(dev, false);
--		kobject_uevent(&dev->kobj, KOBJ_ADD);
--		device_for_each_child(dev, NULL, tb_scan_finalize_switch);
--	}
--
--	return 0;
--}
--
- static int tb_start(struct tb *tb)
- {
- 	struct tb_cm *tcm = tb_priv(tb);
-@@ -2598,20 +2480,15 @@ static int tb_start(struct tb *tb)
- 	tb_switch_tmu_enable(tb->root_switch);
- 	/* Full scan to discover devices added before the driver was loaded. */
- 	tb_scan_switch(tb->root_switch);
--	/* Find out tunnels created by the boot firmware */
--	tb_discover_tunnels(tb);
--	/* Add DP resources from the DP tunnels created by the boot firmware */
--	tb_discover_dp_resources(tb);
- 	/*
--	 * If the boot firmware did not create USB 3.x tunnels create them
--	 * now for the whole topology.
-+	 * Boot firmware might have created tunnels of its own. Since we cannot
-+	 * be sure they are usable for us, Tear them down and reset the ports
-+	 * to handle it as new hotplug.
- 	 */
--	tb_create_usb3_tunnels(tb->root_switch);
--	/* Add DP IN resources for the root switch */
--	tb_add_dp_resources(tb->root_switch);
--	/* Make the discovered switches available to the userspace */
--	device_for_each_child(&tb->root_switch->dev, NULL,
--			      tb_scan_finalize_switch);
-+	tb_switch_discover_tunnels(tb->root_switch, &tcm->tunnel_list, false);
-+	ret = tb_switch_reset_ports(tb->root_switch);
-+	if (ret)
-+		return ret;
- 
- 	/* Allow tb_handle_hotplug to progress events */
- 	tcm->hotplug_active = true;
--- 
-2.34.1
+Maybe it doesn't currently happen, but it seems a bit weird that the
+'new' function can create a map of length 0 which would return empty ==
+false here.
 
+Could we either make this check also return true for maps with length 0,
+or prevent the new function from returning a map of 0 length?
+
+>  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu cpu)
+>  {
+>  	int low, high;
+> @@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_cpu_map *map)
+>  	return map && __perf_cpu_map__cpu(map, 0).cpu == -1;
+>  }
+>  
+> +struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
+> +{
+> +	struct perf_cpu cpu, result = {
+> +		.cpu = -1
+> +	};
+> +	int idx;
+> +
+> +	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
+> +		result = cpu;
+> +		break;
+> +	}
+> +	return result;
+> +}
+> +
+>  struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
+>  {
+>  	struct perf_cpu result = {
+> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+> index dbe0a7352b64..523e4348fc96 100644
+> --- a/tools/lib/perf/include/perf/cpumap.h
+> +++ b/tools/lib/perf/include/perf/cpumap.h
+> @@ -50,6 +50,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+>   * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
+>   */
+>  LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+> +/**
+> + * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "any CPU"/dummy value.
+> + */
+> +LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+> +/**
+> + * perf_cpu_map__is_empty - does the map contain no values and it doesn't
+> + *                          contain the special "any CPU"/dummy value.
+> + */
+> +LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map);
+> +/**
+> + * perf_cpu_map__min - the minimum CPU value or -1 if empty or just the "any CPU"/dummy value.
+> + */
+> +LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map);
+> +/**
+> + * perf_cpu_map__max - the maximum CPU value or -1 if empty or just the "any CPU"/dummy value.
+> + */
+>  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
+>  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
+>  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
+> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> index 10b3f3722642..2aa79b696032 100644
+> --- a/tools/lib/perf/libperf.map
+> +++ b/tools/lib/perf/libperf.map
+> @@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
+>  		perf_cpu_map__nr;
+>  		perf_cpu_map__cpu;
+>  		perf_cpu_map__has_any_cpu_or_is_empty;
+> +		perf_cpu_map__is_any_cpu_or_is_empty;
+> +		perf_cpu_map__is_empty;
+> +		perf_cpu_map__has_any_cpu;
+> +		perf_cpu_map__min;
+>  		perf_cpu_map__max;
+>  		perf_cpu_map__has;
+>  		perf_thread_map__new_array;
