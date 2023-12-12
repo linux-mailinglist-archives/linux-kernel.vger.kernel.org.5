@@ -2,69 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEC880F793
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED50480F796
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377192AbjLLUJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
+        id S1377207AbjLLUKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377184AbjLLUJi (ORCPT
+        with ESMTP id S235167AbjLLUKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:09:38 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3A8123
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:09:42 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d855efb920so4832391a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702411782; x=1703016582; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m+Xh20zqhrr/iCJFFTsT9uro5zbSBKHOa3I/xPuTFPg=;
-        b=HNUd3McGI3PBXZePBJln6N7UxShskPc8zFMpV8hOI+Rfbc6TnNQOq9exgo518dAT/m
-         fnhaGrrvrQCEmS+wMM1wixTObiMIaB88MqguBn3tDOtyT4yDIIOoSZRj4t0OxfRqh/Yj
-         tIPGLK4uecZCNjZ64ekMpTlXsEe+anKkkA5a4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702411782; x=1703016582;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m+Xh20zqhrr/iCJFFTsT9uro5zbSBKHOa3I/xPuTFPg=;
-        b=ROvPNfJ18fHb/ViskSH+sGg0ym2bDkGkhqCjT+exaCu5+71uZl47F3aiK+645V8FL3
-         dcpDh+Hf+gspWsN1Jynq8WC0DvcThGx9GRorfEwLIqIuM420v/Zt2eE7K682DRWR18XB
-         fCVRlHHjstfh+pCmqAq+4XxWbnl6HwbhXgP6F+13k84In9g7eQe7oU7n2rOMPKBv1Ox8
-         pJdF9puxz9HWPe7aKy7UNWGEoq5tp+HSD1Hvy7+v7awi8XWxPIdDk2njllUibYqE5o5Y
-         rTuTAsTM/tlkhC82/AaD4dXI21EyNzW/DPbUhRbYx9cYTvU8c16+gYSxYxBKbt6gDWjI
-         oiHg==
-X-Gm-Message-State: AOJu0YwBSvy9wNte0eu0laokrggqqw7g+uKL447/al7/LqiPxA2uVnmb
-        weEOWRV/rJjnlBQrqArskpy2ZQ==
-X-Google-Smtp-Source: AGHT+IH/AADEMab3M/6qUBjdv2aKEw9zBEV7hdZDu2k87/v6BK/Pqce46L+PSMF8hGoiLLhsXpZsQA==
-X-Received: by 2002:a9d:7351:0:b0:6d9:e67b:7890 with SMTP id l17-20020a9d7351000000b006d9e67b7890mr7569650otk.32.1702411782275;
-        Tue, 12 Dec 2023 12:09:42 -0800 (PST)
-Received: from smtpclient.apple ([185.189.25.71])
-        by smtp.gmail.com with ESMTPSA id cy26-20020a056830699a00b006d9a339773csm16054otb.27.2023.12.12.12.09.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 12:09:41 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH rcu 3/5] doc: Clarify RCU Tasks reader/updater checklist
-Date:   Tue, 12 Dec 2023 15:09:28 -0500
-Message-Id: <019C4075-EDA3-48A9-8762-CBB28D0BA37C@joelfernandes.org>
-References: <20231212172653.11485-3-neeraj.iitr10@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org, paulmck@kernel.org,
-        Neeraj.Upadhyay@amd.com,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231212172653.11485-3-neeraj.iitr10@gmail.com>
-To:     "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
-X-Mailer: iPhone Mail (20B101)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        Tue, 12 Dec 2023 15:10:06 -0500
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5119D0;
+        Tue, 12 Dec 2023 12:10:12 -0800 (PST)
+Received: from [10.0.0.200] (unknown [10.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 2E71F16113E;
+        Tue, 12 Dec 2023 21:10:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1702411811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=NSwXMRwwI2WsYqTTPxV1sw3kfTJjec0iyybbmjyTcwU=;
+        b=FZ2Z3sxwnCN5HptDmDfL2YEghN9aDyz3Tur4DgifMFD9UCi3hIy+v8rSVwchmGhDBowuc5
+        yG9FChVsXAO0P25uxkGROHc9CSypuv54PUYKJOvIUOxxMREHZWEBEq+3iGJZNxL6F5PqOs
+        /wPZiIKof64cKa7u0vyVp0Sn/y5Z/7I=
+Message-ID: <526b0519-0acd-40c9-ac19-b285ccc3d70b@ixit.cz>
+Date:   Tue, 12 Dec 2023 21:10:10 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH] dt-bindings: panel-simple-dsi: move LG 5" HD TFT LCD
+ panel into DSI yaml
+Content-Language: en-US
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231212175356.72062-1-david@ixit.cz>
+ <69874f27-46ea-4991-a735-6609233ddb8a@quicinc.com>
+From:   David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <69874f27-46ea-4991-a735-6609233ddb8a@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,81 +111,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good catch, thank you! Sent v2.
 
+David
 
-> On Dec 12, 2023, at 12:27 PM, Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.c=
-om> wrote:
->=20
-> =EF=BB=BFFrom: "Paul E. McKenney" <paulmck@kernel.org>
->=20
-> Currently, the reader/updater compatibility rules for the three RCU
-> Tasks flavors are squished together in a single paragraph, which can
-> result in confusion.  This commit therefore splits them out into a list,
-> clearly showing the distinction between these flavors.
->=20
-> Link: https://lore.kernel.org/all/20231002211936.5948253e@gandalf.local.ho=
-me/
->=20
-> Reported-by: Steven Rostedt <rostedt@goodmis.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
-> ---
-> Documentation/RCU/checklist.rst | 25 ++++++++++++++++---------
-> 1 file changed, 16 insertions(+), 9 deletions(-)
->=20
-> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist=
-.rst
-> index bd3c58c44bef..c432899aff22 100644
-> --- a/Documentation/RCU/checklist.rst
-> +++ b/Documentation/RCU/checklist.rst
-> @@ -241,15 +241,22 @@ over a rather long period of time, but improvements a=
-re always welcome!
->    srcu_struct.  The rules for the expedited RCU grace-period-wait
->    primitives are the same as for their non-expedited counterparts.
->=20
-> -    If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
-> -    then the readers must refrain from executing voluntary
-> -    context switches, that is, from blocking.  If the updater uses
-> -    call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
-> -    the corresponding readers must use rcu_read_lock_trace() and
-> -    rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
-> -    or synchronize_rcu_tasks_rude(), then the corresponding readers
-> -    must use anything that disables preemption, for example,
-> -    preempt_disable() and preempt_enable().
-> +    Similarly, it is necssary to correctly use the RCU Tasks flavors:
+On 12/12/2023 20:41, Jessica Zhang wrote:
+>
+>
+> On 12/12/2023 9:53 AM, David Heidelberg wrote:
+>> Originally was in the panel-simple, but belongs to panel-simple-dsi.
+>>
+>> See arch/arm/boot/dts/nvidia/tegra114-roth.dts for more details.
+>>
+>> Fixes:
+>> ```
+>> arch/arm/boot/dts/tegra114-roth.dt.yaml: panel@0: 'reg' does not 
+>> match any of the regexes: 'pinctrl-[0-9]+'
+>>          From schema: 
+>> Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> ```
+>
+> Hi David,
+>
+> Would "Fixes: 310abcea76e9 ("dt-bindings: display: convert simple lg 
+> panels to DT Schema")" be appropriate here?
+>
+> Thanks,
+>
+> Jessica Zhang
+>
+>>
+>> Signed-off-by: David Heidelberg <david@ixit.cz>
+>> ---
+>> .../devicetree/bindings/display/panel/panel-simple-dsi.yaml | 2 ++
+>> .../devicetree/bindings/display/panel/panel-simple.yaml | 2 --
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git 
+>> a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml 
+>> b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+>> index 73674baea75d..f9160d7bac3c 100644
+>> --- 
+>> a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+>> +++ 
+>> b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
+>> @@ -42,6 +42,8 @@ properties:
+>>         - lg,acx467akm-7
+>>           # LG Corporation 7" WXGA TFT LCD panel
+>>         - lg,ld070wx3-sl01
+>> +        # LG Corporation 5" HD TFT LCD panel
+>> +      - lg,lh500wx1-sd03
+>>           # One Stop Displays OSD101T2587-53TS 10.1" 1920x1200 panel
+>>         - osddisplays,osd101t2587-53ts
+>>           # Panasonic 10" WUXGA TFT LCD panel
+>> diff --git 
+>> a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml 
+>> b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> index 2021aa82871a..634a10c6f2dd 100644
+>> --- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> +++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+>> @@ -212,8 +212,6 @@ properties:
+>>         - lemaker,bl035-rgb-002
+>>           # LG 7" (800x480 pixels) TFT LCD panel
+>>         - lg,lb070wv8
+>> -        # LG Corporation 5" HD TFT LCD panel
+>> -      - lg,lh500wx1-sd03
+>>           # LG LP079QX1-SP0V 7.9" (1536x2048 pixels) TFT LCD panel
+>>         - lg,lp079qx1-sp0v
+>>           # LG 9.7" (2048x1536 pixels) TFT LCD panel
+>> -- 
+>> 2.43.0
+>>
+-- 
+David Heidelberg
 
-Typo: necessary.
-
-Probably no need to resend this one, just fix in the PR.
-
-Thanks,
-
- - Joel
-
-
-
-
-> +
-> +    a.    If the updater uses synchronize_rcu_tasks() or
-> +        call_rcu_tasks(), then the readers must refrain from
-> +        executing voluntary context switches, that is, from
-> +        blocking.
-> +
-> +    b.    If the updater uses call_rcu_tasks_trace()
-> +        or synchronize_rcu_tasks_trace(), then the
-> +        corresponding readers must use rcu_read_lock_trace()
-> +        and rcu_read_unlock_trace().
-> +
-> +    c.    If an updater uses call_rcu_tasks_rude() or
-> +        synchronize_rcu_tasks_rude(), then the corresponding
-> +        readers must use anything that disables preemption,
-> +        for example, preempt_disable() and preempt_enable().
->=20
->    Mixing things up will result in confusion and broken kernels, and
->    has even resulted in an exploitable security issue.  Therefore,
-> --=20
-> 2.40.1
->=20
->=20
