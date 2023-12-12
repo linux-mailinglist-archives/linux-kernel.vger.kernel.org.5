@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8735F80EACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CD480EADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 12:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346300AbjLLLu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 06:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        id S1346363AbjLLLwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 06:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjLLLu1 (ORCPT
+        with ESMTP id S1346386AbjLLLw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 06:50:27 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88740AF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 03:50:33 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD1HM-00074x-Tj; Tue, 12 Dec 2023 12:50:24 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD1HM-00FKLQ-0b; Tue, 12 Dec 2023 12:50:24 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rD1HL-001bMK-NW; Tue, 12 Dec 2023 12:50:23 +0100
-Date:   Tue, 12 Dec 2023 12:50:23 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/6] pwm: bcm2835: Allow PWM driver to be used in
- atomic context
-Message-ID: <20231212115023.r5pl2o5em6wl3zr7@pengutronix.de>
-References: <cover.1702369869.git.sean@mess.org>
- <e9e32c9789da3c90b5a2aa7d5a093120b76421fb.1702369869.git.sean@mess.org>
+        Tue, 12 Dec 2023 06:52:29 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3BDAF;
+        Tue, 12 Dec 2023 03:52:34 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCBqARO019409;
+        Tue, 12 Dec 2023 11:52:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=i5kU/DH
+        I2fRQRx6QhoIITu/Uxym8ekVJjFK07l1YCa8=; b=SQyQVXKBLHsGmZa/4JanVFK
+        c0/zhelWdAeua5T9DXmlvV4kE39jxCCFz/KCy3W18VEjLpY9hi763YuKlKloNBLW
+        FCtRUmjasC2HB4P3ySvdLl/FiZE8fytLqI5IPJUBx2ytPDN0gOGYQohr9ElHbQNe
+        jgY3mOIGE5umnvdwb26zXaKpxTBzSCzi8O90mLJqJMgnRedULUR8oQ6mWq5k+fLZ
+        rolKN/DoBCbZIcu238+JX2YU181iQYo85VSZfd8p/J49Sis7p4PTE+AdNP9lG5I4
+        KLKOoH89/B9odDVAGcDuYGCA9ClbQh1fYmkoI9qrH04Sz3fAyrIIzJA3zeOpEaQ=
+        =
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uxjxp0kg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:52:10 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BCBq9MG000339
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 11:52:09 GMT
+Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 12 Dec 2023 03:52:04 -0800
+From:   Luo Jie <quic_luoj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>
+CC:     <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+Subject: [PATCH v2 0/5] support ipq5332 platform
+Date:   Tue, 12 Dec 2023 19:51:45 +0800
+Message-ID: <20231212115151.20016-1-quic_luoj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mpbj4ky42v3bpr7z"
-Content-Disposition: inline
-In-Reply-To: <e9e32c9789da3c90b5a2aa7d5a093120b76421fb.1702369869.git.sean@mess.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Go0niqZI7NtW-XBjgDtMq-mK5e-BI_i0
+X-Proofpoint-GUID: Go0niqZI7NtW-XBjgDtMq-mK5e-BI_i0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312120095
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For IPQ5332 platform, there are two MAC PCSs, and qca8084 is
+connected with one of them.
 
---mpbj4ky42v3bpr7z
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+1. The Ethernet LDO needs to be enabled to make the PHY GPIO
+   reset taking effect, which uses the MDIO bus level reset.
 
-On Tue, Dec 12, 2023 at 08:34:04AM +0000, Sean Young wrote:
-> clk_get_rate() may do a mutex lock. Fetch the clock rate once, and prevent
-> rate changes using clk_rate_exclusive_get().
->=20
-> Signed-off-by: Sean Young <sean@mess.org>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+2. The SoC GCC uniphy AHB and SYS clocks need to be enabled
+   to make the ethernet PHY device accessible.
 
-Looks good,
+3. To provide the clock to the ethernet, the CMN clock needs
+   to be initialized for selecting reference clock and enabling
+   the output clock.
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+4. Support optional MDIO clock frequency config.
 
-Best regards
-Uwe
+5. Update dt-bindings doc for the new added properties.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Changes in v2:
+	* remove the PHY related features such as PHY address
+	  program and clock initialization.
 
---mpbj4ky42v3bpr7z
-Content-Type: application/pgp-signature; name="signature.asc"
+	* leverage the MDIO level GPIO reset for qca8084 PHY.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV4SP4ACgkQj4D7WH0S
-/k6hagf+OgbHoP3zuoQfiGSmlBvCh1S5bURiLFTW1uq9j1+OI04/BkRYuNsiolj0
-FeDgaVK0uMAW2LC8e+49ZgRb/I0SerSmngF46e0oeexom3FJspu1ntmnsYPrAZCz
-XI8xusSdxA+H7eyKDBQI0oOYXyA/yjXhSsAk7gyq7tbfSUasKPJbQpsCv6UAxh8G
-rwbRWDr1Fz+4imDgXdPRpwl0U6agiLqts14IpL6kgXNjwTkrz5UGxMyqMp7ENevQ
-HcxKKftMsleTP4UgT+JAwQ2mRKTiQmQUypTKPK6xazjK6F+8FtO92FV+k9MaDGi8
-5STH+K6ml3PsKLWvGSik5f1WkGn8zA==
-=rFDL
------END PGP SIGNATURE-----
+Luo Jie (5):
+  net: mdio: ipq4019: move eth_ldo_rdy before MDIO bus register
+  net: mdio: ipq4019: enable the SoC uniphy clocks for ipq5332 platform
+  net: mdio: ipq4019: configure CMN PLL clock for ipq5332
+  net: mdio: ipq4019: support MDIO clock frequency divider
+  dt-bindings: net: ipq4019-mdio: Document ipq5332 platform
 
---mpbj4ky42v3bpr7z--
+ .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++-
+ drivers/net/mdio/mdio-ipq4019.c               | 296 ++++++++++++++++--
+ 2 files changed, 424 insertions(+), 29 deletions(-)
+
+
+base-commit: abb240f7a2bd14567ab53e602db562bb683391e6
+-- 
+2.42.0
+
