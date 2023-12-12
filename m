@@ -2,388 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4B180E398
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842FE80E3BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 06:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjLLFRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 00:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S229684AbjLLFW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 00:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjLLFRS (ORCPT
+        with ESMTP id S229460AbjLLFWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 00:17:18 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F91CE;
-        Mon, 11 Dec 2023 21:17:24 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77f44cd99c6so360950785a.0;
-        Mon, 11 Dec 2023 21:17:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702358244; x=1702963044; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YD/9513lMc2HvL8P0k7L3vQlESrpCHMiKxv6xcYrY1I=;
-        b=Q6ZcvW6TiC5gYftchXWUmiBIwwCdq4Qh3rWRcIE4jN3KioLhuwKF/5flFO4+r62TQk
-         f0hUQF/VY3hbEfDuBrQeDMElOf2MaBqQkXi03sh4GvcTstIPJegrnmhpdKbmx2B93s9r
-         0EI0lXksQSR82RIpaz2EDV/00zmX1qBxnGdfilzCZ4WWq4OfAbfeXixRMHx3011shqQA
-         1v0OE+cXq5Q39PDFStwNzA3kCAoVlMZs54vxbr8wSS8ovZcxptW/ZMRKi5CY50oLUH6u
-         h79kfNuwfFhKsgtTAjlF3i3YiUH+uqFO5x6ovWex3GuxEYgwbovLjKBkXoHF1hlppPvb
-         H+jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702358244; x=1702963044;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YD/9513lMc2HvL8P0k7L3vQlESrpCHMiKxv6xcYrY1I=;
-        b=FkC/jjx6AOUtFl52TAj+xKm9AyZM5ZB6QmmgHMVDO/GDp1SMREHpULvTd7qa3//I92
-         l55yGeNFVmWCD0S2zr5XXkQr2bxE5FCU+05iL7C9A3cPvxsjBu+E/9TUbOLIYrEIGGzL
-         NrBJcr3cquEuqE7XjvqUvff285QYRAaYtT6uw0JSHrk8cm8lZ3Ff1RydETGuAgRQJCRi
-         EW6QLr7c7B0cGewRN6c1hfJOGgGxlPamRbVKK1xtxeYrp5VD4/uFg4r6tsNC7Lbm3aba
-         ihy9Zv/Nk+xVr9XaBBE09kwiVXdur9L95cbyXNCrKDwwgjkJdR41xQVIjgihv2rGrQZp
-         Q1nw==
-X-Gm-Message-State: AOJu0Yw/N+oemr9Ib8GIOp3huwnv7SoXRoIofkr19cf/tBvIKDAH2Bqc
-        oShNhSdeF1FNEieujseWt7Ge08losFHSWD8L3Rs=
-X-Google-Smtp-Source: AGHT+IE/ecgDzGI+LZYye82qUJWm+mcX8rIZZUVScTeNXHaHdNYX0Zi34b5EW2q9RFLMcz/BcgzXwP0li6e9jdBkoSk=
-X-Received: by 2002:a05:620a:6d08:b0:77e:fbba:645a with SMTP id
- ul8-20020a05620a6d0800b0077efbba645amr7660694qkn.57.1702358243751; Mon, 11
- Dec 2023 21:17:23 -0800 (PST)
+        Tue, 12 Dec 2023 00:22:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028CECE;
+        Mon, 11 Dec 2023 21:22:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702358551; x=1733894551;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vBcOqMVGmk5DzvYxiQ5N9EnkBoAt4mO+G28rTQngrAU=;
+  b=XmUCJP2iv9Ngmz8X2E2XQZLgQciHI0bnlMmJGRcU2zxPmiZmVJu3NNFD
+   BBKyd3GiwSv8rdma3ALo8ALpXi1XcVjm3Yp+sg0ZU8D2FrRJzQIU5ObVF
+   HbrrWMD+/n8MsYg6KDJFCSQ4R6IL9KryrjC4G62duUV0zgfIbnNZjZn6M
+   7hYekLuhwsOI6OoaBEJuV/WKjmpMXIdyoe4OcKpoRUUXwXXX07Z+j4RF6
+   Xi/VyHTCzGpfwprMrWqsxlMIrgyZguFhED/No/wBDGspCoxB7TsmN/m/K
+   IPvPwgmJ0Ltmt5ojjp9YAfHhChml5/8yp+f8OX1BwARRtkvcQhF8T7lV1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="480952860"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="480952860"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 21:22:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="773388115"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="773388115"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga002.jf.intel.com with ESMTP; 11 Dec 2023 21:22:26 -0800
+Message-ID: <416b6639-8904-4b31-973c-d5522e2731d8@linux.intel.com>
+Date:   Tue, 12 Dec 2023 13:17:47 +0800
 MIME-Version: 1.0
-References: <20231211193048.580691-1-avagin@google.com> <20231211193048.580691-2-avagin@google.com>
-In-Reply-To: <20231211193048.580691-2-avagin@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 12 Dec 2023 07:17:12 +0200
-Message-ID: <CAOQ4uxgFGLJPQfvHV+6Yoexj-uEYM2ur5Dau7YySczN3-RwJnQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/overlayfs: verify device and inode numbers
- in /proc/pid/maps
-To:     Andrei Vagin <avagin@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Longfang Liu <liulongfang@huawei.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 12/12] iommu: Use refcount for fault data access
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231207064308.313316-1-baolu.lu@linux.intel.com>
+ <20231207064308.313316-13-baolu.lu@linux.intel.com>
+ <20231211152456.GB1489931@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231211152456.GB1489931@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+fsdevel, +brauner
+On 12/11/23 11:24 PM, Jason Gunthorpe wrote:
+> Also iopf_queue_remove_device() is messed up - it returns an error
+> code but nothing ever does anything with it 🙁 Remove functions like
+> this should never fail.
 
-On Mon, Dec 11, 2023 at 9:30=E2=80=AFPM Andrei Vagin <avagin@google.com> wr=
-ote:
->
-> When mapping a file on overlayfs, the file stored in ->vm_file is a
-> backing file whose f_inode is on the underlying filesystem. We need to
-> verify that /proc/pid/maps contains numbers of the overlayfs file, but
-> not its backing file.
->
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
-> Signed-off-by: Andrei Vagin <avagin@google.com>
+Yes, agreed.
 
-Thanks for the fix and test.
+> 
+> Removal should be like I explained earlier:
+>   - Disable new PRI reception
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+This could be done by
 
-> ---
->  tools/testing/selftests/Makefile              |   1 +
->  .../filesystems/overlayfs/.gitignore          |   2 +
->  .../selftests/filesystems/overlayfs/Makefile  |   7 +
->  .../filesystems/overlayfs/dev_in_maps.c       | 182 ++++++++++++++++++
->  .../selftests/filesystems/overlayfs/log.h     |  26 +++
->  5 files changed, 218 insertions(+)
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/.gitign=
-ore
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/Makefil=
-e
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/dev_in_=
-maps.c
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/log.h
->
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/M=
-akefile
-> index 3b2061d1c1a5..0939a40abb28 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -26,6 +26,7 @@ TARGETS +=3D filesystems
->  TARGETS +=3D filesystems/binderfs
->  TARGETS +=3D filesystems/epoll
->  TARGETS +=3D filesystems/fat
-> +TARGETS +=3D filesystems/overlayfs
->  TARGETS +=3D firmware
->  TARGETS +=3D fpu
->  TARGETS +=3D ftrace
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/.gitignore b/t=
-ools/testing/selftests/filesystems/overlayfs/.gitignore
-> new file mode 100644
-> index 000000000000..52ae618fdd98
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/.gitignore
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +dev_in_maps
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/Makefile b/too=
-ls/testing/selftests/filesystems/overlayfs/Makefile
-> new file mode 100644
-> index 000000000000..56b2b48a765b
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/Makefile
-> @@ -0,0 +1,7 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +TEST_GEN_PROGS :=3D dev_in_maps
-> +
-> +CFLAGS :=3D -Wall -Werror
-> +
-> +include ../../lib.mk
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c =
-b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-> new file mode 100644
-> index 000000000000..08497c2e10a3
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-> @@ -0,0 +1,182 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +
-> +#include <inttypes.h>
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +
-> +#include <linux/unistd.h>
-> +#include <linux/types.h>
-> +#include <linux/mount.h>
-> +#include <sys/syscall.h>
-> +#include <sys/stat.h>
-> +#include <sys/mount.h>
-> +#include <sys/mman.h>
-> +#include <sched.h>
-> +#include <fcntl.h>
-> +
-> +#include "../../kselftest.h"
-> +#include "log.h"
-> +
-> +static int sys_fsopen(const char *fsname, unsigned int flags)
-> +{
-> +       return syscall(__NR_fsopen, fsname, flags);
-> +}
-> +
-> +static int sys_fsconfig(int fd, unsigned int cmd, const char *key, const=
- char *value, int aux)
-> +{
-> +       return syscall(__NR_fsconfig, fd, cmd, key, value, aux);
-> +}
-> +
-> +static int sys_fsmount(int fd, unsigned int flags, unsigned int attr_fla=
-gs)
-> +{
-> +       return syscall(__NR_fsmount, fd, flags, attr_flags);
-> +}
-> +
-> +static int sys_move_mount(int from_dfd, const char *from_pathname,
-> +                         int to_dfd, const char *to_pathname,
-> +                         unsigned int flags)
-> +{
-> +       return syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd, =
-to_pathname, flags);
-> +}
-> +
-> +static long get_file_dev_and_inode(void *addr, struct statx *stx)
-> +{
-> +       char buf[4096];
-> +       FILE *mapf;
-> +
-> +       mapf =3D fopen("/proc/self/maps", "r");
-> +       if (mapf =3D=3D NULL)
-> +               return pr_perror("fopen(/proc/self/maps)");
-> +
-> +       while (fgets(buf, sizeof(buf), mapf)) {
-> +               unsigned long start, end;
-> +               uint32_t maj, min;
-> +               __u64 ino;
-> +
-> +               if (sscanf(buf, "%lx-%lx %*s %*s %x:%x %llx",
-> +                               &start, &end, &maj, &min, &ino) !=3D 5)
-> +                       return pr_perror("unable to parse: %s", buf);
-> +               if (start =3D=3D (unsigned long)addr) {
-> +                       stx->stx_dev_major =3D maj;
-> +                       stx->stx_dev_minor =3D min;
-> +                       stx->stx_ino =3D ino;
-> +                       return 0;
-> +               }
-> +       }
-> +
-> +       return pr_err("unable to find the mapping");
-> +}
-> +
-> +static int ovl_mount(void)
-> +{
-> +       int tmpfs, fsfd, ovl;
-> +
-> +       fsfd =3D sys_fsopen("tmpfs", 0);
-> +       if (fsfd =3D=3D -1)
-> +               return pr_perror("fsopen(tmpfs)");
-> +
-> +       if (sys_fsconfig(fsfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0) =3D=3D=
- -1)
-> +               return pr_perror("FSCONFIG_CMD_CREATE");
-> +
-> +       tmpfs =3D sys_fsmount(fsfd, 0, 0);
-> +       if (tmpfs =3D=3D -1)
-> +               return pr_perror("fsmount");
-> +
-> +       close(fsfd);
-> +
-> +       /* overlayfs can't be constructed on top of a detached mount. */
-> +       if (sys_move_mount(tmpfs, "", AT_FDCWD, "/tmp", MOVE_MOUNT_F_EMPT=
-Y_PATH))
-> +               return pr_perror("move_mount");
-> +       close(tmpfs);
-> +
-> +       if (mkdir("/tmp/w", 0755) =3D=3D -1 ||
-> +           mkdir("/tmp/u", 0755) =3D=3D -1 ||
-> +           mkdir("/tmp/l", 0755) =3D=3D -1)
-> +               return pr_perror("mkdir");
-> +
-> +       fsfd =3D sys_fsopen("overlay", 0);
-> +       if (fsfd =3D=3D -1)
-> +               return pr_perror("fsopen(overlay)");
-> +       if (sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "source", "test", 0) =
-=3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "lowerdir", "/tmp/l",=
- 0) =3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "upperdir", "/tmp/u",=
- 0) =3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "workdir", "/tmp/w", =
-0) =3D=3D -1)
-> +               return pr_perror("fsconfig");
-> +       if (sys_fsconfig(fsfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0) =3D=3D=
- -1)
-> +               return pr_perror("fsconfig");
-> +       ovl =3D sys_fsmount(fsfd, 0, 0);
-> +       if (ovl =3D=3D -1)
-> +               return pr_perror("fsmount");
-> +
-> +       return ovl;
-> +}
-> +
-> +/*
-> + * Check that the file device and inode shown in /proc/pid/maps match va=
-lues
-> + * returned by stat(2).
-> + */
-> +static int test(void)
-> +{
-> +       struct statx stx, mstx;
-> +       int ovl, fd;
-> +       void *addr;
-> +
-> +       ovl =3D ovl_mount();
-> +       if (ovl =3D=3D -1)
-> +               return -1;
-> +
-> +       fd =3D openat(ovl, "test", O_RDWR | O_CREAT, 0644);
-> +       if (fd =3D=3D -1)
-> +               return pr_perror("openat");
-> +
-> +       addr =3D mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_FILE | MAP_=
-SHARED, fd, 0);
-> +       if (addr =3D=3D MAP_FAILED)
-> +               return pr_perror("mmap");
-> +
-> +       if (get_file_dev_and_inode(addr, &mstx))
-> +               return -1;
-> +       if (statx(fd, "", AT_EMPTY_PATH | AT_STATX_SYNC_AS_STAT, STATX_IN=
-O, &stx))
-> +               return pr_perror("statx");
-> +
-> +       if (stx.stx_dev_major !=3D mstx.stx_dev_major ||
-> +           stx.stx_dev_minor !=3D mstx.stx_dev_minor ||
-> +           stx.stx_ino !=3D mstx.stx_ino)
-> +               return pr_fail("unmatched dev:ino %x:%x:%llx (expected %x=
-:%x:%llx)\n",
-> +                       mstx.stx_dev_major, mstx.stx_dev_minor, mstx.stx_=
-ino,
-> +                       stx.stx_dev_major, stx.stx_dev_minor, stx.stx_ino=
-);
-> +
-> +       ksft_test_result_pass("devices are matched\n");
-> +       return 0;
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +       int fsfd;
-> +
-> +       fsfd =3D sys_fsopen("overlay", 0);
-> +       if (fsfd =3D=3D -1) {
-> +               ksft_test_result_skip("unable to create overlay mount\n")=
-;
-> +               return 1;
-> +       }
-> +       close(fsfd);
-> +
-> +       /* Create a new mount namespace to not care about cleaning test m=
-ounts. */
-> +       if (unshare(CLONE_NEWNS) =3D=3D -1) {
-> +               ksft_test_result_skip("unable to create a new mount names=
-pace\n");
-> +               return 1;
-> +       }
-> +
-> +       if (mount(NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) =3D=3D -1) {
-> +               pr_perror("mount");
-> +               return 1;
-> +       }
-> +
-> +       ksft_set_plan(1);
-> +
-> +       if (test())
-> +               return 1;
-> +
-> +       ksft_exit_pass();
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/log.h b/tools/=
-testing/selftests/filesystems/overlayfs/log.h
-> new file mode 100644
-> index 000000000000..db64df2a8483
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/log.h
-> @@ -0,0 +1,26 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __SELFTEST_TIMENS_LOG_H__
-> +#define __SELFTEST_TIMENS_LOG_H__
-> +
-> +#define pr_msg(fmt, lvl, ...)                                          \
-> +       ksft_print_msg("[%s] (%s:%d)\t" fmt "\n",                       \
-> +                       lvl, __FILE__, __LINE__, ##__VA_ARGS__)
-> +
-> +#define pr_p(func, fmt, ...)   func(fmt ": %m", ##__VA_ARGS__)
-> +
-> +#define pr_err(fmt, ...)                                               \
-> +       ({                                                              \
-> +               ksft_test_result_error(fmt "\n", ##__VA_ARGS__);         =
-       \
-> +               -1;                                                     \
-> +       })
-> +
-> +#define pr_fail(fmt, ...)                                      \
-> +       ({                                                      \
-> +               ksft_test_result_fail(fmt, ##__VA_ARGS__);      \
-> +               -1;                                             \
-> +       })
-> +
-> +#define pr_perror(fmt, ...)    pr_p(pr_err, fmt, ##__VA_ARGS__)
-> +
-> +#endif
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+	rcu_assign_pointer(param->fault_param, NULL);
+
+?
+
+>   - Ack all outstanding PRQ to the device
+
+All outstanding page requests are responded with
+IOMMU_PAGE_RESP_INVALID, indicating that device should not attempt any
+retry.
+
+>   - Disable PRI on the device
+>   - Tear down the iopf infrastructure
+> 
+> So under this model if the iopf_queue_remove_device() has been called
+> it should be sort of a 'disassociate' action where fault_param is
+> still floating out there but iommu_page_response() does nothing.
+
+Yes. All pending requests have been auto-responded.
+
+> IOW pass the refcount from the iommu_report_device_fault() down into
+> the fault handler, into the work and then into iommu_page_response()
+> which will ultimately put it back.
+
+Yes.
+
+Best regards,
+baolu
