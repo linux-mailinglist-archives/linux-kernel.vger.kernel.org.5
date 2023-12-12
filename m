@@ -2,138 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0E380FB5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9A180FB5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjLLX1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:27:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
+        id S235157AbjLLX1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 18:27:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbjLLX1N (ORCPT
+        with ESMTP id S232301AbjLLX1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:27:13 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442F19A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:27:19 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-550dd0e3304so5223988a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:27:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702423638; x=1703028438; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gKLkSlT6twZSU8NwNcfFicELi2XwtFQzSyMdx7RHtng=;
-        b=XVvD4tYmRygs90Fc8wbizaMrsqvdeyNOOLqBvE59kzDxsnznBap+pg57RKOILrXjXx
-         NFe675D74ZBD3EafUeZY92c9dufaK9BU/mwBovgIfnPIEueDTefW8OuaC47tN9kpFUbB
-         cYatjDSSZ1Mca4mpGPEot1r9BRltjnD5YSRoMy301YJ54TvJFxSeaFbzGOuA3pRzegaK
-         b8po0f8iQSAsoaBrwwUJ9H+ajRftDBvTD45DhRghUWOuVwgtVVNAh0NETScWEQi6SNA5
-         46f/JWDdXLZf6sBwN+qgNhLF67ZHoybTqEVbwJTNNR70w7O7sml1mZE6PcSkvpR8CjH/
-         0tvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702423638; x=1703028438;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gKLkSlT6twZSU8NwNcfFicELi2XwtFQzSyMdx7RHtng=;
-        b=rBr3ff53JUgNZ1Yow+c2USKotxp9l8lREjQUiZT5slgK1JiZyC6ox4J6EjQA9kv5yJ
-         qgUX1SlqfuxGVivscH/w5N92AzfL+dKwAlS7tfrKokqo/5UVbjuviKHOd1kwPWjJJO1L
-         dgUV3iNN1D5779bJn5XvwmmyVcYI/qOTgMCRrYpRcyB3Vt6jyaoOVeLxPQhr+wA6cLuW
-         AREfT9/X3t/3E4ohXFb+X5flEDG4ftczBBwJ6uVuZYu4TmOIUGEKxDy+89Ul/3J9ubDe
-         ouyCHW7dC05a6v/Rqr55CGrVvpP05r6kVHB/B1V5Ewk2fuAdecisJqd3aXwnnphLGjn4
-         PuTg==
-X-Gm-Message-State: AOJu0YzarPEhFpGcR690tcaPCcUqgKQ9sSZNG+mdMYR44/OGOu0ubsY7
-        bWag/QJDLW+wz0G8AV/i3N/i/TRmGQRhxBrSW39voA==
-X-Google-Smtp-Source: AGHT+IEcLfbyN3sALFXpOV8inmfq4U78bPkK4T1KZHCYHRdFLvvsTNXJwOIypWMEDP7cNFZj1hDYFe6LyYq/hjCEulI=
-X-Received: by 2002:a17:906:7c44:b0:a19:a19b:78cc with SMTP id
- g4-20020a1709067c4400b00a19a19b78ccmr3383860ejp.143.1702423637584; Tue, 12
- Dec 2023 15:27:17 -0800 (PST)
+        Tue, 12 Dec 2023 18:27:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E92F2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 15:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702423624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZwFQ3GQCbPFAax8NUohZK89OPMuLW9MEl5mvS51Lzts=;
+        b=Qb6rEPepNg/r1A/4ycL+MxCwfAeoRRx9JRESXZNnMHwx51B0+PdWmNQ1gs11C6mIFP/YGl
+        6OaZ3/ufSM9dfytM3RZLMTH6JCADT5ye200VAi0CO0gnL5HTa5zF4pDoDh31uN4xNCUmVE
+        aJYaLugb7REp/xMQ9Z/JoT9Z/r82mBQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-45-6YG-K_zxMJKQP8zTqBW2aQ-1; Tue, 12 Dec 2023 18:27:03 -0500
+X-MC-Unique: 6YG-K_zxMJKQP8zTqBW2aQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4552A80BEC1;
+        Tue, 12 Dec 2023 23:27:02 +0000 (UTC)
+Received: from localhost.localdomain.com (unknown [10.22.34.149])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 800551121306;
+        Tue, 12 Dec 2023 23:27:01 +0000 (UTC)
+From:   Nico Pache <npache@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com
+Cc:     akpm@linux-foundation.org, vincenzo.frascino@arm.com,
+        dvyukov@google.com, andreyknvl@gmail.com, glider@google.com,
+        ryabinin.a.a@gmail.com
+Subject: [PATCH] kunit: kasan_test: disable fortify string checker on kmalloc_oob_memset
+Date:   Tue, 12 Dec 2023 16:26:59 -0700
+Message-ID: <20231212232659.18839-1-npache@redhat.com>
 MIME-Version: 1.0
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
- <CAKEwX=NXcY3_GuKbh0=Ceg9wj=7u4y0NgmfSVEG3-+deY0jiWQ@mail.gmail.com>
- <CAJD7tkbErWz7Rjn-JdY8LjSW=GzEyyrNeJ5P1ipChFSufmQmLQ@mail.gmail.com>
- <CAF8kJuMegmMD3+YZfvsW3h1y1z1-kH7SiyJHPVnrSc89OZASuA@mail.gmail.com> <77d628dc-ab8c-4d8c-bc63-7e4518ea92d7@bytedance.com>
-In-Reply-To: <77d628dc-ab8c-4d8c-bc63-7e4518ea92d7@bytedance.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 12 Dec 2023 15:26:41 -0800
-Message-ID: <CAJD7tkZCxwDpNm-jQv_ieDvYhrtvMTXXjRp9_dQW3_VqYgUUsw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Chris Li <chriscli@google.com>, Nhat Pham <nphamcs@gmail.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 7:25=E2=80=AFPM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> On 2023/12/7 08:43, Chris Li wrote:
-> > Hi Nhat and Yosry,
-> >
-> > On Wed, Dec 6, 2023 at 12:42=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> >>
-> >> On Wed, Dec 6, 2023 at 9:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> w=
-rote:
-> >>>
-> >>> + Chris Li
-> >>>
-> >>> Chris, I vaguely remember from our last conversation that you have
-> >>> some concurrent efforts to use xarray here right?
-> >
-> > Yes, I do have the zswap xarray for older versions of the kernel. The
-> > recent mm-unstable tree has  a lot of zswap related updates. Give me 2
-> > days to refresh and post it. The zswap invalid entry and the reference
-> > count change is causing a good portion of the code to be updated. That
-> > is the price to pay keeping out of tree patches. My fault is not
-> > getting to it sooner.
-> >
-> >>
-> >> If I recall correctly, the xarray already reduces the lock contention
-> >> as lookups are lockless, but Chris knows more here. As you mentioned
-> >
-> > Yes. To be exact, xarray can use spin lock (same as current RB tree)
-> > or take RCU read lock on the lookup path (depending on how you call
-> > the xarray API). Not completely lockless but the RCU read lock should
-> > have less lock contention than normal spinlock. +Matthew
-> >
->
-> Great! Lockless lookup in zswap_load() should reduce spinlock contention.
-> And multiple trees (multiple xarrays) can further reduce the contention
-> on the concurrent zswap_store() side. So it's complementary IMHO.
->
-> >> in a different email, it would be nice to get some data so that we can
-> >> compare different solutions.
-> >
-> > Yes, it is certainly welcome to see more data points. If I recall
-> > correctly, the zswap xarray array makes the lookup similar to the swap
-> > cache lookup. It has a noticeable difference in the long tail end.
-> >
->
-> Right, I post some data from yesterday in another reply.
-> Will test again and update the data since Nhat's zswap shrinker fix patch
-> has been merged into mm-unstable today.
->
-> Thanks!
+similar to commit 09c6304e38e4 ("kasan: test: fix compatibility with
+FORTIFY_SOURCE") the kernel is panicing in kmalloc_oob_memset_*.
 
-Let's split the rbtree breakdown into a separate series. This series
-has irrelevant (and very nice) cleanups and optimizations, let's get
-them separately and defer the rbtree breakdown part until we get data
-about the xarray implementation. Perhaps the tree breakdown is not
-needed as much with an xarray, or at the very least the implementation
-would look different on top of an xarray.
+This is due to the `ptr` not being hidden from the optimizer which would
+disable the runtime fortify string checker.
+
+kernel BUG at lib/string_helpers.c:1048!
+Call Trace:
+[<00000000272502e2>] fortify_panic+0x2a/0x30
+([<00000000272502de>] fortify_panic+0x26/0x30)
+[<001bffff817045c4>] kmalloc_oob_memset_2+0x22c/0x230 [kasan_test]
+
+Hide the `ptr` variable from the optimizer to fix the kernel panic.
+Also define a size2 variable and hide that as well. This cleans up
+the code and follows the same convention as other tests.
+
+Signed-off-by: Nico Pache <npache@redhat.com>
+---
+ mm/kasan/kasan_test.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+index 8281eb42464b..5aeba810ba70 100644
+--- a/mm/kasan/kasan_test.c
++++ b/mm/kasan/kasan_test.c
+@@ -493,14 +493,17 @@ static void kmalloc_oob_memset_2(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = 128 - KASAN_GRANULE_SIZE;
++	size_t size2 = 2;
+ 
+ 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
++	OPTIMIZER_HIDE_VAR(ptr);
+ 	OPTIMIZER_HIDE_VAR(size);
+-	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, 2));
++	OPTIMIZER_HIDE_VAR(size2);
++	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, size2));
+ 	kfree(ptr);
+ }
+ 
+@@ -508,14 +511,17 @@ static void kmalloc_oob_memset_4(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = 128 - KASAN_GRANULE_SIZE;
++	size_t size2 = 4;
+ 
+ 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
++	OPTIMIZER_HIDE_VAR(ptr);
+ 	OPTIMIZER_HIDE_VAR(size);
+-	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, 4));
++	OPTIMIZER_HIDE_VAR(size2);
++	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, size2));
+ 	kfree(ptr);
+ }
+ 
+@@ -523,14 +529,17 @@ static void kmalloc_oob_memset_8(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = 128 - KASAN_GRANULE_SIZE;
++	size_t size2 = 8;
+ 
+ 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
++	OPTIMIZER_HIDE_VAR(ptr);
+ 	OPTIMIZER_HIDE_VAR(size);
+-	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, 8));
++	OPTIMIZER_HIDE_VAR(size2);
++	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, size2));
+ 	kfree(ptr);
+ }
+ 
+@@ -538,14 +547,17 @@ static void kmalloc_oob_memset_16(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = 128 - KASAN_GRANULE_SIZE;
++	size_t size2 = 16;
+ 
+ 	KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+ 
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
++	OPTIMIZER_HIDE_VAR(ptr);
+ 	OPTIMIZER_HIDE_VAR(size);
+-	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, 16));
++	OPTIMIZER_HIDE_VAR(size2);
++	KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, size2));
+ 	kfree(ptr);
+ }
+ 
+-- 
+2.43.0
+
