@@ -2,167 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFFE80F972
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E74A80F975
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 22:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbjLLVdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 16:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
+        id S1377182AbjLLVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 16:34:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235196AbjLLVcp (ORCPT
+        with ESMTP id S235185AbjLLVeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 16:32:45 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE95A7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:32:51 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-dbcb4747d84so1477196276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:32:51 -0800 (PST)
+        Tue, 12 Dec 2023 16:34:05 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB854A7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:34:11 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6ce6dd83945so5592326b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 13:34:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702416770; x=1703021570; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nAMCWPmOAEyI7QnHbEVFzQzgfOnlTbYbwwq0iE7QXzY=;
-        b=hBz2agZPHmFoCNfkYwLxe49dfn7WI+3JZZM6PBOJzHQcyXBlEsBGUFciDGneuIHqOq
-         MrVgLNCfiYw4IpZg5Bh/MykT7+7R1zEOVGtc8yAr5y5Q5QDa6vY9xO7Wr5ExaM3ltp2D
-         IAl6NMUNrDX+etN1vh1X1ogQobiHojiVe6Sf+Y2B8rKdR1ZTI+t5ZU4+nuyKhjwNKQjD
-         kA6h0i8I5UCogjp+Ypu/sWHXmlQAFdzPzi1P7wt7LRkFmA9WnS9ri9DI0yTkB9gvPgit
-         vjXQL3mBUi0EoLFXBmojcIw3oX8ji+TkFjO1S6ucP7SSyOB0rVgHYsNbhE1IckY9/OBl
-         gI7g==
+        d=chromium.org; s=google; t=1702416851; x=1703021651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BUBXCMgW8IRc4vkm7/izJLiVwvVVMNu8qOIh1J5boU8=;
+        b=ixmc1hdXiCVXM3eKXWlbOid0djUpVNi7m3rTzzqaS2gqAibgXUqZmJ6x9vSXiezYPd
+         k0J49kCxVo9svRTDafWND7Nh6BNt2FS6OEnGjrERvIdarplUylodWhf3Fkwozxmcr47S
+         phJTsXk0VVCrq/Hi+V5RpiHlZozV7m8Z9qyMA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702416770; x=1703021570;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nAMCWPmOAEyI7QnHbEVFzQzgfOnlTbYbwwq0iE7QXzY=;
-        b=fMrnQ81uNfvgNPGqrnaeRewEWwyv9C17H1qgnLeRC/gJvupkPaPI6BPdT1luZnndjW
-         1Oo+wq605k5feSGSmmW4hzq/r8kMqPL568qV+C1k8vLUgJwCLG4IWdGlZXEbMkznIeWd
-         uwoNLjz6mzsArKxPSHjpNCQ6VJA3ijthT3VBzcvBefQHKevmBmnQpNzj11FgAMKtUvXY
-         8FhgzSmY9KCx3/+cJSxbff3IyyW2mUZPznOJs0xd3iQGBF6PbZGx+cfL/az2dVTjUIhk
-         Jngv7aQsu63tgNbXhzRPbYQ+Q3u5aldJJc8Z+V7pwJdjZsT+9CCWPwihd7Dg2aUu1LRX
-         ZENg==
-X-Gm-Message-State: AOJu0Yxzs8uK9biQkFkqGtC9w2SHfqRFU4kS9CD0lEbq0eFt6L828BY0
-        pcvCLcQx14IfJlorraLSQjdGbqX3td4EacE6mFmWcg==
-X-Google-Smtp-Source: AGHT+IHwhm79zg1o8Twrfkas2RbpxztHXKT11jxCktgcQzXvIJ4yp5ZwLauwclFvKaPNojWCQqYq1B6yvcIm7JME4n8=
-X-Received: by 2002:a81:8305:0:b0:5d4:4bb:2090 with SMTP id
- t5-20020a818305000000b005d404bb2090mr5961876ywf.17.1702416770167; Tue, 12 Dec
- 2023 13:32:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702416851; x=1703021651;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BUBXCMgW8IRc4vkm7/izJLiVwvVVMNu8qOIh1J5boU8=;
+        b=wgZNo7KPNYUKs31KRpc69H7Zwy3ngfbjzgfrdF0G7JgCQnRmvWDOSMActE2fM+mWsE
+         ehz7KL9p6rZCBhoZs/Rl8QqqOG8zHF0Lig/oVLlNrGDfxUouucWEc7DPlMqFyFcYMSnQ
+         r+FMzoqJGCeP8pz1sqWf6eYDICo8YMS8iJ0rfPut0N46nM7YpyEzc+k1Ddu4MsgpQ4OJ
+         +kSSV0zkhxLF12LphgUb3ZM2sQv8bNmB0ESGHVNC8VzXQvUqFX4qO8gdg9dNkp+Z5Ge7
+         djhoW1xEa+w6s+/4Eg5OPyNafFU3mIzh2JqleMY5BmRyomJC0HxFW3LmW6eXrDtki6PM
+         C/lA==
+X-Gm-Message-State: AOJu0YxWhI0Gtn2YEHzJnTIvyE5tMcEJUncSN6rs9ySFGZMOD9ZCh5pE
+        wld2mMOb4wMcBKwAijxGdoZP+Q==
+X-Google-Smtp-Source: AGHT+IFjOA5OyEhfv3ZEaJ2ntXMaFYPXBjpMdJB7JxNYpSO1j7kBSU8jL07cqpqSKP1PenK7ylyWxA==
+X-Received: by 2002:a05:6a00:8cb:b0:6ce:2e7b:55fa with SMTP id s11-20020a056a0008cb00b006ce2e7b55famr7820685pfu.39.1702416851123;
+        Tue, 12 Dec 2023 13:34:11 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x3-20020a056a000bc300b006cea17d08ebsm8594307pfu.120.2023.12.12.13.34.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 13:34:10 -0800 (PST)
+Date:   Tue, 12 Dec 2023 13:34:10 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: fcoe: use sysfs_match_string over fcoe_parse_mode
+Message-ID: <202312121330.2210A26@keescook>
+References: <20231211-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v1-1-73b942238396@google.com>
 MIME-Version: 1.0
-References: <20231212002245.23715-1-quic_abhinavk@quicinc.com>
- <20231212002245.23715-2-quic_abhinavk@quicinc.com> <CAA8EJpqJOh0R1X3i1UGe9hHoezV4uBNDCWPFSdeuXyC6Ju4eHA@mail.gmail.com>
- <59304cf8-33b7-bf27-f9e2-a15e323c869a@quicinc.com>
-In-Reply-To: <59304cf8-33b7-bf27-f9e2-a15e323c869a@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 12 Dec 2023 23:32:39 +0200
-Message-ID: <CAA8EJpr3Gjd-5cw=15g9TNcs1q30_eSzFYpD0_-0fc43VBof1g@mail.gmail.com>
-Subject: Re: [PATCH v3 01/15] drm/msm/dpu: add formats check for writeback encoder
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, seanpaul@chromium.org,
-        quic_jesszhan@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v1-1-73b942238396@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 19:17, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 12/11/2023 10:40 PM, Dmitry Baryshkov wrote:
-> > On Tue, 12 Dec 2023 at 02:23, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> >>
-> >> In preparation for adding more formats to dpu writeback add
-> >> format validation to it to fail any unsupported formats.
-> >>
-> >> changes in v3:
-> >>          - rebase on top of msm-next
-> >>          - replace drm_atomic_helper_check_wb_encoder_state() with
-> >>            drm_atomic_helper_check_wb_connector_state() due to the
-> >>            rebase
-> >>
-> >> changes in v2:
-> >>          - correct some grammar in the commit text
-> >>
-> >> Fixes: d7d0e73f7de3 ("drm/msm/dpu: introduce the dpu_encoder_phys_* for writeback")
-> >> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> >> ---
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c | 7 +++++++
-> >>   1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> >> index bb94909caa25..425415d45ec1 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_wb.c
-> >> @@ -272,6 +272,7 @@ static int dpu_encoder_phys_wb_atomic_check(
-> >>   {
-> >>          struct drm_framebuffer *fb;
-> >>          const struct drm_display_mode *mode = &crtc_state->mode;
-> >> +       int ret;
-> >>
-> >>          DPU_DEBUG("[atomic_check:%d, \"%s\",%d,%d]\n",
-> >>                          phys_enc->hw_wb->idx, mode->name, mode->hdisplay, mode->vdisplay);
-> >> @@ -308,6 +309,12 @@ static int dpu_encoder_phys_wb_atomic_check(
-> >>                  return -EINVAL;
-> >>          }
-> >>
-> >> +       ret = drm_atomic_helper_check_wb_connector_state(conn_state->connector, conn_state->state);
-> >> +       if (ret < 0) {
-> >> +               DPU_ERROR("invalid pixel format %p4cc\n", &fb->format->format);
-> >> +               return ret;
-> >> +       }
-> >
-> > There is no guarantee that there will be no other checks added to this
-> > helper. So, I think this message is incorrect. If you wish, you can
-> > promote the level of the message in the helper itself.
-> > On the other hand, we rarely print such messages by default. Most of
-> > the checks use drm_dbg.
-> >
->
-> hmm...actually drm_atomic_helper_check_wb_connector_state() already has
-> a debug message to indicate invalid pixel formats.
->
-> You are right, i should perhaps just say that "atomic_check failed" or
-> something.
->
-> I can make this a DPU_DEBUG. Actually I didnt know that we are not
-> supposed to print out atomic_check() errors. Is it perhaps because its
-> okay for check to fail?
+On Mon, Dec 11, 2023 at 08:06:28PM +0000, Justin Stitt wrote:
+> Instead of copying @buf into a new buffer and carefully managing its
+> newline/null-terminating status, we can just use sysfs_match_string()
+> as it uses sysfs_streq() internally which handles newline/null-term:
+> 
+> |  /**
+> |   * sysfs_streq - return true if strings are equal, modulo trailing newline
+> |   * @s1: one string
+> |   * @s2: another string
+> |   *
+> |   * This routine returns true iff two strings are equal, treating both
+> |   * NUL and newline-then-NUL as equivalent string terminations.  It's
+> |   * geared for use with sysfs input strings, which generally terminate
+> |   * with newlines but are compared against values without newlines.
+> |   */
+> |  bool sysfs_streq(const char *s1, const char *s2)
+> |  ...
+> 
+> Then entirely drop the now unused fcoe_parse_mode, being careful to
+> change if condition from checking for FIP_CONN_TYPE_UNKNOWN to < 0 as
+> sysfs_match_string can return -EINVAL.
+> 
+> To get the compiler not to complain, make fip_conn_type_names
+> const char * const. Perhaps, this should also be done for
+> fcf_state_names.
+> 
+> This also removes an instance of strncpy() which helps [1].
+> 
+> Link: https://github.com/KSPP/linux/issues/90 [1]
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Builds upon patch and feedback from [2]:
+> 
+> However, this is different enough to warrant its own patch and not be a
+> continuation.
+> 
+> [2]: https://lore.kernel.org/all/9f38f4aa-c6b5-4786-a641-d02d8bd92f7f@acm.org/
+> ---
+>  drivers/scsi/fcoe/fcoe_sysfs.c | 26 ++++----------------------
+>  1 file changed, 4 insertions(+), 22 deletions(-)
 
-There are no messages by default there, because otherwise it is so
-easy for the user to overspam the dmesg and thus syslog / journal. DoS
-on the plate.
+My favorite kind of insert/delete ratio! :)
 
->
-> But then we would not know why it failed.
+> 
+> diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
+> index e17957f8085c..f9c5d00f658a 100644
+> --- a/drivers/scsi/fcoe/fcoe_sysfs.c
+> +++ b/drivers/scsi/fcoe/fcoe_sysfs.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/etherdevice.h>
+>  #include <linux/ctype.h>
+> +#include <linux/string.h>
+>  
+>  #include <scsi/fcoe_sysfs.h>
+>  #include <scsi/libfcoe.h>
+> @@ -214,25 +215,13 @@ static const char *get_fcoe_##title##_name(enum table_type table_key)	\
+>  	return table[table_key];					\
+>  }
+>  
+> -static char *fip_conn_type_names[] = {
+> +static const char * const fip_conn_type_names[] = {
+>  	[ FIP_CONN_TYPE_UNKNOWN ] = "Unknown",
+>  	[ FIP_CONN_TYPE_FABRIC ]  = "Fabric",
+>  	[ FIP_CONN_TYPE_VN2VN ]   = "VN2VN",
+>  };
+>  fcoe_enum_name_search(ctlr_mode, fip_conn_type, fip_conn_type_names)
+>  
+> -static enum fip_conn_type fcoe_parse_mode(const char *buf)
+> -{
+> -	int i;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(fip_conn_type_names); i++) {
+> -		if (strcasecmp(buf, fip_conn_type_names[i]) == 0)
+> -			return i;
+> -	}
+> -
+> -	return FIP_CONN_TYPE_UNKNOWN;
+> -}
+> -
+>  static char *fcf_state_names[] = {
+>  	[ FCOE_FCF_STATE_UNKNOWN ]      = "Unknown",
+>  	[ FCOE_FCF_STATE_DISCONNECTED ] = "Disconnected",
+> @@ -274,17 +263,10 @@ static ssize_t store_ctlr_mode(struct device *dev,
+>  			       const char *buf, size_t count)
+>  {
+>  	struct fcoe_ctlr_device *ctlr = dev_to_ctlr(dev);
+> -	char mode[FCOE_MAX_MODENAME_LEN + 1];
+>  
+>  	if (count > FCOE_MAX_MODENAME_LEN)
+>  		return -EINVAL;
+>  
+> -	strncpy(mode, buf, count);
+> -
+> -	if (mode[count - 1] == '\n')
+> -		mode[count - 1] = '\0';
+> -	else
+> -		mode[count] = '\0';
+>  
+>  	switch (ctlr->enabled) {
+>  	case FCOE_CTLR_ENABLED:
+> @@ -297,8 +279,8 @@ static ssize_t store_ctlr_mode(struct device *dev,
+>  			return -ENOTSUPP;
+>  		}
+>  
+> -		ctlr->mode = fcoe_parse_mode(mode);
+> -		if (ctlr->mode == FIP_CONN_TYPE_UNKNOWN) {
+> +		ctlr->mode = sysfs_match_string(fip_conn_type_names, buf);
+> +		if (ctlr->mode < 0) {
 
-Think about the user of X11. They don't see the console. And by
-default in the contemporary distros they won't be able to check dmesg.
-So if a commit fails, they have to deduce anyway, why did it fail.
+I think this needs to include FIP_CONN_TYPE_UNKNOWN to keep the logic
+the same? (i.e. it could match the string "Unknown", so it would return
+the enum value for that, 0 in this case.)
 
->
-> >> +
-> >>          return 0;
-> >>   }
-> >>
-> >> --
-> >> 2.40.1
-> >>
-> >
-> >
+Otherwise, yeah, this looks good.
 
+-Kees
 
+>  			LIBFCOE_SYSFS_DBG(ctlr, "Unknown mode %s provided.\n",
+>  					  buf);
+>  			return -EINVAL;
+> 
+> ---
+> base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+> change-id: 20231024-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-0e1dffe82855
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
 
 -- 
-With best wishes
-Dmitry
+Kees Cook
