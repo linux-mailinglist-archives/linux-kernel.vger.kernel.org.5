@@ -2,72 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D94580ED46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 14:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E234180EC3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346428AbjLLNVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 08:21:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        id S232563AbjLLMmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:42:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235152AbjLLMlh (ORCPT
+        with ESMTP id S232482AbjLLMmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:41:37 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B9295;
-        Tue, 12 Dec 2023 04:41:43 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SqHqB6dJRz9xrpF;
-        Tue, 12 Dec 2023 20:24:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-        by mail.maildlp.com (Postfix) with ESMTP id 1AF9C1404DB;
-        Tue, 12 Dec 2023 20:41:34 +0800 (CST)
-Received: from [10.204.63.22] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCHN2H0VHhlfMxgAg--.37324S2;
-        Tue, 12 Dec 2023 13:41:33 +0100 (CET)
-Message-ID: <b9ce0bad-4e7d-44e2-bdd4-6ebf1b6b196f@huaweicloud.com>
-Date:   Tue, 12 Dec 2023 13:41:22 +0100
+        Tue, 12 Dec 2023 07:42:02 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA7394;
+        Tue, 12 Dec 2023 04:42:08 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 727C4224EA;
+        Tue, 12 Dec 2023 12:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702384926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNa2E9XZNfaEdk9TRq5PEze1pvUq7Mj5mqzveUCyzc8=;
+        b=bqifFFBE0MhFbajnZEhW24Eq1ViJGdjcEWsq8/k47JzaQI32MX0l2kkMiLOAcNPPtKJ5RD
+        zOIv/B4mVuNNMoGK0+kV6vI5YQY7PviQqA8T490SCZVa2phLk3VERKJMsA12a1aGaOCILW
+        m/aammhjVPXoytUIrSiVDtcqg6NgXqE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702384926;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNa2E9XZNfaEdk9TRq5PEze1pvUq7Mj5mqzveUCyzc8=;
+        b=lJNxfJ9whX7J5ojbi7z5RYhIfbUF5l/rie01DhjSXemSuWafRNwkvQCIu4erc8VQGYxC1X
+        pBgiA/J7AaxpkIDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702384924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNa2E9XZNfaEdk9TRq5PEze1pvUq7Mj5mqzveUCyzc8=;
+        b=0KdH44DZYQRGMDTrAM0LQjrUQAS8V3NaAYeDzWeKE87PTrDaebUZcqWItMEjrvBcOgiTmp
+        7RxHdmBMXOWgtyGJrqmZLqncXjLQUl4s9wKm4mxDw5lV6rNNfSyNwLoEQEcxjWZDpv4YKH
+        E8q8gi3f/Zfp7AcVNkEjNZpc7gP1evA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702384924;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNa2E9XZNfaEdk9TRq5PEze1pvUq7Mj5mqzveUCyzc8=;
+        b=A2WXGC5FP449rylXKqpbXvaibLTsm5cCAdgmCw5kuqGzNYV2jWUDlTNJduF61STFzuMqqc
+        AhDFoFLB7KVT6oCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CFDF132DC;
+        Tue, 12 Dec 2023 12:42:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id pImyFhxVeGWJMgAAn2gu4w
+        (envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 12:42:04 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id C6A01A06E5; Tue, 12 Dec 2023 13:41:57 +0100 (CET)
+Date:   Tue, 12 Dec 2023 13:41:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, willy@infradead.org,
+        akpm@linux-foundation.org, david@fromorbit.com, hch@infradead.org,
+        ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+        stable@kernel.org
+Subject: Re: [RFC PATCH] mm/filemap: avoid buffered read/write race to read
+ inconsistent data
+Message-ID: <20231212124157.ew6q6jp2wsezvqzd@quack3>
+References: <20231212093634.2464108-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-Content-Language: en-US
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zohar@linux.ibm.com, paul@paul-moore.com, stefanb@linux.ibm.com,
-        jlayton@kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
- <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
- <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
- <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
- <CAOQ4uxgvKb520_Nbp+Y7KDq3_7t1tx65w5pOP8y6or1prESv+Q@mail.gmail.com>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <CAOQ4uxgvKb520_Nbp+Y7KDq3_7t1tx65w5pOP8y6or1prESv+Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwCHN2H0VHhlfMxgAg--.37324S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1rJFW5Xw43CryftryxKrg_yoWrAryDpF
-        WYka4UKrs8tr17AwnFya17XFWjy3yrJ3WUXw1Dtr4kZFyDtF1Sgry7Ka4UuF9rWr1xG34j
-        vFWjk347ur9xZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAJBF1jj5ONawAAsL
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212093634.2464108-1-libaokun1@huawei.com>
+X-Spam-Level: **********
+X-Spam-Score: 10.20
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: 727C4224EA
+X-Spam-Flag: NO
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0KdH44DZ;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=A2WXGC5F;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Spamd-Result: default: False [-1.31 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         R_RATELIMIT(0.00)[to_ip_from(RLipn3kch65fcrhdxgeb98n64p)];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[suse.cz];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[16];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,mit.edu,dilger.ca,suse.cz,infradead.org,linux-foundation.org,fromorbit.com,gmail.com,huawei.com,kernel.org];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -1.31
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,112 +132,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.23 19:31, Amir Goldstein wrote:
-> On Mon, Dec 11, 2023 at 4:56 PM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
->>
->> On Fri, 2023-12-08 at 23:01 +0100, Christian Brauner wrote:
->>> On Fri, Dec 08, 2023 at 11:55:19PM +0200, Amir Goldstein wrote:
->>>> On Fri, Dec 8, 2023 at 7:25 PM Roberto Sassu
->>>> <roberto.sassu@huaweicloud.com> wrote:
->>>>>
->>>>> From: Roberto Sassu <roberto.sassu@huawei.com>
->>>>>
->>>>> EVM updates the HMAC in security.evm whenever there is a setxattr or
->>>>> removexattr operation on one of its protected xattrs (e.g. security.ima).
->>>>>
->>>>> Unfortunately, since overlayfs redirects those xattrs operations on the
->>>>> lower filesystem, the EVM HMAC cannot be calculated reliably, since lower
->>>>> inode attributes on which the HMAC is calculated are different from upper
->>>>> inode attributes (for example i_generation and s_uuid).
->>>>>
->>>>> Although maybe it is possible to align such attributes between the lower
->>>>> and the upper inode, another idea is to map security.evm to another name
->>>>> (security.evm_overlayfs)
->>>>
->>>> If we were to accept this solution, this will need to be trusted.overlay.evm
->>>> to properly support private overlay xattr escaping.
->>>>
->>>>> during an xattr operation, so that it does not
->>>>> collide with security.evm set by the lower filesystem.
->>>>
->>>> You are using wrong terminology and it is very confusing to me.
->>>
->>> Same.
->>
->> Argh, sorry...
->>
->>>> see the overlay mount command has lowerdir= and upperdir=.
->>>> Seems that you are using lower filesystem to refer to the upper fs
->>>> and upper filesystem to refer to overlayfs.
->>>>
->>>>>
->>>>> Whenever overlayfs wants to set security.evm, it is actually setting
->>>>> security.evm_overlayfs calculated with the upper inode attributes. The
->>>>> lower filesystem continues to update security.evm.
->>>>>
->>>>
->>>> I understand why that works, but I am having a hard time swallowing
->>>> the solution, mainly because I feel that there are other issues on the
->>>> intersection of overlayfs and IMA and I don't feel confident that this
->>>> addresses them all.
->>
->> This solution is specifically for the collisions on HMACs, nothing
->> else. Does not interfere/solve any other problem.
->>
->>>> If you want to try to convince me, please try to write a complete
->>>> model of how IMA/EVM works with overlayfs, using the section
->>>> "Permission model" in Documentation/filesystems/overlayfs.rst
->>>> as a reference.
->>
->> Ok, I will try.
->>
->> I explain first how EVM works in general, and then why EVM does not
->> work with overlayfs.
->>
+On Tue 12-12-23 17:36:34, Baokun Li wrote:
+> The following concurrency may cause the data read to be inconsistent with
+> the data on disk:
 > 
-> I understand both of those things.
+>              cpu1                           cpu2
+> ------------------------------|------------------------------
+>                                // Buffered write 2048 from 0
+>                                ext4_buffered_write_iter
+>                                 generic_perform_write
+>                                  copy_page_from_iter_atomic
+>                                  ext4_da_write_end
+>                                   ext4_da_do_write_end
+>                                    block_write_end
+>                                     __block_commit_write
+>                                      folio_mark_uptodate
+> // Buffered read 4096 from 0          smp_wmb()
+> ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
+>  generic_file_read_iter            i_size_write // 2048
+>   filemap_read                     unlock_page(page)
+>    filemap_get_pages
+>     filemap_get_read_batch
+>     folio_test_uptodate(folio)
+>      ret = test_bit(PG_uptodate, folio_flags)
+>      if (ret)
+>       smp_rmb();
+>       // Ensure that the data in page 0-2048 is up-to-date.
 > 
-> What I don't understand is WHY EVM needs to work on overlayfs?
-> What is the use case?
-> What is the threat model?
+>                                // New buffered write 2048 from 2048
+>                                ext4_buffered_write_iter
+>                                 generic_perform_write
+>                                  copy_page_from_iter_atomic
+>                                  ext4_da_write_end
+>                                   ext4_da_do_write_end
+>                                    block_write_end
+>                                     __block_commit_write
+>                                      folio_mark_uptodate
+>                                       smp_wmb()
+>                                       set_bit(PG_uptodate, folio_flags)
+>                                    i_size_write // 4096
+>                                    unlock_page(page)
 > 
-> The purpose of IMA/EVM as far as I understand it is to detect and
-> protect against tampering with data/metadata offline. Right?
+>    isize = i_size_read(inode) // 4096
+>    // Read the latest isize 4096, but without smp_rmb(), there may be
+>    // Load-Load disorder resulting in the data in the 2048-4096 range
+>    // in the page is not up-to-date.
+>    copy_page_to_iter
+>    // copyout 4096
 > 
-> As Seth correctly wrote, overlayfs is just the composition of existing
-> underlying layers.
+> In the concurrency above, we read the updated i_size, but there is no read
+> barrier to ensure that the data in the page is the same as the i_size at
+> this point, so we may copy the unsynchronized page out. Hence adding the
+> missing read memory barrier to fix this.
 > 
-> Noone can tamper with overlayfs without tampering with the underlying
-> layers.
+> This is a Load-Load reordering issue, which only occurs on some weak
+> mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
+> mem-ordering architectures (e.g. X86). And theoretically the problem
 
-Makes sense.
+AFAIK x86 can also reorder loads vs loads so the problem can in theory
+happen on x86 as well.
 
-> The correct solution to your problem, and I have tried to say this many
-> times, in to completely opt-out of IMA/EVM for overlayfs.
+> doesn't only happen on ext4, filesystems that call filemap_read() but
+> don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
+> problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
+> this problem.
 > 
-> EVM should not store those versions of HMAC for overlayfs and for
-> the underlying layers, it should ONLY store a single version for the
-> underlying layer.
-
-If we avoid the checks in IMA and EVM for overlayfs, we need the 
-guarantee that everything passes through overlayfs down, and that there 
-is no external interference to the lower and upper filesystems (the part 
-that is used by overlayfs).
-
-Maybe I'm missing something, I looked at this issue only now, and Mimi 
-knows it much better than me.
-
-Roberto
-
-> Because write() in overlayfs always follows by write() to upper layer
-> and setxattr() in overlayfs always follows by setxattr() to upper layer
-> IMO write() and setxattr() on overlayfs should by ignored by IMA/EVM
-> and only write()/setxattr() on underlying fs should be acted by IMA/EVM
-> which AFAIK, happens anyway.
+> Cc: stable@kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  mm/filemap.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> Please let me know if I am missing something,
-> 
-> Thanks,
-> Amir.
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 71f00539ac00..6324e2ac3e74 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -2607,6 +2607,9 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+>  			goto put_folios;
+>  		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
+>  
+> +		/* Ensure that the page cache within isize is updated. */
 
+Barries have to be in pairs to work and it is a good practice to document
+this. So here I'd have comment like:
+		/*
+		 * Pairs with a barrier in
+		 * block_write_end()->mark_buffer_dirty() or other page
+		 * dirtying routines like iomap_write_end() to ensure
+		 * changes to page contents are visible before we see
+		 * increased inode size.
+		 */
+
+								Honza
+
+> +		smp_rmb();
+> +
+>  		/*
+>  		 * Once we start copying data, we don't want to be touching any
+>  		 * cachelines that might be contended:
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
