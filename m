@@ -2,98 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF7780F4BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EAF880F4C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 18:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjLLRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 12:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S1376806AbjLLRjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 12:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232546AbjLLRjW (ORCPT
+        with ESMTP id S232817AbjLLRjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 12:39:22 -0500
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125469F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:28 -0800 (PST)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-20316647099so84181fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 09:39:28 -0800 (PST)
+        Tue, 12 Dec 2023 12:39:51 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2EA93;
+        Tue, 12 Dec 2023 09:39:55 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6ce33234fd7so3141600b3a.0;
+        Tue, 12 Dec 2023 09:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1702402767; x=1703007567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lUNcmTOafhUTvYQgQCAZ2J3XidKSJdEQq/nWiWeUEgE=;
-        b=Uahcjca7Pm5sO1adSdHjqXTnJtThnJjHeBLrMAimlYmIVG+2c27XbPPYX5mKWdj7cR
-         G8+CliuYp+mTllA7GyLcztbWkHeufOcDajzRhMGxc/M2AyrGeIcs1NOHzUPjdygumhPM
-         R2u9e82H4++WVPFS9rxxg5D9b8+7ocMoORY1UI0Bf17X8EChcUiBfjnQ2b2CLcrBdk2G
-         BMCkjU5l1LEFKDmjlk3JC9IZu+T+JicfqJkv5DKdvIuUcipqV9UNYblCfeDkZc0zjWlC
-         E1kKDeylDS8YfBNaK+W6S6ByxuMg7wJlJ5S0y96Ryfk+xkJ+6hxE9HvbThLnkZluZ8G7
-         h85g==
+        d=gmail.com; s=20230601; t=1702402794; x=1703007594; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0bimU+RjPXnA4GcSVMRC2y8VYJ0x8Wxk5dqkFvYFDmQ=;
+        b=UcB3TR4+hVzwbuXwUvncgd6U5wdRg6cfgNSEOOXdeXTGVp/ALfzBJNLs8Mj776Zn2q
+         n3T5Tjd3dFaQlXoHJN2SLXUn+nVfHMK7zZBxg3y8pleb78t9WT2sdbcIIbIGpQ6N9szh
+         QwdzxVV1W6Qsq/qbRDuSlGg6MldIt9AvuCIAIGhifRTSf207jLbJomMvsb8U86/LHeKL
+         vYmLmmjURW9eXrxsjoVxmR7SRZBxmXtfz0uEaMB7PDh1N8jYrShFw1ckARbrunRQyLqr
+         sgo++0VJ6+binmrFA3a13ggj+ejmWTLCt13qu/DxM7Nh9YwDE9EnAGuks4GqlrmBSvOQ
+         p8/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702402767; x=1703007567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lUNcmTOafhUTvYQgQCAZ2J3XidKSJdEQq/nWiWeUEgE=;
-        b=fGVhNE0IDRXY/uL8T/v8cUwn5lhPgbJaC85A1Uh/FH7abcHB2+93hE58/znfL/qfcG
-         uBqUdSPU1rM67nfe2Jpoa4aQ+Z1Er8fBI9RHRy++fnGZ6vV4CcLPPe9ZamFzEaiWpz55
-         lAoKiXsH8mMMif9WXn/Cl4cv+eaI8HWrKLhw8Yf2sM2oPpoyt/Eaa+n9Q7XZ9DqoElkr
-         SsMCxohSV2KyGFEEZoa+/kw3VA+kUVr+kp067v4kr0mYJ1mhCYTr6ZXpxV0OASeA0STI
-         LoxHyaqQpsA9nuI8y4HgMlVVZhx0EI2s0hxAzAnnaaHw6/AcEN6n0F3v0rKlAR//bXjK
-         j9YA==
-X-Gm-Message-State: AOJu0Yxd5CU/h7hZJj6PREJT5bf1v/j1mBP2/IA4gXiFrzVs6iRB4HfS
-        UiwmkvlaTR35Jdp1Ryw+p/lM47m4G27TL5t3MC/F7J7W0DQEopWh
-X-Google-Smtp-Source: AGHT+IH8FppDOJz1c2vNZhu2IoyiV03XlApPbOHQwSfNyieubu2559mIvdKWWArZPTLxB5xikCyyW94EFosm8JLdBec=
-X-Received: by 2002:a05:6870:659e:b0:1fb:3741:4dc5 with SMTP id
- fp30-20020a056870659e00b001fb37414dc5mr8515512oab.34.1702402766687; Tue, 12
- Dec 2023 09:39:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702402794; x=1703007594;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0bimU+RjPXnA4GcSVMRC2y8VYJ0x8Wxk5dqkFvYFDmQ=;
+        b=KjQZrEZVnniJ0OLvU4WR2jvsc/Yrmi3JeoUIbMPVSn4MaljUowbXDqiDn6grFjXtpX
+         nl0ZX7ISoC0yetMFPeaG+rX5P4nx51gyFbaihhbYjNODHfiSfw1bzOhlzt2blMcVhQQB
+         r3m8HWdpALFIvMJnSEilRtNJatO0+im9EJt+cdSGsrdPTTrFM+gLBB2qUz+3LAsDkzwW
+         BmFN++ujNpOTioDABpLJwsMJiBCZAh1x/7XFRic/aezAqxD6L5iCMf0md9yWpCzqY29g
+         WdjS9qpeQRuFW/gAlZxT2dL5YS7A5wPQKRaTn8c1OpAXR8fxB9WbO1T+NUakKm6UiAwJ
+         0Rnw==
+X-Gm-Message-State: AOJu0YzCo2DJ3mH8p9rnC9SmMmow8cXI7nO39G+vnOLm+ucu/XOTgyNn
+        I9u3rim4eTU7F5akB1+z127/srIurCRJgFr+
+X-Google-Smtp-Source: AGHT+IFadAS+SyDVgm58OPghc2OCdPROFHBDIHrxFJPHsDzzW43OTDML6jWi0zmAD3TWRQ0XOnYK2Q==
+X-Received: by 2002:a05:6a00:8606:b0:6ce:2731:7a02 with SMTP id hg6-20020a056a00860600b006ce27317a02mr2253347pfb.56.1702402793924;
+        Tue, 12 Dec 2023 09:39:53 -0800 (PST)
+Received: from neeraj.linux ([101.0.63.152])
+        by smtp.gmail.com with ESMTPSA id c11-20020a630d0b000000b005c2185be2basm8418384pgl.54.2023.12.12.09.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 09:39:53 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:09:48 +0530
+From:   "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        rostedt@goodmis.org, paulmck@kernel.org, Neeraj.Upadhyay@amd.com
+Subject: [PATCH rcu 0/3] RCU misc fixes for v6.8
+Message-ID: <20231212173948.GA11724@neeraj.linux>
 MIME-Version: 1.0
-References: <20231212141200.62579-1-eichest@gmail.com> <20231212170704.74565969@device.home>
-In-Reply-To: <20231212170704.74565969@device.home>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Tue, 12 Dec 2023 18:39:14 +0100
-Message-ID: <CAPv3WKfY2ATjPPV=yFQNUE=dV4wpyV3d0cQNBGOuSPb+id=mvw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] net: mvpp2: add support for mii
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Stefan Eichenberger <eichest@gmail.com>, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-wt., 12 gru 2023 o 17:07 Maxime Chevallier
-<maxime.chevallier@bootlin.com> napisa=C5=82(a):
->
-> Hi Stefan,
->
-> On Tue, 12 Dec 2023 15:12:00 +0100
-> Stefan Eichenberger <eichest@gmail.com> wrote:
->
-> > Currently, mvpp2 only supports RGMII. This commit adds support for MII.
-> > The description in Marvell's functional specification seems to be wrong=
-.
-> > To enable MII, we need to set GENCONF_CTRL0_PORT3_RGMII, while for RGMI=
-I
-> > we need to clear it. This is also how U-Boot handles it.
-> >
-> > Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
->
-> Reviewed-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+This series contains misc RCU fixes:
 
-LGTM, as well.
-Reviewed-by: Marcin Wojtas <mw@semihalf.com>
+1.      Restrict access to RCU CPU stall notifiers.
 
-Best regards,
-Marcin
+2.      Remove unused macros from rcupdate.h, courtesy of Pedro Falcato.
+
+3.      Force quiescent states only for ongoing grace period, courtesy
+        of Zqiang.
+
+
+Thanks
+Neeraj
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt |    6 ++++++
+ include/linux/rcu_notifier.h                    |    6 +++---
+ include/linux/rcupdate.h                        |    3 ---
+ kernel/rcu/Kconfig.debug                        |   25 +++++++++++++++++++++++++
+ kernel/rcu/rcu.h                                |    8 +++++---
+ kernel/rcu/rcutorture.c                         |   12 +++++++-----
+ kernel/rcu/tree.c                               |    2 ++
+ kernel/rcu/tree_stall.h                         |   11 ++++++++++-
+ kernel/rcu/update.c                             |    6 ++++++
+ 9 files changed, 64 insertions(+), 15 deletions(-)
