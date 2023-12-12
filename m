@@ -2,83 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEE880E7D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6873880E7C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjLLJf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:35:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S1345820AbjLLJen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjLLJff (ORCPT
+        with ESMTP id S229449AbjLLJel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:35:35 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8794E9;
-        Tue, 12 Dec 2023 01:35:30 -0800 (PST)
-X-UUID: b8cf7f33c3c545dd8a3ced85c4210217-20231212
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:997280ab-4177-4420-a9b6-268ff8af484b,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-INFO: VERSION:1.1.33,REQID:997280ab-4177-4420-a9b6-268ff8af484b,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:259793fd-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:231212151949FMQZSAO8,BulkQuantity:7,Recheck:0,SF:66|24|17|19|44|102,
-        TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:41,QS:nil,BEC:nil,COL:0,
-        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: b8cf7f33c3c545dd8a3ced85c4210217-20231212
-X-User: shitao@kylinos.cn
-Received: from kylin-pc.. [(112.64.161.44)] by mailgw
-        (envelope-from <shitao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1603587090; Tue, 12 Dec 2023 17:35:14 +0800
-From:   shitao <shitao@kylinos.cn>
-To:     kvalo@kernel.org
-Cc:     gregory.greenman@intel.com, kernel-bot@kylinos.cn,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        shitao@kylinos.cn
-Subject: [PATCH v2] wifi: iwlwifi: Fix spelling typo in comment
-Date:   Tue, 12 Dec 2023 17:34:24 +0800
-Message-Id: <20231212093424.3104329-1-shitao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <87wmtjonfw.fsf@kernel.org>
-References: <87wmtjonfw.fsf@kernel.org>
+        Tue, 12 Dec 2023 04:34:41 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155E1CE;
+        Tue, 12 Dec 2023 01:34:48 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c3ceded81so29403505e9.1;
+        Tue, 12 Dec 2023 01:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702373686; x=1702978486; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZlLSLEWUd1/iq+JA+Lsz6BXe+7Zz+SmGu5k5JTmZh/M=;
+        b=dziLiuQw8OE8cdPTs5eADjydLM8EhU5N1fIsX4tzG1KXy5nWWxuJ5Njj1X8cAZilB/
+         pyyXrahp4GdZAM83zFLMPL40aDRupV336CaxmyneSlp+T/H1QfhPX2pn2OVYYF2eweYI
+         N0w2t3A+B1vUoUPgbY5AZykEQCahaHOxo2PqTeCxDW8oUV/B8sKDtumemluUeix5zgP8
+         umHMYLzRlFwI3bbjC/An8zq8Polgk0fwtXU4nn7Sj2kTLQ4dMRNQiEoUgJPBH6YAttAG
+         lp8zPlO/AY2wAnM/WhHNSgK3DOAZsSTkxccueCeZUefvx4q2TlWpqhSTy7hzxfRN/isp
+         7rzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702373686; x=1702978486;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZlLSLEWUd1/iq+JA+Lsz6BXe+7Zz+SmGu5k5JTmZh/M=;
+        b=eWOa8tR8IwE3PI4mhLqH1D/7IL62drPq9OmdQUiD3WzGto0PjVWLTf98LtaW0iOuaK
+         BTqbdYkD8kxVB6hlU8ypLLXc6I0NKRvqn4RZxSrmNjhxK1yfyfHV44ZZcwXuIsM6iSeZ
+         HjA20quuUO2Ta1TJlWxHVaMHFoV573xzn5qlSlz0BYSXClYwpAq92sxfupEgBiEJah3h
+         /ufhU879me7E0QaIkXC+A9ztGzvalkCI3FsmYJBc7zuADatsgW31yRyQwza56xtb5PVl
+         2dXAX8nhK/B8Bl03LTEsU08T9ivNsHHpBe/DeMFWv/9jPVl1MDMm+pyHQNwh5D5FtsS5
+         BmSQ==
+X-Gm-Message-State: AOJu0YwIwsT0+Ax1kp+SCdelyVCGFzlFhuj2g8X45NIlmipF6kNRDJ1O
+        ItZbJJ9XrOSP5X9JeZyqAKoDOLajbOM=
+X-Google-Smtp-Source: AGHT+IHxrwrcWxXtPo3h4ISIgbxcwLfR7qEWZg4nkgUwBk3bxp777OAjMiv7o1jlsbYD3G73SDXajQ==
+X-Received: by 2002:a05:600c:601c:b0:40c:3984:4975 with SMTP id az28-20020a05600c601c00b0040c39844975mr2943686wmb.95.1702373685821;
+        Tue, 12 Dec 2023 01:34:45 -0800 (PST)
+Received: from localhost.localdomain (141.red-88-10-53.dynamicip.rima-tde.net. [88.10.53.141])
+        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c4886f254sm6009578wmn.13.2023.12.12.01.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 01:34:45 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     tglx@linutronix.de, daniel.lezcano@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: [RESEND PATCH v2] dt-bindings: timer: add Ralink SoCs system tick counter
+Date:   Tue, 12 Dec 2023 10:34:43 +0100
+Message-Id: <20231212093443.1898591-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix spelling typo in iwl-context-info.h comment.
+Add YAML doc for the system tick counter which is present on Ralink SoCs.
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: shitao <shitao@kylinos.cn>
+cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- drivers/net/wireless/intel/iwlwifi/iwl-context-info.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2 RESEND:
+- Add Daniel Lezcano to CC in the patch itself.
+Changes in v2:
+- Add Rob's Reviewed-by tag.
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-context-info.h b/drivers/net/wireless/intel/iwlwifi/iwl-context-info.h
-index 1a1321db137c..3ab6f127041f 100644
---- a/drivers/net/wireless/intel/iwlwifi/iwl-context-info.h
-+++ b/drivers/net/wireless/intel/iwlwifi/iwl-context-info.h
-@@ -6,7 +6,7 @@
- #ifndef __iwl_context_info_file_h__
- #define __iwl_context_info_file_h__
- 
--/* maximmum number of DRAM map entries supported by FW */
-+/* maximum number of DRAM map entries supported by FW */
- #define IWL_MAX_DRAM_ENTRY	64
- #define CSR_CTXT_INFO_BA	0x40
- 
+v1: https://lore.kernel.org/lkml/CAMhs-H_9kAdOfR-RaJWqAq6d3S3DXtKJqWy-EWCu0-ZjWKB9Sw@mail.gmail.com/T/#re9225265416ca8463c5f06d736f9834ae75efe0c
+
+I am sending this with Rob's RB added since I ping for the v1 multiple
+times without response. So I can be missing something or the patch is
+lost for any reason. Thanks!
+
+ .../bindings/timer/ralink,cevt-systick.yaml   | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/ralink,cevt-systick.yaml
+
+diff --git a/Documentation/devicetree/bindings/timer/ralink,cevt-systick.yaml b/Documentation/devicetree/bindings/timer/ralink,cevt-systick.yaml
+new file mode 100644
+index 000000000000..59d97feddf4e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/ralink,cevt-systick.yaml
+@@ -0,0 +1,38 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/ralink,cevt-systick.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: System tick counter present in Ralink family SoCs
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++properties:
++  compatible:
++    const: ralink,cevt-systick
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    systick@d00 {
++        compatible = "ralink,cevt-systick";
++        reg = <0xd00 0x10>;
++
++        interrupt-parent = <&cpuintc>;
++        interrupts = <7>;
++    };
++...
 -- 
-2.34.1
+2.25.1
 
