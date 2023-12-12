@@ -2,229 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5287C80E0B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC48F80E0D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 02:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345666AbjLLBJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 20:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S1345671AbjLLBUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 20:20:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345638AbjLLBJf (ORCPT
+        with ESMTP id S1345638AbjLLBUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 20:09:35 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B61BE;
-        Mon, 11 Dec 2023 17:09:41 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id A83FC24E25E;
-        Tue, 12 Dec 2023 09:09:39 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 09:09:39 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Dec
- 2023 09:09:39 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Tue, 12 Dec 2023 09:09:39 +0800
-From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "Hal Feng" <hal.feng@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>
-CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: RE: [PATCH v1 00/16] Basic clock and reset support for StarFive
- JH8100 RISC-V SoC
-Thread-Topic: [PATCH v1 00/16] Basic clock and reset support for StarFive
- JH8100 RISC-V SoC
-Thread-Index: AQHaKDpenJ7xM02baU+qIG80sqYy3rCfF1UAgAXHjcA=
-Date:   Tue, 12 Dec 2023 01:09:38 +0000
-Message-ID: <f1e151e14e0b4bcca1c9119f5d7e7559@EXMBX066.cuchost.com>
-References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
- <CAJM55Z_nnrFcU6N8ZELUoGLe6Dp358aXH7VGf1i+USbZOsbpnQ@mail.gmail.com>
-In-Reply-To: <CAJM55Z_nnrFcU6N8ZELUoGLe6Dp358aXH7VGf1i+USbZOsbpnQ@mail.gmail.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [202.188.176.82]
-x-yovoleruleagent: yovoleflag
+        Mon, 11 Dec 2023 20:20:16 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCA3BE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:20:22 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db4004a8aa9so5405494276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Dec 2023 17:20:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702344021; x=1702948821; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1zDhsNUVn4yIMFjkCDRNEin0bHQri3D2G8bRroxp6Us=;
+        b=MZkSx2ZLeyolCz4tPy38TJrR4a+Ag4brz0y7/00ZxtexQDrnHg83AFWT9Li9v1I/Da
+         mtTd8OWVcx+DKpYfpT6o8vTrxDj10swKS9vFr0N/fnCFtf+2qIk7zX1NFPiBSi0lFtJG
+         JbgQY0BzI0am5IlRM4vztZIjcVDd+DY5otYDPH4ukmSp9Cb4TBon6nDdQkB57EWs3PB8
+         duDYTeGUSu3XnIqDPUmxrerrKTuOh4Z3FnMmV85pCvxbwivVjAr937sX0PxEVXWpZulo
+         6t804Rs+mUVB49kLWJupGRKFLQmCt9VChHSMERrqAk2BArA2NnIkfoPxYfT9VwwPkxue
+         8EOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702344021; x=1702948821;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1zDhsNUVn4yIMFjkCDRNEin0bHQri3D2G8bRroxp6Us=;
+        b=po9sAUnafpbtWrblFF5qVEhYZIvoOaZxP92a5acXdBqmXL/3jhzfxor1+h2MhKwxZK
+         U3t8KkD/5ay5DylRKccmBiTPsbqbgDc0JecuZBZ6CF7CJquQq9sPmRzDra38vGPHxZTo
+         pZ0WtFc9Ky8so2M/SHiO1ngTYUmeXkVtEPq2I9MzHtXHqmzKZEwt3+JiFX/Rm7YGM5xT
+         dKZWAmGYXzh9SDGXGuLuEQdXFutJhez2df+9afgPL7ezgLbMmjcWulSi6HeG6V7ilCb5
+         qPCC8JVsNzRWZwQg6IJzQBPC1NlVGJ0Fqypvsek6KEWuE9tIMIrTLcqH+9SbMc1wx7ZE
+         TNUQ==
+X-Gm-Message-State: AOJu0Yw7nCOSUjQkoUVCSWA2+B80tSFGlq/3m74NYm76VBqkzlPqXD/E
+        LG1qwn/79Q/rX/sOHhZfXstFds+REGHjkabY/Q==
+X-Google-Smtp-Source: AGHT+IGCZ/3Hm1oGZDJVqOZYRs9LPHOqFGAgnB5x2qnhyF/MXbWlUssASTcKwx82JlkzLEzUYKLzUY5/EHQX7bbR4Q==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:52f:b0:db5:48c5:302e with
+ SMTP id y15-20020a056902052f00b00db548c5302emr45864ybs.4.1702344021701; Mon,
+ 11 Dec 2023 17:20:21 -0800 (PST)
+Date:   Tue, 12 Dec 2023 01:20:20 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAFS1d2UC/6WOQQ6CMBREr2K6tqYtFsGV9zDEQPspPxFK+ptGQ
+ ri7hZ1rd/NmMW9WRhAQiN1PKwuQkNBPGdT5xMzQTg442sxMCVVIUQhOMUxmXrgNmCAQJ0PIsRv
+ THl7RxV8wvGrrzgrQ17IsWZ6dA/T4OZTPJvOAFH1YjgdJ7u0fsiS55JWuO21A6VtvH85794aL8 SNrtm37AnDg44XxAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702344020; l=4467;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=9iNx/XHoAbZspBn0RbR1EutQz4ViuX602P3R/36GQ8c=; b=ACnHEmP9avRU458e42EgHVuaVBoRcXII5xatNVn8cssXGucBR8pasyE0oiyg7hd0qGAmlVZEb
+ WJGm7jNqDLeDk/nFXjOFe7SEQg4jBctpuaST44ZAsyJIZoqPwCiEGIb
+X-Mailer: b4 0.12.3
+Message-ID: <20231212-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v2-1-bdb9a7cd96c8@google.com>
+Subject: [PATCH v2] scsi: ibmvscsi_tgt: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Michael Cyr <mikecyr@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW1pbCBSZW5uZXIgQmVy
-dGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IFNhdHVy
-ZGF5LCBEZWNlbWJlciA5LCAyMDIzIDEyOjUzIEFNDQo+IFRvOiBKZWVIZW5nIFNpYSA8amVlaGVu
-Zy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5lbEBlc21pbC5kazsgY29ub3JAa2VybmVsLm9y
-Zzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5v
-cmc7IHBhdWwud2FsbXNsZXlAc2lmaXZlLmNvbTsgcGFsbWVyQGRhYmJlbHQuY29tOyBhb3VAZWVj
-cy5iZXJrZWxleS5lZHU7DQo+IG10dXJxdWV0dGVAYmF5bGlicmUuY29tOyBzYm95ZEBrZXJuZWwu
-b3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlOyBlbWlsLnJlbm5lci5iZXJ0aGluZ0BjYW5vbmlj
-YWwuY29tOyBIYWwgRmVuZw0KPiA8aGFsLmZlbmdAc3RhcmZpdmV0ZWNoLmNvbT47IFhpbmd5dSBX
-dSA8eGluZ3l1Lnd1QHN0YXJmaXZldGVjaC5jb20+DQo+IENjOiBsaW51eC1yaXNjdkBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZzsgbGludXgtY2xrQHZnZXIua2VybmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4g
-PGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjEg
-MDAvMTZdIEJhc2ljIGNsb2NrIGFuZCByZXNldCBzdXBwb3J0IGZvciBTdGFyRml2ZSBKSDgxMDAg
-UklTQy1WIFNvQw0KPiANCj4gU2lhIEplZSBIZW5nIHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggc2Vy
-aWVzIGVuYWJsZWQgYmFzaWMgY2xvY2sgJiByZXNldCBzdXBwb3J0IGZvciBTdGFyRml2ZQ0KPiA+
-IEpIODEwMCBTb0MuDQo+ID4NCj4gPiBUaGlzIHBhdGNoIHNlcmllcyBkZXBlbmRzIG9uIHRoZSBJ
-bml0aWFsIGRldmljZSB0cmVlIHN1cHBvcnQgZm9yDQo+ID4gU3RhckZpdmUgSkg4MTAwIFNvQyBw
-YXRjaCBzZXJpZXMgd2hpY2ggY2FuIGJlIGZvdW5kIGF0IGJlbG93IGxpbms6DQo+ID4gaHR0cHM6
-Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIzMTIwMTEyMTQxMC45NTI5OC0xLWplZWhlbmcuc2lh
-QHN0YXJmaXZldGVjaC5jb20vDQo+ID4NCj4gPiBTdGFyRml2ZSBKSDgxMDAgc2hhcmVzIGEgc2lt
-aWxhciBjbG9jayBhbmQgcmVzZXQgZGVzaWduIHdpdGggSkg3MTEwLg0KPiA+IFRvIGZhY2lsaXRh
-dGUgdGhlIHJldXNlIG9mIHRoZSBmaWxlIGFuZCBpdHMgZnVuY3Rpb25hbGl0aWVzLCBmaWxlcw0K
-PiA+IGNvbnRhaW5pbmcgdGhlICdqaDcxeDAnIG5hbWluZyBjb252ZW50aW9uIGFyZSByZW5hbWVk
-IHRvIHVzZSB0aGUNCj4gPiAnY29tbW9uJyB3b3JkaW5nLiBJbnRlcm5hbCBmdW5jdGlvbnMgdGhh
-dCBjb250YWluIHRoZSAnamg3MXgwJw0KPiA+IG5hbWluZyBjb252ZW50aW9uIGFyZSByZW5hbWVk
-IHRvIHVzZSAnc3RhcmZpdmUuJyBUaGlzIGlzIGFjY29tcGxpc2hlZA0KPiA+IHRocm91Z2ggcGF0
-Y2hlcyAxLCAyLCAzLCBhbmQgNC4NCj4gDQo+IEknbSBhIGxpdHRsZSBzY2VwdGljYWwgYWxsIHRo
-aXMgcmVuYW1pbmcgaXMgd29ydGggaXQsIGJ1dCBpZiB0aGluayBpdCdzIGxpa2VseQ0KPiB0aGF0
-IGZ1dHVyZSBzdGFyZml2ZSBTb0NzIGNhbiB1c2UgdGhlIHNhbWUgY2xvY2sgZHJpdmVycyBJJ20g
-b2sgd2l0aCBpdC4gSnVzdA0KPiBrbm93IHRoYXQgeW91J2xsIGxvb2sgYSBiaXQgc2lsbHkgaWYg
-eW91ciAiSkg5MTAwIiBjYW4ndCB1c2UgdGhlc2UgZHJpdmVycyBhbmQNCj4geW91J2xsIGFscmVh
-ZHkgbmVlZCBkaWZmZXJlbnQgc3RhcmZpdmUgYW5kIHN0YXJmaXZlLWdlbjIgZHJpdmVycy4NClRo
-YW5rIHlvdSBmb3IgeW91ciB1bmRlcnN0YW5kaW5nLg0KPiANCj4gL0VtaWwNCj4gPg0KPiA+DQo+
-ID4gUGF0Y2ggNSBhZGRzIGRvY3VtZW50YXRpb24gdG8gZGVzY3JpYmUgU3lzdGVtIChTWVNDUkcp
-IENsb2NrICYgUmVzZXQNCj4gPiBiaW5kaW5nLg0KPiA+IFBhdGNoIDYgYWRkcyBTWVNDUkcgY2xv
-Y2sgZHJpdmVyLg0KPiA+DQo+ID4gcGF0Y2ggNyBhZGRzIGRvY3VtZW50YXRpb24gdG8gZGVzY3Jp
-YmUgU3lzdGVtLU5vcnRoLVdlc3QgKFNZU0NSRy1OVykNCj4gPiBDbG9jayAmIFJlc2V0IGJpbmRp
-bmcuDQo+ID4gUGF0Y2ggOCBhZGRzIFNZU0NSRy1OVyBjbG9jayBkcml2ZXIuDQo+ID4NCj4gPiBw
-YXRjaCA5IGFkZHMgZG9jdW1lbnRhdGlvbiB0byBkZXNjcmliZSBTeXN0ZW0tTm9ydGgtRWFzdCAo
-U1lTQ1JHLU5FKQ0KPiA+IENsb2NrICYgUmVzZXQgYmluZGluZy4NCj4gPiBQYXRjaCAxMCBhZGRz
-IFNZU0NSRy1ORSBjbG9jayBkcml2ZXIuDQo+ID4NCj4gPiBwYXRjaCAxMSBhZGRzIGRvY3VtZW50
-YXRpb24gdG8gZGVzY3JpYmUgU3lzdGVtLVNvdXRoLVdlc3QgKFNZU0NSRy1TVykNCj4gPiBDbG9j
-ayAmIFJlc2V0IGJpbmRpbmcuDQo+ID4gUGF0Y2ggMTIgYWRkcyBTWVNDUkctU1cgY2xvY2sgZHJp
-dmVyLg0KPiA+DQo+ID4gcGF0Y2ggMTMgYWRkcyBkb2N1bWVudGF0aW9uIHRvIGRlc2NyaWJlIEFs
-d2F5cy1PbiAoQU9OKQ0KPiA+IENsb2NrICYgUmVzZXQgYmluZGluZy4NCj4gPiBQYXRjaCAxNCBh
-ZGRzIEFPTiBjbG9jayBkcml2ZXIuDQo+ID4NCj4gPiBQYXRjaCAxNSBhZGRzIHN1cHBvcnQgZm9y
-IHRoZSBhdXhpbGlhcnkgcmVzZXQgZHJpdmVyLg0KPiA+DQo+ID4gUGF0Y2ggMTYgYWRkcyBjbG9j
-a3MgYW5kIHJlc2V0IG5vZGVzIHRvIHRoZSBKSDgxMDAgZGV2aWNlIHRyZWUuDQo+ID4NCj4gPiBT
-aWEgSmVlIEhlbmcgKDE2KToNCj4gPiAgIHJlc2V0OiBzdGFyZml2ZTogUmVuYW1lIGZpbGUgbmFt
-ZSAiamg3MXgwIiB0byAiY29tbW9uIg0KPiA+ICAgcmVzZXQ6IHN0YXJmaXZlOiBDb252ZXJ0IHRo
-ZSB3b3JkICJqaDcxeDAiIHRvICJzdGFyZml2ZSINCj4gPiAgIGNsazogc3RhcmZpdmU6IFJlbmFt
-ZSBmaWxlIG5hbWUgImpoNzF4MCIgdG8gImNvbW1vbiINCj4gPiAgIGNsazogc3RhcmZpdmU6IENv
-bnZlcnQgdGhlIHdvcmQgImpoNzF4MCIgdG8gInN0YXJmaXZlIg0KPiA+ICAgZHQtYmluZGluZ3M6
-IGNsb2NrOiBBZGQgU3RhckZpdmUgSkg4MTAwIFN5c3RlbSBjbG9jayBhbmQgcmVzZXQNCj4gPiAg
-ICAgZ2VuZXJhdG9yDQo+ID4gICBjbGs6IHN0YXJmaXZlOiBBZGQgSkg4MTAwIFN5c3RlbSBjbG9j
-ayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gICBkdC1iaW5kaW5nczogY2xvY2s6IEFkZCBTdGFyRml2
-ZSBKSDgxMDAgU3lzdGVtLU5vcnRoLVdlc3QgY2xvY2sgYW5kDQo+ID4gICAgIHJlc2V0IGdlbmVy
-YXRvcg0KPiA+ICAgY2xrOiBzdGFyZml2ZTogQWRkIEpIODEwMCBTeXN0ZW0tTm9ydGgtV2VzdCBj
-bG9jayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gICBkdC1iaW5kaW5nczogY2xvY2s6IEFkZCBTdGFy
-Rml2ZSBKSDgxMDAgU3lzdGVtLU5vcnRoLUVhc3QgY2xvY2sgYW5kDQo+ID4gICAgIHJlc2V0IGdl
-bmVyYXRvcg0KPiA+ICAgY2xrOiBzdGFyZml2ZTogQWRkIEpIODEwMCBTeXN0ZW0tTm9ydGgtRWFz
-dCBjbG9jayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gICBkdC1iaW5kaW5nczogY2xvY2s6IEFkZCBT
-dGFyRml2ZSBKSDgxMDAgU3lzdGVtLVNvdXRoLVdlc3QgY2xvY2sgYW5kDQo+ID4gICAgIHJlc2V0
-IGdlbmVyYXRvcg0KPiA+ICAgY2xrOiBzdGFyZml2ZTogQWRkIEpIODEwMCBTeXN0ZW0tU291dGgt
-V2VzdCBjbG9jayBnZW5lcmF0b3IgZHJpdmVyDQo+ID4gICBkdC1iaW5kaW5nczogY2xvY2s6IEFk
-ZCBTdGFyRml2ZSBKSDgxMDAgQWx3YXlzLU9uIGNsb2NrIGFuZCByZXNldA0KPiA+ICAgICBnZW5l
-cmF0b3INCj4gPiAgIGNsazogc3RhcmZpdmU6IEFkZCBKSDgxMDAgQWx3YXlzLU9uIGNsb2NrIGdl
-bmVyYXRvciBkcml2ZXINCj4gPiAgIHJlc2V0OiBzdGFyZml2ZTogQWRkIFN0YXJGaXZlIEpIODEw
-MCByZXNldCBkcml2ZXINCj4gPiAgIHJpc2N2OiBkdHM6IHN0YXJmaXZlOiBqaDgxMDA6IEFkZCBj
-bG9ja3MgYW5kIHJlc2V0cyBub2Rlcw0KPiA+DQo+ID4gIC4uLi9jbG9jay9zdGFyZml2ZSxqaDgx
-MDAtYW9uY3JnLnlhbWwgICAgICAgICB8ICA3NyArKysNCj4gPiAgLi4uL2Nsb2NrL3N0YXJmaXZl
-LGpoODEwMC1zeXNjcmctbmUueWFtbCAgICAgIHwgMTU4ICsrKysrDQo+ID4gIC4uLi9jbG9jay9z
-dGFyZml2ZSxqaDgxMDAtc3lzY3JnLW53LnlhbWwgICAgICB8IDExOSArKysrDQo+ID4gIC4uLi9j
-bG9jay9zdGFyZml2ZSxqaDgxMDAtc3lzY3JnLXN3LnlhbWwgICAgICB8ICA2NiArKw0KPiA+ICAu
-Li4vY2xvY2svc3RhcmZpdmUsamg4MTAwLXN5c2NyZy55YW1sICAgICAgICAgfCAgNjYgKysNCj4g
-PiAgTUFJTlRBSU5FUlMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE1ICsN
-Cj4gPiAgYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgxMDAtY2xrLmR0c2kgIHwgMTgw
-ICsrKysrKw0KPiA+ICBhcmNoL3Jpc2N2L2Jvb3QvZHRzL3N0YXJmaXZlL2poODEwMC5kdHNpICAg
-ICAgfCAxMTUgKysrKw0KPiA+ICBkcml2ZXJzL2Nsay9zdGFyZml2ZS9LY29uZmlnICAgICAgICAg
-ICAgICAgICAgfCAgNDkgKy0NCj4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvTWFrZWZpbGUgICAg
-ICAgICAgICAgICAgIHwgICAzICstDQo+ID4gIGRyaXZlcnMvY2xrL3N0YXJmaXZlL2Nsay1zdGFy
-Zml2ZS1jb21tb24uYyAgICB8IDMyNyArKysrKysrKysrDQo+ID4gIGRyaXZlcnMvY2xrL3N0YXJm
-aXZlL2Nsay1zdGFyZml2ZS1jb21tb24uaCAgICB8IDEzMCArKysrDQo+ID4gIC4uLi9jbGsvc3Rh
-cmZpdmUvY2xrLXN0YXJmaXZlLWpoNzEwMC1hdWRpby5jICB8IDEyNyArKy0tDQo+ID4gIGRyaXZl
-cnMvY2xrL3N0YXJmaXZlL2Nsay1zdGFyZml2ZS1qaDcxMDAuYyAgICB8IDUwMyArKysrKysrKy0t
-LS0tLS0tDQo+ID4gIC4uLi9jbGsvc3RhcmZpdmUvY2xrLXN0YXJmaXZlLWpoNzExMC1hb24uYyAg
-ICB8ICA2MiArLQ0KPiA+ICAuLi4vY2xrL3N0YXJmaXZlL2Nsay1zdGFyZml2ZS1qaDcxMTAtaXNw
-LmMgICAgfCAgNzIgKy0tDQo+ID4gIC4uLi9jbGsvc3RhcmZpdmUvY2xrLXN0YXJmaXZlLWpoNzEx
-MC1zdGcuYyAgICB8ICA5NCArLS0NCj4gPiAgLi4uL2Nsay9zdGFyZml2ZS9jbGstc3RhcmZpdmUt
-amg3MTEwLXN5cy5jICAgIHwgNTIzICsrKysrKysrLS0tLS0tLS0NCj4gPiAgLi4uL2Nsay9zdGFy
-Zml2ZS9jbGstc3RhcmZpdmUtamg3MTEwLXZvdXQuYyAgIHwgIDc0ICstLQ0KPiA+ICBkcml2ZXJz
-L2Nsay9zdGFyZml2ZS9jbGstc3RhcmZpdmUtamg3MTEwLmggICAgfCAgIDQgKy0NCj4gPiAgZHJp
-dmVycy9jbGsvc3RhcmZpdmUvY2xrLXN0YXJmaXZlLWpoNzF4MC5jICAgIHwgMzI3IC0tLS0tLS0t
-LS0NCj4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvY2xrLXN0YXJmaXZlLWpoNzF4MC5oICAgIHwg
-MTIzIC0tLS0NCj4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL01ha2VmaWxlICAgICAg
-ICAgIHwgICA3ICsNCj4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL2Nsay1hb24uYyAg
-ICAgICAgIHwgMjc1ICsrKysrKysrKw0KPiA+ICAuLi4vY2xrL3N0YXJmaXZlL2poODEwMC9jbGst
-c3RhcmZpdmUtamg4MTAwLmggfCAgMTEgKw0KPiA+ICBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgx
-MDAvY2xrLXN5cy1uZS5jICAgICAgfCA1NjYgKysrKysrKysrKysrKysrKysrDQo+ID4gIGRyaXZl
-cnMvY2xrL3N0YXJmaXZlL2poODEwMC9jbGstc3lzLW53LmMgICAgICB8IDI2OCArKysrKysrKysN
-Cj4gPiAgZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL2Nsay1zeXMtc3cuYyAgICAgIHwgMTM2
-ICsrKysrDQo+ID4gIGRyaXZlcnMvY2xrL3N0YXJmaXZlL2poODEwMC9jbGstc3lzLmMgICAgICAg
-ICB8IDQ1NSArKysrKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL3Jlc2V0L3N0YXJmaXZlL0tjb25m
-aWcgICAgICAgICAgICAgICAgfCAgMTQgKy0NCj4gPiAgZHJpdmVycy9yZXNldC9zdGFyZml2ZS9N
-YWtlZmlsZSAgICAgICAgICAgICAgIHwgICA0ICstDQo+ID4gIC4uLnJmaXZlLWpoNzF4MC5jID0+
-IHJlc2V0LXN0YXJmaXZlLWNvbW1vbi5jfSB8ICA2OCArLS0NCj4gPiAgLi4uL3Jlc2V0L3N0YXJm
-aXZlL3Jlc2V0LXN0YXJmaXZlLWNvbW1vbi5oICAgIHwgIDE0ICsNCj4gPiAgLi4uL3Jlc2V0L3N0
-YXJmaXZlL3Jlc2V0LXN0YXJmaXZlLWpoNzEwMC5jICAgIHwgICA0ICstDQo+ID4gIC4uLi9yZXNl
-dC9zdGFyZml2ZS9yZXNldC1zdGFyZml2ZS1qaDcxMTAuYyAgICB8ICAgOCArLQ0KPiA+ICAuLi4v
-cmVzZXQvc3RhcmZpdmUvcmVzZXQtc3RhcmZpdmUtamg3MXgwLmggICAgfCAgMTQgLQ0KPiA+ICAu
-Li4vcmVzZXQvc3RhcmZpdmUvcmVzZXQtc3RhcmZpdmUtamg4MTAwLmMgICAgfCAxMDIgKysrKw0K
-PiA+ICAuLi4vZHQtYmluZGluZ3MvY2xvY2svc3RhcmZpdmUsamg4MTAwLWNyZy5oICAgfCA0MzAg
-KysrKysrKysrKysrKw0KPiA+ICAuLi4vZHQtYmluZGluZ3MvcmVzZXQvc3RhcmZpdmUsamg4MTAw
-LWNyZy5oICAgfCAxMjcgKysrKw0KPiA+ICAuLi5yZml2ZS1qaDcxeDAuaCA9PiByZXNldC1zdGFy
-Zml2ZS1jb21tb24uaH0gfCAgMTAgKy0NCj4gPiAgNDAgZmlsZXMgY2hhbmdlZCwgNDQ4NSBpbnNl
-cnRpb25zKCspLCAxMjQyIGRlbGV0aW9ucygtKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3N0YXJmaXZlLGpoODEwMC1hb25j
-cmcueWFtbA0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL2Nsb2NrL3N0YXJmaXZlLGpoODEwMC1zeXNjcmctbmUueWFtbA0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3N0
-YXJmaXZlLGpoODEwMC1zeXNjcmctbncueWFtbA0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3N0YXJmaXZlLGpoODEwMC1zeXNj
-cmctc3cueWFtbA0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL2Nsb2NrL3N0YXJmaXZlLGpoODEwMC1zeXNjcmcueWFtbA0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDgxMDAtY2xrLmR0
-c2kNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL3N0YXJmaXZlL2Nsay1zdGFy
-Zml2ZS1jb21tb24uYw0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvc3RhcmZp
-dmUvY2xrLXN0YXJmaXZlLWNvbW1vbi5oDQo+ID4gIGRlbGV0ZSBtb2RlIDEwMDY0NCBkcml2ZXJz
-L2Nsay9zdGFyZml2ZS9jbGstc3RhcmZpdmUtamg3MXgwLmMNCj4gPiAgZGVsZXRlIG1vZGUgMTAw
-NjQ0IGRyaXZlcnMvY2xrL3N0YXJmaXZlL2Nsay1zdGFyZml2ZS1qaDcxeDAuaA0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvc3RhcmZpdmUvamg4MTAwL01ha2VmaWxlDQo+ID4g
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xrLWFvbi5j
-DQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xr
-LXN0YXJmaXZlLWpoODEwMC5oDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9z
-dGFyZml2ZS9qaDgxMDAvY2xrLXN5cy1uZS5jDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2
-ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xrLXN5cy1udy5jDQo+ID4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xrLXN5cy1zdy5jDQo+ID4gIGNyZWF0
-ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9zdGFyZml2ZS9qaDgxMDAvY2xrLXN5cy5jDQo+ID4g
-IHJlbmFtZSBkcml2ZXJzL3Jlc2V0L3N0YXJmaXZlL3tyZXNldC1zdGFyZml2ZS1qaDcxeDAuYyA9
-PiByZXNldC1zdGFyZml2ZS1jb21tb24uY30gKDU1JSkNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0
-IGRyaXZlcnMvcmVzZXQvc3RhcmZpdmUvcmVzZXQtc3RhcmZpdmUtY29tbW9uLmgNCj4gPiAgZGVs
-ZXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvcmVzZXQvc3RhcmZpdmUvcmVzZXQtc3RhcmZpdmUtamg3
-MXgwLmgNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvcmVzZXQvc3RhcmZpdmUvcmVz
-ZXQtc3RhcmZpdmUtamg4MTAwLmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQt
-YmluZGluZ3MvY2xvY2svc3RhcmZpdmUsamg4MTAwLWNyZy5oDQo+ID4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL3Jlc2V0L3N0YXJmaXZlLGpoODEwMC1jcmcuaA0KPiA+
-ICByZW5hbWUgaW5jbHVkZS9zb2Mvc3RhcmZpdmUve3Jlc2V0LXN0YXJmaXZlLWpoNzF4MC5oID0+
-IHJlc2V0LXN0YXJmaXZlLWNvbW1vbi5ofSAoNTAlKQ0KPiA+DQo+ID4gLS0NCj4gPiAyLjM0LjEN
-Cj4gPg0K
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
+
+We don't need the NUL-padding behavior that strncpy() provides as vscsi
+is NUL-allocated in ibmvscsis_probe() which proceeds to call
+ibmvscsis_adapter_info():
+|       vscsi = kzalloc(sizeof(*vscsi), GFP_KERNEL);
+
+ibmvscsis_probe() -> ibmvscsis_handle_crq() -> ibmvscsis_parse_command()
+-> ibmvscsis_mad() -> ibmvscsis_process_mad() -> ibmvscsis_adapter_info()
+
+Following the same idea, `partition_name` is defiend as:
+|       static char partition_name[PARTITION_NAMELEN] = "UNKNOWN";
+... which is NUL-padded already, meaning strscpy() is the best option.
+
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
+
+However, for cap->name and info let's use strscpy_pad as they are
+allocated via dma_alloc_coherent():
+|       cap = dma_alloc_coherent(&vscsi->dma_dev->dev, olen, &token,
+|                                GFP_ATOMIC);
+&
+|       info = dma_alloc_coherent(&vscsi->dma_dev->dev, sizeof(*info), &token,
+|                                 GFP_ATOMIC);
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- use strscpy_pad for info->partition_name (thanks Kees)
+- rebase onto mainline bee0e7762ad2c602
+- Link to v1: https://lore.kernel.org/r/20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-v1-1-859b5ce257fd@google.com
+---
+Note: build-tested only.
+
+Found with: $ rg "strncpy\("
+---
+ drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+index 4dc411a58107..6b16020b1f59 100644
+--- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
++++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
+@@ -1551,18 +1551,18 @@ static long ibmvscsis_adapter_info(struct scsi_info *vscsi,
+ 	if (vscsi->client_data.partition_number == 0)
+ 		vscsi->client_data.partition_number =
+ 			be32_to_cpu(info->partition_number);
+-	strncpy(vscsi->client_data.srp_version, info->srp_version,
++	strscpy(vscsi->client_data.srp_version, info->srp_version,
+ 		sizeof(vscsi->client_data.srp_version));
+-	strncpy(vscsi->client_data.partition_name, info->partition_name,
++	strscpy(vscsi->client_data.partition_name, info->partition_name,
+ 		sizeof(vscsi->client_data.partition_name));
+ 	vscsi->client_data.mad_version = be32_to_cpu(info->mad_version);
+ 	vscsi->client_data.os_type = be32_to_cpu(info->os_type);
+ 
+ 	/* Copy our info */
+-	strncpy(info->srp_version, SRP_VERSION,
+-		sizeof(info->srp_version));
+-	strncpy(info->partition_name, vscsi->dds.partition_name,
+-		sizeof(info->partition_name));
++	strscpy_pad(info->srp_version, SRP_VERSION,
++		    sizeof(info->srp_version));
++	strscpy_pad(info->partition_name, vscsi->dds.partition_name,
++		    sizeof(info->partition_name));
+ 	info->partition_number = cpu_to_be32(vscsi->dds.partition_num);
+ 	info->mad_version = cpu_to_be32(MAD_VERSION_1);
+ 	info->os_type = cpu_to_be32(LINUX);
+@@ -1645,8 +1645,8 @@ static int ibmvscsis_cap_mad(struct scsi_info *vscsi, struct iu_entry *iue)
+ 			 be64_to_cpu(mad->buffer),
+ 			 vscsi->dds.window[LOCAL].liobn, token);
+ 	if (rc == H_SUCCESS) {
+-		strncpy(cap->name, dev_name(&vscsi->dma_dev->dev),
+-			SRP_MAX_LOC_LEN);
++		strscpy_pad(cap->name, dev_name(&vscsi->dma_dev->dev),
++			sizeof(cap->name));
+ 
+ 		len = olen - min_len;
+ 		status = VIOSRP_MAD_SUCCESS;
+@@ -3650,7 +3650,7 @@ static int ibmvscsis_get_system_info(void)
+ 
+ 	name = of_get_property(rootdn, "ibm,partition-name", NULL);
+ 	if (name)
+-		strncpy(partition_name, name, sizeof(partition_name));
++		strscpy(partition_name, name, sizeof(partition_name));
+ 
+ 	num = of_get_property(rootdn, "ibm,partition-no", NULL);
+ 	if (num)
+
+---
+base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+change-id: 20231030-strncpy-drivers-scsi-ibmvscsi_tgt-ibmvscsi_tgt-c-8a9bd0e54666
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
