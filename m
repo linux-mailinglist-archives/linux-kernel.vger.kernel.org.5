@@ -2,200 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F5680E14A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570DE80E14C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345577AbjLLCP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
+        id S1345624AbjLLCQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbjLLCPz (ORCPT
+        with ESMTP id S1345568AbjLLCQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:15:55 -0500
-Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFBEDC;
-        Mon, 11 Dec 2023 18:16:01 -0800 (PST)
-Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-5d4f71f7e9fso50692207b3.0;
-        Mon, 11 Dec 2023 18:16:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702347360; x=1702952160; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7bAjE3baVrRo4/1Vx4v8GLgpMDVpdz7g2ycdmGyOX1k=;
-        b=PYQYOlBDCHM/ElKH0G50fytd4R/0Ddb7DyaQzTR2BlyqthO0dgVE/Nd0NOdUB6nlWn
-         mXVK/lTEeAqBYfsVYEs5oe2thvun4Gl5MR7CcfCiaiTp2P3p2R2zmcLSVFw9MtO701x/
-         pPaC62FgrtzTA+pdry3WfMUdITiS/JK6aXMC/lhn0HBQHE5bQjsoQ+p2mqL4Vfr3p7MG
-         bUJ1bAWuRbdA2F3UOd3893J9q6WqhJJvtMEKkzv2B7kPuSIpZ1h2cgE0QuX+0eSNTsbb
-         Lky261q6QI9h29K8JSpFgcIOXQyqi1GdGyOzZQPlCRf2qyFGHkN4kD/TL261aItFnNCt
-         qK0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702347360; x=1702952160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7bAjE3baVrRo4/1Vx4v8GLgpMDVpdz7g2ycdmGyOX1k=;
-        b=xKZuobtLM+eovlqvxmkSO1fmbSKUsjqpx+y4ibDKoY6Zc8gn2d48usGtwM4MAT3AKT
-         +4SwNHAhFsXv7LBteWt4wekOPi4wnPzJTgitsCS5ZhRnJLizcwrxL94k1l/ioVkru6e0
-         V05seHwfxxC90qn1B91ftUxkeM6yMgNprlnkm3FFBfPcIeYtyXBL2LQIhj38ld03UTfA
-         H+AY4AA9wFnsJFrag5ciC9X6WZKHVXMY6Cz1eXcYcDVHERwmpEHdMeIKvnFQj75CZj4r
-         9ZDofcRvKil51sHmHSnpUp8gKPtfP9bqVqSvsSUoBqAKCYHeiPcbxSx0IkJEasYLxCia
-         RZPA==
-X-Gm-Message-State: AOJu0YwEjMnhjxaNNXOF4yVo1pXpa10qgJ0nQv8FZ53T7WRXILOFLubM
-        PSN9NgREtFHrobs05kc1VQqjT5ATEIBSPsvymT0=
-X-Google-Smtp-Source: AGHT+IEYUyLvw9c+mHMwkLxM1UZ1Jw8iW1DGz6JnOYejP7gOCE/U6/M00nWkyQ9EsA/C1gEI/7B9mclagQ+lcOUQcJ0=
-X-Received: by 2002:a25:aa01:0:b0:db7:dacf:6211 with SMTP id
- s1-20020a25aa01000000b00db7dacf6211mr3149791ybi.99.1702347360532; Mon, 11 Dec
- 2023 18:16:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20231210130001.2050847-1-menglong8.dong@gmail.com> <CAEf4BzYUKkpFa5dp4Ye7jzK1RhYtS6Yv55GH18U21Qi6xxQetg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYUKkpFa5dp4Ye7jzK1RhYtS6Yv55GH18U21Qi6xxQetg@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Tue, 12 Dec 2023 10:15:49 +0800
-Message-ID: <CADxym3ZZ2uV45Ra_vKSEK68qdnAiL-6XpNO2hSfUtyj3OeypwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: make the verifier trace the "not qeual" for regs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 11 Dec 2023 21:16:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D31D6;
+        Mon, 11 Dec 2023 18:16:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702347382; x=1733883382;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=tnQzK8omLFr00y6USNr4GI8/YoYRJu+8FpMKS8Thd5I=;
+  b=OkjKBnl1aBVYdxkgb1Ka4MaEa+pADX9h1b4ejAU3SpaCYP9tc2S0QUfQ
+   XyzaTtTXDQBWSlBFS680JSMojYXjjJPjC2u7/JKmC7mRoB+WgxMj6uMB1
+   /MPJmwNPfns2HbQ2R5CTJJTDjQnhCO7Yd0pV3ex6ea1JQ9/ueB9oUeg/M
+   IpE8YRqpzoC9ZopSvOV/b5sDpjG1aYH7+w20SWDMYBWFBzZjIp9gGu1ix
+   Etwk6zdNa4JBrOK1deODKmXmZ2QxyI947jmoUIpc9BWYrae8aVXUy3DBw
+   hO712NMDZeliHMG/sP1UDi6wf+8eLTtLBPbzP5ViPbn3V+HwGzfQSmh7m
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="8107853"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="8107853"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 18:16:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="946581865"
+X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
+   d="scan'208";a="946581865"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 18:16:20 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 11 Dec 2023 18:16:19 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 18:16:19 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 11 Dec 2023 18:16:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h0tADcEAoyVuEaUxIydx7KcGrjFpzCgIKFieaQgU5DdgkF8Rbca3lgrDcua7TzF1NljxKD5LNq0HNwMvtRU1f+IFp8dig9TZ9G/uqUIwFepjK7RZbiMbGfnJ6kFgPB09A3udzNJ0c7+Y1xtk3tIAunLzwWVCx54tZlnTVjlqIfWvKPEDh1zagbeGdzWhEcW6p1MENf67z05Cgh66tujqyRpTqKKJIhIzI8wjt8D5YBHl9IhXH6jAYi7ChR/PTaGu28oh17QLdNnapCaoP4HysAlHy0QdVElPoReqRsufYL9/fibmAoyniqpEifKmJyDS7v3nocDebkHW4KeG+dxyKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SMtkO0YlhLJoeSRr1IVZDkwWXC7lL8BRgCb6Iijt5Es=;
+ b=kLbiRYGdk6S94VeahyC+FTPTpn3GEIJMAOnRLqIaJH5bDkuzjLhLN6UlsNddUjv6iwWMKj0f6TY0pXEUg7tEXCZ5WyGML2Fbbm/vkkKKmJFjRe7as0uDJKb2U0NimzxO3THRnPgJ1eM18bKJgApwea72ZKKWM1tUPrfil1O0jZXKI9n/fKw22MosMPZgc0zUk3rfZRxKyctxCZIRp47JnBdUk7MA5FIdo9/vPYaOuP3F1jc71F9fS/y0+h2UzvFCqBVhANgChfmbyE0swY6PJGHoir4qnDvXIZoOBJKuEJUp+lYe36FdqbMrshEsAdzXXFtCctimGIhWdYIdCuukLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by CO1PR11MB4817.namprd11.prod.outlook.com (2603:10b6:303:98::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
+ 2023 02:16:17 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 02:16:17 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+CC:     "joro@8bytes.org" <joro@8bytes.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: RE: [PATCH 3/3] vfio: Report PASID capability via VFIO_DEVICE_FEATURE
+ ioctl
+Thread-Topic: [PATCH 3/3] vfio: Report PASID capability via
+ VFIO_DEVICE_FEATURE ioctl
+Thread-Index: AQHaIPx2EKyfzMrBBEWzcc+IDcJP4bCkdsqAgACIdDA=
+Date:   Tue, 12 Dec 2023 02:16:17 +0000
+Message-ID: <BN9PR11MB5276DD7A14E938973DDEBEC18C8EA@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20231127063909.129153-1-yi.l.liu@intel.com>
+        <20231127063909.129153-4-yi.l.liu@intel.com>
+ <20231211110345.1b4526c6.alex.williamson@redhat.com>
+In-Reply-To: <20231211110345.1b4526c6.alex.williamson@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CO1PR11MB4817:EE_
+x-ms-office365-filtering-correlation-id: be49b604-8e1d-4c35-04db-08dbfab852a8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7Vu8UBJ9QYbYxcUqbhRhN1RcJnR7CfmIz0a0aYWEgyhFjiXyDcVID1ipFSezNpc5UgtjU+Uqc6ZAtXU1KBJJAuHg4T5Au2wpxVYtJVNU1qwbGwS6ZKZvU6JNn8tOPp5a8mOEPpmH52zSZz7bgcz9Htsm02Fa6s48fRo+PndFb9KEL9Z0nlkIQWsB2IEhvNveb9lSFpa5UKoWWMvIqPLc1IPZfxtMrb95cTebrKutNlgSIEj/l6Re6CJM6kt63BDIX5vhEhlJl5hTvEAQSGFp8JPWuWaQb6Wcjs1sUgz0NHgoXPwAguU3sIpGMNfrUo/4CXnm7nuZz1/unusqLGlCjF67bUNzcjSy50n3yxyIwXUCc70dN2mnAItrObmaaldyHw2PuqsIjul/vSYLzhQTQJ+5xu/pD4MCcIU6ov/lndrRYw20KEoV0FM8r/LdmaIeSGWi8d5kCwe8v0jfMV89hXI03yyBerHue06vXZ9ZEX9Do6tc5HaOnJM7RwlBjgsp3/v7kLtuYvwZCLO3KCY3n/38gUSPjfvSl3sDrioN7k9iEUI/mvuRzJvBzt9cVIk+S1YcVxuSXjkH9iafMP5opQDh47jpkv64BejLvbGIzRUk+9tAni7qUDgoIGjab3Lj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(366004)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(41300700001)(38070700009)(5660300002)(7416002)(2906002)(9686003)(6506007)(7696005)(71200400001)(478600001)(64756008)(33656002)(122000001)(38100700002)(55016003)(82960400001)(26005)(8936002)(86362001)(4326008)(66476007)(54906003)(66446008)(66556008)(76116006)(316002)(110136005)(6636002)(8676002)(66946007)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IGNHUMVoJikSoGOxjoFU6R+SxG6R6kDraTelirCZ2ga6nl1zf/ERQ/IzhUUP?=
+ =?us-ascii?Q?3Z/Ya0Dmnz3SqsdGq+kZTAGebfKNbScv7nQfv6HQlVif9mmZdTWZiuFgV4Tb?=
+ =?us-ascii?Q?MouzHNK0NRhkKsCSOWM9q5U6cMhyi/OClPFyQglqsuEZShCS6+UTJcdg2H82?=
+ =?us-ascii?Q?/ycM+oZR94ibbxHcT8BTvCsIGn0YAp87CeORXBP5ffgbA8pcLMSZYMiHwbfm?=
+ =?us-ascii?Q?h+XWJfpMwfwqz2Z/lE8KDvghZixqlI9L3glWA7h/+cotgC7Aut6kJ6PWKNWO?=
+ =?us-ascii?Q?jmyT7gEkPc252ZbBZKViulTZ3443PxaNbCpirlfYsP9DvqmXZD6QpWLTCU7Y?=
+ =?us-ascii?Q?ShvHwNIDWWeMCWbj3t4R78TFpv/6O5xF14LBMAC5UnYGjyvVfCcAYRyzMpSo?=
+ =?us-ascii?Q?rUUW0fQJ5GweWqOE8VFZTpQ3fw+3YZkS+2vbzhPcUTgbpQyaXYB+DBj+2fmb?=
+ =?us-ascii?Q?rykI4baPbChecnzuMWoq0879GRXW7HL5dW1d3A6mDpf4pZdJRBjEEcY3ycxJ?=
+ =?us-ascii?Q?c1n4HqvkpOAb7AIJlIQOrhejw9PF1qiEpNWCAduGFTPtUqFyw17ML2Tzbv3W?=
+ =?us-ascii?Q?1n+kexKrj3U7OQEbJeVehrxueujy41XjMYHkFZ+3QRvr9MCuRdt4+B6LqdaY?=
+ =?us-ascii?Q?ndbe1N60bAsCVMcwoLNE0da6Ldl9YY9GP7fCzEnmdnjvYRo94iKk/9OHPkaB?=
+ =?us-ascii?Q?MqQOWfP5clMnOqRnVcyDAmAOfUADOgf3ssZAMMlbFKg0IZohbftiUcc5t+ky?=
+ =?us-ascii?Q?HFSGspz/XpIMG/4RLfE9Yz+3mPnr324d95ZbQCKlsPJYqW+UtdgEjd9B+wsW?=
+ =?us-ascii?Q?WQfqKwSjcQ9xOPXIxK9CF6luDD+Qoh8RCc5e7zuMF90FmmMTTtQYE2eER17W?=
+ =?us-ascii?Q?lfAX7NbRWT27OaYAkNG3OBtjgJ44GKWoXBZKpOU3htErWXJyNZ/bLOPAGjEO?=
+ =?us-ascii?Q?57rLqhNuLDwnWBWG8SXUBJOh7AJnxK9KSp7+f23o/0szpPgdcioVpsYFIjjV?=
+ =?us-ascii?Q?3uSWh+eqpPhunwk2k48OqKiCQpb7CBzMpZPn4VuBVSg4iQwsXF9jR9tubM6b?=
+ =?us-ascii?Q?nRg5mzVZ+i3PatZi80VfdFc+jDT9LP8aXKDLO2vZl+kZkk2kZuNc0TRCGEb9?=
+ =?us-ascii?Q?QPeReo6zeUFBzqzz53hy2cM+UTd8Y1ZV20k9zMrvYCdqniukUVluM8KCbZZw?=
+ =?us-ascii?Q?bVdcXkcmktFUpvQuURf2GppnG7Ge4PsZZWZsicrpahAH+QyX0okcTI67BcOK?=
+ =?us-ascii?Q?Y0dhgRE5tbEScYTIEjR1W7W3UcM2OE19+7YQT4ikk64EQr8oP+7f+u6ZH+kd?=
+ =?us-ascii?Q?DvYEIAwIClFVNER5yaBb/ggZok8UCcK4gQaq5xKrYsfM1h0mWOeVq5CCE5s6?=
+ =?us-ascii?Q?vQkd5CA4DXlkCumvzNLVxm+ZuSJuT7Zu7ujYv4o9oG3Mgd3qa0k0+tGygtWp?=
+ =?us-ascii?Q?kHYug4fkigTmi3Gd/6tFN+fcQmcesDoswnN/ZTeWQkN8xhEzUDLh7Tf/ZvcB?=
+ =?us-ascii?Q?FserOp7Yl0v5zBiZDPX9yFCQYnqoORahafxmeb13CcDPMFdu0I2SXyG0QvHy?=
+ =?us-ascii?Q?fPLSw8Do/TtWfhD1VeVuKmuObthnSsjCLIV4DeTb?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be49b604-8e1d-4c35-04db-08dbfab852a8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2023 02:16:17.0503
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4vtRiQZzVl5jxja6SFXbwmhTfuxcsFjGvIEyyhPsothjCJ+a9xAokfF36lA443NPeqERZgnq+D3WOIBlsWazSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4817
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 3:16=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sun, Dec 10, 2023 at 5:00=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
+> From: Alex Williamson <alex.williamson@redhat.com>
+> Sent: Tuesday, December 12, 2023 2:04 AM
+>=20
+> On Sun, 26 Nov 2023 22:39:09 -0800
+> Yi Liu <yi.l.liu@intel.com> wrote:
+>=20
+> > This reports the PASID capability data to userspace via
+> VFIO_DEVICE_FEATURE,
+> > hence userspace could probe PASID capability by it. This is a bit diffe=
+rent
+> > with other capabilities which are reported to userspace when the user
+> reads
+> > the device's PCI configuration space. There are two reasons for this.
 > >
-> > We can derive some new information for BPF_JNE in regs_refine_cond_op()=
-.
-> > Take following code for example:
-> >
-> >   /* The type of "a" is u16 */
-> >   if (a > 0 && a < 100) {
-> >     /* the range of the register for a is [0, 99], not [1, 99],
-> >      * and will cause the following error:
-> >      *
-> >      *   invalid zero-sized read
-> >      *
-> >      * as a can be 0.
-> >      */
-> >     bpf_skb_store_bytes(skb, xx, xx, a, 0);
-> >   }
-> >
-> > In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0".=
- In the
-> > TRUE branch, the dst_reg will be marked as known to 0. However, in the
-> > fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
-> > the [min, max] for a is [0, 99], not [1, 99].
-> >
-> > For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
-> > const and is exactly the edge of the dst reg.
-> >
-> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 45 ++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 44 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 727a59e4a647..7b074ac93190 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -1764,6 +1764,40 @@ static void __mark_reg_const_zero(struct bpf_reg=
-_state *reg)
-> >         reg->type =3D SCALAR_VALUE;
-> >  }
-> >
-> > +#define CHECK_REG_MIN(value)                   \
-> > +do {                                           \
-> > +       if ((value) =3D=3D (typeof(value))imm)      \
-> > +               value++;                        \
-> > +} while (0)
-> > +
-> > +#define CHECK_REG_MAX(value)                   \
-> > +do {                                           \
-> > +       if ((value) =3D=3D (typeof(value))imm)      \
-> > +               value--;                        \
-> > +} while (0)
-> > +
-> > +static void mark_reg32_not_equal(struct bpf_reg_state *reg, u64 imm)
-> > +{
-> > +               CHECK_REG_MIN(reg->s32_min_value);
-> > +               CHECK_REG_MAX(reg->s32_max_value);
-> > +               CHECK_REG_MIN(reg->u32_min_value);
-> > +               CHECK_REG_MAX(reg->u32_max_value);
-> > +}
-> > +
-> > +static void mark_reg_not_equal(struct bpf_reg_state *reg, u64 imm)
-> > +{
-> > +               CHECK_REG_MIN(reg->smin_value);
-> > +               CHECK_REG_MAX(reg->smax_value);
-> > +
-> > +               CHECK_REG_MIN(reg->umin_value);
-> > +               CHECK_REG_MAX(reg->umax_value);
-> > +
-> > +               CHECK_REG_MIN(reg->s32_min_value);
-> > +               CHECK_REG_MAX(reg->s32_max_value);
-> > +               CHECK_REG_MIN(reg->u32_min_value);
-> > +               CHECK_REG_MAX(reg->u32_max_value);
-> > +}
->
-> please don't use macros for this, this code is tricky enough without
-> having to jump around double-checking what exactly macros are doing.
-> Just code it explicitly.
->
+> >  - First, Qemu by default exposes all available PCI capabilities in vfi=
+o-pci
+> >    config space to the guest as read-only, so adding PASID capability i=
+n the
+> >    vfio-pci config space will make it exposed to the guest automaticall=
+y while
+> >    an old Qemu doesn't really support it.
+>=20
+> Shouldn't we also be working on hiding the PASID capability in QEMU
+> ASAP?  This feature only allows QEMU to know PASID control is actually
+> available, not the guest.  Maybe we're hoping this is really only used
+> by VFs where there's no capability currently exposed to the guest?
 
-Okay!
+We expect this to be used by both PF/VF. It doesn't make sense to have
+separate interfaces between them.
 
-> Also I don't see the need for mark_reg32_not_equal() and
-> mark_reg_not_equal() helper functions, there is just one place where
-> this logic is going to be called from, so let's add code right there.
->
+I'm not aware of that the PASID capability has been exported today. So
+yes we should fix QEMU asap. and also remove the line exposing it
+in vfio_pci_config.c.
 
-Yeah, you are right. And I just found that you have already
-implemented the test case for this logic in reg_bounds.c/range_cond().
-I wonder why this logic is not implemented in the verifier yet?
-Am I missing something?
+>=20
+> >  - Second, PASID capability does not exit on VFs (instead shares the ca=
+p of
+>=20
+> s/exit/exist/
+>=20
+> >    the PF). Creating a virtual PASID capability in vfio-pci config spac=
+e needs
+> >    to find a hole to place it, but doing so may require device specific
+> >    knowledge to avoid potential conflict with device specific registers=
+ like
+> >    hiden bits in VF config space. It's simpler by moving this burden to=
+ the
+> >    VMM instead of maintaining a quirk system in the kernel.
+>=20
+> This feels a bit like an incomplete solution though and we might
+> already posses device specific knowledge in the form of a variant
+> driver.  Should this feature structure include a flag + field that
+> could serve to generically indicate to the VMM a location for
+> implementing the PASID capability?  The default core implementation
+> might fill this only for PFs where clearly an emualted PASID capability
+> can overlap the physical capability.  Thanks,
+>=20
 
-Thanks!
-Menglong Dong
-
-> > +
-> >  static void mark_reg_known_zero(struct bpf_verifier_env *env,
-> >                                 struct bpf_reg_state *regs, u32 regno)
-> >  {
-> > @@ -14332,7 +14366,16 @@ static void regs_refine_cond_op(struct bpf_reg=
-_state *reg1, struct bpf_reg_state
-> >                 }
-> >                 break;
-> >         case BPF_JNE:
-> > -               /* we don't derive any new information for inequality y=
-et */
-> > +               /* try to recompute the bound of reg1 if reg2 is a cons=
-t and
-> > +                * is exactly the edge of reg1.
-> > +                */
-> > +               if (is_reg_const(reg2, is_jmp32)) {
-> > +                       val =3D reg_const_value(reg2, is_jmp32);
-> > +                       if (is_jmp32)
-> > +                               mark_reg32_not_equal(reg1, val);
-> > +                       else
-> > +                               mark_reg_not_equal(reg1, val);
-> > +               }
-> >                 break;
-> >         case BPF_JSET:
-> >                 if (!is_reg_const(reg2, is_jmp32))
-> > --
-> > 2.39.2
-> >
+make sense
