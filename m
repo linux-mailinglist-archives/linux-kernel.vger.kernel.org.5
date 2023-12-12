@@ -2,220 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9497380F545
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C0B80F546
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 19:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377076AbjLLSLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 13:11:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
+        id S1377094AbjLLSLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 13:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbjLLSL2 (ORCPT
+        with ESMTP id S232358AbjLLSLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 13:11:28 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA7EBD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 10:11:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1702404685; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=aB1GS5ER43ugiCtXrlRzmJ14CP25jy1HU+JUvbjVCXLd/vb17LXHbkHdO1J78MwqLxCWgNc4h9NLPko0WfEj0BWIpPWPL2ROvUdkwRCLg3s156DIFiP5YNjpijdaU6G5eVAv58huJ0KCF2df/iPzwgUxzG5NaTAJbmpvs+nDVpQ=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1702404685; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=CdVFAutf16HunPP4VGxIvYXTf6+XNrdgytRbuVIRwvE=; 
-        b=InDKLhjWaQ1/C7/Ljt9nOux3cAcxhaAqBvkj0ZU1i5oAkey5QrI34uX4faKBfKKag0u+pXAncGGs264EHbea4fn3rRChrlJGTeSYYgSSeURdNsi46WgSZI62kFcp/ipHFKipczAzzXcU3RXzdXixc50bgAcY9smD8b+R9iv4GOg=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1702404685;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=CdVFAutf16HunPP4VGxIvYXTf6+XNrdgytRbuVIRwvE=;
-        b=gR59eeze9bRlhyIs6mtzmz/eCluIIsJK5kn7dZMt7/CG1sGqZPmLCt1Zez5TdriU
-        xVGxgyiM9iE/5j2yzR3IMRF9Zrp9dg5r65NMq8YRCNEAIIKpXEAn6ZQwjZ6+RFhC/7C
-        oIfgLWHgrBlNne0+hVqtgL4ydWlPySzAe+cliozA=
-Received: from [192.168.1.12] (182.69.31.144 [182.69.31.144]) by mx.zoho.in
-        with SMTPS id 1702404684363952.426048869551; Tue, 12 Dec 2023 23:41:24 +0530 (IST)
-Message-ID: <66e9ef2c-baba-4484-be9d-4abbb930a7bf@siddh.me>
-Date:   Tue, 12 Dec 2023 23:41:21 +0530
+        Tue, 12 Dec 2023 13:11:54 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2076.outbound.protection.outlook.com [40.107.244.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73591BD;
+        Tue, 12 Dec 2023 10:12:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UUYbpxYBd182wJsYYoMkJ2vMykUdKWf05P7ZkbqD8VE8QcGP8x/oIVf/zeCFTgXYVNtUXK5LTDgMOAivEYrWdF50W9h2NtT41uqcfExbQRxrsJLaUOtpp/mwon7AFkwPo4YDeU8e54tqaeQ7eK3nf3T+WvAjP3685wAa9LA2T3KPTIu16b/8zRmimHxuFBKI7srQ/Ayv0hiYGuFNbw8Tnp6868c06h2ZkiraJCl3jf4VZFsvfSnl2lNtDfHUhDQfy/xhP377VevjnODtX19tm+CzuUvWf4u5uiS+C/E4QQIbflD8T/fDzGuY4FsdFzPnGtmnh4IG62XVljmB2FwzPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DsdEjdFGro1jUaUTRB3jpRmIpqJfTbR955de68Nrfyc=;
+ b=LrC92Vkp1Wo3FeDLsTQhq/8CiziE1U7+LgF2rOgogxWtseyluizkmdf+M0fgMdRNmJ/0HreVt0eXgU/F47tAStPrSUyo/k+ZHltsv2reFCYQ7PrpmIUfXu1y5FU+FMc33h5vhK4h4aJ52M+2y7cZLJMP9MkVGzejNkm5jP/d21u7HQ1FTZwcHvpNTy0AmreP/xEmhb94rufFqbnqdTvha2N5Qm3xAlpinPxFNIogosFkVR8jUY2kzHZaTH22VpzBee8z09Ez7PTJ3K/Y86x6GuB4S12b2BYBSnowqoX2VXxi+0bdmDroEuelS7w0+kau/sFAfSI+hvlaLg+THSVUeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DsdEjdFGro1jUaUTRB3jpRmIpqJfTbR955de68Nrfyc=;
+ b=LBgE9ACwCj2vsqSMjtpj26FkBaPSGUd8vOo2f97yhvp7zp8cEBBuim1iF+ui4QS9TeL2S5N+k6ve1+4stUktgVal/UO0d/DNOGUl6P8M3oTM03n3KUC7XZT0cURnqNU0AkcxkKoURxOTE6Y6ry+lpSk/zJcCfRXQiWEAIwOTeGbqr6K1/4Y+ZxgOXrDW4Eh0s9GlJZw/mfNeTUgCd+Mt2Z8qxXl39KuBHLXGF/DQVvBKFGSbNpDnDdp2rQWJf4nTm1Z/00wY9lTkk5QUpef1gHFTgU/zIn+SXNfqu+nXDQQtXc6NeRDcDLsleWhc53vkCnKDT5kmKok86y4ATRvpNg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB8428.namprd12.prod.outlook.com (2603:10b6:510:243::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
+ 2023 18:11:57 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 18:11:57 +0000
+Date:   Tue, 12 Dec 2023 14:11:56 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+        gshan@redhat.com, linux-mm@kvack.org, lpieralisi@kernel.org,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci devices
+Message-ID: <20231212181156.GO3014157@nvidia.com>
+References: <20231208164709.23101-1-ankita@nvidia.com>
+ <20231208164709.23101-3-ankita@nvidia.com>
+ <ZXicemDzXm8NShs1@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXicemDzXm8NShs1@arm.com>
+X-ClientProxiedBy: MN2PR02CA0023.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::36) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000cb112e0609b419d3@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
- nfc_alloc_send_skb
-Content-Language: en-US, en-GB, hi-IN
-From:   Siddh Raman Pant <code@siddh.me>
-In-Reply-To: <000000000000cb112e0609b419d3@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB8428:EE_
+X-MS-Office365-Filtering-Correlation-Id: d3fafca0-d646-4b38-167e-08dbfb3dd430
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hPLN4IERp5q2wZAX2wdRWqMVf+Fk7/Bvtm/y9UODYAPpvHtxcbLM4NZW5aXVCOV/cb4r/6/218onG4WhZxBak8hkX17GXSipbpKXE64hsmWs1BTUB+qg4S3t9+5aL0SDqrVdYJsiaJWgDnNmHSGtD5omH0Zc9dQsIMrwsTDWgK2ePjQ8rnY5xwu158nU59bv4B4ch5AxzwzLm2oNEeyrkToXmZyCdkEgnibFdGnmbAeWlQ5/r/CJLMFDsW47uhZPsH0WHEKKev7cVnuhNBdrp69yQiR09HCGmdqmc+ynCVXfRyn6q+PavV3L5JtSEh6xOt9BS8JaHK4dPt15fx7/4Oe+gJXc5K6V7T9OvrgEr1jx02ijeThl9K2BIrWNJR81ObkplKR6ixrLAtDbyPqg+TIJZXUQ3xtkpkhvLgy48yRvhTIWidqAODC9dqc0hQmbDdq3zPRNNPQnC24hDMtgbARP3OkQbZ/gkXLt38TDfWOd1LzuGcU2gYzPjjcVVTB949cGp1P6ZAnidBt2SJL5GoUD2Bs05juxdbJOrYcInHcKVO6UznX8hQqQHpD32KnG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(396003)(366004)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(41300700001)(2616005)(1076003)(26005)(83380400001)(33656002)(36756003)(38100700002)(5660300002)(8676002)(316002)(8936002)(4326008)(2906002)(7416002)(86362001)(6512007)(6506007)(66476007)(6916009)(66556008)(66946007)(478600001)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lY+ljsP3PhtpT/EpVX1ZKQab0bzV4kfOgaErxMjpaqM+y+mB//tsww8slkYC?=
+ =?us-ascii?Q?/YryN+gOdI4qJ7siLtRknWGYLBba8O5EfmSW+zEXd0Qc1L3keG3JiJXFmSfK?=
+ =?us-ascii?Q?xxeOSIfR0bEGZJfFF8TCdlG4vYPMFgBBLSBcGGlSSOPI11P0mqc6VS0kPDdv?=
+ =?us-ascii?Q?U3TPQQG0YO0xmbT+tHUlS3cg2VgMgWASkF0ksdJ/7At4Mffx6/hHsU74bFs2?=
+ =?us-ascii?Q?d0tT+59qQOLLGYiGU5w8JwGOiTpRRUPAFsVqKoPNCDIOkYSJWyhjdwqTKeiT?=
+ =?us-ascii?Q?t20eIVYfJQbAnKrfkjb8XLw4mi1kS6JDg8JmdPkZ4y1OyAlmPAYRHH9kHJ6b?=
+ =?us-ascii?Q?NRkKy2A1gBhd1oY8JjB+MU7m7HQ7ywH5l5BGozVGWMsDiZH0IJmo+Sk6igMD?=
+ =?us-ascii?Q?sQPkubIT8ENgDK8sJJ9fM8N4h9/QYVA2WyVy5KfmAFbqlz8+/uEtvYHYydzp?=
+ =?us-ascii?Q?/nM1n4zeNw+0hy0X6cEITbgA5hZzVjlhbM4kzSrHdu5mejTjWdGp9Osy5X0L?=
+ =?us-ascii?Q?HfB9mWoWd+RDxLQQdIWM4SvQyjO9GlBBga1lNADdN+U/XWgx6gAwc+6ezZdF?=
+ =?us-ascii?Q?pSsTovZF5KlmVicqmG5EYlKT8XE76cWjJFxTBXMcFlnZm05UP+CzOavFs3KW?=
+ =?us-ascii?Q?2gOwFlunuzn5gZk4/7ejOEEOzkTsfHLH4AEiYLARwyotXNVXh2GKkPdOxKSL?=
+ =?us-ascii?Q?g1cCKurXjfYly46m8V4HXFmErGes6EclMCHuiC8CyxiYyronW0Ok+GJngJoC?=
+ =?us-ascii?Q?XyYPjiMlL+Ys1x38QDGDlyOoI2v12Im7AoMqv366aIULCZQYvJsz/qsS+k54?=
+ =?us-ascii?Q?1HYvhcL37vCFWAsSJRQqtPSbJ3TW+f/sp0ZbB7IUOYmyFDnEQxkarl1tDf7S?=
+ =?us-ascii?Q?bvauImFSOpA6sQ+vEVr4ZkIDrGYNb+SALYylcSnXdcSb5QVi9jI4p+h7EyZt?=
+ =?us-ascii?Q?DU1X1WKLj61Z8U+AkL12v9/tmC9smeXWdCJr01Lkwzhxqa228AM9v/9nlqbg?=
+ =?us-ascii?Q?i1ZdcoS7JRygPZ922SAEvLnflK2/jAO32oI8ECd08hxJIzdRYLhCGkKqOSXC?=
+ =?us-ascii?Q?bCN/iFqBAXIeuQE6fo1yPX3xEI1BX9yfO5L/j+iR2XKTHOzb4XlgKsGZw8Gm?=
+ =?us-ascii?Q?UGFwH8Ndx7y20DtPvXKYvKEHz2pZxQQSi+kkbpTDN43BDgqtkAU+3Kp/nrhW?=
+ =?us-ascii?Q?p7X6JePiqJkhw06Szr76Cgjjvn7i7Sx5pXAFMohSMRWjHFQAtGVYsOVqrkdK?=
+ =?us-ascii?Q?eIFMrofFXPFyT95w0ZN0wLUKHn1VDKd5UK82Gr5Piv47IrHggJuYWiEx4f/w?=
+ =?us-ascii?Q?Z7fhfcde/+9hJgT533DEjyxDH1kN+3hcT1RhAAsvpvaslcoIT5ki6BMyKWmS?=
+ =?us-ascii?Q?CAZP8V+RAKcQQItELXI36j3lWYb5XF426amMOZ2OJIZ/zxIrRUQb9apAbwEU?=
+ =?us-ascii?Q?d5fY19ZfMD4kCRTPZMNnSlRGijD8nt5GJAGahG8H3fshgkXA2zyCWMfc+aGB?=
+ =?us-ascii?Q?pATNqK3BS8EkrtBXeNxRwqCbXhrv/mcNlgGGLsCTQz0esE738B1MiVdfO0Z/?=
+ =?us-ascii?Q?ZcRZC0gT/laouWX/surdnG5ECZRLdH9/o8EOvSsM?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3fafca0-d646-4b38-167e-08dbfb3dd430
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 18:11:57.5689
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9bXSN1XWQUcSUdDFg3DI3BMjBwwQ9lTSMbnpSNQJbgBDOo8vCF3oA2FmClbwkLnJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8428
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+On Tue, Dec 12, 2023 at 05:46:34PM +0000, Catalin Marinas wrote:
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index a422cc123a2d..8d3c4820c492 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -391,6 +391,13 @@ extern unsigned int kobjsize(const void *objp);
+> >  # define VM_UFFD_MINOR		VM_NONE
+> >  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+> >  
+> > +#ifdef CONFIG_64BIT
+> > +#define VM_VFIO_ALLOW_WC_BIT	39	/* Convey KVM to map S2 NORMAL_NC */
+> 
+> This comment shouldn't be in the core header file. It knows nothing
+> about S2 and Normal-NC, that's arm64 terminology. You can mention
+> something like VFIO can use this flag hint that write-combining is
+> allowed.
 
----
- net/nfc/llcp_core.c | 72 +++++++++++++++++++++++++++++----------------
- 1 file changed, 47 insertions(+), 25 deletions(-)
+Let's write a comment down here to address both remarks:
 
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index 1dac28136e6a..2f77200a3720 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -145,6 +145,13 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
- 
- static struct nfc_llcp_local *nfc_llcp_local_get(struct nfc_llcp_local *local)
- {
-+	/* Since using nfc_llcp_local may result in usage of nfc_dev, whenever
-+	 * we hold a reference to local, we also need to hold a reference to
-+	 * the device to avoid UAF.
-+	 */
-+	if (!nfc_get_device(local->dev->idx))
-+		return NULL;
-+
- 	kref_get(&local->ref);
- 
- 	return local;
-@@ -177,10 +184,18 @@ static void local_release(struct kref *ref)
- 
- int nfc_llcp_local_put(struct nfc_llcp_local *local)
- {
-+	struct nfc_dev *dev;
-+	int ret;
-+
- 	if (local == NULL)
- 		return 0;
- 
--	return kref_put(&local->ref, local_release);
-+	dev = local->dev;
-+
-+	ret = kref_put(&local->ref, local_release);
-+	nfc_put_device(dev);
-+
-+	return ret;
- }
- 
- static struct nfc_llcp_sock *nfc_llcp_sock_get(struct nfc_llcp_local *local,
-@@ -901,7 +916,7 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 
- 	if (dsap != LLCP_SAP_SDP) {
- 		sock = nfc_llcp_sock_get(local, dsap, LLCP_SAP_SDP);
--		if (sock == NULL || sock->sk.sk_state != LLCP_LISTEN) {
-+		if (!sock || sock->sk.sk_state != LLCP_LISTEN) {
- 			reason = LLCP_DM_NOBOUND;
- 			goto fail;
- 		}
-@@ -910,7 +925,7 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 		size_t sn_len;
- 
- 		sn = nfc_llcp_connect_sn(skb, &sn_len);
--		if (sn == NULL) {
-+		if (!sn) {
- 			reason = LLCP_DM_NOBOUND;
- 			goto fail;
- 		}
-@@ -918,7 +933,7 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 		pr_debug("Service name length %zu\n", sn_len);
- 
- 		sock = nfc_llcp_sock_get_sn(local, sn, sn_len);
--		if (sock == NULL) {
-+		if (!sock) {
- 			reason = LLCP_DM_NOBOUND;
- 			goto fail;
- 		}
-@@ -928,39 +943,31 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 
- 	parent = &sock->sk;
- 
--	if (sk_acceptq_is_full(parent)) {
--		reason = LLCP_DM_REJ;
--		release_sock(&sock->sk);
--		sock_put(&sock->sk);
--		goto fail;
--	}
-+	if (sk_acceptq_is_full(parent))
-+		goto fail_put_sock;
- 
- 	if (sock->ssap == LLCP_SDP_UNBOUND) {
- 		u8 ssap = nfc_llcp_reserve_sdp_ssap(local);
- 
- 		pr_debug("First client, reserving %d\n", ssap);
- 
--		if (ssap == LLCP_SAP_MAX) {
--			reason = LLCP_DM_REJ;
--			release_sock(&sock->sk);
--			sock_put(&sock->sk);
--			goto fail;
--		}
-+		if (ssap == LLCP_SAP_MAX)
-+			goto fail_put_sock;
- 
- 		sock->ssap = ssap;
- 	}
- 
- 	new_sk = nfc_llcp_sock_alloc(NULL, parent->sk_type, GFP_ATOMIC, 0);
--	if (new_sk == NULL) {
--		reason = LLCP_DM_REJ;
--		release_sock(&sock->sk);
--		sock_put(&sock->sk);
--		goto fail;
--	}
-+	if (!new_sk)
-+		goto fail_put_sock;
- 
- 	new_sock = nfc_llcp_sock(new_sk);
--	new_sock->dev = local->dev;
-+
- 	new_sock->local = nfc_llcp_local_get(local);
-+	if (!new_sock->local)
-+		goto fail_free_new_sock;
-+
-+	new_sock->dev = local->dev;
- 	new_sock->rw = sock->rw;
- 	new_sock->miux = sock->miux;
- 	new_sock->nfc_protocol = sock->nfc_protocol;
-@@ -1004,8 +1011,14 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
- 
- 	return;
- 
-+fail_free_new_sock:
-+	sock_put(&new_sock->sk);
-+	nfc_llcp_sock_free(new_sock);
-+fail_put_sock:
-+	reason = LLCP_DM_REJ;
-+	release_sock(&sock->sk);
-+	sock_put(&sock->sk);
- fail:
--	/* Send DM */
- 	nfc_llcp_send_dm(local, dsap, ssap, reason);
- }
- 
-@@ -1597,7 +1610,16 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
- 	if (local == NULL)
- 		return -ENOMEM;
- 
--	local->dev = ndev;
-+	/* As we are going to initialize local's refcount, we need to get the
-+	 * nfc_dev to avoid UAF, otherwise there is no point in continuing.
-+	 * See nfc_llcp_local_get().
-+	 */
-+	local->dev = nfc_get_device(ndev->idx);
-+	if (!local->dev) {
-+		kfree(local);
-+		return -ENODEV;
-+	}
-+
- 	INIT_LIST_HEAD(&local->list);
- 	kref_init(&local->ref);
- 	mutex_init(&local->sdp_lock);
--- 
-2.42.0
+ This flag is used to connect VFIO to arch specific KVM code. It
+ indicates that the memory under this VMA is safe for use with any
+ non-cachable memory type inside KVM. Some VFIO devices, on some
+ platforms, are thought to be unsafe and can cause machine crashes if
+ KVM does not lock down the memory type.
 
+> should know the implications. There's also an expectation that the
+> actual driver (KVM guests) or maybe later DPDK can choose the safe
+> non-cacheable or write-combine (Linux terminology) attributes for the
+> BAR.
+
+DPDK won't rely on this interface
+
+Thanks,
+Jason
