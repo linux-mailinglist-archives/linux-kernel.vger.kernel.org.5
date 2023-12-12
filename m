@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AFF80F6B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589DD80F6BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 20:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376969AbjLLTbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 14:31:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        id S1377106AbjLLTcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 14:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbjLLTbv (ORCPT
+        with ESMTP id S1376956AbjLLTcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 14:31:51 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA127106;
-        Tue, 12 Dec 2023 11:31:52 -0800 (PST)
-Received: from [194.95.143.137] (helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1rD8Tp-0005mP-OM; Tue, 12 Dec 2023 20:31:45 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Sam Edwards <cfsworks@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Edwards <CFSworks@gmail.com>
-Subject: Re: [PATCH 1/2] xhci: Introduce "disable-usb3" DT property/quirk
-Date:   Tue, 12 Dec 2023 20:31:45 +0100
-Message-ID: <4854020.GXAFRqVoOG@phil>
-In-Reply-To: <20231208210458.912776-2-CFSworks@gmail.com>
-References: <20231208210458.912776-1-CFSworks@gmail.com>
- <20231208210458.912776-2-CFSworks@gmail.com>
+        Tue, 12 Dec 2023 14:32:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C52C9B
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 11:32:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9E4C433C8;
+        Tue, 12 Dec 2023 19:32:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702409534;
+        bh=TY0fTx0ctTq290WnoWAWUZDkJDQeQKPE92XPLQbudrU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZNxbmsS/+h1vg1YDha+zs73ry/J6JwD9wUqhXowYooyJXnc44pEUjmKhLQx1Mccdg
+         kp/fOLDBP/VN2SkWVyFbkoQIfdPhk1LY6Ssd1gF99lkSc/nNyP/BS859V6zdU3/dDM
+         cPvs3qwtLTYvWOAp/csw9reTXvq578vQePaIA5WReWVOmdqAYUA8eRNSqT7Yxb/6nN
+         g9zWOYXZByVNKBeAtw+LzrjWitaL/efLkvAa3XQ6amXDrpFyuoe8wFwd8RieVCN1Ye
+         1fL40FWifvmwR0psB1eBxwUflDm/kuU629zzOnmDVMJ6Nf9ETF2YdCAZ5PgYZBNMPK
+         NB08Xl1EqSiRw==
+Date:   Tue, 12 Dec 2023 11:32:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Justin Lai <justinlai0215@realtek.com>
+Cc:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>
+Subject: Re: [PATCH net-next v14 06/13] rtase: Implement .ndo_start_xmit
+ function
+Message-ID: <20231212113212.1cfb9e19@kernel.org>
+In-Reply-To: <20231208094733.1671296-7-justinlai0215@realtek.com>
+References: <20231208094733.1671296-1-justinlai0215@realtek.com>
+        <20231208094733.1671296-7-justinlai0215@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 8. Dezember 2023, 22:04:57 CET schrieb Sam Edwards:
-> Some systems may have xHCI controllers that enumerate USB 3.0 ports, but
-> these ports nevertheless cannot be used. Perhaps enabling them triggers a
-> hardware bug, or perhaps they simply aren't connected and it would be
-> confusing to the user to see an unusable USB 3.0 rhub show up -- whatever
-> the case may be, it's reasonable to want to disable these ports.
-> 
-> Add a DT property (and associated quirk) to the xHCI driver that skips
-> over (i.e. ignores and doesn't initialize) any USB 3.0 ports discovered
-> during driver initialization.
-> 
-> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
+On Fri, 8 Dec 2023 17:47:26 +0800 Justin Lai wrote:
+> +static int tx_handler(struct rtase_ring *ring, int budget)
 
-I'm very much unsure, where the line goes between hw-quirk and
-dt-is-not-a-configuration-space - in this specific instance.
+I don't see how this is called, the way you split the submission makes
+it a bit hard to review, oh well. Anyway - if you pass the NAPI budget
+here - that's not right, it may be 0, and you'd loop forever.
+For Tx - you should try to reap some fixed number of packets, say 128,
+the budget is for Rx, not for Tx.
 
-DT is meant to describe the actual hardware present and not how
-any operating system supports it.
-
-So having that usb3phy present in the kernel - even if only in
-a more limited form as you describe would be my preference.
-
-
-But for a short-term thing, the usb3-phy in the binding is optional, so
-so you could "just" deduce the no-usb3 state in your code from its
-absence from the dt-node?
-
-
-Heiko
-
-
-
->  Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
->  drivers/usb/host/xhci-mem.c                         | 4 ++++
->  drivers/usb/host/xhci-plat.c                        | 3 +++
->  drivers/usb/host/xhci.h                             | 1 +
->  4 files changed, 12 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> index 180a261c3e8f..8a64e747260a 100644
-> --- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> @@ -25,6 +25,10 @@ properties:
->      description: Set if the controller has broken port disable mechanism
->      type: boolean
->  
-> +  disable-usb3:
-> +    description: Ignore (don't initialize, don't use) USB3 ports
-> +    type: boolean
+> +	const struct rtase_private *tp = ring->ivec->tp;
+> +	struct net_device *dev = tp->dev;
+> +	int workdone = 0;
+> +	u32 dirty_tx;
+> +	u32 tx_left;
 > +
->    imod-interval-ns:
->      description: Interrupt moderation interval
->      default: 5000
-> diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-> index 0a37f0d511cf..bf8fcab626e4 100644
-> --- a/drivers/usb/host/xhci-mem.c
-> +++ b/drivers/usb/host/xhci-mem.c
-> @@ -1968,6 +1968,10 @@ static void xhci_add_in_port(struct xhci_hcd *xhci, unsigned int num_ports,
->  	minor_revision = XHCI_EXT_PORT_MINOR(temp);
->  
->  	if (major_revision == 0x03) {
-> +		/* Ignore USB3 ports entirely if USB3 support is disabled. */
-> +		if (xhci->quirks & XHCI_DISABLE_USB3)
-> +			return;
+> +	dirty_tx = ring->dirty_idx;
+> +	tx_left = READ_ONCE(ring->cur_idx) - dirty_tx;
 > +
->  		rhub = &xhci->usb3_rhub;
->  		/*
->  		 * Some hosts incorrectly use sub-minor version for minor
-> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> index b93161374293..75285fb5bbbc 100644
-> --- a/drivers/usb/host/xhci-plat.c
-> +++ b/drivers/usb/host/xhci-plat.c
-> @@ -249,6 +249,9 @@ int xhci_plat_probe(struct platform_device *pdev, struct device *sysdev, const s
->  		if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
->  			xhci->quirks |= XHCI_BROKEN_PORT_PED;
->  
-> +		if (device_property_read_bool(tmpdev, "disable-usb3"))
-> +			xhci->quirks |= XHCI_DISABLE_USB3;
+> +	while (tx_left > 0) {
+> +		u32 entry = dirty_tx % NUM_DESC;
+> +		struct tx_desc *desc = ring->desc +
+> +				       sizeof(struct tx_desc) * entry;
+> +		u32 len = ring->mis.len[entry];
+> +		u32 status;
 > +
->  		device_property_read_u32(tmpdev, "imod-interval-ns",
->  					 &xhci->imod_interval);
->  	}
-> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-> index 5df370482521..c53fbeea478f 100644
-> --- a/drivers/usb/host/xhci.h
-> +++ b/drivers/usb/host/xhci.h
-> @@ -1906,6 +1906,7 @@ struct xhci_hcd {
->  #define XHCI_RESET_TO_DEFAULT	BIT_ULL(44)
->  #define XHCI_ZHAOXIN_TRB_FETCH	BIT_ULL(45)
->  #define XHCI_ZHAOXIN_HOST	BIT_ULL(46)
-> +#define XHCI_DISABLE_USB3	BIT_ULL(47)
->  
->  	unsigned int		num_active_eps;
->  	unsigned int		limit_active_eps;
-> 
+> +		status = le32_to_cpu(desc->opts1);
+> +
+> +		if (status & DESC_OWN)
+> +			break;
+> +
+> +		rtase_unmap_tx_skb(tp->pdev, len, desc);
+> +		ring->mis.len[entry] = 0;
+> +		if (ring->skbuff[entry]) {
+> +			dev_consume_skb_any(ring->skbuff[entry]);
 
+napi_consume_skb, assuming you call this from NAPI
 
+> +			ring->skbuff[entry] = NULL;
+> +		}
+> +
+> +		dev->stats.tx_bytes += len;
+> +		dev->stats.tx_packets++;
+> +		dirty_tx++;
+> +		tx_left--;
+> +		workdone++;
+> +
+> +		if (workdone == budget)
+> +			break;
+> +	}
+> +
+> +	if (ring->dirty_idx != dirty_tx) {
+> +		WRITE_ONCE(ring->dirty_idx, dirty_tx);
+> +
+> +		if (__netif_subqueue_stopped(dev, ring->index) &&
+> +		    rtase_tx_avail(ring))
+> +			netif_start_subqueue(dev, ring->index);
 
+Please use the start / stop macros from include/net/netdev_queues.h
+I'm pretty sure the current code is racy.
 
+> +		if (ring->cur_idx != dirty_tx)
+> +			rtase_w8(tp, RTASE_TPPOLL, BIT(ring->index));
+> +	}
+> +
+> +	return workdone;
+> +}
+
+> +	/* multiqueues */
+> +	q_idx = skb_get_queue_mapping(skb);
+> +	ring = &tp->tx_ring[q_idx];
+
+As Paolo pointed out elsewhere you seem to only support one queue.
+Remove this indirection, please, and always use queue 0, otherwise
+it's a bit confusing.
