@@ -2,66 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDA980E724
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135580E72B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjLLJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 04:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
+        id S1346225AbjLLJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 04:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjLLJQI (ORCPT
+        with ESMTP id S235078AbjLLJQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 04:16:08 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181B2C7;
-        Tue, 12 Dec 2023 01:16:14 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BC7jh3u009842;
-        Tue, 12 Dec 2023 01:16:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=pfpt0220; bh=8Fi6JKQ6
-        hzjc5TlTDLGpAytVBONJviRalvFedjkioj0=; b=D6C1v4MgfuQ6il0V41KGiZJh
-        jP2GdC/sJC/8OZIMIHZ8LaK0lH4SlvHju6gJ/AF7VufwoPUp5aHIrMEbS6aYRAQD
-        s9egYCd3xv89wmMw1rHDXtT84HGXSGGTkgFU0UBphB85sj6U3ItOuFVufYbSiwII
-        0tYj59ZHukadgwd6Mmd9S9PQEnKQuFEN+XCCRpAzdqzl6i5y/CX5jUWVo5AIRTnP
-        cxvkE4imJzjZQbkYt3vN81d0sFYQMWbrTevU1cBlXvizmtR4Tv0BkQFxUrptg0hl
-        rZL4siUpfEmFIyL2RvVQZugSms6AiPkCvpIFyHmPnXRpNn9DZm5Se6gkjAsB3w==
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uwyp4m9n4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 12 Dec 2023 01:16:06 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Dec
- 2023 01:16:05 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 12 Dec 2023 01:16:05 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 2BD283F7043;
-        Tue, 12 Dec 2023 01:16:00 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <sgoutham@marvell.com>, <sbhatta@marvell.com>,
-        <jerinj@marvell.com>, <gakula@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH] octeontx2-af: Fix multicast/mirror group lock/unlock issue
-Date:   Tue, 12 Dec 2023 14:45:58 +0530
-Message-ID: <20231212091558.49579-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Dec 2023 04:16:58 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19EBD2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:17:02 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e1a2253045so8807357b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 01:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702372622; x=1702977422; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=p38ZcnMoGySoA9RmMEhaNrnZZBwNT7TlIqnl8C0Lsh4=;
+        b=cLHbrcnTccbzLpgPFtaMkhk8CDo/sdm0AY57ytdW5qVS+9wKPREjSYF/lO7GGtd/QQ
+         C3RRLuaaqVKIVQPGzRggNvWHJd0kDQV8GZZlODhpr26LhWdiqRbM2vXgBtgb5lHENC56
+         1w6+yEAYfy/lXo9Br2XO9MnYqJ1UOPAU0RPOBaZaBZjLY4Xk3aA8rSH4J3StikVdVTqE
+         Dg2TQpNkfdMev4GGOEfw7vSuzAOaZRG3v0nLDKeiZ4M+KrbslZJhs0x7RL9sYivpFQD4
+         4mbKjLMnGtWZDIqLxMqbIgC1eicDHEC+8Vfsc2+TkajwK6jgetQZg9Y1hNA3jyYnZXds
+         rmyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702372622; x=1702977422;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p38ZcnMoGySoA9RmMEhaNrnZZBwNT7TlIqnl8C0Lsh4=;
+        b=NMJBt0JH+ID1Y1Qarm2kJQzJG+I6/PJaYLI85ovPlSkAofjrr/k7tvBFLT676oxvMt
+         wziLBEgc5Ml5NofWE3znyOpU6v7khjAP3bnaH9psFFjGvh2CFqR+6PS5GrgsMpFBZTst
+         xEBX4F4xe7p51d6LiIC8MrU7QfeBm2h0v6r3VN5t3yY2u6CdIvFJPcMrL78j2S2Ar0mO
+         6xr8i2FDEFNaWalbUL0MI09KzNG2rXff98WzEbRmOFTRbYxPU9D9fUg2WE02B6i0xB+c
+         O0BndT8uCWUHeHnPEsdVyO4UYsCpbVYhusiOVxBs5Zvf9kr7wmmCRkH/zsqJ0tXtziiT
+         xIIA==
+X-Gm-Message-State: AOJu0YzW4goRwb9TibKbLLFsUZhxyUtSIL7brtYWaHz7iQ/cuY7D4nDC
+        lkJF0jhCt3pdv40OdAPOejk7WXlNYnVkyVkvajaR7Q==
+X-Google-Smtp-Source: AGHT+IGfK6M82t1BPlvqg9TxCM/9qRj45o0tTiIJ27mtS0gYiaU1mn1aQ6NyYyJKbJ+DgcTtvVTbDhuMjYDaazDF4Ss=
+X-Received: by 2002:a0d:e905:0:b0:5d7:1941:ac7 with SMTP id
+ s5-20020a0de905000000b005d719410ac7mr4662948ywe.98.1702372621940; Tue, 12 Dec
+ 2023 01:17:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mdvrYMnmTWV766XtHWctnrpE8w_O9Zp1
-X-Proofpoint-GUID: mdvrYMnmTWV766XtHWctnrpE8w_O9Zp1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+References: <20231212-x1e80100-clock-controllers-v1-0-0de1af44dcb3@linaro.org> <20231212-x1e80100-clock-controllers-v1-10-0de1af44dcb3@linaro.org>
+In-Reply-To: <20231212-x1e80100-clock-controllers-v1-10-0de1af44dcb3@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 12 Dec 2023 11:16:50 +0200
+Message-ID: <CAA8EJpriXaymPkbkr_8Z76SDqZFrNAUOH_ggtpxSE2VA=0gcqA@mail.gmail.com>
+Subject: Re: [PATCH 10/10] clk: qcom: Add camcc clock driver for x1e80100
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,169 +79,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per the existing implementation, there exists a race between finding
-a multicast/mirror group entry and deleting that entry. The group lock
-was taken and released independently by rvu_nix_mcast_find_grp_elem()
-function. Which is incorrect and group lock should be taken during the
-entire operation of group updation/deletion. This patch fixes the same.
+On Tue, 12 Dec 2023 at 00:46, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+>
+> Add the camcc clock driver for x1e80100
+>
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/clk/qcom/Kconfig          |    8 +
+>  drivers/clk/qcom/Makefile         |    1 +
+>  drivers/clk/qcom/camcc-x1e80100.c | 2489 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 2498 insertions(+)
+>
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 0633728c870c..4580edbd13ea 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -20,6 +20,14 @@ menuconfig COMMON_CLK_QCOM
+>
+>  if COMMON_CLK_QCOM
+>
+> +config CLK_X1E80100_CAMCC
+> +       tristate "X1E80100 Camera Clock Controller"
+> +       depends on ARM64 || COMPILE_TEST
+> +       select CLK_X1E80100_GCC
+> +       help
+> +         Support for the camera clock controller on X1E80100 devices.
+> +         Say Y if you want to support camera devices and camera functionality.
+> +
+>  config CLK_X1E80100_DISPCC
+>         tristate "X1E80100 Display Clock Controller"
+>         depends on ARM64 || COMPILE_TEST
+> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> index 750b084553c6..1da65ca78e24 100644
+> --- a/drivers/clk/qcom/Makefile
+> +++ b/drivers/clk/qcom/Makefile
+> @@ -21,6 +21,7 @@ clk-qcom-$(CONFIG_QCOM_GDSC) += gdsc.o
+>  obj-$(CONFIG_APQ_GCC_8084) += gcc-apq8084.o
+>  obj-$(CONFIG_APQ_MMCC_8084) += mmcc-apq8084.o
+>  obj-$(CONFIG_CLK_GFM_LPASS_SM8250) += lpass-gfm-sm8250.o
+> +obj-$(CONFIG_CLK_X1E80100_CAMCC) += camcc-x1e80100.o
+>  obj-$(CONFIG_CLK_X1E80100_DISPCC) += dispcc-x1e80100.o
+>  obj-$(CONFIG_CLK_X1E80100_GCC) += gcc-x1e80100.o
+>  obj-$(CONFIG_CLK_X1E80100_GPUCC) += gpucc-x1e80100.o
+> diff --git a/drivers/clk/qcom/camcc-x1e80100.c b/drivers/clk/qcom/camcc-x1e80100.c
+> new file mode 100644
+> index 000000000000..50dc578692a1
+> --- /dev/null
+> +++ b/drivers/clk/qcom/camcc-x1e80100.c
+> @@ -0,0 +1,2489 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <dt-bindings/clock/qcom,x1e80100-camcc.h>
+> +
+> +#include "clk-alpha-pll.h"
+> +#include "clk-branch.h"
+> +#include "clk-rcg.h"
+> +#include "clk-regmap.h"
+> +#include "common.h"
+> +#include "gdsc.h"
+> +#include "reset.h"
+> +
+> +enum {
+> +       DT_BI_TCXO,
+> +       DT_BI_TCXO_AO,
+> +       DT_SLEEP_CLK,
+> +};
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_CAM_CC_PLL0_OUT_EVEN,
+> +       P_CAM_CC_PLL0_OUT_MAIN,
+> +       P_CAM_CC_PLL0_OUT_ODD,
+> +       P_CAM_CC_PLL1_OUT_EVEN,
+> +       P_CAM_CC_PLL2_OUT_EVEN,
+> +       P_CAM_CC_PLL2_OUT_MAIN,
+> +       P_CAM_CC_PLL3_OUT_EVEN,
+> +       P_CAM_CC_PLL4_OUT_EVEN,
+> +       P_CAM_CC_PLL6_OUT_EVEN,
+> +       P_CAM_CC_PLL8_OUT_EVEN,
+> +       P_SLEEP_CLK,
+> +};
+> +
+> +static const struct pll_vco lucid_ole_vco[] = {
+> +       { 249600000, 2300000000, 0 },
+> +};
+> +
+> +static const struct pll_vco rivian_ole_vco[] = {
+> +       { 777000000, 1285000000, 0 },
+> +};
+> +
+> +static const struct alpha_pll_config cam_cc_pll0_config = {
+> +       .l = 0x3E,
 
-Fixes: 51b2804c19cd ("octeontx2-af: Add new mbox to support multicast/mirror offload")
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
+Lowercase hex, please.
+Other than that LGTM.
 
-Note: This is a follow up of
+> +       .alpha = 0x8000,
+> +       .config_ctl_val = 0x20485699,
+> +       .config_ctl_hi_val = 0x00182261,
+> +       .config_ctl_hi1_val = 0x82AA299C,
+> +       .test_ctl_val = 0x00000000,
+> +       .test_ctl_hi_val = 0x00000003,
+> +       .test_ctl_hi1_val = 0x00009000,
+> +       .test_ctl_hi2_val = 0x00000034,
+> +       .user_ctl_val = 0x00008400,
+> +       .user_ctl_hi_val = 0x00000005,
+> +};
 
-https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_netdev_net-2Dnext_c_51b2804c19cd&d=DwIDaQ&c=nKjWec2b6R0mOyPaz7xtfQ&r=7si3Xn9Ly-Se1a655kvEPIYU0nQ9HPeN280sEUv5ROU&m=NjKPoTkYVlL5Dh4aSr3-dVo-AukiIperlvB0S4_Mqzkyl_VcYAAKrWhkGZE5Cx-p&s=AkBf0454Xm-0adqV0Os7ZE8peaCXtYyuNbCS5kit6Jk&e=
 
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 58 +++++++++++++------
- 1 file changed, 40 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-index b01503acd520..0ab5626380c5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
-@@ -6142,14 +6142,12 @@ static struct nix_mcast_grp_elem *rvu_nix_mcast_find_grp_elem(struct nix_mcast_g
- 	struct nix_mcast_grp_elem *iter;
- 	bool is_found = false;
- 
--	mutex_lock(&mcast_grp->mcast_grp_lock);
- 	list_for_each_entry(iter, &mcast_grp->mcast_grp_head, list) {
- 		if (iter->mcast_grp_idx == mcast_grp_idx) {
- 			is_found = true;
- 			break;
- 		}
- 	}
--	mutex_unlock(&mcast_grp->mcast_grp_lock);
- 
- 	if (is_found)
- 		return iter;
-@@ -6162,7 +6160,7 @@ int rvu_nix_mcast_get_mce_index(struct rvu *rvu, u16 pcifunc, u32 mcast_grp_idx)
- 	struct nix_mcast_grp_elem *elem;
- 	struct nix_mcast_grp *mcast_grp;
- 	struct nix_hw *nix_hw;
--	int blkaddr;
-+	int blkaddr, ret;
- 
- 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
- 	nix_hw = get_nix_hw(rvu->hw, blkaddr);
-@@ -6170,11 +6168,15 @@ int rvu_nix_mcast_get_mce_index(struct rvu *rvu, u16 pcifunc, u32 mcast_grp_idx)
- 		return NIX_AF_ERR_INVALID_NIXBLK;
- 
- 	mcast_grp = &nix_hw->mcast_grp;
-+	mutex_lock(&mcast_grp->mcast_grp_lock);
- 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, mcast_grp_idx);
- 	if (!elem)
--		return NIX_AF_ERR_INVALID_MCAST_GRP;
-+		ret = NIX_AF_ERR_INVALID_MCAST_GRP;
-+	else
-+		ret = elem->mce_start_index;
- 
--	return elem->mce_start_index;
-+	mutex_unlock(&mcast_grp->mcast_grp_lock);
-+	return ret;
- }
- 
- void rvu_nix_mcast_flr_free_entries(struct rvu *rvu, u16 pcifunc)
-@@ -6238,7 +6240,7 @@ int rvu_nix_mcast_update_mcam_entry(struct rvu *rvu, u16 pcifunc,
- 	struct nix_mcast_grp_elem *elem;
- 	struct nix_mcast_grp *mcast_grp;
- 	struct nix_hw *nix_hw;
--	int blkaddr;
-+	int blkaddr, ret = 0;
- 
- 	blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NIX, pcifunc);
- 	nix_hw = get_nix_hw(rvu->hw, blkaddr);
-@@ -6246,13 +6248,15 @@ int rvu_nix_mcast_update_mcam_entry(struct rvu *rvu, u16 pcifunc,
- 		return NIX_AF_ERR_INVALID_NIXBLK;
- 
- 	mcast_grp = &nix_hw->mcast_grp;
-+	mutex_lock(&mcast_grp->mcast_grp_lock);
- 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, mcast_grp_idx);
- 	if (!elem)
--		return NIX_AF_ERR_INVALID_MCAST_GRP;
--
--	elem->mcam_index = mcam_index;
-+		ret = NIX_AF_ERR_INVALID_MCAST_GRP;
-+	else
-+		elem->mcam_index = mcam_index;
- 
--	return 0;
-+	mutex_unlock(&mcast_grp->mcast_grp_lock);
-+	return ret;
- }
- 
- int rvu_mbox_handler_nix_mcast_grp_create(struct rvu *rvu,
-@@ -6306,6 +6310,13 @@ int rvu_mbox_handler_nix_mcast_grp_destroy(struct rvu *rvu,
- 		return err;
- 
- 	mcast_grp = &nix_hw->mcast_grp;
-+
-+	/* If AF is requesting for the deletion,
-+	 * then AF is already taking the lock
-+	 */
-+	if (!req->is_af)
-+		mutex_lock(&mcast_grp->mcast_grp_lock);
-+
- 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, req->mcast_grp_idx);
- 	if (!elem)
- 		return NIX_AF_ERR_INVALID_MCAST_GRP;
-@@ -6333,12 +6344,6 @@ int rvu_mbox_handler_nix_mcast_grp_destroy(struct rvu *rvu,
- 	mutex_unlock(&mcast->mce_lock);
- 
- delete_grp:
--	/* If AF is requesting for the deletion,
--	 * then AF is already taking the lock
--	 */
--	if (!req->is_af)
--		mutex_lock(&mcast_grp->mcast_grp_lock);
--
- 	list_del(&elem->list);
- 	kfree(elem);
- 	mcast_grp->count--;
-@@ -6370,9 +6375,20 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
- 		return err;
- 
- 	mcast_grp = &nix_hw->mcast_grp;
-+
-+	/* If AF is requesting for the updation,
-+	 * then AF is already taking the lock
-+	 */
-+	if (!req->is_af)
-+		mutex_lock(&mcast_grp->mcast_grp_lock);
-+
- 	elem = rvu_nix_mcast_find_grp_elem(mcast_grp, req->mcast_grp_idx);
--	if (!elem)
-+	if (!elem) {
-+		if (!req->is_af)
-+			mutex_unlock(&mcast_grp->mcast_grp_lock);
-+
- 		return NIX_AF_ERR_INVALID_MCAST_GRP;
-+	}
- 
- 	/* If any pcifunc matches the group's pcifunc, then we can
- 	 * delete the entire group.
-@@ -6383,8 +6399,11 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
- 				/* Delete group */
- 				dreq.hdr.pcifunc = elem->pcifunc;
- 				dreq.mcast_grp_idx = elem->mcast_grp_idx;
--				dreq.is_af = req->is_af;
-+				dreq.is_af = 1;
- 				rvu_mbox_handler_nix_mcast_grp_destroy(rvu, &dreq, NULL);
-+				if (!req->is_af)
-+					mutex_unlock(&mcast_grp->mcast_grp_lock);
-+
- 				return 0;
- 			}
- 		}
-@@ -6467,5 +6486,8 @@ int rvu_mbox_handler_nix_mcast_grp_update(struct rvu *rvu,
- 
- done:
- 	mutex_unlock(&mcast->mce_lock);
-+	if (!req->is_af)
-+		mutex_unlock(&mcast_grp->mcast_grp_lock);
-+
- 	return ret;
- }
 -- 
-2.25.1
-
+With best wishes
+Dmitry
