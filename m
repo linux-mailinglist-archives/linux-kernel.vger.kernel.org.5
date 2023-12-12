@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8BA80F3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB3E80F3C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 17:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjLLQ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 11:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S229702AbjLLQ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 11:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376773AbjLLQ4M (ORCPT
+        with ESMTP id S235152AbjLLQ4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 11:56:12 -0500
+        Tue, 12 Dec 2023 11:56:16 -0500
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F81895
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:56:19 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3BC913200AB1;
-        Tue, 12 Dec 2023 11:56:18 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A57B7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 08:56:22 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.west.internal (Postfix) with ESMTP id 6FADE3200AB1;
+        Tue, 12 Dec 2023 11:56:21 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 12 Dec 2023 11:56:18 -0500
+  by compute7.internal (MEProxy); Tue, 12 Dec 2023 11:56:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=fm1; t=1702400177; x=
-        1702486577; bh=/+M9IjnFHxdC7RuAIS3s25vkqInV/9zFKLtDT3kzv/I=; b=b
-        ke5HObmZP9BQYI/hHrINGwDrAF+NarFlwX7RQpZc7Ru7wZX09bhVCJVlJ4STMPg/
-        gUZ0qyOC5SBZEbZviPmTGu8GjNFZQyegs7IcZ0nrHkLGlIzmmbHBKvgd8jXBRC6t
-        7l66I6RtmBX3DpdofJqUmHW5zbMCl1U4D7F1gR0CwWAdGQty826c97XOWSiBA7zw
-        +j0z3tvQW8emWlWF0TTsV5sKDI+iiLp2+TrT7Xsd1WLc8gzqXeOfRgUg9amktW3P
-        XAisCXMwGjiH9bCEQKW6R67NZWBhiavo2eTnF8aHxggtpnQBZm9bDCwOF+yI4RFo
-        JMmUP/QYzKVTfel/X74ww==
+        :reply-to:subject:subject:to:to; s=fm1; t=1702400180; x=
+        1702486580; bh=Fb0pDO1f0yINjQLVIJ/Z6Zltm4xMmfYmovEsSAll8kg=; b=g
+        6gsWYvTMi6DJhpHpSIEWcHceSQI6os0nVX8dcEepSe6Y4Lj258hYu0P8oYR0lEKs
+        Gv/AmldnUTQWb3l4eaug1N4/+yT800A9ZbS8PnXCjYcQWo2B+cSKtBvlt+g7kz+S
+        Ll5vR33n81EC/4+qQFq8aMp5ucgItf+BBEWRgfUUjGLy5sd1YvyYZ1xovN/1In0n
+        CyGZRS/0+NXVK5Yo3t2iOp+fgq61dg02AqSY01awMQ9caqW35BJifQfppKYRB4YI
+        qNKC9QqaXkwYLM05UXNcQm2m/yMXWWZ2kcLsUBL1g4ZRYfAtlZRK+n0xWUFFGpc0
+        NQ3C+jlU6Ng72tILlgm1A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702400177; x=
-        1702486577; bh=/+M9IjnFHxdC7RuAIS3s25vkqInV/9zFKLtDT3kzv/I=; b=G
-        OOIDE1MnLrFSx5wStnhMYJh+DKiya9bjvuP+qRev9D7K71WwITEcywYyGOrQ3RdB
-        B1TrYwDBTuzitvCRaQHu/cjskZPolyj1TxiwpYkxtox9k5+8kRdGtqBpqQ18hl7u
-        Dv5wAKzexjsKglVtuZ4S5oWBMt2mDV002M9HMj5SjwztjBG9Y410ZocTox2+8Esl
-        R6TOFtFs/YZ6G/tjCsAqJpVTZU6VoZe0OEfYcSpcVdtKFN5r9m2/Dyx1nS5sNnmI
-        puWHIbvxGI1Ki2Wm4iAvOucSTnPQ5MujG8McWnhoHg1SxFPKIjHDsR9Z7N+n9lZV
-        FlkqOOUYW+63oE2GMTThw==
-X-ME-Sender: <xms:sZB4ZRjukcASlLblo4xLNvyQ3-kHqR7K-0ZkenzhXGJXxNK4R3qEMg>
-    <xme:sZB4ZWAMIrDnRngNCg-8NbeCXj_6yQ6qS6HVBnfLQc6vY9mxNagVzYxvc9P_wlY_1
-    SIhoXOHtxBWg33-bfQ>
-X-ME-Received: <xmr:sZB4ZRHdfTVbMpJyDyAdn72AOZwKZ0ja4kFvJj8gPpBs2Q_k7sQ9oIqhvWd64E5WbyFoJribJax3hPTu72-t6p7rhHRgWnaSqAPwdwudcAs>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702400180; x=
+        1702486580; bh=Fb0pDO1f0yINjQLVIJ/Z6Zltm4xMmfYmovEsSAll8kg=; b=T
+        +HuUGq//k5tMytBxtuvF5POQDfUFv5wQUd+s7eye8tthOldTjQ0DPHWGlFl2+hSw
+        OODdwKUpJj3IKmc91VyQLke1BJZtzL5PGBnhZgWnBgwWwdaoKFUr/hqzczgrvszn
+        LwipiJVKoS2qJtr/Mriaj9zl2IhCtHSgjA6Bu0D7AUKlFyUdBAW79z19zMzYEAcr
+        WOR6NnI0E+lApEv8z8TGHPUC61PHOMbBHTuIpjYeETU6JsvlNMZEi5rsSiGNo29I
+        NnEuzJ1i4qf4R3sKRha80rW7sGWr9vEtw5K2OmB5tvJ0dh3eiOlw/Y2XMSXXZVvU
+        8hsiPY1QPl0UNzRnoekHg==
+X-ME-Sender: <xms:tJB4ZYbndnFr2KiecgN3o0AvYK4AABb3Fr77mxd2t067PMbv4VEt0A>
+    <xme:tJB4ZTYUIQ-ViEaesluuTK1PnGvz96GZ7wSqCM47OibrATnzYAi4jTm6dW6QByW4j
+    pUUwPiDlZMBKY_V-J8>
+X-ME-Received: <xmr:tJB4ZS93ZpaPRBy7r20VV02zXXoWYgtdO9cpqIC3PPaNeicFapebthWWSR1mATAYKpS_ZE7IWeF0hp9vpeYGAAyRMikTgJkY6dB7fDp5gY8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelgedgledvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
     rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
     egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
+    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
     grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:sZB4ZWTSw6lypB0-AYDiAK5Q0QhLXRLX8JHwQrpOgx0FWBAZyHo88Q>
-    <xmx:sZB4Zeww2h9LINjE9_7JLApe_IJFxPfEIcj_TbE9J7Zkreu0lggOFQ>
-    <xmx:sZB4Zc54UdpdoT7szCPhgUciBHrYQ_8lf7RU_17rDqsgA1MlQW8FZQ>
-    <xmx:sZB4ZS_q9gu6ndnzTZqEn0Fpgteu1hzICRZcry7cw4OPh0drH3r0Jw>
+X-ME-Proxy: <xmx:tJB4ZSpl7P6y2b7-_DBGnATL54Sb6VshcEH6BBCmsQzcba6JOhlDwg>
+    <xmx:tJB4ZTqThtj4zSTopROp5-TlSXOwhFkQAFO0mas74cDd6csQahGD4Q>
+    <xmx:tJB4ZQRo8Z85J4fI8I3MqoQYbRxf1tgHBNB5tnA2AynmZQKPhw-pig>
+    <xmx:tJB4ZSVK9fcnRaFksNbnmi42TcXC9joDHn8dr4nJQ8KYTWoSsYquBw>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Dec 2023 11:56:17 -0500 (EST)
+ 12 Dec 2023 11:56:20 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 4/5] staging: rtl8192e: rename variable pHT
-Date:   Tue, 12 Dec 2023 11:56:36 -0500
-Message-ID: <20231212165637.17618-5-garyrookard@fastmail.org>
+Subject: [PATCH 5/5] staging: rtl8192e: rename variable pCapELE
+Date:   Tue, 12 Dec 2023 11:56:37 -0500
+Message-ID: <20231212165637.17618-6-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231212165637.17618-1-garyrookard@fastmail.org>
 References: <20231212165637.17618-1-garyrookard@fastmail.org>
@@ -86,81 +86,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coding style issue, Avoid CamelCase
-rename it. pHT -> ht
+Coding style issue, checkpatch Avoid CamelCase,
+rename it. pCapELE -> cap_ele
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 64 +++++++++++------------
+ 1 file changed, 32 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index ac85151a6069..add8f58b5b1e 100644
+index add8f58b5b1e..25097f1935a5 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -250,17 +250,17 @@ void ht_reset_iot_setting(struct rt_hi_throughput *ht_info)
- void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
+@@ -251,7 +251,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
  				  u8 *len, u8 is_encrypt, bool assoc)
  {
--	struct rt_hi_throughput *pHT = ieee->ht_info;
-+	struct rt_hi_throughput *ht = ieee->ht_info;
- 	struct ht_capab_ele *pCapELE = NULL;
+ 	struct rt_hi_throughput *ht = ieee->ht_info;
+-	struct ht_capab_ele *pCapELE = NULL;
++	struct ht_capab_ele *cap_ele = NULL;
  
--	if (!pos_ht_cap || !pHT) {
-+	if (!pos_ht_cap || !ht) {
+ 	if (!pos_ht_cap || !ht) {
  		netdev_warn(ieee->dev,
- 			    "%s(): posHTCap and ht_info are null\n", __func__);
- 		return;
- 	}
- 	memset(pos_ht_cap, 0, *len);
- 
--	if ((assoc) && (pHT->ePeerHTSpecVer == HT_SPEC_VER_EWC)) {
-+	if ((assoc) && (ht->ePeerHTSpecVer == HT_SPEC_VER_EWC)) {
+@@ -264,66 +264,66 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
  		static const u8	EWC11NHTCap[] = { 0x00, 0x90, 0x4c, 0x33 };
  
  		memcpy(pos_ht_cap, EWC11NHTCap, sizeof(EWC11NHTCap));
-@@ -275,9 +275,9 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
+-		pCapELE = (struct ht_capab_ele *)&pos_ht_cap[4];
++		cap_ele = (struct ht_capab_ele *)&pos_ht_cap[4];
+ 		*len = 30 + 2;
+ 	} else {
+-		pCapELE = (struct ht_capab_ele *)pos_ht_cap;
++		cap_ele = (struct ht_capab_ele *)pos_ht_cap;
+ 		*len = 26 + 2;
+ 	}
+ 
+-	pCapELE->AdvCoding		= 0;
++	cap_ele->AdvCoding		= 0;
  	if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev))
- 		pCapELE->ChlWidth = 0;
+-		pCapELE->ChlWidth = 0;
++		cap_ele->ChlWidth = 0;
  	else
--		pCapELE->ChlWidth = (pHT->reg_bw_40mhz ? 1 : 0);
-+		pCapELE->ChlWidth = (ht->reg_bw_40mhz ? 1 : 0);
+-		pCapELE->ChlWidth = (ht->reg_bw_40mhz ? 1 : 0);
++		cap_ele->ChlWidth = (ht->reg_bw_40mhz ? 1 : 0);
  
--	pCapELE->MimoPwrSave		= pHT->self_mimo_ps;
-+	pCapELE->MimoPwrSave		= ht->self_mimo_ps;
- 	pCapELE->GreenField		= 0;
- 	pCapELE->ShortGI20Mhz		= 1;
- 	pCapELE->ShortGI40Mhz		= 1;
-@@ -286,7 +286,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
- 	pCapELE->RxSTBC			= 0;
- 	pCapELE->DelayBA		= 0;
- 	pCapELE->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
--	pCapELE->DssCCk = ((pHT->reg_bw_40mhz) ? (pHT->reg_supp_cck ? 1 : 0) : 0);
-+	pCapELE->DssCCk = ((ht->reg_bw_40mhz) ? (ht->reg_supp_cck ? 1 : 0) : 0);
- 	pCapELE->PSMP = 0;
- 	pCapELE->LSigTxopProtect = 0;
+-	pCapELE->MimoPwrSave		= ht->self_mimo_ps;
+-	pCapELE->GreenField		= 0;
+-	pCapELE->ShortGI20Mhz		= 1;
+-	pCapELE->ShortGI40Mhz		= 1;
++	cap_ele->MimoPwrSave		= ht->self_mimo_ps;
++	cap_ele->GreenField		= 0;
++	cap_ele->ShortGI20Mhz		= 1;
++	cap_ele->ShortGI40Mhz		= 1;
  
-@@ -309,16 +309,16 @@ void ht_construct_capability_element(struct rtllib_device *ieee, u8 *pos_ht_cap,
- 	pCapELE->ASCap = 0;
+-	pCapELE->TxSTBC			= 1;
+-	pCapELE->RxSTBC			= 0;
+-	pCapELE->DelayBA		= 0;
+-	pCapELE->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
+-	pCapELE->DssCCk = ((ht->reg_bw_40mhz) ? (ht->reg_supp_cck ? 1 : 0) : 0);
+-	pCapELE->PSMP = 0;
+-	pCapELE->LSigTxopProtect = 0;
++	cap_ele->TxSTBC			= 1;
++	cap_ele->RxSTBC			= 0;
++	cap_ele->DelayBA		= 0;
++	cap_ele->MaxAMSDUSize = (MAX_RECEIVE_BUFFER_SIZE >= 7935) ? 1 : 0;
++	cap_ele->DssCCk = ((ht->reg_bw_40mhz) ? (ht->reg_supp_cck ? 1 : 0) : 0);
++	cap_ele->PSMP = 0;
++	cap_ele->LSigTxopProtect = 0;
+ 
+ 	netdev_dbg(ieee->dev,
+ 		   "TX HT cap/info ele BW=%d MaxAMSDUSize:%d DssCCk:%d\n",
+-		   pCapELE->ChlWidth, pCapELE->MaxAMSDUSize, pCapELE->DssCCk);
++		   cap_ele->ChlWidth, cap_ele->MaxAMSDUSize, cap_ele->DssCCk);
+ 
+ 	if (is_encrypt) {
+-		pCapELE->MPDUDensity	= 7;
+-		pCapELE->MaxRxAMPDUFactor	= 2;
++		cap_ele->MPDUDensity	= 7;
++		cap_ele->MaxRxAMPDUFactor	= 2;
+ 	} else {
+-		pCapELE->MaxRxAMPDUFactor	= 3;
+-		pCapELE->MPDUDensity	= 0;
++		cap_ele->MaxRxAMPDUFactor	= 3;
++		cap_ele->MPDUDensity	= 0;
+ 	}
+ 
+-	memcpy(pCapELE->MCS, ieee->reg_dot11ht_oper_rate_set, 16);
+-	memset(&pCapELE->ExtHTCapInfo, 0, 2);
+-	memset(pCapELE->TxBFCap, 0, 4);
++	memcpy(cap_ele->MCS, ieee->reg_dot11ht_oper_rate_set, 16);
++	memset(&cap_ele->ExtHTCapInfo, 0, 2);
++	memset(cap_ele->TxBFCap, 0, 4);
+ 
+-	pCapELE->ASCap = 0;
++	cap_ele->ASCap = 0;
  
  	if (assoc) {
--		if (pHT->iot_action & HT_IOT_ACT_DISABLE_MCS15)
-+		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS15)
- 			pCapELE->MCS[1] &= 0x7f;
+ 		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS15)
+-			pCapELE->MCS[1] &= 0x7f;
++			cap_ele->MCS[1] &= 0x7f;
  
--		if (pHT->iot_action & HT_IOT_ACT_DISABLE_MCS14)
-+		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS14)
- 			pCapELE->MCS[1] &= 0xbf;
+ 		if (ht->iot_action & HT_IOT_ACT_DISABLE_MCS14)
+-			pCapELE->MCS[1] &= 0xbf;
++			cap_ele->MCS[1] &= 0xbf;
  
--		if (pHT->iot_action & HT_IOT_ACT_DISABLE_ALL_2SS)
-+		if (ht->iot_action & HT_IOT_ACT_DISABLE_ALL_2SS)
- 			pCapELE->MCS[1] &= 0x00;
+ 		if (ht->iot_action & HT_IOT_ACT_DISABLE_ALL_2SS)
+-			pCapELE->MCS[1] &= 0x00;
++			cap_ele->MCS[1] &= 0x00;
  
--		if (pHT->iot_action & HT_IOT_ACT_DISABLE_RX_40MHZ_SHORT_GI)
-+		if (ht->iot_action & HT_IOT_ACT_DISABLE_RX_40MHZ_SHORT_GI)
- 			pCapELE->ShortGI40Mhz		= 0;
+ 		if (ht->iot_action & HT_IOT_ACT_DISABLE_RX_40MHZ_SHORT_GI)
+-			pCapELE->ShortGI40Mhz		= 0;
++			cap_ele->ShortGI40Mhz		= 0;
  
  		if (ieee->GetHalfNmodeSupportByAPsHandler(ieee->dev)) {
+-			pCapELE->ChlWidth = 0;
+-			pCapELE->MCS[1] = 0;
++			cap_ele->ChlWidth = 0;
++			cap_ele->MCS[1] = 0;
+ 		}
+ 	}
+ }
 -- 
 2.41.0
 
