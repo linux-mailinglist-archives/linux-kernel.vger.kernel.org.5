@@ -2,163 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9290680E1EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B88280E1F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 03:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjLLCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Dec 2023 21:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S1345645AbjLLCii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Dec 2023 21:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234973AbjLLCeE (ORCPT
+        with ESMTP id S229562AbjLLCih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Dec 2023 21:34:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DC71FC8;
-        Mon, 11 Dec 2023 18:32:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702348341; x=1733884341;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ZOIG19UmSc6gfXd82Z1U5XFq8uTkjC99QBhZ5DKwrnc=;
-  b=Yps1jtBlDua0Bf7/+ekLIJydnjrBoFdsLMgY/jq3Uo882b7rMWlz7D/W
-   IOshdCYuCZ/8C4dRMWObhD/IGt7GO45zWSFLj9d+SFky1pwE5shpl3ksx
-   Nn5MdQCDYZc96Hu3J5mDrM5w87dXMnJ4GEsY4/QchcxHTrQSbRQFU0sRf
-   KRcV52BMO0dg2lGRMnBtuL1n2naY9i4V8arDstwkzk+c8Clz2+UIqGYfH
-   ZJnflv3GQB5JtUVSZOLt3qSHuyQCEBvLmh/AaXqZSbXsxF9AyEJdLFHZ/
-   /83icq92cFlXz/U6OGQ8o9htG9GWVuwKmyEVPWBYBUkp9UxP+QzShPanv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="461218658"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="461218658"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2023 18:30:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10921"; a="1104722063"
-X-IronPort-AV: E=Sophos;i="6.04,269,1695711600"; 
-   d="scan'208";a="1104722063"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Dec 2023 18:30:31 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 11 Dec 2023 18:30:31 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 11 Dec 2023 18:30:31 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Dec 2023 18:30:30 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RNixnAkriOwsYHy8/zW+JhVN7i+QP/hIxCp5T4XbCfelRyK9Kmyod0hugjesouMO4/N73pEeaNFQXln7l2yErHiAshJuxFVCEl22kTkLTA6l3HnBG5o26wcK0A9FGDehMTMe1Ew7GhCY3jVBNDmPyLzfQZnX5m5wBWsLomsBSaKi3MPF+VD3rv8H6AkxMKK5bMB13D7XH/EjmMi3eVwMMqyFDWssDjZPFg91voLTR9pw3iG7m2MYLAfigr52LQHbyxKo3IXkSjdhIID3yuIZeqJR7rGaXML8l3QDEdjm7FjV827DguOBlp32Be4A4NjYvwk2f83Iukzrvbx7xxHaww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1W5YVxSaTSTMuwQGyxbabwyqttq0o6Wynyj019fA8L8=;
- b=GD+xOWylYx/IW/W/K0DhgUJ5H1OChrBn4RI+3I9buCkW+y+wv8lnyqq45OzvQ2lHplbd7LDW3rOSWSwgskU4uXbAfIWzb6AE0DahgcK2U5Kxa+90rJrl0pE1LsOAR4032S91WYnNK76KEtjM2dHXyUDtFagJwx1VZszoK2mqrx5NOvV9HWaM9Sdo3LKdJI2A5bNRSUEtf9y1zOL+OY17dfLAc0Clf+sbgeV80EKSZMigaDV0EiuoUAy/B/HophiRFeXbqK/Y30dqlN4P/LfYuTFGmCd4J2XEBsRqGZ0syRN1DlSJRPTbshQyE5Kpz3cBH3wETEUpTmTOgEc3I2e8xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by SA3PR11MB8021.namprd11.prod.outlook.com (2603:10b6:806:2fd::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.32; Tue, 12 Dec
- 2023 02:30:29 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::92ef:1d38:2ad6:5e29]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::92ef:1d38:2ad6:5e29%6]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
- 02:30:28 +0000
-Message-ID: <aef69154-d46c-5947-1ad9-58418dc3947c@intel.com>
-Date:   Mon, 11 Dec 2023 18:30:18 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 10/35] dmaengine: idxd: optimize perfmon_assign_event()
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
-        "Dave Jiang" <dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>,
-        <dmaengine@vger.kernel.org>
-CC:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-References: <20231212022749.625238-1-yury.norov@gmail.com>
- <20231212022749.625238-11-yury.norov@gmail.com>
-From:   Fenghua Yu <fenghua.yu@intel.com>
-In-Reply-To: <20231212022749.625238-11-yury.norov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR05CA0043.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::18) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+        Mon, 11 Dec 2023 21:38:37 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44358E;
+        Mon, 11 Dec 2023 18:38:42 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BC2Uhc763147471, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BC2Uhc763147471
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 12 Dec 2023 10:30:45 +0800
+Received: from alexlu (172.29.36.158) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 12 Dec
+ 2023 10:30:43 +0800
+Date:   Tue, 12 Dec 2023 10:30:34 +0800
+From:   Alex Lu <alex_lu@realsil.com.cn>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Max Chou <max.chou@realtek.com>, Karen Hsu <karenhsu@realtek.com>
+Subject: [PATCH v3] Bluetooth: Add more enc key size check
+Message-ID: <ZXfFyoEhCj_S70qp@alexlu>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|SA3PR11MB8021:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02d90a64-5f83-454e-776b-08dbfaba4dd8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gs3lYcHW6qKJ/HwndQDjcsW19YIHLU9tdM8FPwtzlI5tee1ve2i6thUA5g9ZfIC7H5zGnAyv6soPZrmgVOxTbMo1f6MzZySQkiryOr7msxJU7jR2vIBmWOI+AKSdxuzsDV0H4wIfHMJelihGA7YSg8TEvXIdLmbTW7sPcEeHafVekrvcdycETex5W5PPAcFbSWn2VOusvKSPCxquxcFZiAT33QkY+TN4DJlm1kAGF6vhjt46JiYsCwUHcrxSuZRZ+Rq987Rup2BkkqHXxtcBKGWRw1IJ3nbIjXW2ERlZdaS8rkGLp7cdBQQlPlBZebtIOtWp4flgI7VVJf0JVhVE45UlM6ioHxwr+HTxuGgt6+gAxF2LNVrFNdTlWeJwCEm7RZ1VyRZVTM7zqIS+B0KVbtDeD8G8kfHBquSKBBsRrGZ+rPrRa/TzQtwb+hB2lHcxRj90+y2Zr1U14aCx5ExP3gLB0fIz+CASAkXeqYbpeIzljFWEiyiyC/GyHG57lH6tJeIU3ZTIthkoSwe+Jv5S13OXGEkBbHgKWABzbhs9BArVTQ2x8sg1gwfKV7e816kNvMr8FBD9Jyn0VQiC1c8tX+Cfmu9jduBmm1CJOwLh6kFXmFxF6CctBpfihFRj20KrWpcaWpx6IydgrbKEF14arQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(366004)(136003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(53546011)(6512007)(26005)(2616005)(6666004)(6486002)(6506007)(478600001)(41300700001)(7416002)(4744005)(44832011)(5660300002)(54906003)(2906002)(66476007)(66556008)(66946007)(316002)(8676002)(8936002)(4326008)(110136005)(86362001)(38100700002)(31696002)(36756003)(82960400001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkZQc1U4Ym03TG1HTGYrT2hXVXJ3MHN2S1lycXczdCtyT1VSb2FQdkxHbkZl?=
- =?utf-8?B?b0ZyVGNpL3ROQ3hqc2l3OE8vM09iK2pQRTVuVmNWV3ptWmxuZ3FtUXRoZG5B?=
- =?utf-8?B?ZEkxVllGVkVCYnd6cjlDQ3ZzSThvZDU3R2liYitIQVZ6ZWIzaTFpdVFBd29H?=
- =?utf-8?B?Z1dlVXR0bWdkMHM0WFFIRlExVU9QYitWVG5URTAxbkplTFFCUUNtOXRXTEx4?=
- =?utf-8?B?V0IwUVF1c0IzZWNDN0cvbVYrTWt4VXY1K3dsdzJKSTNHUVVKeTJpRUNNS3JT?=
- =?utf-8?B?U2JwTFdjR0F3VmhQVmNWNWRjKzA1eFMyaXgwNVBkaS91M3FHS1hyOHBOYmlL?=
- =?utf-8?B?OEdtUWZ5N0VtNUFuOERQT0M0SmdsS2pTbVlHU0RCTzNITXU3clZIOHdVcEUv?=
- =?utf-8?B?UGp6cCtnVmt2SlVXbmduV3YrblBOQmNtV082OFk0d1NlWlA2OFljNndLU1ZI?=
- =?utf-8?B?UHlzYm8ya2J4eS9vamVPSG83Y2dwRnN5dkxKdWx0V3MxUVcrb1orbEpqNUJO?=
- =?utf-8?B?ZzVaUDFkcjFQc1BDemY0aS8vWHN3b3RrNmE0SXF5alcwTVB0OCtoeDFjdnpu?=
- =?utf-8?B?dHJXQk9NSitIa1EwQ0ErZlMrTFdiUk5qVFprNFgwbW5tL1Vad2Y1UXR1cmFW?=
- =?utf-8?B?RmNQNTVyUnYzU0lQVTJ0bHZEeE1PMUpmdm5taklYWEp6eHc4S0Rjbm50dGJt?=
- =?utf-8?B?eHNoVVA1S1NieC8vUmRrcmN6aXhhK2NnQ25EUUJXZlFYZHcwUnljUEhZWVl1?=
- =?utf-8?B?SHVKMkg3b3g2Ukp3dk1yUnFkMGR1SHdoTGxKZ2JpZGVzYWZvSnZ3a0tSVXZS?=
- =?utf-8?B?YmJ2YmxCRmcxTitYb0xLZUdTQTh0Z0p1Y25PNFJuek1GNnd1MlBZWVlXUnBT?=
- =?utf-8?B?aXBkaFBVcEdyMkVFNXo3YTdxK1RhdVBUbG5uaXIvSUdWOU1kVmpCY21oR0dk?=
- =?utf-8?B?a0dHMG02SkhZdmpDWUxGNThmSEtrK2xRUlFhUDQyeUZBTXYvdnhNZWQ0a3lr?=
- =?utf-8?B?K3dNRWVZV2RaNFU0QzEvM3d6eEhaL09qckpYUXFEcFNoYkZKR2F5bDF5Ukti?=
- =?utf-8?B?Q0QwbWlyT1dyMHo0YWZVUVhUVE02UXNJSlZpeEVKZTdxVGJSUisvRFp4bjhU?=
- =?utf-8?B?azB6UHdOdEh5emFZbENhM1ZucGpxZ3RVcTZyd3drbFp4UjNKM1hvb1ppRUdp?=
- =?utf-8?B?Skl3QmlUaGRMUzZCSEJvNXQrU1hXRlpMZWp6N0p3bHdrbW9PYXNaZlpKeTha?=
- =?utf-8?B?LzdkVERmWjFxZ2FWdnpmVmY4emYzUDBxRkNtOHB5cGoxbDloWlBEc3loRThw?=
- =?utf-8?B?a2ZJQ0FGc2poMkZMUDBYdTVtSm1jTmhCbXR0WjU2UzJhL0NrbUFFRTAyWGpL?=
- =?utf-8?B?ZmRubW5IMWZIam1MeHA0QmhDcnBUK01lYy9ic1RNaXIreVV0UmU4eVZzSDhY?=
- =?utf-8?B?czhWZzRwU0laeDAwMGpub01aSGRHREx3d2dvWjkwVFJ3Y3gvYUp5UUZsbldK?=
- =?utf-8?B?RlJwTUp4MU5rQ0g0WTlzQk5uVXo3L3dvdnM2bXoxVkxKZHZtTTl5SEFJakhY?=
- =?utf-8?B?bkV4N0hqZWc2cWxzWjJPM3MrRUo2UWxrZmNNQ1FscGMvcDZOVldNNFQ4b0Ru?=
- =?utf-8?B?MHBWUCthZS85a2VSWFkweHMzaHlpWE5oUlp6aWVWeWgrcFdXbVhSN0FXd0VI?=
- =?utf-8?B?OGdINUtFc1psTDZaZFNKclRUTFlJQWpXaUVsM1Z5ZU5jM0RxdzVmU0NFVW8z?=
- =?utf-8?B?Z2ZNZlI3Um1UMGdMTWk0ZERsTkFIUkNQUGFLZlBxRWN0NE4wNkN1Sms4Z2Fy?=
- =?utf-8?B?LzZ1Q0RySU5meFVnSFU1WjBrOGtNYVhDR0hIL1lrNkpNU2ppeWlOZXdlSVZE?=
- =?utf-8?B?N1NpYVd6cFc0NlUxYWljd1VpRlVabUYvdkViWE5hRzVyRzBOTDRvUjQxWFda?=
- =?utf-8?B?Yngwb3dyalJIZkdIbzA3TEhmbFFkRzFjRG1mQThXUDhXN3N4YVNZRUJLaUwy?=
- =?utf-8?B?UnlISmp0ZFNjVm04ekdXRjBUSFZ5eGJ2endOVUJ2b1hqMC9WemxMUDJUeXRB?=
- =?utf-8?B?QjZsS202MEVsNldKY1NzSHdLMWwxZkoxUEUvVVpsR1ZSajViL1RMdzN3WDZl?=
- =?utf-8?Q?A6ItztxrtkB0eg2oJtO4XdEdg?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02d90a64-5f83-454e-776b-08dbfaba4dd8
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 02:30:28.1939
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yFFChlP9NHWJ+gN0IhHXpAE+6NqcGweh+UkMzJonphzDzprbxRU9EzD2oZjnNq4Ge3326OUS07smyi7tqCJ1UQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8021
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-Originating-IP: [172.29.36.158]
+X-ClientProxiedBy: RSEXH36502.realsil.com.cn (172.29.17.3) To
+ RSEXMBS01.realsil.com.cn (172.29.17.195)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -166,19 +48,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Alex Lu <alex_lu@realsil.com.cn>
 
+When we are slave role and receives l2cap conn req when encryption has
+started, we should check the enc key size to avoid KNOB attack or BLUFFS
+attack.
+From SIG recommendation, implementations are advised to reject
+service-level connections on an encrypted baseband link with key
+strengths below 7 octets.
+A simple and clear way to achieve this is to place the enc key size
+check in hci_cc_read_enc_key_size()
 
-On 12/11/23 18:27, Yury Norov wrote:
-> The function searches used_mask for a set bit in a for-loop bit by bit.
-> Simplify it by using atomic find_and_set_bit(), and make a nice
-> one-liner.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> Acked-by: Vinod Koul <vkoul@kernel.org>
+The btmon log below shows the case that lacks enc key size check.
 
-Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> HCI Event: Connect Request (0x04) plen 10
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Class: 0x480104
+          Major class: Computer (desktop, notebook, PDA, organizers)
+          Minor class: Desktop workstation
+          Capturing (Scanner, Microphone)
+          Telephony (Cordless telephony, Modem, Headset)
+        Link type: ACL (0x01)
+< HCI Command: Accept Connection Request (0x01|0x0009) plen 7
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Role: Peripheral (0x01)
+> HCI Event: Command Status (0x0f) plen 4
+      Accept Connection Request (0x01|0x0009) ncmd 2
+        Status: Success (0x00)
+> HCI Event: Connect Complete (0x03) plen 11
+        Status: Success (0x00)
+        Handle: 1
+        Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Link type: ACL (0x01)
+        Encryption: Disabled (0x00)
+...
 
-Thanks.
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Encryption: Enabled with E0 (0x01)
+< HCI Command: Read Encryption Key Size (0x05|0x0008) plen 2
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+> HCI Event: Command Complete (0x0e) plen 7
+      Read Encryption Key Size (0x05|0x0008) ncmd 2
+        Status: Success (0x00)
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Key size: 6
+// We should check the enc key size
+...
 
--Fenghua
+> ACL Data RX: Handle 1 flags 0x02 dlen 12
+      L2CAP: Connection Request (0x02) ident 3 len 4
+        PSM: 25 (0x0019)
+        Source CID: 64
+< ACL Data TX: Handle 1 flags 0x00 dlen 16
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 64
+        Source CID: 64
+        Result: Connection pending (0x0001)
+        Status: Authorization pending (0x0002)
+> HCI Event: Number of Completed Packets (0x13) plen 5
+        Num handles: 1
+        Handle: 1 Address: BB:22:33:44:55:99 (OUI BB-22-33)
+        Count: 1
+        #35: len 16 (25 Kb/s)
+        Latency: 5 msec (2-7 msec ~4 msec)
+< ACL Data TX: Handle 1 flags 0x00 dlen 16
+      L2CAP: Connection Response (0x03) ident 3 len 8
+        Destination CID: 64
+        Source CID: 64
+        Result: Connection successful (0x0000)
+        Status: No further information available (0x0000)
+
+Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+Changes in v3:
+  - Use a simple and clear approach according to maintainer's suggestion
+Changes in v2:
+  - Fix compiling issue reported by sparse
+
+ net/bluetooth/hci_event.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 2ad7b9f86f74..ef8c3bed7361 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -750,9 +750,23 @@ static u8 hci_cc_read_enc_key_size(struct hci_dev *hdev, void *data,
+ 	} else {
+ 		conn->enc_key_size = rp->key_size;
+ 		status = 0;
++
++		if (conn->enc_key_size < hdev->min_enc_key_size) {
++			/* As slave role, the conn->state has been set to
++			 * BT_CONNECTED and l2cap conn req might not be received
++			 * yet, at this moment the l2cap layer almost does
++			 * nothing with the non-zero status.
++			 * So we also clear encrypt related bits, and then the
++			 * handler of l2cap conn req will get the right secure
++			 * state at a later time.
++			 */
++			status = HCI_ERROR_AUTH_FAILURE;
++			clear_bit(HCI_CONN_ENCRYPT, &conn->flags);
++			clear_bit(HCI_CONN_AES_CCM, &conn->flags);
++		}
+ 	}
+ 
+-	hci_encrypt_cfm(conn, 0);
++	hci_encrypt_cfm(conn, status);
+ 
+ done:
+ 	hci_dev_unlock(hdev);
+-- 
+2.39.2
+
