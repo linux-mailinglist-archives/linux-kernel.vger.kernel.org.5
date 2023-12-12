@@ -2,135 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C0680F10C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AFD80F119
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 16:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376861AbjLLPbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 10:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
+        id S1376869AbjLLPcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 10:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376863AbjLLPb2 (ORCPT
+        with ESMTP id S1376659AbjLLPcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 10:31:28 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2043.outbound.protection.outlook.com [40.107.92.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C15EB;
-        Tue, 12 Dec 2023 07:31:34 -0800 (PST)
+        Tue, 12 Dec 2023 10:32:06 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2040.outbound.protection.outlook.com [40.107.220.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACA0D3;
+        Tue, 12 Dec 2023 07:32:11 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a0yAXY70N90JlYH6dbpbTEAbp7kB9p47vFkRyaISbI1Tomuz4OfbDx94vZBnKIb8juIUE4HwBD1wQW8RNF0qWBXpxSvP46cILCRt3bF8r29JPW8VvVWrlLVpZF8vzYKTPUIQlaCeNZAauuem/LwT/1mVtDaXUIkjiw505rYVX0LrJq1oh94NVTnlQ18xRjOmVqyz73JYXvyxlLxY2YlVh2YPNJy/r+eHtsruejSBA0GRA1zEHNrE6ws31U1CR+SSERthSfx9F1pxggf0soHA7Wn6Ey19sZYeOmvm/XyN+B7D7jB89aoBpxlFPds1aTtHrougCmq/cexFVYy3kK0kng==
+ b=EiQitxJHv5N8Le102APORQc1XcNB2v+7LTykPWUxgYHuS62S5BiKoqxMcrYQ4v0+4e3wkRdN/6zgxg6hMt70kr7wgWVoNz0wqjFBvLGGTvWOQJqmiTzIgB1YhufRP2juPCAr4tssUyouPX4FBqTLgxZ1h7uR6Pe1R2OleqerW51HK9HGicdf1knE2y7JfqO6Vq/YJBA/3NpDLuqlmEXsmtj9dB7BbE9pHXzh3HmR5Ht3vbyjJajjXEsDHDp1Y7urrRrh1ICJPMotA8XmPCrq8oshrI7h9S39zbr2YosK+h+hJ7jL2TAg9WLKy3pBokyDC9dCFv7Q7z+8lvIcXVjoeA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ml7OeEGtH+zqT2KaX+X6lbRJATkjOq13K8mGmUFr6BI=;
- b=CschBbRnUIpyW03ymk5dQOU9c/mXbdUqXDjTo8yIXZbw4Vze4TEBZ5+HKaLG0zNrrjeQ9FyqxXqHC+otsn2qLLpPRv1F1QAq9o5vJU+vyhTJv9mMUj0VNR6dP0byFS8bcaLIxFIZCteWHO3KDHeurcH1L7pk76Ms5nn8qjb/JZmHl5e3ovDG2Jye5cyqBXNF7OpcfRHtHCf5D7RHY+trS/qjU4YJYyVASwkyNOBtcAsYd5rOP1nxG1GrrCyUKDVPO6Fucr5DKK0aAlRoly4c1VebsCTho1nTlPXzcIpMT6kMtCpymG3nED9NSqo2pNjHg85f0qkWRi6QuxmYEK5nUg==
+ bh=2r3/njLio/3ehCYee3Yasiu5WzkDcld211VAJPzS4ec=;
+ b=Gbh/RpMPdWj4FjUmoWSXz/nWCTVZXoiEmmINt5Zkzj/YQ6YfA2aMp02cTe84R6RsONdymSj//yYwM6+NtCONmrnlr0og5OKCxWHA9LaqUl/BdmcvYJMzm5VFlZpJbnGByYs6l7RUs+ZyQdKw+eoIKFGYVcFqRh3ltf4A9s9P37EsDlQYf5Gkx/vkLTcyUT0dBvUd0PuOwiRKoKo+dYOcQOCfF+DEe+Gg/MVIAa04JDAEPiJDjwW8e8T798uB0FewJNvBvPTTRWcCsI3+CRAJ+hhZoAnJs9bKnlfl87gDnOcDCLdL0OvadcAdowgR66gra6NGGIHAMffIEq/DkcHC2g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ml7OeEGtH+zqT2KaX+X6lbRJATkjOq13K8mGmUFr6BI=;
- b=I4et2SzFqnNhj1BEpz1gkpYzx7PbMspELexFIbPO1ZcCSwGvA7XU6cNXiG2b5Il2rccFQQQrn/JOmttkGgheDqI9C69voWt6EN4lCYlmkzcAqRt1CoFNueh1+91nU0gBN43m3Jwv+aNVoo0qDkyynbHxLrz+AHPNIq8JcDDjkfqS3yqMlQ/NW2ZvblRG4WxXFVfDekgliz2hWmGcdaqE4tNmBWxMPZR2liWdQIX3CUgY1SrvFcwMNd4QZpTNHkvL0uzwFXKZvXtABYTVvAM+wT03dshFOEIf07MOnVEXpWQY5KwWgfOOHZU7yZABAAF2tgxH+Qtb9GfZ1XXSVIw8XA==
+ bh=2r3/njLio/3ehCYee3Yasiu5WzkDcld211VAJPzS4ec=;
+ b=BDK6vpTN+swowLbI5/9NYilFRAOp0q2eCTWmANF0aeANQy7whmeQ15fk5wVqf1fTyyLa3MeWhsMItWUx5OED8goMRYOo4Jp4EQVmvOnPebRIrHpnIs3ZaoGATePl62yhzLyqh7UqoRCiHNGmGKJTXgUBx9J5sV5m9LOpuTJSAuQ=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB8612.namprd12.prod.outlook.com (2603:10b6:303:1ec::13) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CH3PR12MB7522.namprd12.prod.outlook.com (2603:10b6:610:142::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
- 2023 15:31:31 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
- 15:31:31 +0000
-Date:   Tue, 12 Dec 2023 11:31:30 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH 3/3] vfio: Report PASID capability via
- VFIO_DEVICE_FEATURE ioctl
-Message-ID: <20231212153130.GK3014157@nvidia.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
- <20231127063909.129153-4-yi.l.liu@intel.com>
- <BN9PR11MB527639DBE4C433542F351F6D8C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <0bdae2ca-a200-4db1-a016-059730d1545e@intel.com>
- <BN9PR11MB52763C75E3D638B722CE63A78C8EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB52763C75E3D638B722CE63A78C8EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: BLAPR05CA0007.namprd05.prod.outlook.com
- (2603:10b6:208:36e::7) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+ 2023 15:32:06 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.033; Tue, 12 Dec 2023
+ 15:32:06 +0000
+Message-ID: <c56a359b-d035-4557-84d2-6c8ddd600bff@amd.com>
+Date:   Tue, 12 Dec 2023 09:32:03 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] thunderbolt: Introduce tb_switch_reset_ports(),
+ tb_port_reset() and usb4_port_reset()
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sanath S <Sanath.S@amd.com>
+Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231212140047.2021496-1-Sanath.S@amd.com>
+ <20231212140047.2021496-2-Sanath.S@amd.com>
+ <20231212152706.GG1074920@black.fi.intel.com>
+Content-Language: en-US
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20231212152706.GG1074920@black.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1P222CA0104.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c5::14) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB8612:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e9e61bf-394a-4479-6dfc-08dbfb276a9f
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CH3PR12MB7522:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a7f22d9-cc3a-4086-cafe-08dbfb277f76
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EckCOqMOwy4jPgA3Sl5ApxEUG0/HYNHcrYTNiYjMr1qdFQlvS4FmjwTSU1Tkf3fuISw4R8iFqTBvKizo6iANQq21pHteNgl/wp4rq9v0s+PAAg+5bsDCe1gQZJ3MKYT7VvV6voYjyOFxFskkdBj1JyrtoTR2TLL0T8+tOgs6iID/8s9SwodKkFo2c8CuM5673wqB/uV7fvBzlxAWSowGXWZIb016/O9pWbWh/vIlVbbh6DpA2lTGBQyY90Zmy36A2ZOahE7CCH0cpriiNftKPcAW9/LtAtrfTEcBNIsbyrXydvRtVOLL3YWxW2R9f8s1gs6Un3aaWjYdPdEGQa3q+tTzJ6x34VB1eHlQhuxcFsPXVqNL5g5kyv1tROxqbBsO1a0uJ+9nkUiadlz1m51gxi1KZ26rHiTNli+ExCoLLzRtR0wHSEzLSj2Z4NHCmGdRwAbXXCQjH+q7U6xKbuvoY7Vt9YvWRgdCJWxNlBw4UYKGceH2k1HyzjED39omgY0APFRNOcNYkSCPkARPF5xoWsVY5JcOe1nzlOvhAJ1822hBYsZRmGpKFOv8t+RfWabu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(1076003)(53546011)(2616005)(6506007)(6512007)(478600001)(36756003)(6486002)(66556008)(66476007)(6916009)(8676002)(54906003)(86362001)(66946007)(4326008)(316002)(33656002)(38100700002)(8936002)(26005)(7416002)(5660300002)(41300700001)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: eb70Do3zCKPEbTi51fec73pv//NUB/fPhGQ3hw2l7zTw/I0nzynssxGZ3HP8orQtgfyiTAywjoz8905P/E2vcA7MHQGoA1dHweLfUaicvcKJSSueiWRqe3mMXCfeVKpm76ewK3Rs5t2wxEl6SA0UCgbHU29zktwkrbKalp01oKt5b40yZ6TK6bBgYbZ48zIz+HWJM9wY77ltmqgHNVO7teo6f/MkubULTQAhiJo+xbUDSkUWhDByVXtNjqEi8F6TYvC5rayIt1jiH03h7gIFVOJ7joOnrZUk+BFsv7PnIb+mlLike+nFb7LMvrJLTnYe1DthN/vNLWfCRs0RQ6mm//yi6Vc/iu6SAq1yiTurRC2JbQoTC4sJkfZvkN2bgmiu1kmdPV4ue8I2HZt1SH3FKy/+SNia+rJ26JR1RJ6Ko5V3to6rUWyWmgmc3MpZYZfigu/P7AjcQpMQPhWtBEJnzJfFpw0f9nuJnWba7ocrum0TiC8cKC3IgZkb0lpfQ1hHNJuogzVAdf/y1FWExyddcFSCTgV7X8pmXd6TsYCaUhEfzF6JgiJtLCm+Ez+4aGeZKhldyd5a6OtgbPMFdtDDPuT3MU49VVVPH2tWnA+ikuI8M4FueMOcm2evdZ+JmW+xCgf19Vctf19LC03L4cIMXB5adJl5Vd9r5cgeSn2kYPmsx2jBKJvjFFuGfDBKOdm6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(83380400001)(38100700002)(6512007)(66574015)(26005)(2616005)(8676002)(4326008)(316002)(8936002)(44832011)(5660300002)(2906002)(6636002)(6486002)(53546011)(6666004)(66476007)(110136005)(66556008)(66946007)(6506007)(478600001)(41300700001)(36756003)(31696002)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p6fKD28jH8t1XDlmusErUHrezMT/tyXYMqivc36fjpeKwougPgjA5YnwZqJm?=
- =?us-ascii?Q?lYxCHoD2SczyL4uBYNHR/vlGLXGuSw64ZXeNE/Bsk3VwwORQMRG8oSXfZZ8J?=
- =?us-ascii?Q?e7/dhhUTSEXQqdtLXJdVA1SdZ1m9ABXRPqHg6dRPrKmPQTS4718jU0asZfg+?=
- =?us-ascii?Q?Mcqsbl86R9PKgrVmSFPW8lC0TKQ4+GdzoaZ6MrMBy0jhP0lGEiUHKXGW3SFu?=
- =?us-ascii?Q?UkHM0ilorlzaIl5/uJX7UpZ6VAmB38SHLV0pX0RmCAXX9uIuSZ7cyrf+85U/?=
- =?us-ascii?Q?36I6rv9Ev3dt/TKjUJytG3XjMs9QvTbNpcqIVyU9cXpsoO5i6dsDrTKFnUmV?=
- =?us-ascii?Q?yfeIXcr8MygojbZ5rgNJ9LZ7nUW8IroKBvMwhDYXRy4XKxKkeTyuLug0wnho?=
- =?us-ascii?Q?yqQ9uPoQsaQ4g40wp2JDehuY1g5v1oC8RDnp53xg3QYhiw/sbcfldtHCdDLh?=
- =?us-ascii?Q?iY2yUf33msxo9VthwGTRJkWDiIhEtKOqdlmDvYSyoE3DzvlT5zPrlGOqsEE5?=
- =?us-ascii?Q?yfh/eMLio47va9HZydD1mp7JY5hkc5+f5YPoKe6O8S0qITFtCnVcmHWb+6bC?=
- =?us-ascii?Q?W9HDfx/PrlXaxArS5EwLUvyJlBz6xa+TyMQ9k0jYjsKFBqpUj8wAq5Heux5c?=
- =?us-ascii?Q?Vw0Xq4WS2sLfURfK9xcaeh1uh5zY+n+C3ATCadSXUx0RysotI5aleIK8MMr4?=
- =?us-ascii?Q?vrOeiHmTCSUFfJMyMenpmGsqeyibaT2L8Xn/rG7KX0DZL5TuWSPjXQZhMT95?=
- =?us-ascii?Q?mPWhoXRcEPbQrKZsTU9QTjEdcIoX3ve5OdcPsKQKIbQadDkYZjKa73AkN27m?=
- =?us-ascii?Q?U+x5XOZlaFQBxjant2swbut46QmgSSdfsVqRZYscoXZk+8E1SRJVLbdDlOnM?=
- =?us-ascii?Q?3ucL+bOLpYmWuuRH7MBONlisd0f0lVRstSCmtoPLN5TlGAe5Uzh5X30phNgn?=
- =?us-ascii?Q?+In1/ir9g2ag4r1rZdENt5TD24RaGcv0+k7H/bWwXsCTp+btPB1rE748/u9j?=
- =?us-ascii?Q?KdhIctMCnJoDfroLAtn4RLQTLQRK+DdfyUv8QfpxPccq4lJAL1Z9jPuwW/m/?=
- =?us-ascii?Q?7Hh2799zKyVUgP9IuHdpJSnWtREWjd38tlAKt0j6xiPLb175Be8v1Ik0VLy3?=
- =?us-ascii?Q?uBBeJegthycRzvbmRd2GPYKGms4ziu2xfPoBo3c/8kS5jFhNtFekxCM7Y7Zr?=
- =?us-ascii?Q?/rRHwvIbMs/jhEkf9FVvWPbJbjbOlZnfcA/ULZ8sI1GX3EWMZ+M9eYr6dpIC?=
- =?us-ascii?Q?09v9HIpT9GOgrJ+80iUQB0AZL4DHSJA9sEvn/qNcFNkvcyYhitDJ9cr75ejv?=
- =?us-ascii?Q?a+wvlb5+SkB9RYavirY9SFNU78jrLjnRomF4FcFFy18bqKmtN/YDvYg1j+XH?=
- =?us-ascii?Q?9ZFM582suYC4EUO3tdD7nc9uIBw1+F6l2nJzn2V6BgvhWo6VsiUuUIs8DdWM?=
- =?us-ascii?Q?X/Q92rk34DZ7rQwCWVazY8vXWJQlR02QB0m1rU2ul6A9xA1R76Ld+tDyHFEt?=
- =?us-ascii?Q?goqvhpmn/DZHTua0ecYdJEF/BCzMxssA3zKxLZuRmOoB0tSpSk4aRVlIzjWM?=
- =?us-ascii?Q?xyRGdMtw8w2D/1lXyhDBQLzikgWSyPWoo9r7ekns?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e9e61bf-394a-4479-6dfc-08dbfb276a9f
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YzcxT0xyNUxTUis0NGViYm40dEE4eDdmT3VYdU1YRHVJQksya212eGpxR3c4?=
+ =?utf-8?B?YnZRMTRzZkxQL3FLZDIycFF2bEcwMlFrK052d0U3Skdubk82bk5XdE5CMTg4?=
+ =?utf-8?B?cEl4SG5DZnovN1BTTHMybHd3RkUvdmlpSnJkTzJOMERkTGJGVzlCSzBEL3pt?=
+ =?utf-8?B?TW5PNFJlb1lHNS82bzZFaGdDN2J1ajczK2JvT2k0U2syWEo5RGlwZ2w4Vk1P?=
+ =?utf-8?B?V1A3eUo3N2t5TmY5cWpORDdoRmwrTU40bHprM2Nwb2U5Wk5PZVVRbnZlWU1R?=
+ =?utf-8?B?VXNML2I5YThaR2d1dVhIQzF1UHdPTzF4VDZldmpoL3Y4L2RNaW9yZ0dFMDBN?=
+ =?utf-8?B?dlBXbVgyenA3SytORENXS01IMzlsbVFKdkRYa2JaMEdIQlhLbjV0SHAwK0Iz?=
+ =?utf-8?B?SnVURHc5d1ZJVzJRbHRRSStCMEJYdktydlZpYjVyQ3NuZFdXREJrWTNYUVU5?=
+ =?utf-8?B?T201a01TL1JEQ1lYb1F6UzJsUnBlc2xRUkV1ZzF2Q2hRTnNLeTBUdE03YS9M?=
+ =?utf-8?B?NU45NjZ6ODI4ZEFNYjhQMGhUWXZBUld1aE9uUGh6Z29GcWRZanpyYTE4TWZx?=
+ =?utf-8?B?QUZuanBIbnByUTBvV1NnVkY2a3VINnBIWUpPS3drOG9PRmN2aW5XOGFUVkxi?=
+ =?utf-8?B?Z043WUlXZldEQmloK1dQMWUwVzBtaFdIbUlmMStYTktoYTZXNE9BcTFSYnFw?=
+ =?utf-8?B?eEd2azgwQ1czVWlZUll4dEZKUDNRVFMwcUV5OEJCVjBGODY1ZGdxcUVpclQw?=
+ =?utf-8?B?SDFaWll3VWp1K2d3L3crUDkyMVVNZFoyYk51d2VRTjI5UktsZm5pdmJWbUhL?=
+ =?utf-8?B?VlpxUEFrc2xpaC9MWFdMMERzTkVCZGpvRmJRc3JjQVlQM2RuSExoaTMwV29m?=
+ =?utf-8?B?c05CZWhWdk1MVE5xZlZWRFFPMGhodkJYTUhBZEl0Zm03dnBuaTZZTGlvMk82?=
+ =?utf-8?B?TmJhSVN6TGE1TzcvYmtvZmdWc0plemlVaVBXR2NuRTNGbmZSTWRSUTk0Y3Rw?=
+ =?utf-8?B?WHdEclYzby9HSlNhSTgzTGlURGhrMnREa3FQRXlFdzg5TVJiRURJTWtybWNr?=
+ =?utf-8?B?SzZCWFFRL0xIS1BQNk5xSFZZTDRpZnlMRnQ3YWFiQXV6Zys1eHhwYmZLT3VE?=
+ =?utf-8?B?cDQyZmtGbXQwTGdwRUNxUVY2NG5TNURuYk12Ky96ZFJ0N1l6eFF5Z01Bc1Y2?=
+ =?utf-8?B?NmJNeXd4Mm8zbVFSdFFmQmNZQmtmNDVjekMvVlkySDRQNnJwUkJjOVdaVjQv?=
+ =?utf-8?B?QWRJNDRmcjBpOTVtWGpLV2lzbFQ1S3NKampsMEkwSkd3QWtpQkpJeEhMbW9J?=
+ =?utf-8?B?L25Fd3U3U2J1K0hTa0J0eXk3WHRTS0ZoY0xJTDUwTFZOVDZPMzNMQnFLeTQr?=
+ =?utf-8?B?NTNpR2RLUmNQRkJHZVZGQlBVU0lwM29JUmtjQXNwNktJQnNvRHVCTHJ4RGtB?=
+ =?utf-8?B?eHp6SU8wYjZiMjBqR1dzUncwUEZwVzdKS3lMYkRCWnVlSmlicWp2OS9oajk1?=
+ =?utf-8?B?cUxCTTNiUUFyeHZ6aXZML1E0SVd2MHlkNlF1cnoyc1FIT3dBUll2ckxjUG84?=
+ =?utf-8?B?ZTZUKzRud0c0R0hkSlU2Z3ZPNyt5aVJaUXl1bThwalVHTks0ZUh0WnhkUnBs?=
+ =?utf-8?B?RGV5NnhIRDlkQ3dWZzNSSk9RMUZ3SEV1enJudlE0bENDV1dyemhYR2RVUzAz?=
+ =?utf-8?B?enRvek9VUWYwNGxWQndBOFBzbzlQbHBTeDlsSTd5MC9CTnlNQVh1eTMyY3hw?=
+ =?utf-8?B?djNYai9Zd0dYTkw3UU5UWWVycmFMcEFrK2ZNc1J5aERCakF4UmtpQmQyeEJY?=
+ =?utf-8?B?R2I5QlBQSmw5aEZaREswN2wwNHhndTVRUmV2Nmh0dVhEcGpuSVVnTjVKOHJ0?=
+ =?utf-8?B?VFhmbDMvMWN1S0g2VmNVL1pqa1d5RWxOaEdRaUVxVytCRFBwakNlcHo2WkhQ?=
+ =?utf-8?B?bWg4MEQ1N0FnR1ZpTEhxbFFpVXR5Sk1lYTRkMnFCWDEzcGlpejQrUGZOOG5q?=
+ =?utf-8?B?azZRRFVPOU50OHlJcHIrOC9UZzg5b1VTK3dmcWZqa1RIYTBpallyczdOWGEz?=
+ =?utf-8?B?UTMzZmQ5aWhLaUFSc0pYdDdtTkJtTDkvaVdxaUQva0E1TUNxVS9uem51SEhp?=
+ =?utf-8?Q?8tnmguhyO0rGaydgRxlHWyck8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a7f22d9-cc3a-4086-cafe-08dbfb277f76
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:31:31.5682
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 15:32:06.5870
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R0F89YniDgzm33h0gJP1QBDL3Q3/TGlerhmR8D74Ex+wAmEWzYU6oT1NQEu5aLqf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB8612
+X-MS-Exchange-CrossTenant-UserPrincipalName: WYwWWNV59kfdU1TJhdvlDUI4Q98L0c4wm/zTVM2Obi/qsqnOOX+hKEHta0QaLEesTblfxWPS21RnobbkS1ym/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7522
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -141,56 +128,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 02:20:01AM +0000, Tian, Kevin wrote:
-> > From: Liu, Yi L <yi.l.liu@intel.com>
-> > Sent: Monday, December 11, 2023 4:08 PM
-> > 
-> > On 2023/12/7 16:47, Tian, Kevin wrote:
-> > >> From: Liu, Yi L <yi.l.liu@intel.com>
-> > >> Sent: Monday, November 27, 2023 2:39 PM
-> > >>
-> > >> +static int vfio_pci_core_feature_pasid(struct vfio_device *device, u32
-> > flags,
-> > >> +				       struct vfio_device_feature_pasid __user
-> > >> *arg,
-> > >> +				       size_t argsz)
-> > >> +{
-> > >> +	struct vfio_pci_core_device *vdev =
-> > >> +		container_of(device, struct vfio_pci_core_device, vdev);
-> > >> +	struct vfio_device_feature_pasid pasid = { 0 };
-> > >> +	struct pci_dev *pdev = vdev->pdev;
-> > >> +	u32 capabilities = 0;
-> > >> +	int ret;
-> > >> +
-> > >> +	/* We do not support SET of the PASID capability */
-> > >
-> > > this line alone is meaningless. Please explain the reason e.g. due to
-> > > no PASID capability per VF...
-> > 
-> > sure. I think the major reason is we don't allow userspace to change the
-> > PASID configuration. is it?
+On 12/12/2023 09:27, Mika Westerberg wrote:
+> On Tue, Dec 12, 2023 at 07:30:46PM +0530, Sanath S wrote:
+>> Introduce the tb_switch_reset_ports() function that resets the
+>> downstream ports of a given switch. This helps us reset the USB4
+>> links created by boot firmware during the init sequence.
+>>
+>> Introduce the tb_port_reset() helper function that resets the
+>> given port.
+>>
+>> Introduce the usb4_port_reset() function that performs the DPR
+>> of a given port. This function follows the CM guide specification 7.3
+>>
+>> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+>> Signed-off-by: Sanath S <Sanath.S@amd.com>
+>> ---
+>>   drivers/thunderbolt/switch.c  | 31 ++++++++++++++++++++++++++++
+>>   drivers/thunderbolt/tb.h      |  2 ++
+>>   drivers/thunderbolt/tb_regs.h |  1 +
+>>   drivers/thunderbolt/usb4.c    | 39 +++++++++++++++++++++++++++++++++++
+>>   4 files changed, 73 insertions(+)
+>>
+>> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+>> index 44e9b09de47a..26ad6cc1ee91 100644
+>> --- a/drivers/thunderbolt/switch.c
+>> +++ b/drivers/thunderbolt/switch.c
+>> @@ -626,6 +626,19 @@ int tb_port_unlock(struct tb_port *port)
+>>   	return 0;
+>>   }
+>>   
+>> +/**
+>> + * tb_port_reset() - Reset downstream port
+>> + * @port: Port to reset
+>> + *
+>> + * Helps to reconfigure the USB4 link by resetting the downstream port.
+>> + *
+>> + * Return: Returns 0 on success or an error code on failure.
+>> + */
+>> +static int tb_port_reset(struct tb_port *port)
+>> +{
+>> +	return usb4_port_reset(port);
+>> +}
+>> +
+>>   static int __tb_port_enable(struct tb_port *port, bool enable)
+>>   {
+>>   	int ret;
+>> @@ -1547,6 +1560,24 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
+>>   	       regs->__unknown1, regs->__unknown4);
+>>   }
+>>   
+>> +/**
+>> + * tb_switch_reset_ports() - Reset downstream ports of switch.
+>> + * @sw: Switch whose ports need to be reset.
+>> + *
+>> + * Return: Returns 0 on success or an error code on failure.
+>> + */
+>> +int tb_switch_reset_ports(struct tb_switch *sw)
+>> +{
+>> +	struct tb_port *port;
+>> +	int ret = -EINVAL;
 > 
-> if only PF it's still possible to develop a model allowing userspace to
-> change.
+> Why it returns -EINVAL? What if this is run for non-USB4 router?
 
-More importantly the primary purpose of setting the PASID width is
-because of the physical properties of the IOMMU HW.
+This is a good point, but in the non USB4 case (default return) maybe 
+it's better to be -ENODEV and in patch 2 be careful about the caller.
 
-IOMMU HW that supports virtualization should do so in a way that the
-PASID with can be globally set to some value the hypervisor is aware
-the HW can decode in all cases.
+> 
+>> +
+>> +	tb_switch_for_each_port(sw, port) {
+>> +		if (tb_port_is_null(port) && port->cap_usb4)
+>> +			ret = tb_port_reset(port);
+> 
+> Should it stop here and return ret?
 
-The VM should have no way to make the HW ignore (vs check for zero)
-upper bits of the PASID that would require the physical PASID bits to
-be reduced.
++1
 
-So we should never allow programming of this, VMM just fakes it and
-ignores sets.
+> 
+>> +	}
+>> +	return ret;
+>> +}
+>> +
+>>   /**
+>>    * tb_switch_reset() - reconfigure route, enable and send TB_CFG_PKG_RESET
+>>    * @sw: Switch to reset
+>> diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+>> index e299e53473ae..f2687ec4ac53 100644
+>> --- a/drivers/thunderbolt/tb.h
+>> +++ b/drivers/thunderbolt/tb.h
+>> @@ -797,6 +797,7 @@ void tb_switch_remove(struct tb_switch *sw);
+>>   void tb_switch_suspend(struct tb_switch *sw, bool runtime);
+>>   int tb_switch_resume(struct tb_switch *sw);
+>>   int tb_switch_reset(struct tb_switch *sw);
+>> +int tb_switch_reset_ports(struct tb_switch *sw);
+>>   int tb_switch_wait_for_bit(struct tb_switch *sw, u32 offset, u32 bit,
+>>   			   u32 value, int timeout_msec);
+>>   void tb_sw_set_unplugged(struct tb_switch *sw);
+>> @@ -1281,6 +1282,7 @@ struct tb_port *usb4_switch_map_usb3_down(struct tb_switch *sw,
+>>   int usb4_switch_add_ports(struct tb_switch *sw);
+>>   void usb4_switch_remove_ports(struct tb_switch *sw);
+>>   
+>> +int usb4_port_reset(struct tb_port *port);
+>>   int usb4_port_unlock(struct tb_port *port);
+>>   int usb4_port_hotplug_enable(struct tb_port *port);
+>>   int usb4_port_configure(struct tb_port *port);
+>> diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
+>> index 87e4795275fe..d49530bc0d53 100644
+>> --- a/drivers/thunderbolt/tb_regs.h
+>> +++ b/drivers/thunderbolt/tb_regs.h
+>> @@ -389,6 +389,7 @@ struct tb_regs_port_header {
+>>   #define PORT_CS_18_CSA				BIT(22)
+>>   #define PORT_CS_18_TIP				BIT(24)
+>>   #define PORT_CS_19				0x13
+>> +#define PORT_CS_19_DPR				BIT(0)
+>>   #define PORT_CS_19_PC				BIT(3)
+>>   #define PORT_CS_19_PID				BIT(4)
+>>   #define PORT_CS_19_WOC				BIT(16)
+>> diff --git a/drivers/thunderbolt/usb4.c b/drivers/thunderbolt/usb4.c
+>> index 4277733d0021..55f7c163bf84 100644
+>> --- a/drivers/thunderbolt/usb4.c
+>> +++ b/drivers/thunderbolt/usb4.c
+>> @@ -1073,6 +1073,45 @@ void usb4_switch_remove_ports(struct tb_switch *sw)
+>>   	}
+>>   }
+>>   
+>> +/**
+>> + * usb4_port_reset() - Reset USB4 downsteam port
+>> + * @port: USB4 port to reset.
+>> + *
+>> + * Helps to reconfigure USB4 link by resetting downstream port.
+>> + *
+>> + * Return: Returns 0 on success or an error code on failure.
+>> + */
+>> +int usb4_port_reset(struct tb_port *port)
+>> +{
+>> +	int ret;
+>> +	u32 val = 0;
+> 
+> Reverse christmas tree please:
+> 
+> u32 val = 0;
+> int ret;
+> 
+>> +
+>> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+>> +			port->cap_usb4 + PORT_CS_19, 1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	val = val | PORT_CS_19_DPR;
+>> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
+>> +			port->cap_usb4 + PORT_CS_19, 1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	/* Wait for 10ms after requesting downstream port reset */
+>> +	msleep(10);
+> 
+> Probably good to add a couple of more ms just in case. Also
+> usleep_range()? (or fsleep()).
 
-Similar argument for enable, IOMMU HW supporting virtualization should
-always be able to decode PASID and reject PASID TLPs if the VM hasn't
-configured the vIOMMU to decode them. The purpose of the disable bit
-is to accommodate IOMMU HW that cannot decode the PASID TLP at all and
-would become confused.
+Sanath had it at 20 but I had suggested to align to spec.
+For the wiggle room maybe usleep_range(10000, 15000)?
 
-Jason
+> 
+>> +
+>> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+>> +			port->cap_usb4 + PORT_CS_19, 1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	val &= ~PORT_CS_19_DPR;
+>> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
+>> +			port->cap_usb4 + PORT_CS_19, 1);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   /**
+>>    * usb4_port_unlock() - Unlock USB4 downstream port
+>>    * @port: USB4 port to unlock
+>> -- 
+>> 2.34.1
+
