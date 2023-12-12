@@ -2,55 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAB080E5E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD39A80E5DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346230AbjLLIW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S1346199AbjLLIWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:22:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346055AbjLLIWC (ORCPT
+        with ESMTP id S1346049AbjLLIWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 03:22:02 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7CDB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2C2ECC4163D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41808EA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:22:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 327B4C116A7;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702369325;
-        bh=qrQdSRYnIt0dvVsr5w3gpaU+qxRo3oybmeMtAq01eqc=;
+        bh=a/cZdGJuuVrU9Ek8D9oilewhzZsfNMnr7caWbQucbUk=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=hEiAIqLe1e1QbDpAle811YL8mhOH9MyenBWPc6U6s20hLz7cZQuP3FlgUUAs3v8JI
-         d29Ed+geMCNYbQWHRz3XgNNEAYAFHn+oknV+qk8VlE9hLwHJ7/mF6V+29z3rQlsHzx
-         DaI1uliAp1GiueWJsh5xM9q2rjqxJMWfBQjtYBaYrEt4P4VzMZhCSYkwvpKX0J87jq
-         Uqf97jcx5r1DQ9PbSKDYOBqw/OpOz9nE/2J8He246KFI4431+OPWcWLe+NKT7vMvdu
-         BguwHsXF+2lxqpU+MhlTTo5DzWIJlJCZLwVisMALKq8cNDgWPexSMuF+OeKhGnqgZT
-         UWycFTrHk7/Vg==
+        b=pt9KPg09r3jMiJJ6aWUIv5G1tg8Qp2+aEtuMJ7yFylEpkXRh6i6tjMm9pXnDUGnS7
+         Cv0gNjR3bUL4iPVKPMw4jEE5BTji2jCnmWJ3IIPVmnajK+uFkkuLSFjiqvJ0EoSrdw
+         p/nD5vnETgjP1rB+hInwdieVxTLKTz7jk+sRrOnzwOrNGKOgj5zeTHP8+3omNjlZmM
+         mQpBVDcdwRzd1b2rRCpD3jEDdnHEuuWAFGaA66r9Kef7XZuz+gDLxMRC1LlJXnWPAS
+         2JvmdgWzp7L+k8eUQAzS6ATNF8yTd2FgzdPoT/fcccLkK7pV8kUKKsyXrJa1vPamOw
+         vDwqRLgL9XJsQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 1BD3AC4167B;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 24DDBC38147;
         Tue, 12 Dec 2023 08:22:05 +0000 (UTC)
 From:   Nikita Shubin via B4 Relay 
         <devnull+nikita.shubin.maquefel.me@kernel.org>
-Date:   Tue, 12 Dec 2023 11:20:29 +0300
-Subject: [PATCH v6 12/40] watchdog: ep93xx: add DT support for Cirrus
- EP93xx
+Date:   Tue, 12 Dec 2023 11:20:30 +0300
+Subject: [PATCH v6 13/40] dt-bindings: pwm: Add Cirrus EP93xx
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-ep93xx-v6-12-c307b8ac9aa8@maquefel.me>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231212-ep93xx-v6-13-c307b8ac9aa8@maquefel.me>
 References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
 In-Reply-To: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13-dev-e3e53
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=1127;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702369322; l=1848;
  i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
- bh=yDvFgKkbYlXFeJISIbxBJBumhjJt07IbMFASDCbxstc=; =?utf-8?q?b=3DQ0wAA2U+Gywk?=
- =?utf-8?q?gx889/3aYwp5uoyzuJWMfMc1DMxXm6J+9f4hVTHXpJB1aVug4SJP1aZuhTdSLvW6?=
- G6v4Z9zQCFXvQWZBIhyboqsyp1qBgSFxECkp51hVrhM3h1Xl4gvW
+ bh=yiCeIO46pBt38m6arFX6dYafL64TrLSuKy+InISqKkU=; =?utf-8?q?b=3Dwr9OAY+iSHXW?=
+ =?utf-8?q?3CdcW50cK4pZHKIutn0mgqORqGrxNWwgq2l7KrvnxRa3Fxbyk8lxb1B5MueySKjM?=
+ JNqNVvxNBL/4qEgLvGp2wwWB04qM8r5sTc64tuX43sBmzGqJA81V
 X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
  pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
 X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718 with auth_id=65
@@ -68,44 +73,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikita Shubin <nikita.shubin@maquefel.me>
 
-Add OF ID match table.
+Add YAML bindings for ep93xx SoC PWM.
 
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- drivers/watchdog/ep93xx_wdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml | 53 ++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/drivers/watchdog/ep93xx_wdt.c b/drivers/watchdog/ep93xx_wdt.c
-index 59dfd7f6bf0b..af89b7bb8f66 100644
---- a/drivers/watchdog/ep93xx_wdt.c
-+++ b/drivers/watchdog/ep93xx_wdt.c
-@@ -19,6 +19,7 @@
-  */
- 
- #include <linux/platform_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/watchdog.h>
- #include <linux/io.h>
-@@ -127,9 +128,16 @@ static int ep93xx_wdt_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id ep93xx_wdt_of_ids[] = {
-+	{ .compatible = "cirrus,ep9301-wdt" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ep93xx_wdt_of_ids);
+diff --git a/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml b/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
+new file mode 100644
+index 000000000000..903210ef9c31
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/cirrus,ep9301-pwm.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/cirrus,ep9301-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static struct platform_driver ep93xx_wdt_driver = {
- 	.driver		= {
- 		.name	= "ep93xx-wdt",
-+		.of_match_table = ep93xx_wdt_of_ids,
- 	},
- 	.probe		= ep93xx_wdt_probe,
- };
++title: Cirrus Logic ep93xx PWM controller
++
++maintainers:
++  - Alexander Sverdlin <alexander.sverdlin@gmail.com>
++  - Nikita Shubin <nikita.shubin@maquefel.me>
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - const: cirrus,ep9301-pwm
++      - items:
++          - enum:
++              - cirrus,ep9302-pwm
++              - cirrus,ep9307-pwm
++              - cirrus,ep9312-pwm
++              - cirrus,ep9315-pwm
++          - const: cirrus,ep9301-pwm
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: SoC PWM clock
++
++  "#pwm-cells":
++    const: 3
++
++required:
++  - compatible
++  - reg
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/cirrus,ep9301-syscon.h>
++    pwm@80910000 {
++        compatible = "cirrus,ep9301-pwm";
++        reg = <0x80910000 0x10>;
++        clocks = <&syscon EP93XX_CLK_PWM>;
++        #pwm-cells = <3>;
++    };
 
 -- 
 2.41.0
