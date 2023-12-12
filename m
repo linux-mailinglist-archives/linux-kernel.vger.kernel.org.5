@@ -2,315 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DA580EB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8D980EB41
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 13:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346455AbjLLMFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 07:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S232462AbjLLMGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 07:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbjLLMFI (ORCPT
+        with ESMTP id S1346516AbjLLMFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 07:05:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042B010C
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:05:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4DFC433C7;
-        Tue, 12 Dec 2023 12:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1702382712;
-        bh=SWC+Nat235TfMnBb+/6EkvPUKFseOAinCkhNaARYsag=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EQsCvB2rvg3wr3eEZRcI09WFbK6/2YJHQOlR0YNb0PuGAhCXDh+j3kihrpndd9L20
-         NWROiM541o1UO2Rr13OiHP+f6H2AGGGizYWJTECWd+ZnfwQamaI4lToOknLDt02WYN
-         0V4v9LDHIZEQD5ioy6EaJghbm4MhKhCjlNVbxOkQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-Subject: [PATCH 4.19 00/53] 4.19.302-rc2 review
-Date:   Tue, 12 Dec 2023 13:05:09 +0100
-Message-ID: <20231212120154.063773918@linuxfoundation.org>
-X-Mailer: git-send-email 2.43.0
+        Tue, 12 Dec 2023 07:05:54 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305B3F3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:05:59 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c31f18274so50698335e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 04:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1702382757; x=1702987557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=13Ja0Nw0pPSuSjFH0IeSQRlQSG+h5LbxqOjPprrcVUw=;
+        b=LBTBVL+e6HjCFWoT5yz3khfIQFU+1yrZ0091b8YaLlhi6LhWpOoStg+TCbnC6rs2S5
+         MKRojI3gw3lQiPqgPRrY5iNnaR1YJ2KwGimH+OkAwcDpzrTCSFeTgDoUbIFYN0hXHSfr
+         tmr8lJmsgTzZ9GasTICsEw/En6yAWjItt0DQIPTYLHvhcEhW61iGDJECbVRHw1EaEIBd
+         AO4NJT23w5FVZANyWyWZkuDr5tARX2i1tlhReEBxHqOhlfSMjf+ZyVXIfi8DNTym89Tb
+         WnFNgnWczL27cjFgjkw+2O29GTstuY3Hrk7jWWm9E7A8jkoiPuawniEecm5RdM2J5Xix
+         8xpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702382757; x=1702987557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=13Ja0Nw0pPSuSjFH0IeSQRlQSG+h5LbxqOjPprrcVUw=;
+        b=a1FiX2I5qiRzK8BM33dqhsTQQEtxb0qI/+4SNApbgFv50S3eRfKTFzH2BH7gCLMrff
+         xDYSfZG2tekGA/dgJHu9RAT/Su54gKiNYtK8NaDMmHYjrVOZMjYMWOQO1JJsGeAISdTn
+         znW8LF3smGb0lZmLMmqJ9iJhLbUEGy7wDq6xYp6tRp3B/utZkC/1iMt81K9hE6FZP6sr
+         oeWsI9/RmSY/N/+SqFYzupFuieKwJ6TsaC2/3IYI/Zrec2Vtqv5FFLyHbxiwwl0HBCht
+         TU3pnoTGsXg9LKvPeFPXinCZPeVQGjGrauuOlnJun+y55ctNEl2dyeoW2UiWqS+hvWwl
+         7sYg==
+X-Gm-Message-State: AOJu0Yy/4JM/wTITu3bfHNbjVW3+KFiZUsyGIy08h1NpdK5bCzsVn4ZV
+        sP522j3UoDbTVrAHE33dQXKoxQ==
+X-Google-Smtp-Source: AGHT+IGgjoAn2HE1UEgBwViiepp0+DZatRSss7QIX4mMogy9AnMEBgnie0Cd206XFxiA8r5oPda77g==
+X-Received: by 2002:a05:600c:4812:b0:40c:3bb2:ca58 with SMTP id i18-20020a05600c481200b0040c3bb2ca58mr2815131wmo.31.1702382757343;
+        Tue, 12 Dec 2023 04:05:57 -0800 (PST)
+Received: from airbuntu ([104.132.45.98])
+        by smtp.gmail.com with ESMTPSA id z20-20020a05600c0a1400b004064e3b94afsm18818476wmp.4.2023.12.12.04.05.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 04:05:56 -0800 (PST)
+Date:   Tue, 12 Dec 2023 12:05:55 +0000
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <20231212120555.wradm57buz7ckv4p@airbuntu>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <20231205162043.GA2558193@google.com>
+ <20231207172032.kto27hfdxa4juq7b@airbuntu>
+ <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.302-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.302-rc2
-X-KernelTest-Deadline: 2023-12-14T12:01+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0d531690-1240-4356-a647-b4c71a56b31d@joelfernandes.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.19.302 release.
-There are 53 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Thu, 14 Dec 2023 12:01:29 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.302-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.19.302-rc2
-
-Mukesh Ojha <quic_mojha@quicinc.com>
-    devcoredump: Send uevent once devcd is ready
-
-Mukesh Ojha <quic_mojha@quicinc.com>
-    devcoredump : Serialize devcd_del work
-
-Sagi Grimberg <sagi@grimberg.me>
-    IB/isert: Fix unaligned immediate-data handling
-
-Namhyung Kim <namhyung@kernel.org>
-    tools headers UAPI: Sync linux/perf_event.h with the kernel sources
-
-Ido Schimmel <idosch@nvidia.com>
-    drop_monitor: Require 'CAP_SYS_ADMIN' when joining "events" group
-
-Ido Schimmel <idosch@nvidia.com>
-    psample: Require 'CAP_NET_ADMIN' when joining "packets" group
-
-Ido Schimmel <idosch@nvidia.com>
-    genetlink: add CAP_NET_ADMIN test for multicast bind
-
-Ido Schimmel <idosch@nvidia.com>
-    netlink: don't call ->netlink_bind with table lock held
-
-Ryusuke Konishi <konishi.ryusuke@gmail.com>
-    nilfs2: fix missing error check for sb_set_blocksize call
-
-Claudio Imbrenda <imbrenda@linux.ibm.com>
-    KVM: s390/mm: Properly reset no-dat
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/CPU/AMD: Check vendor in the AMD microcode callback
-
-Ronald Wahl <ronald.wahl@raritan.com>
-    serial: 8250_omap: Add earlycon support for the AM654 UART controller
-
-Daniel Mack <daniel@zonque.org>
-    serial: sc16is7xx: address RX timeout interrupt errata
-
-RD Babiera <rdbabiera@google.com>
-    usb: typec: class: fix typec_altmode_put_partner to put plugs
-
-Cameron Williams <cang1@live.co.uk>
-    parport: Add support for Brainboxes IX/UC/PX parallel cards
-
-Konstantin Aladyshev <aladyshev22@gmail.com>
-    usb: gadget: f_hid: fix report descriptor allocation
-
-Boerge Struempfel <boerge.struempfel@gmail.com>
-    gpiolib: sysfs: Fix error handling on failed export
-
-Peter Zijlstra <peterz@infradead.org>
-    perf: Fix perf_event_validate_size()
-
-Namhyung Kim <namhyung@kernel.org>
-    perf/core: Add a new read format to get a number of lost samples
-
-Petr Pavlu <petr.pavlu@suse.com>
-    tracing: Fix a possible race when disabling buffered events
-
-Petr Pavlu <petr.pavlu@suse.com>
-    tracing: Fix incomplete locking when disabling buffered events
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    tracing: Always update snapshot buffer size
-
-Ryusuke Konishi <konishi.ryusuke@gmail.com>
-    nilfs2: prevent WARNING in nilfs_sufile_set_segment_usage()
-
-Daniel Borkmann <daniel@iogearbox.net>
-    packet: Move reference count in packet_sock to atomic_long_t
-
-Jason Zhang <jason.zhang@rock-chips.com>
-    ALSA: pcm: fix out-of-bounds in snd_pcm_state_names
-
-Philipp Zabel <p.zabel@pengutronix.de>
-    ARM: dts: imx7: Declare timers compatible with fsl,imx6dl-gpt
-
-Anson Huang <Anson.Huang@nxp.com>
-    ARM: dts: imx: make gpt node name generic
-
-Kunwu Chan <chentao@kylinos.cn>
-    ARM: imx: Check return value of devm_kasprintf in imx_mmdc_perf_init
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    scsi: be2iscsi: Fix a memleak in beiscsi_init_wrb_handle()
-
-Petr Pavlu <petr.pavlu@suse.com>
-    tracing: Fix a warning when allocating buffered events fails
-
-Armin Wolf <W_Armin@gmx.de>
-    hwmon: (acpi_power_meter) Fix 4.29 MW bug
-
-Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-    RDMA/bnxt_re: Correct module description string
-
-Eric Dumazet <edumazet@google.com>
-    tcp: do not accept ACK of bytes we never sent
-
-Phil Sutter <phil@nwl.cc>
-    netfilter: xt_owner: Fix for unsafe access of sk->sk_socket
-
-Lukasz Pawelczyk <l.pawelczyk@samsung.com>
-    netfilter: xt_owner: Add supplementary groups option
-
-Yonglong Liu <liuyonglong@huawei.com>
-    net: hns: fix fake link up on xge port
-
-Shigeru Yoshida <syoshida@redhat.com>
-    ipv4: ip_gre: Avoid skb_pull() failure in ipgre_xmit()
-
-Thomas Reichinger <thomas.reichinger@sohard.de>
-    arcnet: restoring support for multiple Sohard Arcnet cards
-
-Tong Zhang <ztong0001@gmail.com>
-    net: arcnet: com20020 fix error handling
-
-Ahmed S. Darwish <a.darwish@linutronix.de>
-    net: arcnet: Fix RESET flag handling
-
-Randy Dunlap <rdunlap@infradead.org>
-    hv_netvsc: rndis_filter needs to select NLS
-
-Eric Dumazet <edumazet@google.com>
-    ipv6: fix potential NULL deref in fib6_add()
-
-YuanShang <YuanShang.Mao@amd.com>
-    drm/amdgpu: correct chunk_ptr to a pointer to chunk.
-
-Masahiro Yamada <masahiroy@kernel.org>
-    kconfig: fix memory leak from range properties
-
-Alex Pakhunov <alexey.pakhunov@spacex.com>
-    tg3: Increment tx_dropped in tg3_tso_bug()
-
-Alex Pakhunov <alexey.pakhunov@spacex.com>
-    tg3: Move the [rt]x_dropped counters to tg3_napi
-
-Jozsef Kadlecsik <kadlec@netfilter.org>
-    netfilter: ipset: fix race condition between swap/destroy and kernel side add/del/test
-
-Thomas Gleixner <tglx@linutronix.de>
-    hrtimers: Push pending hrtimers away from outgoing CPU earlier
-
-Evgeny Novikov <novikov@ispras.ru>
-    media: davinci: vpif_capture: fix potential double free
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    spi: imx: mx51-ecspi: Move some initialisation to prepare_message hook.
-
-Robin Gong <yibin.gong@nxp.com>
-    spi: imx: correct wml as the last sg length
-
-Robin Gong <yibin.gong@nxp.com>
-    spi: imx: move wml setting to later than setup_transfer
-
-Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-    spi: imx: add a device specific prepare_message callback
-
-
--------------
-
-Diffstat:
-
- Makefile                                          |   4 +-
- arch/arm/boot/dts/imx6qdl.dtsi                    |   2 +-
- arch/arm/boot/dts/imx6sl.dtsi                     |   2 +-
- arch/arm/boot/dts/imx6sx.dtsi                     |   2 +-
- arch/arm/boot/dts/imx6ul.dtsi                     |   4 +-
- arch/arm/boot/dts/imx7s.dtsi                      |  16 +--
- arch/arm/mach-imx/mmdc.c                          |   7 +-
- arch/s390/mm/pgtable.c                            |   2 +-
- arch/x86/kernel/cpu/amd.c                         |   3 +
- drivers/base/devcoredump.c                        |  86 +++++++++++-
- drivers/gpio/gpiolib-sysfs.c                      |  15 ++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c            |   2 +-
- drivers/hwmon/acpi_power_meter.c                  |   4 +
- drivers/infiniband/hw/bnxt_re/main.c              |   2 +-
- drivers/infiniband/ulp/isert/ib_isert.c           |  93 ++++++-------
- drivers/infiniband/ulp/isert/ib_isert.h           |  41 ++++--
- drivers/media/platform/davinci/vpif_capture.c     |   2 -
- drivers/net/arcnet/arc-rimi.c                     |   4 +-
- drivers/net/arcnet/arcdevice.h                    |   8 ++
- drivers/net/arcnet/arcnet.c                       |  66 +++++++++-
- drivers/net/arcnet/com20020-isa.c                 |   4 +-
- drivers/net/arcnet/com20020-pci.c                 | 119 +++++++++--------
- drivers/net/arcnet/com20020_cs.c                  |   2 +-
- drivers/net/arcnet/com90io.c                      |   4 +-
- drivers/net/arcnet/com90xx.c                      |   4 +-
- drivers/net/ethernet/broadcom/tg3.c               |  42 +++++-
- drivers/net/ethernet/broadcom/tg3.h               |   4 +-
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c |  29 +++++
- drivers/net/hyperv/Kconfig                        |   1 +
- drivers/parport/parport_pc.c                      |  21 +++
- drivers/scsi/be2iscsi/be_main.c                   |   1 +
- drivers/spi/spi-imx.c                             | 151 ++++++++++++++++------
- drivers/tty/serial/8250/8250_early.c              |   1 +
- drivers/tty/serial/sc16is7xx.c                    |  12 ++
- drivers/usb/gadget/function/f_hid.c               |   7 +-
- drivers/usb/typec/class.c                         |   5 +-
- fs/nilfs2/sufile.c                                |  44 +++++--
- fs/nilfs2/the_nilfs.c                             |   6 +-
- include/linux/cpuhotplug.h                        |   1 +
- include/linux/hrtimer.h                           |   4 +-
- include/linux/perf_event.h                        |   2 +
- include/net/genetlink.h                           |   3 +
- include/uapi/linux/netfilter/xt_owner.h           |   7 +-
- include/uapi/linux/perf_event.h                   |   5 +-
- kernel/cpu.c                                      |   8 +-
- kernel/events/core.c                              |  80 ++++++++----
- kernel/events/ring_buffer.c                       |   5 +-
- kernel/time/hrtimer.c                             |  33 ++---
- kernel/trace/trace.c                              |  42 +++---
- net/core/drop_monitor.c                           |   4 +-
- net/ipv4/ip_gre.c                                 |  11 +-
- net/ipv4/tcp_input.c                              |   6 +-
- net/ipv6/ip6_fib.c                                |   6 +-
- net/netfilter/ipset/ip_set_core.c                 |  14 +-
- net/netfilter/xt_owner.c                          |  37 +++++-
- net/netlink/af_netlink.c                          |   4 +-
- net/netlink/genetlink.c                           |  35 +++++
- net/packet/af_packet.c                            |  16 +--
- net/packet/internal.h                             |   2 +-
- net/psample/psample.c                             |   3 +-
- scripts/kconfig/symbol.c                          |  14 +-
- sound/core/pcm.c                                  |   1 +
- tools/include/uapi/linux/perf_event.h             |   5 +-
- 63 files changed, 830 insertions(+), 340 deletions(-)
-
-
+On 12/09/23 01:26, Joel Fernandes wrote:
+> On 12/7/23 12:20, Qais Yousef wrote:
+> > On 12/05/23 16:20, Joel Fernandes wrote:
+> > 
+> >> I think a better approach is not do an anti-CONFIG option and instead do
+> >> a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
+> >> just default to keeping lazy on. I'd like to avoid proliferation of already
+> >> large number of RCU config options and more chances of errors.
+> > 
+> > The issue is that we don't want to ship with default on :-)
+> 
+> Yes, so you can ship with rcutree.enable_lazy=0 which this patch adds, no? In
+> theory, you can accomplish this by simply CONFIG_RCU_LAZY=y and
+> rcutree.enable_lazy=0 or rcutree.lazy=0.
+> 
+> However, I see the inconvenience factor (you have to set a boot parameter
+> without making this a purely .config affair) so I am not terribly opposed with
+> this patch (I am also guilty of adding a CONFIG option to avoid having to set a
+> boot parameter (for unrelated feature), but in my defense I did not know a boot
+> parameter existed for the said feature). ;-)
+
+It is more than inconvenience. The GKI doesn't ship with a specific userspace.
+So we can't guarantee the boot parameter will be set and have to rely on no one
+missing the memo to add this additional parameter.
+
+And to speed up adoption and testing, I am backporting the feature to 5.10,
+5.15 and 6.1. It is risky enough to get a backport, but to default on it could
+  introduce more subtle surprises. But not doing so we could end up waiting for
+2 years before enough people move to the latest LTS that contains the feature.
+
+> 
+> >> I also want lazy to be ON for everybody configuring it into the kernel by
+> >> default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
+> > 
+> > This is still the default behavior.
+> > 
+> > And all or nothing approach is not practical. You're telling me if I can't ship
+> > with default off, then I must disable it altogether. Adoption will become
+> > harder IMHO.
+> 
+> No, that's not what I said. You misunderstood me (which is probably my fault at
+> not being more clear). It is not all or nothing. I am just saying you can
+> accomplish "default off" by just setting the boot parameter. With this patch,
+> you are not willing to do that out of convenience, which I can understand but
+> still we should at least have a discussion about that.
+
+Okay, sorry if I misunderstood.
+
+> 
+> > 
+> >> tglx also suggested that's why we made changed of our initial prototypes of
+> >> call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
+> >> train and not add more APIs (thus causing more confusion to kernel
+> >> developers). This was a bit painful, but it was worth it.
+> > 
+> > I think implementation details make sense, but orthogonal to the problem of
+> > enabling CONFIG_RCU_LAZY=y but still ship with default off. It is a risky
+> > change and we want to start staging with default off first.
+> 
+> Never had any issue with that. I very much want to see this safely rolled out to
+> Android. ;-)
+> 
+> > Not allowing this
+> > in upstream means I'll either have to resort to keep it disabled, or carry out
+> > of tree patch to get what I want. Both of which would be unfortunate.
+> 
+> There is already precedent for building things into the kernel but keeping them
+> default off, so I don't have an issue with the experimentation use case. I was
+> just discussing whether the additional CONFIG is really needed when you already
+> have added a boot param to keep it default-off. If you have an argument for why
+> that would be really helpful [1].
+> 
+> Also, nit: rcutree.enable_lazy is probably better than rcutree.enable_rcu_lazy.
+> The 'rcu' is redundant.
+
+It matches the config option so feels natural to have them both named the same?
+
+> 
+> Other than that, the patch LGTM but if you could update the commit log with
+> details about [1], that would be great. And while at it, you could add my tag:
+
+You forgot to include [1]? Or I'm just blind today?
+
+> 
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Thanks!
+
+--
+Qais Yousef
