@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B2680F7CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B3E80F7D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377339AbjLLUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S1377341AbjLLUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377293AbjLLUWg (ORCPT
+        with ESMTP id S1377223AbjLLUZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:22:36 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE01D5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:22:40 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bffb64178so7253004e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:22:40 -0800 (PST)
+        Tue, 12 Dec 2023 15:25:02 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBEBBC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:25:06 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c3fe6c1b5so32352005e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:25:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702412559; x=1703017359; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702412705; x=1703017505; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xuNzKiLraPrIuS1goHgIt7bHljtI9RX7C3sKU6VhhOE=;
-        b=L+dBl+2H2ZUw3Soz6331AxpB0xCSEilJb+1EJu6T5pUiUxEz/oZNsbbWQBKUM+93kx
-         X46sJAjeSBBTfVHX+eCjjWoYctBID2BQ1RYjjaCe9cpn6EoDR99YdjlMsZr0Vn3QjtKz
-         oOOn8RtlM6cOMle/8JHnwyOFC754U00RZWopj+ylyMOvUW7lkvscr7l7C9t9Xfuw6OkG
-         8SZzcCL+r4mHioUzwmMqZmW5ny+tZYC1YGIQQYn0avblhLXYCNi4ZISiZH8x1NXFTuH4
-         3XcjioR7hG5GZ9Wl1GEPrePuSDMtI6H2TjOutppd72P1/qBrfEZVKn8b73W0umibF0s+
-         HjOQ==
+        bh=Gg2VhOkDAyFX8Rm+h8gLNSLn5Q4DtPM59iL23zDHgQs=;
+        b=T9M78ciO7obQ6/ysQ3NlXE3GXsN6xk1paWoiipTleqYvxel5GIbRmGGvZCxENpy2Kg
+         mbfLzo77bKIOMCH9zFZ5qqtWn3Ms3VH3EzbJ4KFEBVGEV+IkAkWnkMo1X5hWZkJ9Emsh
+         9Pi2XUoINIcOnPVB/ts+TaxNDpjCR52pbQJAs0VO+YQWJGkdOsGfQNJKMk++b0lzvoCN
+         05I9sK8bV0rd55+hUwG2dGDlXHKgHAXdxh4iHbS3jNJNEyolY7cPwsJSUZV5ZZLBoS4M
+         xBapEu421XaXs7g8FkRVn6f7ouoqs6fC2m36EQJV1m4F3gqUleBEpQKWsBA8OMCP5C1y
+         dibQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702412559; x=1703017359;
+        d=1e100.net; s=20230601; t=1702412705; x=1703017505;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xuNzKiLraPrIuS1goHgIt7bHljtI9RX7C3sKU6VhhOE=;
-        b=WDndxVRvGMAm8g5nhLFiKjn64lmAcWVc4CFUyRy+89k/JJ2y88wwtkI8BJKbklbZ9+
-         1JpFgnXW5e4DVOLf59OjHjZpSJiKIVFfBJ6SnhjYQPPm4MiMtPZ9klF1814Ix7jBnvt2
-         4P47n025JzIQSNlHEMwIc7FIwbOnMzuxEcrduJhF61Y1rU7ckt6zlAiBkjHbCemWCQVG
-         eyF+P3bv3+sTEC9uMnAU+M04bFFgzSqrJms7704HKVJXw6ykZ+n0N8w9dPlqH08KIGYp
-         YIwH1QWlz43uFp/0zqThpvv6xmWmR+JUzSfm21G1CS25OTJVYJXHHq/FPzsmd7oLh3Pk
-         z9Kw==
-X-Gm-Message-State: AOJu0Yy3zqNkd8LIRNTWfD5EnDwr1Q8EFYfZrBfvMj6EydwImIpVXqS2
-        9l/IbZ+JpzAsAPLnw1W6irbtqw==
-X-Google-Smtp-Source: AGHT+IES0k6YYyk2hoPP+SRjXnjQtNDkCUnv5imzN76RfFL40qTM72hPddzSkHxtjlR8lxL7KVD9yA==
-X-Received: by 2002:a05:6512:3146:b0:50b:fadc:dddb with SMTP id s6-20020a056512314600b0050bfadcdddbmr2979783lfi.93.1702412558918;
-        Tue, 12 Dec 2023 12:22:38 -0800 (PST)
+        bh=Gg2VhOkDAyFX8Rm+h8gLNSLn5Q4DtPM59iL23zDHgQs=;
+        b=ue0lGk5MHZA9M3Nayzzt6eEx4E3iOHQaS0B1PMcLBDiGQ/MmkqF1X5hHT2TYzu8OkS
+         1Tot31cuWW30FRh+tmVsAHe3sLaMQVvntVxUJatbiv11l2j+VoULukZLM1hGjIpryvqG
+         BzECYHRIROJUt0h4Mlw1v21SBPRs4VVXOIjJ0ZotQIZ5gy9jHTyNhOBZ26EuKR8kJTWM
+         FiZ08sEVbRXQlBMaY7a2tZqhEep1M3+MqzhKAZzcra+g7HHnPw9bNbovNaE+JtOVCyUE
+         Y+DqPsgGCZldvMNtKU4ODtQolAoGI9EfskV4arypnnuFMqmu/XeIzYXAffX7z/EGWvUP
+         TWsg==
+X-Gm-Message-State: AOJu0Yx2fA2pjyoVHo+HOco4nlUJAwCz03PT9fccCiMajv0UvWbb7oPv
+        St64b+rjcx9K2bNwYRIsAE3jew==
+X-Google-Smtp-Source: AGHT+IFQ06+o3v5U4i6nHVsfc7/wjTk6EGqq94+TOdJn7emzkIZzmR60D09Xdf40+S0+UEH+AGjfQQ==
+X-Received: by 2002:a7b:c44b:0:b0:40c:3751:b661 with SMTP id l11-20020a7bc44b000000b0040c3751b661mr3360042wmi.61.1702412705095;
+        Tue, 12 Dec 2023 12:25:05 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a1f738318a5sm6178368ejc.155.2023.12.12.12.22.36
+        by smtp.gmail.com with ESMTPSA id w6-20020a5d6806000000b00336103442d2sm10177965wru.76.2023.12.12.12.25.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 12:22:38 -0800 (PST)
-Message-ID: <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
-Date:   Tue, 12 Dec 2023 21:22:35 +0100
+        Tue, 12 Dec 2023 12:25:04 -0800 (PST)
+Message-ID: <1b19af6f-645a-4913-b9db-49b1f3ad54f9@linaro.org>
+Date:   Tue, 12 Dec 2023 21:25:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 5/8] ARM: dts: aspeed: System1: Voltage regulators
+Subject: Re: [PATCH v1 6/8] ARM: dts: aspeed: System1: GPIO, Fan ctrl, Led
 Content-Language: en-US
 To:     Ninad Palsule <ninad@linux.ibm.com>, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -72,7 +72,7 @@ Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
         linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
         geissonator@yahoo.com
 References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-6-ninad@linux.ibm.com>
+ <20231212164004.1683589-7-ninad@linux.ibm.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,13 +118,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231212164004.1683589-6-ninad@linux.ibm.com>
+In-Reply-To: <20231212164004.1683589-7-ninad@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,WEIRD_QUOTING
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -132,50 +132,225 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 12/12/2023 17:40, Ninad Palsule wrote:
-> This commit adds different voltage regulators.
+> This commit adds following devices to the device tree.
+> - GPIO pin assignements, GPIO expansion devices
+> - LED brinker devices
+> - Fan controllers
 > 
 > Tested:
 >     This board is tested using the simics simulator.
 > 
 > Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
 > ---
->  .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 266 ++++++++++++++++++
+>  .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 547 +++++++++++++++++-
 
 Squash it.
 
->  1 file changed, 266 insertions(+)
+>  1 file changed, 542 insertions(+), 5 deletions(-)
 > 
 > diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
-> index 0557bff9f36a..b8e7e52d4600 100644
+> index b8e7e52d4600..75562aa63701 100644
 > --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
 > +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
-> @@ -114,10 +114,127 @@ vga_memory: region@bf000000 {
+> @@ -114,6 +114,99 @@ vga_memory: region@bf000000 {
 >  		};
 >  	};
 >  
-> +	iio-hwmon {
-> +		compatible = "iio-hwmon";
-> +		io-channels = <&p12v_vd 0>, <&p5v_aux_vd 0>,
-> +			<&p5v_bmc_aux_vd 0>, <&p3v3_aux_vd 0>,
-> +			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>,
-> +			<&adc1 4>, <&adc0 2>, <&adc1 0>,
-> +			<&p2V5_aux_vd 0>, <&adc1 7>;
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		bmc-ready {
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+> +			gpios = <&gpio0 ASPEED_GPIO(L, 7) GPIO_ACTIVE_HIGH>;
+> +		};
+> +
+> +		bmc-hb {
+
+None of these were tested.
+
+
+>  	/*A0-A7*/	"","","","","","","","",
+> -	/*B0-B7*/	"","","","","","","","",
+> +	/*B0-B7*/	"","","","","bmc-tpm-reset","","","",
+
+Really? You just added these lines. There is no point in adding a new
+line and immediately changing it.
+
+This points how your split is artificial and not helpful.
+...
+
+
+>  &i2c2 {
+> @@ -486,6 +744,20 @@ regulator@43 {
+>  &i2c6 {
+>  	status = "okay";
+>  
+> +	fan-controller@52 {
+> +		compatible = "maxim,max31785a";
+> +		reg = <0x52>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+
+Why do you need cells?
+
 > +	};
 > +
-> +	p12v_vd: voltage_divider1 {
+> +	fan-controller@54 {
+> +		compatible = "maxim,max31785a";
+> +		reg = <0x54>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
 
-Same comments as in other patches.
+Why do you need cells?
 
-> +		compatible = "voltage-divider";
-> +		io-channels = <&adc1 3>;
-> +		#io-channel-cells = <1>;
+> +	};
 > +
-> +		/* Scale the system voltage by 1127/127 to fit the ADC range.
+>  	i2c-mux@70 {
+>  		compatible = "nxp,pca9548";
+>  		reg = <0x70>;
+> @@ -522,6 +794,48 @@ i2c6mux0chn4: i2c@4 {
+>  			#address-cells = <1>;
+>  			#size-cells = <0>;
+>  			reg = <4>;
+> +
+> +			led-controller@60 {
+> +				compatible = "nxp,pca9551";
+> +				reg = <0x60>;
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				gpio-controller;
+> +				#gpio-cells = <2>;
+> +
+> +				led@0 {
+> +					label = "enclosure-id-led";
+> +					reg = <0>;
+> +					retain-state-shutdown;
+> +					default-state = "keep";
+> +					type = <PCA955X_TYPE_LED>;
+> +				};
+> +
+> +				led@1 {
+> +					label = "attention-led";
+> +					reg = <1>;
+> +					retain-state-shutdown;
+> +					default-state = "keep";
+> +					type = <PCA955X_TYPE_LED>;
+> +				};
+> +
+> +				led@2 {
+> +					label = "enclosure-fault-rollup-led";
+> +					reg = <2>;
+> +					retain-state-shutdown;
+> +					default-state = "keep";
+> +					type = <PCA955X_TYPE_LED>;
+> +				};
+> +
+> +				led@3 {
+> +					label = "power-on-led";
+> +					reg = <3>;
+> +					retain-state-shutdown;
+> +					default-state = "keep";
+> +					type = <PCA955X_TYPE_LED>;
+> +				};
+> +			};
+>  		};
+>  
+>  		i2c6mux0chn5: i2c@5 {
+> @@ -542,6 +856,44 @@ i2c6mux0chn7: i2c@7 {
+>  			reg = <7>;
+>  		};
+>  	};
+> +
+> +	pca3: pca9539@74 {
 
-Use Linux coding style comments. /* and blank line
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
 
-....
+> +		compatible = "nxp,pca9539";
+> +		reg = <0x74>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +	};
+> +
+> +	pca4: pca9539@77 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+> +		compatible = "nxp,pca9539";
+> +		reg = <0x77>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		gpio-line-names =
+> +			"PE_NVMED0_EXP_PRSNT_N",
+> +			"PE_NVMED1_EXP_PRSNT_N",
+> +			"PE_NVMED2_EXP_PRSNT_N",
+> +			"PE_NVMED3_EXP_PRSNT_N",
+> +			"LED_FAULT_NVMED0",
+> +			"LED_FAULT_NVMED1",
+> +			"LED_FAULT_NVMED2",
+> +			"LED_FAULT_NVMED3",
+> +			"FAN0_PRESENCE_R_N",
+> +			"FAN1_PRESENCE_R_N",
+> +			"FAN2_PRESENCE_R_N",
+> +			"FAN3_PRESENCE_R_N",
+> +			"FAN4_PRESENCE_R_N",
+> +			"FAN5_PRESENCE_N",
+> +			"FAN6_PRESENCE_N",
+> +			"";
+> +	};
+>  };
+>  
+>  &i2c7 {
+> @@ -809,6 +1161,191 @@ regulator@41 {
+>  		compatible = "infineon,ir38263";
+>  		reg = <0x41>;
+>  	};
+> +
+> +	led-controller@61 {
+> +		compatible = "nxp,pca9552";
+> +		reg = <0x61>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+
+...
+
+> +		led@15 {
+> +			label = "pe-cp-drv3-perst";
+> +			reg = <15>;
+> +			retain-state-shutdown;
+> +			default-state = "keep";
+> +			type = <PCA955X_TYPE_LED>;
+> +		};
+> +	};
+> +
+> +	pca1: pca9539@75 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+
 
 Best regards,
 Krzysztof
