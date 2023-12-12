@@ -2,180 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CC580E78A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 10:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06D680E69E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 09:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbjLLIpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 03:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
+        id S1345948AbjLLItL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 03:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231724AbjLLIpX (ORCPT
+        with ESMTP id S229449AbjLLItK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 03:45:23 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1217AEB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:45:29 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so80629001fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:45:28 -0800 (PST)
+        Tue, 12 Dec 2023 03:49:10 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F28A1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:49:15 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3332efd75c9so4859016f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 00:49:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702370727; x=1702975527; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Omz/DgpKUeGQilLLhVjXFEyh0Z9R1EKXUyzxBMs6J7A=;
-        b=ib6MRxWIL6rcsVNiLs0MzvX7Lah9Ouj/7I9hxsARoR6+2FR0r3xQ8YhmIeFC6xrjzq
-         AtlibE6fZddGgE43fiRwhBcMmvyBmfCVrGNu5ZuB01GSvfJpbN/Qy9PvJMxGatcSCSHr
-         HUV6SjIUttnXfSFIX4OnRsaKfzmYMtbm98TycLD8KNfLZRIgoTHfa89tRKFMQKs5lGOC
-         Pq8oomORwJv38mYaBGJ+TOpEFngYknY2469FfyoxmQgl6KQy/10dF0bU7tsTc3BB788J
-         vYuKnvxP2BH8v/5b+twYKxMFID6PL3xh7mG/4d9MZT8zX8fZF3hu2DUivtp/vyF8p8ie
-         nXdA==
+        d=citrix.com; s=google; t=1702370954; x=1702975754; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6uZzm+Qo9kyEz193letIHfqz7iKse8Vcx14IHv462OI=;
+        b=VfxYjRpCnjM/k0+8JnMAv1EHfq0A+Ttqtsk+bvbP0ONX86EoRk3Eax/HeP93qeQA5T
+         cvQV2jJLQNorkK5RUq0JxKZZiF3jwtFbJd5Mty0GY31EH88l5hfF4CHTwtILUM1xKU3r
+         KhHBYi9ILlkG+LPTStq+YUW//zCHD53nUYz28=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702370727; x=1702975527;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Omz/DgpKUeGQilLLhVjXFEyh0Z9R1EKXUyzxBMs6J7A=;
-        b=fEDVcXvfKv3RYuT69iSc+v3jA1HHlDKaGa/UxzpYK5gtwAtEUQ6cCymrw2NxGKexKG
-         cUYo26TS37eUFYX80ks9J6EUvdWqXOIDD+LClP8565ezGDzgbaJmMm9AtW1rWixztzeM
-         xplnP/Tk/wzd2LcIcFWRu+ZOvD9cBgPFiVXAHRMnDxzE7a1/uWhQviD7ypk6TIDUXXBf
-         /QHI9+24nN1aUCid8Fi22CsqkT2h7Pc5Itb/F1xITg6YtjPSNpm9qompu9PWpFbNsVxK
-         uge7eCYaEpdcJVIuQNfMMQ05Tq3czSeQjNkdLPsRl/sP4tbRGrUdxTYjtoKiNt7tGl1J
-         AQGg==
-X-Gm-Message-State: AOJu0YxVQJE33SLqDoWcENwlc3bCOnoTF3NKWhyUhgm3uipo9+l/xYG8
-        k2d2wjheAqW1d+bAWunajsQ2oA==
-X-Google-Smtp-Source: AGHT+IHMmAjqRoFuJlflIFweqSIshflAgg68eCfZzlldRID0DuaOj865r76XRIm+aaLf+ki8Cy/CUw==
-X-Received: by 2002:a2e:a883:0:b0:2cc:1c66:5de7 with SMTP id m3-20020a2ea883000000b002cc1c665de7mr3241908ljq.36.1702370727197;
-        Tue, 12 Dec 2023 00:45:27 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id c27-20020a50d65b000000b0054c9bbd07e7sm4650471edj.54.2023.12.12.00.45.26
+        d=1e100.net; s=20230601; t=1702370954; x=1702975754;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6uZzm+Qo9kyEz193letIHfqz7iKse8Vcx14IHv462OI=;
+        b=QC/sHNLN8YR83ZgmyzEZUmPM1v81aHoUFT/sDHOz/tt4UZJgBijoqZLWYJOL6cREVk
+         y7NiR5SGmgZ842pm1fU3XI+YpRltSSdYFi18BvfJm2bmibfJzHKHcnICADfgGSFTDNaS
+         GHJz41CHZFV7Y6EiHoTYu/zCu8buC+Vwj1XwgvE6AGrr4emIG8slRUyv6wdvXsvhTcd5
+         9ATfPebvOSY13ny7nN/Cwio1iKLFO6zR4bKHhF0r7fP9A4usBWOErXtufJHefIsU0vHz
+         p/3LZKHKGRdPhA32ysbjcqnSsGLzjYRl7RneFE9ibadTGCKhK84aX9OFNMy/g0D/EKbI
+         d4FA==
+X-Gm-Message-State: AOJu0Yw5DII6r0xcIsRE6OaX+1RHTIZJb780NKDc8Qv5i7Al7LpgTagX
+        bapT48UT2XND9+eueyRqz35Xrw==
+X-Google-Smtp-Source: AGHT+IEZFnrGwnWVMUa8WqvQ1kBpf2Ui1ZoWTnehWdJvArdWdni7kizYW7qHE4fznbzxBvAlLIdv1A==
+X-Received: by 2002:a05:6000:1012:b0:333:174f:edd8 with SMTP id a18-20020a056000101200b00333174fedd8mr1089314wrx.50.1702370954354;
+        Tue, 12 Dec 2023 00:49:14 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id v13-20020a5d590d000000b003363469490asm503631wrd.111.2023.12.12.00.49.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 00:45:26 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Tue, 12 Dec 2023 09:45:19 +0100
-Subject: [PATCH v5 3/3] remoteproc: qcom: pas: Add SM8650 remoteproc
- support
+        Tue, 12 Dec 2023 00:49:13 -0800 (PST)
+Date:   Tue, 12 Dec 2023 09:49:13 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     "Chen, Jiqian" <Jiqian.Chen@amd.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "Stabellini, Stefano" <stefano.stabellini@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Hildebrand, Stewart" <Stewart.Hildebrand@amd.com>,
+        "Ragiadakou, Xenia" <Xenia.Ragiadakou@amd.com>,
+        "Huang, Honglei1" <Honglei1.Huang@amd.com>,
+        "Zhang, Julia" <Julia.Zhang@amd.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>
+Subject: Re: [RFC KERNEL PATCH v2 2/3] xen/pvh: Unmask irq for passthrough
+ device in PVH dom0
+Message-ID: <ZXgeieg4E8UN0KoN@macbook>
+References: <alpine.DEB.2.22.394.2311301912350.110490@ubuntu-linux-20-04-desktop>
+ <ZWmgJNidFsfkDp7q@macbook>
+ <alpine.DEB.2.22.394.2312011857260.110490@ubuntu-linux-20-04-desktop>
+ <ZW2ptexPQXrWBiOS@macbook>
+ <alpine.DEB.2.22.394.2312041413000.110490@ubuntu-linux-20-04-desktop>
+ <ZW7rDjjC0gxEI1cq@macbook>
+ <15275706-5c31-4e29-aa29-9f5e90526219@suse.com>
+ <BL1PR12MB5849C871B0B9577D1E0BF576E784A@BL1PR12MB5849.namprd12.prod.outlook.com>
+ <ZXculMdLgwGaRC7i@macbook>
+ <BL1PR12MB584997DDE6839F2340022976E78EA@BL1PR12MB5849.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231212-topic-sm8650-upstream-remoteproc-v5-3-e749a1a48268@linaro.org>
-References: <20231212-topic-sm8650-upstream-remoteproc-v5-0-e749a1a48268@linaro.org>
-In-Reply-To: <20231212-topic-sm8650-upstream-remoteproc-v5-0-e749a1a48268@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2575;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=rcCMAhKznACH/kVnuoo9vdWWRW8gyLT1bcz1jsoDm8U=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleB2hQh4l3ez5dH/Fy4acIk6r7JJPBD0Sk8rMok+E
- Mqixxc6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXgdoQAKCRB33NvayMhJ0aznD/
- 47ng77aB6Y9baLrDGX4/bd8O72LboU3vWD4/mB6rxaa+3p8cJ/0K67eNwKRkiZnqQZRfzsYKhj4GXB
- jOBpDGHiZ2OLds8CJCrlksNmzRU4T4YPc4W6+ZytTMQ6998IxX/F8iAsytGaDKNkP8ol1tWGkTrblG
- JnjjAkr6oxN5+eQFMnoYn3xbEal8xsKt/zE+I2dKcHkf8oTTbM2xWQL0sBgoRTI+0sDtPEvg215MiJ
- mLZVe9zUdr0FhN4ZFHz2qUcl/+bqfquuq9uDksDOfthkXwAbZaCOMJmT+J4baqVVOgZRfTK7gkX6fB
- D11yZxX7OxoSiayxX5b9PKiRFXNhCi55CJjEHAK3lS1wPXvrASwmCZz3LBP3QXWhOVH2jqeQEhxUwa
- yRmAjGPBleIRi4NLLlPwR0Hqf4x5n2lVYCm/QgL8iFm7h0dAtcRYnube/CujZUCnMPaTVFHnhdBGBT
- Zk+iCe0SBrJ/8U2z0Ib/XVJVRdlgfw/ZL5btaLpMTFQoszGzff7382GJCypjSsrNt2NyyMh4k5EFPL
- X1h40u1u5otDmBUI86Jar4hHKAOvUFPzd3kBXibYTqSSaTpZF13J9VtjEKmqEeUBVCEB6V5/ocqmgd
- VXMpyreoTwOmRPElManJpF6wWs1QSaaUT9ZJGhOaZwyprXWS5wydh727DVIw==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BL1PR12MB584997DDE6839F2340022976E78EA@BL1PR12MB5849.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DSP Peripheral Authentication Service support for the SM8650 platform.
+On Tue, Dec 12, 2023 at 06:16:43AM +0000, Chen, Jiqian wrote:
+> On 2023/12/11 23:45, Roger Pau Monné wrote:
+> > On Wed, Dec 06, 2023 at 06:07:26AM +0000, Chen, Jiqian wrote:
+> >>
+> >> When PVH dom0 enable a device, it will get trigger and polarity from ACPI (see acpi_pci_irq_enable)
+> >> I have a version of patch which tried that way, see below:
+> >>
+> >> diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
+> >> index ada3868c02c2..43e1bda9f946 100644
+> >> --- a/arch/x86/xen/enlighten_pvh.c
+> >> +++ b/arch/x86/xen/enlighten_pvh.c
+> >> @@ -1,6 +1,7 @@
+> >>  // SPDX-License-Identifier: GPL-2.0
+> >>  #include <linux/acpi.h>
+> >>  #include <linux/export.h>
+> >> +#include <linux/pci.h>
+> >>
+> >>  #include <xen/hvc-console.h>
+> >>
+> >> @@ -25,6 +26,127 @@
+> >>  bool __ro_after_init xen_pvh;
+> >>  EXPORT_SYMBOL_GPL(xen_pvh);
+> >>
+> >> +typedef struct gsi_info {
+> >> +       int gsi;
+> >> +       int trigger;
+> >> +       int polarity;
+> >> +       int pirq;
+> >> +} gsi_info_t;
+> >> +
+> >> +struct acpi_prt_entry {
+> >> +       struct acpi_pci_id      id;
+> >> +       u8                      pin;
+> >> +       acpi_handle             link;
+> >> +       u32                     index;          /* GSI, or link _CRS index */
+> >> +};
+> >> +
+> >> +static int xen_pvh_get_gsi_info(struct pci_dev *dev,
+> >> +                                                               gsi_info_t *gsi_info)
+> >> +{
+> >> +       int gsi;
+> >> +       u8 pin = 0;
+> >> +       struct acpi_prt_entry *entry;
+> >> +       int trigger = ACPI_LEVEL_SENSITIVE;
+> >> +       int polarity = acpi_irq_model == ACPI_IRQ_MODEL_GIC ?
+> >> +                                     ACPI_ACTIVE_HIGH : ACPI_ACTIVE_LOW;
+> >> +
+> >> +       if (dev)
+> >> +               pin = dev->pin;
+> >> +       if (!pin) {
+> >> +               xen_raw_printk("No interrupt pin configured\n");
+> >> +               return -EINVAL;
+> >> +       }
+> >> +
+> >> +       entry = acpi_pci_irq_lookup(dev, pin);
+> >> +       if (entry) {
+> >> +               if (entry->link)
+> >> +                       gsi = acpi_pci_link_allocate_irq(entry->link,
+> >> +                                                        entry->index,
+> >> +                                                        &trigger, &polarity,
+> >> +                                                        NULL);
+> >> +               else
+> >> +                       gsi = entry->index;
+> >> +       } else
+> >> +               return -EINVAL;
+> >> +
+> >> +       gsi_info->gsi = gsi;
+> >> +       gsi_info->trigger = trigger;
+> >> +       gsi_info->polarity = polarity;
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int xen_pvh_map_pirq(gsi_info_t *gsi_info)
+> >> +{
+> >> +       struct physdev_map_pirq map_irq;
+> >> +       int ret;
+> >> +
+> >> +       map_irq.domid = DOMID_SELF;
+> >> +       map_irq.type = MAP_PIRQ_TYPE_GSI;
+> >> +       map_irq.index = gsi_info->gsi;
+> >> +       map_irq.pirq = gsi_info->gsi;
+> >> +
+> >> +       ret = HYPERVISOR_physdev_op(PHYSDEVOP_map_pirq, &map_irq);
+> >> +       gsi_info->pirq = map_irq.pirq;
+> >> +
+> >> +       return ret;
+> >> +}
+> >> +
+> >> +static int xen_pvh_unmap_pirq(gsi_info_t *gsi_info)
+> >> +{
+> >> +       struct physdev_unmap_pirq unmap_irq;
+> >> +
+> >> +       unmap_irq.domid = DOMID_SELF;
+> >> +       unmap_irq.pirq = gsi_info->pirq;
+> >> +
+> >> +       return HYPERVISOR_physdev_op(PHYSDEVOP_unmap_pirq, &unmap_irq);
+> >> +}
+> >> +
+> >> +static int xen_pvh_setup_gsi(gsi_info_t *gsi_info)
+> >> +{
+> >> +       struct physdev_setup_gsi setup_gsi;
+> >> +
+> >> +       setup_gsi.gsi = gsi_info->gsi;
+> >> +       setup_gsi.triggering = (gsi_info->trigger == ACPI_EDGE_SENSITIVE ? 0 : 1);
+> >> +       setup_gsi.polarity = (gsi_info->polarity == ACPI_ACTIVE_HIGH ? 0 : 1);
+> >> +
+> >> +       return HYPERVISOR_physdev_op(PHYSDEVOP_setup_gsi, &setup_gsi);
+> >> +}
+> > 
+> > Hm, why not simply call pcibios_enable_device() from pciback?  What
+> pcibios_enable_device had been called when using cmd "xl pci-assignable-add sbdf" from pciback. But it didn't do map_pirq and setup_gsi.
+> Because pcibios_enable_device-> pcibios_enable_irq-> __acpi_register_gsi(acpi_register_gsi_ioapic PVH specific)
+> > you are doing here using the hypercalls is a backdoor into what's done
+> > automatically by Xen on IO-APIC accesses by a PVH dom0.
+> But the gsi didn't be unmasked, and vioapic_hwdom_map_gsi is never called.
+> So, I think in pciback, if we can do what vioapic_hwdom_map_gsi does.
+>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 50 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+I see, it does setup the IO-APIC pin but doesn't unmask it, that's
+what I feared.
 
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 46d744fbe8ad..83dcde2dec61 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -1197,6 +1197,53 @@ static const struct adsp_data sm8550_mpss_resource = {
- 	.region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
- };
- 
-+static const struct adsp_data sm8650_cdsp_resource = {
-+	.crash_reason_smem = 601,
-+	.firmware_name = "cdsp.mdt",
-+	.dtb_firmware_name = "cdsp_dtb.mdt",
-+	.pas_id = 18,
-+	.dtb_pas_id = 0x25,
-+	.minidump_id = 7,
-+	.auto_boot = true,
-+	.proxy_pd_names = (char*[]){
-+		"cx",
-+		"mxc",
-+		"nsp",
-+		NULL
-+	},
-+	.load_state = "cdsp",
-+	.ssr_name = "cdsp",
-+	.sysmon_name = "cdsp",
-+	.ssctl_id = 0x17,
-+	.region_assign_idx = 2,
-+	.region_assign_count = 1,
-+	.region_assign_shared = true,
-+	.region_assign_vmid = QCOM_SCM_VMID_CDSP,
-+};
-+
-+static const struct adsp_data sm8650_mpss_resource = {
-+	.crash_reason_smem = 421,
-+	.firmware_name = "modem.mdt",
-+	.dtb_firmware_name = "modem_dtb.mdt",
-+	.pas_id = 4,
-+	.dtb_pas_id = 0x26,
-+	.minidump_id = 3,
-+	.auto_boot = false,
-+	.decrypt_shutdown = true,
-+	.proxy_pd_names = (char*[]){
-+		"cx",
-+		"mss",
-+		NULL
-+	},
-+	.load_state = "modem",
-+	.ssr_name = "mpss",
-+	.sysmon_name = "modem",
-+	.ssctl_id = 0x12,
-+	.region_assign_idx = 2,
-+	.region_assign_count = 2,
-+	.region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
-+};
-+
- static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,msm8226-adsp-pil", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,msm8953-adsp-pil", .data = &msm8996_adsp_resource},
-@@ -1249,6 +1296,9 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,sm8550-adsp-pas", .data = &sm8550_adsp_resource},
- 	{ .compatible = "qcom,sm8550-cdsp-pas", .data = &sm8550_cdsp_resource},
- 	{ .compatible = "qcom,sm8550-mpss-pas", .data = &sm8550_mpss_resource},
-+	{ .compatible = "qcom,sm8650-adsp-pas", .data = &sm8550_adsp_resource},
-+	{ .compatible = "qcom,sm8650-cdsp-pas", .data = &sm8650_cdsp_resource},
-+	{ .compatible = "qcom,sm8650-mpss-pas", .data = &sm8650_mpss_resource},
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, adsp_of_match);
+> > It will be much more natural for the PVH dom0 model to simply use the
+> > native way to configure and unmask the IO-APIC pin, and that would
+> > correctly setup the triggering/polarity and bind it to dom0 without
+> > requiring the usage of any hypercalls.
+> Do you still prefer that I called unmask_irq in pcistub_init_device, as this v2 patch do?
+> But Thomas Gleixner think it is not suitable to export unmask_irq.
 
--- 
-2.34.1
+Yeah, that wasn't good.
 
+> > 
+> > Is that an issue since in that case the gsi will get mapped and bound
+> > to dom0?
+> Dom0 do map_pirq is to pass the check xc_domain_irq_permission()-> pirq_access_permitted(), 
+
+Can we see about finding another way to fix this check?
+
+One option would be granting permissions over the IRQ in
+PHYSDEVOP_setup_gsi?
+
+Otherwise we could see about modifying the logic in PHYSDEVOP_map_pirq
+so that the hardware domain can map IRQs to other domains without
+having it mapped to itself first?
+
+I think the call to PHYSDEVOP_setup_gsi in pciback is fine, but I
+would really like to avoid the usage of PHYSDEVOP_{,un}map_pirq on a
+PVH dom0 against itself.
+
+> > 
+> > Otherwise I would prefer if the gsi is just configured from pciback
+> > (PHYSDEVOP_setup_gsi) but not mapped, as allowing a PVH dom0 to map
+> > interrupts using PHYSDEVOP_{,un}map_pirq to itself introduces a new
+> > interface to manage interrupts that clashes with the native way that a
+> > PVH dom0 uses.
+> This method does map_pirq and setup_gsi only when a device is assigned to passthrough, it won't affect the other device using native way.
+
+It's not affected because of the specific usage in Linux, but allowing
+the interface to be used against itself (so to manage interrupts
+from assigned to dom0) is opening a whole new way to setup interrupts,
+and it's unclear to me how that will affect the current way we use to
+manage interrupts on a PVH dom0.
+
+Thanks, Roger.
