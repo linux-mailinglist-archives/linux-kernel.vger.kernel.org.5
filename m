@@ -2,156 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F198D80F875
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0E080F876
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Dec 2023 21:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377255AbjLLUwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 15:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        id S1377389AbjLLUwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 15:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbjLLUwZ (ORCPT
+        with ESMTP id S235276AbjLLUw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 15:52:25 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C7FD2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 12:51:28 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1rD9hL-0006JL-4s; Tue, 12 Dec 2023 21:49:47 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1rD9hI-00FQAr-Q7; Tue, 12 Dec 2023 21:49:44 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id BF57D261699;
-        Tue, 12 Dec 2023 20:49:42 +0000 (UTC)
-Date:   Tue, 12 Dec 2023 21:49:41 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH RESEND v1 2/7] dt-bindings: can: mpfs: add missing
- required clock
-Message-ID: <20231212-unreeling-depose-8b6b2e032555-mkl@pengutronix.de>
-References: <20231208-reenter-ajar-b6223e5134b3@spud>
- <20231208-palpitate-passable-c79bacf2036c@spud>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4h2qlcdcaxtarwhl"
+        Tue, 12 Dec 2023 15:52:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C748188;
+        Tue, 12 Dec 2023 12:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702414301; x=1733950301;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=oILEYhUTyld4ghsJPZrm2tbqvnMqj8g9TOUzrDYg7Vo=;
+  b=WtJNMB+HoQRrUeTE2tlunejiod4AUpbjfzOtmnBqX/dXxi5kbV5XzULo
+   h4IEUN3g3dRhLeKfx/CVA9F+9TFXHE0eY5z9yo3sBSRsLON825eMrxcgW
+   epL4wMFQ5obkxFAGckeTAzy304K0P56QJe0SNihWmqjyV+fd5+C9TH3Bc
+   GWLVEJFnDVrauPy90sPbk3Z6vnMhPFGc5/tMVo1quVBTWZXrrMBI0ES6E
+   R6AtrryPDrqy9V/K/BztuEjm//OepSRX0aLO1go1UyDNVFO3fhFe0vzi8
+   cs/ORe0xP+nvwVC4WtAHg43CzxlEs6YTO/zajjGLwoeRI0l/qVlteJH5J
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="1942481"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="1942481"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 12:50:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="1105044618"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="1105044618"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Dec 2023 12:50:51 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 12 Dec 2023 12:50:51 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 12 Dec 2023 12:50:51 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 12 Dec 2023 12:50:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iqJkSCYeppyLAQIuCGCaNzwQMk1h5r7/kXyUgJ2N6VSAKIoXnpDnTrRt2DTeAtgN5y9/ijpycrKmDW+Yo9ntjzpe/7bzBskn5VJeY6uyKabM/g3XiEQHFDfVkKtOd8ITQmcttrASjQv3EtREjEoyJ3OPJyexG3u6dnnD0/thjvCsNbagTJSkAa7dVoKGF9Ysw2nv7Ju7ra11NyZQYANaEpl3arUvplzmNfZfrTdZk9wpqZr0OAQofYF9YK2qPRYXYJLYHerfSWgS3Gvv3g7jAl1hjfFRNI4iq9PeLz2SIIq/xbVjvlRh4wYYQi0ccHBp328A1wa43VBsIGWEMAGN0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1uv8Vj7lcfWwFSG13gl5gV852yM+F8Ykmw+zmFLfOoQ=;
+ b=iqDL0QJqGI/0MH5Oc18ruQrHtAfmNDtc2kH26gHV4HPAzUjfMRFGT6vtKm6vM+V208iqgxUJhxe3NnVtXTVwxsvIntFE71WXNmdLVtCPqTC4W6cQveWY+DUrJjOhJ8DtsYp/anj//EakBxNQDe0mtTrWJ3VKNpBWcmSaXg3Ha+hzRQnrl7SywkGUKzWJB+VAJKGLgzrsdwcHXNaR2ia2c1x+YgkVKAxJknuYkX7wMxB8ZD+1w/30d9I+KOuNRe9GN5T0Cfm8hJVB/9ZPC8Oznzg0WjjqXsu0T6m1uME0ded24hUQ0zAEm7LTtQfwTs4Z3KHEvwMkeI9jrcvz5tbcrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by PH0PR11MB5205.namprd11.prod.outlook.com (2603:10b6:510:3d::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Tue, 12 Dec
+ 2023 20:50:46 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7068.031; Tue, 12 Dec 2023
+ 20:50:46 +0000
+Date:   Tue, 12 Dec 2023 12:50:41 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH v2 6/7] firmware/efi: Process CXL Component Events
+Message-ID: <6578c7a1707c1_2253952944@iweiny-mobl.notmuch>
+References: <20231211-cxl-cper-v2-0-c116900ba658@intel.com>
+ <20231211-cxl-cper-v2-6-c116900ba658@intel.com>
+ <657891bb7ec69_269bd29421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231208-palpitate-passable-c79bacf2036c@spud>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <657891bb7ec69_269bd29421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: SJ0PR03CA0042.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::17) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH0PR11MB5205:EE_
+X-MS-Office365-Filtering-Correlation-Id: fef0c282-9dd7-45cd-626a-08dbfb540392
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lkKqvRsAI35d/+XM30QFsxUzr20rZne1LFV7GyC6BFKLAQGC7R9e3M/00oImNJWTPtD5cixd91TP8rJCLwm614ddfk5tEmEj2C5xyYBLxkq6Sj/lRYg9iwpGBCZMwSZCaiR/Nlo3EL8qPdZDSu79Op3eUTT6wtie3YrcG2Q/+vmDB5dm4cBT0O51iS4cAx7INFvWRxAyVIHd4kCT1RQhv67c/XQMWIdPsrpAXtJatQO9IFHpZMBzGf7JWICxaWc0E/1a3lP7+phYCuZ2PxysCxeEreSXXRCHcXAz0L/YXl3GakyEWvnShrBGxSUBLaxgaXlekWyUr+lVOfL0S7RnIATkZo614/SyPfqAD6mcovDZhlp5+xDaip3f+LOkNWu/R1jgId3trDaVaMQXlWe5TisMiWZCPreivBiMs9YI9Uy6XMP6WwEtQWsXoB+cTyyhQ6ZOSJxUqAzah7xDkDnhLbnY3ulV1oVASQ78oKYc2FDqE8NTBOeu/5AM6AWmIkyNPz/rb+j2ehuANVunVIqZ2ljTKnG59yz2B3wb9RU9sTd2NxMLzL/4UFH+8ZFj7hsj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(107886003)(6512007)(9686003)(6506007)(66946007)(5660300002)(4326008)(41300700001)(8936002)(44832011)(2906002)(6486002)(110136005)(8676002)(478600001)(26005)(316002)(6666004)(66476007)(54906003)(38100700002)(86362001)(82960400001)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gfVt99aPFpBlqrANFgwQaS9sVZEpQptxQrlHKBSumVY3hG6gA9XnD9HJQ9uU?=
+ =?us-ascii?Q?kyAai6/aM4jQvbhOzqQFbOo/9p+raCkjLwA1u2HDbIauKNJSkvjwWNESw7EK?=
+ =?us-ascii?Q?HyMOPGKZtxOQ1NN/P9hlLiVfNnXxInTy79Gk/nE0Qh7JxE0xKhxipaHW4oeo?=
+ =?us-ascii?Q?Ojhx+D9P7NYBrXg7QCVu70ia/Lx+CIoyqNsYBZoEApzF/x5hjpWf62jrsNKi?=
+ =?us-ascii?Q?siUbTfcJl9U86Bf3jA8O4P0E54WJzvutcDtTjEc9H7RnkbDpKi4Os197rhss?=
+ =?us-ascii?Q?H6HvnGW+MTpHHxgZbNCeIJGVkIF+V2WJxaJLQfd1SgGETYkRWxoLsLwMrkHS?=
+ =?us-ascii?Q?7eSrW1mBYq2ptfYAcnaHLS573kgvzeS6wj0wSqeslT46LdpHwR/qn/Tl2HB+?=
+ =?us-ascii?Q?xUJDx6Rv04VdXWnAAsLTMSNcbnMkRAvkmwz0r1GpDxEiCrw2nTH7uYkaUdWf?=
+ =?us-ascii?Q?3BapGQDuhOw9uD0q25GO6oRiWukpdtMmW8axlhOuicMq84QGZDs6Bhb3S2fn?=
+ =?us-ascii?Q?t2YHeJJwC1r97rrvhFp8/Srjhin+xBHMD2NLjL3cz8WQ44CHGhn7QF/Yy7K9?=
+ =?us-ascii?Q?ZpoOp5/uBDvjS8e6jsrPL17BOROtR75swDZRwITBZ26Hya+O44gRFsYt7Yom?=
+ =?us-ascii?Q?YxiACbCXpCCb3rAFqiKPPZ6sK4kGGzx76R0nBQwZhguratLrU4JtR0c4EIkU?=
+ =?us-ascii?Q?ekaEb3EFbmRvr5D6E5AvpiesGAtk1VxViB49ANdBg8Tan+jlt+OWh64Zvobd?=
+ =?us-ascii?Q?602Ihp2zS33ay9jDe8F76F3J+qdC8YD8ifTmrUZao3+z/CohMDKmmiuIZzeK?=
+ =?us-ascii?Q?1kWcl1GGPTd5TesU+Jei77xdb9J1fWU1CQRT477TXt/ESJOXizyK2tTr2P4E?=
+ =?us-ascii?Q?MfM0BULNRtIlWOvgJrzyHBM78qxeyjpW87b98xf9Tiv28KN+qDtd1sIreuFr?=
+ =?us-ascii?Q?wOZsbW5j089nxsZoDS+pIlILLSQlrA+HI3EJekyMMFmgMMfsk6G37s6V7rAf?=
+ =?us-ascii?Q?me2ftT1TeoSAbtJp4dBrq+Qt/lEA5JsXFepwUR0xEzxAtZrZzyMzrulaU8MZ?=
+ =?us-ascii?Q?8098uD+IeTG194qRsVg5zpob+KwGQQETW/L7u4xRjibdIUvw0kdO2IZ3zq6J?=
+ =?us-ascii?Q?t01UBQMxZ6ncBZhnzvLHctztvUG3ZvPGMmZY065NdnYYHscmzxT/I+6/0j9G?=
+ =?us-ascii?Q?j3jBOjoBGwCnKGCA001ZArT94Hzfd/g1b/bm69a4U0SYxUFnVQAE1bwhrNP4?=
+ =?us-ascii?Q?dhbK5E3Wl2csElkLotvnwsl8KzZNVFAQBcj4wgJoX3CTj4lNKFESmQBJdIc5?=
+ =?us-ascii?Q?l/t11v4P7+QK7Rr1wQFVIYlXOGpLqqNjFXSkKrJWuSNzNW2NU7qxjkqIQ+jb?=
+ =?us-ascii?Q?4b3RRWklxbLSg48/dtehZFSNpziSauA2sHTTjdgHjEEXesbCOC03c2KGqgtc?=
+ =?us-ascii?Q?Fs7Ow63Dq1R4hMAkB9Nvg8mG4/Oc5EtpO7NiC3uzOR7incwXQjePT/nx/ELJ?=
+ =?us-ascii?Q?/1Ori304MDpgSOP+JOuS55WMOe1Wi/ZnTL6mnSEj8n5GwyAWzQC6NrkBjgKH?=
+ =?us-ascii?Q?c8ic5WhnRSshOzXmLV6EbkdoSMhZipGx2y++sF37?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fef0c282-9dd7-45cd-626a-08dbfb540392
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 20:50:46.1089
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WwyOu3HfqjOaUvaTf/nd1O4ilZwQP6Ryq+mPdcVHS4618bAMVl6z2KnbzMJU0vTPM3IxJkXihamPWlxt9HHWAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5205
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dan Williams wrote:
+> Ira Weiny wrote:
+> > BIOS can configure memory devices as firmware first.  This will send CXL
+> > events to the firmware instead of the OS.  The firmware can then send
+> > these events to the OS via UEFI.
+> > 
+> > UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
+> > format for CXL Component Events.  The format is mostly the same as the
+> > CXL Common Event Record Format.  The difference is a GUID is used in
+> > the Section Type to identify the event type.
+> > 
+> > Add EFI support to detect CXL CPER records and call a notifier chain
+> > with the record data blobs to be processed by the CXL code.
+> 
+> It is no longer a notifier chain in this version. I wouldn't even call
+> it a notifier, it's just a registered callback.
 
---4h2qlcdcaxtarwhl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah yea I missed that in my rework sorry.
 
-On 08.12.2023 17:12:24, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->=20
-> The CAN controller on PolarFire SoC has an AHB peripheral clock _and_ a
-> CAN bus clock. The bus clock was omitted when the binding was written,
-> but is required for operation. Make up for lost time and add it.
->=20
-> Cautionary tale in adding bindings without having implemented a real
-> user for them perhaps.
->=20
-> Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN contr=
-oller")
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml    | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can=
-=2Eyaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> index 45aa3de7cf01..05f680f15b17 100644
-> --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
-> @@ -24,7 +24,10 @@ properties:
->      maxItems: 1
-> =20
->    clocks:
-> -    maxItems: 1
-> +    maxItems: 2
-> +    items:
-> +      - description: AHB peripheral clock
-> +      - description: CAN bus clock
+[snip]
 
-Do we we want to have a "clock-names" property, as we need the clock
-rate of the CAN bus clock.
+> > +DECLARE_RWSEM(cxl_cper_rw_sem);
+> > +static cxl_cper_notifier cper_notifier;
+> > +
+> > +void cxl_cper_post_event(const char *pfx, guid_t *sec_type,
+> > +			 struct cper_cxl_event_rec *rec)
+> > +{
+> > +	struct cxl_cper_event_data data = {
+> > +		.rec = rec,
+> > +	};
+> > +
+> > +	if (!(rec->hdr.validation_bits & CPER_CXL_COMP_EVENT_LOG_VALID)) {
+> > +		pr_err(FW_WARN "cxl event no Component Event Log present\n");
+> > +		return;
+> > +	}
+> > +
+> > +	if (guid_equal(sec_type, &CPER_SEC_CXL_GEN_MEDIA_GUID))
+> > +		data.event_type = CXL_CPER_EVENT_GEN_MEDIA;
+> > +	else if (guid_equal(sec_type, &CPER_SEC_CXL_DRAM_GUID))
+> > +		data.event_type = CXL_CPER_EVENT_DRAM;
+> > +	else if (guid_equal(sec_type, &CPER_SEC_CXL_MEM_MODULE_GUID))
+> > +		data.event_type = CXL_CPER_EVENT_MEM_MODULE;
+> > +
+> > +	down_read(&cxl_cper_rw_sem);
+> 
+>    guard(rwsem_read)(&cxl_cper_rw_sem);
 
-Marc
+Much better.  Done throughout.
 
-> =20
->  required:
->    - compatible
-> @@ -39,7 +42,7 @@ examples:
->      can@2010c000 {
->          compatible =3D "microchip,mpfs-can";
->          reg =3D <0x2010c000 0x1000>;
-> -        clocks =3D <&clkcfg 17>;
-> +        clocks =3D <&clkcfg 17>, <&clkcfg 37>;
->          interrupt-parent =3D <&plic>;
->          interrupts =3D <56>;
->      };
+> 
+> > +	if (cper_notifier)
+> > +		cper_notifier(&data);
+> > +	up_read(&cxl_cper_rw_sem);
+> > +}
+> > +
+> > +void cxl_cper_register_notifier(cxl_cper_notifier notifier)
+> > +{
+> > +	down_write(&cxl_cper_rw_sem);
+> 
+>    guard(rwsem_write)(&cxl_cper_rw_sem);
+> 
+> > +	cper_notifier = notifier;
+> 
+> I would enforce that there is only one registrant and explicitly fail
+> attempts to assign more than one.
 
-Marc
+Done.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+> 
+> > +	up_write(&cxl_cper_rw_sem);
+> > +}
+> > +EXPORT_SYMBOL_NS_GPL(cxl_cper_register_notifier, CXL);
+> > +
+> > +void cxl_cper_unregister_notifier(void)
+> > +{
+> > +	down_write(&cxl_cper_rw_sem);
+> 
+>    guard(rwsem_write)(&cxl_cper_rw_sem);
+> 
+> > +	cper_notifier = NULL;
+> 
+> This could enforce that the same callback specified at registration time
+> must also be passed at unregistration to disallow anonymous
+> unregistration.
+> 
+> Makes the code self documenting that the registrant is a singleton, and
+> that unregistration must precede the next registration.
 
---4h2qlcdcaxtarwhl
-Content-Type: application/pgp-signature; name="signature.asc"
+But what do we do if it does not match?  Returning an error will be
+ignored by the cxl_pci_driver_exit() and if we enforce the singleton in
+the registration I don't see a lot of room for error here.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmV4x1gACgkQvlAcSiqK
-BOgF/AgAhJ4xir0nA6ujdFUlOe+BWbITRC3gKi4T8KNqQvU+8gfmDpk0EjBpkbT0
-5H1M0A+FA44+z9JDq6MWnVWxoajf03KOfKBjbciOadSrrBXY96gIIAnJbpJTt8yj
-qCtULHegVD42Wd0VEtxqny4TTkSeTIDstqKX65M5PNn8wKKtVtbufPuFVTOZ08IA
-NSXUrGvAAhKVWGtY6fe/qw5BebQIDc6fdl3xzF0R6UZzKGluO5JVeMAItJ5HtT8K
-JiUGMmxEt+H2EpiQtVtY5arGq+RmwhMVSDu9CFCDgtNqbszvV8lXZebODUP+a2xu
-EDNNicG+TnD2kVzye9AYXJ+qizwySg==
-=Df6N
------END PGP SIGNATURE-----
+[snip]
 
---4h2qlcdcaxtarwhl--
+> > diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
+> > index 18dab4d90dc8..c764ff877a6d 100644
+> > --- a/include/linux/cxl-event.h
+> > +++ b/include/linux/cxl-event.h
+> > @@ -108,4 +108,55 @@ struct cxl_event_record_raw {
+> >  	union cxl_event event;
+> >  } __packed;
+> >  
+> > +enum cxl_event_type {
+> > +	CXL_CPER_EVENT_GEN_MEDIA,
+> > +	CXL_CPER_EVENT_DRAM,
+> > +	CXL_CPER_EVENT_MEM_MODULE,
+> > +};
+> > +
+> > +#pragma pack(1)
+> 
+> Looks like there is usage of __packed a few lines up, just pick
+> one-style. Prefer __packed vs #pragma when only a small handful of
+> structures need annotation as that is easier to check for correctness in
+> patch form.
+
+Ok I'll change it.  Smita requested the use of pragma but keeping the
+__packed is redundant right now.  And I'll go with your preference of
+__packed.
+
+Ira
