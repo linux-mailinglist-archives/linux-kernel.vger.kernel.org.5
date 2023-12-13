@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E9180FBD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E3580FBD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377625AbjLMAGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        id S1377665AbjLMAGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377732AbjLMAGh (ORCPT
+        with ESMTP id S1377734AbjLMAGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 19:06:37 -0500
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEF1132;
-        Tue, 12 Dec 2023 16:06:31 -0800 (PST)
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4883811A;
+        Tue, 12 Dec 2023 16:06:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702425992; x=1733961992;
+  t=1702425994; x=1733961994;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Jz8kgyam6i59G9GfakNoGFINiG08t4Jr479SrWRohZo=;
-  b=rXMc1hXIKd5oub+KFNLu8RGE+1zQvW59/i+2bNVEIwmnrTHgJNWzC27L
-   21LBt3FkW293/mZTOx0eAhle2gcngrshSXtZhnZx0WjD5mPDZottBe5Oh
-   MbI9XznreKvrNT5hRzs1tqVJkE/kLrWH0b0BdU4HfuQAuWwzM6UPvdG/N
-   Q=;
+  bh=IHxE/iueMjg5jk3J7QeMpZujdfbmXnsIes6SvH8utzQ=;
+  b=h2YU4YR9wcBn2kwVG+LxOLzaht5wGiWplBrw1iQvgQEnfE/GWJhznk7r
+   kn/3+aUb/TwmwTlEEOclmOuQ+rDPLPiAmR4MVtM96JUaXdrOc1suHL+nf
+   PDnNuuXCoW2qfXJwrjg0vijQQq3Vka0KecZGru6djuNuZyuShw/931eWC
+   s=;
 X-IronPort-AV: E=Sophos;i="6.04,271,1695686400"; 
-   d="scan'208";a="690702147"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-a65ebc6e.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:06:24 +0000
+   d="scan'208";a="382524268"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:06:27 +0000
 Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1e-m6i4x-a65ebc6e.us-east-1.amazon.com (Postfix) with ESMTPS id EC6BE67031;
-        Wed, 13 Dec 2023 00:06:09 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:9205]
+        by email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com (Postfix) with ESMTPS id E9CFD8179B;
+        Wed, 13 Dec 2023 00:06:13 +0000 (UTC)
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:11247]
  by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.147:2525] with esmtp (Farcaster)
- id 3f50b193-e344-4aae-8069-116bad994162; Wed, 13 Dec 2023 00:06:08 +0000 (UTC)
-X-Farcaster-Flow-ID: 3f50b193-e344-4aae-8069-116bad994162
+ id 7d1c1fe5-8e35-45c9-ab5b-5b98cbcd951c; Wed, 13 Dec 2023 00:06:12 +0000 (UTC)
+X-Farcaster-Flow-ID: 7d1c1fe5-8e35-45c9-ab5b-5b98cbcd951c
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 00:06:08 +0000
+ 15.2.1118.40; Wed, 13 Dec 2023 00:06:12 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 00:06:04 +0000
+ 15.2.1118.40; Wed, 13 Dec 2023 00:06:08 +0000
 From:   Alexander Graf <graf@amazon.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -68,9 +68,9 @@ CC:     <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         Usama Arif <usama.arif@bytedance.com>,
         David Woodhouse <dwmw@amazon.co.uk>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: [PATCH 07/15] x86: Add KHO support
-Date:   Wed, 13 Dec 2023 00:04:44 +0000
-Message-ID: <20231213000452.88295-8-graf@amazon.com>
+Subject: [PATCH 08/15] tracing: Introduce names for ring buffers
+Date:   Wed, 13 Dec 2023 00:04:45 +0000
+Message-ID: <20231213000452.88295-9-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231213000452.88295-1-graf@amazon.com>
 References: <20231213000452.88295-1-graf@amazon.com>
@@ -82,7 +82,7 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,377 +91,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We now have all bits in place to support KHO kexecs. This patch adds
-awareness of KHO in the kexec file as well as boot path for x86 and
-adds the respective kconfig option to the architecture so that it can
-use KHO successfully.
-
-In addition, it enlightens it decompression code with KHO so that its
-KASLR location finder only considers memory regions that are not already
-occupied by KHO memory.
+With KHO (Kexec HandOver), we want to preserve trace buffers across
+kexec. To carry over their state between kernels, the kernel needs a
+common handle for them that exists on both sides. As handle we introduce
+names for ring buffers. In a follow-up patch, the kernel can then use
+these names to recover buffer contents for specific ring buffers.
 
 Signed-off-by: Alexander Graf <graf@amazon.com>
 ---
- arch/x86/Kconfig                      | 12 ++++++
- arch/x86/boot/compressed/kaslr.c      | 55 +++++++++++++++++++++++++++
- arch/x86/include/uapi/asm/bootparam.h | 15 +++++++-
- arch/x86/kernel/e820.c                |  9 +++++
- arch/x86/kernel/kexec-bzimage64.c     | 39 +++++++++++++++++++
- arch/x86/kernel/setup.c               | 46 ++++++++++++++++++++++
- arch/x86/mm/init_32.c                 |  7 ++++
- arch/x86/mm/init_64.c                 |  7 ++++
- 8 files changed, 189 insertions(+), 1 deletion(-)
+ include/linux/ring_buffer.h | 7 ++++---
+ kernel/trace/ring_buffer.c  | 5 ++++-
+ kernel/trace/trace.c        | 7 ++++---
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3762f41bb092..849e6ddc5d94 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2103,6 +2103,18 @@ config ARCH_SUPPORTS_CRASH_HOTPLUG
- config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
- 	def_bool CRASH_CORE
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index 782e14f62201..f34538f97c75 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -85,17 +85,18 @@ void ring_buffer_discard_commit(struct trace_buffer *buffer,
+  * size is in bytes for each per CPU buffer.
+  */
+ struct trace_buffer *
+-__ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *key);
++__ring_buffer_alloc(const char *name, unsigned long size, unsigned flags,
++		    struct lock_class_key *key);
  
-+config KEXEC_KHO
-+	bool "kexec handover"
-+	depends on KEXEC
-+	select MEMBLOCK_SCRATCH
-+	select LIBFDT
-+	select CMA
-+	help
-+	  Allow kexec to hand over state across kernels by generating and
-+	  passing additional metadata to the target kernel. This is useful
-+	  to keep data or state alive across the kexec. For this to work,
-+	  both source and target kernels need to have this option enabled.
-+
- config PHYSICAL_START
- 	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
- 	default "0x1000000"
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index dec961c6d16a..93ea292e4c18 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -29,6 +29,7 @@
- #include <linux/uts.h>
- #include <linux/utsname.h>
- #include <linux/ctype.h>
-+#include <uapi/linux/kexec.h>
- #include <generated/utsversion.h>
- #include <generated/utsrelease.h>
+ /*
+  * Because the ring buffer is generic, if other users of the ring buffer get
+  * traced by ftrace, it can produce lockdep warnings. We need to keep each
+  * ring buffer's lock class separate.
+  */
+-#define ring_buffer_alloc(size, flags)			\
++#define ring_buffer_alloc(name, size, flags)			\
+ ({							\
+ 	static struct lock_class_key __key;		\
+-	__ring_buffer_alloc((size), (flags), &__key);	\
++	__ring_buffer_alloc((name), (size), (flags), &__key);	\
+ })
  
-@@ -472,6 +473,60 @@ static bool mem_avoid_overlap(struct mem_vector *img,
- 			}
- 		}
+ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 43cc47d7faaf..eaaf823ddedb 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -557,6 +557,7 @@ struct trace_buffer {
  
-+#ifdef CONFIG_KEXEC_KHO
-+		if (ptr->type == SETUP_KEXEC_KHO) {
-+			struct kho_data *kho = (struct kho_data *)ptr->data;
-+			struct kho_mem *mems = (void *)kho->mem_cache_addr;
-+			int nr_mems = kho->mem_cache_size / sizeof(*mems);
-+			int i;
-+
-+			/* Avoid the mem cache */
-+			avoid = (struct mem_vector) {
-+				.start = kho->mem_cache_addr,
-+				.size = kho->mem_cache_size,
-+			};
-+
-+			if (mem_overlaps(img, &avoid) && (avoid.start < earliest)) {
-+				*overlap = avoid;
-+				earliest = overlap->start;
-+				is_overlapping = true;
-+			}
-+
-+			/* And the KHO DT */
-+			avoid = (struct mem_vector) {
-+				.start = kho->dt_addr,
-+				.size = kho->dt_size,
-+			};
-+
-+			if (mem_overlaps(img, &avoid) && (avoid.start < earliest)) {
-+				*overlap = avoid;
-+				earliest = overlap->start;
-+				is_overlapping = true;
-+			}
-+
-+			/* As well as any other KHO memory reservations */
-+			for (i = 0; i < nr_mems; i++) {
-+				avoid = (struct mem_vector) {
-+					.start = mems[i].addr,
-+					.size = mems[i].len,
-+				};
-+
-+				/*
-+				 * This mem starts after our current break.
-+				 * The array is sorted, so we're done.
-+				 */
-+				if (avoid.start >= earliest)
-+					break;
-+
-+				if (mem_overlaps(img, &avoid)) {
-+					*overlap = avoid;
-+					earliest = overlap->start;
-+					is_overlapping = true;
-+				}
-+			}
-+		}
-+#endif
-+
- 		ptr = (struct setup_data *)(unsigned long)ptr->next;
- 	}
+ 	struct rb_irq_work		irq_work;
+ 	bool				time_stamp_abs;
++	const char			*name;
+ };
  
-diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 01d19fc22346..013af38a9673 100644
---- a/arch/x86/include/uapi/asm/bootparam.h
-+++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -13,7 +13,8 @@
- #define SETUP_CC_BLOB			7
- #define SETUP_IMA			8
- #define SETUP_RNG_SEED			9
--#define SETUP_ENUM_MAX			SETUP_RNG_SEED
-+#define SETUP_KEXEC_KHO		10
-+#define SETUP_ENUM_MAX			SETUP_KEXEC_KHO
- 
- #define SETUP_INDIRECT			(1<<31)
- #define SETUP_TYPE_MAX			(SETUP_ENUM_MAX | SETUP_INDIRECT)
-@@ -181,6 +182,18 @@ struct ima_setup_data {
- 	__u64 size;
- } __attribute__((packed));
- 
-+/*
-+ * Locations of kexec handover metadata
-+ */
-+struct kho_data {
-+	__u64 dt_addr;
-+	__u64 dt_size;
-+	__u64 scratch_addr;
-+	__u64 scratch_size;
-+	__u64 mem_cache_addr;
-+	__u64 mem_cache_size;
-+} __attribute__((packed));
-+
- /* The so-called "zeropage" */
- struct boot_params {
- 	struct screen_info screen_info;			/* 0x000 */
-diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index fb8cf953380d..c891b83f5b1c 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -1341,6 +1341,15 @@ void __init e820__memblock_setup(void)
- 			continue;
- 
- 		memblock_add(entry->addr, entry->size);
-+
-+		/*
-+		 * At this point with KHO we only allocate from scratch memory
-+		 * and only from memory below ISA_END_ADDRESS. Make sure that
-+		 * when we add memory for the eligible range, we add it as
-+		 * scratch memory so that we can resize the memblocks array.
-+		 */
-+		if (is_kho_boot() && (end <= ISA_END_ADDRESS))
-+			memblock_mark_scratch(entry->addr, end);
- 	}
- 
- 	/* Throw away partial pages: */
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index a61c12c01270..0cb8d0650a02 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/kexec.h>
- #include <linux/kernel.h>
-+#include <linux/libfdt.h>
- #include <linux/mm.h>
- #include <linux/efi.h>
- #include <linux/random.h>
-@@ -233,6 +234,33 @@ setup_ima_state(const struct kimage *image, struct boot_params *params,
- #endif /* CONFIG_IMA_KEXEC */
- }
- 
-+static void setup_kho(const struct kimage *image, struct boot_params *params,
-+		       unsigned long params_load_addr,
-+		       unsigned int setup_data_offset)
-+{
-+#ifdef CONFIG_KEXEC_KHO
-+	struct setup_data *sd = (void *)params + setup_data_offset;
-+	struct kho_data *kho = (void *)sd + sizeof(*sd);
-+
-+	sd->type = SETUP_KEXEC_KHO;
-+	sd->len = sizeof(struct kho_data);
-+
-+	/* Only add if we have all KHO images in place */
-+	if (!image->kho.dt.buffer || !image->kho.mem_cache.buffer)
-+		return;
-+
-+	/* Add setup data */
-+	kho->dt_addr = image->kho.dt.mem;
-+	kho->dt_size = image->kho.dt.bufsz;
-+	kho->scratch_addr = kho_scratch_phys;
-+	kho->scratch_size = kho_scratch_len;
-+	kho->mem_cache_addr = image->kho.mem_cache.mem;
-+	kho->mem_cache_size = image->kho.mem_cache.bufsz;
-+	sd->next = params->hdr.setup_data;
-+	params->hdr.setup_data = params_load_addr + setup_data_offset;
-+#endif /* CONFIG_KEXEC_KHO */
-+}
-+
- static int
- setup_boot_parameters(struct kimage *image, struct boot_params *params,
- 		      unsigned long params_load_addr,
-@@ -305,6 +333,13 @@ setup_boot_parameters(struct kimage *image, struct boot_params *params,
- 				     sizeof(struct ima_setup_data);
- 	}
- 
-+	if (IS_ENABLED(CONFIG_KEXEC_KHO)) {
-+		/* Setup space to store preservation metadata */
-+		setup_kho(image, params, params_load_addr, setup_data_offset);
-+		setup_data_offset += sizeof(struct setup_data) +
-+				     sizeof(struct kho_data);
-+	}
-+
- 	/* Setup RNG seed */
- 	setup_rng_seed(params, params_load_addr, setup_data_offset);
- 
-@@ -470,6 +505,10 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
- 		kbuf.bufsz += sizeof(struct setup_data) +
- 			      sizeof(struct ima_setup_data);
- 
-+	if (IS_ENABLED(CONFIG_KEXEC_KHO))
-+		kbuf.bufsz += sizeof(struct setup_data) +
-+			      sizeof(struct kho_data);
-+
- 	params = kzalloc(kbuf.bufsz, GFP_KERNEL);
- 	if (!params)
- 		return ERR_PTR(-ENOMEM);
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 1526747bedf2..196414c9c9e6 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -382,6 +382,29 @@ int __init ima_get_kexec_buffer(void **addr, size_t *size)
- }
- #endif
- 
-+static void __init add_kho(u64 phys_addr, u32 data_len)
-+{
-+#ifdef CONFIG_KEXEC_KHO
-+	struct kho_data *kho;
-+	u64 addr = phys_addr + sizeof(struct setup_data);
-+	u64 size = data_len - sizeof(struct setup_data);
-+
-+	kho = early_memremap(addr, size);
-+	if (!kho) {
-+		pr_warn("setup: failed to memremap kho data (0x%llx, 0x%llx)\n",
-+			 addr, size);
-+		return;
-+	}
-+
-+	kho_populate(kho->dt_addr, kho->scratch_addr, kho->scratch_size,
-+		     kho->mem_cache_addr, kho->mem_cache_size);
-+
-+	early_memunmap(kho, size);
-+#else
-+	pr_warn("Passed KHO data, but CONFIG_KEXEC_KHO not set. Ignoring.\n");
-+#endif
-+}
-+
- static void __init parse_setup_data(void)
+ struct ring_buffer_iter {
+@@ -1801,7 +1802,8 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
+  * when the buffer wraps. If this flag is not set, the buffer will
+  * drop data when the tail hits the head.
+  */
+-struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
++struct trace_buffer *__ring_buffer_alloc(const char *name,
++					unsigned long size, unsigned flags,
+ 					struct lock_class_key *key)
  {
- 	struct setup_data *data;
-@@ -410,6 +433,9 @@ static void __init parse_setup_data(void)
- 		case SETUP_IMA:
- 			add_early_ima_buffer(pa_data);
- 			break;
-+		case SETUP_KEXEC_KHO:
-+			add_kho(pa_data, data_len);
-+			break;
- 		case SETUP_RNG_SEED:
- 			data = early_memremap(pa_data, data_len);
- 			add_bootloader_randomness(data->data, data->len);
-@@ -989,8 +1015,26 @@ void __init setup_arch(char **cmdline_p)
- 	cleanup_highmap();
+ 	struct trace_buffer *buffer;
+@@ -1823,6 +1825,7 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 	buffer->flags = flags;
+ 	buffer->clock = trace_clock_local;
+ 	buffer->reader_lock_key = key;
++	buffer->name = name;
  
- 	memblock_set_current_limit(ISA_END_ADDRESS);
-+
- 	e820__memblock_setup();
+ 	init_irq_work(&buffer->irq_work.work, rb_wake_up_waiters);
+ 	init_waitqueue_head(&buffer->irq_work.waiters);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 9aebf904ff97..7700ca1be2a5 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9384,7 +9384,8 @@ allocate_trace_buffer(struct trace_array *tr, struct array_buffer *buf, int size
  
-+	/*
-+	 * We can resize memblocks at this point, let's dump all KHO
-+	 * reservations in and switch from scratch-only to normal allocations
-+	 */
-+	kho_reserve_mem();
-+
-+	/* Allocations now skip scratch mem, return low 1M to the pool */
-+	if (is_kho_boot()) {
-+		u64 i;
-+		phys_addr_t base, end;
-+
-+		__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,
-+				     MEMBLOCK_SCRATCH, &base, &end, NULL)
-+			if (end <= ISA_END_ADDRESS)
-+				memblock_clear_scratch(base, end - base);
-+	}
-+
- 	/*
- 	 * Needs to run after memblock setup because it needs the physical
- 	 * memory size.
-@@ -1106,6 +1150,8 @@ void __init setup_arch(char **cmdline_p)
- 	 */
- 	arch_reserve_crashkernel();
+ 	buf->tr = tr;
  
-+	kho_reserve();
-+
- 	memblock_find_dma_reserve();
+-	buf->buffer = ring_buffer_alloc(size, rb_flags);
++	buf->buffer = ring_buffer_alloc(tr->name ? tr->name : "global_trace",
++					size, rb_flags);
+ 	if (!buf->buffer)
+ 		return -ENOMEM;
  
- 	if (!early_xdbc_setup_hardware())
-diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-index b63403d7179d..6c3810afed04 100644
---- a/arch/x86/mm/init_32.c
-+++ b/arch/x86/mm/init_32.c
-@@ -20,6 +20,7 @@
- #include <linux/smp.h>
- #include <linux/init.h>
- #include <linux/highmem.h>
-+#include <linux/kexec.h>
- #include <linux/pagemap.h>
- #include <linux/pci.h>
- #include <linux/pfn.h>
-@@ -738,6 +739,12 @@ void __init mem_init(void)
- 	after_bootmem = 1;
- 	x86_init.hyper.init_after_bootmem();
+@@ -9421,7 +9422,7 @@ static int allocate_trace_buffers(struct trace_array *tr, int size)
+ 		return ret;
  
-+	/*
-+	 * Now that all KHO pages are marked as reserved, let's flip them back
-+	 * to normal pages with accurate refcount.
-+	 */
-+	kho_populate_refcount();
-+
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index a190aae8ceaf..3ce1a4767610 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -20,6 +20,7 @@
- #include <linux/smp.h>
- #include <linux/init.h>
- #include <linux/initrd.h>
-+#include <linux/kexec.h>
- #include <linux/pagemap.h>
- #include <linux/memblock.h>
- #include <linux/proc_fs.h>
-@@ -1339,6 +1340,12 @@ void __init mem_init(void)
- 	after_bootmem = 1;
- 	x86_init.hyper.init_after_bootmem();
+ #ifdef CONFIG_TRACER_MAX_TRACE
+-	ret = allocate_trace_buffer(tr, &tr->max_buffer,
++	ret = allocate_trace_buffer(NULL, &tr->max_buffer,
+ 				    allocate_snapshot ? size : 1);
+ 	if (MEM_FAIL(ret, "Failed to allocate trace buffer\n")) {
+ 		free_trace_buffer(&tr->array_buffer);
+@@ -10473,7 +10474,7 @@ __init static int tracer_alloc_buffers(void)
+ 		goto out_free_cpumask;
+ 	/* Used for event triggers */
+ 	ret = -ENOMEM;
+-	temp_buffer = ring_buffer_alloc(PAGE_SIZE, RB_FL_OVERWRITE);
++	temp_buffer = ring_buffer_alloc("temp_buffer", PAGE_SIZE, RB_FL_OVERWRITE);
+ 	if (!temp_buffer)
+ 		goto out_rm_hp_state;
  
-+	/*
-+	 * Now that all KHO pages are marked as reserved, let's flip them back
-+	 * to normal pages with accurate refcount.
-+	 */
-+	kho_populate_refcount();
-+
- 	/*
- 	 * Must be done after boot memory is put on freelist, because here we
- 	 * might set fields in deferred struct pages that have not yet been
 -- 
 2.40.1
 
