@@ -2,124 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 947858118C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B4D8118C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbjLMQJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S1379337AbjLMQLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:11:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbjLMQJq (ORCPT
+        with ESMTP id S230390AbjLMQKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:09:46 -0500
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFD9AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:09:49 -0800 (PST)
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231213160948epoutp02323a4c0ba00bdb6d7080c7b397fa45ee~gb-w4KU611712417124epoutp02l
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:09:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231213160948epoutp02323a4c0ba00bdb6d7080c7b397fa45ee~gb-w4KU611712417124epoutp02l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1702483788;
-        bh=afVvJieNT+llfsmtaR1nNoSD0bljlOmyLWrGv/f0GlA=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=pWE8HBU2PORXnNdPyW24obJSdQYv7CfFCpLZAupVLrCi1oCQgj/XnJazdTpZQKBan
-         fi8Y34QQl9ly8VnUgBA+TLY1Utg/Y0Bi1YJ3O9jEONzdq+eH5NIIpfkvIrhWPuGmVT
-         z1vh/5XiP9DUYh96myTTFJQEWl2Q3uoPNG+HxHxc=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20231213160947epcas5p3325683ce64e485d30828497c7725e703~gb-v9fiYY2618626186epcas5p3p;
-        Wed, 13 Dec 2023 16:09:47 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.174]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Sr0mn4Mgfz4x9Pt; Wed, 13 Dec
-        2023 16:09:45 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DD.92.08567.947D9756; Thu, 14 Dec 2023 01:09:45 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231213160945epcas5p4968cf82b20ac40bb7a89937f5f83e3b1~gb-t5sIpr1187811878epcas5p4Y;
-        Wed, 13 Dec 2023 16:09:45 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231213160945epsmtrp1aea7a274763388f1e005033043e810e8~gb-t41qNv0255102551epsmtrp1d;
-        Wed, 13 Dec 2023 16:09:45 +0000 (GMT)
-X-AuditID: b6c32a44-617fd70000002177-4c-6579d74935e4
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        15.B3.08817.847D9756; Thu, 14 Dec 2023 01:09:44 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231213160943epsmtip15a2583debde02121028b0b3c6ef0368b~gb-sHTVNv0109401094epsmtip1A;
-        Wed, 13 Dec 2023 16:09:42 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Jaewon Kim'" <jaewon02.kim@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231210133915.42112-1-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH] dt-bindings: pinctrl: samsung: correct ExynosAutov920
- wake-up compatibles
-Date:   Wed, 13 Dec 2023 21:39:41 +0530
-Message-ID: <016e01da2dde$c9777610$5c666230$@samsung.com>
+        Wed, 13 Dec 2023 11:10:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D57691
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:10:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF16BC433C7;
+        Wed, 13 Dec 2023 16:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702483845;
+        bh=6Cp4QoPrziOGTCMSk4UORYT4B4hBTsbrJjJUD3vnofQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DaPBC8q9bSXwlg7DJK7lOva3fmQIvfCrRPjT/JKRo+D7GNADZym1lXreSvh0xEGcX
+         7qqXo8suAV7zGz1guhGKcOcDk9iA+dlRKVenK89Uq3l2sNHGIrydXH3/HQV2LSkcMJ
+         JQEGTYWwY5DupDh9nWxWzVSicVtHkoJ6DyPgstdY9fLz51eLhJLNXkQZA58d+qBbZ+
+         OymwzDhn92zRL8rO9cQ+L3/QSaWecCmxRCQlBLM9c5gSAJRQYD5vjTKERx+COT5cd2
+         hCTY5Wb+x11tidCp0usO1V9s5usaSagfL8mXKqtnvnDShZvWUBIJBD5Q/UOzMbey05
+         JfI5UYYV7UWIQ==
+Date:   Wed, 13 Dec 2023 16:10:40 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: iio: adc: Add binding for AD7380 ADCs
+Message-ID: <20231213-grooving-bulk-58fcfc20be11@spud>
+References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
+ <20231213-ad7380-mainline-v2-2-cd32150d84a3@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQDwuG9IClMSYxFsO+y1snlGxJj/YwKcDPHesmVr46A=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKJsWRmVeSWpSXmKPExsWy7bCmhq7n9cpUg9blihZr9p5jsph/5Byr
-        xY6GI6wWe19vZbeY8mc5k8Wmx9dYLTbP/8NocXnXHDaLGef3MVm07j3CbnH4TTurxapdfxgd
-        eDx2zrrL7rFpVSebx51re9g8Ni+p9+jbsorR4/MmuQC2qGybjNTElNQihdS85PyUzLx0WyXv
-        4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKAblRTKEnNKgUIBicXFSvp2NkX5pSWpChn5
-        xSW2SqkFKTkFJgV6xYm5xaV56Xp5qSVWhgYGRqZAhQnZGZfOJRZM56pY/uYbSwPjLY4uRk4O
-        CQETiYPnpzN3MXJxCAnsZpS4PuclO0hCSOATo8S3HbwQiW+MEjffbmOD6Wg99psJIrGXUWLr
-        9ivMEB0vGCWmLPUAsdkEdCV2LG5jAykSEfjCLDHr0CcWkASngIvE7qufGUFsYYEEiSnn77KC
-        2CwCqhIrT00A28ArYCnxat9lFghbUOLkzCdgNrOAvMT2t3OYIa5QkPj5dBkrRFxc4uXRI2Bn
-        iwhYSVxe/5QRZLGEwA4OiZ3Ne4ESHECOi8SjBYIQvcISr45vYYewpSRe9rdBlXhILPojBRHO
-        kHi7fD0jhG0vceDKHBaQEmYBTYn1u/QhtvJJ9P5+wgTRySvR0SYEUa0q0fzuKguELS0xsbub
-        FcL2kHj4exYLJNimM0qcnvmAZQKjwiwkT85C8uQsJI/NQti8gJFlFaNkakFxbnpqsmmBYV5q
-        OTy2k/NzNzGC06+Wyw7GG/P/6R1iZOJgPMQowcGsJMJ7ckd5qhBvSmJlVWpRfnxRaU5q8SFG
-        U2DIT2SWEk3OB2aAvJJ4QxNLAxMzMzMTS2MzQyVx3tetc1OEBNITS1KzU1MLUotg+pg4OKUa
-        mAqUfm671np7vmH4JosJz69/rmzONedb5GO9i+NF/pSnldFhaxjuaty/EsTe/upqHufBfacm
-        9/jZJUvLTvgky+K4bgX3owSVp4XbhbeY/pP71BAwNXKR24GKomi5uS/vytaq5fPeYxF7+pHr
-        UILjpZkiKpHfPk6SYu4+z8ie/d2srf3K9Qmfp1zO2Pfi+bMf/Klr4vIW3n50k29thTWTfW3k
-        /vyjPa8n9VXOre/qFbF+919cpPoQh0HT3Ne3v//sLDKa/XpRqVgQy/d4m81sab/dVNX6C3/s
-        /vlo3tTCtzXXy19fMxfe7HDO+oHJlFfZa/qu/jkfolc693HXhPs8y02k3d4X9nlHaBU/kxeQ
-        DFdiKc5INNRiLipOBADeDrEBSAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWy7bCSnK7H9cpUg32LTCzW7D3HZDH/yDlW
-        ix0NR1gt9r7eym4x5c9yJotNj6+xWmye/4fR4vKuOWwWM87vY7Jo3XuE3eLwm3ZWi1W7/jA6
-        8HjsnHWX3WPTqk42jzvX9rB5bF5S79G3ZRWjx+dNcgFsUVw2Kak5mWWpRfp2CVwZl84lFkzn
-        qlj+5htLA+Mtji5GTg4JAROJ1mO/mboYuTiEBHYzSuw/8Y8VIiEtcX3jBHYIW1hi5b/n7BBF
-        zxglds3ZzAaSYBPQldixuA3MFhH4wyyxZXk6RNFURomXC5pZQBKcAi4Su69+ZgSxhQXiJF5M
-        vMIMYrMIqEqsPDUBrJlXwFLi1b7LLBC2oMTJmU+AbA4OZgE9ibaNYK3MAvIS29/OYYY4SEHi
-        59NlrBBxcYmXR4+wQ9xgJXF5/VPGCYxCs5BMmoUwaRaSSbOQdC9gZFnFKJlaUJybnltsWGCU
-        l1quV5yYW1yal66XnJ+7iREcbVpaOxj3rPqgd4iRiYPxEKMEB7OSCO/JHeWpQrwpiZVVqUX5
-        8UWlOanFhxilOViUxHm/ve5NERJITyxJzU5NLUgtgskycXBKNTB1bLFYcvhNUVP8pyV5hgJC
-        uyOkFpzPOXa8NfGqbHL4P9NmbS6P0k/Zs/L01kZ3HNDcfOh0yqpzy2ODbjV4dG8MfONnG18f
-        9d5Jd+Xif+HeXwPPtgr6G/31t/v/duHf3wtPpCzN3b1u+3fTWeVd1hH93I2ur2f0iJsqztfi
-        KVlgeJzJ3qjw3ONLapf4u37eetrNUMW2d077GpOTtWyaf5Yo7P52ZWur4frnSzbrLD8b/FpQ
-        6fOj5fNPvH72ZvKuNzlV5acS1rfYRkssyMv4q+Lk6/tml+bbHXlvjrvta3l0wqqxbNvKnA/S
-        H9U/aq5zSjL/9cdo21lt5suGy1+8cj365KAJQ7fPteRjBw4mr3XsVWIpzkg01GIuKk4EAJMG
-        Vy4lAwAA
-X-CMS-MailID: 20231213160945epcas5p4968cf82b20ac40bb7a89937f5f83e3b1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231210133923epcas5p2b8c2e0d2bd5f54a338deb13ccde8f9ba
-References: <CGME20231210133923epcas5p2b8c2e0d2bd5f54a338deb13ccde8f9ba@epcas5p2.samsung.com>
-        <20231210133915.42112-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QDYW7xwkRaYUe+Lj"
+Content-Disposition: inline
+In-Reply-To: <20231213-ad7380-mainline-v2-2-cd32150d84a3@baylibre.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,41 +59,197 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--QDYW7xwkRaYUe+Lj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Sunday, December 10, 2023 7:09 PM
-> To: Tomasz Figa <tomasz.figa@gmail.com>; Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org>; Sylwester Nawrocki
-> <s.nawrocki@samsung.com>; Alim Akhtar <alim.akhtar@samsung.com>;
-> Linus Walleij <linus.walleij@linaro.org>; Rob Herring
-<robh+dt@kernel.org>;
-> Conor Dooley <conor+dt@kernel.org>; Jaewon Kim
-> <jaewon02.kim@samsung.com>; linux-arm-kernel@lists.infradead.org;
-> linux-samsung-soc@vger.kernel.org; linux-gpio@vger.kernel.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [PATCH] dt-bindings: pinctrl: samsung: correct ExynosAutov920
-> wake-up compatibles
-> 
-> ExynosAutov920 SoC wake-up pin controller has different register layout
-> than Exynos7, thus it should not be marked as compatible.  Neither DTS nor
-> Linux driver was merged yet, so the change does not impact ABI.
-> 
-> Cc: Jaewon Kim <jaewon02.kim@samsung.com>
-> Fixes: 904140fa4553 ("dt-bindings: pinctrl: samsung: use Exynos7 fallbacks
-for
-> newer wake-up controllers")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
-
+On Wed, Dec 13, 2023 at 05:21:19AM -0600, David Lechner wrote:
+> This adds a binding specification for the Analog Devices Inc. AD7380
+> family of ADCs.
+>=20
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 > ---
-> 
-.
-.
-.
---
+>=20
+> v2 changes:
+> - Added maxItems to reg property
+> - Replaced adi,sdo-mode property with spi-rx-bus-channels
+> - Made spi-rx-bus-channels property optional with default value of 1
+>     (this made the if: check more complex)
+> - Changed example to use gpio for interrupt
+>=20
+>  .../devicetree/bindings/iio/adc/adi,ad7380.yaml    | 107 +++++++++++++++=
+++++++
+>  MAINTAINERS                                        |   9 ++
+>  2 files changed, 116 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml b/=
+Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
+> new file mode 100644
+> index 000000000000..43d58c52f7dd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
+> @@ -0,0 +1,107 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/adi,ad7380.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices Simultaneous Sampling Analog to Digital Converters
+> +
+> +maintainers:
+> +  - Michael Hennerich <Michael.Hennerich@analog.com>
+> +  - Nuno S=E1 <nuno.sa@analog.com>
+> +
+> +description: |
+> +  * https://www.analog.com/en/products/ad7380.html
+> +  * https://www.analog.com/en/products/ad7381.html
+> +  * https://www.analog.com/en/products/ad7383.html
+> +  * https://www.analog.com/en/products/ad7384.html
+> +
+> +$ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad7380
+> +      - adi,ad7381
+> +      - adi,ad7383
+> +      - adi,ad7384
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 80000000
+> +  spi-cpol: true
+> +  spi-cpha: true
+> +
+> +  spi-rx-bus-channels:
+
+This is now being framed as a standard property, so I think it should be
+in spi-peripheral-props, no? Granted, you'd need a rather more
+generalised explanation of the property in that case.
+
+> +    description:
+> +      In 1-wire mode, the SDOA pin acts as the sole data line and the SD=
+OB/ALERT
+> +      pin acts as the ALERT interrupt signal. In 2-wire mode, data for i=
+nput A
+> +      is read from SDOA and data for input B is read from SDOB/ALERT (an=
+d the
+> +      ALERT interrupt signal is not available).
+> +    enum: [1, 2]
+
+Jonathan also mentioned specifying that this defaults to 1-wire. I
+didn't see a response or that implemented. Did you miss that comment
+=66rom him?
+
+Cheers,
+Conor.
+
+> +
+> +  vcc-supply:
+> +    description: A 3V to 3.6V supply that powers the chip.
+> +
+> +  vlogic-supply:
+> +    description:
+> +      A 1.65V to 3.6V supply for the logic pins.
+> +
+> +  refio-supply:
+> +    description:
+> +      A 2.5V to 3.3V supply for the external reference voltage. When omi=
+tted,
+> +      the internal 2.5V reference is used.
+> +
+> +  interrupts:
+> +    description:
+> +      When the device is using 1-wire mode, this property is used to opt=
+ionally
+> +      specify the ALERT interrupt.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vcc-supply
+> +  - vlogic-supply
+> +
+> +allOf:
+> +  - if:
+> +      required:
+> +        - spi-rx-bus-channels
+> +    then:
+> +      if:
+> +        properties:
+> +          spi-rx-bus-channels:
+> +            const: 2
+> +      then:
+> +        properties:
+> +          interrupts: false
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    spi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        adc@0 {
+> +            compatible =3D "adi,ad7380";
+> +            reg =3D <0>;
+> +
+> +            spi-cpol;
+> +            spi-cpha;
+> +            spi-max-frequency =3D <80000000>;
+> +
+> +            interrupts =3D <27 IRQ_TYPE_EDGE_FALLING>;
+> +            interrupt-parent =3D <&gpio0>;
+> +
+> +            vcc-supply =3D <&supply_3_3V>;
+> +            vlogic-supply =3D <&supply_3_3V>;
+> +            refio-supply =3D <&supply_2_5V>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index fe1f6f97f96a..e2a998be5879 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -430,6 +430,15 @@ W:	http://wiki.analog.com/AD7142
+>  W:	https://ez.analog.com/linux-software-drivers
+>  F:	drivers/input/misc/ad714x.c
+> =20
+> +AD738X ADC DRIVER (AD7380/1/2/4)
+> +M:	Michael Hennerich <michael.hennerich@analog.com>
+> +M:	Nuno S=E1 <nuno.sa@analog.com>
+> +R:	David Lechner <dlechner@baylibre.com>
+> +S:	Supported
+> +W:	https://wiki.analog.com/resources/tools-software/linux-drivers/iio-ad=
+c/ad738x
+> +W:	https://ez.analog.com/linux-software-drivers
+> +F:	Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
+> +
+>  AD7877 TOUCHSCREEN DRIVER
+>  M:	Michael Hennerich <michael.hennerich@analog.com>
+>  S:	Supported
+>=20
+> --=20
 > 2.34.1
-> 
+>=20
 
+--QDYW7xwkRaYUe+Lj
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnXgAAKCRB4tDGHoIJi
+0olQAQD0uGzuJAnzrkjyNQSFOQ2fC9H/eELRnpvt8Qn7xokQfAEAtm9kgIN7xibR
+NYDDxEwEe+7NATpX/ImfrcOZYOoIIQw=
+=xfs8
+-----END PGP SIGNATURE-----
+
+--QDYW7xwkRaYUe+Lj--
