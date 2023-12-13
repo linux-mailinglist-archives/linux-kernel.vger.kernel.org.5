@@ -2,358 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDDF811BEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC3A811BEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbjLMSFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:05:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1379335AbjLMSID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235508AbjLMSFs (ORCPT
+        with ESMTP id S1378965AbjLMSIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:05:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D004114
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:05:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CF2C433CC;
-        Wed, 13 Dec 2023 18:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702490752;
-        bh=4vH4cEVo8W55BC4iyBqtXcMfUYzLk1TrXzqxAwaowug=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=k+CYcQm5dEJr9o8GA81Xp8OmOxk4eOWgnj5m/vm8gLWkdfi6helpGS/YQO1TxJtsj
-         AhY8Eh+wCPHTdjswg2ot22M7q+cuwdY8st9K4BtfSLg0qt1/02H/t8uC5QcWsz25jg
-         u1WkL6CRIRiHiQ5zdGRlMMZ8JTSTRONKO+U/vv4boJecosYyGx9RuZxfly4rcpuJRa
-         5rBYpUc0LCaUPQ1fbHNFxCVd+z5PBPiDH0yoODcsxOVFmEbSlIvcwr0Tb1S7PWlNVC
-         le1z09VGKqLUTr8+WeFN6QnpKw/V94OBXD48f3c1p05HiULtNgxUVmVwZcWR8ymLx6
-         yADhkWb+xjyNg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5E24ECE0C4D; Wed, 13 Dec 2023 10:05:52 -0800 (PST)
-Date:   Wed, 13 Dec 2023 10:05:52 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     David Sterba <dsterba@suse.cz>, kernel test robot <lkp@intel.com>,
-        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, julia.lawall@inria.fr, clm@fb.com,
-        dsterba@suse.com, baptiste.lepers@gmail.com
-Subject: Re: [paulmck-rcu:frederic.2023.12.08a 29/37]
- fs/btrfs/transaction.c:496:6: error: call to '__compiletime_assert_329'
- declared with 'error' attribute: Need native word sized stores/loads for
- atomicity.
-Message-ID: <505dba1e-4950-4968-a789-434c52a3e1c7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202312091837.cKaPw0Tf-lkp@intel.com>
- <0487d7cc-b906-4a4a-b284-9c79700b4ede@paulmck-laptop>
- <20231213125358.GB3001@suse.cz>
- <4c814394-6eab-4aca-96af-43f99fb94c01@paulmck-laptop>
- <20231213155440.GA454379@perftesting>
+        Wed, 13 Dec 2023 13:08:01 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A898E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:08:07 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1ca24776c3so1653361366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:08:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702490886; x=1703095686; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Sz22v/qVZ8FEe06Lv2eVm1w3fWPD2RSBmypkGKFUt0=;
+        b=tOKWjiu9GIKThpR2TESHsiDaAm5MWSONKJOjN8rb51lTq1vDLg60mYZDmzR5NnkKJ4
+         LeXpzjziKJiq+rHYgY3ubN2sbP+/969v66wZPL2FXWLpvQxwWmS83NKMg4LyDEbxPJNG
+         KTO36cj+47VulD4nI6zI0iQd6MxNFpzdjVCpZPccLlxW2u/w1oeC7p9EI9dTKLgyX2GL
+         5wR14nyUgJf4L0I9fgFsrbdSHh/onXUwCJWVZc4D7s5hDuFFizSyzyLZoB2UqQgDIRO4
+         hPi2hCJBUVw6IghkA5AcEoU8L5YNjIeEwkxmqVSLh55O77drf2L6rfoO8SmXvtrImS93
+         bd7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702490886; x=1703095686;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Sz22v/qVZ8FEe06Lv2eVm1w3fWPD2RSBmypkGKFUt0=;
+        b=WQ1Ns9Ee7T8G7RzK52VoIu15SrAxdoJ+ZbHXGthCM0x75gD5Jn5kHy2r63O+QCEA/E
+         /N3wpDJBtdRjhnTkn6x685K3ETY5e1PvYoNzd4zc6+HKU+IqRGibGtyxaQF4EiVtvBar
+         IGlnKlcy2BKYD345LaBy6pGQOt8uxATIb34mGkr9HVOf2G+UX5faYQYEAzgfNbI4aQe2
+         W+VydOOu65Y72jUSopuB94IWZa3iGlKPreWH62/J4DfYLOSdyCqAgpyuc+dHDBmIVGXp
+         82blBrrTgnx4PGYbcqKHsoQDdnBo5nmAXzWCsBtnm8VKAzyfCRQrMX31pt9uqlV0w6a8
+         0RAA==
+X-Gm-Message-State: AOJu0Ywk4zWqxLg3iQ+oV9MSloFFzfzpQ1RDYEzDeR2K+eUpojNIn9UT
+        nr3WhWR+VewwTAfnrq+tTt+zog==
+X-Google-Smtp-Source: AGHT+IFXGar7fRRKDpWjyH1EUxpwM+xdNfvLNoh6Mpuj4/G1yKCzW2mMGjCspgAQz6Wqjpqrhfe49Q==
+X-Received: by 2002:a17:906:957:b0:a1d:8d09:d07d with SMTP id j23-20020a170906095700b00a1d8d09d07dmr7861599ejd.47.1702490885803;
+        Wed, 13 Dec 2023 10:08:05 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id tk7-20020a170907c28700b00a1d1ebc2206sm8193829ejc.72.2023.12.13.10.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 10:08:05 -0800 (PST)
+Message-ID: <ab3c00da-5dec-4274-a9ef-2ac0fef6efee@linaro.org>
+Date:   Wed, 13 Dec 2023 19:08:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213155440.GA454379@perftesting>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/6] arm: arm64: dts: Enable cros-ec-spi as wake source
+To:     Mark Hasemeyer <markhas@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Raul Rangel <rrangel@chromium.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Andy Gross <agross@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Paul Barker <paul.barker@sancloud.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
+ <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:54:40AM -0500, Josef Bacik wrote:
-> On Wed, Dec 13, 2023 at 06:56:37AM -0800, Paul E. McKenney wrote:
-> > On Wed, Dec 13, 2023 at 01:53:58PM +0100, David Sterba wrote:
-> > > On Sat, Dec 09, 2023 at 07:51:30AM -0800, Paul E. McKenney wrote:
-> > > > On Sat, Dec 09, 2023 at 06:20:37PM +0800, kernel test robot wrote:
-> > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git frederic.2023.12.08a
-> > > > > head:   37843b5f561a08ae899fb791eeeb5abd992eabe2
-> > > > > commit: 7dd87072d40809e26503f04b79d63290288dbbac [29/37] btrfs: Adjust ->last_trans ordering in btrfs_record_root_in_trans()
-> > > > > config: riscv-rv32_defconfig (https://download.01.org/0day-ci/archive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/config)
-> > > > > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> > > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/reproduce)
-> > > > > 
-> > > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > > > the same patch/commit), kindly add following tags
-> > > > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202312091837.cKaPw0Tf-lkp@intel.com/
-> > > > > 
-> > > > > All errors (new ones prefixed by >>):
-> > > > > 
-> > > > >    warning: unknown warning option '-Wpacked-not-aligned'; did you mean '-Wpacked-non-pod'? [-Wunknown-warning-option]
-> > > > >    warning: unknown warning option '-Wstringop-truncation'; did you mean '-Wstring-concatenation'? [-Wunknown-warning-option]
-> > > > >    warning: unknown warning option '-Wmaybe-uninitialized'; did you mean '-Wuninitialized'? [-Wunknown-warning-option]
-> > > > > >> fs/btrfs/transaction.c:496:6: error: call to '__compiletime_assert_329' declared with 'error' attribute: Need native word sized stores/loads for atomicity.
-> > > > >      496 |         if (smp_load_acquire(&root->last_trans) == trans->transid && /* ^^^ */
-> > > > >          |             ^
-> > > > 
-> > > > Ooooh!!!  :-/
-> > > > 
-> > > > From what I can see, the current code can tear this load on 32-bit
-> > > > systems, which can result in bad comparisons and then in failure to wait
-> > > > for a partially complete transaction.
-> > > > 
-> > > > So is btrfs actually supported on 32-bit systems?  If not, would the
-> > > > following patch be appropriate?
-> > > 
-> > > There are limitations on 32bit systems, eg. due to shorter inode numbers
-> > > (ino_t is unsigned long) and that radix-tree/xarray does support only
-> > > unsigned long keys, while we have 64bit identifiers for inodes or tree
-> > > roots.
-> > > 
-> > > So far we support that and dropping it completely is I think a big deal,
-> > > like with any possibly used feature. What I've seen there are NAS boxes
-> > > with low power ARM that are 32bit.
-> > > 
-> > > > If btrfs is to be supported on 32-bit systems, from what I can see some
-> > > > major surgery is required, even if a 32-bit counter is wrap-safe for
-> > > > this particular type of transaction.  (But SSDs?  In-memory btrfs
-> > > > filesystems?)
-> > > 
-> > > We won't probably do any major surgery to support 32bit systems.
-> > 
-> > Got it, and thank you for the background!  My takeaway is that 32-bit
-> > BTRFS must work in the common case, but might have issues on some
-> > workloads, for example, running out of inode numbers or load tearing.
-> > 
-> > > > ------------------------------------------------------------------------
-> > > > 
-> > > > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> > > > index 4fb925e8c981..4d56158c34f9 100644
-> > > > --- a/fs/btrfs/Kconfig
-> > > > +++ b/fs/btrfs/Kconfig
-> > > > @@ -19,6 +19,7 @@ config BTRFS_FS
-> > > >  	select RAID6_PQ
-> > > >  	select XOR_BLOCKS
-> > > >  	depends on PAGE_SIZE_LESS_THAN_256KB
-> > > > +	depends on 64BIT
-> > > 
-> > > Can we keep the current inefficient smp_* barriers instead of dropping
-> > > the whole 32bit support as an alternative. If the smp_load_acquire are
-> > > better but not strictly necessary for the correctness (from the barriers
-> > > POV) I'd suggest to leave it as-is. We can put comments in case somebody
-> > > wants to optimize it in the future again.
-> > 
-> > We still have the barrier placement issue, given that smp_rmb() enforces
-> > only the ordering of earlier and later loads, correct?  Or am I missing
-> > some other ordering constraint that makes all that work?
-> > 
-> > But I can make each of the current patch's smp_load_acquire() call instead
-> > be be a READ_ONCE() followed by an smp_rmb(), the test_bit_acquire()
-> > call be test_bit() followed by smp_rmb(), and the smp_store_release()
-> > call be an smp_wmb() followed by a WRITE_ONCE().  This provides the needed
-> > ordering, bullet-proofs the 64-bit code against compilers, but works on
-> > 32-bit systems.  For example, on a 32-bit system the 64-bit READ_ONCE()
-> > and WRITE_ONCE() might still be compiled as a pair of 32-bit memory
-> > accesses, but they will both be guaranteed to be single memory accesses
-> > on 64-bit systems.
-> > 
-> > Would that work for you guys?
+On 13/12/2023 19:00, Mark Hasemeyer wrote:
+> The cros_ec driver currently assumes that cros-ec-spi compatible device
+> nodes are a wakeup-source even though the wakeup-source property is not
+> defined.
 > 
-> Actually I think we just need to re-work all of this to make it less silly.
-> Does this look reasonable to you Paul?  I still have to test it, but I think it
-> addresses your concerns and lets us keep 32bit support ;).  Thanks,
-
-Things that avoid the need for memory barriers are often improvements!
-
-I don't claim to understand enough of the BTRFS code to fully judge
-this, but I do ask one stupid question below just in case it inspires
-a non-stupid idea.  ;-)
-
-							Thanx, Paul
-
-> Josef
+> Add the wakeup-source property to all cros-ec-spi compatible device
+> nodes to match expected behavior.
 > 
-> From: Josef Bacik <josef@toxicpanda.com>
-> Date: Wed, 13 Dec 2023 10:46:57 -0500
-> Subject: [PATCH] btrfs: cleanup how we record roots in the transaction
-> 
-> Previously we didn't have a bit field for tracking if a root was
-> recorded in the transaction, it was simply an integer on the root.
-> Additionally we have the ->last_trans which we record the last
-> transaction this root was modified in.  We had various memory barriers
-> to attempt to synchronize these two updates so we could avoid taking the
-> ->reloc_mutex all of the time for transaction starts.
-> 
-> However this code has changed a lot, but the dubious memory ordering has
-> remained.  Fix up this code to make it more clear and get rid of the
-> memory barriers.  All we're trying to avoid here is constantly taking
-> the ->reloc_mutex, so add a new bit to mark that the root has been
-> recorded.  If this bit is set then we can skip the expensive step,
-> otherwise we have to take the lock and wait.
-> 
-> Add a big comment indicating why we're doing the ordering and locking
-> the way we are, and use ->fs_roots_radix_lock as the arbiter of this new
-> bit.
-> 
-> This makes the code simpler, removes the memory barriers, and documents
-> clearly what we're doing so it's less confusing for future readers.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 > ---
->  fs/btrfs/ctree.h       | 11 ++++---
->  fs/btrfs/disk-io.c     |  1 +
->  fs/btrfs/transaction.c | 69 +++++++++++++++++-------------------------
->  3 files changed, 34 insertions(+), 47 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 70e828d33177..eb44cf191863 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -90,12 +90,13 @@ struct btrfs_path {
->   */
->  enum {
->  	/*
-> -	 * btrfs_record_root_in_trans is a multi-step process, and it can race
-> -	 * with the balancing code.   But the race is very small, and only the
-> -	 * first time the root is added to each transaction.  So IN_TRANS_SETUP
-> -	 * is used to tell us when more checks are required
-> +	 * We set this after we've recorded the root in the transaction.  This
-> +	 * is used to avoid taking the reloc_mutex every time we call
-> +	 * btrfs_start_transaction(root).  Once the root has been recorded we
-> +	 * don't have to do the setup work again, and this is cleared on
-> +	 * transaction commit once we're done with the root.
->  	 */
-> -	BTRFS_ROOT_IN_TRANS_SETUP,
-> +	BTRFS_ROOT_RECORDED,
->  
->  	/*
->  	 * Set if tree blocks of this root can be shared by other roots.
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c6907d533fe8..0410fac5f78e 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4805,6 +4805,7 @@ static void btrfs_free_all_qgroup_pertrans(struct btrfs_fs_info *fs_info)
->  			radix_tree_tag_clear(&fs_info->fs_roots_radix,
->  					(unsigned long)root->root_key.objectid,
->  					BTRFS_ROOT_TRANS_TAG);
-> +			clear_bit(BTRFS_ROOT_RECORDED, &root->state);
->  		}
->  	}
->  	spin_unlock(&fs_info->fs_roots_radix_lock);
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 5b3333ceef04..186089ddac27 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -407,54 +407,43 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
->  	int ret = 0;
->  
->  	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
-> -	    root->last_trans < trans->transid) || force) {
-> +	     !test_bit(BTRFS_ROOT_RECORDED, &root->state)) || force) {
 
-Would it make sense to test both bits at once?  Something like:
+I did not get any other patches in the set, so no clue what's there...
+but for this patch: please split per subarch. At least Samsung bits.
 
-	if ((READ_ONCE(root->state) & (BIT(BTRFS_ROOT_SHAREABLE) | BIT(BTRFS_ROOT_RECORDED))) == BIT(BTRFS_ROOT_SHAREABLE))
+Best regards,
+Krzysztof
 
-That way you get an atomic test of both bits without the memory-ordering
-aggravation.  Though you already hold the mutex here, so this should
-not matter in this case, hence the question being stupid.  ;-)
-
->  		WARN_ON(!force && root->commit_root != root->node);
->  
->  		/*
-> -		 * see below for IN_TRANS_SETUP usage rules
-> -		 * we have the reloc mutex held now, so there
-> -		 * is only one writer in this function
-> +		 * We are using ->fs_roots_radix_lock as the ultimate protector
-> +		 * of BTRFS_ROOT_RECORDED, which means we want to set it once
-> +		 * we're completely done, so we call btrfs_init_reloc_root()
-> +		 * first.
-> +		 *
-> +		 * This is ok because we are protected here by ->reloc_mutex, so
-> +		 * in reality we won't ever race and call
-> +		 * btrfs_init_reloc_root() twice on the same root back to back.
-> +		 * However if we do it's ok, because again we're protected by
-> +		 * ->reloc_mutex and the second call will simply update the
-> +		 * ->last_trans on the reloc root to the current transid, making
-> +		 * it essentially a no-op.
-> +		 *
-> +		 * We're using ->fs_roots_radix_lock here because
-> +		 * btrfs_drop_snapshot will clear the tag so we don't update the
-> +		 * root, and we will clear the RECORDED flag there without the
-> +		 * ->reloc_mutex lock held.  Again this is fine because we won't
-> +		 * be messing with a dropped root anymore, but for concurrency
-> +		 * it's best to keep the rules nice and simple.
->  		 */
-> -		set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
-> -
-> -		/* make sure readers find IN_TRANS_SETUP before
-> -		 * they find our root->last_trans update
-> -		 */
-> -		smp_wmb();
-> +		ret = btrfs_init_reloc_root(trans, root);
->  
->  		spin_lock(&fs_info->fs_roots_radix_lock);
-> -		if (root->last_trans == trans->transid && !force) {
-> +		if (test_bit(BTRFS_ROOT_RECORDED, &root->state) && !force) {
->  			spin_unlock(&fs_info->fs_roots_radix_lock);
->  			return 0;
->  		}
->  		radix_tree_tag_set(&fs_info->fs_roots_radix,
->  				   (unsigned long)root->root_key.objectid,
->  				   BTRFS_ROOT_TRANS_TAG);
-> -		spin_unlock(&fs_info->fs_roots_radix_lock);
-> +		set_bit(BTRFS_ROOT_RECORDED, &root->state);
->  		root->last_trans = trans->transid;
-> -
-> -		/* this is pretty tricky.  We don't want to
-> -		 * take the relocation lock in btrfs_record_root_in_trans
-> -		 * unless we're really doing the first setup for this root in
-> -		 * this transaction.
-> -		 *
-> -		 * Normally we'd use root->last_trans as a flag to decide
-> -		 * if we want to take the expensive mutex.
-> -		 *
-> -		 * But, we have to set root->last_trans before we
-> -		 * init the relocation root, otherwise, we trip over warnings
-> -		 * in ctree.c.  The solution used here is to flag ourselves
-> -		 * with root IN_TRANS_SETUP.  When this is 1, we're still
-> -		 * fixing up the reloc trees and everyone must wait.
-> -		 *
-> -		 * When this is zero, they can trust root->last_trans and fly
-> -		 * through btrfs_record_root_in_trans without having to take the
-> -		 * lock.  smp_wmb() makes sure that all the writes above are
-> -		 * done before we pop in the zero below
-> -		 */
-> -		ret = btrfs_init_reloc_root(trans, root);
-> -		smp_mb__before_atomic();
-> -		clear_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
-> +		spin_unlock(&fs_info->fs_roots_radix_lock);
->  	}
->  	return ret;
->  }
-> @@ -476,6 +465,7 @@ void btrfs_add_dropped_root(struct btrfs_trans_handle *trans,
->  	radix_tree_tag_clear(&fs_info->fs_roots_radix,
->  			     (unsigned long)root->root_key.objectid,
->  			     BTRFS_ROOT_TRANS_TAG);
-> +	clear_bit(BTRFS_ROOT_RECORDED, &root->state);
->  	spin_unlock(&fs_info->fs_roots_radix_lock);
->  }
->  
-> @@ -488,13 +478,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
->  	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
->  		return 0;
->  
-> -	/*
-> -	 * see record_root_in_trans for comments about IN_TRANS_SETUP usage
-> -	 * and barriers
-> -	 */
-> -	smp_rmb();
-> -	if (root->last_trans == trans->transid &&
-> -	    !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
-> +	if (test_bit(BTRFS_ROOT_RECORDED, &root->state))
->  		return 0;
->  
->  	mutex_lock(&fs_info->reloc_mutex);
-> @@ -1531,6 +1515,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
->  			radix_tree_tag_clear(&fs_info->fs_roots_radix,
->  					(unsigned long)root->root_key.objectid,
->  					BTRFS_ROOT_TRANS_TAG);
-> +			clear_bit(BTRFS_ROOT_RECORDED, &root->state);
->  			spin_unlock(&fs_info->fs_roots_radix_lock);
->  
->  			btrfs_free_log(trans, root);
-> -- 
-> 2.43.0
-> 
