@@ -2,59 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E5B810E02
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF71F810DFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbjLMKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:06:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
+        id S235254AbjLMKGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbjLMKGU (ORCPT
+        with ESMTP id S235223AbjLMKGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:06:20 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EDDA7;
-        Wed, 13 Dec 2023 02:06:26 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C9EFC1C0007;
-        Wed, 13 Dec 2023 10:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702461985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4Vs/12xGUPJSfdWRakvw+41gON0/vxkSbuDwoub7QLg=;
-        b=ZOxkW6T/ELZrsNiwkrU6xsQkgx1LcKuMCRHv61QxMzNGi0jWd3xgscZOFXvyUe2BTy6sel
-        Bj2sjLZctVjWhC1Oz5MdvSTAj62j/7PZv3CNRjg/qqHalD54Lw9LLBzQGPIgaoj/R2hxTW
-        CyG4NYjlS4W0H4X+0x/NeWIj9WBX9qr8OSyLPgCOCb4seW0G0fm2dwvpe0N/curKpsYiug
-        TByedK/NZGHq5wV4s+UTbRrOs2CqXuAiYs3zO8B1jTk2TzLbPzd4Ye7SU9QuN5a7EmFsUy
-        ivMjRqhfp0Wpu/cvJgH+Q4sDgVJ8uWnC8uRH4mjNjm9sh/+NrGU1Wdu5LIG5eQ==
-Date:   Wed, 13 Dec 2023 11:06:22 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Daniel Golle <daniel@makrotopia.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
+        Wed, 13 Dec 2023 05:06:44 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9E883;
+        Wed, 13 Dec 2023 02:06:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=DU16zi8C8rSb8wBiZF7N3q5YkCOaje3ALTOIqa12Rls=; b=OPwMqNJtYxJY74GOJZ4kO51X7g
+        CRxANP+hAK0KpzshNF07PUR0Z48SMf9MSWT/vxNbOjCzx/Wtrf3q/8vW5QSwBhIQJfx/rfvBb2cR7
+        UyOFgxfKlcbSqKAeHanauqtRS+Z0qgc/GTsF6IwSrtXinvZQYH7XCS9lSvPYYpeNkLgM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rDM8Y-002nvF-5G; Wed, 13 Dec 2023 11:06:42 +0100
+Date:   Wed, 13 Dec 2023 11:06:42 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: phy: skip LED triggers on PHYs on SFP modules
-Message-ID: <20231213110622.29f53391@device.home>
-In-Reply-To: <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
-References: <102a9dce38bdf00215735d04cd4704458273ad9c.1702339354.git.daniel@makrotopia.org>
-        <20231212153512.67a7a35b@device.home>
-        <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Daniel Golle <daniel@makrotopia.org>,
+        Li Zetao <lizetao1@huawei.com>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH] leds: trigger: netdev: display only supported link speed
+ attribute
+Message-ID: <8cb5f20f-f9da-4d26-af2d-f63771990fd3@lunn.ch>
+References: <20231209150724.25565-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209150724.25565-1-ansuelsmth@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,50 +53,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 10:08:25 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> On Tue, Dec 12, 2023 at 03:35:12PM +0100, Maxime Chevallier wrote:
-> > Hi Daniel
-> > 
-> > On Tue, 12 Dec 2023 00:05:35 +0000
-> > Daniel Golle <daniel@makrotopia.org> wrote:
-> >   
-> > > Calling led_trigger_register() when attaching a PHY located on an SFP
-> > > module potentially (and practically) leads into a deadlock.
-> > > Fix this by not calling led_trigger_register() for PHYs localted on SFP
-> > > modules as such modules actually never got any LEDs.  
-> > 
-> > While I don't have a fix for this issue, I think your justification
-> > isn't good. This isn't about having LEDs on the module or not, but
-> > rather the PHY triggering LED events for LEDS that can be located
-> > somewhere else on the system (like the front pannel of a switch).  
+On Sat, Dec 09, 2023 at 04:07:24PM +0100, Christian Marangi wrote:
+> With the addition of more link speed mode to the netdev trigger, it was
+> pointed out that there may be a problem with bloating the attribute list
+> with modes that won't ever be supported by the trigger as the attached
+> device name doesn't support them.
 > 
-> SFP LEDs are very unlikely to be on the front panel, since there is no
-> such pins on the SFP cage.
+> To clear and address this problem, change the logic where these
+> additional trigger modes are added.
 > 
-> Russell, in your collection of SFPs do you have any with LEDs?
+> Since the netdev trigger REQUIRE a device name to be set, attach to the
+> device name change function additional logic to parse the supported link
+> speed modes using ethtool APIs and add only the supported link speed
+> modes attribute.
+> 
+> This only apply to the link speed modes and every other mode is still
+> provided by default.
 
-I mean, aren't the led triggers generic so that it can trigger any
-other LED to blink, and it's up to the user to decide ?
+Deleting the file and then re-creating it is not so nice when handling
+user space. Have you tried this while holding the file open?
 
-I do however see one good thing with this patch is that it makes the
-behaviour coherent regarding triggers regardless if we have a
-media-converter or not.
+Please take a look at the is_visible() method of a sysfs group. If it
+returns 0, the file is simply not visible in sysfs, but it still
+exists. It is not a problem if a process holds it open when it becomes
+invisible.
 
-If we have a SFP bus with phylink as its upstream (SFP bus directly
-connected to the MAC), then the phy is going to be attached through
-phy_attach_direct(), and before this patch, led triggers will be
-registered.
+    Andrew
 
-If we have an intermediate PHY acting as a media-converter and
-connected to the SFP bus, then the phy isn't attached to the net_device,
-and the triggers aren't registered.
-
-So if in the end it doesn't make sense to register led triggers for
-PHY in modules, it might be more coherent not registering them at all
-as this patch does. What do you think ?
-
-Thanks,
-
-Maxime
+---
+pw-bot: cr
