@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7A381122D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430A5811232
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbjLMM5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:57:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
+        id S1378945AbjLMM77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbjLMM47 (ORCPT
+        with ESMTP id S233434AbjLMM75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:56:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EBCF7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:57:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 243D0C433C7;
-        Wed, 13 Dec 2023 12:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702472225;
-        bh=5neyQLlIsWkVQ2qC/3BqHS/hcTbEBUuFcUcD3NBeG0s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HR5wn3Vc92O0f9VH/KvOhlRbDK6cnTIzdbBfU7+Im7txS9/EYwh+f3J/O0TzyoblJ
-         7rElQ0qgoIssF7p525GEvCg5DL3fYjZEEuetWKZW4tPt7ISoXwa2G0w0VQI0Na6Vb7
-         +HScxFJgAr4LmbJ5CKhpzzm9yBPajUCkf+/TQVYK8tp1bYMZ00OqIymfOFhKyV/BQI
-         6NlzllRYkn2QD8WZ/KqfQ3lv8SWwrwEqg7ycvwerufxvI2e7/zZGxSS1JWDxQGDQyR
-         8WlDxQkrqzv0Egy1zNc1AmcsMvU31n7SPqHSLFxHoM6s21UPxtytLk0H+n9c6GXfw3
-         nyPKPtITtrC6Q==
-Date:   Wed, 13 Dec 2023 12:57:01 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Subject: Re: linux-next: Tree for Dec 11 (riscv32: patch.c)
-Message-ID: <20231213-excretory-ashen-03a34f3a4c90@spud>
-References: <20231211172504.058ad6b6@canb.auug.org.au>
- <9f0763c0-8175-4160-b72e-8e9e3aee42f8@infradead.org>
- <CAHVXubjbVxEvL01uu_Cm-_R8oLddwc6fUaQYE_Bc+sBThTmvWA@mail.gmail.com>
+        Wed, 13 Dec 2023 07:59:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7392D0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:59:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702472399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wFCv+0tZaZnz6YeZzK8hxOwjz0J3Dsh5vJIVe/dhdnE=;
+        b=L5rvBkq7WhtTSAr5d60UpyQkuONVIJszllE9YfmiaablMmK19b5Of86TWIgU+CBxQQVrE0
+        iU769KPoCmTn9+BWqI3OP83FfRYe6lyvJIMrAN8wGULRwSc0x+VN5xW5Xn6fOochAoayWx
+        h/idZuqlyQMGsCasW7MA5WfSNyUzzHM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-630-WZIFZUgBOQSZYC2uqgNcAg-1; Wed, 13 Dec 2023 07:59:57 -0500
+X-MC-Unique: WZIFZUgBOQSZYC2uqgNcAg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c26711881so13097995e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:59:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702472396; x=1703077196;
+        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wFCv+0tZaZnz6YeZzK8hxOwjz0J3Dsh5vJIVe/dhdnE=;
+        b=TzrZkZRfsO20zn/VFa9ORl511d0oZJY69svGYH7pdBb6zTpVelR8Zk/ABdnRQJDYME
+         CCaVQd/y48NkFqt73La05j3xYF3lbWfyowQMk+5Bpd5Gv7zHlHL9pWDZv3OtqeU+lZM9
+         0X+/Bfil6ShiQ/UQiBVQRrPbE1HGFyrC24xYn/HUIsKyfhZTjciiPh3DM+glXK4fO0Zs
+         CXf2ClnYIulechXX1ddMjzZqAy7C3J+RrbvFV536S4B5Gxbnpq99P0R9p2f40vl6PNFS
+         8t35TT/Xl/i3AOTPogC6jk2wrc7KCX7MBK6o1tRUtEt/zIeIQCqS/o81uBciNnRUy3q3
+         JhlA==
+X-Gm-Message-State: AOJu0YxQ/YJQfSK/tFVRb0BgkoYt7jO4QkarES7LKJzTOOwpnoRc8VwI
+        vBTNWBEQj1JLrwAiLQGtpdntmM77oeITahbX8t3BPozL/L49UxXn33Q5/ueg+p5bMgJh/xl86YK
+        oSCfKGWQF+9IzFIgk9FHxT0JC
+X-Received: by 2002:a05:600c:511a:b0:40b:516a:3856 with SMTP id o26-20020a05600c511a00b0040b516a3856mr9749094wms.1.1702472396622;
+        Wed, 13 Dec 2023 04:59:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGwXql9nJbq7x4v2uy9r9nzvBcsRQ6cZzXgBsR4vsn2vk2qU4KbpFlHbt/UWL+c1VfSst1fYA==
+X-Received: by 2002:a05:600c:511a:b0:40b:516a:3856 with SMTP id o26-20020a05600c511a00b0040b516a3856mr9749062wms.1.1702472396246;
+        Wed, 13 Dec 2023 04:59:56 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id g9-20020a5d4889000000b0033609584b9dsm13081881wrq.74.2023.12.13.04.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 04:59:55 -0800 (PST)
+Message-ID: <74219796e91675c533daea6a2a6afc6d06fb7461.camel@redhat.com>
+Subject: Further cleanups for pci_iounmap() and lib/iomap.c discussion
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Philipp Stanner <pstanner@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Uladzislau Koshchanka <koshchanka@gmail.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Kees Cook <keescook@chromium.org>, Rae Moar <rmoar@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org
+Date:   Wed, 13 Dec 2023 13:59:54 +0100
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="obwyZd8LQsMhiGve"
-Content-Disposition: inline
-In-Reply-To: <CAHVXubjbVxEvL01uu_Cm-_R8oLddwc6fUaQYE_Bc+sBThTmvWA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hola,
 
---obwyZd8LQsMhiGve
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a discussion about whether we want to move lib/iomap.c and
+remove the remaining pci_io(un)map() definition of s390.
 
-On Tue, Dec 12, 2023 at 09:01:17AM +0100, Alexandre Ghiti wrote:
-> Hi Randy,
->=20
-> On Mon, Dec 11, 2023 at 10:17=E2=80=AFPM Randy Dunlap <rdunlap@infradead.=
-org> wrote:
-> >
-> >
-> >
-> > On 12/10/23 22:25, Stephen Rothwell wrote:
-> > > Hi all,
-> > >
-> > > Changes since 20231208:
-> > >
-> >
-> > on riscv32:
-> >
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L4':
-> > patch.c:(.text+0xbe): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0xc2): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L12':
-> > patch.c:(.text+0xd2): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0xd6): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L15':
-> > patch.c:(.text+0x1ea): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L7':
-> > patch.c:(.text+0x1ee): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x1fe): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L22':
-> > patch.c:(.text+0x202): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `__patch_insn_write':
-> > patch.c:(.text+0x410): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x414): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x424): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x428): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L46':
-> > patch.c:(.text+0x53c): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x540): undefined reference to `__exittext_begin'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: ar=
-ch/riscv/kernel/patch.o: in function `.L48':
-> > patch.c:(.text+0x550): undefined reference to `__exittext_end'
-> > /opt/crosstool/gcc-13.2.0-nolibc/riscv32-linux/bin/riscv32-linux-ld: pa=
-tch.c:(.text+0x554): undefined reference to `__exittext_end'
-> >
-> >
-> > Full randconfig file is attached.
->=20
-> We can ignore this one as CONFIG_XIP is enabled and we agreed at LPC
-> that I'll remove this soon.
+That would be followup work on our pci_iounmap() cleanup [1] that was
+discussed here [2] (but is not yet merged).
 
-I don't think we can (even if people hadn't sent patches yesterday for
-XIP) act as if XIP being removed is a foregone conclusion.
 
---obwyZd8LQsMhiGve
-Content-Type: application/pgp-signature; name="signature.asc"
+The summary from the last discussions was:
+ * GENERIC_IOMAP is not generic anymore, but x86-specific
+ * All (?) archs should be able to use generic pci_iounmap()
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXmqHQAKCRB4tDGHoIJi
-0v3JAQDasJk60e0AOa9BFldLhHllm/ZCvbLhi798Ft48nzn06AEAx1NxZQ4H+SZo
-z8u48ofVkJagwI2H9MWYiHFrr32d0w0=
-=hgAl
------END PGP SIGNATURE-----
+I've been looking into GENERIC_IOMAP a bit and am unsure whether that's
+true. Notably, powerpc seems to do something with it; see
+platforms/Kconfig:
 
---obwyZd8LQsMhiGve--
+config PPC_INDIRECT_PIO
+bool
+select GENERIC_IOMAP
+
+
+I've had a few ideas, but don't really want to pursue them until we had
+a discussion about it:
+   1. If GENERIC_IOMAP is really x86-specific, that should mean that we
+      could move lib/iomap.c to x86 completely, since that file is only
+      built when that symbol is defined.
+   2. If it's moved to x86, the question arises whether it's possible
+      to provide exact variants for lib/iomap.c's PIO_* constants. The
+      comment above them in that file hint at those being just rough
+      estimates ("assuming that all the low addresses are always PIO").
+   3. To really just have one pci_iounmap(), we'd have to jump into
+      s390 and replace its pci_iounmap(), which might be a bad idea
+      since it also has its own pci_iomap().
+
+
+So my tendency would be to leave s390 alone, figure out what's going on
+with powerpc and then, if possible, move lib/iomap.c to x86 and
+consequently have the second "generic" definition of iomem_is_ioport()
+from asm-generic/iomap.h removed.
+
+Ideas?
+
+P.
+
+
+[1] https://lore.kernel.org/all/20231213104922.13894-1-pstanner@redhat.com/
+[2] https://lore.kernel.org/all/619ea619-29e4-42fb-9b27-1d1a32e0ee66@app.fa=
+stmail.com/
+
