@@ -2,72 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4310A8115D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AAC8115DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442460AbjLMPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        id S1442260AbjLMPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:13:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442451AbjLMPLd (ORCPT
+        with ESMTP id S1442258AbjLMPNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:11:33 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C49CA0;
-        Wed, 13 Dec 2023 07:11:40 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6ce9c8c45a7so4399286b3a.0;
-        Wed, 13 Dec 2023 07:11:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702480300; x=1703085100; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MVoGj2D2DMUo44xl6GAyPl6zTtJUXg2mVSdeTOQeduo=;
-        b=bwI9BR7zEVOMYzoiLHbLanlPztr52jbM8D9MdL6cbYztUnsShcnsq9T6I8Sno/kCml
-         b4JJh1/wtmHm1Y0vZXLEZ5FxIVktOwJ5o5s8+SFqFFFYWKqcdTDj/NvMSIqCCWB4o3wX
-         vjnMpglXXx686FnV6h5SL+KHvoBNWKuKwsNs+TmkHuWAw/Z0Eh28K1izubToTEy8dMRZ
-         BDJS4/ryb54dlD1mbhoGediJ1A5LAVdDaAvsdFGZ9K1uu61Ip6aVEYT3Bt0Ln0kuCpsX
-         g+RmNGbOECBgo6hHktt/Sqyr/qjYkkreyhX/dxS149W+AAX7UDY2bCC9qvHulwR2U368
-         Svkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702480300; x=1703085100;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MVoGj2D2DMUo44xl6GAyPl6zTtJUXg2mVSdeTOQeduo=;
-        b=ufoXCNeFt7UiygDe0cyFse08d8VKq0VORAIA9PS27w22oTOJRTZh9CVQorFTIvJCWW
-         NwL3jzcHfxiz927lzVprjg32Q1o2V8r1oKTAQpU9FabU0kzRf4yEh3RF4EmkVHk+JhvB
-         FL2QvuBboPmT10aKjXbnzo7/LriUG+1VoCwbveciCOgR/JkWtXEwBuXia2GAmknGTdX6
-         visR2HPsljn3YyeOSiK06YwvnvwTaQ3cDKHqXSx4c1yjo3feGW74X/bkvLTuIexPdwIx
-         lBqLZ4Ue66nUNQ1YZBGZGBEw5lk/ndPOk36lIjVMfdU29q51jiWgdeGwnPm9GGFLe5ip
-         j9Iw==
-X-Gm-Message-State: AOJu0YxM1DQK2hUVLl3OUGe5QRs0ftgWBCjXfOMyFUE/wtk5ZP6PRpWr
-        TFa7C/1UqN7pkOlS4wrfmxF7ook8B70=
-X-Google-Smtp-Source: AGHT+IFkfYSwGPDQjq6tPndqIEs9YjrBQhCIDruTbK01vdsPqTRY2vSH8jhBHfinjmh8CGjzZVbc1Q==
-X-Received: by 2002:aa7:88c8:0:b0:6ce:53f6:1eee with SMTP id k8-20020aa788c8000000b006ce53f61eeemr4612365pff.31.1702480299807;
-        Wed, 13 Dec 2023 07:11:39 -0800 (PST)
-Received: from rigel (194-223-186-106.tpgi.com.au. [194.223.186.106])
-        by smtp.gmail.com with ESMTPSA id u13-20020a056a00098d00b006ce455a7faasm10154893pfg.150.2023.12.13.07.11.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 07:11:39 -0800 (PST)
-Date:   Wed, 13 Dec 2023 23:11:34 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        brgl@bgdev.pl, linus.walleij@linaro.org
-Subject: Re: [PATCH 3/4] gpiolib: cdev: reduce locking in
- gpio_desc_to_lineinfo()
-Message-ID: <ZXnJply1tPnTN_-O@rigel>
-References: <20231212054253.50094-1-warthog618@gmail.com>
- <20231212054253.50094-4-warthog618@gmail.com>
- <ZXm4C7KVkMwL4_sX@smile.fi.intel.com>
- <ZXm6oHjb7CRZ8-0f@rigel>
+        Wed, 13 Dec 2023 10:13:30 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1568CB0;
+        Wed, 13 Dec 2023 07:13:37 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDBP9iL006807;
+        Wed, 13 Dec 2023 07:13:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=pfpt0220; bh=h0QNwsIs
+        xCVCFnb61YiC0y8uyBswFifMu55wtofMhKA=; b=UfZX8Aj0ErqBfh2mlJAzJlfz
+        9i+DM64msaTL1/IclVsrPG3bCuoYvvxngzgaNMu60pp3NanQn7aLo/TY3sVbUrfE
+        vVHtw67pa5jwOceuNy6yNB3XKjcLy6Yc9IF3iJwfwTT0CojkWTObKCPQq3tf7JaW
+        0G+YIqfdQ9G3ejop6rLicLMw3Tnw7Jl8YfbqqghvewWRRrCNJ5spNyUGTQ9lNBKE
+        b1zcUEUizrMTj40YwsFbYx9BU9tjYQB1a8U7zb8jxuhXlR8cl9cmGIa1b5KXfdvG
+        ayrqrnoqqEai4i5DyKT1jRDXEH8U0VBLCBlWmo8rsbnK3cEGMFr2dFw7u0uXbg==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uybqmgras-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 07:13:23 -0800 (PST)
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 13 Dec
+ 2023 07:13:21 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 13 Dec 2023 07:13:21 -0800
+Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
+        by maili.marvell.com (Postfix) with ESMTP id 97E905B6943;
+        Wed, 13 Dec 2023 07:13:19 -0800 (PST)
+From:   Elad Nachman <enachman@marvell.com>
+To:     <gregory.clement@bootlin.com>, <andi.shyti@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <enachman@marvell.com>, <cyuval@marvell.com>
+Subject: [PATCH v3 0/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+Date:   Wed, 13 Dec 2023 17:13:11 +0200
+Message-ID: <20231213151312.1165115-1-enachman@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXm6oHjb7CRZ8-0f@rigel>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: fW9T9wHimsPpN25zWGrXT3Fd-nLuGaFD
+X-Proofpoint-ORIG-GUID: fW9T9wHimsPpN25zWGrXT3Fd-nLuGaFD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,38 +65,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:07:28PM +0800, Kent Gibson wrote:
-> On Wed, Dec 13, 2023 at 03:56:27PM +0200, Andy Shevchenko wrote:
-> > On Tue, Dec 12, 2023 at 01:42:52PM +0800, Kent Gibson wrote:
-> > > Reduce the time holding the gpio_lock by snapshotting the desc flags,
-> > > rather than testing them individually while holding the lock.
-> > >
-> > > Accept that the calculation of the used field is inherently racy, and
-> > > only check the availabilty of the line from pinctrl if other checks
-> > > pass, so avoiding the check for lines that are otherwise in use.
-> >
-> > ...
-> >
-> > > -	bool ok_for_pinctrl;
-> > > -	unsigned long flags;
-> > > +	unsigned long iflags, dflags;
-> >
-> > With a preliminary conversion to cleanup.h this whole change becomes cleaner,
-> > no?
-> >
->
-> You mean the scoped guards?  Dunno - haven't used them.
-> Care to provide more detail?
->
+From: Elad Nachman <enachman@marvell.com>
 
-Ok, so changing the spin_lock/unlock to
+i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
 
-       scoped_guard(spinlock_irqsave, &gpio_lock) {
-       ...
-       }
+Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
+while slave is in the middle of responding.
+This means that the i2c slave has not finished the transmission, but
+the master has already finished toggling the clock, probably due to
+the slave missing some of the master's clocks.
+This was seen with Ubiquity SFP module.
+This is typically caused by slaves which do not adhere completely
+to the i2c standard.
 
-you no longer need the iflags at all, and can rename dflags to flags.
-Got it.
+The solution is to change the I2C mode from mpps to gpios, and toggle
+the i2c_scl gpio to emulate bus clock toggling, so slave will finish
+its transmission, driven by the manual clock toggling, and will release
+the i2c bus.
 
-Cheers,
-Kent.
+v3:
+   1) Remove unused / un-initialized variable
+
+   2) Replace devm_pinctrl_get() with pinctrl_get() and pinctrl_put() pair
+      in probe and device removal.
+
+   3) Replace atomic sleeps with usleep_range()
+
+   4) Rework comment to start with a capital letter
+
+v2:
+   1) Explain more about cause of issue in commit message
+
+   2) Change variable name to something clearer
+
+   3) Leave space between comments
+
+   4) Remove redundant blank line
+
+   5) Add error message if pinctrl get failed
+
+   6) Move gpio request to probe function
+
+   7) Fix commenting style
+
+   8) Explain in comments why 10 togglings are required
+
+   9) Move from mdelay to udelay, reducing delay time
+
+   10) Explain in comments what is the value written
+       to the reset register.
+
+   11) Explain why fallthrough is required (generate stop condition)
+
+   12) Explain why in case of missing i2c arbitration loss details,
+       driver probe will not fail, in order to be backward compatible
+       with older dts files
+
+Elad Nachman (1):
+  i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
+
+ drivers/i2c/busses/i2c-mv64xxx.c | 118 ++++++++++++++++++++++++++++++-
+ 1 file changed, 117 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
