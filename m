@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D195811A10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140DC811A0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378798AbjLMQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S235219AbjLMQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMQvJ (ORCPT
+        with ESMTP id S229458AbjLMQuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:51:09 -0500
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E796F3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:15 -0800 (PST)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-46484f37549so2447759137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702486274; x=1703091074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+aZ9Gls1BogU2MReoFJauXP2UgnNIXaBIdamecIfCjI=;
-        b=LlP3f+lLIPBascCA2+adLBXWKEu/Ue7Y8JXRF0nEayxwk7LWD959xZEtSi8ktJIijE
-         GBxivhUlpImZXMyAyCxvhhcOYGIk2R6YDNEMZMSQOdckB8g+n556UIXbTATnAZkJDthM
-         7Xg6bBhJ96eEWCyuqVGbL0lH68x3FlDctOOfb4kLHwt8kzhe1ha44+AcdDV3CTqU6PKM
-         Fw87yHuOr3TXqCVW8hMR6oEBa/pq1TrhV5Y6phT3yN4WhHjjS8v/5648cxHQzAw/hcCd
-         HIexjtFwEtTDEqtlJbgP98kiwtigjIjQgMiC6EAJYWO2rC2Kqcg72GM7kHggTB10BKzd
-         RSIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702486274; x=1703091074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+aZ9Gls1BogU2MReoFJauXP2UgnNIXaBIdamecIfCjI=;
-        b=ftnkEDoA10OfkmFJ33zzj0G39ElAwaMHIJFQzLMkuMjL/41OQruvIFnHTc9rHCaM2P
-         wlZawF1MsHtJruCKyzIXOxhPsQ3TYCD5knIqVfjJlhgCCAKvzhJweG9Y+GeLR0bwLuJM
-         0aaOUHqt3gutWQPmJoDhG0O2cHzsq0kT25sPDaz3ylr8oKX65Rb+pKjtvlQqn1hMrwhC
-         PFpdK64csXMVrNuVgCiqMWaDr0Df9BBtH0+8kCoFhm5+yPND9hK9BMz5ZRQVobGhMVBi
-         Eqk6ARSHSDnEGkKDev84l7PhfpLIW5xzN6kIRldiaqM2XnVLQkzjQPyb5Gb9JgeSlV1o
-         kPwQ==
-X-Gm-Message-State: AOJu0Yy7ivBxjTrpAKqzxdf3OLRnoh/5EgYkVsDH9zewTo/kTjeS0dx+
-        635xYLMIicHh5ow8P0ZUfw2c98XiiaB9UNtjzkuLuw==
-X-Google-Smtp-Source: AGHT+IHQpIkVGJCpLoc6EVwkHmU30myi6H5tPqvw7/ES4Tv2xk+lOzhBDTrqSvlq0+rORSxW/TrAAv6EHgdiBENNGNI=
-X-Received: by 2002:a05:6102:188c:b0:464:498f:3b6 with SMTP id
- ji12-20020a056102188c00b00464498f03b6mr4870448vsb.22.1702486274436; Wed, 13
- Dec 2023 08:51:14 -0800 (PST)
+        Wed, 13 Dec 2023 11:50:51 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43252AC;
+        Wed, 13 Dec 2023 08:50:56 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sr1g64b1Pz67pnj;
+        Thu, 14 Dec 2023 00:49:54 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id AE4A1140595;
+        Thu, 14 Dec 2023 00:50:54 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
+ 2023 16:50:54 +0000
+Date:   Wed, 13 Dec 2023 16:50:52 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+        <linux-cxl@vger.kernel.org>, David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Huang Ying <ying.huang@intel.com>
+Subject: Re: [PATCH v4 1/3] Documentatiion/ABI: Add ABI documentation for
+ sys-bus-dax
+Message-ID: <20231213165052.00007d74@Huawei.com>
+In-Reply-To: <20231212-vv-dax_abi-v4-1-1351758f0c92@intel.com>
+References: <20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com>
+        <20231212-vv-dax_abi-v4-1-1351758f0c92@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <cover.1702339432.git.andreyknvl@google.com> <432a89fafce11244287c8af757e73a2eb22a5354.1702339432.git.andreyknvl@google.com>
- <CANpmjNM9Kq9C4f9AMYE9U3JrqofbsrC7cmrP28ZP4ep1CZTWaA@mail.gmail.com> <CA+fCnZcGWXbpwCxk5eoBEMr2_4+8hhEpTefE2h4QQ-9fRv-2Uw@mail.gmail.com>
-In-Reply-To: <CA+fCnZcGWXbpwCxk5eoBEMr2_4+8hhEpTefE2h4QQ-9fRv-2Uw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 13 Dec 2023 17:50:36 +0100
-Message-ID: <CANpmjNPEofU4wkmuqYegjDZgmP84yrf7Bmfc-t4Wp7UyYvDc7A@mail.gmail.com>
-Subject: Re: [PATCH mm 2/4] kasan: handle concurrent kasan_record_aux_stack calls
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        syzbot+186b55175d8360728234@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 15:40, Andrey Konovalov <andreyknvl@gmail.com> wrote=
-:
->
-> On Tue, Dec 12, 2023 at 8:29=E2=80=AFPM Marco Elver <elver@google.com> wr=
-ote:
-> >
-> > > -       stack_depot_put(alloc_meta->aux_stack[1]);
-> > > +       new_handle =3D kasan_save_stack(0, depot_flags);
-> > > +
-> > > +       spin_lock_irqsave(&aux_lock, flags);
-> >
-> > This is a unnecessary global lock. What's the problem here? As far as
-> > I can understand a race is possible where we may end up with
-> > duplicated or lost stack handles.
->
-> Yes, this is the problem. And this leads to refcount underflows in the
-> stack depot code, as we fail to keep precise track of the stack
-> traces.
->
-> > Since storing this information is best effort anyway, and bugs are
-> > rare, a global lock protecting this is overkill.
-> >
-> > I'd just accept the racyness and use READ_ONCE() / WRITE_ONCE() just
-> > to make sure we don't tear any reads/writes and the depot handles are
-> > valid.
->
-> This will help with the potential tears but will not help with the
-> refcount issues.
->
-> > There are other more complex schemes [1], but I think they are
-> > overkill as well.
-> >
-> > [1]: Since a depot stack handle is just an u32, we can have a
-> >
-> >  union {
-> >    depot_stack_handle_t handles[2];
-> >    atomic64_t atomic_handle;
-> >   } aux_stack;
-> > (BUILD_BUG_ON somewhere if sizeof handles and atomic_handle mismatch.)
-> >
-> > Then in the code here create the same union and load atomic_handle.
-> > Swap handle[1] into handle[0] and write the new one in handles[1].
-> > Then do a cmpxchg loop to store the new atomic_handle.
->
-> This approach should work. If you prefer, I can do this instead of a spin=
-lock.
->
-> But we do need some kind of atomicity while rotating the aux handles
-> to make sure nothing gets lost.
+On Tue, 12 Dec 2023 12:08:30 -0700
+Vishal Verma <vishal.l.verma@intel.com> wrote:
 
-Yes, I think that'd be preferable. Although note that not all 32-bit
-architectures have 64-bit atomics, so that may be an issue. Another
-alternative is to have a spinlock next to the aux_stack (it needs to
-be initialized properly). It'll use up a little more space, but that's
-for KASAN configs only, so I think it's ok. Certainly better than a
-global lock.
+> Add the missing sysfs ABI documentation for the device DAX subsystem.
+> Various ABI attributes under this have been present since v5.1, and more
+> have been added over time. In preparation for adding a new attribute,
+> add this file with the historical details.
+> 
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+
+Hi Vishal,  One editorial suggestions.
+
+I don't know the interface well enough to do a good review of the content
+so leaving that for Dan or others.
+
+> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/start
+> +Date:		October, 2020
+> +KernelVersion:	v5.10
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RO) A dax device may have multiple constituent discontiguous
+> +		address ranges. These are represented by the different
+> +		'mappingX' subdirectories. The 'start' attribute indicates the
+> +		start physical address for the given range.
+
+A common option for these files is to have a single entry with two What:
+lines.  Here that would avoid duplication of majority of this text across
+the start, end  and page_offset entries.  Alternatively you could do an
+entry for the mapping[0..N] directory with the shared text then separate
+entries for the 3 files under there.
+
+
+> +
+> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/end
+> +Date:		October, 2020
+> +KernelVersion:	v5.10
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RO) A dax device may have multiple constituent discontiguous
+> +		address ranges. These are represented by the different
+> +		'mappingX' subdirectories. The 'end' attribute indicates the
+> +		end physical address for the given range.
+> +
+> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/page_offset
+> +Date:		October, 2020
+> +KernelVersion:	v5.10
+> +Contact:	nvdimm@lists.linux.dev
+> +Description:
+> +		(RO) A dax device may have multiple constituent discontiguous
+> +		address ranges. These are represented by the different
+> +		'mappingX' subdirectories. The 'page_offset' attribute indicates the
+> +		offset of the current range in the dax device.
+
