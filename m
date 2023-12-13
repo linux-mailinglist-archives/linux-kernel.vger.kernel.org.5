@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78223811AC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C37F811ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbjLMRTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
+        id S230353AbjLMRVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbjLMRTe (ORCPT
+        with ESMTP id S229458AbjLMRVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:19:34 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6A5129
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:19:40 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c3fe6c08fso48132725e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:19:39 -0800 (PST)
+        Wed, 13 Dec 2023 12:21:10 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EE1E4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:21:15 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcd9f4396eso498549276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:21:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1702487978; x=1703092778; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W3BG24W610lJuKV/MW/fbLfcOspFMJtOeERiQaIiRWM=;
-        b=D0KAKx8N4MOccXzvsRUZwfL8OuCPtt3k7XEY9o9U6Ih3o+HdBLv6i4JjXRresI2HZ+
-         wanjfnLKZVo68KteA3Zw+i7+NbBdBjEJJEE9vSdH3EUFIkSz+QBF8q/s/jdm7kcHU8R/
-         gXPfscw1sWibuwuqwo2lwqQxJbXz6M3BIsEVuBJqb79Lqe1LrGNOFebPQ+r3IC7POhRX
-         MK4Wrx23J5YbUz386TcdmtUd318S1eQEvV8IoyskZ3UqEjuI239KKX4WJCQ0mIcLMoVv
-         MUJ9U/QgfjVAndSoKONembXEsWkpKqW9RsiaoVANQgOTkXM47AH4sjS11iY/ItjloGWk
-         cUjw==
+        d=google.com; s=20230601; t=1702488075; x=1703092875; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AUER+D4xe6qS+B1oKWs50YXOCoyXjBc3WM+/yGcEVoE=;
+        b=QX5FBp6jzLZh5gCBAy2h22nqyENcL1EB0kJ6BPSIS6XmNIWrAL81u6cc59Im04Jyqq
+         3vUYKZJsGlaLxdzw5y59C4uIAyaCCkLr5ectb/2dcWVoXfhmCWy5WSQ4u1pFakISSTZd
+         qB7c1oBpTT6WZYCS50ohGRS14xxOLVEVRTDpKmYzCm8QsGxE75jWUH4Onj0pHkaUW9rz
+         bikNqc27HabAtCTJ9sKNkC40++VJDl8yaxhylNyQ0SUv0to/Frb7Zi4YDNx7XTHjLYT2
+         CFr+DrWgfS0BOpEUx/PDVD7vdkZqbPQk7AnKYyAU1+Uv6D0IM1vv17W5cA/QvsyTsQHF
+         eWpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702487978; x=1703092778;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W3BG24W610lJuKV/MW/fbLfcOspFMJtOeERiQaIiRWM=;
-        b=K0pi91urBsVu5u2SrftoWsXxG1Zfqunj1do1FpR9yciMU6TCgFC8V+8Kti6TzmCSUk
-         BIKgp/rMBoltwSruW2T4YnVEDmYtS4fSqfuLx4Lqpe43PUKIPV3fdMMLeAVxBhNGQJB1
-         RXNHK3tH5sjXfik0C3CpbF9dGwn5wU0a/3Ptv5dyYoFSZNV7T/Nz6kBatDchVHVpYuc0
-         lMWO/uzZQFNpOekXaFOjdos9jqX3hmpUBTcoyT7Ub1b5In6ORwmbFwkIdtjfEMSm3nM9
-         7XyKS3R6xO5nKFqzD/3Ltgy43lQjeYCfM5iFJRSdLxayJyAEcw81yzw54MYTrEq3xcq4
-         DdOA==
-X-Gm-Message-State: AOJu0YyA0FWXTbHs4kbgimBbuWHTfWwNrMbHxt+cpmfDwySjj13gTN5w
-        GnkMMH46LtZSrW+vAV9dWtnkEQ==
-X-Google-Smtp-Source: AGHT+IFLcGLrThHqoGdIdS0RECHOQeVt4478xU7EiOcPPKGKy3QIAr+KLDIgxCltoydbRPGDwIQ3TA==
-X-Received: by 2002:a05:600c:4749:b0:40c:a11:19df with SMTP id w9-20020a05600c474900b0040c0a1119dfmr2878247wmo.180.1702487978245;
-        Wed, 13 Dec 2023 09:19:38 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id r20-20020a05600c459400b0040b349c91acsm23318063wmo.16.2023.12.13.09.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 09:19:37 -0800 (PST)
-Date:   Wed, 13 Dec 2023 18:19:37 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>, devicetree@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 03/15] KVM: riscv: selftests: Add Zbc extension to
- get-reg-list test
-Message-ID: <20231213-1082f104e8ba65ee3db6aa3a@orel>
-References: <20231128145357.413321-1-apatel@ventanamicro.com>
- <20231128145357.413321-4-apatel@ventanamicro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128145357.413321-4-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702488075; x=1703092875;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AUER+D4xe6qS+B1oKWs50YXOCoyXjBc3WM+/yGcEVoE=;
+        b=Dt1NCxDoO9mHhSOrOkOh1NZ5J0y832MDrIVn5g/MzPf6z7LYJm6HhNlgadrnSRh2MG
+         pNExti3dLlR22/lrPzG/uYjZib0GCJIFbJbAKu1UUo7E/VhTjlxHMq2sfy/VU6UEqep1
+         aSIvCqTfypsU4pTbs7b80TqAHOen7+7Qo45PggI4CKPKzhVTMv7ysETYeGaJ2e1abwBO
+         ca4SA9Ps3QlAAD7sAvuLBOVNWFqzBib8QAMf1Ec0DUNsox1MA/5AFciipKAOHySzquvZ
+         8X08DV7zkZ2A++kygwQ6W98M0QtzazfciwjTlVkTowJADgXA4UymFnK1TjbdSdIfMSIc
+         4b/g==
+X-Gm-Message-State: AOJu0Ywy84UNmHPsh41GPKRCzHJ1dCApTOJmOayBg7PQg3phllvtOKL0
+        fgqS4EQd72di6vLrwUsQUjWYvson6Tg=
+X-Google-Smtp-Source: AGHT+IHxxvfKb7sYphqiEH80MgNn6no+WlSe6mwkjghyGVLAhz51UUraQXN2vSCIrd3Mg+DzJsjQQlvELHM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:150:b0:da0:3da9:ce08 with SMTP id
+ p16-20020a056902015000b00da03da9ce08mr91009ybh.10.1702488074979; Wed, 13 Dec
+ 2023 09:21:14 -0800 (PST)
+Date:   Wed, 13 Dec 2023 09:21:13 -0800
+In-Reply-To: <184e253d-06c4-419e-b2b4-7cce1f875ba5@redhat.com>
+Mime-Version: 1.0
+References: <20231208184628.2297994-1-pbonzini@redhat.com> <ZXPRGzgWFqFdI_ep@google.com>
+ <184e253d-06c4-419e-b2b4-7cce1f875ba5@redhat.com>
+Message-ID: <ZXnoCadq2J3cPz2r@google.com>
+Subject: Re: [PATCH] KVM: selftests: fix supported_flags for aarch64
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Shaoqin Huang <shahuang@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 08:23:45PM +0530, Anup Patel wrote:
-> The KVM RISC-V allows Zbc extension for Guest/VM so let us add
-> this extension to get-reg-list test.
+On Tue, Dec 12, 2023, Paolo Bonzini wrote:
+> On 12/9/23 03:29, Sean Christopherson wrote:
+> > On Fri, Dec 08, 2023, Paolo Bonzini wrote:
+> > > KVM/Arm supports readonly memslots; fix the calculation of
+> > > supported_flags in set_memory_region_test.c, otherwise the
+> > > test fails.
+> > 
+> > You got beat by a few hours, and by a better solution ;-)
+> > 
+> > https://lore.kernel.org/all/20231208033505.2930064-1-shahuang@redhat.com
 > 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  tools/testing/selftests/kvm/riscv/get-reg-list.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> index b6b4b6d7dacd..4b75b011f2d8 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -44,6 +44,7 @@ bool filter_reg(__u64 reg)
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_SVPBMT:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBA:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBB:
-> +	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBC:
+> Better but also wrong---and my patch has the debatable merit of more
+> clearly exposing the wrongness.  Testing individual architectures is bad,
+> but testing __KVM_HAVE_READONLY_MEM makes the test fail when running a new
+> test on an old kernel.
 
-Assuming this gets rebased on [1] then this line becomes
+But we already crossed that bridge and burned it for good measure by switching
+to KVM_SET_USER_MEMORY_REGION2, i.e. as of commit
 
-  case KVM_REG_RISCV_ISA_EXT | KVM_REG_RISCV_ISA_SINGLE | KVM_RISCV_ISA_EXT_ZBC:
+  8d99e347c097 ("KVM: selftests: Convert lib's mem regions to KVM_SET_USER_MEMORY_REGION2")
 
-[1] https://lore.kernel.org/linux-riscv/20231213170951.93453-8-ajones@ventanamicro.com/
+selftests built against a new kernel can't run on an old kernel.  Building KVM
+selftests requires kernel headers, so while not having a hard requirement that
+the uapi headers are fresh would be nice, I don't think it buys all that much.
 
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
->  	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
-> @@ -361,6 +362,7 @@ static const char *isa_ext_id_to_str(const char *prefix, __u64 id)
->  		KVM_ISA_EXT_ARR(SVPBMT),
->  		KVM_ISA_EXT_ARR(ZBA),
->  		KVM_ISA_EXT_ARR(ZBB),
-> +		KVM_ISA_EXT_ARR(ZBC),
->  		KVM_ISA_EXT_ARR(ZBS),
->  		KVM_ISA_EXT_ARR(ZICBOM),
->  		KVM_ISA_EXT_ARR(ZICBOZ),
-> @@ -739,6 +741,7 @@ KVM_ISA_EXT_SIMPLE_CONFIG(svnapot, SVNAPOT);
->  KVM_ISA_EXT_SIMPLE_CONFIG(svpbmt, SVPBMT);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zba, ZBA);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zbb, ZBB);
-> +KVM_ISA_EXT_SIMPLE_CONFIG(zbc, ZBC);
->  KVM_ISA_EXT_SIMPLE_CONFIG(zbs, ZBS);
->  KVM_ISA_EXT_SUBLIST_CONFIG(zicbom, ZICBOM);
->  KVM_ISA_EXT_SUBLIST_CONFIG(zicboz, ZICBOZ);
-> @@ -761,6 +764,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
->  	&config_svpbmt,
->  	&config_zba,
->  	&config_zbb,
-> +	&config_zbc,
->  	&config_zbs,
->  	&config_zicbom,
->  	&config_zicboz,
-> -- 
-> 2.34.1
->
+If we wanted to assert that x86, arm64, etc. enumerate __KVM_HAVE_READONLY_MEM,
+i.e. ensure that read-only memory is supported as expected, then that can be done
+as a completely unrelated test.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
+IMO, one of the big selling points of selftests over KUT is that we can punt on
+supporting old kernels since selftests are in-tree.  I don't think it's at all
+unreasonable to require that selftests be built against the target kernel, and
+by doing so we can signficantly reduce the maintenance burden.  The kernel needs
+to be backwards compatibile, but I don't see why selftests need to be backwards
+compatible.
