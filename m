@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E57811E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41A2811E53
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbjLMTKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        id S235498AbjLMTLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235548AbjLMTKT (ORCPT
+        with ESMTP id S235536AbjLMTLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:10:19 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD2D5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:10:24 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so43703475ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:10:24 -0800 (PST)
+        Wed, 13 Dec 2023 14:11:37 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C5999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:11:26 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-55263acefc1so2230a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:11:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702494623; x=1703099423; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
-        b=CE1E8N2YrSlCa3ZagkQjHUXjZES8FXi9nuCnC6w3mP3ssI2+vrg6eCxwymrV/dwewd
-         rIAEGlhIZyy9lZM5i3djaktv6e/Nr48ex/cEQdVS21w2XS/ukfPcDqjwbxVbDFx1JkZa
-         Q2+ppRDpUisA3M3MywHl3dsIcyoamA2e9fxhs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702494623; x=1703099423;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702494685; x=1703099485; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
-        b=kDG4qRf5UKSvshYhe8g+KGHm6elKb+knAsxpCYjX2gMBOWJaDQuHsP9+3VhGOIs/8r
-         yDiAvj9ioTcSdSvxvFEu8hfkqziuS9NhYcYrAN7lWceCEcIHXPYH22EI5XF3MmweL3qc
-         vtPuXzh9JJ/ZtSYI9X6FUKAmv2+impR+jQzMezJLD+AMmOo3zGoZ1WnLsSLLOSz3nHAu
-         6EzsNRY8art8Dq14L7tDrLkuq1M0nG8IfKpGugYSqtjedDbAIGXCfaEBM8mOB2479REY
-         o5wO6jj+iOjA2w8mewShAms4cIUt1A5TJgFvZhhnaI7x+jsmPiqGIXVJcv9FrLVkjenG
-         QMlg==
-X-Gm-Message-State: AOJu0Yx2AF5m4Czc+LKK1sF5cPw040JsmJoSQWTwe+2PqX1pAxtzR4ne
-        hfr3fL7HyPyxnUAiBUciPq7Dfg==
-X-Google-Smtp-Source: AGHT+IGgfljpT76KBPui5MmTR6g8xbaYQw4KFDi5WWuN30o04xnbXoheBZ2WDSfB+ilvt/xURB8IDw==
-X-Received: by 2002:a17:903:98c:b0:1d3:4316:68d3 with SMTP id mb12-20020a170903098c00b001d3431668d3mr2259140plb.76.1702494623547;
-        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001cc307bcdbdsm10950629plg.211.2023.12.13.11.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:10:22 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Kalle Valo <kvalo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] wifi: ath10k: use flexible array in struct
- wmi_host_mem_chunks
-Message-ID: <202312131110.F94BC3427@keescook>
-References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
- <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
+        bh=bHJ55Kk7aai+pHpHj+Xl232clUcmRT42WTr7UJtOMZM=;
+        b=2mRdp/yx0K9H1b3efR21cfeQ3m2djl/tiOAqQi0UIYxUwpMpguHgHmvVlh8MgwfzSZ
+         uvjMxbvdOS3JbZPOYXAfhBcE8Iew90tECnsMTy3WVOQuYkKbrldGHrBsqJEkw5VsJnJ8
+         60UCu95wvoiAx7xDSrGAFJScTHJzVgAwvMMuE5UErjrLs9xc/h3oKOVOWwE6/nHTk12E
+         hglcYoZQXuiog2VuVRNd31tODPxKJDPQ2IPDJgZI1/U9dZd36WNKSIaLCvJtIhFr210c
+         Q6b+NQFX0R4QDVXzHl1GoOqYo7QUkcc/VQi4b0nr7jCGA3VLRgI74V76svGPAjh2K9s3
+         RD3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702494685; x=1703099485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bHJ55Kk7aai+pHpHj+Xl232clUcmRT42WTr7UJtOMZM=;
+        b=INVIWQApawvlkhYG84NR69h3PfE/+oKURf13SZfxhNfHdFu4kwRKSXMoY6KngruTpz
+         WP6buMM/Jp/mpl01foetoqino2o7kXvygsr7cVgtuyObS545iZnVKKxMjQpalM/ZtIZc
+         ZTT063CEDzY9ROqtsVaQNFJ7duKvoTkOukFaON6pwgVJcmZsuhNSmst3M92NRC7aETkI
+         pDjO5ZY8OfZZIN/QxTAuajWtUsiMyynzni1ujAy9Sz2fT5Zt/1YkzGe7jIwSosb0mauj
+         fiz4UET+EpZLn8997cBnM59mB2uZBxGWEOAm3o2HDH+FIc4iRzuqe/tFtcng3/MuccCQ
+         Hvgg==
+X-Gm-Message-State: AOJu0YxKEsLEy/Y1yZ1Lz4vqgX0X0ISuNj0T7Gk80ig4asE1+W9M+fDF
+        7DxBty419SCms8tZJP5gbq3bR9WeFL0xwi1st/UR
+X-Google-Smtp-Source: AGHT+IHmQnJXpBBQU4/69NV6VX6vNcyUI+kTuWm+Zt4MLjQLg1zAhUcCev0tT/Qrqw+2jW4AbT0W1/wdXb3GQ1OK7cA=
+X-Received: by 2002:a50:d7c3:0:b0:54a:ee8b:7a99 with SMTP id
+ m3-20020a50d7c3000000b0054aee8b7a99mr533699edj.0.1702494684889; Wed, 13 Dec
+ 2023 11:11:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231106193524.866104-1-jstultz@google.com> <c6787831-f659-12cb-4954-fd13a05ed590@amd.com>
+In-Reply-To: <c6787831-f659-12cb-4954-fd13a05ed590@amd.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Wed, 13 Dec 2023 11:11:12 -0800
+Message-ID: <CANDhNCqcviNOZTi2G9R21K-p32uM0U_LLiiEBjveJ4gikk8wrQ@mail.gmail.com>
+Subject: Re: [PATCH v6 00/20] Proxy Execution: A generalized form of Priority
+ Inheritance v6
+To:     K Prateek Nayak <kprateek.nayak@amd.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Qais Yousef <qyousef@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        Youssef Esmat <youssefesmat@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com,
+        Metin Kaya <Metin.Kaya@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,29 +89,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:06:39AM -0800, Jeff Johnson wrote:
-> Currently struct wmi_host_mem_chunks defines:
-> 	struct host_memory_chunk items[1];
-> 
-> Per the guidance in [1] this should be a flexible array. However there
-> is a documented requirement:
-> 	some fw revisions require at least 1 chunk regardless of count
-> 
-> To satisfy this requirement, follow the guidance from [2] and wrap the
-> array in a union which contains both the flexible array and a single
-> instance of the underlying struct. Since the footprint of the struct
-> is unchanged, no additional driver changes are required.
-> 
-> No functional changes, compile tested only.
-> 
-> [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
-> [2] https://lore.kernel.org/linux-wireless/202308301529.AC90A9EF98@keescook/
-> 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+On Tue, Dec 12, 2023 at 10:37=E2=80=AFPM K Prateek Nayak <kprateek.nayak@am=
+d.com> wrote:
+>
+> Hello John,
+>
+> I may have some data that might help you debug a potential performance
+> issue mentioned below.
 
-This looks like the right approach here.
+Hey Prateek,
+  Thank you so much for taking the time to try this out and providing
+such helpful analysis!
+More below.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> On 11/7/2023 1:04 AM, John Stultz wrote:
+> > [..snip..]
+> >
+> > Performance:
+> > =E2=80=94----------
+> > This patch series switches mutexes to use handoff mode rather
+> > than optimistic spinning. This is a potential concern where locks
+> > are under high contention. However, earlier performance analysis
+> > (on both x86 and mobile devices) did not see major regressions.
+> > That said, Chenyu did report a regression[3], which I=E2=80=99ll need t=
+o
+> > look further into.
+>
+> I too see this as the most notable regression. Some of the other
+> benchmarks I've tested (schbench, tbench, netperf, ycsb-mongodb,
+> DeathStarBench) show little to no difference when running with Proxy
 
--- 
-Kees Cook
+This is great to hear! Thank you for providing this input!
+
+> Execution, however sched-messaging sees a 10x blowup in the runtime.
+> (taskset -c 0-7,128-125 perf bench sched messaging -p -t -l 100000 -g 1)
+
+Oof. I appreciate you sharing this!
+
+> While investigating, I drew up the runqueue length when running
+> sched-messaging pinned to 1CCX (CPUs 0-7,128-125 on my 3rd Generation
+> EPYC system) using the following bpftrace script that dumps it csv
+> format:
+
+Just so I'm following you properly on the processor you're using, cpus
+0-7 and 128-125 are in the same CCX?
+(I thought there were only 8 cores per CCX?)
+
+> rqlen.bt
+> ---
+<snip>
+> --
+>
+> I've attached the csv for tip (rqlen50-tip-pinned.csv) and proxy
+> execution (rqlen50-pe-pinned.csv) below.
+>
+> The trend I see with hackbench is that the chain migration leads
+> to a single runqueue being completely overloaded, followed by some
+> amount of the idling on the entire CCX and a similar chain appearing
+> on a different CPU. The trace for tip show a lot more CPUs being
+> utilized.
+>
+> Mathieu has been looking at hackbench and the effect of task migration
+> on the runtime and it appears that lowering the migrations improves
+> the hackbench performance significantly [1][2][3]
+>
+> [1] https://lore.kernel.org/lkml/20230905072141.GA253439@ziqianlu-dell/
+> [2] https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoye=
+rs@efficios.com/
+> [3] https://lore.kernel.org/lkml/20231019160523.1582101-1-mathieu.desnoye=
+rs@efficios.com/
+>
+> Since migration itself is not cheap, I believe the chain migration at
+> the current scale hampers the performance since sched-messaging
+> emulates a worst-case scenario for proxy-execution.
+
+Hrm.
+
+> I'll update the thread once I have more information. I'll continue
+> testing and take a closer look at the implementation.
+>
+> > I also briefly re-tested with this v5 series
+> > and saw some average latencies grow vs v4, suggesting the changes
+> > to return-migration (and extra locking) have some impact. With v6
+> > the extra overhead is reduced but still not as nice as v4. I=E2=80=99ll
+> > be digging more there, but my priority is still stability over
+> > speed at this point (it=E2=80=99s easier to validate correctness of
+> > optimizations if the baseline isn=E2=80=99t crashing).
+> >
+> >
+> > If folks find it easier to test/tinker with, this patch series
+> > can also be found here:
+> >   https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v6-6.=
+6
+> >   https://github.com/johnstultz-work/linux-dev.git proxy-exec-v6-6.6
+>
+> P.S. I was using the above tree.
+
+Ok, I've been working on getting v7 ready which includes two main things:
+1) I've reworked the return migration back into the ttwu path to avoid
+the lock juggling
+2) Working to properly conditionalize and re-add Connor's
+chain-migration feature (which when a migration happens pulls the full
+blocked_donor list with it)
+
+So I'll try to reproduce your results and see if these help any with
+this particular case, and then I'll start to look closer at what can
+be done.
+
+Again, thanks so much, I've got so much gratitude for your testing and
+analysis here. I really appreciate your feedback!
+Do let me know if you find anything further!
+
+thanks
+-john
