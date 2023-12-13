@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB08108E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41738108E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378462AbjLMD6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 22:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
+        id S1378477AbjLMD6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 22:58:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjLMD6O (ORCPT
+        with ESMTP id S1378467AbjLMD6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 22:58:14 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF87E99;
-        Tue, 12 Dec 2023 19:58:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702439898;
-        bh=11blm8HJnQ9+FMdEFOr+A0pNMEFB7Ju+WMZoc5kI8rI=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=bYYRLl0jzzJ/ry5xSjKpPL3Ta4LRbgeYJx3Vgef71CF0GIHSmOPdE+YzqWjksBsGW
-         d7D6bFX9jKH/NKYYgsHD+Hx61y+8aPtGJxa6ftQOA3QNawyzS7/2OT0cIKohk7KXNp
-         Ta0Z7jytlPEm/dv4XB9uu3kZ01TwCcxFvk3s0Ze97Vs4v5Ymo687c6GBYiBUjusNxM
-         4AOPIQ8M5YIedSlhMujT/VRpw91eaObFkbTObneLptFPAsgiB+2uvpkrAcskIWlrGP
-         BneWrr9+wgMp1N0R+bLRE/Nh9xaP4mOWhjbsACvzgCMSli8o+QnXqTMCRcAy/AVDaa
-         4oW120hXsVqSA==
-Received: from [100.96.234.34] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9787637813F2;
-        Wed, 13 Dec 2023 03:58:09 +0000 (UTC)
-Message-ID: <2e4a719b-f2b3-48db-99db-d96040d78b12@collabora.com>
-Date:   Wed, 13 Dec 2023 08:58:06 +0500
+        Tue, 12 Dec 2023 22:58:33 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075B2E9;
+        Tue, 12 Dec 2023 19:58:35 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCMH4lI019781;
+        Tue, 12 Dec 2023 19:58:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        pfpt0220; bh=wYhhUnYpaTFB0YMoL62xpPkjL9eoZHUVOZMZb8+CVoQ=; b=PZt
+        7N0/93MOIiaotiab/eGB0Egt/InSmm5ut2vnszDI2rDj1vcyY90lwJ7nZABAgEfN
+        jDPJ332LmBMbboOg9o+VsvSOMoTx1++7+KrBFWTSKPHfTkxweTbApw5EApQI0mer
+        iHEsTUp0/QXn34IPd5vZc9jqw6SwgXyxPvjkqXxbXxl6Gso0xDeOQCjcd+RpMM6/
+        qrnLqjhiFJ4+lgHc6nn+BlOiFoauEYWQ7eJ1KDzwQKyDrtYaZKfqurEFoqXkLlQq
+        bKRow3JjmPUJ/UOsoJr+NceJYj1eXUbkkktng9pFSrqABMhP1Gh4OvlUDoWkS3WJ
+        Ti03VjV0h/IyXRI97gw==
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uvrmjv2wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 19:58:28 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Dec
+ 2023 19:58:26 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 12 Dec 2023 19:58:26 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 0692B3F7043;
+        Tue, 12 Dec 2023 19:58:26 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <kheib@redhat.com>, <konguyen@redhat.com>,
+        Shinas Rasheed <srasheed@marvell.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        "Sathesh Edara" <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH net-next v4 2/4] octeon_ep: PF-VF mailbox version support
+Date:   Tue, 12 Dec 2023 19:58:07 -0800
+Message-ID: <20231213035816.2656851-3-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231213035816.2656851-1-srasheed@marvell.com>
+References: <20231213035816.2656851-1-srasheed@marvell.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, ryan.roberts@arm.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Content-Language: en-US
-To:     John Hubbard <jhubbard@nvidia.com>, Mark Brown <broonie@kernel.org>
-References: <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
- <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
- <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
- <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
- <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
- <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
- <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
- <3eadd79c-c02a-495f-92c0-0315046ef59f@nvidia.com>
- <3d22f342-280f-4a44-87f4-8cca291cfce7@sirena.org.uk>
- <e3048458-726e-4b98-b2bf-908ea9066959@nvidia.com>
- <0f97db9c-5b86-4f56-8463-2520fe79f709@sirena.org.uk>
- <f1b0b80a-1cc6-48c4-8a53-0222b3e59c7f@nvidia.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <f1b0b80a-1cc6-48c4-8a53-0222b3e59c7f@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: EpkbNou-eJY1vRwcL_A64IsfqnD0HyKd
+X-Proofpoint-ORIG-GUID: EpkbNou-eJY1vRwcL_A64IsfqnD0HyKd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -78,103 +75,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 7:14 AM, John Hubbard wrote:
-> On 12/12/23 07:12, Mark Brown wrote:
->> On Mon, Dec 11, 2023 at 12:29:58PM -0800, John Hubbard wrote:
->>> On 12/11/23 12:21, Mark Brown wrote:
-> ...
->>> Or maybe there is an innovative way to do all of this, that we have
->>> yet to think of.
->>
->> We do copy files into tools/include at random times which makes sense
->> for things that aren't uapi, and we are putting bits of uapi there
->> already so we could just expand the set of files copied there.  AFAICT
->> the only reason we're copying the uapi files at all is that they're
->> directly in the same include/ directories as everything else and are
->> always referenced with their uapi/ prefix.
-> 
-> Oh, this sounds like it would work nicely. No more "make headers"
-> required (hooray!). Instead, the new approach would be "selftests are
-> allowed to include from tools/include", and then we can just start
-> copying the files that we need to that location, and gradually fix up
-> all the selftests.
-No, this wouldn't work.
-* The selftests are applications which include default header files. The
-application don't care from where the header files are picked up at compile
-time. We should be able to build the application on normal system with
-latest headers installed without any changes.
-* The header files cannot be included directly as they need to be processed
-first which is done by `make headers`. Here is a diff between kernel fs.h
-and processed header file to be used by applications:
+Add PF-VF mailbox initial version support
 
---- include/uapi/linux/fs.h	2023-12-12 14:45:22.857409660 +0500
-+++ usr/include/linux/fs.h	2023-12-12 14:49:23.469733573 +0500
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#ifndef _UAPI_LINUX_FS_H
--#define _UAPI_LINUX_FS_H
-+#ifndef _LINUX_FS_H
-+#define _LINUX_FS_H
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+---
+V4:
+  - No changes
 
- /*
-  * This file has definitions for some important file table structures
-@@ -13,14 +13,10 @@
- #include <linux/limits.h>
- #include <linux/ioctl.h>
- #include <linux/types.h>
--#ifndef __KERNEL__
- #include <linux/fscrypt.h>
--#endif
+V3: https://lore.kernel.org/all/20231211063355.2630028-3-srasheed@marvell.com/
+  - No changes
 
- /* Use of MS_* flags within the kernel is restricted to core mount(2) code. */
--#if !defined(__KERNEL__)
- #include <linux/mount.h>
--#endif
+V2: https://lore.kernel.org/all/20231209081450.2613561-3-srasheed@marvell.com/
+  - No changes
 
- /*
-  * It's silly to have NR_OPEN bigger than NR_FILE, but you can change
-@@ -287,19 +283,19 @@
- typedef int __bitwise __kernel_rwf_t;
+V1: https://lore.kernel.org/all/20231208070352.2606192-3-srasheed@marvell.com/
 
- /* high priority request, poll if possible */
--#define RWF_HIPRI	((__force __kernel_rwf_t)0x00000001)
-+#define RWF_HIPRI	((__kernel_rwf_t)0x00000001)
+ .../net/ethernet/marvell/octeon_ep/octep_main.h   |  1 +
+ .../ethernet/marvell/octeon_ep/octep_pfvf_mbox.c  | 15 ++++++++++++---
+ .../ethernet/marvell/octeon_ep/octep_pfvf_mbox.h  |  7 +++++--
+ 3 files changed, 18 insertions(+), 5 deletions(-)
 
- /* per-IO O_DSYNC */
--#define RWF_DSYNC	((__force __kernel_rwf_t)0x00000002)
-+#define RWF_DSYNC	((__kernel_rwf_t)0x00000002)
-
- /* per-IO O_SYNC */
--#define RWF_SYNC	((__force __kernel_rwf_t)0x00000004)
-+#define RWF_SYNC	((__kernel_rwf_t)0x00000004)
-
- /* per-IO, return -EAGAIN if operation would block */
--#define RWF_NOWAIT	((__force __kernel_rwf_t)0x00000008)
-+#define RWF_NOWAIT	((__kernel_rwf_t)0x00000008)
-
- /* per-IO O_APPEND */
--#define RWF_APPEND	((__force __kernel_rwf_t)0x00000010)
-+#define RWF_APPEND	((__kernel_rwf_t)0x00000010)
-
- /* mask of flags supported by the kernel */
- #define RWF_SUPPORTED	(RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
-@@ -364,4 +360,4 @@
- 	__u64 return_mask;
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
+index 3223bb6f95ea..fee59e0e0138 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
+@@ -220,6 +220,7 @@ struct octep_iface_link_info {
+ /* The Octeon VF device specific info data structure.*/
+ struct octep_pfvf_info {
+ 	u8 mac_addr[ETH_ALEN];
++	u32 mbox_version;
  };
-
--#endif /* _UAPI_LINUX_FS_H */
-+#endif /* _LINUX_FS_H */
-
-> 
-> I really like this, at first reading anyway.
-> 
-> Muhammad, Shuah, others, what do you think?
-> 
-> +Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> 
-> 
-> thanks,
-
+ 
+ /* The Octeon device specific private data structure.
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
+index 43b40e91f7bf..baffe298a2a0 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
+@@ -28,10 +28,18 @@ static void octep_pfvf_validate_version(struct octep_device *oct,  u32 vf_id,
+ {
+ 	u32 vf_version = (u32)cmd.s_version.version;
+ 
+-	if (vf_version <= OCTEP_PFVF_MBOX_VERSION_V1)
+-		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
++	dev_dbg(&oct->pdev->dev, "VF id:%d VF version:%d PF version:%d\n",
++		vf_id, vf_version, OCTEP_PFVF_MBOX_VERSION_CURRENT);
++	if (vf_version < OCTEP_PFVF_MBOX_VERSION_CURRENT)
++		rsp->s_version.version = vf_version;
+ 	else
+-		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
++		rsp->s_version.version = OCTEP_PFVF_MBOX_VERSION_CURRENT;
++
++	oct->vf_info[vf_id].mbox_version = rsp->s_version.version;
++	dev_dbg(&oct->pdev->dev, "VF id:%d negotiated VF version:%d\n",
++		vf_id, oct->vf_info[vf_id].mbox_version);
++
++	rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
+ }
+ 
+ static void octep_pfvf_get_link_status(struct octep_device *oct, u32 vf_id,
+@@ -167,6 +175,7 @@ int octep_setup_pfvf_mbox(struct octep_device *oct)
+ 			goto free_mbox;
+ 
+ 		memset(oct->mbox[ring], 0, sizeof(struct octep_mbox));
++		memset(&oct->vf_info[i], 0, sizeof(struct octep_pfvf_info));
+ 		mutex_init(&oct->mbox[ring]->lock);
+ 		INIT_WORK(&oct->mbox[ring]->wk.work, octep_pfvf_mbox_work);
+ 		oct->mbox[ring]->wk.ctxptr = oct->mbox[ring];
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
+index 34feeb559b0d..af4dcf5ef7f1 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
+@@ -13,11 +13,15 @@
+ #define OCTEON_SDP_16K_HW_FRS  16380UL
+ #define OCTEON_SDP_64K_HW_FRS  65531UL
+ 
++/* When a new command is implemented,PF Mbox version should be bumped.
++ */
+ enum octep_pfvf_mbox_version {
+ 	OCTEP_PFVF_MBOX_VERSION_V0,
+ 	OCTEP_PFVF_MBOX_VERSION_V1,
+ };
+ 
++#define OCTEP_PFVF_MBOX_VERSION_CURRENT	OCTEP_PFVF_MBOX_VERSION_V1
++
+ enum octep_pfvf_mbox_opcode {
+ 	OCTEP_PFVF_MBOX_CMD_VERSION,
+ 	OCTEP_PFVF_MBOX_CMD_SET_MTU,
+@@ -30,7 +34,7 @@ enum octep_pfvf_mbox_opcode {
+ 	OCTEP_PFVF_MBOX_CMD_GET_LINK_STATUS,
+ 	OCTEP_PFVF_MBOX_CMD_GET_MTU,
+ 	OCTEP_PFVF_MBOX_CMD_DEV_REMOVE,
+-	OCTEP_PFVF_MBOX_CMD_LAST,
++	OCTEP_PFVF_MBOX_CMD_MAX,
+ };
+ 
+ enum octep_pfvf_mbox_word_type {
+@@ -79,7 +83,6 @@ enum octep_pfvf_link_autoneg {
+ 
+ #define OCTEP_PFVF_MBOX_TIMEOUT_MS     500
+ #define OCTEP_PFVF_MBOX_MAX_RETRIES    2
+-#define OCTEP_PFVF_MBOX_VERSION        0
+ #define OCTEP_PFVF_MBOX_MAX_DATA_SIZE  6
+ #define OCTEP_PFVF_MBOX_MORE_FRAG_FLAG 1
+ #define OCTEP_PFVF_MBOX_WRITE_WAIT_TIME msecs_to_jiffies(1)
 -- 
-BR,
-Muhammad Usama Anjum
+2.25.1
+
