@@ -2,206 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E923811A29
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07458811A2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbjLMQzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:55:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        id S232663AbjLMQzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjLMQzP (ORCPT
+        with ESMTP id S233248AbjLMQza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:55:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DCDD0;
-        Wed, 13 Dec 2023 08:55:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702486522; x=1734022522;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=6YC6aCPDxU42a4qt+JoaUd94uuWHnHRRaz7zBFO2jSE=;
-  b=SgOShYqMevgbOKjXckh4QoJv0CUEP+CFnntlqdQWQPLDEpYoGwj7XxpH
-   ysDL70CW15Rx1S9/PjLMRH9uRTjj0+y2p+zUWjAMEeF2R3KuEdR1DcQg5
-   08b3dNbXLwE0RDltAOWM6A00YWgvh9c+yQ+xYaqpEw//NzJyHosZi6uUD
-   tR7ly7g9aLLDSf3HajKc4NON7Ua1yb5R4A/8g56+TWUALp+P6m8aTGi8P
-   kjGz+tFYdD/vSTjFcsPDkCD3tJxrggT91f/pputaZQB5D6yeYQ0r6iDIn
-   hw05hzLlIRczHE89090tnGvTCYozNymZKZZIxJkdQzdOoU1mzXczzjQkI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8384567"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="8384567"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:55:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947244346"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="947244346"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 08:55:21 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 08:55:20 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 08:55:19 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 08:55:19 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Dec 2023 08:55:14 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D3hDDZ8xz4xM91AhzmMvYYfz3TgOPFLLdUg/2DgMvWGl9cai5/R8CRC0kG/+kouEvjwdjFLg0qEHxlgAgLJ1v0fh8T9wibE7gl+2KELS3qHL6PyFNqZO/plwT1rRlistEm4MbbWFdnX2UMnVBcoAS/IVeRrroK9OtW2zkjG7Mzsq2iFaTRI1XT6bQ6eif0kzqFMEQxx0YGPcjgnILBYB2iCjVo/DiZBYVe3QMO8m0k5cQamET4QwsbfKX50ikYBe1mQNcHrs8Dtr3Cit3mGVldnOo2DYYz4p2hnrE3guATaEqIBaKPkBO6EWHIxogKZjHffijeNgULGTU8x8Bk+I2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PbR/v2yJSgpgG274eAYXGKVkjXju8YPUQL75GLcXMmw=;
- b=ee1nKy1umCGN46rRDPIIGStkGoXfjH1BywByZd3QG8g/JWxPFYSUx7mWAnFzUwUHhF4VzAl0JHUYskoB+8JSt0qdCR2t2J05n8ZErN8/EP7vQ+UlxIRDNTTQWPvH75bInnT1VAoEAvYE5NHyMTqcmtL4nbGKKYj9eWXyhzgPnItGRuPlgG50AGdRzJKapjkmuUN4EwT53VOqNTvg6cHSgGUkc9dRxIMa3nLNvjKK4bEfRJlCmVoQsIuStM5QmVk3jhO/RuC/6vXdseTisQ5leMoBzBuQwzZfQ8bhnB1Zrw2lk/Vkxg6oc0RGNg4Q/83j4UC/oee3XJqcJqtHnYpWDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by PH8PR11MB7117.namprd11.prod.outlook.com (2603:10b6:510:217::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.37; Wed, 13 Dec
- 2023 16:55:12 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 16:55:12 +0000
-Message-ID: <be59d5ac-fabb-4a05-99d4-fb281f7ea507@intel.com>
-Date:   Wed, 13 Dec 2023 09:55:08 -0700
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH] dmaengine: fix NULL pointer in channel unregistration
- function
-To:     Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231213160452.2598073-1-amelie.delaunay@foss.st.com>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20231213160452.2598073-1-amelie.delaunay@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0116.namprd05.prod.outlook.com
- (2603:10b6:a03:334::31) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Wed, 13 Dec 2023 11:55:30 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6AAAC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:55:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6C+G+He17NccpRYXyvfr/RRpub5+8DDVn1CdeNstsjM=; b=eMShkFmEwwZe5F929p52bl4FOD
+        CvbkWqFICiRnUUQ1L//RWI2/P+5TDUv56GmEj4i+95Nj9pWhwp/2RoOLS0MxofbBB4waUmwKHwaHN
+        LwsuQ5EtxnSmzd04hX7iyhhjz252+MtHuP1bq512XRDW+lIkoqFAwRZi+v1H+hgV5ldaKBzUxpDuz
+        KEXf2wwntJZbJtQhnH85vu/dp4kfYJqSvdPYD0jN/DShb1Nr8aEzy5/ITthEmGObyXHmJjR6RlMi2
+        GSZyllH0Swb0VsZ/MWVlpCb+puMSougMmcBgJyQb7yqH3NA5tL6iYP6RHmFQ9Tt0H64UUxeHpNEfz
+        GCJfbewQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rDSWB-00FWGw-0R;
+        Wed, 13 Dec 2023 16:55:31 +0000
+Date:   Wed, 13 Dec 2023 08:55:31 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Aron Silverton <aron.silverton@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        David Ahern <dsahern@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <ZXniAwBwtF5hmOuq@infradead.org>
+References: <20231128175224.GR436702@nvidia.com>
+ <20231128103304.25c2c642@kernel.org>
+ <ZWZJGF7moDM_k6TU@x130>
+ <2023112922-lyricist-unclip-8e78@gregkh>
+ <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
+ <20231204185210.030a72ca@kernel.org>
+ <fgalnohzpiox7rvsf3wsurkf2x3rdtyhwqq5tk43gesvjlw6yl@i7colkh2sx5h>
+ <20231205204855.52fa5cc1@kernel.org>
+ <kakenvblxlgrkjvcrwfflnkm6n5fpxgr4qifwkdttjascth3te@57us7mblobjz>
+ <ZXIUysBgNWWZHe0z@x130>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH8PR11MB7117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5596d7ac-654b-4b78-8e42-08dbfbfc4571
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q2KSco+GIORbfLvCldrtSABhiN4ScwcwNo2C0ph29B+Rt4iPyyH1qPKFqkCj5gcidAcH2Jpwj0EPFjLHB6/fN2Aymhdwc4pWdoapvlft2zYt4WBAbPIZIIAc0p8NXfnNMaDZ6ZeYs17h+zvwCv84T1kgw47kQ2t9ptoIQ0gKmPp5WmYREwI5ST1hkioa3JtNtwBCCDhuTsXWtSK3fmHBFtBnm01A5JbQ/Do5BD5Kyy+LlNiVUP9ei9U3W7WjPUN7cNb4h6TEmc8Rcq2FBOSrURUQgDa0cTLazzrRIt4HvObgZZz+TSBRRbpA22t78zx1dXlPJJCZZJ7c+n7MTsOf7Iwt/YfM9QDKroT99ksJ+eNgo0LxpQcy2pPpunLpflP9sfnAiOX7zyl5qGn+/FkwxrnwhM1x9UFfsAbWX47ewwwMtWuDJ0muY3HzoPlH/13uPQyu+2nFCuHC/8TJP3q02RTuqhdviRtxR19HUnxPwZwqaISk+Yjts9xL/P57XfRAOe2fjbjpwHWNDOGAvTKOkefo2s5lDY55RxRv6CvK65JXVuLrUH4D7sNoQHXlOG3dV5cngQPquMc/ws1JFbCEdBR0m+sjygQh96daivHMFXQ6zPz+emaJqJN8CZUlTqei
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(366004)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(478600001)(6506007)(6486002)(38100700002)(31686004)(26005)(83380400001)(2616005)(316002)(6512007)(53546011)(4326008)(8936002)(5660300002)(8676002)(86362001)(2906002)(41300700001)(31696002)(36756003)(44832011)(6666004)(82960400001)(66946007)(110136005)(66556008)(66476007)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SHd2a2N4UFFsQ3Bud09vNE1iUU4yQWdmM2NJclZYSnlpRjR0L0dkSTVsSksv?=
- =?utf-8?B?MWF2MTIyb3JZYXJuRDlyUTZXLzc1TnRjWk1HVjNFWW4vSWdrMk9hNWQzbTZt?=
- =?utf-8?B?dEdCSkE3WGJMdzM3UmhyUUpZU01ORHNPKzNLUTV5c2U2ZitrTXBCOWxJK0Ft?=
- =?utf-8?B?Q0l1bTVJbWEyOUhQYkI1N0FESEMzZWRYMUpCQlZoeXFVclRlUkJYUGRhRFFa?=
- =?utf-8?B?RW00TUNGdXZTRSsyWlRlZi95V1ljYjJ5Y2R5YmJQd2Y0Yk51M2UrMHVuSits?=
- =?utf-8?B?c3I4Y2Z6aGpvK1FuVEt6cnhBV0U1R1U4VkhBbDV5VmlLQVp3MUswN2xOQnQx?=
- =?utf-8?B?K2F3MEtyU1dQRlZmd2xMTFhON1dYRW5oZ2lJa0dIL3U1U0t4UU5Ta3VjaDJm?=
- =?utf-8?B?bFc2MFJXUGt0MlVjWHlZeEQ1Y0pZc3lVRjFFRjV5eDBudU40aHdpTEVWYUY1?=
- =?utf-8?B?SkxCSTBWRE1oOVRGWmNscXdZQXo4eFp4cGFpS296U3hEN1VSd2VUemorZzdh?=
- =?utf-8?B?QVJKWThtSjk1SkZFWDJyL0JyUHJNZno1RUZlbkVadTBxYlhhTTNsTmRuc1B5?=
- =?utf-8?B?S2tIOXdQWStXbm5uWGF6SG5RQVJNbG15RVRtdjJFb0ptdEVxVGJ4YnNhdnpF?=
- =?utf-8?B?RDFVWWxhYXFrVXRKQmNQZmZRK1FEalNKamkreHNEUCt5dHJlZ0pIYndERzkx?=
- =?utf-8?B?VG93SUlmMTVXekJXWHlCZWF4VDBVWlRoZHBpaGtmdFRPc29sQ3FwSlI5L3N4?=
- =?utf-8?B?Rk9nYlZSSmxtQVJCVHlTZGoreElHMUNwbWVJTE1NMTRRb2NpT2o4czBVQnQr?=
- =?utf-8?B?dWNqemh5bG4xTG4vdU5WQTFmTXpVbExNK2pUeWwxZkJsZGV4blVvWmx4YVIv?=
- =?utf-8?B?S0VLQ2pJOEZ5VmtDNHRSUkZ0Z0lCRUxveElGTld0TW8wYWlRb2RQMW1PVjZ6?=
- =?utf-8?B?NkVDc2JXK1VIVkpIcUQxQXNaU1NlRS81WkI0Um9YS2l6RTF4NGtKcHZXdWRH?=
- =?utf-8?B?V1JGckl1TVVJNGhLalEveUozMDR4Z2EwZ3JRZXByN0dNWkg1QVVtZmt5QThW?=
- =?utf-8?B?dkM2Ykcxa0JBeTFzUW5nWWZMa2tDb1U4Wk9GRzFBdzdYMDJVbSszN2NLRUFu?=
- =?utf-8?B?ZCtXTlhNemFrdGpwcW5XaHV5RnF5VmtWdTlhMlR2T3pzUTN1cW5saFk0aHBE?=
- =?utf-8?B?MHlOQ0JFbERBVThJZ1RBZk0yWkZXemt4V3pmVFFMYXRkTURWRHpVRVRDQjhP?=
- =?utf-8?B?OVE0VnJZMnZITWpJR3p2T1RVL3UyWnZIaEFEYmpIRUZ5T0hqN3dBNE5LdTFI?=
- =?utf-8?B?dEo1L0RDajBHb2F3Y2FUQTFieEwvR3NOaHlFMHR0Z3ZSN0hzQSt0ZHV5R0N6?=
- =?utf-8?B?VjZRcVhzeFEweHYwZDZjVVZIaDQvQzN2K0haL2dEbDc1bEF4VHlzZENsUFVC?=
- =?utf-8?B?YnljelBiWFFvYTBIbFpQYVV4bXdYckxxSHhsZnhPcTVRZmtPRS9FZFJYbUZu?=
- =?utf-8?B?aHhxWUg1R1BVcW9JMlNNY3dWTmQ0SDF3VXEwcGpsRUFTTkpJMzRXeGtTUDVj?=
- =?utf-8?B?SW96L0JnUk0xeDNRMVl0UWRQZVkvT2hOY3FkcGh2QXZ5Ym9venArajRXZ3hm?=
- =?utf-8?B?SHQrZ0U2MnlET1U1bFJMclBrVFFFRTQ4MVYvcHhDUnM5ME1OMTcrVCtTTnpi?=
- =?utf-8?B?ZWoyYTZwZzUwRFU2ZVRGVDlDbDNpc2prUWVpRmszV3kvZWdkUWNIQWNHcDI1?=
- =?utf-8?B?aUVwdXpSL3d0MnZhT3pLMENudVRMYmRneUl0TVJlYVp6TS8wanBHVXJuOXNI?=
- =?utf-8?B?NEZ6aTEzTGt0eFFEZHpzWVk1SnZrbFM2OFFmNTNENkhHWnkwQytHaFRKZ0FE?=
- =?utf-8?B?Mzk3TFVodFlJQWg1VFVjeExZN29zekNiMThPSTA4MU0rbWVTSkc2VWt0Tjhh?=
- =?utf-8?B?dVVzcVVKTmFSRi9GTnN0cGlCbnBQM0NEdVZQSGRqQmgrSW16K2NCMnRTK1Ja?=
- =?utf-8?B?TVlDdDVIa2p2QTQrYXd1R09jdVMvaFNPamhRQmF4dWxnVzU0MzdiS1JBWVVC?=
- =?utf-8?B?Q1ZwOUVOMUJBdXUrSDYzS3B3RVl3V3J2dlQ4MzVhbS9xaVBVWkU0dW40QmVP?=
- =?utf-8?Q?SHkfH0cm2UlHxbRHp/nSTpiyp?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5596d7ac-654b-4b78-8e42-08dbfbfc4571
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 16:55:12.0801
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wjYGiwlLCROQp538OSVKKHYoQ+9geoljcDu0kKxTjQ439yaQfwFvHE6Q1cgd30XOZwPCmWMrgclpgGhC+0d1bQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7117
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXIUysBgNWWZHe0z@x130>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 07, 2023 at 10:54:02AM -0800, Saeed Mahameed wrote:
+> Also I would like to repeat, this is not touching netdev, netdev's policies
+> do not apply to the greater kernel or RDMA, and we have use cases with
+> pure-infiniband/DPU/FPGA cards that have no netdev at all, or other cases
+> with pur virtio instances, and much more.
 
-
-On 12/13/23 09:04, Amelie Delaunay wrote:
-> __dma_async_device_channel_register() can fail. In case of failure,
-> chan->local is freed (with free_percpu()), and chan->local is nullified.
-> When dma_async_device_unregister() is called (because of managed API or
-> intentionally by DMA controller driver), channels are unconditionally
-> unregistered, leading to this NULL pointer:
-> [    1.318693] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000d0
-> [...]
-> [    1.484499] Call trace:
-> [    1.486930]  device_del+0x40/0x394
-> [    1.490314]  device_unregister+0x20/0x7c
-> [    1.494220]  __dma_async_device_channel_unregister+0x68/0xc0
-> 
-> Look at dma_async_device_register() function error path, channel device
-> unregistration is done only if chan->local is not NULL.
-> 
-> Then add the same condition at the beginning of
-> __dma_async_device_channel_unregister() function, to avoid NULL pointer
-> issue whatever the API used to reach this function.
-> 
-> Fixes: d2fb0a043838 ("dmaengine: break out channel registration")
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/dma/dmaengine.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-> index b7388ae62d7f..491b22240221 100644
-> --- a/drivers/dma/dmaengine.c
-> +++ b/drivers/dma/dmaengine.c
-> @@ -1103,6 +1103,9 @@ EXPORT_SYMBOL_GPL(dma_async_device_channel_register);
->  static void __dma_async_device_channel_unregister(struct dma_device *device,
->  						  struct dma_chan *chan)
->  {
-> +	if (chan->local == NULL)
-> +		return;
-> +
->  	WARN_ONCE(!device->device_release && chan->client_count,
->  		  "%s called while %d clients hold a reference\n",
->  		  __func__, chan->client_count);
+Yes.  I mean just about every complex block driver has some kind of
+vendor spcific tooling for debugging, statistics, etc.  Trying to deny
+it just because one function expose by a device is a network device is
+even more silly than disallowing it for pure net devices (which already
+tend to be complex beasts).
