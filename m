@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA857811031
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B10811045
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378819AbjLMLeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:34:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S1378152AbjLMLgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377778AbjLMLdd (ORCPT
+        with ESMTP id S235169AbjLMLgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:33:33 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C33130
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:23 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c32e205fcso10694115e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702467202; x=1703072002; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KKPObWVuIFXSRwOfIm7U25jwf++f1sQGlTYA9JTEt2I=;
-        b=RfzSBK9SpNVuBJ654n3yp6K89HTEUNgLDz1Sbt6qD1ReJvEFqKJNWWjquoQuURed/7
-         44oanJh4FfD1MTUJeQPIDNmOGHYMOfr3rZwDb1EWck4Hm/TM/6DOXF9J7bxb1uwvOJI7
-         hmR0sqBCxhqSin/1N2o7WE9V7Qkjz5HsR2IKc+wPDvElfWdR4qHrySS82awQH0gPWgzG
-         SjQhYrmxuYmJiZ7KEkg2tS0x08mZ7qU2Xo5JiXjzO7qAJwe99Mp5MUfRxG3CXhwEHqEl
-         9KF8k0oRR+ccrWlyyOk++AVWrFr0TEGOuoocx30+8XMa/RDMy2RBfelCU9UmAW0IU0Es
-         tfDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702467202; x=1703072002;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KKPObWVuIFXSRwOfIm7U25jwf++f1sQGlTYA9JTEt2I=;
-        b=cpbl3oXfoBPj68F0wg1/K3tDGLLuCnLZek9/T3aEooZtxHgBNTmsCK0C6mpdgA48AQ
-         /MopNbhJhNBEIfdo41b6pVxCFO3VlrQAvgtzmn42IIHeooM6o6tj5UpkSsgOKwK+f2dq
-         dBbcWqZImXrM/2P3eo8tTLJ127gLIxkkU75bWqsqvszK/QRMkq70O/f8SdmA97ux9ZkB
-         iJ1jbJeAAFnQ6hTUsUEbmkLHY0/+fMQafINhbF5p+x5wgFe/5oB4Ejr4qK6TmPmMZnkE
-         oX/7JmEHaMpUaZd1ieRfWj/zqrAIRftY5KWil/sVnXgCz1CRVJLzlq0nB7Q4k3tWtgTW
-         NpXw==
-X-Gm-Message-State: AOJu0YwfEI2bXP8sUCkpNxHOOn2zH7h8bc/ZjPIj9EgNztuGWQneiS4e
-        xHxHu9tESzuDGr0wL8xgxCszdQ==
-X-Google-Smtp-Source: AGHT+IFOAi6+jGGEZI3vEUxmpFwncaq2mLgc0WthEtql1NhoQKa77IbEBEbBVUbFXF2l0uTI44prGg==
-X-Received: by 2002:a05:600c:3b23:b0:40c:2631:7c3d with SMTP id m35-20020a05600c3b2300b0040c26317c3dmr9593791wms.2.1702467201829;
-        Wed, 13 Dec 2023 03:33:21 -0800 (PST)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:c564:f167:d072:5672])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm22433137wms.30.2023.12.13.03.33.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 03:33:21 -0800 (PST)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Robbin Ehn <rehn@rivosinc.com>
-Subject: [PATCH 9/9] riscv: hwprobe: export Zicond extension
-Date:   Wed, 13 Dec 2023 12:33:05 +0100
-Message-ID: <20231213113308.133176-10-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231213113308.133176-1-cleger@rivosinc.com>
-References: <20231213113308.133176-1-cleger@rivosinc.com>
+        Wed, 13 Dec 2023 06:36:36 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD3DC26A1;
+        Wed, 13 Dec 2023 03:34:18 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFF58C15;
+        Wed, 13 Dec 2023 03:35:03 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBA133F738;
+        Wed, 13 Dec 2023 03:34:15 -0800 (PST)
+Message-ID: <0640a9bf-b864-45ef-ab39-14b0e85ff9ad@arm.com>
+Date:   Wed, 13 Dec 2023 12:34:10 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 00/23] Introduce runtime modifiable Energy Model
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        linux-pm@vger.kernel.org, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com, linux-kernel@vger.kernel.org,
+        rafael@kernel.org
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <d920867d-5572-48c3-bd54-b9e989ab6bd5@arm.com>
+ <ec8dc77f-364c-443b-a63d-35a2e37d2ccc@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <ec8dc77f-364c-443b-a63d-35a2e37d2ccc@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export the zicond extension to userspace using hwprobe.
+On 13/12/2023 10:23, Lukasz Luba wrote:
+> Hi Dietmar,
+> 
+> Thank you for the review, I will go one-by-one to respond
+> your comments in patches as well. First comments are below.
+> 
+> On 12/12/23 18:48, Dietmar Eggemann wrote:
+>> On 29/11/2023 12:08, Lukasz Luba wrote:
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
----
- Documentation/arch/riscv/hwprobe.rst  | 5 +++++
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_riscv.c         | 1 +
- 3 files changed, 7 insertions(+)
+[...]
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index 510e49878834..a42c3b5d6bc3 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -172,6 +172,11 @@ The following keys are defined:
-        defined in the Atomic Compare-and-Swap (CAS) instructions manual starting
-        from commit 5059e0ca641c ("update to ratified").
- 
-+  * :c:macro:`RISCV_HWPROBE_EXT_ZICOND`: The Zicond extension is supported as
-+       defined in the RISC-V Integer Conditional (Zicond) operations extension
-+       manual starting from commit 95cf1f9 ("Add changes requested by Ved
-+       during signoff")
-+
- * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
-   information about the selected set of processors.
- 
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index 7ec4331122e7..4287aa391cf5 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -59,6 +59,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
- #define		RISCV_HWPROBE_EXT_ZAM		(1ULL << 34)
- #define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 35)
-+#define		RISCV_HWPROBE_EXT_ZICOND	(1ULL << 36)
- #define RISCV_HWPROBE_KEY_CPUPERF_0	5
- #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
-diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index abb0eea3ee08..d94f11534efa 100644
---- a/arch/riscv/kernel/sys_riscv.c
-+++ b/arch/riscv/kernel/sys_riscv.c
-@@ -177,6 +177,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 		EXT_KEY(ZTSO);
- 		EXT_KEY(ZAM);
- 		EXT_KEY(ZACAS);
-+		EXT_KEY(ZICOND);
- 
- 		if (has_vector()) {
- 			EXT_KEY(ZVBB);
--- 
-2.43.0
+>>> Changelog:
+>>> v5:
+>>> - removed 2 tables design
+>>> - have only one table (runtime_table) used also in thermal (Wei, Rafael)
+>>
+>> Until v4 you had 2 EM's, the static and the modifiable (runtime). Now in
+>> v5 this changed to only have one, the modifiable. IMHO it would be
+>> better to change the existing table to be modifiable rather than staring
+>> with two EM's and then removing the static one. I assume you end up with
+>> way less code changes and the patch-set will become easier to digest for
+>> reviewers.
+> 
+> The patches are structured in this way following Daniel's recommendation
+> I got when I was adding similar big changes to EM in 2020 (support all
+> devices in kernel). The approach is as follows:
+> 0. Do some basic clean-up/refactoring if needed for a new feature, to
+>    re-use some code if possible in future
+> 1. Introduce new feature next to the existing one
+> 2. Add API and all needed infrastructure (structures, fields) for
+>    drivers
+> 3. Re-wire the existing drivers/frameworks to the new feature via new
+>    API; ideally keep 1 patch per driver so the maintainer can easily
+>    grasp the changes and ACK it, because it will go via different tree
+>    (Rafael's tree); in case of some code clash in the driver's code
+>    during merge - it will be a single driver so easier to handle
+> 4. when all drivers and frameworks are wired up with the new feature
+>    remove the old feature (structures, fields, APIs, etc)
+> 5. Update the documentation with new latest state of desing
+> 
+> In this approach the patches are less convoluted. Because if I remove
+> the old feature and add new in a single patch (e.g. the main structure)
+> that patch will have to modify all drivers to still compile. It
+> would be a big messy patch for this re-design.
+> 
+> I can see in some later comment from Rafael that he is OK with current
+> patch set structure.
 
+OK, in case Rafael and Daniel prefer this, then it's fine.
+
+I just find it weird that we now have
+
+70 struct em_perf_domain {
+71         struct em_perf_table __rcu *runtime_table;
+                                       ^^^^^^^^^^^^^
+
+as the only EM table.
