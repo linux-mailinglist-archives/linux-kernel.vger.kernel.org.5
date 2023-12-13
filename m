@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8C28113E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 322008113EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbjLMN7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S235478AbjLMOAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235407AbjLMN7L (ORCPT
+        with ESMTP id S235439AbjLMN7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:59:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529A830FF;
-        Wed, 13 Dec 2023 05:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702475869; x=1734011869;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=UcwI/vM+xY5ePthrPSOpIJ1bKEuxaPU5CKcpVJRktmI=;
-  b=CddND9qaOsgtgDlyC/OMz78QNBYJo9sosdGhXTLmk7Uq1AyeLXJo2nzw
-   E9np6JseUy3rhKQqQRaOrwTup4TkjUjJWe7OadLX6HLV2J+oTlODZ8paW
-   xxmxxJxf5+f4VCeIEtMPSSJNSEOCqfuy0X/miOTsw9tlwxjYq5abA0cAW
-   AQ/2gH8TYDEdl+d5sV/ps6V4s5cz9nSOwPxf7/CGnVBJhYC9zrv3ZZsnD
-   hp0USmWmp+5Zjf7p1p0GIxEoGsHs0lM7Tbp6SRz1fNmXCsayBZfG/51I1
-   iZbExiEL3pUCmJGpmX80a0PUUqjyK0k1YJx0loUL8DRRS5uFKuft3SjNS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2046510"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="2046510"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:57:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="802892488"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="802892488"
-Received: from stetter-mobl1.ger.corp.intel.com ([10.252.50.95])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:57:43 -0800
-Date:   Wed, 13 Dec 2023 15:57:41 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-cc:     git@amd.com, michal.simek@amd.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-serial <linux-serial@vger.kernel.org>,
-        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, radhey.shyam.pandey@amd.com,
-        srinivas.goud@amd.com, shubhrajyoti.datta@amd.com,
-        manion05gk@gmail.com
-Subject: Re: [PATCH V5 3/3] tty: serial: uartps: Add rs485 support to uartps
- driver
-In-Reply-To: <20231213130023.606486-4-manikanta.guntupalli@amd.com>
-Message-ID: <7919791e-f52f-eb35-ead-deea90cbe8@linux.intel.com>
-References: <20231213130023.606486-1-manikanta.guntupalli@amd.com> <20231213130023.606486-4-manikanta.guntupalli@amd.com>
+        Wed, 13 Dec 2023 08:59:31 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F2131;
+        Wed, 13 Dec 2023 05:58:25 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDw2d7027536;
+        Wed, 13 Dec 2023 07:58:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702475882;
+        bh=zf1uNzLL138JIP7WwmzIZ2tsfIRpEhLUgJal4PSyHjA=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=qC20BgsZWC/uMfE9DeGFsk8VTBO/7cQTlIolYFubOeXxwTTquElLKZUikG7p4TJzU
+         +DY3gSaVPZ6u5QJ3p5ymLRo2Q2GiHv6BZ8/NnOBlMwcmu2A+943NeaVNjYGTvHiyj8
+         hwdKmavTZqnvmVALCviCIRd7qSn7OH3XXanTDUiY=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDDw21U125466
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Dec 2023 07:58:02 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
+ Dec 2023 07:58:02 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 13 Dec 2023 07:58:02 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDw2q8109090;
+        Wed, 13 Dec 2023 07:58:02 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <a-nandan@ti.com>, Neha Malcom Francis <n-francis@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
+        <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
+        <devarsht@ti.com>
+Subject: Re: (subset) [PATCH v10 0/7] Add TPS6594 PMIC support on several boards
+Date:   Wed, 13 Dec 2023 07:58:00 -0600
+Message-ID: <170247584177.2577232.10722538239180811630.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231208114919.3429562-1-n-francis@ti.com>
+References: <20231208114919.3429562-1-n-francis@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,353 +70,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023, Manikanta Guntupalli wrote:
+Hi Neha Malcom Francis,
 
-> Add rs485 support to uartps driver. Use either rts-gpios or RTS
-> to control RS485 phy as driver or a receiver.
+On Fri, 08 Dec 2023 17:19:12 +0530, Neha Malcom Francis wrote:
+> TPS6594 is a Power Management IC which provides regulators and others
+> features like GPIOs, RTC, watchdog, ESMs (Error Signal Monitor), and
+> PFSM (Pre-configurable Finite State Machine). The SoC and the PMIC can
+> communicate through the I2C or SPI interfaces.
+> TPS6594 is the super-set device while TPS6593 and LP8764 are derivatives.
 > 
-> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-> ---
-> Changes for V2:
-> Modify optional gpio name to xlnx,phy-ctrl-gpios.
-> Update commit description.
-> Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
+> This series adds device tree nodes for TI TPS6594 PMICs found in the
+> following boards:
+> - J721EXSOMXEVM:
+>   Link: https://www.ti.com/tool/J721EXSOMXEVM
+> - J721S2XSOMXEVM:
+>   Link: https://www.ti.com/tool/J721S2XSOMXEVM
+> - J7200XSOMXEVM:
+>   Link: https://www.ti.com/tool/J7200XSOMXEVM
+> - J784S4XEVM
+>   Link: https://www.ti.com/tool/J784S4XEVM
+> - SK-AM69
+>   Link: https://www.ti.com/tool/SK-AM69
+> - SK-TDA4VM (J721E-SK)
+>   Link: https://www.ti.com/tool/SK-TDA4VM
 > 
-> Changes for V3:
-> Modify optional gpio name to rts-gpios.
-> Update commit description.
-> Move cdns_uart_tx_empty function to avoid prototype statement.
-> Remove assignment of struct serial_rs485 to port->rs485 as
-> serial core performs that.
-> Switch to native RTS in non GPIO case.
-> Handle rs485 during stop tx.
-> Remove explicit calls to configure gpio direction and value,
-> as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
-> Update implementation to support configuration of GPIO/RTS value
-> based on user configuration of SER_RS485_RTS_ON_SEND and
-> SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
-> 
-> Changes for V4:
-> Create separate patch for cdns_uart_tx_empty relocation.
-> Call cdns_rs485_rx_setup() before uart_add_one_port() in probe.
-> Update gpio descriptor name to gpiod_rts.
-> Instead of cdns_rs485_config_gpio_rts_high() and
-> cdns_rs485_config_gpio_rts_low() functions for RTS/GPIO value
-> configuration implement cdns_rts_gpio_enable().
-> Disable auto rts and call cdns_uart_stop_tx() from cdns_rs485_config.
-> Use timer instead of mdelay for delay_rts_before_send and delay_rts_after_send.
-> Update cdns_uart_set_mctrl to support GPIO/RTS.
-> 
-> Changes for V5:
-> None.
-> ---
->  drivers/tty/serial/xilinx_uartps.c | 214 +++++++++++++++++++++++++++--
->  1 file changed, 205 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-> index aafcc2179e0e..3e1045896812 100644
-> --- a/drivers/tty/serial/xilinx_uartps.c
-> +++ b/drivers/tty/serial/xilinx_uartps.c
-> @@ -22,7 +22,9 @@
->  #include <linux/of.h>
->  #include <linux/module.h>
->  #include <linux/pm_runtime.h>
-> -#include <linux/iopoll.h>
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/delay.h>
->  
->  #define CDNS_UART_TTY_NAME	"ttyPS"
->  #define CDNS_UART_NAME		"xuartps"
-> @@ -193,6 +195,10 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
->   * @clk_rate_change_nb:	Notifier block for clock changes
->   * @quirks:		Flags for RXBS support.
->   * @cts_override:	Modem control state override
-> + * @gpiod_rts:		Pointer to the gpio descriptor
-> + * @rs485_tx_started:	RS485 tx state
-> + * @timer:		Timer for tx and rx
-> + * @stop_tx_timer:	Timer for stop tx
->   */
->  struct cdns_uart {
->  	struct uart_port	*port;
-> @@ -203,10 +209,22 @@ struct cdns_uart {
->  	struct notifier_block	clk_rate_change_nb;
->  	u32			quirks;
->  	bool cts_override;
-> +	struct gpio_desc	*gpiod_rts;
-> +	bool			rs485_tx_started;
-> +	struct timer_list	timer;
-> +	struct timer_list	stop_tx_timer;
->  };
->  struct cdns_platform_data {
->  	u32 quirks;
->  };
-> +
-> +struct serial_rs485 cdns_rs485_supported = {
-> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
-> +		 SER_RS485_RTS_AFTER_SEND,
-> +	.delay_rts_before_send = 1,
-> +	.delay_rts_after_send = 1,
-> +};
-> +
->  #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
->  		clk_rate_change_nb)
->  
-> @@ -305,6 +323,55 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
->  	tty_flip_buffer_push(&port->state->port);
->  }
->  
-> +/**
-> + * cdns_rts_gpio_enable - Configure RTS/GPIO to high/low
-> + * @cdns_uart: Handle to the cdns_uart
-> + * @enable: Value to be set to RTS/GPIO
-> + */
-> +static void cdns_rts_gpio_enable(struct cdns_uart *cdns_uart, bool enable)
-> +{
-> +	u32 val;
-> +
-> +	if (cdns_uart->gpiod_rts) {
-> +		gpiod_set_value(cdns_uart->gpiod_rts, enable);
-> +	} else {
-> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +		if (enable)
-> +			val &= ~CDNS_UART_MODEMCR_RTS;
-> +		else
-> +			val |= CDNS_UART_MODEMCR_RTS;
-> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +	}
-> +}
-> +
-> +/**
-> + * cdns_rs485_tx_setup - Tx setup specific to rs485
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
-> +{
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND)
-> +		cdns_rts_gpio_enable(cdns_uart, 1);
-> +	else
-> +		cdns_rts_gpio_enable(cdns_uart, 0);
-> +
-> +	cdns_uart->rs485_tx_started = true;
-> +}
-> +
-> +/**
-> + * cdns_rs485_rx_setup - Rx setup specific to rs485
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
-> +{
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND)
-> +		cdns_rts_gpio_enable(cdns_uart, 1);
-> +	else
-> +		cdns_rts_gpio_enable(cdns_uart, 0);
-> +
-> +	cdns_uart->rs485_tx_started = false;
-> +}
-> +
->  /**
->   * cdns_uart_tx_empty -  Check whether TX is empty
->   * @port: Handle to the uart port structure
-> @@ -579,6 +646,42 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
->  }
->  #endif
->  
-> +/**
-> + * cdns_rs485_rx_callback - Timer rx callback handler for rs485.
-> + * @t: Handle to the timer list structure
-> + */
-> +static void cdns_rs485_rx_callback(struct timer_list *t)
-> +{
-> +	struct cdns_uart *cdns_uart = from_timer(cdns_uart, t, timer);
-> +
-> +	/*
-> +	 * Default Rx should be setup, because Rx signaling path
-> +	 * need to enable to receive data.
-> +	 */
-> +	cdns_rs485_rx_setup(cdns_uart);
-> +}
-> +
-> +/**
-> + * cdns_rs485_tx_callback - Timer tx callback handler for rs485.
-> + * @t: Handle to the timer list structure
-> + */
-> +static void cdns_rs485_tx_callback(struct timer_list *t)
-> +{
-> +	struct cdns_uart *cdns_uart = from_timer(cdns_uart, t, timer);
-> +
-> +	cdns_uart_handle_tx(cdns_uart->port);
-> +
-> +	/* Enable the TX Empty interrupt */
-> +	writel(CDNS_UART_IXR_TXEMPTY, cdns_uart->port->membase + CDNS_UART_IER);
-> +
-> +	if (uart_circ_empty(&cdns_uart->port->state->xmit) ||
-> +	    uart_tx_stopped(cdns_uart->port)) {
-> +		timer_setup(&cdns_uart->timer, cdns_rs485_rx_callback, 0);
-> +		mod_timer(&cdns_uart->timer, jiffies +
-> +			  msecs_to_jiffies(cdns_uart->port->rs485.delay_rts_after_send));
-> +	}
-> +}
-> +
->  /**
->   * cdns_uart_start_tx -  Start transmitting bytes
->   * @port: Handle to the uart port structure
-> @@ -586,6 +689,7 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
->  static void cdns_uart_start_tx(struct uart_port *port)
->  {
->  	unsigned int status;
-> +	struct cdns_uart *cdns_uart = port->private_data;
->  
->  	if (uart_tx_stopped(port))
->  		return;
-> @@ -604,10 +708,40 @@ static void cdns_uart_start_tx(struct uart_port *port)
->  
->  	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
->  
-> -	cdns_uart_handle_tx(port);
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		if (!cdns_uart->rs485_tx_started) {
-> +			timer_setup(&cdns_uart->timer,
-> +				    cdns_rs485_tx_callback, 0);
-> +			cdns_rs485_tx_setup(cdns_uart);
-> +			mod_timer(&cdns_uart->timer, jiffies +
-> +				  msecs_to_jiffies(port->rs485.delay_rts_before_send));
-> +		} else {
-> +			if (!timer_pending(&cdns_uart->timer))
-> +				mod_timer(&cdns_uart->timer, jiffies);
-> +		}
-> +	} else {
-> +		cdns_uart_handle_tx(port);
->  
-> -	/* Enable the TX Empty interrupt */
-> -	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
-> +		/* Enable the TX Empty interrupt */
-> +		writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
-> +	}
-> +}
-> +
-> +/**
-> + * cdns_rs485_stop_tx_callback - Timer stop tx callback handler for rs485.
-> + * @t: Handle to the timer list structure
-> + */
-> +static void cdns_rs485_stop_tx_callback(struct timer_list *t)
-> +{
-> +	unsigned int regval;
-> +	struct cdns_uart *cdns_uart = from_timer(cdns_uart, t, stop_tx_timer);
-> +
-> +	cdns_rs485_rx_setup(cdns_uart);
-> +
-> +	regval = readl(cdns_uart->port->membase + CDNS_UART_CR);
-> +	regval |= CDNS_UART_CR_TX_DIS;
-> +	/* Disable the transmitter */
-> +	writel(regval, cdns_uart->port->membase + CDNS_UART_CR);
->  }
->  
->  /**
-> @@ -617,11 +751,19 @@ static void cdns_uart_start_tx(struct uart_port *port)
->  static void cdns_uart_stop_tx(struct uart_port *port)
->  {
->  	unsigned int regval;
-> +	struct cdns_uart *cdns_uart = port->private_data;
->  
-> -	regval = readl(port->membase + CDNS_UART_CR);
-> -	regval |= CDNS_UART_CR_TX_DIS;
-> -	/* Disable the transmitter */
-> -	writel(regval, port->membase + CDNS_UART_CR);
-> +	if ((cdns_uart->port->rs485.flags & SER_RS485_ENABLED) &&
-> +	    !timer_pending(&cdns_uart->stop_tx_timer) &&
-> +	    cdns_uart->rs485_tx_started) {
-> +		mod_timer(&cdns_uart->stop_tx_timer, jiffies +
-> +			  msecs_to_jiffies(cdns_uart->port->rs485.delay_rts_after_send));
-> +	} else {
-> +		regval = readl(port->membase + CDNS_UART_CR);
-> +		regval |= CDNS_UART_CR_TX_DIS;
-> +		/* Disable the transmitter */
-> +		writel(regval, port->membase + CDNS_UART_CR);
-> +	}
->  }
->  
->  /**
-> @@ -829,6 +971,12 @@ static int cdns_uart_startup(struct uart_port *port)
->  		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
->  		cpu_relax();
->  
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		timer_setup(&cdns_uart->stop_tx_timer,
-> +			    cdns_rs485_stop_tx_callback, 0);
-> +		cdns_rs485_rx_setup(cdns_uart);
-> +	}
-> +
->  	/*
->  	 * Clear the RX disable bit and then set the RX enable bit to enable
->  	 * the receiver.
-> @@ -888,6 +1036,7 @@ static void cdns_uart_shutdown(struct uart_port *port)
->  {
->  	int status;
->  	unsigned long flags;
-> +	struct cdns_uart *cdns_uart = port->private_data;
->  
->  	uart_port_lock_irqsave(port, &flags);
->  
-> @@ -903,6 +1052,11 @@ static void cdns_uart_shutdown(struct uart_port *port)
->  	uart_port_unlock_irqrestore(port, flags);
->  
->  	free_irq(port->irq, port);
-> +
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		del_timer_sync(&cdns_uart->timer);
-> +		del_timer_sync(&cdns_uart->stop_tx_timer);
-> +	}
->  }
->  
->  /**
-> @@ -1032,7 +1186,7 @@ static void cdns_uart_set_mctrl(struct uart_port *port, unsigned int mctrl)
->  	mode_reg &= ~CDNS_UART_MR_CHMODE_MASK;
->  
->  	if (mctrl & TIOCM_RTS)
-> -		val |= CDNS_UART_MODEMCR_RTS;
-> +		cdns_rts_gpio_enable(cdns_uart_data, 1);
->  	if (mctrl & TIOCM_DTR)
->  		val |= CDNS_UART_MODEMCR_DTR;
->  	if (mctrl & TIOCM_LOOP)
-> @@ -1455,6 +1609,31 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
->  /* Temporary variable for storing number of instances */
->  static int instances;
->  
-> +/**
-> + * cdns_rs485_config - Called when an application calls TIOCSRS485 ioctl.
-> + * @port: Pointer to the uart_port structure
-> + * @termios: Pointer to the ktermios structure
-> + * @rs485: Pointer to the serial_rs485 structure
-> + *
-> + * Return: 0
-> + */
-> +static int cdns_rs485_config(struct uart_port *port, struct ktermios *termios,
-> +			     struct serial_rs485 *rs485)
-> +{
-> +	u32 val;
-> +
-> +	if (rs485->flags & SER_RS485_ENABLED) {
-> +		dev_dbg(port->dev, "Setting UART to RS485\n");
-> +		/* Make sure auto RTS is disabled */
-> +		val = readl(port->membase + CDNS_UART_MODEMCR);
-> +		val &= ~CDNS_UART_MODEMCR_FCM;
-> +		writel(val, port->membase + CDNS_UART_MODEMCR);
-> +		/* Disable transmitter and make Rx setup*/
+> [...]
 
-Missing space.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-> +		cdns_uart_stop_tx(port);
-> +	}
+[1/7] arm64: dts: ti: k3-j7200-som-p0: Add TP6594 family PMICs
+      commit: 08aaf5f02e9d593cf6b2dc7da9c568e19199e00e
+[2/7] arm64: dts: ti: k3-j721s2-som-p0: Add TP6594 family PMICs
+      commit: f4eb94b898f5b708d024a70fd544cdd76537bcf9
+[3/7] arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family PMICs
+      commit: 46774eddde0ce499621cc8887106bcb449856e1f
+[4/7] arm64: dts: ti: k3-j784s4-evm: Add support for TPS6594 PMIC
+      commit: 3044f0184089e910f4da923bf64dca60ff47a117
+[5/7] arm64: dts: ti: k3-am69-sk: Add support for TPS6594 PMIC
+      commit: 865a1593bf99e1b3d4ffa6182919429694b17a36
+[6/7] arm64: dts: ti: k3-j721e-sk: Add TPS6594 family PMICs
+      commit: b808cef0be467318d862f87b64d7eddde6906ba3
 
-So you provide no way to disable RS485 after it once gets enable?
-Arguably that might not usually be a very useful thing to do in practice 
-but API-wise this function is expected to be able to also turn RS485 off.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-I didn't do a full review but having to add a timer smells like you could
-reuse the existing em485 framework for timing, please check.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
- i.
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
