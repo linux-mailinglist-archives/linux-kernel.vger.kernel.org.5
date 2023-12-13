@@ -2,146 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929A580FBA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 00:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B7080FBAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377522AbjLLX6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 18:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S1377621AbjLMAAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232512AbjLLX6I (ORCPT
+        with ESMTP id S1377520AbjLMAAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 18:58:08 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BFDB2;
-        Tue, 12 Dec 2023 15:58:14 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c210e34088so5228291a12.2;
-        Tue, 12 Dec 2023 15:58:14 -0800 (PST)
+        Tue, 12 Dec 2023 19:00:48 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37612BE;
+        Tue, 12 Dec 2023 16:00:52 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a1f6433bc1eso988639966b.1;
+        Tue, 12 Dec 2023 16:00:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702425490; x=1703030290; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WY977mAi5HwM1Re1JNSyw1hSd3wTJM+QSi5mNmNbSmY=;
-        b=kD/xs5DG8YRdT4UUhe+frEZQxebNTUXf/Sh+XSMIh6ANWlqxYtynZxe0JJ1AfW9bPq
-         BFuMKYw4f7A1G9v3Jt36ZiaHGcKh/Y/BgekfByYuSd7rsy3SAAurywiFO72/5Z12kSkn
-         Kks97R3wjj2q5e+jm+31rVs8KGVYPDzskloN/wcA5NJ5YnwTMVP6mJ25BYVLz/e09ZgP
-         x4tYFU20j5ZknLke+uL+fgTZmVm1TDVoUw0z/ElKpKT13pJJwMCC9nyEd/UpvFyad5xD
-         FplNvFpkxyNv+tyd5zRkgxM9z1H9bx+V97nBfhXsL6gEP/niKNkQhGtPcVICNQm0+yOS
-         p8gA==
+        d=gmail.com; s=20230601; t=1702425650; x=1703030450; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jaKGNb1VRd5VrDyxiTt9RbEg148bOMoqEkF4ucEMcYQ=;
+        b=S9ivD7ZXIqANASyAZdAcw38OJxzPLwjVns1W12tepRBvx1QXzD1KBn5E4VPjIuy6a1
+         CgCDXiUjNnq9igmTIyQ6mWdBOdleK1Zt1H/rYbFMD52P4RuRWQ5zzCbExp1oNNONNBDG
+         zVgJol/ddV51NZQVXLK+MGMVU1G1yypdZxSmj1jR5b4kh132RcPftwEsu8+gg8HEMgLA
+         /YkBKucoCmjArSqps+dNSdg4IkOtwaCEBWeg4aKII8xaIgviSJ3e+9wJRv5ixqCC64dJ
+         rYDQ8LU57Nc9h7hbpklLNik1e6DcjGk6VC/vXWOrNG5KemRWCpdB9kFdOnAwoDeGPhi/
+         4mSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702425490; x=1703030290;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WY977mAi5HwM1Re1JNSyw1hSd3wTJM+QSi5mNmNbSmY=;
-        b=aQa8LVdCfNIFNCNQdlOMO6D4dNW1RxS1pVGVDjuYqJv2TgRiw2BcbRzbfujhX7ijgf
-         dAAXBNwrT95Z8rAfiBPkZdvrCiBtHSNr9F9gg2KxexATIjgE3x98zDHVW+iOUcSXGDvy
-         inyurEuaYYf7he/U0SPOYRF3Kgx5ToM/owWeTL7C+Qri7UNeirYfJSeyKTEr+NzuiSYv
-         rcuVKirGdjHmI2CGok61vM+LzTF/nlCO4++yzDv4FFTqJ3r4yEkwZBkAraMjI2wqZJAX
-         VgQ+FeCEWejeTSgwrDZjYfPXn6gxqs3MipqkWxq1NECLe0iNpH/YG9hQvRcnujhg/VLg
-         DQAA==
-X-Gm-Message-State: AOJu0YwxDt5uMnFXok1v22ACRcWCKzSLt2UurO9ckRZpyqbDkza8za+f
-        p5tKpEUWz7CrdG/qM4FuC+hs8KcXBBQ=
-X-Google-Smtp-Source: AGHT+IEN1M2m1fMPKM1QlMZNADUU9UIl8/5swPq2xJewaX3t8kJvummweEvIbGb+B2HDSgH1vZA0eA==
-X-Received: by 2002:a17:902:f7c5:b0:1d0:98db:6fd4 with SMTP id h5-20020a170902f7c500b001d098db6fd4mr6344189plw.56.1702425489555;
-        Tue, 12 Dec 2023 15:58:09 -0800 (PST)
-Received: from rigel (194-223-186-106.tpgi.com.au. [194.223.186.106])
-        by smtp.gmail.com with ESMTPSA id z3-20020a170902834300b001d1d1ef8be5sm9144470pln.173.2023.12.12.15.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 15:58:09 -0800 (PST)
-Date:   Wed, 13 Dec 2023 07:58:04 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, andy@kernel.org
-Subject: Re: [PATCH 0/4] gpiolib: cdev: relocate debounce_period_us
-Message-ID: <ZXjzjOtKFoMRhKA-@rigel>
-References: <20231212054253.50094-1-warthog618@gmail.com>
- <CAMRc=Me90Lu7Duc8-4xSfDcHQd6M7+0t0O8FAa6jiizp-OO5=Q@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702425650; x=1703030450;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jaKGNb1VRd5VrDyxiTt9RbEg148bOMoqEkF4ucEMcYQ=;
+        b=JBt+l9gmXpAFeQ5L2mxN6Tk8VNuOlut9RbG/OZ2qflkzKSqWQlgkxhdlP7PMfFJJXr
+         UTqeLlpFa+wVeMJIB7YljMAiZ1PhtzWAxYFv2l4zj2ziSp+4JoaRwNYa87iIL0eu5wzf
+         fnntVD3sXJJkHlUr3ZOJuMcYR+SxKPzwT5ZHzp3oRZst/WHPZVjSWtokEhpNKPkO4ye2
+         93wsL47f5QxWPiQ2rW/JpaES0fekEL+B7F3YBr6i7vZ3VGF/IJ8nUjcxNUDed/K0l4OT
+         MIsU4Pra51q8MVhSCAe5/uKgICb9XDHiQZwFPrK1/gVm3yIgDLrmZuughBWaU+3tlABN
+         oQAw==
+X-Gm-Message-State: AOJu0Yxp2jz+3EgK01gCjWOr86HQdra1Kj+eNgoeIvnInaiLr1Y6X49p
+        vZOQzIwtE4ebE19KN3JMVA3vGIxW3QXJLL+P3s0EIA8rZdk=
+X-Google-Smtp-Source: AGHT+IGYW7xzpOkLwqBUER6EDcHRX9iNES/kCZd6cZhJDe/FEx9mz+yAG28v2vFhNXHxL0DlY9zccc8Lg4UK5reXTnI=
+X-Received: by 2002:a17:906:101e:b0:a01:ae9a:c1d3 with SMTP id
+ 30-20020a170906101e00b00a01ae9ac1d3mr7424415ejm.11.1702425650293; Tue, 12 Dec
+ 2023 16:00:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Me90Lu7Duc8-4xSfDcHQd6M7+0t0O8FAa6jiizp-OO5=Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+In-Reply-To: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Dec 2023 16:00:38 -0800
+Message-ID: <CAEf4BzavDwxD3=c6Gxo6N9OjN95Bf0bKZ0xMPGCq=nCm8jPzGg@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 0/2] bpf: support to trace BPF_JNE
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     andrii@kernel.org, yonghong.song@linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 06:09:00PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Dec 12, 2023 at 6:43 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > This series contains minor improvements to gpiolib-cdev.
-> >
-> > The banner change is relocating the debounce_period_us from gpiolib's
-> > struct gpio_desc to cdev's struct line.  The first patch stores the
-> > field locally in cdev.  The second removes the now unused field from
-> > gpiolib.
-> >
-> > The third patch is somewhat related and removes a FIXME from
-> > gpio_desc_to_lineinfo().  The FIXME relates to a race condition in
-> > the calculation of the used  flag, but I would assert that from
-> > the userspace perspective the read operation itself is inherently racy.
-> > The line being reported as unused in the info provides no guarantee -
-> > it just an indicator that requesting the line is likely to succeed -
-> > assuming the line is not otherwise requested in the meantime.
-> > Give the overall operation is racy, trying to stamp out an unlikely
-> > race within the operation is pointless. Accept it as a possibility
-> > that has negligible side-effects and reduce the number of locks held
-> > simultaneously and the duration that the gpio_lock is held.
-> >
-> > The fourth patch is unrelated to debounce or info, but addresses Andy's
-> > recent assertion that the linereq get/set values functions are confusing
-> > and under documented.  Figured I may as well add that while I was in
-> > there.
-> >
-> > Kent Gibson (4):
-> >   gpiolib: cdev: relocate debounce_period_us from struct gpio_desc
-> >   gpiolib: remove debounce_period_us from struct gpio_desc
-> >   gpiolib: cdev: reduce locking in gpio_desc_to_lineinfo()
-> >   gpiolib: cdev: improve documentation of get/set values
-> >
-> >  drivers/gpio/gpiolib-cdev.c | 257 ++++++++++++++++++++++++++++--------
-> >  drivers/gpio/gpiolib.c      |   3 -
-> >  drivers/gpio/gpiolib.h      |   5 -
-> >  3 files changed, 201 insertions(+), 64 deletions(-)
-> >
-> > --
-> > 2.39.2
-> >
+On Tue, Dec 12, 2023 at 5:15=E2=80=AFAM Menglong Dong <menglong8.dong@gmail=
+.com> wrote:
 >
-> Patches 2-4 look fine, I was about to review patch 1 in detail but I
-> thought I'd just throw this one in here before we commit to a specific
-> solution.
+> For now, the reg bounds is not handled for BPF_JNE case, which can cause
+> the failure of following case:
 >
-> For some reason I thought this would not work but I'm now considering
-> it as an alternative approach: is there anything wrong with adding
-> struct kref to struct line, allocating it separately per-line when
-> gpio_chardev_data is created, referencing it from struct linereq when
-> the line is being requested, and dropping the reference from
-> gpio_chardev_data and linereq when either is being removed? Other than
-> the increased number of allocations?
+>   /* The type of "a" is u16 */
+>   if (a > 0 && a < 100) {
+>     /* the range of the register for a is [0, 99], not [1, 99],
+>      * and will cause the following error:
+>      *
+>      *   invalid zero-sized read
+>      *
+>      * as a can be 0.
+>      */
+>     bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>   }
+>
+> In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0". I=
+n the
+> TRUE branch, the dst_reg will be marked as known to 0. However, in the
+> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+> the [min, max] for a is [0, 99], not [1, 99].
+>
+> In the 1st patch, we reduce the range of the dst reg if the src reg is a
+> const and is exactly the edge of the dst reg For BPF_JNE.
+>
+> In the 2nd patch, we just activate the test case for this logic in
+> range_cond(), which is committed by Andrii in the
+> commit 8863238993e2 ("selftests/bpf: BPF register range bounds tester").
+>
+> Changes since v1:
+> - simplify the code in the 1st patch
+> - introduce the 2nd patch for the testing
+>
+> Menglong Dong (2):
+>   bpf: make the verifier trace the "not qeual" for regs
+>   selftests/bpf: activate the OP_NE login in range_cond()
+>
+>  kernel/bpf/verifier.c                         | 29 ++++++++++++++++++-
+>  .../selftests/bpf/prog_tests/reg_bounds.c     |  7 +----
+>  2 files changed, 29 insertions(+), 7 deletions(-)
+>
+> --
+> 2.39.2
 >
 
-The collection of struct line always has to be global, right, as both
-gpio_chardev_data and linereq are ephemeral.  e.g. if one process requests
-a line and another checks the lineinfo, those will have distinct
-gpio_chardev_data.
++1 to all the feedback from Eduard. Besides that, please target
+bpf-next tree (so, [PATH bpf-next] for subject prefix), thanks!
 
-But the key issue is that the linereq and struct line lifetimes are
-strictly tied - a struct line does not live beyond the containing linereq.
-Leaving the struct line alive after the linereq is released is just wrong.
-The line has been released back to gpiolib so there can be no
-supplemental info left.
-If you want any such info to persist beyond the line release then it
-should be located in gpiolib itself, not cdev.
+Also, instead of "verifier traces", I think "verifier tracks" is less
+confusing wording. Tracing within the BPF ecosystem is usually used
+for a completely different meaning.
 
-Cheers,
-Kent.
-
+Oh, and just to keep feedback in one place. In patch #2 you have a
+typo in the subject "not qeual" -> "not equal".
