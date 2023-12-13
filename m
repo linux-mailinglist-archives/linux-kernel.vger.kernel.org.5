@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5108118FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3548118FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbjLMQRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S233494AbjLMQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbjLMQRq (ORCPT
+        with ESMTP id S232371AbjLMQSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:17:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEE4D0;
-        Wed, 13 Dec 2023 08:17:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702484273; x=1734020273;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7B2DphUlGbzEdI7JKraMwKjte3e4u4RUHtQDmI5dL+g=;
-  b=k8aKKpX9liLK7PKx+uytSVoed39nKMl5doB3Yj/pQgYo9o4x4BSEHpeG
-   h5y0PO6gIiSgHqgUvsvsFbGw3hLDhrqR8y+Q+UtryXw/SZcITnwLBIfDW
-   R6oWPpkRew7w68A9aTzGfHLRgESKLczlGSOyvibmdliilEswYeI1hp5eK
-   C905rwi+3r26eRWxH20JAzSUf8XKMTPxFy9haIYJ2pemzCBT2EMyPiZaL
-   rfv9Ezts6cJ/LAmm+CzgmRYyyBaZDk55W6P4aBRoi1Dzfk/LbciCHTB4C
-   JGep+S9wPc8bGARJHHf1zzV+n+Z5ykD54JSB4CBH/SD/p7glw3I5lMjDu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="16539013"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="16539013"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:17:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="839933861"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="839933861"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:17:50 -0800
-Received: from [10.212.117.13] (kliang2-mobl1.ccr.corp.intel.com [10.212.117.13])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 65E1C580BF0;
-        Wed, 13 Dec 2023 08:17:48 -0800 (PST)
-Message-ID: <64c2808e-ac2b-41c0-9e98-61b22e3031c1@linux.intel.com>
-Date:   Wed, 13 Dec 2023 11:17:47 -0500
-MIME-Version: 1.0
+        Wed, 13 Dec 2023 11:18:10 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D49CF;
+        Wed, 13 Dec 2023 08:18:16 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDF985q020589;
+        Wed, 13 Dec 2023 16:18:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=nMpqpToUbMmOflSDpK5xEseDBmZu9/9GMS4KnazN6rs=;
+ b=FVJB3kLwE5DdqqyuYdxuqeuU1cHR2+WcAKSjz3y79g6ra29IZYxc1uW9PZEA6lOLwJVT
+ f6I2krPvAnLrJIucxj8oyXh+g7mCcp922l1K3E6dOQxlscHRvs2TSNR/SVkjWBK32rcg
+ vdH0zWhE8/2VAAoWMPRLNAngzYdgsDWynvFxro8jw3yvJRPyqgQTb/gBfyPHvGfxushj
+ xP6WzLKTGPLc0whGjOYKPRmwGi/2y4X7pn+5qqn1eBcMhXrlrSscplkM2wbj3BDlTHgw
+ IECD21rAUVDUGQIjWM5TF0M6O2mMlq4imTnqjZmZPPW4MuA+Kib60PKK5KT56Zb1CSPa ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uycuq5y18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 16:18:10 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDGG2QM022733;
+        Wed, 13 Dec 2023 16:18:09 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uycuq5y0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 16:18:09 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD7EGIa014833;
+        Wed, 13 Dec 2023 16:18:08 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42kf534-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 16:18:08 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDGI5HL46334612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 16:18:05 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8927E20043;
+        Wed, 13 Dec 2023 16:18:05 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1702E20040;
+        Wed, 13 Dec 2023 16:18:04 +0000 (GMT)
+Received: from [9.179.18.31] (unknown [9.179.18.31])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Dec 2023 16:18:04 +0000 (GMT)
+Message-ID: <0851ca19-ef4d-4fef-a182-6b9e0b6b483b@linux.ibm.com>
+Date:   Wed, 13 Dec 2023 17:18:03 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 3/5] perf mem: Clean up perf_mem_events__name()
-Content-Language: en-US
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
-        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
-        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
-        james.clark@arm.com, mike.leach@linaro.org,
-        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20231207192338.400336-1-kan.liang@linux.intel.com>
- <20231207192338.400336-4-kan.liang@linux.intel.com>
- <20231209054809.GB2116834@leoy-yangtze.lan>
- <3b67c2de-741d-4d5e-8c8f-87b8b9e08825@linux.intel.com>
- <20231213133336.GA3895246@leoy-yangtze.lan>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231213133336.GA3895246@leoy-yangtze.lan>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH net-next v6 00/10] net/smc: implement SMCv2.1 virtual ISM
+ device support
+To:     Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
+        wenjia@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, kgraul@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        guangguan.wang@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1702371151-125258-1-git-send-email-guwen@linux.alibaba.com>
+From:   Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <1702371151-125258-1-git-send-email-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: svdNPIDk_S9t0FJY5S1FgEnpwQiFSXCH
+X-Proofpoint-GUID: -L85_3GBpl2bPU3eTul0kKzYE0isnf3Q
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_09,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1011 adultscore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312130115
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,34 +103,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023-12-13 8:33 a.m., Leo Yan wrote:
->>> I am a bit suspect if we really need the field '.aux_event', the
->>> '.aux_event' field is only used for generating event string.
->> No, it stores the event encoding for the extra event.
->> ARM doesn't need it, so it's 0.
-> I searched a bit and confirmed '.aux_event' is only used in
-> util/mem-events.c and for 'perf record'.
+On 12/12/2023 09:52, Wen Gu wrote:
+> The fourth edition of SMCv2 adds the SMC version 2.1 feature updates for
+> SMC-Dv2 with virtual ISM. Virtual ISM are created and supported mainly by
+> OS or hypervisor software, comparable to IBM ISM which is based on platform
+> firmware or hardware.
 > 
-> I failed to connect the code with "it stores the event encoding for the
-> extra event".  Could you elaborate a bit for this?
+> With the introduction of virtual ISM, SMCv2.1 makes some updates:
+> 
+> - Introduce feature bitmask to indicate supplemental features.
+> - Reserve a range of CHIDs for virtual ISM.
+> - Support extended GIDs (128 bits) in CLC handshake.
+> 
+> So this patch set aims to implement these updates in Linux kernel. And it
+> acts as the first part of SMC-D virtual ISM extension & loopback-ism [1].
+> 
+> [1] https://lore.kernel.org/netdev/1695568613-125057-1-git-send-email-guwen@linux.alibaba.com/
 
-The details of the reason of introducing the mem_load aux event can be
-found here.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=61b985e3e775a3a75fda04ce7ef1b1aefc4758bc
+Also there was a typo in the
+linux-kernel@vger.kernel.org
+Fixed it on this Mail.
+Sorry for the noise.
 
-A mem_load_aux event is a new requirement for SPR. For the other Intel
-platforms, a single mem_load event is good enough to collect the data
-source information. But for SPR, we have to group both the mem_load
-event and the mem_load_aux event when collecting the data source
-information. In the group, the mem_load_aux event must be the leader
-event. But for the sample read case, only the sampling of the mem_load
-make sense. So the is_mem_loads_aux_event() is introduced to switch the
-sampling event to the mem_load event. Here is the perf tool patch.
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2a57d40832dc8366bc517bcbbfdb1d7fb583735b
-
-The .aux_event is to store the event encoding of the mem_load_aux event.
-If it's the leader of a sampling read group, we should use the second
-event as a sampling event.
-
-Thanks,
-Kan
+> 
+> v6->v5:
+> - Add 'Reviewed-by' label given in the previous versions:
+>    * Patch #4, #6, #9, #10 have nothing changed since v3;
+> - Patch #2:
+>    * fix the format issue (Alignment should match open parenthesis) compared to v5;
+>    * remove useless clc->hdr.length assignment in smcr_clc_prep_confirm_accept()
+>      compared to v5;
+> - Patch #3: new added compared to v5.
+> - Patch #7: some minor changes like aclc_v2->aclc or clc_v2->clc compared to v5
+>    due to the introduction of Patch #3. Since there were no major changes, I kept
+>    the 'Reviewed-by' label.
+> 
+> Other changes in previous versions but not yet acked:
+> - Patch #1: Some minor changes in subject and fix the format issue
+>    (length exceeds 80 columns) compared to v3.
+> - Patch #5: removes useless ini->feature_mask assignment in __smc_connect()
+>    and smc_listen_v2_check() compared to v4.
+> - Patch #8: new added, compared to v3.
+> 
+> v5->v4:
+> - Patch #6: improve the comment of SMCD_CLC_MAX_V2_GID_ENTRIES;
+> - Patch #4: remove useless ini->feature_mask assignment;
+> 
+> v4->v3:
+> - Patch #6: use SMCD_CLC_MAX_V2_GID_ENTRIES to indicate the max gid
+>    entries in CLC proposal and using SMC_MAX_V2_ISM_DEVS to indicate the
+>    max devices to propose;
+> - Patch #6: use i and i+1 in smc_find_ism_v2_device_serv();
+> - Patch #2: replace the large if-else block in smc_clc_send_confirm_accept()
+>    with 2 subfunctions;
+> - Fix missing byte order conversion of GID and token in CLC handshake,
+>    which is in a separate patch sending to net:
+>    https://lore.kernel.org/netdev/1701882157-87956-1-git-send-email-guwen@linux.alibaba.com/
+> - Patch #7: add extended GID in SMC-D lgr netlink attribute;
+> 
+> v3->v2:
+> - Rename smc_clc_fill_fce as smc_clc_fill_fce_v2x;
+> - Remove ISM_IDENT_MASK from drivers/s390/net/ism.h;
+> - Add explicitly assigning 'false' to ism_v2_capable in ism_dev_init();
+> - Remove smc_ism_set_v2_capable() helper for now, and introduce it in
+>    later loopback-ism implementation;
+> 
+> v2->v1:
+> - Fix sparse complaint;
+> - Rebase to the latest net-next;
+> 
+> Wen Gu (10):
+>    net/smc: rename some 'fce' to 'fce_v2x' for clarity
+>    net/smc: introduce sub-functions for smc_clc_send_confirm_accept()
+>    net/smc: unify the structs of accept or confirm message for v1 and v2
+>    net/smc: support SMCv2.x supplemental features negotiation
+>    net/smc: introduce virtual ISM device support feature
+>    net/smc: define a reserved CHID range for virtual ISM devices
+>    net/smc: compatible with 128-bits extended GID of virtual ISM device
+>    net/smc: support extended GID in SMC-D lgr netlink attribute
+>    net/smc: disable SEID on non-s390 archs where virtual ISM may be used
+>    net/smc: manage system EID in SMC stack instead of ISM driver
+> 
+>   drivers/s390/net/ism.h        |   7 -
+>   drivers/s390/net/ism_drv.c    |  57 +++-----
+>   include/linux/ism.h           |   1 -
+>   include/net/smc.h             |  16 ++-
+>   include/uapi/linux/smc.h      |   2 +
+>   include/uapi/linux/smc_diag.h |   2 +
+>   net/smc/af_smc.c              | 116 +++++++++------
+>   net/smc/smc.h                 |  10 +-
+>   net/smc/smc_clc.c             | 318 +++++++++++++++++++++++++-----------------
+>   net/smc/smc_clc.h             |  58 ++++----
+>   net/smc/smc_core.c            |  37 +++--
+>   net/smc/smc_core.h            |  18 ++-
+>   net/smc/smc_diag.c            |   9 +-
+>   net/smc/smc_ism.c             |  50 +++++--
+>   net/smc/smc_ism.h             |  30 +++-
+>   net/smc/smc_pnet.c            |   4 +-
+>   16 files changed, 445 insertions(+), 290 deletions(-)
+> 
