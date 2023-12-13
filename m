@@ -2,121 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F6F81074D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6013E810757
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378110AbjLMBJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S1378104AbjLMBJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377653AbjLMBJP (ORCPT
+        with ESMTP id S1378076AbjLMBJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:09:15 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07FD91;
-        Tue, 12 Dec 2023 17:09:20 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sqcnm2cdhz4f3jZH;
-        Wed, 13 Dec 2023 09:09:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 86FC11A098C;
-        Wed, 13 Dec 2023 09:09:17 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgBntQs5BHllRkz5DQ--.6696S3;
-        Wed, 13 Dec 2023 09:09:16 +0800 (CST)
-Subject: Re: [PATCH RFC v2 for-6.8/block 01/18] block: add some bdev apis
-To:     Christoph Hellwig <hch@infradead.org>,
-        Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, willy@infradead.org,
-        akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140552.973290-2-yukuai1@huaweicloud.com>
- <ZXhdRhfr+JoWdhyj@infradead.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <893e2764-65a6-ef73-5ddf-95cd9f97cb19@huaweicloud.com>
-Date:   Wed, 13 Dec 2023 09:09:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 12 Dec 2023 20:09:45 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C16BCF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:09:51 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-33340c50af9so6265679f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702429789; x=1703034589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0i1d9QvoS4OxhYISeUTScW7akaFRcF7KdLSyFQ8hFdE=;
+        b=MLHbNY0Czd3wPe32uDHEc/p1QFAuW5t37BjMpcSQ2JrBYEKt/Wqd1QbsTFzgLXsEN+
+         e3zrFyeJbLcDbesFlbaAbJ4AkhT9MSKbiUSpFqgK+n3Ihyw51fmrpHKKATAsVyY7MeGB
+         fWBqPUvZmrKqbfVAVled2XVKP8ba27dIcf7oKvZ76EK+crAx7CGdVTPrRzYOlRNuhU7p
+         pvX0DfSrYhSZXjFc5E5n9LKb5R4aBzuu2LPN/nbNqGeYnsUe4ftFMqYIqRFh+WScy9yx
+         UD8XfTMfQyY0XR1pW3zgLXJ425d57zXmHsWNryMgdpTfLKmrQXK9O2funHSfzgsFvrjJ
+         mWjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702429789; x=1703034589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0i1d9QvoS4OxhYISeUTScW7akaFRcF7KdLSyFQ8hFdE=;
+        b=YPUWUKlwJklHYueoJsQJW09MsKYpaaswM2JVmaNstKlEl6119SL1BEMyelVxp9wY4W
+         ZYprYvrj1RENBQeyoBeerRKDo7zM67k4VChsNnZYIWtHV72kx9bNR7bkMrQPGKiArwcA
+         NrlbocqsUd0wFgOt5+hFypzic9gRlNp0x2CMop1D7+tEG/lOtjUPwzqgykp4HaVPr/Kw
+         m9vXls3kPq2zvyvayDvQtCYL4jm+G5twym/Ht7p/oZWEbUJcH/Fp2qWwAr9G/unD6iRF
+         16FNW0CZqMjW/eJUiqsleMIAwC1Y/lx/PScT+ImMyj1PBM0WR0uABa4Fp5aI0Qu+7eQu
+         ZUxA==
+X-Gm-Message-State: AOJu0Yzt2QHZgU4AFK+00jSOQ4F4kSoHVASaWqqRy98VnFm8SCbJuaCT
+        luAvlxLpK3sUe1frKA4SLmfvcOnedcWqXoMVRPawlg==
+X-Google-Smtp-Source: AGHT+IFHv6ulP97j2C3dKg3abBYpoQRGbAehnWd7YHUNtYhyRmrdi8aZpqMGubt6wRgBcXdnMdT0ZlS6rLmxwPeMcJk=
+X-Received: by 2002:a05:600c:4f86:b0:40c:48fb:ea01 with SMTP id
+ n6-20020a05600c4f8600b0040c48fbea01mr1374675wmq.209.1702429789212; Tue, 12
+ Dec 2023 17:09:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ZXhdRhfr+JoWdhyj@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBntQs5BHllRkz5DQ--.6696S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4fJw1rAF1UKF4fJrWDJwb_yoWfurcEqr
-        n7Cryv9w1jvws5Wr4UKFy5JrWrJFWYyr43Xay8ta4Iq3s8Xa18Ar92ka48uas8Ww47Z3ZI
-        9FsxuFy8uF4fujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbaxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j
-        6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-        BIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com> <20231212122535.GA3029808@nvidia.com>
+ <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com>
+ <20231212143942.GF3014157@nvidia.com> <CAHS8izNHtemjjkMf43grCHP1RZ=2UFiMtgea0M6+PaAgC=DDMQ@mail.gmail.com>
+ <20231212150834.GI3014157@nvidia.com>
+In-Reply-To: <20231212150834.GI3014157@nvidia.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 12 Dec 2023 17:09:35 -0800
+Message-ID: <CAHS8izMdKYyjE9bdcFDWWPWECwVZL7XQjtjOFoTq5_bEEJvN6w@mail.gmail.com>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Dec 12, 2023 at 7:08=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
+>
+> On Tue, Dec 12, 2023 at 06:58:17AM -0800, Mina Almasry wrote:
+>
+> > Jason, we set the LSB on page_pool_iov pointers before casting it to
+> > struct page pointers. The resulting pointers are not useable as page
+> > pointers at all.
+>
+> I understand that, the second ask is about maintainability of the mm
+> by using correct types.
+>
+> > > Perhaps you can simply avoid this by arranging for this driver to als=
+o
+> > > exclusively use some special type to indicate the dual nature of the
+> > > pointer and leave the other drivers as using the struct page version.
+> >
+> > This is certainly possible, but it requires us to rename all the page
+> > pointers in the page_pool to the new type, and requires the driver
+> > adding devmem TCP support to rename all the page* pointer instances to
+> > the new type. It's possible but it introduces lots of code churn. Is
+> > the LSB + cast not a reasonable compromise here? I feel like the trick
+> > of setting the least significant bit on a pointer to indicate it's
+> > something else has a fair amount of precedent in the kernel.
+>
+> Linus himself has complained about exactly this before, and written a cle=
+anup:
+>
+> https://lore.kernel.org/linux-mm/20221108194139.57604-1-torvalds@linux-fo=
+undation.org/
+>
+> If you mangle a pointer *so it is no longer a pointer* then give it a
+> proper opaque type so the compiler can check everything statically and
+> require that the necessary converters are called in all cases.
+>
+> You call it churn, I call it future maintainability. :(
+>
+> No objection to using the LSB, just properly type a LSB mangled
+> pointer so everyone knows what is going on and don't call it MM's
+> struct page *.
+>
+> I would say this is important here because it is a large driver facing
+> API surface.
+>
 
-ÔÚ 2023/12/12 21:16, Christoph Hellwig Ð´µÀ:
->> +void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
->> +			   pgoff_t end)
->> +{
->> +	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
->> +}
->> +EXPORT_SYMBOL_GPL(invalidate_bdev_range);
-> 
-> Can we have kerneldoc comments for the new helpers please?
+OK, I imagine this is not that hard to implement - it's really whether
+the change is acceptable to reviewers.
 
-Of course, will definitely do this in v3.
-> 
->> +struct folio *__bdev_get_folio(struct block_device *bdev, loff_t pos,
->> +			       fgf_t fgp_flags, gfp_t gfp)
->> +{
->> +	return __filemap_get_folio(bdev->bd_inode->i_mapping, pos >> PAGE_SHIFT,
->> +				   fgp_flags, gfp);
->> +}
->> +EXPORT_SYMBOL_GPL(__bdev_get_folio);
-> 
-> It's a bit silly to have a __-prefixed API without a version that
-> doesn't have the prefix, so I'd prefer to drop it.  Unless willy has
-> a good argument for keeping it the same as the filemap API.
+I figure I can start by implementing a no-op abstraction to page*:
 
-Ok, I'll drop it if willy doesn't against this.
+typedef struct page netmem_t
 
+and replace the page* in the following places with netmem_t*:
+
+1. page_pool API (not internals)
+2. drivers using the page_pool.
+3. skb_frag_t.
+
+I think that change needs to be a separate series by itself. Then the
+devmem patches would on top of that change netmem_t such that it can
+be a union between struct page and page_pool_iov and add the special
+handling of page_pool_iov. Does this sound reasonable?
+
+
+--
 Thanks,
-Kuai
-> 
-> .
-> 
-
+Mina
