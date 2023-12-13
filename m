@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE2F8118D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A310E8118D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbjLMQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S233423AbjLMQMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjLMQM3 (ORCPT
+        with ESMTP id S233401AbjLMQMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:12:29 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ACACF;
-        Wed, 13 Dec 2023 08:12:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1vrOiSisAVsmWgexef/gsX29GgUfsLmdvZF3qsbjTJ0=; b=qbB4sQwpo0TQONpnefMuazB4i7
-        4omduYqjHcOb0sF5jrGtudYXP6lqdTlTm1ubaC+T5C5sLiEGWJVFwp0kE6DUU+/RrYWd6aLX7f8dE
-        1O46o/WuMevXvWn67r0tXeMUAF7/rXTjsuKG8JwMzj7uWMace9o6b+Kf13aiMpvDKxnLLis8qxYyn
-        h7ZBLKU+RvJfcrsmN1fShqob074w4Ln4AnXEwjCwRVLLlaRA7phdFchdVBY0EYkklkyy07SKiDV4v
-        wX/F1ItJo2j9xmvYO/txDPXPZiVpUxONjeEIR1kfJ49zXtm1dnL9wuLuCcZSTCVfiE+lx0SKqlgfd
-        9sD23HeA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36092)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDRqS-0000ES-04;
-        Wed, 13 Dec 2023 16:12:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDRqS-0001du-DO; Wed, 13 Dec 2023 16:12:24 +0000
-Date:   Wed, 13 Dec 2023 16:12:24 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v6 1/3] net: phy: extend PHY package API to
- support multiple global address
-Message-ID: <ZXnX6GuooQQwu8Bs@shell.armlinux.org.uk>
-References: <20231213105730.1731-1-ansuelsmth@gmail.com>
- <ZXnRlERUGhwxKJxi@shell.armlinux.org.uk>
- <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
+        Wed, 13 Dec 2023 11:12:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88904DB;
+        Wed, 13 Dec 2023 08:12:54 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="379978078"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="379978078"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:12:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947229929"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="947229929"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:12:36 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDRqc-00000005ZFp-1DbZ;
+        Wed, 13 Dec 2023 18:12:34 +0200
+Date:   Wed, 13 Dec 2023 18:12:34 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
+References: <20231212054253.50094-1-warthog618@gmail.com>
+ <20231212054253.50094-2-warthog618@gmail.com>
+ <ZXm3rayrcvfO1t1Z@smile.fi.intel.com>
+ <ZXm_WsIpgIyOUNHt@rigel>
+ <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
+ <ZXnU3tMYCc2Rw8Qv@rigel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZXnU3tMYCc2Rw8Qv@rigel>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 04:50:33PM +0100, Christian Marangi wrote:
-> On Wed, Dec 13, 2023 at 03:45:24PM +0000, Russell King (Oracle) wrote:
-> > On Wed, Dec 13, 2023 at 11:57:28AM +0100, Christian Marangi wrote:
-> > > -static inline int phy_package_read(struct phy_device *phydev, u32 regnum)
-> > > +static inline int phy_package_read(struct phy_device *phydev,
-> > > +				   unsigned int addr_offset, u32 regnum)
-> > >  {
-> > >  	struct phy_package_shared *shared = phydev->shared;
-> > > +	int addr = shared->base_addr + addr_offset;
-> > >  
-> > > -	if (!shared)
-> > > +	if (addr >= PHY_MAX_ADDR)
-> > >  		return -EIO;
-> > 
-> > If we're going to check the address, I think we should check it
-> > properly, which means also checking whether it's become negative.
-> > 
-> > Alternatively, we could consider making "addr" and "base_addr"
-> > unsigned types, since they should never be negative. However,
-> > that probably should be done as a separate patch before this one.
+On Wed, Dec 13, 2023 at 11:59:26PM +0800, Kent Gibson wrote:
+> On Wed, Dec 13, 2023 at 04:40:12PM +0100, Bartosz Golaszewski wrote:
+> > On Wed, Dec 13, 2023 at 3:27 PM Kent Gibson <warthog618@gmail.com> wrote:
+> > > On Wed, Dec 13, 2023 at 03:54:53PM +0200, Andy Shevchenko wrote:
+> > > > On Tue, Dec 12, 2023 at 01:42:50PM +0800, Kent Gibson wrote:
+
+...
+
+> > > > > +static struct supinfo supinfo;
+> > > >
+> > > > Why supinfo should be a struct to begin with? Seems to me as an unneeded
+> > > > complication.
 > >
+> > I think we should keep it as a struct but defined the following way:
+> >
+> > struct {
+> >     spinlock_t lock;
+> >     struct rb_root tree;
+> > } supinfo;
 > 
-> Maybe I'm confused but isn't already like that?
-> On phy_package_join base_addr is already checked if it's negative (and
-> rejected)
-> 
-> addr_offset is unsigned so it can't be negative.
+> That is what I meant be merging the struct definition with the variable
+> definition.  Or is there some other way to completely do away with the
+> struct that I'm missing?
 
-True, but with base_addr being an int, addr_offset being unsigned int,
-and addr being an int, if addr_offset is a very large number,
-2-complement arithmetic will have the effect of treating it as a
-negative number.
+Look at the top of gpiolib.c:
 
-So, base_addr=0, addr_offset=~0 results in addr being -1.
+static DEFINE_MUTEX(gpio_lookup_lock);
+static LIST_HEAD(gpio_lookup_list);
 
-If "addr" were unsigned int, and as we've already established,
-"base_addr" can't be less than zero because of the checks already done
-(thus it can also be unsigned int) then we'll end up with the checks
-you're adding automatically doing the right thing, because...
+In the similar way you can simply do
 
-base_addr=0, addr_offset=~0 results in addr being ~0 (a large
-positive unsigned number).
+static DEFINE_SPINLOCK(gpio_sup_lock);
+static struct rb_root gpio_sup_tree;
+
+> > > Yeah, that is a hangover from an earlier iteration where supinfo was
+> > > contained in other object rather than being a global.
+> > > Could merge the struct definition into the variable now.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+With Best Regards,
+Andy Shevchenko
+
+
