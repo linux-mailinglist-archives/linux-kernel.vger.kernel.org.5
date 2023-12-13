@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB49812139
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAC5812141
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442746AbjLMWLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        id S1442740AbjLMWOD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 17:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLMWLV (ORCPT
+        with ESMTP id S229929AbjLMWOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:11:21 -0500
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9D29C;
-        Wed, 13 Dec 2023 14:11:27 -0800 (PST)
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3ba2dd905f9so313433b6e.2;
-        Wed, 13 Dec 2023 14:11:27 -0800 (PST)
+        Wed, 13 Dec 2023 17:14:01 -0500
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856A9AC;
+        Wed, 13 Dec 2023 14:14:08 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28b0071ae32so547620a91.0;
+        Wed, 13 Dec 2023 14:14:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702505487; x=1703110287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AgTgho1a4LA/XjrrePxUmui9LuYj0rwstzK1KGu7248=;
-        b=IMOdCTBYRRbRReNvThP/IthfKDyEycuBWJ2p5+YXsrp6tIPSvBf1h4tn3PPsU2obm7
-         UpTMqDdTQTW5MmKHd6Wo0FCc/O6JLWLVruzay5/RxcI9R1FfbGZ3oRi6+uIAQChboBIl
-         2aKolWYZQXhD0aK3W4mTou0lyLy9JQhQN05xk+XOE7toUrc4pa8usbnqI8zNs9Ye21Dt
-         fIABmmUfThbUT0YTunzXrzJ5G3oOempjphTxm/Z+jlIC+ZnAPBn8NwTnn3XQ317CPC/x
-         kjnp3Dz97l/rSuQpycw2PVcAKZ8b8psKCN3QEucCIq8Kh47X9qKkyO4hKvFyOznEXQgw
-         hVsw==
-X-Gm-Message-State: AOJu0YyHyH+Hc8OFkS2RtWR5Zz0F8PLl4ABVbKUmEcvgplWCFFo9+5Pm
-        ZB3JHFt3pTmCiJjq1RHSCQ==
-X-Google-Smtp-Source: AGHT+IHX5L5W/V5kcRHCZGCX9tUxlzQHF1lIwCR9ERJ7ag6EqOQsYnbBD4efejagEgtQrlmcp0mZLw==
-X-Received: by 2002:a05:6808:6493:b0:3ba:667:9e4f with SMTP id fh19-20020a056808649300b003ba06679e4fmr7673479oib.113.1702505486877;
-        Wed, 13 Dec 2023 14:11:26 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id bh20-20020a056808181400b003b83c516e62sm3102354oib.51.2023.12.13.14.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 14:11:26 -0800 (PST)
-Received: (nullmailer pid 2156812 invoked by uid 1000);
-        Wed, 13 Dec 2023 22:11:24 -0000
-Date:   Wed, 13 Dec 2023 16:11:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mark Hasemeyer <markhas@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Raul Rangel <rrangel@chromium.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 2/6] arm: arm64: dts: Enable cros-ec-spi as wake source
-Message-ID: <20231213221124.GB2115075-robh@kernel.org>
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
- <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
+        d=1e100.net; s=20230601; t=1702505648; x=1703110448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PrPkyaX0AG7+dG5o0kCvLphBtxW3qZUWNIeyMgltZ2k=;
+        b=tWatdAZAyUZqXvJ/JZ9Ieo0c6eQD2x8BxciznFEcQFU+9MYwP2VjuQFhRbTfJwdDVo
+         HH62xrm9BDpIoDa1pcWnXMYMAs38ujNmpViGGLgvpzfP/t+nzrdc2mL9YQNNc+5oJaoh
+         o1qn3HuT5x1BMxCZyqhxEUrygdUaqWhRHrHqSbvLrEp17QY+NW0HFN9v9rTmITbOlOZZ
+         ol/Pa2gozDO9tpbhm9SyfncXcwz0D6/ikoXps1a0ln43667LEJ3tH75bGIJqEcvpTo7J
+         D+pd+EQpawUL3+CbTg9z0Dnc+6LUKT4mZgLkINNpWl4M+Psh1F6k573ei6XBaPt0mrUe
+         5vzA==
+X-Gm-Message-State: AOJu0Yyd+aMpk5VTs/DuP72xfoDO776ndZUYpTFrdfDtiIYSPdVo118i
+        SdSdtJFqlrE7avoZI3hH+oqjOjyvrBZVxRvzPlU=
+X-Google-Smtp-Source: AGHT+IFzysZucKQnuzF1P2AfQ1XThSqn5haRfHgHeRKl6p1tfABu5GEmr/4tmyo87GzdBiPVxvBCbsqjqSQqWGjQ56Q=
+X-Received: by 2002:a17:90a:6d26:b0:28a:cf4f:dad9 with SMTP id
+ z35-20020a17090a6d2600b0028acf4fdad9mr1520579pjj.28.1702505647865; Wed, 13
+ Dec 2023 14:14:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+References: <20231212070547.612536-1-namhyung@kernel.org> <20231212070547.612536-3-namhyung@kernel.org>
+ <CAP-5=fWH=Nt4Dr7-rHqqfPSHPQUP=Bof2iGWEZEpsz5NC+wZiA@mail.gmail.com>
+In-Reply-To: <CAP-5=fWH=Nt4Dr7-rHqqfPSHPQUP=Bof2iGWEZEpsz5NC+wZiA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 13 Dec 2023 14:13:57 -0800
+Message-ID: <CAM9d7chc9uyj-gZT0_a6aca6UMqjiXGNiSB8MGUXchg5VGrKrw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] perf unwind-libdw: Handle JIT-generated DSOs properly
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Milian Wolff <milian.wolff@kdab.com>,
+        Pablo Galindo <pablogsal@gmail.com>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,13 +67,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:00:20AM -0700, Mark Hasemeyer wrote:
-> The cros_ec driver currently assumes that cros-ec-spi compatible device
-> nodes are a wakeup-source even though the wakeup-source property is not
-> defined.
+On Tue, Dec 12, 2023 at 10:07 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Mon, Dec 11, 2023 at 11:05 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Usually DSOs are mapped from the beginning of the file, so the base
+> > address of the DSO can be calculated by map->start - map->pgoff.
+> >
+> > However, JIT DSOs which are generated by `perf inject -j`, are mapped
+> > only the code segment.  This makes unwind-libdw code confusing and
+> > rejects processing unwinds in the JIT DSOs.  It should use the map
+> > start address as base for them to fix the confusion.
+> >
+> > Fixes: 1fe627da3033 ("perf unwind: Take pgoff into account when reporting elf to libdwfl")
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/unwind-libdw.c | 21 +++++++++++++++++----
+> >  1 file changed, 17 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/perf/util/unwind-libdw.c b/tools/perf/util/unwind-libdw.c
+> > index 8554db3fc0d7..6013335a8dae 100644
+> > --- a/tools/perf/util/unwind-libdw.c
+> > +++ b/tools/perf/util/unwind-libdw.c
+> > @@ -46,6 +46,7 @@ static int __report_module(struct addr_location *al, u64 ip,
+> >  {
+> >         Dwfl_Module *mod;
+> >         struct dso *dso = NULL;
+> > +       Dwarf_Addr base;
+> >         /*
+> >          * Some callers will use al->sym, so we can't just use the
+> >          * cheaper thread__find_map() here.
+> > @@ -58,13 +59,25 @@ static int __report_module(struct addr_location *al, u64 ip,
+> >         if (!dso)
+> >                 return 0;
+> >
+> > +       /*
+> > +        * The generated JIT DSO files only map the code segment without
+> > +        * ELF headers.  Since JIT codes used to be packed in a memory
+> > +        * segment, calculating the base address using pgoff falls into
+> > +        * a different code in another DSO.  So just use the map->start
+> > +        * directly to pick the correct one.
+> > +        */
+> > +       if (!strncmp(dso->long_name, "/tmp/jitted-", 12))
+>
+> Perhaps it would be better to test:
+> dso->symtab_type == DSO_BINARY_TYPE__JAVA_JIT
 
-If a device knows it is wakeup capable, why do you need a property too?
-I haven't looked closely enough, but it smells like after patch 6, these 
-properties would be required for wakeup? That would be an ABI break.
+Well.. it's a little different.  The JAVA_JIT type files have
+"/tmp/perf-" prefix and it's a plain text file (for symbols).
+While this is an ELF file generated by `perf inject -j`.
 
-Rob
+Thanks,
+Namhyung
