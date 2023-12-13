@@ -2,214 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF41810E8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9808C810E8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbjLMKfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        id S1377189AbjLMKfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235220AbjLMKfD (ORCPT
+        with ESMTP id S233257AbjLMKff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:35:03 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2070.outbound.protection.outlook.com [40.107.237.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E547812B;
-        Wed, 13 Dec 2023 02:35:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ygfg6hkyLsZtOvAvAG8JQ7fb9KesUajYU1VHFgpDIj6JnqVyCJXBGgWy85q0BuThU0nha2qxKHNJzKxiOrtsIVXWqY6zvi7SGQRSkXfeIoNBn9/Ey7InVQsl0L3V2Y7FX5DPAK+Ym/np+uyeHRazjVI+WcRYNekR8M6JI+7l3DCiZBoDq6F3ik4LfKcuR0ZdJ21ZsjwFKvRV4Tzyve3DNCXBDJm93rbBkDrE72TjFvhPqRK5gQC9Bq6NpbsLBRsTAlrOPnyufZrkBMfIh+Op3H1dlHkm5Q+DjaAsPC6/hJJLwo8c8BR6H14JxADed4uGpPpcMQ7XjYIlT/9D1pRS5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oJWm9Rx+UtwUZYZFJkczuFMdP7EjzEq2ZomOQRsasbU=;
- b=XhKjRMhrmxCghHt7o/Pr79QH1ie3dh6UvxWjdBsHdQrvvPR/pwZX2pyom+4RY/7llUvUrBV9H2lV052iERomtBiBxXXHyZMMBtlnG1SBDcetQijzoDhcEEtZCyGy+kv7S8rjCJG7CRKsKzKIBzL1B2CVIKWVT3iY97TCOjxbElvX9uh0JRTpa5f4Ac6IResPHAWQeKcOQhi96AX/0GPvyQvewYh7/ZaW8KBz8Q1UaF3RE9xFxdkGC3UVqywLrbw47OHKA66jBh6nuKqN5KxaLGZdDxgbo5BOU/YBQmapC3T5qjKDWLE4/0zDM0BojBequ+GZ5DUt73R8Ke4R8VQCVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oJWm9Rx+UtwUZYZFJkczuFMdP7EjzEq2ZomOQRsasbU=;
- b=n4dmVWyRbLZpLmczzUyTYl/wW97IEOBWbi74rcEIEAh2yLY1Fzjg9JRatNoLb0ACiVwqXHq4+TDlB/UF4pMUfJgpJuD3I/b/Km9XWsAxxUspXQnKCWjGuGeS30W9qACP77hXNeQ2Ths1zawSBHzLWg/6x4narJqNWRACt/1RFeU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW4PR12MB7016.namprd12.prod.outlook.com (2603:10b6:303:218::14)
- by SA1PR12MB6895.namprd12.prod.outlook.com (2603:10b6:806:24e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 10:35:06 +0000
-Received: from MW4PR12MB7016.namprd12.prod.outlook.com
- ([fe80::1f1b:e85b:abf0:3d3c]) by MW4PR12MB7016.namprd12.prod.outlook.com
- ([fe80::1f1b:e85b:abf0:3d3c%6]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 10:35:06 +0000
-Message-ID: <adcc6446-8c30-a258-e19b-76fca2c50d21@amd.com>
-Date:   Wed, 13 Dec 2023 16:04:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset downstream
- ports created by boot firmware
-Content-Language: en-US
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Sanath S <Sanath.S@amd.com>
-Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
-        michael.jamet@intel.com, YehezkelShB@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231212191635.2022520-1-Sanath.S@amd.com>
- <20231212191635.2022520-3-Sanath.S@amd.com>
- <20231213054914.GI1074920@black.fi.intel.com>
- <20231213061805.GK1074920@black.fi.intel.com>
- <20231213062306.GL1074920@black.fi.intel.com>
-From:   Sanath S <sanaths2@amd.com>
-In-Reply-To: <20231213062306.GL1074920@black.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0218.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:ea::10) To MW4PR12MB7016.namprd12.prod.outlook.com
- (2603:10b6:303:218::14)
+        Wed, 13 Dec 2023 05:35:35 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D99D0;
+        Wed, 13 Dec 2023 02:35:40 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2cc259392a6so38238301fa.2;
+        Wed, 13 Dec 2023 02:35:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702463739; x=1703068539; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=V3CWtF2fNs4rwpfbH1gBvvm+8Rnb61bFFG6hs2W4ExA=;
+        b=batvxJUvMPnHAKsWWExrG0Rx53MG3rISmoTDbs/OWl+0ton6lrhtsrWE/mPeViInv0
+         168fMk+q1OW6YlwOUzGU7X5gXp3CkxXXUyuC68CgNdZjhjvmYylNqkh38jkaxXtPDiIa
+         x3aK6phkgdL2Nl/1ks1H21NLmzwAq+zyPdKN54EcSB29GxQeqmCtpNPbhrVFfQveH13B
+         kmCpiSXHLrUvErqRr0qmwXEYF7svVTIkX2aO3xQNjk3ai3lzFfgrKxIMZaEGsPy3imWh
+         Y2pq72d2bK/H3lkm4u6VgXv/Vz2ZAwgPj0rJ5oa6AqcoWZCL+kJqtd4jEevonAozTfnG
+         +yiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702463739; x=1703068539;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3CWtF2fNs4rwpfbH1gBvvm+8Rnb61bFFG6hs2W4ExA=;
+        b=Xmja3WDjJjKrVrDP4BrGDyWlxJgNLDBIe0YiBPpyRO4CvHj/2s8T77gYjdd8RnrmK8
+         Koi6n1tCOfBMmBJxUeOES3MU+kzZq2YNXcVfG06Y0By/nXU0+voCOHxf18GoTfMgLrXL
+         v4tUZ/VHBFYopSNqeI3eXbOwdzHTyf+k6zpBu9Ic6vK62IAaeU5zPKHoaNhXLWNBqrMY
+         MvUXZCPbvj6AZq5ZFFPIhCqylgtm5wUMViJGMT7sHV3XuaDiZCNd1bidJUj7/II1j249
+         6Y776DopAz6Xmd5m4pooy+1XgsmA+ZHo+dsHpSsOAoHx9HL3/S92q1IQzzZGA06M1Rtb
+         jm9Q==
+X-Gm-Message-State: AOJu0YxTrKQMH5UKSDoiHRL/zo0g1ACGnUrE2Ac8xR4BT6qeYxYbDcYH
+        R+qRUZwHQO4IzGoj3KS1tUE=
+X-Google-Smtp-Source: AGHT+IEQui0wHCLJmNUMvL14iDsJqoNnWAgoMis8U6G/2ToohSIRNjWhCuxMn+s0PRVlKH5GIu1JRg==
+X-Received: by 2002:a05:651c:901:b0:2cc:264a:1c37 with SMTP id e1-20020a05651c090100b002cc264a1c37mr3394042ljq.104.1702463738671;
+        Wed, 13 Dec 2023 02:35:38 -0800 (PST)
+Received: from pc636 (host-90-235-2-229.mobileonline.telia.com. [90.235.2.229])
+        by smtp.gmail.com with ESMTPSA id y5-20020a05651c020500b002ca35a126e5sm1792425ljn.119.2023.12.13.02.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 02:35:38 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 13 Dec 2023 11:35:35 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Qais Yousef <qyousef@layalina.io>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <ZXmI9zDW8KlZqQj7@pc636>
+References: <20231203011252.233748-1-qyousef@layalina.io>
+ <ZXhTjrTqZvMTXKtK@pc636>
+ <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB7016:EE_|SA1PR12MB6895:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd63527b-82d5-4077-ec11-08dbfbc72bff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bQ1yueQKTDarkYS34B2LhfUJGWOZ7XQc70uuVXtZgiBQvooL1oJW2qGy/McUYewwBGObGb36WP8y1uWXHirHbNI56fM0NFcsxQOchrJXlBKVURIKl17vLQIlR306231obt6QcHdv92lAee8G/qSElcy3/udv6J27kV63VQ9LCObDdxEeZeETp2ioaGTRnRDFJgLKu5bvs3b4C/iRMZPU3gXDWAzBNAGZ3plzYyN+HEPG8UEc3Q346CPR7GQh2R6DQnqwOt+ugSQn5iXN7zxMijIJxqp1pGpqn5PkvHDOnJj9nMQJivojlQk//5bNTxYrkYxYuBaloguDdHPK81OX23cURVmBFFxNKCPQxLxn3O8HBrHjqaPJgnPAwh4eJT5dcNwYDMhcR2rSAHNmK/vPzASpi7NRzKZYsJ9eST8uaR1Fgu7BO/mhj20M/7PJe045qAFMg74qdv/W01jyChUhj9C7GcGDcwkP1smcOX0MhmBVL0jNEarFYESJhsEbaraNrxCSRvDsr2BNLTVYALhAMzgSUYeKZ3bX96GVpdO31bbCaoTwf/uBV9PS330zWQ0cdkC1ndEFkTfXDyQaFGfoB0MxoUmG7AvpU/a11QOgzmFPs4jYq/9J+dKT2pc55rYJD506YtR3cnOgN0ITB6imLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7016.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(366004)(136003)(376002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(66574015)(2616005)(26005)(6506007)(6512007)(6666004)(53546011)(83380400001)(8676002)(5660300002)(4326008)(8936002)(41300700001)(2906002)(6486002)(478600001)(316002)(6636002)(66556008)(66946007)(110136005)(66476007)(31696002)(38100700002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aTdRUU9oSjZRUG9CQzNxem5CZHZMcUx6ckVmNVJ5cVJiaUMyRUR5L256a1dx?=
- =?utf-8?B?dHJTVWFrYjd4bVZaRllNSTFRTnFGVFJkK0hRbWxaOFAxdUdKRExEamZ1VlA2?=
- =?utf-8?B?MkFCcE5uckhOUGhnZHlRNE9GaFNzZnU5T1h0NVBXUnVBNWRHcUgvTno0Yys0?=
- =?utf-8?B?VUdKK1MzUUcrblV5WkpsZzU1ZUJ0c01SczlUNmhwNFFwdmk4dnBYd1oxUk9l?=
- =?utf-8?B?QzQzYVFRWVF0THJYWWFLbU1QYmVKT0JpTmFYTW50U3VIUzhXaDVUUktiT3VN?=
- =?utf-8?B?YmhaVXRGZUtZaDFOVGlDNHpqaXVxN3pRdkFpYysxNWhub0ZqdWdlNUkzUTF2?=
- =?utf-8?B?U2FXWE96VWY5bHQ4WDdabTJaMFdBK2pZWUpDQWt2Wi9Qak1VZitEbkYyeFlh?=
- =?utf-8?B?UXFRc3hkM2gwWWxIWktsRDZkMW1YZTBYRnZqM2QzbVYvTGlNU3I1U3pHK0lR?=
- =?utf-8?B?b2t2ekVCTVhJNTJ4ajU5dGZnTFBxVkxSYWZKNitzaXhsV2ZRMWpWZGFtcVN2?=
- =?utf-8?B?ZlNpRy9TMEZVUUJ6TDd4TGVPZGk5eFFSZ3JSL1VXblBIQVg3aWd2dmdQQUtW?=
- =?utf-8?B?S2xaYVI4TkdRd0lZdU9TdTZHUVdpbzRVVVpGczBWLzVWQ2VvdGxia2pWNTJQ?=
- =?utf-8?B?T3dYOGJCL3BBbHkrckpUREdtRkV4L0pMN0oxd3JCMy9NQUFJK3V1YU1Jd245?=
- =?utf-8?B?ZCtuQVpkUXVXdGE0ejFpQnpMckhIN0dhSjFWWU1ieWxVelRmeXdsS0pDcnlp?=
- =?utf-8?B?bU11bEJQa2cvcHRIcEV3TWtIb3ZBZzN1NGZXMmxKa0VjOE0ybXdxVU9meDZX?=
- =?utf-8?B?VExOVTZhdnZWSEhUQTdFanBib2VhRCtiaEIxaWNuT3NUdDh0TXZpUHJMdTdP?=
- =?utf-8?B?ZndSUnJLZTZaQ1liWHJnbElXQkpJa2lOZU54cHorNmNVQUpXQktrNkRGcVAr?=
- =?utf-8?B?RGhyU1hia2lMekNCU29Ud2VjNG5hbnJ0dlkvU3NIVEhOV3Y1Z1J2Y1pQcDVG?=
- =?utf-8?B?b3dJdkN3ZzBNazBDU3pvTmJOM3oxQlFzdVRQR0xLTis3VDlTbVNHUG4yZitR?=
- =?utf-8?B?YjFvU3hXMWZ6Tm5BTFZya1l2T1RSbGduZ1VYc0IydVVBOUg1SkhibkJoWGtk?=
- =?utf-8?B?Y0QzNGRwT2xHbGovRHZ4THU0cGZlb2ZlMDQ2eTlVbFBycmNPck1qbDlPdXJh?=
- =?utf-8?B?UzRCalZjRVZGTzkvM0dnRERzTUpQZ1lCS2hWZDBkemNQUGpWUHpra3hyVjg1?=
- =?utf-8?B?b0JleHQzb1E0cXZNaW04NkQrL25PbmppYWZ2TlY0eE05dGNYR2cyRS9lVlRL?=
- =?utf-8?B?eTRsNHlLVXdkdTY4S3F2Tno0akliWFl2T1dPWEVKNTB4alNPeHpQdUppMFBw?=
- =?utf-8?B?MHRCN1VrZjJ2ZmZrYUJhQk1PSU53bGFmZDF4WTBBWVF3U2hNSDlWSkp0WmtB?=
- =?utf-8?B?cDlPLzNtKzBFTW00b2xJcXNUR3RtZTVXYjN3QWJHMEdpK3JQSFNibGhNV0h1?=
- =?utf-8?B?WngvclNEYW1xWUljbHJYbmFyUGtJcG9PVkE2ajh5ZEc5SDVDalJVTm9tOW1m?=
- =?utf-8?B?RTQxZ2cwbFR3VEpuSEFMa2JKZE1JSlROZnVNcHBsT3JkQTNvNlBtKytWUU12?=
- =?utf-8?B?YkdQWlR3NC9nNk5nc3hqWkhYVC9Xb1ROWWF0bitPYUgvOFRHZHZUZlJFaEl0?=
- =?utf-8?B?d1NVZzNuUy9hZUhreWZxUG5xemM5VHpSOXQ5aW5EZWRQWGVMSGpWbmpCcnVi?=
- =?utf-8?B?S3RWYWRyNmw2V2tMaFB1bkVZZlFuQ1pTT2NRRGpuQTJuT3RoZCtQcjBNTUhp?=
- =?utf-8?B?WUdxcnNLRjNoVVlPdGEzNXNjQlBsTG5UbE4xMWprZEN1ZmNMUVV0NjhkZmxJ?=
- =?utf-8?B?WDZuZVdkN01wQmwyMUtqeDhFbk5WaDdwQWZVTElFSHFXMlJrRlJMZ2dTK0JK?=
- =?utf-8?B?Z0VIY0ZiN01ocTBYZFhOdDdXODl6dmF6b0Vac2c3V1JpajhGNEJ3V1BBRStQ?=
- =?utf-8?B?WlhlZ2JiekZzV01RblBCU0R4N05BM0NxOG8rUDIrVW9SSlhqd3BsL0F1OTcz?=
- =?utf-8?B?bW4zYTVMbVR5NEdtK0t0OGVabUdqOXd0M0xWNjBJQ3JiMFlUZForYkJLdFR4?=
- =?utf-8?Q?K9MidB1Oq7xSWGCKnV60w5mr3?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd63527b-82d5-4077-ec11-08dbfbc72bff
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7016.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 10:35:06.3567
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /sPjR0WE0h4UDwaoFjr+5mHTgOtajIDHhrEN4X4lwEbG08tfx5W1aq99V91+izCjx+jBa773pLNOTJhTk8mKpA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6895
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/13/2023 11:53 AM, Mika Westerberg wrote:
-> On Wed, Dec 13, 2023 at 08:18:06AM +0200, Mika Westerberg wrote:
->> On Wed, Dec 13, 2023 at 07:49:14AM +0200, Mika Westerberg wrote:
->>> On Wed, Dec 13, 2023 at 12:46:35AM +0530, Sanath S wrote:
->>>> Boot firmware might have created tunnels of its own. Since we cannot
->>>> be sure they are usable for us. Tear them down and reset the ports
->>>> to handle it as a new hotplug for USB3 routers.
->>>>
->>>> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
->>>> Signed-off-by: Sanath S <Sanath.S@amd.com>
->>>> ---
->>>>   drivers/thunderbolt/tb.c | 11 +++++++++++
->>>>   1 file changed, 11 insertions(+)
->>>>
->>>> diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
->>>> index fd49f86e0353..febd0b6972e3 100644
->>>> --- a/drivers/thunderbolt/tb.c
->>>> +++ b/drivers/thunderbolt/tb.c
->>>> @@ -2598,6 +2598,17 @@ static int tb_start(struct tb *tb)
->>>>   	tb_switch_tmu_enable(tb->root_switch);
->>>>   	/* Full scan to discover devices added before the driver was loaded. */
->>>>   	tb_scan_switch(tb->root_switch);
->>>> +	/*
->>>> +	 * Boot firmware might have created tunnels of its own. Since we cannot
->>>> +	 * be sure they are usable for us, Tear them down and reset the ports
->>>> +	 * to handle it as new hotplug for USB4 routers.
->>>> +	 */
->>>> +	if (tb_switch_is_usb4(tb->root_switch)) {
->>>> +		tb_switch_discover_tunnels(tb->root_switch,
->>>> +					   &tcm->tunnel_list, false);
->>> Why this is needed?
->>>
->>> It should be enough, to do simply something like this:
->>>
->>> 	if (tb_switch_is_usb4(tb->root_switch))
->>> 		tb_switch_reset(tb->root_switch);
-If we don't tear down of tunnels before performing the DPR, the PCIe 
-enumeration is failing.
-
-PCIe link is not coming up after DPR. Below log is missing without 
-performing path
-deactivation before performing DPR and hence PCIe enumeration is not 
-initiated.
-
-[  746.630865] pcieport 0000:00:03.1: pciehp: Slot(0-1): Card present
-[  746.630885] pcieport 0000:00:03.1: pciehp: Slot(0-1): Link Up
-
-I think when we do a DPR, it internally does some handling with PCI Path 
-Enable bit(PE).
-So, deactivation of PCIe path is necessary for DPR to work.
-
->> Actually this needs to be done only for USB4 v1 routers since we already
->> reset USB4 v2 hosts so something like:
->>
->> 	/*
->> 	 * Reset USB4 v1 host router to get rid of possible tunnels the
->> 	 * boot firmware created. This makes sure all the tunnels are
->> 	 * created by us and thus have known configuration.
->> 	 *
->> 	 * For USB4 v2 and beyond we do this in nhi_reset() using the
->> 	 * host router reset interface.
->> 	 */
->> 	if (usb4_switch_version(tb->root_switch) == 1)
->> 		tb_switch_reset(tb->root_switch);
->>
->> (possibly add similar comment to the nhi_reset() to refer this one).
-> Oh, and would it be possible to tie this with the "host_reset" parameter
-> too somehow? I guess it could be moved to "tb.c" and "tb.h" and then
-> check it from nhi.c as already done and then here so this would become:
+On Tue, Dec 12, 2023 at 05:28:54PM -0500, Joel Fernandes wrote:
+> On Tue, Dec 12, 2023 at 7:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
+> >
+> > On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
+> > > To allow more flexible arrangements while still provide a single kernel
+> > > for distros, provide a boot time parameter to enable/disable lazy RCU.
+> > >
+> > > Specify:
+> > >
+> > >       rcutree.enable_rcu_lazy=[y|1|n|0]
+> > >
+> > > Which also requires
+> > >
+> > >       rcu_nocbs=all
+> > >
+> > > at boot time to enable/disable lazy RCU.
+> > >
+> > > To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
+> > > CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
+> > >
+> > > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > > ---
+> > >
+> > > Changes since v1:
+> > >
+> > >       * Use module_param() instead of module_param_cb()
+> > >       * Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
+> > >       * Remove unnecessary READ_ONCE()
+> > >
+> > > Tested on qemu only this time with various config/boot configuration to ensure
+> > > expected values are in sysfs.
+> > >
+> > > Did a bunch of build tests against various configs/archs.
+> > >
+> > >  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+> > >  kernel/rcu/Kconfig                              | 13 +++++++++++++
+> > >  kernel/rcu/tree.c                               |  7 ++++++-
+> > >  3 files changed, 24 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > > index 65731b060e3f..2f0386a12aa7 100644
+> > > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > > @@ -5021,6 +5021,11 @@
+> > >                       this kernel boot parameter, forcibly setting it
+> > >                       to zero.
+> > >
+> > > +     rcutree.enable_rcu_lazy= [KNL]
+> > > +                     To save power, batch RCU callbacks and flush after
+> > > +                     delay, memory pressure or callback list growing too
+> > > +                     big.
+> > > +
+> > >       rcuscale.gp_async= [KNL]
+> > >                       Measure performance of asynchronous
+> > >                       grace-period primitives such as call_rcu().
+> > > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> > > index bdd7eadb33d8..e7d2dd267593 100644
+> > > --- a/kernel/rcu/Kconfig
+> > > +++ b/kernel/rcu/Kconfig
+> > > @@ -314,6 +314,19 @@ config RCU_LAZY
+> > >         To save power, batch RCU callbacks and flush after delay, memory
+> > >         pressure, or callback list growing too big.
+> > >
+> > > +       Requires rcu_nocbs=all to be set.
+> > > +
+> > > +       Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
+> > > +
+> > > +config RCU_LAZY_DEFAULT_OFF
+> > > +     bool "Turn RCU lazy invocation off by default"
+> > > +     depends on RCU_LAZY
+> > > +     default n
+> > > +     help
+> > > +       Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+> > > +       off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+> > > +       it back on.
+> > > +
+> > >  config RCU_DOUBLE_CHECK_CB_TIME
+> > >       bool "RCU callback-batch backup time check"
+> > >       depends on RCU_EXPERT
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index 3ac3c846105f..8b7675624815 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> > >  }
+> > >
+> > >  #ifdef CONFIG_RCU_LAZY
+> > > +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+> > > +module_param(enable_rcu_lazy, bool, 0444);
+> > > +
+> > >  /**
+> > >   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+> > >   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+> > >       __call_rcu_common(head, func, false);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > +#else
+> > > +#define enable_rcu_lazy              false
+> > >  #endif
+> > >
+> > >  /**
+> > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > >   */
+> > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > >  {
+> > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> > > +     __call_rcu_common(head, func, enable_rcu_lazy);
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(call_rcu);
+> > >
+> > I think, it makes sense. Especially for devices/systems where it is hard
+> > to recompile the kernel and deploy it. For example, Google and GKI approach.
+> 
+> My concerns had nothing to do with recompiling the kernel. Passing a
+> boot parameter (without a kernel compile) can just as well
+> default-disable the feature.
+> 
+> I think what Qais is saying is that passing a boot parameter is itself
+> a hassle in Android (something I did not know about) because of GKI
+> etc.
 >
->   	if (host_reset && usb4_switch_version(tb->root_switch) == 1)
->   		tb_switch_reset(tb->root_switch);
+That is true. Doing:
 
-Is host_reset necessary for USB4 v1 routers ? I did not use host_reset 
-in this case.
-If its needed, then we have to modify to enable host_reset in nhi.c as well.
+echo 1 > /sys/.../enable_lazy
 
-> With the idea that the user has a "chicken bit" to disable this
-> behaviour (and consistent one with USB4 v2). Feel free to make it look
-> nicer though.
+is a way how to make it easy and flexible.
+
+--
+Uladzislau Rezki
