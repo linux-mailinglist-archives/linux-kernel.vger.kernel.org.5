@@ -2,176 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3EE812235
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9A7812239
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbjLMW7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        id S1442523AbjLMW70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjLMW7N (ORCPT
+        with ESMTP id S229763AbjLMW7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:59:13 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50039CF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:59:19 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbc68661060so5191428276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702508358; x=1703113158; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P+J5uhAeT04KXTELzQDOfFmLaVLnZ2vRpEsBsoOgLL4=;
-        b=KfqFARilZk67aIMqxNzCzRfq/DqZxGxtsMpp6prFL06MxhzS4rmbbTrr45NGtdGuXx
-         KGDWdDc5pUuYn4KLtlljQWjoyefiJ+ddfqQuBYsPI8iJsD84nclDLmF2M7jNwCDXWZx9
-         oBgnaPFFWpVJ5b6NyJHDx6StNjYYfzDlP/WjURuo/sjTiO5kc68j/f+3k/UBpiDMhxAi
-         r2yE5mkELOpmdYkZGb0OZ0RL7MbMuN0alb7bGZs52REVX6RUQZKuJ+yePas9LILeCKQM
-         qV48pvLgllVHnX7o8YniHt4JydRf0XU7yJq97zg22VyJ/0tYr5ajGy0mRBUcvtURKr/B
-         h7nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702508358; x=1703113158;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P+J5uhAeT04KXTELzQDOfFmLaVLnZ2vRpEsBsoOgLL4=;
-        b=JCxVZeAwdJEP9tVOJ5YJA9Ed9sEylhfE0EWY9vi6Aw1MbqT3xAZAvHJixZknpLjJmX
-         RPA+7d+oLPgoG9IcDlKzoP7xK60yUolJ2iLgUQML2SCj3bnuOil1/HIKPLX4ht0OHYE3
-         a4VZ54s2N9D8wJbJtEf287nbwhmn6natQN2mvVxfngv2DCZluyjS3att5F5uUMO68D2A
-         ygIrn49zIzbKvANlMdCFtecGEX0L6ncm3kV5zzJRv7+jli7T+FfL0VGmzsEOVP0U5ygW
-         xcDhVRoul5UtxThxbIukOaT3kkRje4rhO7BXwpOXHQXD5xN7ZOks6v+OJrQMmUyKBpZt
-         HQFA==
-X-Gm-Message-State: AOJu0Yyzk3hurjmRbGmzYTAr8jdTvsN73e0tOPR2BZNRvDVPRgI0fmnq
-        vygZglYzBelJioeB/2oHcxCpVz+8u8Y=
-X-Google-Smtp-Source: AGHT+IF/2tOKGAnp02CUAmcGGknds7jEyZkdjWAgG3ZJhjWlZQOPu75oZHl38j1efeikxZ9gYUCkkMb1/cI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:a28c:0:b0:dbc:d4c4:15d3 with SMTP id
- c12-20020a25a28c000000b00dbcd4c415d3mr27833ybi.5.1702508358541; Wed, 13 Dec
- 2023 14:59:18 -0800 (PST)
-Date:   Wed, 13 Dec 2023 14:59:16 -0800
-In-Reply-To: <5ca5592b21131f515e296afae006e5bb28b1fb87.camel@redhat.com>
+        Wed, 13 Dec 2023 17:59:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FD6EA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:59:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0881C433C9;
+        Wed, 13 Dec 2023 22:59:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702508370;
+        bh=tu87z2m0yzSYCrpZUb09UJnCb9MAH5ku9bxrta7xiXw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hY36A9CwjW4Ty/pXdnOweeE+wQ0Ya22fO53ILzsQPxdcW0Jf/Y3ErRLmtdDojdFLp
+         tOlP/tEgGDdQnxEqcVMB8djOZl8lHOfONUmdxWkIt9wTDtQt7X4ytnR28UZyMNu0od
+         s8K4uM4/C8ohD8dgVoiiSZYs9+1p2cJyMU5+GWhzT2UCBHABuY6jH1zhKZdgeRM72x
+         394b4GfPamjk/Rf+YqlH/xT1n+Gh1vxETzAy+2bOr/W1X4adoHGsS6PjDyAfbD3L74
+         lyGW1M7BGXGcCKS/Yfjx4o59TPoWdNfy37S6w7cQwgiM/g1e5UeakK88leErFezb8l
+         jOzra2NCdG2DA==
+Date:   Thu, 14 Dec 2023 07:59:26 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4] tracing/selftests: Add test to test the trace_marker
+Message-Id: <20231214075926.e3969c8746068953fe910ed0@kernel.org>
+In-Reply-To: <20231213111527.6a4c9b58@gandalf.local.home>
+References: <20231213111527.6a4c9b58@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-References: <20220921003201.1441511-11-seanjc@google.com> <20231207010302.2240506-1-jmattson@google.com>
- <ZXHw7tykubfG04Um@google.com> <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
- <ZXh8Nq_y_szj1WN0@google.com> <5ca5592b21131f515e296afae006e5bb28b1fb87.camel@redhat.com>
-Message-ID: <ZXo3REB8g-ZecT2U@google.com>
-Subject: Re: [PATCH v4 10/12] KVM: x86: never write to memory from kvm_vcpu_check_block()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Jim Mattson <jmattson@google.com>, alexandru.elisei@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        borntraeger@linux.ibm.com, chenhuacai@kernel.org, david@redhat.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, james.morse@arm.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, maz@kernel.org,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, pbonzini@redhat.com,
-        suzuki.poulose@arm.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023, Maxim Levitsky wrote:
-> On Tue, 2023-12-12 at 07:28 -0800, Sean Christopherson wrote:
-> > On Sun, Dec 10, 2023, Jim Mattson wrote:
-> > > On Thu, Dec 7, 2023 at 8:21=E2=80=AFAM Sean Christopherson <seanjc@go=
-ogle.com> wrote:
-> > > > Doh.  We got the less obvious cases and missed the obvious one.
-> > > >=20
-> > > > Ugh, and we also missed a related mess in kvm_guest_apic_has_interr=
-upt().  That
-> > > > thing should really be folded into vmx_has_nested_events().
-> > > >=20
-> > > > Good gravy.  And vmx_interrupt_blocked() does the wrong thing becau=
-se that
-> > > > specifically checks if L1 interrupts are blocked.
-> > > >=20
-> > > > Compile tested only, and definitely needs to be chunked into multip=
-le patches,
-> > > > but I think something like this mess?
-> > >=20
-> > > The proposed patch does not fix the problem. In fact, it messes thing=
-s
-> > > up so much that I don't get any test results back.
-> >=20
-> > Drat.
-> >=20
-> > > Google has an internal K-U-T test that demonstrates the problem. I
-> > > will post it soon.
-> >=20
-> > Received, I'll dig in soonish, though "soonish" might unfortunately mig=
-ht mean
-> > 2024.
-> >=20
->=20
-> Hi,
->=20
-> So this is what I think:
->=20
-> KVM does have kvm_guest_apic_has_interrupt() for this exact purpose,
-> to check if nested APICv has a pending interrupt before halting.
+On Wed, 13 Dec 2023 11:15:27 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-For all intents and purposes, so was nested_ops->has_events().  I don't see
-any reason to have two APIs that do the same thing, and the call to
-kvm_guest_apic_has_interrupt() is wrong in that it doesn't verify that IRQs=
- are
-enabled for _L2_.  That's why my preference is to fold the two together.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Add a test that writes longs strings, some over the size of the sub buffer
+> and make sure that the entire content is there.
 
-> However the problem is bigger - with APICv we have in essence 2 pending
-> interrupt bitmaps - the PIR and the IRR, and to know if the guest has a
-> pending interrupt one has in theory to copy PIR to IRR, then see if the m=
-ax
-> is larger then the current PPR.
+This looks good to me. and tested.
 
-Yeah, this is what my untested hack-a-patch tried to do.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-> Since we don't want to write to guest memory,
+Thank you,
 
-The changelog is misleading/wrong.  Writing guest memory is ok, what isn't =
-safe
-is blocking or sleeping, i.e. KVM must not trigger a host page fault due to
-accessing a page that's been swapped out.  Read vs. write doesn't matter.
+> 
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+> Changes since v3: https://lore.kernel.org/linux-trace-kernel/20231212192317.0fb6b101@gandalf.local.home
+> 
+> - Removed / */ from regex, to catch more than one space added to the
+>   beginning of the print. This would have caught the bug of using "%*s"
+>   instead of "%.*s". Luckily, the trace_printk test caught that.
+> 
+>  .../ftrace/test.d/00basic/trace_marker.tc     | 82 +++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> new file mode 100755
+> index 000000000000..9aa0db2b84fc
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> @@ -0,0 +1,82 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: Basic tests on writing to trace_marker
+> +# requires: trace_marker
+> +# flags: instance
+> +
+> +get_buffer_data_size() {
+> +	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
+> +}
+> +
+> +get_buffer_data_offset() {
+> +	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
+> +}
+> +
+> +get_event_header_size() {
+> +	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	total_bits=$((type_len+time_len+array_len))
+> +	total_bits=$((total_bits+7))
+> +	echo $((total_bits/8))
+> +}
+> +
+> +get_print_event_buf_offset() {
+> +	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
+> +}
+> +
+> +event_header_size=`get_event_header_size`
+> +print_header_size=`get_print_event_buf_offset`
+> +
+> +data_offset=`get_buffer_data_offset`
+> +
+> +marker_meta=$((event_header_size+print_header_size))
+> +
+> +make_str() {
+> +        cnt=$1
+> +	# subtract two for \n\0 as marker adds these
+> +	cnt=$((cnt-2))
+> +	printf -- 'X%.0s' $(seq $cnt)
+> +}
+> +
+> +write_buffer() {
+> +	size=$1
+> +
+> +	str=`make_str $size`
+> +
+> +	# clear the buffer
+> +	echo > trace
+> +
+> +	# write the string into the marker
+> +	echo -n $str > trace_marker
+> +
+> +	echo $str
+> +}
+> +
+> +test_buffer() {
+> +
+> +	size=`get_buffer_data_size`
+> +	oneline_size=$((size-marker_meta))
+> +	echo size = $size
+> +	echo meta size = $marker_meta
+> +
+> +	# Now add a little more the meta data overhead will overflow
+> +
+> +	str=`write_buffer $size`
+> +
+> +	# Make sure the line was broken
+> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
+> +
+> +	if [ "$new_str" = "$str" ]; then
+> +		exit fail;
+> +	fi
+> +
+> +	# Make sure the entire line can be found
+> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; }' trace`
+> +
+> +	if [ "$new_str" != "$str" ]; then
+> +		exit fail;
+> +	fi
+> +}
+> +
+> +test_buffer
+> -- 
+> 2.42.0
+> 
 
-So KVM can safely read and write guest memory so long as it already mapped =
-by=20
-kvm_vcpu_map() (or I suppose if we wrapped an access with pagefault_disable=
-(),
-but I can't think of a sane reason to do that).  E.g. nVMX can access a vCP=
-U's
-PID mapping, but synthesizing a nested VM-Exit will cause explosions on nSV=
-M.
 
-> and the IRR here resides in the guest memory, I guess we have to do a
-> 'dry-run' version of 'vmx_complete_nested_posted_interrupt' and call it f=
-rom
-> kvm_guest_apic_has_interrupt().
-
-nested_ops->has_events() is the much better fit, e.g. the naming won't get =
-weird
-and we can gate the whole thing on is_guest_mode().  Though we probably nee=
-d a
-wrapper to handle any commonalities between nVMX and nSVM.
-
-> What do you think? I can prepare a patch for this.
-
-As above, this is what I tried to do, sort of.  Though it's obviously broke=
-n.  We
-don't need a full dry-run because KVM only needs to detect events that are =
-unique
-to L2, e.g. nVMX's preemption timer, MTF, and pending virtual interrupts (h=
-mm,
-I suspect nSVM's vNMI is broken too).  Things like INIT and SMI don't requi=
-re
-nested virtualization awareness because the event itself is tracked for the=
- vCPU
-as a whole.
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
