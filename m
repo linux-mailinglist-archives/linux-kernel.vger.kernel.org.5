@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0DC811C28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A12D811C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442144AbjLMSSH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 13:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S1442148AbjLMSSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233481AbjLMSSG (ORCPT
+        with ESMTP id S233481AbjLMSSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:18:06 -0500
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C435AF;
-        Wed, 13 Dec 2023 10:18:12 -0800 (PST)
-Received: from in01.mta.xmission.com ([166.70.13.51]:55092)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDToA-000YZK-3k; Wed, 13 Dec 2023 11:18:10 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:53124 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDTo9-007oxM-1R; Wed, 13 Dec 2023 11:18:09 -0700
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Joel Granados <j.granados@samsung.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
-        <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
-        <20231207104357.kndqvzkhxqkwkkjo@localhost>
-        <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
-        <20231208095926.aavsjrtqbb5rygmb@localhost>
-        <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
-        <ZXlhkJm2KjCymcqu@bombadil.infradead.org>
-Date:   Wed, 13 Dec 2023 12:18:00 -0600
-In-Reply-To: <ZXlhkJm2KjCymcqu@bombadil.infradead.org> (Luis Chamberlain's
-        message of "Tue, 12 Dec 2023 23:47:28 -0800")
-Message-ID: <87v8927yqv.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1rDTo9-007oxM-1R;;;mid=<87v8927yqv.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19i6qfGdObJtlqwV73cM5HlVuthNRxr54M=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        Wed, 13 Dec 2023 13:18:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F170AF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:18:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 670E5C433C7;
+        Wed, 13 Dec 2023 18:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702491524;
+        bh=VmD4PSEal/Oz36jy5f+5kaRai9u7pyp8fynzdDmI2do=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=X2P92CgdOxQRlOF6Y/p2g5JD1pkpHumiiu9p5GDFPCiLmujjHvpYytSN41+m+dFbM
+         LPf5Fcv5lFuMzDJb7YIYytx5y3jShptvJAUD3lox1shQM+eGRGvAK/IWDCNsbqpKCq
+         nF191Vv4/8qxf+i5UjcXUNEjGbZqMPoLzvXAQpnbV9BFN7vlzDMtZMVx4SMZ8fIuNs
+         Ffws+/iE/wjlT7ufm7QnqblkO7NomQZk22M6/MWNlp0dgUgn1EbrPkfoFgtuWTTx/2
+         oSb2w4EBkFOXrY4I/yfFIbRQ5KloinB/P3cxzOrlhbN+W5DKTgSPHVLlw1RzW6T92Q
+         +o/7nl5bbZt8A==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 13 Dec 2023 20:18:35 +0200
+Message-Id: <CXNEVH8BZUJT.1UHVUI66SZMTE@suppilovahvero>
+Cc:     <patrick.rudolph@9elements.com>, <vincent@vtremblay.dev>,
+        <peteryin.openbmc@gmail.com>, <lakshmiy@us.ibm.com>,
+        <bhelgaas@google.com>, <naresh.solanki@9elements.com>,
+        <alexander.stein@ew.tq-group.com>, <festevam@denx.de>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>, <geissonator@yahoo.com>
+Subject: Re: [PATCH v1 1/8] dt-bindings: arm: aspeed: add IBM system1-bmc
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Ninad Palsule" <ninad@linux.ibm.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@codeconstruct.com.au>,
+        <peterhuewe@gmx.de>, <jgg@ziepe.ca>, <keescook@chromium.org>,
+        <tony.luck@intel.com>, <gpiccoli@igalia.com>,
+        <johannes.holland@infineon.com>, <linux@roeck-us.net>,
+        <broonie@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-2-ninad@linux.ibm.com>
+In-Reply-To: <20231212164004.1683589-2-ninad@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Luis Chamberlain <mcgrof@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 472 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 1.41
-        (0.3%), extract_message_metadata: 26 (5.5%), get_uri_detail_list: 2.4
-        (0.5%), tests_pri_-2000: 39 (8.3%), tests_pri_-1000: 4.2 (0.9%),
-        tests_pri_-950: 1.79 (0.4%), tests_pri_-900: 1.50 (0.3%),
-        tests_pri_-90: 133 (28.2%), check_bayes: 132 (27.9%), b_tokenize: 12
-        (2.6%), b_tok_get_all: 9 (2.0%), b_comp_prob: 4.2 (0.9%),
-        b_tok_touch_all: 102 (21.6%), b_finish: 0.96 (0.2%), tests_pri_0: 238
-        (50.4%), check_dkim_signature: 0.50 (0.1%), check_dkim_adsp: 2.8
-        (0.6%), poll_dns_idle: 1.21 (0.3%), tests_pri_10: 2.3 (0.5%),
-        tests_pri_500: 9 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
-
-> On Mon, Dec 11, 2023 at 12:25:10PM +0100, Thomas Weißschuh wrote:
->> Before sending it I'd like to get feedback on the internal rework of the
->> is_empty detection from you and/or Luis.
->> 
->> https://git.sr.ht/~t-8ch/linux/commit/ea27507070f3c47be6febebe451bbb88f6ea707e
->> or the attached patch.
+On Tue Dec 12, 2023 at 6:39 PM EET, Ninad Palsule wrote:
+> Document the new compatibles used on IBM system1-bmc
 >
-> Please send as a new patch as RFC and please ensure on the To field is
-> first "Eric W. Biederman" <ebiederm@xmission.com> with a bit more
-> elaborate commit log as suggested from my review below. If there are
-> any hidden things me and Joel could probably miss I'm sure Eric will
-> be easily able to spot it.
+> Tested:
+
+this not very useful line :-) (nit)
+
+>     This board is tested using the simics simulator.
+
+Just leave this (w/o indentation)
+
 >
->> From ea27507070f3c47be6febebe451bbb88f6ea707e Mon Sep 17 00:00:00 2001
->> From: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
->> Date: Sun, 3 Dec 2023 21:56:46 +0100
->> Subject: [PATCH] sysctl: move permanently empty flag to ctl_dir
->> MIME-Version: 1.0
->> Content-Type: text/plain; charset=UTF-8
->> Content-Transfer-Encoding: 8bit
->> 
->> Simplify the logic by always keeping the permanently_empty flag on the
->> ctl_dir.
->> The previous logic kept the flag in the leaf ctl_table and from there
->> transferred it to the ctl_table from the directory.
->> 
->> This also removes the need to have a mutable ctl_table and will allow
->> the constification of those structs.
+> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> ---
+>  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+>  Documentation/devicetree/bindings/trivial-devices.yaml   | 2 ++
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/D=
+ocumentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> index 6f7543463d89..ebebe14c42aa 100644
+> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+> @@ -85,6 +85,7 @@ properties:
+>                - facebook,yosemite4-bmc
+>                - ibm,everest-bmc
+>                - ibm,rainier-bmc
+> +              - ibm,system1-bmc
+>                - ibm,tacoma-bmc
+>                - inventec,starscream-bmc
+>                - inventec,transformer-bmc
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
+umentation/devicetree/bindings/trivial-devices.yaml
+> index 441b55723675..b12a60d2eb0f 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -135,6 +135,8 @@ properties:
+>            - ibm,cffps1
+>              # IBM Common Form Factor Power Supply Versions 2
+>            - ibm,cffps2
+> +            # Infineon barometric pressure and temperature sensor
+> +          - infineon,dps310
+>              # Infineon IR36021 digital POL buck controller
+>            - infineon,ir36021
+>              # Infineon IR38060 Voltage Regulator
 
-> Please elaborate a bit more on this here in your next RFC.
-
-> It's a pretty aggressive cleanup, specially with the new hipster guard()
-> call but I'd love Eric's eyeballs on a proper v2.
-
-I will look at a v2 time permitting.
-
-My sense is that changing the locking probably make sense as a separate
-patch.
-
-Eric
+BR, Jarkko
