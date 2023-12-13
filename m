@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3A181140A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73CA8113C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379219AbjLMOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35018 "EHLO
+        id S1379290AbjLMNyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379234AbjLMOEh (ORCPT
+        with ESMTP id S1379375AbjLMNyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:04:37 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5CA272B;
-        Wed, 13 Dec 2023 05:51:59 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDpo1r082168;
-        Wed, 13 Dec 2023 07:51:50 -0600
+        Wed, 13 Dec 2023 08:54:06 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9392D63;
+        Wed, 13 Dec 2023 05:52:03 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDprYx026786;
+        Wed, 13 Dec 2023 07:51:53 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702475510;
-        bh=0qQebMJ7bQkjmnZJr+klT2pzAR9oH/HwmktifuqGtBE=;
+        s=ti-com-17Q1; t=1702475513;
+        bh=bhumMpBR4LJkmxiweDxOklgbVuS1BkjYIlFp4Cmmodc=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HpeKOBdYWig182j+7eH8naiY3vh6+T+9CDeuERmOezu56IY369FZnJiviU9PxiEtN
-         0qWC8aWIu5/wkCTHe8cBKcKPnovvwff2ONXdXg20L2kHk44+gXVXxUwISRI4qkva9S
-         vn03XjffrB/eGEW2PQSeWuBcaa7ftiNmqpCHNfLM=
-Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDDpolk041274
+        b=dBvRpnneGZoYt8bWiraEBycBgcSZuYSv6IszAlJYeUiCJ99OLMmR2tZ5C93W+wFlA
+         sA1/GVMjje6D7IZuDX9/z1P5+jQM7AKSxY6mIAFN+Bx3tZFN94yTE6377FpQ02qTre
+         zxPbYxWR8AGxJohEu/wgkQEd6Nke0k6vVQoCqVG4=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDDprJP007777
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 07:51:50 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 13 Dec 2023 07:51:53 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 07:51:50 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 07:51:53 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 07:51:50 -0600
+ Frontend Transport; Wed, 13 Dec 2023 07:51:53 -0600
 Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDpeLD101220;
-        Wed, 13 Dec 2023 07:51:47 -0600
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDDpeLE101220;
+        Wed, 13 Dec 2023 07:51:50 -0600
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>,
@@ -49,9 +49,9 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <j-luthra@ti.com>
-Subject: [PATCH v2 2/3] arm64: dts: ti: k3-j7*: Add additional regs for DMA components
-Date:   Wed, 13 Dec 2023 19:21:37 +0530
-Message-ID: <20231213135138.929517-3-vigneshr@ti.com>
+Subject: [PATCH v2 3/3] arm64: dts: ti: k3-am6*: Add additional regs for DMA components
+Date:   Wed, 13 Dec 2023 19:21:38 +0530
+Message-ID: <20231213135138.929517-4-vigneshr@ti.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213135138.929517-1-vigneshr@ti.com>
 References: <20231213135138.929517-1-vigneshr@ti.com>
@@ -61,184 +61,169 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manorit Chawdhry <m-chawdhry@ti.com>
-
-Add additional reg properties for UDMA and RingAcc nodes which are
+Add additional reg properties for BCDMA and PKTDMA nodes which are
 mostly used by bootloader components before Device Manager firmware
 services are available, in order to setup DMA transfers.
 
-Signed-off-by: Manorit Chawdhry <m-chawdhry@ti.com>
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi        | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi  | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi        | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi  | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi       | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       | 8 ++++++--
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 8 ++++++--
- 8 files changed, 48 insertions(+), 16 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++----
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++----
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 18 ++++++++++++++----
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi  | 18 ++++++++++++++----
+ 4 files changed, 56 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index 264913f83287..b8424994ac5f 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -281,8 +281,12 @@ main_udmap: dma-controller@31150000 {
- 			compatible = "ti,j721e-navss-main-udmap";
- 			reg = <0x00 0x31150000 0x00 0x100>,
- 			      <0x00 0x34000000 0x00 0x100000>,
--			      <0x00 0x35000000 0x00 0x100000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x00 0x35000000 0x00 0x100000>,
-+			      <0x00 0x30b00000 0x00 0x4000>,
-+			      <0x00 0x30c00000 0x00 0x4000>,
-+			      <0x00 0x30d00000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+index 49000a97c153..357970f1134f 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -121,8 +121,13 @@ main_bcdma: dma-controller@485c0100 {
+ 			      <0x00 0x4c000000 0x00 0x20000>,
+ 			      <0x00 0x4a820000 0x00 0x20000>,
+ 			      <0x00 0x4aa40000 0x00 0x20000>,
+-			      <0x00 0x4bc00000 0x00 0x100000>;
+-			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4bc00000 0x00 0x100000>,
++			      <0x00 0x48600000 0x00 0x8000>,
++			      <0x00 0x484a4000 0x00 0x2000>,
++			      <0x00 0x484c2000 0x00 0x2000>,
++			      <0x00 0x48420000 0x00 0x2000>;
++			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "bchan";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <3>;
  
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 672cb2acc1be..60b26374ae0c 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -353,8 +353,12 @@ mcu_udmap: dma-controller@285c0000 {
- 			compatible = "ti,j721e-navss-mcu-udmap";
- 			reg = <0x00 0x285c0000 0x00 0x100>,
- 			      <0x00 0x2a800000 0x00 0x40000>,
--			      <0x00 0x2aa00000 0x00 0x40000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x00 0x2aa00000 0x00 0x40000>,
-+			      <0x00 0x284a0000 0x00 0x4000>,
-+			      <0x00 0x284c0000 0x00 0x4000>,
-+			      <0x00 0x28400000 0x00 0x2000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
+@@ -138,8 +143,13 @@ main_pktdma: dma-controller@485c0000 {
+ 			reg = <0x00 0x485c0000 0x00 0x100>,
+ 			      <0x00 0x4a800000 0x00 0x20000>,
+ 			      <0x00 0x4aa00000 0x00 0x40000>,
+-			      <0x00 0x4b800000 0x00 0x400000>;
+-			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4b800000 0x00 0x400000>,
++			      <0x00 0x485e0000 0x00 0x10000>,
++			      <0x00 0x484a0000 0x00 0x2000>,
++			      <0x00 0x484c0000 0x00 0x2000>,
++			      <0x00 0x48430000 0x00 0x1000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "rflow";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <2>;
  
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-index 746b9f8b1c64..2569b4c08ffb 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-@@ -382,8 +382,12 @@ main_udmap: dma-controller@31150000 {
- 			compatible = "ti,j721e-navss-main-udmap";
- 			reg = <0x0 0x31150000 0x0 0x100>,
- 			      <0x0 0x34000000 0x0 0x100000>,
--			      <0x0 0x35000000 0x0 0x100000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x0 0x35000000 0x0 0x100000>,
-+			      <0x0 0x30b00000 0x0 0x20000>,
-+			      <0x0 0x30c00000 0x0 0x10000>,
-+			      <0x0 0x30d00000 0x0 0x8000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+index 2338a92a4c9f..f0b8c9ab1459 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
+@@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
+ 			      <0x00 0x4c000000 0x00 0x20000>,
+ 			      <0x00 0x4a820000 0x00 0x20000>,
+ 			      <0x00 0x4aa40000 0x00 0x20000>,
+-			      <0x00 0x4bc00000 0x00 0x100000>;
+-			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4bc00000 0x00 0x100000>,
++			      <0x00 0x48600000 0x00 0x8000>,
++			      <0x00 0x484a4000 0x00 0x2000>,
++			      <0x00 0x484c2000 0x00 0x2000>,
++			      <0x00 0x48420000 0x00 0x2000>;
++			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "bchan";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <3>;
+ 			ti,sci = <&dmsc>;
+@@ -117,8 +122,13 @@ main_pktdma: dma-controller@485c0000 {
+ 			reg = <0x00 0x485c0000 0x00 0x100>,
+ 			      <0x00 0x4a800000 0x00 0x20000>,
+ 			      <0x00 0x4aa00000 0x00 0x40000>,
+-			      <0x00 0x4b800000 0x00 0x400000>;
+-			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4b800000 0x00 0x400000>,
++			      <0x00 0x485e0000 0x00 0x10000>,
++			      <0x00 0x484a0000 0x00 0x2000>,
++			      <0x00 0x484c0000 0x00 0x2000>,
++			      <0x00 0x48430000 0x00 0x1000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "rflow";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <2>;
+ 			ti,sci = <&dmsc>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+index 963758c7d377..4c51bae06b57 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+@@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
+ 			      <0x00 0x4c000000 0x00 0x20000>,
+ 			      <0x00 0x4a820000 0x00 0x20000>,
+ 			      <0x00 0x4aa40000 0x00 0x20000>,
+-			      <0x00 0x4bc00000 0x00 0x100000>;
+-			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4bc00000 0x00 0x100000>,
++			      <0x00 0x48600000 0x00 0x8000>,
++			      <0x00 0x484a4000 0x00 0x2000>,
++			      <0x00 0x484c2000 0x00 0x2000>,
++			      <0x00 0x48420000 0x00 0x2000>;
++			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "bchan";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <3>;
  
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-index 8f259efe3af9..a74912d9e4da 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-@@ -475,8 +475,12 @@ mcu_udmap: dma-controller@285c0000 {
- 			compatible = "ti,j721e-navss-mcu-udmap";
- 			reg = <0x0 0x285c0000 0x0 0x100>,
- 			      <0x0 0x2a800000 0x0 0x40000>,
--			      <0x0 0x2aa00000 0x0 0x40000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x0 0x2aa00000 0x0 0x40000>,
-+			      <0x0 0x284a0000 0x0 0x4000>,
-+			      <0x0 0x284c0000 0x0 0x4000>,
-+			      <0x0 0x28400000 0x0 0x2000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
+@@ -119,8 +124,13 @@ main_pktdma: dma-controller@485c0000 {
+ 			reg = <0x00 0x485c0000 0x00 0x100>,
+ 			      <0x00 0x4a800000 0x00 0x20000>,
+ 			      <0x00 0x4aa00000 0x00 0x40000>,
+-			      <0x00 0x4b800000 0x00 0x400000>;
+-			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4b800000 0x00 0x400000>,
++			      <0x00 0x485e0000 0x00 0x10000>,
++			      <0x00 0x484a0000 0x00 0x2000>,
++			      <0x00 0x484c0000 0x00 0x2000>,
++			      <0x00 0x48430000 0x00 0x1000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "rflow";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <2>;
+ 			bootph-all;
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index c7be378492e2..e348114f42e0 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -138,8 +138,13 @@ main_bcdma: dma-controller@485c0100 {
+ 			      <0x00 0x4c000000 0x00 0x20000>,
+ 			      <0x00 0x4a820000 0x00 0x20000>,
+ 			      <0x00 0x4aa40000 0x00 0x20000>,
+-			      <0x00 0x4bc00000 0x00 0x100000>;
+-			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4bc00000 0x00 0x100000>,
++			      <0x00 0x48600000 0x00 0x8000>,
++			      <0x00 0x484a4000 0x00 0x2000>,
++			      <0x00 0x484c2000 0x00 0x2000>,
++			      <0x00 0x48420000 0x00 0x2000>;
++			reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "bchan";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <3>;
  
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-index b03731b53a26..bf959312fad0 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-@@ -1086,8 +1086,12 @@ main_udmap: dma-controller@31150000 {
- 			compatible = "ti,j721e-navss-main-udmap";
- 			reg = <0x0 0x31150000 0x0 0x100>,
- 			      <0x0 0x34000000 0x0 0x80000>,
--			      <0x0 0x35000000 0x0 0x200000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x0 0x35000000 0x0 0x200000>,
-+			      <0x0 0x30b00000 0x0 0x20000>,
-+			      <0x0 0x30c00000 0x0 0x8000>,
-+			      <0x0 0x30d00000 0x0 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-index d9e2cab8a8c5..80aa33c58a45 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-@@ -478,8 +478,12 @@ mcu_udmap: dma-controller@285c0000 {
- 			compatible = "ti,j721e-navss-mcu-udmap";
- 			reg = <0x0 0x285c0000 0x0 0x100>,
- 			      <0x0 0x2a800000 0x0 0x40000>,
--			      <0x0 0x2aa00000 0x0 0x40000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x0 0x2aa00000 0x0 0x40000>,
-+			      <0x0 0x284a0000 0x0 0x4000>,
-+			      <0x0 0x284c0000 0x0 0x4000>,
-+			      <0x0 0x28400000 0x0 0x2000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index d89bcddcfe3d..827328450f96 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -1188,8 +1188,12 @@ main_udmap: dma-controller@31150000 {
- 			compatible = "ti,j721e-navss-main-udmap";
- 			reg = <0x00 0x31150000 0x00 0x100>,
- 			      <0x00 0x34000000 0x00 0x80000>,
--			      <0x00 0x35000000 0x00 0x200000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x00 0x35000000 0x00 0x200000>,
-+			      <0x00 0x30b00000 0x00 0x20000>,
-+			      <0x00 0x30c00000 0x00 0x8000>,
-+			      <0x00 0x30d00000 0x00 0x4000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-index 119f4e2cc0d1..3902a921d7e5 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-@@ -486,8 +486,12 @@ mcu_udmap: dma-controller@285c0000 {
- 			compatible = "ti,j721e-navss-mcu-udmap";
- 			reg = <0x00 0x285c0000 0x00 0x100>,
- 			      <0x00 0x2a800000 0x00 0x40000>,
--			      <0x00 0x2aa00000 0x00 0x40000>;
--			reg-names = "gcfg", "rchanrt", "tchanrt";
-+			      <0x00 0x2aa00000 0x00 0x40000>,
-+			      <0x00 0x284a0000 0x00 0x4000>,
-+			      <0x00 0x284c0000 0x00 0x4000>,
-+			      <0x00 0x28400000 0x00 0x2000>;
-+			reg-names = "gcfg", "rchanrt", "tchanrt",
-+				    "tchan", "rchan", "rflow";
- 			msi-parent = <&main_udmass_inta>;
- 			#dma-cells = <1>;
+@@ -155,8 +160,13 @@ main_pktdma: dma-controller@485c0000 {
+ 			reg = <0x00 0x485c0000 0x00 0x100>,
+ 			      <0x00 0x4a800000 0x00 0x20000>,
+ 			      <0x00 0x4aa00000 0x00 0x40000>,
+-			      <0x00 0x4b800000 0x00 0x400000>;
+-			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
++			      <0x00 0x4b800000 0x00 0x400000>,
++			      <0x00 0x485e0000 0x00 0x20000>,
++			      <0x00 0x484a0000 0x00 0x4000>,
++			      <0x00 0x484c0000 0x00 0x2000>,
++			      <0x00 0x48430000 0x00 0x4000>;
++			reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
++				    "ring", "tchan", "rchan", "rflow";
+ 			msi-parent = <&inta_main_dmss>;
+ 			#dma-cells = <2>;
  
 -- 
 2.43.0
