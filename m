@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 140DC811A0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5F4811A11
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235219AbjLMQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S1378871AbjLMQv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMQuv (ORCPT
+        with ESMTP id S235215AbjLMQvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:50:51 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43252AC;
-        Wed, 13 Dec 2023 08:50:56 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sr1g64b1Pz67pnj;
-        Thu, 14 Dec 2023 00:49:54 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id AE4A1140595;
-        Thu, 14 Dec 2023 00:50:54 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
- 2023 16:50:54 +0000
-Date:   Wed, 13 Dec 2023 16:50:52 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Vishal Verma <vishal.l.verma@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <linux-cxl@vger.kernel.org>, David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>
-Subject: Re: [PATCH v4 1/3] Documentatiion/ABI: Add ABI documentation for
- sys-bus-dax
-Message-ID: <20231213165052.00007d74@Huawei.com>
-In-Reply-To: <20231212-vv-dax_abi-v4-1-1351758f0c92@intel.com>
-References: <20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com>
-        <20231212-vv-dax_abi-v4-1-1351758f0c92@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 13 Dec 2023 11:51:25 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3BEDD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:31 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1cc518c5bbso227203366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702486289; x=1703091089; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a/V4SViSQX7vA1insSL2knptZhi5hxD300GNJth/+14=;
+        b=I1ATGzUmzY0bY4cWo0iv0U2VyXUHKA9AK1lZ8Hk1+n/AK1bio0DsOHAaex/D1miUzG
+         eKPRVT30gNhqfwkasjISzUw9KTuwTDg2O07DMyTyRPNVCsL7RLtc8vJ2QjTqmuDIvZi0
+         c6OdqQAVDRbFpxyGw7BZ/EBNWJxcdbH/XnmoQ/mAPO6CAXenckC0UYTZri3aFNA7l1lZ
+         kcJiOY5naakuYJjFE+54BY+Zf3vyE0y8cVsqo+oy1b623UWFZbgc6qeIPZa2wUUNZmzP
+         kb/Exfhr63istGgXH5Nt22y6Mco3Pq+sGq9NM/dKdyOiCfTQWI2j7g8yhEIYwVkuZBIN
+         BMXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702486289; x=1703091089;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a/V4SViSQX7vA1insSL2knptZhi5hxD300GNJth/+14=;
+        b=QiXc166yD5FdYZuBXcj1Bt+CIKl9IAsM6a/X6fRyQkNRdO75siTUcTKGKbz7zOsG7/
+         T984QCobSQcF6HXndo3Zsc/k6LlJcO5zhdri9xaAYU2YYmCIdOhW1DSNWkMhN496ezod
+         D/6nkhQ/sidBdL4o/v5ukfJik9+FBC7JHHVbpnz+mrJ4fnteHG+8i8vFy62Vq/UY7aoE
+         f1o/8df5gilLn1PT3EkuZ4tDu3tSBUt0gXoiXoVNLeTglDNwOkrbiHuaQ94zPzREYAdM
+         iR5UYc515cOO5FMqaNJ/lB/LvPNNn3I/hC5DwuHrIV8fojr5Ssh8HF2CRh//UhIziNP1
+         ySHg==
+X-Gm-Message-State: AOJu0YwmU6JUpfw+j8ZgpnjCwGGVHKYSdYFE63iNxy0KhWwMzYuPXxCs
+        1C+ZCw65vHN2L7JpVKPeMstWy3/LaTI=
+X-Google-Smtp-Source: AGHT+IE9njAwIJUhmwH7QLB+W/LK10H+t1DdunnMzWH8iljEb1D85yxLQf1A/fBndBdwWCYqkoZ2hw==
+X-Received: by 2002:a17:907:c317:b0:a1d:5c72:3be2 with SMTP id tl23-20020a170907c31700b00a1d5c723be2mr8744283ejc.7.1702486289471;
+        Wed, 13 Dec 2023 08:51:29 -0800 (PST)
+Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id uv8-20020a170907cf4800b00a1d232b39b9sm8000778ejc.184.2023.12.13.08.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:51:29 -0800 (PST)
+Date:   Wed, 13 Dec 2023 17:51:27 +0100
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/10] staging: rtl8192e: Remove variable nMaxAMSDUSize and
+ further
+Message-ID: <cover.1702406712.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 12:08:30 -0700
-Vishal Verma <vishal.l.verma@intel.com> wrote:
+Remove unused or unchanged variables.
 
-> Add the missing sysfs ABI documentation for the device DAX subsystem.
-> Various ABI attributes under this have been present since v5.1, and more
-> have been added over time. In preparation for adding a new attribute,
-> add this file with the historical details.
-> 
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Transferred this patch over wlan connection of rtl8192e.
+Tested in b,g,n mode and n mode in channels 2, 9, 13
 
-Hi Vishal,  One editorial suggestions.
+Philipp Hortmann (10):
+  staging: rtl8192e: Remove variable bCurrent_AMSDU_Support
+  staging: rtl8192e: Remove unused variable nMaxAMSDUSize
+  staging: rtl8192e: Remove constant variable self_mimo_ps
+  staging: rtl8192e: Remove constant variable peer_mimo_ps
+  staging: rtl8192e: Remove constant variable forced_short_gi
+  staging: rtl8192e: Remove unused variable ht_info->amsdu_support
+  staging: rtl8192e: Remove variable ht_info->mpdu_density
+  staging: rtl8192e: Remove variable ht_info->RT2RT_HT_Mode
+  staging: rtl8192e: Remove constant variable reg_rt2rt_aggregation
+  staging: rtl8192e: Remove constant variable reg_rx_reorder_enable
 
-I don't know the interface well enough to do a good review of the content
-so leaving that for Dan or others.
+ .../staging/rtl8192e/rtl8192e/r8192E_dev.c    |  5 +-
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c  |  1 -
+ drivers/staging/rtl8192e/rtl819x_HT.h         | 11 ---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c     | 77 ++++---------------
+ drivers/staging/rtl8192e/rtllib_tx.c          |  5 --
+ 5 files changed, 17 insertions(+), 82 deletions(-)
 
-> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/start
-> +Date:		October, 2020
-> +KernelVersion:	v5.10
-> +Contact:	nvdimm@lists.linux.dev
-> +Description:
-> +		(RO) A dax device may have multiple constituent discontiguous
-> +		address ranges. These are represented by the different
-> +		'mappingX' subdirectories. The 'start' attribute indicates the
-> +		start physical address for the given range.
-
-A common option for these files is to have a single entry with two What:
-lines.  Here that would avoid duplication of majority of this text across
-the start, end  and page_offset entries.  Alternatively you could do an
-entry for the mapping[0..N] directory with the shared text then separate
-entries for the 3 files under there.
-
-
-> +
-> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/end
-> +Date:		October, 2020
-> +KernelVersion:	v5.10
-> +Contact:	nvdimm@lists.linux.dev
-> +Description:
-> +		(RO) A dax device may have multiple constituent discontiguous
-> +		address ranges. These are represented by the different
-> +		'mappingX' subdirectories. The 'end' attribute indicates the
-> +		end physical address for the given range.
-> +
-> +What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/page_offset
-> +Date:		October, 2020
-> +KernelVersion:	v5.10
-> +Contact:	nvdimm@lists.linux.dev
-> +Description:
-> +		(RO) A dax device may have multiple constituent discontiguous
-> +		address ranges. These are represented by the different
-> +		'mappingX' subdirectories. The 'page_offset' attribute indicates the
-> +		offset of the current range in the dax device.
+-- 
+2.43.0
 
