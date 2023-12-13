@@ -2,89 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FBB811F91
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3616811F97
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379021AbjLMT5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        id S1442241AbjLMT7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMT5j (ORCPT
+        with ESMTP id S1442230AbjLMT7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:57:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BAFDD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:57:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F1EAC433C8;
-        Wed, 13 Dec 2023 19:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702497465;
-        bh=nI+LIVGF1GW7NDDMlrV2VjRUQx18LLMDaUCPSY9bsk4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=T/X7bD8Jdh2xNZJR9uEBE9z06LT3goHniJiJc9mJdPPiqHfM0zJc7/DNwrRy9wZiH
-         8rhNzHcJ6SZLYAP9uK2URisV21Mii3Zpo+2Z0FjpDu9HhrSvP+lxHe8o440jLyHuuR
-         6YTkIpYoySP0HztG3rLgKwr0gsOxJrlf8QCUDD6YsNFwrInY6yiM3VHhBCqmm4cy70
-         OtFEl4RuQNBLI4qB5J/QPoRjSiuaFAkRYXGSb2+fCZ+vximrVbCW00AGuHpZYMaBEZ
-         j4+mT9CVm4BeHJ4rojA7e6HpiGKA/78QeRW5Jh8UR/EHwgSdNhYs/wkwLFCzbDhGok
-         kqw5LVzRREbkQ==
-Date:   Wed, 13 Dec 2023 13:57:43 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx
- platforms.
-Message-ID: <20231213195743.GA1055303@bhelgaas>
+        Wed, 13 Dec 2023 14:59:51 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E301B118
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:59:56 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-dbccfd048d4so959307276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702497596; x=1703102396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s31Qnl2jy9dVbfR9SU0O1e0gpO4gYzM2ckO1KK9cNWQ=;
+        b=jH6SPAsqxum5r3bxOr50QI5W87HWpirYc1yAIgS/RNk9lEb5qFNA6PDAz2emVohfq1
+         gOwnW748Yc7xrx+hYRlaJMmMhMj4iEBIn1WM2oDG2dl/x1xnY3WsP8v7ITohdLywlGd8
+         HGs2IvZ/FY9gTmgtVvecABlfpLXjRNz/FDTKUDSuL6/m4SMJBIAVzfqgMX6LeqDNWNuM
+         73UkEIW4t49gpM0cixQTLOGffy9lfjQmwzbmxDaTGBmxQcsyTusofHLMOfFlP7SfKkMn
+         BnDkfhGMO1ql5kdAQqUyYWJEmdzxqY4hriswEuWn8AqPsYBZLyEtrRFur1hvPEm9fZFt
+         wEwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702497596; x=1703102396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s31Qnl2jy9dVbfR9SU0O1e0gpO4gYzM2ckO1KK9cNWQ=;
+        b=JGJMb7t5DlBwJFv495z+bhDzMOdXs1dank26zPV3Wz5gabbmWUHceLkRB9WI1ozLz9
+         l//CKT/1kq5UbVMiDMHlu+skU7rGu2/pUUMSUELRUXJ3IaU794qJ6S3N1MYHjgLuRvA6
+         5MukDViGTQjWULW/9C9/0DeIRap4Be/NjtcA4pSuzJu7q5SyFwGm3JmH/LWqZn6pABR0
+         eUG1vIkrDXVvr2jZFjICzvyjihgZc4XNKllzHXua9gDdPYJHUK0QIDh/GKSyeRoe5ti6
+         cNxjj4gG7scJhU0Cn2wnF0pC6CCWggK5T+YvJS279GwgsO1ia1nIWMdfOR9iXNSIB3C8
+         u/Zg==
+X-Gm-Message-State: AOJu0YxmUgIqOrpbAkJ5AGYQ3ZcL6ZdM5qRnrs9NanYNsh4/Hg3hHMee
+        7aHcKOyxyiVWErr5VCOWyr8NsK6ZP/7L8d74xWwjWg==
+X-Google-Smtp-Source: AGHT+IGoanEfSAfWqtQw7++5uapiVETyiSe4lA5KkKISTBsZpDDCHd2EgxZu4V1rN9q+R/qEjWhYJ9uGnGBTlEe8bKg=
+X-Received: by 2002:a25:6ac4:0:b0:db7:dacf:3fb6 with SMTP id
+ f187-20020a256ac4000000b00db7dacf3fb6mr4418808ybc.99.1702497596004; Wed, 13
+ Dec 2023 11:59:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213092850.1706042-2-sherry.sun@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org> <20231122-arm64-gcs-v7-20-201c483bd775@kernel.org>
+In-Reply-To: <20231122-arm64-gcs-v7-20-201c483bd775@kernel.org>
+From:   Deepak Gupta <debug@rivosinc.com>
+Date:   Wed, 13 Dec 2023 11:59:45 -0800
+Message-ID: <CAKC1njQVB71A8fQBLmBnx++agM12XDLhS=7iL7-A4NTXSqUM+A@mail.gmail.com>
+Subject: Re: [PATCH v7 20/39] arm64/gcs: Context switch GCS state for EL0
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop period at the end of subject line.  It only adds the possibility
-of unnecessary line wrapping in git log.
-
-On Wed, Dec 13, 2023 at 05:28:47PM +0800, Sherry Sun wrote:
-> Add pci host wakeup feature for imx platforms.
-
-s/pci/PCI/
-s/imx/i.MX/ (based on how nxp.com web pages refer to it)
-
-> Example of configuring the corresponding dts property under the PCI
-> node:
-> wake-gpios = <&gpio5 21 GPIO_ACTIVE_LOW>;
-
-Add newline between paragraphs or wrap into a single paragraph.
-
-> +		/* host wakeup support */
-> +		imx6_pcie->host_wake_irq = -1;
-
-AFAIK, 0 is an invalid IRQ value.  So why not drop this assignment
-since imx6_pcie->host_wake_irq is 0 by default since it was allocated
-with devm_kzalloc(), and test like this elsewhere:
-
-  if (imx6_pcie->host_wake_irq) {
-    enable_irq_wake(imx6_pcie->host_wake_irq)
-
-> +		host_wake_gpio = devm_gpiod_get_optional(dev, "wake", GPIOD_IN);
-> +		if (IS_ERR(host_wake_gpio))
-> +			return PTR_ERR(host_wake_gpio);
+On Wed, Nov 22, 2023 at 1:45=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
 > +
-> +		if (host_wake_gpio != NULL) {
+> +/*
+> + * Apply the GCS mode configured for the specified task to the
+> + * hardware.
+> + */
+> +void gcs_set_el0_mode(struct task_struct *task)
+> +{
+> +       u64 gcscre0_el1 =3D GCSCRE0_EL1_nTR;
+> +
+> +       if (task->thread.gcs_el0_mode & PR_SHADOW_STACK_ENABLE)
+> +               gcscre0_el1 |=3D GCSCRE0_EL1_RVCHKEN | GCSCRE0_EL1_PCRSEL=
+;
 
-  if (host_wake_gpio)
+If the intent is to disable, is the GCS stack freed or kept around?
+I expect if libc is taking the decision to disable, kernel should free it u=
+p.
+Is it freed in some other flow?
 
-Bjorn
+> +
+> +       if (task->thread.gcs_el0_mode & PR_SHADOW_STACK_WRITE)
+> +               gcscre0_el1 |=3D GCSCRE0_EL1_STREn;
+> +
+> +       if (task->thread.gcs_el0_mode & PR_SHADOW_STACK_PUSH)
+> +               gcscre0_el1 |=3D GCSCRE0_EL1_PUSHMEn;
+> +
+> +       write_sysreg_s(gcscre0_el1, SYS_GCSCRE0_EL1);
+> +}
