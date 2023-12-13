@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26F6811959
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDA281195D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjLMQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:28:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        id S233603AbjLMQ27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbjLMQ2q (ORCPT
+        with ESMTP id S232628AbjLMQ25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:28:46 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 514D2B9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:28:52 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1E6BC15;
-        Wed, 13 Dec 2023 08:29:37 -0800 (PST)
-Received: from [10.57.45.12] (unknown [10.57.45.12])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B4F33F738;
-        Wed, 13 Dec 2023 08:28:50 -0800 (PST)
-Message-ID: <68d6f2bb-3c18-4dce-ba32-6925955dcc35@arm.com>
-Date:   Wed, 13 Dec 2023 16:28:49 +0000
+        Wed, 13 Dec 2023 11:28:57 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70691F2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:29:03 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bfa7f7093so9232543e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:29:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702484942; x=1703089742; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vMU6rrGmxgyuL5TMMGyP9RyaaPrkiegeHhKObIZg/xs=;
+        b=GdA/WwQH4WSe7uaoF2YNOZnizmgt8DxQSZ/DDPP8JenTPCO4EkAHB4SLZkqL0SwZTr
+         2PLe0gtPlmlk781UPcGsGlG5RUd81ekTqvbuGOsi0tbv3cX+Ev0QpM8fxiiku7oRfER4
+         HjqXornI72XC6J6eX+/cm2q0HMKKaew7z4PGyoJZ5WSAjlPOoIRJOumB8VhXoEv1xPYQ
+         aXTaK5v11d9bUWCP2F3mQMEDoZeEKaeAnmuf/bkgRzC6S0fidwZqq0YWfGIiLAwFWNam
+         re69MmWw/iuNwTPiBIG6Zf4imyUgiBcNawBvzE/qDPsJILhsO18STr+WEE3j9e9ClyrZ
+         QQXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702484942; x=1703089742;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vMU6rrGmxgyuL5TMMGyP9RyaaPrkiegeHhKObIZg/xs=;
+        b=PNeyBkhuBDTOWTzsAHlvQ09mtZlsvq2uIm7/IwV2nhNnNMUTxw2ncm2YgQNEjEYQse
+         YU43kh5FLS+TikQfpiNOOvsXJWYXkB7QNu0untmtKGfBCXBvN6sPZhYQcGpQ6NPbDCT7
+         4S/ZXZnt6ic1R4tvkwbiVcKG1Ko4lNHHu0kZ5n0i4pRA/OaEzp88Rs4NFriSVlbJthHA
+         Eg1j6lz927AObkOet7SlTZ/TcSd3tIuKinxEfn1A7X+MQdc5MXkZcCckDMUonL+PPhwK
+         ytnuku5ekIcybZniP3cw6gPrhsLRC552+ASJNyBGeRYY6aOlqDvfUpcYZOVeYufcY+mP
+         yYRQ==
+X-Gm-Message-State: AOJu0YzPGo4ncJEkOxUr4zqTVEVr1VqHAOkbZlU3weI+lgdcfU8ZLsZy
+        FAx6dg+ODAjOu8oQYja30+skwA==
+X-Google-Smtp-Source: AGHT+IFJu6vsF/X1yu3ijUE5ikBJmKtuP5O78EYgVqbIzMF1rD5Pj8yPIiXoKlW7GBWTwlov6p8k3A==
+X-Received: by 2002:a05:6512:969:b0:50b:fcd4:832d with SMTP id v9-20020a056512096900b0050bfcd4832dmr3753987lft.113.1702484941699;
+        Wed, 13 Dec 2023 08:29:01 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id br7-20020a056512400700b0050bfe37d28asm1641026lfb.34.2023.12.13.08.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:29:01 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 0/4] arm64: dts: qcom: few improvements
+Date:   Wed, 13 Dec 2023 17:28:52 +0100
+Message-Id: <20231213162856.188566-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] coresight: Fix issue where a source device's helpers
- aren't disabled
-Content-Language: en-GB
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org
-Cc:     Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231212155407.1429121-1-james.clark@arm.com>
- <20231212155407.1429121-2-james.clark@arm.com>
- <a1ab2481-0ec0-4e29-b6af-bcce4cf0b57d@arm.com>
- <3c7665ff-b2e2-f10d-a78a-4ddc1791926f@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <3c7665ff-b2e2-f10d-a78a-4ddc1791926f@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,68 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 13:54, James Clark wrote:
-> 
-> 
-> On 12/12/2023 17:44, Suzuki K Poulose wrote:
->> Hi James
->>
->> On 12/12/2023 15:53, James Clark wrote:
->>> The linked commit reverts the change that accidentally used some sysfs
->>> enable/disable functions from Perf which broke the refcounting, but it
->>> also removes the fact that the sysfs disable function disabled the
->>> helpers.
->>
->>
->>>
->>> Add a new wrapper function that does both which is used by both Perf and
->>> sysfs, and label the sysfs disable function appropriately. The naming of
->>> all of the functions will be tidied up later to avoid this happening
->>> again.
->>>
->>> Fixes: 287e82cf69aa ("coresight: Fix crash when Perf and sysfs modes
->>> are used concurrently")
->>
->> But we still don't "enable" the helpers from perf mode with this patch.
->> i.e., we use source_ops()->enable directly. So, I guess this patch
->> doesn't fix a bug as such. But that said, it would be good to
->> enable/disable helpers for sources, in perf mode.
->>
->> Suzuki
-> 
-> We do, it happens in coresight_enable_path() which Perf uses. I added
-> the comment below about that.
+Changes in v2:
+1. Previous submission included stale patch.  Resend without it. No
+actual changes, but marking it v2 for convenience.
 
-Ah, I see. That indeed is a bit confusing. And I think all users of 
-coresight_enable_path() enables the source right after. So, I don't
-see any point in having it separate. That said, this fix makes sense
-and apologies for the confusion. We could may be cleanup the 
-enable_path() to enable the source too, in a separate patch.
-
-Suzuki
+Best regards,
+Krzysztof
 
 
-> 
->   [...]
-> 
->>>    +/*
->>> + * Helper function to call source_ops(csdev)->disable and also
->>> disable the
->>> + * helpers.
->>> + *
->>> + * There is an imbalance between coresight_enable_path() and
->>> + * coresight_disable_path(). Enabling also enables the source's
->>> helpers as part
->>> + * of the path, but disabling always skips the first item in the path
->>> (which is
->>> + * the source), so sources and their helpers don't get disabled as
->>> part of that
->>> + * function and we need the extra step here.
->>> + */
-> 
-> The reason coresight_disable_path() skips the first item is because it's
-> used after errors where a path is only partially enabled and it unwinds,
-> skipping the last item, because the last item didn't enable.
-> 
-> It seemed a bit more intrusive to change that, and it's already working.
+Krzysztof Kozlowski (4):
+  arm64: dts: qcom: sm8450: move Soundwire pinctrl to its nodes
+  arm64: dts: qcom: sm8450: drop unneeded assigned-clocks from codec
+    macros
+  arm64: dts: qcom: sm8550: move Soundwire pinctrl to its nodes
+  arm64: dts: qcom: sm8550: drop unneeded assigned-clocks from codec
+    macros
+
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 36 ++++++++++------------------
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 34 ++++++++++----------------
+ 2 files changed, 24 insertions(+), 46 deletions(-)
+
+-- 
+2.34.1
 
