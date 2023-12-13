@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40FB8115DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCD08115E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442248AbjLMPNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
+        id S1442452AbjLMPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442095AbjLMPNW (ORCPT
+        with ESMTP id S1442095AbjLMPN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:13:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B7B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:13:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702480407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v2OWzLPbe7fefjvMfxhIYzTmKhON3iT9TY5UrL/jTLs=;
-        b=PeC1Cg86T813cTyTKLQh38RDl9q1rmAVFG9Tv9pA1wAG2X78hQh+uBkfbkGig06Ma9fgi7
-        orJN6Z9sBo/pGVT6tuXdqxz12eW2j0iA+C3Z4IXVmxRCwBoDCo+5vp8RFN8rBASiln3k6T
-        5s8uLnw+DV3Y86Dy1KqfVkXbnIa1020=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-lmafaidlNKSErLhEQQ0lPQ-1; Wed, 13 Dec 2023 10:13:25 -0500
-X-MC-Unique: lmafaidlNKSErLhEQQ0lPQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1d38492da7so427255966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:13:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702480404; x=1703085204;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v2OWzLPbe7fefjvMfxhIYzTmKhON3iT9TY5UrL/jTLs=;
-        b=j7pKAnyonKJA2aFfSYO/Sz6ybU7qijbHt2hJ1f+O/lYIBjaK2CLUbDDZpDSbvLK00L
-         ARRnvhDgwrCySy+6s1DTUdQ0KA73CDAduuNsctO2XW1aGZuUUavKaI0c0gJ0AYfllOmL
-         d3Q2q6yHF41Kh8whWlDV6lzChjSYLCUSQGmeGgBfATAF+p7Oj3JqCPXml6ZJ24OISiRw
-         8qFfzIcvbX0yS6d1VOevjMBqx3u5+1IwnaspWL6XqL+s5QUKRdWzPyBvqfLKFcfJ7h1B
-         DxoEQpi4QzozIhVWm8VYrltOY9m03sjVc1xg3+Xc/kSZfpzDiAyKVcHehgNpUVJmT29S
-         sa0w==
-X-Gm-Message-State: AOJu0YxiUEbmcV/RQIOMa2vAdPomri54+LdE4IaEGdVoHPWGU5Ql2F6g
-        qCOH0MY1LYeZEi/8WIMSmpq5KELZ6D8l68EggZ6WrG+vT2lPfM2oDVQ0cLAZ9frrOctyUcbs5QL
-        ayUWEQHJcb25rOjj+15FZV9hq
-X-Received: by 2002:a17:906:209:b0:a1c:966c:2962 with SMTP id 9-20020a170906020900b00a1c966c2962mr2353776ejd.5.1702480404100;
-        Wed, 13 Dec 2023 07:13:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGVEHNhpEpNkKjGAhK/XWOUUTGGv28PciIr/kdbCXWcbETJTEaPRgwgaTCSAZtVYbJ3/DARkA==
-X-Received: by 2002:a17:906:209:b0:a1c:966c:2962 with SMTP id 9-20020a170906020900b00a1c966c2962mr2353768ejd.5.1702480403779;
-        Wed, 13 Dec 2023 07:13:23 -0800 (PST)
-Received: from redhat.com ([2a02:14f:16d:d414:dc39:9ae8:919b:572d])
-        by smtp.gmail.com with ESMTPSA id s16-20020a17090699d000b00a1e27e584c7sm7934486ejn.69.2023.12.13.07.13.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 07:13:23 -0800 (PST)
-Date:   Wed, 13 Dec 2023 10:13:15 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v8 0/4] send credit update during setting
- SO_RCVLOWAT
-Message-ID: <20231213100957-mutt-send-email-mst@kernel.org>
-References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
- <20231212105423-mutt-send-email-mst@kernel.org>
- <d27f22f0-0f1e-e1bb-5b13-a524dc6e94d7@salutedevices.com>
- <20231212111131-mutt-send-email-mst@kernel.org>
- <7b362aef-6774-0e08-81e9-0a6f7f616290@salutedevices.com>
- <ucmekzurgt3zcaezzdkk6277ukjmwaoy6kdq6tzivbtqd4d32b@izqbcsixgngk>
- <402ea723-d154-45c9-1efe-b0022d9ea95a@salutedevices.com>
- <20231213100518-mutt-send-email-mst@kernel.org>
+        Wed, 13 Dec 2023 10:13:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534EE3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:14:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BE95BC433C7;
+        Wed, 13 Dec 2023 15:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702480445;
+        bh=RCKOlm/rfJFGAluA0uC53gYGTmOCx5LlFHEsyolIc+I=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=gSEmqayp2smuoWiLQmUclE5sR26aeI0Yub9E4AkG18zY+z6p6Hhd8nSJxjIjTDxOp
+         4HScECyDsw5KjQFWXEpqy3nFPZ4VTG/3zN/wAoSZ9txm/CJiVMSYVKhFFLcpZVoQrQ
+         WrsIJO/E3DFQytgwC2B2+IbtJXiakHWK0JemlNrfnC2K9lGP+3WrIEiK7OQ9U3+5Nx
+         AMgbRr4eZkQyGHnf5h2BPZoFjWKp7GmhWq5mIdYEB9TLvwYOpW5uugVA3bIYP/77iN
+         a/+7RRqM9I7S4joIqRK0lpPxg678QyU7Zn43z+g7NE7nQgDYqrW22gunkhvi2vSeMd
+         WZZy21qbDipLQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 9F443C4332F;
+        Wed, 13 Dec 2023 15:14:05 +0000 (UTC)
+From:   Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
+Date:   Wed, 13 Dec 2023 16:13:59 +0100
+Subject: [PATCH RESEND RFC] driver: core: don't queue device links removal
+ for dt overlays
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231213100518-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Message-Id: <20231213-fix-device-links-overlays-v1-1-f091b213777c@analog.com>
+X-B4-Tracking: v=1; b=H4sIADbKeWUC/32NMQ+CMBCF/4q52TNcAREnE8XRAUfD0NAWGrE1r
+ WkkhP9uJc5Ol3f53vsm8NJp6WG/msDJoL22JgZar6DtuekkahEzsISlRCxDpd8oIthKHLS5e7R
+ BuoGPHikVZaFUSRlJiP2nkxFetm9QV9fqcvq+6/MRmnh77V/WjYs50AL9JMUfSSAkFEWW7lS+F
+ QnLD9zwwXab1j6gmef5A0ES52LSAAAA
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702480444; l=4326;
+ i=nuno.sa@analog.com; s=20231116; h=from:subject:message-id;
+ bh=8QbmA+HGKDxoC5NcwfVBHQDhv97DYzCEC3G4ZKRaqFg=;
+ b=h7llQVIwtSkkBrHpTDv5Kmr8hPHmtfoiroWKx19gGJBYsjg71X5oGUH/+PQZ5SbkhnTrVfuBs
+ SQwuaubmPnTDMaAvNPNwDS7BJvSQqKlhdvW9lZ1t9NfGy6SQJvA71FC
+X-Developer-Key: i=nuno.sa@analog.com; a=ed25519;
+ pk=3NQwYA013OUYZsmDFBf8rmyyr5iQlxV/9H4/Df83o1E=
+X-Endpoint-Received: by B4 Relay for nuno.sa@analog.com/20231116 with auth_id=100
+X-Original-From: Nuno Sa <nuno.sa@analog.com>
+Reply-To: <nuno.sa@analog.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,71 +68,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:05:44AM -0500, Michael S. Tsirkin wrote:
-> On Wed, Dec 13, 2023 at 12:08:27PM +0300, Arseniy Krasnov wrote:
-> > 
-> > 
-> > On 13.12.2023 11:43, Stefano Garzarella wrote:
-> > > On Tue, Dec 12, 2023 at 08:43:07PM +0300, Arseniy Krasnov wrote:
-> > >>
-> > >>
-> > >> On 12.12.2023 19:12, Michael S. Tsirkin wrote:
-> > >>> On Tue, Dec 12, 2023 at 06:59:03PM +0300, Arseniy Krasnov wrote:
-> > >>>>
-> > >>>>
-> > >>>> On 12.12.2023 18:54, Michael S. Tsirkin wrote:
-> > >>>>> On Tue, Dec 12, 2023 at 12:16:54AM +0300, Arseniy Krasnov wrote:
-> > >>>>>> Hello,
-> > >>>>>>
-> > >>>>>>                                DESCRIPTION
-> > >>>>>>
-> > >>>>>> This patchset fixes old problem with hungup of both rx/tx sides and adds
-> > >>>>>> test for it. This happens due to non-default SO_RCVLOWAT value and
-> > >>>>>> deferred credit update in virtio/vsock. Link to previous old patchset:
-> > >>>>>> https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
-> > >>>>>
-> > >>>>>
-> > >>>>> Patchset:
-> > >>>>>
-> > >>>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> > >>>>
-> > >>>> Thanks!
-> > >>>>
-> > >>>>>
-> > >>>>>
-> > >>>>> But I worry whether we actually need 3/8 in net not in net-next.
-> > >>>>
-> > >>>> Because of "Fixes" tag ? I think this problem is not critical and reproducible
-> > >>>> only in special cases, but i'm not familiar with netdev process so good, so I don't
-> > >>>> have strong opinion. I guess @Stefano knows better.
-> > >>>>
-> > >>>> Thanks, Arseniy
-> > >>>
-> > >>> Fixes means "if you have that other commit then you need this commit
-> > >>> too". I think as a minimum you need to rearrange patches to make the
-> > >>> fix go in first. We don't want a regression followed by a fix.
-> > >>
-> > >> I see, ok, @Stefano WDYT? I think rearrange doesn't break anything, because this
-> > >> patch fixes problem that is not related with the new patches from this patchset.
-> > > 
-> > > I agree, patch 3 is for sure net material (I'm fine with both rearrangement or send it separately), but IMHO also patch 2 could be.
-> > > I think with the same fixes tag, since before commit b89d882dc9fc ("vsock/virtio: reduce credit update messages") we sent a credit update
-> > > for every bytes we read, so we should not have this problem, right?
-> > 
-> > Agree for 2, so I think I can rearrange: two fixes go first, then current 0001, and then tests. And send it as V9 for 'net' only ?
-> > 
-> > Thanks, Arseniy
-> 
-> 
-> hmm why not net-next?
+From: Nuno Sa <nuno.sa@analog.com>
 
-Oh I missed your previous discussion. I think everything in net-next is
-safer.  Having said that, I won't nack it net, either.
+For device links, releasing the supplier/consumer devices references
+happens asynchronously in device_link_release_fn(). Hence, the possible
+release of an of_node is also asynchronous. If these nodes were added
+through overlays we have a problem because this does not respect the
+devicetree overlays assumptions that when a changeset is
+being removed in __of_changeset_entry_destroy(), it must hold the last
+reference to that node. Due to the async nature of device links that
+cannot be guaranteed.
 
-> > > 
-> > > So, maybe all the series could be "net".
-> > > 
-> > > Thanks,
-> > > Stefano
-> > > 
+Given the above, in case one of the link consumer/supplier is part of
+an overlay node we call directly device_link_release_fn() instead of
+queueing it. Yes, it might take some significant time for
+device_link_release_fn() to complete because of synchronize_srcu() but
+we would need to, anyways, wait for all OF references to be released if
+we want to respect overlays assumptions.
+
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+---
+This RFC is a follow up of a previous one that I sent to the devicetree
+folks [1]. It got rejected because it was not really fixing the root
+cause of the issue (which I do agree). Please see the link where I
+fully explain what the issue is.
+
+I did also some git blaming and did saw that commit
+80dd33cf72d1 ("drivers: base: Fix device link removal") introduced
+queue_work() as we could be releasing the last device reference and hence
+sleeping which is against SRCU callback requirements. However, that same
+commit is now making use of synchronize_srcu() which may take
+significant time (and I think that's the reason for the work item?).
+
+However, given the dt overlays requirements, I'm not seeing any
+reason to not be able to run device_link_release_fn() synchronously if we
+detect an OVERLAY node is being released. I mean, even if we come up
+(and I did some experiments in this regard) with some async mechanism to
+release the OF nodes refcounts, we still need a synchronization point
+somewhere.
+
+Anyways, I would like to have some feedback on how acceptable would this
+be or what else could I do so we can have a "clean" dt overlay removal.
+
+I'm also cc'ing dts folks so they can give some comments on the new
+device_node_overlay_removal() function. My goal is to try to detect when an
+overlay is being removed (maybe we could even have an explicit flag for
+it?) and only directly call device_link_release_fn() in that case.
+
+[1]: https://lore.kernel.org/linux-devicetree/20230511151047.1779841-1-nuno.sa@analog.com/
+---
+ drivers/base/core.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 67ba592afc77..8466b63b89c3 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(devlink);
+ 
++static bool device_node_overlay_removal(struct device *dev)
++{
++	if (!dev_of_node(dev))
++		return false;
++	if (!of_node_check_flag(dev->of_node, OF_DETACHED))
++		return false;
++	if (!of_node_check_flag(dev->of_node, OF_OVERLAY))
++		return false;
++
++	return true;
++}
++
+ static void device_link_release_fn(struct work_struct *work)
+ {
+ 	struct device_link *link = container_of(work, struct device_link, rm_work);
+@@ -532,8 +544,19 @@ static void devlink_dev_release(struct device *dev)
+ 	 * synchronization in device_link_release_fn() and if the consumer or
+ 	 * supplier devices get deleted when it runs, so put it into the "long"
+ 	 * workqueue.
++	 *
++	 * However, if any of the supplier, consumer nodes is being removed
++	 * through overlay removal, the expectation in
++	 * __of_changeset_entry_destroy() is for the node 'kref' to be 1 which
++	 * cannot be guaranteed with the async nature of
++	 * device_link_release_fn(). Hence, do it synchronously for the overlay
++	 * case.
+ 	 */
+-	queue_work(system_long_wq, &link->rm_work);
++	if (device_node_overlay_removal(link->consumer) ||
++	    device_node_overlay_removal(link->supplier))
++		device_link_release_fn(&link->rm_work);
++	else
++		queue_work(system_long_wq, &link->rm_work);
+ }
+ 
+ static struct class devlink_class = {
+
+---
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+change-id: 20231124-fix-device-links-overlays-13d97ff9141e
+--
+
+Thanks!
+- Nuno SÃ¡
 
