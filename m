@@ -2,142 +2,512 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 661F48116BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E93811732
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442285AbjLMP3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:29:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
+        id S1442217AbjLMPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442347AbjLMP2b (ORCPT
+        with ESMTP id S1442392AbjLMPfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:28:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164D61AE
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:26:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBA69C433CB;
-        Wed, 13 Dec 2023 15:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702481199;
-        bh=5LrrEvMyyj0fWb6NPjVbblFGe/sJuNAe4eX2ZyX7Kt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gb6BH7D+aYS61woucg5hbgnpKCFH2JrZe9F7CoamrCJlrRo+15C86NHi2e7T9MoI0
-         voFaVtvfZv/m36LPNfwBTmuS+fzS/AZgBTL6y1G5uJKdzX+82fqYVPsguuz4WpGlfR
-         1duPZzQ84PZHAjZJENwupiAANqkRbYlKDP8/kc4RZLH/+/VSSctEpbwMMA6dixOzmD
-         sDUCEhLqqa6Mke47Dab95s7KYkO0rDF5YbInpc//M4u5vOhFqp/NY6TRGcO2+52gFm
-         YH/2i10BIfOinYtmJuflXh8fQo2clkel8PHqG9azTs1GexOFYGdkEgJXJ3+1y3LPLm
-         glD3qCYeHihAw==
-Date:   Wed, 13 Dec 2023 15:26:28 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
-        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        conor+dt@kernel.org, conor.dooley@microchip.com,
-        devicetree@vger.kernel.org, dminus@andestech.com,
-        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
-        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
-        jolsa@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, locus84@andestech.com,
-        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
-        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, peterz@infradead.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
-        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
-        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
-        wens@csie.org, will@kernel.org, ycliang@andestech.com,
-        inochiama@outlook.com
-Subject: Re: [PATCH v5 09/16] dt-bindings: riscv: Add T-Head PMU extension
- description
-Message-ID: <20231213-romp-squeegee-0cdb44aff415@spud>
-References: <20231213070301.1684751-1-peterlin@andestech.com>
- <20231213070301.1684751-10-peterlin@andestech.com>
+        Wed, 13 Dec 2023 10:35:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60E12105;
+        Wed, 13 Dec 2023 07:27:09 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="13676036"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="13676036"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 07:27:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="767249590"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="767249590"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 07:27:06 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDR8Y-00000005Yh1-36Wm;
+        Wed, 13 Dec 2023 17:27:02 +0200
+Date:   Wed, 13 Dec 2023 17:27:02 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Jim Liu <jim.t90615@gmail.com>
+Cc:     JJLIU0@nuvoton.com, KWLIU@nuvoton.com, linus.walleij@linaro.org,
+        brgl@bgdev.pl, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: Re: [PATCH v9 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
+Message-ID: <ZXnNRoGmeibdRAwq@smile.fi.intel.com>
+References: <20231212065147.3475413-1-jim.t90615@gmail.com>
+ <20231212065147.3475413-4-jim.t90615@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7g0vcE0ZONFlAzn3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213070301.1684751-10-peterlin@andestech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231212065147.3475413-4-jim.t90615@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 02:51:47PM +0800, Jim Liu wrote:
+> Add Nuvoton BMC NPCM7xx/NPCM8xx sgpio driver support.
+> Nuvoton NPCM SGPIO module is combine serial to parallel IC (HC595)
+> and parallel to serial IC (HC165), and use APB3 clock to control it.
+> This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
+> BMC can use this driver to increase 64 GPI pins and 64 GPO pins to use.
 
---7g0vcE0ZONFlAzn3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Wed, Dec 13, 2023 at 03:02:54PM +0800, Yu Chien Peter Lin wrote:
-> Document the ISA string for T-Head performance monitor extension
-> which provides counter overflow interrupt mechanism.
->=20
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Guo Ren <guoren@kernel.org>
-> Reviewed-by: Inochi Amaoto <inochiama@outlook.com>
-> ---
-> Changes v2 -> v3:
->   - New patch
-> Changes v3 -> v4:
->   - No change
-> Changes v4 -> v5:
->   - Include Guo's Reviewed-by
->   - Include Inochi's Reviewed-by
->   - Update to C910 documentation with its commit hash
-> ---
->  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Do=
-cumentation/devicetree/bindings/riscv/extensions.yaml
-> index c91ab0e46648..b5cb8ac7ac80 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -258,5 +258,11 @@ properties:
->              in commit 2e5236 ("Ztso is now ratified.") of the
->              riscv-isa-manual.
-> =20
-> +        - const: xtheadpmu
-> +          description:
-> +            The T-Head performance monitor extension for counter overflo=
-w, as ratified
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/hashtable.h>
+> +#include <linux/init.h>
+> +#include <linux/io.h>
 
-I'm not sure that "ratified" here is the right word, probably
-"documented" is better, but I don't think that is worth a resend.
+> +#include <linux/kernel.h>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Is this a proxy to some other headers like array_size.h? Please use respective
+headers directly.
 
-Cheers,
-Conor.
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/string.h>
 
-> +            in commit 4c4981 ("Initial commit") of Xuantie C910 user man=
-ual.
-> +            https://github.com/T-head-Semi/openc910/tree/main/doc
+...
+
+> +#define NPCM_CLK_MHZ	8000000
+
+HZ_PER_MHZ from units.h?
+
+...
+
+> +struct npcm_sgpio {
+> +	struct gpio_chip chip;
+> +	struct clk *pclk;
+> +	struct irq_chip intc;
+> +	raw_spinlock_t lock;	/*protect event config*/
+
+Missing spaces.
+
+> +	void __iomem *base;
+> +	int irq;
+> +	u8 nin_sgpio;
+> +	u8 nout_sgpio;
+> +	u8 in_port;
+> +	u8 out_port;
+> +	u8 int_type[MAX_NR_HW_SGPIO];
+> +};
+
+...
+
+> +	{
+> +		.wdata_reg = 0x07,
+> +		.rdata_reg = 0x0f,
+> +		.event_config = 0x1e,
+> +		.event_status = 0x27,
+> +	},
 > +
->  additionalProperties: true
->  ...
-> --=20
-> 2.34.1
->=20
 
---7g0vcE0ZONFlAzn3
-Content-Type: application/pgp-signature; name="signature.asc"
+Redundant blank line.
 
------BEGIN PGP SIGNATURE-----
+...
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnNJAAKCRB4tDGHoIJi
-0rGDAQD3aa1sgvZcl2UuyEAdv8hNrEY8UAeOmq4VVREsig79WAEAp7psoeCxBWLM
-X4adVORVHKHi9jWmb2mdq7PBBO0wmwE=
-=8PPM
------END PGP SIGNATURE-----
+> +static void __iomem *bank_reg(struct npcm_sgpio *gpio,
+> +			      const struct npcm_sgpio_bank *bank,
+> +			      const enum npcm_sgpio_reg reg)
+> +{
+> +	switch (reg) {
+> +	case READ_DATA:
+> +		return gpio->base + bank->rdata_reg;
+> +	case WRITE_DATA:
+> +		return gpio->base + bank->wdata_reg;
+> +	case EVENT_CFG:
+> +		return gpio->base + bank->event_config;
+> +	case EVENT_STS:
+> +		return gpio->base + bank->event_status;
+> +	default:
+> +		/* actually if code runs to here, it's an error case */
+> +		dev_WARN(gpio->chip.parent, "Getting here is an error condition");
 
---7g0vcE0ZONFlAzn3--
+...then return an error here.
+
+> +	}
+> +	return 0;
+
+See above.
+
+> +}
+
+> +static void irqd_to_npcm_sgpio_data(struct irq_data *d,
+
+Respect namespace, here it's better to have npcm_sgpio_irqd_to_data().
+
+> +				    struct npcm_sgpio **gpio,
+> +				    const struct npcm_sgpio_bank **bank,
+> +				    u8 *bit, unsigned int *offset)
+
+...
+
+> +static int npcm_sgpio_init_port(struct npcm_sgpio *gpio)
+> +{
+> +	u8 in_port, out_port, set_port, reg;
+> +
+> +	in_port = GPIO_BANK(gpio->nin_sgpio);
+> +	if (GPIO_BIT(gpio->nin_sgpio) > 0)
+> +		in_port += 1;
+
+This is strange... So, you are telling that offsets start from 1 and not 0?
+
+> +	out_port = GPIO_BANK(gpio->nout_sgpio);
+> +	if (GPIO_BIT(gpio->nout_sgpio) > 0)
+> +		out_port += 1;
+
+Ditto.
+
+...
+
+> +	set_port = ((out_port & NPCM_IOXCFG2_PORT) << 4) | (in_port & NPCM_IOXCFG2_PORT);
+
+Outer parentheses are redundant.
+
+...
+
+> +static int npcm_sgpio_dir_out(struct gpio_chip *gc, unsigned int offset, int val)
+> +{
+> +	gc->set(gc, offset, val);
+> +
+> +	return 0;
+
+> +
+
+Redundant blank line.
+
+> +}
+> +
+> +static int npcm_sgpio_get_direction(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
+
+> +	if (offset > gpio->chip.ngpio)
+> +		return -EINVAL;
+
+Why do you need this check?
+
+> +	if (offset < gpio->nout_sgpio)
+> +		return GPIO_LINE_DIRECTION_OUT;
+> +
+> +	return GPIO_LINE_DIRECTION_IN;
+> +}
+
+...
+
+> +static void npcm_sgpio_set(struct gpio_chip *gc, unsigned int offset, int val)
+> +{
+> +	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
+> +	const struct  npcm_sgpio_bank *bank = offset_to_bank(offset);
+> +	void __iomem *addr;
+> +	u8 reg = 0;
+> +
+> +	addr = bank_reg(gpio, bank, WRITE_DATA);
+> +	reg = ioread8(addr);
+> +
+> +	if (val)
+> +		reg |= (val << GPIO_BIT(offset));
+
+...and if val is not 1?..
+
+> +	else
+> +		reg &= ~(1 << GPIO_BIT(offset));
+
+In both cases use BIT().
+
+> +	iowrite8(reg, addr);
+> +}
+
+...
+
+> +	dir = npcm_sgpio_get_direction(gc, offset);
+> +	if (dir == 0) {
+> +		bank = offset_to_bank(offset);
+> +
+> +		addr = bank_reg(gpio, bank, WRITE_DATA);
+> +		reg = ioread8(addr);
+> +		reg = !!(reg & GPIO_BIT(offset));
+> +	} else {
+> +		offset -= gpio->nout_sgpio;
+> +		bank = offset_to_bank(offset);
+> +
+> +		addr = bank_reg(gpio, bank, READ_DATA);
+> +		reg = ioread8(addr);
+> +		reg = !!(reg & GPIO_BIT(offset));
+> +	}
+
+Instead of conditional(s) use arithmetics. You can get all these directly
+from the properly formed calculations.
+
+...
+
+> +static void npcm_sgpio_setup_enable(struct npcm_sgpio *gpio, bool enable)
+> +{
+
+> +	u8 reg = 0;
+Redundant assignment.
+
+> +	reg = ioread8(gpio->base + NPCM_IOXCTS);
+
+> +	reg = reg & ~NPCM_IOXCTS_RD_MODE;
+> +	reg = reg | NPCM_IOXCTS_RD_MODE_PERIODIC;
+
+Combine them.
+
+> +	if (enable) {
+> +		reg |= NPCM_IOXCTS_IOXIF_EN;
+> +		iowrite8(reg, gpio->base + NPCM_IOXCTS);
+> +	} else {
+> +		reg &= ~NPCM_IOXCTS_IOXIF_EN;
+> +		iowrite8(reg, gpio->base + NPCM_IOXCTS);
+> +	}
+> +}
+
+...
+
+> +static int npcm_sgpio_setup_clk(struct npcm_sgpio *gpio,
+> +				const struct npcm_clk_cfg *clk_cfg)
+> +{
+> +	unsigned long apb_freq;
+> +	u32 val;
+> +	u8 tmp;
+> +	int i;
+> +
+> +	apb_freq = clk_get_rate(gpio->pclk);
+> +	tmp = ioread8(gpio->base + NPCM_IOXCFG1) & ~NPCM_IOXCFG1_SFT_CLK;
+> +
+> +	for (i = 0; i < clk_cfg->cfg_opt; i++) {
+> +		val = apb_freq / clk_cfg->sft_clk[i];
+> +		if ((NPCM_CLK_MHZ < val) && (i != 0) ) {
+> +			iowrite8(clk_cfg->clk_sel[i-1] | tmp, gpio->base + NPCM_IOXCFG1);
+> +			return 0;
+> +		} else if (i == (clk_cfg->cfg_opt-1) && (NPCM_CLK_MHZ > val)) {
+> +			iowrite8(clk_cfg->clk_sel[i] | tmp, gpio->base + NPCM_IOXCFG1);
+> +			return 0;
+> +		}
+
+These i == / i != checks probably due to wrong operator be chosen. Consider using
+while-loop, or do-while. I believe it will make code better.
+
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+
+...
+
+> +static void npcm_sgpio_irq_init_valid_mask(struct gpio_chip *gc,
+> +					   unsigned long *valid_mask, unsigned int ngpios)
+> +{
+> +	struct npcm_sgpio *gpio = gpiochip_get_data(gc);
+
+> +	int n = gpio->nin_sgpio;
+
+Why do you need this variable, what for?
+
+> +	/* input GPIOs in the high range */
+> +	bitmap_set(valid_mask, gpio->nout_sgpio, n);
+> +	bitmap_clear(valid_mask, 0, gpio->nout_sgpio);
+> +}
+
+...
+
+> +	raw_spin_lock_irqsave(&gpio->lock, flags);
+
+Don't you need to use spin lock in the other APIs? It seem whole driver works by luck.
+
+> +	npcm_sgpio_setup_enable(gpio, false);
+> +
+> +	reg = ioread16(addr);
+> +	if (set) {
+> +		reg &= ~(NPCM_IXOEVCFG_MASK << (bit * 2));
+> +	} else {
+> +		type = gpio->int_type[offset];
+> +		reg |= (type << (bit * 2));
+
+At least the calculations can be done outside of the lock.
+
+> +	}
+> +
+> +	iowrite16(reg, addr);
+> +
+> +	npcm_sgpio_setup_enable(gpio, true);
+> +
+> +	addr = bank_reg(gpio, bank, EVENT_STS);
+> +	reg = ioread8(addr);
+> +	reg |= BIT(bit);
+> +	iowrite8(reg, addr);
+> +
+> +	raw_spin_unlock_irqrestore(&gpio->lock, flags);
+
+...
+
+> +	switch (type & IRQ_TYPE_SENSE_MASK) {
+> +	case IRQ_TYPE_EDGE_BOTH:
+> +		val = NPCM_IXOEVCFG_BOTH;
+> +		handler = handle_edge_irq;
+> +		break;
+> +	case IRQ_TYPE_EDGE_RISING:
+> +		val = NPCM_IXOEVCFG_RISING;
+> +		handler = handle_edge_irq;
+> +		break;
+> +	case IRQ_TYPE_EDGE_FALLING:
+> +		val = NPCM_IXOEVCFG_FALLING;
+> +		handler = handle_edge_irq;
+> +		break;
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		val = NPCM_IXOEVCFG_RISING;
+> +		handler = handle_level_irq;
+> +		break;
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		val = NPCM_IXOEVCFG_FALLING;
+> +		handler = handle_level_irq;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+
+You can split the handler setup and make this function less by 5 LoCs or so.
+
+See, for example, gpio-tangier.c.
+
+...
+
+> +	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
+> +		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
+> +
+> +		reg = ioread8(bank_reg(gpio, bank, EVENT_STS));
+> +		for_each_set_bit(j, &reg, 8) {
+> +			girq = irq_find_mapping(gc->irq.domain, i * 8 + gpio->nout_sgpio + j);
+> +			generic_handle_irq(girq);
+
+generic_handle_domain_irq()
+
+> +		}
+> +	}
+
+...
+
+> +static int npcm_sgpio_setup_irqs(struct npcm_sgpio *gpio,
+> +				 struct platform_device *pdev)
+> +{
+> +	int rc, i;
+> +	struct gpio_irq_chip *irq;
+> +
+> +	rc = platform_get_irq(pdev, 0);
+> +	if (rc < 0)
+> +		return rc;
+> +
+> +	gpio->irq = rc;
+> +
+> +	npcm_sgpio_setup_enable(gpio, false);
+> +
+> +	/* Disable IRQ and clear Interrupt status registers for all SGPIO Pins. */
+> +	for (i = 0; i < ARRAY_SIZE(npcm_sgpio_banks); i++) {
+> +		const struct npcm_sgpio_bank *bank = &npcm_sgpio_banks[i];
+
+> +		iowrite16(0x0000, bank_reg(gpio, bank, EVENT_CFG));
+
+0 is enough.
+
+> +		iowrite8(0xff, bank_reg(gpio, bank, EVENT_STS));
+
+GENMASK() ?
+
+> +	}
+> +
+> +	irq = &gpio->chip.irq;
+> +	gpio_irq_chip_set_chip(irq, &sgpio_irq_chip);
+> +	irq->init_valid_mask = npcm_sgpio_irq_init_valid_mask;
+> +	irq->handler = handle_bad_irq;
+> +	irq->default_type = IRQ_TYPE_NONE;
+> +	irq->parent_handler = npcm_sgpio_irq_handler;
+> +	irq->parent_handler_data = gpio;
+> +	irq->parents = &gpio->irq;
+> +	irq->num_parents = 1;
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static struct npcm_clk_cfg npcm750_sgpio_pdata = {
+> +	.sft_clk = npcm750_SFT_CLK,
+> +	.clk_sel = npcm750_CLK_SEL,
+> +	.cfg_opt = 6,
+
+Define this magic and use it in the above arrays as the capacity.
+
+> +};
+> +
+> +static const struct npcm_clk_cfg npcm845_sgpio_pdata = {
+> +	.sft_clk = npcm845_SFT_CLK,
+> +	.clk_sel = npcm845_CLK_SEL,
+
+> +	.cfg_opt = 5,
+
+Ditto.
+
+> +};
+
+...
+
+> +static const struct of_device_id npcm_sgpio_of_table[] = {
+> +	{ .compatible = "nuvoton,npcm750-sgpio", .data = &npcm750_sgpio_pdata, },
+> +	{ .compatible = "nuvoton,npcm845-sgpio", .data = &npcm845_sgpio_pdata, },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, npcm_sgpio_of_table);
+
+Move this closer to its user below.
+
+...
+
+> +	if (gpio->nin_sgpio > MAX_NR_HW_SGPIO || gpio->nout_sgpio > MAX_NR_HW_SGPIO) {
+> +		dev_err(&pdev->dev, "Number of GPIOs exceeds the maximum of %d: input: %d output: %d\n",
+> +			MAX_NR_HW_SGPIO, nin_gpios, nout_gpios);
+> +		return -EINVAL;
+
+		return dev_err_probe(...);
+
+> +	}
+> +
+> +	gpio->pclk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(gpio->pclk)) {
+> +		dev_err(&pdev->dev, "Could not get pclk\n");
+> +		return PTR_ERR(gpio->pclk);
+
+Ditto.
+
+> +	}
+
+...
+
+> +	rc = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+> +	if (rc < 0)
+
+Here and in the other cases, why ' < 0'? Does it have positive value
+to be returned in some cases?
+
+> +		return rc;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
