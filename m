@@ -2,111 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352F7810B1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 003ED810B47
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378524AbjLMHNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        id S235268AbjLMHPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbjLMHNF (ORCPT
+        with ESMTP id S1378699AbjLMHPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:13:05 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A83D8E4;
-        Tue, 12 Dec 2023 23:13:10 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.183])
-        by gateway (Coremail) with SMTP id _____8CxRPCFWXllbZgAAA--.3567S3;
-        Wed, 13 Dec 2023 15:13:09 +0800 (CST)
-Received: from [10.20.42.183] (unknown [10.20.42.183])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxPeGBWXllsv0BAA--.13577S3;
-        Wed, 13 Dec 2023 15:13:08 +0800 (CST)
-Subject: Re: Re: [PATCH v5 1/4] KVM: selftests: Add KVM selftests header files
- for LoongArch
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
-References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
- <20231130111804.2227570-2-zhaotianrui@loongson.cn>
- <e40d3884-bf39-8286-627f-e0ce7dacfcbe@loongson.cn>
- <ZXiV1rMrXY0hNgvZ@google.com>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <023b6f8f-301b-a6d0-448b-09a602ba1141@loongson.cn>
-Date:   Wed, 13 Dec 2023 15:15:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 13 Dec 2023 02:15:42 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6F6E3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:15:48 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1c7b20f895so757439066b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702451746; x=1703056546; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tMTwt7L6rgKnu3PUy8qh8FUCF9fFCzjsiWdGKd+O9a4=;
+        b=pcq0pfR0y1hcqMtgToMZYxK2f9BkZFZg07gT1bLleAhKLU8HxgjgkqS3cC0MfyytQP
+         z7tgY5jDRYcCJmtOkxyW8+nuZH8vdW/D8VoHpsIzfyd2FyHtOQCXVO4T09LmJfzl70aN
+         sahsIGJjCIEeQEYM6J7C9sYYK69E9Za7agPICKTYXDUdOh5LjT7C+qSLa1UO62lz24NM
+         GBA6X2YHp7iiQqm40kshkZbz+L4a32euWONXU4D+msBS7RJYedPutkZnZqsguhDTZkxR
+         enruOmO3KDpf/2Ykg9iKhs8320BRXjbG/IoRb6wUd+XAZMpYUahhJiEeWyK0WxkuZl0A
+         d0dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702451746; x=1703056546;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tMTwt7L6rgKnu3PUy8qh8FUCF9fFCzjsiWdGKd+O9a4=;
+        b=ZZFtiipY81lP2t2apVmnxe8vhQhkOXTKa72jgNwZMlpiUjiq/G/q++uIRhqqrJqDk5
+         G/0Ji7P5PYQT88l+WLRIQItEypTnAObIhnBFF+71tCSpu4EDdwF0EWjLM+cc7QbJQ8G/
+         rGgkfUUGynrGGv2uLw2h7qtY6/dgHL7nFi0QrqFYm0xtpCKMDMImYOuFQeL0wqOY4+iZ
+         0FdKqb/wxkhl5DOjXQClse/hjHsuBgTVUan9UwP/MQycreSQ4RHIynYKkbQYqRyN2Ar1
+         ilvOebaTFHD3DDQ3lNYqC3RQfD1dPf3ezmHQkmrv+F+SH0QCaE4uLuzYuolv419oPIIh
+         ifNw==
+X-Gm-Message-State: AOJu0YxEJSuGiA7867id/8Byotm/BTrN0bo2QAOBz9XKhqEIY0BDjUeV
+        vnylSqBYnIhLpfvsd5w57aqVN1Yh9uTU7fKVMcs=
+X-Google-Smtp-Source: AGHT+IGsrKBnPBDqJ4VH7yA/4zgFx/jx29FZ3j6NGsplz0s+1Bb3O0BwU6x9CkfwnMlKKrFhbWUseg==
+X-Received: by 2002:a17:906:5ace:b0:a1e:82b2:e2fc with SMTP id x14-20020a1709065ace00b00a1e82b2e2fcmr3715564ejs.120.1702451746469;
+        Tue, 12 Dec 2023 23:15:46 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id hu19-20020a170907a09300b00a0ad580e1b6sm7196336ejc.48.2023.12.12.23.15.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 23:15:45 -0800 (PST)
+Message-ID: <24fb0b25-0139-4370-864c-839ae931f847@linaro.org>
+Date:   Wed, 13 Dec 2023 08:15:43 +0100
 MIME-Version: 1.0
-In-Reply-To: <ZXiV1rMrXY0hNgvZ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxPeGBWXllsv0BAA--.13577S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7WF1fXr4kWr1kCFyrCryrZrc_yoW8Jw4UpF
-        yI9F1aka1kGFW7tws5Jw1UuF43KFs3uF18CrWDGw4Du3Z8Jwnrtr4jkw4rKa4vyr47J3W2
-        v3W2q34vqa9093gCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jOa93UUU
-        UU=
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+References: <20231211121124.4194-1-quic_kriskura@quicinc.com>
+ <20231211121124.4194-2-quic_kriskura@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231211121124.4194-2-quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/12/2023 13:11, Krishna Kurapati wrote:
+> The high speed related interrupts present on QC targets are as follows:
+> 
+> dp/dm irq's
+> These IRQ's directly reflect changes on the DP/DM pads of the SoC. These
+> are used as wakeup interrupts only on SoCs with non-QUSB2 targets with
+> exception of SDM670/SDM845/SM6350.
+> 
+> qusb2_phy irq
+> SoCs with QUSB2 PHY do not have separate DP/DM IRQs and expose only a
+> single IRQ whose behavior can be modified by the QUSB2PHY_INTR_CTRL
+> register. The required DPSE/DMSE configuration is done in
+> QUSB2PHY_INTR_CTRL register of phy address space.
+> 
+> hs_phy_irq
+> This is completely different from the above two and is present on all
+> targets with exception of a few IPQ ones. The interrupt is not enabled by
+> default and its functionality is mutually exclusive of qusb2_phy on QUSB
+> targets and DP/DM on femto phy targets.
+> 
+> The DTs of several QUSB2 PHY based SoCs incorrectly define "hs_phy_irq"
+> when they should have been "qusb2_phy_irq". On Femto phy targets, the
+> "hs_phy_irq" mentioned is either the actual "hs_phy_irq" or "pwr_event",
+> neither of which would never be triggered directly are non-functional
+> currently. The implementation tries to clean up this issue by addressing
+> the discrepencies involved and fixing the hs_phy_irq's in respective DT's.
+> 
+> Classiffy SoC's into four groups based on whether qusb2_phy interrupt
+> or {dp/dm}_hs_phy_irq is used for wakeup in high speed and whether the
+> SoCs have hs_phy_irq present in them or not.
+> 
+> The ss_phy_irq is optional interrupt because there are mutliple SoC's
+> which either support only High Speed or there are multiple controllers
+> within same Soc and the secondary controller is High Speed only capable.
+> 
+> This breaks ABI on targets running older kernels, but since the interrupt
+> definitions are given wrong on many targets and to establish proper rules
+> for usage of DWC3 interrupts on Qualcomm platforms, DT binding update is
+> necessary.
 
+This still does not explain why missing property has to be added as
+first one, causing huge reordering of everything here and in DTS.
 
-在 2023/12/13 上午1:18, Sean Christopherson 写道:
-> On Tue, Dec 12, 2023, zhaotianrui wrote:
->> Hi, Sean:
->>
->> I want to change the definition of  DEFAULT_GUEST_TEST_MEM in the common
->> file "memstress.h", like this:
->>
->>   /* Default guest test virtual memory offset */
->> +#ifndef DEFAULT_GUEST_TEST_MEM
->>   #define DEFAULT_GUEST_TEST_MEM		0xc0000000
->> +#endif
->>
->> As this address should be re-defined in LoongArch headers.
-> 
-> Why?  E.g. is 0xc0000000 unconditionally reserved, not guaranteed to be valid,
-> something else?
-> 
->> So, do you have any suggesstion?
-> 
-> Hmm, I think ideally kvm_util_base.h would define a range of memory that can be
-> used by tests for arbitrary data.  Multiple tests use 0xc0000000, which is not
-> entirely arbitrary, i.e. it doesn't _need_ to be 0xc0000000, but 0xc0000000 is
-> convenient because it's 32-bit addressable and doesn't overlap reserved areas in
-> other architectures.
-> 
-Thanks for your explanation, and LoongArch want to define 
-DEFAULT_GUEST_TEST_MEM to 0x130000000. As default base address for 
-application loading is 0x120000000, DEFAULT_GUEST_TEST_MEM should be 
-larger than app loading address, so that PER_VCPU_MEM_SIZE can be large 
-enough, and kvm selftests app size is smaller than 256M in generic.
+If pwr_event is required and we already break the ABI, reduce the impact
+of the change by putting it after all required interrupts. Otherwise
+please explain here and in commit msg why different approach is taken.
 
-Thanks
-Tianrui Zhao
+Best regards,
+Krzysztof
 
