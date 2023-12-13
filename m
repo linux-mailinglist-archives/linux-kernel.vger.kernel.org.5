@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8344810BC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F091810BD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378706AbjLMHuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        id S1378730AbjLMHvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjLMHt6 (ORCPT
+        with ESMTP id S1378554AbjLMHvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:49:58 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C88E4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:50:03 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1915034144so860190066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702453802; x=1703058602; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jvtn/gz8YL6Ce3HXfGFLuvh0AJH+XzrObcFPY0JHO+Y=;
-        b=nJHOznshjaKJK+XR2lW4Qm7ZmpyY/lOx6ahMPrNJaPkCfVAfr2TXMiFmtzro9vpPJ7
-         aVwz1wfx5mMahUOV6vj34Svgl5THp7iQSSLcfP8xNpUy08FEHwub578kGf2RIQvQ09xY
-         uGg5aikbKP++haZmKZ5nLOri09yLiIlbbZZJgS8Cld/Cgzdbg6cbg1N3knchu+epF9Ww
-         NmZys7GfQHf7K3znSqW4PsvdGYArYBMkldUzUZjSha+NYeUJA0REvT5ZidADvLRAuteR
-         unSf/QbJ8rzKPUpUYsoHp5j1n7cWGyvEL046iJSThpW2xTnSGKKGIFWCwoYJNaubdCcx
-         Mm1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702453802; x=1703058602;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jvtn/gz8YL6Ce3HXfGFLuvh0AJH+XzrObcFPY0JHO+Y=;
-        b=UNxYJavPhcp3E42ALy8aLcueLwh3OEUCBF3Roz1Ae70ElFf9jfwF9Royfw1M2XC5/u
-         M6sPekwIszIXWiZ4qFuO4F1s6VkUu/PD9NfTzl03HaoWZJM1FrvviJrmWPcETDBo5DXT
-         Vf25e4zNAMw94YcS2Cl6xxoEisEI+SX0aJldvG/Hn8AaMXf085ieVBiZA0kVDuTGIVVl
-         B/WmsCrOTKcm3yTdmHj8t26dQTzBwGB8ZGnIsUDIhotEt6X1HKIXW2ShLUi/NeKMAvmj
-         ZDKva0p3B7YcWQeCGwpaASfqJFM/rq1Rjy3iChQx9PN4HbmFiHPLIgKxSkYYxt+T0BS4
-         1jmw==
-X-Gm-Message-State: AOJu0Ywd3PcH8fohNBrBWj4UKti+GpVnvWfeuEFFNFNONHNXUPqSs1pX
-        oAxkFqOIn1Xf7+WDCr2olzs2ig==
-X-Google-Smtp-Source: AGHT+IEY8S5EAkfl0TgWnTfT9xclu2RZQfeyA+EIuy2UHvMlMrR/3Hv1WbUDbQq2o9H2HbQysVp8dQ==
-X-Received: by 2002:a17:906:106:b0:9e3:fbab:e091 with SMTP id 6-20020a170906010600b009e3fbabe091mr5413257eje.15.1702453802327;
-        Tue, 12 Dec 2023 23:50:02 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vt4-20020a170907a60400b00a1e1a1dd318sm7374141ejc.137.2023.12.12.23.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 23:50:01 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Jaewon Kim <jaewon02.kim@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
-In-Reply-To: <20231211114145.106255-1-jaewon02.kim@samsung.com>
-References: <CGME20231211114215epcas2p226d66c6dd01a4414559272c648c3d464@epcas2p2.samsung.com>
- <20231211114145.106255-1-jaewon02.kim@samsung.com>
-Subject: Re: [PATCH v4 0/2] Introduce ExynosAutov920 SoC and SADK board
-Message-Id: <170245380069.18789.1595497375493388753.b4-ty@linaro.org>
-Date:   Wed, 13 Dec 2023 08:50:00 +0100
+        Wed, 13 Dec 2023 02:51:02 -0500
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71190BD;
+        Tue, 12 Dec 2023 23:51:06 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4SqnPC144gz9y1y3;
+        Wed, 13 Dec 2023 15:37:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+        by mail.maildlp.com (Postfix) with ESMTP id 31E66140426;
+        Wed, 13 Dec 2023 15:51:03 +0800 (CST)
+Received: from [10.204.63.22] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwCnpV9gYnllQm9tAg--.42816S2;
+        Wed, 13 Dec 2023 08:51:02 +0100 (CET)
+Message-ID: <ecf524e0-b580-44c0-b64a-4b99da0615bf@huaweicloud.com>
+Date:   Wed, 13 Dec 2023 08:50:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MAINTAINERS: Add Roberto Sassu as co-maintainer to IMA
+ and EVM
+To:     Mimi Zohar <zohar@linux.ibm.com>, linux-integrity@vger.kernel.org
+Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212152937.928126-1-zohar@linux.ibm.com>
+ <20231212152937.928126-2-zohar@linux.ibm.com>
+Content-Language: en-US
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <20231212152937.928126-2-zohar@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwCnpV9gYnllQm9tAg--.42816S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1UAF43Zw13Ar1DXFyrZwb_yoW8AF15pa
+        yDWr45Cry0gr1xA3ZYgF43Aay5X3y8Jry7W3yDtw17ZasxG3Z09F4vk3WI9FykKr18KFWY
+        yr9Igrn8uan8ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
+        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
+        cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMI
+        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
+        KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAKBF1jj5OUXwACsn
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 11 Dec 2023 20:41:43 +0900, Jaewon Kim wrote:
-> ExynosAutov920[1] is ARMv8-based automotive-oriented SoC.
-> This SoC is the next generation of exynosautov9 and AE(Automotive Enhanced)
-> IPs are used for safety.
+On 12.12.23 16:29, Mimi Zohar wrote:
+> Roberto Sassu has been actively involved in IMA and EVM since 2011.
+> His first major IMA contribution was IMA template support.  He also
+> contributed extending TPM 2.0 PCRs with properly calculated per TPM
+> bank digests and included file metadata information in the IMA
+> measurement list.
 > 
-> This patchset is the minimal set for ExynosAutov920 SoC and SADK board.
-> Currently, ramdisk console is available and Clock, UFS, and USI will be
-> added after this patchset.
+> Regarding EVM, Roberto contributed to making EVM portable and immutable
+> signatures more usable.  He also prepared the LSM infrastructure to
+> support EVM as a fully fledged LSM, by ensuring that the latter receives
+> from the former all xattrs provided by other registered LSMs at inode
+> creation time, for HMAC calculation.
 > 
-> [...]
+> Roberto is currently working on making IMA and EVM full fledged LSMs.
+> 
+> Add Roberto as an IMA and EVM maintainer.
+> 
+> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Applied, thanks!
+Acked-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-[1/2] pinctrl: samsung: support ExynosAuto GPIO structure
-      https://git.kernel.org/pinctrl/samsung/c/884fdaa53b38921165cd9afdb230502b4e1690b0
-[2/2] pinctrl: samsung: add exynosautov920 pinctrl
-      https://git.kernel.org/pinctrl/samsung/c/6cf96df77338c6a7e753229fe6d330ab60e28cda
+Thanks
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Roberto
+
+> ---
+>   MAINTAINERS | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 012df8ccf34e..ffaac404d1e0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -7977,6 +7977,7 @@ F:	include/uapi/linux/ext4.h
+>   
+>   Extended Verification Module (EVM)
+>   M:	Mimi Zohar <zohar@linux.ibm.com>
+> +M:	Roberto Sassu <roberto.sassu@huawei.com>
+>   L:	linux-integrity@vger.kernel.org
+>   S:	Supported
+>   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
+> @@ -10554,6 +10555,7 @@ F:	drivers/crypto/inside-secure/
+>   
+>   INTEGRITY MEASUREMENT ARCHITECTURE (IMA)
+>   M:	Mimi Zohar <zohar@linux.ibm.com>
+> +M:	Roberto Sassu <roberto.sassu@huawei.com>
+>   M:	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+>   L:	linux-integrity@vger.kernel.org
+>   S:	Supported
 
