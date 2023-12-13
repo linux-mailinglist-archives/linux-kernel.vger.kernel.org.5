@@ -2,139 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD17811B9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE89811BA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbjLMRys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S233430AbjLMR4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233643AbjLMRy3 (ORCPT
+        with ESMTP id S235471AbjLMR4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:54:29 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C267128
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:54:36 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 914D75C03F5;
-        Wed, 13 Dec 2023 12:54:35 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 13 Dec 2023 12:54:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=fm1; t=1702490075; x=
-        1702576475; bh=RRJC+HdOSAtLKZ1tfbLXPJklfXKvB6O/n536R+XKUYg=; b=i
-        G8N+EJ6x+T4ml59XjFOuXm57KzjFKlH3qEfjT/whpVmd/PHK08DGw3rkiBkPsPMu
-        ycZ37H+kgTlHsp0D3tHGif1sK+LFPaJ8tiQ5vgj/l1qEUFO3PLTEzOHr83NStlCT
-        mVXwV4sCFPd5Rk4h6C2dwCUi8yaSts2IsHF/4EQA4Vi87U2ITPOiPH49tpyLYG66
-        ZvlabOBI3sl4yjA4hv0f56kJPkWR71DhIzVzOiuTGu43j+f7PESZQqzUNAbloqYi
-        oUxNBfYo/FTkGcQUzSWuwRQb5cJ9VXMqGBbLr8HhkVqLp0C9DG4txrigXLoKsjhI
-        P7aoM9O9HZHEHx4Cydx0A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702490075; x=
-        1702576475; bh=RRJC+HdOSAtLKZ1tfbLXPJklfXKvB6O/n536R+XKUYg=; b=o
-        p+szTeXumDNUM5dpSMbUm2WhsyQqKR40pfl6Su8kcgEh/yWcQmkFfN0ch88iE1fJ
-        yRS2i0IDWfFM0RDA4Aw3F2+JRTmeCcEwlHvgFMDV8xPY8fszwieSmAdDwYgRmHc3
-        R1UNYkV+k2/8ltLO+cRYuD0SN+Rbc5oAzSpKzt5q6YJOHsEqux7F4FWAumyA9gdK
-        9f1lsun6RtqNrYLu5tQgnGWKZUryuvqn6qcNcvmrHSxdiAdrgAmSUQd68PmoxdBG
-        37hbI1HUQOKHlG3IhAj8vJ7A8YHWAB3TnkTqsDz3afWLmhMPW7ywz2lBcn5Q5295
-        AzJmOonHnyVgPTa4VE0dQ==
-X-ME-Sender: <xms:2-95ZbPuep1r7XjPIYqklLV_wP56dpueMHu7zgDaNCJZ0DGmJJUxXA>
-    <xme:2-95ZV-Qxg5hJb_ZaD1Frh0Kg-bRxUASudO8qKiK2IBoOlPqFRiRUryfHTKVoXO0N
-    I4YZblTZWUjXF0Idfw>
-X-ME-Received: <xmr:2-95ZaQqNSHaKEl5icurbc6d2kdEA3B6V7HpyH9NshJDIoM-WEoHiXRSfxUeEXVrLRqJmwqSO7-c9D9-_gPJhS3FAgCM7dot08NVEfJC7M0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeljedggeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
-    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
-    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
-    grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:2-95ZfvrBbTUmXbKeJLQF2iRKjjHOM4_AVeTUAOQ3oriZ3GGm-MUOQ>
-    <xmx:2-95ZTfAMGqoQginvMyKlMTKM-3KEYcV1FXPi9p0_9tDDxpmjOfJ_g>
-    <xmx:2-95Zb3dDWnS7Lr15cLLo1tzvfWoARAe2InSuc6gv4-iz4YiIFYobw>
-    <xmx:2-95Zf5de3xY7esnUjj40fFZEvOOx4mv23p-Y1Q9d-3ZEhnkOLjcNA>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 12:54:35 -0500 (EST)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 5/5] staging: rtl8192e: rename variable HTInitializeHTInfo
-Date:   Wed, 13 Dec 2023 12:54:59 -0500
-Message-ID: <20231213175459.5425-6-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231213175459.5425-1-garyrookard@fastmail.org>
-References: <20231213175459.5425-1-garyrookard@fastmail.org>
+        Wed, 13 Dec 2023 12:56:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B493114
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702490178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEKtCaZo1O9cfSPgdOwxIJB9fsJXHh/ahknjK4hJAXk=;
+        b=JHU6RjzXafQpEOV2brBCe61Y+RLDRaUdD0hEeYXaykOANcJoWOO/v930HitsddPbKTCy75
+        096n8/tbb/JCTF4r4nNsxLRvxsEtPqGNdgE3UTgO2XOWTMFDlRIwqSzzQI3XrYPOPxlssl
+        0abo/n3+V25Ho2MXzGD/q0IVhOeFXqA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-203-Kofem-qXPfmvryUY3roAgw-1; Wed, 13 Dec 2023 12:56:15 -0500
+X-MC-Unique: Kofem-qXPfmvryUY3roAgw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a19725a3a84so424611466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:56:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702490174; x=1703094974;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vEKtCaZo1O9cfSPgdOwxIJB9fsJXHh/ahknjK4hJAXk=;
+        b=Wtpt5zn+cc79uo5PYhdEturUepTbXrkbLNC+aMSfSdyvXW7AbSg7P4UBpvuGKwr2vb
+         ZtrOrlNEb5U2saSEB8zlzHtYXqd30uufa5zHJEKvME2P1HHpDCm9q7+hMiDPW04mN12d
+         KwpJeu+/0iWfEQy/DUSCk3DJyb+0gy5f5QiBzN5EyN0gSJLqBRvm1+kpUuEg6BWtEGxu
+         c9vdtv8d6H/ExIxkerv7tYtOHLZaV/KboBC627Emi77UIiBU7OppXDVfaZdGk2YG9tOb
+         2sQio3Jpp/8q4Zt9f/URu0T7K09XrT/0kNrqMV+9Z+In7EFCf7y9RZxuU9/ncKPLUESp
+         w0bA==
+X-Gm-Message-State: AOJu0Yy/LYpbqn3nRq8V8ucM6E7Fwwp9l/Oz6ZBWd5o+6JIYS8Lm2OeX
+        /0820xVHwGo2pN42TXZsS40E+2S9d+v+sUK7v2tLHMBz3H+DRpjAdGzAFbfwT7sypbhLI6M4D/0
+        dv8edyf3hrN0lRs20CxVULuwe
+X-Received: by 2002:a17:906:51c9:b0:a23:94b:eb76 with SMTP id v9-20020a17090651c900b00a23094beb76mr66459ejk.110.1702490174197;
+        Wed, 13 Dec 2023 09:56:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGc9RJlOVWyo0HyAiFTcOk5Wfn8VDPbQGBmpAhf72fm6DauJ3ApY2N3w9RPj1ICyK7MuA8IVA==
+X-Received: by 2002:a17:906:51c9:b0:a23:94b:eb76 with SMTP id v9-20020a17090651c900b00a23094beb76mr66447ejk.110.1702490173843;
+        Wed, 13 Dec 2023 09:56:13 -0800 (PST)
+Received: from redhat.com ([109.253.189.71])
+        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1e443bc037sm8258684ejc.147.2023.12.13.09.56.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 09:56:12 -0800 (PST)
+Date:   Wed, 13 Dec 2023 12:56:08 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v8 0/4] send credit update during setting
+ SO_RCVLOWAT
+Message-ID: <20231213125404-mutt-send-email-mst@kernel.org>
+References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
+ <20231212105423-mutt-send-email-mst@kernel.org>
+ <d27f22f0-0f1e-e1bb-5b13-a524dc6e94d7@salutedevices.com>
+ <20231212111131-mutt-send-email-mst@kernel.org>
+ <7b362aef-6774-0e08-81e9-0a6f7f616290@salutedevices.com>
+ <ucmekzurgt3zcaezzdkk6277ukjmwaoy6kdq6tzivbtqd4d32b@izqbcsixgngk>
+ <402ea723-d154-45c9-1efe-b0022d9ea95a@salutedevices.com>
+ <20231213100518-mutt-send-email-mst@kernel.org>
+ <20231213100957-mutt-send-email-mst@kernel.org>
+ <8e6b06a5-eeb3-84c8-c6df-a8b81b596295@salutedevices.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <8e6b06a5-eeb3-84c8-c6df-a8b81b596295@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coding style issue, checkpatch Avoid CamelCase,
-rename it. HTInitializeHTInfo -> ht_initialize_ht_info
+On Wed, Dec 13, 2023 at 08:11:57PM +0300, Arseniy Krasnov wrote:
+> 
+> 
+> On 13.12.2023 18:13, Michael S. Tsirkin wrote:
+> > On Wed, Dec 13, 2023 at 10:05:44AM -0500, Michael S. Tsirkin wrote:
+> >> On Wed, Dec 13, 2023 at 12:08:27PM +0300, Arseniy Krasnov wrote:
+> >>>
+> >>>
+> >>> On 13.12.2023 11:43, Stefano Garzarella wrote:
+> >>>> On Tue, Dec 12, 2023 at 08:43:07PM +0300, Arseniy Krasnov wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 12.12.2023 19:12, Michael S. Tsirkin wrote:
+> >>>>>> On Tue, Dec 12, 2023 at 06:59:03PM +0300, Arseniy Krasnov wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 12.12.2023 18:54, Michael S. Tsirkin wrote:
+> >>>>>>>> On Tue, Dec 12, 2023 at 12:16:54AM +0300, Arseniy Krasnov wrote:
+> >>>>>>>>> Hello,
+> >>>>>>>>>
+> >>>>>>>>>                                DESCRIPTION
+> >>>>>>>>>
+> >>>>>>>>> This patchset fixes old problem with hungup of both rx/tx sides and adds
+> >>>>>>>>> test for it. This happens due to non-default SO_RCVLOWAT value and
+> >>>>>>>>> deferred credit update in virtio/vsock. Link to previous old patchset:
+> >>>>>>>>> https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> Patchset:
+> >>>>>>>>
+> >>>>>>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> >>>>>>>
+> >>>>>>> Thanks!
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> But I worry whether we actually need 3/8 in net not in net-next.
+> >>>>>>>
+> >>>>>>> Because of "Fixes" tag ? I think this problem is not critical and reproducible
+> >>>>>>> only in special cases, but i'm not familiar with netdev process so good, so I don't
+> >>>>>>> have strong opinion. I guess @Stefano knows better.
+> >>>>>>>
+> >>>>>>> Thanks, Arseniy
+> >>>>>>
+> >>>>>> Fixes means "if you have that other commit then you need this commit
+> >>>>>> too". I think as a minimum you need to rearrange patches to make the
+> >>>>>> fix go in first. We don't want a regression followed by a fix.
+> >>>>>
+> >>>>> I see, ok, @Stefano WDYT? I think rearrange doesn't break anything, because this
+> >>>>> patch fixes problem that is not related with the new patches from this patchset.
+> >>>>
+> >>>> I agree, patch 3 is for sure net material (I'm fine with both rearrangement or send it separately), but IMHO also patch 2 could be.
+> >>>> I think with the same fixes tag, since before commit b89d882dc9fc ("vsock/virtio: reduce credit update messages") we sent a credit update
+> >>>> for every bytes we read, so we should not have this problem, right?
+> >>>
+> >>> Agree for 2, so I think I can rearrange: two fixes go first, then current 0001, and then tests. And send it as V9 for 'net' only ?
+> >>>
+> >>> Thanks, Arseniy
+> >>
+> >>
+> >> hmm why not net-next?
+> > 
+> > Oh I missed your previous discussion. I think everything in net-next is
+> > safer.  Having said that, I won't nack it net, either.
+> 
+> So, summarizing all above:
+> 1) This patchset entirely goes to net-next as v9
+> 2) I reorder patches like 3 - 2 - 1 - 4, e.g. two fixes goes first with Fixes tag
+> 3) Add Acked-by: Michael S. Tsirkin <mst@redhat.com> to each patch
+> 
+> @Michael, @Stefano ?
+> 
+> Thanks, Arseniy
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h         | 2 +-
- drivers/staging/rtl8192e/rtllib_module.c  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Fine by me.
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 8d07e5caa2b8..8af980619b99 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -553,7 +553,7 @@ void ht_on_assoc_rsp(struct rtllib_device *ieee)
- 	ht_info->current_op_mode = pPeerHTInfo->OptMode;
- }
- 
--void HTInitializeHTInfo(struct rtllib_device *ieee)
-+void ht_initialize_ht_info(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index f756395b9bed..dbc894259477 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1761,7 +1761,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee,
- void ht_construct_rt2rt_agg_element(struct rtllib_device *ieee,
- 				u8 *posRT2RTAgg, u8 *len);
- void ht_on_assoc_rsp(struct rtllib_device *ieee);
--void HTInitializeHTInfo(struct rtllib_device *ieee);
-+void ht_initialize_ht_info(struct rtllib_device *ieee);
- void HTInitializeBssDesc(struct bss_ht *pBssHT);
- void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 				   struct rtllib_network *pNetwork);
-diff --git a/drivers/staging/rtl8192e/rtllib_module.c b/drivers/staging/rtl8192e/rtllib_module.c
-index 95b6d6b9429c..e7af4a25b0be 100644
---- a/drivers/staging/rtl8192e/rtllib_module.c
-+++ b/drivers/staging/rtl8192e/rtllib_module.c
-@@ -123,7 +123,7 @@ struct net_device *alloc_rtllib(int sizeof_priv)
- 		goto free_softmac;
- 
- 	ht_update_default_setting(ieee);
--	HTInitializeHTInfo(ieee);
-+	ht_initialize_ht_info(ieee);
- 	rtllib_ts_init(ieee);
- 	for (i = 0; i < IEEE_IBSS_MAC_HASH_SIZE; i++)
- 		INIT_LIST_HEAD(&ieee->ibss_mac_hash[i]);
--- 
-2.41.0
+> > 
+> >>>>
+> >>>> So, maybe all the series could be "net".
+> >>>>
+> >>>> Thanks,
+> >>>> Stefano
+> >>>>
+> > 
 
