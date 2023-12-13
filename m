@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD109812340
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3CD81238F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442984AbjLMXiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S1442710AbjLMXuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442757AbjLMXhU (ORCPT
+        with ESMTP id S234064AbjLMXtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:37:20 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5401BE;
-        Wed, 13 Dec 2023 15:37:16 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDM7CtE015847;
-        Wed, 13 Dec 2023 23:36:57 GMT
+        Wed, 13 Dec 2023 18:49:49 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942661BDC;
+        Wed, 13 Dec 2023 15:40:57 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDMe3sK026112;
+        Wed, 13 Dec 2023 23:40:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=KKQ+/x5aBUFVSHNTE5+u0C93kqAMHLy+4zXkcQqC2PY=;
- b=a+xMfSQN60Zosn0PI81EMAF4iY520/iP3v9Go9PFZ6MMlXPomoueq2Ez2smx8b0GVB0h
- /Bj6t51LVnuCeIlcxLRdQLYnMmrLuXgt1/16Wg0BstV79h+ehRTfeOeByPkVLNlJfcj0
- FZdPraGjUCULl+aHf7mZwssQpyMKKzPburxiGRZaG6X8tX27PiB9w9Tdeb1yE/HGWRVP
- 2nvtddCISxWAXZAQ1luQIjaGLqtlnLKyJEBVxSh2TJ+lbEJh4wyXU2NZsZr/Iqg6QoEV
- kpgM/0LiaDkcYoKUGn6fSQq2aOxqNEZt1vGUnMbqUXwtkRqq3negMXD7hUUCPiX8mdiQ Jw== 
+ bh=RNAEdf6yu7dcjX2jOn112T18heV7subpebJzqiDTVHU=;
+ b=h3Ohq2BoyYrV9ysMvVTwG1yC/SXJpU8oKVRlehn/wazgckl0UWxkXl1XO8C8uVC1WS+8
+ YUGZREXylkmApnzow/KMhN0IP1LHHAhIO5AJYJ97Lxf+MwVMI/LTGVWRpw/kHTXONOhF
+ nv8rn3h4yud8DLUMBfDzXZrkLVeVmxKQDX+I31EcMbq8gxOQrKySuuIPDIhsfNYOWpqw
+ ChJFNztbP1Qy/gBh10TXgIcM/48+O7eGAy+XmGZWp0DwJv/rNtaZAngmvnZ4g68TvdMp
+ Mmp11/PyrYe8pa6QXcH19pDsd3UirZNCcKW6jOL9jl0GgqAkMgtQd7WDT7uHC/Ww4SYW 7w== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyn4d1q9y-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uymwuj5vt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 23:36:57 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDNQFao006872;
+        Wed, 13 Dec 2023 23:40:24 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDNWTIR009723;
+        Wed, 13 Dec 2023 23:40:23 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uymwuj5ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 23:40:23 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDGkI3J014819;
         Wed, 13 Dec 2023 23:36:56 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyn4d1q98-1
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42kg1xx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 13 Dec 2023 23:36:56 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDLGUp7028201;
-        Wed, 13 Dec 2023 23:36:55 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw2xyvrsa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 23:36:54 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDNap6R27263494
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDNarHZ45220132
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 23:36:51 GMT
+        Wed, 13 Dec 2023 23:36:53 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA37D20040;
+        by IMSVA (Postfix) with ESMTP id 46F5E20040;
+        Wed, 13 Dec 2023 23:36:53 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4A2120043;
         Wed, 13 Dec 2023 23:36:51 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 52BFE20043;
-        Wed, 13 Dec 2023 23:36:50 +0000 (GMT)
 Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.70.156])
         by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Dec 2023 23:36:50 +0000 (GMT)
+        Wed, 13 Dec 2023 23:36:51 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Alexander Potapenko <glider@google.com>,
@@ -82,24 +82,24 @@ Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Sven Schnelle <svens@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v3 27/34] s390/irqflags: Do not instrument arch_local_irq_*() with KMSAN
-Date:   Thu, 14 Dec 2023 00:24:47 +0100
-Message-ID: <20231213233605.661251-28-iii@linux.ibm.com>
+Subject: [PATCH v3 28/34] s390/mm: Define KMSAN metadata for vmalloc and modules
+Date:   Thu, 14 Dec 2023 00:24:48 +0100
+Message-ID: <20231213233605.661251-29-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213233605.661251-1-iii@linux.ibm.com>
 References: <20231213233605.661251-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IYnxAzNVYRzPOrpd-XtDyC5bRWSG5SiX
-X-Proofpoint-GUID: xGq4qQaEqxkSC5s6qSjoXz9Vr7RdbrF2
+X-Proofpoint-GUID: vfBS-CdzCAtBe0eAONYSdh2uF2-ntzde
+X-Proofpoint-ORIG-GUID: gLjFNC89khIf6pZ9lL-ibBIu5mfuKJCk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-13_14,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- mlxscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
- impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=816 priorityscore=1501
+ impostorscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2312130167
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
@@ -111,89 +111,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN generates the following false positives on s390x:
+The pages for the KMSAN metadata associated with most kernel mappings
+are taken from memblock by the common code. However, vmalloc and module
+metadata needs to be defined by the architectures.
 
-[    6.063666] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
-[         ...]
-[    6.577050] Call Trace:
-[    6.619637]  [<000000000690d2de>] check_flags+0x1fe/0x210
-[    6.665411] ([<000000000690d2da>] check_flags+0x1fa/0x210)
-[    6.707478]  [<00000000006cec1a>] lock_acquire+0x2ca/0xce0
-[    6.749959]  [<00000000069820ea>] _raw_spin_lock_irqsave+0xea/0x190
-[    6.794912]  [<00000000041fc988>] __stack_depot_save+0x218/0x5b0
-[    6.838420]  [<000000000197affe>] __msan_poison_alloca+0xfe/0x1a0
-[    6.882985]  [<0000000007c5827c>] start_kernel+0x70c/0xd50
-[    6.927454]  [<0000000000100036>] startup_continue+0x36/0x40
+Be a little bit more careful than x86: allocate exactly MODULES_LEN
+for the module shadow and origins, and then take 2/3 of vmalloc for
+the vmalloc shadow and origins. This ensures that users passing small
+vmalloc= values on the command line do not cause module metadata
+collisions.
 
-Between trace_hardirqs_on() and `stosm __mask, 3` lockdep thinks that
-interrupts are on, but on the CPU they are still off. KMSAN
-instrumentation takes spinlocks, giving lockdep a chance to see and
-complain about this discrepancy.
-
-KMSAN instrumentation is inserted in order to poison the __mask
-variable. Disable instrumentation in the respective functions. They are
-very small and it's easy to see that no important metadata updates are
-lost because of this.
-
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/include/asm/irqflags.h | 18 +++++++++++++++---
- drivers/s390/char/sclp.c         |  2 +-
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ arch/s390/boot/startup.c        |  8 ++++++++
+ arch/s390/include/asm/pgtable.h | 10 ++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/arch/s390/include/asm/irqflags.h b/arch/s390/include/asm/irqflags.h
-index 02427b205c11..7353a88b2ae2 100644
---- a/arch/s390/include/asm/irqflags.h
-+++ b/arch/s390/include/asm/irqflags.h
-@@ -37,12 +37,19 @@ static __always_inline void __arch_local_irq_ssm(unsigned long flags)
- 	asm volatile("ssm   %0" : : "Q" (flags) : "memory");
+diff --git a/arch/s390/boot/startup.c b/arch/s390/boot/startup.c
+index 8104e0e3d188..e37e7ffda430 100644
+--- a/arch/s390/boot/startup.c
++++ b/arch/s390/boot/startup.c
+@@ -253,9 +253,17 @@ static unsigned long setup_kernel_memory_layout(void)
+ 	MODULES_END = round_down(__abs_lowcore, _SEGMENT_SIZE);
+ 	MODULES_VADDR = MODULES_END - MODULES_LEN;
+ 	VMALLOC_END = MODULES_VADDR;
++#ifdef CONFIG_KMSAN
++	VMALLOC_END -= MODULES_LEN * 2;
++#endif
+ 
+ 	/* allow vmalloc area to occupy up to about 1/2 of the rest virtual space left */
+ 	vmalloc_size = min(vmalloc_size, round_down(VMALLOC_END / 2, _REGION3_SIZE));
++#ifdef CONFIG_KMSAN
++	/* take 2/3 of vmalloc area for KMSAN shadow and origins */
++	vmalloc_size = round_down(vmalloc_size / 3, _REGION3_SIZE);
++	VMALLOC_END -= vmalloc_size * 2;
++#endif
+ 	VMALLOC_START = VMALLOC_END - vmalloc_size;
+ 
+ 	/* split remaining virtual space between 1:1 mapping & vmemmap array */
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index 601e87fa8a9a..d764abeb9e6d 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -107,6 +107,16 @@ static inline int is_module_addr(void *addr)
+ 	return 1;
  }
  
--static __always_inline unsigned long arch_local_save_flags(void)
 +#ifdef CONFIG_KMSAN
-+#define ARCH_LOCAL_IRQ_ATTRIBUTES \
-+	noinline notrace __no_sanitize_memory __maybe_unused
-+#else
-+#define ARCH_LOCAL_IRQ_ATTRIBUTES __always_inline
++#define KMSAN_VMALLOC_SIZE (VMALLOC_END - VMALLOC_START)
++#define KMSAN_VMALLOC_SHADOW_START VMALLOC_END
++#define KMSAN_VMALLOC_ORIGIN_START (KMSAN_VMALLOC_SHADOW_START + \
++				    KMSAN_VMALLOC_SIZE)
++#define KMSAN_MODULES_SHADOW_START (KMSAN_VMALLOC_ORIGIN_START + \
++				    KMSAN_VMALLOC_SIZE)
++#define KMSAN_MODULES_ORIGIN_START (KMSAN_MODULES_SHADOW_START + MODULES_LEN)
 +#endif
 +
-+static ARCH_LOCAL_IRQ_ATTRIBUTES unsigned long arch_local_save_flags(void)
- {
- 	return __arch_local_irq_stnsm(0xff);
- }
- 
--static __always_inline unsigned long arch_local_irq_save(void)
-+static ARCH_LOCAL_IRQ_ATTRIBUTES unsigned long arch_local_irq_save(void)
- {
- 	return __arch_local_irq_stnsm(0xfc);
- }
-@@ -52,7 +59,12 @@ static __always_inline void arch_local_irq_disable(void)
- 	arch_local_irq_save();
- }
- 
--static __always_inline void arch_local_irq_enable(void)
-+static ARCH_LOCAL_IRQ_ATTRIBUTES void arch_local_irq_enable_external(void)
-+{
-+	__arch_local_irq_stosm(0x01);
-+}
-+
-+static ARCH_LOCAL_IRQ_ATTRIBUTES void arch_local_irq_enable(void)
- {
- 	__arch_local_irq_stosm(0x03);
- }
-diff --git a/drivers/s390/char/sclp.c b/drivers/s390/char/sclp.c
-index d53ee34d398f..fb1d9949adca 100644
---- a/drivers/s390/char/sclp.c
-+++ b/drivers/s390/char/sclp.c
-@@ -736,7 +736,7 @@ sclp_sync_wait(void)
- 	cr0_sync.val = cr0.val & ~CR0_IRQ_SUBCLASS_MASK;
- 	cr0_sync.val |= 1UL << (63 - 54);
- 	local_ctl_load(0, &cr0_sync);
--	__arch_local_irq_stosm(0x01);
-+	arch_local_irq_enable_external();
- 	/* Loop until driver state indicates finished request */
- 	while (sclp_running_state != sclp_running_state_idle) {
- 		/* Check for expired request timer */
+ /*
+  * A 64 bit pagetable entry of S390 has following format:
+  * |			 PFRA			      |0IPC|  OS  |
 -- 
 2.43.0
 
