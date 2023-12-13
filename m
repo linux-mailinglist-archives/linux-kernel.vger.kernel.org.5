@@ -2,125 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 012A2810A6D
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3DA810A6E
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378632AbjLMGgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
+        id S1378640AbjLMGgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:36:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378610AbjLMGfz (ORCPT
+        with ESMTP id S1378644AbjLMGgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:35:55 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4910FE3;
-        Tue, 12 Dec 2023 22:35:57 -0800 (PST)
-X-UUID: da7b963a998111eeba30773df0976c77-20231213
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=wT6L12FQNaWx6Rm0cYBfdK4wwQwZV9ZOJPOa++K3K/g=;
-        b=LC4YDiav+nghYdp1mi1zHiGBfiZNPHmfD6QTGeBA4SAH6H4nl5m9tdg47hH2v1tVDkvVuIUOhuiJHCYqfc3NQnG0T1FCi1YSi+dfOmXS8Ch9bLGkkUYriNqYCuzjnzVZsqxEZA1DHrV6IS1T5vBWSOnHWg6e+p3ctL12e8wIByA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:7479b175-1874-48ca-af8a-25a4e4329f16,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:5f6e1ebd-2ac7-4da2-9f94-677a477649d9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: da7b963a998111eeba30773df0976c77-20231213
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 334278013; Wed, 13 Dec 2023 14:35:49 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 13 Dec 2023 14:35:47 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 13 Dec 2023 14:35:46 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH 3/3] arm64: dts: mediatek: mt8195: Add mediatek,rxfifo-depth to cherry
-Date:   Wed, 13 Dec 2023 14:35:43 +0800
-Message-ID: <20231213063543.12435-3-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231213063543.12435-1-chunfeng.yun@mediatek.com>
-References: <20231213063543.12435-1-chunfeng.yun@mediatek.com>
+        Wed, 13 Dec 2023 01:36:08 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261DC116;
+        Tue, 12 Dec 2023 22:36:11 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b9e7f4a0d7so4264512b6e.1;
+        Tue, 12 Dec 2023 22:36:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702449370; x=1703054170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kcmFWfftq2G2Pe8r2jvIeDmGVCfNhd3HCerTRPIks3k=;
+        b=bO1MzouKJLCOHPp4Szm+trCtoNQqe9zVmPgzRKGgPx3/fkMTvK3wx0M8MaUd0cCAHm
+         vVScit1m7ou23HkEz+HPNo0vxXZ2qxpgfEatZfNx0oWD6P0JfJdEEyacSEPJ/lJaazPT
+         9smieZIsXU5HdJfuoQ0bzlFWVoC/X6RccDMV39QrPYcwCQwOj3uyPNO9pLQeHwMdUd4W
+         ZJOJaEBmcREK1gcouopYybie0og+Mp5Wpx/c4/Zb8ebCQ/QTyxERsu5RJuAoJDUPHLqu
+         HgMZvrFg+TaPV4TYdiENXKCERdsgRG9sOdWxjIP+yQehbLydGMrpsI3gXeQDmMcmVHc1
+         gJfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702449370; x=1703054170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kcmFWfftq2G2Pe8r2jvIeDmGVCfNhd3HCerTRPIks3k=;
+        b=g3D1wWBLdbYDsTo0WDgigUq8yvY5C52GX3g2VbvwmhKIlhunAHGypf0A9WgSBucYQ7
+         /Bdy3UltbccYxlswrO6mLibUJTdYU3bOTr5ZjqzVYVL8Xjcui9qMk0fpHWiSRbnd7V3Z
+         0uzlZd6A50tl2uVW5L+JbSWq0oeNbeevGnfxwAo1iXO/TkxfIq7Wdd6q50hLECqHLy2C
+         lB0H0ZnrzhCAP7Fps3KboAGCduWEfrpJNd0S2/2fLevJS4r9g3qxFLEZZlQl2l6H0LVt
+         kleFA6puEZrzGetiVx1biCIjfsbF/VjcDBCtWCVxQ3acJkQwK8NK8CeljT0w9/NH63kT
+         I6gw==
+X-Gm-Message-State: AOJu0YwzdjvTgSbkmyR9XQ4Mrk8Xy41yalHnAojDxYhT6ZZz7HbbY/i5
+        dPMopNA4/Zxn1KAALUV5O9coKYrphrf5pQjLrEelPFaSXWByNrsZ
+X-Google-Smtp-Source: AGHT+IGt0rw2dSwB6cz4IETPSpNy/wIiv8FLtWZOOgCFCgAlDlmlV89gTjiEln7X3htaLqkTToHUF7rrI6ej3rLsABk=
+X-Received: by 2002:a05:6808:10cc:b0:3b8:b063:5049 with SMTP id
+ s12-20020a05680810cc00b003b8b0635049mr10985998ois.74.1702449370274; Tue, 12
+ Dec 2023 22:36:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--1.493100-8.000000
-X-TMASE-MatchedRID: 6pbNFWS8cDvREKzvS64+oUAoPtuOD8baBdebOqawiLsUta+LQgEZMA4D
-        QawrW+a/bhd2wSXB2al2ke9pVPnlKW94Ipa1otxo98sqn8kK3uF9LQinZ4QefOYQ3zcXToXr+gt
-        Hj7OwNO2OhzOa6g8KrdEifc9nolYfTA0OZlrhcEd8tH5vvpYSxTzEkZW7fanljQJquhmJPATW0/
-        74iSYj85QfOBeKyB45Yu4o39ob+Xo7BmSr5gys2eLDq7G+Ik/yv22xKJRyIGVDnOxozmpp1r+Wv
-        XJiKHRLMw/B2eF7ydmUTGVAhB5EbQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.493100-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 7076D785627DCAEAF457C7A3EF026C5B2281C7455469107C4ADE47F566AFBC692000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Wed, 13 Dec 2023 14:35:58 +0800
+Message-ID: <CABOYnLwGoNXXzvvn+YmCcjLu6ttAJGGTaN8+O_tNdPqcjHnfUA@mail.gmail.com>
+Subject: Re: [syzbot] [gfs2] WARNING in vfs_utimes
+To:     syzbot+0c64a8706d587f73409e@syzkaller.appspotmail.com
+Cc:     brauner@kernel.org, gfs2@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the quirk property "mediatek,rxfifo-depth" to work around Gen1 isoc-in
-transfer issue which send out unexpected ACK even after device already
-finished the burst transfer with a short patcket, specially for a 4K
-camera device.
+Hello, I reproduced this bug with repro.c and repro.txt since it
+relatively large please see
+https://gist.github.com/xrivendell7/b3b804bbf6d8c9930b2ba22e2dfaa6e6
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Since this bug in the dashboard
+https://syzkaller.appspot.com/bug?extid=3D0c64a8706d587f73409e use
+kernel commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/lin=
+ux.git/log/?id=3Daed8aee11130a954356200afa3f1b8753e8a9482
+kernel config: https://syzkaller.appspot.com/text?tag=3DKernelConfig&x=3Ddf=
+91a3034fe3f122
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-index dd5b89b73190..2f2133931846 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-@@ -1185,6 +1185,7 @@ &xhci0 {
- 
- 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
- 	vbus-supply = <&usb_vbus>;
-+	mediatek,rxfifo-depth;
- };
- 
- &xhci1 {
-@@ -1192,6 +1193,7 @@ &xhci1 {
- 
- 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
- 	vbus-supply = <&usb_vbus>;
-+	mediatek,rxfifo-depth;
- };
- 
- &xhci2 {
--- 
-2.25.1
+my repro.c use the seem config and it crash report like below, and
+it=E2=80=99s almost can make sure it the same as bug reported by syzobt.
 
+TITLE: WARNING in vfs_utimes
+CORRUPTED: false ()
+MAINTAINERS (TO): [linux-kernel@vger.kernel.org]
+MAINTAINERS (CC): [brauner@kernel.org linux-fsdevel@vger.kernel.org
+viro@zeniv.linux.org.uk]
+------------[ cut here ]------------
+DEBUG_RWSEMS_WARN_ON((rwsem_owner(sem) !=3D current) &&
+!rwsem_test_oflags(sem, RWSEM_NONSPINNABLE)): y
+WARNING: CPU: 2 PID: 12763 at kernel/locking/rwsem.c:1370 __up_write
+kernel/locking/rwsem.c:1369 [inline]
+WARNING: CPU: 2 PID: 12763 at kernel/locking/rwsem.c:1370
+up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Modules linked in:
+CPU: 2 PID: 12763 Comm: c90 Not tainted 6.6.0-rc1-00072-gaed8aee11130-dirty=
+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
+RIP: 0010:up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Code: 48 c7 c7 20 99 4a 8b 48 c7 c6 60 9b 4a 8b 48 8b 54 24 28 48 8b
+4c 24 18 4d 89 e0 4c 8b 4c 24 31
+RSP: 0018:ffffc9000af5fbe0 EFLAGS: 00010292
+RAX: d361770a4cb50c00 RBX: ffffffff8b4a9a00 RCX: 0000000000000000
+RDX: ffff8880298fbcc0 RSI: ffff8880298fbcc0 RDI: 0000000000000000
+RBP: ffffc9000af5fcb0 R08: ffffffff8155ef6f R09: 1ffff1101732516a
+R10: dffffc0000000000 R11: ffffed101732516b R12: 0000000000000000
+R13: ffff88807c966d68 R14: 1ffff920015ebf84 R15: dffffc0000000000
+FS: 00007fc89df2d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc89df2e000 CR3: 000000014aab9000 CR4: 0000000000750ee0
+PKRU: 55555554
+Call Trace:
+<TASK>
+inode_unlock include/linux/fs.h:807 [inline]
+vfs_utimes+0x4dc/0x790 fs/utimes.c:68
+do_utimes_path fs/utimes.c:99 [inline]
+do_utimes fs/utimes.c:145 [inline]
+__do_sys_utime fs/utimes.c:226 [inline]
+__se_sys_utime+0x1f2/0x2f0 fs/utimes.c:215
+do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x43deb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 1c 00 00 90 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c8
+RSP: 002b:00007fc89df2d208 EFLAGS: 00000246 ORIG_RAX: 0000000000000084
+RAX: ffffffffffffffda RBX: 00007fc89df2d6c0 RCX: 000000000043deb9
+RDX: 0031656c69662f2e RSI: 0000000000000000 RDI: 0000000020000080
+RBP: 00007fc89df2d220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffb0
+R13: 0000000000000016 R14: 00007fffd3267590 R15: 00007fffd3267678
+</TASK>
+TITLE: kernel panic: kernel: panic_on_warn set ...
+CORRUPTED: false ()
+MAINTAINERS (TO): [linux-kernel@vger.kernel.org]
+MAINTAINERS (CC): [brauner@kernel.org linux-fsdevel@vger.kernel.org
+viro@zeniv.linux.org.uk]
+Modules linked in:
+CPU: 2 PID: 12763 Comm: c90 Not tainted 6.6.0-rc1-00072-gaed8aee11130-dirty=
+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
+RIP: 0010:up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Code: 48 c7 c7 20 99 4a 8b 48 c7 c6 60 9b 4a 8b 48 8b 54 24 28 48 8b
+4c 24 18 4d 89 e0 4c 8b 4c 24 31
+RSP: 0018:ffffc9000af5fbe0 EFLAGS: 00010292
+RAX: d361770a4cb50c00 RBX: ffffffff8b4a9a00 RCX: 0000000000000000
+RDX: ffff8880298fbcc0 RSI: ffff8880298fbcc0 RDI: 0000000000000000
+RBP: ffffc9000af5fcb0 R08: ffffffff8155ef6f R09: 1ffff1101732516a
+R10: dffffc0000000000 R11: ffffed101732516b R12: 0000000000000000
+R13: ffff88807c966d68 R14: 1ffff920015ebf84 R15: dffffc0000000000
+FS: 00007fc89df2d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc89df2e000 CR3: 000000014aab9000 CR4: 0000000000750ee0
+PKRU: 55555554
+Call Trace:
+<TASK>
+inode_unlock include/linux/fs.h:807 [inline]
+vfs_utimes+0x4dc/0x790 fs/utimes.c:68
+do_utimes_path fs/utimes.c:99 [inline]
+do_utimes fs/utimes.c:145 [inline]
+__do_sys_utime fs/utimes.c:226 [inline]
+__se_sys_utime+0x1f2/0x2f0 fs/utimes.c:215
+do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x43deb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 1c 00 00 90 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c8
+RSP: 002b:00007fc89df2d208 EFLAGS: 00000246 ORIG_RAX: 0000000000000084
+RAX: ffffffffffffffda RBX: 00007fc89df2d6c0 RCX: 000000000043deb9
+RDX: 0031656c69662f2e RSI: 0000000000000000 RDI: 0000000020000080
+RBP: 00007fc89df2d220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffb0
+R13: 0000000000000016 R14: 00007fffd3267590 R15: 00007fffd3267678
+</TASK>
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 2 PID: 12763 Comm: c90 Not tainted 6.6.0-rc1-00072-gaed8aee11130-dirty=
+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+<TASK>
+__dump_stack lib/dump_stack.c:88 [inline]
+dump_stack_lvl+0x1f4/0x2f0 lib/dump_stack.c:106
+panic+0x31e/0x7a0 kernel/panic.c:340
+__warn+0x32e/0x4c0
+__report_bug lib/bug.c:199 [inline]
+report_bug+0x2ca/0x520 lib/bug.c:219
+handle_bug+0x3d/0x70 arch/x86/kernel/traps.c:237
+exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:258
+asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
+RIP: 0010:up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Code: 48 c7 c7 20 99 4a 8b 48 c7 c6 60 9b 4a 8b 48 8b 54 24 28 48 8b
+4c 24 18 4d 89 e0 4c 8b 4c 24 31
+RSP: 0018:ffffc9000af5fbe0 EFLAGS: 00010292
+RAX: d361770a4cb50c00 RBX: ffffffff8b4a9a00 RCX: 0000000000000000
+RDX: ffff8880298fbcc0 RSI: ffff8880298fbcc0 RDI: 0000000000000000
+RBP: ffffc9000af5fcb0 R08: ffffffff8155ef6f R09: 1ffff1101732516a
+R10: dffffc0000000000 R11: ffffed101732516b R12: 0000000000000000
+R13: ffff88807c966d68 R14: 1ffff920015ebf84 R15: dffffc0000000000
+inode_unlock include/linux/fs.h:807 [inline]
+vfs_utimes+0x4dc/0x790 fs/utimes.c:68
+do_utimes_path fs/utimes.c:99 [inline]
+do_utimes fs/utimes.c:145 [inline]
+__do_sys_utime fs/utimes.c:226 [inline]
+__se_sys_utime+0x1f2/0x2f0 fs/utimes.c:215
+do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x43deb9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 1c 00 00 90 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c8
+RSP: 002b:00007fc89df2d208 EFLAGS: 00000246 ORIG_RAX: 0000000000000084
+RAX: ffffffffffffffda RBX: 00007fc89df2d6c0 RCX: 000000000043deb9
+RDX: 0031656c69662f2e RSI: 0000000000000000 RDI: 0000000020000080
+RBP: 00007fc89df2d220 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffb0
+R13: 0000000000000016 R14: 00007fffd3267590 R15: 00007fffd3267678
+</TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+However, the repro.c can also crash the lastest kernel HEAD commit:
+88035e5694a86a7167d490bb95e9df97a9bb162b use the same configuation.
+It report below the same of the bug reported by syzbot:
+https://syzkaller.appspot.com/bug?extid=3De14d6cd6ec241f507ba7.
+
+TITLE: WARNING in __folio_mark_dirty
+CORRUPTED: false ()
+MAINTAINERS (TO): [akpm@linux-foundation.org
+linux-fsdevel@vger.kernel.org linux-mm@kvack.org willy@infradead.org]
+MAINTAINERS (CC): [linux-kernel@vger.kernel.org]
+------------[ cut here ]------------
+WARNING: CPU: 3 PID: 8118 at include/linux/backing-dev.h:255
+folio_account_dirtied mm/page-writeback.c:2618 [inline]
+WARNING: CPU: 3 PID: 8118 at include/linux/backing-dev.h:255
+__folio_mark_dirty+0x936/0x1120 mm/page-writeback.c:2669
+Modules linked in:
+CPU: 3 PID: 8118 Comm: c90 Not tainted 6.7.0-rc5-00042-g88035e5694a8 #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:inode_to_wb include/linux/backing-dev.h:252 [inline]
+RIP: 0010:folio_account_dirtied mm/page-writeback.c:2618 [inline]
+RIP: 0010:__folio_mark_dirty+0x936/0x1120 mm/page-writeback.c:2669
+Code: f8 ff ff e8 5c 72 c8 ff 0f 0b e9 c9 f8 ff ff 31 ff e8 4e 72 c8
+ff 4c 89 f7 48 8b 74 24 20 e8 bf
+RSP: 0018:ffffc900142afa00 EFLAGS: 00010093
+RAX: ffffffff81c92f96 RBX: 0000000000000000 RCX: ffff8880250f1e80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff88801b12c2f8 R08: ffffffff81c92ab5 R09: 1ffff1100362585f
+R10: dffffc0000000000 R11: ffffed1003625860 R12: 0000000000000001
+R13: ffff88801b12c180 R14: ffffea000518f8c0 R15: 1ffff1100362585f
+FS: 00000000023563c0(0000) GS:ffff88823bd00000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff0aff8f78 CR3: 000000001d875000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+<TASK>
+mark_buffer_dirty+0x2ab/0x520 fs/buffer.c:1200
+gfs2_unpin+0x142/0xad0 fs/gfs2/lops.c:111
+buf_lo_after_commit+0x157/0x1b0 fs/gfs2/lops.c:745
+lops_after_commit fs/gfs2/lops.h:51 [inline]
+gfs2_log_flush+0x1f45/0x26a0 fs/gfs2/log.c:1115
+gfs2_kill_sb+0x60/0x340 fs/gfs2/ops_fstype.c:1786
+deactivate_locked_super+0xc8/0x140 fs/super.c:484
+cleanup_mnt+0x444/0x4e0 fs/namespace.c:1256
+task_work_run+0x257/0x310 kernel/task_work.c:180
+resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+exit_to_user_mode_loop+0xde/0x100 kernel/entry/common.c:171
+exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+__syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+do_syscall_64+0x50/0x110 arch/x86/entry/common.c:89
+entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x43f117
+Code: 09 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66
+2e 0f 1f 84 00 00 00 00 00 0f 18
+RSP: 002b:00007fff0aff9728 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fff0affaa68 RCX: 000000000043f117
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff0aff97d0
+RBP: 00007fff0affa810 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 0000000000000001
+R13: 00007fff0affaa58 R14: 0000000000000001 R15: 0000000000000001
+</TASK>
+TITLE: kernel panic: kernel: panic_on_warn set ...
+CORRUPTED: false ()
+MAINTAINERS (TO): [akpm@linux-foundation.org
+linux-fsdevel@vger.kernel.org linux-mm@kvack.org willy@infradead.org]
+MAINTAINERS (CC): [linux-kernel@vger.kernel.org]
+Modules linked in:
+CPU: 3 PID: 8118 Comm: c90 Not tainted 6.7.0-rc5-00042-g88035e5694a8 #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:inode_to_wb include/linux/backing-dev.h:252 [inline]
+RIP: 0010:folio_account_dirtied mm/page-writeback.c:2618 [inline]
+RIP: 0010:__folio_mark_dirty+0x936/0x1120 mm/page-writeback.c:2669
+Code: f8 ff ff e8 5c 72 c8 ff 0f 0b e9 c9 f8 ff ff 31 ff e8 4e 72 c8
+ff 4c 89 f7 48 8b 74 24 20 e8 bf
+RSP: 0018:ffffc900142afa00 EFLAGS: 00010093
+RAX: ffffffff81c92f96 RBX: 0000000000000000 RCX: ffff8880250f1e80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff88801b12c2f8 R08: ffffffff81c92ab5 R09: 1ffff1100362585f
+R10: dffffc0000000000 R11: ffffed1003625860 R12: 0000000000000001
+R13: ffff88801b12c180 R14: ffffea000518f8c0 R15: 1ffff1100362585f
+FS: 00000000023563c0(0000) GS:ffff88823bd00000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff0aff8f78 CR3: 000000001d875000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+<TASK>
+mark_buffer_dirty+0x2ab/0x520 fs/buffer.c:1200
+gfs2_unpin+0x142/0xad0 fs/gfs2/lops.c:111
+buf_lo_after_commit+0x157/0x1b0 fs/gfs2/lops.c:745
+lops_after_commit fs/gfs2/lops.h:51 [inline]
+gfs2_log_flush+0x1f45/0x26a0 fs/gfs2/log.c:1115
+gfs2_kill_sb+0x60/0x340 fs/gfs2/ops_fstype.c:1786
+deactivate_locked_super+0xc8/0x140 fs/super.c:484
+cleanup_mnt+0x444/0x4e0 fs/namespace.c:1256
+task_work_run+0x257/0x310 kernel/task_work.c:180
+resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+exit_to_user_mode_loop+0xde/0x100 kernel/entry/common.c:171
+exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+__syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+do_syscall_64+0x50/0x110 arch/x86/entry/common.c:89
+entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x43f117
+Code: 09 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66
+2e 0f 1f 84 00 00 00 00 00 0f 18
+RSP: 002b:00007fff0aff9728 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fff0affaa68 RCX: 000000000043f117
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff0aff97d0
+RBP: 00007fff0affa810 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 0000000000000001
+R13: 00007fff0affaa58 R14: 0000000000000001 R15: 0000000000000001
+</TASK>
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 3 PID: 8118 Comm: c90 Not tainted 6.7.0-rc5-00042-g88035e5694a8 #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+<TASK>
+__dump_stack lib/dump_stack.c:88 [inline]
+dump_stack_lvl+0x1f4/0x2f0 lib/dump_stack.c:106
+panic+0x35a/0x880 kernel/panic.c:344
+__warn+0x32e/0x4c0
+__report_bug lib/bug.c:199 [inline]
+report_bug+0x2ca/0x520 lib/bug.c:219
+handle_bug+0x3d/0x70 arch/x86/kernel/traps.c:237
+exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:258
+asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:inode_to_wb include/linux/backing-dev.h:252 [inline]
+RIP: 0010:folio_account_dirtied mm/page-writeback.c:2618 [inline]
+RIP: 0010:__folio_mark_dirty+0x936/0x1120 mm/page-writeback.c:2669
+Code: f8 ff ff e8 5c 72 c8 ff 0f 0b e9 c9 f8 ff ff 31 ff e8 4e 72 c8
+ff 4c 89 f7 48 8b 74 24 20 e8 bf
+RSP: 0018:ffffc900142afa00 EFLAGS: 00010093
+RAX: ffffffff81c92f96 RBX: 0000000000000000 RCX: ffff8880250f1e80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff88801b12c2f8 R08: ffffffff81c92ab5 R09: 1ffff1100362585f
+R10: dffffc0000000000 R11: ffffed1003625860 R12: 0000000000000001
+R13: ffff88801b12c180 R14: ffffea000518f8c0 R15: 1ffff1100362585f
+mark_buffer_dirty+0x2ab/0x520 fs/buffer.c:1200
+gfs2_unpin+0x142/0xad0 fs/gfs2/lops.c:111
+buf_lo_after_commit+0x157/0x1b0 fs/gfs2/lops.c:745
+lops_after_commit fs/gfs2/lops.h:51 [inline]
+gfs2_log_flush+0x1f45/0x26a0 fs/gfs2/log.c:1115
+gfs2_kill_sb+0x60/0x340 fs/gfs2/ops_fstype.c:1786
+deactivate_locked_super+0xc8/0x140 fs/super.c:484
+cleanup_mnt+0x444/0x4e0 fs/namespace.c:1256
+task_work_run+0x257/0x310 kernel/task_work.c:180
+resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+exit_to_user_mode_loop+0xde/0x100 kernel/entry/common.c:171
+exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+__syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+do_syscall_64+0x50/0x110 arch/x86/entry/common.c:89
+entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x43f117
+Code: 09 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66
+2e 0f 1f 84 00 00 00 00 00 0f 18
+RSP: 002b:00007fff0aff9728 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 00007fff0affaa68 RCX: 000000000043f117
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff0aff97d0
+RBP: 00007fff0affa810 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 0000000000000001
+R13: 00007fff0affaa58 R14: 0000000000000001 R15: 0000000000000001
+</TASK>
+
+
+I hope someone figure out and hope it helps.
+
+Best regards
+xingwei Lee
