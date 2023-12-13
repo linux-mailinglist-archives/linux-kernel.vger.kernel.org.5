@@ -2,63 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CA98109C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B438F8109C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjLMF7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 00:59:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
+        id S1378542AbjLMGAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbjLMF7k (ORCPT
+        with ESMTP id S235255AbjLMGAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 00:59:40 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15388ED;
-        Tue, 12 Dec 2023 21:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702447186; x=1733983186;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xFB78RRny3RcIBKLfnK8gcknt209whVVbyKNAjVGXJI=;
-  b=NGtisIUHl/vk7vggzYzSHzA90YcSzxKQcNWoxMzk9O+YLag/r3dQuZwl
-   Q3GibtOwh5Ui9ZspqVpRsQ4+IvtxxopVcFQ3ZJSSPke+yDSdc+/47pLgS
-   1wKyAflTm1XTXWoc9rnwrDq6uePBJ0BPYYLBgLPORZWSjzCPNnbvEYMh2
-   Ag43Vc6BoMuujsb+c2KcW5oabauRtGQdNP6kmPbH0Nrx9n8Sj7a58fdqD
-   bQzgd4Z2O0Jm9dvzTtgz2++fGvANcxkDiEWhv7Z3bWCGhjI9vRI4GuvUu
-   XmA1wtMFPliMZAQSbVD3U2UQQEEw47XWh5I/2yg8wIO8+LugSPWcBHiX6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2057671"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="2057671"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 21:59:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777373539"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="777373539"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 12 Dec 2023 21:59:43 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 366691A7; Wed, 13 Dec 2023 07:59:41 +0200 (EET)
-Date:   Wed, 13 Dec 2023 07:59:41 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Sanath S <Sanath.S@amd.com>
-Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
-        michael.jamet@intel.com, YehezkelShB@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 1/2] thunderbolt: Introduce tb_switch_reset_ports(),
- tb_port_reset() and usb4_port_reset()
-Message-ID: <20231213055941.GJ1074920@black.fi.intel.com>
-References: <20231212191635.2022520-1-Sanath.S@amd.com>
- <20231212191635.2022520-2-Sanath.S@amd.com>
+        Wed, 13 Dec 2023 01:00:10 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7439F7;
+        Tue, 12 Dec 2023 22:00:14 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD5gRtY009863;
+        Wed, 13 Dec 2023 06:00:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=TjaLeJnqTOAYTFIcON8BZhczgaQnsRt3YN92XTznSZU=;
+ b=YjgO2RbA7ZTb6qQQT9Pd1Q+4qL1RWzIMcPKn0H+8jxnep/6LUCUTPXHxQa0+bDeUC4Ze
+ ikyIq4TalgvhwJvH+1i/FTy7aUBKITv0bult90vOXDozybGR2s/itZ0xaHzpqpBsKEH6
+ 1InwZtbbNrbZ37b3dLDwe/kbM4j1pB/z+QcrhSAtdo+gwKy4MUINWpizEmSP2aFr5m0z
+ GdVzLl9435VoVvIxGfNyRLRqQ9SFFiRVVGAu1JfpjyuC8IKu8/qgp71CSRy6ojhZDzES
+ 4b3/EMZelNuTjdFYh8QK71zqt510twEc56E46O0HaKZhHoeRsUt8+soRUqv7fEsnnGiZ 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy6pvrdvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:00:08 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BD5qh9W003082;
+        Wed, 13 Dec 2023 06:00:07 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy6pvrduc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:00:07 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD4e9Ij004899;
+        Wed, 13 Dec 2023 06:00:06 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4skeb1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:00:06 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BD604pw44827110
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 06:00:04 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA6D32004D;
+        Wed, 13 Dec 2023 06:00:04 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DAE5820043;
+        Wed, 13 Dec 2023 06:00:01 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.51.82])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 13 Dec 2023 06:00:01 +0000 (GMT)
+Date:   Wed, 13 Dec 2023 11:29:57 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Message-ID: <ZXlIXWIqP9xipYzL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212191635.2022520-2-Sanath.S@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _8OkYYCLfW-dy6EZ47uB0qBsdgMdIFs4
+X-Proofpoint-ORIG-GUID: 7rrjuVr4GoM9eExABM89Fy3OpjTg-SS2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_14,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=851 adultscore=0 spamscore=0
+ clxscore=1015 mlxscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312130041
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,205 +100,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 12:46:34AM +0530, Sanath S wrote:
-> Introduce the tb_switch_reset_ports() function that resets the
-> downstream ports of a given switch. This helps us reset the USB4
-> links created by boot firmware during the init sequence.
+On Tue, Dec 12, 2023 at 07:46:51AM +0000, John Garry wrote:
+> On 11/12/2023 10:54, Ojaswin Mujoo wrote:
+> > > This seems a rather big drawback.
+> > So if I'm not wrong, we force the extent alignment as well as the size
+> > of the extent in xfs right.
 > 
-> Introduce the tb_port_reset() helper function that resets the
-> given port.
+> For XFS in my v1 patchset, we only force alignment (but not size).
 > 
-> Introduce the usb4_port_reset() function that performs the DPR
-> of a given port. This function follows the CM guide specification 7.3
+> It is assumed that the user will fallocate/dd the complete file before
+> issuing atomic writes, and we will have extent alignment and length as
+> required.
 > 
-> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Sanath S <Sanath.S@amd.com>
-> ---
->  drivers/thunderbolt/switch.c  | 35 +++++++++++++++++++++++++++++++
->  drivers/thunderbolt/tb.h      |  2 ++
->  drivers/thunderbolt/tb_regs.h |  1 +
->  drivers/thunderbolt/usb4.c    | 39 +++++++++++++++++++++++++++++++++++
->  4 files changed, 77 insertions(+)
+> However - as we have seen with a trial user - it can create a problem if we
+> don't do that and we write 4K and then overwrite with a 16K atomic write to
+> a file, as 2x extents may be allocated for the complete 16K and it cannot be
+> issued as a single BIO.
+
+So currently, if we don't fallocate beforehand in xfs and the user
+tries to do the 16k overwrite to an offset having a 4k extent, how are
+we handling it?
+
+Here ext4 will return an error indicating atomic write can't happen at
+this particular offset. The way I see it is if the user passes atomic
+flag to pwritev2 and we are unable to ensure atomicity for any reason we
+return error, which seems like a fair approach for a generic interface. 
+
 > 
-> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-> index 44e9b09de47a..ef7ed92fd48e 100644
-> --- a/drivers/thunderbolt/switch.c
-> +++ b/drivers/thunderbolt/switch.c
-> @@ -626,6 +626,19 @@ int tb_port_unlock(struct tb_port *port)
->  	return 0;
->  }
->  
-> +/**
-> + * tb_port_reset() - Reset downstream port
-> + * @port: Port to reset
-> + *
-> + * Helps to reconfigure the USB4 link by resetting the downstream port.
-> + *
-> + * Return: Returns 0 on success or an error code on failure.
-> + */
-> +static int tb_port_reset(struct tb_port *port)
-> +{
-> +	return usb4_port_reset(port);
-> +}
-> +
->  static int __tb_port_enable(struct tb_port *port, bool enable)
->  {
->  	int ret;
-> @@ -1547,6 +1560,28 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
->  	       regs->__unknown1, regs->__unknown4);
->  }
->  
-> +/**
-> + * tb_switch_reset_ports() - Reset downstream ports of switch.
+> > 
+> > We didn't want to overly restrict the users of atomic writes by
+> > forcing
+> > the extents to be of a certain alignment/size irrespective of the
+> > size
+> > of write. The design in this patchset provides this flexibility at
+> > the
+> > cost of some added precautions that the user should take (eg not
+> > doing
+> > an atomic write on a pre existing unaligned extent etc).
+> 
+> Doesn't bigalloc already give you what you require here?
 
-Drop the '.'
+Yes, but its an mkfs time feature and it also applies to each an every
+file which might not be desirable for all use cases. 
 
-> + * @sw: Switch whose ports need to be reset.
-> + *
-> + * This is applicable only for USB4 routers.
-> + * tb_switch_is_usb4() needs to be called before calling this
-> + * function.
-
-This should fit into 2 lines:
-
-	* This is applicable only for USB4 routers. tb_switch_is_usb4()
-	* needs to be called before calling this function.
-
-> + *
-> + * Return: Returns 0 on success or an error code on failure.
-
-Specifically returns %-EOPNOTSUPP if the router does not support this
-(e.g is not USB4 router).
-
-> + */
-> +int tb_switch_reset_ports(struct tb_switch *sw)
-> +{
-> +	struct tb_port *port;
-> +	int ret = -EOPNOTSUPP;
-
-Reverse christmas tree:
-
-	int ret = -EOPNOTSUPP;
-	struct tb_port *port;
-
-> +
-> +	tb_switch_for_each_port(sw, port) {
-> +		if (tb_port_is_null(port) && port->cap_usb4)
-> +			return tb_port_reset(port);
-
-Now you run this only once for the first lane adapter it finds.
-
-How much you actually tested this patch series? :(
-
-Since we are already in -rc5 it is unlikely that behavioral changes like
-this will go to the next release (v6.8-rc1), so you have all that time
-to make sure your patches work as expected.
-
-> +	}
-> +	return ret;
-> +}
-> +
->  /**
->   * tb_switch_reset() - reconfigure route, enable and send TB_CFG_PKG_RESET
->   * @sw: Switch to reset
-> diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
-> index e299e53473ae..f2687ec4ac53 100644
-> --- a/drivers/thunderbolt/tb.h
-> +++ b/drivers/thunderbolt/tb.h
-> @@ -797,6 +797,7 @@ void tb_switch_remove(struct tb_switch *sw);
->  void tb_switch_suspend(struct tb_switch *sw, bool runtime);
->  int tb_switch_resume(struct tb_switch *sw);
->  int tb_switch_reset(struct tb_switch *sw);
-> +int tb_switch_reset_ports(struct tb_switch *sw);
->  int tb_switch_wait_for_bit(struct tb_switch *sw, u32 offset, u32 bit,
->  			   u32 value, int timeout_msec);
->  void tb_sw_set_unplugged(struct tb_switch *sw);
-> @@ -1281,6 +1282,7 @@ struct tb_port *usb4_switch_map_usb3_down(struct tb_switch *sw,
->  int usb4_switch_add_ports(struct tb_switch *sw);
->  void usb4_switch_remove_ports(struct tb_switch *sw);
->  
-> +int usb4_port_reset(struct tb_port *port);
->  int usb4_port_unlock(struct tb_port *port);
->  int usb4_port_hotplug_enable(struct tb_port *port);
->  int usb4_port_configure(struct tb_port *port);
-> diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
-> index 87e4795275fe..d49530bc0d53 100644
-> --- a/drivers/thunderbolt/tb_regs.h
-> +++ b/drivers/thunderbolt/tb_regs.h
-> @@ -389,6 +389,7 @@ struct tb_regs_port_header {
->  #define PORT_CS_18_CSA				BIT(22)
->  #define PORT_CS_18_TIP				BIT(24)
->  #define PORT_CS_19				0x13
-> +#define PORT_CS_19_DPR				BIT(0)
->  #define PORT_CS_19_PC				BIT(3)
->  #define PORT_CS_19_PID				BIT(4)
->  #define PORT_CS_19_WOC				BIT(16)
-> diff --git a/drivers/thunderbolt/usb4.c b/drivers/thunderbolt/usb4.c
-> index 4277733d0021..c8a4bf33ed1c 100644
-> --- a/drivers/thunderbolt/usb4.c
-> +++ b/drivers/thunderbolt/usb4.c
-> @@ -1073,6 +1073,45 @@ void usb4_switch_remove_ports(struct tb_switch *sw)
->  	}
->  }
->  
-> +/**
-> + * usb4_port_reset() - Reset USB4 downsteam port
-> + * @port: USB4 port to reset.
-> + *
-> + * Helps to reconfigure USB4 link by resetting downstream port.
-> + *
-> + * Return: Returns 0 on success or an error code on failure.
-> + */
-> +int usb4_port_reset(struct tb_port *port)
-> +{
-> +	u32 val = 0;
-
-This initialization is actually not needed.
-
-> +	int ret;
-> +
-> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
-> +			port->cap_usb4 + PORT_CS_19, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	val = val | PORT_CS_19_DPR;
-
-val |= PORT_CS_19_DPR;
-
-Same as you do below with &= ~..
-
-> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
-> +			port->cap_usb4 + PORT_CS_19, 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Wait for 10ms after requesting downstream port reset */
-> +	usleep_range(10000, 15000);
-> +
-> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
-> +			port->cap_usb4 + PORT_CS_19, 1);
-> +	if (ret)
-> +		return ret;
-
-Do you really need to read it back from the hardware here?
-
-> +
-> +	val &= ~PORT_CS_19_DPR;
-> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
-> +			port->cap_usb4 + PORT_CS_19, 1);
-> +
-> +	return ret;
-
-This can be simply
-
-	return tb_port_write(port, &val, TB_CFG_PORT,
-			     port->cap_usb4 + PORT_CS_19, 1);
-
-> +}
-> +
->  /**
->   * usb4_port_unlock() - Unlock USB4 downstream port
->   * @port: USB4 port to unlock
-> -- 
-> 2.34.1
+Regards,
+ojaswin
