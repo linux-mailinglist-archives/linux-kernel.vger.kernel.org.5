@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C03F811430
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74042811435
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379246AbjLMOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        id S1379232AbjLMOHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441830AbjLMOG5 (ORCPT
+        with ESMTP id S235440AbjLMOHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:06:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC6CE3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:06:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC2AC433CA;
-        Wed, 13 Dec 2023 14:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702476419;
-        bh=tm2PI5P6o9KPIR9RVFv5cihdxeSVXN3uEt/yiTzKpe0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=c9zQEcvQ/I/2TrO3daFju8Q2xvsVxymZ1J7YViFzMZ22+GvhKczCBu8rrJUDo+TO1
-         Anc8NUN4dA8ow4LVobcs6qb1jWphf9bw+jELBUPJqudNn/xWmkIMxcrIKvu8XEBcOa
-         WGHuZ4mBaB1rMvlvIqSSVkfP8pw0u8oJznFFXHh/0RHC1S6PyvN8OnGfzj5MLKjOEg
-         HySg5HD2tSeAL5m4LdWat8MD42qViAcfpBu0xgVl4Hr5NLzfEv0Y0pYxVLkLYlhamB
-         Yq4b1VHB5b6j9M45TKb0UiSQxQhkgwHVuLjWoh+MIYvXWbVA5RP95pk6+8WdFm9kYM
-         Og9EiU/75zGdQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50c0f13ea11so7992931e87.3;
-        Wed, 13 Dec 2023 06:06:58 -0800 (PST)
-X-Gm-Message-State: AOJu0YxucbavZ/Qjy1Vb5DUJJ0bNooCEMlRyYWncESP3UVIaMT1itJwG
-        eoFJ3D54/QAFW0wqvhMXjfTn4/wgZTTOcI9qkw==
-X-Google-Smtp-Source: AGHT+IEHGprK2wtm9q9hd2ZZLdtHsMouVaTGmtumsX7/XD4d3zOhREC7oFbL/aoRWTZ5IHg9+YH7vjYm3B+d1JvtS+g=
-X-Received: by 2002:a19:8c5b:0:b0:50d:1733:ceba with SMTP id
- i27-20020a198c5b000000b0050d1733cebamr3208254lfj.58.1702476417164; Wed, 13
- Dec 2023 06:06:57 -0800 (PST)
+        Wed, 13 Dec 2023 09:07:09 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15277D51
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:07:06 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50bfd8d5c77so8010675e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:07:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702476424; x=1703081224; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3mpP4FYlQiPUrh7uh0fJ6KTyN1gKE2qxwNTY74r7how=;
+        b=LZe4Qw9DSx91S8VEjP5F6O/2Mfdwcf5v5CH+yrSQeUVPbLCqxb6saLFtH0gdNDFfXF
+         6guQ0eYz9iDwRTK8DkwfeF+WCMyHyVlTQC7Gp2WHK2W1Y+2O/5a6Qn1iy7Q332DEGmwE
+         aDL2Mt6RiNoPOlICDtWxXnSqt52VcxdkQogIPKHlPGzwK/W2qcME7jEeRFLF/KNRp/ma
+         Qzg9TX7JtDxT0tcRDPJGMO1ZdfeTW7wOTTwLWqfWQDKpaboXZqgomcON1Y1XFw2iDFoz
+         9UpplhI7ogKSafB/P7D3XZRv4+D7oSmTP0n60vhqrwNritrc+K5S71z4VyzYhIG92WoY
+         +EgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702476424; x=1703081224;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3mpP4FYlQiPUrh7uh0fJ6KTyN1gKE2qxwNTY74r7how=;
+        b=Go/NQNP/onOrhwnia/hJAOL+lRAk0md5P146JCuqwgLFnRqHwGobDv8ww1jmmwN0RP
+         Hk7W+yL3Rt1x5zvz7aKAMW0icBAOiiM28XE5zS2Qb1ykp+Ajvy2TqtYy3R+Xpma90aLF
+         ekNuW8HTbcsyE4Oe0eCy0KwcG80eyuMZnN9iIW0uvRtw9UjErUCcWSuYXyQfdtisgFbe
+         mXqX9MFxIRGuo6fbW6GJhp5OTAWHM/yryo+J2qcKImRBipua0tqNjIrs8C8Ma5XtZg5X
+         +oNFltzWUjctK6YsKqN/4LTG8nXI6v8hrOWXikjQ87+bQsZMLicySpj36yLADNZyoR9V
+         8Fhg==
+X-Gm-Message-State: AOJu0YzRfmTfyGY6w4ZxbePM3YkLQu3XJB8szzWveT3AUIlUVUVD8hRo
+        S8IDZ8/zCyoLftznCUGURjZysA==
+X-Google-Smtp-Source: AGHT+IHLaGkIdnxeJBM1wGEeSYqCk0pgJ7QznFWs/siqTln1+v9poui80bpgefiIR9FIPcfUgGi6ww==
+X-Received: by 2002:a05:6512:2210:b0:50c:2135:cd4e with SMTP id h16-20020a056512221000b0050c2135cd4emr2244766lfu.14.1702476424112;
+        Wed, 13 Dec 2023 06:07:04 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id vk2-20020a170907cbc200b00a1f76acb08fsm7037903ejc.134.2023.12.13.06.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 06:07:03 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Aakarsh Jain <aakarsh.jain@samsung.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        m.szyprowski@samsung.com, andrzej.hajda@intel.com,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-samsung-soc@vger.kernel.org,
+        andi@etezian.org, gost.dev@samsung.com, alim.akhtar@samsung.com,
+        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
+        ajaykumar.rs@samsung.com, linux-fsd@tesla.com,
+        Smitha T Murthy <smithatmurthy@gmail.com>
+Subject: Re: (subset) [Patch v5 11/11] arm64: dts: fsd: Add MFC related DT enteries
+Date:   Wed, 13 Dec 2023 15:06:59 +0100
+Message-Id: <170247641057.38939.10066985368657963484.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231206063045.97234-12-aakarsh.jain@samsung.com>
+References: <20231206063045.97234-1-aakarsh.jain@samsung.com> <CGME20231206063140epcas5p1ba86525117f4d9ec9172ae7cb18b7420@epcas5p1.samsung.com> <20231206063045.97234-12-aakarsh.jain@samsung.com>
 MIME-Version: 1.0
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-12-alexandru.elisei@arm.com> <CAL_Jsq+k5BeM9+u12AQvWQ0b4Uv5Cy0vPOpK_uLcYtRnunq4iQ@mail.gmail.com>
- <ZXiMiLz9ZyUdxUP8@raptor> <CAL_Jsq+U_GR=mOK3-phnd4jeJKf79aOmhPwDOSj+f=s-7fZZWQ@mail.gmail.com>
- <ZXmr-Kl9L2SO13--@raptor>
-In-Reply-To: <ZXmr-Kl9L2SO13--@raptor>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 13 Dec 2023 08:06:44 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL=P1Y6w38LD_xw+vK4CNqt22FW_FE9oi_XTLHVQEne7Q@mail.gmail.com>
-Message-ID: <CAL_JsqL=P1Y6w38LD_xw+vK4CNqt22FW_FE9oi_XTLHVQEne7Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 11/27] arm64: mte: Reserve tag storage memory
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, hyesoo.yu@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,73 +82,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 7:05=E2=80=AFAM Alexandru Elisei
-<alexandru.elisei@arm.com> wrote:
->
-> Hi Rob,
->
-> On Tue, Dec 12, 2023 at 12:44:06PM -0600, Rob Herring wrote:
-> > On Tue, Dec 12, 2023 at 10:38=E2=80=AFAM Alexandru Elisei
-> > <alexandru.elisei@arm.com> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > Thank you so much for the feedback, I'm not very familiar with device=
- tree,
-> > > and any comments are very useful.
-> > >
-> > > On Mon, Dec 11, 2023 at 11:29:40AM -0600, Rob Herring wrote:
-> > > > On Sun, Nov 19, 2023 at 10:59=E2=80=AFAM Alexandru Elisei
-> > > > <alexandru.elisei@arm.com> wrote:
-> > > > >
-> > > > > Allow the kernel to get the size and location of the MTE tag stor=
-age
-> > > > > regions from the DTB. This memory is marked as reserved for now.
-> > > > >
-> > > > > The DTB node for the tag storage region is defined as:
-> > > > >
-> > > > >         tags0: tag-storage@8f8000000 {
-> > > > >                 compatible =3D "arm,mte-tag-storage";
-> > > > >                 reg =3D <0x08 0xf8000000 0x00 0x4000000>;
-> > > > >                 block-size =3D <0x1000>;
-> > > > >                 memory =3D <&memory0>;    // Associated tagged me=
-mory node
-> > > > >         };
-> > > >
-> > > > I skimmed thru the discussion some. If this memory range is within
-> > > > main RAM, then it definitely belongs in /reserved-memory.
-> > >
-> > > Ok, will do that.
-> > >
-> > > If you don't mind, why do you say that it definitely belongs in
-> > > reserved-memory? I'm not trying to argue otherwise, I'm curious about=
- the
-> > > motivation.
-> >
-> > Simply so that /memory nodes describe all possible memory and
-> > /reserved-memory is just adding restrictions. It's also because
-> > /reserved-memory is what gets handled early, and we don't need
-> > multiple things to handle early.
-> >
-> > > Tag storage is not DMA and can live anywhere in memory.
-> >
-> > Then why put it in DT at all? The only reason CMA is there is to set
-> > the size. It's not even clear to me we need CMA in DT either. The
-> > reasoning long ago was the kernel didn't do a good job of moving and
-> > reclaiming contiguous space, but that's supposed to be better now (and
-> > most h/w figured out they need IOMMUs).
-> >
-> > But for tag storage you know the size as it is a function of the
-> > memory size, right? After all, you are validating the size is correct.
-> > I guess there is still the aspect of whether you want enable MTE or
-> > not which could be done in a variety of ways.
->
-> Oh, sorry, my bad, I should have been clearer about this. I don't want to
-> put it in the DT as a "linux,cma" node. But I want it to be managed by CM=
-A.
 
-Yes, I understand, but my point remains. Why do you need this in DT?
-If the location doesn't matter and you can calculate the size from the
-memory size, what else is there to add to the DT?
+On Wed, 06 Dec 2023 12:00:45 +0530, Aakarsh Jain wrote:
+> Add MFC DT node and reserve memory node for MFC usage.
+> 
+> 
 
-Rob
+Applied, thanks!
+
+[11/11] arm64: dts: fsd: Add MFC related DT enteries
+        https://git.kernel.org/krzk/linux/c/a41d9b3287b1d2d737984465e6efbf09a4fb51d2
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
