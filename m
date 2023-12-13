@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EDB810AD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EEB810B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbjLMHE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
+        id S1378802AbjLMHHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233152AbjLMHEY (ORCPT
+        with ESMTP id S1378753AbjLMHGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:04:24 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430AAE8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:04:30 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bfa7f7093so8465445e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:04:30 -0800 (PST)
+        Wed, 13 Dec 2023 02:06:18 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13474121
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:06:18 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-551c03ae050so1344873a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:06:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702451068; x=1703055868; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702451176; x=1703055976; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=deWpEeAoza1LIualsVZbdy0EHlWRefem1NxcUaee0Zg=;
-        b=rEAzQJNwAXc7rSVbxi4fHFkg5IIwWAfXD1M99bSKAQktmunuM3q8pzVv2dRFAUALoK
-         UIsXgIugtz9E7zdamU7yp+LTNhtB3vZkJ9zRbazIrqfLWfv8+xeVXfBCYfj9subfnnF0
-         /7TOtWjjWs1rNVM8bPDek6KVtuthaWm0LTzdvZNTa6QaWWcl4yAn9SqgCImP4goRr5jQ
-         wx2Ojzix3CLIRVt1Q0BsuqCgxFel73xD82xzY+0+mWnha/rWLTgeofAKvXCbWY6FKVV7
-         wUvotjH0n5H21D4jUVsEwCttdcBGpZ/R6H1I67SZkMCpCbE/tmjCkDCyHxSnatB8EB+t
-         h/1g==
+        bh=NzFGyTL0oZZDUCJr1TDfYYZr3e+1e61gGXyy8FIDTsk=;
+        b=XZN4pL7ggMlYdFUy0IY2Nby5Eo4DEVYZf5Kb4jTga1+SjIuIU7STUX5DgcWXNWQCNP
+         CBqIvAaC/ZK/wVOR/lrq70ln73s742U+9Q4936e5Sk4+VfOHN2oWtJsBpESLcZPSrNdz
+         OazIek/CwY/UcMqRvw9yMIza013P5qn0h6IGsFIi0bhXaOGdoSyG3xxG+QC/u0Rw2k0M
+         pNYtqn5iIXza6vuUVs+FHTXjCd5wjH5iSoUDHRsH/l+tA6KotySKRxgUA2xTgZQgz6j7
+         6FNg79jS18M29lH8L2e3R195oUI1Ob+dGdG++/QhcQf6U1GHKnSn0+/7mVJkKaAy3alU
+         /i/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702451068; x=1703055868;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702451176; x=1703055976;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=deWpEeAoza1LIualsVZbdy0EHlWRefem1NxcUaee0Zg=;
-        b=w6WteNxXvzEAZlvM5OQJd8iCCcwAqSJ/TOnG6oS3SNlHQmVtiuoJSOWNrtG2IvN4oF
-         vMplpKfcRKDND16Ugv0yS3Gg5K0fi25CqAcZ+J7JvDdzhJmJMdJkMBvZfZ/BsnJAkMeH
-         5pNiDvNpdrSciyi6b28gyjPlEvrj0zHadx+PnEdXGo7t6eFyzDr6JUYuY8/lYWvqLtJY
-         cBTUh2yBUF7+XZYDLHpQR4T2BGUHV0DABVmTFWGQsYcZw5Y7nIwoONCVsPFR0D15Vgrc
-         Gtr5MzSTzzgd0ryZlICbX0QuG/xPTSpxljnx0x98h0rURtP+wmBFuOzwa4ECo+K6gplt
-         uy/A==
-X-Gm-Message-State: AOJu0YwMdBpN89V5M6MTh6W5J9SYIzI81+Ys6DPQ8K22TBuDD+9Tf7z0
-        di6qCZiYz6NUDMrcVEVFYgXSLQ==
-X-Google-Smtp-Source: AGHT+IGiKF2oMLU28+2oME+tA62AXHIXuo2gREvYYSDjnfH4ylJlVQQHKbnuWwDLWMIVd4Qro9wzqA==
-X-Received: by 2002:a19:ad4b:0:b0:50b:f71f:2cc1 with SMTP id s11-20020a19ad4b000000b0050bf71f2cc1mr3014522lfd.62.1702451068447;
-        Tue, 12 Dec 2023 23:04:28 -0800 (PST)
+        bh=NzFGyTL0oZZDUCJr1TDfYYZr3e+1e61gGXyy8FIDTsk=;
+        b=gbSLay55u0fmO2F/Mn4VSpwn7Jbu7KbKfzIKPZQESwGsmWxNtDQ0sryUHC8qQdsrwH
+         3tW7R+u3DpE8FbwSY7AKZ9Uz4ep1q2/+gO4+mWxhxt3KVkNgESZVVXcnbB8GqJImhGZy
+         rGr03VCiiPAP3smI7prbXLCFhr/bv71oSa/1L+BA5PwBcnGWiTGlxH1QBv9gTxtlDjD0
+         UD8tmieQFbilgvSaxpy0k3e5OvcCXCCBLGtSrHbLvAwBKaGlaXF4liWBe54u7iiK86B2
+         KdXOupjg3L3DVfxqpWdhZuxbaf8DLfoKjfV40C1fOBeKGrJN2CU31EOpuRF6MqwoHDyU
+         +ObQ==
+X-Gm-Message-State: AOJu0YwYOaCC7OAVCHsOYXW76bR94y5eCAUEqqXxfhY9h3Msa6fA7b8x
+        jNNdK7Y5ma9mrmcUDLo6l77WMw==
+X-Google-Smtp-Source: AGHT+IFzmw9qR1vlx3wCugnI26nJY5j5kV1LjP1LiE/3P7iFl5oVJ3E7kqPeTIh2kPzbcX5S2jC9JA==
+X-Received: by 2002:a17:906:18d:b0:a1f:b541:6252 with SMTP id 13-20020a170906018d00b00a1fb5416252mr1765911ejb.92.1702451176521;
+        Tue, 12 Dec 2023 23:06:16 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id cr7-20020a056402222700b0054ce9ef93fbsm5349829edb.4.2023.12.12.23.04.25
+        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b00a1b65249053sm7175322ejc.128.2023.12.12.23.06.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 23:04:28 -0800 (PST)
-Message-ID: <7c878a4e-da9b-4e8e-a965-9eeefe073d13@linaro.org>
-Date:   Wed, 13 Dec 2023 08:04:23 +0100
+        Tue, 12 Dec 2023 23:06:16 -0800 (PST)
+Message-ID: <c40d691a-10ed-4678-b1f0-4b2f5f7f3557@linaro.org>
+Date:   Wed, 13 Dec 2023 08:06:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/5] dt-bindings: clock: mediatek: add clock
- controllers of MT7988
+Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Document WCD939x USB SubSystem
+ Altmode/Analog Audio Switch
 Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>,
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org
-References: <152b256d253508cdc7514c0f1c5a9324bde83d46.1702350213.git.daniel@makrotopia.org>
- <ce9b1e777090724794cf9f0c52bcd8618385fd06.1702350213.git.daniel@makrotopia.org>
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212-topic-sm8650-upstream-wcd939x-usbss-v2-0-38961fea5867@linaro.org>
+ <20231212-topic-sm8650-upstream-wcd939x-usbss-v2-1-38961fea5867@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -128,12 +117,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ce9b1e777090724794cf9f0c52bcd8618385fd06.1702350213.git.daniel@makrotopia.org>
+In-Reply-To: <20231212-topic-sm8650-upstream-wcd939x-usbss-v2-1-38961fea5867@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,94 +130,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 04:18, Daniel Golle wrote:
-> Add various clock controllers found in the MT7988 SoC to existing
-> bindings (if applicable) and add files for the new ethwarp, mcusys
-> and xfi-pll clock controllers not previously present in any SoC.
+On 12/12/2023 09:54, Neil Armstrong wrote:
+> Document the Qualcomm WCD9390/WCD9395 USB SubSystem Altmode/Analog Audio Switch
+> which is a separate USB SubSystem for Altmode/Analog Audio Switch accessible
+> over an I2C interface.
 > 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
+> Since Audio Headphone and Microphone data path between the Codec and the USB-C Mux
+> subsystems are external to the IC, it requires a second port to handle USB-C altmode
+> & orientation switching for Audio Accessory Mode to the Codec SubSystem.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-...
-
-> -      - const: syscon
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt7622-sgmiisys
-> +              - mediatek,mt7629-sgmiisys
-> +              - mediatek,mt7981-sgmiisys_0
-> +              - mediatek,mt7981-sgmiisys_1
-> +              - mediatek,mt7986-sgmiisys_0
-> +              - mediatek,mt7986-sgmiisys_1
-> +          - const: syscon
-> +      - items:
-> +          - enum:
-> +              - mediatek,mt7988-sgmiisys_0
-> +              - mediatek,mt7988-sgmiisys_1
-
-No underscores in compatibles. At least for new ones, because you cannot
-touch the old.
-
-> +          - const: simple-mfd
-> +          - const: syscon
->  
->    reg:
->      maxItems: 1
-> @@ -35,11 +42,47 @@ properties:
->      description: Invert polarity of the SGMII data lanes
->      type: boolean
->  
-> +  pcs:
-> +    type: object
-> +    description: HSGMII PCS logic
-> +    properties:
-> +      compatible:
-> +        const: mediatek,mt7988-sgmii
-> +
-> +      clocks:
-> +        maxItems: 3
-> +        minItems: 3
-
-drop minItems
-
-> +
-> +      clock-names:
-> +        items:
-> +          - const: sgmii_sel
-> +          - const: sgmii_tx
-> +          - const: sgmii_rx
-> +
-> +    required:
-> +      - compatible
-> +      - clocks
-> +      - clock-names
-> +
-> +    additionalProperties: false
-> +
->  required:
->    - compatible
->    - reg
->    - '#clock-cells'
->  
-
-add allOf: here
-
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - mediatek,mt7988-sgmiisys_0
-> +          - mediatek,mt7988-sgmiisys_1
-> +
-> +then:
-> +  required:
-> +    - pcs
-
-else: also valid?
-
-Maybe there is no point to have it in this binding?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
