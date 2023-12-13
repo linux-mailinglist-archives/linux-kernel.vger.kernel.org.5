@@ -2,350 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF9A8107C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD058107BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378227AbjLMBi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S1378213AbjLMBim convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 20:38:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378215AbjLMBix (ORCPT
+        with ESMTP id S1378218AbjLMBik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:38:53 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE1710A;
-        Tue, 12 Dec 2023 17:38:59 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b9ef61b6b8so3762595b6e.3;
-        Tue, 12 Dec 2023 17:38:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702431539; x=1703036339; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=auvI36LUE8ejZAXPToUPGGocmqelYA9bY8VJoyIN2tw=;
-        b=IwnO7soVBEqSAkQjjLNK/g5JAiebyrJxg7X998cLfg5aD/GClhDXTHiD+e+R//4Mc+
-         SJNnItClH9NV/Vjs9btJBOsFuZSCd+5arXhHGX+OOCFLX8iO+fIgMDzZOtvtLuaX9k2K
-         zEC2j0QZqrIphcStjf3yGlSWZAke+dOjJ6Cq7je5xxGBOuZ4S6yL8Z2ukJniH1/VwiVL
-         iIOICXpQjWFFQhLOi3E+cEh96bEwK8nl7KsXix4oVuRBgc/RyI6NRYCINfXZo4zmQr4z
-         c/LvduMGEbuWPtDNmwAW7GbKYIAktnb3DDyl3M8DXUBummVp6sceg9Ok2yrbCaZawq2K
-         VRLA==
+        Tue, 12 Dec 2023 20:38:40 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3DDC;
+        Tue, 12 Dec 2023 17:38:45 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d855efb920so5079384a34.1;
+        Tue, 12 Dec 2023 17:38:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702431539; x=1703036339;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702431525; x=1703036325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=auvI36LUE8ejZAXPToUPGGocmqelYA9bY8VJoyIN2tw=;
-        b=IwNGIVy6yqFOw+ZT2Dri6dJg8I7ijvMMugou754jYQve0Brtq8cMxSsW7DcCYGW7f4
-         qbv6STlF8IiNclzXzpaRg+dGXVNTG3dwo1l2zSVXaxyaCU9qdUWjAQDqbNpBWlLwYLqY
-         CuQb+Wuj7buMREYmjFgbsz3GyPDnZa49u26XwR+ATzhbd/1wBNtcZSCJeBq81nG3UueV
-         B8ltUvwYPzvZan1MQ/roNC1JDKr6F16mxgLNHPDYDEJQCBU7Qf2sbHdVdlZahmV2cxFf
-         x4bNLLURh2IcTni2APfDw8DcOlRrn1pH5PFyih0lE05Luk2r2RjSHS0Ilzix8ybo+xWr
-         PIWg==
-X-Gm-Message-State: AOJu0YzsB6AJD2SezbDTJQG18jGVhWRcxevpFKbgUukb5LuczGEurMNc
-        4gm/FVQMhA/zqv3myhvqsLRQbG3AMSKhYw==
-X-Google-Smtp-Source: AGHT+IEPRFFkdSriOP29xRP3FC7OLv6jCpNAM8KRiqnpSneN+mERl09dXemtdfLzfx721QtwIbEe3Q==
-X-Received: by 2002:a05:6808:1998:b0:3b9:de63:f514 with SMTP id bj24-20020a056808199800b003b9de63f514mr9078746oib.12.1702431538693;
-        Tue, 12 Dec 2023 17:38:58 -0800 (PST)
-Received: from localhost ([2620:10d:c090:500::7:1c76])
-        by smtp.gmail.com with ESMTPSA id z3-20020a1709028f8300b001d0242c0471sm9256526plo.224.2023.12.12.17.38.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 17:38:58 -0800 (PST)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
-Date:   Tue, 12 Dec 2023 17:38:03 -0800
-Message-Id: <20231213013807.897742-3-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213013807.897742-1-schatzberg.dan@gmail.com>
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+        bh=YIWyx+xVFC2u/BA+JksVQths0h28NvpxYOOQa54kPF4=;
+        b=EFGQfdiiwRYwCoFGDdwWFDPhVvXuqtpK/4c+YrkBGlUdNMn3AzZTac1zEleEFCf6aY
+         CG0oT5mypW+NZCNRiTDgj6HxB4R8pOQw1hgeH9HyqafgLcGWns1egL8BK5lfgmPEQX6H
+         RC5700fwaRQ7ScFJGBwvHhaT+zlKj3dMhcsCeSIkqN2nYHlMvCAw92sVTxlM6yxcr2xJ
+         T/Z9rwLWyrtB0hTgtyz8fifxhVMn8BuNUTb9Wh9ArooLfUPUeFntFZgAOj1xGoCoIDIM
+         0fK+nPK9NpyIc14UiPZiAYBBi3y24Djz/CBGgqHE5AIlBJ9czMdUsU4ttAOgWDIXb4H8
+         baTw==
+X-Gm-Message-State: AOJu0YxurFebBOG1eT4G+UHREMKsUX8TA+QX6wMASPXzG5fkmHdj8478
+        03W4k6xIyLeZYj7bN0E/O+xQV2OGo5UbBbme6OY=
+X-Google-Smtp-Source: AGHT+IGlZ816ibGJ8fDaIkml7iSqJhiWarKEM7x1sTAEAA3o0fynxk7QISFQW23IR7l5lf+U58/lXVVtZGhr9A5i4Hg=
+X-Received: by 2002:a9d:6349:0:b0:6d9:d567:7c36 with SMTP id
+ y9-20020a9d6349000000b006d9d5677c36mr7620957otk.71.1702431525092; Tue, 12 Dec
+ 2023 17:38:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231211045543.31741-1-khuey@kylehuey.com>
+In-Reply-To: <20231211045543.31741-1-khuey@kylehuey.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 12 Dec 2023 17:38:34 -0800
+Message-ID: <CAM9d7ciZaK5=TkX8RhmszKKYP12k4k6A1monOP7vJJ+ivZG_bQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Combine perf and bpf for fast eval of hw
+ breakpoint conditions
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        "Robert O'Callahan" <robert@ocallahan.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow proactive reclaimers to submit an additional swappiness=<val>
-argument to memory.reclaim. This overrides the global or per-memcg
-swappiness setting for that reclaim attempt.
+Hello,
 
-For example:
+On Sun, Dec 10, 2023 at 8:55 PM Kyle Huey <me@kylehuey.com> wrote:
+>
+> rr, a userspace record and replay debugger[0], replays asynchronous events
+> such as signals and context switches by essentially[1] setting a breakpoint
+> at the address where the asynchronous event was delivered during recording
+> with a condition that the program state matches the state when the event
+> was delivered.
+>
+> Currently, rr uses software breakpoints that trap (via ptrace) to the
+> supervisor, and evaluates the condition from the supervisor. If the
+> asynchronous event is delivered in a tight loop (thus requiring the
+> breakpoint condition to be repeatedly evaluated) the overhead can be
+> immense. A patch to rr that uses hardware breakpoints via perf events with
+> an attached BPF program to reject breakpoint hits where the condition is
+> not satisfied reduces rr's replay overhead by 94% on a pathological (but a
+> real customer-provided, not contrived) rr trace.
+>
+> The only obstacle to this approach is that while the kernel allows a BPF
+> program to suppress sample output when a perf event overflows it does not
+> suppress signalling the perf event fd or sending the perf event's SIGTRAP.
+> This patch set redesigns __perf_overflow_handler() and
+> bpf_overflow_handler() so that the former invokes the latter directly when
+> appropriate rather than through the generic overflow handler machinery,
+> passes the return code of the BPF program back to __perf_overflow_handler()
+> to allow it to decide whether to execute the regular overflow handler,
+> reorders bpf_overflow_handler() and the side effects of perf event
+> overflow, changes __perf_overflow_handler() to suppress those side effects
+> if the BPF program returns zero, and adds a selftest.
+>
+> The previous version of this patchset can be found at
+> https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
+>
+> Changes since v2:
+>
+> Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+> this code to implement this feature in a cleaner way. Patch 2 is separated
+> for the benefit of the ARM arch maintainers.
+>
+> Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+> implementation thanks to the earlier refactoring.
+>
+> Patch 4 is v2's patch 3, and addresses review comments about C++ style
+> comments, getting a TRAP_PERF definition into the test, and unnecessary
+> NULL checks.
 
-echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-will perform reclaim on the rootcg with a swappiness setting of 0 (no
-swap) regardless of the vm.swappiness sysctl setting.
+Thanks,
+Namhyung
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 19 +++++---
- include/linux/swap.h                    |  3 +-
- mm/memcontrol.c                         | 61 ++++++++++++++++++++-----
- mm/vmscan.c                             | 11 +++--
- 4 files changed, 72 insertions(+), 22 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..06319349c072 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1282,17 +1282,10 @@ PAGE_SIZE multiple when read back.
- 	This is a simple interface to trigger memory reclaim in the
- 	target cgroup.
- 
--	This file accepts a single key, the number of bytes to reclaim.
--	No nested keys are currently supported.
--
- 	Example::
- 
- 	  echo "1G" > memory.reclaim
- 
--	The interface can be later extended with nested keys to
--	configure the reclaim behavior. For example, specify the
--	type of memory to reclaim from (anon, file, ..).
--
- 	Please note that the kernel can over or under reclaim from
- 	the target cgroup. If less bytes are reclaimed than the
- 	specified amount, -EAGAIN is returned.
-@@ -1304,6 +1297,18 @@ PAGE_SIZE multiple when read back.
- 	This means that the networking layer will not adapt based on
- 	reclaim induced by memory.reclaim.
- 
-+The following nested keys are defined.
-+
-+	  ==========		================================
-+	  swappiness		Swappiness value to reclaim with
-+	  ==========		================================
-+
-+	Specifying a swappiness value instructs the kernel to perform
-+	the reclaim with that swappiness value. Note that this has the
-+	same semantics as the vm.swappiness sysctl - it sets the
-+	relative IO cost of reclaiming anon vs file memory but does
-+	not allow for reclaiming specific amounts of anon or file memory.
-+
-   memory.peak
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index e2ab76c25b4a..690898c347de 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -412,7 +412,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  int swappiness);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 9748a6b88bb8..be3d5797d9df 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/parser.h>
- #include <linux/sched/isolation.h>
- #include "internal.h"
- #include <net/sock.h>
-@@ -2449,7 +2450,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP,
-+							mem_cgroup_swappiness(memcg));
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2740,7 +2742,8 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options,
-+						    mem_cgroup_swappiness(memcg));
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3660,7 +3663,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP,
-+					mem_cgroup_swappiness(memcg))) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3774,7 +3778,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP,
-+						  mem_cgroup_swappiness(memcg)))
- 			nr_retries--;
- 	}
- 
-@@ -6720,7 +6725,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					mem_cgroup_swappiness(memcg));
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6769,7 +6775,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					mem_cgroup_swappiness(memcg)))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6895,6 +6902,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+enum {
-+	MEMORY_RECLAIM_SWAPPINESS = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t tokens = {
-+	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
-@@ -6902,12 +6919,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
- 	unsigned int reclaim_options;
--	int err;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
-+	int swappiness = mem_cgroup_swappiness(memcg);
- 
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-+
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		switch (match_token(start, tokens, args)) {
-+		case MEMORY_RECLAIM_SWAPPINESS:
-+			if (match_int(&args[0], &swappiness))
-+				return -EINVAL;
-+			if (swappiness < MIN_SWAPPINESS || swappiness > MAX_SWAPPINESS)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
- 
- 	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
- 	while (nr_reclaimed < nr_to_reclaim) {
-@@ -6926,7 +6964,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--					GFP_KERNEL, reclaim_options);
-+					GFP_KERNEL, reclaim_options,
-+					swappiness);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2aa671fe938b..cfef06c7c23f 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -136,6 +136,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swappiness value for reclaim */
-+	int swappiness;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -2327,7 +2330,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
--	int swappiness = mem_cgroup_swappiness(memcg);
-+	int swappiness = sc->swappiness;
- 	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
-@@ -2608,7 +2611,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
--	return mem_cgroup_swappiness(memcg);
-+	return sc->swappiness;
- }
- 
- static int get_nr_gens(struct lruvec *lruvec, int type)
-@@ -6433,7 +6436,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   int swappiness)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6448,6 +6452,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.swappiness = swappiness,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
--- 
-2.34.1
-
+>
+> [0] https://rr-project.org/
+> [1] Various optimizations exist to skip as much as execution as possible
+> before setting a breakpoint, and to determine a set of program state that
+> is practical to check and verify.
+>
+>
