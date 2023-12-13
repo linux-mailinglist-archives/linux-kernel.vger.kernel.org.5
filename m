@@ -2,106 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7377811C59
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38D2811C66
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbjLMS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
+        id S233768AbjLMS1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbjLMS1L (ORCPT
+        with ESMTP id S235590AbjLMS1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:27:11 -0500
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326AEA7;
-        Wed, 13 Dec 2023 10:27:18 -0800 (PST)
-Received: from in01.mta.xmission.com ([166.70.13.51]:50630)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDTwx-000ZKP-6d; Wed, 13 Dec 2023 11:27:15 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:38540 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDTww-007q8r-4s; Wed, 13 Dec 2023 11:27:14 -0700
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Maria Yu <quic_aiquny@quicinc.com>, kernel@quicinc.com,
-        quic_pkondeti@quicinc.com, keescook@chromium.or,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
-        dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
-        <ZXnaNSrtaWbS2ivU@casper.infradead.org>
-Date:   Wed, 13 Dec 2023 12:27:05 -0600
-In-Reply-To: <ZXnaNSrtaWbS2ivU@casper.infradead.org> (Matthew Wilcox's message
-        of "Wed, 13 Dec 2023 16:22:13 +0000")
-Message-ID: <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 13 Dec 2023 13:27:39 -0500
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A37C111
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:27:45 -0800 (PST)
+Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
+        id 9918D10CFA721; Wed, 13 Dec 2023 10:27:33 -0800 (PST)
+From:   Stefan Roesch <shr@devkernel.io>
+To:     kernel-team@fb.com
+Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v4 0/4] mm/ksm: Add ksm advisor
+Date:   Wed, 13 Dec 2023 10:27:25 -0800
+Message-Id: <20231213182729.587081-1-shr@devkernel.io>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1rDTww-007q8r-4s;;;mid=<87o7eu7ybq.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1/VU39+2YW8c791zJoSkh67aCTXIOvQAFw=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,HELO_MISC_IP,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_NEUTRAL,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 0.85
-        (0.2%), extract_message_metadata: 11 (2.3%), get_uri_detail_list: 0.81
-        (0.2%), tests_pri_-2000: 11 (2.4%), tests_pri_-1000: 2.5 (0.5%),
-        tests_pri_-950: 1.16 (0.3%), tests_pri_-900: 1.01 (0.2%),
-        tests_pri_-90: 193 (41.5%), check_bayes: 189 (40.7%), b_tokenize: 6
-        (1.3%), b_tok_get_all: 63 (13.5%), b_comp_prob: 3.3 (0.7%),
-        b_tok_touch_all: 114 (24.5%), b_finish: 0.94 (0.2%), tests_pri_0: 221
-        (47.5%), check_dkim_signature: 0.53 (0.1%), check_dkim_adsp: 2.6
-        (0.6%), poll_dns_idle: 0.46 (0.1%), tests_pri_10: 2.0 (0.4%),
-        tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
- tasklist_lock
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+What is the KSM advisor?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The ksm advisor automatically manages the pages_to_scan setting to
+achieve a target scan time. The target scan time defines how many seconds
+it should take to scan all the candidate KSM pages. In other words the
+pages_to_scan rate is changed by the advisor to achieve the target scan
+time.
 
-> On Wed, Dec 13, 2023 at 06:17:45PM +0800, Maria Yu wrote:
->> +static inline void write_lock_tasklist_lock(void)
->> +{
->> +	while (1) {
->> +		local_irq_disable();
->> +		if (write_trylock(&tasklist_lock))
->> +			break;
->> +		local_irq_enable();
->> +		cpu_relax();
->
-> This is a bad implementation though.  You don't set the _QW_WAITING flag
-> so readers don't know that there's a pending writer.  Also, I've seen
-> cpu_relax() pessimise CPU behaviour; putting it into a low-power mode
-> that takes a while to wake up from.
->
-> I think the right way to fix this is to pass a boolean flag to
-> queued_write_lock_slowpath() to let it know whether it can re-enable
-> interrupts while checking whether _QW_WAITING is set.
+Why do we need a KSM advisor?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+The number of candidate pages for KSM is dynamic. It can often be observe=
+d
+that during the startup of an application more candidate pages need to be
+processed. Without an advisor the pages_to_scan parameter needs to be
+sized for the maximum number of candidate pages. With the scan time
+advisor the pages_to_scan parameter based can be changed based on demand.
 
-Yes.  It seems to make sense to distinguish between write_lock_irq and
-write_lock_irqsave and fix this for all of write_lock_irq.
+Algorithm
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The algorithm calculates the change value based on the target scan time
+and the previous scan time. To avoid pertubations an exponentially
+weighted moving average is applied.
 
-Either that or someone can put in the work to start making the
-tasklist_lock go away.
+The algorithm has a max and min
+value to:
+- guarantee responsiveness to changes
+- to limit CPU resource consumption
 
-Eric
+Parameters to influence the KSM scan advisor
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The respective parameters are:
+- ksm_advisor_mode
+  0: None (default), 1: scan time advisor
+- ksm_advisor_target_scan_time
+  how many seconds a scan should of all candidate pages take
+- ksm_advisor_max_cpu
+  upper limit for the cpu usage in percent of the ksmd background thread
+
+The initial value and the max value for the pages_to_scan parameter can
+be limited with:
+- ksm_advisor_min_pages_to_scan
+  minimum value for pages_to_scan per batch
+- ksm_advisor_max_pages_to_scan
+  maximum value for pages_to_scan per batch
+
+The default settings for the above two parameters should be suitable for
+most workloads.
+
+The parameters are exposed as knobs in /sys/kernel/mm/ksm. By default the
+scan time advisor is disabled.
+
+Currently there are two advisors:
+- none and
+- scan-time.
+
+Resource savings
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Tests with various workloads have shown considerable CPU savings. Most
+of the workloads I have investigated have more candidate pages during
+startup. Once the workload is stable in terms of memory, the number of
+candidate pages is reduced. Without the advisor, the pages_to_scan needs
+to be sized for the maximum number of candidate pages. So having this
+advisor definitely helps in reducing CPU consumption.
+
+For the instagram workload, the advisor achieves a 25% CPU reduction.
+Once the memory is stable, the pages_to_scan parameter gets reduced to
+about 40% of its max value.
+
+The new advisor works especially well if the smart scan feature is also
+enabled.
+
+How is defining a target scan time better?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+For an administrator it is more logical to set a target scan time.. The
+administrator can determine how many pages are scanned on each scan.
+Therefore setting a target scan time makes more sense.
+
+In addition the administrator might have a good idea about the memory
+sizing of its respective workloads.
+
+Setting cpu limits is easier than setting The pages_to_scan parameter. Th=
+e
+pages_to_scan parameter is per batch. For the administrator it is difficu=
+lt
+to set the pages_to_scan parameter.
+
+Tracing
+=3D=3D=3D=3D=3D=3D=3D
+A new tracing event has been added for the scan time advisor. The new
+trace event is called ksm_advisor. It reports the scan time, the new
+pages_to_scan setting and the cpu usage of the ksmd background thread.
+
+Other approaches
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Approach 1: Adapt pages_to_scan after processing each batch. If KSM
+  merges pages, increase the scan rate, if less KSM pages, reduce the
+  the pages_to_scan rate. This doesn't work too well. While it increases
+  the pages_to_scan for a short period, but generally it ends up with a
+  too low pages_to_scan rate.
+
+Approach 2: Adapt pages_to_scan after each scan. The problem with that
+  approach is that the calculated scan rate tends to be high. The more
+  aggressive KSM scans, the more pages it can de-duplicate.
+
+There have been earlier attempts at an advisor:
+  propose auto-run mode of ksm and its tests
+  (https://marc.info/?l=3Dlinux-mm&m=3D166029880214485&w=3D2)
+
+
+Changes:
+=3D=3D=3D=3D=3D=3D=3D=3D
+V4:=20
+  - rename ksm_advisor_min_pages to ksm_advisor_min_pages_to_scan
+  - rename ksm_advisor_max_pages to ksm_advisor_max_pages_to_scan
+  - folded init_advisor() into set_advisor_defaults()
+  - moved set_advisor_defaults() to second patch
+  - Fixed long division for 32 bit platforms in scan_time_advisor()
+  - folded stop_advisor_scan() into scan_time_advisor()
+  - renamed run_advisor() to stop_advisor_scan()
+  - Fixed typo
+  - Added documentation for min and max cpu and how they are used in
+    the scan time advisor calculation
+
+V3:
+  - Use string parameters for advisor mode
+  - Removed min cpu load sysfs knob
+  - dropped unused enums in ksm_advisor_type
+  - renamed KSM_ADVISOR_LAST to KSM_ADVISOR_COUNT
+  - init_advisor() is needed but changed how it is initialized
+  - don't allow to change pages_to_scan parameter when scan-time advisor
+    is enabled
+  - add ksm_advisor_start_scan() and ksm_advisor_stop_scan() functions
+    to calculate scan time
+  - removed scan time parameter to scan_time_advisor() function
+
+V2:
+  - Use functions for long long calculations to support 32 bit platforms
+  - Use cpu min and cpu max settings for the advisor instead of the pages
+    min and max parameters.
+  - pages min and max values are now used for the initial and max values.
+    Generally they are not required to be changed.
+  - Add cpu percent usage value to tracepoint definition
+  - Update documentation for cpu min and cpu max values=20
+  - Update commit messages for the above changes
+
+
+
+*** BLURB HERE ***
+
+Stefan Roesch (4):
+  mm/ksm: add ksm advisor
+  mm/ksm: add sysfs knobs for advisor
+  mm/ksm: add tracepoint for ksm advisor
+  mm/ksm: document ksm advisor and its sysfs knobs
+
+ Documentation/admin-guide/mm/ksm.rst |  55 +++++
+ include/trace/events/ksm.h           |  33 +++
+ mm/ksm.c                             | 298 ++++++++++++++++++++++++++-
+ 3 files changed, 385 insertions(+), 1 deletion(-)
+
+
+base-commit: 12d04a7bf0da67321229d2bc8b1a7074d65415a9
+--=20
+2.39.3
 
