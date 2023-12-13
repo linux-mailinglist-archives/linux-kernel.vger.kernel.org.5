@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E541280FC13
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3524180FC14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377853AbjLMANe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S1377751AbjLMANg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377751AbjLMAN0 (ORCPT
+        with ESMTP id S232620AbjLMAN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Dec 2023 19:13:26 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5EDBC;
-        Tue, 12 Dec 2023 16:13:30 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7b7039d30acso365328039f.3;
-        Tue, 12 Dec 2023 16:13:30 -0800 (PST)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896DE92;
+        Tue, 12 Dec 2023 16:13:32 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d03bcf27e9so39541665ad.0;
+        Tue, 12 Dec 2023 16:13:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702426410; x=1703031210; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702426412; x=1703031212; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1yE8tDVZHn5Q5IZE7sgzYyBr3j80GHRhr26uqjreUGM=;
-        b=AIXJgCZrV2whvpPckxYKmj5a7FxRulAE1yMGD1ynu8KZnXITmN269U5oa6s86wHeZk
-         bXvWyeRRv/4o3Q1APWQt97qyY896g/dSM3wXhWGv38r6Hga4208CfC5Xf7cpUF8qruFK
-         Ed7Cdp6g63QifG9DMcyCsrPntHsYt+WRon7gpIrgB9kUykYe91SIwFLzSuXJAavQ33AG
-         NuofKgjHbxrW1Mxoinuv/qvqvmHHKWY6nAUrAokRGvPbpdUkkxS7ttwGvNY/QFXO9DJ6
-         sAdorHLdeO1k4UO4uEts5NTVenCZo/Fc9LMjZdv+N1HF7G8GZzb9iyymEW8ttF/Vsof0
-         BCCw==
+        bh=jUL8XAmO2qiHdWokVXe8WU7dwxVOHJXV31dlSpnABqs=;
+        b=POyDM7Zz2mJ/TjEWN/s8el/mDMWOU5lqMwUanTXP2fR/a9AMA+QovAeU+FRubGNnsu
+         srN/GgG34z25tdRKg3gGYUNKNydhNAhdPnoPR7AqWvGnCXF4OMZjjeJIQ2vdK1xfFidX
+         tSugM9NnOEOmUrtyxHTj27mKqgKAJgcQ/t27mKYQUcZScuzCbchvWULMp62dlaUj59aD
+         ixmQFzjMgfhscf89OYUI9dJe6/70XDzVTJTHW4X4HczT27iz3y89Lg4CESYMbKvq3aGH
+         9zTiW3jkfHnAfiss7g5zxn4z3RAsKiwFII78k/6JOUeF7pSndcCpAAXVCmBl83kHgWI7
+         WPXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702426410; x=1703031210;
+        d=1e100.net; s=20230601; t=1702426412; x=1703031212;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1yE8tDVZHn5Q5IZE7sgzYyBr3j80GHRhr26uqjreUGM=;
-        b=G8Ty/AdkU4ZTDtQ6IngdiVRHCVr/OcGCqRqd5HHlD6DM/+v0DxRGAzDtLwtZR3xY/z
-         hnVwHcK2o5BP4SxnQEJXqMc+6luP8obUxcKH9w2gnuk6U5mILpP1yT4S87pC/iMGbMQe
-         +QllHGLA9WZA6MXHbXtZASlgb/oqXjHiT4OQrmoEAa75U5CHEjrdDdpxz8hKJKMOFcK3
-         8lFnLGCb5grimgaLGszO2XLjnRHAu8cfc9cvu3Px4z1PwrXx+XwxjExXWqOXqqNHCOw/
-         J+ZptovqUpaK1ENExSN4bxYps913Jo9qiItFfcxfuCeUotMFdbA33KCgcUjYiNMpnDBh
-         gqAg==
-X-Gm-Message-State: AOJu0YxHnH8yqIwKWhx5lJDiF0rM8hAk8IZnspY7LOh53G3Y3h7Y6TxW
-        iH27W4Gahnjc3xtbS+tY7yA=
-X-Google-Smtp-Source: AGHT+IHCOUHbghffD9nTh2liqpDCfNSN3Nu/R/yotPPFOFlBFCd5bu6rSoH70raZS37aoXS7kG/nSg==
-X-Received: by 2002:a05:6e02:ef3:b0:35d:7ce5:3a55 with SMTP id j19-20020a056e020ef300b0035d7ce53a55mr7544753ilk.121.1702426409690;
-        Tue, 12 Dec 2023 16:13:29 -0800 (PST)
+        bh=jUL8XAmO2qiHdWokVXe8WU7dwxVOHJXV31dlSpnABqs=;
+        b=pfXEU8x8Y8vWqhtGruNiBSh27J+eGW1Y7zv2cBJaBPfeYBaDKiYw/QudUp+YZKsxrM
+         nET34/mYBsKq7m7rMXQFmY/MvEtnb2OMOpT5DXkMTdvkAJZEoG0pOHgBIgdQtmR4XFHH
+         nJBRb5FWYcxkHOSuuu7VuY30qe/AzDM48SLQUDNW4AV+zecHdEFMCoRet/I0qvhdYiWi
+         UYexnceOPkgAD0W/A0PTp+ytB0xIblXrKEISox07gbuovTs8ZJzJys+rEWPqjxxiTtFx
+         w//J+52qwL/99Hv2qms/1X/b9KIvVoZLG5+Fg7jYcHDPWMByWVnapNXShUdPs+U+9EHX
+         nDJA==
+X-Gm-Message-State: AOJu0Yx6iidhvDnZch3EBFSdqUDI19Rz+t9w+ncAEKECjGoim0NE72kS
+        DpjGZQ+vtM4cpEBkM2Bk1gg=
+X-Google-Smtp-Source: AGHT+IGpMYGeqGHw+LbYWTHi4KX/Qmq5JaiI4ACRKC9vfRYU/uoiSEHyZeG3Uk0zOT+cM6x5nWNS0g==
+X-Received: by 2002:a17:902:680d:b0:1d3:3eb8:53c3 with SMTP id h13-20020a170902680d00b001d33eb853c3mr1100315plk.89.1702426411841;
+        Tue, 12 Dec 2023 16:13:31 -0800 (PST)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:8251:f360:4316:214e])
-        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001d0ab572458sm9136398plr.121.2023.12.12.16.13.27
+        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001d0ab572458sm9136398plr.121.2023.12.12.16.13.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 16:13:28 -0800 (PST)
+        Tue, 12 Dec 2023 16:13:30 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,9 +64,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Stephane Eranian <eranian@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: [PATCH 02/17] perf dwarf-regs: Add get_dwarf_regnum()
-Date:   Tue, 12 Dec 2023 16:13:08 -0800
-Message-ID: <20231213001323.718046-3-namhyung@kernel.org>
+Subject: [PATCH 03/17] perf annotate-data: Add find_data_type()
+Date:   Tue, 12 Dec 2023 16:13:09 -0800
+Message-ID: <20231213001323.718046-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231213001323.718046-1-namhyung@kernel.org>
 References: <20231213001323.718046-1-namhyung@kernel.org>
@@ -83,155 +83,265 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The get_dwarf_regnum() returns a DWARF register number from a register
-name string according to the psABI.  Also add two pseudo encodings of
-DWARF_REG_PC which is a register that are used by PC-relative addressing
-and DWARF_REG_FB which is a frame base register.  They need to be
-handled in a special way.
+The find_data_type() is to get a data type from the memory access at the
+given address (IP) using a register and an offset.  It requires DWARF
+debug info in the DSO and searches the list of variables and function
+parameters in the scope.
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
+In a pseudo code, it does basically the following:
+
+  find_data_type(dso, ip, reg, offset)
+  {
+      pc = map__rip_2objdump(ip);
+      CU = dwarf_addrdie(dso->dwarf, pc);
+      scopes = die_get_scopes(CU, pc);
+      for_each_scope(S, scopes) {
+          V = die_find_variable_by_reg(S, pc, reg);
+          if (V && V.type == pointer_type) {
+              T = die_get_real_type(V);
+              if (offset < T.size)
+                  return T;
+          }
+      }
+      return NULL;
+  }
+
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/arch/x86/util/dwarf-regs.c | 38 +++++++++++++++++++++++++++
- tools/perf/util/dwarf-regs.c          | 34 ++++++++++++++++++++++++
- tools/perf/util/include/dwarf-regs.h  | 19 ++++++++++++++
- 3 files changed, 91 insertions(+)
+ tools/perf/util/Build           |   1 +
+ tools/perf/util/annotate-data.c | 163 ++++++++++++++++++++++++++++++++
+ tools/perf/util/annotate-data.h |  40 ++++++++
+ 3 files changed, 204 insertions(+)
+ create mode 100644 tools/perf/util/annotate-data.c
+ create mode 100644 tools/perf/util/annotate-data.h
 
-diff --git a/tools/perf/arch/x86/util/dwarf-regs.c b/tools/perf/arch/x86/util/dwarf-regs.c
-index 530934805710..399c4a0a29d8 100644
---- a/tools/perf/arch/x86/util/dwarf-regs.c
-+++ b/tools/perf/arch/x86/util/dwarf-regs.c
-@@ -113,3 +113,41 @@ int regs_query_register_offset(const char *name)
- 			return roff->offset;
- 	return -EINVAL;
- }
-+
-+struct dwarf_regs_idx {
-+	const char *name;
-+	int idx;
-+};
-+
-+static const struct dwarf_regs_idx x86_regidx_table[] = {
-+	{ "rax", 0 }, { "eax", 0 }, { "ax", 0 }, { "al", 0 },
-+	{ "rdx", 1 }, { "edx", 1 }, { "dx", 1 }, { "dl", 1 },
-+	{ "rcx", 2 }, { "ecx", 2 }, { "cx", 2 }, { "cl", 2 },
-+	{ "rbx", 3 }, { "edx", 3 }, { "bx", 3 }, { "bl", 3 },
-+	{ "rsi", 4 }, { "esi", 4 }, { "si", 4 }, { "sil", 4 },
-+	{ "rdi", 5 }, { "edi", 5 }, { "di", 5 }, { "dil", 5 },
-+	{ "rbp", 6 }, { "ebp", 6 }, { "bp", 6 }, { "bpl", 6 },
-+	{ "rsp", 7 }, { "esp", 7 }, { "sp", 7 }, { "spl", 7 },
-+	{ "r8", 8 }, { "r8d", 8 }, { "r8w", 8 }, { "r8b", 8 },
-+	{ "r9", 9 }, { "r9d", 9 }, { "r9w", 9 }, { "r9b", 9 },
-+	{ "r10", 10 }, { "r10d", 10 }, { "r10w", 10 }, { "r10b", 10 },
-+	{ "r11", 11 }, { "r11d", 11 }, { "r11w", 11 }, { "r11b", 11 },
-+	{ "r12", 12 }, { "r12d", 12 }, { "r12w", 12 }, { "r12b", 12 },
-+	{ "r13", 13 }, { "r13d", 13 }, { "r13w", 13 }, { "r13b", 13 },
-+	{ "r14", 14 }, { "r14d", 14 }, { "r14w", 14 }, { "r14b", 14 },
-+	{ "r15", 15 }, { "r15d", 15 }, { "r15w", 15 }, { "r15b", 15 },
-+	{ "rip", DWARF_REG_PC },
-+};
-+
-+int get_arch_regnum(const char *name)
-+{
-+	unsigned int i;
-+
-+	if (*name != '%')
-+		return -EINVAL;
-+
-+	for (i = 0; i < ARRAY_SIZE(x86_regidx_table); i++)
-+		if (!strcmp(x86_regidx_table[i].name, name + 1))
-+			return x86_regidx_table[i].idx;
-+	return -ENOENT;
-+}
-diff --git a/tools/perf/util/dwarf-regs.c b/tools/perf/util/dwarf-regs.c
-index 69cfaa5953bf..5b7f86c0063f 100644
---- a/tools/perf/util/dwarf-regs.c
-+++ b/tools/perf/util/dwarf-regs.c
-@@ -5,9 +5,12 @@
-  * Written by: Masami Hiramatsu <mhiramat@kernel.org>
-  */
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 73e3f194f949..5cf000302080 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -196,6 +196,7 @@ perf-$(CONFIG_DWARF) += probe-finder.o
+ perf-$(CONFIG_DWARF) += dwarf-aux.o
+ perf-$(CONFIG_DWARF) += dwarf-regs.o
+ perf-$(CONFIG_DWARF) += debuginfo.o
++perf-$(CONFIG_DWARF) += annotate-data.o
  
-+#include <stdlib.h>
-+#include <string.h>
- #include <debug.h>
- #include <dwarf-regs.h>
- #include <elf.h>
-+#include <errno.h>
- #include <linux/kernel.h>
- 
- #ifndef EM_AARCH64
-@@ -68,3 +71,34 @@ const char *get_dwarf_regstr(unsigned int n, unsigned int machine)
- 	}
- 	return NULL;
- }
-+
-+__weak int get_arch_regnum(const char *name __maybe_unused)
-+{
-+	return -ENOTSUP;
-+}
-+
-+/* Return DWARF register number from architecture register name */
-+int get_dwarf_regnum(const char *name, unsigned int machine)
-+{
-+	char *regname = strdup(name);
-+	int reg = -1;
-+	char *p;
-+
-+	if (regname == NULL)
-+		return -EINVAL;
-+
-+	/* For convenience, remove trailing characters */
-+	p = strpbrk(regname, " ,)");
-+	if (p)
-+		*p = '\0';
-+
-+	switch (machine) {
-+	case EM_NONE:	/* Generic arch - use host arch */
-+		reg = get_arch_regnum(regname);
-+		break;
-+	default:
-+		pr_err("ELF MACHINE %x is not supported.\n", machine);
-+	}
-+	free(regname);
-+	return reg;
-+}
-diff --git a/tools/perf/util/include/dwarf-regs.h b/tools/perf/util/include/dwarf-regs.h
-index 7d99a084e82d..01fb25a1150a 100644
---- a/tools/perf/util/include/dwarf-regs.h
-+++ b/tools/perf/util/include/dwarf-regs.h
-@@ -2,6 +2,9 @@
- #ifndef _PERF_DWARF_REGS_H_
- #define _PERF_DWARF_REGS_H_
- 
-+#define DWARF_REG_PC  0xd3af9c /* random number */
-+#define DWARF_REG_FB  0xd3affb /* random number */
-+
- #ifdef HAVE_DWARF_SUPPORT
- const char *get_arch_regstr(unsigned int n);
- /*
-@@ -10,6 +13,22 @@ const char *get_arch_regstr(unsigned int n);
-  * machine: ELF machine signature (EM_*)
-  */
- const char *get_dwarf_regstr(unsigned int n, unsigned int machine);
-+
-+int get_arch_regnum(const char *name);
+ perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
+ perf-$(CONFIG_LOCAL_LIBUNWIND)    += unwind-libunwind-local.o
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+new file mode 100644
+index 000000000000..1ddec786721c
+--- /dev/null
++++ b/tools/perf/util/annotate-data.c
+@@ -0,0 +1,163 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * get_dwarf_regnum - Returns DWARF regnum from register name
-+ * name: architecture register name
-+ * machine: ELF machine signature (EM_*)
++ * Convert sample address to data type using DWARF debug info.
++ *
++ * Written by Namhyung Kim <namhyung@kernel.org>
 + */
-+int get_dwarf_regnum(const char *name, unsigned int machine);
++
++#include <stdio.h>
++#include <stdlib.h>
++
++#include "annotate-data.h"
++#include "debuginfo.h"
++#include "debug.h"
++#include "dso.h"
++#include "map.h"
++#include "map_symbol.h"
++#include "strbuf.h"
++#include "symbol.h"
++
++static bool find_cu_die(struct debuginfo *di, u64 pc, Dwarf_Die *cu_die)
++{
++	Dwarf_Off off, next_off;
++	size_t header_size;
++
++	if (dwarf_addrdie(di->dbg, pc, cu_die) != NULL)
++		return cu_die;
++
++	/*
++	 * There are some kernels don't have full aranges and contain only a few
++	 * aranges entries.  Fallback to iterate all CU entries in .debug_info
++	 * in case it's missing.
++	 */
++	off = 0;
++	while (dwarf_nextcu(di->dbg, off, &next_off, &header_size,
++			    NULL, NULL, NULL) == 0) {
++		if (dwarf_offdie(di->dbg, off + header_size, cu_die) &&
++		    dwarf_haspc(cu_die, pc))
++			return true;
++
++		off = next_off;
++	}
++	return false;
++}
++
++/* The type info will be saved in @type_die */
++static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset)
++{
++	Dwarf_Word size;
++
++	/* Get the type of the variable */
++	if (die_get_real_type(var_die, type_die) == NULL) {
++		pr_debug("variable has no type\n");
++		return -1;
++	}
++
++	/*
++	 * It expects a pointer type for a memory access.
++	 * Convert to a real type it points to.
++	 */
++	if (dwarf_tag(type_die) != DW_TAG_pointer_type ||
++	    die_get_real_type(type_die, type_die) == NULL) {
++		pr_debug("no pointer or no type\n");
++		return -1;
++	}
++
++	/* Get the size of the actual type */
++	if (dwarf_aggregate_size(type_die, &size) < 0) {
++		pr_debug("type size is unknown\n");
++		return -1;
++	}
++
++	/* Minimal sanity check */
++	if ((unsigned)offset >= size) {
++		pr_debug("offset: %d is bigger than size: %lu\n", offset, size);
++		return -1;
++	}
++
++	return 0;
++}
++
++/* The result will be saved in @type_die */
++static int find_data_type_die(struct debuginfo *di, u64 pc,
++			      int reg, int offset, Dwarf_Die *type_die)
++{
++	Dwarf_Die cu_die, var_die;
++	Dwarf_Die *scopes = NULL;
++	int ret = -1;
++	int i, nr_scopes;
++
++	/* Get a compile_unit for this address */
++	if (!find_cu_die(di, pc, &cu_die)) {
++		pr_debug("cannot find CU for address %lx\n", pc);
++		return -1;
++	}
++
++	/* Get a list of nested scopes - i.e. (inlined) functions and blocks. */
++	nr_scopes = die_get_scopes(&cu_die, pc, &scopes);
++
++	/* Search from the inner-most scope to the outer */
++	for (i = nr_scopes - 1; i >= 0; i--) {
++		/* Look up variables/parameters in this scope */
++		if (!die_find_variable_by_reg(&scopes[i], pc, reg, &var_die))
++			continue;
++
++		/* Found a variable, see if it's correct */
++		ret = check_variable(&var_die, type_die, offset);
++		break;
++	}
++
++	free(scopes);
++	return ret;
++}
++
++/**
++ * find_data_type - Return a data type at the location
++ * @ms: map and symbol at the location
++ * @ip: instruction address of the memory access
++ * @reg: register that holds the base address
++ * @offset: offset from the base address
++ *
++ * This functions searches the debug information of the binary to get the data
++ * type it accesses.  The exact location is expressed by (ip, reg, offset).
++ * It return %NULL if not found.
++ */
++struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
++					   int reg, int offset)
++{
++	struct annotated_data_type *result = NULL;
++	struct dso *dso = map__dso(ms->map);
++	struct debuginfo *di;
++	Dwarf_Die type_die;
++	struct strbuf sb;
++	u64 pc;
++
++	di = debuginfo__new(dso->long_name);
++	if (di == NULL) {
++		pr_debug("cannot get the debug info\n");
++		return NULL;
++	}
++
++	/*
++	 * IP is a relative instruction address from the start of the map, as
++	 * it can be randomized/relocated, it needs to translate to PC which is
++	 * a file address for DWARF processing.
++	 */
++	pc = map__rip_2objdump(ms->map, ip);
++	if (find_data_type_die(di, pc, reg, offset, &type_die) < 0)
++		goto out;
++
++	result = zalloc(sizeof(*result));
++	if (result == NULL)
++		goto out;
++
++	strbuf_init(&sb, 32);
++	if (die_get_typename_from_type(&type_die, &sb) < 0)
++		strbuf_add(&sb, "(unknown type)", 14);
++
++	result->type_name = strbuf_detach(&sb, NULL);
++
++out:
++	debuginfo__delete(di);
++	return result;
++}
+diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
+new file mode 100644
+index 000000000000..633147f78ca5
+--- /dev/null
++++ b/tools/perf/util/annotate-data.h
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _PERF_ANNOTATE_DATA_H
++#define _PERF_ANNOTATE_DATA_H
++
++#include <errno.h>
++#include <linux/compiler.h>
++#include <linux/types.h>
++
++struct map_symbol;
++
++/**
++ * struct annotated_data_type - Data type to profile
++ * @type_name: Name of the data type
++ * @type_size: Size of the data type
++ *
++ * This represents a data type accessed by samples in the profile data.
++ */
++struct annotated_data_type {
++	char *type_name;
++	int type_size;
++};
++
++#ifdef HAVE_DWARF_SUPPORT
++
++/* Returns data type at the location (ip, reg, offset) */
++struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
++					   int reg, int offset);
 +
 +#else /* HAVE_DWARF_SUPPORT */
 +
-+static inline int get_dwarf_regnum(const char *name __maybe_unused,
-+				   unsigned int machine __maybe_unused)
++static inline struct annotated_data_type *
++find_data_type(struct map_symbol *ms __maybe_unused, u64 ip __maybe_unused,
++	       int reg __maybe_unused, int offset __maybe_unused)
 +{
-+	return -1;
++	return NULL;
 +}
- #endif
- 
- #ifdef HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET
++
++#endif /* HAVE_DWARF_SUPPORT */
++
++#endif /* _PERF_ANNOTATE_DATA_H */
 -- 
 2.43.0.472.g3155946c3a-goog
 
