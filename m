@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0B081101E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60EC811029
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377797AbjLMLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
+        id S1377728AbjLMLdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377788AbjLMLdb (ORCPT
+        with ESMTP id S1377991AbjLMLdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Dec 2023 06:33:31 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39EC120
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:15 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9f575d4b2so16198061fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:15 -0800 (PST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9BD124
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:17 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c317ba572so12199465e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702467194; x=1703071994; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702467196; x=1703071996; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fxiI83AWHviDA1K2goPpANE3T3h3Nt6zkBhZOZxUOr0=;
-        b=wRW7vS6mmRB6RaimzdIgDNsK6NJw7bhKdfXHy2vM3cDcXt1YHDdKPFuSOiqzvbEbUt
-         ZlnpU2N+qGRwg7UAlOqSx6DuDvJGaZxCNuTFSwK4us5/h/q8WZ7Ip6CRufFvFHaNCB4Q
-         RFssjBuUa1STuLPUM1zyhpmEyGUSo3fs2WwINTIzhTPObP5+9pfcdLZzA7A/wNnEV6bq
-         I0HzL0TZd0SuXfslCnaB0cGz6DqUxLFOdoZoxlDq9Z66Z3vPKDoJeEtZrzZQdu3p7N7U
-         1rhH+6dukhcf1HY4MaUoJcWRjsPA6OKjF2zqhtRfMWe9PTQ5qXp2lvFp2Yv3qkzczodj
-         xxCQ==
+        bh=bstEpC4Wn7eojNR4ey8qLYKe/MWWQca3CdSgitFw4Fg=;
+        b=RC0pQrg+1tzni5Y/urP2QWDVAWmKqQUsrkRj0mkkRUeu7RUyjQAaNL9xs2KZ8B8u7w
+         qAyP3KEhtSBooyTraLIgzc97Zdu10Lx9T1Q9kCZ48YupxjLt1+XdRDesCjuKhqKZn6FG
+         FZVe8wO+gH6jCMj+J8/4tSIFL0w65DgvzsVGTvvGa1b58Ji7zudsKY2+sPasFIale85o
+         GHGLg5ufOgZWrGr/O5GmVaZvKWcAkSiUNQkVs9prh21o+vH+SmG3XAhe4zyDwUlWmfio
+         Nf+uMiXqj3SgPD8H8wef4UCjj+48zhsFEK9XtAoEQjEoyRyz9yYTf6R1gODpJoFg50p4
+         sNpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702467194; x=1703071994;
+        d=1e100.net; s=20230601; t=1702467196; x=1703071996;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fxiI83AWHviDA1K2goPpANE3T3h3Nt6zkBhZOZxUOr0=;
-        b=tBUjDNP67YEqqCoCyIX00tOmj0WxSN0H8fNunn8wsOb/oYOcjmhuV/6J4678AJEojg
-         P3vyXeVHJzhIX9eUIE3WOIYp6rv6j8DoUZ+faIdaLERpcw1LNVLkJgPDrvxfXk1kHSvV
-         mfYnjmAkVA7PVGk7E5do0sGT5vwcl6otQXkkWE+jrSuBE2PqbCzzDo2OnBXscK01SEM8
-         6xljhIUHBF8lqqw224BLDL6Y9xMTY/lj+I0A36DhuSScJGf+r5F6PWgC3GD30kRXN4qQ
-         Qw+N4zoioONWOBlQMZa1B4ISfgigVAUgytdi2PEakLTo9I5OSmzzVsyHyvuLxah6beaG
-         vaPw==
-X-Gm-Message-State: AOJu0YzprlwXzxfW5sYiLDxvZ8ZUhujJmDYW393Rds5LAOflQWzieKSp
-        4ceNYEgdAXbPY8p14ZY7vQvNww==
-X-Google-Smtp-Source: AGHT+IGFQ9eQ0IrP8TYC+dSFSgqEE4ePc+Ww0dv4Sk8Ab3H2/aQW5oT0kIoa/QE1H0U8J0J6zKys2w==
-X-Received: by 2002:a2e:bc23:0:b0:2c9:edfa:f7a0 with SMTP id b35-20020a2ebc23000000b002c9edfaf7a0mr8605317ljf.1.1702467194165;
-        Wed, 13 Dec 2023 03:33:14 -0800 (PST)
+        bh=bstEpC4Wn7eojNR4ey8qLYKe/MWWQca3CdSgitFw4Fg=;
+        b=ZC8bxlDdCevZvDfZdnkmACzytEXf6dQxHi664oHPlZJAi+walYHkLVfrV7Meol2vnR
+         u1zfOmvLlqAYrqzO/KDwva12KNluFdRKIyMnTzpIkT8CdiM89zH1XGs5zNiDgDnqnRko
+         q3MR314Skf0I4vNLKpOjsVrtEH0bibVth4IsnEgIz235P+uuXQDV6Hbem15uSMC6e7xG
+         vLAyWtEOHGyl7oeiUFrQxpajVD3ChPJLYgMt6W4mniRZwJD64beksdkkdQxqTF30qTjD
+         2Ma8h1SICZwi65Rp3UE6Mfu8R8M8X0Fq/oqPwV2ZnmVg4fZuKazGl8TuXnZG55vXeQ3s
+         G+JQ==
+X-Gm-Message-State: AOJu0YwVXqWaMpGP2wxgDR9Fwchz+nCaVrZWTko2agPVe7x5Jr3uN30R
+        SGIusDVngJZzEZSMjzGE0iYfhg==
+X-Google-Smtp-Source: AGHT+IG2tOfMAS1pydsf4pPawIp50fPoX384Fx9efJpcAm8MmIokurwGuZwz8GEsZl7/fbAwTEX3Lg==
+X-Received: by 2002:a05:600c:358c:b0:40b:5547:76a0 with SMTP id p12-20020a05600c358c00b0040b554776a0mr9797289wmq.0.1702467195152;
+        Wed, 13 Dec 2023 03:33:15 -0800 (PST)
 Received: from carbon-x1.. ([2a01:e0a:999:a3a0:c564:f167:d072:5672])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm22433137wms.30.2023.12.13.03.33.13
+        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm22433137wms.30.2023.12.13.03.33.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 03:33:13 -0800 (PST)
+        Wed, 13 Dec 2023 03:33:14 -0800 (PST)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
@@ -62,9 +62,9 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Robbin Ehn <rehn@rivosinc.com>
-Subject: [PATCH 2/9] riscv: hwprobe: export Ztso ISA extension
-Date:   Wed, 13 Dec 2023 12:32:58 +0100
-Message-ID: <20231213113308.133176-3-cleger@rivosinc.com>
+Subject: [PATCH 3/9] dt-bindings: riscv: add Zam ISA extension description
+Date:   Wed, 13 Dec 2023 12:32:59 +0100
+Message-ID: <20231213113308.133176-4-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213113308.133176-1-cleger@rivosinc.com>
 References: <20231213113308.133176-1-cleger@rivosinc.com>
@@ -73,61 +73,37 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export the Ztso extension to userspace.
+Add description for the Zam ISA extension.
 
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
 ---
- Documentation/arch/riscv/hwprobe.rst  | 4 ++++
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_riscv.c         | 1 +
- 3 files changed, 6 insertions(+)
+ Documentation/devicetree/bindings/riscv/extensions.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index 41463b932268..10bd7b170118 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -161,6 +161,10 @@ The following keys are defined:
-        defined in the RISC-V ISA manual starting from commit 056b6ff467c7
-        ("Zfa is ratified").
+diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+index 3574a0b70be4..912cc6a42eb4 100644
+--- a/Documentation/devicetree/bindings/riscv/extensions.yaml
++++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+@@ -171,6 +171,11 @@ properties:
+             memory types as ratified in the 20191213 version of the privileged
+             ISA specification.
  
-+  * :c:macro:`RISCV_HWPROBE_EXT_ZTSO`: The Ztso extension is supported as
-+       defined in the RISC-V ISA manual starting from commit 5618fb5a216b
-+       ("Ztso is now ratified.")
++        - const: zam
++          description: |
++            The standard Zam extension for misaligned atomics is supported as
++            ratified in version 20191213 of the riscv-isa-manual.
 +
- * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
-   information about the selected set of processors.
- 
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index 91fbe1a7f2e2..01ac3dc196e5 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -56,6 +56,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_EXT_ZVFH		(1 << 30)
- #define		RISCV_HWPROBE_EXT_ZVFHMIN	(1 << 31)
- #define		RISCV_HWPROBE_EXT_ZFA		(1ULL << 32)
-+#define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
- #define RISCV_HWPROBE_KEY_CPUPERF_0	5
- #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
-diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index f0bd7b480b7f..6564fa9e7a7f 100644
---- a/arch/riscv/kernel/sys_riscv.c
-+++ b/arch/riscv/kernel/sys_riscv.c
-@@ -174,6 +174,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 		EXT_KEY(ZKSH);
- 		EXT_KEY(ZKT);
- 		EXT_KEY(ZIHINTNTL);
-+		EXT_KEY(ZTSO);
- 
- 		if (has_vector()) {
- 			EXT_KEY(ZVBB);
+         - const: zba
+           description: |
+             The standard Zba bit-manipulation extension for address generation
 -- 
 2.43.0
 
