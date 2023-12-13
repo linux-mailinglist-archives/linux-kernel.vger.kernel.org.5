@@ -2,188 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8559811099
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C213781109D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378168AbjLML4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
+        id S1378252AbjLML4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbjLML4s (ORCPT
+        with ESMTP id S1378199AbjLML4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:56:48 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C33CB0;
-        Wed, 13 Dec 2023 03:56:54 -0800 (PST)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B78914A9;
-        Wed, 13 Dec 2023 12:56:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702468567;
-        bh=LpozRU9I0yUBeNC+SLVevsZLHwzso4Nd9+gU5TUH4t8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=JlVl611lQFRznEIx5K/5KizQsqy0aIQk6E+5jngYPjQW28ZGLNboaYKl/jr2elrUS
-         WeAmY4PWI5wYvX2CjFhEiWp6MG6Yn4j2qqmDgrcq8SNUdwjwkPRS7Ex7xqD81aZUU0
-         x6d40lkrjHIumtFUOooPw9gtzkYyFtqL4khvSCgg=
-Message-ID: <0722393c-8107-4a8f-b3ab-1bbb347a6f1b@ideasonboard.com>
-Date:   Wed, 13 Dec 2023 13:56:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [v2] media: i2c: mt9m114: use fsleep() in place of
- udelay()
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20231213112322.1655236-1-arnd@kernel.org>
- <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
- <20231213114812.GB769@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231213114812.GB769@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 06:56:49 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5895ACF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:56:55 -0800 (PST)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id BE4E13F19A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1702468613;
+        bh=fEKA5YHCYnGRm2G7PXjnR2dxRPk0aRjVN0bpJvT3Tb0=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=KwXv+gHrEQ5KU7gee+gbabDgrebWmU4MzMuXXWJuyoq4YthDUjceSqRmQSUXOr4k1
+         35ZIV3/6nfM8vzpDi9egx7MYSuCS63NfBXoVzXxg/X2rw0F20eLk6KGqEMG7RC8pqM
+         aZPP+iExyJtiCdpF8+kbQHcO9oVLRE+9n8CEHPf8JCcQmGzESuLXxXcpaFv6RWyxwE
+         ZsCbHs+rKp7Yt6/sdV9tZYM+v9b9xUj+2jrZLkTrA+jyJByUksAKC9RvT3N84BsO70
+         0PG4ccQLnAmy3LCczxTR8OIX8v9Fj7oZbtvOa6O/6/SuBp3e1hXMgMowohkesz/9H7
+         5zEpMLhIYW6uw==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4257662f905so88856911cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:56:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702468612; x=1703073412;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEKA5YHCYnGRm2G7PXjnR2dxRPk0aRjVN0bpJvT3Tb0=;
+        b=qiGDG70vtlmojQsx9iPAQh6wwqPOx7p6zJD2rvI7IsxSJ2A7bbVzntoTKriDPv33Jd
+         4Dn2sXRhOra+8a8pFc5A0+t5DTunUys8orxemMs0lfDHWrVQNWMbGMU+XCtn+QRegFok
+         l1M17VUGSnFd/a5CeGpXnVQx7SQpX3Db7b2ja+XECG8XxDD2ryyCkVP6tvqOkuJBpd4I
+         7gU0IhAfK6/JkTWwLSjarzR+ggepaPFSuD6s+pyCPxsPcjoD4mb9q7/CK9B7X48V0IFO
+         NTtqQoLQ/3Tvw6Bf4uFByH5eWxPk20gcH9iM7Z570EA/HvaxnQZ94DGv5/AG98ELRQma
+         rc6A==
+X-Gm-Message-State: AOJu0Yzwg/0drfNGIlVSWTIKVYJLE/SnBTjlop//8DHwW0rE0Mj73zSg
+        oLcW0cbCR81c/g8pGGHTH6XgCyI1eBNGV2yoySOKeF8OGgbdRjJCIXfY0BtjlGcp9vSnbYwLzam
+        CNbnFTbKa6NXVxmNxRiQfvD9Pa63d9OMXKjGTY6dA/68QUBcjt2h1KzCYgQ==
+X-Received: by 2002:a05:622a:181a:b0:425:a0b5:5d43 with SMTP id t26-20020a05622a181a00b00425a0b55d43mr11488973qtc.63.1702468612604;
+        Wed, 13 Dec 2023 03:56:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFBkVFLBJC/0risE5Kv5CrCtwd+gtryIUOxD+I5QRMHIbkz3Zh7EYMwe0cp/xekG+Qh3sh2S9fxIZKLyq5ska0=
+X-Received: by 2002:a05:622a:181a:b0:425:a0b5:5d43 with SMTP id
+ t26-20020a05622a181a00b00425a0b55d43mr11488962qtc.63.1702468612273; Wed, 13
+ Dec 2023 03:56:52 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 13 Dec 2023 03:56:51 -0800
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <9ae86c6786bc4ac7b93c971ba00084a6@EXMBX066.cuchost.com>
+References: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+ <20231206115000.295825-7-jeeheng.sia@starfivetech.com> <CAJM55Z_VgBGvCPuvwmQahMcMfuWKnOKpZ9bBbbhei_Teu5Apeg@mail.gmail.com>
+ <9ae86c6786bc4ac7b93c971ba00084a6@EXMBX066.cuchost.com>
+Mime-Version: 1.0
+Date:   Wed, 13 Dec 2023 03:56:51 -0800
+Message-ID: <CAJM55Z9GVFGuwqe=zLXQvBwDfVSz4eA2EXDd4sqWVCKJF2J+fg@mail.gmail.com>
+Subject: RE: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator driver
+To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "conor@kernel.org" <conor@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 13:48, Laurent Pinchart wrote:
-> On Wed, Dec 13, 2023 at 01:40:54PM +0200, Tomi Valkeinen wrote:
->> On 13/12/2023 13:23, Arnd Bergmann wrote:
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> With clang-16, building without COMMON_CLK triggers a range check on
->>> udelay() because of a constant division-by-zero calculation:
->>>
->>> ld.lld: error: undefined symbol: __bad_udelay
->>>>>> referenced by mt9m114.c
->>>>>>                 drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
->>>
->>> In this configuration, the driver already fails to probe, before
->>> this function gets called, so it's enough to suppress the assertion.
->>>
->>> Do this by using fsleep(), which turns long delays into sleep() calls
->>> in place of the link failure.
->>>
->>> This is probably a good idea regardless to avoid overly long dynamic
->>> udelay() calls on a slow clock.
->>>
->>> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
->>> Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
->>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>> ---
->>>    drivers/media/i2c/mt9m114.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
->>> index 0a22f328981d..68adaecaf481 100644
->>> --- a/drivers/media/i2c/mt9m114.c
->>> +++ b/drivers/media/i2c/mt9m114.c
->>> @@ -2116,7 +2116,7 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
->>>    		duration = DIV_ROUND_UP(2 * 50 * 1000000, freq);
->>>    
->>>    		gpiod_set_value(sensor->reset, 1);
->>> -		udelay(duration);
->>> +		fsleep(duration);
->>>    		gpiod_set_value(sensor->reset, 0);
->>>    	} else {
->>>    		/*
->>
->> I think this is fine, so:
->>
->> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->>
->> But: If we don't have COMMON_CLK (or rather, I think, HAVE_CLK), the
->> freq will be zero at compile time. So won't the compiler give a warning
->> for the DIV_ROUND_UP() call?
->>
->> Interestingly, for me, this doesn't give a div-by-zero warning:
->>
->> 	int x;
->> 	int y = 0;
->> 	x = DIV_ROUND_UP(10, y);
->>
->> but this does:
->>
->> 	int x;
->> 	const int y = 0;
->> 	x = DIV_ROUND_UP(10, y);
->>
->> And looks like this gives the warning too:
->>
->> 	int x;
->> 	const int y = 0;
->> 	if (y)
->> 		x = DIV_ROUND_UP(10, y);
->>
->> So, I think, the code in the driver could fail to compile at some later
->> point, if the compiler warnings are improved (?), or if someone adds a
->> 'const' in front of 'long freq = clk_get_rate(sensor->clk);' line.
->>
->> Maybe worry about that if it actually happens =).
-> 
-> Maybe :-) I would be tempted to make VIDEO_CAMERA_SENSOR depend on
-> COMMON_CLK.
+JeeHeng Sia wrote:
+> > -----Original Message-----
+> > From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > Sent: Saturday, December 9, 2023 12:25 AM
+> > To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; kernel@esmil.dk; conor@kernel.org; robh+dt@kernel.org;
+> > krzysztof.kozlowski+dt@linaro.org; paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
+> > mturquette@baylibre.com; sboyd@kernel.org; p.zabel@pengutronix.de; emil.renner.berthing@canonical.com; Hal Feng
+> > <hal.feng@starfivetech.com>; Xingyu Wu <xingyu.wu@starfivetech.com>
+> > Cc: linux-riscv@lists.infradead.org; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; linux-clk@vger.kernel.org; Leyfoon Tan
+> > <leyfoon.tan@starfivetech.com>
+> > Subject: Re: [PATCH v1 06/16] clk: starfive: Add JH8100 System clock generator driver
+> >
+> > Sia Jee Heng wrote:
+> > > Add support for JH8100 System clock generator.
+> > >
+> > > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> > > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > > ---
+> > >  MAINTAINERS                                   |   8 +
+> > >  drivers/clk/starfive/Kconfig                  |   9 +
+> > >  drivers/clk/starfive/Makefile                 |   1 +
+> > >  drivers/clk/starfive/clk-starfive-common.h    |   9 +-
+> > >  drivers/clk/starfive/jh8100/Makefile          |   3 +
+> > >  .../clk/starfive/jh8100/clk-starfive-jh8100.h |  11 +
+> > >  drivers/clk/starfive/jh8100/clk-sys.c         | 455 ++++++++++++++++++
+> > >  7 files changed, 495 insertions(+), 1 deletion(-)
+> > >  create mode 100644 drivers/clk/starfive/jh8100/Makefile
+> > >  create mode 100644 drivers/clk/starfive/jh8100/clk-starfive-jh8100.h
+> > >  create mode 100644 drivers/clk/starfive/jh8100/clk-sys.c
+...
+> > > diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefile
+> > > index 012f7ee83f8e..6cb3ce823330 100644
+> > > --- a/drivers/clk/starfive/Makefile
+> > > +++ b/drivers/clk/starfive/Makefile
+> > > @@ -10,3 +10,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7110_AON)	+= clk-starfive-jh7110-aon.o
+> > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_STG)	+= clk-starfive-jh7110-stg.o
+> > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_ISP)	+= clk-starfive-jh7110-isp.o
+> > >  obj-$(CONFIG_CLK_STARFIVE_JH7110_VOUT)	+= clk-starfive-jh7110-vout.o
+> > > +obj-$(CONFIG_CLK_STARFIVE_JH8100_SYS)	+= jh8100/
+> >
+> > I don't really see why do you need a special subdirectory for the JH8100? The
+> > JH7110 drivers do fine without it.
+> Each subfolder can represent a different platform, making it easier to
+> locate and maintain platform-specific code. Since the code is expected
+> to grow in the future, let's start organizing it in a folder-based structure
+> for easier maintenance at a later stage.
 
-I think HAVE_CLK would be more correct.
+Yes, but that's not what you're doing here. You're making just one of the 3
+almost identical drivers be different for no good reason.
 
-  Tomi
+> > > diff --git a/drivers/clk/starfive/clk-starfive-common.h b/drivers/clk/starfive/clk-starfive-common.h
+> > > index fed45311360c..ec30af0658cf 100644
+> > > --- a/drivers/clk/starfive/clk-starfive-common.h
+> > > +++ b/drivers/clk/starfive/clk-starfive-common.h
+> > > @@ -103,6 +103,13 @@ struct starfive_clk_data {
+> > >  	.parents = { [0] = _parent },						\
+> > >  }
+> > >
+> > > +#define STARFIVE_GINV(_idx, _name, _flags, _parent)[_idx] = {			\
+> > > +	.name = _name,								\
+> > > +	.flags = _flags,							\
+> > > +	.max = STARFIVE_CLK_ENABLE | STARFIVE_CLK_INVERT,			\
+> > > +	.parents = { [0] = _parent },						\
+> > > +}
+> > > +
+> > >  struct starfive_clk {
+> > >  	struct clk_hw hw;
+> > >  	unsigned int idx;
+> > > @@ -114,7 +121,7 @@ struct starfive_clk_priv {
+> > >  	spinlock_t rmw_lock;
+> > >  	struct device *dev;
+> > >  	void __iomem *base;
+> > > -	struct clk_hw *pll[3];
+> > > +	struct clk_hw *pll[8];
+> >
+> > These extra slots are just used for fixed factor dummy PLLs right now, similar
+> > to how the JH7110 first used them and later had to rework drivers and device
+> > trees for the proper PLL driver.
+> Yes, its intention is similar to JH8100. We will submit other clock
+> domains and PLL at later stage but not so soon.
+> >
+> > This time around I'd much rather you work on getting the PLL driver in first,
+> > so we don't need all that churn.
+> I am sorry but we started development on FPGA. Unfortunately, the PLL driver
+> and other domains are planned to be finished at a later stage. I have tried
+> to minimize the churn as much as possible.
 
+It's awesome that you're beginning upstreaming early, but if you don't have
+this in silicon yet, how do you even know that this driver works?
+
+If you're just using this for testing on FPGAs you can create dummy fixed
+clocks in the device tree for the PLLs that this driver can consume.  Then
+later when you have a PLL driver you can replace those fixed clocks with the
+output of that driver.
+
+/Emil
