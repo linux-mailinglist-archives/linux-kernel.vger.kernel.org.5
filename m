@@ -2,177 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E331812065
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3013981206C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbjLMVEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        id S1442700AbjLMVJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 16:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbjLMVEr (ORCPT
+        with ESMTP id S229772AbjLMVI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:04:47 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DB1113;
-        Wed, 13 Dec 2023 13:04:53 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDKalVI028033;
-        Wed, 13 Dec 2023 21:04:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=ihpYFWWnterI/M7n6N8lxFYsutBZIy9xyS15gKnimk4=; b=Xs
-        BtDFUy4K4/9RWn93c9zZtV2xSiDP17Zoa7YnD+lKSbGfK9H1qRdXyXRlhkAbp5p5
-        BwxzsBSCV7TdCVXbBUb0if3xWpaZYYp7jK54S8E9ZSzTr1IO9PEJJXLswKB79Jmg
-        dsDxJ5pfJfjWme/++is2+yDckxj3SaA+f/Vv529QwgyWMuoZK+O0FdAfYJLaFfuT
-        Jsz/OlOkU63A+/DteQYC9RLnYe8LG97HBJE8FI1BZUdqaJ22qYPBjKqOz5hGBt6H
-        /cTzLgyOJf2Y8eKVcR4qZD0c/3EPBRBVDLPhtcJ184GoM3PxIvopFRJasWMF5qv6
-        dlZ7WMG8H2RHh6Hqdbzw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy4dhjdt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 21:04:46 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDL4apE007824
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 21:04:36 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 13:04:36 -0800
-Message-ID: <1505c454-aaeb-bc80-7e1e-c0b2e1aa1197@quicinc.com>
-Date:   Wed, 13 Dec 2023 13:04:35 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 1/2] drm/msm/dpu: Set input_sel bit for INTF
-Content-Language: en-US
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
+        Wed, 13 Dec 2023 16:08:59 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3876CA7;
+        Wed, 13 Dec 2023 13:09:06 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-28aeb049942so966382a91.2;
+        Wed, 13 Dec 2023 13:09:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702501745; x=1703106545; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jr0TCswUxTc7AafwY66WLMMCccn93bB0q3vfp6TfBSI=;
+        b=Xp9msi7xRn/ParGLJqLDaIPh7RvxSk++DdyXyjIQYLtESgFE1CixNJoBI5hcZ3F2kc
+         JXqa35mlxEHbkJAGgZ7uxgChouePvjca0H/ckYz0wKj10PgR4/wB8eF8wsgjFnncyetk
+         c9W/8nKX3+iub8Dh3MoUG7C2zWLkhJXXoxqo/B8ifKQoqI+jqZdBcmGAG11c/p4plWl6
+         aXmQmVEdch2enI4a0iHu/cboLo6eyzWQyaMgX8JIPYlwrCI5m8ygU34ypTzJpkzW1Ifz
+         lJV5YCYI8tqP97vvpGQR/JRAdE4GCbuprZo9W93ndOe7S4uYU8TT9Tkq0S/FxOGDrDOg
+         Sa9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702501745; x=1703106545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jr0TCswUxTc7AafwY66WLMMCccn93bB0q3vfp6TfBSI=;
+        b=NMtORc4oDnSEzvysoR35HkQhqws2RAD+4rgBSEa6LAzDvhTtcL6sIt0/Qp8jiA3y0U
+         Y2TsiyJ9EtGuPVLKNr16yN/rLlPJEhz7rLPrUxMs8zygQ5j5Xw8e2DWrBg2o3lvMOphO
+         TEj3BTTzNZax6DpgijqSJd/JtHLUKEAWrCEzTG61nONd4FMqevYvH7ONe849noSHOgBM
+         nDmGQipO7YolX+T+z0lFl5c3ieyrzlnkfMWcBwtF9fTCDTBawkwrhST8at0HMeJEnuqB
+         RHGqx0XL9QTj9QoTgfirou7oi32TLQg2X+WPah1sVh7eCUzUDyzX0Q74Ay+oipd0KWdH
+         ODPw==
+X-Gm-Message-State: AOJu0YzHiiSRMz+rprSx1EFEj7QrJe+gXcC3aWpg9qJ7Lr6CsnDtrUs3
+        DsamylJxWQotJErGDKCMWMJ4TBRjQdg=
+X-Google-Smtp-Source: AGHT+IGkZNT3/LQJXplSCFC2ZzrzZXt7QKKZ3e7zIfx8/mItHgRrGzSLgrzJFjDmOkydu/gWyWNaYQ==
+X-Received: by 2002:a17:90a:9f45:b0:28a:93d:814c with SMTP id q5-20020a17090a9f4500b0028a093d814cmr6918586pjv.50.1702501744634;
+        Wed, 13 Dec 2023 13:09:04 -0800 (PST)
+Received: from localhost ([100.84.200.15])
+        by smtp.gmail.com with ESMTPSA id j8-20020a17090a734800b0028ae9cb6ce0sm1723141pjs.6.2023.12.13.13.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 13:09:03 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Rob Clark <robdclark@chromium.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20231213-encoder-fixup-v2-0-b11a4ad35e5e@quicinc.com>
- <20231213-encoder-fixup-v2-1-b11a4ad35e5e@quicinc.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20231213-encoder-fixup-v2-1-b11a4ad35e5e@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 3oj3WGXAvEMGL8Uy7hAIQgKCDjvtCn6x
-X-Proofpoint-GUID: 3oj3WGXAvEMGL8Uy7hAIQgKCDjvtCn6x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312130149
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] soc: qcom: pmic_glink: Fix boot when QRTR=m
+Date:   Wed, 13 Dec 2023 13:06:43 -0800
+Message-ID: <20231213210644.8702-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
+We need to bail out before adding/removing devices, if we are going
+to -EPROBE_DEFER.  Otherwise boot will get stuck forever at
+deferred_probe_initcall().
 
-On 12/13/2023 12:51 PM, Jessica Zhang wrote:
-> Set the input_sel bit for encoders as it was missed in the initial
-> implementation.
-> 
-> Reported-by: Rob Clark <robdclark@gmail.com>
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/39
-> Fixes: 91143873a05d ("drm/msm/dpu: Add MISR register support for interface")
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c |  2 +-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   |  2 +-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 10 ++++++++--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  3 ++-
->   4 files changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> index 0b6a0a7dcc39..226133af7840 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> @@ -322,7 +322,7 @@ static u32 dpu_hw_intf_get_line_count(struct dpu_hw_intf *intf)
->   
->   static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf, bool enable, u32 frame_count)
->   {
-> -	dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, enable, frame_count);
-> +	dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, enable, frame_count, 0x1);
->   }
->   
->   static int dpu_hw_intf_collect_misr(struct dpu_hw_intf *intf, u32 *misr_value)
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-> index 25af52ab602f..bbc9756ecde9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
-> @@ -85,7 +85,7 @@ static void dpu_hw_lm_setup_border_color(struct dpu_hw_mixer *ctx,
->   
->   static void dpu_hw_lm_setup_misr(struct dpu_hw_mixer *ctx, bool enable, u32 frame_count)
->   {
-> -	dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, enable, frame_count);
-> +	dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, enable, frame_count, 0x0);
->   }
->   
->   static int dpu_hw_lm_collect_misr(struct dpu_hw_mixer *ctx, u32 *misr_value)
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> index 0b05061e3e62..87716a60332e 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
-> @@ -477,7 +477,8 @@ void _dpu_hw_setup_qos_lut(struct dpu_hw_blk_reg_map *c, u32 offset,
->   
->   void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c,
->   		u32 misr_ctrl_offset,
-> -		bool enable, u32 frame_count)
-> +		bool enable, u32 frame_count,
-> +		u32 input_sel)
->   {
->   	u32 config = 0;
->   
-> @@ -487,8 +488,13 @@ void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c,
->   	wmb();
->   
->   	if (enable) {
-> +		/*
-> +		 * note: Aside from encoders, input_sel should be
-> +		 * set to 0x0 by default
-> +		 */
->   		config = (frame_count & MISR_FRAME_COUNT_MASK) |
-> -			MISR_CTRL_ENABLE | MISR_CTRL_FREE_RUN_MASK;
-> +			MISR_CTRL_ENABLE | MISR_CTRL_FREE_RUN_MASK |
-> +			((input_sel & 0xF) << 24);
->   
->   		DPU_REG_WRITE(c, misr_ctrl_offset, config);
->   	} else {
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> index fe083b2e5696..761056be272b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
-> @@ -357,7 +357,8 @@ void _dpu_hw_setup_qos_lut(struct dpu_hw_blk_reg_map *c, u32 offset,
->   void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c,
->   		u32 misr_ctrl_offset,
->   		bool enable,
-> -		u32 frame_count);
-> +		u32 frame_count,
-> +		u32 input_sel);
+Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/soc/qcom/pmic_glink.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-u8 for input_sel?
+diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
+index 914057331afd..2899746af6a6 100644
+--- a/drivers/soc/qcom/pmic_glink.c
++++ b/drivers/soc/qcom/pmic_glink.c
+@@ -268,10 +268,16 @@ static int pmic_glink_probe(struct platform_device *pdev)
+ 	else
+ 		pg->client_mask = PMIC_GLINK_CLIENT_DEFAULT;
+ 
++	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
++	if (IS_ERR(pg->pdr)) {
++		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr), "failed to initialize pdr\n");
++		return ret;
++	}
++
+ 	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI)) {
+ 		ret = pmic_glink_add_aux_device(pg, &pg->ucsi_aux, "ucsi");
+ 		if (ret)
+-			return ret;
++			goto out_release_pdr_handle;
+ 	}
+ 	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_ALTMODE)) {
+ 		ret = pmic_glink_add_aux_device(pg, &pg->altmode_aux, "altmode");
+@@ -284,17 +290,11 @@ static int pmic_glink_probe(struct platform_device *pdev)
+ 			goto out_release_altmode_aux;
+ 	}
+ 
+-	pg->pdr = pdr_handle_alloc(pmic_glink_pdr_callback, pg);
+-	if (IS_ERR(pg->pdr)) {
+-		ret = dev_err_probe(&pdev->dev, PTR_ERR(pg->pdr), "failed to initialize pdr\n");
+-		goto out_release_aux_devices;
+-	}
+-
+ 	service = pdr_add_lookup(pg->pdr, "tms/servreg", "msm/adsp/charger_pd");
+ 	if (IS_ERR(service)) {
+ 		ret = dev_err_probe(&pdev->dev, PTR_ERR(service),
+ 				    "failed adding pdr lookup for charger_pd\n");
+-		goto out_release_pdr_handle;
++		goto out_release_aux_devices;
+ 	}
+ 
+ 	mutex_lock(&__pmic_glink_lock);
+@@ -303,8 +303,6 @@ static int pmic_glink_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
+-out_release_pdr_handle:
+-	pdr_handle_release(pg->pdr);
+ out_release_aux_devices:
+ 	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_BATT))
+ 		pmic_glink_del_aux_device(pg, &pg->ps_aux);
+@@ -314,6 +312,8 @@ static int pmic_glink_probe(struct platform_device *pdev)
+ out_release_ucsi_aux:
+ 	if (pg->client_mask & BIT(PMIC_GLINK_CLIENT_UCSI))
+ 		pmic_glink_del_aux_device(pg, &pg->ucsi_aux);
++out_release_pdr_handle:
++	pdr_handle_release(pg->pdr);
+ 
+ 	return ret;
+ }
+-- 
+2.43.0
 
->   
->   int dpu_hw_collect_misr(struct dpu_hw_blk_reg_map *c,
->   		u32 misr_ctrl_offset,
-> 
