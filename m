@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E12811F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EC2811F6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442151AbjLMTvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:51:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        id S233726AbjLMTvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbjLMTvX (ORCPT
+        with ESMTP id S1377931AbjLMTvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:51:23 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6407ECF;
-        Wed, 13 Dec 2023 11:51:30 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso76177655e9.2;
-        Wed, 13 Dec 2023 11:51:30 -0800 (PST)
+        Wed, 13 Dec 2023 14:51:24 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224F2DC;
+        Wed, 13 Dec 2023 11:51:31 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c46d6784eso34793475e9.3;
+        Wed, 13 Dec 2023 11:51:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1702497089; x=1703101889; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5MfDHxrabIf+gmAYTXlhPOQXkHPRDrfLTxd0p36e6Hg=;
-        b=dTDxRp595qKXYuA9Zogr4UM0eHnKgV9JbcxQPkMxrl2Whq2OJPf0SWdV7BcBhZ9tfN
-         LlQ79JKe8XL4VdfKW/xPpvgKk4pok93lZdJ6KhvqH83gla9qN10aPz6+0GOkqB5XDlEo
-         UbACHYirTU+pu39XU9/8QlarmBjIoa3ohsnPM9DYyoAgNE4JITpgnGS38mON6/QJhuYX
-         wHhdPDSgeuhyb0O5NVIZkoLEK1GrMBqPxozxqj6AleDytKBf/Iqk2tZDoQnzlAdv+0bn
-         hjibvn3rRSQe/rT+2IoAH17JZ2k2i6SLcDunj4dLnY5n9r8oL0PKb7aXZAHECPBCxhmr
-         zggQ==
+        bh=sSS4lcTIGbMXkzXHnajhTMjU7KSYMMCUlsf0C4cS0VI=;
+        b=DA42hTmNzdYhM6vWCT9grgW3ch5sEOkwVO1S8FSagUYe8/k9Aa9WmhvNf6+DjBXdyh
+         HgylTwC/8sQrvu3jIVnF9EgFShmflcxWtb5YJRzgCyfvsl7AA/C0vHsUmbuRnLi4VYto
+         irewCGYKJUIE2/mQKAN8H1Y11bazIsjjZuXNilp7Z33OxJ4rGC7KZ6s6evK9CUiXLOlq
+         UThDYz8PcDJwOFabk1GS0ncwshfGm2Kp3vO1CCP4yXKCzKjanxnkbOdDL8oZluZawjTc
+         kVdlUd7LOlRzlqQZbOx7tBgL6Jdok3RsMb91zrJVlU6ZevxbuvjP7kInUPJudEIaj84g
+         k07w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702497089; x=1703101889;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5MfDHxrabIf+gmAYTXlhPOQXkHPRDrfLTxd0p36e6Hg=;
-        b=Rr/nH0e2yowMyMwhHkenX0ViimtFc6QHKOnC7Qgk2VtJ/uPkVSpsf8/E71hDOj4bcP
-         Sbqkp6Q0x0LRWMN6eeQxOoXYQGKc47DCz+TBFBI68N9IeksTwFjrv3UW7s5wAibaDh0v
-         PY/rWLOeH60pCYxsOIeJppvHoH5VGZELu/OEwmvBKAzUqO8G7mcGhorJ93/pGl2lwAMK
-         lttXuEKp+Zbn6UxP9dcpyzW1SLsCECXSw4AJT8LOAm02KzvW9QTqQCic/JDOePX2gUDd
-         vdR8B4deEdbgKdwtefDYoxLuiF8QnAaJDVzFMCVHS3hP7w4aMOU6k4ZK0OCRsMxk7Agb
-         glIA==
-X-Gm-Message-State: AOJu0Yyl1A7ekK1lmAuBPEUKo2UWyTTAtc8o7DNrelF9kamy96RgEcdE
-        QmJ/izzt6I8VPyMFG2Ps3A==
-X-Google-Smtp-Source: AGHT+IGCytkAX3KBkCK2F8am/Dv9NsvC2yoOVaxaCHwDt9Jkj58Vtpb8hmL72hqJrd7flNDEA8saag==
-X-Received: by 2002:a7b:c4d0:0:b0:40c:3272:1fea with SMTP id g16-20020a7bc4d0000000b0040c32721feamr4145598wmk.87.1702497088887;
-        Wed, 13 Dec 2023 11:51:28 -0800 (PST)
+        bh=sSS4lcTIGbMXkzXHnajhTMjU7KSYMMCUlsf0C4cS0VI=;
+        b=pAkYRsV4GSbMZ2BK+eG3V6hAqDndufqxC259LQ1NMV5GTp2iNmbk3D+bvCfp4zZVwB
+         kAuW+mZkCs3860cqmy9d/CjGPvwbkuiNM7mmNm8je2NLPX3RP/3Vkg61SQwpdUciAFQb
+         FNjBSgcGyOF+H0kYz467kKi4NjtM2SheVmf5WXG4GJ8Ez1ofpnWXpUMX1AMKiiaagwRt
+         HrgLz27viUxP3DvxYAgJ9mkmnXNhs7W4zBkUvu5GLoMdhXkv2zdsCdZAL9nSSVLZXT8+
+         1Hc6/CzdUP68c2zBhcs8Ot2oGG0gd1a/Agfc071GvAj7oQxBY2DluoKV4axN5jBhJCyt
+         slww==
+X-Gm-Message-State: AOJu0YxI2zBO65DE/4kBiuYigW0GQTt6giMkT+/bln8Rco0fdc7u7Jly
+        tTlNpOKXrz72EDMr4dQi7g==
+X-Google-Smtp-Source: AGHT+IEL8LZfudHWsCE9Gg/1An8TCTsUvrAJyoygGbQu539fT0PvYfdS0tzUat19DdSrjW62zZZjHw==
+X-Received: by 2002:a05:600c:3657:b0:40c:2d85:3a13 with SMTP id y23-20020a05600c365700b0040c2d853a13mr4530961wmq.185.1702497089612;
+        Wed, 13 Dec 2023 11:51:29 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:92dc:8b1c:e01c:b93c])
         by smtp.gmail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm24050698wmb.27.2023.12.13.11.51.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 11:51:28 -0800 (PST)
+        Wed, 13 Dec 2023 11:51:29 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Sandy Huang <hjc@rock-chips.com>,
         =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
@@ -62,11 +62,10 @@ To:     Sandy Huang <hjc@rock-chips.com>,
 Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>,
-        Zheng Yang <zhengyang@rock-chips.com>
-Subject: [PATCH 03/11] drm/rockchip: inno_hdmi: Fix video timing
-Date:   Wed, 13 Dec 2023 20:51:17 +0100
-Message-ID: <20231213195125.212923-4-knaerzche@gmail.com>
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH 04/11] drm/rockchip: inno_hdmi: Correctly setup HDMI quantization range
+Date:   Wed, 13 Dec 2023 20:51:18 +0100
+Message-ID: <20231213195125.212923-5-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213195125.212923-1-knaerzche@gmail.com>
 References: <20231213195125.212923-1-knaerzche@gmail.com>
@@ -82,43 +81,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The controller wants the difference between *total and *sync_start in
-the HDMI_VIDEO_EXT_*DELAY registers. Otherwise the signal is very
-unstable for certain non-VIC modes.
-See downstream commit [0]
+The display controller will always give full range RGB regardless of the
+mode set, but HDMI requires certain modes to be transmitted in limited
+range RGB. This is especially required for HDMI sinks which do not support
+non-standard quantization ranges.
 
-[0] https://github.com/rockchip-linux/kernel/commit/8eb559f2502c
+This enables color space conversion for those modes and sets the
+quantization range accordingly in the AVI infoframe.
 
 Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI support")
-Co-developed-by: Zheng Yang <zhengyang@rock-chips.com>
-Signed-off-by: Zheng Yang <zhengyang@rock-chips.com>
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 40 ++++++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 6e5b922a121e..345253e033c5 100644
+index 345253e033c5..32626a75723c 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -412,7 +412,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_L, value & 0xFF);
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HBLANK_H, (value >> 8) & 0xFF);
+@@ -33,6 +33,7 @@ struct hdmi_data_info {
+ 	unsigned int enc_in_format;
+ 	unsigned int enc_out_format;
+ 	unsigned int colorimetry;
++	bool rgb_limited_range;
+ };
  
--	value = mode->hsync_start - mode->hdisplay;
-+	value = mode->htotal - mode->hsync_start;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_L, value & 0xFF);
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_HDELAY_H, (value >> 8) & 0xFF);
+ struct inno_hdmi_i2c {
+@@ -308,6 +309,18 @@ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
+ 	else
+ 		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
  
-@@ -427,7 +427,7 @@ static int inno_hdmi_config_video_timing(struct inno_hdmi *hdmi,
- 	value = mode->vtotal - mode->vdisplay;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VBLANK, value & 0xFF);
++	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_RGB) {
++		drm_hdmi_avi_infoframe_quant_range(&frame.avi,
++						   &hdmi->connector, mode,
++						   hdmi->hdmi_data.rgb_limited_range ?
++						   HDMI_QUANTIZATION_RANGE_LIMITED :
++						   HDMI_QUANTIZATION_RANGE_FULL);
++	} else {
++		frame.avi.quantization_range = HDMI_QUANTIZATION_RANGE_DEFAULT;
++		frame.avi.ycc_quantization_range =
++			HDMI_YCC_QUANTIZATION_RANGE_LIMITED;
++	}
++
+ 	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI, 0, 0, 0);
+ }
  
--	value = mode->vsync_start - mode->vdisplay;
-+	value = mode->vtotal - mode->vsync_start;
- 	hdmi_writeb(hdmi, HDMI_VIDEO_EXT_VDELAY, value & 0xFF);
+@@ -334,14 +347,22 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+ 	if (data->enc_in_format == data->enc_out_format) {
+ 		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) ||
+ 		    (data->enc_in_format >= HDMI_COLORSPACE_YUV444)) {
+-			value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+-			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+-
+-			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
+-				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
+-				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
+-				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+-			return 0;
++			if (data->enc_in_format == HDMI_COLORSPACE_RGB &&
++			    data->enc_out_format == HDMI_COLORSPACE_RGB &&
++			    hdmi->hdmi_data.rgb_limited_range) {
++				csc_mode = CSC_RGB_0_255_TO_RGB_16_235_8BIT;
++				auto_csc = AUTO_CSC_DISABLE;
++				c0_c2_change = C0_C2_CHANGE_DISABLE;
++				csc_enable = v_CSC_ENABLE;
++			} else {
++				value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
++				hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
++				hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
++					  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
++					  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
++					  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
++				return 0;
++			}
+ 		}
+ 	}
  
- 	value = mode->vsync_end - mode->vsync_start;
+@@ -458,6 +479,9 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+ 	else
+ 		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
+ 
++	hdmi->hdmi_data.rgb_limited_range =
++		drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_LIMITED;
++
+ 	/* Mute video and audio output */
+ 	hdmi_modb(hdmi, HDMI_AV_MUTE, m_AUDIO_MUTE | m_VIDEO_BLACK,
+ 		  v_AUDIO_MUTE(1) | v_VIDEO_MUTE(1));
 -- 
 2.43.0
 
