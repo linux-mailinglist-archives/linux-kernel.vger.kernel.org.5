@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FF1811E40
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E57811E4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbjLMTJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
+        id S229972AbjLMTKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:10:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235496AbjLMTJb (ORCPT
+        with ESMTP id S235548AbjLMTKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:09:31 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987DCD47
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:08:47 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1e2ded3d9fso883710066b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:08:47 -0800 (PST)
+        Wed, 13 Dec 2023 14:10:19 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD2D5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:10:24 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so43703475ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702494526; x=1703099326; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=He9LIJAXXmTz6FKO62nb4k03pMOPRlKulCfOI/ivCO4=;
-        b=GcY8a3jcWLRDkmiECsPLq4SKLDvQ4EKscmhi/h/Pm7YnInF2EVrJ9maBQmPt7IgpXc
-         fve9O2crDKqIeu7K/yIy8GD4DCDF3RvMsd5nI3wxAsD2FPWpXb4E6jbVTrUJWDk5Mx3Y
-         Qd7TH1vWVbYbuTKZewA0Axg8Aq1vADFKpjMws=
+        d=chromium.org; s=google; t=1702494623; x=1703099423; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
+        b=CE1E8N2YrSlCa3ZagkQjHUXjZES8FXi9nuCnC6w3mP3ssI2+vrg6eCxwymrV/dwewd
+         rIAEGlhIZyy9lZM5i3djaktv6e/Nr48ex/cEQdVS21w2XS/ukfPcDqjwbxVbDFx1JkZa
+         Q2+ppRDpUisA3M3MywHl3dsIcyoamA2e9fxhs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702494526; x=1703099326;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=He9LIJAXXmTz6FKO62nb4k03pMOPRlKulCfOI/ivCO4=;
-        b=lG6Xaf7B5hDNpo9NZ96B6JE2uC5j2HBXyYBCZBVpUKxO/4wvWU744Jv4C3Mslx7uKP
-         XYRdFI0xuX3NKBrG16fAT/unck+E00J1eb1O83kawKVTVx4b8Z6orEEvxbBnsF7E4+b0
-         0hNmdhCL65itsRQkfAPDXoygrTTEUvs/6al03b+H2xmkjrDmEsh5sQ0bzLm5NUxV2cih
-         zNMGqOpI4z9XXu3DmVebFotsw/Pp5Vq7UVMmO7/La9+jHyaA4neB/nLV3hU9K3IDDwWf
-         RKku0lu0NxJzJVkIEyeLMQAL4oQgGWD4XZfWkzFeqYMZdUUW6/cfhwPqndcQHhw6c7+R
-         6Phw==
-X-Gm-Message-State: AOJu0Yyavw5hnBTTlYWm6K7eJt1SkkdiqgDHg0fAPUAIpX2oJp5dZKIG
-        ccy2KESRazG05R3GvyTWrDg7NZZLQm1qxQJMLc1wFAic
-X-Google-Smtp-Source: AGHT+IGLOPghPgWqHIZYxkwqI8vGmaLXLRVS76GO4OgHMkDGxxouO+mHTQGm+w9rrbZQvkq5qLTBzg==
-X-Received: by 2002:a17:906:934e:b0:a19:a19b:789d with SMTP id p14-20020a170906934e00b00a19a19b789dmr3753248ejw.96.1702494525868;
-        Wed, 13 Dec 2023 11:08:45 -0800 (PST)
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
-        by smtp.gmail.com with ESMTPSA id sk13-20020a170906630d00b00a1d232b39b3sm8345663ejc.145.2023.12.13.11.08.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 11:08:45 -0800 (PST)
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso74723695e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:08:45 -0800 (PST)
-X-Received: by 2002:a05:600c:993:b0:40b:5e21:d356 with SMTP id
- w19-20020a05600c099300b0040b5e21d356mr4369668wmp.95.1702494524867; Wed, 13
- Dec 2023 11:08:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702494623; x=1703099423;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqkTY1D+Z0smSuBPziSXpfoIkBBzL9zSOCOQ3/VwzV8=;
+        b=kDG4qRf5UKSvshYhe8g+KGHm6elKb+knAsxpCYjX2gMBOWJaDQuHsP9+3VhGOIs/8r
+         yDiAvj9ioTcSdSvxvFEu8hfkqziuS9NhYcYrAN7lWceCEcIHXPYH22EI5XF3MmweL3qc
+         vtPuXzh9JJ/ZtSYI9X6FUKAmv2+impR+jQzMezJLD+AMmOo3zGoZ1WnLsSLLOSz3nHAu
+         6EzsNRY8art8Dq14L7tDrLkuq1M0nG8IfKpGugYSqtjedDbAIGXCfaEBM8mOB2479REY
+         o5wO6jj+iOjA2w8mewShAms4cIUt1A5TJgFvZhhnaI7x+jsmPiqGIXVJcv9FrLVkjenG
+         QMlg==
+X-Gm-Message-State: AOJu0Yx2AF5m4Czc+LKK1sF5cPw040JsmJoSQWTwe+2PqX1pAxtzR4ne
+        hfr3fL7HyPyxnUAiBUciPq7Dfg==
+X-Google-Smtp-Source: AGHT+IGgfljpT76KBPui5MmTR6g8xbaYQw4KFDi5WWuN30o04xnbXoheBZ2WDSfB+ilvt/xURB8IDw==
+X-Received: by 2002:a17:903:98c:b0:1d3:4316:68d3 with SMTP id mb12-20020a170903098c00b001d3431668d3mr2259140plb.76.1702494623547;
+        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001cc307bcdbdsm10950629plg.211.2023.12.13.11.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 11:10:23 -0800 (PST)
+Date:   Wed, 13 Dec 2023 11:10:22 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] wifi: ath10k: use flexible array in struct
+ wmi_host_mem_chunks
+Message-ID: <202312131110.F94BC3427@keescook>
+References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+ <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
 MIME-Version: 1.0
-References: <20231213163443.70490-1-brgerst@gmail.com> <20231213163443.70490-2-brgerst@gmail.com>
- <CAHk-=whgooqaEBK27sBMHob9+PwqaZghEsGnSVJsHK=y8U05tw@mail.gmail.com>
-In-Reply-To: <CAHk-=whgooqaEBK27sBMHob9+PwqaZghEsGnSVJsHK=y8U05tw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linuxfoundation.org>
-Date:   Wed, 13 Dec 2023 11:08:27 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wib5XLebuEra7y2YH96wxdk=8vJnA8XoVq0FExpzVvN=Q@mail.gmail.com>
-Message-ID: <CAHk-=wib5XLebuEra7y2YH96wxdk=8vJnA8XoVq0FExpzVvN=Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] x86: Move TSS and LDT to end of the GDT
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-1-92922d92fa2c@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,55 +72,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 10:51, Linus Torvalds
-<torvalds@linuxfoundation.org> wrote:
->
-> We have GDT_ENTRY_PERCPU for example, which is a kernel-only segment.
-> It also happens to be 32-bit only, it doesn't matter for the thing
-> you're trying to fix, but that valid_user_selector() thing is then
-> used on x86-32 too.
->
-> So the ESPFIX and per-cpu segments are kernel-only, but then the VDSO
-> getcpu one is a user segment.
->
-> And the PnP and APM BIOS segments are similarly kernel-only.
+On Wed, Dec 13, 2023 at 09:06:39AM -0800, Jeff Johnson wrote:
+> Currently struct wmi_host_mem_chunks defines:
+> 	struct host_memory_chunk items[1];
+> 
+> Per the guidance in [1] this should be a flexible array. However there
+> is a documented requirement:
+> 	some fw revisions require at least 1 chunk regardless of count
+> 
+> To satisfy this requirement, follow the guidance from [2] and wrap the
+> array in a union which contains both the flexible array and a single
+> instance of the underlying struct. Since the footprint of the struct
+> is unchanged, no additional driver changes are required.
+> 
+> No functional changes, compile tested only.
+> 
+> [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+> [2] https://lore.kernel.org/linux-wireless/202308301529.AC90A9EF98@keescook/
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-Final (?) note: when looking at this, I have to say that our
-GDT_ENTRY_INIT() and GDT_ENTRY() macros are horrendous.
+This looks like the right approach here.
 
-I know exactly *why* they are horrendous, with all the history of
-passing in raw flags values, etc, and you can most certainly see that
-whole thing in the GDT_ENTRY() macro. It's used in assembly code in a
-couple of cases too.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-But then you look at GDT_ENTRY_INIT(), and it turns that illegible
-"flags" value into (slightly more) legible S/DPL/etc values. So it
-literally makes people use those odd "this is how this is encoded"
-values even when the code actually wants to use a structure definition
-that has the flags split out.
-
-I guess it's much too much work to really fix things, but maybe we
-could at least add #defines and comments for the special values.
-
-So instead of
-
-        GDT_ENTRY_INIT(0xc093, 0, 0xfffff)
-
-we could maybe have
-
-       #define GDT_ENTRY_FLAGS(type,s,dpl,p,avl,l,d,g) \
-                ((type) |
-                 (s)<<4) | \
-                (dpl) << 5) | ....
-
-and have #defines for those 0xc093 values (with comments), so that we'd have
-
-        GDT_ENTRY_INIT(KERNEL_DATA_FLAGS, 0, 0xffff)
-
-instead of a magic 0xc093 number.
-
-This would require some nit-picky "read all those values and know the
-crazy descriptor table layout" thing. Maybe somebody has a serious
-case of insomnia and boredom?
-
-           Linus
+-- 
+Kees Cook
