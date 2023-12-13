@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0DD81107A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60CC81107C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378005AbjLMLro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S1378140AbjLMLsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:48:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbjLMLrm (ORCPT
+        with ESMTP id S235348AbjLMLsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:47:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5839B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:47:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7FAC433C8;
-        Wed, 13 Dec 2023 11:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702468068;
-        bh=JyyObBeV7lx+piW0vGHGGe7J7czaHg1baDvRFTL1YFw=;
+        Wed, 13 Dec 2023 06:48:00 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C81EB;
+        Wed, 13 Dec 2023 03:48:06 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91C4D4A9;
+        Wed, 13 Dec 2023 12:47:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702468039;
+        bh=K5vzJMZCByu2FUPV6KuqqU9Oq1PbXacIfstj1rPq/7Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r7rMuQG8++rxezs7n/Y9sURdpr7XIY9fEftxwfu1W5eXx4Y+9uZ3CtJyrCwuP9xWJ
-         aE/wcDKQULl2X4+3Kc/UN5ORX+LcVFbaN3Qo10IiJRgrOAODQRfyvKH7St5lgHiOs6
-         ojTwBd9rDcqql2hJSZrhFgKnp5q72PJFJ+Z/Mlb3z08YwvtNXlcKOU2NP811pDxw66
-         PkqMFn+ihwCmUdHaazAMubK69lhReNpD6dT8mWZzRQYdWqFRI+EgDLaTwm6erXOz/e
-         u9JfzsxmjIuNqS6jbqz+tIh3oDPhyjsB1nIb4l+WISuj9zjqGqU5VLzwrrVGan7Jm0
-         EHsZFsoRPpImQ==
-Date:   Wed, 13 Dec 2023 11:47:44 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Amitesh Singh <singh.amitesh@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] feat(kernel/pca963x): implement power management
-Message-ID: <20231213114744.GK111411@google.com>
-References: <881c6ba1-1701-41be-a4ac-81cdca5f0eea@gmail.com>
+        b=bWhhRaBNUo2jZyMdx+toUqPxhZmYst0bqZgyUgb3ezFtaHvlU7NSFCNP57b15eWom
+         NQ2f7LRfvRz/iwNTe6U2cuHTsmf3kSPE0UCoCQnffcseia+6+317MIrVSjcyi3emRQ
+         GiasRiljz7r2+xTZ0y0xbvMgXJYwc1+edUps42yQ=
+Date:   Wed, 13 Dec 2023 13:48:12 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] [v2] media: i2c: mt9m114: use fsleep() in place of
+ udelay()
+Message-ID: <20231213114812.GB769@pendragon.ideasonboard.com>
+References: <20231213112322.1655236-1-arnd@kernel.org>
+ <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <881c6ba1-1701-41be-a4ac-81cdca5f0eea@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Dec 2023, Amitesh Singh wrote:
-
-> From a22dbd7390ce875e81d67f14f05f593d7f03d5c1 Mon Sep 17 00:00:00 2001
-> From: Amitesh Singh <singh.amitesh@gmail.com>
-> Date: Fri, 8 Dec 2023 15:08:33 +0530
-> Subject: [PATCH] feat(kernel/pca963x): implement power management
-
-What are you using to send this patch?
-
-Please use the Git tools provided:
-
-  git format-patch
-  git send-email
-
-The subject line is also totally incorrect.  Again Git can help:
-
-  git log --oneline -- <subsystem>
-
-Please fix the bot's complaints before re-submitting.
-
-Thank you.
-
-> This implements power management in upstream driver
-> for pca9633 which enables device sleep and resume
-> on system-wide sleep/hibernation
+On Wed, Dec 13, 2023 at 01:40:54PM +0200, Tomi Valkeinen wrote:
+> On 13/12/2023 13:23, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > With clang-16, building without COMMON_CLK triggers a range check on
+> > udelay() because of a constant division-by-zero calculation:
+> > 
+> > ld.lld: error: undefined symbol: __bad_udelay
+> >>>> referenced by mt9m114.c
+> >>>>                drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
+> > 
+> > In this configuration, the driver already fails to probe, before
+> > this function gets called, so it's enough to suppress the assertion.
+> > 
+> > Do this by using fsleep(), which turns long delays into sleep() calls
+> > in place of the link failure.
+> > 
+> > This is probably a good idea regardless to avoid overly long dynamic
+> > udelay() calls on a slow clock.
+> > 
+> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >   drivers/media/i2c/mt9m114.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
+> > index 0a22f328981d..68adaecaf481 100644
+> > --- a/drivers/media/i2c/mt9m114.c
+> > +++ b/drivers/media/i2c/mt9m114.c
+> > @@ -2116,7 +2116,7 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
+> >   		duration = DIV_ROUND_UP(2 * 50 * 1000000, freq);
+> >   
+> >   		gpiod_set_value(sensor->reset, 1);
+> > -		udelay(duration);
+> > +		fsleep(duration);
+> >   		gpiod_set_value(sensor->reset, 0);
+> >   	} else {
+> >   		/*
 > 
-> Signed-off-by: Amitesh Singh <singh.amitesh@gmail.com>
-> ---
->  drivers/leds/leds-pca963x.c | 41 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+> I think this is fine, so:
 > 
-> diff --git a/drivers/leds/leds-pca963x.c b/drivers/leds/leds-pca963x.c
-> index 47223c850e4b..462f917dc986 100644
-> --- a/drivers/leds/leds-pca963x.c
-> +++ b/drivers/leds/leds-pca963x.c
-> @@ -39,6 +39,7 @@
->  #define PCA963X_LED_PWM		0x2	/* Controlled through PWM */
->  #define PCA963X_LED_GRP_PWM	0x3	/* Controlled through PWM/GRPPWM */
+> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > 
-> +#define PCA963X_MODE1_SLEEP     0x04    /* Normal mode or Low Power mode,
-> oscillator off */
->  #define PCA963X_MODE2_OUTDRV	0x04	/* Open-drain or totem pole */
->  #define PCA963X_MODE2_INVRT	0x10	/* Normal or inverted direction */
->  #define PCA963X_MODE2_DMBLNK	0x20	/* Enable blinking */
-> @@ -380,6 +381,45 @@ static int pca963x_register_leds(struct i2c_client
-> *client,
->  	return ret;
->  }
+> But: If we don't have COMMON_CLK (or rather, I think, HAVE_CLK), the 
+> freq will be zero at compile time. So won't the compiler give a warning 
+> for the DIV_ROUND_UP() call?
 > 
-> +#ifdef CONFIG_PM
-> +static int pca963x_suspend(struct device *dev)
-> +{
-> +	struct pca963x *chip;
-> +	u8 reg;
-> +
-> +	chip = dev_get_drvdata(dev);
-> +
-> +	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
-> +	reg = reg | (1 << PCA963X_MODE1_SLEEP);
-> +	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pca963x_resume(struct device *dev)
-> +{
-> +	struct pca963x *chip;
-> +	u8 reg;
-> +
-> +	chip = dev_get_drvdata(dev);
-> +
-> +	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
-> +	reg = reg & ~(1 << PCA963X_MODE1_SLEEP);
-> +	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops pca963x_pmops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(pca963x_suspend, pca963x_resume)
-> +};
-> +
-> +#define PCA963X_SMBUS_PMOPS (&pca963x_pmops)
-> +
-> +#else
-> +#define PCA963X_SMBUS_PMOPS NULL
-> +#endif
-> +
->  static const struct of_device_id of_pca963x_match[] = {
->  	{ .compatible = "nxp,pca9632", },
->  	{ .compatible = "nxp,pca9633", },
-> @@ -430,6 +470,7 @@ static struct i2c_driver pca963x_driver = {
->  	.driver = {
->  		.name	= "leds-pca963x",
->  		.of_match_table = of_pca963x_match,
-> +		.pm = PCA963X_SMBUS_PMOPS
->  	},
->  	.probe = pca963x_probe,
->  	.id_table = pca963x_id,
-> -- 
-> 2.43.0
+> Interestingly, for me, this doesn't give a div-by-zero warning:
 > 
+> 	int x;
+> 	int y = 0;
+> 	x = DIV_ROUND_UP(10, y);
+> 
+> but this does:
+> 
+> 	int x;
+> 	const int y = 0;
+> 	x = DIV_ROUND_UP(10, y);
+> 
+> And looks like this gives the warning too:
+> 
+> 	int x;
+> 	const int y = 0;
+> 	if (y)
+> 		x = DIV_ROUND_UP(10, y);
+> 
+> So, I think, the code in the driver could fail to compile at some later 
+> point, if the compiler warnings are improved (?), or if someone adds a 
+> 'const' in front of 'long freq = clk_get_rate(sensor->clk);' line.
+> 
+> Maybe worry about that if it actually happens =).
+
+Maybe :-) I would be tempted to make VIDEO_CAMERA_SENSOR depend on
+COMMON_CLK.
 
 -- 
-Lee Jones [李琼斯]
+Regards,
+
+Laurent Pinchart
