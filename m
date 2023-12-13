@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6757810B3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46212810B3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378662AbjLMHOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
+        id S235243AbjLMHOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233290AbjLMHOi (ORCPT
+        with ESMTP id S235370AbjLMHOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:14:38 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3648D4B;
-        Tue, 12 Dec 2023 23:14:28 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5e176babd4eso23797907b3.2;
-        Tue, 12 Dec 2023 23:14:28 -0800 (PST)
+        Wed, 13 Dec 2023 02:14:43 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FF718B;
+        Tue, 12 Dec 2023 23:14:38 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c690c3d113so5433091a12.1;
+        Tue, 12 Dec 2023 23:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702451668; x=1703056468; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702451677; x=1703056477; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+4lQ/n2/Aooh3HLrGXdGkcUlpQ+xQAxZM0f/fJu9eb8=;
-        b=lY+TJdQf8e7CJYW2MpDVB7jOjPt4v45zvtXqpctdwmQhY0FKrp2nGgcpY42njiiQDy
-         UFXge8o9Jcw7NDnLm+zAtQDWg2b1mNXk7xmioBo6/+YLa1RmdnO6hubTbq+mBhimLR6b
-         74kiChPu5mZJk3OEMQA40W5wW4kb7bH5BNVJO/8W7kslTnbSjwbuNmrnAPZKVU7ETUk9
-         XZ48l3o0JN+aK7evHkA72PirOU3JjiNO+5JeRciX03i0V4xgRll0S+fNRKSNJ5do3UkE
-         9BtsZuiRmQMpUgdc7Z5oAwIp49kRYiH7axCp1yHmB9y//pmR5JqzzcgItDMtknWtvEwv
-         y8tw==
+        bh=Fpt9vht0zIQ5nO2Er3jawYfCXZtyIGFa5O6APbhC+7c=;
+        b=auVGA2c22Hh4S3WDUQAel1IWmtmrvbxVZtxKOHCqo+0ICcNAyB7Z91HCK9MJ1gJ1HU
+         yFaAX6Bamt0+AjtAURKKNmIDMaW34k1/2U2tL1d6HVUBNZbnjtj2M2EpNkAZ5fEg3nKP
+         WRhqgx3boz25DMo+vp9ELimtof22QL2tqxrA/DEnyoASUMYIj8rWE3z5e2uo3SEgViyn
+         z8996lPcg/Jr3+dHzgKH+wjCN4fc201itFdn0TcREsz3ti/20I1QQByi56YzXIooiWHb
+         SIQ48tBnyAfPtRJBkZ5hGw9+WTS7YCYQkUpFGVf0s8ekBbR/GZdxlxL4uqrmXjpbDMrE
+         yCPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702451668; x=1703056468;
+        d=1e100.net; s=20230601; t=1702451677; x=1703056477;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+4lQ/n2/Aooh3HLrGXdGkcUlpQ+xQAxZM0f/fJu9eb8=;
-        b=eGiyyIzDXqPlSRL3AZcew8fSblMeuJGAyJIhKV2YE/j13ePvEtSgvXhSTvKXHsUbVN
-         GezOCc3YjXWL12fnjlax4HIN0iJv5LDJO63/HO5izL1OjnQeQn6fg7RW/of4dty2bsFi
-         rNJ4uC4MGgE/YELXAkAZ40oh50X7psjdfUt0YQq4NL7TZb/g/P1sO0m3v2vg41j68+b8
-         /HhRdirohaOzb826AL+cnneVaU7R5gr5d+je2LsewYMn/sPUtVI58z5khmqyVx1j/ZF8
-         aDnP4KhicVqn1i9TmYMQUDXSaU6abGk41uDDsRldkU48l9VKzxeMpmQqqypZIokyspCL
-         XoKA==
-X-Gm-Message-State: AOJu0Yw4GALO3Mz9ZCDRkWamzANXxl/z691psP82tKvzhB8Rfx/TPeJd
-        +w14pcSSyfxoNRbVCyTPjflTmSJAAuiXZg==
-X-Google-Smtp-Source: AGHT+IHfDPJCUPSeq4XDUWQHJAokM3yftuwn8RagApGbgpYHpfYiBx5vbT6ITl4KZKWwd62YkOVYXg==
-X-Received: by 2002:a0d:f347:0:b0:5d7:1940:53df with SMTP id c68-20020a0df347000000b005d7194053dfmr6509375ywf.87.1702451667654;
-        Tue, 12 Dec 2023 23:14:27 -0800 (PST)
+        bh=Fpt9vht0zIQ5nO2Er3jawYfCXZtyIGFa5O6APbhC+7c=;
+        b=rmj8dkEx88F9k9yiqPuGl4mPyzPmOxfeGsCrcysE6JRkqAqqiTBvBWmq2QYUQ4O9/j
+         6MC5UGr7VxZKfVOTwSNaWcFTBAKDjqvKxpE9UE5PmLFhSXEL014LphZS7raCpVPGlVUt
+         wGwSRejTwfEb4N1b0H0ZVC/gGVwZEEZYFZOC2Dm2RE9EAMzWMllq9xmX/e9LzaV4nK6K
+         A2Qc5XLL0m5mJeakbrpAxGdt/aquSrndR8Lv4rsbqZWVZEd4dbFSeYbnn1NDHjex05fA
+         YmXgjsBVnPh5BIXZ4em2ENa40PAKvNfan/souN2TslVOf+Jzn/Idx+PvuMoXFMhAJpxG
+         ozdA==
+X-Gm-Message-State: AOJu0YyKPKN4KyQNOAxIPqjMA5e703Asn2EGe2GtSwLy0eeTLXQj9eOO
+        Z+3eyzMFX8WmGudg00dVGB4=
+X-Google-Smtp-Source: AGHT+IFiOaFoDZcu86ZB71YTKWXUnTrQPB2F/YJNZ4osHzc6V+4IWa8LuNptxgWnOiDRbNE+fodQJg==
+X-Received: by 2002:a05:6a20:9390:b0:18f:c737:1c9f with SMTP id x16-20020a056a20939000b0018fc7371c9fmr9235730pzh.5.1702451677576;
+        Tue, 12 Dec 2023 23:14:37 -0800 (PST)
 Received: from google.com ([2620:15c:9d:2:96c1:256f:67e0:c0db])
-        by smtp.gmail.com with ESMTPSA id t6-20020a170902bc4600b001d343a978a7sm1668374plz.220.2023.12.12.23.14.26
+        by smtp.gmail.com with ESMTPSA id ks19-20020a056a004b9300b006ce7d0d2590sm9350469pfb.0.2023.12.12.23.14.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 23:14:27 -0800 (PST)
-Date:   Tue, 12 Dec 2023 23:14:24 -0800
+        Tue, 12 Dec 2023 23:14:37 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:14:34 -0800
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     Tony Lindgren <tony@atomide.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: input: gpio-keys: Allow optional
- dedicated wakeirq
-Message-ID: <ZXlZ0I1mdtvbSL6H@google.com>
+Cc:     Rob Herring <robh@kernel.org>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dhruva Gole <d-gole@ti.com>
+Subject: Re: [PATCH v5 2/2] Input: gpio-keys - Add system suspend support for
+ dedicated wakeirqs
+Message-ID: <ZXlZ2i0wvI9iu3tv@google.com>
 References: <20231129110618.27551-1-tony@atomide.com>
+ <20231129110618.27551-2-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129110618.27551-1-tony@atomide.com>
+In-Reply-To: <20231129110618.27551-2-tony@atomide.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,18 +74,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:06:14PM +0200, Tony Lindgren wrote:
-> Allow configuring an optional dedicated wakeirq for gpio-keys that
-> some SoCs have.
+On Wed, Nov 29, 2023 at 01:06:15PM +0200, Tony Lindgren wrote:
+> Some SoCs have a separate dedicated wake-up interrupt controller that can
+> be used to wake up the system from deeper idle states. We already support
+> configuring a separate interrupt for a gpio-keys button to be used with a
+> gpio line. However, we are lacking support system suspend for cases where
+> a separate interrupt needs to be used in deeper sleep modes.
 > 
-> Let's use the common interrupt naming "irq" and "wakeup" that we already
-> have in use for some drivers and subsystems like i2c framework.
+> Because of it's nature, gpio-keys does not know about the runtime PM state
+> of the button gpios, and may have several gpio buttons configured for each
+> gpio-keys device instance. Implementing runtime PM support for gpio-keys
+> does not help, and we cannot use drivers/base/power/wakeirq.c support. We
+> need to implement custom wakeirq support for gpio-keys.
 > 
-> Note that the gpio-keys interrupt property is optional. If only a gpio
-> property is specified, the driver tries to translate the gpio into an
-> interrupt.
+> For handling a dedicated wakeirq for system suspend, we enable and disable
+> it with gpio_keys_enable_wakeup() and gpio_keys_disable_wakeup() that we
+> already use based on device_may_wakeup().
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Some systems may have a dedicated wakeirq that can also be used as the
+> main interrupt, this is already working for gpio-keys. Let's add some
+> wakeirq related comments while at it as the usage with a gpio line and
+> separate interrupt line may not be obvious.
+> 
+> Tested-by: Dhruva Gole <d-gole@ti.com>
 > Signed-off-by: Tony Lindgren <tony@atomide.com>
 
 Applied, thank you.
