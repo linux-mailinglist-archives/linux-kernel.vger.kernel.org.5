@@ -2,125 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E83812345
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F9981234A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442667AbjLMXiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:38:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
+        id S1442687AbjLMXkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbjLMXia (ORCPT
+        with ESMTP id S235515AbjLMXkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:38:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F331705
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:37:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702510647;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2bM5SMenaJ88uFf7XU2jdKzO8ftktLKCbuzz3KkFPnI=;
-        b=hEGiEamJkB+HwuGGLAUfGB+oR+x2ibWSk2jOsfELOgW+bldCEYyKPSExkuIp7wXJWurBWI
-        JibSUjsocyA6DFXyVjy6YJeNIL3uI4jorArSAqebIdWpyXrxd0h2fxj+SCJRYve9uri7iY
-        YsNTlKu8kVnz4fCljmmY9C+SUlJEckE=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-191-sN8pGApKOT-lIhNe6-KtAw-1; Wed, 13 Dec 2023 18:37:24 -0500
-X-MC-Unique: sN8pGApKOT-lIhNe6-KtAw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77f74245de3so528671385a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:37:24 -0800 (PST)
+        Wed, 13 Dec 2023 18:40:05 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7C31706
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:39:04 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1f6433bc1eso11417966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:39:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702510711; x=1703115511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=khBmMizas9gxTRli+QPr2dO7hNeCzSMKNFFwhsbIguQ=;
+        b=X4dfQZ2AJdj3WsTroyJAt7UQihZJJk0GuJNDMHrQ/FqRjoNROQce4AkdlcdxxjufxH
+         9NBbJKe05XPtTzpb8Ak18Ar6vdB5ijDo4O1HZePt+yi6eDrPnn0mt1+iUyoMSAQnX0pm
+         dIxs56wtxYcBHUjK+dsir9DDa+eL9Ax1AGHmgFtSSqpzXX9W5TyAJDsg1cKhgrBTqzS1
+         c3xNyjTpFV38SzxkpJ+AcuNKff2NPR868ej6Uh28yx3wYhSmTTW6A/zQxSR9ppuDa3zK
+         sXJMCgNh/9hBH1e95pgGC/iBltU3cXZfNT7yuSo2t20f/zPeNJrpoc3sjykDJ8NXmi8g
+         nTjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702510644; x=1703115444;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bM5SMenaJ88uFf7XU2jdKzO8ftktLKCbuzz3KkFPnI=;
-        b=jFHUt5ww3ESFNW2a/BzmN9bQbNJmKz/uvwxv7U4IGo/eCRfrKZiJkQOdU+blxjX7GJ
-         7TGUHhslVOKoUpCsRGSyC0y0o6GPM6eQaUmum6ltAJ+hVZIDBnFYgLlDjoqYzVVbPhf2
-         hQcymx8Z1qJqIpogpjxNGj8zR5LF59itWQSCz2fqXo4dTeCOspJlU6iwHfayfZ6NoVgj
-         aPzYV9xlQnZ2oOkhfcE7ngu+0a6QYEAdlep7bo6W/cWoBJnHN9E2fuAGHVH5n1hgV2iK
-         Lycid9/U//TzNUYPWHGNVGUPWNz5K7VPqoeIwAHpTHWNnGbIOSrJdkAvU+YOzGlCVTB/
-         iC3Q==
-X-Gm-Message-State: AOJu0YwRJZlbi1uj5jQDYWabIamotwV8HsXqfndITq+SvS8klQr/u1O1
-        2mu4/t+BR9R6JYNI1wtDCZ3/h8d4JHwxAe3XMb93QUgume8nkfmW1uEVJagELWuqK20FMm1n0uv
-        N3mljCKrIjtn3hX4gWUVXnhvJ
-X-Received: by 2002:a05:620a:2603:b0:77b:e2ae:934c with SMTP id z3-20020a05620a260300b0077be2ae934cmr10952571qko.12.1702510644403;
-        Wed, 13 Dec 2023 15:37:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHUVH/OQpyNoeiuSGiiYho89l/+ehiBCwR+TccPGs5nC6eWuLzhfay1fvd3HpT8GnD42ZeXXA==
-X-Received: by 2002:a05:620a:2603:b0:77b:e2ae:934c with SMTP id z3-20020a05620a260300b0077be2ae934cmr10952558qko.12.1702510644183;
-        Wed, 13 Dec 2023 15:37:24 -0800 (PST)
-Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
-        by smtp.gmail.com with ESMTPSA id b5-20020a05620a270500b0076ce061f44dsm4878672qkp.25.2023.12.13.15.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 15:37:23 -0800 (PST)
-Message-ID: <114bf9f5790f637a6cdec4957244192d3bd76a04.camel@redhat.com>
-Subject: Re: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
-From:   Lyude Paul <lyude@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>, Paul Dufresne <dufresnep@zoho.com>,
-        Danilo Krummrich <me@dakr.org>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 13 Dec 2023 18:37:22 -0500
-In-Reply-To: <20231213124936.GCZXmoYDq8nMRs75XM@fat_crate.local>
-References: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
-         <20231212224037.GAZXjhZUDeoq50xKJ5@fat_crate.local>
-         <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
-         <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
-         <20231213124936.GCZXmoYDq8nMRs75XM@fat_crate.local>
-Organization: Red Hat Inc.
+        d=1e100.net; s=20230601; t=1702510711; x=1703115511;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=khBmMizas9gxTRli+QPr2dO7hNeCzSMKNFFwhsbIguQ=;
+        b=mQ/uAcBAHsIaRkdug0LWamiNUqYLjbxozFBTDkZjQfIbFGea6mEylGsEuxRwU+1e3m
+         lZxF+cqIyXtJ+TFpAckkvHszFnSuvfUI6xqDh9O+Jc1sHkDsSA6Xh6Fs1L8RucnIwnwt
+         mFIuD0N3Mf9teYNWW+FPF3/oz1qwVa1nLBrvAzBPymkGY1+3/1Q5ZjumCBae7NC8S6wq
+         qFvpWc6fKkGbdJr7mOWdezGkUFFb7mUArMfMSN4C/1PZKLtNpR5PHHRtoBNwfK0NIjuT
+         iTM5A09BnVTCJHxpjgk1JDcLVboPm4Hsn3ovBdtypnTONw9OUmViA6yMe9719UDA6rpi
+         pcpQ==
+X-Gm-Message-State: AOJu0YyzTPNWJXt/Zc7iioa/mXdTSjhU0wEBee/kJ1hKoNI5hydZlW7Z
+        25i+bZRdRmboXtN5MQs7lPUr1PQkMMuGBC0MnQGL7A==
+X-Google-Smtp-Source: AGHT+IHyfcctpaOGCbgl20TU191uLxWgu6dKSBEraZPkN8kPrLIJZsuGFaf9QjriDYu1iEALgMD30ywF0wx6UgxW+Dw=
+X-Received: by 2002:a17:907:831d:b0:a1e:11ea:ee15 with SMTP id
+ mq29-20020a170907831d00b00a1e11eaee15mr5701389ejc.77.1702510710830; Wed, 13
+ Dec 2023 15:38:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com> <20231213-zswap-dstmem-v1-3-896763369d04@bytedance.com>
+In-Reply-To: <20231213-zswap-dstmem-v1-3-896763369d04@bytedance.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 13 Dec 2023 15:37:54 -0800
+Message-ID: <CAJD7tkap6qRarSr=7+9NYCEjXKt1umdaqK6QsnPrE-y3qU0PSA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] mm/zswap: refactor out __zswap_load()
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nhat Pham <nphamcs@gmail.com>, Chris Li <chriscli@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-agh - thank you for repeatedly poking on this, I've been busy enough with G=
-SP
-work I totally missed this. Yes - I'm quite surprised that this is blowing =
-up,
-but considering that looks to be a GT218 I guess display state readback mus=
-t
-just work a bit differently there since that's really early on into the NV5=
-0
-days.
+On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> The zswap_load() and zswap_writeback_entry() have the same part that
+> decompress the data from zswap_entry to page, so refactor out the
+> common part as __zswap_load(entry, page).
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
-The reason that was a drm_WARN_ON() was because it indicates that we're not
-reading back OR -> head assignments properly. But, I'm confused how we're e=
-ven
-getting that far on a non-GSP platform. I'm going to dig into this now, but=
- if
-I don't figure out a good fix by the end of the day I'll just send a patch =
-to
-silent the warning.
-
-Thanks again for bugging me about this!
-
-On Wed, 2023-12-13 at 13:49 +0100, Borislav Petkov wrote:
-> On Wed, Dec 13, 2023 at 12:39:36PM +0100, Borislav Petkov wrote:
-> > We're getting close to releasing so I guess we either debug this or shu=
-t
-> > up the WARN.
->=20
-> Not only that - panic_on_warn turns this into an explosion so you don't
-> want that in a released kernel.
->=20
-
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+Great cleanup,
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
