@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC344810F6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE55810F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378852AbjLMLIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:08:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
+        id S1378850AbjLMLIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378817AbjLMLHv (ORCPT
+        with ESMTP id S1378716AbjLMLH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:07:51 -0500
+        Wed, 13 Dec 2023 06:07:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB190189
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:07:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF688C433C8;
-        Wed, 13 Dec 2023 11:07:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB97D44
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:07:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBACCC433CA;
+        Wed, 13 Dec 2023 11:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702465672;
-        bh=uKhd3JS1pFTqDv4Q8l75rLOBPsAgjlEdfaWWYPn6jXE=;
+        s=k20201202; t=1702465676;
+        bh=1CmyDIXnUIbEEeD4AmCanAzDXjT1r2it6UDhvzpk4Oo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aUCcJyZgrU8hhbXX06TZyC9YJe/SITdnhAAiRBrbNF3MKXaxqu/+PF2g6/mhCNANP
-         B7C+bcpiwzYw28pAcCHmSY7oxiBPZcY7BsxrAfjXUWzXr8wInwhDAmY2uDyPEDb/t8
-         B2OJyyQyAaAOMUfFft6+Z6YUeQmYcyjiCET4RMjANoiOvZ/ylLjDKkJD5bQZ7ZQb9c
-         EKPgBZsH4ELSqjjarQd1AhshBLnHGwAPq0xP8Blid3kmfq/BuGlVkdF/6njPDAFFuR
-         GjmHVx25SWAxcIdKxeAUWcTHEJjgJJ8EhLvOewvKj26jphy3LvR0mZ7Y/UZAjyKSQE
-         1sdVQOmQH0Img==
+        b=V/zldkwAXCKLr54ewMChWRJoe9CFw5lv68gn2mOulcZTgRfvqeg7N+GiCG5BmSTFI
+         qCE0fALhAhH++r93izKdx6P6QGjkGppJsf2uDEEcX7TR0Bp+oojYp3trHZR8JAPPUw
+         gO18UxcRvo/RoUwUwJlqJ+/DqFkft2cXbwVd1FzvuIO4M0hIASRqy9ggnSkEsVzj7a
+         NUWPdGTsHEUdCKwX7OQrZLM6NcX1FA/QqYld9wnRiWfrH18kddKDO4WkQH6ZPRfoO1
+         Bua2zKK6p913f7akNDEzeqjxPFZ4LjzvmpCvB5X4Stn/YfuUGW3VepElo+G806rQfo
+         X/JnocgZDHswQ==
 From:   Roger Quadros <rogerq@kernel.org>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, shuah@kernel.org, vladimir.oltean@nxp.com
@@ -34,9 +34,9 @@ Cc:     s-vadapalli@ti.com, r-gunasekaran@ti.com, vigneshr@ti.com,
         srk@ti.com, horms@kernel.org, p-varis@ti.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         rogerq@kernel.org
-Subject: [PATCH v8 net-next 06/11] net: ethernet: ti: am65-cpsw: Move code to avoid forward declaration
-Date:   Wed, 13 Dec 2023 13:07:16 +0200
-Message-Id: <20231213110721.69154-7-rogerq@kernel.org>
+Subject: [PATCH v8 net-next 07/11] net: ethernet: am65-cpsw: Move register definitions to header file
+Date:   Wed, 13 Dec 2023 13:07:17 +0200
+Message-Id: <20231213110721.69154-8-rogerq@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231213110721.69154-1-rogerq@kernel.org>
 References: <20231213110721.69154-1-rogerq@kernel.org>
@@ -52,129 +52,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move this code to the end to avoid forward declaration.
-No functional change.
+Move register definitions to header file. No functional change.
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
- drivers/net/ethernet/ti/am65-cpsw-qos.c | 86 ++++++++++++-------------
- 1 file changed, 43 insertions(+), 43 deletions(-)
+ drivers/net/ethernet/ti/am65-cpsw-qos.c | 35 -------------------------
+ drivers/net/ethernet/ti/am65-cpsw-qos.h | 35 +++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 35 deletions(-)
 
-Changelog
+Changelog:
 
-v7: move am65_cpsw_qos_tx_rate_calc()
-v6: no change
-v5: no change
-v4: initial commit
+v7: no change
+v6: initial commit
 
 diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-index 2c97fa05a852..862a98211caa 100644
+index 862a98211caa..9f0a05e763d1 100644
 --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
 +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-@@ -56,6 +56,16 @@ enum timer_act {
- 	TACT_SKIP_PROG,		/* just buffer can be updated */
+@@ -15,41 +15,6 @@
+ #include "am65-cpts.h"
+ #include "cpsw_ale.h"
+ 
+-#define AM65_CPSW_REG_CTL			0x004
+-#define AM65_CPSW_PN_REG_CTL			0x004
+-#define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
+-#define AM65_CPSW_PN_REG_EST_CTL		0x060
+-#define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
+-
+-/* AM65_CPSW_REG_CTL register fields */
+-#define AM65_CPSW_CTL_EST_EN			BIT(18)
+-
+-/* AM65_CPSW_PN_REG_CTL register fields */
+-#define AM65_CPSW_PN_CTL_EST_PORT_EN		BIT(17)
+-
+-/* AM65_CPSW_PN_REG_EST_CTL register fields */
+-#define AM65_CPSW_PN_EST_ONEBUF			BIT(0)
+-#define AM65_CPSW_PN_EST_BUFSEL			BIT(1)
+-#define AM65_CPSW_PN_EST_TS_EN			BIT(2)
+-#define AM65_CPSW_PN_EST_TS_FIRST		BIT(3)
+-#define AM65_CPSW_PN_EST_ONEPRI			BIT(4)
+-#define AM65_CPSW_PN_EST_TS_PRI_MSK		GENMASK(7, 5)
+-
+-/* AM65_CPSW_PN_REG_FIFO_STATUS register fields */
+-#define AM65_CPSW_PN_FST_TX_PRI_ACTIVE_MSK	GENMASK(7, 0)
+-#define AM65_CPSW_PN_FST_TX_E_MAC_ALLOW_MSK	GENMASK(15, 8)
+-#define AM65_CPSW_PN_FST_EST_CNT_ERR		BIT(16)
+-#define AM65_CPSW_PN_FST_EST_ADD_ERR		BIT(17)
+-#define AM65_CPSW_PN_FST_EST_BUFACT		BIT(18)
+-
+-/* EST FETCH COMMAND RAM */
+-#define AM65_CPSW_FETCH_RAM_CMD_NUM		0x80
+-#define AM65_CPSW_FETCH_CNT_MSK			GENMASK(21, 8)
+-#define AM65_CPSW_FETCH_CNT_MAX			(AM65_CPSW_FETCH_CNT_MSK >> 8)
+-#define AM65_CPSW_FETCH_CNT_OFFSET		8
+-#define AM65_CPSW_FETCH_ALLOW_MSK		GENMASK(7, 0)
+-#define AM65_CPSW_FETCH_ALLOW_MAX		AM65_CPSW_FETCH_ALLOW_MSK
+-
+ enum timer_act {
+ 	TACT_PROG,		/* need program timer */
+ 	TACT_NEED_STOP,		/* need stop first */
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.h b/drivers/net/ethernet/ti/am65-cpsw-qos.h
+index be4987eb8c51..e3259f27baad 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-qos.h
++++ b/drivers/net/ethernet/ti/am65-cpsw-qos.h
+@@ -31,6 +31,41 @@ struct am65_cpsw_qos {
+ 	struct am65_cpsw_ale_ratelimit ale_mc_ratelimit;
  };
  
-+static u32
-+am65_cpsw_qos_tx_rate_calc(u32 rate_mbps, unsigned long bus_freq)
-+{
-+	u32 ir;
++#define AM65_CPSW_REG_CTL			0x004
++#define AM65_CPSW_PN_REG_CTL			0x004
++#define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
++#define AM65_CPSW_PN_REG_EST_CTL		0x060
++#define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
 +
-+	bus_freq /= 1000000;
-+	ir = DIV_ROUND_UP(((u64)rate_mbps * 32768),  bus_freq);
-+	return ir;
-+}
++/* AM65_CPSW_REG_CTL register fields */
++#define AM65_CPSW_CTL_EST_EN			BIT(18)
 +
- static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
- {
- 	return port->qos.est_oper || port->qos.est_admin;
-@@ -772,49 +782,6 @@ static int am65_cpsw_qos_setup_tc_block(struct net_device *ndev, struct flow_blo
- 					  port, port, true);
- }
- 
--int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
--			       void *type_data)
--{
--	switch (type) {
--	case TC_QUERY_CAPS:
--		return am65_cpsw_tc_query_caps(ndev, type_data);
--	case TC_SETUP_QDISC_TAPRIO:
--		return am65_cpsw_setup_taprio(ndev, type_data);
--	case TC_SETUP_BLOCK:
--		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
--	default:
--		return -EOPNOTSUPP;
--	}
--}
--
--void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
--{
--	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
--
--	am65_cpsw_est_link_up(ndev, link_speed);
--	port->qos.link_down_time = 0;
--}
--
--void am65_cpsw_qos_link_down(struct net_device *ndev)
--{
--	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
--
--	if (!port->qos.link_down_time)
--		port->qos.link_down_time = ktime_get();
--
--	port->qos.link_speed = SPEED_UNKNOWN;
--}
--
--static u32
--am65_cpsw_qos_tx_rate_calc(u32 rate_mbps, unsigned long bus_freq)
--{
--	u32 ir;
--
--	bus_freq /= 1000000;
--	ir = DIV_ROUND_UP(((u64)rate_mbps * 32768),  bus_freq);
--	return ir;
--}
--
- static void
- am65_cpsw_qos_tx_p0_rate_apply(struct am65_cpsw_common *common,
- 			       int tx_ch, u32 rate_mbps)
-@@ -916,3 +883,36 @@ void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common)
- 		       host->port_base + AM65_CPSW_PN_REG_PRI_CIR(tx_ch));
- 	}
- }
++/* AM65_CPSW_PN_REG_CTL register fields */
++#define AM65_CPSW_PN_CTL_EST_PORT_EN		BIT(17)
 +
-+int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
-+			       void *type_data)
-+{
-+	switch (type) {
-+	case TC_QUERY_CAPS:
-+		return am65_cpsw_tc_query_caps(ndev, type_data);
-+	case TC_SETUP_QDISC_TAPRIO:
-+		return am65_cpsw_setup_taprio(ndev, type_data);
-+	case TC_SETUP_BLOCK:
-+		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
++/* AM65_CPSW_PN_REG_EST_CTL register fields */
++#define AM65_CPSW_PN_EST_ONEBUF			BIT(0)
++#define AM65_CPSW_PN_EST_BUFSEL			BIT(1)
++#define AM65_CPSW_PN_EST_TS_EN			BIT(2)
++#define AM65_CPSW_PN_EST_TS_FIRST		BIT(3)
++#define AM65_CPSW_PN_EST_ONEPRI			BIT(4)
++#define AM65_CPSW_PN_EST_TS_PRI_MSK		GENMASK(7, 5)
 +
-+void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
-+{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
++/* AM65_CPSW_PN_REG_FIFO_STATUS register fields */
++#define AM65_CPSW_PN_FST_TX_PRI_ACTIVE_MSK	GENMASK(7, 0)
++#define AM65_CPSW_PN_FST_TX_E_MAC_ALLOW_MSK	GENMASK(15, 8)
++#define AM65_CPSW_PN_FST_EST_CNT_ERR		BIT(16)
++#define AM65_CPSW_PN_FST_EST_ADD_ERR		BIT(17)
++#define AM65_CPSW_PN_FST_EST_BUFACT		BIT(18)
 +
-+	am65_cpsw_est_link_up(ndev, link_speed);
-+	port->qos.link_down_time = 0;
-+}
++/* EST FETCH COMMAND RAM */
++#define AM65_CPSW_FETCH_RAM_CMD_NUM		0x80
++#define AM65_CPSW_FETCH_CNT_MSK			GENMASK(21, 8)
++#define AM65_CPSW_FETCH_CNT_MAX			(AM65_CPSW_FETCH_CNT_MSK >> 8)
++#define AM65_CPSW_FETCH_CNT_OFFSET		8
++#define AM65_CPSW_FETCH_ALLOW_MSK		GENMASK(7, 0)
++#define AM65_CPSW_FETCH_ALLOW_MAX		AM65_CPSW_FETCH_ALLOW_MSK
 +
-+void am65_cpsw_qos_link_down(struct net_device *ndev)
-+{
-+	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-+
-+	if (!port->qos.link_down_time)
-+		port->qos.link_down_time = ktime_get();
-+
-+	port->qos.link_speed = SPEED_UNKNOWN;
-+}
+ #if IS_ENABLED(CONFIG_TI_AM65_CPSW_QOS)
+ int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+ 			       void *type_data);
 -- 
 2.34.1
 
