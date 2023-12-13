@@ -2,175 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A8B8107EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3649C8107EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbjLMB7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
+        id S1378233AbjLMCCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbjLMB72 (ORCPT
+        with ESMTP id S232721AbjLMCCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:59:28 -0500
+        Tue, 12 Dec 2023 21:02:48 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057C4BE;
-        Tue, 12 Dec 2023 17:59:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49A6AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:02:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702432774; x=1733968774;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qDeXpI92OgpZ2MRTC+7+7SsEFipFOOVErgTiRX2yS28=;
-  b=HUd1vd7Dly5U+C8OV/8pIXQTebW7uQoA8jPovDsYRNOT6F5tTjSkpLYd
-   VTIv5wNvDjuHRn0OABnLli3pZb/+eLh+MI4OB7iqRRzZNv7kB95c6cdwF
-   cy4s9uO5wi5tw422y2TyiPp6CblyKYrC72chC9kRPqKC/p/dUy1el1O7f
-   V0xS/liiIMZv9+PELa0Mm8DPAUM8y/gpQYDNS860qPEf9lJOJizwa0KEA
-   uHFrDQyYP3UdckH178c4A6++KkfMZeTDLRtqAJMe4WxnnfJxrUa5y1ny4
-   RsSYQhr98rca5Hu/o1SCQGsVEGAhyzEo2aOfNsP44AbqreAGhsOhPhORe
+  t=1702432971; x=1733968971;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=skYRTUiWQ2BvQF18Xv1trIvo2B7qSHoh8W29zd1qn2A=;
+  b=Zof8Mn5ZKIjLIB5bkactnAd2bGMmVtcMq/Tax5kNgtfrJ10j5YFKGAFW
+   56WMyfGdeWleDINBJSgrbB6tY4P87AH5CylV4L2F3II8O+MHAjggWGt4G
+   PqQt1QEiyJfLO5ftox8yNvCMHS53KjPyNfY7/AIZ2GjCWldborQeTQfXq
+   Hkn0i25RNZTpvNUEew2q5ssCr1BhoFLIswv8rFQcumLFGGxYqtTOlBCrd
+   zJGyPud/f9b++pAcpyQvB8svoYAh79qPYKOJrK5DZijwAXaKDrPXLHaNE
+   Vv+HjKjGe+CeNx9baT1dtxNGzdWAUBbg1ZLjJVXVk9kRQmAsOSafGZY/S
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="393775224"
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="393775692"
 X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="393775224"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 17:59:33 -0800
+   d="scan'208";a="393775692"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:02:51 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="1105137104"
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="891844342"
 X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="1105137104"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Dec 2023 17:59:31 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 17:59:29 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 17:59:29 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 12 Dec 2023 17:59:29 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 12 Dec 2023 17:59:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X9uNzhMp+/rgwdUexiYJt5a1sN6jPL6oPrnRh5nJjQImRX3sOyXImzogvNJeKA5VfirjfB0OO60IVqAsfI/lr2xKxnO8Oi9S+Q5C0tlWJ1Yrh7QWthpdL9C66Rzd0oVasHaJGCbxALcbueCgDPc1iFUgEmJDhBAO9gFIyFbJpoLf6LtmbGZ0WBfnQmxRZpAhOyEEuCX3Jj5W2SCVm994ja+sKO+15ZtfGmb58wYgfEUfz3C2xEstwB+b8S4GI2TWgqzqAPTwq2HLaEShaQqRt4vSiZRUZWxpNcC541eOx+WIjXUjELtHMlpVmqbJuuxwdjPCMU0yuWjjJT4Okqzgtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dt7kTG8dQ2tSx/dEwTC+I0SZb1tbzJmm6S3NpE6L1AY=;
- b=U3NcQcoY6gR8yZapaACJC4N66mTsHadRcW+XeyGC7bhA6CDubnE0Mx6FutD/Ty7YE9CUaihaI0Gwr+MxeapdjS73fNbHTbxACrgAZ3iGwvKrXh6UXlfk0QbhuwzHkYKpGDc7jeAA+xwiBt0zdKwTKbwJRN7g64Rc/ZwU6nRa5ccMI/6Ay8asmry24bvv53Mg5ZkDbA6V4K1grPGfChsji2Qypt3gvo3so9jih7nyYJcJC06aLw85JyhqFocQqrpm1OKtUgLnEc8KLZOtfFfVyOFscbDd3QqxWxRiIxJoEi9XRqCV8ZvMohPSZLOv4LE1KzUDSMHYwiJtdtl6ScC0Ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by DS0PR11MB7852.namprd11.prod.outlook.com (2603:10b6:8:fc::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 01:59:27 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7068.033; Wed, 13 Dec 2023
- 01:59:27 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: RE: [PATCH 3/3] vfio: Report PASID capability via VFIO_DEVICE_FEATURE
- ioctl
-Thread-Topic: [PATCH 3/3] vfio: Report PASID capability via
- VFIO_DEVICE_FEATURE ioctl
-Thread-Index: AQHaIPx2EKyfzMrBBEWzcc+IDcJP4bCdkKlggAY/u4CAATAaUIAA3hcAgACraDA=
-Date:   Wed, 13 Dec 2023 01:59:26 +0000
-Message-ID: <BN9PR11MB5276E0744C625273624333E08C8DA@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231127063909.129153-1-yi.l.liu@intel.com>
- <20231127063909.129153-4-yi.l.liu@intel.com>
- <BN9PR11MB527639DBE4C433542F351F6D8C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <0bdae2ca-a200-4db1-a016-059730d1545e@intel.com>
- <BN9PR11MB52763C75E3D638B722CE63A78C8EA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231212153130.GK3014157@nvidia.com>
-In-Reply-To: <20231212153130.GK3014157@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|DS0PR11MB7852:EE_
-x-ms-office365-filtering-correlation-id: 1fcb0f70-8d69-475f-d585-08dbfb7f2308
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IZyidHd01wxYiGq85E6IHEwON2BMDv3SrQerM/ShpF8PBatiEAlZgWXo3b7LOQPuxHPiYW1P7p5UFP6lBE7ByhqB85cGmJ0SS5fvADVqHmYR48oVAjJs0ho8/X6pd3W/YQTD0vDgcZaNSblhpMg2LZy5mU1pURQEDuJItExtX/bzMPwiA9vryBgdftA+cZytjOellcw8MB8JY+VBEEVmV7y4PJ7jdmtiSmIpFbTPYtYJ8wzJAnVtWiaf01Y/Qou2dUAeETUGZl/wqBUNobKiJO7iNdYUaO8rvrAwrdElUT/Ig7xMCErCCMpwc+/abYDqao6FWhBN5gaM/dPPVEK3wl6LGaieunmeETcS0AZm00GL5i8I4Z9GF3206Zf8FVHmTaZAOBixwS4kLSsOPo74Z1j5/zuEZkwCM/rejq2o/LWKnXcKo2wcHbspCKQMSteu84hLLTXrALNji8TwuYuXc9xGx2RX4jym6qICuCrR+ptDsYsiku0l+NNTqrA+3+6omUalCqfqnRok5kFULe51IrFgC7e+/yvIEZv/I57UGcr0z+iD+1L4xR2ebohfkI3z1NsKr3hfhmx3+AIeywp31B3Bh5aq8hCGB2dpNZMrS6QwhIsRkaJRT+OJ6LEwAnaQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(53546011)(7696005)(6506007)(9686003)(122000001)(5660300002)(8676002)(8936002)(52536014)(7416002)(41300700001)(2906002)(4326008)(316002)(478600001)(26005)(71200400001)(38100700002)(66476007)(66446008)(6916009)(64756008)(54906003)(76116006)(66556008)(66946007)(86362001)(33656002)(82960400001)(38070700009)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8ZnzLuYMI3AmEObcUXalim5yyQWf9JZ0NqJnaJrTQZFi+H9AMd9lK/Y/0P+b?=
- =?us-ascii?Q?G3+DGr0J5s6+3KqCnFuh/VQit6jdnM9HkXsPKvF3tsUrGtG88fZ/Z1FeRKfD?=
- =?us-ascii?Q?6a5lKV+BuePB3NDN3TcyOgmRCEJ+paFszBCBa19hnkXfeCY1xyQuPCldLOlJ?=
- =?us-ascii?Q?v7x03/bHVSAaAJ9f+85F6VNh0Mn0NpGN0scqXCn4WbwWDE4whhYJm1vWjnvO?=
- =?us-ascii?Q?q4n0VsYAvVbp2NwV2dQ4nYR51kFdIhmFqwgryyRheODvzu0oEGexKxIC9oCN?=
- =?us-ascii?Q?vgLh6S4mnKaLo/psonSWlsV4Cp/zWI7qf7LeoeBxwW4/7PM89sTWOQbn7Wlb?=
- =?us-ascii?Q?yK7ABMcgZSTbC+E61ruHYk0/CMTDbA8Ox3KLXuc22l2G83wwLgljC0r9yhcF?=
- =?us-ascii?Q?stBA2uWpp6sxztP++stAVLmq5dNIn88+0Deog5Gm5CwFJS9KDL+n5a9giA5e?=
- =?us-ascii?Q?qkjixHO6N/sKFy57KAlz7PSF6qWvXghmG6Yq6QZKCu8OArbCyYz1AUM1q5ej?=
- =?us-ascii?Q?SOzFn8ra5M0H2HtLif7mT3Pl8clidY8mx30yO8fZZN9XSYEgoE0bVrpkwDGl?=
- =?us-ascii?Q?psmWQvLilBv8KiMx+AWAvoTCWO7rFIFiZ21G3VP8nKimeI86+muYLWev1x+A?=
- =?us-ascii?Q?FMOr5x0RhcX/h204GBaz3GOeZuVYhP2u0dmUj2AMncDyU84fbN54A8AxKgyZ?=
- =?us-ascii?Q?11O2XTqCfYSFtencQfgF0TxjhB1JeGy+DFXb7H2Cf854uFQLIoCT3Qaiyvi2?=
- =?us-ascii?Q?R55artrg9oenHbaP+PR/7czincrWbYy7trjWBZmNqXO6xFtUUU4A7jUPzqKD?=
- =?us-ascii?Q?vtoNqgtK7pbdrKHBhp2bapn4w0+dFP5ZXhyePRtsclGwovw4Sew3p8spqhdJ?=
- =?us-ascii?Q?8HeOZOMmCI9w571dQ6WPyUL108aJPs7cAvMPahQ7eFf7Ra9sbWnXc+MPZezj?=
- =?us-ascii?Q?KaR81l4giME7V7ohpOILeYYp2IIvmz9o6On5HDe3xjl8YR85yZf2vb86Hxge?=
- =?us-ascii?Q?5YUaQXkKjCwKKqHex1OvqOonmv4gWj0NaB38TjEACQJPlibWZxxbj3y97AVr?=
- =?us-ascii?Q?RoOHN7FQElIELSjdPfqh6qz+wmUbH/oYeYNBm9lpDjTCSA+tYwT75SUcnqjp?=
- =?us-ascii?Q?JXk4a1Y9b0NQIz44vxfieGyswX60x/Gvb26tXbOd7FPcifRbA4FxVUn5pEyo?=
- =?us-ascii?Q?jPB2Iexua+vev8rT4MvHGYjOazlhJNSUXNKdrwIeFweo7lKQMJzP5OpAcwSv?=
- =?us-ascii?Q?iREBkEZ6462AU4Lvhq//7Z5JRa4IYAl2ri4+y58DjW9ltLlb+TCNcBDCOm/b?=
- =?us-ascii?Q?S7wSFYhOr4POFZj9NPQEdyJflQsaPigB9sbczboKfJZenoBvSG/L2paai4if?=
- =?us-ascii?Q?UG9ylqL8R/teNskrT8JDTLfpSisaZVHtEbhjDKFc1VDzC1cMQEmR1hZUZCjB?=
- =?us-ascii?Q?jVvzQk/LPayO3rQ3u5VXKoWY1HBzyn1DzjPV7+6HrE4aMEdCW7XORvi+CMlp?=
- =?us-ascii?Q?GJhYmWq1opntlACJKPNcTig2yhzkl2pHfZ+zOq5bQc8N1RaWC82LuQmbb5RB?=
- =?us-ascii?Q?he1PYjdVrt3MPROoUSJbNuEwFjn6jwwYsrNMsEyz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="891844342"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 12 Dec 2023 18:02:49 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDEaF-000Jzf-1H;
+        Wed, 13 Dec 2023 02:02:47 +0000
+Date:   Wed, 13 Dec 2023 10:02:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Paul Burton <paul.burton@imgtec.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>
+Subject: drivers/isdn/hardware/mISDN/hfcmulti.c:466:22: sparse: sparse:
+ incorrect type in argument 1 (different base types)
+Message-ID: <202312130918.TbmHlBbs-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fcb0f70-8d69-475f-d585-08dbfb7f2308
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2023 01:59:26.9638
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fbdFqBR5+aS6Vo80s90oZSEkgqS0bJfy3Wl38aXlHzsOC3YF5oxD6wZ7r/sqw+9LpF8/ZQ8EmkgGqCSsgM/WZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7852
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -181,69 +63,587 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Tuesday, December 12, 2023 11:32 PM
->=20
-> On Tue, Dec 12, 2023 at 02:20:01AM +0000, Tian, Kevin wrote:
-> > > From: Liu, Yi L <yi.l.liu@intel.com>
-> > > Sent: Monday, December 11, 2023 4:08 PM
-> > >
-> > > On 2023/12/7 16:47, Tian, Kevin wrote:
-> > > >> From: Liu, Yi L <yi.l.liu@intel.com>
-> > > >> Sent: Monday, November 27, 2023 2:39 PM
-> > > >>
-> > > >> +static int vfio_pci_core_feature_pasid(struct vfio_device *device=
-, u32
-> > > flags,
-> > > >> +				       struct vfio_device_feature_pasid __user
-> > > >> *arg,
-> > > >> +				       size_t argsz)
-> > > >> +{
-> > > >> +	struct vfio_pci_core_device *vdev =3D
-> > > >> +		container_of(device, struct vfio_pci_core_device, vdev);
-> > > >> +	struct vfio_device_feature_pasid pasid =3D { 0 };
-> > > >> +	struct pci_dev *pdev =3D vdev->pdev;
-> > > >> +	u32 capabilities =3D 0;
-> > > >> +	int ret;
-> > > >> +
-> > > >> +	/* We do not support SET of the PASID capability */
-> > > >
-> > > > this line alone is meaningless. Please explain the reason e.g. due =
-to
-> > > > no PASID capability per VF...
-> > >
-> > > sure. I think the major reason is we don't allow userspace to change =
-the
-> > > PASID configuration. is it?
-> >
-> > if only PF it's still possible to develop a model allowing userspace to
-> > change.
->=20
-> More importantly the primary purpose of setting the PASID width is
-> because of the physical properties of the IOMMU HW.
->=20
-> IOMMU HW that supports virtualization should do so in a way that the
-> PASID with can be globally set to some value the hypervisor is aware
-> the HW can decode in all cases.
->=20
-> The VM should have no way to make the HW ignore (vs check for zero)
-> upper bits of the PASID that would require the physical PASID bits to
-> be reduced.
->=20
-> So we should never allow programming of this, VMM just fakes it and
-> ignores sets.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   cf52eed70e555e864120cfaf280e979e2a035c66
+commit: eed0eabd12ef061821cbfa20d903476e07645320 MIPS: generic: Introduce generic DT-based board support
+date:   7 years ago
+config: mips-randconfig-r132-20231115 (https://download.01.org/0day-ci/archive/20231213/202312130918.TbmHlBbs-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231213/202312130918.TbmHlBbs-lkp@intel.com/reproduce)
 
-PASID width is read-only so certainly sets should be ignored
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312130918.TbmHlBbs-lkp@intel.com/
 
->=20
-> Similar argument for enable, IOMMU HW supporting virtualization should
-> always be able to decode PASID and reject PASID TLPs if the VM hasn't
-> configured the vIOMMU to decode them. The purpose of the disable bit
-> is to accommodate IOMMU HW that cannot decode the PASID TLP at all and
-> would become confused.
->=20
+sparse warnings: (new ones prefixed by >>)
+>> drivers/isdn/hardware/mISDN/hfcmulti.c:466:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/isdn/hardware/mISDN/hfcmulti.c:466:22: sparse:     expected unsigned int [usertype] val
+   drivers/isdn/hardware/mISDN/hfcmulti.c:466:22: sparse:     got restricted __le32 [usertype]
+>> drivers/isdn/hardware/mISDN/hfcmulti.c:471:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   drivers/isdn/hardware/mISDN/hfcmulti.c:471:22: sparse:     expected unsigned short [usertype] val
+   drivers/isdn/hardware/mISDN/hfcmulti.c:471:22: sparse:     got restricted __le16 [usertype]
+   drivers/isdn/hardware/mISDN/hfcmulti.c:486:24: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/isdn/hardware/mISDN/hfcmulti.c:486:24: sparse:     expected unsigned int [usertype] val
+   drivers/isdn/hardware/mISDN/hfcmulti.c:486:24: sparse:     got restricted __le32 [usertype]
+   drivers/isdn/hardware/mISDN/hfcmulti.c:492:24: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] val @@     got restricted __le16 [usertype] @@
+   drivers/isdn/hardware/mISDN/hfcmulti.c:492:24: sparse:     expected unsigned short [usertype] val
+   drivers/isdn/hardware/mISDN/hfcmulti.c:492:24: sparse:     got restricted __le16 [usertype]
+   drivers/isdn/hardware/mISDN/hfcmulti.c:510:32: sparse: sparse: cast to restricted __le32
+   drivers/isdn/hardware/mISDN/hfcmulti.c:515:32: sparse: sparse: cast to restricted __le16
+   drivers/isdn/hardware/mISDN/hfcmulti.c:532:25: sparse: sparse: cast to restricted __le32
+   drivers/isdn/hardware/mISDN/hfcmulti.c:538:25: sparse: sparse: cast to restricted __le16
+   drivers/isdn/hardware/mISDN/hfcmulti.c:1106:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
+   drivers/isdn/hardware/mISDN/hfcmulti.c:1106:26: sparse:     expected void const volatile [noderef] <asn:2> *addr
+   drivers/isdn/hardware/mISDN/hfcmulti.c:1106:26: sparse:     got void *
+   In file included from include/linux/kernel.h:11,
+                    from include/linux/interrupt.h:5,
+                    from drivers/isdn/hardware/mISDN/hfcmulti.c:167:
+   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
+      22 | int ____ilog2_NaN(void);
+         | ^~~
+   drivers/isdn/hardware/mISDN/hfcmulti.c: In function 'hfcmulti_interrupt':
+   drivers/isdn/hardware/mISDN/hfcmulti.c:2767:17: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+    2767 |                 ; /* external IRQ */
+         |                 ^
+   In file included from drivers/isdn/hardware/mISDN/hfcmulti.c:168:
+   drivers/isdn/hardware/mISDN/hfcmulti.c: At top level:
+   include/linux/module.h:138:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'HFCmulti_cleanup': 'cold' [-Wmissing-attributes]
+     138 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
+         |              ^~~~~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/hfcmulti.c:5585:1: note: in expansion of macro 'module_exit'
+    5585 | module_exit(HFCmulti_cleanup);
+         | ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/hfcmulti.c:5480:1: note: 'cleanup_module' target declared here
+    5480 | HFCmulti_cleanup(void)
+         | ^~~~~~~~~~~~~~~~
+   include/linux/module.h:132:13: warning: 'init_module' specifies less restrictive attribute than its target 'HFCmulti_init': 'cold' [-Wmissing-attributes]
+     132 |         int init_module(void) __attribute__((alias(#initfn)));
+         |             ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/hfcmulti.c:5584:1: note: in expansion of macro 'module_init'
+    5584 | module_init(HFCmulti_init);
+         | ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/hfcmulti.c:5491:1: note: 'init_module' target declared here
+    5491 | HFCmulti_init(void)
+         | ^~~~~~~~~~~~~
+--
+   drivers/isdn/hardware/mISDN/avmfritz.c:433:23: sparse: sparse: cast to restricted __le32
+>> drivers/isdn/hardware/mISDN/avmfritz.c:506:30: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/isdn/hardware/mISDN/avmfritz.c:506:30: sparse:     expected unsigned int [usertype] val
+   drivers/isdn/hardware/mISDN/avmfritz.c:506:30: sparse:     got restricted __le32 [usertype]
+   drivers/isdn/hardware/mISDN/avmfritz.c:966:1: sparse: sparse: symbol 'setup_fritz' was not declared. Should it be static?
+   In file included from include/linux/kernel.h:11,
+                    from include/linux/interrupt.h:5,
+                    from drivers/isdn/hardware/mISDN/avmfritz.c:23:
+   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
+      22 | int ____ilog2_NaN(void);
+         | ^~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:288:1: warning: no previous prototype for 'write_ctrl' [-Wmissing-prototypes]
+     288 | write_ctrl(struct bchannel *bch, int which) {
+         | ^~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:745:1: warning: no previous prototype for 'clear_pending_hdlc_ints' [-Wmissing-prototypes]
+     745 | clear_pending_hdlc_ints(struct fritzcard *fc)
+         | ^~~~~~~~~~~~~~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:966:1: warning: no previous prototype for 'setup_fritz' [-Wmissing-prototypes]
+     966 | setup_fritz(struct fritzcard *fc)
+         | ^~~~~~~~~~~
+   In file included from drivers/isdn/hardware/mISDN/avmfritz.c:24:
+   include/linux/module.h:138:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'AVM_cleanup': 'cold' [-Wmissing-attributes]
+     138 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
+         |              ^~~~~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:1176:1: note: in expansion of macro 'module_exit'
+    1176 | module_exit(AVM_cleanup);
+         | ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:1170:20: note: 'cleanup_module' target declared here
+    1170 | static void __exit AVM_cleanup(void)
+         |                    ^~~~~~~~~~~
+   include/linux/module.h:132:13: warning: 'init_module' specifies less restrictive attribute than its target 'AVM_init': 'cold' [-Wmissing-attributes]
+     132 |         int init_module(void) __attribute__((alias(#initfn)));
+         |             ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:1175:1: note: in expansion of macro 'module_init'
+    1175 | module_init(AVM_init);
+         | ^~~~~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:1161:19: note: 'init_module' target declared here
+    1161 | static int __init AVM_init(void)
+         |                   ^~~~~~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c: In function 'modehdlc':
+   drivers/isdn/hardware/mISDN/avmfritz.c:363:28: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     363 |                 bch->state = -1;
+         |                 ~~~~~~~~~~~^~~~
+   drivers/isdn/hardware/mISDN/avmfritz.c:364:9: note: here
+     364 |         case ISDN_P_NONE:
+         |         ^~~~
+--
+   drivers/scsi/hptiop.c:158:53: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:180:35: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:180:35: sparse:     expected void volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:180:35: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:216:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:216:34: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:216:34: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:217:35: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:217:35: sparse:     expected void volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:217:35: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:252:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] result @@     got int @@
+   drivers/scsi/hptiop.c:252:44: sparse:     expected restricted __le32 [usertype] result
+   drivers/scsi/hptiop.c:252:44: sparse:     got int
+   drivers/scsi/hptiop.c:297:35: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:284:32: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:285:34: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] cur_rptr @@     got restricted __le32 [usertype] outlist_rptr @@
+   drivers/scsi/hptiop.c:285:34: sparse:     expected unsigned int [usertype] cur_rptr
+   drivers/scsi/hptiop.c:285:34: sparse:     got restricted __le32 [usertype] outlist_rptr
+   drivers/scsi/hptiop.c:291:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] _tag @@     got restricted __le32 [usertype] val @@
+   drivers/scsi/hptiop.c:291:38: sparse:     expected unsigned int [usertype] _tag
+   drivers/scsi/hptiop.c:291:38: sparse:     got restricted __le32 [usertype] val
+   drivers/scsi/hptiop.c:296:52: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] outlist_rptr @@     got unsigned int [assigned] [usertype] cur_rptr @@
+   drivers/scsi/hptiop.c:296:52: sparse:     expected restricted __le32 [usertype] outlist_rptr
+   drivers/scsi/hptiop.c:296:52: sparse:     got unsigned int [assigned] [usertype] cur_rptr
+   drivers/scsi/hptiop.c:377:52: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:377:52: sparse:     expected void volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:377:52: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:378:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:378:25: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:378:25: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:461:64: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct hpt_iop_request_get_config *info @@     got struct hpt_iop_request_get_config [noderef] <asn:2> *config @@
+   drivers/scsi/hptiop.c:461:64: sparse:     expected struct hpt_iop_request_get_config *info
+   drivers/scsi/hptiop.c:461:64: sparse:     got struct hpt_iop_request_get_config [noderef] <asn:2> *config
+   drivers/scsi/hptiop.c:463:25: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:566:27: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:566:27: sparse:     expected void volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:566:27: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:645:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct hpt_iopmv_regs *regs @@     got void [noderef] <asn:2> * @@
+   drivers/scsi/hptiop.c:645:24: sparse:     expected struct hpt_iopmv_regs *regs
+   drivers/scsi/hptiop.c:645:24: sparse:     got void [noderef] <asn:2> *
+   drivers/scsi/hptiop.c:651:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got struct hpt_iopmv_regs *regs @@
+   drivers/scsi/hptiop.c:651:34: sparse:     expected void const volatile [noderef] <asn:2> *addr
+   drivers/scsi/hptiop.c:651:34: sparse:     got struct hpt_iopmv_regs *regs
+   drivers/scsi/hptiop.c:675:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got struct hpt_iopmv_regs *regs @@
+   drivers/scsi/hptiop.c:675:26: sparse:     expected void const volatile [noderef] <asn:2> *addr
+   drivers/scsi/hptiop.c:675:26: sparse:     got struct hpt_iopmv_regs *regs
+   drivers/scsi/hptiop.c:942:27: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:947:34: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:948:30: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:952:43: sparse: sparse: invalid assignment: &=
+   drivers/scsi/hptiop.c:952:43: sparse:    left side has type restricted __le32
+   drivers/scsi/hptiop.c:952:43: sparse:    right side has type int
+   drivers/scsi/hptiop.c:953:43: sparse: sparse: invalid assignment: ^=
+   drivers/scsi/hptiop.c:953:43: sparse:    left side has type restricted __le32
+   drivers/scsi/hptiop.c:953:43: sparse:    right side has type int
+   drivers/scsi/hptiop.c:958:57: sparse: sparse: restricted __le32 degrades to integer
+   drivers/scsi/hptiop.c:958:48: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] intrfc_len @@     got unsigned int @@
+   drivers/scsi/hptiop.c:958:48: sparse:     expected restricted __le32 [usertype] intrfc_len
+   drivers/scsi/hptiop.c:958:48: sparse:     got unsigned int
+>> drivers/scsi/hptiop.c:959:29: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] inlist_wptr @@
+   drivers/scsi/hptiop.c:959:29: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:959:29: sparse:     got restricted __le32 [usertype] inlist_wptr
+>> drivers/scsi/hptiop.c:984:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:984:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:984:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:986:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:986:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:986:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:989:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:989:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:989:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:991:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:991:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:991:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:994:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:994:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:994:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:996:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __le32 [usertype] @@
+   drivers/scsi/hptiop.c:996:16: sparse:     expected unsigned int [usertype] val
+   drivers/scsi/hptiop.c:996:16: sparse:     got restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:999:35: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] inlist_wptr @@     got unsigned int @@
+   drivers/scsi/hptiop.c:999:35: sparse:     expected restricted __le32 [usertype] inlist_wptr
+   drivers/scsi/hptiop.c:999:35: sparse:     got unsigned int
+   drivers/scsi/hptiop.c:1000:37: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int @@
+   drivers/scsi/hptiop.c:1000:37: sparse:     expected restricted __le32 [usertype]
+   drivers/scsi/hptiop.c:1000:37: sparse:     got unsigned int
+   drivers/scsi/hptiop.c:1001:36: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] outlist_rptr @@     got unsigned int @@
+   drivers/scsi/hptiop.c:1001:36: sparse:     expected restricted __le32 [usertype] outlist_rptr
+   drivers/scsi/hptiop.c:1001:36: sparse:     got unsigned int
+   drivers/scsi/hptiop.c:1544:29: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:1544:29: sparse:     expected void volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:1544:29: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:1545:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got restricted __le32 * @@
+   drivers/scsi/hptiop.c:1545:25: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   drivers/scsi/hptiop.c:1545:25: sparse:     got restricted __le32 *
+   drivers/scsi/hptiop.c:158:51: sparse: sparse: dereference of noderef expression
+   drivers/scsi/hptiop.c:158:51: sparse: sparse: dereference of noderef expression
+   In file included from include/linux/kernel.h:11,
+                    from include/linux/list.h:8,
+                    from include/linux/module.h:9,
+                    from drivers/scsi/hptiop.c:18:
+   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
+      22 | int ____ilog2_NaN(void);
+         | ^~~
+   include/linux/module.h:138:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'hptiop_module_exit': 'cold' [-Wmissing-attributes]
+     138 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
+         |              ^~~~~~~~~~~~~~
+   drivers/scsi/hptiop.c:1709:1: note: in expansion of macro 'module_exit'
+    1709 | module_exit(hptiop_module_exit);
+         | ^~~~~~~~~~~
+   drivers/scsi/hptiop.c:1702:20: note: 'cleanup_module' target declared here
+    1702 | static void __exit hptiop_module_exit(void)
+         |                    ^~~~~~~~~~~~~~~~~~
+   include/linux/module.h:132:13: warning: 'init_module' specifies less restrictive attribute than its target 'hptiop_module_init': 'cold' [-Wmissing-attributes]
+     132 |         int init_module(void) __attribute__((alias(#initfn)));
+         |             ^~~~~~~~~~~
+   drivers/scsi/hptiop.c:1708:1: note: in expansion of macro 'module_init'
+    1708 | module_init(hptiop_module_init);
+         | ^~~~~~~~~~~
+   drivers/scsi/hptiop.c:1696:19: note: 'init_module' target declared here
+    1696 | static int __init hptiop_module_init(void)
+         |                   ^~~~~~~~~~~~~~~~~~
+--
+   sound/pci/mixart/mixart.c:1205:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart.c:1205:23: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart.c:1205:23: sparse:     got unsigned int *
+>> sound/pci/mixart/mixart.c:1205:23: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart.c:1208:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart.c:1208:47: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart.c:1208:47: sparse:     got unsigned int *
+   sound/pci/mixart/mixart.c:1208:47: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart.c:1209:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart.c:1209:47: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart.c:1209:47: sparse:     got unsigned int *
+   sound/pci/mixart/mixart.c:1209:47: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart.c:1210:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart.c:1210:47: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart.c:1210:47: sparse:     got unsigned int *
+   sound/pci/mixart/mixart.c:1210:47: sparse: sparse: cast to restricted __be32
+   In file included from include/linux/kernel.h:11,
+                    from include/linux/interrupt.h:5,
+                    from sound/pci/mixart/mixart.c:25:
+   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
+      22 | int ____ilog2_NaN(void);
+         | ^~~
+   In file included from sound/pci/mixart/mixart.c:28:
+   include/linux/module.h:138:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'mixart_driver_exit': 'cold' [-Wmissing-attributes]
+     138 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
+         |              ^~~~~~~~~~~~~~
+   include/linux/device.h:1355:1: note: in expansion of macro 'module_exit'
+    1355 | module_exit(__driver##_exit);
+         | ^~~~~~~~~~~
+   include/linux/pci.h:1205:9: note: in expansion of macro 'module_driver'
+    1205 |         module_driver(__pci_driver, pci_register_driver, 32-      |         ^~~~~~~~~~~~~
+   sound/pci/mixart/mixart.c:1422:1: note: in expansion of macro 'module_pci_driver'
+    1422 | module_pci_driver(mixart_driver);
+         | ^~~~~~~~~~~~~~~~~
+   In file included from include/linux/pci.h:30,
+                    from sound/pci/mixart/mixart.c:26:
+   sound/pci/mixart/mixart.c:1422:19: note: 'cleanup_module' target declared here
+    1422 | module_pci_driver(mixart_driver);
+         |                   ^~~~~~~~~~~~~
+   include/linux/device.h:1351:20: note: in definition of macro 'module_driver'
+    1351 | static void __exit __driver##_exit(void) 43-      |                    ^~~~~~~~
+   sound/pci/mixart/mixart.c:1422:1: note: in expansion of macro 'module_pci_driver'
+    1422 | module_pci_driver(mixart_driver);
+         | ^~~~~~~~~~~~~~~~~
+   include/linux/module.h:132:13: warning: 'init_module' specifies less restrictive attribute than its target 'mixart_driver_init': 'cold' [-Wmissing-attributes]
+     132 |         int init_module(void) __attribute__((alias(#initfn)));
+         |             ^~~~~~~~~~~
+   include/linux/device.h:1350:1: note: in expansion of macro 'module_init'
+    1350 | module_init(__driver##_init); 52-      | ^~~~~~~~~~~
+   include/linux/pci.h:1205:9: note: in expansion of macro 'module_driver'
+    1205 |         module_driver(__pci_driver, pci_register_driver, 55-      |         ^~~~~~~~~~~~~
+   sound/pci/mixart/mixart.c:1422:1: note: in expansion of macro 'module_pci_driver'
+    1422 | module_pci_driver(mixart_driver);
+         | ^~~~~~~~~~~~~~~~~
+   sound/pci/mixart/mixart.c:1422:19: note: 'init_module' target declared here
+    1422 | module_pci_driver(mixart_driver);
+         |                   ^~~~~~~~~~~~~
+   include/linux/device.h:1346:19: note: in definition of macro 'module_driver'
+    1346 | static int __init __driver##_init(void) 64-      |                   ^~~~~~~~
+   sound/pci/mixart/mixart.c:1422:1: note: in expansion of macro 'module_pci_driver'
+    1422 | module_pci_driver(mixart_driver);
+         | ^~~~~~~~~~~~~~~~~
+   sound/pci/mixart/mixart.c: In function 'mixart_set_clock':
+   sound/pci/mixart/mixart.c:183:19: warning: this statement may fall through [-Wimplicit-fallthrough=]
+     183 |                 if(rate != 0)
+         |                   ^
+   sound/pci/mixart/mixart.c:185:9: note: here
+     185 |         default:
+         |         ^~~~~~~
+--
+   sound/pci/mixart/mixart_core.c:54:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:54:19: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:54:19: sparse:     got unsigned int *
+>> sound/pci/mixart/mixart_core.c:54:19: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:55:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:55:19: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:55:19: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:55:19: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:65:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:65:22: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:65:22: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:65:22: sparse: sparse: cast to restricted __be32
+>> sound/pci/mixart/mixart_core.c:71:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:71:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:71:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:71:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:71:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:71:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:90:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:90:32: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:90:32: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:90:32: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:91:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:91:32: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:91:32: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:91:32: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:92:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:92:32: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:92:32: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:92:32: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:93:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:93:32: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:93:32: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:93:32: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:117:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:117:19: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:117:19: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:117:19: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:125:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:125:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:125:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:125:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:125:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:125:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:132:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:132:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:132:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:132:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:132:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:132:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:159:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:159:19: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:159:19: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:159:19: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:160:19: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:160:19: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:160:19: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:160:19: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:171:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:171:29: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:171:29: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:171:29: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_core.c:179:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:179:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:179:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:179:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:179:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:179:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:184:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:184:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:184:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:184:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:184:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:184:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:185:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:185:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:185:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:185:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:185:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:185:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:186:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:186:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:186:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:186:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:186:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:186:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:187:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:187:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:187:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:187:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:187:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:187:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:188:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:188:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:188:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:188:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:188:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:188:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:189:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:189:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:189:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:189:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:189:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:189:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:190:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:190:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:190:9: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_core.c:190:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_core.c:190:9: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_core.c:190:9: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_core.c:191:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_core.c:191:9: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_core.c:191:9: sparse:     got restricted __be32 [usertype]
+--
+   sound/pci/mixart/mixart_hwdep.c:58:24: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:58:24: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:58:24: sparse:     got unsigned int *
+>> sound/pci/mixart/mixart_hwdep.c:58:24: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:116:31: sparse: sparse: cast to restricted __be16
+   sound/pci/mixart/mixart_hwdep.c:117:35: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:117:80: sparse: sparse: cast to restricted __be16
+   sound/pci/mixart/mixart_hwdep.c:123:54: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:124:66: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:125:54: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:352:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:352:25: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:352:25: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:352:25: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:354:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:354:22: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:354:22: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:354:22: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:356:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:356:25: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:356:25: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:356:25: sparse: sparse: cast to restricted __be32
+>> sound/pci/mixart/mixart_hwdep.c:387:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:387:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:387:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:387:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:387:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:387:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:390:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:392:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:398:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:427:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:428:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:431:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:438:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:448:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:470:57: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:470:57: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:470:57: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:470:57: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:494:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:497:17: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:507:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:507:23: sparse:     expected void const volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:507:23: sparse:     got unsigned int *
+   sound/pci/mixart/mixart_hwdep.c:507:23: sparse: sparse: cast to restricted __be32
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] val @@     got restricted __be32 [usertype] @@
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse:     expected unsigned int [usertype] val
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse:     got restricted __be32 [usertype]
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *mem @@     got unsigned int * @@
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse:     expected void volatile [noderef] <asn:2> *mem
+   sound/pci/mixart/mixart_hwdep.c:515:17: sparse:     got unsigned int *
+   In file included from include/linux/kernel.h:11,
+                    from include/linux/interrupt.h:5,
+                    from sound/pci/mixart/mixart_hwdep.c:23:
+   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
+      22 | int ____ilog2_NaN(void);
+         | ^~~
 
-Yes, this explains why disallowing userspace to change doesn't cause
-problem in this series. My earlier point was just that allowing userspace
-to change could be implemented for PF (though unnecessary with your
-explanation) to mimic the hardware behavior.
+vim +466 drivers/isdn/hardware/mISDN/hfcmulti.c
+
+af69fb3a8ffa37 Karsten Keil 2008-07-27  459  
+af69fb3a8ffa37 Karsten Keil 2008-07-27  460  /* write fifo data (REGIO) */
+5b8343540a3d27 Hannes Eder  2008-12-12  461  static void
+af69fb3a8ffa37 Karsten Keil 2008-07-27  462  write_fifo_regio(struct hfc_multi *hc, u_char *data, int len)
+af69fb3a8ffa37 Karsten Keil 2008-07-27  463  {
+af69fb3a8ffa37 Karsten Keil 2008-07-27  464  	outb(A_FIFO_DATA0, (hc->pci_iobase) + 4);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  465  	while (len >> 2) {
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02 @466  		outl(cpu_to_le32(*(u32 *)data), hc->pci_iobase);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  467  		data += 4;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  468  		len -= 4;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  469  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  470  	while (len >> 1) {
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02 @471  		outw(cpu_to_le16(*(u16 *)data), hc->pci_iobase);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  472  		data += 2;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  473  		len -= 2;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  474  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  475  	while (len) {
+af69fb3a8ffa37 Karsten Keil 2008-07-27  476  		outb(*data, hc->pci_iobase);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  477  		data++;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  478  		len--;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  479  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  480  }
+af69fb3a8ffa37 Karsten Keil 2008-07-27  481  /* write fifo data (PCIMEM) */
+5b8343540a3d27 Hannes Eder  2008-12-12  482  static void
+af69fb3a8ffa37 Karsten Keil 2008-07-27  483  write_fifo_pcimem(struct hfc_multi *hc, u_char *data, int len)
+af69fb3a8ffa37 Karsten Keil 2008-07-27  484  {
+af69fb3a8ffa37 Karsten Keil 2008-07-27  485  	while (len >> 2) {
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02  486  		writel(cpu_to_le32(*(u32 *)data),
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02  487  		       hc->pci_membase + A_FIFO_DATA0);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  488  		data += 4;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  489  		len -= 4;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  490  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  491  	while (len >> 1) {
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02  492  		writew(cpu_to_le16(*(u16 *)data),
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02  493  		       hc->pci_membase + A_FIFO_DATA0);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  494  		data += 2;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  495  		len -= 2;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  496  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  497  	while (len) {
+b3e0aeeb7e0f89 Karsten Keil 2008-08-02  498  		writeb(*data, hc->pci_membase + A_FIFO_DATA0);
+af69fb3a8ffa37 Karsten Keil 2008-07-27  499  		data++;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  500  		len--;
+af69fb3a8ffa37 Karsten Keil 2008-07-27  501  	}
+af69fb3a8ffa37 Karsten Keil 2008-07-27  502  }
+eac74af9b547e2 Karsten Keil 2009-05-22  503  
+
+:::::: The code at line 466 was first introduced by commit
+:::::: b3e0aeeb7e0f89791c4c3bdfd98b36074c5178e6 Fix remaining big endian issue of hfcmulti
+
+:::::: TO: Karsten Keil <kkeil@suse.de>
+:::::: CC: Karsten Keil <kkeil@suse.de>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
