@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C955E81154E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D0381153A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441978AbjLMOyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        id S1441922AbjLMOvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441950AbjLMOyt (ORCPT
+        with ESMTP id S1378944AbjLMOvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:54:49 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2064.outbound.protection.outlook.com [40.107.6.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D334AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:54:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Exbk2sOsk5W5oqtwBswse+nXBNTll92aEd2AVjdK4cootEgUgbzlCvjlZTbSsywL2/MaTnR7UlnYPSn9tY+AyxrPzUh82h/8vV9NTA4ldRyUMvTQLBV0RD1B5ph2XncQyOkrsHvfr20crucKLttaJpKQra5mDYou4jCZIj9JwLVpBibwnBcRg/Y7fj/llQxj9deeX13RCU6N7hdwTzZYiinalj4TX9l3sMc0vuy5wgAKgvAuwOVxW7i+Cp0LHRwYhRIdcgZ42Gm/003suTswZDZ8I2MsPvI5QX9Bf/Tj1b8iZwg23nRkycmIdgO1AQNMKOOuo6FJuHUK2C0o0LSNsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IL1PuRaEkbV1IKrXOWWlO/QhOerzEz9fCpiwLoEBpmw=;
- b=U+1tPOP8pEq8rsPv2rrbRETVzd2DUoRJ670c0eWmXyzMIwlUxCcCyTsl+ekOz9+vAIRjXS+pz/ti/TFoBW7Za9tuGIZ2qTbzGZ181+81cC4H3/zwaQUDeuxeLj+qcG3GgmNsuV+ovDvoJDw0AWArRXJBvD7PxX1rrsXMTpA9gHJltzvhY05Q+zuzDLlPvfmnGLcnmC5v2vNdoBwfmRpkV8uyrJYQWIn1KJY/bp/L6eYyMLQIvatFshiDXdY7vCdVxjCa6O4Ko3TIM1EQqtGt/sDQlBYOBGF/Fe0XJdm/3QPa39WyWIEqF9LQYkZl/xgV/oBoXi6HW2SVKqT8grEdSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IL1PuRaEkbV1IKrXOWWlO/QhOerzEz9fCpiwLoEBpmw=;
- b=Lk5TjBSCOdeELgvctqt+oUz80+r3t9x1yH3Dbn49aXAcEPfE6zA+gxiVEFkivxWd85gNhsjdjrlOFuLGEqGMfQ6oHJZpkWSQ/lYy9q1WYrxmBSEu8K78PjSAzbyp7MrJ0ToDMRkyZImebYThXtNz1uu6eRsXWbxDjslIkqzowPgBgJ1bWGsxeBuFg8dbU9u7g8j8DJH23SbMdYpUkAswDcdYmQ+v5gSVDH+bvIdtDQ/cOiW7lJd26M6x4BltvaxjNzah7r0og/PUiPLrJpQuqEJrKckOpEqly8xDZTSgSR5gX1PX49rMjkmuFPIYfqsZq81WCC+XN1iCHV7iz8oIHw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from AM0PR0402MB3537.eurprd04.prod.outlook.com
- (2603:10a6:208:20::21) by DB8PR04MB7131.eurprd04.prod.outlook.com
- (2603:10a6:10:fd::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 14:54:53 +0000
-Received: from AM0PR0402MB3537.eurprd04.prod.outlook.com
- ([fe80::e965:1a81:19ac:7bf4]) by AM0PR0402MB3537.eurprd04.prod.outlook.com
- ([fe80::e965:1a81:19ac:7bf4%5]) with mapi id 15.20.7068.033; Wed, 13 Dec 2023
- 14:54:52 +0000
-From:   Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-To:     quentin.schulz@theobroma-systems.com, neil.armstrong@linaro.org,
-        quic_jesszhan@quicinc.com, sam@ravnborg.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
-Cc:     heiko@sntech.de, victor.liu@nxp.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-Subject: [PATCH] drm/panel: ltk050h3146w: Set burst mode for ltk050h3148w
-Date:   Wed, 13 Dec 2023 15:50:45 +0100
-Message-Id: <20231213145045.41020-1-farouk.bouabid@theobroma-systems.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: VI1PR06CA0201.eurprd06.prod.outlook.com
- (2603:10a6:802:2c::22) To AM0PR0402MB3537.eurprd04.prod.outlook.com
- (2603:10a6:208:20::21)
+        Wed, 13 Dec 2023 09:51:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B3B993;
+        Wed, 13 Dec 2023 06:51:02 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702479060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHe6ZT6IqHXuvZfN2Kkv8LYZ39KD28BsElvHGdR2yLk=;
+        b=xMCS46RkFqf5k2sd7I0D5MPvvAB63Omcbg8KLgVk2SQU7Ghd1CZw/ElA3/FOQt9X1UGnJn
+        6U+4YO70gazL6yuOO8oelZ79FjJU6HDxDAqifYzSuEtPn3skyg0kJqCOEGOmX5bZqoQebL
+        0VvVtQ/34lXz5afr0fWZWMYVBt4P1veJqfSC0Bodins7HhOHyETaQ9eXNzl1tUrCGxsbuR
+        wl4HpmKpDljPQ6ZLzQmmxnPZOxb+n4i1Ia1Wl3GQZzuN8S39tpZv3TKuV4kCjv/mZPr8b8
+        RBp7hXsGw+M3j83dEIXn4bmn9S6zM4KEQ7EOhOLSigCXc11Wx1096MrpFysiyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702479060;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHe6ZT6IqHXuvZfN2Kkv8LYZ39KD28BsElvHGdR2yLk=;
+        b=XZ+HChB4RPHfbor4Q/YW7pwBZoCQviihzZCHu8++ftZ3wCiy3NX7Or9ivo25GQwo8/o5hP
+        sapuqCrsi4G2GLCw==
+To:     "Zhang, Rui" <rui.zhang@intel.com>,
+        "jsperbeck@google.com" <jsperbeck@google.com>,
+        "tip-bot2@linutronix.de" <tip-bot2@linutronix.de>
+Cc:     "andres@anarazel.de" <andres@anarazel.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tip-commits@vger.kernel.org" 
+        <linux-tip-commits@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
+In-Reply-To: <c1d7e60329a62a9f6d70ffa664632db8db668efe.camel@intel.com>
+References: <87ttonpbnr.ffs@tglx>
+ <c1d7e60329a62a9f6d70ffa664632db8db668efe.camel@intel.com>
+Date:   Wed, 13 Dec 2023 15:51:00 +0100
+Message-ID: <878r5yp357.ffs@tglx>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR0402MB3537:EE_|DB8PR04MB7131:EE_
-X-MS-Office365-Filtering-Correlation-Id: 74c83567-83a3-490d-5f5d-08dbfbeb767b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6HR8aeYfpZhINQY/5Nu8h+jXQ9fJNG47TvuS7T4iaPsN7YsVSX+0kA0VUNTKjPlnmQzjG5hpbtuwSPj2Bsmcy3ob+NeSS++In6huG5A+SoXDQYaljoayC7sL8fSSZZysNH1DteG7796jp6TCTp/5uY2FRYPAlbRlBKdKQzP5b/IuQxuwFiV+Qpeu7Q6eW303n+qvfVtpmqW6RbJfjgapW1laQT2Yd0KdcHpDSS5n9gw/rhcaXAsolwsJKNWbeG6J9if+M2EIlG7giwuFz3+YidNYl13F6RqiaC5XOXi6xjbavc/NDAFEnaYiUp/vKlX5YDp2yeCbOO7IjrrdcoNXrJ2XxCzyOy5kKbUo3rFnH8l3/Cl1Up/4rp02c0yvPJFEqi3OTm/8VkZ95J5IHUq73uqBiJJzcYvTzusq5rNnsz1DX8z2kfFnwcpCxeoRWudknpoSoDOBARFGFQqVDRWHfFaS3ex8VW5slye1wVc2tXZRAVYP8NXDFC4DBGtzby2z/DCazHhLhsQ4u7Huz2/2oHbibiBN0kkgtzKsJXhCHyD3hnOtlAlL8N8Qf88bW1HCYQnBpQU0uFp71XqIUCyMV8RunYyUscEk7hGxV1erBmA/lGTQyRDLMbpW1CEWO4GQaAjv5ICCxeUgpn5mFwMD2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR0402MB3537.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(396003)(136003)(366004)(346002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(1076003)(2616005)(26005)(6666004)(6512007)(6506007)(107886003)(86362001)(38100700002)(38350700005)(36756003)(5660300002)(8936002)(8676002)(44832011)(7416002)(4326008)(52116002)(83380400001)(66476007)(66556008)(66946007)(41300700001)(2906002)(6486002)(316002)(478600001)(138113003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RYa7nNEvaj3LMDTFKsdz3y/toXaAPXm7n0/GFz8QjQ4sdEOICbsWCdeoUOXd?=
- =?us-ascii?Q?M4e/uW+rmNGrytzCEg29GvoJqZD41cpRF0DWbDEMCOxESMaX+8wVvN7LfyMT?=
- =?us-ascii?Q?G0fIVMlKdvDX8tKBvaytSF2fA1tOPlMeJpTqXgaQgOwJiUEEEXCUzJwb6RT5?=
- =?us-ascii?Q?RtF2PUym1gAuP19ooTSdBfEQ7Mt5Lp++MGnBolRFialAiRFhfCYxC+BnBYAP?=
- =?us-ascii?Q?lohpjM35gDzbWHTN9vuCg9V2ykr5lEEcfgnvpGK7QqlKZjRPYDJjRoGR1j1X?=
- =?us-ascii?Q?KC45md+F3A4NF16RagsCCT71vBpsz5AWKIiWdJXej3dwkO/hnvfR6PgU4yMv?=
- =?us-ascii?Q?T/VF12FZIdgFToKAtsHajIsAbTIaPmgoM75iC5K/O6mMWGJWfexqosFSi90K?=
- =?us-ascii?Q?TPTf7em5U6BanJRHeq1rApZ61LX9DVtDKwOzXORmqNRGvjEBr77asEbzYQqN?=
- =?us-ascii?Q?EXNI86r2z5/uwrZsBr3rzjt15faiAzTT0Y8BphzQDrjpd2ntA/lqq9j1fKD3?=
- =?us-ascii?Q?UcX0UczGcN4FtHMaFgR/4ewda1ipJyOrkSsE/hKy/QkNE2kxE4bYp5R6psxL?=
- =?us-ascii?Q?2HC3pwhFmYQjhPdU2xpVUPzRVfsC1LbMcUIwHYevx8kjsnhUknUXlEoFBeQa?=
- =?us-ascii?Q?ZKyB31oR09QeouOVD1+lMLNMqUPF4UpzaNiENAUs3aUvQJbJyjZkD3c4NEJZ?=
- =?us-ascii?Q?s0Cmc7jb2ai13zg6D07OLs68a6AnCnuaSrCa84TL2IgwkzdvSef8jrk2F+8F?=
- =?us-ascii?Q?tbHp2Cpm4N1d0IShUQKJAyHs1SdfR0EUR70XbbGqqyDyF0VWUng4mk/ZwYoF?=
- =?us-ascii?Q?D9/Q2vUHJhPWPMRvJUZwtEtASyYqEOkh8aBRGXCSQh9Viuj6ljpMwsKsrMnh?=
- =?us-ascii?Q?ejl98PmnS3uK68mJYj2RhKG7sTcCco3TOpO2F5PEIUdm1ju7RKu5cKaRMKgN?=
- =?us-ascii?Q?dA/s3NESzf6u07pOJErxSC1zf4DML3fugpFPzmd41MUIdKeZX5cYG1M1EDJk?=
- =?us-ascii?Q?+g+glpUx5/TITwyHKYIb1bscJTC78/E+MOr3XkM7FjM5ABXh+ht8eq95aQ25?=
- =?us-ascii?Q?zH5JQcQDQHBSLt/79Ojw4teWEV855BgCcHsQHZyi+nVW2XyopqEPLmXgRlnO?=
- =?us-ascii?Q?rmdhLg1JIVk3uPt3pghGb+BFUwUJapwGiH3aXiJwIqPboF3otyovanO94LUq?=
- =?us-ascii?Q?a8lEElAWsx/NH07sCRuidsMnDdvBqd0VSK7KxV05vjc7GxSfYhN8xCiBgVXk?=
- =?us-ascii?Q?LFOBkB+EUpAWDQIEIYj63qEb77fmhoX8L+LswwblRuz2AuzsbnfzHI0/fH89?=
- =?us-ascii?Q?CNUrSgvGYsf3nntRuRY29VebcuGkNLH5zHvAqpiVcNl2TzgewrYDhDocjPDX?=
- =?us-ascii?Q?VLtPUbJux3Q3XI6fAF9W8iD0+tjbjYoJhZEuO8rBZy5lKhPGp8Kl+UI/ZPlX?=
- =?us-ascii?Q?UC4FcmXVj69uYeAEQq2xyGGhcYPlwTE3fA7zJNuclbNVFdpXX69wbzhBu76X?=
- =?us-ascii?Q?xxz6iXMgj6wAKgiCVfVfyVAIZ3Wi8We3q+F9+WSOodGpJfc2rvEwR7IwoI86?=
- =?us-ascii?Q?OZPuvVNP6QnIkPg4lNvf2LNkLGb25ijKhSu4lefXLNK+xAKJMCr5Sc7FH9MU?=
- =?us-ascii?Q?GJIYboZ4p0VekZLp1XLZ59I=3D?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74c83567-83a3-490d-5f5d-08dbfbeb767b
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR0402MB3537.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 14:54:52.8389
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MeDaw9DLC3kBZWv7lOowR5ZlnkddM5of9zcnjg64ajZhvZ0yYBuO3NIvZYi69zDCOMvKcun35nRHJzHxNYmDvpmzRVaLxZVOw2jkKwvkQdHHUbblVeF78dO+URLx0mGz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7131
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ltk050h3148w variant expects the horizontal component lane byte clock
-cycle(lbcc) to be calculated using lane_mbps (burst mode) instead of the
-pixel clock.
-Using the pixel clock rate by default for this calculation was introduced
-in commit ac87d23694f4 ("drm/bridge: synopsys: dw-mipi-dsi: Use pixel clock
-rate to calculate lbcc") and starting from commit 93e82bb4de01
-("drm/bridge: synopsys: dw-mipi-dsi: Fix hcomponent lbcc for burst mode")
-only panels that support burst mode can keep using the lane_mbps. So add
-MIPI_DSI_MODE_VIDEO_BURST as part of the mode_flags for the dsi host.
+On Wed, Dec 13 2023 at 07:39, Zhang, Rui wrote:
+> Yeah, I agree.
+>
+> I have posted a patch to do more strict check
+> https://lore.kernel.org/all/20231210143925.38722-1-rui.zhang@intel.com/
+> in case there are some weird cases that LAPIC fails to probe any
+> enabled CPU and we also lose the X2APIC cpus.
 
-Fixes: 93e82bb4de01 ("drm/bridge: synopsys: dw-mipi-dsi: Fix hcomponent lbcc for burst mode")
-Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
----
- drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The return value of acpi_register_lapic() is not really useful.
 
-diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-index 6e3670508e3a..30919c872ac8 100644
---- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-+++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-@@ -326,7 +326,7 @@ static const struct drm_display_mode ltk050h3148w_mode = {
- static const struct ltk050h3146w_desc ltk050h3148w_data = {
- 	.mode = &ltk050h3148w_mode,
- 	.init = ltk050h3148w_init_sequence,
--	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
-+	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_VIDEO_BURST,
- };
- 
- static int ltk050h3146w_init_sequence(struct ltk050h3146w *ctx)
--- 
-2.34.1
+It returns an error if
+
+  1) the number of registered CPUs reached the limit.
+  2) the APIC entry is not enabled
+
+#1: any further X2APIC CPU will be ignored
+
+#2: the return value is bogus as the CPU is accounted for as disabled
+    and will eventually lead to #1
+
+    In fact even 'disabled' entries are valid as they can be brought
+    in later (that's what "physical" hotplug uses)
+
+The topology evaluation rework gets rid of this return value completely,
+so I really don't want to add an dependency on it.
+
+Thanks,
+
+        tglx
+
+
 
