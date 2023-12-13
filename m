@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DFF810E7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F4092810E81
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbjLMKeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
+        id S233223AbjLMKeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjLMKeI (ORCPT
+        with ESMTP id S231863AbjLMKeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:34:08 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02832AD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:15 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5c85e8fdd2dso66005857b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:14 -0800 (PST)
+        Wed, 13 Dec 2023 05:34:14 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DC4AD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:20 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so6435823276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702463654; x=1703068454; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702463659; x=1703068459; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9FZnNzpRdub68izs5qvM26thxhHVaJuKTgF6tB6XgDg=;
-        b=bg39wl1aPOasX3spzmIr+nx6l89vhqaryFyKrQw18UtjOSH8wl0ruVUqtDcmA1iZ9Z
-         G3OChZvO0nlLm8J1xxZu+EAnnNGaVE9WF67wLTNHEChz39tYzY3lO7ne8tK89dk/o+O6
-         SQy0flDUcEwkPBVA79oWf95jbQrSFEXZLBYG9iTbOuv+rK9Yq5EFEfMqJeQKMdc4ShBv
-         cD8TdAvfhymSKyyfu7coGCpnPgx1GZzUEFO9YKa7o1q/3WyvAwFV8FJeHyoEhpnnOwp3
-         fKswXI5sWTEhZ+XW70Kda9npx7vEaLjPj9iOmt+GfvQdOrhZJ2OQWqIcDxy80Xpm4z2z
-         ZagQ==
+        bh=MiCuJGdqU3JpN4sR605F4gpjnmDDPjE+WkJpEGI+07w=;
+        b=Al5DynLsK6MMCjJWHslSzhx12RKhrjNpAUjEmg7JHVtivmWyGFFvHz+26d4Gg7ZPHq
+         b8zTTDneMkAgxCaYVQAsG6zFctO1tHB3gXkDnOPC+yn/iEXIuSRtsTej9pQtwn8y3DZU
+         TfwBS+XbOPskq8SkH1UhjmhHpZbCAqp6aQaHZTBUn2RhNVFi1RVPAEHal/ZHKuMyl+KD
+         7TMieGoAXcirKaDllxlkDSoi11gD8S+qJ7Cj/x6RjQSUZ9lpVU5yjU8CMdBYQknzlOjc
+         7l+Xy+gg1YKyGHAyWvun9eEWAFx0awHSGmWTdQfdoO8x4gS9xpjeGcbTCIAy5ML4EP1h
+         7G8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702463654; x=1703068454;
+        d=1e100.net; s=20230601; t=1702463659; x=1703068459;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9FZnNzpRdub68izs5qvM26thxhHVaJuKTgF6tB6XgDg=;
-        b=ZKE92JBd95OZBZWqV48Xd+K0SC+0W+dZZLtFm0Hk3UtLDa+pV+RQBkLApE6LSIBLuL
-         Q9yc2i98hXoGxlMHnmP3WA8n5E0HgDdpZQ6tqV4n2XscA3Yxn2KKBKPGcWePaV8Iq8W6
-         GMnErpJ56BhTROuo27XSfGdHoDHTXMvHX0u/Yy44nzRz4tyqeDPwXO7hqn38k/eOVmA/
-         qwEnn4wV/PNHULCe741YOjMKi93AtTinEtrMG+szhCylZZtucNIwvG4PX2PA7z5Zni0f
-         IHl1FX8K9pG6LHFKePXrOJ+BjDKwNZvAPloT4uk2oV8eXh3evRngYUpgLBTW4GmC9dkG
-         NgUQ==
-X-Gm-Message-State: AOJu0YyPUY2xv16+Zp+ImdCkvjRYWYmjM2kn/m92BAQJhwO+5fd/PR1N
-        EKmWZUfXQhOjuSRJtJgCMnMcnJismk6YWSBzw8Q7SA==
-X-Google-Smtp-Source: AGHT+IE4U9FmwvNewrvjILhFp2HgfiDj9jTykDdH41QxIuQSGD+dELOKoQEHH2rLaM7jTYmF3DiY8atm1BmmQeHHLmc=
-X-Received: by 2002:a0d:e981:0:b0:5d7:1940:dd92 with SMTP id
- s123-20020a0de981000000b005d71940dd92mr5986727ywe.104.1702463654048; Wed, 13
- Dec 2023 02:34:14 -0800 (PST)
+        bh=MiCuJGdqU3JpN4sR605F4gpjnmDDPjE+WkJpEGI+07w=;
+        b=XLDB7R2P5fNG6XHCRlao5bxhRfsUbMMlsHoj8vp/dScv4l85FicuV61KVAnuQBxgGy
+         HfWaskEIF5CNW6GsOfHg9ZjpdwJkNJGggGF/OGED99NGuXL8s198NG4qWi0aw50aiDs0
+         bXhzuJP/gCgTgHHP+a+NsKnuj3vEpLGSFp9LFHWtLbq4bGm0qw5kC7j5Q/vWsTajtqua
+         25/JQt4vXKP5txs9Emd8Vw4v1SS8b1EWfmiZunSkLc5MDyoo+i0yFUTE2DzSm4h5Wn3A
+         yHKj99jY339K8/vXVHdxraRdWU9qAHiVzjGirAOvi/ngtOKMJE0tPQVvVj6O/1jHUYHz
+         6BHg==
+X-Gm-Message-State: AOJu0Yz8/tRe1IVJ5LUwEmKE96HjTaYeBrjZZxkZ7KokxYyGEomowzC6
+        Ro7+Xrk0ddUfvhDsziwUIt98rlCCs4BJRl0MD61xoQ==
+X-Google-Smtp-Source: AGHT+IFgD1jVe3bhFgxKF39rvDQ+ntKZdf/plcoM/+rcHzXjRXeTMPPO0CRFY6Bnj0jPZjnuV1UQVLT74ShuhRh7MPg=
+X-Received: by 2002:a25:bec3:0:b0:db5:49d8:bcd1 with SMTP id
+ k3-20020a25bec3000000b00db549d8bcd1mr4676061ybm.55.1702463659338; Wed, 13 Dec
+ 2023 02:34:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20231205225856.32739-1-rdunlap@infradead.org>
-In-Reply-To: <20231205225856.32739-1-rdunlap@infradead.org>
+References: <20231127151931.47055-1-ulf.hansson@linaro.org>
+In-Reply-To: <20231127151931.47055-1-ulf.hansson@linaro.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Dec 2023 11:33:37 +0100
-Message-ID: <CAPDyKFrxhcTREpC3pozgvbi_7Q8BxXzEdYYkLFF5zv=viFVg7g@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: fix domain_governor kernel-doc warnings
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Kevin Hilman <khilman@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org
+Date:   Wed, 13 Dec 2023 11:33:43 +0100
+Message-ID: <CAPDyKFofR7AHDctZErs3QG_mXdnhY+yjqNYungim+yeLpx1gBQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: domains: Drop the unused pm_genpd_opp_to_performance_state()
+To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Kevin Hilman <khilman@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,61 +67,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 at 23:59, Randy Dunlap <rdunlap@infradead.org> wrote:
+On Mon, 27 Nov 2023 at 16:19, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> Fix kernel-doc warnings found when using "W=1".
+> Since commit 7c41cdcd3bbe ("OPP: Simplify the over-designed pstate <->
+> level dance"), there is no longer any users of the
+> pm_genpd_opp_to_performance_state() API. Let's therefore drop it and its
+> corresponding ->opp_to_performance_state() callback, which also no longer
+> has any users.
 >
-> domain_governor.c:54: warning: No description found for return value of 'default_suspend_ok'
-> domain_governor.c:266: warning: No description found for return value of '_default_power_down_ok'
-> domain_governor.c:412: warning: cannot understand function prototype: 'struct dev_power_governor pm_domain_always_on_gov = '
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Kevin Hilman <khilman@kernel.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Applied for next, thanks!
+So, I have applied this for next and by adding your ack.
 
 Kind regards
 Uffe
 
 
 > ---
->  drivers/base/power/domain_governor.c |    8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+>  drivers/base/power/domain.c | 32 --------------------------------
+>  include/linux/pm_domain.h   | 12 ------------
+>  2 files changed, 44 deletions(-)
 >
-> diff -- a/drivers/base/power/domain_governor.c b/drivers/base/power/domain_governor.c
-> --- a/drivers/base/power/domain_governor.c
-> +++ b/drivers/base/power/domain_governor.c
-> @@ -49,6 +49,8 @@ static int dev_update_qos_constraint(str
->  /**
->   * default_suspend_ok - Default PM domain governor routine to suspend devices.
->   * @dev: Device to check.
-> + *
-> + * Returns: true if OK to suspend, false if not OK to suspend
->   */
->  static bool default_suspend_ok(struct device *dev)
->  {
-> @@ -261,6 +263,8 @@ static bool __default_power_down_ok(stru
->   * @now: current ktime.
->   *
->   * This routine must be executed under the PM domain's lock.
-> + *
-> + * Returns: true if OK to power down, false if not OK to power down
->   */
->  static bool _default_power_down_ok(struct dev_pm_domain *pd, ktime_t now)
->  {
-> @@ -406,8 +410,8 @@ struct dev_power_governor simple_qos_gov
->         .power_down_ok = default_power_down_ok,
->  };
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index da1777e39eaa..cf65b5a9783c 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -3042,38 +3042,6 @@ int of_genpd_parse_idle_states(struct device_node *dn,
+>  }
+>  EXPORT_SYMBOL_GPL(of_genpd_parse_idle_states);
 >
 > -/**
-> - * pm_genpd_gov_always_on - A governor implementing an always-on policy
-> +/*
-> + * pm_domain_always_on_gov - A governor implementing an always-on policy
->   */
->  struct dev_power_governor pm_domain_always_on_gov = {
->         .suspend_ok = default_suspend_ok,
+> - * pm_genpd_opp_to_performance_state - Gets performance state of the genpd from its OPP node.
+> - *
+> - * @genpd_dev: Genpd's device for which the performance-state needs to be found.
+> - * @opp: struct dev_pm_opp of the OPP for which we need to find performance
+> - *     state.
+> - *
+> - * Returns performance state encoded in the OPP of the genpd. This calls
+> - * platform specific genpd->opp_to_performance_state() callback to translate
+> - * power domain OPP to performance state.
+> - *
+> - * Returns performance state on success and 0 on failure.
+> - */
+> -unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
+> -                                              struct dev_pm_opp *opp)
+> -{
+> -       struct generic_pm_domain *genpd = NULL;
+> -       int state;
+> -
+> -       genpd = container_of(genpd_dev, struct generic_pm_domain, dev);
+> -
+> -       if (unlikely(!genpd->opp_to_performance_state))
+> -               return 0;
+> -
+> -       genpd_lock(genpd);
+> -       state = genpd->opp_to_performance_state(genpd, opp);
+> -       genpd_unlock(genpd);
+> -
+> -       return state;
+> -}
+> -EXPORT_SYMBOL_GPL(pm_genpd_opp_to_performance_state);
+> -
+>  static int __init genpd_bus_init(void)
+>  {
+>         return bus_register(&genpd_bus_type);
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 34663d0d5c55..b97c5e9820f9 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -118,7 +118,6 @@ struct genpd_power_state {
+>  };
+>
+>  struct genpd_lock_ops;
+> -struct dev_pm_opp;
+>  struct opp_table;
+>
+>  struct generic_pm_domain {
+> @@ -146,8 +145,6 @@ struct generic_pm_domain {
+>         int (*power_on)(struct generic_pm_domain *domain);
+>         struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
+>         struct opp_table *opp_table;    /* OPP table of the genpd */
+> -       unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
+> -                                                struct dev_pm_opp *opp);
+>         int (*set_performance_state)(struct generic_pm_domain *genpd,
+>                                      unsigned int state);
+>         struct gpd_dev_ops dev_ops;
+> @@ -348,8 +345,6 @@ int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
+>  struct generic_pm_domain *of_genpd_remove_last(struct device_node *np);
+>  int of_genpd_parse_idle_states(struct device_node *dn,
+>                                struct genpd_power_state **states, int *n);
+> -unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
+> -                                              struct dev_pm_opp *opp);
+>
+>  int genpd_dev_pm_attach(struct device *dev);
+>  struct device *genpd_dev_pm_attach_by_id(struct device *dev,
+> @@ -395,13 +390,6 @@ static inline int of_genpd_parse_idle_states(struct device_node *dn,
+>         return -ENODEV;
+>  }
+>
+> -static inline unsigned int
+> -pm_genpd_opp_to_performance_state(struct device *genpd_dev,
+> -                                 struct dev_pm_opp *opp)
+> -{
+> -       return 0;
+> -}
+> -
+>  static inline int genpd_dev_pm_attach(struct device *dev)
+>  {
+>         return 0;
+> --
+> 2.34.1
+>
