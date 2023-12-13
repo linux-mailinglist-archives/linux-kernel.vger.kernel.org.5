@@ -2,388 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB29881114C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C05E811154
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378855AbjLMMrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
+        id S1378878AbjLMMs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbjLMMro (ORCPT
+        with ESMTP id S1377400AbjLMMs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:47:44 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66CBA4;
-        Wed, 13 Dec 2023 04:47:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZHjgHD/Gl8l5KieVxhVjocoVHd90ATqZhHg2Tfmk6v4=; b=m/S0b+qed0K3dcmWhCc0n9Zs1F
-        G2H5oNb9p4vERMgroCQuwVGt1Uv7foYe43DitlbwjiozNi10Xu2Vrh72WT440BqM40+LvddApHWhY
-        zGwM7W4RFWJqLMb1g/6Z/kp2C5Undrnq3hDzu9HMXqCCK2eKCGgtXQe7a/yj7PObb9/i9YKrWM545
-        dlr023WeZ4zVoeMqA6vpdHxm7L4HBZ1qAld4lja7+MfvzUS4JXoMSyYrYoBpvIhgR6ZfPWXvbovu7
-        OkDAC+ItJuxc62bHBQpFIDmyj139RXmf/MWWUpecB7N4sByYaYHjO6TSbTjzDXFQGHkICjketuZJE
-        HonJMDRw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44482)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDOeE-0008CM-2c;
-        Wed, 13 Dec 2023 12:47:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDOeB-0001UM-IO; Wed, 13 Dec 2023 12:47:31 +0000
-Date:   Wed, 13 Dec 2023 12:47:31 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>
-Subject: [RFC PATCH v3 00/21] ACPI/arm64: add support for virtual cpu hotplug
-Message-ID: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+        Wed, 13 Dec 2023 07:48:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBFEA4;
+        Wed, 13 Dec 2023 04:48:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702471712; x=1734007712;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8oyQWIL48xbMuGTyRmr1kvqN7ATxDJQS7G1iOJWG82U=;
+  b=V45sfMEzDY+7T5YN1iOpvDgWIvR/XrCALfo+svksHsiWBVns9tfeY2qo
+   cP35OyLLJK/Jq2zwahTO1owVX37I/FD/FHf9Kz23+PZOYjHjmg7BFDZlY
+   3Bql1niSxHCcAXlwJhpOxM9RvjvOanrQzMc0rTwMsUzsKJpmtaOVN9X1/
+   XLt8aVYRosxoX1C2P56XQX+clJoNTYKUHmjm7KzvS0+qrrM1vwAkxDeEC
+   AYZYW7ASsyCYVc2e6GBwPXg110cOW6PH3litsYy3bVv9+v6GFDAF1Uee7
+   Ankuf4ByZjK3btlkvoBij9vqykSQV++tgeNgUqq9A3BSNX9ENmP9VWmdK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="392132510"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="392132510"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:48:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="723637716"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="723637716"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.13])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:48:20 -0800
+Message-ID: <84755553-3a79-4693-9396-084e9ae41235@intel.com>
+Date:   Wed, 13 Dec 2023 14:48:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 00/14] Clean up libperf cpumap's empty function
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+References: <20231129060211.1890454-1-irogers@google.com>
+ <ZXifiVytVbebYE3U@kernel.org>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZXifiVytVbebYE3U@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-This is this remaining patches for ARM64 virtual cpu hotplug, which
-follows on from the previous set of 21 patches that GregKH has
-recently queued up, and "x86: intel_epb: Don't rely on link order"
-which can be found at:
-
-https://lore.kernel.org/r/E1r6SeD-00DCuK-M6@rmk-PC.armlinux.org.uk
-https://lore.kernel.org/r/ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk
-
-The entire series can be found at:
-
- git://git.armlinux.org.uk/~rmk/linux-arm.git aarch64/hotplug-vcpu/head
-
-The original cover message from the entire series is below the
-diffstat.
-
- Documentation/arch/arm64/cpu-hotplug.rst   |  79 ++++++++++++++++
- Documentation/arch/arm64/index.rst         |   1 +
- arch/arm64/include/asm/acpi.h              |  11 +++
- arch/arm64/kernel/acpi_numa.c              |  11 ---
- arch/arm64/kernel/psci.c                   |   2 +-
- arch/arm64/kernel/smp.c                    |   3 +-
- arch/loongarch/Kconfig                     |   2 +-
- arch/loongarch/configs/loongson3_defconfig |   2 +-
- arch/loongarch/kernel/acpi.c               |   4 +-
- arch/x86/Kconfig                           |   3 +-
- arch/x86/kernel/acpi/boot.c                |   4 +-
- drivers/acpi/Kconfig                       |  13 ++-
- drivers/acpi/acpi_processor.c              | 141 ++++++++++++++++++++++++++---
- drivers/acpi/bus.c                         |  16 ++++
- drivers/acpi/device_pm.c                   |   2 +-
- drivers/acpi/device_sysfs.c                |   2 +-
- drivers/acpi/internal.h                    |   1 -
- drivers/acpi/property.c                    |   2 +-
- drivers/acpi/scan.c                        | 140 ++++++++++++++++++----------
- drivers/base/cpu.c                         |  16 +++-
- drivers/irqchip/irq-gic-v3.c               |  32 ++++---
- include/acpi/acpi_bus.h                    |   1 +
- include/acpi/actbl2.h                      |   1 +
- include/linux/acpi.h                       |  10 +-
- include/linux/cpumask.h                    |  25 +++++
- kernel/cpu.c                               |   3 +
- 26 files changed, 421 insertions(+), 106 deletions(-)
-
-On Tue, Oct 24, 2023 at 04:15:28PM +0100, Russell King (Oracle) wrote:
-> Hi,
+On 12/12/23 19:59, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Nov 28, 2023 at 10:01:57PM -0800, Ian Rogers escreveu:
+>> Rename and clean up the use of libperf CPU map functions particularly
+>> focussing on perf_cpu_map__empty that may return true for maps
+>> containing CPUs but also with an "any CPU"/dummy value.
+>>
+>> perf_cpu_map__nr is also troubling in that iterating an empty CPU map
+>> will yield the "any CPU"/dummy value. Reduce the appearance of some
+>> calls to this by using the perf_cpu_map__for_each_cpu macro.
+>>
+>> Ian Rogers (14):
+>>   libperf cpumap: Rename perf_cpu_map__dummy_new
+>>   libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
+>>   libperf cpumap: Rename perf_cpu_map__empty
+>>   libperf cpumap: Replace usage of perf_cpu_map__new(NULL)
+>>   libperf cpumap: Add for_each_cpu that skips the "any CPU" case
 > 
-> I'm posting James' patch set updated with most of the review comments
-> from his RFC v2 series back in September. Individual patches have a
-> changelog attached at the bottom of the commit message. Those which
-> I have finished updating have my S-o-b on them, those which still have
-> outstanding review comments from RFC v2 do not. In some of these cases
-> I've asked questions and am waiting for responses.
-> 
-> I'm posting this as RFC v3 because there's still some unaddressed
-> comments and it's clearly not ready for merging. Even if it was ready
-> to be merged, it is too late in this development cycle to be taking
-> this change in, so there would be little point posting it non-RFC.
-> Also James stated that he's waiting for confirmation from the
-> Kubernetes/Kata folk - I have no idea what the status is there.
-> 
-> I will be sending each patch individually to a wider audience
-> appropriate for that patch - apologies to those missing out on this
-> cover message. I have added more mailing lists to the series with the
-> exception of the acpica list in a hope of this cover message also
-> reaching those folk.
-> 
-> The changes that aren't included are:
-> 
-> 1. Updates for my patch that was merged via Thomas (thanks!):
->    c4dd854f740c cpu-hotplug: Provide prototypes for arch CPU registration
->    rather than having this change spread through James' patches.
-> 
-> 2. New patch - simplification of PA-RISC's smp_prepare_boot_cpu()
-> 
-> 3. Moved "ACPI: Use the acpi_device_is_present() helper in more places"
->    and "ACPI: Rename acpi_scan_device_not_present() to be about
->    enumeration" to the beginning of the series - these two patches are
->    already queued up for merging into 6.7.
-> 
-> 4. Moved "arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into
->    a helper" to the beginning of the series, which has been submitted,
->    but as yet the fate of that posting isn't known.
-> 
-> The first four patches in this series are provided for completness only.
-> 
-> There is an additional patch in James' git tree that isn't in the set
-> of patches that James posted: "ACPI: processor: Only call
-> arch_unregister_cpu() if HOTPLUG_CPU is selected" which looks to me to
-> be a workaround for arch_unregister_cpu() being under the ifdef. I've
-> commented on this on the RFC v2 posting making a suggestion, but as yet
-> haven't had any response.
-> 
-> I've included almost all of James' original covering body below the
-> diffstat.
-> 
-> The reason that I'm doing this is to help move this code forward so
-> hopefully it can be merged - which is why I have been keen to dig out
-> from James' patches anything that can be merged and submit it
-> separately, since this is a feature for which some users have a
-> definite need for.
-> 
-> Please note that I haven't tested this beyond building for aarch64 at
-> the present time.
-> 
-> The series can be found at:
-> 
->  git://git.armlinux.org.uk/~rmk/linux-arm.git aarch64/hotplug-vcpu/v6.6-rc7
-> 
->  Documentation/arch/arm64/cpu-hotplug.rst   |  79 +++++++++++++++
->  Documentation/arch/arm64/index.rst         |   1 +
->  arch/arm64/Kconfig                         |   1 +
->  arch/arm64/include/asm/acpi.h              |  11 +++
->  arch/arm64/include/asm/cpu.h               |   1 -
->  arch/arm64/kernel/acpi_numa.c              |  11 ---
->  arch/arm64/kernel/psci.c                   |   2 +-
->  arch/arm64/kernel/setup.c                  |  13 +--
->  arch/arm64/kernel/smp.c                    |   5 +-
->  arch/ia64/Kconfig                          |   3 +
->  arch/ia64/include/asm/acpi.h               |   2 +-
->  arch/ia64/include/asm/cpu.h                |   6 --
->  arch/ia64/kernel/acpi.c                    |   6 +-
->  arch/ia64/kernel/setup.c                   |   2 +-
->  arch/ia64/kernel/topology.c                |  35 +------
->  arch/loongarch/Kconfig                     |   2 +
->  arch/loongarch/configs/loongson3_defconfig |   2 +-
->  arch/loongarch/kernel/acpi.c               |   4 +-
->  arch/loongarch/kernel/topology.c           |  38 +-------
->  arch/parisc/kernel/smp.c                   |   8 +-
->  arch/riscv/Kconfig                         |   1 +
->  arch/riscv/kernel/setup.c                  |  19 +---
->  arch/x86/Kconfig                           |   3 +
->  arch/x86/include/asm/cpu.h                 |   4 -
->  arch/x86/kernel/acpi/boot.c                |   4 +-
->  arch/x86/kernel/cpu/intel_epb.c            |   2 +-
->  arch/x86/kernel/topology.c                 |  27 +-----
->  drivers/acpi/Kconfig                       |  14 ++-
->  drivers/acpi/acpi_processor.c              | 151 +++++++++++++++++++++++------
->  drivers/acpi/bus.c                         |  16 +++
->  drivers/acpi/device_pm.c                   |   2 +-
->  drivers/acpi/device_sysfs.c                |   2 +-
->  drivers/acpi/internal.h                    |   1 -
->  drivers/acpi/processor_core.c              |   2 +-
->  drivers/acpi/property.c                    |   2 +-
->  drivers/acpi/scan.c                        | 148 ++++++++++++++++++----------
->  drivers/base/arch_topology.c               |  38 +++++---
->  drivers/base/cpu.c                         |  44 +++++++--
->  drivers/base/init.c                        |   2 +-
->  drivers/base/node.c                        |   7 --
->  drivers/firmware/psci/psci.c               |   2 +
->  drivers/irqchip/irq-gic-v3.c               |  38 +++++---
->  include/acpi/acpi_bus.h                    |   1 +
->  include/acpi/actbl2.h                      |   1 +
->  include/linux/acpi.h                       |  13 ++-
->  include/linux/cpu.h                        |   4 +
->  include/linux/cpumask.h                    |  25 +++++
->  kernel/cpu.c                               |   3 +
->  48 files changed, 516 insertions(+), 292 deletions(-)
-> 
-> 
-> On Wed, Sep 13, 2023 at 04:37:48PM +0000, James Morse wrote:
-> > Hello!
-> > 
-> > Changes since RFC-v1:
-> >  * riscv is new, ia64 is gone
-> >  * The KVM support is different, and upstream - no need to patch the host.
-> > 
-> > ---
-> > 
-> > This series adds what looks like cpuhotplug support to arm64 for use in
-> > virtual machines. It does this by moving the cpu_register() calls for
-> > architectures that support ACPI out of the arch code by using
-> > GENERIC_CPU_DEVICES, then into the ACPI processor driver.
-> > 
-> > The kubernetes folk really want to be able to add CPUs to an existing VM,
-> > in exactly the same way they do on x86. The use-case is pre-booting guests
-> > with one CPU, then adding the number that were actually needed when the
-> > workload is provisioned.
-> > 
-> > Wait? Doesn't arm64 support cpuhotplug already!?
-> > In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
-> > The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
-> > has the additional step of physically removing the CPU, so that it isn't
-> > present anymore.
-> > 
-> > Arm64 doesn't support this, and can't support it: CPUs are really a slice
-> > of the SoC, and there is not enough information in the existing ACPI tables
-> > to describe which bits of the slice also got removed. Without a reference
-> > machine: adding this support to the spec is a wild goose chase.
-> > 
-> > Critically: everything described in the firmware tables must remain present.
-> > 
-> > For a virtual machine this is easy as all the other bits of 'virtual SoC'
-> > are emulated, so they can (and do) remain present when a vCPU is 'removed'.
-> > 
-> > On a system that supports cpuhotplug the MADT has to describe every possible
-> > CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
-> > the guest is started.
-> > With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
-> > policy about which CPUs can be brought online.
-> > 
-> > This series adds support for virtual-cpuhotplug as exactly that: firmware
-> > policy. This may even work on a physical machine too; for a guest the part of
-> > firmware is played by the VMM. (typically Qemu).
-> > 
-> > PSCI support is modified to return 'DENIED' if the CPU can't be brought
-> > online/enabled yet. The CPU object's _STA method's enabled bit is used to
-> > indicate firmware's current disposition. If the CPU has its enabled bit clear,
-> > it will not be registered with sysfs, and attempts to bring it online will
-> > fail. The notifications that _STA has changed its value then work in the same
-> > way as physical hotplug, and firmware can cause the CPU to be registered some
-> > time later, allowing it to be brought online.
-> > 
-> > This creates something that looks like cpuhotplug to user-space, as the sysfs
-> > files appear and disappear, and the udev notifications look the same.
-> > 
-> > One notable difference is the CPU present mask, which is exposed via sysfs.
-> > Because the CPUs remain present throughout, they can still be seen in that mask.
-> > This value does get used by webbrowsers to estimate the number of CPUs
-> > as the CPU online mask is constantly changed on mobile phones.
-> > 
-> > Linux is tolerant of PSCI returning errors, as its always been allowed to do
-> > that. To avoid confusing OS that can't tolerate this, we needed an additional
-> > bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
-> > appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
-> > has a different bit position in the GICC.
-> > 
-> > This code is unconditionally enabled for all ACPI architectures.
-> > If there are problems with firmware tables on some devices, the CPUs will
-> > already be online by the time the acpi_processor_make_enabled() is called.
-> > A mismatch here causes a firmware-bug message and kernel taint. This should
-> > only affect people with broken firmware who also boot with maxcpus=1, and
-> > bring CPUs online later.
-> > 
-> > I had a go at switching the remaining architectures over to GENERIC_CPU_DEVICES,
-> > so that the Kconfig symbol can be removed, but I got stuck with powerpc
-> > and s390.
-> > 
-> > I've only build tested Loongarch and riscv. I've removed the ia64 specific
-> > patches, but left the changes in other patches to make git-grep review of
-> > renames easier.
-> > 
-> > If folk want to play along at home, you'll need a copy of Qemu that supports this.
-> > https://github.com/salil-mehta/qemu.git salil/virt-cpuhp-armv8/rfc-v2-rc6
-> > 
-> > Replace your '-smp' argument with something like:
-> > | -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
-> > 
-> > then feed the following to the Qemu montior;
-> > | (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
-> > | (qemu) device_del cpu1
-> > 
-> > 
-> > Why is this still an RFC? I'm still looking for confirmation from the
-> > kubernetes/kata folk that this works for them. Because of this I've culled
-> > the CC list...
-> > 
-> > 
-> > This series is based on v6.6-rc1, and can be retrieved from:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/ virtual_cpu_hotplug/rfc/v2
-> > 
-> > 
-> > Thanks,
-> > 
-> > James Morse (34):
-> >   ACPI: Move ACPI_HOTPLUG_CPU to be disabled on arm64 and riscv
-> >   drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
-> >   drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden
-> >   drivers: base: Move cpu_dev_init() after node_dev_init()
-> >   drivers: base: Print a warning instead of panic() when register_cpu()
-> >     fails
-> >   arm64: setup: Switch over to GENERIC_CPU_DEVICES using
-> >     arch_register_cpu()
-> >   x86: intel_epb: Don't rely on link order
-> >   x86/topology: Switch over to GENERIC_CPU_DEVICES
-> >   LoongArch: Switch over to GENERIC_CPU_DEVICES
-> >   riscv: Switch over to GENERIC_CPU_DEVICES
-> >   arch_topology: Make register_cpu_capacity_sysctl() tolerant to late
-> >     CPUs
-> >   ACPI: Use the acpi_device_is_present() helper in more places
-> >   ACPI: Rename acpi_scan_device_not_present() to be about enumeration
-> >   ACPI: Only enumerate enabled (or functional) devices
-> >   ACPI: processor: Add support for processors described as container
-> >     packages
-> >   ACPI: processor: Register CPUs that are online, but not described in
-> >     the DSDT
-> >   ACPI: processor: Register all CPUs from acpi_processor_get_info()
-> >   ACPI: Rename ACPI_HOTPLUG_CPU to include 'present'
-> >   ACPI: Move acpi_bus_trim_one() before acpi_scan_hot_remove()
-> >   ACPI: Rename acpi_processor_hotadd_init and remove pre-processor
-> >     guards
-> >   ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
-> >   ACPI: Check _STA present bit before making CPUs not present
-> >   ACPI: Warn when the present bit changes but the feature is not enabled
-> >   drivers: base: Implement weak arch_unregister_cpu()
-> >   LoongArch: Use the __weak version of arch_unregister_cpu()
-> >   arm64: acpi: Move get_cpu_for_acpi_id() to a header
-> >   ACPICA: Add new MADT GICC flags fields [code first?]
-> >   arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into a
-> >     helper
-> >   irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
-> >   irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
-> >     CPUs
-> >   ACPI: add support to register CPUs based on the _STA enabled bit
-> >   arm64: document virtual CPU hotplug's expectations
-> >   ACPI: Add _OSC bits to advertise OS support for toggling CPU
-> >     present/enabled
-> >   cpumask: Add enabled cpumask for present CPUs that can be brought
-> >     online
-> > 
-> > Jean-Philippe Brucker (1):
-> >   arm64: psci: Ignore DENIED CPUs
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> Applied 1-6, with James Reviewed-by tags, would be good to have Adrian
+> check the PT and BTS parts, testing the end result if he things its all
+> ok.
 > 
 
+Changing the same lines of code twice in the same patch set is not
+really kernel style.
+
+Some of the churn could be reduced by applying and rebasing on the
+patch below.
+
+Ideally the patches should be reordered so that the lines only
+change once i.e.
+
+	perf_cpu_map__empty -> <replacement>
+
+instead of
+
+	perf_cpu_map__empty -> <rename> -> <replacement>
+
+If that is too much trouble, please accept my ack instead:
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+
+From: Adrian Hunter <adrian.hunter@intel.com>
+
+Factor out perf_cpu_map__empty() use to reduce the occurrences and make
+the code more readable.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/arch/x86/util/intel-bts.c | 11 ++++++++---
+ tools/perf/arch/x86/util/intel-pt.c  | 21 ++++++++++++---------
+ 2 files changed, 20 insertions(+), 12 deletions(-)
+
+diff --git a/tools/perf/arch/x86/util/intel-bts.c b/tools/perf/arch/x86/util/intel-bts.c
+index d2c8cac11470..cebe994eb9db 100644
+--- a/tools/perf/arch/x86/util/intel-bts.c
++++ b/tools/perf/arch/x86/util/intel-bts.c
+@@ -59,6 +59,11 @@ intel_bts_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+ 	return INTEL_BTS_AUXTRACE_PRIV_SIZE;
+ }
+ 
++static bool intel_bts_per_cpu(struct evlist *evlist)
++{
++	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
++}
++
+ static int intel_bts_info_fill(struct auxtrace_record *itr,
+ 			       struct perf_session *session,
+ 			       struct perf_record_auxtrace_info *auxtrace_info,
+@@ -109,8 +114,8 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+ 	struct intel_bts_recording *btsr =
+ 			container_of(itr, struct intel_bts_recording, itr);
+ 	struct perf_pmu *intel_bts_pmu = btsr->intel_bts_pmu;
++	bool per_cpu_mmaps = intel_bts_per_cpu(evlist);
+ 	struct evsel *evsel, *intel_bts_evsel = NULL;
+-	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
+ 	bool privileged = perf_event_paranoid_check(-1);
+ 
+ 	if (opts->auxtrace_sample_mode) {
+@@ -143,7 +148,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+ 	if (!opts->full_auxtrace)
+ 		return 0;
+ 
+-	if (opts->full_auxtrace && !perf_cpu_map__empty(cpus)) {
++	if (opts->full_auxtrace && per_cpu_mmaps) {
+ 		pr_err(INTEL_BTS_PMU_NAME " does not support per-cpu recording\n");
+ 		return -EINVAL;
+ 	}
+@@ -224,7 +229,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+ 		 * In the case of per-cpu mmaps, we need the CPU on the
+ 		 * AUX event.
+ 		 */
+-		if (!perf_cpu_map__empty(cpus))
++		if (per_cpu_mmaps)
+ 			evsel__set_sample_bit(intel_bts_evsel, CPU);
+ 	}
+ 
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index fa0c718b9e72..0ff9147c75da 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -312,6 +312,11 @@ static void intel_pt_tsc_ctc_ratio(u32 *n, u32 *d)
+ 	*d = eax;
+ }
+ 
++static bool intel_pt_per_cpu(struct evlist *evlist)
++{
++	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
++}
++
+ static int intel_pt_info_fill(struct auxtrace_record *itr,
+ 			      struct perf_session *session,
+ 			      struct perf_record_auxtrace_info *auxtrace_info,
+@@ -322,7 +327,8 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
+ 	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
+ 	struct perf_event_mmap_page *pc;
+ 	struct perf_tsc_conversion tc = { .time_mult = 0, };
+-	bool cap_user_time_zero = false, per_cpu_mmaps;
++	bool per_cpu_mmaps = intel_pt_per_cpu(session->evlist);
++	bool cap_user_time_zero = false;
+ 	u64 tsc_bit, mtc_bit, mtc_freq_bits, cyc_bit, noretcomp_bit;
+ 	u32 tsc_ctc_ratio_n, tsc_ctc_ratio_d;
+ 	unsigned long max_non_turbo_ratio;
+@@ -369,8 +375,6 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
+ 			ui__warning("Intel Processor Trace: TSC not available\n");
+ 	}
+ 
+-	per_cpu_mmaps = !perf_cpu_map__empty(session->evlist->core.user_requested_cpus);
+-
+ 	auxtrace_info->type = PERF_AUXTRACE_INTEL_PT;
+ 	auxtrace_info->priv[INTEL_PT_PMU_TYPE] = intel_pt_pmu->type;
+ 	auxtrace_info->priv[INTEL_PT_TIME_SHIFT] = tc.time_shift;
+@@ -604,8 +608,8 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
+ 	bool have_timing_info, need_immediate = false;
+ 	struct evsel *evsel, *intel_pt_evsel = NULL;
+-	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
+ 	bool privileged = perf_event_paranoid_check(-1);
++	bool per_cpu_mmaps = intel_pt_per_cpu(evlist);
+ 	u64 tsc_bit;
+ 	int err;
+ 
+@@ -774,8 +778,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 	 * Per-cpu recording needs sched_switch events to distinguish different
+ 	 * threads.
+ 	 */
+-	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
+-	    !record_opts__no_switch_events(opts)) {
++	if (have_timing_info && per_cpu_mmaps && !record_opts__no_switch_events(opts)) {
+ 		if (perf_can_record_switch_events()) {
+ 			bool cpu_wide = !target__none(&opts->target) &&
+ 					!target__has_task(&opts->target);
+@@ -832,7 +835,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 		 * In the case of per-cpu mmaps, we need the CPU on the
+ 		 * AUX event.
+ 		 */
+-		if (!perf_cpu_map__empty(cpus))
++		if (per_cpu_mmaps)
+ 			evsel__set_sample_bit(intel_pt_evsel, CPU);
+ 	}
+ 
+@@ -858,7 +861,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 			tracking_evsel->immediate = true;
+ 
+ 		/* In per-cpu case, always need the time of mmap events etc */
+-		if (!perf_cpu_map__empty(cpus)) {
++		if (per_cpu_mmaps) {
+ 			evsel__set_sample_bit(tracking_evsel, TIME);
+ 			/* And the CPU for switch events */
+ 			evsel__set_sample_bit(tracking_evsel, CPU);
+@@ -870,7 +873,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 	 * Warn the user when we do not have enough information to decode i.e.
+ 	 * per-cpu with no sched_switch (except workload-only).
+ 	 */
+-	if (!ptr->have_sched_switch && !perf_cpu_map__empty(cpus) &&
++	if (!ptr->have_sched_switch && per_cpu_mmaps &&
+ 	    !target__none(&opts->target) &&
+ 	    !intel_pt_evsel->core.attr.exclude_user)
+ 		ui__warning("Intel Processor Trace decoding will not be possible except for kernel tracing!\n");
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
+
+
