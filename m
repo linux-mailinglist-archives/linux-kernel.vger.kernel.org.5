@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF3F8114C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8A28114B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441976AbjLMOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
+        id S1441964AbjLMOe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441923AbjLMOfu (ORCPT
+        with ESMTP id S1441923AbjLMOe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:35:50 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A108BD0;
-        Wed, 13 Dec 2023 06:35:56 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso72109025e9.2;
-        Wed, 13 Dec 2023 06:35:56 -0800 (PST)
+        Wed, 13 Dec 2023 09:34:28 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC83B9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:34:33 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce9e897aeaso6192457b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:34:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702478155; x=1703082955; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:from:content-language
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nUFSFbFgIum2NtAhJnNBP5hxWvYwzYJYVb9Fw/rpe9A=;
-        b=f2rmOjrxmKRrbgQfkPYSgdaz2dxj911vkdvO9Ny+U1hkJy7ieHVUlmfucrF07LiKfX
-         xsLpuS5VuFvO0YpyaKKsvjYTCs0CVLJ2KV2EOv3Ofh6PxPww/gTqNhxCHobhuhPEhpTm
-         79yb+aVqIDcDM4tOQqQTg+INulSm6m939vOECrBMBmb7x/yD/SNKpqyL9xxYMw/e8Tek
-         AfMmMeGdgGsSpoyxINFEoHPyFlrI04OjpHpDz0cQJ0KSOy2G4WcHQPw4sIDsBfhqE4BU
-         OFbzNp4XzYujkCJKylxuqryJe281qVOC0h6mReeGhbT8tFKUNHYQXcuyrO4NLMap7q4/
-         U0Hg==
+        d=gmail.com; s=20230601; t=1702478072; x=1703082872; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cbOaPVmJ7E4boaoj6IocNcjRghNie5jLjB39Y35NZkE=;
+        b=MzuUHnRKvU4ENtNoq+H5yTlCm37pMFnVOnYWl6IZdKcJVqkBZCzO/eQmyMa8//Ge+W
+         LQ1jbJtKld2oVjP7vb4I2bHAKIxvCtRkCX0mdicSws6kOVYsEcCYLk/ZL7QiQ8Hp/aB3
+         gm+GO7y+18omFgBm7KEICTJ2qygV7rDG+yTZSbMSHdW34n19Sab0M7HU7mE8N00nM+lT
+         wUUXPNmtFxaY3NblVpxTsYqUzPcfKt4ydtaktt3xKmW6EOiro0hkoZauvdgE2MFrXVcL
+         SljgabINDOZVNNBa6ezNfpuxgm+Bie7TeIQjgwgqyuwiF7xAkBzh0bUCxvEndrP8DrG2
+         AOxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702478155; x=1703082955;
-        h=content-transfer-encoding:cc:to:subject:from:content-language
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nUFSFbFgIum2NtAhJnNBP5hxWvYwzYJYVb9Fw/rpe9A=;
-        b=LXO8Zd3Xdgh3I+FBunhfOBybW8QbyeYWLrqGN9YNJp0YXGoj/9TVne6j/rwqPH8OBc
-         4eD1scV81p/uZlIpC8ufffHdnMcwvl0ME3er3Pk9HxIjcLKKosj2vkNycAYmyW6c3kw+
-         d9agR7AZcFkDmh3WeYUIbNMcPKnXffv99V7aar3FQUJb91rGBUpCaivZ5+7qCw7ICAII
-         pcT3Q5UOFvO+StgCONZ3v6nT+PGr/wULAZpFZpKKUjlTKSx2a1g1E/qcr74tgDcLkJzA
-         sZzGzu3J1ZknidAXWT62cnnjGr91oFjI+0JACpwwwwYZy7CVKch0E0iWSsgMbhw6SIHN
-         /gag==
-X-Gm-Message-State: AOJu0Yxbl/xzVBvU/BC9RudpGYGKfKq5/RjXWHgdBGYZYRrFMcdr0gsI
-        03RqjQZtXpr4elJJFGePi1FEnUy+a4lXyMtc
-X-Google-Smtp-Source: AGHT+IHH2DLkhZJfogZupcuD9ipfyMZH25Ro9qMHMsMnFpHPnwDdvFgUHUPTzm/6osDEIjFIHpoL3Q==
-X-Received: by 2002:a05:600c:1394:b0:40c:55a7:770f with SMTP id u20-20020a05600c139400b0040c55a7770fmr1119780wmf.159.1702478154820;
-        Wed, 13 Dec 2023 06:35:54 -0800 (PST)
-Received: from [10.0.3.3] ([217.212.240.69])
-        by smtp.gmail.com with ESMTPSA id n21-20020a05600c4f9500b0040b36ad5413sm20112472wmq.46.2023.12.13.06.35.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 06:35:54 -0800 (PST)
-Message-ID: <ac24d9b6-bfff-4700-a301-d4bd0dbb9313@gmail.com>
-Date:   Wed, 13 Dec 2023 15:33:19 +0100
+        d=1e100.net; s=20230601; t=1702478072; x=1703082872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cbOaPVmJ7E4boaoj6IocNcjRghNie5jLjB39Y35NZkE=;
+        b=khreHgLjgJ04/aLcpiwY/tTyi+fq49Qz6zMA009UCB2Y+II63iga/jCv587vD0Bm3W
+         MuBi1ljjKz3nWJkXxcjiOaDCGrY9hKaOmFm+mN/9Y6I7AyTAx6yROUTgR49CrVYfVAvi
+         /gI0fH22EW1yADKAi09O21MSi3BKVKmjRvKKLg6iQ7rOl+yuzPPo5f8b5JPqTQPnbK+d
+         bSTyrDomXCUvc3g90J1AyEUPhE7swCBRMgtHWsL2km9W9yqBcVqW3q09TkZy/veftBt7
+         9ujHITm4DSh3lSiVsPmEtd51FDnnSO5Ic/thCc/p3qb+wFSB+2hJBdgsRrpJerwH/Y1n
+         SOgw==
+X-Gm-Message-State: AOJu0Yx0ygnYic4u3jowdi9tVR/xxNnYZ79APCJ9txvJsoYxzbGw0BBN
+        IQh/mV2Of+46BE2zj6JF0Bt/vQ1NOA+g6ZHWjaxE+Uvq
+X-Google-Smtp-Source: AGHT+IGoeTELoKZIUySzntD4U8AHBobuBQTV1qRo1vfNtYiB/gZi2nsHPSNCb7OxU6Ep5v2NDoelfkeQ2thuszguRvE=
+X-Received: by 2002:a05:6a20:2590:b0:190:7d54:f0c4 with SMTP id
+ k16-20020a056a20259000b001907d54f0c4mr10315674pzd.87.1702478072405; Wed, 13
+ Dec 2023 06:34:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: en-US
-From:   Leone Fernando <leone4fernando@gmail.com>
-Subject: [PATCH net] ipmr: support IP_PKTINFO on cache report IGMP msg
-To:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, willemdebruijn.kernel@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        leone4fernando@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231212232659.18839-1-npache@redhat.com>
+In-Reply-To: <20231212232659.18839-1-npache@redhat.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Wed, 13 Dec 2023 15:34:21 +0100
+Message-ID: <CA+fCnZeE1g7F6UDruw-3v5eTO9u_jcROG4Hbndz8Bnr62Opnyg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: kasan_test: disable fortify string checker on kmalloc_oob_memset
+To:     Nico Pache <npache@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, akpm@linux-foundation.org,
+        vincenzo.frascino@arm.com, dvyukov@google.com, glider@google.com,
+        ryabinin.a.a@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,171 +71,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support IP_PKTINFO on those packets, we need to call
-ipv4_pktinfo_prepare, so introduced minor changes to this
-function to support this flow.
+On Wed, Dec 13, 2023 at 12:27=E2=80=AFAM Nico Pache <npache@redhat.com> wro=
+te:
+>
+> similar to commit 09c6304e38e4 ("kasan: test: fix compatibility with
+> FORTIFY_SOURCE") the kernel is panicing in kmalloc_oob_memset_*.
+>
+> This is due to the `ptr` not being hidden from the optimizer which would
+> disable the runtime fortify string checker.
+>
+> kernel BUG at lib/string_helpers.c:1048!
+> Call Trace:
+> [<00000000272502e2>] fortify_panic+0x2a/0x30
+> ([<00000000272502de>] fortify_panic+0x26/0x30)
+> [<001bffff817045c4>] kmalloc_oob_memset_2+0x22c/0x230 [kasan_test]
+>
+> Hide the `ptr` variable from the optimizer to fix the kernel panic.
+> Also define a size2 variable and hide that as well. This cleans up
+> the code and follows the same convention as other tests.
+>
+> Signed-off-by: Nico Pache <npache@redhat.com>
+> ---
+>  mm/kasan/kasan_test.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
+> index 8281eb42464b..5aeba810ba70 100644
+> --- a/mm/kasan/kasan_test.c
+> +++ b/mm/kasan/kasan_test.c
+> @@ -493,14 +493,17 @@ static void kmalloc_oob_memset_2(struct kunit *test=
+)
+>  {
+>         char *ptr;
+>         size_t size =3D 128 - KASAN_GRANULE_SIZE;
+> +       size_t size2 =3D 2;
 
-When sending mrouted/pimd daemons a cache report IGMP msg, it is
-unnecessary to set dst on the newly created skb.
-It used to be necessary on older versions until
-commit d826eb14ecef ("ipv4: PKTINFO doesnt need dst reference") which
-changed the way IP_PKTINFO struct is been retrieved.
+Let's name this variable access_size or memset_size. Here and in the
+other changed tests.
 
-Fixes: d826eb14ecef ("ipv4: PKTINFO doesnt need dst reference")
-Signed-off-by: Leone Fernando <leone4fernando@gmail.com>
----
- include/net/ip.h       | 10 +++++++++-
- net/ipv4/ip_sockglue.c | 25 ++++++++++++++++---------
- net/ipv4/ipmr.c        | 12 +++++-------
- net/ipv4/raw.c         |  2 +-
- net/ipv4/udp.c         |  2 +-
- 5 files changed, 32 insertions(+), 19 deletions(-)
+>         KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+>
+>         ptr =3D kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>
+> +       OPTIMIZER_HIDE_VAR(ptr);
+>         OPTIMIZER_HIDE_VAR(size);
+> -       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, 2));
+> +       OPTIMIZER_HIDE_VAR(size2);
+> +       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 1, 0, size2));
+>         kfree(ptr);
+>  }
+>
+> @@ -508,14 +511,17 @@ static void kmalloc_oob_memset_4(struct kunit *test=
+)
+>  {
+>         char *ptr;
+>         size_t size =3D 128 - KASAN_GRANULE_SIZE;
+> +       size_t size2 =3D 4;
+>
+>         KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+>
+>         ptr =3D kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>
+> +       OPTIMIZER_HIDE_VAR(ptr);
+>         OPTIMIZER_HIDE_VAR(size);
+> -       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, 4));
+> +       OPTIMIZER_HIDE_VAR(size2);
+> +       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 3, 0, size2));
+>         kfree(ptr);
+>  }
+>
+> @@ -523,14 +529,17 @@ static void kmalloc_oob_memset_8(struct kunit *test=
+)
+>  {
+>         char *ptr;
+>         size_t size =3D 128 - KASAN_GRANULE_SIZE;
+> +       size_t size2 =3D 8;
+>
+>         KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+>
+>         ptr =3D kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>
+> +       OPTIMIZER_HIDE_VAR(ptr);
+>         OPTIMIZER_HIDE_VAR(size);
+> -       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, 8));
+> +       OPTIMIZER_HIDE_VAR(size2);
+> +       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 7, 0, size2));
+>         kfree(ptr);
+>  }
+>
+> @@ -538,14 +547,17 @@ static void kmalloc_oob_memset_16(struct kunit *tes=
+t)
+>  {
+>         char *ptr;
+>         size_t size =3D 128 - KASAN_GRANULE_SIZE;
+> +       size_t size2 =3D 16;
+>
+>         KASAN_TEST_NEEDS_CHECKED_MEMINTRINSICS(test);
+>
+>         ptr =3D kmalloc(size, GFP_KERNEL);
+>         KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>
+> +       OPTIMIZER_HIDE_VAR(ptr);
+>         OPTIMIZER_HIDE_VAR(size);
+> -       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, 16));
+> +       OPTIMIZER_HIDE_VAR(size2);
+> +       KUNIT_EXPECT_KASAN_FAIL(test, memset(ptr + size - 15, 0, size2));
+>         kfree(ptr);
+>  }
+>
+> --
+> 2.43.0
+>
 
-diff --git a/include/net/ip.h b/include/net/ip.h
-index b31be912489a..1b40b7386c56 100644
---- a/include/net/ip.h
-+++ b/include/net/ip.h
-@@ -767,7 +767,15 @@ int ip_options_rcv_srr(struct sk_buff *skb, struct net_device *dev);
-  *	Functions provided by ip_sockglue.c
-  */
- 
--void ipv4_pktinfo_prepare(const struct sock *sk, struct sk_buff *skb);
-+void ipv4_pktinfo_prepare(const struct sock *sk, struct sk_buff *iskb,
-+			struct sk_buff *oskb);
-+
-+
-+static inline void ipv4_pktinfo_input_prepare(const struct sock *sk, struct sk_buff *skb)
-+{
-+	ipv4_pktinfo_prepare(sk, skb, NULL);
-+}
-+
- void ip_cmsg_recv_offset(struct msghdr *msg, struct sock *sk,
- 			 struct sk_buff *skb, int tlen, int offset);
- int ip_cmsg_send(struct sock *sk, struct msghdr *msg,
-diff --git a/net/ipv4/ip_sockglue.c b/net/ipv4/ip_sockglue.c
-index d7d13940774e..fb26963e3869 100644
---- a/net/ipv4/ip_sockglue.c
-+++ b/net/ipv4/ip_sockglue.c
-@@ -1364,19 +1364,26 @@ int do_ip_setsockopt(struct sock *sk, int level, int optname,
- /**
-  * ipv4_pktinfo_prepare - transfer some info from rtable to skb
-  * @sk: socket
-- * @skb: buffer
-+ * @iskb: input buffer
-+ * @oskb: out buffer
-  *
-  * To support IP_CMSG_PKTINFO option, we store rt_iif and specific
-  * destination in skb->cb[] before dst drop.
-  * This way, receiver doesn't make cache line misses to read rtable.
-  */
--void ipv4_pktinfo_prepare(const struct sock *sk, struct sk_buff *skb)
-+void ipv4_pktinfo_prepare(const struct sock *sk, struct sk_buff *iskb,
-+			  struct sk_buff *oskb)
- {
--	struct in_pktinfo *pktinfo = PKTINFO_SKB_CB(skb);
-+	struct in_pktinfo *pktinfo = PKTINFO_SKB_CB(iskb);
- 	bool prepare = inet_test_bit(PKTINFO, sk) ||
- 		       ipv6_sk_rxinfo(sk);
- 
--	if (prepare && skb_rtable(skb)) {
-+	if (oskb) {
-+		memcpy(oskb->cb, iskb->cb, sizeof(iskb->cb));
-+		pktinfo = PKTINFO_SKB_CB(oskb);
-+	}
-+
-+	if (prepare && skb_rtable(iskb)) {
- 		/* skb->cb is overloaded: prior to this point it is IP{6}CB
- 		 * which has interface index (iif) as the first member of the
- 		 * underlying inet{6}_skb_parm struct. This code then overlays
-@@ -1386,20 +1393,20 @@ void ipv4_pktinfo_prepare(const struct sock *sk, struct sk_buff *skb)
- 		 * (e.g., process binds socket to eth0 for Tx which is
- 		 * redirected to loopback in the rtable/dst).
- 		 */
--		struct rtable *rt = skb_rtable(skb);
--		bool l3slave = ipv4_l3mdev_skb(IPCB(skb)->flags);
-+		struct rtable *rt = skb_rtable(iskb);
-+		bool l3slave = ipv4_l3mdev_skb(IPCB(iskb)->flags);
- 
- 		if (pktinfo->ipi_ifindex == LOOPBACK_IFINDEX)
--			pktinfo->ipi_ifindex = inet_iif(skb);
-+			pktinfo->ipi_ifindex = inet_iif(iskb);
- 		else if (l3slave && rt && rt->rt_iif)
- 			pktinfo->ipi_ifindex = rt->rt_iif;
- 
--		pktinfo->ipi_spec_dst.s_addr = fib_compute_spec_dst(skb);
-+		pktinfo->ipi_spec_dst.s_addr = fib_compute_spec_dst(iskb);
- 	} else {
- 		pktinfo->ipi_ifindex = 0;
- 		pktinfo->ipi_spec_dst.s_addr = 0;
- 	}
--	skb_dst_drop(skb);
-+	skb_dst_drop(iskb);
- }
- 
- int ip_setsockopt(struct sock *sk, int level, int optname, sockptr_t optval,
-diff --git a/net/ipv4/ipmr.c b/net/ipv4/ipmr.c
-index 9e222a57bc2b..6ed7c88743f9 100644
---- a/net/ipv4/ipmr.c
-+++ b/net/ipv4/ipmr.c
-@@ -1025,6 +1025,10 @@ static int ipmr_cache_report(const struct mr_table *mrt,
- 	struct sk_buff *skb;
- 	int ret;
- 
-+	mroute_sk = rcu_dereference(mrt->mroute_sk);
-+	if (!mroute_sk)
-+		return -EINVAL;
-+
- 	if (assert == IGMPMSG_WHOLEPKT || assert == IGMPMSG_WRVIFWHOLE)
- 		skb = skb_realloc_headroom(pkt, sizeof(struct iphdr));
- 	else
-@@ -1069,7 +1073,7 @@ static int ipmr_cache_report(const struct mr_table *mrt,
- 		msg = (struct igmpmsg *)skb_network_header(skb);
- 		msg->im_vif = vifi;
- 		msg->im_vif_hi = vifi >> 8;
--		skb_dst_set(skb, dst_clone(skb_dst(pkt)));
-+		ipv4_pktinfo_prepare(mroute_sk, pkt, skb);
- 		/* Add our header */
- 		igmp = skb_put(skb, sizeof(struct igmphdr));
- 		igmp->type = assert;
-@@ -1079,12 +1083,6 @@ static int ipmr_cache_report(const struct mr_table *mrt,
- 		skb->transport_header = skb->network_header;
- 	}
- 
--	mroute_sk = rcu_dereference(mrt->mroute_sk);
--	if (!mroute_sk) {
--		kfree_skb(skb);
--		return -EINVAL;
--	}
--
- 	igmpmsg_netlink_event(mrt, skb);
- 
- 	/* Deliver to mrouted */
-diff --git a/net/ipv4/raw.c b/net/ipv4/raw.c
-index 27da9d7294c0..cde60c8deed4 100644
---- a/net/ipv4/raw.c
-+++ b/net/ipv4/raw.c
-@@ -292,7 +292,7 @@ static int raw_rcv_skb(struct sock *sk, struct sk_buff *skb)
- 
- 	/* Charge it to the socket. */
- 
--	ipv4_pktinfo_prepare(sk, skb);
-+	ipv4_pktinfo_input_prepare(sk, skb);
- 	if (sock_queue_rcv_skb_reason(sk, skb, &reason) < 0) {
- 		kfree_skb_reason(skb, reason);
- 		return NET_RX_DROP;
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 89e5a806b82e..3e5a418c96c3 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2169,7 +2169,7 @@ static int udp_queue_rcv_one_skb(struct sock *sk, struct sk_buff *skb)
- 
- 	udp_csum_pull_header(skb);
- 
--	ipv4_pktinfo_prepare(sk, skb);
-+	ipv4_pktinfo_input_prepare(sk, skb);
- 	return __udp_queue_rcv_skb(sk, skb);
- 
- csum_error:
--- 
-2.34.1
+With the fix mentioned above addressed:
 
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
